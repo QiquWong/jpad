@@ -1125,7 +1125,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		// Execute analysis
 		aircraft.getTheAnalysisManager().getThePerformance().calculatePerformance(resultsFolderPath);
-		
 	}
 	
 	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {

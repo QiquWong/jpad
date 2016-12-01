@@ -6,7 +6,7 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=0.9377285128838025,
+xmax=0.9375607382109167,
 xlabel={Time (hr)},
 xmajorgrids,
 ymin=0.0,
@@ -23,10 +23,10 @@ solid
 table[row sep=crcr]{
 0.0	0.0\\
 0.009307731066391179	0.0\\
-0.3736298513677955	6000.0\\
-0.6460832113255264	6000.0\\
-0.8642503154375123	0.0\\
-0.8682671415590764	0.0\\
+0.37360052243961117	6000.0\\
+0.6459278644061877	6000.0\\
+0.8640949685181736	0.0\\
+0.8681117946397376	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%

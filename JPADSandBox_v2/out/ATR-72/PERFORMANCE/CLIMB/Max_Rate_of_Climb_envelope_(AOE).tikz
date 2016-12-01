@@ -6,11 +6,11 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=7.967961464995051,
+xmax=7.968925925555613,
 xlabel={Maximum Rate of Climb (m/s)},
 xmajorgrids,
 ymin=0.0,
-ymax=8434.833258832707,
+ymax=8435.160385375155,
 ylabel={Altitude (m)},
 ymajorgrids,
 legend style={at={(1.03,0.5)},anchor=west,draw=black,fill=white,legend cell align=left}
@@ -21,12 +21,12 @@ color=black,
 solid
 ]
 table[row sep=crcr]{
-0.0	7810.030795215469\\
-2.126896800718191	6000.0\\
-3.889488470158554	4500.0\\
-5.317295025590823	3000.0\\
-6.804725912852838	1500.0\\
-7.37774209721764	0.0\\
+0.0	7810.333690162181\\
+2.1272845406283585	6000.0\\
+3.8899025752387018	4500.0\\
+5.3172522655049965	3000.0\\
+6.804742198441534	1500.0\\
+7.378635116255197	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%

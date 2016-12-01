@@ -6,7 +6,7 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=545.4424213228526,
+xmax=544.1903917282796,
 xlabel={Fuel used (kg)},
 xmajorgrids,
 ymin=0.0,
@@ -23,10 +23,10 @@ solid
 table[row sep=crcr]{
 0.0	0.0\\
 0.0	0.0\\
-285.05825034234283	6000.0\\
-470.40631092016173	6000.0\\
-505.03927900264125	0.0\\
-505.03927900264125	0.0\\
+285.0352456192651	6000.0\\
+469.2470242585201	6000.0\\
+503.8799923409996	0.0\\
+503.8799923409996	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%

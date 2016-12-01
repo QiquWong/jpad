@@ -2,8 +2,10 @@ package analyses;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +15,18 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Power;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -48,6 +56,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import database.databasefunctions.engine.EngineDatabaseManager;
@@ -59,6 +68,7 @@ import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
+import sun.misc.Perf;
 import writers.JPADStaticWriteUtils;
 
 public class ACPerformanceManager {
@@ -201,6 +211,19 @@ public class ACPerformanceManager {
 	private Map<String, List<Double>> _efficiencyMapWeight;
 	
 	private List<SpecificRangeMap> _specificRangeMap;
+	
+	private Amount<Velocity> _maxSpeesTASAtCruiseAltitude;
+	private Amount<Velocity> _minSpeesTASAtCruiseAltitude;
+	private Amount<Velocity> _maxSpeesCASAtCruiseAltitude;
+	private Amount<Velocity> _minSpeesCASAtCruiseAltitude;
+	private Double _maxMachAtCruiseAltitude;
+	private Double _minMachAtCruiseAltitude;
+	private Double _specificRangeAtCruiseAltitudeAndMach;
+	private Double _efficiencyAtCruiseAltitudeAndMach;
+	private Amount<Force> _thrustAtCruiseAltitudeAndMach;
+	private Amount<Force> _dragAtCruiseAltitudeAndMach;
+	private Amount<Power> _powerAvailableAtCruiseAltitudeAndMach;
+	private Amount<Power> _powerNeededAtCruiseAltitudeAndMach;
 	//..............................................................................
 	// Descent
 	private List<Amount<Length>> _descentLengths;
@@ -304,6 +327,7 @@ public class ACPerformanceManager {
 	private List<Amount<Mass>> _massList;
 	private Amount<Mass> _totalFuelUsed;
 	private Amount<Duration> _totalMissionTime;
+	private Amount<Mass> _endMissionMass;
 	
 	//============================================================================================
 	// Builder pattern 
@@ -1808,11 +1832,21 @@ public class ACPerformanceManager {
 								SI.METER
 								)
 						);
+				
+				Amount<Force> cruiseWeight = 
+						Amount.valueOf(
+								(_maximumTakeOffMass.plus(_maximumLandingMass))
+								.divide(2)
+								.times(AtmosphereCalc.g0)
+								.getEstimatedValue(),
+								SI.NEWTON
+								);
+				
 				_weightListCruise.add(
 						Amount.valueOf(
 								Math.round(
-										(_maximumTakeOffMass.times(AtmosphereCalc.g0))
-										.minus((_maximumTakeOffMass.times(AtmosphereCalc.g0))
+										(cruiseWeight)
+										.minus((cruiseWeight)
 												.times(0.05*(4-i))
 												)
 										.getEstimatedValue()
@@ -1910,6 +1944,614 @@ public class ACPerformanceManager {
 			
 		}
 		
+		// PRINT RESULTS
+		try {
+			toXLSFile(performanceFolderPath + "Performance");
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+	}
+	
+	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
+		
+		Workbook wb;
+		File outputFile = new File(filenameWithPathAndExt + ".xlsx");
+		if (outputFile.exists()) { 
+			outputFile.delete();		
+			System.out.println("Deleting the old .xls file ...");
+		} 
+		
+		if (outputFile.getName().endsWith(".xls")) {
+			wb = new HSSFWorkbook();
+		}
+		else if (outputFile.getName().endsWith(".xlsx")) {
+			wb = new XSSFWorkbook();
+		}
+		else {
+			throw new IllegalArgumentException("I don't know how to create that kind of new file");
+		}
+		
+		CellStyle styleHead = wb.createCellStyle();
+		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+	    styleHead.setFillPattern(CellStyle.SOLID_FOREGROUND);
+	    Font font = wb.createFont();
+	    font.setFontHeightInPoints((short) 20);
+        font.setColor(IndexedColors.BLACK.getIndex());
+        font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        styleHead.setFont(font);
+		
+        //--------------------------------------------------------------------------------
+        // TAKE-OFF ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.TAKE_OFF)) {
+        	Sheet sheet = wb.createSheet("TAKE-OFF");
+        	List<Object[]> dataListTakeOff = new ArrayList<>();
+
+        	dataListTakeOff.add(new Object[] {"Description","Unit","Value"});
+        	dataListTakeOff.add(new Object[] {"Ground roll distance","m", _groundRollDistanceTakeOff.doubleValue(SI.METER)});
+        	dataListTakeOff.add(new Object[] {"Rotation distance","m", _rotationDistanceTakeOff.doubleValue(SI.METER)});
+        	dataListTakeOff.add(new Object[] {"Airborne distance","m", _airborneDistanceTakeOff.doubleValue(SI.METER)});
+        	dataListTakeOff.add(new Object[] {"AOE take-off distance","m", _takeOffDistanceAOE.doubleValue(SI.METER)});
+        	dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","m", _takeOffDistanceFAR25.doubleValue(SI.METER)});
+        	dataListTakeOff.add(new Object[] {"Balanced field length","m", _balancedFieldLength.doubleValue(SI.METER)});
+        	dataListTakeOff.add(new Object[] {" "});
+        	dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","m/s", _vStallTakeOff.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListTakeOff.add(new Object[] {"Decision speed (V1)","m/s", _v1.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","m/s", _vRotation.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","m/s", _vLiftOff.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","m/s", _v2.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListTakeOff.add(new Object[] {" "});
+        	dataListTakeOff.add(new Object[] {"Take-off duration","s", _takeOffDuration.doubleValue(SI.SECOND)});
+
+        	Row rowTakeOff = sheet.createRow(0);
+        	Object[] objArrTakeOff = dataListTakeOff.get(0);
+        	int cellnumTakeOff = 0;
+        	for (Object obj : objArrTakeOff) {
+        		Cell cell = rowTakeOff.createCell(cellnumTakeOff++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheet.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumTakeOff = 1;
+        	for (int i = 1; i < dataListTakeOff.size(); i++) {
+        		objArrTakeOff = dataListTakeOff.get(i);
+        		rowTakeOff = sheet.createRow(rownumTakeOff++);
+        		cellnumTakeOff = 0;
+        		for (Object obj : objArrTakeOff) {
+        			Cell cell = rowTakeOff.createCell(cellnumTakeOff++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+		//--------------------------------------------------------------------------------
+		// CLIMB ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.CLIMB)) {
+        	Sheet sheetClimb = wb.createSheet("CLIMB");
+        	List<Object[]> dataListClimb = new ArrayList<>();
+
+        	dataListClimb.add(new Object[] {"Description","Unit","Value"});
+        	dataListClimb.add(new Object[] {"Absolute ceiling AOE","m", _absoluteCeilingAOE.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Service ceiling AOE","m", _serviceCeilingAOE.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Max rate of climb at cruise altitude AOE","m/s", _maxRateOfClimbAtCruiseAltitudeAOE.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListClimb.add(new Object[] {"Max climb angle at cruise altitude AOE","deg", _maxThetaAtCruiseAltitudeAOE.doubleValue(NonSI.DEGREE_ANGLE)});
+        	dataListClimb.add(new Object[] {"Minimum time to climb AOE","min", _minimumClimbTimeAOE.doubleValue(NonSI.MINUTE)});
+        	if(_climbTimeAtSpecificClimbSpeedAOE != null)
+        		dataListClimb.add(new Object[] {"Time to climb at given climb speed AOE","min", _climbTimeAtSpecificClimbSpeedAOE.doubleValue(NonSI.MINUTE)});
+        	dataListClimb.add(new Object[] {" "});
+        	dataListClimb.add(new Object[] {"Absolute ceiling OEI","m", _absoluteCeilingOEI.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Service ceiling OEI","m", _serviceCeilingOEI.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Minimum time to climb OEI","min", _minimumClimbTimeOEI.doubleValue(NonSI.MINUTE)});
+        	if(_climbTimeAtSpecificClimbSpeedOEI != null)
+        		dataListClimb.add(new Object[] {"Time to climb at given climb speed OEI","min", _climbTimeAtSpecificClimbSpeedOEI.doubleValue(NonSI.MINUTE)});
+
+        	Row rowClimb = sheetClimb.createRow(0);
+        	Object[] objArrClimb = dataListClimb.get(0);
+        	int cellnumClimb = 0;
+        	for (Object obj : objArrClimb) {
+        		Cell cell = rowClimb.createCell(cellnumClimb++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetClimb.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumClimb = 1;
+        	for (int i = 1; i < dataListClimb.size(); i++) {
+        		objArrClimb = dataListClimb.get(i);
+        		rowClimb = sheetClimb.createRow(rownumClimb++);
+        		cellnumClimb = 0;
+        		for (Object obj : objArrClimb) {
+        			Cell cell = rowClimb.createCell(cellnumClimb++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+        //--------------------------------------------------------------------------------
+        // CRUISE ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.CRUISE)) {
+        	Sheet sheetCruise = wb.createSheet("CRUISE");
+        	List<Object[]> dataListCruise = new ArrayList<>();
+
+        	dataListCruise.add(new Object[] {"Description","Unit","Value"});
+        	dataListCruise.add(new Object[] {"Thrust at cruise altitude and Mach","N", _thrustAtCruiseAltitudeAndMach.doubleValue(SI.NEWTON)});
+        	dataListCruise.add(new Object[] {"Drag at cruise altitude and Mach","N", _dragAtCruiseAltitudeAndMach.doubleValue(SI.NEWTON)});
+        	dataListCruise.add(new Object[] {" "});
+        	dataListCruise.add(new Object[] {"Power available at cruise altitude and Mach","W", _powerAvailableAtCruiseAltitudeAndMach.doubleValue(SI.WATT)});
+        	dataListCruise.add(new Object[] {"Power needed at cruise altitude and Mach","W", _powerNeededAtCruiseAltitudeAndMach.doubleValue(SI.WATT)});
+        	dataListCruise.add(new Object[] {" "});
+        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (CAS)","m/s", _minSpeesCASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (CAS)","m/s", _maxSpeesCASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (TAS)","m/s", _minSpeesTASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (TAS)","m/s", _maxSpeesTASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListCruise.add(new Object[] {"Min Mach number at cruise altitude","", _minMachAtCruiseAltitude});
+        	dataListCruise.add(new Object[] {"Max Mach number at cruise altitude","", _maxMachAtCruiseAltitude});
+        	dataListCruise.add(new Object[] {" "});
+        	dataListCruise.add(new Object[] {"Efficiency at cruise altitude and Mach","", _efficiencyAtCruiseAltitudeAndMach});
+        	dataListCruise.add(new Object[] {" "});
+        	dataListCruise.add(new Object[] {"Specific range at cruise altitude and Mach","nmi/lbs", _specificRangeAtCruiseAltitudeAndMach});
+
+        	Row rowCruise = sheetCruise.createRow(0);
+        	Object[] objArrCruise = dataListCruise.get(0);
+        	int cellnumCruise = 0;
+        	for (Object obj : objArrCruise) {
+        		Cell cell = rowCruise.createCell(cellnumCruise++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetCruise.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumCruise = 1;
+        	for (int i = 1; i < dataListCruise.size(); i++) {
+        		objArrCruise = dataListCruise.get(i);
+        		rowCruise = sheetCruise.createRow(rownumCruise++);
+        		cellnumCruise = 0;
+        		for (Object obj : objArrCruise) {
+        			Cell cell = rowCruise.createCell(cellnumCruise++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+		//--------------------------------------------------------------------------------
+        // DESCENT ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.DESCENT)) {
+        	Sheet sheetDescent = wb.createSheet("DESCENT");
+        	List<Object[]> dataListDescent = new ArrayList<>();
+
+        	dataListDescent.add(new Object[] {"Description","Unit","Value"});
+        	dataListDescent.add(new Object[] {"Descent length","nmi", _totalDescentLength.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListDescent.add(new Object[] {"Descent length","km", _totalDescentLength.doubleValue(SI.KILOMETER)});
+        	dataListDescent.add(new Object[] {"Descent duration","min", _totalDescentTime.doubleValue(NonSI.MINUTE)});
+
+        	Row rowDescent = sheetDescent.createRow(0);
+        	Object[] objArrDescent = dataListDescent.get(0);
+        	int cellnumDescent = 0;
+        	for (Object obj : objArrDescent) {
+        		Cell cell = rowDescent.createCell(cellnumDescent++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetDescent.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumDescent = 1;
+        	for (int i = 1; i < dataListDescent.size(); i++) {
+        		objArrDescent = dataListDescent.get(i);
+        		rowDescent = sheetDescent.createRow(rownumDescent++);
+        		cellnumDescent = 0;
+        		for (Object obj : objArrDescent) {
+        			Cell cell = rowDescent.createCell(cellnumDescent++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+        //--------------------------------------------------------------------------------
+        // LANDING ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.LANDING)) {
+        	Sheet sheetLanding = wb.createSheet("LANDING");
+        	List<Object[]> dataListLanding = new ArrayList<>();
+
+        	dataListLanding.add(new Object[] {"Description","Unit","Value"});
+        	dataListLanding.add(new Object[] {"Ground roll distance","m", _groundRollDistanceLanding.doubleValue(SI.METER)});
+        	dataListLanding.add(new Object[] {"Flare distance","m", _flareDistanceLanding.doubleValue(SI.METER)});
+        	dataListLanding.add(new Object[] {"Airborne distance","m", _airborneDistanceLanding.doubleValue(SI.METER)});
+        	dataListLanding.add(new Object[] {"Landing distance","m", _landingDistance.doubleValue(SI.METER)});
+        	dataListLanding.add(new Object[] {"FAR-25 landing field length","m", _landingDistanceFAR25.doubleValue(SI.METER)});
+        	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","m/s", _vStallLanding.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","m/s", _vTouchDown.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListLanding.add(new Object[] {"Flare speed (V_Flare)","m/s", _vFlare.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListLanding.add(new Object[] {"Approach speed (V_A)","m/s", _vApproach.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Landing duration","s", _landingDuration.doubleValue(SI.SECOND)});
+
+        	Row rowLanding = sheetLanding.createRow(0);
+        	Object[] objArrLanding = dataListLanding.get(0);
+        	int cellnumLanding = 0;
+        	for (Object obj : objArrLanding) {
+        		Cell cell = rowLanding.createCell(cellnumLanding++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetLanding.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumLanding = 1;
+        	for (int i = 1; i < dataListLanding.size(); i++) {
+        		objArrLanding = dataListLanding.get(i);
+        		rowLanding = sheetLanding.createRow(rownumLanding++);
+        		cellnumLanding = 0;
+        		for (Object obj : objArrLanding) {
+        			Cell cell = rowLanding.createCell(cellnumLanding++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+        //--------------------------------------------------------------------------------
+        // MISSION PROFILE ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
+        	Sheet sheetMissionProfile = wb.createSheet("MISSION PROFILE");
+        	List<Object[]> dataListMissionProfile = new ArrayList<>();
+
+        	dataListMissionProfile.add(new Object[] {"Description","Unit","Value"});
+        	dataListMissionProfile.add(new Object[] {"Total mission distance","nmi", _theAircraft.getTheAnalysisManager().getReferenceRange().doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTime.doubleValue(NonSI.MINUTE)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","kg", _endMissionMass.doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsed.doubleValue(SI.KILOGRAM)});
+
+        	Row rowMissionProfile = sheetMissionProfile.createRow(0);
+        	Object[] objArrMissionProfile = dataListMissionProfile.get(0);
+        	int cellnumMissionProfile = 0;
+        	for (Object obj : objArrMissionProfile) {
+        		Cell cell = rowMissionProfile.createCell(cellnumMissionProfile++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetMissionProfile.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumMissionProfile = 1;
+        	for (int i = 1; i < dataListMissionProfile.size(); i++) {
+        		objArrMissionProfile = dataListMissionProfile.get(i);
+        		rowMissionProfile = sheetMissionProfile.createRow(rownumMissionProfile++);
+        		cellnumMissionProfile = 0;
+        		for (Object obj : objArrMissionProfile) {
+        			Cell cell = rowMissionProfile.createCell(cellnumMissionProfile++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+        //--------------------------------------------------------------------------------
+        // PAYLOAD-RANGE ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
+        	Sheet sheetPayloadRange = wb.createSheet("PAYLOAD-RANGE");
+        	List<Object[]> dataListPayloadRange = new ArrayList<>();
+
+        	dataListPayloadRange.add(new Object[] {"Description","Unit","Value"});
+        	dataListPayloadRange.add(new Object[] {"CURRENT MACH CONDITION", _theOperatingConditions.getMachCruise()});
+        	dataListPayloadRange.add(new Object[] {"RANGE AT MAX PAYLOAD"});
+        	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxPayloadCurrentMach.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _thePayloadRangeCalculator.getPaxSingleMass().times(_thePayloadRangeCalculator.getnPassMax()).doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", _thePayloadRangeCalculator.getnPassMax()});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePayloadRangeCalculator.getFuelMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"SFC","lb/(lbf*hr)", _thePayloadRangeCalculator.getSfcAtMaxPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"CL","", _thePayloadRangeCalculator.getcLAtMaxPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"CD","", _thePayloadRangeCalculator.getcDAtMaxPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"Efficiency","", _thePayloadRangeCalculator.getEfficiencyAtMaxPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {""});
+        	dataListPayloadRange.add(new Object[] {"RANGE AT MAX FUEL"});
+        	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxFuelCurrentMach.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _thePayloadRangeCalculator.getPaxSingleMass().times(_thePayloadRangeCalculator.getnPassActual()).doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", _thePayloadRangeCalculator.getnPassActual()});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePayloadRangeCalculator.getMaxFuelMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"SFC","lb/(lbf*hr)", _thePayloadRangeCalculator.getSfcAtMaxFuelCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"CL","", _thePayloadRangeCalculator.getcLAtMaxFuelCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"CD","", _thePayloadRangeCalculator.getcDAtMaxFuelCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"Efficiency","", _thePayloadRangeCalculator.getEfficiencyAtMaxFuelCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {""});
+        	dataListPayloadRange.add(new Object[] {"RANGE AT ZERO PAYLOAD"});
+        	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtZeroPayloadCurrentMach.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePayloadRangeCalculator.getTakeOffMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Payload mass","kg", 0.0});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", 0.0});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePayloadRangeCalculator.getMaxFuelMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"SFC","lb/(lbf*hr)", _thePayloadRangeCalculator.getSfcAtZeroPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"CL","", _thePayloadRangeCalculator.getcLAtZeroPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"CD","", _thePayloadRangeCalculator.getcDAtZeroPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {"Efficiency","", _thePayloadRangeCalculator.getEfficiencyAtZeroPayloadCurrentMach()});
+        	dataListPayloadRange.add(new Object[] {""});
+        	dataListPayloadRange.add(new Object[] {""});
+        	dataListPayloadRange.add(new Object[] {"BEST RANGE MACH CONDITION", _thePayloadRangeCalculator.getBestRangeMach()});
+        	dataListPayloadRange.add(new Object[] {"RANGE AT MAX PAYLOAD"});
+        	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxPayloadBestRange.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _thePayloadRangeCalculator.getPaxSingleMass().times(_thePayloadRangeCalculator.getnPassMax()).doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", _thePayloadRangeCalculator.getnPassMax()});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePayloadRangeCalculator.getFuelMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"SFC","lb/(lbf*hr)", _thePayloadRangeCalculator.getSfcAtMaxPayloadBestRange()});
+        	dataListPayloadRange.add(new Object[] {"CL","", _thePayloadRangeCalculator.getcLAtMaxPayloadBestRange()});
+        	dataListPayloadRange.add(new Object[] {"CD","", _thePayloadRangeCalculator.getcDAtMaxPayloadBestRange()});
+        	dataListPayloadRange.add(new Object[] {"Efficiency","", _thePayloadRangeCalculator.getEfficiencyAtMaxPayloadBestRange()});
+        	dataListPayloadRange.add(new Object[] {""});
+        	dataListPayloadRange.add(new Object[] {"RANGE AT MAX FUEL"});
+        	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxFuelBestRange.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _thePayloadRangeCalculator.getPaxSingleMass().times(_thePayloadRangeCalculator.getnPassActual()).doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", _thePayloadRangeCalculator.getnPassActual()});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePayloadRangeCalculator.getMaxFuelMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"SFC","lb/(lbf*hr)", _thePayloadRangeCalculator.getSfcAtMaxFuelBestRange()});
+        	dataListPayloadRange.add(new Object[] {"CL","", _thePayloadRangeCalculator.getcLAtMaxFuelBestRange()});
+        	dataListPayloadRange.add(new Object[] {"CD","", _thePayloadRangeCalculator.getcDAtMaxFuelBestRange()});
+        	dataListPayloadRange.add(new Object[] {"Efficiency","", _thePayloadRangeCalculator.getEfficiencyAtMaxFuelBestRange()});
+        	dataListPayloadRange.add(new Object[] {""});
+        	dataListPayloadRange.add(new Object[] {"RANGE AT ZERO PAYLOAD"});
+        	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtZeroPayloadBestRange.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePayloadRangeCalculator.getTakeOffMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Payload mass","kg", 0.0});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", 0.0});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePayloadRangeCalculator.getMaxFuelMass().doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"SFC","lb/(lbf*hr)", _thePayloadRangeCalculator.getSfcAtZeroPayloadBestRange()});
+        	dataListPayloadRange.add(new Object[] {"CL","", _thePayloadRangeCalculator.getcLAtZeroPayloadBestRange()});
+        	dataListPayloadRange.add(new Object[] {"CD","", _thePayloadRangeCalculator.getcDAtZeroPayloadBestRange()});
+        	dataListPayloadRange.add(new Object[] {"Efficiency","", _thePayloadRangeCalculator.getEfficiencyAtZeroPayloadBestRange()});
+
+        	Row rowPayloadRange = sheetPayloadRange.createRow(0);
+        	Object[] objArrPayloadRange = dataListPayloadRange.get(0);
+        	int cellnumPayloadRange = 0;
+        	for (Object obj : objArrPayloadRange) {
+        		Cell cell = rowPayloadRange.createCell(cellnumPayloadRange++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetPayloadRange.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumPayloadRange = 1;
+        	for (int i = 1; i < dataListPayloadRange.size(); i++) {
+        		objArrPayloadRange = dataListPayloadRange.get(i);
+        		rowPayloadRange = sheetPayloadRange.createRow(rownumPayloadRange++);
+        		cellnumPayloadRange = 0;
+        		for (Object obj : objArrPayloadRange) {
+        			Cell cell = rowPayloadRange.createCell(cellnumPayloadRange++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+        //--------------------------------------------------------------------------------
+        // V-n DIAGRAM ANALYSIS RESULTS:
+        //--------------------------------------------------------------------------------
+        if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
+        	Sheet sheetVnDiagram = wb.createSheet("V-n DIAGRAM");
+        	List<Object[]> dataListVnDiagram = new ArrayList<>();
+
+        	dataListVnDiagram.add(new Object[] {"Description","Unit","Value"});
+        	dataListVnDiagram.add(new Object[] {"REGULATION",_theAircraft.getRegulations().toString()});
+        	dataListVnDiagram.add(new Object[] {"AIRCRAFT TYPE",_theAircraft.getTypeVehicle().toString()});
+        	dataListVnDiagram.add(new Object[] {" "});
+        	dataListVnDiagram.add(new Object[] {" "});
+        	dataListVnDiagram.add(new Object[] {"BASIC MANEUVERING DIAGRAM"});
+        	dataListVnDiagram.add(new Object[] {"Stall speed clean","m/s", _theEnvelopeCalculator.getStallSpeedClean().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Stall speed inverted","m/s", _theEnvelopeCalculator.getStallSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Point A"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorManeuveringSpeed()});
+        	dataListVnDiagram.add(new Object[] {"Point C"});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorCruisingSpeed()});
+        	dataListVnDiagram.add(new Object[] {"Point D"});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDiveSpeed()});
+        	dataListVnDiagram.add(new Object[] {"Point E"});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorDiveSpeed()});
+        	dataListVnDiagram.add(new Object[] {"Point F"});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorCruisingSpeed()});
+        	dataListVnDiagram.add(new Object[] {"Point H"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculator.getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorManeuveringSpeedInverted()});
+        	dataListVnDiagram.add(new Object[] {" "});
+        	dataListVnDiagram.add(new Object[] {"GUST ENVELOPE"});
+        	dataListVnDiagram.add(new Object[] {"Point A'"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorManeuveringSpeedWithGust()});
+        	dataListVnDiagram.add(new Object[] {"Point C'"});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorCruisingSpeedWithGust()});
+        	dataListVnDiagram.add(new Object[] {"Point D'"});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDiveSpeedWithGust()});
+        	dataListVnDiagram.add(new Object[] {"Point E'"});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorDiveSpeedWithGust()});
+        	dataListVnDiagram.add(new Object[] {"Point F'"});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorCruisingSpeedWithGust()});
+        	dataListVnDiagram.add(new Object[] {"Point H'"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculator.getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorManeuveringSpeedInvertedWithGust()});
+        	dataListVnDiagram.add(new Object[] {" "});
+        	dataListVnDiagram.add(new Object[] {" "});
+        	dataListVnDiagram.add(new Object[] {"FLAP MANEUVERING DIAGRAM"});
+        	dataListVnDiagram.add(new Object[] {"Stall speed full flap","m/s", _theEnvelopeCalculator.getStallSpeedFullFlap().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Point A_flap"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculator.getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeed()});
+        	dataListVnDiagram.add(new Object[] {"Point I"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeed()});
+        	dataListVnDiagram.add(new Object[] {" "});
+        	dataListVnDiagram.add(new Object[] {"GUST ENVELOPE (with flaps)"});
+        	dataListVnDiagram.add(new Object[] {"Point A'_flap"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculator.getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeedWithGust()});
+        	dataListVnDiagram.add(new Object[] {"Point I'"});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeedWithGust()});
+
+        	Row rowVnDiagram = sheetVnDiagram.createRow(0);
+        	Object[] objArrVnDiagram = dataListVnDiagram.get(0);
+        	int cellnumVnDiagram = 0;
+        	for (Object obj : objArrVnDiagram) {
+        		Cell cell = rowVnDiagram.createCell(cellnumVnDiagram++);
+        		cell.setCellStyle(styleHead);
+        		if (obj instanceof Date) {
+        			cell.setCellValue((Date) obj);
+        		} else if (obj instanceof Boolean) {
+        			cell.setCellValue((Boolean) obj);
+        		} else if (obj instanceof String) {
+        			cell.setCellValue((String) obj);
+        		} else if (obj instanceof Double) {
+        			cell.setCellValue((Double) obj);
+        		}
+        		sheetVnDiagram.setDefaultColumnWidth(35);
+        	}
+
+        	int rownumVnDiagram = 1;
+        	for (int i = 1; i < dataListVnDiagram.size(); i++) {
+        		objArrVnDiagram = dataListVnDiagram.get(i);
+        		rowVnDiagram = sheetVnDiagram.createRow(rownumVnDiagram++);
+        		cellnumVnDiagram = 0;
+        		for (Object obj : objArrVnDiagram) {
+        			Cell cell = rowVnDiagram.createCell(cellnumVnDiagram++);
+        			if (obj instanceof Date) {
+        				cell.setCellValue((Date) obj);
+        			} else if (obj instanceof Boolean) {
+        				cell.setCellValue((Boolean) obj);
+        			} else if (obj instanceof String) {
+        				cell.setCellValue((String) obj);
+        			} else if (obj instanceof Double) {
+        				cell.setCellValue((Double) obj);
+        			}
+        		}
+        	}
+        }
+		//--------------------------------------------------------------------------------
+		// XLS FILE CREATION:
+		//--------------------------------------------------------------------------------
+		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
+		wb.write(fileOut);
+		fileOut.close();
+		System.out.println("Your excel file has been generated!");
 	}
 	
 	@Override
@@ -1966,12 +2608,35 @@ public class ACPerformanceManager {
 		}
 		if(_taskList.contains(PerformanceEnum.CRUISE)) {
 			
-			// TODO !!
+			sb.append("\tCRUISE\n")
+			.append("\t-------------------------------------\n")
+			.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMach + "\n")
+			.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMach + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMach + "\n")
+			.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMach + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitude + "\n")
+			.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitude + "\n")
+			.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitude + "\n")
+			.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitude + "\n")
+			.append("\t\tMin Mach at cruise altitude = " + _minMachAtCruiseAltitude + "\n")
+			.append("\t\tMax Mach at cruise altitude = " + _maxMachAtCruiseAltitude + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tEfficiency at cruise altitude and Mach = " + _efficiencyAtCruiseAltitudeAndMach + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tSpecific range at cruise altitude and Mach = " + _specificRangeAtCruiseAltitudeAndMach + "nmi/lbs \n")
+			.append("\t-------------------------------------\n");
 			
 		}
 		if(_taskList.contains(PerformanceEnum.DESCENT)) {
 			
-			// TODO !!
+			sb.append("\tDESCENT\n")
+			.append("\t-------------------------------------\n")
+			.append("\t\tDescent length = " + _totalDescentLength.to(NonSI.NAUTICAL_MILE) + "\n")
+			.append("\t\tDescent duration = " + _totalDescentTime + "\n")
+			.append("\t-------------------------------------\n");
+			;
 			
 		}
 		if(_taskList.contains(PerformanceEnum.LANDING)) {
@@ -1993,6 +2658,19 @@ public class ACPerformanceManager {
 			.append("\t-------------------------------------\n")
 			;
 		}
+		if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
+			
+			sb.append("\tMISSION PROFILE\n")
+			.append("\t-------------------------------------\n")
+			.append("\t\tTotal mission distance = " + _theAircraft.getTheAnalysisManager().getReferenceRange() + "\n")
+			.append("\t\tTotal mission duration = " + _totalMissionTime + "\n")
+			.append("\t\tAircraft mass at mission start = " + _maximumTakeOffMass + "\n")
+			.append("\t\tAircraft mass at mission end = " + _endMissionMass + "\n")
+			.append("\t\tTotal fuel mass used = " + _totalFuelUsed + "\n")
+			.append("\t-------------------------------------\n")
+			;
+			
+		}
 		if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
 			sb.append("\tPAYLOAD-RANGE\n")
 			.append(_thePayloadRangeCalculator.toString());
@@ -2000,11 +2678,6 @@ public class ACPerformanceManager {
 		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
 			sb.append("\tV-n DIAGRAM\n")
 			.append(_theEnvelopeCalculator.toString());
-		}
-		if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
-
-			// TODO!!
-			
 		}
 		
 		return sb.toString();
@@ -2664,6 +3337,54 @@ public class ACPerformanceManager {
 						);
 			}
 			
+			_thrustAtCruiseAltitudeAndMach = 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									_thrustListAltitudeParameterization.get(0).getSpeed(),
+									_thrustListAltitudeParameterization.get(0).getThrust(),
+									SpeedCalc.calculateTAS(
+											_theOperatingConditions.getMachCruise(),
+											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+											)
+									),
+							SI.NEWTON
+							);
+			_dragAtCruiseAltitudeAndMach = 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									_dragListAltitudeParameterization.get(0).getSpeed(),
+									_dragListAltitudeParameterization.get(0).getDrag(),
+									SpeedCalc.calculateTAS(
+											_theOperatingConditions.getMachCruise(),
+											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+											)
+									),
+							SI.NEWTON
+							);
+			_powerAvailableAtCruiseAltitudeAndMach = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+							_thrustListAltitudeParameterization.get(0).getSpeed(),
+							_thrustListAltitudeParameterization.get(0).getPower(),
+							SpeedCalc.calculateTAS(
+									_theOperatingConditions.getMachCruise(),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									)
+							),
+					SI.WATT
+					);
+			_powerNeededAtCruiseAltitudeAndMach = Amount.valueOf(
+					MyMathUtils.getInterpolatedValue1DLinear(
+							_dragListAltitudeParameterization.get(0).getSpeed(),
+							_dragListAltitudeParameterization.get(0).getPower(),
+							SpeedCalc.calculateTAS(
+									_theOperatingConditions.getMachCruise(),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									)
+							),
+					SI.WATT
+					); 
+			
+
 			//--------------------------------------------------------------------
 			// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
 			_dragListWeightParameterization = new ArrayList<DragMap>();
@@ -2836,6 +3557,87 @@ public class ACPerformanceManager {
 								_intersectionList
 								)
 						);
+			
+			List<Double> altitudeList = new ArrayList<>();
+			List<Double> minSpeedTASList = new ArrayList<>();
+			List<Double> minSpeedCASList = new ArrayList<>();
+			List<Double> minMachList = new ArrayList<>();
+			List<Double> maxSpeedTASList = new ArrayList<>();
+			List<Double> maxSpeedCASList = new ArrayList<>();
+			List<Double> maxMachList = new ArrayList<>();
+		
+			for(int i=0; i<_cruiseEnvelopeList.size(); i++) {
+				
+				double sigma = OperatingConditions.getAtmosphere(
+						_cruiseEnvelopeList.get(i).getAltitude()
+						).getDensity()*1000/1.225; 
+				
+				if(_cruiseEnvelopeList.get(i).getMinSpeed() != 0.0) {
+					altitudeList.add(_cruiseEnvelopeList.get(i).getAltitude());
+					minSpeedTASList.add(_cruiseEnvelopeList.get(i).getMinSpeed());
+					minSpeedCASList.add(_cruiseEnvelopeList.get(i).getMinSpeed()*(Math.sqrt(sigma)));
+					minMachList.add(_cruiseEnvelopeList.get(i).getMinMach());
+					maxSpeedTASList.add(_cruiseEnvelopeList.get(i).getMaxSpeed());
+					maxSpeedCASList.add(_cruiseEnvelopeList.get(i).getMaxSpeed()*(Math.sqrt(sigma)));
+					maxMachList.add(_cruiseEnvelopeList.get(i).getMaxMach());
+				}
+			}
+				
+			_minSpeesTASAtCruiseAltitude = 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(altitudeList),
+									MyArrayUtils.convertToDoublePrimitive(minSpeedTASList),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									),
+							SI.METERS_PER_SECOND
+							);
+			_maxSpeesTASAtCruiseAltitude = 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(altitudeList),
+									MyArrayUtils.convertToDoublePrimitive(maxSpeedTASList),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									),
+							SI.METERS_PER_SECOND
+							);
+			_minSpeesCASAtCruiseAltitude = 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(altitudeList),
+									MyArrayUtils.convertToDoublePrimitive(minSpeedCASList),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									),
+							SI.METERS_PER_SECOND
+							);
+			_maxSpeesCASAtCruiseAltitude = 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(altitudeList),
+									MyArrayUtils.convertToDoublePrimitive(maxSpeedCASList),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									),
+							SI.METERS_PER_SECOND
+							);
+			_minMachAtCruiseAltitude = 
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(altitudeList),
+							MyArrayUtils.convertToDoublePrimitive(minMachList),
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							);
+			_maxMachAtCruiseAltitude = 
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(altitudeList),
+							MyArrayUtils.convertToDoublePrimitive(maxMachList),
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							);
+			
+			if(_maxMachAtCruiseAltitude < _theOperatingConditions.getMachCruise()) {
+				System.err.println("THE CHOSEN CRUISE MACH NUMBER IS NOT INSIDE THE FLIGHT ENVELOPE !");
+				System.exit(1);
+			}
+				
+
 		}
 
 		public void calculateEfficiency() {
@@ -2872,6 +3674,19 @@ public class ACPerformanceManager {
 						efficiencyListCurrentAltitude
 						);
 			}
+			
+			_efficiencyAtCruiseAltitudeAndMach = 
+					MyMathUtils.getInterpolatedValue1DLinear(
+							_dragListAltitudeParameterization.get(0).getSpeed(),
+							MyArrayUtils.convertToDoublePrimitive(
+									_efficiencyMapAltitude
+									.get("Altitude = " + _theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER))
+									),
+							SpeedCalc.calculateTAS(
+									_theOperatingConditions.getMachCruise(),
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									)
+							);
 			
 			//--------------------------------------------------------------------
 			// WEIGHT PARAMETERIZATION AT FIXED ALTITUDE
@@ -2980,6 +3795,14 @@ public class ACPerformanceManager {
 								)
 						);
 			}
+			
+			int weightIndex = _weightListCruise.size()-1;
+			_specificRangeAtCruiseAltitudeAndMach = 
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getMach()),
+							MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getSpecificRange()),
+							_theOperatingConditions.getMachCruise()
+							);
 		}
 				
 		public void plotCruiseOutput(String cruiseFolderPath) {
@@ -4017,9 +4840,12 @@ public class ACPerformanceManager {
 							)
 					);
 			
+			
 			//----------------------------------------------------------------------
 			// LANDING (neglected)
 			_fuelUsedList.add(_fuelUsedList.get(_fuelUsedList.size()-1));
+			
+			_totalFuelUsed = _fuelUsedList.get(_fuelUsedList.size()-1);
 			
 		}
 		
@@ -4033,6 +4859,8 @@ public class ACPerformanceManager {
 			_massList.add(_massList.get(_massList.size()-1).minus(_fuelUsedList.get(3)));
 			_massList.add(_massList.get(_massList.size()-1).minus(_fuelUsedList.get(4)));
 			_massList.add(_massList.get(_massList.size()-1));
+			
+			_endMissionMass = _massList.get(_massList.size()-1);
 			
 		}
 		
@@ -5540,6 +6368,110 @@ public class ACPerformanceManager {
 
 	public void setTotalDescentTime(Amount<Duration> _totalDescentTime) {
 		this._totalDescentTime = _totalDescentTime;
+	}
+
+	public Amount<Velocity> getMaxSpeesTASAtCruiseAltitude() {
+		return _maxSpeesTASAtCruiseAltitude;
+	}
+
+	public void setMaxSpeesTASAtCruiseAltitude(Amount<Velocity> _maxSpeesTASAtCruiseAltitude) {
+		this._maxSpeesTASAtCruiseAltitude = _maxSpeesTASAtCruiseAltitude;
+	}
+
+	public Amount<Velocity> getMinSpeesTASAtCruiseAltitude() {
+		return _minSpeesTASAtCruiseAltitude;
+	}
+
+	public void setMinSpeesTASAtCruiseAltitude(Amount<Velocity> _minSpeesTASAtCruiseAltitude) {
+		this._minSpeesTASAtCruiseAltitude = _minSpeesTASAtCruiseAltitude;
+	}
+
+	public Amount<Velocity> getMaxSpeesCASAtCruiseAltitude() {
+		return _maxSpeesCASAtCruiseAltitude;
+	}
+
+	public void setMaxSpeesCASAtCruiseAltitude(Amount<Velocity> _maxSpeesCASAtCruiseAltitude) {
+		this._maxSpeesCASAtCruiseAltitude = _maxSpeesCASAtCruiseAltitude;
+	}
+
+	public Amount<Velocity> getMinSpeesCASAtCruiseAltitude() {
+		return _minSpeesCASAtCruiseAltitude;
+	}
+
+	public void setMinSpeesCASAtCruiseAltitude(Amount<Velocity> _minSpeesCASAtCruiseAltitude) {
+		this._minSpeesCASAtCruiseAltitude = _minSpeesCASAtCruiseAltitude;
+	}
+
+	public Double getMaxMachAtCruiseAltitude() {
+		return _maxMachAtCruiseAltitude;
+	}
+
+	public void setMaxMachAtCruiseAltitude(Double _maxMachAtCruiseAltitude) {
+		this._maxMachAtCruiseAltitude = _maxMachAtCruiseAltitude;
+	}
+
+	public Double getMinMachAtCruiseAltitude() {
+		return _minMachAtCruiseAltitude;
+	}
+
+	public void setMinMachAtCruiseAltitude(Double _minMachAtCruiseAltitude) {
+		this._minMachAtCruiseAltitude = _minMachAtCruiseAltitude;
+	}
+
+	public Double getSpecificRangeAtCruiseAltitudeAndMach() {
+		return _specificRangeAtCruiseAltitudeAndMach;
+	}
+
+	public void setSpecificRangeAtCruiseAltitudeAndMach(Double _specificRangeAtCruiseAltitudeAndMach) {
+		this._specificRangeAtCruiseAltitudeAndMach = _specificRangeAtCruiseAltitudeAndMach;
+	}
+
+	public Double getEfficiencyAtCruiseAltitudeAndMach() {
+		return _efficiencyAtCruiseAltitudeAndMach;
+	}
+
+	public void setEfficiencyAtCruiseAltitudeAndMach(Double _efficiencyAtCruiseAltitudeAndMach) {
+		this._efficiencyAtCruiseAltitudeAndMach = _efficiencyAtCruiseAltitudeAndMach;
+	}
+
+	public Amount<Force> getThrustAtCruiseAltitudeAndMach() {
+		return _thrustAtCruiseAltitudeAndMach;
+	}
+
+	public void setThrustAtCruiseAltitudeAndMach(Amount<Force> _thrustAtCruiseAltitudeAndMach) {
+		this._thrustAtCruiseAltitudeAndMach = _thrustAtCruiseAltitudeAndMach;
+	}
+
+	public Amount<Force> getDragAtCruiseAltitudeAndMach() {
+		return _dragAtCruiseAltitudeAndMach;
+	}
+
+	public void setDragAtCruiseAltitudeAndMach(Amount<Force> _dragAtCruiseAltitudeAndMach) {
+		this._dragAtCruiseAltitudeAndMach = _dragAtCruiseAltitudeAndMach;
+	}
+
+	public Amount<Power> getPowerAvailableAtCruiseAltitudeAndMach() {
+		return _powerAvailableAtCruiseAltitudeAndMach;
+	}
+
+	public void setPowerAvailableAtCruiseAltitudeAndMach(Amount<Power> _powerAvailableAtCruiseAltitudeAndMach) {
+		this._powerAvailableAtCruiseAltitudeAndMach = _powerAvailableAtCruiseAltitudeAndMach;
+	}
+
+	public Amount<Power> getPowerNeededAtCruiseAltitudeAndMach() {
+		return _powerNeededAtCruiseAltitudeAndMach;
+	}
+
+	public void setPowerNeededAtCruiseAltitudeAndMach(Amount<Power> _powerNeededAtCruiseAltitudeAndMach) {
+		this._powerNeededAtCruiseAltitudeAndMach = _powerNeededAtCruiseAltitudeAndMach;
+	}
+
+	public Amount<Mass> getEndMissionMass() {
+		return _endMissionMass;
+	}
+
+	public void setEndMissionMass(Amount<Mass> _endMissionMass) {
+		this._endMissionMass = _endMissionMass;
 	}
 
 }

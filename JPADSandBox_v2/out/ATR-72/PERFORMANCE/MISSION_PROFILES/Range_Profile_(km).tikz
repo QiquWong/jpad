@@ -6,7 +6,7 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=400.03199999999975,
+xmax=400.0319999999998,
 xlabel={Range (km)},
 xmajorgrids,
 ymin=0.0,
@@ -23,10 +23,10 @@ solid
 table[row sep=crcr]{
 0.0	0.0\\
 1.2823651807060807	0.0\\
-119.11721862565884	6000.0\\
-247.4222352023532	6000.0\\
+119.17751508867389	6000.0\\
+247.42223520235325	6000.0\\
 369.6252501956975	0.0\\
-370.39999999999975	0.0\\
+370.3999999999998	0.0\\
 };
 \end{axis}
 \end{tikzpicture}%
