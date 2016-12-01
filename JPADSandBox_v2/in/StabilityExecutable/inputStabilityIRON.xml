@@ -2,12 +2,12 @@
 <!-- All units can be choose by user with the exception of surfaces deflections. All values of each array must have the same unit-->    
 <!-- It is possible to choose a constant downwash calculation, or variable with the flag-->    
 <!-- If CONSTANT the downwash is calculated using Roskam method, if variable using Slingerland method-->   
- <Longitudinal_static_stability_executable downwash="VARIABLE"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
+ <Longitudinal_static_stability_executable downwash="CONSTANT"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
  <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
- <aircraft_name>IRON_CGbalance</aircraft_name>
+ <aircraft_name>IRON_downwash_constant</aircraft_name>
         <operating_conditions>
 				<!-- This is the position of the aircraft CG in the BRF -->
-                <x_cg unit="m">23.40</x_cg>
+                <x_cg unit="m">21.145</x_cg> <!-- 30% -->
                 <y_cg unit="m">0.0</y_cg>
                 <z_cg unit="m">-0.01</z_cg>
                 <altitude unit="m">0</altitude>
@@ -259,7 +259,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 					<y_adimensional_stations>[0,1]</y_adimensional_stations>
 					<chord_distribution unit="m">[4.4,2.86]</chord_distribution>
 					<!-- XLE is in LRF, so the root value of XLE  must be zero -->
-					<x_le_distribution unit="m">[0,2]</x_le_distribution>
+					<x_le_distribution unit="m">[0,0.8]</x_le_distribution>
 					<twist_distribution unit="°">[0,0]</twist_distribution>
 					<dihedral_distribution unit="°">[0,0]</dihedral_distribution>
 					<max_thickness_airfoil>[0.12,0.12]</max_thickness_airfoil>

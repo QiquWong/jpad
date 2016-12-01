@@ -227,6 +227,8 @@ public class StabilityExecutableManager {
 	private List<List<Double>> _hTailCLAirfoilsDistribution = new ArrayList<List<Double>>();
 	private List<List<Amount<Angle>>> _hTailInducedAngleOfAttack = new ArrayList<>();
 	private List<List<Double>> _hTailCLAirfoilsDistributionFinal = new ArrayList<List<Double>>();
+	
+	Amount<Length> _hTailHorizontalDistanceACtoCG, _hTailVerticalDistranceACtoCG;
 		
 	// input distributions
 	private List<Double> _hTailYAdimensionalBreakPoints;
@@ -568,6 +570,12 @@ public class StabilityExecutableManager {
 	private  Map <Amount<Angle>, List<Double>>_hTailHorizontalCoefficientDeltaE = new HashMap<Amount<Angle>, List<Double>>();
 	private  Map <Amount<Angle>, List<Double>>_hTailMomentCoefficientPendularDeltaE = new HashMap<Amount<Angle>, List<Double>>();
 	private  Map <Amount<Angle>, List<Double>>_totalMomentCoefficientPendularDeltaE = new HashMap<Amount<Angle>, List<Double>>();
+	
+	// cl equilibrium
+	private List<Double> _hTailEquilibriumLiftCoefficient = new ArrayList<>();
+	private List<Double> _totalEquilibriumLiftCoefficient= new ArrayList<>();
+	private List<Double> _hTailEquilibriumLiftCoefficientConstant = new ArrayList<>();
+	private List<Double> _totalEquilibriumLiftCoefficientConstant = new ArrayList<>();
 	
 	//Distributions -------------------------------------------
 	//----------------------------------------------------------------
@@ -1636,11 +1644,11 @@ public class StabilityExecutableManager {
 		.append("\t\tDelta ac due to fuselage = " + _deltaXACdueToFuselage + "\n")
 		.append("\t\tXAC wing body BRF = " +_wingBodyXACBRF+ "\n")
 		.append("\t\teta Stations = " +_wingYAdimensionalDistribution+ "\n")
-		.append("\t\tMoment Coefficient respect to AC DE Young Harper --> " +_wingMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)+ "\n")
-		.append("\t\tMoment Coefficient respect to AC NAPOLITANO DATCOM --> " +_wingMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)+ "\n")
+		.append("\t\tMoment Coefficient with respect to AC DE Young Harper --> " +_wingMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)+ "\n")
+		.append("\t\tMoment Coefficient with respect to AC NAPOLITANO DATCOM --> " +_wingMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)+ "\n")
 		;
 		for (int i=0; i<_wingMomentumPole.size(); i++){
-			sb.append("\t\tMoment Coefficient respect to " + _wingMomentumPole.get(i) + "--> " +_wingMomentCoefficients.get(i)+ "\n");
+			sb.append("\t\tMoment Coefficient with respect to " + _wingMomentumPole.get(i) + "--> " +_wingMomentCoefficients.get(i)+ "\n");
 		}
 		;
 		double xac = _wingFinalMomentumPole + _deltaXACdueToFuselage;
@@ -1661,11 +1669,11 @@ public class StabilityExecutableManager {
 		.append("\t\tXAC LRF = " +_hTailXACLRF+ "\n")
 		.append("\t\tXAC BRF = " +_hTailXACBRF+ "\n")
 		.append("\t\teta Stations = " +_hTailYAdimensionalDistribution+ "\n")
-		.append("\t\tMoment Coefficient respect to AC DE Young Harper --> " +_hTailMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)+ "\n")
-		.append("\t\tMoment Coefficient respect to AC NAPOLITANO DATCOM --> " +_hTailMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)+ "\n")
+		.append("\t\tMoment Coefficient with respect to AC DE Young Harper --> " +_hTailMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)+ "\n")
+		.append("\t\tMoment Coefficient with respect to AC NAPOLITANO DATCOM --> " +_hTailMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)+ "\n")
 		;
 		for (int i=0; i<_hTailMomentumPole.size(); i++){
-			sb.append("\t\tMoment Coefficient respect to " + _hTailMomentumPole.get(i) + "--> " +_hTailMomentCoefficients.get(i)+ "\n");
+			sb.append("\t\tMoment with Coefficient respect to " + _hTailMomentumPole.get(i) + "--> " +_hTailMomentCoefficients.get(i)+ "\n");
 		}
 		;
 		;
@@ -1690,6 +1698,23 @@ public class StabilityExecutableManager {
 			;
 		}
 	
+
+		sb.append("\nCOMPONENTS MOMENT COEFFICIENT REAPECT TO CG \n")
+		.append("-------------------------------------\n")
+		.append("\t\tX cg = " + _xCGAircraft + " Y cg = " + _yCGAircraft + " Z cg = " + _zCGAircraft + "\n\n")
+		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphasBody, "\t\tAlpha Body", ","))
+		.append("\t\tCM wing no pendular stability = " + _wingMomentCoefficientNOPendular + "\n")
+		.append("\t\tCM wing with pendular stability = " + _wingMomentCoefficientPendular + "\n")
+		.append("\t\tCM Horizontal tail = " + _hTailMomentCoefficientPendular + "\n")
+	    .append("\t\tCM Fuselage = " + _fuselageMomentCoefficient + "\n")
+	    .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "\n\t\tAlpha Body", ","))
+	    .append("\t\tCM Total delta e = 0 = " + _totalMomentCoefficientPendular + "\n")
+		;
+		for (int i = 0; i< this._anglesOfElevatorDeflection.size(); i++){
+			sb.append("\t\tCM total at delta_e= " + _anglesOfElevatorDeflection.get(i) + " -->" + (this._totalMomentCoefficientPendularDeltaE.get( _anglesOfElevatorDeflection.get(i))))
+			.append("\n")
+			;
+		}
 		
 		sb.append("\nDISTRIBUTIONS\n")
 		.append("-------------------------------------\n")
@@ -1707,18 +1732,10 @@ public class StabilityExecutableManager {
 		for (int i=0; i<_alphaWingForDistribution.size(); i++){
 		sb.append("\t\tCm wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_cMWingDistribution.get(i)+ "\n");
 		}
-		;
-
-		sb.append("\nCOMPONENTS MOMENT COEFFICIENT REAPECT TO CG \n")
-		.append("-------------------------------------\n")
-		.append("\t\tX cg = " + _xCGAircraft + " Y cg = " + _yCGAircraft + " Z cg = " + _zCGAircraft + "\n\n")
-		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphasBody, "\t\tAlpha Body", ","))
-		.append("\t\tCM wing no pendular stability = " + _wingMomentCoefficientNOPendular + "\n")
-		.append("\t\tCM wing with pendular stability = " + _wingMomentCoefficientPendular + "\n")
-		.append("\t\tCM Horizontal tail = " + _hTailMomentCoefficientPendular + "\n")
-	    .append("\t\tCM Fuselage = " + _fuselageMomentCoefficient + "\n")
-		;
+		;		
 		
+		sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasTail, "\n\t\tAlpha Body", ","))
+		.append("\t\tcl wing = " + _hTailEquilibriumLiftCoefficient + "\n\n");
 		return sb.toString();
 	}
 
@@ -2337,7 +2354,7 @@ public class StabilityExecutableManager {
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
-					"Wing Moment Coefficient respect to AC", 
+					"Wing Moment Coefficient with respect to AC", 
 					"alpha_w", "CM", 
 					null, null,
 					null, null,
@@ -2345,9 +2362,9 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Wing Moment Coefficient respect to AC");
+					"Wing Moment Coefficient with respect to AC");
 
-		System.out.println("Plot Wing Moment Coefficient Chart respect to AC---> DONE \n");
+		System.out.println("Plot Wing Moment Coefficient Chart with respect to AC---> DONE \n");
 		
 		xList = new ArrayList<>();
 		yList = new ArrayList<>();
@@ -2360,7 +2377,7 @@ public class StabilityExecutableManager {
 		MyChartToFileUtils.plot(
 				xList, 
 				yList, 
-				"Wing Moment Coefficient respect to AC indicated = " + _wingFinalMomentumPole, 
+				"Wing Moment Coefficient with respect to AC indicated = " + _wingFinalMomentumPole, 
 				"alpha_w", "CM", 
 				null, null,
 				_wingMomentCoefficientFinal.get(0)-0.25, _wingMomentCoefficientFinal.get(0)+0.1,
@@ -2368,9 +2385,9 @@ public class StabilityExecutableManager {
 				false,
 				legend,
 				folderPathName,
-				"Wing Moment Coefficient respect to AC indicated = " + _wingFinalMomentumPole);
+				"Wing Moment Coefficient with respect to AC indicated = " + _wingFinalMomentumPole);
 
-	System.out.println("Plot Wing Moment Coefficient Chart respect to AC indicated---> DONE \n");
+	System.out.println("Plot Wing Moment Coefficient Chart with respect to AC indicated---> DONE \n");
 		
 		}
 		
@@ -2383,7 +2400,7 @@ public class StabilityExecutableManager {
 			for (int j=0; j<_wingMomentumPole.size(); j++){
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_wingMomentCoefficients.get(j)));
-			legend.add("CM respect to "+ _wingMomentumPole.get(j) + " of MAC");}
+			legend.add("CM with with respect to "+ _wingMomentumPole.get(j) + " of MAC");}
 
 			MyChartToFileUtils.plot(
 					xList, 
@@ -2398,7 +2415,7 @@ public class StabilityExecutableManager {
 					folderPathName,
 					"Wing Moment Coefficient");
 		
-			System.out.println("Plot Wing Moment Coefficient Chart respect to other poles---> DONE \n");
+			System.out.println("Plot Wing Moment Coefficient Chart with respect to other poles---> DONE \n");
 		}
 		
 		
@@ -2419,7 +2436,7 @@ public class StabilityExecutableManager {
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
-					"Horizontal Tail Moment Coefficient respect to AC", 
+					"Horizontal Tail Moment Coefficient with respect to AC", 
 					"alpha_h", "CM", 
 					null, null,
 					null, null,
@@ -2427,9 +2444,9 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail Moment Coefficient respect to AC");
+					"Horizontal Tail Moment Coefficient with respect to AC");
 
-		System.out.println("Plot Horizontal Tail Moment Coefficient Chart respect to AC---> DONE \n");
+		System.out.println("Plot Horizontal Tail Moment Coefficient Chart with respect to AC---> DONE \n");
 		}
 		
 		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.HTAIL_CM_QUARTER_CHORD)) {
@@ -2441,7 +2458,7 @@ public class StabilityExecutableManager {
 			for (int j=0; j<_hTailMomentumPole.size(); j++){
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasTail));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailMomentCoefficients.get(j)));
-			legend.add("CM respect to "+ _hTailMomentumPole.get(j) + " of MAC");}
+			legend.add("CM with respect to "+ _hTailMomentumPole.get(j) + " of MAC");}
 
 			MyChartToFileUtils.plot(
 					xList, 
@@ -2456,7 +2473,7 @@ public class StabilityExecutableManager {
 					folderPathName,
 					"Horizontal Tail Moment Coefficient");
 		
-			System.out.println("Plot Horizontal Tail Moment Coefficient Chart respect to other poles---> DONE \n");
+			System.out.println("Plot Horizontal Tail Moment Coefficient Chart with respect to other poles---> DONE \n");
 		}
 		
 		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.HTAIL_CM_QUARTER_CHORD)) {
@@ -2468,7 +2485,7 @@ public class StabilityExecutableManager {
 			for (int j=0; j<_hTailMomentumPole.size(); j++){
 			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasTail));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailMomentCoefficients.get(j)));
-			legend.add("CM respect to "+ _hTailMomentumPole.get(j) + " of MAC");}
+			legend.add("CM with respect to "+ _hTailMomentumPole.get(j) + " of MAC");}
 
 			MyChartToFileUtils.plot(
 					xList, 
@@ -2483,7 +2500,7 @@ public class StabilityExecutableManager {
 					folderPathName,
 					"Horizontal Tail Moment Coefficient");
 		
-			System.out.println("Plot Horizontal Tail Moment Coefficient Chart respect to other poles---> DONE \n");
+			System.out.println("Plot Horizontal Tail Moment Coefficient Chart with respect to other poles---> DONE \n");
 		}
 		// MOMENT
 	   //------------------------------------------------------------------------------------------------------------
@@ -2513,6 +2530,67 @@ public class StabilityExecutableManager {
 					"Total Lift Coefficient");
 		
 			System.out.println("Plot Total Lift Coefficient Chart ---> DONE \n");
+			
+			// CL EQUILIBRIUM
+			
+			xList = new ArrayList<>();
+			yList = new ArrayList<>();
+			legend = new ArrayList<>();
+
+			for (int i=0; i<_anglesOfElevatorDeflection.size(); i++){
+				xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasTail));
+				yList.add(_hTailLiftCoefficient3DCurveWithElevator.get(_anglesOfElevatorDeflection.get(i)));
+				legend.add("delta e = " + _anglesOfElevatorDeflection.get(i));
+			}
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailEquilibriumLiftCoefficient));
+			legend.add("CL equilibrium");
+			
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Horizontal tail equilibrium lift coefficient", 
+					"alpha_t", "CL ", 
+					null, null,
+					null, null,
+					"deg", "",
+					false,
+					legend,
+					folderPathName,
+					"Horizontal tail equilibrium lift coefficient");
+		
+			System.out.println("Horizontal tail equilibrium lift coefficient ---> DONE \n");
+			
+			// total
+			xList = new ArrayList<>();
+			yList = new ArrayList<>();
+			legend = new ArrayList<>();
+
+			for (int i=0; i<_anglesOfElevatorDeflection.size(); i++){
+				xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+				yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalLiftCoefficient.get(_anglesOfElevatorDeflection.get(i))));
+				legend.add("delta e =  "+ _anglesOfElevatorDeflection.get(i));
+				}
+			xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphasBody));
+			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalEquilibriumLiftCoefficient));
+			legend.add("CL equilibrium");
+			
+			MyChartToFileUtils.plot(
+					xList, 
+					yList, 
+					"Total equilibrium lift coefficient", 
+					"alpha_b", "CL ", 
+					null, null,
+					null, null,
+					"deg", "",
+					false,
+					legend,
+					folderPathName,
+					"Total equilibrium lift coefficient");
+		
+			System.out.println("Total equilibrium lift coefficient ---> DONE \n");
+			
+			
 		}
 		
 		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_ALPHA_BODY_COMPONENTS)) {
@@ -2542,7 +2620,7 @@ public class StabilityExecutableManager {
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
-					"Components Moment coefficient respect TO CG", 
+					"Components Moment coefficient with respect TO CG", 
 					"alpha_b", "CM", 
 					null, null,
 					null, null,
@@ -2550,9 +2628,9 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Components Moment coefficient respect TO CG");
+					"Components Moment coefficient with respect TO CG");
 		
-			System.out.println("Plot Components Moment coefficient respect TO CG Chart ---> DONE \n");
+			System.out.println("Plot Components Moment coefficient with respect TO CG Chart ---> DONE \n");
 		}
 			if(_plotList.contains(AerodynamicAndStabilityPlotEnum.AIRCRAFT_CM_VS_CL_DELTAE)) {
 
@@ -2561,7 +2639,7 @@ public class StabilityExecutableManager {
 				List<String> legend = new ArrayList<>();
 
 				for (int i=0; i<_anglesOfElevatorDeflection.size(); i++){
-				yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalMomentCoefficientPendularDeltaE.get(_anglesOfElevatorDeflection.get(i))));
+				yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalMomentCoefficientPendularDeltaE.get(_anglesOfElevatorDeflection.get(i)))); 
 				xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_totalLiftCoefficient.get(_anglesOfElevatorDeflection.get(i))));
 				legend.add("delta e =  "+ _anglesOfElevatorDeflection.get(i));
 				}
@@ -2677,7 +2755,7 @@ public class StabilityExecutableManager {
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
-					"Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole, 
+					"Wing Moment Coefficient Distribution with respect to " + _wingFinalMomentumPole, 
 					"alpha_w", "Cl", 
 					null, null,
 					null, null,
@@ -2685,9 +2763,9 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathNameDistribution,
-					"Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole);
+					"Wing Moment Coefficient Distribution with respect to " + _wingFinalMomentumPole);
 		
-			System.out.println("Plot Wing Moment Coefficient Distribution respect to " + _wingFinalMomentumPole+ " Chart ---> DONE \n");
+			System.out.println("Plot Wing Moment Coefficient Distribution with respect to " + _wingFinalMomentumPole+ " Chart ---> DONE \n");
 		}
 		
 		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.CM_DISTRIBUTION_HORIZONTAL_TAIL)) {
@@ -2703,7 +2781,7 @@ public class StabilityExecutableManager {
 			MyChartToFileUtils.plot(
 					xList, 
 					yList, 
-					"Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole, 
+					"Horizontal Tail Moment Coefficient Distribution with respect to " + _hTailFinalMomentumPole, 
 					"alpha_t", "Cl", 
 					null, null,
 					null, null,
@@ -2711,9 +2789,9 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathNameDistribution,
-					"Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole);
+					"Horizontal Tail Moment Coefficient Distribution with respect to " + _hTailFinalMomentumPole);
 		
-			System.out.println("Plot Horizontal Tail Moment Coefficient Distribution respect to " + _hTailFinalMomentumPole + " Chart ---> DONE \n");
+			System.out.println("Plot Horizontal Tail Moment Coefficient Distribution with respect to " + _hTailFinalMomentumPole + " Chart ---> DONE \n");
 		}
 		
 		
@@ -4259,7 +4337,6 @@ public class StabilityExecutableManager {
 
 
 			//distance 
-			Amount<Length> _hTailHorizontalDistanceACtoCG, _hTailVerticalDistranceACtoCG;
 
 			_hTailHorizontalDistanceACtoCG = Amount.valueOf(
 					_xCGAircraft.doubleValue(SI.METER) - (
@@ -4278,16 +4355,16 @@ public class StabilityExecutableManager {
 			if(_downwashConstant == Boolean.FALSE){
 				for (int i=0; i<_numberOfAlphasBody; i++){
 					_hTailMomentCoefficientPendular.add(i,
-							(_hTailNormalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))*(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) 
-							+ (_hTailHorizontalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)))
+							(_hTailNormalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))*(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio)) 
+							+ (_hTailHorizontalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio))
 							);
 				}
 			}
 			if(_downwashConstant == Boolean.TRUE){
 				for (int i=0; i<_numberOfAlphasBody; i++){
 					_hTailMomentCoefficientPendular.add(i,
-							(_hTailNormalCoefficientDownwashConstant.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))*(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER))) 
-							+ (_hTailHorizontalCoefficientDownwashConstant.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)))
+							(_hTailNormalCoefficientDownwashConstant.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))*(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio)) 
+							+ (_hTailHorizontalCoefficientDownwashConstant.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio))
 							);
 				}
 			}
@@ -4366,12 +4443,12 @@ public class StabilityExecutableManager {
 								(_hTailSurface.doubleValue(SI.SQUARE_METRE)/
 										_wingSurface.doubleValue(SI.SQUARE_METRE))*
 								(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/
-										_wingMAC.doubleValue(SI.METER))) 
+										_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio)) 
 							+ (_hTailHorizontalCoefficientDeltaE.get(_anglesOfElevatorDeflection.get(i)).get(ii)*
 									(_hTailSurface.doubleValue(SI.SQUARE_METRE)/
 											_wingSurface.doubleValue(SI.SQUARE_METRE)) * 
 									(_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/
-											_wingMAC.doubleValue(SI.METER)))
+											_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio))
 							);
 				
 				momentCoefficientTotal.add(ii,
@@ -4388,6 +4465,26 @@ public class StabilityExecutableManager {
 						momentCoefficientTotal
 						);
 				
+			}
+	}
+	public void calculateHTailEquilibriumLiftCoefficient(){
+		
+		for (int i=0; i<_numberOfAlphasBody; i++){
+		_hTailEquilibriumLiftCoefficient.add(i,
+				(-_wingMomentCoefficientPendular.get(i)-_fuselageMomentCoefficient.get(i))*
+				(_wingSurface.doubleValue(SI.SQUARE_METRE)/_hTailSurface.doubleValue(SI.SQUARE_METRE)) *
+				(_wingMAC.doubleValue(SI.METER)/_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER))*
+				(1/_dynamicPressureRatio)
+				);
+		}
+	}
+	public void calculateTotalEquilibriumLiftCoefficient(){
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			_totalEquilibriumLiftCoefficient.add(i,
+					_wingliftCoefficient3DCurveCONDITION[i] + _hTailEquilibriumLiftCoefficient.get(i)*_dynamicPressureRatio*
+					(_hTailSurface.doubleValue(SI.SQUARE_METRE)/
+							_wingSurface.doubleValue(SI.SQUARE_METRE))
+					);
 			}
 	}
 	
