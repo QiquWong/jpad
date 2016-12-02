@@ -18,6 +18,9 @@ public interface IEngine {
 	public String getId();
 	public void setId(String id);
 
+	public String getEngineDatabaseName();
+	public void setEngineDatabaseName(String _engineDatabaseName);
+	
 	public EngineTypeEnum getEngineType();
 	public void setEngineType(EngineTypeEnum _engineType);
 

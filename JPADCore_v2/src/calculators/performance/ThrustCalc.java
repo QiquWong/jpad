@@ -5,6 +5,8 @@ import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Mass;
 import org.jscience.physics.amount.Amount;
+
+import aircraft.components.powerplant.PowerPlant;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.performance.customdata.ThrustMap;
@@ -41,10 +43,10 @@ public class ThrustCalc {
 	public static double compareThrustAvailableToDrag(double speed, double weight, double cl,
 			double altitude, double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, 
-			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition) {
+			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition, PowerPlant thePowerPlant) {
 		
 		double mach = SpeedCalc.calculateMach(altitude, speed);
-		double thrust = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
+		double thrust = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
 		double drag = DragCalc.calculateDragAtSpeed(weight, altitude, surface, speed, cd0, cl, ar, oswald, sweepHalfChord, tcMax, airfoilType);
 		
 		if (thrust >= drag) return thrust;
@@ -54,8 +56,9 @@ public class ThrustCalc {
 	public static double compareThrustAvailableToDragGivenDensity(double speed, double weight, double cl,
 			double density, double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, 
-			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition) {
-		return compareThrustAvailableToDrag(speed, weight, cl, AtmosphereCalc.getAltitude(density), cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, t0, nEngine, phi, bpr, engineType, flightCondition);
+			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition,
+			PowerPlant thePowerPlant) {
+		return compareThrustAvailableToDrag(speed, weight, cl, AtmosphereCalc.getAltitude(density), cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 	}
 	
 	/**
@@ -83,6 +86,7 @@ public class ThrustCalc {
 			double[] speed,
 			EngineOperatingConditionEnum[] flightCondition,
 			EngineTypeEnum engineType, 
+			PowerPlant thePowerPlant,
 			double t0, int nEngine, double bpr,
 			double surface, double ar, double oswald,
 			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType, 
@@ -98,7 +102,9 @@ public class ThrustCalc {
 						list.add(new ThrustMap(altitude[i], phi[j], 
 								ThrustCalc.calculateThrustVsSpeed(
 										t0, phi[j], altitude[i],
-										flightCondition[f], engineType, bpr, nEngine, speed),
+										flightCondition[f], engineType,
+										thePowerPlant,
+										bpr, nEngine, speed),
 										speed, bpr, flightCondition[f]));
 	
 					}
@@ -114,11 +120,14 @@ public class ThrustCalc {
 			double altitude, double phi, double[] speed,
 			EngineOperatingConditionEnum flightCondition,
 			EngineTypeEnum engineType,
+			PowerPlant thePowerPlant,
 			double t0, int nEngine, double bpr) {
 	
 		return new ThrustMap(altitude, phi, 
 				ThrustCalc.calculateThrustVsSpeed(t0, phi, altitude,
-						flightCondition, engineType, bpr, nEngine, speed),
+						flightCondition, engineType,
+						thePowerPlant,
+						bpr, nEngine, speed),
 						speed, bpr, flightCondition);
 	}
 
@@ -136,7 +145,9 @@ public class ThrustCalc {
 	public static double calculateThrustDatabase(
 			double t0, double nEngine, double phi,
 			double bpr, EngineTypeEnum engineType, 
-			EngineOperatingConditionEnum flightCondition, double altitude, double mach) {
+			EngineOperatingConditionEnum flightCondition,
+			PowerPlant thePowerPlant,
+			double altitude, double mach) {
 		
 		/*
 		 *  T/T0 from turbofan database is underpredicted.
@@ -149,7 +160,7 @@ public class ThrustCalc {
 //		if(flightCondition == EngineOperatingConditionEnum.CRUISE)
 //			kCorrection = 1.43279165;	// FIXME: More in depth analysis required
 		
-		double thrustRatio = EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition);
+		double thrustRatio = EngineDatabaseManager.getThrustRatio(mach, altitude, bpr, engineType, flightCondition, thePowerPlant);
 		
 		double thrustRatioEff = thrustRatio*kCorrection;
 		
@@ -228,6 +239,7 @@ public class ThrustCalc {
 			double t0, double phi, double altitude, 
 			EngineOperatingConditionEnum flightCondition, 
 			EngineTypeEnum engineType, 
+			PowerPlant thePowerPlant,
 			double bpr, double nEngine,
 			double speed[]) {
 	
@@ -236,11 +248,11 @@ public class ThrustCalc {
 		for (int i=0; i< speed.length; i++){
 			double mach = SpeedCalc.calculateMach(altitude, speed[i]);
 			if (engineType == EngineTypeEnum.TURBOPROP)
-				thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
+				thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
 //						thrust[i] = calculateThrustHowe(t0, nEngine, bpr, phi, altitude, mach);
 			else if (engineType == EngineTypeEnum.TURBOFAN)
 //				thrust[i] = calculateThrust(t0, nEngine, phi, altitude);
-				thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
+				thrust[i] = calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
 		}
 	
 		return thrust;

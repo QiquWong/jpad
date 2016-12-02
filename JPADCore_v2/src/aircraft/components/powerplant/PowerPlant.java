@@ -1,5 +1,6 @@
 package aircraft.components.powerplant;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +11,13 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
-import org.omg.CORBA._PolicyStub;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
+import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import standaloneutils.customdata.CenterOfGravity;
 
 /** 
@@ -29,9 +31,12 @@ public class PowerPlant implements IPowerPlant {
 
 	public  String _id ;
 	private Integer _engineNumber;
-	public List<Engine> _engineList;
-	public EngineTypeEnum _engineType;
-	public EngineMountingPositionEnum _mountingPosition;
+	private List<Engine> _engineList;
+	private EngineTypeEnum _engineType;
+	private EngineMountingPositionEnum _mountingPosition;
+	
+	private TurbofanEngineDatabaseReader _turbofanEngineDatabaseReader;
+	private TurbopropEngineDatabaseReader _turbopropEngineDatabaseReader;
 	
 	private Amount<Force> _t0Total;
 	private Amount<Power> _p0Total;
@@ -68,6 +73,7 @@ public class PowerPlant implements IPowerPlant {
 			initializeDefaultVariables(aircraftName);
 		}
 		
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultVariables (AircraftEnum aircraftName) {
 			switch(aircraftName) {
 			
@@ -163,6 +169,17 @@ public class PowerPlant implements IPowerPlant {
 		this._engineList = builder.__engineList;
 		this._cgList = builder.__cgList;
 
+		if((this._engineList.get(0).getEngineType() == EngineTypeEnum.TURBOPROP)
+				|| (this._engineType == EngineTypeEnum.PISTON))
+			_turbopropEngineDatabaseReader = new TurbopropEngineDatabaseReader(
+					System.getProperty("user.dir") + File.separator + MyConfiguration.databaseFolderPath, 
+					_engineList.get(0).getEngineDatabaseName()
+					);
+		else
+			_turbofanEngineDatabaseReader = new TurbofanEngineDatabaseReader(
+					System.getProperty("user.dir") + File.separator + MyConfiguration.databaseFolderPath, 
+					_engineList.get(0).getEngineDatabaseName()
+					);
 		calculateDerivedVariables();
 		
 	}
@@ -332,6 +349,26 @@ public class PowerPlant implements IPowerPlant {
 	@Override
 	public CenterOfGravity getTotalCG() {
 		return _totalCG;
+	}
+
+	@Override
+	public TurbofanEngineDatabaseReader getTurbofanEngineDatabaseReader() {
+		return _turbofanEngineDatabaseReader;
+	}
+
+	@Override
+	public void setTurbofanEngineDatabaseReader(TurbofanEngineDatabaseReader _turbofanEngineDatabaseReader) {
+		this._turbofanEngineDatabaseReader = _turbofanEngineDatabaseReader;
+	}
+
+	@Override
+	public TurbopropEngineDatabaseReader getTurbopropEngineDatabaseReader() {
+		return _turbopropEngineDatabaseReader;
+	}
+
+	@Override
+	public void setTurbopropEngineDatabaseReader(TurbopropEngineDatabaseReader _turbopropEngineDatabaseReader) {
+		this._turbopropEngineDatabaseReader = _turbopropEngineDatabaseReader;
 	}
 
 }

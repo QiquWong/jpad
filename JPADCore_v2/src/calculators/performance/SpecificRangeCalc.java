@@ -8,6 +8,8 @@ import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
+
+import aircraft.components.powerplant.PowerPlant;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.performance.customdata.DragMap;
@@ -62,7 +64,8 @@ public class SpecificRangeCalc {
 			Double[] mach,
 			double altitude,
 			double bpr,
-			EngineTypeEnum engineType) {
+			EngineTypeEnum engineType,
+			PowerPlant thePowerPlant) {
 		
 		Double sfcMach[] = new Double[mach.length];
 
@@ -75,11 +78,13 @@ public class SpecificRangeCalc {
 							altitude,
 							bpr,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							thePowerPlant
 							),
 					bpr,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					thePowerPlant
 					);
 		}
 		return sfcMach;

@@ -54,9 +54,7 @@ import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import database.databasefunctions.engine.EngineDatabaseManager;
@@ -68,7 +66,6 @@ import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import sun.misc.Perf;
 import writers.JPADStaticWriteUtils;
 
 public class ACPerformanceManager {
@@ -2859,6 +2856,7 @@ public class ACPerformanceManager {
 								speedArray,
 								EngineOperatingConditionEnum.CLIMB,
 								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineNumber(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
@@ -2921,6 +2919,7 @@ public class ACPerformanceManager {
 								speedArray,
 								EngineOperatingConditionEnum.CONTINUOUS,
 								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineNumber()-1,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
@@ -3330,6 +3329,7 @@ public class ACPerformanceManager {
 								speedArrayAltitudeParameterization,
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineNumber(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
@@ -3445,6 +3445,7 @@ public class ACPerformanceManager {
 									),
 							EngineOperatingConditionEnum.CRUISE,
 							_theAircraft.getPowerPlant().getEngineType(), 
+							_theAircraft.getPowerPlant(),
 							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 							_theAircraft.getPowerPlant().getEngineNumber(),
 							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
@@ -3510,6 +3511,7 @@ public class ACPerformanceManager {
 								speedArray,
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineNumber(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
@@ -3757,7 +3759,8 @@ public class ACPerformanceManager {
 						machArray,
 						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType()
+						_theAircraft.getPowerPlant().getEngineType(),
+						_theAircraft.getPowerPlant()
 						);
 
 				efficiency = MyArrayUtils.convertFromDoublePrimitive(
@@ -4713,7 +4716,8 @@ public class ACPerformanceManager {
 										)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.CLIMB
+								EngineOperatingConditionEnum.CLIMB,
+								_theAircraft.getPowerPlant()
 								)
 						);
 			}
@@ -4739,6 +4743,7 @@ public class ACPerformanceManager {
 					_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 					_theAircraft.getPowerPlant().getEngineType(),
 					EngineOperatingConditionEnum.CRUISE,
+					_theAircraft.getPowerPlant(),
 					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 					_theOperatingConditions.getMachCruise()
 					)
@@ -4751,11 +4756,13 @@ public class ACPerformanceManager {
 									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.CRUISE
+									EngineOperatingConditionEnum.CRUISE,
+									_theAircraft.getPowerPlant()
 									),
 							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 							_theAircraft.getPowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							_theAircraft.getPowerPlant()
 							);
 			
 			_fuelUsedList.add(
@@ -4793,6 +4800,7 @@ public class ACPerformanceManager {
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getPowerPlant().getEngineType(),
 								EngineOperatingConditionEnum.DESCENT,
+								_theAircraft.getPowerPlant(),
 								altitudeDescent[i],
 								SpeedCalc.calculateMach(
 										altitudeDescent[i],
@@ -4814,11 +4822,13 @@ public class ACPerformanceManager {
 										altitudeDescent[i],
 										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 										_theAircraft.getPowerPlant().getEngineType(),
-										EngineOperatingConditionEnum.DESCENT
+										EngineOperatingConditionEnum.DESCENT,
+										_theAircraft.getPowerPlant()
 										),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.DESCENT
+								EngineOperatingConditionEnum.DESCENT,
+								_theAircraft.getPowerPlant()
 								)
 						);
 			}

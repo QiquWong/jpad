@@ -382,11 +382,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 			
 			////////////////////////////////////////////////////////////////////////////////////
@@ -427,11 +429,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 			
 			cLAtMaxPayloadCurrentMach = LiftCalc.calculateLiftCoeff(
@@ -474,11 +478,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 			
 			////////////////////////////////////////////////////////////////////////////////////
@@ -525,10 +531,14 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE),
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
+							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE);
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
+					);
 			
 			cLAtMaxPayloadCurrentMach = LiftCalc.calculateLiftCoeff(
 					maxTakeOffMassCurrent.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
@@ -606,11 +616,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 
 			////////////////////////////////////////////////////////////////////////////////////
@@ -651,11 +663,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 
 			cLAtMaxFuelCurrentMach = LiftCalc.calculateLiftCoeff(
@@ -698,11 +712,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 
 			////////////////////////////////////////////////////////////////////////////////////
@@ -749,10 +765,14 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE),
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
+							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE);
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
+					);
 
 			cLAtMaxFuelCurrentMach = LiftCalc.calculateLiftCoeff(
 					maxTakeOffMassCurrent.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
@@ -826,11 +846,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 
 			////////////////////////////////////////////////////////////////////////////////////
@@ -871,11 +893,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 
 			cLAtZeroPayloadCurrentMach = LiftCalc.calculateLiftCoeff(
@@ -918,11 +942,13 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
 							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
 					);
 
 			////////////////////////////////////////////////////////////////////////////////////
@@ -969,10 +995,14 @@ public class PayloadRangeCalc{
 							altitude.doubleValue(SI.METER),
 							byPassRatio,
 							engineType,
-							EngineOperatingConditionEnum.CRUISE),
+							EngineOperatingConditionEnum.CRUISE,
+							theAircraft.getPowerPlant()
+							),
 					byPassRatio,
 					engineType,
-					EngineOperatingConditionEnum.CRUISE);
+					EngineOperatingConditionEnum.CRUISE,
+					theAircraft.getPowerPlant()
+					);
 
 			cLAtZeroPayloadCurrentMach = LiftCalc.calculateLiftCoeff(
 					takeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),

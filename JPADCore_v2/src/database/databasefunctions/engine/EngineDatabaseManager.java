@@ -2,6 +2,9 @@ package database.databasefunctions.engine;
 
 import java.io.File;
 
+import javax.measure.quantity.Power;
+
+import aircraft.components.powerplant.PowerPlant;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -9,17 +12,7 @@ import configuration.enumerations.EngineTypeEnum;
 
 public class EngineDatabaseManager {
 
-	private static EngineTypeEnum engineType = EngineTypeEnum.TURBOFAN;	
-	private static final TurbofanEngineDatabaseReader turbofanDatabaseReader 
-		= new TurbofanEngineDatabaseReader(
-				System.getProperty("user.dir") + File.separator + MyConfiguration.databaseFolderPath, 
-				"TurbofanEngineDatabase.h5");
-	private static final TurbopropEngineDatabaseReader turbopropDatabaseReader 
-		= new TurbopropEngineDatabaseReader(
-				System.getProperty("user.dir") + File.separator + MyConfiguration.databaseFolderPath, 
-				"TurbopropEngineDatabase.h5");
 	private static double kCorrectionSFC = 1.0;
-
 
 	/**
 	 * 
@@ -37,13 +30,15 @@ public class EngineDatabaseManager {
 			double altitude, 
 			double bpr, 
 			EngineTypeEnum engineType,
-			EngineOperatingConditionEnum engineOperatingCondition) {
+			EngineOperatingConditionEnum engineOperatingCondition,
+			PowerPlant thePowerPlant
+			) {
 
 		if (engineType.equals(EngineTypeEnum.TURBOFAN)) {
-			return turbofanDatabaseReader.getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
+			return thePowerPlant.getTurbofanEngineDatabaseReader().getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
 
 		} else {
-			return turbopropDatabaseReader.getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
+			return thePowerPlant.getTurbopropEngineDatabaseReader().getThrustRatio(mach, altitude, bpr, engineOperatingCondition);
 		}
 	}
 
@@ -65,22 +60,16 @@ public class EngineDatabaseManager {
 			double tT0Ratio, 
 			double bpr,
 			EngineTypeEnum engineType,
-			EngineOperatingConditionEnum engineOperatingCondition) {
+			EngineOperatingConditionEnum engineOperatingCondition,
+			PowerPlant thePowerPlant
+			) {
 
 		if (engineType.equals(EngineTypeEnum.TURBOFAN)) {
-			return kCorrectionSFC*turbofanDatabaseReader.getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
+			return kCorrectionSFC*thePowerPlant.getTurbofanEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition); 
 
 		} else {
-			return kCorrectionSFC*turbopropDatabaseReader.getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
+			return kCorrectionSFC*thePowerPlant.getTurbopropEngineDatabaseReader().getSFC(mach, altitude, tT0Ratio, bpr, engineOperatingCondition);
 		}
-	}
-
-	public static EngineTypeEnum getEngineType() {
-		return engineType;
-	}
-
-	public static void setEngineType(EngineTypeEnum engineType) {
-		EngineDatabaseManager.engineType = engineType;
 	}
 
 	public static double getkCorrectionSFC() {

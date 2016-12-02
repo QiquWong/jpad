@@ -1599,6 +1599,7 @@ public class TakeOffCalc {
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
+						TakeOffCalc.this.getAircraft().getPowerPlant(),
 						altitude,
 						SpeedCalc.calculateMach(
 								altitude,
@@ -1616,6 +1617,7 @@ public class TakeOffCalc {
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
 						EngineOperatingConditionEnum.TAKE_OFF,
+						TakeOffCalc.this.getAircraft().getPowerPlant(),
 						altitude,
 						SpeedCalc.calculateMach(
 								altitude,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<engine id="JPAD Test Engine DAF - 2016" type="TURBOPROP">
+	<engine id="JPAD Test Engine DAF - 2016" type="TURBOPROP" database="TurbopropEngineDatabase.h5">
 		<dimensions>
 			<length unit="m">2.0</length>
 			<propeller_diameter unit="m">3.5</propeller_diameter>

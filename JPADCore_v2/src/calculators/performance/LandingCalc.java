@@ -669,6 +669,7 @@ public class LandingCalc {
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineType(),
 					EngineOperatingConditionEnum.TAKE_OFF,
+					LandingCalc.this.getAircraft().getPowerPlant(),
 					LandingCalc.this.getTheConditions().getAltitudeLanding().getEstimatedValue(),
 					SpeedCalc.calculateMach(
 							LandingCalc.this.getTheConditions().getAltitudeLanding().getEstimatedValue(),

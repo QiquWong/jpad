@@ -10,6 +10,8 @@ import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
+import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import standaloneutils.customdata.CenterOfGravity;
 
 public interface IPowerPlant {
@@ -45,5 +47,11 @@ public interface IPowerPlant {
 	public void setDryMassPublicDomainTotal(Amount<Mass> dryMassTotal);
 	
 	public CenterOfGravity getTotalCG();
+	
+	public TurbofanEngineDatabaseReader getTurbofanEngineDatabaseReader();
+	public void setTurbofanEngineDatabaseReader(TurbofanEngineDatabaseReader _turbofanEngineDatabaseReader);
+
+	public TurbopropEngineDatabaseReader getTurbopropEngineDatabaseReader();
+	public void setTurbopropEngineDatabaseReader(TurbopropEngineDatabaseReader _turbopropEngineDatabaseReader);
 	
 }

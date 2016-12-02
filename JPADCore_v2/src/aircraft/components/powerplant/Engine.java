@@ -24,6 +24,7 @@ public class Engine implements IEngine {
 
 	private String _id;
 	private EngineTypeEnum _engineType;
+	private String _engineDatabaseName;
 	
 	private EngineMountingPositionEnum _mountingPoint;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -62,6 +63,7 @@ public class Engine implements IEngine {
 		
 		// optional parameters ... defaults
 		// ...
+		private String __engineDatabaseName;
 		private EngineMountingPositionEnum __mountingPoint;
 		private Amount<Length> __xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 		private Amount<Length> __yApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -87,6 +89,11 @@ public class Engine implements IEngine {
 		
 		public EngineBuilder type (EngineTypeEnum type) {
 			this.__engineType = type;
+			return this;
+		}
+		
+		public EngineBuilder engineDatabaseName (String engineDatabaseName) {
+			this.__engineDatabaseName = engineDatabaseName;
 			return this;
 		}
 		
@@ -186,12 +193,14 @@ public class Engine implements IEngine {
 		 * 
 		 * @author Vittorio Trifari
 		 */
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultVariables (AircraftEnum aircraftName) {
 			
 			switch(aircraftName) {
 			
 			case ATR72:
 				// PW127 Data
+				__engineDatabaseName = "TurbopropEngineDatabase.h5";
 				__engineType = EngineTypeEnum.TURBOPROP;
 				__length = Amount.valueOf(2.13, SI.METER);
 				__propellerDiameter = Amount.valueOf(3.93, SI.METER);
@@ -207,6 +216,7 @@ public class Engine implements IEngine {
 				
 			case B747_100B:
 				// PWJT9D-7 Data
+				__engineDatabaseName = "TurbofanEngineDatabase.h5";
 				__engineType = EngineTypeEnum.TURBOFAN;
 				__length = Amount.valueOf(3.26, SI.METER);
 				__bpr = 5.0;
@@ -220,6 +230,7 @@ public class Engine implements IEngine {
 				
 			case AGILE_DC1:
 				//PW1700G
+				__engineDatabaseName = "TurbofanEngineDatabase.h5";
 				__engineType = EngineTypeEnum.TURBOFAN;
 				__length = Amount.valueOf(2.739, SI.METER);
 				__bpr = 6.0;	
@@ -242,6 +253,7 @@ public class Engine implements IEngine {
 		
 		this._id = builder.__id;
 		this._engineType = builder.__engineType;
+		this._engineDatabaseName = builder.__engineDatabaseName;
 		this._length = builder.__length;
 		this._propellerDiameter = builder.__propellerDiameter;
 		this._numberOfBlades = builder.__numberOfBlades;
@@ -289,6 +301,12 @@ public class Engine implements IEngine {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@type");
+		
+		String engineDatabaseName = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@database");
+		
 		EngineTypeEnum engineType = null;
 		if(typeProperty.equalsIgnoreCase("TURBOJET"))
 			engineType = EngineTypeEnum.TURBOJET;
@@ -320,6 +338,7 @@ public class Engine implements IEngine {
 					.id(id)
 					.length(length)
 					.type(engineType)
+					.engineDatabaseName(engineDatabaseName)
 					.t0(staticThrust)
 					.bpr(bpr)
 					.dryMass(dryMass)
@@ -348,6 +367,7 @@ public class Engine implements IEngine {
 					.id(id)
 					.type(engineType)
 					.length(length)
+					.engineDatabaseName(engineDatabaseName)
 					.propellerDiameter(propellerDiameter)
 					.numberOfBlades(numberOfPropellerBlades)
 					.etaPropeller(etaPropeller)
@@ -374,6 +394,7 @@ public class Engine implements IEngine {
 					.id(id)
 					.type(engineType)
 					.length(length)
+					.engineDatabaseName(engineDatabaseName)
 					.propellerDiameter(propellerDiameter)
 					.numberOfBlades(numberOfPropellerBlades)
 					.etaPropeller(etaPropeller)
@@ -430,6 +451,7 @@ public class Engine implements IEngine {
 		StringBuilder sb = new StringBuilder()
 				.append("\tID: '" + _id + "'\n")
 				.append("\tType: " + _engineType + "\n")
+				.append("\tEngine database name: " + _engineDatabaseName + "\n")
 				.append("\t·····································\n")
 				.append("\tLength: " + _length + "\n")
 				;
@@ -678,6 +700,16 @@ public class Engine implements IEngine {
 	@Override
 	public void setTheBalance(EngineBalanceManager _theBalance) {
 		this._theBalance = _theBalance;
+	}
+
+	@Override
+	public String getEngineDatabaseName() {
+		return _engineDatabaseName;
+	}
+
+	@Override
+	public void setEngineDatabaseName(String _engineDatabaseName) {
+		this._engineDatabaseName = _engineDatabaseName;
 	}
 
 }

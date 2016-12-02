@@ -2,6 +2,8 @@ package calculators.performance;
 
 import javax.measure.quantity.Velocity;
 import org.jscience.physics.amount.Amount;
+
+import aircraft.components.powerplant.PowerPlant;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -21,6 +23,8 @@ public class RangeCalc {
 	rangeClAndAltitudeConstant;
 
 	private double[] speedA, altitudeA, phiA, wfA;
+	
+	private PowerPlant thePowerPlant;
 
 	private double[][] rangeSpeedAndClConstantM, rangeSpeedAndAltitudeConstantM;
 
@@ -47,7 +51,7 @@ public class RangeCalc {
 	public RangeCalc(
 			double cd0, double oswald, double surface, double ar, double sweepHalfChord,
 			double tcMax, AirfoilTypeEnum airfoilType, double t0, int nEngine,
-			EngineTypeEnum engineType, double bpr) {
+			EngineTypeEnum engineType, double bpr, PowerPlant thePowerPlant) {
 		this.cd0 = cd0;
 		this.oswald = oswald;
 		this.surface = surface;
@@ -57,6 +61,7 @@ public class RangeCalc {
 		this.t0 = t0;
 		this.bpr = bpr;
 		this.nEngine = nEngine;
+		this.thePowerPlant = thePowerPlant;
 		this.airfoilType = airfoilType;
 		this.engineType = engineType;
 	}
@@ -117,10 +122,18 @@ public class RangeCalc {
 	 *
 	 */
 	public void calculateAllBreguet() {
-		thrustBreguet = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
+		thrustBreguet = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
 		double tT0Ratio = thrustBreguet/(t0*nEngine);
 
-		sfcBreguet = EngineDatabaseManager.getSFC(mach, altitude, tT0Ratio, bpr, engineType, EngineOperatingConditionEnum.CRUISE);
+		sfcBreguet = EngineDatabaseManager.getSFC(
+				mach,
+				altitude,
+				tT0Ratio,
+				bpr,
+				engineType,
+				EngineOperatingConditionEnum.CRUISE,
+				thePowerPlant
+				);
 		rangeBreguetJet = calculateRangeBreguetSFC(sfcBreguet, altitude, surface, cl, w0, wf, cd0, ar, oswald, sweepHalfChord, tcMax, airfoilType);
 	}
 
@@ -132,11 +145,11 @@ public class RangeCalc {
 		rangeSpeedAndClConstantM = calculateRangeAtConstantSpeedAndLiftCoefficient(
 				w0, wfA, speedA, 
 				cl, cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-				t0, nEngine, phi, bpr, engineType, flightCondition);
+				t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 		rangeSpeedAndAltitudeConstantM = calculateRangeAtConstantSpeedAndAltitude(
 				w0, wf, speedA, altitudeA, 
 				cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-				t0, nEngine, phi, bpr, engineType, flightCondition);
+				t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 	}
 	
 	/**
@@ -147,15 +160,15 @@ public class RangeCalc {
 		rangeSpeedAndClConstant = calculateRangeAtConstantSpeedAndLiftCoefficient(
 				w0, wf, speed, cl, 
 				cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-				t0, nEngine, phi, bpr, engineType, flightCondition, true);
+				t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, true);
 		rangeSpeedAndAltitudeConstant = calculateRangeAtConstantSpeedAndAltitude(
 				w0, wf, speed, altitude, 
 				cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-				t0, nEngine, phi, bpr, engineType, flightCondition, true);
+				t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, true);
 		rangeClAndAltitudeConstant = calculateRangeAtConstantLiftCoefficientAndAltitude(
 				w0, wf, cl, altitude,
 				cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-				t0, nEngine, phi, bpr, engineType, flightCondition, true);		
+				t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, true);		
 	}
 
 	/**
@@ -361,16 +374,16 @@ public class RangeCalc {
 	public static double calculateDeltaRange(double speed, double cl, double w, 
 			double altitude, double cd0, double e, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, EngineTypeEnum engineType, 
-			EngineOperatingConditionEnum flightCondition) {
+			EngineOperatingConditionEnum flightCondition, PowerPlant thePowerPlant) {
 
 		double mach = SpeedCalc.calculateMach(altitude, speed);
-		double thrust = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
+		double thrust = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
 		double cd = DragCalc.calculateCDTotal(cd0, cl, ar, e, mach, sweepHalfChord, tcMax, airfoilType);
 		double drag = DragCalc.calculateDragAtSpeed(w, altitude, surface, speed, cd);
 		double tT0Ratio = thrust/(t0*nEngine);
 		
 		if (thrust >= drag) 
-			return calculateDeltaRangeJetSFC(EngineDatabaseManager.getSFC(mach, altitude, tT0Ratio, bpr, engineType, flightCondition), 
+			return calculateDeltaRangeJetSFC(EngineDatabaseManager.getSFC(mach, altitude, tT0Ratio, bpr, engineType, flightCondition, thePowerPlant), 
 					speed, cl, cd, w);
 		else 
 			return 0.;
@@ -379,10 +392,10 @@ public class RangeCalc {
 	public static double calculateDeltaRangeGivenDensity(double speed, double cl, double w, 
 			double density, double cd0, double e, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, EngineTypeEnum engineType,
-			EngineOperatingConditionEnum flightCondition) {
+			EngineOperatingConditionEnum flightCondition, PowerPlant thePowerPlant) {
 		return calculateDeltaRange(speed, cl, w, AtmosphereCalc.getAltitude(density), 
 				cd0, e, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-				t0, nEngine, phi, bpr, engineType, flightCondition);
+				t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 	}
 
 	/**
@@ -415,7 +428,7 @@ public class RangeCalc {
 			double w0, double wf, double speed, double cl,
 			double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType, 
 			double t0, int nEngine, double phi, double bpr, EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition,
-			boolean printResult) {
+			PowerPlant thePowerPlant, boolean printResult) {
 
 		int nWeights = 100;
 		double density = 0., ceiling = 0.;
@@ -435,7 +448,7 @@ public class RangeCalc {
 			if (ThrustCalc.compareThrustAvailableToDrag(
 					speed, weight[i], cl, AtmosphereCalc.getAltitude(density), 
 					cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition) <= 0.) {
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant) <= 0.) {
 				if (printResult)
 					JPADStaticWriteUtils.logToConsole("The aircraft cannot fly at constant speed= " + speed + " m/s and constant CL= " + cl + " m");
 				return 0.;
@@ -443,7 +456,7 @@ public class RangeCalc {
 			
 			deltaRange[i] = calculateDeltaRange(speed, cl, weight[i], AtmosphereCalc.getAltitude(density), 
 					cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition);
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 		}
 
 		double range = MyMathUtils.integrate1DSimpsonSpline(weight, deltaRange, wf*1.0001, w0*0.9999);
@@ -477,7 +490,7 @@ public class RangeCalc {
 			double altitude, double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, 
 			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition, 
-			boolean printResult) {
+			PowerPlant thePowerPlant, boolean printResult) {
 
 		int nWeights = 100;
 		double[] weight = MyArrayUtils.linspace(wf, w0, nWeights);
@@ -491,7 +504,7 @@ public class RangeCalc {
 			if (ThrustCalc.compareThrustAvailableToDrag(
 					speed, weight[i], cl[i], altitude, 
 					cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition) <= 0.) { 
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant) <= 0.) { 
 				if (printResult)
 					JPADStaticWriteUtils.logToConsole("The aircraft cannot fly at constant speed= " + speed + " m/s and h= " + altitude + " m");
 				return 0.;
@@ -499,7 +512,7 @@ public class RangeCalc {
 			
 			deltaRange[i] = calculateDeltaRange(speed, cl[i], weight[i], altitude, 
 					cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition);
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 		}
 
 		double range = MyMathUtils.integrate1DSimpsonSpline(weight, deltaRange, wf*1.0001, w0*0.9999);
@@ -533,7 +546,7 @@ public class RangeCalc {
 			double altitude, double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, 
 			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition, 
-			boolean printResult) {
+			PowerPlant thePowerPlant, boolean printResult) {
 
 		int nWeights = 100;
 		double[] weight = MyArrayUtils.linspace(wf, w0, nWeights);
@@ -547,7 +560,7 @@ public class RangeCalc {
 			if (ThrustCalc.compareThrustAvailableToDrag(
 					speed[i], weight[i], cl, altitude, 
 					cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition) <= 0.) {
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant) <= 0.) {
 				if (printResult)
 					JPADStaticWriteUtils.logToConsole("The aircraft cannot fly at constant CL= " + cl + " and constant h= " + altitude + " m");
 				return 0.;
@@ -555,7 +568,7 @@ public class RangeCalc {
 			
 			deltaRange[i] = calculateDeltaRange(speed[i], cl, weight[i], altitude, 
 					cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition);
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 		}
 
 		double range = MyMathUtils.integrate1DSimpsonSpline(weight, deltaRange, wf*1.0001, w0*0.9999);
@@ -588,14 +601,15 @@ public class RangeCalc {
 			double w0, double wf, double[] speed, double cl,
 			double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType, 
 			double t0, int nEngine, double phi, double bpr, 
-			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition) {
+			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition, 
+			PowerPlant thePowerPlant) {
 
 		double[] range = new double[speed.length];
 
 		for(int i=0; i<speed.length; i++) {
 			range[i] = calculateRangeAtConstantSpeedAndLiftCoefficient(w0, wf, speed[i], 
 					cl, cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition, false);
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, false);
 		}
 
 		return range;
@@ -625,14 +639,15 @@ public class RangeCalc {
 			double w0, double[] wf, double[] speed, double cl,
 			double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType, 
 			double t0, int nEngine, double phi, double bpr, 
-			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition) {
+			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition,
+			PowerPlant thePowerPlant) {
 		
 		double[][] range = new double[wf.length][speed.length];
 
 		for(int i=0; i<wf.length; i++) {
 			range[i] = calculateRangeAtConstantSpeedAndLiftCoefficientJet(w0, wf[i], speed, 
 					cl, cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition);
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 		}
 
 		return range;
@@ -661,14 +676,15 @@ public class RangeCalc {
 	public static double[] calculateRangeAtConstantSpeedAndAltitudeJet(double w0, double wf, double[] speed,
 			double altitude, double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, 
-			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition) {
+			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition,
+			PowerPlant thePowerPlant) {
 
 		double[] range = new double[speed.length];
 
 		for(int i=0; i<speed.length; i++) {
 			range[i] = calculateRangeAtConstantSpeedAndAltitude(w0, wf, speed[i], 
 					altitude, cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition, false);
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, false);
 		}
 
 		return range;
@@ -697,14 +713,15 @@ public class RangeCalc {
 	public static double[][] calculateRangeAtConstantSpeedAndAltitude(double w0, double wf, double[] speed,
 			double[] altitude, double cd0, double oswald, double surface, double ar, double sweepHalfChord, double tcMax, 
 			AirfoilTypeEnum airfoilType, double t0, int nEngine, double phi, double bpr, 
-			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition) {
+			EngineTypeEnum engineType, EngineOperatingConditionEnum flightCondition, 
+			PowerPlant thePowerPlant) {
 
 		double[][] range = new double[altitude.length][speed.length];
 
 		for(int i=0; i<altitude.length; i++) {
 			range[i] = calculateRangeAtConstantSpeedAndAltitudeJet(w0, wf, speed, 
 					altitude[i], cd0, oswald, surface, ar, sweepHalfChord, tcMax, airfoilType, 
-					t0, nEngine, phi, bpr, engineType, flightCondition);
+					t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant);
 		}
 
 		return range;

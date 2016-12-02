@@ -3,6 +3,7 @@ package calculators.performance;
 import java.util.ArrayList;
 import java.util.List;
 
+import aircraft.components.powerplant.PowerPlant;
 import calculators.aerodynamics.DragCalc;
 import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.RCMap;
@@ -172,12 +173,13 @@ public class RateOfClimbCalc {
 	public static double calculateRC(
 			double altitude, double speed, double phi, double weight,
 			EngineOperatingConditionEnum flightCondition, EngineTypeEnum engineType,
+			PowerPlant thePowerPlant,
 			double t0, int nEngine, double bpr,
 			double surface, double ar, double sweepHalfChord,
 			double tcMax, AirfoilTypeEnum airfoilType, 
 			double cd0, double oswald) {
 		
-		double powerAvailable = speed*ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, SpeedCalc.calculateMach(altitude, speed));
+		double powerAvailable = speed*ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, SpeedCalc.calculateMach(altitude, speed));
 		double powerRequired = speed*DragCalc.calculateDragAtSpeedLevelFlight(weight, altitude, surface, speed, cd0, ar, oswald, sweepHalfChord, tcMax, airfoilType);
 		return (powerAvailable - powerRequired)/weight;
 	}
@@ -236,9 +238,11 @@ public class RateOfClimbCalc {
 			double altitude, double mach, double cd0, double emax,
 			double t0, int nEngine, double phi, double bpr, 
 			EngineTypeEnum engineType,
-			EngineOperatingConditionEnum flightCondition) {
+			EngineOperatingConditionEnum flightCondition,
+			PowerPlant thePowerPlant
+			) {
 
-		double thrust = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, altitude, mach);
+		double thrust = ThrustCalc.calculateThrustDatabase(t0, nEngine, phi, bpr, engineType, flightCondition, thePowerPlant, altitude, mach);
 		return calculateRCmax(w, s, calculateGamma(emax, thrust, w), AtmosphereCalc.getDensity(altitude), cd0, 
 				thrust, emax);
 	}

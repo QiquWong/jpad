@@ -16,6 +16,7 @@ import com.sun.org.apache.bcel.internal.generic.RET;
 import com.sun.org.apache.regexp.internal.recompile;
 import com.sun.org.glassfish.external.amx.AMX;
 
+import aircraft.components.powerplant.PowerPlant;
 import calculators.performance.customdata.CeilingMap;
 import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.DragThrustIntersectionMap;
@@ -292,6 +293,7 @@ public class PerformanceCalcUtils {
 	public static double calculateCeiling(
 			double speed, double phi, double weight,
 			EngineOperatingConditionEnum flightCondition, EngineTypeEnum engineType,
+			PowerPlant thePowerPlant,
 			double t0, int nEngine, double bpr,
 			double surface, double ar, double sweepHalfChord,
 			double tcMax, AirfoilTypeEnum airfoilType, 
@@ -302,7 +304,7 @@ public class PerformanceCalcUtils {
 
 		for (int i=altitude.length-1; i>0; i--) {
 			rc = RateOfClimbCalc.calculateRC(altitude[i], speed, phi, weight, flightCondition, engineType,
-					t0, nEngine, bpr, surface, ar, sweepHalfChord, tcMax, airfoilType, cd0, oswald);
+					thePowerPlant, t0, nEngine, bpr, surface, ar, sweepHalfChord, tcMax, airfoilType, cd0, oswald);
 			if (Math.abs(rc) < 0.1) return altitude[i+1];
 		}
 
