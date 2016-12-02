@@ -3,12 +3,18 @@ package calculators.geometry;
 import static java.lang.Math.pow;
 import static java.lang.Math.tan;
 
+import java.util.List;
+
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 
 
 public class LSGeometryCalc {
@@ -130,6 +136,23 @@ public class LSGeometryCalc {
 		
 		double xACNapolitano =  mac*k1*(xBarAc-k2);
 		return xACNapolitano;
+	}
+	
+	public static Amount<Length> calcYacFromIntegral(Amount<Area> liftingSurfaceArea,
+			List<Amount<Length>> yLE, List<Amount<Length>> chordDistribution, List<Amount<Length>> liftingSurfaceDimensionalY) {
+
+		double [] cY = new double [yLE.size()];
+		
+		for (int i=0; i<yLE.size(); i++){
+		 cY[i] = yLE.get(i).doubleValue(SI.METER) * chordDistribution.get(i).doubleValue(SI.METER);
+		}
+		
+		Amount<Length> yACIntegral =  Amount.valueOf((2/liftingSurfaceArea.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+				cY),
+				SI.METER);
+		
+		return yACIntegral;
 	}
 
 }

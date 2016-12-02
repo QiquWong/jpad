@@ -19,6 +19,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
+import org.jscience.physics.amount.AmountException;
 
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
@@ -165,6 +166,8 @@ public class StabilityExecutableManager {
 	private List<Double> _wingMaxThicknessDistribution;  // not from input
 	private List<Amount<Length>> _wingLERadiusBreakPoints;
 	private List<Amount<Length>> _wingLERadiusDistribution;  // not from input
+	private List<Amount<Length>> _wingYLEBreakPoints;
+	private List<Amount<Length>> _wingYLEDistribution;  // not from input
 
 
 	//High lift devices -------------------------------------------
@@ -534,6 +537,8 @@ public class StabilityExecutableManager {
 	private Map<MethodEnum, List<Double>> _wingMomentCoefficientAC = new HashMap<MethodEnum, List<Double>>();
 	private List<List<Double>>_wingMomentCoefficients = new ArrayList<>();
 	private List<Double>_wingMomentCoefficientFinal = new ArrayList<>();
+	
+	private Amount<Length> _wingYACMAC;
 
 	
 	//h tail
@@ -792,6 +797,60 @@ public class StabilityExecutableManager {
 						for(int i=0; i<xleDistributionArray.length; i++)
 							_wingXleDistribution.add(Amount.valueOf(xleDistributionArray[i], SI.METER));
 
+						// yle
+						
+						_wingYLEBreakPoints = new ArrayList<>();
+						this._wingYLEDistribution = new ArrayList<>();
+						if(_wingDihedralBreakPoints.get(0).equals(Amount.valueOf(0.0,NonSI.DEGREE_ANGLE))){
+							for(int i=0; i<_wingYAdimensionalDistribution.size(); i++)
+								_wingYLEDistribution.add(Amount.valueOf(0.0, SI.METER));
+							}
+						
+						else{
+						
+						
+						if(_wingNumberOfGivenSections == 3){
+						Amount<Length> yLEKink = Amount.valueOf(
+								_wingAdimentionalKinkStation*
+								_wingSemiSpan.doubleValue(SI.METER)*
+								Math.tan(_wingDihedralBreakPoints.get(_wingNumberOfGivenSections-1).doubleValue(SI.RADIAN)),
+								SI.METER
+								);
+						
+						Amount<Length> yLETip = Amount.valueOf(
+								_wingSemiSpan.doubleValue(SI.METER)*
+								Math.tan(_wingDihedralBreakPoints.get(_wingNumberOfGivenSections-1).doubleValue(SI.RADIAN)),
+								SI.METER
+								);
+						
+						_wingYLEBreakPoints.add(0, Amount.valueOf(0.0,SI.METER));
+						_wingYLEBreakPoints.add(1, yLEKink);
+						_wingYLEBreakPoints.add(2, yLETip);
+						}
+						
+						if(_wingNumberOfGivenSections == 2){
+						Amount<Length> yLETip = Amount.valueOf(
+								_wingSemiSpan.doubleValue(SI.METER)*
+								Math.tan(_wingDihedralBreakPoints.get(_wingNumberOfGivenSections-1).doubleValue(SI.RADIAN)),
+								SI.METER
+								);
+						
+						_wingYLEBreakPoints.add(0, Amount.valueOf(0.0,SI.METER));
+						_wingYLEBreakPoints.add(1, yLETip);
+						}
+						
+						Double [] yLEDistributionArray = MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
+								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYLEBreakPoints),
+								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
+								);	
+					
+						for(int i=0; i<yLEDistributionArray.length; i++)
+							_wingYLEDistribution.add(Amount.valueOf(yLEDistributionArray[i], SI.METER));}
+						
+			
+						
+						
 						// twist
 						Double [] twistDistributionArray = MyMathUtils.getInterpolatedValue1DLinear(
 								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
@@ -1097,6 +1156,11 @@ public class StabilityExecutableManager {
 	}
 
 	public void initializeCalculators(){	
+		
+		List<Amount<Angle>> _wingDihedralDistributionNull = new ArrayList<>() ; 
+		for (int i=0; i<_wingDihedralDistribution.size(); i++){
+			_wingDihedralDistributionNull.add(i, Amount.valueOf(0.0, SI.RADIAN));
+		}
 		//NASA BLACKWELL
 		// wing
 		theNasaBlackwellCalculatorMachActualWing = new NasaBlackwell(
@@ -1105,7 +1169,7 @@ public class StabilityExecutableManager {
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistribution),
-				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingDihedralDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_wingDihedralDistributionNull),
 				twistDistributionRad,
 				alphaZeroLiftRad,
 				_wingVortexSemiSpanToSemiSpanRatio,
@@ -1120,7 +1184,7 @@ public class StabilityExecutableManager {
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingYDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingChordsDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingXleDistribution),
-				MyArrayUtils.convertListOfAmountTodoubleArray(this._wingDihedralDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_wingDihedralDistributionNull),
 				twistDistributionRad,
 				alphaZeroLiftRad,
 				_wingVortexSemiSpanToSemiSpanRatio,
@@ -1136,7 +1200,7 @@ public class StabilityExecutableManager {
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._hTailYDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._hTailChordsDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(this._hTailXleDistribution),
-				MyArrayUtils.convertListOfAmountTodoubleArray(this._hTailDihedralDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_wingDihedralDistributionNull),
 				twistDistributionRadHTail,
 				alphaZeroLiftRadHTail,
 				_hTailVortexSemiSpanToSemiSpanRatio,
@@ -1376,6 +1440,7 @@ public class StabilityExecutableManager {
 		System.out.println("Distributions: " );
 		System.out.println("Chord Break Points --> " + this._wingChordsBreakPoints);
 		System.out.println("XLE Break Points --> " + this._wingXleBreakPoints);
+		System.out.println("YLE Break Points --> " + this._wingYLEBreakPoints);
 		System.out.println("Twist Break Points --> " + this._wingTwistBreakPoints);
 		System.out.println("Max thickness Break Points--> " + this._wingMaxThicknessBreakPoints);
 		System.out.println("Dihedral Break Points --> " + this._wingDihedralBreakPoints);
@@ -1386,6 +1451,7 @@ public class StabilityExecutableManager {
 		//distribution		
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingChordsDistribution, "Chord Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingXleDistribution, "XLE Distribution", ",");
+		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingYLEDistribution, "YLE Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingTwistDistribution, "Twist Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingDihedralDistribution, "Dihedral Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingAlphaStarDistribution, "Alpha star Distribution", ",");
@@ -3915,7 +3981,16 @@ public class StabilityExecutableManager {
 		
 		_wingXACBRF.put(MethodEnum.NAPOLITANO_DATCOM,
 				_wingXACMAC.get(MethodEnum.NAPOLITANO_DATCOM).plus(_wingMeanAerodynamicChordLeadingEdgeX).plus(_xApexWing));
+		
 
+		_wingYACMAC = LSGeometryCalc.calcYacFromIntegral(
+				_wingSurface,
+				_wingYLEDistribution,
+				_wingChordsDistribution,
+				_wingYDistribution
+				);
+				
+		
 	}
 	public void calculateWingBodyXAC(){
 		_deltaXACdueToFuselage = - (_fuselageCMAlpha.get(MethodEnum.FUSDES)/_wingcLAlphaDegCONDITION);
@@ -4287,7 +4362,7 @@ public class StabilityExecutableManager {
 		
 		double zVerticalDistance;
 
-			zVerticalDistance = _zApexWing.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
+			zVerticalDistance = _zApexWing.doubleValue(SI.METER)+_wingYACMAC.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
 		
 		_wingVerticalDistranceACtoCG = Amount.valueOf(zVerticalDistance, SI.METER);
 		

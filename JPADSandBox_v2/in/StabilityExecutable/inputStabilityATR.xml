@@ -101,7 +101,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 						<!-- XLE is in LRF, so the root value of XLE  must be zero -->
 						<x_le_distribution unit="m">[0,0,0.58]</x_le_distribution>
 						<twist_distribution unit="°">[0,0,-2]</twist_distribution>
-						<dihedral_distribution unit="°">[0,0,0]</dihedral_distribution>
+						<dihedral_distribution unit="°">[5,5,5]</dihedral_distribution>
 						<max_thickness_airfoil>[0.18,0.18,0.135]</max_thickness_airfoil>
 						<radius_leading_edge unit="m">[0.15,0.15,0.15]</radius_leading_edge>
                     </geometry>
