@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<engine id="JPAD Test Engine DAF - 2016" type="TURBOFAN">
+	<engine id="JPAD Test Engine DAF - 2016" type="TURBOFAN" database="TurbofanEngineDatabase.h5">
 		<dimensions>
 			<length unit="m">2.0</length>
 		</dimensions>

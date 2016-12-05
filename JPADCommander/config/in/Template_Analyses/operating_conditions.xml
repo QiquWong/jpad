@@ -11,7 +11,7 @@
 			<mach>0.3</mach>
 		</climb>
 		<cruise> 
-			<mach>0.43</mach>	
+			<mach>0.42</mach>	
 			<altitude unit="m">6000.0</altitude>
 			<throttle>1.0</throttle>
 		</cruise>

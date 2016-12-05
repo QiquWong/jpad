@@ -33,6 +33,13 @@ public class InputManagerController {
 			"FAR-23",
 			"FAR-25"
 			);
+	ObservableList<String> windshieldTypeList = FXCollections.observableArrayList(
+			"DOUBLE",
+			"FLAT_FLUSH",
+			"FLAT_PROTRUDING",
+			"SINGLE_ROUND",
+			"SINGLE_SHARP"
+			);
 	
 	@FXML
 	@SuppressWarnings("rawtypes")
@@ -43,15 +50,23 @@ public class InputManagerController {
 	private ChoiceBox regulationsTypeChioseBox;
 	
 	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox windshieldTypeChoiceBox;
+	
+	@FXML
 	@SuppressWarnings("unchecked")
 	private void initialize() {
 		aircraftTypeChioseBox.setItems(aircraftTypeList);
 		regulationsTypeChioseBox.setItems(regulationsTypeList);
+		windshieldTypeChoiceBox.setItems(windshieldTypeList);
 	}
 	
 	@FXML
 	private void showInputManagerAircraftFromFileContent() throws IOException {
 		
+		//.......................................................................................
+		// AIRCRAFT TAB FILEDS CAPTURE
+		//.......................................................................................
 		// get the content of Input-Aircraft-From-File
 		Main.setMainInputManagerAircraftSubContentFieldsLayout(
 				(BorderPane) Main.getMainInputManagerLayout().lookup("#mainInputManagerAircraftSubContentFields")
@@ -137,11 +152,35 @@ public class InputManagerController {
 		// TODO : SET TEXT FIELD INPUT FILE IF AIRCRAFT NOT NULL 				  //
         //		  CHECK IF AIRCRAFT IS FROM DEFAULT --> THEN CLEAR THE TEXT FIELD //
 		////////////////////////////////////////////////////////////////////////////
+        
+		//.......................................................................................
+		// FUSELAGE TAB
+		//.......................................................................................
+
+        // get the pane of the front view
+		Main.setFuselageFrontViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#fuselageFrontViewPane")
+				);
+		
+		// get the pane of the side view
+		Main.setFuselageSideViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#fuselageSideViewPane")
+				);
+		
+		// get the pane of the top view
+		Main.setFuselageTopViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#fuselageTopViewPane")
+				);
+		
 	}
 
 	@SuppressWarnings("unchecked")
 	@FXML
 	private void showInputManagerAircraftDefaultContent() throws IOException {
+		
+		//.......................................................................................
+		// AIRCRAFT TAB
+		//.......................................................................................
 		
 		// get the content of Default-Aircraft
 		Main.setMainInputManagerAircraftSubContentFieldsLayout(
@@ -203,6 +242,25 @@ public class InputManagerController {
 		Main.getLoadButtonDefaultAircraft().disableProperty().bind(
 				Main.getDefaultAircraftChoiceBox().valueProperty().isNull()
 				);
+		
+		//.......................................................................................
+		// FUSELAGE TAB
+		//.......................................................................................
+		
+        // get the pane of the front view
+		Main.setFuselageFrontViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#fuselageFrontViewPane")
+				);
+		
+		// get the pane of the side view
+		Main.setFuselageSideViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#fuselageSideViewPane")
+				);
+		
+		// get the pane of the top view
+		Main.setFuselageTopViewPane(
+				(Pane) Main.getMainInputManagerLayout().lookup("#fuselageTopViewPane")
+				);
 	}
 
 	@FXML
@@ -225,6 +283,29 @@ public class InputManagerController {
 				);
 		
 		Main.getAircraftViewsAndDataLogSplitPane().setDividerPositions(0.9);
+		
+	};
+	
+	@FXML
+	private void zoomDataLogAndMessagesFuselage() {
+		
+		Main.setFuselageViewsAndDataLogSplitPane(
+				(SplitPane) Main.getMainInputManagerLayout().lookup("#fuselageViewsAndDataLogSplitPane")
+				);
+		
+		Main.getFuselageViewsAndDataLogSplitPane().setDividerPositions(0.5);
+		
+	};
+	
+
+	@FXML
+	private void zoomViewsFuselage() {
+		
+		Main.setFuselageViewsAndDataLogSplitPane(
+				(SplitPane) Main.getMainInputManagerLayout().lookup("#fuselageViewsAndDataLogSplitPane")
+				);
+		
+		Main.getFuselageViewsAndDataLogSplitPane().setDividerPositions(0.9);
 		
 	};
 }

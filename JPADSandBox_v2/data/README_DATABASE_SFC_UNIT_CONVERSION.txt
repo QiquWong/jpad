@@ -2,7 +2,7 @@
 SFC UNIT CONVERSION FROM THE DATABASE
 -----------------------------------------------------------------
 	.............................................................
-	TURBOPROP
+	TURBOPROP (see DOCS/TurbopropEngineModel)
 	.............................................................
 		SFC given with respect to thrust. In order to obtain SFC
 		in kg/min, the following conversion is required:

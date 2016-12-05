@@ -24,6 +24,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
@@ -41,6 +42,10 @@ import standaloneutils.JPADXmlReader;
 
 public class Main extends Application {
 
+	//-------------------------------------------------------------------------------------------
+	// VARIABLE DECLARATION
+	//...........................................................................................
+	// LAYOUTS:
 	private static Stage primaryStage;
 	private static BorderPane mainLayout;
 	private static BorderPane mainInputManagerLayout;
@@ -50,91 +55,121 @@ public class Main extends Application {
 	private static ToolBar mainInputManagerAircraftFromFileToolbarLayout;
 	private static BorderPane mainInputManagerAircraftDefaultLayout;
 	private static ToolBar mainInputManagerAircraftDefaultToolbarLayout;
-	
+	//...........................................................................................
+	// FOLDER CONFIGURATION FIELDS:
+	private static String inputDirectoryPath;
+	private static String outputDirectoryPath;
+	private static String databaseDirectoryPath;
+	private static String inputFileAbsolutePath;
+	private static Object choiseBoxSelectionDefaultAircraft;
+	//...........................................................................................
+	// STATUS BAR
+	private static StatusBar statusBar;
+	private static Button statusLight;
+	private static State status;
+	//...........................................................................................
+	// AIRCRAFT OBJECT
+	private static Aircraft theAircraft;
+	//...........................................................................................
+	// AIRCRAFT TAB (INPUT):
 	private static TextArea textAreaAircraftConsoleOutput;
-	
 	private static TextField textFieldAircraftInputFile;
-	
+	private static Button loadButtonFromFile;
+	private static Button loadButtonDefaultAircraft;
+	private static ChoiceBox<String> defaultAircraftChoiseBox;
 	private static ChoiceBox<String> choiceBoxAircraftType;
-	
 	private static ChoiceBox<String> choiceBoxRegulationsType;
-	
 	private static TextField textFieldAircraftCabinConfiguration;
-	
 	private static TextField textFieldAircraftFuselageFile;
 	private static TextField textFieldAircraftFuselageX;
 	private static TextField textFieldAircraftFuselageY;
 	private static TextField textFieldAircraftFuselageZ;
-	
 	private static TextField textFieldAircraftWingFile;
 	private static TextField textFieldAircraftWingX;
 	private static TextField textFieldAircraftWingY;
 	private static TextField textFieldAircraftWingZ;
 	private static TextField textFieldAircraftWingRiggingAngle;
-	
 	private static TextField textFieldAircraftHorizontalTailFile;
 	private static TextField textFieldAircraftHorizontalTailX;
 	private static TextField textFieldAircraftHorizontalTailY;
 	private static TextField textFieldAircraftHorizontalTailZ;
 	private static TextField textFieldAircraftHorizontalTailRiggingAngle;
-	
 	private static TextField textFieldAircraftVerticalTailFile;
 	private static TextField textFieldAircraftVerticalTailX;
 	private static TextField textFieldAircraftVerticalTailY;
 	private static TextField textFieldAircraftVerticalTailZ;
 	private static TextField textFieldAircraftVerticalTailRiggingAngle;
-	
 	private static TextField textFieldAircraftCanardFile;
 	private static TextField textFieldAircraftCanardX;
 	private static TextField textFieldAircraftCanardY;
 	private static TextField textFieldAircraftCanardZ;
 	private static TextField textFieldAircraftCanardRiggingAngle;
-	
 	private static List<TextField> textFieldAircraftEngineFileList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEngineXList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEngineYList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEngineZList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEnginePositonList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEngineTiltList = new ArrayList<>();
-	
 	private static List<TextField> textFieldAircraftNacelleFileList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacelleXList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacelleYList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacelleZList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacellePositonList = new ArrayList<>();
-	
 	private static TextField textFieldAircraftLandingGearsFile;
 	private static TextField textFieldAircraftLandingGearsX;
 	private static TextField textFieldAircraftLandingGearsY;
 	private static TextField textFieldAircraftLandingGearsZ;
 	private static TextField textFieldAircraftLandingGearsPosition;
-	
 	private static TextField textFieldAircraftSystemsFile;
 	private static TextField textFieldAircraftSystemsX;
 	private static TextField textFieldAircraftSystemsY;
 	private static TextField textFieldAircraftSystemsZ;
-	
 	private static Pane aircraftFrontViewPane;
 	private static Pane aircraftSideViewPane;
 	private static Pane aircraftTopViewPane;
-	
 	private static SplitPane aircraftViewsAndDataLogSplitPane;
+	//...........................................................................................
+	// FUSELAGE TAB (INPUT):
+	private static TextArea textAreaFuselageConsoleOutput;
+	private static CheckBox fuselagePressurizedCheckBox;
+	private static TextField textFieldFuselageDeckNumber;
+	private static TextField textFieldFuselageLength;
+	private static TextField textFieldFuselageSurfaceRoughness;
+	private static TextField textFieldFuselageNoseLengthRatio;
+	private static TextField textFieldFuselageNoseFinenessRatio;
+	private static TextField textFieldFuselageNoseTipOffset;
+	private static TextField textFieldFuselageNoseDxCap;
+	private static ChoiceBox<String> choiceBoxFuselageNoseWindshieldType;
+	private static TextField textFieldFuselageNoseWindshieldWidth;
+	private static TextField textFieldFuselageNoseWindshieldHeight;
+	private static TextField textFieldFuselageNoseMidSectionHeight;
+	private static TextField textFieldFuselageNoseMidSectionRhoUpper;
+	private static TextField textFieldFuselageNoseMidSectionRhoLower;
+	private static TextField textFieldFuselageCylinderLengthRatio;
+	private static TextField textFieldFuselageCylinderSectionWidth;
+	private static TextField textFieldFuselageCylinderSectionHeight;
+	private static TextField textFieldFuselageCylinderHeightFromGround;
+	private static TextField textFieldFuselageCylinderSectionHeightRatio;
+	private static TextField textFieldFuselageCylinderSectionRhoUpper;
+	private static TextField textFieldFuselageCylinderSectionRhoLower;
+	private static TextField textFieldFuselageTailTipOffset;
+	private static TextField textFieldFuselageTailDxCap;
+	private static TextField textFieldFuselageTailMidSectionHeight;
+	private static TextField textFieldFuselageTailMidRhoUpper;
+	private static TextField textFieldFuselageTailMidRhoLower;
+	private static List<TextField> textFieldSpoilersXInboradList = new ArrayList<>();
+	private static List<TextField> textFieldSpoilersXOutboradList = new ArrayList<>();
+	private static List<TextField> textFieldSpoilersYInboradList = new ArrayList<>();
+	private static List<TextField> textFieldSpoilersYOutboradList = new ArrayList<>();
+	private static List<TextField> textFieldSpoilersMinDeflectionList = new ArrayList<>();
+	private static List<TextField> textFieldSpoilersMaxDeflectionList = new ArrayList<>();
+	private static Pane fuselageFrontViewPane;
+	private static Pane fuselageSideViewPane;
+	private static Pane fuselageTopViewPane;
+	private static SplitPane fuselageViewsAndDataLogSplitPane;
 	
-	private static String inputDirectoryPath;
-	private static String outputDirectoryPath;
-	private static String databaseDirectoryPath;
-	private static String inputFileAbsolutePath;
-	private static Object choiseBoxSelectionDefaultAircraft;
-	
-	private static Aircraft theAircraft;
-	private static Button loadButtonFromFile;
-	private static Button loadButtonDefaultAircraft;
-	private static ChoiceBox<String> defaultAircraftChoiseBox;
-	
-	private static StatusBar statusBar;
-	private static Button statusLight;
-	private static State status;
-	
+	//-------------------------------------------------------------------------------------------
+	// METHODS
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		
@@ -268,7 +303,9 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
+	
+	//-------------------------------------------------------------------------------------------
+	// GETTERS & SETTERS
 	public static TextField getTextFieldAircraftInputFile() {
 		return textFieldAircraftInputFile;
 	}
@@ -821,46 +858,325 @@ public class Main extends Application {
 		Main.choiseBoxSelectionDefaultAircraft = choiseBoxSelectionDefaultAircraft;
 	}
 
-	/**
-	 * @return the choiceBoxAircraftType
-	 */
 	public static ChoiceBox<String> getChoiceBoxAircraftType() {
 		return choiceBoxAircraftType;
 	}
 
-	/**
-	 * @param choiceBoxAircraftType the choiceBoxAircraftType to set
-	 */
 	public static void setChoiceBoxAircraftType(ChoiceBox<String> choiceBoxAircraftType) {
 		Main.choiceBoxAircraftType = choiceBoxAircraftType;
 	}
 
-	/**
-	 * @return the choiceBoxRegulationsType
-	 */
 	public static ChoiceBox<String> getChoiceBoxRegulationsType() {
 		return choiceBoxRegulationsType;
 	}
 
-	/**
-	 * @param choiceBoxRegulationsType the choiceBoxRegulationsType to set
-	 */
 	public static void setChoiceBoxRegulationsType(ChoiceBox<String> choiceBoxRegulationsType) {
 		Main.choiceBoxRegulationsType = choiceBoxRegulationsType;
 	}
 
-	/**
-	 * @return the aircraftViewsAndDataLogSplitPane
-	 */
 	public static SplitPane getAircraftViewsAndDataLogSplitPane() {
 		return aircraftViewsAndDataLogSplitPane;
 	}
 
-	/**
-	 * @param aircraftViewsAndDataLogSplitPane the aircraftViewsAndDataLogSplitPane to set
-	 */
 	public static void setAircraftViewsAndDataLogSplitPane(SplitPane aircraftViewsAndDataLogSplitPane) {
 		Main.aircraftViewsAndDataLogSplitPane = aircraftViewsAndDataLogSplitPane;
+	}
+
+	public static CheckBox getFuselagePressurizedCheckBox() {
+		return fuselagePressurizedCheckBox;
+	}
+
+	public static void setFuselagePressurizedCheckBox(CheckBox fuselagePressurizedCheckBox) {
+		Main.fuselagePressurizedCheckBox = fuselagePressurizedCheckBox;
+	}
+
+	public static TextField getTextFieldFuselageDeckNumber() {
+		return textFieldFuselageDeckNumber;
+	}
+
+	public static void setTextFieldFuselageDeckNumber(TextField textFieldFuselageDeckNumber) {
+		Main.textFieldFuselageDeckNumber = textFieldFuselageDeckNumber;
+	}
+
+	public static TextField getTextFieldFuselageLength() {
+		return textFieldFuselageLength;
+	}
+
+	public static void setTextFieldFuselageLength(TextField textFieldFuselageLength) {
+		Main.textFieldFuselageLength = textFieldFuselageLength;
+	}
+
+	public static TextField getTextFieldFuselageSurfaceRoughness() {
+		return textFieldFuselageSurfaceRoughness;
+	}
+
+	public static void setTextFieldFuselageSurfaceRoughness(TextField textFieldSurfaceRoughness) {
+		Main.textFieldFuselageSurfaceRoughness = textFieldSurfaceRoughness;
+	}
+
+	public static TextField getTextFieldFuselageNoseLengthRatio() {
+		return textFieldFuselageNoseLengthRatio;
+	}
+
+	public static void setTextFieldFuselageNoseLengthRatio(TextField textFieldFuselageNoseLengthRatio) {
+		Main.textFieldFuselageNoseLengthRatio = textFieldFuselageNoseLengthRatio;
+	}
+
+	public static TextField getTextFieldFuselageNoseFinenessRatio() {
+		return textFieldFuselageNoseFinenessRatio;
+	}
+
+	public static void setTextFieldFuselageNoseFinenessRatio(TextField textFieldFuselageNoseFinenessRatio) {
+		Main.textFieldFuselageNoseFinenessRatio = textFieldFuselageNoseFinenessRatio;
+	}
+
+	public static TextField getTextFieldFuselageNoseTipOffset() {
+		return textFieldFuselageNoseTipOffset;
+	}
+
+	public static void setTextFieldFuselageNoseTipOffset(TextField textFieldFuselageNoseTipOffset) {
+		Main.textFieldFuselageNoseTipOffset = textFieldFuselageNoseTipOffset;
+	}
+
+	public static TextField getTextFieldFuselageNoseDxCap() {
+		return textFieldFuselageNoseDxCap;
+	}
+
+	public static void setTextFieldFuselageNoseDxCap(TextField textFieldFuselageNoseDxCap) {
+		Main.textFieldFuselageNoseDxCap = textFieldFuselageNoseDxCap;
+	}
+
+	public static ChoiceBox<String> getChoiceBoxFuselageNoseWindshieldType() {
+		return choiceBoxFuselageNoseWindshieldType;
+	}
+
+	public static void setChoiceBoxFuselageNoseWindshieldType(ChoiceBox<String> choiceBoxFuselageNoseWindshieldType) {
+		Main.choiceBoxFuselageNoseWindshieldType = choiceBoxFuselageNoseWindshieldType;
+	}
+
+	public static TextField getTextFieldFuselageNoseWindshieldWidth() {
+		return textFieldFuselageNoseWindshieldWidth;
+	}
+
+	public static void setTextFieldFuselageNoseWindshieldWidth(TextField textFieldFuselageNoseWindshieldWidth) {
+		Main.textFieldFuselageNoseWindshieldWidth = textFieldFuselageNoseWindshieldWidth;
+	}
+
+	public static TextField getTextFieldFuselageNoseWindshieldHeight() {
+		return textFieldFuselageNoseWindshieldHeight;
+	}
+
+	public static void setTextFieldFuselageNoseWindshieldHeight(TextField textFieldFuselageNoseWindshieldHeight) {
+		Main.textFieldFuselageNoseWindshieldHeight = textFieldFuselageNoseWindshieldHeight;
+	}
+
+	public static TextField getTextFieldFuselageNoseMidSectionHeight() {
+		return textFieldFuselageNoseMidSectionHeight;
+	}
+
+	public static void setTextFieldFuselageNoseMidSectionHeight(TextField textFieldFuselageNoseMidSectionHeight) {
+		Main.textFieldFuselageNoseMidSectionHeight = textFieldFuselageNoseMidSectionHeight;
+	}
+
+	public static TextField getTextFieldFuselageNoseMidSectionRhoUpper() {
+		return textFieldFuselageNoseMidSectionRhoUpper;
+	}
+
+	public static void setTextFieldFuselageNoseMidSectionRhoUpper(TextField textFieldFuselageNoseMidSectionRhoUpper) {
+		Main.textFieldFuselageNoseMidSectionRhoUpper = textFieldFuselageNoseMidSectionRhoUpper;
+	}
+
+	public static TextField getTextFieldFuselageNoseMidSectionRhoLower() {
+		return textFieldFuselageNoseMidSectionRhoLower;
+	}
+
+	public static void setTextFieldFuselageNoseMidSectionRhoLower(TextField textFieldFuselageNoseMidSectionRhoLower) {
+		Main.textFieldFuselageNoseMidSectionRhoLower = textFieldFuselageNoseMidSectionRhoLower;
+	}
+
+	public static TextField getTextFieldFuselageCylinderLengthRatio() {
+		return textFieldFuselageCylinderLengthRatio;
+	}
+
+	public static void setTextFieldFuselageCylinderLengthRatio(TextField textFieldFuselageCylinderLengthRatio) {
+		Main.textFieldFuselageCylinderLengthRatio = textFieldFuselageCylinderLengthRatio;
+	}
+
+	public static TextField getTextFieldFuselageCylinderSectionWidth() {
+		return textFieldFuselageCylinderSectionWidth;
+	}
+
+	public static void setTextFieldFuselageCylinderSectionWidth(TextField textFieldFuselageCylinderSectionWidth) {
+		Main.textFieldFuselageCylinderSectionWidth = textFieldFuselageCylinderSectionWidth;
+	}
+
+	public static TextField getTextFieldFuselageCylinderSectionHeight() {
+		return textFieldFuselageCylinderSectionHeight;
+	}
+
+	public static void setTextFieldFuselageCylinderSectionHeight(TextField textFieldFuselageCylinderSectionHeight) {
+		Main.textFieldFuselageCylinderSectionHeight = textFieldFuselageCylinderSectionHeight;
+	}
+
+	public static TextField getTextFieldFuselageCylinderHeightFromGround() {
+		return textFieldFuselageCylinderHeightFromGround;
+	}
+
+	public static void setTextFieldFuselageCylinderHeightFromGround(TextField textFieldFuselageCylinderHeightFromGround) {
+		Main.textFieldFuselageCylinderHeightFromGround = textFieldFuselageCylinderHeightFromGround;
+	}
+
+	public static TextField getTextFieldFuselageCylinderSectionHeightRatio() {
+		return textFieldFuselageCylinderSectionHeightRatio;
+	}
+
+	public static void setTextFieldFuselageCylinderSectionHeightRatio(
+			TextField textFieldFuselageCylinderSectionHeightRatio) {
+		Main.textFieldFuselageCylinderSectionHeightRatio = textFieldFuselageCylinderSectionHeightRatio;
+	}
+
+	public static TextField getTextFieldFuselageCylinderSectionRhoUpper() {
+		return textFieldFuselageCylinderSectionRhoUpper;
+	}
+
+	public static void setTextFieldFuselageCylinderSectionRhoUpper(TextField textFieldFuselageCylinderSectionRhoUpper) {
+		Main.textFieldFuselageCylinderSectionRhoUpper = textFieldFuselageCylinderSectionRhoUpper;
+	}
+
+	public static TextField getTextFieldFuselageCylinderSectionRhoLower() {
+		return textFieldFuselageCylinderSectionRhoLower;
+	}
+
+	public static void setTextFieldFuselageCylinderSectionRhoLower(TextField textFieldFuselageCylinderSectionRhoLower) {
+		Main.textFieldFuselageCylinderSectionRhoLower = textFieldFuselageCylinderSectionRhoLower;
+	}
+
+	public static TextField getTextFieldFuselageTailTipOffset() {
+		return textFieldFuselageTailTipOffset;
+	}
+
+	public static void setTextFieldFuselageTailTipOffset(TextField textFieldFuselageTailTipOffset) {
+		Main.textFieldFuselageTailTipOffset = textFieldFuselageTailTipOffset;
+	}
+
+	public static TextField getTextFieldFuselageTailDxCap() {
+		return textFieldFuselageTailDxCap;
+	}
+
+	public static void setTextFieldFuselageTailDxCap(TextField textFieldFuselageTailDxCap) {
+		Main.textFieldFuselageTailDxCap = textFieldFuselageTailDxCap;
+	}
+
+	public static TextField getTextFieldFuselageTailMidSectionHeight() {
+		return textFieldFuselageTailMidSectionHeight;
+	}
+
+	public static void setTextFieldFuselageTailMidSectionHeight(TextField textFieldFuselageTailMidSectionHeight) {
+		Main.textFieldFuselageTailMidSectionHeight = textFieldFuselageTailMidSectionHeight;
+	}
+
+	public static TextField getTextFieldFuselageTailMidRhoUpper() {
+		return textFieldFuselageTailMidRhoUpper;
+	}
+
+	public static void setTextFieldFuselageTailMidRhoUpper(TextField textFieldFuselageTailMidRhoUpper) {
+		Main.textFieldFuselageTailMidRhoUpper = textFieldFuselageTailMidRhoUpper;
+	}
+
+	public static TextField getTextFieldFuselageTailMidRhoLower() {
+		return textFieldFuselageTailMidRhoLower;
+	}
+
+	public static void setTextFieldFuselageTailMidRhoLower(TextField textFieldFuselageTailMidRhoLower) {
+		Main.textFieldFuselageTailMidRhoLower = textFieldFuselageTailMidRhoLower;
+	}
+
+	public static List<TextField> getTextFieldSpoilersXInboradList() {
+		return textFieldSpoilersXInboradList;
+	}
+
+	public static void setTextFieldSpoilersXInboradList(List<TextField> textFieldSpoilersXInboradList) {
+		Main.textFieldSpoilersXInboradList = textFieldSpoilersXInboradList;
+	}
+
+	public static List<TextField> getTextFieldSpoilersXOutboradList() {
+		return textFieldSpoilersXOutboradList;
+	}
+
+	public static void setTextFieldSpoilersXOutboradList(List<TextField> textFieldSpoilersXOutboradList) {
+		Main.textFieldSpoilersXOutboradList = textFieldSpoilersXOutboradList;
+	}
+
+	public static List<TextField> getTextFieldSpoilersYInboradList() {
+		return textFieldSpoilersYInboradList;
+	}
+
+	public static void setTextFieldSpoilersYInboradList(List<TextField> textFieldSpoilersYInboradList) {
+		Main.textFieldSpoilersYInboradList = textFieldSpoilersYInboradList;
+	}
+
+	public static List<TextField> getTextFieldSpoilersYOutboradList() {
+		return textFieldSpoilersYOutboradList;
+	}
+
+	public static void setTextFieldSpoilersYOutboradList(List<TextField> textFieldSpoilersYOutboradList) {
+		Main.textFieldSpoilersYOutboradList = textFieldSpoilersYOutboradList;
+	}
+
+	public static List<TextField> getTextFieldSpoilersMinDeflectionList() {
+		return textFieldSpoilersMinDeflectionList;
+	}
+
+	public static void setTextFieldSpoilersMinDeflectionList(List<TextField> textFieldSpoilersMinDeflectionList) {
+		Main.textFieldSpoilersMinDeflectionList = textFieldSpoilersMinDeflectionList;
+	}
+
+	public static List<TextField> getTextFieldSpoilersMaxDeflectionList() {
+		return textFieldSpoilersMaxDeflectionList;
+	}
+
+	public static void setTextFieldSpoilersMaxDeflectionList(List<TextField> textFieldSpoilersMaxDeflectionList) {
+		Main.textFieldSpoilersMaxDeflectionList = textFieldSpoilersMaxDeflectionList;
+	}
+
+	public static Pane getFuselageFrontViewPane() {
+		return fuselageFrontViewPane;
+	}
+
+	public static void setFuselageFrontViewPane(Pane fuselageFrontViewPane) {
+		Main.fuselageFrontViewPane = fuselageFrontViewPane;
+	}
+
+	public static Pane getFuselageSideViewPane() {
+		return fuselageSideViewPane;
+	}
+
+	public static void setFuselageSideViewPane(Pane fuselageSideViewPane) {
+		Main.fuselageSideViewPane = fuselageSideViewPane;
+	}
+
+	public static Pane getFuselageTopViewPane() {
+		return fuselageTopViewPane;
+	}
+
+	public static void setFuselageTopViewPane(Pane fuselageTopViewPane) {
+		Main.fuselageTopViewPane = fuselageTopViewPane;
+	}
+
+	public static SplitPane getFuselageViewsAndDataLogSplitPane() {
+		return fuselageViewsAndDataLogSplitPane;
+	}
+
+	public static void setFuselageViewsAndDataLogSplitPane(SplitPane fuselageViewsAndDataLogSplitPane) {
+		Main.fuselageViewsAndDataLogSplitPane = fuselageViewsAndDataLogSplitPane;
+	}
+
+	public static TextArea getTextAreaFuselageConsoleOutput() {
+		return textAreaFuselageConsoleOutput;
+	}
+
+	public static void setTextAreaFuselageConsoleOutput(TextArea textAreaFuselageConsoleOutput) {
+		Main.textAreaFuselageConsoleOutput = textAreaFuselageConsoleOutput;
 	}
 
 }

@@ -530,7 +530,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Separator layoutX="-4.0" layoutY="298.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Separator layoutX="-4.0" layoutY="240.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Label layoutX="5.0" layoutY="7.0" text="Pressurized">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
@@ -545,178 +545,172 @@
                                                          </font>
                                                       </Label>
                                                       <TextField id="textFieldFuselageLength" layoutX="4.0" layoutY="146.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="5.0" layoutY="181.0" prefHeight="21.0" prefWidth="128.0" text="Reference mass:">
+                                                      <Label layoutX="7.0" layoutY="179.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageReferenceMass" layoutX="4.0" layoutY="202.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="7.0" layoutY="237.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="200.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="5.0" layoutY="248.0" prefHeight="21.0" prefWidth="156.0" text="NOSE TRUNK DATA" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="258.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="5.0" layoutY="306.0" prefHeight="21.0" prefWidth="156.0" text="NOSE TRUNK DATA" textFill="#0400ff">
+                                                      <Separator layoutX="-28.0" layoutY="276.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="280.0" text="Length ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Separator layoutX="-28.0" layoutY="334.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <Label layoutX="6.0" layoutY="338.0" text="Length ratio:">
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" layoutX="5.0" layoutY="303.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="6.0" layoutY="334.0" prefHeight="21.0" prefWidth="111.0" text="Fineness ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseLengthRatio" layoutX="5.0" layoutY="361.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="6.0" layoutY="392.0" prefHeight="21.0" prefWidth="111.0" text="Fineness ratio:">
+                                                      <TextField id="textFieldFuselageNoseFinenessRatio" layoutX="5.0" layoutY="354.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="6.0" layoutY="389.0" prefHeight="21.0" prefWidth="389.0" text="Tip z offset from origin (&lt;0 under the reference line)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseFinenessRatio" layoutX="5.0" layoutY="412.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="6.0" layoutY="447.0" prefHeight="21.0" prefWidth="389.0" text="Tip z offset from origin (&lt;0 under the reference line)">
+                                                      <TextField id="textFieldFuselageNoseTipOffset" layoutX="5.0" layoutY="410.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="8.0" layoutY="445.0" prefHeight="21.0" prefWidth="163.0" text="dx of the nose cap (%)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseTipOffset" layoutX="5.0" layoutY="468.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="8.0" layoutY="503.0" prefHeight="21.0" prefWidth="163.0" text="dx of the nose cap (%)">
+                                                      <TextField id="textFieldFuselageNoseDxCap" layoutX="7.0" layoutY="466.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="7.0" layoutY="504.0" text="Windshiled type:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseDxCap" layoutX="7.0" layoutY="524.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="7.0" layoutY="562.0" text="Windshiled type:">
+                                                      <Label layoutX="7.0" layoutY="558.0" prefHeight="21.0" prefWidth="146.0" text="Windshield width:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label layoutX="7.0" layoutY="616.0" prefHeight="21.0" prefWidth="146.0" text="Windshield width:">
+                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" layoutX="6.0" layoutY="578.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="7.0" layoutY="613.0" prefHeight="21.0" prefWidth="164.0" text="Windshield height:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" layoutX="6.0" layoutY="636.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="7.0" layoutY="671.0" prefHeight="21.0" prefWidth="164.0" text="Windshield height:">
+                                                      <TextField id="textFieldFuselageNoseWindshieldHeight" layoutX="6.0" layoutY="634.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="9.0" layoutY="669.0" prefHeight="21.0" prefWidth="366.0" text="Mid section height to total section height ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" layoutX="6.0" layoutY="692.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="9.0" layoutY="727.0" prefHeight="21.0" prefWidth="366.0" text="Mid section height to total section height ratio:">
+                                                      <TextField id="textFieldFuselageNoseMidSectionHeight" layoutX="8.0" layoutY="690.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="8.0" layoutY="729.0" prefHeight="21.0" prefWidth="209.0" text="Mid section rho upper curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseMidSectionHeight" layoutX="8.0" layoutY="748.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="8.0" layoutY="787.0" prefHeight="21.0" prefWidth="209.0" text="Mid section rho upper curve:">
+                                                      <TextField id="textFieldFuselageNoseMidSectionRhoUpper" layoutX="7.0" layoutY="750.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="10.0" layoutY="786.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho lower curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseMidSectionRhoUpper" layoutX="7.0" layoutY="808.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="10.0" layoutY="843.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho lower curve:">
+                                                      <TextField id="textFieldFuselageNoseMidSectionRhoLower" layoutX="9.0" layoutY="807.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <ChoiceBox id="choiceBoxFuselageNoseWindshieldType" fx:id="windshieldTypeChoiceBox" layoutX="7.0" layoutY="525.0" prefHeight="31.0" prefWidth="381.0" />
+                                                      <Separator layoutX="-1.0" layoutY="844.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="8.0" layoutY="852.0" prefHeight="21.0" prefWidth="241.0" text="CYLINDRICAL TRUNK DATA" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseMidSectionRhoLower" layoutX="9.0" layoutY="864.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <ChoiceBox id="textFieldFuselageNoseWindshieldType" layoutX="7.0" layoutY="583.0" prefHeight="31.0" prefWidth="381.0" />
-                                                      <Separator layoutX="-1.0" layoutY="901.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="8.0" layoutY="909.0" prefHeight="21.0" prefWidth="241.0" text="CYLINDRICAL TRUNK DATA" textFill="#0400ff">
+                                                      <Separator layoutX="-25.0" layoutY="880.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="9.0" layoutY="884.0" text="Length ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Separator layoutX="-25.0" layoutY="937.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <Label layoutX="9.0" layoutY="941.0" text="Length ratio:">
+                                                      <TextField id="textFieldFuselageCylinderLengthRatio" layoutX="8.0" layoutY="907.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="9.0" layoutY="938.0" prefHeight="21.0" prefWidth="111.0" text="Section width:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderLengthRatio" layoutX="8.0" layoutY="964.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="9.0" layoutY="995.0" prefHeight="21.0" prefWidth="111.0" text="Section width:">
+                                                      <TextField id="textFieldFuselageCylinderSectionWidth" layoutX="8.0" layoutY="958.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="9.0" layoutY="993.0" prefHeight="21.0" prefWidth="389.0" text="Section height:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionWidth" layoutX="8.0" layoutY="1015.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="9.0" layoutY="1050.0" prefHeight="21.0" prefWidth="389.0" text="Section height:">
+                                                      <TextField id="textFieldFuselageCylinderSectionHeight" layoutX="8.0" layoutY="1014.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="11.0" layoutY="1049.0" prefHeight="21.0" prefWidth="163.0" text="Height from ground:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionHeight" layoutX="8.0" layoutY="1071.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="11.0" layoutY="1106.0" prefHeight="21.0" prefWidth="163.0" text="Height from ground:">
+                                                      <TextField id="textFieldFuselageCylinderHeightFromGround" layoutX="10.0" layoutY="1070.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="11.0" layoutY="1108.0" prefHeight="21.0" prefWidth="366.0" text="Section height to total section height ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderHeightFromGround" layoutX="10.0" layoutY="1127.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="11.0" layoutY="1165.0" prefHeight="21.0" prefWidth="366.0" text="Section height to total section height ratio:">
+                                                      <TextField id="textFieldFuselageCylinderSectionHeightRatio" layoutX="10.0" layoutY="1129.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="10.0" layoutY="1168.0" prefHeight="21.0" prefWidth="209.0" text="Section rho upper curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionHeight" layoutX="10.0" layoutY="1186.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="10.0" layoutY="1225.0" prefHeight="21.0" prefWidth="209.0" text="Section rho upper curve:">
+                                                      <TextField id="textFieldFuselageCylinderSectionRhoUpper" layoutX="9.0" layoutY="1189.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="12.0" layoutY="1224.0" prefHeight="21.0" prefWidth="226.0" text="Section rho lower curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionRhoUpper" layoutX="9.0" layoutY="1246.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="12.0" layoutY="1281.0" prefHeight="21.0" prefWidth="226.0" text="Section rho lower curve:">
+                                                      <TextField id="textFieldFuselageCylinderSectionRhoLower" layoutX="11.0" layoutY="1245.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Separator layoutX="3.0" layoutY="1278.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="12.0" layoutY="1286.0" prefHeight="21.0" prefWidth="241.0" text="TAIL TRUNK DATA" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionRhoLower" layoutX="11.0" layoutY="1302.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Separator layoutX="3.0" layoutY="1340.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="12.0" layoutY="1348.0" prefHeight="21.0" prefWidth="241.0" text="TAIL TRUNK DATA" textFill="#0400ff">
+                                                      <Separator layoutX="-21.0" layoutY="1314.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="13.0" layoutY="1318.0" text="Tip z offset from origin (&lt;0 under the reference line)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Separator layoutX="-21.0" layoutY="1376.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <Label layoutX="13.0" layoutY="1380.0" text="Tip z offset from origin (&lt;0 under the reference line)">
+                                                      <TextField id="textFieldFuselageTailTipOffset" layoutX="12.0" layoutY="1341.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="13.0" layoutY="1372.0" prefHeight="21.0" prefWidth="173.0" text="dx of the nose cap (%)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailTipOffset" layoutX="12.0" layoutY="1403.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="13.0" layoutY="1434.0" prefHeight="21.0" prefWidth="173.0" text="dx of the nose cap (%)">
+                                                      <TextField id="textFieldFuselageTailDxCap" layoutX="12.0" layoutY="1392.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="13.0" layoutY="1427.0" prefHeight="21.0" prefWidth="389.0" text="Mid section height to total section height ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailDxCap" layoutX="12.0" layoutY="1454.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="13.0" layoutY="1489.0" prefHeight="21.0" prefWidth="389.0" text="Mid section height to total section height ratio:">
+                                                      <TextField id="textFieldFuselageTailMidSectionHeight" layoutX="12.0" layoutY="1448.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="15.0" layoutY="1483.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho upper curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailMidSectionHeight" layoutX="12.0" layoutY="1510.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="15.0" layoutY="1545.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho upper curve:">
+                                                      <TextField id="textFieldFuselageTailMidRhoUpper" layoutX="14.0" layoutY="1504.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Label layoutX="15.0" layoutY="1542.0" prefHeight="21.0" prefWidth="366.0" text="Mid section rho lower curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailMidRhoUpper" layoutX="14.0" layoutY="1566.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Label layoutX="15.0" layoutY="1604.0" prefHeight="21.0" prefWidth="366.0" text="Mid section rho lower curve:">
+                                                      <TextField id="textFieldFuselageTailMidRhoLower" layoutX="14.0" layoutY="1563.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <Separator layoutX="-1.0" layoutY="1603.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="8.0" layoutY="1608.0" prefHeight="21.0" prefWidth="241.0" text="SPOILERS DATA (eventually)" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailMidRhoLower" layoutX="14.0" layoutY="1625.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <Separator layoutX="-1.0" layoutY="1665.0" prefHeight="0.0" prefWidth="1312.0" />
-                                                      <Label layoutX="8.0" layoutY="1673.0" prefHeight="21.0" prefWidth="241.0" text="SPOILERS DATA (eventually)" textFill="#0400ff">
-                                                         <font>
-                                                            <Font name="System Bold" size="15.0" />
-                                                         </font>
-                                                      </Label>
-                                                      <Separator layoutX="-25.0" layoutY="1701.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <GridPane layoutX="4.0" layoutY="1704.0" prefHeight="212.0" prefWidth="383.0">
+                                                      <Separator layoutX="-25.0" layoutY="1629.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <GridPane layoutX="4.0" layoutY="1637.0" prefHeight="212.0" prefWidth="383.0">
                                                          <columnConstraints>
                                                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="120.0" />
                                                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="67.0" />
@@ -804,21 +798,21 @@
                                                    <items>
                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
                                                          <children>
-                                                            <TabPane prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TabPane onMouseClicked="#zoomViewsFuselage" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <tabs>
                                                                   <Tab id="FuselageTopView" text="Top view">
                                                                      <content>
-                                                                        <Pane id="FuselageTopViewPane" />
+                                                                        <Pane id="fuselageTopViewPane" />
                                                                      </content>
                                                                   </Tab>
                                                                   <Tab id="FuselageSideView" text="Side view">
                                                                      <content>
-                                                                        <Pane id="FuselageSideViewPane" />
+                                                                        <Pane id="fuselageSideViewPane" />
                                                                      </content>
                                                                   </Tab>
-                                                                  <Tab id="FuselageFrontView" text="Front view">
+                                                                  <Tab id="fuselageFrontView" text="Front view">
                                                                      <content>
-                                                                        <Pane id="FuselageFrontViewPane" />
+                                                                        <Pane id="fuselageFrontViewPane" />
                                                                      </content>
                                                                   </Tab>
                                                                </tabs>
@@ -827,7 +821,7 @@
                                                       </AnchorPane>
                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                          <children>
-                                                            <TabPane prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TabPane onMouseClicked="#zoomDataLogAndMessagesFuselage" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <tabs>
                                                                   <Tab text="Data log">
                                                                      <content>

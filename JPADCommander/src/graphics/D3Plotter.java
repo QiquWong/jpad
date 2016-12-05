@@ -998,7 +998,7 @@ if (false) {
 
 	public void saveSVG(String outputFilePath) {
 
-		System.out.println("D3Plotter :: saveSVG");
+//		System.out.println("D3Plotter :: saveSVG");
 
 		// get the svg node
 

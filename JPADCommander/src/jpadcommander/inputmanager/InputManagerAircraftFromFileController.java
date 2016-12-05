@@ -20,7 +20,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
+import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.WindshieldType;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import graphics.D3Plotter;
@@ -30,6 +33,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -82,7 +86,8 @@ public class InputManagerAircraftFromFileController {
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-
+		MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, Main.getDatabaseDirectoryPath());
+		
 		String dirLiftingSurfaces = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces";
 		String dirFuselages = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "fuselages";
 		String dirEngines = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "engines";
@@ -116,10 +121,21 @@ public class InputManagerAircraftFromFileController {
 				highLiftDatabaseReader)
 				);
 
+		// COMPONENTS LOG TO INTERFACE
 		logAircraftFromFileToInterface();
+		logFuselageFromFileToInterface();
+		
+		// COMPONENTS 3 VIEW CREATION
+		//............................
+		// aircraft
 		createAircraftTopView();
 		createAircraftSideView();
 		createAircraftFrontView();
+		//............................
+		// aircraft
+		createFuselageTopView();
+		createFuselageSideView();
+		createFuselageFrontView();
 		
 		// write again
 		System.setOut(originalOut);
@@ -315,7 +331,6 @@ public class InputManagerAircraftFromFileController {
 		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 			
-		// TODO : SEE HOW TO FIT THE IMAGE TO PARENT
 		int WIDTH = 700;
 		int HEIGHT = 600;
 		
@@ -398,6 +413,10 @@ public class InputManagerAircraftFromFileController {
 			String outputFilePathTopView = Main.getOutputDirectoryPath() 
 					+ File.separator 
 					+ "AircraftTopView.svg";
+			File outputFile = new File(outputFilePathTopView);
+			if(outputFile.exists())
+				outputFile.delete();
+				
 			d3Plotter.saveSVG(outputFilePathTopView);
 
 		}; // end-of-Runnable
@@ -653,6 +672,9 @@ public class InputManagerAircraftFromFileController {
 			String outputFilePathSideView = Main.getOutputDirectoryPath() 
 					+ File.separator 
 					+ "AircraftSideView.svg";
+			File outputFile = new File(outputFilePathSideView);
+			if(outputFile.exists())
+				outputFile.delete();
 			d3Plotter.saveSVG(outputFilePathSideView);
 
 		}; // end-of-Runnable
@@ -992,6 +1014,9 @@ public class InputManagerAircraftFromFileController {
 			String outputFilePathFrontView = Main.getOutputDirectoryPath() 
 					+ File.separator 
 					+ "AircraftFrontView.svg";
+			File outputFile = new File(outputFilePathFrontView);
+			if(outputFile.exists())
+				outputFile.delete();
 			d3Plotter.saveSVG(outputFilePathFrontView);
 
 
@@ -1004,6 +1029,327 @@ public class InputManagerAircraftFromFileController {
 		//create the scene
 		Scene sceneFrontView = new Scene(browserFrontView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
 		Main.getAircraftFrontViewPane().getChildren().add(sceneFrontView.getRoot());
+	}
+	
+	public static void createFuselageTopView() {
+	
+		//--------------------------------------------------
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
+		// left curve, upperview
+		List<Amount<Length>> vX1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountX();
+		int nX1Left = vX1Left.size();
+		List<Amount<Length>> vY1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY();
+
+		Double[][] dataOutlineXYLeftCurve = new Double[nX1Left][2];
+		IntStream.range(0, nX1Left)
+		.forEach(i -> {
+			dataOutlineXYLeftCurve[i][1] = vX1Left.get(i).doubleValue(SI.METRE);
+			dataOutlineXYLeftCurve[i][0] = vY1Left.get(i).doubleValue(SI.METRE);
+		});
+
+		// right curve, upperview
+		List<Amount<Length>> vX2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX();
+		int nX2Right = vX2Right.size();
+		List<Amount<Length>> vY2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY();
+
+		Double[][] dataOutlineXYRightCurve = new Double[nX2Right][2];
+		IntStream.range(0, nX2Right)
+		.forEach(i -> {
+			dataOutlineXYRightCurve[i][1] = vX2Right.get(i).doubleValue(SI.METRE);
+			dataOutlineXYRightCurve[i][0] = vY2Right.get(i).doubleValue(SI.METRE);
+		});
+
+		List<Double[][]> listDataArrayTopView = new ArrayList<Double[][]>();
+
+		// fuselage
+		listDataArrayTopView.add(dataOutlineXYLeftCurve);
+		listDataArrayTopView.add(dataOutlineXYRightCurve);
+
+		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double xMinTopView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+			
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
+				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.xRange(xMinTopView, xMaxTopView)
+				.yRange(yMaxTopView, yMinTopView)
+				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
+				.title("Fuselage data representation - Top View")
+				.xLabel("y (m)")
+				.yLabel("x (m)")
+				.showXGrid(true)
+				.showYGrid(true)
+				.symbolTypes(
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE
+						)
+				.symbolSizes(2,2)
+				.showSymbols(false,false) // NOTE: overloaded function
+				.symbolStyles(
+						"fill:blue; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2"
+						)
+				.lineStyles(
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2"
+						)
+				.plotAreas(true,true)
+				.areaStyles("fill:white;","fill:white;")
+				.areaOpacities(1.0,1.0)
+				.showLegend(false)
+				.build();
+		
+		D3Plotter d3Plotter = new D3Plotter(
+				optionsTopView,
+				listDataArrayTopView
+				);
+		//define d3 content as post loading hook
+		Runnable postLoadingHook = () -> {
+
+			//--------------------------------------------------
+			// Create the D3 graph
+			//--------------------------------------------------
+			d3Plotter.createD3Content();
+			
+			//--------------------------------------------------
+			// output
+			String outputFilePathTopView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "FuselageTopView.svg";
+			File outputFile = new File(outputFilePathTopView);
+			if(outputFile.exists())
+				outputFile.delete();
+			d3Plotter.saveSVG(outputFilePathTopView);
+
+		}; // end-of-Runnable
+
+		// create the Browser/D3
+		//create browser
+		JavaFxD3Browser browserTopView = d3Plotter.getBrowser(postLoadingHook, false);
+		Scene sceneTopView = new Scene(browserTopView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
+		Main.getFuselageTopViewPane().getChildren().add(sceneTopView.getRoot());
+	}
+
+	public static void createFuselageSideView() {
+		
+		//--------------------------------------------------
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
+		// upper curve, sideview
+		List<Amount<Length>> vX1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
+		int nX1Upper = vX1Upper.size();
+		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+
+		Double[][] dataOutlineXZUpperCurve = new Double[nX1Upper][2];
+		IntStream.range(0, nX1Upper)
+		.forEach(i -> {
+			dataOutlineXZUpperCurve[i][0] = vX1Upper.get(i).doubleValue(SI.METRE);
+			dataOutlineXZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
+		});
+
+		// lower curve, sideview
+		List<Amount<Length>> vX2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
+		int nX2Lower = vX2Lower.size();
+		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+
+		Double[][] dataOutlineXZLowerCurve = new Double[nX2Lower][2];
+		IntStream.range(0, nX2Lower)
+		.forEach(i -> {
+			dataOutlineXZLowerCurve[i][0] = vX2Lower.get(i).doubleValue(SI.METRE);
+			dataOutlineXZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+		});
+		
+		List<Double[][]> listDataArraySideView = new ArrayList<Double[][]>();
+
+		// fuselage
+		listDataArraySideView.add(dataOutlineXZUpperCurve);
+		listDataArraySideView.add(dataOutlineXZLowerCurve);
+		
+		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
+		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		double yMinSideView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
+		
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		D3PlotterOptions optionsSideView = new D3PlotterOptions.D3PlotterOptionsBuilder()
+				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.xRange(xMinSideView, xMaxSideView)
+				.yRange(yMinSideView, yMaxSideView)
+				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
+				.title("Fuselage data representation - Side View")
+				.xLabel("x (m)")
+				.yLabel("z (m)")
+				.showXGrid(true)
+				.showYGrid(true)
+				.symbolTypes(
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE
+						)
+				.symbolSizes(2,2)
+				.showSymbols(false,false) // NOTE: overloaded function
+				.symbolStyles(
+						"fill:blue; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2"
+						)
+				.lineStyles(
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2"
+						)
+				.plotAreas(true,true)
+				.areaStyles("fill:white;","fill:white;")
+				.areaOpacities(1.0,1.0)
+				.showLegend(false)
+				.build();
+		
+		D3Plotter d3Plotter = new D3Plotter(
+				optionsSideView,
+				listDataArraySideView
+				);
+		
+		//define d3 content as post loading hook
+		Runnable postLoadingHook = () -> {
+
+			//--------------------------------------------------
+			// Create the D3 graph
+			//--------------------------------------------------
+			d3Plotter.createD3Content();
+			
+			//--------------------------------------------------
+			// output
+			String outputFilePathSideView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "FuselageSideView.svg";
+			File outputFile = new File(outputFilePathSideView);
+			if(outputFile.exists())
+				outputFile.delete();
+			d3Plotter.saveSVG(outputFilePathSideView);
+
+		}; // end-of-Runnable
+
+		// create the Browser/D3
+		//create browser
+		JavaFxD3Browser browserSideView = d3Plotter.getBrowser(postLoadingHook, false);
+		Scene sceneSideView = new Scene(browserSideView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
+		Main.getFuselageSideViewPane().getChildren().add(sceneSideView.getRoot());		
+		
+	}
+	
+	public static void createFuselageFrontView() {
+		
+		//--------------------------------------------------
+		// get data vectors from fuselage discretization
+		//--------------------------------------------------
+		// section upper curve
+		List<Amount<Length>> vY1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountY();
+		int nY1Upper = vY1Upper.size();
+		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ();
+
+		Double[][] dataSectionYZUpperCurve = new Double[nY1Upper][2];
+		IntStream.range(0, nY1Upper)
+		.forEach(i -> {
+			dataSectionYZUpperCurve[i][0] = vY1Upper.get(i).doubleValue(SI.METRE);
+			dataSectionYZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
+		});
+
+		// section lower curve
+		List<Amount<Length>> vY2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY();
+		int nY2Lower = vY2Lower.size();
+		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ();
+
+		Double[][] dataSectionYZLowerCurve = new Double[nY2Lower][2];
+		IntStream.range(0, nY2Lower)
+		.forEach(i -> {
+			dataSectionYZLowerCurve[i][0] = vY2Lower.get(i).doubleValue(SI.METRE);
+			dataSectionYZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+		});
+		
+		List<Double[][]> listDataArrayFrontView = new ArrayList<Double[][]>();
+
+		// fuselage
+		listDataArrayFrontView.add(dataSectionYZUpperCurve);
+		listDataArrayFrontView.add(dataSectionYZLowerCurve);
+		
+		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
+		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double zMaxFrontView = yMaxFrontView; 
+		double zMinFrontView = yMinFrontView;
+		
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		D3PlotterOptions optionsFrontView = new D3PlotterOptions.D3PlotterOptionsBuilder()
+				.widthGraph(WIDTH).heightGraph(HEIGHT)
+				.xRange(yMinFrontView, yMaxFrontView)
+				.yRange(zMinFrontView, zMaxFrontView)
+				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
+				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
+				.title("Fuselage data representation - Front View")
+				.xLabel("y (m)")
+				.yLabel("z (m)")
+				.showXGrid(true)
+				.showYGrid(true)
+				.symbolTypes(
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE
+						)
+				.symbolSizes(2,2)
+				.showSymbols(false,false) // NOTE: overloaded function
+				.symbolStyles(
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2"
+						)
+				.lineStyles(
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2"
+						)
+				.plotAreas(true,true)
+				.areaStyles("fill:white;","fill:white;")
+				.areaOpacities(1.0,1.0)
+				.showLegend(false)
+				.build();
+		
+		D3Plotter d3Plotter = new D3Plotter(
+				optionsFrontView,
+				listDataArrayFrontView
+				);
+
+		//define d3 content as post loading hook
+		Runnable postLoadingHook = () -> {
+
+			//--------------------------------------------------
+			// Create the D3 graph
+			//--------------------------------------------------
+			d3Plotter.createD3Content();
+			
+			//--------------------------------------------------
+			// output
+			String outputFilePathFrontView = Main.getOutputDirectoryPath() 
+					+ File.separator 
+					+ "FuselageFrontView.svg";
+			File outputFile = new File(outputFilePathFrontView);
+			if(outputFile.exists())
+				outputFile.delete();
+			d3Plotter.saveSVG(outputFilePathFrontView);
+
+
+		}; // end-of-Runnable
+
+		// create the Browser/D3
+		//create browser
+		JavaFxD3Browser browserFrontView = d3Plotter.getBrowser(postLoadingHook, false);
+
+		//create the scene
+		Scene sceneFrontView = new Scene(browserFrontView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
+		Main.getFuselageFrontViewPane().getChildren().add(sceneFrontView.getRoot());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -2020,9 +2366,635 @@ public class InputManagerAircraftFromFileController {
 					"NOT INITIALIZED"
 					);
 		
-		///////////////////////////////////////////////////////////////////////////////
-		// TODO : ADD SVG IMAGES TO THE TOP, SIDE AND FRONT VIEW PANES SAVED IN MAIN //
-		///////////////////////////////////////////////////////////////////////////////
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void logFuselageFromFileToInterface() {
+
+		// print the toString method of the aircraft inside the text area of the GUI ...
+		Main.setTextAreaFuselageConsoleOutput(
+				(TextArea) Main.getMainInputManagerLayout().lookup("#FuselageOutput")
+				);
+		Main.getTextAreaFuselageConsoleOutput().setText(
+				Main.getTheAircraft().getFuselage().getFuselageCreator().toString()
+				);
+
+		//---------------------------------------------------------------------------------
+		// PRESSURIZED FLAG:
+		Main.setFuselagePressurizedCheckBox(
+				(CheckBox) Main.getMainInputManagerLayout().lookup("#fuselagePressurizedCheckBox")
+				);
+
+		if(Main.getFuselagePressurizedCheckBox() != null) {
+			if(Main.getTheAircraft().getFuselage().getFuselageCreator().getPressurized() == Boolean.TRUE)
+				Main.getFuselagePressurizedCheckBox().setSelected(true);
+			
 		
+		//---------------------------------------------------------------------------------
+		// DECK NUMBER:
+		Main.setTextFieldFuselageDeckNumber(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageDeckNumber")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageDeckNumber().setText(
+					Integer.toString(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getDeckNumber()
+							)
+					);
+		else
+			Main.getTextFieldFuselageDeckNumber().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// LENGTH:
+		Main.setTextFieldFuselageLength(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageLength")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageLength().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getLenF()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageLength().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// SURFACE ROUGHNESS:
+		Main.setTextFieldFuselageSurfaceRoughness(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldSurfaceRoughness")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageSurfaceRoughness().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getRoughness()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageSurfaceRoughness().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// LENGTH RATIO:
+		Main.setTextFieldFuselageNoseLengthRatio(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseLengthRatio")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseLengthRatio().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getLenRatioNF()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseLengthRatio().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// FINENESS RATIO:
+		Main.setTextFieldFuselageNoseFinenessRatio(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseFinenessRatio")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseFinenessRatio().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getLambdaN()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseFinenessRatio().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NOSE TIP OFFSET RATIO:
+		Main.setTextFieldFuselageNoseTipOffset(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseTipOffset")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseTipOffset().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getHeightN()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseTipOffset().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NOSE DX CAP PERCENT:
+		Main.setTextFieldFuselageNoseDxCap(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseDxCap")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseDxCap().setText(
+					Double.toString(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getDxNoseCapPercent()
+							)
+					);
+		else
+			Main.getTextFieldFuselageNoseDxCap().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// WINDSHIELD TYPE:
+		Main.setChoiceBoxFuselageNoseWindshieldType(
+				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxFuselageNoseWindshieldType")
+				);
+
+		if(Main.getTheAircraft().getFuselage() != null) { 
+			if(Main.getChoiceBoxFuselageNoseWindshieldType() != null) {
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.DOUBLE)
+					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(0);
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.FLAT_FLUSH)		
+					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(1);
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.FLAT_PROTRUDING)
+					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(2);
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.SINGLE_ROUND)
+					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(3);
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.SINGLE_SHARP)
+					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(4);
+			}
+		}
+		
+		//---------------------------------------------------------------------------------
+		// WINDSHIELD WIDTH:
+		Main.setTextFieldFuselageNoseWindshieldWidth(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseWindshieldWidth")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseWindshieldWidth().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getWindshieldWidth()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseWindshieldWidth().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// WINDSHIELD HEIGHT:
+		Main.setTextFieldFuselageNoseWindshieldHeight(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseWindshieldHeight")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseWindshieldHeight().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getWindshieldHeight()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseWindshieldHeight().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NOSE MID-SECTION HEIGHT TO TOTAL SECTION HEIGHT RATIO:
+		Main.setTextFieldFuselageNoseMidSectionHeight(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseMidSectionHeight")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseMidSectionHeight().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionNoseMidLowerToTotalHeightRatio()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseMidSectionHeight().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NOSE MID-SECTION RHO UPPER:
+		Main.setTextFieldFuselageNoseMidSectionRhoUpper(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseMidSectionRhoUpper")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseMidSectionRhoUpper().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionMidNoseRhoUpper()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseMidSectionRhoUpper().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NOSE MID-SECTION RHO LOWER:
+		Main.setTextFieldFuselageNoseMidSectionRhoLower(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseMidSectionRhoLower")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageNoseMidSectionRhoLower().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionMidNoseRhoLower()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageNoseMidSectionRhoLower().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CYLINDER LENGTH RATIO:
+		Main.setTextFieldFuselageCylinderLengthRatio(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderLengthRatio")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageCylinderLengthRatio().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getLenRatioCF()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageCylinderLengthRatio().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CYLINDER SECTION WIDTH:
+		Main.setTextFieldFuselageCylinderSectionWidth(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderSectionWidth")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageCylinderSectionWidth().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionCylinderWidth()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageCylinderSectionWidth().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CYLINDER SECTION HEIGHT:
+		Main.setTextFieldFuselageCylinderSectionHeight(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderSectionHeight")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageCylinderSectionHeight().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionCylinderHeight()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageCylinderSectionHeight().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CYLINDER SECTION HEIGHT FROM GROUND:
+		Main.setTextFieldFuselageCylinderHeightFromGround(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderHeightFromGround")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageCylinderHeightFromGround().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getHeightFromGround()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageCylinderHeightFromGround().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CYLINDER SECTION HEIGHT TO TOTAL HEIGH RATIO:
+		Main.setTextFieldFuselageCylinderSectionHeightRatio(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderSectionHeightRatio")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageCylinderSectionHeightRatio().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionCylinderLowerToTotalHeightRatio()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageCylinderSectionHeightRatio().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CYLINDER SECTION RHO UPPER:
+		Main.setTextFieldFuselageCylinderSectionRhoUpper(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderSectionRhoUpper")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageCylinderSectionRhoUpper().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionCylinderRhoUpper()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageCylinderSectionRhoUpper().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CYLINDER SECTION RHO LOWER:
+		Main.setTextFieldFuselageCylinderSectionRhoLower(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderSectionRhoLower")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageCylinderSectionRhoLower().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionCylinderRhoLower()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageCylinderSectionRhoLower().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// TAIL CONE TIP OFFSET:
+		Main.setTextFieldFuselageTailTipOffset(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageTailTipOffset")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageTailTipOffset().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getHeightT()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageTailTipOffset().setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// TAIL CONE DX CAP PERCENT:
+		Main.setTextFieldFuselageTailDxCap(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageTailDxCap")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageTailDxCap().setText(
+					Double.toString(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getDxTailCapPercent()
+							)
+					);
+		else
+			Main.getTextFieldFuselageTailDxCap().setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// TAIL CONE MID SECTION HEIGHT TO TOTAL HEIGHT RATIO:
+		Main.setTextFieldFuselageTailMidSectionHeight(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageTailMidSectionHeight")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageTailMidSectionHeight().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionTailMidLowerToTotalHeightRatio()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageTailMidSectionHeight().setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// TAIL CONE MID SECTION RHO UPPER:
+		Main.setTextFieldFuselageTailMidRhoUpper(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageTailMidRhoUpper")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageTailMidRhoUpper().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionMidTailRhoUpper()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageTailMidRhoUpper().setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// TAIL CONE MID SECTION RHO LOWER:
+		Main.setTextFieldFuselageTailMidRhoLower(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageTailMidRhoLower")
+				);
+		if(Main.getTheAircraft().getFuselage() != null)
+			Main.getTextFieldFuselageTailMidRhoLower().setText(
+					Main.getTheAircraft()
+					.getFuselage()
+					.getFuselageCreator()
+					.getSectionMidTailRhoLower()
+					.toString()
+					);
+		else
+			Main.getTextFieldFuselageTailMidRhoLower().setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// SPOLERS:
+		Main.getTextFieldSpoilersXInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXin1")
+				);
+		Main.getTextFieldSpoilersXInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXin2")
+				);
+		Main.getTextFieldSpoilersXInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXin3")
+				);
+		Main.getTextFieldSpoilersXInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXin4")
+				);
+		//..........................................................................................................
+		Main.getTextFieldSpoilersXOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXout1")
+				);
+		Main.getTextFieldSpoilersXOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXout2")
+				);
+		Main.getTextFieldSpoilersXOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXout3")
+				);
+		Main.getTextFieldSpoilersXOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerXout4")
+				);
+		//..........................................................................................................
+		Main.getTextFieldSpoilersYInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYin1")
+				);
+		Main.getTextFieldSpoilersYInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYin2")
+				);
+		Main.getTextFieldSpoilersYInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYin3")
+				);
+		Main.getTextFieldSpoilersYInboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYin4")
+				);
+		//..........................................................................................................
+		Main.getTextFieldSpoilersYOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYout1")
+				);
+		Main.getTextFieldSpoilersYOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYout2")
+				);
+		Main.getTextFieldSpoilersYOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYout3")
+				);
+		Main.getTextFieldSpoilersYOutboradList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerYout4")
+				);
+		//..........................................................................................................
+		Main.getTextFieldSpoilersMinDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMin1")
+				);
+		Main.getTextFieldSpoilersMinDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMin2")
+				);
+		Main.getTextFieldSpoilersMinDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMin3")
+				);
+		Main.getTextFieldSpoilersMinDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMin4")
+				);
+		//..........................................................................................................
+		Main.getTextFieldSpoilersMaxDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMax1")
+				);
+		Main.getTextFieldSpoilersMaxDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMax2")
+				);
+		Main.getTextFieldSpoilersMaxDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMax3")
+				);
+		Main.getTextFieldSpoilersMaxDeflectionList().add(
+				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageSpoilerDeltaMax4")
+				);
+		//..........................................................................................................
+		if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers() != null) {
+			for (int i = 0; i < Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().size(); i++) {
+				//..........................................................................................................
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getInnerStationChordwisePosition() != null)
+					Main.getTextFieldSpoilersXInboradList().get(i).setText(
+							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getInnerStationChordwisePosition().toString()
+							);
+				else
+					Main.getTextFieldSpoilersXInboradList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getOuterStationChordwisePosition() != null)
+					Main.getTextFieldSpoilersXOutboradList().get(i).setText(
+							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getOuterStationChordwisePosition().toString()
+							);
+				else
+					Main.getTextFieldSpoilersXOutboradList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getInnerStationSpanwisePosition() != null)
+					Main.getTextFieldSpoilersYInboradList().get(i).setText(
+							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getInnerStationSpanwisePosition().toString()
+							);
+				else
+					Main.getTextFieldSpoilersYInboradList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getOuterStationSpanwisePosition() != null)
+					Main.getTextFieldSpoilersYOutboradList().get(i).setText(
+							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getOuterStationSpanwisePosition().toString()
+							);
+				else
+					Main.getTextFieldSpoilersYOutboradList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getInnerStationSpanwisePosition() != null)
+					Main.getTextFieldSpoilersYInboradList().get(i).setText(
+							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getInnerStationSpanwisePosition().toString()
+							);
+				else
+					Main.getTextFieldSpoilersYInboradList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMinimumDeflection() != null)
+					Main.getTextFieldSpoilersMinDeflectionList().get(i).setText(
+							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMinimumDeflection().toString()
+							);
+				else
+					Main.getTextFieldSpoilersMinDeflectionList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+				//..........................................................................................................
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMaximumDeflection() != null)
+					Main.getTextFieldSpoilersMaxDeflectionList().get(i).setText(
+							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMaximumDeflection().toString()
+							);
+				else
+					Main.getTextFieldSpoilersMaxDeflectionList().get(i).setText(
+							"NOT INITIALIZED"
+							);
+
+			}
+		}
+		
+		}
 	}
 }

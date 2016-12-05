@@ -202,7 +202,9 @@ public class MyConfiguration {
 		return mapPaths.get(dir);
 	}
 
-
+	public static void setDir(FoldersEnum dir, String folderPath) {
+		mapPaths.put(dir, folderPath);
+	}
 
 
 }

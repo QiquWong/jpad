@@ -16,11 +16,12 @@ engineDataATR72_IDLE = importdata('ATR72_IDLE.mat');
 nPoints = 50;
 machVector = transpose(linspace(0, 0.6, nPoints));
 
-%% MAX TAKE_OFF
 t0 = engineDataATR72_TAKE_OFF(1,4); % lbf
-disp(strcat('Static thrust - MAX TAKE-OFF (lbf) = ', num2str(t0)));
+disp(strcat('Static thrust (lbf) = ', num2str(t0)));
 t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX TAKE-OFF (N) = ', num2str(t0)));
+disp(strcat('Static thrust (N) = ', num2str(t0)));
+
+%% MAX TAKE_OFF
 %% h = 0ft
 smoothingParameter = 0.999999;
 
@@ -118,10 +119,6 @@ sfc_h15000_TakeOff_Spline = ppval( ...
     );
 
 %% MAX CONTINOUS
-t0 = engineDataATR72_CONTINOUS(1,4); % lbf
-disp(strcat('Static thrust - MAX CONTINOUS (lbf) = ', num2str(t0)));
-t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX CONTINOUS (N) = ', num2str(t0)));
 %% h = 0ft
 smoothingParameter = 0.999999;
 thrustRatio_h0_Continous = csaps( ...
@@ -291,10 +288,6 @@ sfc_h30000_Continous_Spline = ppval( ...
     );
 
 %% MAX CLIMB
-t0 = engineDataATR72_CLIMB(1,4); % lbf
-disp(strcat('Static thrust - MAX CLIMB (lbf) = ', num2str(t0)));
-t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX CLIMB (N) = ', num2str(t0)));
 %% h = 0ft
 smoothingParameter = 0.999999;
 thrustRatio_h0_Climb = csaps( ...
@@ -464,10 +457,6 @@ sfc_h30000_Climb_Spline = ppval( ...
     );
 
 %% MAX IDLE
-t0 = engineDataATR72_IDLE(1,4); % lbf
-disp(strcat('Static thrust - MAX IDLE (lbf) = ', num2str(t0)));
-t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX IDLE (N) = ', num2str(t0)));
 %% h = 0ft
 smoothingParameter = 0.999999;
 thrustRatio_h0_Idle = csaps( ...
@@ -637,10 +626,6 @@ sfc_h30000_Idle_Spline = ppval( ...
     );
 
 %% MAX CRUISE
-t0 = engineDataATR72_CRUISE(1,4); % lbf
-disp(strcat('Static thrust - MAX CRUISE (lbf) = ', num2str(t0)));
-t0 = t0*4.44822; % Newton
-disp(strcat('Static thrust - MAX CRUISE (N) = ', num2str(t0)));
 %% h = 0ft
 smoothingParameter = 0.999999;
 thrustRatio_h0_Cruise = csaps( ...

@@ -16,6 +16,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import standaloneutils.customdata.CenterOfGravity;
@@ -56,7 +57,7 @@ public class PowerPlant implements IPowerPlant {
 		// required parameters
 		private String __id;
 		private Integer __engineNumber;
-		public List<Engine> __engineList = new ArrayList<Engine>();
+		private List<Engine> __engineList = new ArrayList<Engine>();
 		
 		// optional parameters ... defaults
 		// ...	
@@ -78,7 +79,7 @@ public class PowerPlant implements IPowerPlant {
 			switch(aircraftName) {
 			
 			case ATR72:
-				__engineNumber = 2;
+				__engineNumber = 2; 
 				for (int i=0; i<__engineNumber; i++)
 					__engineList.add(
 							new Engine
@@ -168,18 +169,19 @@ public class PowerPlant implements IPowerPlant {
 		this._engineNumber = builder.__engineNumber;
 		this._engineList = builder.__engineList;
 		this._cgList = builder.__cgList;
-
+		
 		if((this._engineList.get(0).getEngineType() == EngineTypeEnum.TURBOPROP)
 				|| (this._engineType == EngineTypeEnum.PISTON))
 			_turbopropEngineDatabaseReader = new TurbopropEngineDatabaseReader(
-					System.getProperty("user.dir") + File.separator + MyConfiguration.databaseFolderPath, 
+					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
 					_engineList.get(0).getEngineDatabaseName()
 					);
 		else
 			_turbofanEngineDatabaseReader = new TurbofanEngineDatabaseReader(
-					System.getProperty("user.dir") + File.separator + MyConfiguration.databaseFolderPath, 
+					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
 					_engineList.get(0).getEngineDatabaseName()
 					);
+		
 		calculateDerivedVariables();
 		
 	}
