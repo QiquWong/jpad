@@ -5,6 +5,8 @@
 			id="JPAD Test analysis - PERFORMANCE"
 			weights_from_xls_file="false" 
 			file_weights="Weights.xlsx"
+			balance_from_xls_file="false"
+			file_balance="Balance.xlsx"
 			aerodynamics_from_xls_file="false" 
 			file_aerodynamics="Aerodynamics.xlsx"
 			>
@@ -16,6 +18,9 @@
 				<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
 				<single_passenger_mass unit="kg">99.0</single_passenger_mass>
 			</weights>
+			<balance>
+				<xCG_max_aft unit="m"></xCG_max_aft>
+			</balance>
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 				<cD0>0.0229</cD0>
 				<oswald>0.83</oswald> 
@@ -86,6 +91,7 @@
 		<takeoff>
 			<simulations perform="TRUE"/>
 			<balanced_field_length perform="TRUE"/>
+			<vMC perform="TRUE"/>
 		</takeoff>
 		<climb>
 			<thrust_drag perform="TRUE"/>

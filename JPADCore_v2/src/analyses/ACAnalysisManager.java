@@ -1100,8 +1100,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		}
 		
 		// Evaluate arms again with the new CG estimate
-		aircraft.calculateArms(aircraft.getHTail());
-		aircraft.calculateArms(aircraft.getVTail());
+		aircraft.calculateArms(
+				aircraft.getHTail(),
+				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF()
+				);
+		aircraft.calculateArms(
+				aircraft.getVTail(),
+				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF()
+				);
 
 		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheBalance());
 	}

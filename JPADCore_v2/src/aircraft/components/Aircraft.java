@@ -913,16 +913,16 @@ public class Aircraft implements IAircraft {
 			this._theNacelles.setKExcr(_kExcr);
 	}
 	
-	public void calculateArms(LiftingSurface theLiftingSurface){
+	public void calculateArms(LiftingSurface theLiftingSurface, Amount<Length> xcgMTOM){
 		
 		if(theLiftingSurface.getType() == ComponentEnum.WING) {
-			calculateAircraftCGToWingACdistance();
+			calculateAircraftCGToWingACdistance(xcgMTOM);
 			theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
 					getWingACToCGDistance()
 					);
 		}
 		else if( // case CG behind AC wing
-				_theAnalysisManager.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() > 
+				xcgMTOM.doubleValue(SI.METER) > 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -931,7 +931,7 @@ public class Aircraft implements IAircraft {
 			if((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
 					|| (theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL)) {
 			
-				calculateAircraftCGToWingACdistance();
+				calculateAircraftCGToWingACdistance(xcgMTOM);
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
@@ -940,7 +940,7 @@ public class Aircraft implements IAircraft {
 						);
 			}
 			else if (theLiftingSurface.getType() == ComponentEnum.CANARD) {
-				calculateAircraftCGToWingACdistance();
+				calculateAircraftCGToWingACdistance(xcgMTOM);
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
@@ -950,7 +950,7 @@ public class Aircraft implements IAircraft {
 			}
 		}
 		else if( // case AC wing behind CG
-				_theAnalysisManager.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() <= 
+				xcgMTOM.doubleValue(SI.METER) <= 
 				(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 						.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)
@@ -958,7 +958,7 @@ public class Aircraft implements IAircraft {
 			if((theLiftingSurface.getType() == ComponentEnum.HORIZONTAL_TAIL)
 					|| (theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL)) {
 			
-				calculateAircraftCGToWingACdistance();
+				calculateAircraftCGToWingACdistance(xcgMTOM);
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
@@ -967,7 +967,7 @@ public class Aircraft implements IAircraft {
 						);
 			}
 			else if (theLiftingSurface.getType() == ComponentEnum.CANARD) {
-				calculateAircraftCGToWingACdistance();
+				calculateAircraftCGToWingACdistance(xcgMTOM);
 				calculateLiftingSurfaceACToWingACdistance(theLiftingSurface);
 				calculateVolumetricRatio(theLiftingSurface);
 				theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceArm(
@@ -978,10 +978,10 @@ public class Aircraft implements IAircraft {
 		}
 	}
 
-	private void calculateAircraftCGToWingACdistance(){
+	private void calculateAircraftCGToWingACdistance(Amount<Length> xCGMTOM){
 		_wingACToCGDistance = Amount.valueOf(
 				Math.abs(
-						_theAnalysisManager.getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() -
+						xCGMTOM.doubleValue(SI.METER) -
 						(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
 								.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
 									_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25)

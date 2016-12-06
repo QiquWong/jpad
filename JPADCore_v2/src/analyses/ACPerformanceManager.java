@@ -34,9 +34,11 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.aerodynamics.MomentCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
 import calculators.performance.PayloadRangeCalc;
@@ -53,10 +55,16 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
+import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
+import configuration.enumerations.cNbetaContributionsEnum;
+import database.databasefunctions.aerodynamics.DatabaseManager;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
@@ -91,6 +99,9 @@ public class ACPerformanceManager {
 	private Amount<Mass> _operatingEmptyMass;
 	private Amount<Mass> _maximumFuelMass;
 	private Amount<Mass> _singlePassengerMass;
+	//..............................................................................
+	// Balance
+	private Amount<Length> _xCGMaxAft;
 	//..............................................................................
 	// Aerodynamics
 	private Double _cD0;
@@ -166,11 +177,15 @@ public class ACPerformanceManager {
 	private Amount<Length> _rotationDistanceTakeOff;
 	private Amount<Length> _airborneDistanceTakeOff;
 	private Amount<Velocity> _vStallTakeOff;
+	private Amount<Velocity> _vMC;
 	private Amount<Velocity> _vRotation;
 	private Amount<Velocity> _vLiftOff;
 	private Amount<Velocity> _v1;
 	private Amount<Velocity> _v2;
 	private Amount<Duration> _takeOffDuration;
+	private double[] _thrustMomentOEI;
+
+	private double[] _yawingMomentOEI;
 	//..............................................................................
 	// Climb
 	private List<RCMap> _rcMapAOE;
@@ -346,6 +361,9 @@ public class ACPerformanceManager {
 		private Amount<Mass> __maximumFuelMass;
 		private Amount<Mass> __singlePassengerMass;
 		//..............................................................................
+		// Balance
+		private Amount<Length> __xCGMaxAft;
+		//..............................................................................
 		// Aerodynamics
 		private Double __cD0;
 		private Double __oswaldCruise;
@@ -451,6 +469,11 @@ public class ACPerformanceManager {
 		
 		public ACPerformanceCalculatorBuilder singlePassengerMass(Amount<Mass> singlePassengerMass) {
 			this.__singlePassengerMass = singlePassengerMass;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder xCGMaxAft (Amount<Length> xCGMaxAft) {
+			this.__xCGMaxAft = xCGMaxAft;
 			return this;
 		}
 		
@@ -723,6 +746,8 @@ public class ACPerformanceManager {
 		this._maximumFuelMass = builder.__maximumFuelMass;
 		this._singlePassengerMass = builder.__singlePassengerMass;
 		
+		this._xCGMaxAft = builder.__xCGMaxAft;
+		
 		this._cD0 = builder.__cD0;
 		this._oswaldCruise = builder.__oswaldCruise;
 		this._oswaldClimb = builder.__oswaldClimb;
@@ -815,6 +840,22 @@ public class ACPerformanceManager {
 			readWeightsFromXLSFlag = Boolean.TRUE;
 		else
 			readWeightsFromXLSFlag = Boolean.FALSE;
+		
+		//---------------------------------------------------------------------------------------
+		// WEIGHTS FROM FILE INSTRUCTION
+		String fileBalanceXLS = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@file_balance");
+		Boolean readBalanceFromXLSFlag;
+		String readBalanceFromXLSString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@balance_from_xls_file");
+		if(readBalanceFromXLSString.equalsIgnoreCase("true"))
+			readBalanceFromXLSFlag = Boolean.TRUE;
+		else
+			readBalanceFromXLSFlag = Boolean.FALSE;
 		
 		//---------------------------------------------------------------------------------------
 		// AERODYNAMICS FROM FILE INSTRUCTION
@@ -947,6 +988,65 @@ public class ACPerformanceManager {
 			String singlePassengerMassProperty = reader.getXMLPropertyByPath("//performance/weights/single_passenger_mass");
 			if(singlePassengerMassProperty != null)
 				singlePassengerMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/single_passenger_mass");
+		}
+		
+		//===========================================================================================
+		// READING BALANCE DATA ...
+		/********************************************************************************************
+		 * If the boolean flag is true, the method reads from the xls file and ignores the assigned
+		 * data inside the xlm file.
+		 * Otherwise it ignores the xls file and reads the input data from the xml.
+		 */
+		Amount<Length> xCGMaxAft = null;		
+		
+		if(readBalanceFromXLSFlag == Boolean.TRUE) {
+			
+			File balanceFile = new File(
+					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
+					+ theAircraft.getId() 
+					+ File.separator
+					+ "BALANCE"
+					+ File.separator
+					+ fileBalanceXLS);
+			
+			if(balanceFile.exists()) {
+
+				FileInputStream readerXLS = new FileInputStream(balanceFile);
+				Workbook workbook;
+				if (balanceFile.getAbsolutePath().endsWith(".xls")) {
+					workbook = new HSSFWorkbook(readerXLS);
+				}
+				else if (balanceFile.getAbsolutePath().endsWith(".xlsx")) {
+					workbook = new XSSFWorkbook(readerXLS);
+				}
+				else {
+					throw new IllegalArgumentException("I don't know how to create that kind of new file");
+				}
+				
+				//...............................................................
+				// XCG Max Forward
+				Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "GLOBAL RESULTS");
+				if(sheetGlobalData != null) {
+					Cell xCGMaxAftCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Max aft Xcg MAC").get(0)).getCell(2);
+					if(xCGMaxAftCell != null)
+						xCGMaxAft = Amount.valueOf(
+								(xCGMaxAftCell.getNumericCellValue()
+								* theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+								+ (theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
+										+ theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+								SI.METER);
+				}
+			}
+			else {
+				//...............................................................
+				// XCG Max Forward
+				String xCGMaxAftProperty = reader.getXMLPropertyByPath("//performance/balance/xCG_max_aft");
+				if(xCGMaxAftProperty != null)
+					xCGMaxAft = Amount.valueOf(
+							Double.valueOf(reader.getXMLPropertyByPath("//performance/balance/xCG_max_aft")),
+							SI.METER
+							);
+			}
 		}
 		
 		//===========================================================================================
@@ -1492,6 +1592,15 @@ public class ACPerformanceManager {
 					if(balancedFieldLengthChartProperty.equalsIgnoreCase("TRUE")) 
 						plotList.add(PerformancePlotEnum.BALANCED_FIELD_LENGTH);
 				}
+				
+				String vmcPlotProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/takeoff/vMC/@perform");
+				if (vmcPlotProperty != null) {
+					if(vmcPlotProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.VMC);
+				}
 			}				
 			//...............................................................
 			// CLIMB 
@@ -1704,6 +1813,7 @@ public class ACPerformanceManager {
 				.operatingEmptyMass(operatingEmptyMass)
 				.maximumFuelMass(maximumFuelMass)
 				.singlePassengerMass(singlePassengerMass)
+				.xCGMaxAft(xCGMaxAft)
 				.cD0(cD0)
 				.oswaldCruise(oswaldCruise)
 				.oswaldClimb(oswaldClimb)
@@ -1786,6 +1896,9 @@ public class ACPerformanceManager {
 			calcTakeOff.calculateBalancedFieldLength();
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
 				calcTakeOff.plotBalancedFieldLength(takeOffFolderPath);
+			calcTakeOff.calculateVMC();
+			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+				calcTakeOff.plotVMC(takeOffFolderPath);
 			
 		}
 		
@@ -2764,8 +2877,148 @@ public class ACPerformanceManager {
 			
 		}
 		
-		public void plotTakeOffPerformance(String takeOffFolderPath) {
+		public void calculateVMC() {
 			
+			String veDSCDatabaseFileName = "VeDSC_database.h5";
+			String fusDesDatabaseFileName = "FusDes_database.h5";
+			
+			VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
+					new VeDSCDatabaseReader(
+							MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), veDSCDatabaseFileName
+							),
+					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
+					);
+
+			FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(
+					new FusDesDatabaseReader(
+							MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), fusDesDatabaseFileName
+							), 
+					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
+					);
+			
+			// GETTING THE FUSELAGE HEGHT AR V-TAIL MAC (c/4)
+			List<Amount<Length>> vX1Upper = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
+			int nX1Upper = vX1Upper.size();
+			List<Amount<Length>> vZ1Upper = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+			
+			// lower curve, sideview
+			List<Amount<Length>> vX2Lower = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
+			int nX2Lower = vX2Lower.size();
+			List<Amount<Length>> vZ2Lower = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+			
+			Amount<Length> DiameterAtVerticalMAC = 
+			
+			
+			veDSCDatabaseReader.runAnalysis(
+					_theAircraft.getWing().getAspectRatio(), 
+					_theAircraft.getWing().getPositionRelativeToAttachment(), 
+					_theAircraft.getVTail().getAspectRatio(), 
+					_theAircraft.getVTail().getSpan().doubleValue(SI.METER), 
+					_theAircraft.getHTail().getPositionRelativeToAttachment(),
+					inputManager.getValue(DirStabEnum.Diameter_at_vertical_MAC).doubleValue(SI.METER), 
+					inputManager.getValue(DirStabEnum.Tailcone_shape).getEstimatedValue());
+
+			Airfoil vTailMeanAirfoil = new Airfoil(
+					LiftingSurface.calculateMeanAirfoil(
+							_theAircraft.getVTail()
+							),
+					_theAircraft.getVTail().getAerodynamicDatabaseReader()
+					);
+			
+			if(_theAircraft.getTheAnalysisManager().getTheBalance() == null)
+				_theAircraft.calculateArms(_theAircraft.getVTail(), _xCGMaxAft);
+			
+			// cNb vertical [1/deg]
+			double cNbVertical = MomentCalc.calcCNbetaVerticalTail(
+					_theAircraft.getWing().getAspectRatio(), 
+					_theAircraft.getVTail().getAspectRatio(),
+					_theAircraft.getVTail().getLiftingSurfaceCreator().getLiftingSurfaceArm().doubleValue(SI.METER),
+					_theAircraft.getWing().getSpan().doubleValue(SI.METER),
+					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+					_theAircraft.getVTail().getSurface().doubleValue(SI.SQUARE_METRE), 
+					_theAircraft.getVTail().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+					vTailMeanAirfoil.getAirfoilCreator().getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
+					_theOperatingConditions.getMachTakeOff(), 
+					veDSCDatabaseReader.getkFv(),
+					veDSCDatabaseReader.getkWv(),
+					veDSCDatabaseReader.getkHv())/(180/Math.PI);
+					
+			//..................................................................................
+			// CALCULATING THE THRUST YAWING MOMENT
+			double[] speed = MyArrayUtils.linspace(
+					SpeedCalc.calculateTAS(
+							0.05,
+							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
+							),
+					SpeedCalc.calculateTAS(
+							_theOperatingConditions.getMachTakeOff(),
+							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
+							),
+					250
+					);
+
+			double[] thrust = ThrustCalc.calculateThrustVsSpeed(
+					_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+					_theOperatingConditions.getThrottleTakeOff(),
+					_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER),
+					EngineOperatingConditionEnum.TAKE_OFF,
+					_theAircraft.getPowerPlant().getEngineType(),
+					_theAircraft.getPowerPlant(),
+					_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+					_theAircraft.getPowerPlant().getEngineNumber()-1,
+					speed
+					);
+
+			List<Amount<Length>> enginesArms = new ArrayList<>();
+			for(int i=0; i<_theAircraft.getPowerPlant().getEngineList().size(); i++)
+				enginesArms.add(_theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes());
+			
+			Amount<Length> maxEngineArm = 
+					Amount.valueOf(
+							MyArrayUtils.getMax(
+									MyArrayUtils.convertListOfAmountToDoubleArray(
+											enginesArms
+											)
+									),
+							SI.METER
+							);
+			
+			_thrustMomentOEI = new double[thrust.length]; 
+			for(int i=0; i < thrust.length; i++){
+				_thrustMomentOEI[i] = thrust[i]*maxEngineArm.doubleValue(SI.METER);
+			}
+
+			//..................................................................................
+			// CALCULATING THE VERTICAL TAIL YAWING MOMENT
+			_yawingMomentOEI = new double[_thrustMomentOEI.length];
+			
+			double tau = LiftCalc.calculateTauIndexElevator(
+					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+					_theAircraft.getVTail().getAspectRatio(), 
+					_theAircraft.getVTail().getHighLiftDatabaseReader(),
+					_theAircraft.getVTail().getAerodynamicDatabaseReader(),
+					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
+					);
+			
+			for(int i=0; i < thrust.length; i++){
+			_yawingMomentOEI[i] = cNbVertical*
+					tau*
+					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)*
+					0.5*
+					_theOperatingConditions.getDensityTakeOff().getEstimatedValue()*
+					Math.pow(speed[i],2)*
+					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)*
+					_theAircraft.getWing().getSpan().doubleValue(SI.METER);
+			}
+			
+			//..................................................................................
+			// CALCULATING THE VMC
+			
+			
+		}
+
+		public void plotTakeOffPerformance(String takeOffFolderPath) {
+
 			if(_plotList.contains(PerformancePlotEnum.TAKE_OFF_SIMULATIONS))
 				try {
 					_theTakeOffCalculator.createTakeOffCharts(takeOffFolderPath);
@@ -2774,13 +3027,46 @@ public class ACPerformanceManager {
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
-			
+
 		}
 		
 		public void plotBalancedFieldLength(String takeOffFolderPath) {
 			
 			if(_plotList.contains(PerformancePlotEnum.BALANCED_FIELD_LENGTH))
 				_theTakeOffCalculator.createBalancedFieldLengthChart(takeOffFolderPath);
+			
+		}
+		
+		public void plotVMC(String takeOffFolderPath) {
+			
+			double[] speed = MyArrayUtils.linspace(
+					SpeedCalc.calculateTAS(
+							0.05,
+							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
+							)/_vStallTakeOff.doubleValue(SI.METERS_PER_SECOND),
+					SpeedCalc.calculateTAS(
+							_theOperatingConditions.getMachTakeOff(),
+							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
+							)/_vStallTakeOff.doubleValue(SI.METERS_PER_SECOND),
+					250
+					);
+			
+			double[][] thrustPlotVector = new double [2][speed.length];
+			
+			for(int i=0; i < speed.length; i++){
+			thrustPlotVector[0][i] = _thrustMomentOEI[i];
+			thrustPlotVector[1][i] = _yawingMomentOEI[i];
+			}
+			String[] legendValue = new String[2];
+			legendValue[0] = "Thrust Moment";
+			legendValue[1] = "Yawning Moment";
+			
+			MyChartToFileUtils.plot(speed,thrustPlotVector,
+					null, null, null, null,
+					"V/VsTO", "Thrust - Yawing Moment",
+					"", "N m",legendValue,
+					takeOffFolderPath, "VMC");
+
 			
 		}
 		
@@ -6483,5 +6769,45 @@ public class ACPerformanceManager {
 	public void setEndMissionMass(Amount<Mass> _endMissionMass) {
 		this._endMissionMass = _endMissionMass;
 	}
+
+	public Amount<Length> getXCGMTOM() {
+		return _xCGMaxAft;
+	}
+
+	public void setXCGMTOM(Amount<Length> _xCGMaxAft) {
+		this._xCGMaxAft = _xCGMaxAft;
+	}
+
+	public Amount<Velocity> getVMC() {
+		return _vMC;
+	}
+
+	public void setVMC(Amount<Velocity> _vMC) {
+		this._vMC = _vMC;
+	}
+
+	public Amount<Length> getXCGMaxAft() {
+		return _xCGMaxAft;
+	}
+
+	public void setXCGMaxAft(Amount<Length> _xCGMaxAft) {
+		this._xCGMaxAft = _xCGMaxAft;
+	
+	
+	public double[] getThrustMomentOEI() {
+		return _thrustMomentOEI;
+	}
+
+	public void setThrustMomentOEI(double[] _thrustMomentOEI) {
+		this._thrustMomentOEI = _thrustMomentOEI;
+	}
+
+	public double[] getYawingMomentOEI() {
+		return _yawingMomentOEI;
+	}
+
+	public void setYawingMomentOEI(double[] _yawingMomentOEI) {
+		this._yawingMomentOEI = _yawingMomentOEI;
+	}}
 
 }

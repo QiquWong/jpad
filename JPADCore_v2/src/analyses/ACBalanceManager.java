@@ -586,8 +586,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass BRF","m",_cgMTOM.getXBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {"Zcg maximum take-off mass BRF","m", _cgMTOM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
-		dataListGlobal.add(new Object[] {"Max aft Xcg MAC","%",_maxAftCG});
 		dataListGlobal.add(new Object[] {"Max forward Xcg MAC","%",_maxForwardCG});
+		dataListGlobal.add(new Object[] {"Max aft Xcg MAC","%",_maxAftCG});
 		
 		CellStyle styleHead = wb.createCellStyle();
 		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
@@ -1678,8 +1678,8 @@ public class ACBalanceManager extends ACCalculatorManager implements IACBalanceM
 				);
 		cgExcursionRefToMAC.add((_cgMTOM.getXMAC()*100));
 		
-		_maxAftCG = (MyArrayUtils.getMin(cgExcursionRefToMAC));
-		_maxForwardCG = (MyArrayUtils.getMax(cgExcursionRefToMAC));
+		_maxForwardCG = (MyArrayUtils.getMin(cgExcursionRefToMAC));
+		_maxAftCG = (MyArrayUtils.getMax(cgExcursionRefToMAC));
 	}
 
 	public List<CenterOfGravity> getCGList() {
