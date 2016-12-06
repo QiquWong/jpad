@@ -19,7 +19,7 @@
 				<single_passenger_mass unit="kg">99.0</single_passenger_mass>
 			</weights>
 			<balance>
-				<xCG_max_aft unit="m"></xCG_max_aft>
+				<xCG_max_aft unit="%">42.87</xCG_max_aft>
 			</balance>
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 				<cD0>0.0317</cD0>

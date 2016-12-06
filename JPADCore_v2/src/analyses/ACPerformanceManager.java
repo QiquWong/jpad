@@ -34,7 +34,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
-import aircraft.components.fuselage.Fuselage;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -55,15 +54,11 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
-import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
-import configuration.enumerations.cNbetaContributionsEnum;
 import database.databasefunctions.aerodynamics.DatabaseManager;
-import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.JPADXmlReader;
@@ -183,8 +178,7 @@ public class ACPerformanceManager {
 	private Amount<Velocity> _v1;
 	private Amount<Velocity> _v2;
 	private Amount<Duration> _takeOffDuration;
-	private double[] _thrustMomentOEI;
-
+	private double[] _thrustMomentOEI;;
 	private double[] _yawingMomentOEI;
 	//..............................................................................
 	// Climb
@@ -2108,6 +2102,7 @@ public class ACPerformanceManager {
         	dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","m", _takeOffDistanceFAR25.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {"Balanced field length","m", _balancedFieldLength.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {" "});
+        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","m/s", _vMC.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","m/s", _vStallTakeOff.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Decision speed (V1)","m/s", _v1.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","m/s", _vRotation.doubleValue(SI.METERS_PER_SECOND)});
@@ -2686,6 +2681,7 @@ public class ACPerformanceManager {
 			.append("\t\tBalanced field length = " + _balancedFieldLength + "\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOff + "\n")
+			.append("\t\tMiminum control speed (VMC) = " + _vMC + "\n")
 			.append("\t\tDecision speed (V1) = " + _v1 + "\n")
 			.append("\t\tRotation speed (V_Rot) = " + _vRotation + "\n")
 			.append("\t\tLift-off speed (V_LO) = " + _vLiftOff + "\n")
@@ -2880,7 +2876,6 @@ public class ACPerformanceManager {
 		public void calculateVMC() {
 			
 			String veDSCDatabaseFileName = "VeDSC_database.h5";
-			String fusDesDatabaseFileName = "FusDes_database.h5";
 			
 			VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
 					new VeDSCDatabaseReader(
@@ -2889,25 +2884,37 @@ public class ACPerformanceManager {
 					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
 					);
 
-			FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(
-					new FusDesDatabaseReader(
-							MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), fusDesDatabaseFileName
-							), 
-					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
-					);
-			
 			// GETTING THE FUSELAGE HEGHT AR V-TAIL MAC (c/4)
-			List<Amount<Length>> vX1Upper = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
-			int nX1Upper = vX1Upper.size();
-			List<Amount<Length>> vZ1Upper = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+			List<Amount<Length>> vX = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
+			List<Amount<Length>> vZUpper = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+			List<Amount<Length>> vZLower = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
 			
-			// lower curve, sideview
-			List<Amount<Length>> vX2Lower = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
-			int nX2Lower = vX2Lower.size();
-			List<Amount<Length>> vZ2Lower = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+			List<Amount<Length>> sectionHeightsList = new ArrayList<>();
+			List<Amount<Length>> xListInterpolation = new ArrayList<>();
+			for(int i=vX.size()-5; i<vX.size(); i++) {
+				sectionHeightsList.add(
+						vZUpper.get(i).minus(vZLower.get(i))
+						);
+				xListInterpolation.add(vX.get(i));
+			}
 			
-			Amount<Length> DiameterAtVerticalMAC = 
+			Amount<Length> diameterAtVTailQuarteMAC = 
+					Amount.valueOf( 
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(xListInterpolation),
+									MyArrayUtils.convertListOfAmountTodoubleArray(sectionHeightsList),
+									_theAircraft.getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+									.plus(_theAircraft.getVTail().getXApexConstructionAxes())
+									.plus(_theAircraft.getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
+									.doubleValue(SI.METER)
+									),
+							SI.METER
+							);
 			
+			double tailConeTipToFuselageRadiusRatio = 
+					_theAircraft.getFuselage().getFuselageCreator().getHeightT()
+					.divide(_theAircraft.getFuselage().getSectionHeight().divide(2))
+					.getEstimatedValue();
 			
 			veDSCDatabaseReader.runAnalysis(
 					_theAircraft.getWing().getAspectRatio(), 
@@ -2915,8 +2922,9 @@ public class ACPerformanceManager {
 					_theAircraft.getVTail().getAspectRatio(), 
 					_theAircraft.getVTail().getSpan().doubleValue(SI.METER), 
 					_theAircraft.getHTail().getPositionRelativeToAttachment(),
-					inputManager.getValue(DirStabEnum.Diameter_at_vertical_MAC).doubleValue(SI.METER), 
-					inputManager.getValue(DirStabEnum.Tailcone_shape).getEstimatedValue());
+					diameterAtVTailQuarteMAC.doubleValue(SI.METER), 
+					tailConeTipToFuselageRadiusRatio
+					);
 
 			Airfoil vTailMeanAirfoil = new Airfoil(
 					LiftingSurface.calculateMeanAirfoil(
@@ -3014,6 +3022,20 @@ public class ACPerformanceManager {
 			//..................................................................................
 			// CALCULATING THE VMC
 			
+			double[] curvesIntersection = MyArrayUtils.intersectArraysSimple(
+					_thrustMomentOEI,
+					_yawingMomentOEI
+					);
+			int indexOfVMC = 0;
+			for(int i=0; i<curvesIntersection.length; i++)
+				if(curvesIntersection[i] != 0.0) {
+					indexOfVMC = i;
+				}			
+			
+			_vMC = Amount.valueOf(
+					speed[indexOfVMC],
+					SI.METERS_PER_SECOND
+					);
 			
 		}
 
@@ -6792,7 +6814,7 @@ public class ACPerformanceManager {
 
 	public void setXCGMaxAft(Amount<Length> _xCGMaxAft) {
 		this._xCGMaxAft = _xCGMaxAft;
-	
+	}
 	
 	public double[] getThrustMomentOEI() {
 		return _thrustMomentOEI;
@@ -6808,6 +6830,6 @@ public class ACPerformanceManager {
 
 	public void setYawingMomentOEI(double[] _yawingMomentOEI) {
 		this._yawingMomentOEI = _yawingMomentOEI;
-	}}
+	}
 
 }
