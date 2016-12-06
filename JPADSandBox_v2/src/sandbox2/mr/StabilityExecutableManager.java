@@ -18,6 +18,7 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.jboss.netty.util.internal.SystemPropertyUtil;
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountException;
 
@@ -28,6 +29,7 @@ import analyses.ACPerformanceManager.ACPerformanceCalculatorBuilder;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AnglesCalc;
+import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
@@ -109,6 +111,8 @@ public class StabilityExecutableManager {
 	private Amount<Length> _xApexWing;
 	private Amount<Length> _yApexWing;
 	private Amount<Length> _zApexWing;
+	
+	private Amount<Length> _zACRootWing;
 
 	private Amount<Area> _wingSurface;
 	private Double _wingAspectRatio;
@@ -492,12 +496,14 @@ public class StabilityExecutableManager {
 	private List<Double> cDPolarWing;
 
 	//CALCULATED_INPUT_AIRFOIL-wing
+	private List<Double> clListDragWing = new ArrayList<>();
 	private List<List<Double>> clPolarAirfoilWingDragPolar = new ArrayList<List<Double>>();
 	private List<List<Double>> cDPolarAirfoilsWing= new ArrayList<List<Double>>();
 	private List<List<Double>> _wingCdAirfoilDistributionInputStations = new ArrayList<List<Double>>();
 	private List<List<Double>> _wingCdAirfoilDistribution = new ArrayList<List<Double>>();
 
 	//INPUT-htail
+	private List<Double> clListDragTail = new ArrayList<>();
 	private List<Double> cLhTailDragPolar;
 	private List<Double> cDPolarhTail;
 
@@ -1114,7 +1120,14 @@ public class StabilityExecutableManager {
 						// Other values       |
 						//---------------
 
+						// zAC root wing
+						
+						double deltaZ = _wingXACBreakPoints.get(0)*
+								_wingChordsBreakPoints.get(0).doubleValue(SI.METER)*
+								Math.tan(_wingAngleOfIncidence.doubleValue(SI.RADIAN));
 
+						_zACRootWing = Amount.valueOf(_zApexWing.doubleValue(SI.METER) - deltaZ, SI.METER);
+						
 						//Horizontal and vertical distance
 						this._horizontalDistanceQuarterChordWingHTail = Amount.valueOf(
 								(this._xApexHTail.doubleValue(SI.METER) + this._hTailChordsBreakPoints.get(0).doubleValue(SI.METER)/4)- 
@@ -1125,19 +1138,19 @@ public class StabilityExecutableManager {
 						if ( (this._zApexWing.doubleValue(SI.METER) > 0 && this._zApexHTail.doubleValue(SI.METER) > 0 ) ||
 								(this._zApexWing.doubleValue(SI.METER) < 0 && this._zApexHTail.doubleValue(SI.METER) < 0 )){
 							this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-									this._zApexHTail.doubleValue(SI.METER) - this._zApexWing.doubleValue(SI.METER), SI.METER);
+									this._zApexHTail.doubleValue(SI.METER) - this._zACRootWing.doubleValue(SI.METER), SI.METER);
 						}
 
 						if ( (this._zApexWing.doubleValue(SI.METER) > 0 && this._zApexHTail.doubleValue(SI.METER) < 0 ) ||
 								(this._zApexWing.doubleValue(SI.METER) < 0 && this._zApexHTail.doubleValue(SI.METER) > 0 )){ // different sides
 							if(this._zApexWing.doubleValue(SI.METER) < 0 ){
 								this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-										this._zApexHTail.doubleValue(SI.METER) + Math.abs(this._zApexWing.doubleValue(SI.METER)), SI.METER);	
+										this._zApexHTail.doubleValue(SI.METER) + Math.abs(this._zACRootWing.doubleValue(SI.METER)), SI.METER);	
 							}
 
 							if(this._zApexWing.doubleValue(SI.METER) > 0 ){
 								this._verticalDistanceZeroLiftDirectionWingHTail = Amount.valueOf(
-										-( Math.abs(this._zApexHTail.doubleValue(SI.METER)) + this._zApexWing.doubleValue(SI.METER)), SI.METER);	
+										-( Math.abs(this._zApexHTail.doubleValue(SI.METER)) + this._zACRootWing.doubleValue(SI.METER)), SI.METER);	
 							}
 						}
 
@@ -1605,7 +1618,8 @@ public class StabilityExecutableManager {
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleConstantRoskam, "\t\tDownwash angle with Constant Gradient Roskam", ","))
 			.append("\t\tDownwash Gradient Constant Slingerland = " + _downwashGradientConstantSlingerland.get(0)+ "\n")
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleConstantSlingerland, "\t\tDownwash angle with Constant Gradient Slingerland", ","))
-			.append("\t\tDownwash Gradient Variable Slingerland = " + _downwashGradientVariableSlingerland.get(0)+ "\n")
+			.append("\t\tDownwash Gradient Variable Slingerland = " + _downwashGradientVariableSlingerland+ "\n")
+			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleConstantSlingerland, "\t\tDownwash angle with Constant Gradient Slingerland", ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleVariableSlingerland, "\t\tDownwash angle with Variable Gradient Slingerland", ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._horizontalDistance, "\t\thorizontal distance Variable Slingerland", ","))
 			.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._verticalDistance, "\t\tVertical distance with Variable Gradient Slingerland", ","))
@@ -1788,18 +1802,25 @@ public class StabilityExecutableManager {
 		.append("\t\teta horizontal tail = " + _hTailYAdimensionalDistribution + "\n")
 		;
 		for (int i=0; i<_alphaWingForDistribution.size(); i++){
-		sb.append("\t\tCl wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_clWingDistribution.get(i)+ "\n");
+			sb.append("\t\tCl wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_clWingDistribution.get(i)+ "\n");
 		}
 		;
 		for (int i=0; i<_alphaHorizontalTailForDistribution.size(); i++){
-		sb.append("\t\tCl horizontal tail at alpha = " + _alphaHorizontalTailForDistribution.get(i) + " --> " +_clHtailDistribution.get(i)+ "\n");
+			sb.append("\t\tCl horizontal tail at alpha = " + _alphaHorizontalTailForDistribution.get(i) + " --> " +_clHtailDistribution.get(i)+ "\n");
 		}
 		sb.append("\n");
 		for (int i=0; i<_alphaWingForDistribution.size(); i++){
-		sb.append("\t\tCm wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_cMWingDistribution.get(i)+ "\n");
+			sb.append("\t\tCm wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_cMWingDistribution.get(i)+ "\n");
 		}
 		;		
-		
+		for (int i=0; i<_alphaWingForDistribution.size(); i++){
+			sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphaIWingDistribution.get(i), "\t\tAlpha_i wing at alpha", ","));
+		}
+		;
+		for (int i=0; i<_alphaWingForDistribution.size(); i++){
+			sb.append("\t\tXcp wing at alpha = " + _alphaWingForDistribution.get(i) + " --> " +_centerOfPressureWingDistribution.get(i)+ "\n");
+		}
+		;
 		sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasTail, "\n\t\tAlpha Body", ","))
 		.append("\t\tcl wing = " + _hTailEquilibriumLiftCoefficient + "\n\n");
 		return sb.toString();
@@ -2927,10 +2948,10 @@ public class StabilityExecutableManager {
 				xList, 
 				yList, 
 				"Wing center of pressure distribution", 
-				"eta", "cp", 
+				"eta", "Xcp/c", 
 				null, null,
 				null, null,
-				"", "deg",
+				"", "",
 				true,
 				legend,
 				folderPathNameDistribution,
@@ -2955,7 +2976,7 @@ public class StabilityExecutableManager {
 				"eta", "cp", 
 				null, null,
 				null, null,
-				"", "deg",
+				"", "",
 				true,
 				legend,
 				folderPathNameDistribution,
@@ -3429,12 +3450,26 @@ public class StabilityExecutableManager {
 		}
 
 		if(this._wingDragMethod==MethodEnum.AIRFOIL_INPUT){	 // _wingliftCoefficient3DCurveCONDITION, _wingCdAirfoilDistribution
+			double minValue = 0.0;
+			double maxValue = 0.0;
+			for (int i=0; i<_wingNumberOfGivenSections; i++){
+				int limit = clPolarAirfoilWingDragPolar.get(i).size();
+				for(int ii=0; ii<limit; ii++){
+					if(clPolarAirfoilWingDragPolar.get(i).get(ii)<minValue)
+						minValue = clPolarAirfoilWingDragPolar.get(i).get(ii);
+					if(clPolarAirfoilWingDragPolar.get(i).get(ii)>maxValue)
+						maxValue = clPolarAirfoilWingDragPolar.get(i).get(ii);
+				}
+			}
+			clListDragTail = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
+			
 			for (int i=0; i<_wingNumberOfGivenSections; i++){
 				List<Double> cdPolarStationList = new ArrayList<>();
 				Double [] cdPolarStation = MyMathUtils.getInterpolatedValue1DLinear(
 						MyArrayUtils.convertToDoublePrimitive(clPolarAirfoilWingDragPolar.get(i)), 
 						MyArrayUtils.convertToDoublePrimitive(cDPolarAirfoilsWing.get(i)), 
-						MyArrayUtils.convertToDoublePrimitive(_wingliftCoefficient3DCurveCONDITION)
+						MyArrayUtils.convertToDoublePrimitive(clListDragTail)
 						);	
 				for (int ii=0; ii<cdPolarStation.length; ii++){
 					cdPolarStationList.add(ii, cdPolarStation[ii]);
@@ -3488,7 +3523,7 @@ public class StabilityExecutableManager {
 			for (int kk=0; kk<_numberOfAlphasBody; kk++){
 				cdListTemp [kk] = cdMatrix[kk][k];
 			}
-			_wingCdAirfoilDistribution.add(k,MyArrayUtils.convertDoubleArrayToListDouble(cdListTemp));
+			_wingCdAirfoilDistribution.set(k,MyArrayUtils.convertDoubleArrayToListDouble(cdListTemp));
 		}
 		
 			// TODO 
@@ -3711,36 +3746,21 @@ public class StabilityExecutableManager {
 		// if  MethodEnum = INPUT the arrays are already builded  
 		
 		if(this._wingDragMethod==MethodEnum.AIRFOIL_INPUT){
+//			
+//			// PARASITE DRAG-----------------------------------------
+			double [] cdDistributionAtAlpha, cCd, clDistributionfromNasaBlackwell;
+	
 			
-			// PARASITE DRAG-----------------------------------------
-			double [] cdDistributionAtAlpha, cCd;
-//			System.out.println("cl" + Arrays.toString(_wingliftCoefficient3DCurveCONDITION));
-//			System.out.println(" WING CD DISTRIBUTION 1 STAZIONE " + _wingCdAirfoilDistribution.get(0));
-//			System.out.println(" WING CD DISTRIBUTION 12 STAZIONE " + _wingCdAirfoilDistribution.get(_wingNumberOfPointSemiSpanWise-1));
-			
-//			MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._alphasWing, "Alphas Wing array", ",");
-//			System.out.println(" WING CL DISTRIBUTION 1 STAZIONE " + _wingCLAirfoilsDistributionFinal.get(0));
-//			System.out.println(" WING CL DISTRIBUTION 12 STAZIONE " +_wingCLAirfoilsDistributionFinal.get(_wingNumberOfPointSemiSpanWise-1));
-			
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				cdDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
-				cCd =  new double [_wingNumberOfPointSemiSpanWise];
-				for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
-					cdDistributionAtAlpha[ii] = _wingCdAirfoilDistribution.get(ii).get(i);
-					cCd[ii] = _wingChordsDistribution.get(ii).doubleValue(SI.METER) * cdDistributionAtAlpha[ii];
-				}				
-//				System.out.println(" eta station " + _wingYAdimensionalDistribution);
-//				System.out.println("CD DISTRIBUZIONE A ALPHA " +  _alphasBody.get(i)+ Arrays.toString(cdDistributionAtAlpha));
-				_wingParasiteDragCoefficientDistribution.add(
-						i,
-						(2/_wingSurface.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-								cCd)
-						);
-				
-//				System.out.println(" cl wing " + Arrays.toString(_wingliftCoefficient3DCurveCONDITION)) ;
-//				System.out.println(" cd wing " + _wingParasiteDragCoefficientDistribution);
-			}
+			_wingParasiteDragCoefficientDistribution = DragCalc.calculateParasiteDragLiftingSurfaceFromAirfoil(
+					_alphasWing,
+					theNasaBlackwellCalculatorMachActualWing,
+					_wingCdAirfoilDistribution,
+					clListDragTail, 
+					_wingChordsDistribution, 
+					_wingSurface, 
+					_wingYDistribution
+					);
+		
 			
 			// INDUCED DRAG------------------------------------------
 			  //induced angle of attack
@@ -3754,53 +3774,83 @@ public class StabilityExecutableManager {
 						));
 			}
 		
-			double [] cdInducedDistributionAtAlpha, clInducedDistributionAtAlpha;
-			double [] clInducedDistributionAtAlphaNew, alphaDistribution;
+//			double [] cdInducedDistributionAtAlpha, clInducedDistributionAtAlpha;
+//			double [] clInducedDistributionAtAlphaNew, alphaDistribution;
+//			
+//			double minAlpha = MyArrayUtils.getMin(MyArrayUtils.convertDoubleArrayToListDouble(
+//					MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing)));
+//
+//			
+//			for (int i=0; i<_numberOfAlphasBody; i++){
+//				cdInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
+//				clInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
+//				clInducedDistributionAtAlphaNew = new double [_wingNumberOfPointSemiSpanWise];
+//				alphaDistribution = new double [_wingNumberOfPointSemiSpanWise];
+//				cCd = new double [_wingNumberOfPointSemiSpanWise];
+//				
+//				System.out.println("\nAlpha " + _alphasWing.get(i));
+//				
+//				theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
+//				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
+//
+//				System.out.println(" ETA STATION " + _wingYAdimensionalDistribution);
+//				System.out.println(" cl old " + Arrays.toString(clInducedDistributionAtAlpha));
+////				System.out.println("\n");
+//		
+//				
+//				for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
+//					alphaDistribution [ii] = (clInducedDistributionAtAlpha[ii] - _wingCl0Distribution.get(ii))/
+//							_wingClAlphaDistributionDeg.get(ii);
+//	
+//					if(alphaDistribution [ii] < minAlpha){
+//						clInducedDistributionAtAlphaNew[ii] = 
+//								_wingClAlphaDistributionDeg.get(ii)*
+//								alphaDistribution [ii] + 
+//								_wingCl0Distribution.get(ii);
+//					}
+//					
+//					else{
+//					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+//							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
+//							MyArrayUtils.convertToDoublePrimitive(
+//									MyArrayUtils.convertListOfDoubleToDoubleArray(
+//											_wingCLAirfoilsDistributionFinal.get(ii))),
+//							alphaDistribution[ii]
+//							);
+//					}
+//					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
+//							Math.tan(_wingInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
+//					
+//					cCd[ii] = _wingChordsDistribution.get(ii).doubleValue(SI.METER) * cdInducedDistributionAtAlpha[ii];
+//				}
+////				System.out.println(" cd induced distribution at alpha " + _alphasBody.get(i) + " = " + Arrays.toString(cdInducedDistributionAtAlpha));
+////				System.out.println(" eta stations " + _wingYAdimensionalDistribution);
+//				System.out.println(" cl new " + Arrays.toString(clInducedDistributionAtAlphaNew));
+//				_wingInducedDragCoefficientDistribution.add(
+//						i,
+//						(2/_wingSurface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
+//								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
+//								cCd)
+//						);
+//			}
+//			
+////			System.out.println(" cl wing " + Arrays.toString(_wingliftCoefficient3DCurveCONDITION)) ;
+////			System.out.println(" cd wing " + _wingInducedDragCoefficientDistribution);
 			
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				cdInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
-				clInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
-				clInducedDistributionAtAlphaNew = new double [_wingNumberOfPointSemiSpanWise];
-				alphaDistribution = new double [_wingNumberOfPointSemiSpanWise];
-				cCd = new double [_wingNumberOfPointSemiSpanWise];
-				
-				theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
-				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
+			_wingInducedDragCoefficientDistribution = DragCalc.calculateInducedDragLiftingSurfaceFromAirfoil(
+					_alphasWing,
+					theNasaBlackwellCalculatorMachActualWing, 
+					_wingCLAirfoilsDistributionFinal, 
+					_alphasWing,
+					_wingChordsDistribution, 
+					_wingSurface, 
+					_wingYDistribution,
+					_wingCl0Distribution,
+					_wingClAlphaDistributionDeg,
+					_wingInducedAngleOfAttack
+					);
+					
 
-//				System.out.println(" ETA STATION " + _wingYAdimensionalDistribution +"\n");
-//				MyArrayUtils.printListOfAmountWithUnitsInEvidence(_wingInducedAngleOfAttack.get(i), "cdInducedDistributionAtAlpha", ",");
-//				System.out.println("\n");
-		
-				
-				for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
-					alphaDistribution [ii] = (clInducedDistributionAtAlpha[ii] - _wingCl0Distribution.get(ii))/
-							_wingClAlphaDistributionDeg.get(ii);
-					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
-							MyArrayUtils.convertToDoublePrimitive(
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											_wingCLAirfoilsDistributionFinal.get(ii))),
-							alphaDistribution[ii]
-							);
-					
-					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
-							Math.tan(_wingInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
-					
-					cCd[ii] = _wingChordsDistribution.get(ii).doubleValue(SI.METER) * cdInducedDistributionAtAlpha[ii];
-				}
-//				System.out.println(" cd induced distribution at alpha " + _alphasBody.get(i) + " = " + Arrays.toString(cdInducedDistributionAtAlpha));
-//				System.out.println(" eta stations " + _wingYAdimensionalDistribution);
-				
-				_wingInducedDragCoefficientDistribution.add(
-						i,
-						(2/_wingSurface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-								cCd)
-						);
-			}
-			
-//			System.out.println(" cl wing " + Arrays.toString(_wingliftCoefficient3DCurveCONDITION)) ;
-//			System.out.println(" cd wing " + _wingInducedDragCoefficientDistribution);
 			
 			// TOTAL DRAG--------------------------------------------
 			

@@ -169,6 +169,8 @@ public final class MyArrayUtils {
 		}
 		return max;
 	}
+	
+	
 
 	@Deprecated
 	public static double getMax(double[] d) {
