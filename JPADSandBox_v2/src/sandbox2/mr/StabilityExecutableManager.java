@@ -432,6 +432,7 @@ public class StabilityExecutableManager {
 	//Elevator
 	//these values are maps and the key is the angle of elevatordeflection
 	private Map <Amount<Angle>, Double> _tauElevator = new HashMap<Amount<Angle>, Double>();
+	
 	private Map <Amount<Angle>, Double> _deltaCLMaxElevator = new HashMap<Amount<Angle>, Double>();
 	private Map <Amount<Angle>, Double> _cLAlphaElevatorDeg = new HashMap<Amount<Angle>, Double>();
 	private Map <Amount<Angle>, Double> _deltacLZeroElevator = new HashMap<Amount<Angle>, Double>();
@@ -445,6 +446,9 @@ public class StabilityExecutableManager {
 	private Map <Amount<Angle>, Double> _hTailCLStarElevator = new HashMap<Amount<Angle>, Double>();
 	private Map <Amount<Angle>, Double> _hTailCLAlphaElevator = new HashMap<Amount<Angle>, Double>();
 
+	// tau graph
+	private Map <Amount<Angle>, Double> _tauElevatorArray = new HashMap<Amount<Angle>, Double>();
+	List<Amount<Angle>> _deltaEAnglesArray = new ArrayList<>();
 
 	//Actual
 	private Amount<Angle> _wingAlphaZeroLiftCONDITION;
@@ -1580,7 +1584,7 @@ public class StabilityExecutableManager {
 		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasWing, "\t\tAlpha Wing", ","))
 		.append("\t\tCL 3D Curve = " + Arrays.toString(_wingliftCoefficient3DCurve)+ "\n")
 		.append("\t\tEta stations = " + _wingYAdimensionalDistribution+ "\n")
-		.append("\t\tCl distribution at CL max = " + Arrays.toString(_wingliftCoefficientDistributionatCLMax) + "\n")
+		.append("\t\tCl distribution at CL max ( alpha = " + _wingalphaMaxLinear + " ) = " + Arrays.toString(_wingliftCoefficientDistributionatCLMax) + "\n")
 		;
 
 		if(_theCondition == ConditionEnum.TAKE_OFF || _theCondition== ConditionEnum.LANDING){
@@ -1653,7 +1657,7 @@ public class StabilityExecutableManager {
 		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasTail, "\t\tAlpha Tail", ","))
 		.append("\t\tCL 3D Curve = " + Arrays.toString(_hTailliftCoefficient3DCurve)+ "\n")
 		.append("\t\tEta stations = " + _hTailYAdimensionalDistribution+ "\n")
-		.append("\t\tCl distribution at CL max = " + Arrays.toString(_hTailliftCoefficientDistributionatCLMax) + "\n")
+		.append("\t\tCl distribution at CL max ( alpha = " + _hTailalphaMaxLinear + " ) = " + Arrays.toString(_hTailliftCoefficientDistributionatCLMax) + "\n")
 		.append("\t\tDynamic pressure Ratio = " + _dynamicPressureRatio+ "\n")
 		;
 
@@ -1667,6 +1671,13 @@ public class StabilityExecutableManager {
 			.append("\n")
 			;
 		}
+		sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._deltaEAnglesArray, "\t\tdelta e elevator ", ","));
+		sb.append("\t\ttau index --> [ ");
+		for (int ii = 0; ii< this._deltaEAnglesArray.size()-1; ii++){
+			sb.append( this._tauElevatorArray.get( _deltaEAnglesArray.get(ii)) + " , ")
+			;
+		}
+		sb.append( this._tauElevatorArray.get( _deltaEAnglesArray.get(this._deltaEAnglesArray.size()-1)) + " ] " );
 
 
 		sb.append("\nDRAG\n")
@@ -3388,6 +3399,27 @@ public class StabilityExecutableManager {
 							MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasTail)
 							));
 		}
+
+		 this._deltaEAnglesArray = MyArrayUtils.convertDoubleArrayToListOfAmount(
+				MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.linspace(-30, 5, 50)), NonSI.DEGREE_ANGLE);
+		
+		
+		for (int i=0; i<this._deltaEAnglesArray.size(); i++){
+
+			theStabilityCalculator.calculateElevatorEffects(
+					this,
+					_deltaEAnglesArray.get(i));
+
+			_tauElevatorArray.put(_deltaEAnglesArray.get(i),
+					LiftCalc.calculateTauIndexElevator(
+							_elevatorCfC, 
+							_hTailAspectRatio,
+							highLiftDatabaseReader, 
+							aeroDatabaseReader, 
+							_deltaEAnglesArray.get(i)
+							)); 
+		}
 	}
 
 
@@ -3438,6 +3470,7 @@ public class StabilityExecutableManager {
 	public void initializeDragArray(){ 
 // WING-------------------------------------------------------------
 		//------------cd curve---------------------------
+	
 		if(this._wingDragMethod==MethodEnum.INPUT){
 
 			Double [] wingDragCurve = MyMathUtils.getInterpolatedValue1DLinear(
@@ -3461,71 +3494,18 @@ public class StabilityExecutableManager {
 						maxValue = clPolarAirfoilWingDragPolar.get(i).get(ii);
 				}
 			}
-			clListDragTail = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+			clListDragWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
-			
-			for (int i=0; i<_wingNumberOfGivenSections; i++){
-				List<Double> cdPolarStationList = new ArrayList<>();
-				Double [] cdPolarStation = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(clPolarAirfoilWingDragPolar.get(i)), 
-						MyArrayUtils.convertToDoublePrimitive(cDPolarAirfoilsWing.get(i)), 
-						MyArrayUtils.convertToDoublePrimitive(clListDragTail)
-						);	
-				for (int ii=0; ii<cdPolarStation.length; ii++){
-					cdPolarStationList.add(ii, cdPolarStation[ii]);
-				}
-				_wingCdAirfoilDistributionInputStations.add(i,cdPolarStationList);			
-			}
-		}
+
+		_wingCdAirfoilDistribution = AerodynamicCalc.calculateCDMatrixAirfoils(
+				clListDragWing,
+				clPolarAirfoilWingDragPolar, 
+				cDPolarAirfoilsWing,
+				_wingYAdimensionalBreakPoints, 
+				_wingYAdimensionalDistribution
+				);
 		
-		// Bidimensional airfoil curves as matrix
-		//
-		//  --------------------------> number of point semi span
-		//  |   |
-		//  | a |
-		//  | l	|
-		//	| p	|
-		//	| h
-		//  | a
-		//  |
-		// \/
-		// number of point 2d curve
-		
-		// initialize cd
-		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
-			_wingCdAirfoilDistribution.add(_wingCdAirfoilDistributionInputStations.get(0));
-		}
-		double [] cdStar ,cdDistribution;
-		double [][] cdMatrix = new double [_numberOfAlphasBody][_wingNumberOfPointSemiSpanWise];
-		
-		for (int i=0; i<_numberOfAlphasBody; i++){
-			cdStar =   new double [_wingNumberOfGivenSections];
-			cdDistribution = new double [_wingNumberOfPointSemiSpanWise];
-			for (int ii=0; ii<_wingNumberOfGivenSections; ii++){
-				cdStar[ii] = _wingCdAirfoilDistributionInputStations.get(ii).get(i);
-			}// given station
-			
-			for (int iii=0; iii<_wingNumberOfPointSemiSpanWise; iii++){
-				cdDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
-						cdStar, 
-						_wingYAdimensionalDistribution.get(iii)
-						);
-	
-					cdMatrix[i][iii] = cdDistribution[iii];
-			}//semispanwise
-		} // alpha 
-		
-		// filling the list of list 
-		
-		for (int k=0; k<_wingNumberOfPointSemiSpanWise; k++){
-			Double [] cdListTemp = new Double [_numberOfAlphasBody];
-			for (int kk=0; kk<_numberOfAlphasBody; kk++){
-				cdListTemp [kk] = cdMatrix[kk][k];
-			}
-			_wingCdAirfoilDistribution.set(k,MyArrayUtils.convertDoubleArrayToListDouble(cdListTemp));
-		}
-		
+		}	
 			// TODO 
 			if(this._wingDragMethod==MethodEnum.CLASSIC){}
 			if(this._wingDragMethod==MethodEnum.AIRFOIL_DISTRIBUTION){}
@@ -3533,71 +3513,16 @@ public class StabilityExecutableManager {
 
 		//-----------cl curve--------------------------------
 		if(_wingairfoilLiftCoefficientCurve == MethodEnum.INPUT){
-			for (int i=0; i<_wingNumberOfGivenSections; i++){
-				List<Double> clStationList = new ArrayList<>();
-				Double [] clStation = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertListOfAmountTodoubleArray(alphaAirfoilsWing.get(i)), 
-						MyArrayUtils.convertToDoublePrimitive(clDistributionAirfoilsWing.get(i)), 
-						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing)
-						);	
-				for (int ii=0; ii<clStation.length; ii++){
-					clStationList.add(ii, clStation[ii]);
-				}
-				_wingCLAirfoilsDistribution.add(i,clStationList);			
-			}
-		}
 		
-		// Bidimensional airfoil curves as matrix
-		//
-		//  --------------------------> number of point semi span
-		//  |   |
-		//  | a |
-		//  | l	|
-		//	| p	|
-		//	| h
-		//  | a
-		//  |
-		// \/
-		// number of point 2d curve
-		
-		// initialize cd
-		for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
-			_wingCLAirfoilsDistributionFinal.add(_wingCLAirfoilsDistribution.get(0));
-		}
-		double [] clStar ,clDistribution;
-		double [][] clMatrix = new double [_numberOfAlphasBody][_wingNumberOfPointSemiSpanWise];
-		
-		for (int i=0; i<_numberOfAlphasBody; i++){
-			clStar =   new double [_wingNumberOfGivenSections];
-			clDistribution = new double [_wingNumberOfPointSemiSpanWise];
-			for (int ii=0; ii<_wingNumberOfGivenSections; ii++){
-				clStar[ii] = _wingCLAirfoilsDistribution.get(ii).get(i);
-			}// given station
-			
-			for (int iii=0; iii<_wingNumberOfPointSemiSpanWise; iii++){
-				clDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
-						clStar, 
-						_wingYAdimensionalDistribution.get(iii)
-						);
-	
-					clMatrix[i][iii] = clDistribution[iii];
-			}//semispanwise
-		} // alpha 
-		
-		// filling the list of list 
-		
-		for (int k=0; k<_wingNumberOfPointSemiSpanWise; k++){
-			Double [] clListTemp = new Double [_numberOfAlphasBody];
-			for (int kk=0; kk<_numberOfAlphasBody; kk++){
-				clListTemp [kk] = clMatrix[kk][k];
-			}
-			_wingCLAirfoilsDistributionFinal.set(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
+		_wingCLAirfoilsDistributionFinal = AerodynamicCalc.calculateCLMatrixAirfoils(
+				_alphasWing, 
+				alphaAirfoilsWing,
+				clDistributionAirfoilsWing,
+				_wingYAdimensionalBreakPoints, 
+				_wingYAdimensionalDistribution
+				);
+
 	}
-//		for(int i=0; i<_wingCLAirfoilsDistributionFinal.size();i++){
-//			System.out.println(" i " + i);
-//			System.out.println("_wing cl " + _wingCLAirfoilsDistributionFinal);
-//		}
 		
 // HORIZONTAL TAIL ----------------------------------------
 		//---------cd curve-----------------------
@@ -3613,132 +3538,47 @@ public class StabilityExecutableManager {
 		}
 
 		if(this._hTailDragMethod==MethodEnum.AIRFOIL_INPUT){	 // _wingliftCoefficient3DCurveCONDITION, _wingCdAirfoilDistribution
+
+			double minValue = 0.0;
+			double maxValue = 0.0;
 			for (int i=0; i<_hTailnumberOfGivenSections; i++){
-				List<Double> cdPolarStationList = new ArrayList<>();
-				Double [] cdPolarStation = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(clPolarAirfoilHTailDragPolar.get(i)), 
-						MyArrayUtils.convertToDoublePrimitive(cDPolarAirfoilsHTail.get(i)), 
-						MyArrayUtils.convertToDoublePrimitive(_hTailliftCoefficient3DCurve)
-						);	
-				for (int ii=0; ii<cdPolarStation.length; ii++){
-					cdPolarStationList.add(ii, cdPolarStation[ii]);
+				int limit = clPolarAirfoilHTailDragPolar.get(i).size();
+				for(int ii=0; ii<limit; ii++){
+					if(clPolarAirfoilHTailDragPolar.get(i).get(ii)<minValue)
+						minValue = clPolarAirfoilHTailDragPolar.get(i).get(ii);
+					if(clPolarAirfoilHTailDragPolar.get(i).get(ii)>maxValue)
+						maxValue = clPolarAirfoilHTailDragPolar.get(i).get(ii);
 				}
-				_hTailCdAirfoilDistributionInputStations.add(i,cdPolarStationList);			
 			}
-		}
-		
-		// Bidimensional airfoil curves as matrix
-		//
-		//  --------------------------> number of point semi span
-		//  |   |
-		//  | a |
-		//  | l	|
-		//	| p	|
-		//	| h
-		//  | a
-		//  |
-		// \/
-		// number of point 2d curve
-		
-		// initialize cd
-		for (int i=0; i<_hTailNumberOfPointSemiSpanWise; i++){
-			_hTailCdAirfoilDistribution.add(_hTailCdAirfoilDistributionInputStations.get(0));
-		}
-		double [][] cdMatrixHTail = new double [_numberOfAlphasBody][_hTailNumberOfPointSemiSpanWise];
-		
-		for (int i=0; i<_numberOfAlphasBody; i++){
-			cdStar =   new double [_hTailnumberOfGivenSections];
-			cdDistribution = new double [_hTailNumberOfPointSemiSpanWise];
-			for (int ii=0; ii<_hTailnumberOfGivenSections; ii++){
-				cdStar[ii] = _hTailCdAirfoilDistributionInputStations.get(ii).get(i);
-			}// given station
-			
-			for (int iii=0; iii<_hTailNumberOfPointSemiSpanWise; iii++){
-				cdDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
-						cdStar, 
-						_hTailYAdimensionalDistribution.get(iii)
-						);
+			clListDragTail = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 	
-				cdMatrixHTail[i][iii] = cdDistribution[iii];
-			}//semispanwise
-		} // alpha 
 		
-		// filling the list of list 
-		
-		for (int k=0; k<_hTailNumberOfPointSemiSpanWise; k++){
-			Double [] cdListTemp = new Double [_numberOfAlphasBody];
-			for (int kk=0; kk<_numberOfAlphasBody; kk++){
-				cdListTemp [kk] = cdMatrixHTail[kk][k];
-			}
-			_hTailCdAirfoilDistribution.add(k,MyArrayUtils.convertDoubleArrayToListDouble(cdListTemp));
+		_hTailCdAirfoilDistribution = AerodynamicCalc.calculateCDMatrixAirfoils(
+				clListDragTail,
+				clPolarAirfoilHTailDragPolar, 
+				cDPolarAirfoilsHTail,
+				_hTailYAdimensionalBreakPoints, 
+				_hTailYAdimensionalDistribution
+				);
 		}
 		
-		// TODO 
-		if(this._hTailDragMethod==MethodEnum.CLASSIC){}
-		if(this._hTailDragMethod==MethodEnum.AIRFOIL_DISTRIBUTION){}
-		
+			// TODO 
+			if(this._hTailDragMethod==MethodEnum.CLASSIC){}
+			if(this._hTailDragMethod==MethodEnum.AIRFOIL_DISTRIBUTION){}
+	
+
 		//-----------cl curve--------------------------------
 		if(_hTailairfoilLiftCoefficientCurve == MethodEnum.INPUT){
-			for (int i=0; i<_hTailnumberOfGivenSections; i++){
-				List<Double> clStationList = new ArrayList<>();
-				Double [] clStation = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertListOfAmountTodoubleArray(alphaAirfoilsHTail.get(i)), 
-						MyArrayUtils.convertToDoublePrimitive(clDistributionAirfoilsHTail.get(i)), 
-						MyArrayUtils.convertListOfAmountTodoubleArray(_alphasTail)
-						);	
-				for (int ii=0; ii<clStation.length; ii++){
-					clStationList.add(ii, clStation[ii]);
-				}
-				_hTailCLAirfoilsDistribution.add(i,clStationList);			
-			}
-		}
 		
-		// Bidimensional airfoil curves as matrix
-		//
-		//  --------------------------> number of point semi span
-		//  |   |
-		//  | a |
-		//  | l	|
-		//	| p	|
-		//	| h
-		//  | a
-		//  |
-		// \/
-		// number of point 2d curve
-		
-		// initialize cd
-		for (int i=0; i<_hTailNumberOfPointSemiSpanWise; i++){
-			_hTailCLAirfoilsDistributionFinal.add(_hTailCLAirfoilsDistribution.get(0));
-		}
-		double [][] clMatrixTail = new double [_numberOfAlphasBody][_hTailNumberOfPointSemiSpanWise];
-		
-		for (int i=0; i<_numberOfAlphasBody; i++){
-			clStar =   new double [_hTailnumberOfGivenSections];
-			clDistribution = new double [_hTailNumberOfPointSemiSpanWise];
-			for (int ii=0; ii<_hTailnumberOfGivenSections; ii++){
-				clStar[ii] = _hTailCLAirfoilsDistribution.get(ii).get(i);
-			}// given station
-			
-			for (int iii=0; iii<_hTailNumberOfPointSemiSpanWise; iii++){
-				clDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_hTailYAdimensionalBreakPoints),
-						clStar, 
-						_hTailYAdimensionalDistribution.get(iii)
-						);
-	
-					clMatrixTail[i][iii] = clDistribution[iii];
-			}//semispanwise
-		} // alpha 
-		
-		// filling the list of list 
-		
-		for (int k=0; k<_hTailNumberOfPointSemiSpanWise; k++){
-			Double [] clListTemp = new Double [_numberOfAlphasBody];
-			for (int kk=0; kk<_numberOfAlphasBody; kk++){
-				clListTemp [kk] = clMatrixTail[kk][k];
-			}
-			_hTailCLAirfoilsDistributionFinal.set(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
+		_hTailCLAirfoilsDistributionFinal = AerodynamicCalc.calculateCLMatrixAirfoils(
+				_alphasTail, 
+				alphaAirfoilsHTail,
+				clDistributionAirfoilsHTail,
+				_hTailYAdimensionalBreakPoints, 
+				_hTailYAdimensionalDistribution
+				);
+
 		}
 	}
 
@@ -3748,14 +3588,12 @@ public class StabilityExecutableManager {
 		if(this._wingDragMethod==MethodEnum.AIRFOIL_INPUT){
 //			
 //			// PARASITE DRAG-----------------------------------------
-			double [] cdDistributionAtAlpha, cCd, clDistributionfromNasaBlackwell;
-	
-			
+		
 			_wingParasiteDragCoefficientDistribution = DragCalc.calculateParasiteDragLiftingSurfaceFromAirfoil(
 					_alphasWing,
 					theNasaBlackwellCalculatorMachActualWing,
 					_wingCdAirfoilDistribution,
-					clListDragTail, 
+					clListDragWing, 
 					_wingChordsDistribution, 
 					_wingSurface, 
 					_wingYDistribution
@@ -3773,69 +3611,6 @@ public class StabilityExecutableManager {
 						_wingNumberOfPointSemiSpanWise
 						));
 			}
-		
-//			double [] cdInducedDistributionAtAlpha, clInducedDistributionAtAlpha;
-//			double [] clInducedDistributionAtAlphaNew, alphaDistribution;
-//			
-//			double minAlpha = MyArrayUtils.getMin(MyArrayUtils.convertDoubleArrayToListDouble(
-//					MyArrayUtils.convertListOfAmountToDoubleArray(_alphasWing)));
-//
-//			
-//			for (int i=0; i<_numberOfAlphasBody; i++){
-//				cdInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
-//				clInducedDistributionAtAlpha = new double [_wingNumberOfPointSemiSpanWise];
-//				clInducedDistributionAtAlphaNew = new double [_wingNumberOfPointSemiSpanWise];
-//				alphaDistribution = new double [_wingNumberOfPointSemiSpanWise];
-//				cCd = new double [_wingNumberOfPointSemiSpanWise];
-//				
-//				System.out.println("\nAlpha " + _alphasWing.get(i));
-//				
-//				theNasaBlackwellCalculatorMachActualWing.calculate(_alphasWing.get(i));
-//				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray();
-//
-//				System.out.println(" ETA STATION " + _wingYAdimensionalDistribution);
-//				System.out.println(" cl old " + Arrays.toString(clInducedDistributionAtAlpha));
-////				System.out.println("\n");
-//		
-//				
-//				for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
-//					alphaDistribution [ii] = (clInducedDistributionAtAlpha[ii] - _wingCl0Distribution.get(ii))/
-//							_wingClAlphaDistributionDeg.get(ii);
-//	
-//					if(alphaDistribution [ii] < minAlpha){
-//						clInducedDistributionAtAlphaNew[ii] = 
-//								_wingClAlphaDistributionDeg.get(ii)*
-//								alphaDistribution [ii] + 
-//								_wingCl0Distribution.get(ii);
-//					}
-//					
-//					else{
-//					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-//							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
-//							MyArrayUtils.convertToDoublePrimitive(
-//									MyArrayUtils.convertListOfDoubleToDoubleArray(
-//											_wingCLAirfoilsDistributionFinal.get(ii))),
-//							alphaDistribution[ii]
-//							);
-//					}
-//					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
-//							Math.tan(_wingInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
-//					
-//					cCd[ii] = _wingChordsDistribution.get(ii).doubleValue(SI.METER) * cdInducedDistributionAtAlpha[ii];
-//				}
-////				System.out.println(" cd induced distribution at alpha " + _alphasBody.get(i) + " = " + Arrays.toString(cdInducedDistributionAtAlpha));
-////				System.out.println(" eta stations " + _wingYAdimensionalDistribution);
-//				System.out.println(" cl new " + Arrays.toString(clInducedDistributionAtAlphaNew));
-//				_wingInducedDragCoefficientDistribution.add(
-//						i,
-//						(2/_wingSurface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
-//								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
-//								cCd)
-//						);
-//			}
-//			
-////			System.out.println(" cl wing " + Arrays.toString(_wingliftCoefficient3DCurveCONDITION)) ;
-////			System.out.println(" cd wing " + _wingInducedDragCoefficientDistribution);
 			
 			_wingInducedDragCoefficientDistribution = DragCalc.calculateInducedDragLiftingSurfaceFromAirfoil(
 					_alphasWing,
@@ -3849,7 +3624,7 @@ public class StabilityExecutableManager {
 					_wingClAlphaDistributionDeg,
 					_wingInducedAngleOfAttack
 					);
-					
+				
 
 			
 			// TOTAL DRAG--------------------------------------------
@@ -3865,86 +3640,55 @@ public class StabilityExecutableManager {
 	}
 	public void calculateHTailDragCharacterstics(){
 		if(this._hTailDragMethod==MethodEnum.AIRFOIL_INPUT){
-			
 			// PARASITE DRAG-----------------------------------------
-			double [] cdDistributionAtAlpha, cCd = null;
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				cdDistributionAtAlpha = new double [_hTailNumberOfPointSemiSpanWise];
-				cCd = new double [_hTailNumberOfPointSemiSpanWise];
-				for (int ii=0; ii<_hTailNumberOfPointSemiSpanWise; ii++){
-					cdDistributionAtAlpha[ii] = _hTailCdAirfoilDistribution.get(ii).get(i);
-					cCd[ii] = cdDistributionAtAlpha[ii]*_hTailChordsDistribution.get(ii).doubleValue(SI.METER);
-				}				
-			_hTailParasiteDragCoefficientDistribution.add(
-						i,
-						(2/_hTailSurface.doubleValue(SI.SQUARE_METRE))*MyMathUtils.integrate1DSimpsonSpline(
-								MyArrayUtils.convertListOfAmountTodoubleArray(_hTailYDistribution),
-								cCd)
-						);
-
-			}
 			
-			// INDUCED DRAG------------------------------------------
-			  //induced angle of attack
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				_hTailInducedAngleOfAttack.add(i,
-						theStabilityCalculator.calculateInducedAngleOfAttackDistribution(
-						_alphasTail.get(i), 
-						theNasaBlackwellCalculatorMachActualHTail, 
-						_altitude, 
-						_machCurrent, 
-						_hTailNumberOfPointSemiSpanWise
-						));
-			}
-		
-			double [] cdInducedDistributionAtAlpha, clInducedDistributionAtAlpha, alphaDistributionTail, clInducedDistributionAtAlphaNew;
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				cdInducedDistributionAtAlpha = new double [_hTailNumberOfPointSemiSpanWise];
-				clInducedDistributionAtAlpha = new double [_hTailNumberOfPointSemiSpanWise];
-				alphaDistributionTail = new double [_hTailNumberOfPointSemiSpanWise];
-				clInducedDistributionAtAlphaNew = new double [_hTailNumberOfPointSemiSpanWise];
-				cCd = new double [_hTailNumberOfPointSemiSpanWise];
+				_hTailParasiteDragCoefficientDistribution = DragCalc.calculateParasiteDragLiftingSurfaceFromAirfoil(
+						_alphasTail,
+						theNasaBlackwellCalculatorMachActualHTail,
+						_hTailCdAirfoilDistribution,
+						clListDragTail, 
+						_hTailChordsDistribution, 
+						_hTailSurface, 
+						_hTailYDistribution
+						);
+			
 				
-				theNasaBlackwellCalculatorMachActualHTail.calculate(_alphasTail.get(i));
-				clInducedDistributionAtAlpha = theNasaBlackwellCalculatorMachActualHTail.getClTotalDistribution().toArray();
-
-				for (int ii=0; ii<_hTailNumberOfPointSemiSpanWise; ii++){
-					alphaDistributionTail [ii] = (clInducedDistributionAtAlpha[ii] - _hTailCl0Distribution.get(ii))/
-							_hTailClAlphaistributionDeg.get(ii);
-					clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(_alphasTail),
-							MyArrayUtils.convertToDoublePrimitive(
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											_hTailCLAirfoilsDistributionFinal.get(ii))),
-							alphaDistributionTail[ii]
-							);
-					
-					cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
-							Math.tan(_hTailInducedAngleOfAttack.get(i).get(ii).doubleValue(SI.RADIAN));
-					
-					cCd[ii] = _hTailChordsDistribution.get(ii).doubleValue(SI.METER)*cdInducedDistributionAtAlpha[ii];
+				// INDUCED DRAG------------------------------------------
+				  //induced angle of attack
+				for (int i=0; i<_numberOfAlphasBody; i++){
+					_hTailInducedAngleOfAttack.add(i,theStabilityCalculator.calculateInducedAngleOfAttackDistribution(
+							_alphasTail.get(i), 
+							theNasaBlackwellCalculatorMachActualHTail, 
+							_altitude, 
+							_machCurrent, 
+							_hTailNumberOfPointSemiSpanWise
+							));
 				}
-					_hTailInducedDragCoefficientDistribution.add(
-							i,
-							(2/_hTailSurface.doubleValue(SI.SQUARE_METRE))*MyMathUtils.integrate1DSimpsonSpline(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_hTailYDistribution),
-									cCd));
-	
-			}
+				
+				_hTailInducedDragCoefficientDistribution = DragCalc.calculateInducedDragLiftingSurfaceFromAirfoil(
+						_alphasTail,
+						theNasaBlackwellCalculatorMachActualHTail, 
+						_hTailCLAirfoilsDistributionFinal,
+						_alphasTail,
+						_hTailChordsDistribution, 
+						_hTailSurface, 
+						_hTailYDistribution,
+						_hTailCl0Distribution,
+						_hTailClAlphaistributionDeg,
+						_hTailInducedAngleOfAttack
+						);
 						
 			}
 			
 			
 			// TOTAL DRAG--------------------------------------------
 			
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				_hTailDragCoefficient3DCurve.add(
-						i,
-						_hTailParasiteDragCoefficientDistribution.get(i)+_hTailInducedDragCoefficientDistribution.get(i));
-			}
-			
-		}
-
+		for (int i=0; i<_numberOfAlphasBody; i++){
+			_hTailDragCoefficient3DCurve.add(
+					i,
+					_hTailParasiteDragCoefficientDistribution.get(i)+_hTailInducedDragCoefficientDistribution.get(i));
+		}			
+	}
 
 	public void calculateWingXAC(){
 		

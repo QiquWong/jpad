@@ -723,6 +723,7 @@ public class DragCalc {
 			
 			theNasaBlackwellCalculator.calculate(alphasArray.get(i));
 			clInducedDistributionAtAlpha = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
 				alphaDistribution [ii] = (clInducedDistributionAtAlpha[ii] - clZeroDistribution.get(ii))/
@@ -747,16 +748,20 @@ public class DragCalc {
 				cdInducedDistributionAtAlpha[ii] = clInducedDistributionAtAlphaNew[ii] * 
 						Math.tan(inducedAngleOfAttackDistribution.get(i).get(ii).doubleValue(SI.RADIAN));
 				
+				
 				cCd[ii] = chordDistribution.get(ii).doubleValue(SI.METER) * cdInducedDistributionAtAlpha[ii];
 			}
+			
 			inducedDrag.add(
 					i,
 					(2/surface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
 							MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistribution),
 							cCd)
 					);
+			
+			
 		}
-				
+		System.out.println(" INDUCED DRAG " + inducedDrag);
 		return inducedDrag;
 			}	
 }
