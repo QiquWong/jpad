@@ -33,7 +33,7 @@ package sandbox.mr.StabilityTest;
 //import standaloneutils.customdata.CenterOfGravity;
 //import standaloneutils.customdata.MyArray;
 //
-//public class MyStabilityCalculator {
+public class MyStabilityCalculator {
 //
 //	double deltaACWingBody;
 //	
@@ -1133,4 +1133,4 @@ package sandbox.mr.StabilityTest;
 //		this.pitchingMomentDerThrust = pitchingMomentDerThrust;
 //	}
 //}
-//}
+}

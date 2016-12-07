@@ -29,7 +29,7 @@ package sandbox.mr.StabilityTest;
 //import standaloneutils.MyMathUtils;
 //import standaloneutils.customdata.MyArray;
 //
-//public class StabilityCalculatorInduced {
+public class StabilityCalculatorInduced {
 //
 //	/**
 //	 * This method evaluates the tau factor reading external databases. 
@@ -368,5 +368,5 @@ package sandbox.mr.StabilityTest;
 //	}
 //
 //}
-//}
+}
 //

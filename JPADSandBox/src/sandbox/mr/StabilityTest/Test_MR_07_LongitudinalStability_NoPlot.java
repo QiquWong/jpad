@@ -65,7 +65,7 @@ package sandbox.mr.StabilityTest;
 //import standaloneutils.customdata.MyArray;
 //import writers.JPADStaticWriteUtils;
 //
-//public class Test_MR_07_LongitudinalStability_NoPlot {
+public class Test_MR_07_LongitudinalStability_NoPlot {
 //
 //	@SuppressWarnings({ "unchecked", "rawtypes" })
 //	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
@@ -1238,4 +1238,4 @@ package sandbox.mr.StabilityTest;
 //		System.out.println("\n\n\t\t\tWRITING CM vs ALPHA CHART TO FILE ");
 //}
 //
-//}
+}

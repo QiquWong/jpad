@@ -59,7 +59,7 @@ package sandbox.mr.StabilityTest;
 //import standaloneutils.customdata.MyArray;
 //import writers.JPADStaticWriteUtils;
 //
-//public class Test_MR_07_LongitudinalStability_TurboFan {
+public class Test_MR_07_LongitudinalStability_TurboFan {
 //
 //	@SuppressWarnings({ "unchecked", "rawtypes" })
 //	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
@@ -777,6 +777,6 @@ package sandbox.mr.StabilityTest;
 //
 //	}
 //
-//}
+}
 //
 //
