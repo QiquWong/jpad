@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<aircraft id="IRON" type="TURBOPROP" regulations="FAR_25">
+    <cabin_configuration file="cabin_configuration_IRON.xml"/>
+    <lifting_surfaces file="wing_IRON.xml">
+        <x/>
+        <y/>
+        <z/>
+        <rigging_angle/>
+    </lifting_surfaces>
+    <lifting_surfaces file="htail_IRON.xml">
+        <x/>
+        <y/>
+        <z/>
+        <rigging_angle/>
+    </lifting_surfaces>
+    <lifting_surfaces file="vtail_IRON.xml">
+        <x/>
+        <y/>
+        <z/>
+        <rigging_angle/>
+    </lifting_surfaces>
+    <fuselages file="fuselage_IRON.xml">
+        <x/>
+        <y/>
+        <z/>
+    </fuselages>
+</aircraft>

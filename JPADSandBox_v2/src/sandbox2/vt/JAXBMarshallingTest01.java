@@ -1,6 +1,8 @@
 package sandbox2.vt;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -9,6 +11,8 @@ import javax.measure.unit.SI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -16,6 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.CabinConfiguration;
+import aircraft.components.fuselage.Fuselage;
+import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.FoldersEnum;
@@ -23,58 +30,82 @@ import configuration.enumerations.RegulationsEnum;
 
 /*
  *  reference: https://www.javacodegeeks.com/2014/12/jaxb-tutorial-xml-binding.html
+ *  reference: https://examples.javacodegeeks.com/core-java/xml/bind/jaxb-marshal-example/
  */
 
-public class JABXMarshallingTest01 {
+public class JAXBMarshallingTest01 {
 
 	/*
-	 * THE CLASS THAT HAVE TO BE PASSED TO JAXB MUST BE STATIC !!
+	 * THE CLASS THAT HAVE TO BE PASSED TO JAXB MUST BE STATIC  (if INNER)!!
 	 */
 	@XmlRootElement( name = "aircraft" )
+	@XmlAccessorType (XmlAccessType.FIELD)
 	@XmlType( propOrder = {  // this define the order of the XMLElements
-			"",
-			"",
-			"",
-			"" ,
-			""
+			"_id", "_typeVehicle", "_regulations",
+			"_cabinConfigurationPath",
+			"_wingPath","_xApexWing","_yApexWing","_zApexWing","_riggingAngleWing",
+			"_hTailPath","_xApexHTail","_yApexHTail","_zApexHTail","_riggingAngleHTail",
+			"_vTailPath","_xApexVTail","_yApexVTail","_zApexVTail", "_riggingAngleVTail",
+			"_fuselagePath","_xApexFuselage","_yApexFuselage","_zApexFuselage"
 			} )
 	public static class MyAircraftProtoype {
 		
 		//-----------------------------------------------
 		// VARIABLE DECLARATION:
+		@XmlAttribute( name = "id")
 		private String _id;
+		@XmlAttribute( name = "type")
 		private AircraftTypeEnum _typeVehicle;
+		@XmlAttribute( name = "regulations")
 		private RegulationsEnum _regulations;
 		
+		@XmlAttribute( name = "file")
 		private String _cabinConfigurationPath;
 		
+		@XmlAttribute( name = "file")
 		private String _wingPath;
+		@XmlElement( name = "x")
 		private Amount<Length> _xApexWing;
+		@XmlElement( name = "y")
 		private Amount<Length> _yApexWing;
+		@XmlElement( name = "z")
 		private Amount<Length> _zApexWing;
+		@XmlElement( name = "rigging_angle")
 		private Amount<Angle> _riggingAngleWing;
 		
+		@XmlAttribute( name = "file")
 		private String _hTailPath;
+		@XmlElement( name = "x")
 		private Amount<Length> _xApexHTail;
+		@XmlElement( name = "y")
 		private Amount<Length> _yApexHTail;
+		@XmlElement( name = "z")
 		private Amount<Length> _zApexHTail;
+		@XmlElement( name = "rigging_angle")
 		private Amount<Angle> _riggingAngleHTail;
 		
+		@XmlAttribute( name = "file")
 		private String _vTailPath;
+		@XmlElement( name = "x")
 		private Amount<Length> _xApexVTail;
+		@XmlElement( name = "y")
 		private Amount<Length> _yApexVTail;
+		@XmlElement( name = "z")
 		private Amount<Length> _zApexVTail;
+		@XmlElement( name = "rigging_angle")
 		private Amount<Angle> _riggingAngleVTail;
 		
+		@XmlAttribute( name = "file")
 		private String _fuselagePath;
+		@XmlElement( name = "x")
 		private Amount<Length> _xApexFuselage;
+		@XmlElement( name = "y")
 		private Amount<Length> _yApexFuselage;
+		@XmlElement( name = "z")
 		private Amount<Length> _zApexFuselage;
 		
-		// TODO : TRY TO ADD POWER PLANT (List of enigne) 
-				
 		//-----------------------------------------------
-		// GETTER: (remember to put setter and getters divided)
+		// GETTER: 
 		public String getId() {
 			return _id;
 		}
@@ -146,96 +177,73 @@ public class JABXMarshallingTest01 {
 		}
 		
 		//-----------------------------------------------
-		// SETTER: (remember to put setter and getters divided)
-		@XmlAttribute( name = "id")
+		// SETTER: 
 		public void setId(String _id) {
 			this._id = _id;
 		}
-		@XmlAttribute( name = "type")
 		public void setTypeVehicle(AircraftTypeEnum _typeVehicle) {
 			this._typeVehicle = _typeVehicle;
 		}
-		@XmlAttribute( name = "regulations")
 		public void setRegulations(RegulationsEnum _regulations) {
 			this._regulations = _regulations;
 		}
-		@XmlAttribute( name = "file")
 		public void setCabinConfigurationPath(String _cabinConfigurationPath) {
 			this._cabinConfigurationPath = _cabinConfigurationPath;
 		}
-		@XmlAttribute( name = "file")
 		public void setWingPath(String _wingPath) {
 			this._wingPath = _wingPath;
 		}
-		@XmlElement( name = "x")
 		public void setXApexWing(Amount<Length> _xApexWing) {
 			this._xApexWing = _xApexWing;
 		}
-		@XmlElement( name = "y")
 		public void setYApexWing(Amount<Length> _yApexWing) {
 			this._yApexWing = _yApexWing;
 		}
-		@XmlElement( name = "z")
 		public void setZApexWing(Amount<Length> _zApexWing) {
 			this._zApexWing = _zApexWing;
 		}
-		@XmlElement( name = "rigging_angle")
 		public void setRiggingAngleWing(Amount<Angle> _riggingAngleWing) {
 			this._riggingAngleWing = _riggingAngleWing;
 		}
-		@XmlAttribute( name = "file")
 		public void setHTailPath(String _hTailPath) {
 			this._hTailPath = _hTailPath;
 		}
-		@XmlElement( name = "x")
 		public void setXApexHTail(Amount<Length> _xApexHTail) {
 			this._xApexHTail = _xApexHTail;
 		}
-		@XmlElement( name = "y")
 		public void setYApexHTail(Amount<Length> _yApexHTail) {
 			this._yApexHTail = _yApexHTail;
 		}
-		@XmlElement( name = "z")
 		public void setZApexHTail(Amount<Length> _zApexHTail) {
 			this._zApexHTail = _zApexHTail;
 		}
-		@XmlElement( name = "rigging_angle")
 		public void setRiggingAngleHTail(Amount<Angle> _riggingAngleHTail) {
 			this._riggingAngleHTail = _riggingAngleHTail;
 		}
-		@XmlAttribute( name = "file")
 		public void setVTailPath(String _vTailPath) {
 			this._vTailPath = _vTailPath;
 		}
-		@XmlElement( name = "x")
 		public void setXApexVTail(Amount<Length> _xApexVTail) {
 			this._xApexVTail = _xApexVTail;
 		}
-		@XmlElement( name = "y")
 		public void setYApexVTail(Amount<Length> _yApexVTail) {
 			this._yApexVTail = _yApexVTail;
 		}
-		@XmlElement( name = "z")
 		public void setZApexVTail(Amount<Length> _zApexVTail) {
 			this._zApexVTail = _zApexVTail;
 		}
-		@XmlElement( name = "rigging_angle")
 		public void setRiggingAngleVTail(Amount<Angle> _riggingAngleVTail) {
 			this._riggingAngleVTail = _riggingAngleVTail;
 		}
-		@XmlAttribute( name = "file")
 		public void setFuselagePath(String _fuselagePath) {
 			this._fuselagePath = _fuselagePath;
 		}
-		@XmlElement( name = "x")
 		public void setXApexFuselage(Amount<Length> _xApexFuselage) {
 			this._xApexFuselage = _xApexFuselage;
 		}
-		@XmlElement( name = "y")
 		public void setYApexFuselage(Amount<Length> _yApexFuselage) {
 			this._yApexFuselage = _yApexFuselage;
 		}
-		@XmlElement( name = "z")
 		public void setZApexFuselage(Amount<Length> _zApexFuselage) {
 			this._zApexFuselage = _zApexFuselage;
 		}
@@ -254,43 +262,48 @@ public class JABXMarshallingTest01 {
 		 * (AND PERFORM A NEW CALCULATE GEOMETRY) WHICH CAN BE EASILY 
 		 * WRITTEN ON FILE.
 		 * 
-		 * TODO : SEE IF THIS WORK ALSO WITH GETTERS
 		 * TODO : SEE HOW TO ADD TAG NOT LINKED WITH FIELDS
-		 * TODO : DEFINE PROP ORDER
+		 * TODO : MANAGE COMPONENTS AS LISTS IN ORDER TO MAKE THE XML STRUCTURE SIMILAR TO THE ORGINAL XML
+		 * TODO : SEE HOW TO PRINT AMOUNT FIELDS
 		 */
 		
-		MyAircraftProtoype theAricraft = new MyAircraftProtoype();
-		theAricraft.setId("IRON");
-		theAricraft.setTypeVehicle(AircraftTypeEnum.TURBOPROP);
-		theAricraft.setRegulations(RegulationsEnum.FAR_25);
-		theAricraft.setCabinConfigurationPath("cabin_configuration_IRON.xml");
-		theAricraft.setWingPath("wing_IRON.xml");
-		theAricraft.setXApexWing(Amount.valueOf(19.09, SI.METER)); 
-		theAricraft.setYApexWing(Amount.valueOf(0.0, SI.METER));
-		theAricraft.setZApexWing(Amount.valueOf(-1.32, SI.METER));
-		theAricraft.setRiggingAngleWing(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
-		theAricraft.setHTailPath("htail_IRON.xml");
-		theAricraft.setXApexHTail(Amount.valueOf(31.54, SI.METER)); 
-		theAricraft.setYApexHTail(Amount.valueOf(0.0, SI.METER));
-		theAricraft.setZApexHTail(Amount.valueOf(1.34, SI.METER));
-		theAricraft.setRiggingAngleHTail(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		theAricraft.setVTailPath("vtail_IRON.xml");
-		theAricraft.setXApexVTail(Amount.valueOf(31.54, SI.METER)); 
-		theAricraft.setYApexVTail(Amount.valueOf(0.0, SI.METER));
-		theAricraft.setZApexVTail(Amount.valueOf(1.5, SI.METER));
-		theAricraft.setRiggingAngleVTail(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
-		theAricraft.setFuselagePath("fuselage_IRON.xml");
-		theAricraft.setXApexFuselage(Amount.valueOf(0.0, SI.METER)); 
-		theAricraft.setYApexFuselage(Amount.valueOf(0.0, SI.METER));
-		theAricraft.setZApexFuselage(Amount.valueOf(0.0, SI.METER));
+		
+		
+		MyAircraftProtoype theAircraft = new MyAircraftProtoype();
+		theAircraft.setId("IRON");
+		theAircraft.setTypeVehicle(AircraftTypeEnum.TURBOPROP);
+		theAircraft.setRegulations(RegulationsEnum.FAR_25);
+		theAircraft.setCabinConfigurationPath("cabin_configuration_IRON.xml");
+		theAircraft.setWingPath("wing_IRON.xml");
+		theAircraft.setXApexWing(Amount.valueOf(19.09, SI.METER)); 
+		theAircraft.setYApexWing(Amount.valueOf(0.0, SI.METER));
+		theAircraft.setZApexWing(Amount.valueOf(-1.32, SI.METER));
+		theAircraft.setRiggingAngleWing(Amount.valueOf(2.0, NonSI.DEGREE_ANGLE));
+		theAircraft.setHTailPath("htail_IRON.xml");
+		theAircraft.setXApexHTail(Amount.valueOf(31.54, SI.METER)); 
+		theAircraft.setYApexHTail(Amount.valueOf(0.0, SI.METER));
+		theAircraft.setZApexHTail(Amount.valueOf(1.34, SI.METER));
+		theAircraft.setRiggingAngleHTail(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		theAircraft.setVTailPath("vtail_IRON.xml");
+		theAircraft.setXApexVTail(Amount.valueOf(31.54, SI.METER)); 
+		theAircraft.setYApexVTail(Amount.valueOf(0.0, SI.METER));
+		theAircraft.setZApexVTail(Amount.valueOf(1.5, SI.METER));
+		theAircraft.setRiggingAngleVTail(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		theAircraft.setFuselagePath("fuselage_IRON.xml");
+		theAircraft.setXApexFuselage(Amount.valueOf(0.0, SI.METER)); 
+		theAircraft.setYApexFuselage(Amount.valueOf(0.0, SI.METER));
+		theAircraft.setZApexFuselage(Amount.valueOf(0.0, SI.METER));
 
 		// CORE OF THE TEST
-		JAXBContext jaxbContext = JAXBContext.newInstance(MyAircraftProtoype.class );
+		JAXBContext jaxbContext = JAXBContext.newInstance(
+				MyAircraftProtoype.class
+				);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
+		jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+		
 		// this exports to xml
 		jaxbMarshaller.marshal(
-				theAricraft,
+				theAircraft,
 				new File(
 						MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
 						+ File.separator
@@ -300,7 +313,7 @@ public class JABXMarshallingTest01 {
 		
 		// this prints the xml to console
 		jaxbMarshaller.marshal(
-				theAricraft,
+				theAircraft,
 				System.out 
 				);
 		
