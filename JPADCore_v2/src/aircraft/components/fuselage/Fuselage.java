@@ -15,6 +15,9 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jscience.physics.amount.Amount;
 
@@ -36,15 +39,17 @@ import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
+import writers.xmlAdapters.AmountAdapter;
 
 public class Fuselage implements IFuselage {
 
 	AerodynamicDatabaseReader _aerodynamicDatabaseReader;
 	
 	private String _id;
-	private Amount<Length> _X0, _Y0, _Z0;
+	private Amount<Length> _X0;
+	private Amount<Length> _Y0;
+	private Amount<Length> _Z0;
 	private ComponentEnum _type = ComponentEnum.FUSELAGE; 
-
 	private Double _kExcr = 0.0;
 	
 	//-----------------------------------------------------------------------
@@ -61,8 +66,7 @@ public class Fuselage implements IFuselage {
 	private Double[] _percentDifference;
 
 	private Double _massCorrectionFactor = 1.;
-	private Amount<Length> _xCG, _xCGReference, 
-	_xCGEstimated, _zCGEstimated;
+	private Amount<Length> _xCG, _xCGReference, _xCGEstimated, _zCGEstimated;
 	private Double[] _percentDifferenceXCG;
 
 	private CenterOfGravity _cg;
@@ -265,6 +269,7 @@ public class Fuselage implements IFuselage {
 	}
 	
 	@Override
+	@XmlTransient
 	public FuselageCreator getFuselageCreator() {
 		return _fuselageCreator;
 	}

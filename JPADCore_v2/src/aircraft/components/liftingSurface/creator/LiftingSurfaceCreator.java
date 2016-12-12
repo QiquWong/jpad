@@ -185,7 +185,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			this.__id = id;
 			this.__mirrored = mirrored; 
 			this.__type = type;
-			this.initializeDefaultVariables(AircraftEnum.ATR72, type);
+//			this.initializeDefaultVariables(AircraftEnum.ATR72, type);
 		}
 
 		public LiftingSurfaceCreatorBuilder(String id, Boolean mirrored, AircraftEnum aircraftName, ComponentEnum type) {

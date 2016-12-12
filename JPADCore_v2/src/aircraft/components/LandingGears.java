@@ -100,7 +100,7 @@ public class LandingGears implements ILandingGear {
 		
 		public LandingGearsBuilder (String id) {
 			this.__id = id;
-			this.initializeDefaultVariables(AircraftEnum.ATR72);
+//			this.initializeDefaultVariables(AircraftEnum.ATR72);
 		}
 		
 		public LandingGearsBuilder (String id, AircraftEnum aircraftName) {

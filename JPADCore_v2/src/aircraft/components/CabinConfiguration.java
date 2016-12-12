@@ -2,6 +2,7 @@ package aircraft.components;
 
 import static java.lang.Math.round;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,13 +13,14 @@ import java.util.TreeMap;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
 
 import aircraft.auxiliary.SeatsBlock;
 import aircraft.auxiliary.SeatsBlock.CGboarding;
-import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -39,17 +41,17 @@ import writers.JPADStaticWriteUtils;
  * The number of passengers and their location is necessary for estimating 
  * the Aircraft Center of Gravity position.
  * 
- * @author Lorenzo Attanasio
+ * @author Lorenzo Attanasio, Vittorio Trifari
  *
  */
 public class CabinConfiguration implements ICabinConfiguration {
 
 	private String _id;
+	private File _cabinConfigurationPath;
 	private SeatsBlock _seatsBlockRight,	
 					   _seatsBlockLeft,
 					   _seatsBlockCenter;
 
-	@SuppressWarnings("unused")
 	private Map<ClassTypeEnum, ArrayList<Object>> _seatsMap;
 	private Map<MethodEnum, Amount<?>> _massMap;
 	private Map<Integer, Amount<Length>> _breaksMap;
@@ -64,13 +66,14 @@ public class CabinConfiguration implements ICabinConfiguration {
 	private Amount<Mass> _massFurnishingsAndEquipmentReference,
 						 _massFurnishingsAndEquipment,
 						 _massEstimatedFurnishingsAndEquipment;
-
+	
 	private Integer _nPax,
 				   _nCrew,
 				   _flightCrewNumber,
 				   _cabinCrewNumber,
 				   _maxPax,
 				   _classesNumber;
+	
 	private Integer	_numberOfBreaksEconomyClass, 
 					_numberOfBreaksBusinessClass,
 					_numberOfBreaksFirstClass;
@@ -79,6 +82,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 					_numberOfRowsEconomyClass,
 					_numberOfRowsBusinessClass,
 					_numberOfRowsFirstClass;
+	
 	private Integer[] _numberOfColumnsEconomyClass,
 					  _numberOfColumnsBusinessClass,
 					  _numberOfColumnsFirstClass;
@@ -204,7 +208,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 		
 		public ConfigurationBuilder (String id) {
 			this.__id = id;
-			this.initializeDefaultVariables(AircraftEnum.ATR72); // initialize with ATR-72 data
+//			this.initializeDefaultVariables(AircraftEnum.ATR72); // initialize with ATR-72 data
 		}
 		
 		public ConfigurationBuilder (String id, AircraftEnum aircraftName) {
@@ -361,6 +365,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 		 * 
 		 * @author Vittorio Trifari
 		 */
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultVariables(AircraftEnum aircraftName) {
 
 			AmountFormat.setInstance(AmountFormat.getExactDigitsInstance());
@@ -1714,6 +1719,16 @@ public class CabinConfiguration implements ICabinConfiguration {
 	@Override
 	public Integer getCabinCrewNumber() {
 		return _cabinCrewNumber;
+	}
+
+	@Override
+	public File getCabinConfigurationPath() {
+		return _cabinConfigurationPath;
+	}
+	
+	@Override
+	public void setCabinConfigurationPath(File _cabinConfigurationPath) {
+		this._cabinConfigurationPath = _cabinConfigurationPath;
 	}
 
 }

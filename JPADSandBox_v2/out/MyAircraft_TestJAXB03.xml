@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<aircraft id="JPAD Test Aircraft DAF - 2016" type="JET" regulations="FAR_25">
+    <components xsi:type="componentEnum" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">FUSELAGE</components>
+    <components xsi:type="componentEnum" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">CABIN_CONFIGURATION</components>
+</aircraft>

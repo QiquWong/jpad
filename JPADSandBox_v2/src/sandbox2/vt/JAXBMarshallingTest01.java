@@ -1,8 +1,6 @@
 package sandbox2.vt;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -17,16 +15,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.CabinConfiguration;
-import aircraft.components.fuselage.Fuselage;
-import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.RegulationsEnum;
+import writers.xmlAdapters.AmountAdapter;
 
 /*
  *  reference: https://www.javacodegeeks.com/2014/12/jaxb-tutorial-xml-binding.html
@@ -65,43 +62,58 @@ public class JAXBMarshallingTest01 {
 		@XmlAttribute( name = "file")
 		private String _wingPath;
 		@XmlElement( name = "x")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _xApexWing;
 		@XmlElement( name = "y")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _yApexWing;
 		@XmlElement( name = "z")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _zApexWing;
 		@XmlElement( name = "rigging_angle")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Angle> _riggingAngleWing;
 		
 		@XmlAttribute( name = "file")
 		private String _hTailPath;
 		@XmlElement( name = "x")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _xApexHTail;
 		@XmlElement( name = "y")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _yApexHTail;
 		@XmlElement( name = "z")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _zApexHTail;
 		@XmlElement( name = "rigging_angle")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Angle> _riggingAngleHTail;
 		
 		@XmlAttribute( name = "file")
 		private String _vTailPath;
 		@XmlElement( name = "x")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _xApexVTail;
 		@XmlElement( name = "y")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _yApexVTail;
 		@XmlElement( name = "z")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _zApexVTail;
 		@XmlElement( name = "rigging_angle")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Angle> _riggingAngleVTail;
 		
 		@XmlAttribute( name = "file")
 		private String _fuselagePath;
 		@XmlElement( name = "x")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _xApexFuselage;
 		@XmlElement( name = "y")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _yApexFuselage;
 		@XmlElement( name = "z")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _zApexFuselage;
 		
 		//-----------------------------------------------
@@ -296,7 +308,8 @@ public class JAXBMarshallingTest01 {
 
 		// CORE OF THE TEST
 		JAXBContext jaxbContext = JAXBContext.newInstance(
-				MyAircraftProtoype.class
+				MyAircraftProtoype.class,
+				AmountAdapter.class
 				);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );

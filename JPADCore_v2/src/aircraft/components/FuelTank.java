@@ -501,42 +501,15 @@ public class FuelTank implements IFuelTank {
 				xCGSegmentOppositeFaceChordwiseX[0] -= 0.0001; 
 			
 			// now that the segments coordinates are calculated, we have to intersect these latter.
-			UnivariateFunction functionToIntersectSpanWise = MyMathUtils.interpolate1DLinear(
-					xCGSegmentOppositeFaceSpanwiseX,
-					xCGSegmentOppositeFaceSpanwiseY
+			xCGPrismoidsList.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									xCGSegmentOppositeFaceSpanwiseX,
+									xCGSegmentOppositeFaceSpanwiseY,
+									xCGSegmentOppositeFaceChordwiseX[0]),
+							SI.METER
+							)
 					);
-			UnivariateFunction functionToIntersectChordWise = MyMathUtils.interpolate1DLinear(
-					xCGSegmentOppositeFaceChordwiseX,
-					xCGSegmentOppositeFaceChordwiseY
-					);
-			
-			double[] arrayToIntersectSpanWise = new double[50];
-			double[] arrayToIntersectChordWise = new double[50];
-			double[] xArrayFittedSpanwise = MyArrayUtils.linspace(
-					xCGSegmentOppositeFaceSpanwiseX[0],
-					xCGSegmentOppositeFaceSpanwiseX[xCGSegmentOppositeFaceSpanwiseX.length-1],
-					50
-					);
-			double[] xArrayFittedChordwise = MyArrayUtils.linspace(
-					xCGSegmentOppositeFaceChordwiseX[0],
-					xCGSegmentOppositeFaceChordwiseX[xCGSegmentOppositeFaceChordwiseX.length-1],
-					50
-					);
-			for(int j=0; j<arrayToIntersectSpanWise.length; j++) {
-				arrayToIntersectSpanWise[j] = functionToIntersectSpanWise.value(xArrayFittedSpanwise[j]);
-				arrayToIntersectChordWise[j] = functionToIntersectChordWise.value(xArrayFittedChordwise[j]);
-			}
-			
-			double[] intersection = MyArrayUtils.intersectArraysSimple(arrayToIntersectSpanWise, arrayToIntersectChordWise);
-			
-			for(int j=0; j<intersection.length; j++)
-				if(intersection[j] != 0.0)
-					xCGPrismoidsList.add(
-							Amount.valueOf(
-									intersection[j],
-									SI.METER
-									)
-							);
 			
 			
 		}

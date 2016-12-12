@@ -9,6 +9,10 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Element;
@@ -39,7 +43,6 @@ import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.RegulationsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import de.dlr.sc.tigl.Tigl.WingCoordinates;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 
@@ -53,13 +56,14 @@ import standaloneutils.MyXMLReaderUtils;
  *  		Vincenzo Cusati,
  *  	    Manuela Ruocco
  */
+
 public class Aircraft implements IAircraft {
 
 	private String _id;
 	private AeroConfigurationTypeEnum _type = AeroConfigurationTypeEnum.EMPTY;
-	private AircraftTypeEnum _typeVehicle;
 	private RegulationsEnum _regulations;
-
+	private AircraftTypeEnum _typeVehicle;
+	
 	private ACAnalysisManager _theAnalysisManager;
 	
 	private Fuselage _theFuselage;
@@ -74,7 +78,7 @@ public class Aircraft implements IAircraft {
 	private LandingGears _theLandingGears;
 	private Systems _theSystems;
 	private CabinConfiguration _theCabinConfiguration;
-	
+
 	private List<Object> _componentsList;
 	
 	private Amount<Area> _sWetTotal = Amount.valueOf(0.0, SI.SQUARE_METRE);
@@ -114,7 +118,7 @@ public class Aircraft implements IAircraft {
 		
 		public AircraftBuilder (String id, AerodynamicDatabaseReader aeroDatabaseReader, HighLiftDatabaseReader highLiftDatabaseReader) {
 			this.__id = id;
-			initialize(AircraftEnum.ATR72, aeroDatabaseReader, highLiftDatabaseReader);
+//			initialize(AircraftEnum.ATR72, aeroDatabaseReader, highLiftDatabaseReader);
 		}
 		
 		public AircraftBuilder (String id, AircraftEnum aircraftName, AerodynamicDatabaseReader aeroDatabaseReader, HighLiftDatabaseReader highLiftDatabaseReader) {
@@ -440,6 +444,11 @@ public class Aircraft implements IAircraft {
 			return this;
 		}
 		
+		public AircraftBuilder componentsList (List<Object> componentsList) {
+			this.__componentsList = componentsList;
+			return this;
+		}
+		
 		public AircraftBuilder xApexFuselage(Amount<Length> xApex) {
 			if(__theFuselage != null)
 				this.__theFuselage.setXApexConstructionAxes(xApex);
@@ -566,17 +575,20 @@ public class Aircraft implements IAircraft {
 		}
 		
 		public AircraftBuilder xApexFuelTank(Amount<Length> xApex) {
-			this.__theFuelTank.setXApexConstructionAxes(xApex);
+			if(__theFuelTank != null)
+				this.__theFuelTank.setXApexConstructionAxes(xApex);
 			return this;
 		}
 		
 		public AircraftBuilder yApexFuelTank(Amount<Length> yApex) {
-			this.__theFuelTank.setYApexConstructionAxes(yApex);
+			if(__theFuelTank != null)
+				this.__theFuelTank.setYApexConstructionAxes(yApex);
 			return this;
 		}
 	
 		public AircraftBuilder zApexFuelTank(Amount<Length> zApex) {
-			this.__theFuelTank.setZApexConstructionAxes(zApex);
+			if(__theFuelTank != null)
+				this.__theFuelTank.setZApexConstructionAxes(zApex);
 			return this;
 		}
 		
@@ -644,7 +656,11 @@ public class Aircraft implements IAircraft {
 	//===================================================================================================
 	// End of builder pattern
 	//===================================================================================================
-
+	
+	public Aircraft() {
+		
+	}
+	
 	public Aircraft(AircraftBuilder builder) {
 		
 		this._id = builder.__id;
@@ -690,7 +706,7 @@ public class Aircraft implements IAircraft {
 					this._theExposedWing.getLiftingSurfaceCreator().getSurfaceWetted()
 					);
 		}
-		else
+		else if(this._theWing != null)
 			this._theWing.getLiftingSurfaceCreator().setSurfaceWettedExposed(
 					this._theWing.getLiftingSurfaceCreator().getSurfaceWetted()
 					);
@@ -843,9 +859,7 @@ public class Aircraft implements IAircraft {
 
 		this._theExposedWing = new LiftingSurfaceBuilder("Exposed wing", ComponentEnum.WING, theWing.getAerodynamicDatabaseReader(), theWing.getHighLiftDatabaseReader())
 				.liftingSurfaceCreator(
-						new LiftingSurfaceCreator
-							.LiftingSurfaceCreatorBuilder("Exposed wing", Boolean.TRUE, ComponentEnum.WING)
-								.build()
+						_theWing.getLiftingSurfaceCreator()
 						)
 				.build();
 		this._theExposedWing.getLiftingSurfaceCreator().getPanels().clear();
@@ -1124,6 +1138,7 @@ public class Aircraft implements IAircraft {
 		if(cabinConfigrationFileName != null) {
 			String cabinConfigurationPath = cabinConfigurationDir + File.separator + cabinConfigrationFileName;
 			theCabinConfiguration = CabinConfiguration.importFromXML(cabinConfigurationPath);
+			theCabinConfiguration.setCabinConfigurationPath(new File(cabinConfigurationPath));
 		}
 		
 		//---------------------------------------------------------------------------------
@@ -1155,6 +1170,27 @@ public class Aircraft implements IAircraft {
 			zApexWing = reader.getXMLAmountLengthByPath("//wing/position/z");
 			riggingAngleWing = reader.getXMLAmountAngleByPath("//wing/rigging_angle");
 			theWing.setRiggingAngle(riggingAngleWing);
+		}
+		
+		//---------------------------------------------------------------------------------
+		// FUEL TANK
+		FuelTank theFuelTank = null;
+		Amount<Length> xApexFuelTank = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> yApexFuelTank = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> zApexFuelTank = Amount.valueOf(0.0, SI.METER);
+		
+		if(theWing != null) {
+			
+			theFuelTank = new FuelTank.FuelTankBuilder("Fuel Tank", theWing).build();
+			xApexFuelTank = xApexWing
+					.plus(theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
+							.times(theWing.getLiftingSurfaceCreator()
+									.getMainSparNonDimensionalPosition()
+									)
+							);
+			yApexFuelTank = yApexWing;
+			zApexFuelTank = zApexWing;			
+			
 		}
 		
 		//---------------------------------------------------------------------------------
@@ -1253,161 +1289,166 @@ public class Aircraft implements IAircraft {
 		//---------------------------------------------------------------------------------
 		// POWER PLANT
 		List<Engine> engineList = new ArrayList<Engine>();
+		PowerPlant thePowerPlant = null;
 		
 		NodeList nodelistEngines = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//power_plant/engine");
 
-		List<String> xApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/x");
-		List<String> yApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/y");
-		List<String> zApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/z");		
-		List<String> tiltingAngleListProperties = reader.getXMLPropertiesByPath("//engine/tilting_angle");
-		List<String> mountingPointListProperties = reader.getXMLPropertiesByPath("//engine/mounting_point");
+		if(nodelistEngines.getLength() > 0) {		
+			List<String> xApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/x");
+			List<String> yApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/y");
+			List<String> zApexPowerPlantListProperties = reader.getXMLPropertiesByPath("//engine/position/z");		
+			List<String> tiltingAngleListProperties = reader.getXMLPropertiesByPath("//engine/tilting_angle");
+			List<String> mountingPointListProperties = reader.getXMLPropertiesByPath("//engine/mounting_point");
 
-		List<Amount<Length>> xApexPowerPlantList = new ArrayList<>();
-		List<Amount<Length>> yApexPowerPlantList = new ArrayList<>();
-		List<Amount<Length>> zApexPowerPlantList = new ArrayList<>();
-		List<Amount<Angle>> tiltingAngleList = new ArrayList<>();
-		List<EngineMountingPositionEnum> mountingPointList = new ArrayList<>();
-		
-		for(int i=0; i<mountingPointListProperties.size(); i++) {
-			if(mountingPointListProperties.get(i).equalsIgnoreCase("AFT_FUSELAGE"))
-				mountingPointList.add(EngineMountingPositionEnum.AFT_FUSELAGE);
-			else if(mountingPointListProperties.get(i).equalsIgnoreCase("BURIED"))
-				mountingPointList.add(EngineMountingPositionEnum.BURIED);
-			else if(mountingPointListProperties.get(i).equalsIgnoreCase("REAR_FUSELAGE"))
-				mountingPointList.add(EngineMountingPositionEnum.REAR_FUSELAGE);
-			else if(mountingPointListProperties.get(i).equalsIgnoreCase("WING"))
-				mountingPointList.add(EngineMountingPositionEnum.WING);
-			else if(mountingPointListProperties.get(i).equalsIgnoreCase("HTAIL"))
-				mountingPointList.add(EngineMountingPositionEnum.HTAIL);
-			else {
-				System.err.println("INVALID ENGINE MOUNTING POSITION !!! ");
-				return null;
+			List<Amount<Length>> xApexPowerPlantList = new ArrayList<>();
+			List<Amount<Length>> yApexPowerPlantList = new ArrayList<>();
+			List<Amount<Length>> zApexPowerPlantList = new ArrayList<>();
+			List<Amount<Angle>> tiltingAngleList = new ArrayList<>();
+			List<EngineMountingPositionEnum> mountingPointList = new ArrayList<>();
+
+			for(int i=0; i<mountingPointListProperties.size(); i++) {
+				if(mountingPointListProperties.get(i).equalsIgnoreCase("AFT_FUSELAGE"))
+					mountingPointList.add(EngineMountingPositionEnum.AFT_FUSELAGE);
+				else if(mountingPointListProperties.get(i).equalsIgnoreCase("BURIED"))
+					mountingPointList.add(EngineMountingPositionEnum.BURIED);
+				else if(mountingPointListProperties.get(i).equalsIgnoreCase("REAR_FUSELAGE"))
+					mountingPointList.add(EngineMountingPositionEnum.REAR_FUSELAGE);
+				else if(mountingPointListProperties.get(i).equalsIgnoreCase("WING"))
+					mountingPointList.add(EngineMountingPositionEnum.WING);
+				else if(mountingPointListProperties.get(i).equalsIgnoreCase("HTAIL"))
+					mountingPointList.add(EngineMountingPositionEnum.HTAIL);
+				else {
+					System.err.println("INVALID ENGINE MOUNTING POSITION !!! ");
+					return null;
+				}
+
+				xApexPowerPlantList.add(
+						Amount.valueOf(
+								Double.valueOf(
+										xApexPowerPlantListProperties.get(i)
+										),
+								SI.METER)
+						);
+				yApexPowerPlantList.add(
+						Amount.valueOf(
+								Double.valueOf(
+										yApexPowerPlantListProperties.get(i)
+										),
+								SI.METER)
+						);
+				zApexPowerPlantList.add(
+						Amount.valueOf(
+								Double.valueOf(
+										zApexPowerPlantListProperties.get(i)
+										),
+								SI.METER)
+						);
+				tiltingAngleList.add(
+						Amount.valueOf(
+								Double.valueOf(
+										tiltingAngleListProperties.get(i)
+										),
+								NonSI.DEGREE_ANGLE)
+						);
 			}
-			
-			xApexPowerPlantList.add(
-					Amount.valueOf(
-							Double.valueOf(
-									xApexPowerPlantListProperties.get(i)
-									),
-							SI.METER)
-					);
-			yApexPowerPlantList.add(
-					Amount.valueOf(
-							Double.valueOf(
-									yApexPowerPlantListProperties.get(i)
-									),
-							SI.METER)
-					);
-			zApexPowerPlantList.add(
-					Amount.valueOf(
-							Double.valueOf(
-									zApexPowerPlantListProperties.get(i)
-									),
-							SI.METER)
-					);
-			tiltingAngleList.add(
-					Amount.valueOf(
-							Double.valueOf(
-									tiltingAngleListProperties.get(i)
-									),
-							NonSI.DEGREE_ANGLE)
-					);
-		}
-		
-		System.out.println("Engines found: " + nodelistEngines.getLength());
-		for (int i = 0; i < nodelistEngines.getLength(); i++) {
-			Node nodeEngine  = nodelistEngines.item(i); // .getNodeValue();
-			Element elementEngine = (Element) nodeEngine;
-			String engineFileName = elementEngine.getAttribute("file");
-			System.out.println("[" + i + "]\nEngine file: " + elementEngine.getAttribute("file"));
-			
-			String enginePath = engineDir + File.separator + engineFileName;
-			engineList.add(Engine.importFromXML(enginePath));
-			
-			engineList.get(i).setXApexConstructionAxes(xApexPowerPlantList.get(i));
-			engineList.get(i).setYApexConstructionAxes(yApexPowerPlantList.get(i));
-			engineList.get(i).setZApexConstructionAxes(zApexPowerPlantList.get(i));
-			engineList.get(i).setTiltingAngle(tiltingAngleList.get(i));
-			engineList.get(i).setMountingPosition(mountingPointList.get(i));
-			
-		}
 
-		PowerPlant thePowerPlant = new PowerPlant.PowerPlantBuilder("MyPowerPlant", engineList).build();
-		
+			System.out.println("Engines found: " + nodelistEngines.getLength());
+			for (int i = 0; i < nodelistEngines.getLength(); i++) {
+				Node nodeEngine  = nodelistEngines.item(i); // .getNodeValue();
+				Element elementEngine = (Element) nodeEngine;
+				String engineFileName = elementEngine.getAttribute("file");
+				System.out.println("[" + i + "]\nEngine file: " + elementEngine.getAttribute("file"));
+
+				String enginePath = engineDir + File.separator + engineFileName;
+				engineList.add(Engine.importFromXML(enginePath));
+
+				engineList.get(i).setXApexConstructionAxes(xApexPowerPlantList.get(i));
+				engineList.get(i).setYApexConstructionAxes(yApexPowerPlantList.get(i));
+				engineList.get(i).setZApexConstructionAxes(zApexPowerPlantList.get(i));
+				engineList.get(i).setTiltingAngle(tiltingAngleList.get(i));
+				engineList.get(i).setMountingPosition(mountingPointList.get(i));
+
+			}
+
+			thePowerPlant = new PowerPlant.PowerPlantBuilder("MyPowerPlant", engineList).build();
+
+		}
 		//---------------------------------------------------------------------------------
 		// NACELLES
 		List<NacelleCreator> nacelleList = new ArrayList<NacelleCreator>();
+		Nacelles theNacelles = null;
 		
 		NodeList nodelistNacelle = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//nacelles/nacelle");
 
-		List<String> xApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/x");
-		List<String> yApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/y");
-		List<String> zApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/z");		
-		List<String> mountingPointNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/mounting_point");
+		if(nodelistNacelle.getLength() > 0) {
+			List<String> xApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/x");
+			List<String> yApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/y");
+			List<String> zApexNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/position/z");		
+			List<String> mountingPointNacellesListProperties = reader.getXMLPropertiesByPath("//nacelle/mounting_point");
 
-		List<Amount<Length>> xApexNacellesList = new ArrayList<>();
-		List<Amount<Length>> yApexNacellesList = new ArrayList<>();
-		List<Amount<Length>> zApexNacellesList = new ArrayList<>();
-		List<NacelleCreator.MountingPosition> mountingPointNacellesList = new ArrayList<>();
-		
-		for(int i=0; i<mountingPointNacellesListProperties.size(); i++) {
-			if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("WING"))
-				mountingPointNacellesList.add(NacelleCreator.MountingPosition.WING);
-			else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("FUSELAGE"))
-				mountingPointNacellesList.add(NacelleCreator.MountingPosition.FUSELAGE);
-			else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("UNDERCARRIAGE_HOUSING"))
-				mountingPointNacellesList.add(NacelleCreator.MountingPosition.UNDERCARRIAGE_HOUSING);
-			else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("HTAIL"))
-				mountingPointNacellesList.add(NacelleCreator.MountingPosition.HTAIL);
-			else {
-				System.err.println("INVALID NACELLE MOUNTING POSITION !!! ");
-				return null;
+			List<Amount<Length>> xApexNacellesList = new ArrayList<>();
+			List<Amount<Length>> yApexNacellesList = new ArrayList<>();
+			List<Amount<Length>> zApexNacellesList = new ArrayList<>();
+			List<NacelleCreator.MountingPosition> mountingPointNacellesList = new ArrayList<>();
+
+			for(int i=0; i<mountingPointNacellesListProperties.size(); i++) {
+				if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("WING"))
+					mountingPointNacellesList.add(NacelleCreator.MountingPosition.WING);
+				else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("FUSELAGE"))
+					mountingPointNacellesList.add(NacelleCreator.MountingPosition.FUSELAGE);
+				else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("UNDERCARRIAGE_HOUSING"))
+					mountingPointNacellesList.add(NacelleCreator.MountingPosition.UNDERCARRIAGE_HOUSING);
+				else if(mountingPointNacellesListProperties.get(i).equalsIgnoreCase("HTAIL"))
+					mountingPointNacellesList.add(NacelleCreator.MountingPosition.HTAIL);
+				else {
+					System.err.println("INVALID NACELLE MOUNTING POSITION !!! ");
+					return null;
+				}
+
+				xApexNacellesList.add(
+						Amount.valueOf(
+								Double.valueOf(
+										xApexNacellesListProperties.get(i)
+										),
+								SI.METER)
+						);
+				yApexNacellesList.add(
+						Amount.valueOf(
+								Double.valueOf(
+										yApexNacellesListProperties.get(i)
+										),
+								SI.METER)
+						);
+				zApexNacellesList.add(
+						Amount.valueOf(
+								Double.valueOf(
+										zApexNacellesListProperties.get(i)
+										),
+								SI.METER)
+						);
 			}
-			
-			xApexNacellesList.add(
-					Amount.valueOf(
-							Double.valueOf(
-									xApexNacellesListProperties.get(i)
-									),
-							SI.METER)
-					);
-			yApexNacellesList.add(
-					Amount.valueOf(
-							Double.valueOf(
-									yApexNacellesListProperties.get(i)
-									),
-							SI.METER)
-					);
-			zApexNacellesList.add(
-					Amount.valueOf(
-							Double.valueOf(
-									zApexNacellesListProperties.get(i)
-									),
-							SI.METER)
-					);
-		}
-		
-		System.out.println("Nacelles found: " + nodelistNacelle.getLength());
-		for (int i = 0; i < nodelistNacelle.getLength(); i++) {
-			Node nodeNacelle  = nodelistNacelle.item(i); // .getNodeValue();
-			Element elementNacelle = (Element) nodeNacelle;
-			String nacelleFileName = elementNacelle.getAttribute("file");
-			System.out.println("[" + i + "]\nNacelle file: " + elementNacelle.getAttribute("file"));
-			
-			String nacellePath = nacelleDir + File.separator + nacelleFileName;
-			nacelleList.add(NacelleCreator.importFromXML(nacellePath, engineDir));
-			
-			nacelleList.get(i).setXApexConstructionAxes(xApexNacellesList.get(i));
-			nacelleList.get(i).setYApexConstructionAxes(yApexNacellesList.get(i));
-			nacelleList.get(i).setZApexConstructionAxes(zApexNacellesList.get(i));
-			nacelleList.get(i).setMountingPosition(mountingPointNacellesList.get(i));
-			
-		}
 
-		Nacelles theNacelles = new Nacelles.NacellesBuilder("MyNacelle", nacelleList).build();
-		
+			System.out.println("Nacelles found: " + nodelistNacelle.getLength());
+			for (int i = 0; i < nodelistNacelle.getLength(); i++) {
+				Node nodeNacelle  = nodelistNacelle.item(i); // .getNodeValue();
+				Element elementNacelle = (Element) nodeNacelle;
+				String nacelleFileName = elementNacelle.getAttribute("file");
+				System.out.println("[" + i + "]\nNacelle file: " + elementNacelle.getAttribute("file"));
+
+				String nacellePath = nacelleDir + File.separator + nacelleFileName;
+				nacelleList.add(NacelleCreator.importFromXML(nacellePath, engineDir));
+
+				nacelleList.get(i).setXApexConstructionAxes(xApexNacellesList.get(i));
+				nacelleList.get(i).setYApexConstructionAxes(yApexNacellesList.get(i));
+				nacelleList.get(i).setZApexConstructionAxes(zApexNacellesList.get(i));
+				nacelleList.get(i).setMountingPosition(mountingPointNacellesList.get(i));
+
+			}
+
+			theNacelles = new Nacelles.NacellesBuilder("MyNacelle", nacelleList).build();
+		}
 		//---------------------------------------------------------------------------------
 		// LANDING GEARS
 		String landingGearsFileName =
@@ -1466,10 +1507,38 @@ public class Aircraft implements IAircraft {
 		}
 		
 		//---------------------------------------------------------------------------------
+		// COMPONENT LIST:
+		List<Object> componentList = new ArrayList<>();
+		if(theFuselage != null)
+			componentList.add(ComponentEnum.FUSELAGE);
+		if(theCabinConfiguration != null)
+			componentList.add(ComponentEnum.CABIN_CONFIGURATION);
+		if(theWing != null)
+			componentList.add(ComponentEnum.WING);
+		if(theFuelTank != null)
+			componentList.add(ComponentEnum.FUEL_TANK);
+		if(theHorizontalTail != null)
+			componentList.add(ComponentEnum.HORIZONTAL_TAIL);
+		if(theVerticalTail != null)
+			componentList.add(ComponentEnum.VERTICAL_TAIL);
+		if(theCanard != null)
+			componentList.add(ComponentEnum.CANARD);
+		if(thePowerPlant != null)
+			componentList.add(ComponentEnum.POWER_PLANT);
+		if(theNacelles != null)
+			componentList.add(ComponentEnum.NACELLE);
+		if(theLandingGears != null)
+			componentList.add(ComponentEnum.LANDING_GEAR);
+		if(theSystems != null)
+			componentList.add(ComponentEnum.SYSTEMS);
+		
+		
+		//---------------------------------------------------------------------------------
 		Aircraft theAircraft = new AircraftBuilder(id, aeroDatabaseReader, highLiftDatabaseReader)
 				.name(id)
 				.aircraftType(type)
 				.regulations(regulations)
+				.componentsList(componentList)
 				.fuselage(theFuselage)
 				.xApexFuselage(xApexFuselage)
 				.yApexFuselage(yApexFuselage)
@@ -1491,16 +1560,10 @@ public class Aircraft implements IAircraft {
 				.xApexCanard(xApexCanard)
 				.yApexCanard(yApexCanard)
 				.zApexCanard(zApexCanard)
-				.fuelTank(new FuelTank.FuelTankBuilder("Fuel Tank", theWing).build())
-				.xApexFuelTank(theWing.getXApexConstructionAxes()
-						.plus(theWing.getChordRoot()
-								.times(theWing.getLiftingSurfaceCreator()
-										.getMainSparNonDimensionalPosition()
-										)
-								)
-						)
-				.yApexFuelTank(theWing.getYApexConstructionAxes())
-				.zApexFuelTank(theWing.getZApexConstructionAxes())
+				.fuelTank(theFuelTank)
+				.xApexFuelTank(xApexFuelTank)
+				.yApexFuelTank(yApexFuelTank)
+				.zApexFuelTank(zApexFuelTank)
 				.powerPlant(thePowerPlant)
 				.nacelles(theNacelles)
 				.landingGears(theLandingGears)

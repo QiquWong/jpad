@@ -1,5 +1,6 @@
 package aircraft.components;
 
+import java.io.File;
 import java.util.List;
 
 import javax.measure.quantity.Length;
@@ -236,5 +237,9 @@ public interface ICabinConfiguration {
 	public void setFlightCrewNumber(Integer flightCrewNumber);
 
 	public Integer getCabinCrewNumber();
+	
+	public File getCabinConfigurationPath();
+	
+	public void setCabinConfigurationPath(File _cabinConfigurationPath);
 	
 }

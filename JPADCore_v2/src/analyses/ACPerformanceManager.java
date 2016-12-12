@@ -71,7 +71,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
-public class ACPerformanceManager {
+public class ACPerformanceManager implements IACPerformanceManger {
 
 	/*
 	 *******************************************************************************
@@ -6831,5 +6831,4 @@ public class ACPerformanceManager {
 	public void setYawingMomentOEI(double[] _yawingMomentOEI) {
 		this._yawingMomentOEI = _yawingMomentOEI;
 	}
-
 }

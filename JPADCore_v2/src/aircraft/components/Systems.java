@@ -59,7 +59,7 @@ public class Systems implements ISystems {
 
 		public SystemsBuilder (String id) {
 			this.__id = id;
-			this.initializeDefaultVariables(AircraftEnum.ATR72);
+//			this.initializeDefaultVariables(AircraftEnum.ATR72);
 		}
 		
 		public SystemsBuilder (String id, AircraftEnum aircraftName) {

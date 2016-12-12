@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jscience.physics.amount.Amount;
 
@@ -29,6 +30,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.RegulationsEnum;
+import writers.xmlAdapters.AmountAdapter;
 
 /*
  *  reference: https://www.javacodegeeks.com/2014/12/jaxb-tutorial-xml-binding.html
@@ -89,12 +91,16 @@ public class JAXBMarshallingTest02 {
 		@XmlAttribute( name = "file")
 		private String _path;
 		@XmlElement( name = "x")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _xApex;
 		@XmlElement( name = "y")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _yApex;
 		@XmlElement( name = "z")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _zApex;
 		@XmlElement( name = "rigging_angle")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Angle> _riggingAngle;
 		
 		//-----------------------------------------------
@@ -156,10 +162,13 @@ public class JAXBMarshallingTest02 {
 		@XmlAttribute( name = "file")
 		private String _fuselagePath;
 		@XmlElement( name = "x")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _xApexFuselage;
 		@XmlElement( name = "y")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _yApexFuselage;
 		@XmlElement( name = "z")
+		@XmlJavaTypeAdapter(AmountAdapter.class)
 		private Amount<Length> _zApexFuselage;
 
 		//-----------------------------------------------
@@ -302,7 +311,10 @@ public class JAXBMarshallingTest02 {
 	        JAXBContext context;
 	        BufferedWriter writer = null;
 	        writer = new BufferedWriter(new FileWriter(selectedFile));
-	        context = JAXBContext.newInstance(MyAircraftProtoype.class);
+	        context = JAXBContext.newInstance(
+	        		MyAircraftProtoype.class,
+	        		AmountAdapter.class
+	        		);
 	        Marshaller m = context.createMarshaller();
 	        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 	        m.marshal(
@@ -332,8 +344,6 @@ public class JAXBMarshallingTest02 {
 		 * WRITTEN ON FILE.
 		 * 
 		 * TODO : SEE HOW TO ADD TAG NOT LINKED WITH FIELDS
-		 * TODO : SEE HOW TO PRINT AMOUNT FIELDS
-		 * 
 		 * TODO : POSSIBLE XML STRUCTURE CHANGE?? (DISCUSS WITH PROF.)
 		 */
 		

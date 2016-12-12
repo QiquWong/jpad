@@ -1937,7 +1937,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 		public FuselageBuilder(String id){ // defaults to ATR72 fuselage
 			this._id = id;
-			this.initializeDefaultVariables(AircraftEnum.ATR72);
+//			this.initializeDefaultVariables(AircraftEnum.ATR72);
 		}
 
 		public FuselageBuilder(String id, AircraftEnum aircraftName){

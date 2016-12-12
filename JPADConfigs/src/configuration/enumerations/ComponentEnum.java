@@ -21,5 +21,6 @@ public enum ComponentEnum{
 	FUEL_TANK,
 	SYSTEMS, 
 	ENGINE,
+	CABIN_CONFIGURATION,
 	WINGBODY;
 }
