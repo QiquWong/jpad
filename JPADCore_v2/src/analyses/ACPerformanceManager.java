@@ -5174,8 +5174,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_massList.add(_maximumTakeOffMass);
 			_massList.add(_maximumTakeOffMass);
 			_massList.add(_maximumTakeOffMass.minus(_fuelUsedList.get(2)));
-			_massList.add(_massList.get(_massList.size()-1).minus(_fuelUsedList.get(3)));
-			_massList.add(_massList.get(_massList.size()-1).minus(_fuelUsedList.get(4)));
+			_massList.add(_maximumTakeOffMass.minus(_fuelUsedList.get(3)));
+			_massList.add(_maximumTakeOffMass.minus(_fuelUsedList.get(4)));
 			_massList.add(_massList.get(_massList.size()-1));
 			
 			_endMissionMass = _massList.get(_massList.size()-1);
