@@ -126,6 +126,7 @@ public class StabilityExecutableManager {
 	private Amount<Angle> _wingSweepQuarterChord;
 	private Amount<Angle> _wingSweepLE;
 	private Double _wingVortexSemiSpanToSemiSpanRatio;
+	private double cLAlphaMachZero;
 
 	private AirfoilFamilyEnum _wingMeanAirfoilFamily;
 	private Double _wingMaxThicknessMeanAirfoil;
@@ -137,7 +138,14 @@ public class StabilityExecutableManager {
 	private List<List<Amount<Angle>>> _wingInducedAngleOfAttack = new ArrayList<>();
 	private List<List<Double>> _wingCLAirfoilsDistribution = new ArrayList<List<Double>>();
 	private List<List<Double>> _wingCLAirfoilsDistributionFinal = new ArrayList<List<Double>>();
-
+	//input
+	private MethodEnum _wingairfoilMomentCoefficientCurve;
+	private List<List<Double>> _wingCLMomentAirfoilInput = new ArrayList<List<Double>>();
+	private List<List<Double>> _wingCMMomentAirfoilInput = new ArrayList<List<Double>>();
+	//output
+	private List<Double> _wingCLMomentAirfoilOutput = new ArrayList<Double>();
+	private List<List<Double>> _wingCMMomentAirfoilOutput = new ArrayList<List<Double>>();
+	
 	// input distributions 
 	private List<Double> _wingYAdimensionalBreakPoints;
 	private List<Amount<Length>> _wingYBreakPoints;
@@ -501,6 +509,7 @@ public class StabilityExecutableManager {
 
 	//CALCULATED_INPUT_AIRFOIL-wing
 	private List<Double> clListDragWing = new ArrayList<>();
+	private List<Double> clListMomentWing = new ArrayList<>();
 	private List<List<Double>> clPolarAirfoilWingDragPolar = new ArrayList<List<Double>>();
 	private List<List<Double>> cDPolarAirfoilsWing= new ArrayList<List<Double>>();
 	private List<List<Double>> _wingCdAirfoilDistributionInputStations = new ArrayList<List<Double>>();
@@ -547,7 +556,11 @@ public class StabilityExecutableManager {
 	private Map<MethodEnum, List<Double>> _wingMomentCoefficientAC = new HashMap<MethodEnum, List<Double>>();
 	private List<List<Double>>_wingMomentCoefficients = new ArrayList<>();
 	private List<Double>_wingMomentCoefficientFinal = new ArrayList<>();
+	private List<Double>_wingMomentCoefficientConstant = new ArrayList<>();
+	private List<Double>_wingMomentCoefficientFinalACVariable = new ArrayList<>();
 	
+	
+	private Amount<Length> _wingZACMAC;
 	private Amount<Length> _wingYACMAC;
 
 	
@@ -1311,7 +1324,7 @@ public class StabilityExecutableManager {
 		double clOneMachZero = theNasaBlackwellCalculatorMachZero.getCLCurrent();
 		theNasaBlackwellCalculatorMachZero.calculate(Amount.valueOf(toRadians(4.), SI.RADIAN));
 		double clTwoMachZero = theNasaBlackwellCalculatorMachZero.getCLCurrent();
-		double cLAlphaMachZero = (clTwoMachZero-clOneMachZero)/toRadians(4);
+		cLAlphaMachZero = (clTwoMachZero-clOneMachZero)/toRadians(4);
 
 		// Roskam method
 		double downwashGradientConstant = AerodynamicCalc.calculateDownwashRoskamWithMachEffect(
@@ -1465,7 +1478,8 @@ public class StabilityExecutableManager {
 		System.out.println("Cl zero Break Points --> " + this._wingCl0BreakPoints);
 		System.out.println("Alpha star Break Points --> " + this._wingAlphaStarBreakPoints);
 		System.out.println("Cl max Break Points --> " + this._wingClMaxBreakPoints);
-		//distribution		
+		//distribution	
+		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingYDistribution, "Y Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingChordsDistribution, "Chord Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingXleDistribution, "XLE Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingYLEDistribution, "YLE Distribution", ",");
@@ -1577,6 +1591,7 @@ public class StabilityExecutableManager {
 		.append("\t\talpha zero lift = " + _wingAlphaZeroLift+ "\n" )
 		.append("\t\tCL zero = " + _wingcLZero+ "\n")
 		.append("\t\tCL alpha = " + _wingclAlpha+ "\n")
+		.append("\t\tCL alpha M=0 = " + cLAlphaMachZero+ "\n")
 		.append("\t\tCL star = " + _wingcLStar+ "\n")
 		.append("\t\tAlpha star = " + _wingalphaStar+ "\n")
 		.append("\t\tCL max = " + _wingcLMax+ "\n")
@@ -1728,6 +1743,8 @@ public class StabilityExecutableManager {
 		.append("\t-------------------------------------\n")
 		.append("\t\tMAC = " +_wingMAC+ "\n")
 		.append("\t\tx MAC = " +_wingMeanAerodynamicChordLeadingEdgeX + "\n")
+		.append("\t\ty MAC = " +_wingYACMAC + "\n")
+		.append("\t\tz MAC = " +_wingZACMAC + "\n")
 		.append("\t\tXAC MAC = " +_wingXACMAC+ "\n")
 		.append("\t\tXAC MAC percent = " +_wingXACMACpercent+ "\n")
 		.append("\t\tXAC LRF = " +_wingXACLRF+ "\n")
@@ -1735,6 +1752,7 @@ public class StabilityExecutableManager {
 		.append("\t\tDelta ac due to fuselage = " + _deltaXACdueToFuselage + "\n")
 		.append("\t\tXAC wing body BRF = " +_wingBodyXACBRF+ "\n")
 		.append("\t\teta Stations = " +_wingYAdimensionalDistribution+ "\n")
+		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasWing, "\t\tAlpha Wing", ","))
 		.append("\t\tMoment Coefficient with respect to AC DE Young Harper --> " +_wingMomentCoefficientAC.get(MethodEnum.DEYOUNG_HARPER)+ "\n")
 		.append("\t\tMoment Coefficient with respect to AC NAPOLITANO DATCOM --> " +_wingMomentCoefficientAC.get(MethodEnum.NAPOLITANO_DATCOM)+ "\n")
 		;
@@ -1742,11 +1760,16 @@ public class StabilityExecutableManager {
 			sb.append("\t\tMoment Coefficient with respect to " + _wingMomentumPole.get(i) + "--> " +_wingMomentCoefficients.get(i)+ "\n");
 		}
 		;
+		sb.append("\t\tMoment Coefficient with respect to AC FINAL " + _wingFinalMomentumPole + " --> " + _wingMomentCoefficientConstant + "\n");
+		if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.INPUTCURVE){
+		sb.append("\t\tMoment Coefficient with respect to AC FINAL with cm ac variable " + _wingFinalMomentumPole + " --> " +_wingMomentCoefficientFinalACVariable+ "\n")
+		;
+		}
 		double xac = _wingFinalMomentumPole + _deltaXACdueToFuselage;
 		sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "\t\tAlpha Body", ","))
-		.append("\t\tCM wing with pendular stability, AC wing = " + _wingFinalMomentumPole + " AC wing body " + 
+		.append("\t\tCM wing respect to CG with pendular stability, AC wing = " + _wingFinalMomentumPole + " AC wing body " + 
 				  xac + " = " + _wingMomentCoefficientPendular + "\n")
-		.append("\t\tCM wing without pendular stability, AC wing = " + _wingFinalMomentumPole + " AC wing body " + 
+		.append("\t\tCM wing respect to CG without pendular stability, AC wing = " + _wingFinalMomentumPole + " AC wing body " + 
 				  xac + " = " + _wingMomentCoefficientNOPendular + "\n")
 		;
 		
@@ -1825,7 +1848,7 @@ public class StabilityExecutableManager {
 		}
 		;		
 		for (int i=0; i<_alphaWingForDistribution.size(); i++){
-			sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphaIWingDistribution.get(i), "\t\tAlpha_i wing at alpha", ","));
+			sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphaIWingDistribution.get(i), "\t\tAlpha_i wing at alpha = " +  _alphaWingForDistribution.get(i)  + " deg --> " , ","));
 		}
 		;
 		for (int i=0; i<_alphaWingForDistribution.size(); i++){
@@ -2140,7 +2163,7 @@ public class StabilityExecutableManager {
 			}
 			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
 			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
-			yList.add(_hTailliftCLMaxDistribution);
+			yList.add(MyArrayUtils.convertFromDoublePrimitive(_hTailliftCoefficientDistributionatCLMax));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailClMaxDistribution));
 			legend.add("Cl distribution at CL max");
 			legend.add("Cl max airfoils");
@@ -2478,7 +2501,8 @@ public class StabilityExecutableManager {
 				"Wing Moment Coefficient with respect to AC indicated = " + _wingFinalMomentumPole, 
 				"alpha_w", "CM", 
 				null, null,
-				_wingMomentCoefficientFinal.get(0)-0.25, _wingMomentCoefficientFinal.get(0)+0.1,
+				//_wingMomentCoefficientFinal.get(0)-0.25, _wingMomentCoefficientFinal.get(0)+0.1,
+				null, null,
 				"deg", "",
 				false,
 				legend,
@@ -2506,7 +2530,7 @@ public class StabilityExecutableManager {
 					"Wing Moment Coefficient", 
 					"alpha_w", "CM", 
 					null, null,
-					-0.23, 0.1,
+					null, null,
 					"deg", "",
 					true,
 					legend,
@@ -3497,7 +3521,7 @@ public class StabilityExecutableManager {
 			clListDragWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 
-		_wingCdAirfoilDistribution = AerodynamicCalc.calculateCDMatrixAirfoils(
+		_wingCdAirfoilDistribution = AerodynamicCalc.calculateCDorCMMatrixAirfoils(
 				clListDragWing,
 				clPolarAirfoilWingDragPolar, 
 				cDPolarAirfoilsWing,
@@ -3523,6 +3547,36 @@ public class StabilityExecutableManager {
 				);
 
 	}
+		
+		//-----cm curve--------------------------------
+		
+		if(_wingairfoilMomentCoefficientCurve==MethodEnum.INPUTCURVE){
+			// cl array
+			double minValue = 1.0;
+			double maxValue = 0.0;
+			for (int i=0; i<_wingNumberOfGivenSections; i++){
+				int limit = _wingCLMomentAirfoilInput.get(i).size();
+				for(int ii=0; ii<limit; ii++){
+					if(_wingCLMomentAirfoilInput.get(i).get(ii)<minValue)
+						minValue = _wingCLMomentAirfoilInput.get(i).get(ii);
+					if(_wingCLMomentAirfoilInput.get(i).get(ii)>maxValue)
+						maxValue = _wingCLMomentAirfoilInput.get(i).get(ii);
+				}
+			}
+			clListMomentWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
+			_wingCLMomentAirfoilOutput = clListMomentWing;
+			
+			// matrix
+			_wingCMMomentAirfoilOutput = AerodynamicCalc.calculateCDorCMMatrixAirfoils(
+					clListMomentWing,
+					_wingCLMomentAirfoilInput, 
+					_wingCMMomentAirfoilInput,
+					_wingYAdimensionalBreakPoints, 
+					_wingYAdimensionalDistribution
+					);
+
+		}
 		
 // HORIZONTAL TAIL ----------------------------------------
 		//---------cd curve-----------------------
@@ -3554,7 +3608,7 @@ public class StabilityExecutableManager {
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 	
 		
-		_hTailCdAirfoilDistribution = AerodynamicCalc.calculateCDMatrixAirfoils(
+		_hTailCdAirfoilDistribution = AerodynamicCalc.calculateCDorCMMatrixAirfoils(
 				clListDragTail,
 				clPolarAirfoilHTailDragPolar, 
 				cDPolarAirfoilsHTail,
@@ -3777,9 +3831,16 @@ public class StabilityExecutableManager {
 				_wingXACMAC.get(MethodEnum.NAPOLITANO_DATCOM).plus(_wingMeanAerodynamicChordLeadingEdgeX).plus(_xApexWing));
 		
 
-		_wingYACMAC = LSGeometryCalc.calcYacFromIntegral(
+		_wingZACMAC = LSGeometryCalc.calcZacFromIntegral(
 				_wingSurface,
 				_wingYLEDistribution,
+				_wingChordsDistribution,
+				_wingYDistribution
+				);
+		
+		_wingYACMAC = LSGeometryCalc.calcZacFromIntegral(
+				_wingSurface,
+				_wingYDistribution,
 				_wingChordsDistribution,
 				_wingYDistribution
 				);
@@ -3892,11 +3953,13 @@ public class StabilityExecutableManager {
 			_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
 			_wingXACMACpercent.get(MethodEnum.DEYOUNG_HARPER)* 
 			_wingMAC.doubleValue(SI.METER), SI.METER);
-			
+		
+	if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.CONSTANT){
 		_wingMomentCoefficientAC.put(MethodEnum.DEYOUNG_HARPER, 
 				MomentCalc.calcCMLiftingSurfaceWithIntegral(
 				theNasaBlackwellCalculatorMachActualWing, 
 				_alphasWing, 
+				_wingMAC,
 				_wingYDistribution, 
 				_wingCl0Distribution, 
 				_wingClAlphaDistributionDeg, 
@@ -3909,17 +3972,40 @@ public class StabilityExecutableManager {
 				_wingSurface, 
 				momentumPoleYH
 				));
-		
+	}
+	
+	if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.INPUTCURVE){
+		_wingMomentCoefficientAC.put(MethodEnum.DEYOUNG_HARPER, 
+				MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
+				theNasaBlackwellCalculatorMachActualWing, 
+				_alphasWing, 
+				_wingMAC,
+				_wingYDistribution, 
+				_wingCl0Distribution, 
+				_wingClAlphaDistributionDeg, 
+				_wingCLMomentAirfoilOutput,
+				_wingCMMomentAirfoilOutput,
+				_wingXACDistribution, 
+				_wingChordsDistribution, 
+				_wingXleDistribution, 
+				_wingCLAirfoilsDistributionFinal, 
+				_alphasWing,
+				_wingSurface, 
+				momentumPoleYH
+				));
+	}
 		// respect TO AC NAPOLITANO DATCOM	
 		Amount<Length> momentumPoleND = Amount.valueOf( 
 				_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
 				_wingXACMACpercent.get(MethodEnum.NAPOLITANO_DATCOM)* 
 				_wingMAC.doubleValue(SI.METER), SI.METER);
-				
+		
+		if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.CONSTANT){		
 			_wingMomentCoefficientAC.put(MethodEnum.NAPOLITANO_DATCOM, 
 					MomentCalc.calcCMLiftingSurfaceWithIntegral(
 					theNasaBlackwellCalculatorMachActualWing, 
 					_alphasWing, 
+					_wingMAC,
 					_wingYDistribution, 
 					_wingCl0Distribution, 
 					_wingClAlphaDistributionDeg, 
@@ -3932,7 +4018,28 @@ public class StabilityExecutableManager {
 					_wingSurface, 
 					momentumPoleND
 					));
-			
+		}
+		
+		if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.INPUTCURVE){		
+			_wingMomentCoefficientAC.put(MethodEnum.NAPOLITANO_DATCOM, 
+					MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
+					theNasaBlackwellCalculatorMachActualWing, 
+					_alphasWing, 
+					_wingMAC,
+					_wingYDistribution, 
+					_wingCl0Distribution, 
+					_wingClAlphaDistributionDeg, 
+					_wingCLMomentAirfoilOutput,
+					_wingCMMomentAirfoilOutput,
+					_wingXACDistribution, 
+					_wingChordsDistribution, 
+					_wingXleDistribution, 
+					_wingCLAirfoilsDistributionFinal, 
+					_alphasWing,
+					_wingSurface, 
+					momentumPoleND
+					));
+		}
 			
 			// respect TO another pole	
 			Amount<Length> momentumPole;
@@ -3941,11 +4048,13 @@ public class StabilityExecutableManager {
 					_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
 					_wingMomentumPole.get(j)* 
 					_wingMAC.doubleValue(SI.METER), SI.METER);
-					
+			
+			if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.CONSTANT){	
 				_wingMomentCoefficients.add(
 						MomentCalc.calcCMLiftingSurfaceWithIntegral(
 						theNasaBlackwellCalculatorMachActualWing, 
 						_alphasWing, 
+						_wingMAC,
 						_wingYDistribution, 
 						_wingCl0Distribution, 
 						_wingClAlphaDistributionDeg, 
@@ -3960,17 +4069,40 @@ public class StabilityExecutableManager {
 						));
 			}
 			
+			if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.INPUTCURVE){	
+				_wingMomentCoefficients.add(
+						MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
+						theNasaBlackwellCalculatorMachActualWing, 
+						_alphasWing, 
+						_wingMAC,
+						_wingYDistribution, 
+						_wingCl0Distribution, 
+						_wingClAlphaDistributionDeg, 
+						_wingCLMomentAirfoilOutput,
+						_wingCMMomentAirfoilOutput,
+						_wingXACDistribution, 
+						_wingChordsDistribution, 
+						_wingXleDistribution, 
+						_wingCLAirfoilsDistributionFinal, 
+						_alphasWing,
+						_wingSurface, 
+						momentumPole
+						));
+			}
+			}
+			
 			// respect TO final pole	
 			Amount<Length> momentumPoleFinal;
 			momentumPoleFinal = Amount.valueOf( 
 					_wingMeanAerodynamicChordLeadingEdgeX.doubleValue(SI.METER) + 
 					_wingFinalMomentumPole* 
 					_wingMAC.doubleValue(SI.METER), SI.METER);
-					
+
 			_wingMomentCoefficientFinal = 
 						MomentCalc.calcCMLiftingSurfaceWithIntegral(
 						theNasaBlackwellCalculatorMachActualWing, 
 						_alphasWing, 
+						_wingMAC,
 						_wingYDistribution, 
 						_wingCl0Distribution, 
 						_wingClAlphaDistributionDeg, 
@@ -3983,6 +4115,30 @@ public class StabilityExecutableManager {
 						_wingSurface, 
 						momentumPoleFinal
 						);
+			
+			if(this.getWingairfoilMomentCoefficientCurve()==MethodEnum.INPUTCURVE){
+			_wingMomentCoefficientFinalACVariable =
+					MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
+							theNasaBlackwellCalculatorMachActualWing, 
+							_alphasWing, 
+							_wingMAC,
+							_wingYDistribution, 
+							_wingCl0Distribution, 
+							_wingClAlphaDistributionDeg, 
+							_wingCLMomentAirfoilOutput,
+							_wingCMMomentAirfoilOutput, 
+							_wingXACDistribution, 
+							_wingChordsDistribution, 
+							_wingXleDistribution, 
+							_wingCLAirfoilsDistributionFinal, 
+							_alphasWing,
+							_wingSurface, 
+							momentumPoleFinal
+							);
+			_wingMomentCoefficientConstant = _wingMomentCoefficientFinal ;
+			_wingMomentCoefficientFinal = _wingMomentCoefficientFinalACVariable;
+			}	
+					
 		
 	}	
 	
@@ -3999,6 +4155,7 @@ public class StabilityExecutableManager {
 				MomentCalc.calcCMLiftingSurfaceWithIntegral(
 						theNasaBlackwellCalculatorMachActualHTail, 
 						_alphasTail, 
+						_hTailMAC,
 						_hTailYDistribution, 
 						_hTailCl0Distribution, 
 						_hTailClAlphaistributionDeg, 
@@ -4022,6 +4179,7 @@ public class StabilityExecutableManager {
 				MomentCalc.calcCMLiftingSurfaceWithIntegral(
 						theNasaBlackwellCalculatorMachActualHTail, 
 						_alphasTail, 
+						_hTailMAC,
 						_hTailYDistribution, 
 						_hTailCl0Distribution, 
 						_hTailClAlphaistributionDeg, 
@@ -4048,6 +4206,7 @@ public class StabilityExecutableManager {
 					MomentCalc.calcCMLiftingSurfaceWithIntegral(
 							theNasaBlackwellCalculatorMachActualHTail, 
 							_alphasTail, 
+							_hTailMAC,
 							_hTailYDistribution, 
 							_hTailCl0Distribution, 
 							_hTailClAlphaistributionDeg, 
@@ -4156,7 +4315,7 @@ public class StabilityExecutableManager {
 		
 		double zVerticalDistance;
 
-			zVerticalDistance = _zApexWing.doubleValue(SI.METER)+_wingYACMAC.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
+			zVerticalDistance = _zApexWing.doubleValue(SI.METER)+_wingZACMAC.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
 		
 		_wingVerticalDistranceACtoCG = Amount.valueOf(zVerticalDistance, SI.METER);
 		
@@ -6252,5 +6411,45 @@ public class StabilityExecutableManager {
 
 	public void setVerticalTailSpan(Amount<Length> _verticalTailSpan) {
 		this._verticalTailSpan = _verticalTailSpan;
+	}
+
+	public MethodEnum getWingairfoilMomentCoefficientCurve() {
+		return _wingairfoilMomentCoefficientCurve;
+	}
+
+	public void setWingairfoilMomentCoefficientCurve(MethodEnum _wingairfoilMomentCoefficientCurve) {
+		this._wingairfoilMomentCoefficientCurve = _wingairfoilMomentCoefficientCurve;
+	}
+
+	public List<List<Double>> getWingCLMomentAirfoilInput() {
+		return _wingCLMomentAirfoilInput;
+	}
+
+	public List<List<Double>> getWingCMMomentAirfoilInput() {
+		return _wingCMMomentAirfoilInput;
+	}
+
+	public List<Double> getWingCLMomentAirfoilOutput() {
+		return _wingCLMomentAirfoilOutput;
+	}
+
+	public List<List<Double>> getWingCMMomentAirfoilOutput() {
+		return _wingCMMomentAirfoilOutput;
+	}
+
+	public void setWingCLMomentAirfoilInput(List<List<Double>> _wingCLMomentAirfoilInput) {
+		this._wingCLMomentAirfoilInput = _wingCLMomentAirfoilInput;
+	}
+
+	public void setWingCMMomentAirfoilInput(List<List<Double>> _wingCMMomentAirfoilInput) {
+		this._wingCMMomentAirfoilInput = _wingCMMomentAirfoilInput;
+	}
+
+	public void setWingCLMomentAirfoilOutput(List<Double> _wingCLMomentAirfoilOutput) {
+		this._wingCLMomentAirfoilOutput = _wingCLMomentAirfoilOutput;
+	}
+
+	public void setWingCMMomentAirfoilOutput(List<List<Double>> _wingCMMomentAirfoilOutput) {
+		this._wingCMMomentAirfoilOutput = _wingCMMomentAirfoilOutput;
 	}
 }

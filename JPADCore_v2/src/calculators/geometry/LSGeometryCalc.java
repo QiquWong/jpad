@@ -138,13 +138,30 @@ public class LSGeometryCalc {
 		return xACNapolitano;
 	}
 	
-	public static Amount<Length> calcYacFromIntegral(Amount<Area> liftingSurfaceArea,
+	public static Amount<Length> calcZacFromIntegral(Amount<Area> liftingSurfaceArea,
 			List<Amount<Length>> yLE, List<Amount<Length>> chordDistribution, List<Amount<Length>> liftingSurfaceDimensionalY) {
 
 		double [] cY = new double [yLE.size()];
 		
 		for (int i=0; i<yLE.size(); i++){
 		 cY[i] = yLE.get(i).doubleValue(SI.METER) * chordDistribution.get(i).doubleValue(SI.METER);
+		}
+		
+		Amount<Length> yACIntegral =  Amount.valueOf((2/liftingSurfaceArea.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertListOfAmountTodoubleArray(liftingSurfaceDimensionalY),
+				cY),
+				SI.METER);
+		
+		return yACIntegral;
+	}
+	
+	public static Amount<Length> calcYacFromIntegral(Amount<Area> liftingSurfaceArea,
+			List<Amount<Length>> yDimensionalStation, List<Amount<Length>> chordDistribution, List<Amount<Length>> liftingSurfaceDimensionalY) {
+
+		double [] cY = new double [yDimensionalStation.size()];
+		
+		for (int i=0; i<yDimensionalStation.size(); i++){
+		 cY[i] = yDimensionalStation.get(i).doubleValue(SI.METER) * chordDistribution.get(i).doubleValue(SI.METER);
 		}
 		
 		Amount<Length> yACIntegral =  Amount.valueOf((2/liftingSurfaceArea.doubleValue(SI.SQUARE_METRE))* MyMathUtils.integrate1DSimpsonSpline(

@@ -507,6 +507,39 @@ public class ReaderWriter{
 				theStabilityCalculator.getcDPolarAirfoilsHTail().add(i,cdTailAmount);
 			}
 		}
+		
+		//---------------------------------------------------------------------------------
+		// MOMENT CURVE:
+		
+		//wing
+		String wingMomentAirfoilMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@ACmoment");
+		if(wingMomentAirfoilMethod.equalsIgnoreCase("CURVE"))
+			theStabilityCalculator.setWingairfoilMomentCoefficientCurve(MethodEnum.INPUTCURVE);
+		if(wingMomentAirfoilMethod.equalsIgnoreCase("CONSTANT"))
+			theStabilityCalculator.setWingairfoilMomentCoefficientCurve(MethodEnum.CONSTANT);
+		
+		if(theStabilityCalculator.getWingairfoilMomentCoefficientCurve()==MethodEnum.INPUTCURVE){
+			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
+				List<String> clWing = new ArrayList<>();
+				List<Double> clWingAmount = new ArrayList<>();
+				clWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/moment/cl_moment_curve").get(i));
+				List<String> cmWing = new ArrayList<>();
+				List<Double> cmWingAmount = new ArrayList<>();
+				cmWing =JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//wing/moment/cm_curve").get(i));
+				for (int ii=0; ii<clWing.size(); ii++){
+					clWingAmount.add(Double.valueOf(clWing.get(ii)));
+					cmWingAmount.add(Double.valueOf(cmWing.get(ii)));
+				}
+				theStabilityCalculator.getWingCLMomentAirfoilInput().add(i,clWingAmount);
+				theStabilityCalculator.getWingCMMomentAirfoilInput().add(i,cmWingAmount);
+			}
+		}
+		if(theStabilityCalculator.getWingairfoilMomentCoefficientCurve()==MethodEnum.CONSTANT){
+		theStabilityCalculator.setWingCmACBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/c_m_ac"));
+		}
 
 		//---------------------------------------------------------------------------------
 		// PLOT:

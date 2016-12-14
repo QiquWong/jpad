@@ -676,7 +676,7 @@ public class AerodynamicCalc {
 		 * 
 		 * 
 	 * @param referenceAlphaArray. the reference angle in common of all list
-	 * @param this is the list of alpha array as input
+	 * @param this is the list of cl array as input
 	 * @param this is the list of cd array as input, each one correspond to an alpha array
 	 * @param adimentional break points stations
 	 * @param adimentional distribution stations
@@ -688,7 +688,7 @@ public class AerodynamicCalc {
 
 	 */
 	
-	public static List<List<Double>> calculateCDMatrixAirfoils(List<Double> referenceCLArray,
+	public static List<List<Double>> calculateCDorCMMatrixAirfoils(List<Double> referenceCLArray,
 			List<List<Double>> clArrayInput,
 			List<List<Double>> cdArrayInput,
 			List<Double> yAdimensionalBreakPoints,
