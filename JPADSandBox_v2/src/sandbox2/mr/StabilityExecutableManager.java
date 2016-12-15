@@ -604,7 +604,7 @@ public class StabilityExecutableManager {
 	private List<Double> _totalEquilibriumLiftCoefficient= new ArrayList<>();
 	private List<Double> _hTailEquilibriumLiftCoefficientConstant = new ArrayList<>();
 	private List<Double> _totalEquilibriumLiftCoefficientConstant = new ArrayList<>();
-	
+	private List<Amount<Angle>> _deltaEEquilibrium = new ArrayList<>();
 	//Distributions -------------------------------------------
 	//----------------------------------------------------------------
 	
@@ -1811,6 +1811,8 @@ public class StabilityExecutableManager {
 			.append("\n")
 			;
 		}
+		sb.append("\t\tCL Eq. = " +_totalEquilibriumLiftCoefficient+ "\n")
+;
 	
 
 		sb.append("\nCOMPONENTS MOMENT COEFFICIENT REAPECT TO CG \n")
@@ -1821,14 +1823,35 @@ public class StabilityExecutableManager {
 		.append("\t\tCM wing with pendular stability = " + _wingMomentCoefficientPendular + "\n")
 		.append("\t\tCM Horizontal tail = " + _hTailMomentCoefficientPendular + "\n")
 	    .append("\t\tCM Fuselage = " + _fuselageMomentCoefficient + "\n")
-	    .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "\n\t\tAlpha Body", ","))
 	    .append("\t\tCM Total delta e = 0 = " + _totalMomentCoefficientPendular + "\n")
+	    .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "\n\t\tAlpha Body", ","))
 		;
 		for (int i = 0; i< this._anglesOfElevatorDeflection.size(); i++){
 			sb.append("\t\tCM total at delta_e= " + _anglesOfElevatorDeflection.get(i) + " -->" + (this._totalMomentCoefficientPendularDeltaE.get( _anglesOfElevatorDeflection.get(i))))
 			.append("\n")
 			;
 		}
+		sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._deltaEEquilibrium, "\t\tdelta E Eq. = ", ","));
+//-------------------------------		
+		sb.append("\nCOMPONENTS MOMENT COEFFICIENT REAPECT TO CG \n")
+		.append("-------------------------------------\n")
+		.append("\t\tX cg = " + _xCGAircraft + " Y cg = " + _yCGAircraft + " Z cg = " + _zCGAircraft + "\n\n")
+		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphasBody, "", ","))
+		.append( _wingMomentCoefficientNOPendular + "\n")
+		.append(_wingMomentCoefficientPendular + "\n")
+		.append(_hTailMomentCoefficientPendular + "\n")
+	    .append( _fuselageMomentCoefficient + "\n")
+	    .append( _totalMomentCoefficientPendular + "\n")
+	    .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "", ","))
+		;
+		for (int i = 0; i< this._anglesOfElevatorDeflection.size(); i++){
+			sb.append( (this._totalMomentCoefficientPendularDeltaE.get( _anglesOfElevatorDeflection.get(i))))
+			.append("\n")
+			;
+		}
+//-----------------------------------	
+		
+		
 		
 		sb.append("\nDISTRIBUTIONS\n")
 		.append("-------------------------------------\n")
@@ -4514,6 +4537,124 @@ public class StabilityExecutableManager {
 							_wingSurface.doubleValue(SI.SQUARE_METRE))
 					);
 			}
+	}
+	
+	public void calculateDeltaeEquilibrium() throws InstantiationException, IllegalAccessException{
+		
+		// create array delta e
+		
+		List<Amount<Angle>> deltaEforDeltaEEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount(
+				MyArrayUtils.linspace(-45, 10, 12), NonSI.DEGREE_ANGLE);
+		Map <Amount<Angle>, Double[]> _clMapForDeltaeElevator = new HashMap<Amount<Angle>, Double[]>();
+		double tauActual, clZero, clMax, clStar;
+		Amount<Angle> alphaZeroLift, alphaStall, alphaStar;
+		
+		List<List<Double>> clDeltaEFinalList = new ArrayList<>();
+		
+		for (int i=0; i<deltaEforDeltaEEquilibrium.size(); i++){
+			// tau-------------
+			theStabilityCalculator.calculateElevatorEffects(
+					this,
+					deltaEforDeltaEEquilibrium.get(i));
+
+			tauActual = 
+					LiftCalc.calculateTauIndexElevator(
+							_elevatorCfC, 
+							_hTailAspectRatio,
+							highLiftDatabaseReader, 
+							aeroDatabaseReader, 
+							deltaEforDeltaEEquilibrium.get(i)
+							);
+			
+			// values------------
+
+			//------------------------------------------------------
+			// ALPHA ZERO LIFT HIGH LIFT
+			alphaZeroLift = 
+					Amount.valueOf(
+							_hTailAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE) - 
+							(tauActual*deltaEforDeltaEEquilibrium.get(i).doubleValue(NonSI.DEGREE_ANGLE)),
+							NonSI.DEGREE_ANGLE);
+
+			//------------------------------------------------------
+			// CL ZERO HIGH LIFT
+			clZero = 
+					-_hTailcLAlphaDeg *
+					alphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE);
+
+			//------------------------------------------------------
+			// CL MAX HIGH LIFT
+
+			clMax =
+					_hTailcLMax + _deltaCLMaxElevator.get(deltaEforDeltaEEquilibrium.get(i));
+
+
+			//------------------------------------------------------
+			// ALPHA STALL HIGH LIFT
+			double deltaYPercent = aeroDatabaseReader
+					.getDeltaYvsThickness(
+							_hTailMaxThicknessMeanAirfoil,
+							_hTailMeanAirfoilFamily
+							);
+
+			Amount<Angle> deltaAlpha = Amount.valueOf(
+					aeroDatabaseReader
+					.getDAlphaVsLambdaLEVsDy(
+							_hTailSweepLE.doubleValue(NonSI.DEGREE_ANGLE),
+							deltaYPercent
+							),
+					NonSI.DEGREE_ANGLE);
+
+			alphaStall = 
+					Amount.valueOf((((clMax) - 
+							clZero) /
+							_hTailcLAlphaDeg) + deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE),
+							NonSI.DEGREE_ANGLE);
+
+			//------------------------------------------------------
+			// ALPHA STAR HIGH LIFT		
+			alphaStar = 
+					Amount.valueOf(_hTailalphaStar.doubleValue(NonSI.DEGREE_ANGLE)-
+							(tauActual) * deltaEforDeltaEEquilibrium.get(i).doubleValue(NonSI.DEGREE_ANGLE), 
+							NonSI.DEGREE_ANGLE);
+
+			//------------------------------------------------------
+			// CL STAR HIGH LIFT
+			clStar = 
+					_hTailcLAlphaDeg * 
+					alphaStar.doubleValue(NonSI.DEGREE_ANGLE)+
+					clZero; 
+			
+			
+			// curve----------------
+			_clMapForDeltaeElevator.put(
+					deltaEforDeltaEEquilibrium.get(i),
+					LiftCalc.calculateCLvsAlphaArray(
+							clZero,
+							clMax,
+							alphaStar,
+							alphaStall,
+							Amount.valueOf(_hTailcLAlphaDeg, NonSI.DEGREE_ANGLE.inverse()),
+							MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasTail)
+							));
+		}
+		
+		for (int i=0; i<_numberOfAlphasBody-10; i++){
+			Double [] clTemp = new Double[deltaEforDeltaEEquilibrium.size()];
+			for (int ii = 0; ii<deltaEforDeltaEEquilibrium.size(); ii++){
+				clTemp[ii] = _clMapForDeltaeElevator.get(deltaEforDeltaEEquilibrium.get(ii))[i];
+			}
+			clDeltaEFinalList.add(i, MyArrayUtils.convertDoubleArrayToListDouble(clTemp));
+		
+		
+		_deltaEEquilibrium.add(i, Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(clDeltaEFinalList.get(i))),
+						MyArrayUtils.convertListOfAmountTodoubleArray(deltaEforDeltaEEquilibrium),
+						_hTailEquilibriumLiftCoefficient.get(i))
+				, 
+				NonSI.DEGREE_ANGLE));
+		}
 	}
 	
 	// DISTRIBUTIONS----------------------------------------------------------
