@@ -153,6 +153,7 @@ public class Test_Stability{
 		theCalculator.calculateMomentCoefficientRespectToCG();
 		theCalculator.calculateHTailEquilibriumLiftCoefficient();
 		theCalculator.calculateTotalEquilibriumLiftCoefficient();
+		theCalculator.calculateDeltaeEquilibrium();
 		//...
 		theCalculator.calculateDistributions();
 		theCalculator.printAllData();

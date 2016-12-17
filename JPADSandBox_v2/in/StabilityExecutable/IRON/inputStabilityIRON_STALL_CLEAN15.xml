@@ -7,7 +7,7 @@
  <aircraft_name>IRON_STALL_CLEAN15</aircraft_name>
         <operating_conditions>
 				<!-- This is the position of the aircraft CG in the BRF -->
-                <x_cg unit="m">20.89</x_cg>   <!--- 15, 25, 32% -->
+                <x_cg unit="m">20.8945</x_cg>   <!--- 15, 25, 32% -->
                 <y_cg unit="m">0.0</y_cg>    
                 <z_cg unit="m">-0.3</z_cg> <!-- 10% MAC -->
                 <altitude unit="m">5030</altitude>   <!-- cruise:30kft stall: 16.5kft-->
@@ -15,7 +15,7 @@
 				<!-- Reynolds number referred to MAC  -->
 				<Reynolds_number>17500000</Reynolds_number>  <!-- Re cruise=18.2e6 Re Take-Off=12.5e6 Re Landing=12.3e6-->
 				<!-- definition of alpha body array analysis  -->
-				<alpha_body_initial unit="°">-5</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
+				<alpha_body_initial unit="°">-4</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
                 <alpha_body_final unit="°">23</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
                 <number_of_alphas_body>60</number_of_alphas_body>
 				<!-- 9 values at least. It will be added the alpha zero lift. THESE ARE ALPHAS WING -->

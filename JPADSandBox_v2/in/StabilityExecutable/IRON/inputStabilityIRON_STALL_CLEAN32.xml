@@ -2,12 +2,12 @@
 <!-- All units can be choose by user with the exception of surfaces deflections. All values of each array must have the same unit-->    
 <!-- It is possible to choose a constant downwash calculation, or variable with the flag-->    
 <!-- If CONSTANT the downwash is calculated using Roskam method, if variable using Slingerland method-->   
- <Longitudinal_static_stability_executable downwash="VARIABLE"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
+ <Longitudinal_static_stability_executable downwash="CONSTANT"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
  <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
- <aircraft_name>IRON_STALL_CLEAN32</aircraft_name>
+ <aircraft_name>IRON_STALL_CLEAN15</aircraft_name>
         <operating_conditions>
 				<!-- This is the position of the aircraft CG in the BRF -->
-                <x_cg unit="m">21.444</x_cg> <!-- 30% -->   <!--- 15, 25, 32% -->
+                <x_cg unit="m">21.4436</x_cg>   <!--- 15, 25, 32% -->
                 <y_cg unit="m">0.0</y_cg>    
                 <z_cg unit="m">-0.3</z_cg> <!-- 10% MAC -->
                 <altitude unit="m">5030</altitude>   <!-- cruise:30kft stall: 16.5kft-->
@@ -15,7 +15,7 @@
 				<!-- Reynolds number referred to MAC  -->
 				<Reynolds_number>17500000</Reynolds_number>  <!-- Re cruise=18.2e6 Re Take-Off=12.5e6 Re Landing=12.3e6-->
 				<!-- definition of alpha body array analysis  -->
-				<alpha_body_initial unit="°">-5</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
+				<alpha_body_initial unit="°">-4</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
                 <alpha_body_final unit="°">23</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
                 <number_of_alphas_body>60</number_of_alphas_body>
 				<!-- 9 values at least. It will be added the alpha zero lift. THESE ARE ALPHAS WING -->
@@ -23,11 +23,11 @@
 				<alpha_horizontal_tail_array_for_distribution unit="°">[0,2,4,6,12,30]</alpha_horizontal_tail_array_for_distribution>
 				<condition>CRUISE</condition>
 				<!-- This is the pole for the calculation of the moment referred to the MAC. The momentum respect to the aerodynamic center is automatically calculated -->
-				<wing_momentum_pole>[0.25, 0.264]</wing_momentum_pole>
+				<wing_momentum_pole>[0.25, 0.26503]</wing_momentum_pole>
 				<horizontal_tail_momentum_pole>[0.25]</horizontal_tail_momentum_pole>
 				<!-- This is the pole used in the stability equation . This is the position of the AC for the user. This value for the wing will be modified for the fuselage effect-->
-				<wing_pole_in_equation>0.264</wing_pole_in_equation>
-				<horizontal_tail_pole_in_equation>0.264</horizontal_tail_pole_in_equation>
+				<wing_pole_in_equation>0.26503</wing_pole_in_equation>
+				<horizontal_tail_pole_in_equation>0.25</horizontal_tail_pole_in_equation>
 				<!--
 				<condition>CRUISE</condition>
 				<condition>LANDING</condition>
@@ -39,12 +39,13 @@ INPUT: the 3D polar of the lifting surface is given as input
 CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
 CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
 CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->    		
-       <wing WingAirfoilLiftCurve="INPUT" wingPolar="CALCULATED_INPUT_AIRFOIL">
+       <wing WingAirfoilLiftCurve="INPUT" wingPolar="CALCULATED_INPUT_AIRFOIL" ACmoment = "CONSTANT">
 	   <!-- <wing airfoilLiftCurve="CALCULATED"> -->
 	   <!-- <wing polar="INPUT"> -->
 	   <!-- <wing polar="CALCULATED_PARABOLIC"> -->
 	   <!-- <wing polar="CALCULATED_INPUT_AIRFOIL"> -->
 	   <!-- <wing polar="CALCULATED_DATABASE_AIRFOIL"> -->
+	   <!-- <ACmoment="CONSTANT"> if ACmoment="CURVE" there will be calculated both methods-->
 			<position>
 			<!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
                     <x unit="m">19.09</x>
@@ -95,12 +96,12 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			 <lift_coefficient>[0.1639 , 0.2906 , 0.4162 , 0.5415 , 0.6656 , 0.7851 , 0.8974 , 1.0099 , 1.1169 , 1.2185 , 1.3186 , 1.4128 , 1.4728 , 1.5348 , 1.5934 , 1.6439 , 1.6884 , 1.6997 , 1.7083 , 1.71 , 1.7116 , 1.7124 , 1.7138 , 1.7144 , 1.73943 , 1.7769 , 1.8082 , 1.83197]</lift_coefficient>
 			 </airfoil_lift_curve>
 			 <moment>
-				<cl_moment_curve station="ROOT">[0.1661 , 0.2298 , 0.2927 , 0.4183 , 0.543 , 0.6655 , 0.7797 , 0.8957 , 1.0093 , 1.1183 , 1.224 , 1.3297 , 1.4249 , 1.5023 , 1.5194 , 1.5218 , 1.5223 , 1.5704 , 1.6348 , 1.6938 , 1.7475 , 1.7957 , 1.8198 , 1.8393 , 1.8494 , 1.8656 ]</cl_polar_curve>
-				<cm_curve>[0.00574 , 0.00487 , 0.0042 , 0.00389 , 0.00394 , 0.00423 , 0.00516 , 0.00589 , 0.00674 , 0.00779 , 0.00892 , 0.00986 , 0.01116 , 0.01261 , 0.01304 , 0.01315 , 0.01322 , 0.01433 , 0.0166 , 0.01942 , 0.02282 , 0.02675 , 0.02882 , 0.03126 , 0.03434 , 0.03715 ]</cd_polar_curve>
-				<cl_moment_curve station="KINK">[0.1661 , 0.2298 , 0.2927 , 0.4183 , 0.543 , 0.6655 , 0.7797 , 0.8957 , 1.0093 , 1.1183 , 1.224 , 1.3297 , 1.4249 , 1.5023 , 1.5194 , 1.5218 , 1.5223 , 1.5704 , 1.6348 , 1.6938 , 1.7475 , 1.7957 , 1.8198 , 1.8393 , 1.8494 , 1.8656 ]</cl_polar_curve>
-				<cm_curve>[0.00574 , 0.00487 , 0.0042 , 0.00389 , 0.00394 , 0.00423 , 0.00516 , 0.00589 , 0.00674 , 0.00779 , 0.00892 , 0.00986 , 0.01116 , 0.01261 , 0.01304 , 0.01315 , 0.01322 , 0.01433 , 0.0166 , 0.01942 , 0.02282 , 0.02675 , 0.02882 , 0.03126 , 0.03434 , 0.03715]</cd_polar_curve>
-				<cl_moment_curve station="TIP">[0.1639 , 0.2906 , 0.4162 , 0.5415 , 0.6656 , 0.7851 , 0.8974 , 1.0099 , 1.1169 , 1.2185 , 1.3186 , 1.4128 , 1.4728 , 1.5348 , 1.5934 , 1.6439 , 1.6884 , 1.6997 , 1.7083 , 1.71 , 1.7116 , 1.7124 , 1.7138 , 1.7144 , 1.73943 , 1.7769 , 1.8082 , 1.83197]</cl_polar_curve>
-				<cm_curve>[0.00576 , 0.00427 , 0.00411 , 0.00418 , 0.00435 , 0.00488 , 0.00587 , 0.00679 , 0.00797 , 0.00933 , 0.01054 , 0.01178 , 0.01382 , 0.0161 , 0.01889 , 0.0224 , 0.02656 , 0.02761 , 0.02842 , 0.02857 , 0.0287 , 0.02877 , 0.0289 , 0.02896 , 0.030294 , 0.035499 , 0.041605 , 0.048804]</cd_polar_curve>
+				<cl_moment_curve station="ROOT">[0.1661 , 0.2927 , 0.4183 , 0.543 , 0.6655 , 0.7797 , 0.8957 , 1.0093 , 1.1183 , 1.224 , 1.3297 , 1.4249 , 1.5023 , 1.5704 , 1.6348 , 1.6938 , 1.7475 , 1.7957 , 1.8393 , 1.8656]</cl_moment_curve>
+				<cm_curve>[-0.122787374 , -0.12230061 , -0.1235738 , -0.12599453 , -0.129294839 , -0.13331775 , -0.138736991 , -0.145985256 , -0.155562787 , -0.168250268 , -0.185388488 , -0.205688828 , -0.226349169 , -0.248146791 , -0.272314948 , -0.297853655 , -0.324218173 , -0.350643905 , -0.376974518 , -0.394040215 ] </cm_curve>
+				<cl_moment_curve station="KINK">[0.1661 , 0.2927 , 0.4183 , 0.543 , 0.6655 , 0.7797 , 0.8957 , 1.0093 , 1.1183 , 1.224 , 1.3297 , 1.4249 , 1.5023 , 1.5704 , 1.6348 , 1.6938 , 1.7475 , 1.7957 , 1.8393 , 1.8656 ]</cl_moment_curve>
+				<cm_curve>[-0.122787374 , -0.12230061 , -0.1235738 , -0.12599453 , -0.129294839 , -0.13331775 , -0.138736991 , -0.145985256 , -0.155562787 , -0.168250268 , -0.185388488 , -0.205688828 , -0.226349169 , -0.248146791 , -0.272314948 , -0.297853655 , -0.324218173 , -0.350643905 , -0.376974518 , -0.394040215 ]</cm_curve>
+				<cl_moment_curve station="TIP">[0.1639 , 0.2906 , 0.4162 , 0.5415 , 0.6656 , 0.7851 , 0.8974 , 1.0099 , 1.1169 , 1.2185 , 1.3186 , 1.4128 , 1.4728 , 1.5348 , 1.5934 , 1.6439 , 1.6884 , 1.73943 , 1.7769 , 1.8082 ]</cl_moment_curve>
+				<cm_curve>[-0.125351513 , -0.12326898 , -0.122138082 , -0.122564015 , -0.125129891 , -0.130185277 , -0.137737398 , -0.148485159 , -0.162074971 , -0.17837771 , -0.198007292 , -0.220000475 , -0.235912953 , -0.253999044 , -0.272696099 , -0.290108144 , -0.306482812 , -0.326487309 , -0.342034064 , -0.35559137 ]</cm_curve>
 			 </moment>
              <distribution>
                    <geometry>
@@ -108,20 +109,20 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 						<chord_distribution unit="m">[4.48,3.47,1.65]</chord_distribution>
 						<!-- XLE is in LRF, so the root value of XLE  must be zero -->
 						<x_le_distribution unit="m">[0,0.91966,3.12877]</x_le_distribution>
-						<twist_distribution unit="°">[0,0,-4]</twist_distribution>
+						<twist_distribution unit="°">[0,0,-2]</twist_distribution>
 						<dihedral_distribution unit="°">[5,5,5]</dihedral_distribution>
 						<max_thickness_airfoil>[0.18,0.18,0.14]</max_thickness_airfoil>
 						<radius_leading_edge unit="m">[0.15,0.15,0.15]</radius_leading_edge>
                     </geometry>
                     <aerodynamics>
 						<!-- <alpha_zero_lift_distribution unit="°">[-4.29, -4.29 , -2.61]</alpha_zero_lift_distribution> -->
-						 <alpha_zero_lift_distribution unit="°">[-4.26, -4.26 ,-4.27]</alpha_zero_lift_distribution> 
-						<cl_alpha_distribution unit="1/deg">[0.1274,0.1274,0.1267]</cl_alpha_distribution> 
+						 <alpha_zero_lift_distribution unit="°">[-4.2891, -4.2891 ,-4.27388]</alpha_zero_lift_distribution> 
+						<cl_alpha_distribution unit="1/deg">[0.1266,0.1266,0.1267]</cl_alpha_distribution> 
 						<alpha_star_distribution unit="°">[9,9,8]</alpha_star_distribution>
 						<maximum_lift_coefficient_distribution>[1.87,1.87,1.82]</maximum_lift_coefficient_distribution>
 						<!-- <x_ac_referred_to_chord>[0.11,0.08,0.04]</x_ac_referred_to_chord> -->
 						<x_ac_referred_to_chord>[0.27,0.27,0.27]</x_ac_referred_to_chord>
-						<c_m_ac>[-0.155,-0.155,-0.155]</c_m_ac>
+						<c_m_ac>[-0.12,-0.12,-0.12]</c_m_ac>
 					</aerodynamics>	
              </distribution>
 			 <high_lift_devices>
