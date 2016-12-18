@@ -501,7 +501,8 @@ public class AerodynamicCalc {
 			Amount<Angle> angleOfAttack,
 			List<Double> liftingSurfaceCl0Distribution, // all distributions must have the same length!!
 			List<Double> liftingSurfaceCLAlphaDegDistribution,
-			List<Double> liftingSurfaceCmACDistribution,
+			List<Double> liftingSurfaceCLforCMMatrix,
+			List<List<Double>> liftingSurfaceCmACDistribution,
 			List<Double> liftingSurfaceXACadimensionalDistribution,
 			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
 			List<Amount<Angle>> anglesOfAttackClMatrix// references angle of attack of the list of list airfoilClMatrix
@@ -510,7 +511,8 @@ public class AerodynamicCalc {
 		List<Double> cpDistribution = new ArrayList<>();
 
 		double[]  clDistribution, alphaDistribution, clInducedDistributionAtAlphaNew;
-
+		double cmActual;
+		
 		int numberOfPointSemiSpanWise = liftingSurfaceCl0Distribution.size();
 		clDistribution = new double[numberOfPointSemiSpanWise];
 		alphaDistribution = new double[numberOfPointSemiSpanWise];
@@ -538,9 +540,20 @@ public class AerodynamicCalc {
 						alphaDistribution[ii]
 						);
 			}
-			cpDistribution.add(ii,liftingSurfaceXACadimensionalDistribution.get(ii) -
-					(liftingSurfaceCmACDistribution.get(ii)/
-							clInducedDistributionAtAlphaNew[ii]));
+			
+			cmActual = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCLforCMMatrix),
+					MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCmACDistribution.get(ii)),
+					clInducedDistributionAtAlphaNew[ii]
+					);
+			
+			cpDistribution.add(ii,0.25 -
+					(cmActual/
+					clInducedDistributionAtAlphaNew[ii]));
+			
+//			cpDistribution.add(ii,liftingSurfaceXACadimensionalDistribution.get(ii) -
+//					(cmActual/
+//							clInducedDistributionAtAlphaNew[ii]));
 		}
 		cpDistribution.add(numberOfPointSemiSpanWise-1,0.0);
 		return cpDistribution;

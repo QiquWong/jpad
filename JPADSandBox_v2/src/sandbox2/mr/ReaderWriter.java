@@ -95,8 +95,8 @@ public class ReaderWriter{
 		theStabilityCalculator.setMachCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/mach_number")));
 		theStabilityCalculator.setReynoldsCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/Reynolds_number")));
 
-		theStabilityCalculator.setWingFinalMomentumPole(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/wing_pole_in_equation")));
-		theStabilityCalculator.setHTailFinalMomentumPole(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/horizontal_tail_pole_in_equation")));
+		theStabilityCalculator.setWingFinalMomentumPole(0.25);
+		theStabilityCalculator.setHTailFinalMomentumPole(0.25);
 		theStabilityCalculator.setAlphaWingForDistribution(reader.readArrayofAmountFromXML("//operating_conditions/alpha_wing_array_for_distribution"));
 		theStabilityCalculator.setAlphaHorizontalTailForDistribution(reader.readArrayofAmountFromXML("//operating_conditions/alpha_horizontal_tail_array_for_distribution"));
 		

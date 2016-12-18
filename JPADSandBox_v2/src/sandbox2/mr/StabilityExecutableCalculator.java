@@ -1385,6 +1385,66 @@ public class StabilityExecutableCalculator {
 		 
 		theStabilityManager
 			.getDeltaCLMaxElevator().put(elevatorDeflectionAngle, correctionFactor*deltaCLmaxElevator);
+		
+		//---------------------------------------------
+		// deltaCl0 (flap)
+		Double thetaF;
+		 
+			thetaF = Math.acos((2*cfc)-1);
+
+		Double alphaDelta;
+		
+		alphaDelta = (1-((thetaF-Math.sin(thetaF))/Math.PI));
+
+		Double etaDeltaFlap;
+	
+	   etaDeltaFlap = 
+						highLiftDatabaseReader
+						.getEtaDeltaVsDeltaFlapPlain(
+								elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),
+								cfc
+								)
+						;
+		
+		Double deltaCl0First;
+		
+			deltaCl0First= (
+					alphaDelta.doubleValue()
+					*etaDeltaFlap.doubleValue()
+					*elevatorDeflectionAngle.doubleValue(SI.RADIAN)
+					*(clAlphaMeanElevator*57.3)
+					);
+
+		Double deltaCCfFlap;
+	
+			deltaCCfFlap = 
+					highLiftDatabaseReader
+					.getDeltaCCfVsDeltaFlap(
+							elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),
+							elevatorTypeIndex
+							)
+					;
+
+		Double cFirstCFlap;
+
+			cFirstCFlap = (1+(deltaCCfFlap.doubleValue()*cfc));
+
+		Double deltaCl0FlapList;
+
+			deltaCl0FlapList= (
+					(deltaCl0First.doubleValue()*cFirstCFlap.doubleValue())
+					+(cl0MeanElevator*(cFirstCFlap.doubleValue()-1))
+					);
+			
+
+		
+		double deltaCl0Flap = 0.0;
+	
+			deltaCl0Flap += deltaCl0FlapList;
+		
+		
+		theStabilityManager
+		.getDeltaCD0Elevator().put(elevatorDeflectionAngle, correctionFactor*deltaCLmaxElevator);
 
 	}
 	

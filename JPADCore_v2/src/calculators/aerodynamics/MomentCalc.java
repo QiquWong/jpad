@@ -457,7 +457,11 @@ public class MomentCalc {
 						clInducedDistributionAtAlphaNew[ii]
 						);
 				
-				xcPfracC[ii] = liftingSurfaceXACadimensionalDistribution.get(ii) -
+//				xcPfracC[ii] = liftingSurfaceXACadimensionalDistribution.get(ii) -
+//						(cmActual/
+//								clInducedDistributionAtAlphaNew[ii]);
+				
+				xcPfracC[ii] = 0.25 -
 						(cmActual/
 								clInducedDistributionAtAlphaNew[ii]);
 
