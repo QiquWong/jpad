@@ -177,7 +177,7 @@ public class ReaderWriter{
 		//distributions
 
 		theStabilityCalculator.setWingYAdimensionalBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/geometry/y_adimensional_stations"));
-
+		
 		theStabilityCalculator.setWingChordsBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/chord_distribution"));
 		theStabilityCalculator.setWingXleBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/x_le_distribution"));
 		theStabilityCalculator.setWingTwistBreakPoints(reader.readArrayofAmountFromXML("//wing/distribution/geometry/twist_distribution"));
@@ -191,6 +191,28 @@ public class ReaderWriter{
 		
 		theStabilityCalculator.setWingXACBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/x_ac_referred_to_chord"));
 		theStabilityCalculator.setWingCmACBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/c_m_ac"));
+		
+		//distributions clean if condition take off or landing
+
+		if (theStabilityCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theStabilityCalculator.getTheCondition() == ConditionEnum.LANDING) {
+		
+			theStabilityCalculator.setWingNumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_given_sections"))));
+			theStabilityCalculator.setWingYAdimensionalBreakPointsCLEAN(reader.readArrayDoubleFromXMLSplit("//wing/distribution_clean/geometry/y_adimensional_stations"));
+		
+		theStabilityCalculator.setWingChordsBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/geometry/chord_distribution"));
+		theStabilityCalculator.setWingXleBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/geometry/x_le_distribution"));
+		theStabilityCalculator.setWingTwistBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/geometry/twist_distribution"));
+		theStabilityCalculator.setWingDihedralBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/geometry/dihedral_distribution"));
+		theStabilityCalculator.setWingAlphaZeroLiftBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/aerodynamics/alpha_zero_lift_distribution"));
+		theStabilityCalculator.setWingAlphaStarBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/aerodynamics/alpha_star_distribution"));
+		theStabilityCalculator.setWingClMaxBreakPointsCLEAN(reader.readArrayDoubleFromXMLSplit("//wing/distribution_clean/aerodynamics/maximum_lift_coefficient_distribution"));
+		theStabilityCalculator.setWingClAlphaBreakPointsDegCLEAN(reader.readArrayDoubleFromXMLSplit("//wing/distribution_clean/aerodynamics/cl_alpha_distribution"));
+		theStabilityCalculator.setWingMaxThicknessBreakPointsCLEAN(reader.readArrayDoubleFromXMLSplit("//wing/distribution_clean/geometry/max_thickness_airfoil"));
+		theStabilityCalculator.setWingLERadiusBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/geometry/radius_leading_edge"));
+
+		}
+		
+		
 		//---------------------------------------------------------------------------------
 		// HIGH LIFT DEVICES:
 
@@ -390,6 +412,7 @@ public class ReaderWriter{
 			theStabilityCalculator.setWingairfoilLiftCoefficientCurve(MethodEnum.CLASSIC);
 		
 		if(theStabilityCalculator.getWingairfoilLiftCoefficientCurve()==MethodEnum.INPUT){
+			
 			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
 				List<String> alphasWing = new ArrayList<>();
 				List<Amount<Angle>> alphasWingAmount = new ArrayList<>();

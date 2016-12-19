@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -1576,4 +1577,94 @@ public class LiftCalc {
 	
 		return cLAlphaFuselage;
 	}
+	
+	public static double [] calculateNasaBlackwellDistributionFromAirfoil (
+			Amount<Angle> alphaActual,
+			NasaBlackwell theNasaBlackwellCalculator,
+			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Amount<Angle>> alphaReferenceOfCdMatrix,// references Cl of the list of list airfoilCdMatrix
+			List<Double> clZeroDistribution,
+			List<Double> clAlphaDegDistribution,
+			List<Amount<Length>> yDimensionalDistribution
+			) 
+			{
+		
+		int numberOfPointSemiSpanWise = clZeroDistribution.size();
+		double [] clDistributionAtAlpha ;
+		double [] alphaDistribution = new double[numberOfPointSemiSpanWise];
+		double [] clDistributionAtAlphaModified = new double[numberOfPointSemiSpanWise];
+		
+		double minAlpha = MyArrayUtils.getMin(MyArrayUtils.convertDoubleArrayToListDouble(
+				MyArrayUtils.convertListOfAmountToDoubleArray(alphaReferenceOfCdMatrix)));
+		
+		// Classical nasa blackwell distribution
+		theNasaBlackwellCalculator.calculate(alphaActual);
+		clDistributionAtAlpha = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+
+		for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+			alphaDistribution [ii] = (clDistributionAtAlpha[ii] - clZeroDistribution.get(ii))/
+					clAlphaDegDistribution.get(ii);
+
+			if(alphaDistribution [ii] < minAlpha){
+				clDistributionAtAlphaModified[ii] = 
+						clAlphaDegDistribution.get(ii)*
+						alphaDistribution [ii] + 
+						clZeroDistribution.get(ii);
+			}
+			
+			else{
+				clDistributionAtAlphaModified[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(alphaReferenceOfCdMatrix),
+					MyArrayUtils.convertToDoublePrimitive(
+							MyArrayUtils.convertListOfDoubleToDoubleArray(
+									airfoilClMatrix.get(ii))),
+					alphaDistribution[ii]
+					);
+			}
+			
+		}
+		return clDistributionAtAlphaModified;
+		
+			}
+	
+	public static double[] calculate3DCLfromNasaBlacwellModified (
+			List<Amount<Angle>> alphasArray,
+			NasaBlackwell theNasaBlackwellCalculator,
+			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Amount<Angle>> alphaReferenceOfCdMatrix,// references Cl of the list of list airfoilCdMatrix
+			List<Amount<Length>> chordDistribution,
+			Amount<Area> surface,
+			List<Double> clZeroDistribution,
+			List<Double> clAlphaDegDistribution,
+			List<Amount<Length>> yDimensionalDistribution
+			) 
+			{
+		
+		double[] nasaBlackwellModifiedCLCurve = new double [alphasArray.size()] ;
+		double[] clDistributionActual ;
+		double[] cCl = new double [chordDistribution.size()] ;
+		
+		for (int i=0; i<alphasArray.size(); i++){
+
+			clDistributionActual = 	
+			calculateNasaBlackwellDistributionFromAirfoil(
+					alphasArray.get(i),
+					theNasaBlackwellCalculator,
+					airfoilClMatrix, 
+					alphaReferenceOfCdMatrix,
+					clZeroDistribution,
+					clAlphaDegDistribution, 
+					yDimensionalDistribution
+					);
+			for(int ii=0; ii<chordDistribution.size(); ii++){
+			cCl[ii] = clDistributionActual[ii] * chordDistribution.get(ii).doubleValue(SI.METER);
+			}
+			nasaBlackwellModifiedCLCurve[i] = (
+					2/surface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistribution),
+					cCl);
+		}
+		
+		return nasaBlackwellModifiedCLCurve;
+			}
 }

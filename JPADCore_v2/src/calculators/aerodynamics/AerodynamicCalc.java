@@ -614,7 +614,7 @@ public class AerodynamicCalc {
 
 		int numberOfAlpha = referenceAlphaArray.size();
 		int numberOfPointSemiSpanWise = yAdimensionalDistribution.size();
-		int numberOfGivenSection = yAdimensionalBreakPoints.size();
+		int numberOfGivenSection = clArrayInput.size();
 
 
 		// interpolation
@@ -712,7 +712,7 @@ public class AerodynamicCalc {
 
 		int numberOfCl = referenceCLArray.size();
 		int numberOfPointSemiSpanWise = yAdimensionalDistribution.size();
-		int numberOfGivenSection = yAdimensionalBreakPoints.size();
+		int numberOfGivenSection = clArrayInput.size();
 
 
 		// interpolation

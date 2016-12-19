@@ -135,12 +135,15 @@ public class Test_Stability{
 		if (theCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theCalculator.getTheCondition() == ConditionEnum.LANDING){
 			theCalculator.calculateWingHighLiftCharacteristics();
 		}
+
 		theCalculator.initializeDownwashArray();
 		theCalculator.initializeHTailArray();
 		theCalculator.calculateHTailLiftCharacteristics();
 		theCalculator.calculateHTailLiftCharacteristicsWithElevatorDeflection();
 		theCalculator.calculateWingFuselageLiftCharacterstics();
+		
 		theCalculator.initializeDragArray();
+		theCalculator.calculateWingLiftCharacteristicsFromAirfoil();
 		theCalculator.calculateWingDragCharacterstics();
 		theCalculator.calculateHTailDragCharacterstics();
 		theCalculator.calculateWingXAC();
