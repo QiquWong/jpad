@@ -196,8 +196,8 @@ public class ReaderWriter{
 
 		if (theStabilityCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theStabilityCalculator.getTheCondition() == ConditionEnum.LANDING) {
 		
-			theStabilityCalculator.setWingNumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/number_of_given_sections"))));
-			theStabilityCalculator.setWingYAdimensionalBreakPointsCLEAN(reader.readArrayDoubleFromXMLSplit("//wing/distribution_clean/geometry/y_adimensional_stations"));
+			theStabilityCalculator.setWingNumberOfGivenSectionsCLEAN((int)Double.parseDouble((reader.getXMLPropertyByPath("//distribution_clean/number_of_given_sections_clean"))));
+			theStabilityCalculator.setWingYAdimensionalBreakPointsCLEAN(reader.readArrayDoubleFromXMLSplit("//distribution_clean/geometry/y_adimensional_stations"));
 		
 		theStabilityCalculator.setWingChordsBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/geometry/chord_distribution"));
 		theStabilityCalculator.setWingXleBreakPointsCLEAN(reader.readArrayofAmountFromXML("//wing/distribution_clean/geometry/x_le_distribution"));

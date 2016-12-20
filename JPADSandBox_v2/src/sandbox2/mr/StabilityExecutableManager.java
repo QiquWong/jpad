@@ -781,6 +781,28 @@ public class StabilityExecutableManager {
 					);
 		}
 
+		if (_theCondition == ConditionEnum.TAKE_OFF || _theCondition == ConditionEnum.LANDING){
+			this._wingYBreakPointsCLEAN = new ArrayList<>();
+			for (int i=0; i<_wingNumberOfGivenSectionsCLEAN; i++){
+				this._wingYBreakPointsCLEAN.add(
+						Amount.valueOf((_wingYAdimensionalBreakPointsCLEAN.get(i) * _wingSemiSpan.doubleValue(SI.METER)), SI.METER)
+						);
+			}
+			
+			double[] yDistributionTemp = new double[this._wingNumberOfPointSemiSpanWise];
+			yDistributionTemp = MyArrayUtils.linspace(
+					0.0,
+					this._wingSemiSpan.doubleValue(SI.METER),
+					this._wingNumberOfPointSemiSpanWise);
+
+			this._wingYDistributionCLEAN = new ArrayList<>();
+			for (int i=0; i<_wingNumberOfPointSemiSpanWise; i++){
+				this._wingYDistributionCLEAN.add(
+						Amount.valueOf(yDistributionTemp[i], SI.METER)
+						);
+			}
+		
+		}
 		double[] yDistributionTemp = new double[this._wingNumberOfPointSemiSpanWise];
 		yDistributionTemp = MyArrayUtils.linspace(
 				0.0,
@@ -920,26 +942,8 @@ public class StabilityExecutableManager {
 						else{
 						
 						
-						if(_wingNumberOfGivenSections == 3){
-						Amount<Length> yLEKink = Amount.valueOf(
-								_wingAdimentionalKinkStation*
-								_wingSemiSpan.doubleValue(SI.METER)*
-								Math.tan(_wingDihedralBreakPoints.get(_wingNumberOfGivenSections-1).doubleValue(SI.RADIAN)),
-								SI.METER
-								);
 						
-						Amount<Length> yLETip = Amount.valueOf(
-								_wingSemiSpan.doubleValue(SI.METER)*
-								Math.tan(_wingDihedralBreakPoints.get(_wingNumberOfGivenSections-1).doubleValue(SI.RADIAN)),
-								SI.METER
-								);
-						
-						_wingYLEBreakPoints.add(0, Amount.valueOf(0.0,SI.METER));
-						_wingYLEBreakPoints.add(1, yLEKink);
-						_wingYLEBreakPoints.add(2, yLETip);
-						}
-						
-						if(_wingNumberOfGivenSections == 2){
+				
 						Amount<Length> yLETip = Amount.valueOf(
 								_wingSemiSpan.doubleValue(SI.METER)*
 								Math.tan(_wingDihedralBreakPoints.get(_wingNumberOfGivenSections-1).doubleValue(SI.RADIAN)),
@@ -948,10 +952,10 @@ public class StabilityExecutableManager {
 						
 						_wingYLEBreakPoints.add(0, Amount.valueOf(0.0,SI.METER));
 						_wingYLEBreakPoints.add(1, yLETip);
-						}
 						
+						double[] yBreakPointsYLE ={0,1};
 						Double [] yLEDistributionArray = MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalBreakPoints),
+								yBreakPointsYLE,
 								MyArrayUtils.convertListOfAmountTodoubleArray(_wingYLEBreakPoints),
 								MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 								);	
@@ -1146,18 +1150,18 @@ public class StabilityExecutableManager {
 									MyArrayUtils.convertToDoublePrimitive(_wingMaxThicknessBreakPointsCLEAN),
 									MyArrayUtils.convertToDoublePrimitive(_wingYAdimensionalDistribution)
 									);	
-							this._wingMaxThicknessDistributionCLEAN = new ArrayList<>();
+							this._wingMaxThicknessDistribution = new ArrayList<>();
 							for(int i=0; i<maxThicknessDistributionArray.length; i++)
-								_wingMaxThicknessDistributionCLEAN.add(maxThicknessDistributionArray[i]);
+								_wingMaxThicknessDistribution.add(maxThicknessDistributionArray[i]);
 
 							// max thickness mean airfoil
 							if (this._wingNumberOfGivenSectionsCLEAN == 3){
-								this._wingMaxThicknessMeanAirfoilCLEAN =  _wingMaxThicknessBreakPointsCLEAN.get(0) * kRoot +
+								this._wingMaxThicknessMeanAirfoil =  _wingMaxThicknessBreakPointsCLEAN.get(0) * kRoot +
 										_wingMaxThicknessBreakPointsCLEAN.get(1) * kKink + 
 										_wingMaxThicknessBreakPointsCLEAN.get(2) * kTip;
 							}
 							if (this._wingNumberOfGivenSectionsCLEAN == 2){
-								this._wingMaxThicknessMeanAirfoilCLEAN =  _wingMaxThicknessBreakPointsCLEAN.get(0) * kRoot +
+								this._wingMaxThicknessMeanAirfoil =  _wingMaxThicknessBreakPointsCLEAN.get(0) * kRoot +
 										_wingMaxThicknessBreakPointsCLEAN.get(1) * kTip;
 							}
 						}
@@ -7270,6 +7274,14 @@ public class StabilityExecutableManager {
 
 	public void setWingLERadiusDistributionCLEAN(List<Amount<Length>> _wingLERadiusDistributionCLEAN) {
 		this._wingLERadiusDistributionCLEAN = _wingLERadiusDistributionCLEAN;
+	}
+
+	public int getWingNumberOfGivenSectionsCLEAN() {
+		return _wingNumberOfGivenSectionsCLEAN;
+	}
+
+	public void setWingNumberOfGivenSectionsCLEAN(int _wingNumberOfGivenSectionsCLEAN) {
+		this._wingNumberOfGivenSectionsCLEAN = _wingNumberOfGivenSectionsCLEAN;
 	}
 
 }
