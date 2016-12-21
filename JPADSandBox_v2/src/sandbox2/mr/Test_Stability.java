@@ -159,6 +159,10 @@ public class Test_Stability{
 		theCalculator.calculateDeltaeEquilibrium();
 		//...
 		theCalculator.calculateDistributions();
+		if (theCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theCalculator.getTheCondition() == ConditionEnum.LANDING){
+			theCalculator.calculateFlappedCurve();
+			theCalculator.calculateCL();
+		}
 		theCalculator.printAllData();
 		String sb = theCalculator.printAllResults();
 		System.out.println(sb);

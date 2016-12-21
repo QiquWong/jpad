@@ -538,8 +538,10 @@ public class StabilityExecutableManager {
 	private List<Double> _wingInducedDragCoefficientDistribution = new ArrayList<Double>();
 	//------------------------------------------------
 	private List<Double> _wingDragCoefficient3DCurve = new ArrayList<Double>();
+	private List<Double> _wingDragCoefficient3DCurveTemp = new ArrayList<Double>();
 	private List<List<Double>> _wingAirfoilsCoefficientCurve;
 
+	private MethodEnum _deltaDueToFlapMethod;
 	//input
 	//INPUT-wing
 	private List<Double> cLWingDragPolar;
@@ -648,6 +650,7 @@ public class StabilityExecutableManager {
 	//----------------------------------------------------------------
 	
 	private List<List<Double>> _clWingDistribution = new ArrayList<>();
+	private Double [] _cl3DCurveWingFlapped;
 	private List<List<Double>> _clHtailDistribution = new ArrayList<>();
 	private List<List<Double>> _centerOfPressureWingDistribution = new ArrayList<>();
 	private List<List<Double>> _centerOfPressurehTailDistribution = new ArrayList<>();
@@ -658,6 +661,23 @@ public class StabilityExecutableManager {
 	
 	private List<double [] > _clNasaBlackwellDistributionModified = new ArrayList<>();
 	
+	
+	//Flapped CL CURVE -------------------------------------------
+	//----------------------------------------------------------------
+	
+	private Double _clZeroFlapped;
+	private Double _clAlphaDegFlapped;
+	private Double _clAlphaRadFlapped;
+	private Amount<?> _wingclAlphaFlapped;
+	private Double _clMaxFlapped;
+	private Amount<Angle> _alphaStarFlapped;
+	private Amount<Angle> _alphaStallFlapped;
+	private Amount<Angle> _alphaStallLinearFlapped ;
+	private Amount<Angle> _alphaZeroLiftFlapped;
+	private List<Double> _clMaxDistributionFlapped;
+	
+	List<List<Double>> clDistributions; 
+	Double[] cl3D;
 	
 	
 	/*****************************************************************************************************************************************
@@ -2119,6 +2139,28 @@ public class StabilityExecutableManager {
 		sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasTail, "\n\t\tAlpha Body", ","))
 		.append("\t\tcl wing = " + _hTailEquilibriumLiftCoefficient + "\n\n");
 		
+		
+		// CL FLAPPED CURVE
+		
+		if(_theCondition == ConditionEnum.TAKE_OFF || _theCondition == ConditionEnum.LANDING){
+		sb.append("\nFLAPPED 3D CURVE\n")
+		.append("-------------------------------------\n")
+		.append("\t\talpha zero lift = " + _alphaZeroLiftFlapped + "\n" )
+		.append("\t\tCL zero = " + _clZeroFlapped+ "\n")
+		.append("\t\tCL alpha = " + _clAlphaDegFlapped+ "\n")
+		.append("\t\tAlpha star = " + _alphaStarFlapped+ "\n")
+		.append("\t\tCL max = " + _clMaxFlapped+ "\n")
+		.append("\t\tAlpha stall = " + _alphaStallFlapped+ "\n")
+		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasWing, "\t\tAlpha Wing", ","))
+		.append("\t\tCL 3D Curve = " + Arrays.toString(_cl3DCurveWingFlapped)+ "\n")
+		.append("\t\teta wing = " + _wingYAdimensionalDistribution + "\n\n")
+		.append("\t\tCL max distribution at alpha " + _alphaStallLinearFlapped + " = " + _clMaxDistributionFlapped + "\n\n")
+		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphaWingForDistribution, "\t\tAlpha Wing", ","))
+		.append("\t\tCL 3D Curve  = " + Arrays.toString(cl3D) + "\n\n");
+		for (int i=0; i<_alphaWingForDistribution.size(); i++){
+			sb.append("\t\tCl distribution  at alpha " + _alphaWingForDistribution.get(i) +  " = " + clDistributions.get(i) + "\n\n");
+		}
+		}
 		return sb.toString();
 	}
 
@@ -4107,11 +4149,30 @@ public class StabilityExecutableManager {
 			// TOTAL DRAG--------------------------------------------
 			
 			for (int i=0; i<_numberOfAlphasBody; i++){
-				_wingDragCoefficient3DCurve.add(
+				_wingDragCoefficient3DCurveTemp.add(
 						i,
 						_wingParasiteDragCoefficientDistribution.get(i)+_wingInducedDragCoefficientDistribution.get(i));
 			}
 			
+			if (_theCondition == ConditionEnum.CRUISE){
+				_wingDragCoefficient3DCurve = _wingDragCoefficient3DCurveTemp;
+			}
+
+			if (_theCondition == ConditionEnum.TAKE_OFF || _theCondition == ConditionEnum.LANDING){
+				if(this._deltaDueToFlapMethod==MethodEnum.AIRFOIL_INPUT){
+					_wingDragCoefficient3DCurve = _wingDragCoefficient3DCurveTemp;
+
+				}
+
+				if(this._deltaDueToFlapMethod==MethodEnum.SEMPIEMPIRICAL){
+					// delta CD0
+
+					for (int i=0; i<_numberOfAlphasBody; i++){
+						_wingDragCoefficient3DCurve.add(i, _wingDragCoefficient3DCurveTemp.get(i) + _deltaCD0);
+					}
+
+				}
+			}
 		}
 
 	}
@@ -5258,6 +5319,112 @@ public class StabilityExecutableManager {
 //							_hTailCLAirfoilsDistributionFinal, 
 //							_alphasTail));
 //			}
+	}
+	
+	public void calculateFlappedCurve(){
+
+		// CL0 -------------
+		theNasaBlackwellCalculatorMachActualWing.calculate(Amount.valueOf(0.0, SI.RADIAN));
+		_clZeroFlapped = theNasaBlackwellCalculatorMachActualWing.getCLCurrent();
+		
+		// CL ALPHA--------------
+		theNasaBlackwellCalculatorMachActualWing.calculate(Amount.valueOf(toRadians(0.), SI.RADIAN));
+		double clOneMachActual = theNasaBlackwellCalculatorMachActualWing.getCLCurrent();
+		theNasaBlackwellCalculatorMachActualWing.calculate(Amount.valueOf(toRadians(4.), SI.RADIAN));
+		double clTwoMachActual = theNasaBlackwellCalculatorMachActualWing.getCLCurrent();
+		_clAlphaRadFlapped = (clTwoMachActual-clOneMachActual)/toRadians(4);
+		_clAlphaDegFlapped = (clTwoMachActual-clOneMachActual)/(4);
+		_wingclAlphaFlapped = Amount.valueOf( _clAlphaRadFlapped , SI.RADIAN.inverse());
+		
+		// DELTA ALPHA 
+		double deltaYPercent = aeroDatabaseReader
+				.getDeltaYvsThickness(
+						_wingMaxThicknessMeanAirfoil,
+						_wingMeanAirfoilFamily
+						);
+
+		Amount<Angle> deltaAlpha = Amount.valueOf(
+				aeroDatabaseReader
+				.getDAlphaVsLambdaLEVsDy(
+						_wingSweepLE.doubleValue(NonSI.DEGREE_ANGLE),
+						deltaYPercent
+						),
+				NonSI.DEGREE_ANGLE);
+		
+		// ALPHA STALL LINEAR-----------------------
+		
+		_alphaStallFlapped =  Amount.valueOf(13, NonSI.DEGREE_ANGLE);
+		_alphaStallLinearFlapped = Amount.valueOf(
+				_alphaStallFlapped.doubleValue(NonSI.DEGREE_ANGLE) - deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE), 
+				NonSI.DEGREE_ANGLE);
+		
+		// CL MAX----------------------
+		
+		theNasaBlackwellCalculatorMachActualWing.calculate(_alphaStallLinearFlapped);
+		 _clMaxDistributionFlapped = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+				 theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray()));
+		_clMaxFlapped = theNasaBlackwellCalculatorMachActualWing.getCLCurrent();
+		
+		// ALPHA STAR----------------------
+		
+		_alphaStarFlapped=
+				Amount.valueOf(
+						_alphaStallFlapped.doubleValue(NonSI.DEGREE_ANGLE)
+						-(_wingalphaStall.doubleValue(NonSI.DEGREE_ANGLE)
+								- _wingalphaStar.doubleValue(NonSI.DEGREE_ANGLE)),
+						NonSI.DEGREE_ANGLE);
+				
+		// ALPHA ZERO LIFT
+		
+		_alphaZeroLiftFlapped = 
+				Amount.valueOf(
+						-(_clZeroFlapped  /_clAlphaDegFlapped ),
+						NonSI.DEGREE_ANGLE
+						);
+		// 3D CURVE-------------
+		
+		_cl3DCurveWingFlapped = LiftCalc.calculateCLvsAlphaArray(
+				_clZeroFlapped,
+				_clMaxFlapped,
+				_alphaStarFlapped,
+				_alphaStallFlapped,
+				_wingclAlphaFlapped,
+				MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasWing)
+				);
+}
+	
+	public void calculateCL(){
+		double [] alphaDistribution;
+		clDistributions = new ArrayList<>();
+		List<Double> clDistributionActual;
+		cl3D = new Double[_alphaWingForDistribution.size()]; 
+		Double[] cCL = new Double[_wingNumberOfPointSemiSpanWise]; 
+		for (int i=0; i<_alphaWingForDistribution.size(); i++){
+			alphaDistribution = new double [_wingNumberOfPointSemiSpanWise];
+			clDistributionActual = new ArrayList<>();
+			for (int ii=0; ii<_wingNumberOfPointSemiSpanWise; ii++){
+				alphaDistribution[ii] = _alphaWingForDistribution.get(i).doubleValue(NonSI.DEGREE_ANGLE) +
+						_wingTwistDistribution.get(ii).doubleValue(NonSI.DEGREE_ANGLE)
+						+ _alphaIWingDistribution.get(i).get(ii).doubleValue(NonSI.DEGREE_ANGLE);
+	
+				
+				clDistributionActual.add(ii,
+						MyMathUtils.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
+								MyArrayUtils.convertToDoublePrimitive(
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												_wingCLAirfoilsDistributionFinal.get(ii))),
+								alphaDistribution[ii]
+								));
+			}
+			clDistributions.add(i, clDistributionActual);
+			for (int j=0; j<_wingNumberOfPointSemiSpanWise; j++){
+				cCL[j] = clDistributions.get(i).get(j)*_wingChordsDistribution.get(j).doubleValue(SI.METER);
+			}
+			cl3D[i] = 	(2/_wingSurface.doubleValue(SI.SQUARE_METRE)) * MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(_wingYDistribution),
+					MyArrayUtils.convertToDoublePrimitive(cCL));
+		}
 	}
 	
 
@@ -7282,6 +7449,14 @@ public class StabilityExecutableManager {
 
 	public void setWingNumberOfGivenSectionsCLEAN(int _wingNumberOfGivenSectionsCLEAN) {
 		this._wingNumberOfGivenSectionsCLEAN = _wingNumberOfGivenSectionsCLEAN;
+	}
+
+	public MethodEnum getDeltaDueToFlapMethod() {
+		return _deltaDueToFlapMethod;
+	}
+
+	public void setDeltaDueToFlapMethod(MethodEnum _deltaDueToFlapMethod) {
+		this._deltaDueToFlapMethod = _deltaDueToFlapMethod;
 	}
 
 }

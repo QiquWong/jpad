@@ -564,6 +564,20 @@ public class ReaderWriter{
 		theStabilityCalculator.setWingCmACBreakPoints(reader.readArrayDoubleFromXMLSplit("//wing/distribution/aerodynamics/c_m_ac"));
 		}
 
+		// delta due to flap method 
+		String deltaDueToFlaplMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@deltaDueToFlap");
+		if(deltaDueToFlaplMethod.equalsIgnoreCase("SEMIEMPIRICAL"))
+			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.SEMPIEMPIRICAL);
+		if(deltaDueToFlaplMethod.equalsIgnoreCase("INPUT_CURVE"))
+			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.AIRFOIL_INPUT);
+		
+		if (theStabilityCalculator.getTheCondition() == ConditionEnum.CRUISE){
+			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.AIRFOIL_INPUT);
+		}
+		
 		//---------------------------------------------------------------------------------
 		// PLOT:
 
