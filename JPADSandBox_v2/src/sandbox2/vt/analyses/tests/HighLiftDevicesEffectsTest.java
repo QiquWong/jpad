@@ -16,6 +16,7 @@ import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsCalculator;
 import analyses.liftingsurface.LSAerodynamicsCalculator.CalcCLAlpha;
+import analyses.liftingsurface.LSAerodynamicsCalculator.CalcHighLiftCurve;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -254,12 +255,23 @@ public class HighLiftDevicesEffectsTest extends Application {
 			theAircraft.getWing().setTheAerodynamicsCalculator(theAerodynamicCalculator);
 
 			// TAKE-OFF
-			LiftCalc.calculateHighLiftDevicesEffects(
-					theAircraft.getWing(),
+			CalcHighLiftCurve calcHighLiftCurve = theAerodynamicCalculator.new CalcHighLiftCurve();
+			calcHighLiftCurve.semiempirical(
 					theOperatingConditions.getFlapDeflectionTakeOff(),
 					theOperatingConditions.getSlatDeflectionTakeOff(),
-					theAerodynamicCalculator.getCurrentLiftCoefficient()
+					theOperatingConditions.getMachTakeOff(),
+					theOperatingConditions.getAltitudeTakeOff()
 					);
+			
+			System.out.println("\n\t\tAlpha Array: " + theAerodynamicCalculator.getAlphaArrayPlotHighLift());
+			System.out.println("\n\t\tCL Array: " + theAerodynamicCalculator.getLiftCoefficient3DCurveHighLift().get(MethodEnum.EMPIRICAL));			
+			
+//			LiftCalc.calculateHighLiftDevicesEffects(
+//					theAircraft.getWing(),
+//					theOperatingConditions.getFlapDeflectionTakeOff(),
+//					theOperatingConditions.getSlatDeflectionTakeOff(),
+//					theAerodynamicCalculator.getCurrentLiftCoefficient()
+//					);
 			
 			// LANDING
 //			LiftCalc.calculateHighLiftDevicesEffects(
