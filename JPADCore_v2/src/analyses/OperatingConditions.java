@@ -3,7 +3,6 @@ package analyses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.DynamicViscosity;
@@ -26,7 +25,6 @@ import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.PressureCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import standaloneutils.atmosphere.TemperatureCalc;
-import standaloneutils.customdata.MyArray;
 
 /**
  * Set the aircraft current operating conditions
@@ -48,7 +46,7 @@ public class OperatingConditions implements IOperatingConditions {
 	// Cruise data
 	private Amount<Length> _altitudeCruise;
 	private Double _machCruise;
-	private Double _throttleCruise;
+	private Double[] _throttleCruise;
 
 	// Take-off data
 	private Amount<Length> _altitudeTakeOff;
@@ -134,7 +132,7 @@ public class OperatingConditions implements IOperatingConditions {
 		// Cruise data
 		private Amount<Length> __altitudeCruise;
 		private Double __machCruise;
-		private Double __throttleCruise;
+		private Double[] __throttleCruise;
 
 		// Take-off data
 		private Amount<Length> __altitudeTakeOff;
@@ -180,7 +178,7 @@ public class OperatingConditions implements IOperatingConditions {
 			return this;
 		}
 		
-		public OperatingConditionsBuilder throttleCruise (Double throttleCruise) {
+		public OperatingConditionsBuilder throttleCruise (Double[] throttleCruise) {
 			this.__throttleCruise = throttleCruise;
 			return this;
 		}
@@ -250,7 +248,7 @@ public class OperatingConditions implements IOperatingConditions {
 			
 			this.__machCruise = 0.6;
 			this.__altitudeCruise = Amount.valueOf(6000.0, SI.METER);
-			this.__throttleCruise = 0.8;
+			this.__throttleCruise = new Double[] {1.0, 0.95, 0.75};
 			
 			this.__machTakeOff = 0.2;
 			this.__altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
@@ -360,7 +358,7 @@ public class OperatingConditions implements IOperatingConditions {
 		// CRUISE DATA:
 		Double machCruise = null;
 		Amount<Length> altitudeCruise = null;
-		Double throttleCruise = null;
+		Double[] throttleCruise = null;
 		//.............................................................
 		String machCruiseProperty = reader.getXMLPropertyByPath("//cruise/mach");
 		if(machCruiseProperty != null)
@@ -372,7 +370,9 @@ public class OperatingConditions implements IOperatingConditions {
 		//.............................................................
 		String throttleCruiseProperty = reader.getXMLPropertyByPath("//cruise/throttle");
 		if(throttleCruiseProperty != null)
-			throttleCruise = Double.valueOf(reader.getXMLPropertyByPath("//cruise/throttle"));
+			throttleCruise = MyArrayUtils.convertListOfDoubleToDoubleArray(
+					reader.readArrayDoubleFromXML("//cruise/throttle")
+					);
 		
 		///////////////////////////////////////////////////////////////
 		// TAKE-OFF DATA:
@@ -770,11 +770,11 @@ public class OperatingConditions implements IOperatingConditions {
 		this._machClimb = _machClimb;
 	}
 
-	public Double getThrottleCruise() {
+	public Double[] getThrottleCruise() {
 		return _throttleCruise;
 	}
 
-	public void setThrottleCruise(Double _throttleCruise) {
+	public void setThrottleCruise(Double[] _throttleCruise) {
 		this._throttleCruise = _throttleCruise;
 	}
 

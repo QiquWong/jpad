@@ -8,6 +8,7 @@ package configuration.enumerations;
  */
 public enum EngineOperatingConditionEnum {
 	TAKE_OFF,
+	APR,
 	CONTINUOUS,
 	CLIMB,
 	CRUISE,

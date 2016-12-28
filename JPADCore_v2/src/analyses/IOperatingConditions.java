@@ -39,8 +39,8 @@ public interface IOperatingConditions {
 	public String getId();
 	public void setId(String id);
 	
-	public Double getThrottleCruise();
-	public void setThrottleCruise(Double _throttleCruise);
+	public Double[] getThrottleCruise();
+	public void setThrottleCruise(Double[] _throttleCruise);
 
 	public Amount<Length> getAltitudeTakeOff();
 	public void setAltitudeTakeOff(Amount<Length> _altitudeTakeOff);

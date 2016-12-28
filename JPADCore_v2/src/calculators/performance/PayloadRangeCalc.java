@@ -144,7 +144,6 @@ public class PayloadRangeCalc{
 			Amount<Mass> maxFuelMass,
 			Double[] polarCL,
 			Double[] polarCD,
-			double oswald,
 			double cruiseMach,
 			Amount<Length> altitude,
 			Amount<Mass> passengerSingleMass
@@ -166,7 +165,6 @@ public class PayloadRangeCalc{
 		this.polarCL = polarCL;
 		this.polarCD = polarCD;
 		this.cD0 = MyArrayUtils.getMin(this.polarCD);
-		this.oswald = oswald;
 		this.etaPropeller = theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller();
 		
 		Airfoil meanAirfoil = new Airfoil(

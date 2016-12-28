@@ -77,7 +77,7 @@ public abstract class EngineDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public abstract double getThrustDescent(double mach, double altitude, double bpr);
-
+	
 	/**
 	 * 
 	 * @author Lorenzo Attanasio
@@ -89,14 +89,6 @@ public abstract class EngineDatabaseReader extends DatabaseReader{
 	 */
 	public abstract double getSFC(double mach, double altitude, double tT0Ratio, double bpr, EngineOperatingConditionEnum engineOperatingCondition);
 
-	/**
-	 * 
-	 * @param mach
-	 * @param altitude meters
-	 * @param bpr
-	 * @return
-	 */
-	public abstract double getDescentFuelFlow(double mach, double altitude, double bpr);
 
 	public String getEngineDatabaseFileName() {
 		return databaseFileName;

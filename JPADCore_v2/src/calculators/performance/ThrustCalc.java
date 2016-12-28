@@ -87,10 +87,7 @@ public class ThrustCalc {
 			EngineOperatingConditionEnum[] flightCondition,
 			EngineTypeEnum engineType, 
 			PowerPlant thePowerPlant,
-			double t0, int nEngine, double bpr,
-			double surface, double ar, double oswald,
-			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType, 
-			double cLmax, double cD0) {
+			double t0, int nEngine, double bpr) {
 	
 		List<ThrustMap> list = new ArrayList<ThrustMap>();
 	

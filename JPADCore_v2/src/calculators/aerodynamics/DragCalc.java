@@ -521,6 +521,51 @@ public class DragCalc {
 						speed);
 	}
 
+	public static List<DragMap> calculateDragAndPowerRequired(
+			double[] altitude,
+			double[] phi,
+			double[] weight,
+			double[] speed,
+			double surface,
+			double CLmax,
+			double polarCL[],
+			double polarCD[],
+			double sweepHalfChord,
+			double tcMax, 
+			AirfoilTypeEnum airfoilType
+			) {
+
+		int nAlt = altitude.length;
+		int nThrottle = phi.length;
+		List<DragMap> list = new ArrayList<DragMap>();
+
+		for(int f=0; f<nThrottle; f++) {
+			for(int i=0; i<nAlt; i++) {
+				for(int k=0; k<weight.length; k++) {
+
+				list.add(new DragMap(
+						weight[k],
+						altitude[i], 
+						calculateDragVsSpeed(
+								weight[k],
+								altitude[i], 
+								surface,
+								polarCL,
+								polarCD,
+								speed,
+								sweepHalfChord,
+								tcMax,
+								airfoilType
+								), 
+						speed)
+						);
+				}
+			}
+		}
+
+		return list;
+	}
+	
 	/**
 	 * This methods allows the user to evaluate required power and drag using a known polar curve
 	 * given as input.

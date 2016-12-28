@@ -19,6 +19,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.customdata.CenterOfGravity;
 
 /** 
@@ -172,10 +173,16 @@ public class PowerPlant implements IPowerPlant {
 		
 		if((this._engineList.get(0).getEngineType() == EngineTypeEnum.TURBOPROP)
 				|| (this._engineType == EngineTypeEnum.PISTON))
-			_turbopropEngineDatabaseReader = new TurbopropEngineDatabaseReader(
-					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
-					_engineList.get(0).getEngineDatabaseName()
-					);
+			try {
+				_turbopropEngineDatabaseReader = new TurbopropEngineDatabaseReader(
+						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
+						_engineList.get(0).getEngineDatabaseName()
+						);
+			} catch (HDF5LibraryException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
 		else
 			_turbofanEngineDatabaseReader = new TurbofanEngineDatabaseReader(
 					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 

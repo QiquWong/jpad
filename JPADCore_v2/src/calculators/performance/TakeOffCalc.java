@@ -24,11 +24,9 @@ import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import analyses.OperatingConditions;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -58,7 +56,6 @@ public class TakeOffCalc {
 	// VARIABLE DECLARATION
 
 	private Aircraft aircraft;
-	private OperatingConditions theConditions;
 	private Amount<Duration> dtRot, dtHold,	
 	dtRec = Amount.valueOf(3, SI.SECOND),
 	tHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
@@ -70,7 +67,7 @@ public class TakeOffCalc {
 	tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1;
-	private Amount<Length> wingToGroundDistance, obstacle, balancedFieldLength;
+	private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
 	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor;
 	private List<Amount<Angle>> alpha, theta, gamma;
@@ -84,7 +81,7 @@ public class TakeOffCalc {
 	private Double vFailure;
 	private boolean isAborted;
 	
-	private double oswald, cD0, cLalphaFlap, deltaCD0LandingGear, deltaCD0FlapLandinGears;
+	private double cLalphaFlap, mach;
 
 	// Statistics to be collected at every phase: (initialization of the lists through the builder
 	private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
@@ -108,7 +105,8 @@ public class TakeOffCalc {
 	 */
 	public TakeOffCalc(
 			Aircraft aircraft,
-			OperatingConditions theConditions,
+			Amount<Length> altitude,
+			double mach,
 			Amount<Mass> maxTakeOffMass,
 			Amount<Duration> dtRot,
 			Amount<Duration> dtHold,
@@ -126,17 +124,15 @@ public class TakeOffCalc {
 			Amount<Velocity> vWind,
 			Amount<Angle> alphaGround,
 			Amount<Angle> iw,
-			double cD0,
-			double oswald,
 			double cLmaxTO,
 			double cLZeroTO,
-			double cLalphaFlap,
-			double deltaCD0FlapLandingGears
+			double cLalphaFlap
 			) {
 
 		// Required data
 		this.aircraft = aircraft;
-		this.theConditions = theConditions;
+		this.altitude = altitude;
+		this.mach = mach;
 		this.maxTakeOffMass = maxTakeOffMass;
 		this.dtRot = dtRot;
 		this.dtHold = dtHold;
@@ -154,19 +150,15 @@ public class TakeOffCalc {
 		this.vWind = vWind;
 		this.alphaGround = alphaGround;
 		this.iw = iw;
-		this.cD0 = cD0;
-		this.oswald = oswald;
-		this.deltaCD0FlapLandinGears = deltaCD0FlapLandingGears;
 		this.cLmaxTO = cLmaxTO;
-		this.cL0 = cLZeroTO;
 		this.cLalphaFlap = cLalphaFlap;
-		
-		this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
+		this.cL0 = cLZeroTO;
+		this.cLground = cLZeroTO + (cLalphaFlap*iw.getEstimatedValue());
 		
 		// Reference velocities definition
 		vSTakeOff = Amount.valueOf(
 				SpeedCalc.calculateSpeedStall(
-						theConditions.getAltitudeTakeOff().getEstimatedValue(),
+						getAltitude().doubleValue(SI.METER),
 						maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
 						aircraft.getWing().getSurface().getEstimatedValue(),
 						cLmaxTO
@@ -179,9 +171,6 @@ public class TakeOffCalc {
 		System.out.println("CLmaxTO = " + cLmaxTO);
 		System.out.println("CL0 = " + cLZeroTO);
 		System.out.println("CLground = " + cLground);
-		System.out.println("CD0 clean = " + cD0);
-		System.out.println("Delta CD0 flap + landing gears = " + deltaCD0FlapLandinGears);
-		System.out.println("CD0 TakeOff = " + (cD0 + deltaCD0FlapLandinGears));
 		System.out.println("VsTO = " + vSTakeOff);
 		System.out.println("VRot = " + vRot);
 		System.out.println("vLO = " + vLO);
@@ -1095,30 +1084,12 @@ public class TakeOffCalc {
 
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
-//			initialize();
 			calculateTakeOffDistanceODE(failureSpeedArray[i], false);
 			continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
-//			initialize();
 			calculateTakeOffDistanceODE(failureSpeedArray[i], true);
 			abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 		}
 
-//		// interpolation of the two arrays
-//		failureSpeedArrayFitted = MyArrayUtils.linspace(
-//				2.0,
-//				vLO.getEstimatedValue(),
-//				250);
-//		continuedTakeOffFitted.interpolate(failureSpeedArray, continuedTakeOffArray);
-//		abortedTakeOffFitted.interpolate(failureSpeedArray, abortedTakeOffArray);
-//
-//		// values extraction from the polynomial spline functions
-//		continuedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
-//		abortedTakeOffSplineValues = new double[failureSpeedArrayFitted.length];
-//
-//		for(int i=0; i<failureSpeedArrayFitted.length; i++){
-//			continuedTakeOffSplineValues[i] = continuedTakeOffFitted.value(failureSpeedArrayFitted[i]);
-//			abortedTakeOffSplineValues[i] = abortedTakeOffFitted.value(failureSpeedArrayFitted[i]);
-//		}
 
 		// arrays intersection
 		double[] intersection = MyArrayUtils.intersectArraysSimple(
@@ -1518,13 +1489,10 @@ public class TakeOffCalc {
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = TakeOffCalc.this.mu;
 			kAlpha = TakeOffCalc.this.kAlphaDot;
-			cD0 = TakeOffCalc.this.getcD0();
-			deltaCD0 = TakeOffCalc.this.getDeltaCD0FlapLandinGears();
-			oswald = TakeOffCalc.this.getOswald();
 			ar = aircraft.getWing().getAspectRatio();
 			kGround = TakeOffCalc.this.getkGround();
 			vWind = TakeOffCalc.this.getvWind().getEstimatedValue();
-			altitude = TakeOffCalc.this.getTheConditions().getAltitudeTakeOff().getEstimatedValue();
+			altitude = TakeOffCalc.this.getAltitude().getEstimatedValue();
 
 			// alpha_dot_initial calculation
 			double cLatLiftOff = cLmaxTO/(Math.pow(kLO, 2));
@@ -1609,14 +1577,28 @@ public class TakeOffCalc {
 										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								)
 						);
-			else
+			else {
+				// CHECK ON THE APR SETTING, if present use this ...
+				if ((TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
+						&& (Double.valueOf(
+								TakeOffCalc.this.getAircraft()
+								.getPowerPlant()
+								.getTurbopropEngineDatabaseReader()
+								.getThrustAPR(
+										TakeOffCalc.this.getMach(),
+										TakeOffCalc.this.getAltitude().doubleValue(SI.METER),
+										TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR()
+										)
+								) != 0.0
+							)
+						)
 				theThrust =	ThrustCalc.calculateThrustDatabase(
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
 						TakeOffCalc.this.getPhi(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 						TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.TAKE_OFF,
+						EngineOperatingConditionEnum.APR,
 						TakeOffCalc.this.getAircraft().getPowerPlant(),
 						altitude,
 						SpeedCalc.calculateMach(
@@ -1627,7 +1609,27 @@ public class TakeOffCalc {
 										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								)
 						);
-
+				else
+					// ... otherwise use TAKE-OFF
+					theThrust =	ThrustCalc.calculateThrustDatabase(
+							TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
+							TakeOffCalc.this.getPhi(),
+							TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+							TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
+							EngineOperatingConditionEnum.TAKE_OFF,
+							TakeOffCalc.this.getAircraft().getPowerPlant(),
+							altitude,
+							SpeedCalc.calculateMach(
+									altitude,
+									speed + 
+									(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+											gamma,
+											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+									)
+							);
+			}
+			
 			return theThrust;
 		}
 
@@ -1746,14 +1748,6 @@ public class TakeOffCalc {
 
 	public void setAircraft(Aircraft aircraft) {
 		this.aircraft = aircraft;
-	}
-
-	public OperatingConditions getTheConditions() {
-		return theConditions;
-	}
-
-	public void setTheConditions(OperatingConditions theConditions) {
-		this.theConditions = theConditions;
 	}
 
 	public Amount<Duration> getDtRot() {
@@ -2280,22 +2274,6 @@ public class TakeOffCalc {
 		this.tRec = tRec;
 	}
 
-	public double getOswald() {
-		return oswald;
-	}
-
-	public void setOswald(double oswald) {
-		this.oswald = oswald;
-	}
-
-	public double getcD0() {
-		return cD0;
-	}
-
-	public void setcD0(double cD0) {
-		this.cD0 = cD0;
-	}
-
 	public double getcLalphaFlap() {
 		return cLalphaFlap;
 	}
@@ -2304,28 +2282,28 @@ public class TakeOffCalc {
 		this.cLalphaFlap = cLalphaFlap;
 	}
 
-	public double getDeltaCD0FlapLandinGears() {
-		return deltaCD0FlapLandinGears;
-	}
-
-	public void setDeltaCD0FlapLandinGears(double deltaCD0FlapLandinGears) {
-		this.deltaCD0FlapLandinGears = deltaCD0FlapLandinGears;
-	}
-
-	public double getDeltaCD0LandingGear() {
-		return deltaCD0LandingGear;
-	}
-
-	public void setDeltaCD0LandingGear(double deltaCD0LandingGear) {
-		this.deltaCD0LandingGear = deltaCD0LandingGear;
-	}
-
 	public Amount<Mass> getMaxTakeOffMass() {
 		return maxTakeOffMass;
 	}
 
 	public void setMaxTakeOffMass(Amount<Mass> maxTakeOffMass) {
 		this.maxTakeOffMass = maxTakeOffMass;
+	}
+
+	public Amount<Length> getAltitude() {
+		return altitude;
+	}
+
+	public void setAltitude(Amount<Length> altitude) {
+		this.altitude = altitude;
+	}
+
+	public double getMach() {
+		return mach;
+	}
+
+	public void setMach(double mach) {
+		this.mach = mach;
 	}
 
 }

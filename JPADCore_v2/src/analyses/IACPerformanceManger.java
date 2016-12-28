@@ -45,9 +45,6 @@ public interface IACPerformanceManger {
 	public Amount<Mass> getMaximumTakeOffMass() ;
 	public void setMaximumTakeOffMass(Amount<Mass> _maximumTakeOffMass) ;
 
-	public Amount<Mass> getMaximumLandingMass() ;
-	public void setMaximumLandingMass(Amount<Mass> _maximumLandingMass) ;
-
 	public Amount<Mass> getMaximumZeroFuelMass();
 	public void setMaximumZeroFuelMass(Amount<Mass> _maximumZeroFuelMass) ;
 
@@ -59,21 +56,6 @@ public interface IACPerformanceManger {
 
 	public Amount<Mass> getSinglePassengerMass();
 	public void setSinglePassengerMass(Amount<Mass> _singlePassengerMass) ;
-
-	public Double getCD0();
-	public void setCD0(Double _cD0);
-
-	public Double getOswaldCruise() ;
-	public void setOswaldCruise(Double _oswald) ;
-
-	public Double getOswaldClimb() ;
-	public void setOswaldClimb(Double _oswaldClimb) ;
-
-	public Double getOswaldTakeOff() ;
-	public void setOswaldTakeOff(Double _oswaldTakeOff) ;
-
-	public Double getOswaldLanding() ;
-	public void setOswaldLanding(Double _oswaldLanding) ;
 
 	public Double getCLmaxClean() ;
 	public void setCLmaxClean(Double _cLmaxClean) ;
@@ -108,18 +90,6 @@ public interface IACPerformanceManger {
 	public Double getMuBrake() ;
 	public void setMuBrake(Double _muBrake) ;
 
-	public Double getDeltaCD0HighLift() ;
-	public void setDeltaCD0TakeOff(Double _deltaCD0TakeOff) ;
-
-	public Double getDeltaCD0Landing() ;
-	public void setDeltaCD0Landing(Double _deltaCD0Landing) ;
-
-	public Double getDeltaCD0LandingGear() ;
-	public void setDeltaCD0LandingGear(Double _deltaCD0LandingGear) ;
-
-	public Double getDeltaCD0Spoliers() ;
-	public void setDeltaCD0Spoliers(Double _deltaCD0Spoliers) ;
-
 	public Double getCLmaxTakeOff() ;
 	public void setCLmaxTakeOff(Double _cLmaxTakeOff) ;
 
@@ -138,8 +108,8 @@ public interface IACPerformanceManger {
 	public Double getKCLmax() ;
 	public void setKCLmax(Double _kCLmax) ;
 
-	public Double getKDragDueToEngineFailure() ;
-	public void setKDragDueToEngineFailure(Double _kDragDueToFailure) ;
+	public Double getDragDueToEngineFailure() ;
+	public void setDragDueToEngineFailure(Double _kDragDueToFailure) ;
 
 	public Double getKAlphaDot() ;
 	public void setKAlphaDot(Double _kAlphaDot) ;
@@ -565,9 +535,12 @@ public interface IACPerformanceManger {
 	public Amount<Duration> getLandingDuration();
 	public void setLandingDuration(Amount<Duration> _landingDuration);
 
-	public List<DragMap> getDragList();
-	public void setDragList(List<DragMap> _dragList);
-
+	public List<DragMap> getDragListAOE();
+	public void setDragListAOE(List<DragMap> _dragListAOE);
+	
+	public List<DragMap> getDragListOEI();
+	public void setDragListOEI(List<DragMap> _dragListOEI);
+	
 	public List<ThrustMap> getThrustListAOE();
 	public void setThrustListAOE(List<ThrustMap> _thrustListAOE);
 	

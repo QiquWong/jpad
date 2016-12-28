@@ -26,6 +26,8 @@ import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
 
+import com.orsonpdf.Stream;
+
 public final class MyArrayUtils {
 
 	private MyArrayUtils() {}
@@ -534,6 +536,10 @@ public final class MyArrayUtils {
 		return ret;
 	}
 
+	public static double[] sumNumberToArrayEBE(double[] a, double b) {
+		return Arrays.stream(a).map(x -> x + b).toArray();
+	}
+	
 	@Deprecated
 	public static double[] sumArraysElementByElement(double[] a, double[] b) {
 

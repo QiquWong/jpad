@@ -1,14 +1,15 @@
 package database.databasefunctions.engine;
 
 import configuration.enumerations.EngineOperatingConditionEnum;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyInterpolatingFunction;
 
 public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 
 	private MyInterpolatingFunction takeOffSFCFunction, continuousSFCFunction, climbSFCFunction,
-	cruiseSFCFunction, descentSFCFunction;
+	cruiseSFCFunction, descentSFCFunction, aprSFCFunction, aprThrustFunction;
 
-	public TurbopropEngineDatabaseReader(String databaseFolderName, String engineDatabaseFileName) {
+	public TurbopropEngineDatabaseReader(String databaseFolderName, String engineDatabaseFileName) throws HDF5LibraryException, NullPointerException {
 
 		super(databaseFolderName, engineDatabaseFileName);
 
@@ -17,12 +18,14 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 		climbThrustFunction = database.interpolate2DFromDatasetFunction("MaximumClimbThrust");
 		cruiseThrustFunction = database.interpolate2DFromDatasetFunction("MaximumCruiseThrust");
 		descentThrustFunction = database.interpolate2DFromDatasetFunction("IdleThrust");
+		aprThrustFunction = database.interpolate2DFromDatasetFunction("APR_Thrust");
 
 		takeOffSFCFunction = database.interpolate2DFromDatasetFunction("TakeOffSFC");
 		continuousSFCFunction = database.interpolate2DFromDatasetFunction("MaximumContinuousSFC");
 		climbSFCFunction = database.interpolate2DFromDatasetFunction("MaximumClimbSFC");
 		cruiseSFCFunction = database.interpolate2DFromDatasetFunction("MaximumCruiseSFC");
 		descentSFCFunction = database.interpolate2DFromDatasetFunction("IdleSFC");
+		aprSFCFunction = database.interpolate2DFromDatasetFunction("APR_SFC");
 	}
 
 	@Override
@@ -44,8 +47,12 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 			return getThrustMaximumCruise(mach, altitude, bpr);
 		}
 
-		else {
+		else if (flightCondition.equals(EngineOperatingConditionEnum.DESCENT)){
 			return getThrustDescent(mach, altitude, bpr);
+		}
+		
+		else  {
+			return getThrustAPR(mach, altitude, bpr);
 		}
 	}
 
@@ -69,11 +76,17 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 		return cruiseThrustFunction.value(mach, altitude/0.3048);
 	}
 
-	@Override
 	public double getThrustDescent(double mach, double altitude, double bpr) {
 		return descentThrustFunction.value(mach, altitude/0.3048);
 	}
 
+	public double getThrustAPR(double mach, double altitude, double bpr) {
+		if( aprThrustFunction != null)
+			return aprThrustFunction.value(mach, altitude/0.3048);
+		else
+			return 0.0;
+	}
+	
 	@Override
 	public double getSFC(double mach, double altitude, double tT0Ratio, double bpr, EngineOperatingConditionEnum flightCondition) {
 		
@@ -93,8 +106,12 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 			return getSFCMaximumCruise(mach, altitude, bpr);
 		}
 
-		else {
+		else if (flightCondition.equals(EngineOperatingConditionEnum.DESCENT)){
 			return getSFCDescent(mach, altitude, bpr);
+		}
+		
+		else {
+			return getSFCAPR(mach, altitude, bpr);
 		}
 	}
 	
@@ -118,10 +135,11 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 		return descentSFCFunction.value(mach, altitude/0.3048);
 	}
 
-	@Override
-	public double getDescentFuelFlow(double mach, double altitude, double bpr) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getSFCAPR(double mach, double altitude, double bpr) {
+		if(aprSFCFunction != null)
+			return aprSFCFunction.value(mach, altitude/0.3048);
+		else
+			return 0.0;
 	}
 
 }

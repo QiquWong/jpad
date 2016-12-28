@@ -71,7 +71,6 @@ public class LandingCalc {
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
 	private double mu, muBrake, cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiRev;
-	private double oswald, cD0, cLalphaFlap, deltaCD0FlapLandinGearsSpoilers;
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -118,12 +117,9 @@ public class LandingCalc {
 			Amount<Angle> alphaGround,
 			Amount<Angle> iw,
 			Amount<Angle> thetaApproach,
-			double cD0,
-			double oswald,
 			double cLmaxLanding,
 			double cL0Landing,
 			double cLalphaFlap,
-			double deltaCD0FlapLandingGearsAndSpoilers,
 			double reverseThrottle,
 			Amount<Duration> nFreeRoll
 			) {
@@ -143,12 +139,8 @@ public class LandingCalc {
 		this.alphaGround = alphaGround;
 		this.iw = iw;
 		this.thetaApproach = thetaApproach;
-		this.cD0 = cD0;
-		this.oswald = oswald;
 		this.cLmaxLanding = cLmaxLanding;
-		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandingGearsAndSpoilers;
 		this.cL0Landing = cL0Landing; 
-		this.cLalphaFlap = cLalphaFlap;
 		this.phiRev = reverseThrottle;
 		this.nFreeRoll = nFreeRoll;
 		
@@ -625,9 +617,6 @@ public class LandingCalc {
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = LandingCalc.this.mu;
 			muBrake = LandingCalc.this.muBrake;
-			cD0 = LandingCalc.this.getcD0();
-			deltaCD0 = LandingCalc.this.getDeltaCD0FlapLandinGearsSpoilers();
-			oswald = LandingCalc.this.getOswald();
 			ar = aircraft.getWing().getAspectRatio();
 			kGround = LandingCalc.this.getkGround();
 			cLground = LandingCalc.this.getcLground();
@@ -925,30 +914,6 @@ public class LandingCalc {
 	}
 	public void setPhiRev(double phiRev) {
 		this.phiRev = phiRev;
-	}
-	public double getOswald() {
-		return oswald;
-	}
-	public void setOswald(double oswald) {
-		this.oswald = oswald;
-	}
-	public double getcD0() {
-		return cD0;
-	}
-	public void setcD0(double cD0) {
-		this.cD0 = cD0;
-	}
-	public double getcLalphaFlap() {
-		return cLalphaFlap;
-	}
-	public void setcLalphaFlap(double cLalphaFlap) {
-		this.cLalphaFlap = cLalphaFlap;
-	}
-	public double getDeltaCD0FlapLandinGearsSpoilers() {
-		return deltaCD0FlapLandinGearsSpoilers;
-	}
-	public void setDeltaCD0FlapLandinGearsSpoliers(double deltaCD0FlapLandinGearsSpoilers) {
-		this.deltaCD0FlapLandinGearsSpoilers = deltaCD0FlapLandinGearsSpoilers;
 	}
 	public Amount<Length> getsApproach() {
 		return sApproach;
