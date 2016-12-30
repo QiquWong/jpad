@@ -6,7 +6,7 @@ width=\figurewidth,
 height=\figureheight,
 scaled ticks=false, tick label style={/pgf/number format/fixed},
 xmin=0.0,
-xmax=3339.302333720515,
+xmax=2299.3510406257537,
 xlabel={Range (nmi)},
 xmajorgrids,
 ymin=0.0,
@@ -22,9 +22,9 @@ solid
 ]
 table[row sep=crcr]{
 0.0	72.0\\
-711.8629375633968	72.0\\
-2250.3128818068803	46.0\\
-3091.9466052967728	0.0\\
+0.0	72.0\\
+0.0	46.0\\
+0.0	0.0\\
 };
 
 \addplot [

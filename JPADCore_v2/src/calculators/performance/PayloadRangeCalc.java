@@ -280,10 +280,13 @@ public class PayloadRangeCalc{
 					theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
 					);
 			
-			bestRangeMach = SpeedCalc.calculateMach(
-					altitude.doubleValue(SI.METER),
-					pointE.get("Speed_E")
-					);
+			if(oswald != 0.0)
+				bestRangeMach = SpeedCalc.calculateMach(
+						altitude.doubleValue(SI.METER),
+						pointE.get("Speed_E")
+						);
+			else
+				bestRangeMach = 0.0;
 		}
 		else if (engineType == EngineTypeEnum.TURBOJET ||
 				engineType == EngineTypeEnum.TURBOFAN ||
@@ -299,9 +302,12 @@ public class PayloadRangeCalc{
 					theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
 					);
 			
-			bestRangeMach = SpeedCalc.calculateMach(
-					altitude.doubleValue(SI.METER),
-					pointA.get("Speed_A"));
+			if(oswald != 0.0)
+				bestRangeMach = SpeedCalc.calculateMach(
+						altitude.doubleValue(SI.METER),
+						pointA.get("Speed_A"));
+			else
+				bestRangeMach = 0.0;
 		}
 	}
 
@@ -1045,11 +1051,11 @@ public class PayloadRangeCalc{
 		//--------------------------------------------------------------------------------------
 		// BEST RANGE CONDITION
 		rangeArrayBestRange = new ArrayList<>();
-			
+
 		rangeAtMaxPayloadBestRange = calcRangeAtMaxPayload(maxTakeOffMass, true);
 		rangeAtMaxFuelBestRange = calcRangeAtMaxFuel(maxTakeOffMass, true);
 		rangeAtZeroPayloadBestRange = calcRangeAtZeroPayload(true);
-		
+
 		// POINT 1
 		rangeArrayBestRange.add(Amount.valueOf(0.0, NonSI.NAUTICAL_MILE));
 		// POINT 2
@@ -1058,8 +1064,7 @@ public class PayloadRangeCalc{
 		rangeArrayBestRange.add(rangeAtMaxFuelBestRange);
 		// POINT 4
 		rangeArrayBestRange.add(rangeAtZeroPayloadBestRange);
-		
-		
+
 		//--------------------------------------------------------------------------------------
 		// CURRENT MACH CONDITION
 		rangeArrayCurrentMach = new ArrayList<>();

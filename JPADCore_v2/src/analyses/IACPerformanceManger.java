@@ -45,9 +45,6 @@ public interface IACPerformanceManger {
 	public Amount<Mass> getMaximumTakeOffMass() ;
 	public void setMaximumTakeOffMass(Amount<Mass> _maximumTakeOffMass) ;
 
-	public Amount<Mass> getMaximumZeroFuelMass();
-	public void setMaximumZeroFuelMass(Amount<Mass> _maximumZeroFuelMass) ;
-
 	public Amount<Mass> getOperatingEmptyMass();
 	public void setOperatingEmptyMass(Amount<Mass> _operatingEmptyMass) ;
 

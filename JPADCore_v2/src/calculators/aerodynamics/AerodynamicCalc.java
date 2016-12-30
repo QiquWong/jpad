@@ -5,7 +5,13 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -13,7 +19,9 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.print.attribute.HashAttributeSet;
 
+import org.apache.commons.collections4.ComparatorUtils;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
