@@ -40,6 +40,7 @@ import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
+import calculators.performance.MissionProfileCalc;
 import calculators.performance.PayloadRangeCalc;
 import calculators.performance.PerformanceCalcUtils;
 import calculators.performance.RateOfClimbCalc;
@@ -154,6 +155,15 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	// Descent
 	private Amount<Velocity> _speedDescentCAS;
 	private Amount<Velocity> _rateOfDescent;
+	//..............................................................................
+	// Mission Profile:
+	private Amount<Length> _alternateCruiseLength;
+	private Amount<Length> _alternateCruiseAltitude;
+	private Amount<Duration> _holdingDuration;
+	private Amount<Length> _holdingAltitude;
+	private Double _fuelReserve;
+	private Amount<Length> _firstGuessCruiseLength;
+	private Amount<Mass> _firstGuessInitialMissionFuelMass;
 	//..............................................................................
 	// Plot and Task Maps
 	private List<PerformanceEnum> _taskList;
@@ -409,9 +419,18 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		// Flight maneuvering and gust envelope
 		private Double __cLmaxInverted = -1.0;
 		//..............................................................................
-		// Mission profile
+		// Descent
 		private Amount<Velocity> __speedDescent;
 		private Amount<Velocity> __rateOfDescent;
+		//..............................................................................
+		// Mission profile
+		private Amount<Length> __alternateCruiseLength;
+		private Amount<Length> __alternateCruiseAltitude;
+		private Amount<Duration> __holdingDuration;
+		private Amount<Length> __holdingAltitude;
+		private Double __fuelReserve;
+		private Amount<Length> __firstGuessCruiseLength;
+		private Amount<Mass> __firstGuessInitialMissionFuelMass;
 		//..............................................................................
 		// Plot and Task Maps
 		private List<PerformanceEnum> __taskList = new ArrayList<PerformanceEnum>();
@@ -678,6 +697,41 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder alternateCruiseLength(Amount<Length> alternateCruiseLength) {
+			this.__alternateCruiseLength = alternateCruiseLength;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder alternateCruiseAltitude(Amount<Length> alternateCruiseAltitude) {
+			this.__alternateCruiseAltitude = alternateCruiseAltitude;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder holdingDuration(Amount<Duration> holdingDuration) {
+			this.__holdingDuration = holdingDuration;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder holdingAltitude(Amount<Length> holdingAltitude) {
+			this.__holdingAltitude = holdingAltitude;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder fuelReserve(Double fuelReserve) {
+			this.__fuelReserve = fuelReserve;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder firstGuessCruiseLength(Amount<Length> firstGuessCruiseLength) {
+			this.__firstGuessCruiseLength = firstGuessCruiseLength;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder firstGuessFuelMass(Amount<Mass> firstGuessFuelMass) {
+			this.__firstGuessInitialMissionFuelMass = firstGuessFuelMass;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder taskList(List<PerformanceEnum> taskList) {
 			this.__taskList = taskList;
 			return this;
@@ -758,6 +812,14 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		this._rateOfDescent = builder.__rateOfDescent;
 		this._speedDescentCAS = builder.__speedDescent;
+		
+	    this._alternateCruiseLength = builder.__alternateCruiseLength;
+	    this._alternateCruiseAltitude = builder.__alternateCruiseAltitude;
+	    this._holdingDuration = builder.__holdingDuration;
+	    this._holdingAltitude = builder.__holdingAltitude;
+	    this._fuelReserve = builder.__fuelReserve;
+	    this._firstGuessCruiseLength = builder.__firstGuessCruiseLength;
+	    this._firstGuessInitialMissionFuelMass = builder.__firstGuessInitialMissionFuelMass;
 		
 		this._taskList = builder.__taskList;
 		this._plotList = builder.__plotList;
@@ -1548,6 +1610,60 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					SI.METERS_PER_SECOND
 					);		
 		
+		
+		//===========================================================================================
+		// READING FLIGHT MANEUVERING AND GUST ENVELOPE DATA ...
+		Amount<Length> alternateCruiseLength = null;
+		Amount<Length> alternateCruiseAltitude = null;
+		Amount<Duration> holdingDuration = null;
+		Amount<Length> holdingAltitude = null;
+		Double fuelReserve = null;
+		Amount<Length> firstGuessCruiseLength = null;
+		Amount<Mass> firstGuessInitialFuelMass = null;
+		
+		//...............................................................
+		// ALTERNATE CRUISE LENGTH
+		List<String> alternateCruiseLengthProperty = reader.getXMLPropertiesByPath("//performance/mission_profile/alternate_cruise_length");
+		if(!alternateCruiseLengthProperty.isEmpty()) {
+			alternateCruiseLength = reader.getXMLAmountLengthByPath("//performance/mission_profile/alternate_cruise_length"); 
+		}
+		//...............................................................
+		// ALTERNATE CRUISE ALTITUDE
+		List<String> alternateCruiseAltitudeProperty = reader.getXMLPropertiesByPath("//performance/mission_profile/alternate_cruise_altitude");
+		if(!alternateCruiseAltitudeProperty.isEmpty()) {
+			alternateCruiseAltitude = reader.getXMLAmountLengthByPath("//performance/mission_profile/alternate_cruise_altitude"); 
+		}
+		//...............................................................
+		// HOLDING DURATION
+		List<String> holdingDurationProperty = reader.getXMLPropertiesByPath("//performance/mission_profile/holding_duration");
+		if(!holdingDurationProperty.isEmpty()) {
+			holdingDuration = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//performance/mission_profile/holding_duration"); 
+		}
+		//...............................................................
+		// HOLDING ALTITUDE
+		List<String> holdingAltitudeProperty = reader.getXMLPropertiesByPath("//performance/mission_profile/holding_altitude");
+		if(!holdingAltitudeProperty.isEmpty()) {
+			holdingAltitude = reader.getXMLAmountLengthByPath("//performance/mission_profile/holding_altitude"); 
+		}
+		//...............................................................
+		// FUEL RESERVE
+		List<String> fuelReserveProperty = reader.getXMLPropertiesByPath("//performance/mission_profile/fuel_reserve");
+		if(!fuelReserveProperty.isEmpty()) {
+			fuelReserve = Double.valueOf(reader.getXMLPropertyByPath("//performance/mission_profile/fuel_reserve")); 
+		}
+		//...............................................................
+		// FIRST GUESS CRUISE LENGTH
+		List<String> firstGuessCruiseLengthProperty = reader.getXMLPropertiesByPath("//performance/mission_profile/cruise_length");
+		if(!firstGuessCruiseLengthProperty.isEmpty()) {
+			firstGuessCruiseLength = reader.getXMLAmountLengthByPath("//performance/mission_profile/cruise_length"); 
+		}
+		//...............................................................
+		// FIRST GUESS INITIAL FUEL MASS
+		List<String> firstGuessInitialFuelMassProperty = reader.getXMLPropertiesByPath("//performance/mission_profile/initial_mission_fuel");
+		if(!firstGuessInitialFuelMassProperty.isEmpty()) {
+			firstGuessInitialFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/mission_profile/initial_mission_fuel"); 
+		}
+		
 		//===========================================================================================
 		// READING PLOT LIST ...	
 		List<PerformancePlotEnum> plotList = new ArrayList<PerformancePlotEnum>();
@@ -1837,6 +1953,13 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.cLmaxInverted(cLmaxInverted)
 				.rateOfDescent(rateOfDescent)
 				.speedDescentCAS(speedDescentCAS)
+				.alternateCruiseLength(alternateCruiseLength)
+				.alternateCruiseAltitude(alternateCruiseAltitude)
+				.holdingDuration(holdingDuration)
+				.holdingAltitude(holdingAltitude)
+				.fuelReserve(fuelReserve)
+				.firstGuessCruiseLength(firstGuessCruiseLength)
+				.firstGuessFuelMass(firstGuessInitialFuelMass)
 				.taskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.plotList(plotList)
 				.build();
@@ -2012,23 +2135,24 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					);
 			
 			CalcMissionProfile calcMissionProfile = new CalcMissionProfile();
-			calcMissionProfile.checkPreviousAnalyses();
-			calcMissionProfile.calculateMissionProfile();
-			calcMissionProfile.calculateFuelUsedProfile();
-			calcMissionProfile.calculateWeightProfile();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
-				calcMissionProfile.plotProfiles(missionProfilesFolderPath);
+			calcMissionProfile.calculateMissionProfileIterative();
+//			calcMissionProfile.checkPhases();
+//			calcMissionProfile.calculateMissionProfile();
+//			calcMissionProfile.calculateFuelUsedProfile();
+//			calcMissionProfile.calculateWeightProfile();
+//			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+//				calcMissionProfile.plotProfiles(missionProfilesFolderPath);
 			
 		}
 		
-		// PRINT RESULTS
-		try {
-			toXLSFile(performanceFolderPath + "Performance");
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
+//		// PRINT RESULTS
+//		try {
+//			toXLSFile(performanceFolderPath + "Performance");
+//		} catch (InvalidFormatException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} 
 		
 	}
 	
@@ -5049,17 +5173,22 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	//............................................................................
 	public class CalcMissionProfile {
 		
-		public void checkPreviousAnalyses() {
+		public void calculateMissionProfileIterative() {
 			
-			if(_theTakeOffCalculator == null) {
-				CalcTakeOff calcTakeOff = new CalcTakeOff();
-				calcTakeOff.performTakeOffSimulation(
-						_maximumTakeOffMass, 
+
+			
+		}
+		
+		public void checkPhases() {
+			
+			CalcTakeOff calcTakeOff = new CalcTakeOff();
+			calcTakeOff.performTakeOffSimulation(
+						_operatingEmptyMass
+						.plus(_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getNPax()))
+						.plus(that), 
 						_theOperatingConditions.getAltitudeTakeOff(),
 						_theOperatingConditions.getMachTakeOff()
 						);
-				// TODO : WEIGHT, ALTITUDE AND MACH HERE HAVE TO BE CHANGED (MISSION INPUTS)   
-			}
 			
 			if(_rcMapAOE == null) {
 				CalcClimb calcClimb = new CalcClimb();
@@ -7031,6 +7160,62 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setKCruiseWeight(Double _kCruiseWeight) {
 		this._kCruiseWeight = _kCruiseWeight;
+	}
+
+	public Amount<Length> getAlternateCruiseLength() {
+		return _alternateCruiseLength;
+	}
+
+	public void setAlternateCruiseLength(Amount<Length> _alternateCruiseLength) {
+		this._alternateCruiseLength = _alternateCruiseLength;
+	}
+
+	public Amount<Length> getAlternateCruiseAltitude() {
+		return _alternateCruiseAltitude;
+	}
+
+	public void setAlternateCruiseAltitude(Amount<Length> _alternateCruiseAltitude) {
+		this._alternateCruiseAltitude = _alternateCruiseAltitude;
+	}
+
+	public Amount<Duration> getHoldingDuration() {
+		return _holdingDuration;
+	}
+
+	public void setHoldingDuration(Amount<Duration> _holdingDuration) {
+		this._holdingDuration = _holdingDuration;
+	}
+
+	public Amount<Length> getHoldingAltitude() {
+		return _holdingAltitude;
+	}
+
+	public void setHoldingAltitude(Amount<Length> _holdingAltitude) {
+		this._holdingAltitude = _holdingAltitude;
+	}
+
+	public Double getFuelReserve() {
+		return _fuelReserve;
+	}
+
+	public void setFuelReserve(Double _fuelReserve) {
+		this._fuelReserve = _fuelReserve;
+	}
+
+	public Amount<Length> getFirstGuessCruiseLength() {
+		return _firstGuessCruiseLength;
+	}
+
+	public void setFirstGuessCruiseLength(Amount<Length> _firstGuessCruiseLength) {
+		this._firstGuessCruiseLength = _firstGuessCruiseLength;
+	}
+
+	public Amount<Mass> getFirstGuessInitialMissionFuelMass() {
+		return _firstGuessInitialMissionFuelMass;
+	}
+
+	public void setFirstGuessInitialMissionFuelMass(Amount<Mass> _firstGuessInitialMissionFuelMass) {
+		this._firstGuessInitialMissionFuelMass = _firstGuessInitialMissionFuelMass;
 	}
 
 }

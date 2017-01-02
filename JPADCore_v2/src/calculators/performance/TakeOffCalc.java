@@ -27,6 +27,7 @@ import aircraft.components.Aircraft;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -69,7 +70,7 @@ public class TakeOffCalc {
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, balancedFieldLength;
 	private Amount<Angle> alphaGround, iw;
-	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor;
+	private List<Double> alphaDot, gammaDot, cL, cD, loadFactor, sfc;
 	private List<Amount<Angle>> alpha, theta, gamma;
 	private List<Amount<Duration>> time;
 	private List<Amount<Velocity>> speed, rateOfClimb;
@@ -726,6 +727,29 @@ public class TakeOffCalc {
 								SI.NEWTON)
 								);
 				}
+				//--------------------------------------------------------------------------------
+				// SFC:
+				TakeOffCalc.this.getSfc().add(
+						x[1]
+						*(0.224809)*(0.454/60)
+						*EngineDatabaseManager.getSFC(
+								SpeedCalc.calculateMach(
+										x[4],
+										x[1]
+										),
+								x[4],
+								(TakeOffCalc.this.getThrust().get(
+										TakeOffCalc.this.getThrust().size()-1
+										)
+										.doubleValue(SI.NEWTON)/2)
+								/TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.TAKE_OFF,
+								TakeOffCalc.this.getAircraft().getPowerPlant()
+								)
+						);
+				
 				//--------------------------------------------------------------------------------
 				// FRICTION:
 				if(!isAborted) {
@@ -2304,6 +2328,14 @@ public class TakeOffCalc {
 
 	public void setMach(double mach) {
 		this.mach = mach;
+	}
+
+	public List<Double> getSfc() {
+		return sfc;
+	}
+
+	public void setSfc(List<Double> sfc) {
+		this.sfc = sfc;
 	}
 
 }

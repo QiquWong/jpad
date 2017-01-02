@@ -100,6 +100,15 @@
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvring flight and gust envelope (default = -1.0) --> 
 			</flight_maneuvering_and_gust_envelope>
+			<mission_profile>
+				<alternate_cruise_length unit="nmi"></alternate_cruise_length>
+				<alternate_cruise_altitude unit="ft"></alternate_cruise_altitude>
+				<holding_duration unit="min"></holding_duration>
+				<holding_altitude unit="ft"></holding_altitude>
+				<fuel_reserve></fuel_reserve>
+				<cruise_length unit="nmi"></cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<initial_mission_fuel unit="kg"></initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+			</mission_profile>
         </performance>
     </analysis>
 	<plot>
