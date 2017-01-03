@@ -204,6 +204,7 @@ public class TakeOffCalc {
 		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
 		this.groundDistance = new ArrayList<Amount<Length>>();
 		this.verticalDistance = new ArrayList<Amount<Length>>();
+		this.sfc = new ArrayList<Double>();
 		
 		takeOffResults.initialize();
 	}
@@ -240,6 +241,7 @@ public class TakeOffCalc {
 		rateOfClimb.clear();
 		groundDistance.clear();
 		verticalDistance.clear();
+		sfc.clear();
 		
 		tHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 		tEndHold = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
@@ -730,18 +732,21 @@ public class TakeOffCalc {
 				//--------------------------------------------------------------------------------
 				// SFC:
 				TakeOffCalc.this.getSfc().add(
-						x[1]
+						(TakeOffCalc.this.getThrust().get(
+								TakeOffCalc.this.getThrust().size()-1
+								)
+								.doubleValue(SI.NEWTON))
 						*(0.224809)*(0.454/60)
 						*EngineDatabaseManager.getSFC(
 								SpeedCalc.calculateMach(
-										x[4],
+										x[3],
 										x[1]
 										),
-								x[4],
+								x[3],
 								(TakeOffCalc.this.getThrust().get(
 										TakeOffCalc.this.getThrust().size()-1
 										)
-										.doubleValue(SI.NEWTON)/2)
+										.doubleValue(SI.NEWTON)/aircraft.getPowerPlant().getEngineNumber())
 								/TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),

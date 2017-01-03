@@ -17,6 +17,7 @@ import com.sun.org.apache.regexp.internal.recompile;
 import com.sun.org.glassfish.external.amx.AMX;
 
 import aircraft.components.powerplant.PowerPlant;
+import analyses.OperatingConditions;
 import calculators.performance.customdata.CeilingMap;
 import calculators.performance.customdata.DragMap;
 import calculators.performance.customdata.DragThrustIntersectionMap;
@@ -394,13 +395,16 @@ public class PerformanceCalcUtils {
 		double[] rcInverseArray = new double[rcList.size()];
 		double[] altitudeArray = new double[rcList.size()];
 		
-		
-		
 		for(int i=0; i<rcInverseArray.length; i++) {
+			
+			double sigma = OperatingConditions.getAtmosphere(
+					rcList.get(i).getAltitude()
+					).getDensity()*1000/1.225; 
+			
 			rcInverseArray[i] = 1/(MyMathUtils.getInterpolatedValue1DLinear(
 						rcList.get(i).getSpeed(),
 						rcList.get(i).getRC(),
-						speed.doubleValue(SI.METERS_PER_SECOND)
+						speed.divide(Math.sqrt(sigma)).doubleValue(SI.METERS_PER_SECOND)
 						)
 					);
 			altitudeArray[i] = rcList.get(i).getAltitude();

@@ -14,7 +14,7 @@
 				<maximum_take_off_mass unit="kg">22500.0</maximum_take_off_mass>
 				<operating_empty_mass unit="kg">12950.0</operating_empty_mass>
 				<maximum_fuel_mass unit="kg">5000.0</maximum_fuel_mass>
-				<single_passenger_mass unit="kg">99.0</single_passenger_mass>
+				<single_passenger_mass unit="kg">95.0</single_passenger_mass>
 			</weights>
 			<balance>
 				<xCG_max_aft unit="%">42.87</xCG_max_aft>
@@ -87,7 +87,7 @@
 			<climb>
 				<k_climb_weight_AOE></k_climb_weight_AOE> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
-				<climb_speed unit="m/s"></climb_speed>
+				<climb_speed_CAS unit="m/s"></climb_speed_CAS>
 			</climb>
 			<cruise>
 				<altitudes_array unit="m">0;1500;3000;4500;6000</altitudes_array>
@@ -98,16 +98,22 @@
 				<descent_speed_CAS unti="m/s">113.17</descent_speed_CAS>
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
-				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvring flight and gust envelope (default = -1.0) --> 
+				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 
 			</flight_maneuvering_and_gust_envelope>
 			<mission_profile>
-				<alternate_cruise_length unit="nmi"></alternate_cruise_length>
-				<alternate_cruise_altitude unit="ft"></alternate_cruise_altitude>
-				<holding_duration unit="min"></holding_duration>
-				<holding_altitude unit="ft"></holding_altitude>
-				<fuel_reserve></fuel_reserve>
-				<cruise_length unit="nmi"></cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
-				<initial_mission_fuel unit="kg"></initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
+				<alternate_cruise_length unit="nmi">87</alternate_cruise_length> <!-- (default = 0.0) -->
+				<alternate_cruise_altitude unit="ft">10000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
+				<alternate_cruise_mach_number>0.27</alternate_cruise_mach_number>
+				<holding_duration unit="min">45</holding_duration> <!-- (default = 0.0) -->
+				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
+				<holding_mach_number>0.18</holding_mach_number>
+				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
+				<cruise_length unit="nmi">70</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<initial_mission_fuel unit="kg">3100</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
+				<cruise_mission_mach_number>0.42</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
+				<landing_ground_idle_fuel_flow unit="kg/min">2.65</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile>
         </performance>
     </analysis>
