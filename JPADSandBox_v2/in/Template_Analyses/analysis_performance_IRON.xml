@@ -12,37 +12,42 @@
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">53750.0</maximum_take_off_mass>
-				<maximum_landing_mass unit="kg">52133.41578</maximum_landing_mass>
-				<maximum_zero_fuel_mass unit="kg">45966.95085</maximum_zero_fuel_mass>
-				<operating_empty_mass unit="kg">33096.95085</operating_empty_mass>
-				<maximum_fuel_mass unit="kg">11959.06668</maximum_fuel_mass>
-				<single_passenger_mass unit="kg">99.0</single_passenger_mass>
+				<operating_empty_mass unit="kg">33580.0</operating_empty_mass>
+				<maximum_fuel_mass unit="kg">11959.0</maximum_fuel_mass>
+				<single_passenger_mass unit="kg">104.0</single_passenger_mass>
 			</weights>
 			<balance>
-				<xCG_max_aft unit="%"></xCG_max_aft>
+				<xCG_max_aft unit="%">32</xCG_max_aft>
 			</balance>
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
-				<cD0>0.0229</cD0>
-				<oswald>0.83</oswald> 
-				<oswald_take_off>0.81</oswald_take_off>
-				<oswald_landing>0.79</oswald_landing>
 				<cLmax_clean_configuration>1.61</cLmax_clean_configuration>
 				<cL_alpha_clean_configuration unit="1/deg">0.106</cL_alpha_clean_configuration>
+				<cLmax_take_off_configuration>2.4</cLmax_take_off_configuration>
 				<cL_alpha_take_off unit="1/deg">0.108</cL_alpha_take_off>
+				<cL0_take_off_configuration>1.3</cL0_take_off_configuration>
+				<cLmax_landing_configuration>3.0</cLmax_landing_configuration>
 				<cL_alpha_landing unit="1/deg">0.1</cL_alpha_landing>
+				<cL0_landing_configuration>1.3</cL0_landing_configuration>
+				<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
+				<cD0>0.0229</cD0>
+				<oswald_cruise>0.83</oswald_cruise> 
+				<oswald_climb>0.82</oswald_climb> 
+				<oswald_take_off>0.81</oswald_take_off>
+				<oswald_landing>0.79</oswald_landing>				
 				<delta_CD0_take_off>0.013</delta_CD0_take_off>
 				<delta_CD0_landing>0.017</delta_CD0_landing>
 				<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
-				<delta_CD0_spoilers>0.011</delta_CD0_spoilers>
-				<cLmax_take_off_configuration>2.4</cLmax_take_off_configuration>
-				<cL0_take_off_configuration>1.3</cL0_take_off_configuration>
-				<cLmax_landing_configuration>3.0</cLmax_landing_configuration>
-				<cL0_landing_configuration>1.3</cL0_landing_configuration>
+				<delta_CD0_spoilers>0.0</delta_CD0_spoilers>
+				<!---->
 				<polar_curves>
 					<cruise>
-						<polar_curve_CL>-0.2;-0.15;-0.1;-0.05;0.0;0.05;0.1;0.15;0.2;0.25;0.3;0.35;0.4;0.45;0.5;0.55;0.6;0.65;0.7;0.75;0.8;0.85;0.9;0.95;1</polar_curve_CL>
-						<polar_curve_CD>0.03898575;0.037821378;0.036786972;0.035916396;0.035235185;0.034761522;0.03450724;0.034478814;0.034678355;0.035104609;0.035753948;0.036621369;0.037701485;0.038989522;0.040482314;0.0421793;0.044083514;0.046202586;0.048549733;0.051144754;0.054015029;0.05719651;0.060734718;0.064685736;0.069117208</polar_curve_CD>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
 					</cruise>
+					<climb>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
+					</climb>
 					<take_off>
 						<polar_curve_CL></polar_curve_CL>
 						<polar_curve_CD></polar_curve_CD>
@@ -55,19 +60,23 @@
 			</aerodynamics>
 			<!-- the following data can be assigned between tags, or not. If not, default values are used -->
 			<takeoff_landing>
+				<!-- general data -->
+				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
+				<wheels_friction_coefficient></wheels_friction_coefficient> <!-- default = 0.03 -->
+				<wheels_friction_coefficient_with_brakes></wheels_friction_coefficient_with_brakes> <!-- default = 0.4 -->
+				<!-- take-off data -->
 				<dt_rotation unit="s"></dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
-				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
-				<wheels_friction_coefficient></wheels_friction_coefficient> <!-- default = 0.03 -->
-				<wheels_friction_coefficient_with_brakes></wheels_friction_coefficient_with_brakes> <!-- default = 0.4 -->
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<k_lift_off></k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
 				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
-				<k_drag_due_to_engine_failure></k_drag_due_to_engine_failure> <!-- percentage of the drag coefficient increase in OEI condition (default = 1.1) -->
+				<drag_due_to_engine_failure></drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
 				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with increasing k_alpha_dot - (default 0.04) -->
 				<alpha_reduction_rate unit="deg/s"></alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
+				<!-- landing data -->
+				<k_landing_weight></k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
 				<theta_approach unit="deg"></theta_approach> <!-- default = 3deg -->
 				<k_approach></k_approach> <!-- V_approach/V_stall in landing (default = 1.3) -->
@@ -76,15 +85,36 @@
 				<free_roll_duration unit="s"></free_roll_duration> <!-- default = 2s -->
 			</takeoff_landing>
 			<climb>
-				<climb_speed></climb_speed>
+				<k_climb_weight_AOE></k_climb_weight_AOE> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
+				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
+				<climb_speed_CAS unit="m/s"></climb_speed_CAS>
 			</climb>
+			<cruise>
+				<altitudes_array unit="ft">20000;25000;30000</altitudes_array>
+				<k_cruise_weight></k_cruise_weight> <!-- percentage of the maximum take-off weight to be used for the cruise performance - (default = 0.98) -->
+			</cruise>
 			<descent>
-				<rate_of_descent unit="m/s"></rate_of_descent>
-				<descent_speed_CAS unti="m/s"></descent_speed_CAS>
+				<rate_of_descent unit="ft/min">1500</rate_of_descent>
+				<descent_speed_CAS unti="kts">220</descent_speed_CAS>
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
-				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the maneuvering flight and gust envelope (default = -1.0) --> 
+				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 
 			</flight_maneuvering_and_gust_envelope>
+			<mission_profile>
+			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
+				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
+				<alternate_cruise_altitude unit="ft">10000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
+				<alternate_cruise_mach_number>??</alternate_cruise_mach_number>
+				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
+				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
+				<holding_mach_number>??</holding_mach_number>
+				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
+				<cruise_length unit="nmi">100</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<initial_mission_fuel unit="kg">1250</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
+				<cruise_mission_mach_number>??</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
+				<landing_ground_idle_fuel_flow unit="kg/min">5.17</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
+			</mission_profile>
         </performance>
     </analysis>
 	<plot>

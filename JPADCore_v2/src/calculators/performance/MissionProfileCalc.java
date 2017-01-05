@@ -33,7 +33,9 @@ public class MissionProfileCalc {
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
 	private Amount<Length> _takeOffMissionAltitude;
-	private Amount<Mass> _firstGuessInitialMissionMass;
+	private Amount<Mass> _operatingEmptyMass;
+	private Amount<Mass> _singlePassengerMass;
+	private Amount<Mass> _firstGuessInitialFuelMass;
 	private Amount<Length> _firstGuessCruiseLength;
 	private Double _cruiseMissionMachNumber;
 	private Amount<Length> _alternateCruiseLength;
@@ -90,16 +92,20 @@ public class MissionProfileCalc {
 	private List<Amount<Duration>> _timeList;
 	private List<Amount<Mass>> _fuelUsedList;
 	private List<Amount<Mass>> _massList;
+	private Amount<Mass> _initialFuelMass;
 	private Amount<Mass> _totalFuelUsed;
 	private Amount<Duration> _totalMissionTime;
 	private Amount<Length> _totalMissionRange;
+	private Amount<Mass> _initialMissionMass;
 	private Amount<Mass> _endMissionMass;
 	//--------------------------------------------------------------------------------------------
 	// BUILDER:
 	public MissionProfileCalc(
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
-			Amount<Mass> firstGuessInitialMissionMass,
+			Amount<Mass> operatingEmptyMass,
+			Amount<Mass> singlePassengerMass,
+			Amount<Mass> firstGuessInitialFuelMass,
 			Amount<Length> takeOffMissionAltitude,
 			Amount<Length> firstGuessCruiseLength,
 			Double cruiseMissionMachNumber,
@@ -110,6 +116,7 @@ public class MissionProfileCalc {
 			Amount<Length> holdingAltitude,
 			Double holdingMachNumber,
 			Double landingFuelFlow,
+			Double fuelReserve,
 			Double cLmaxClean,
 			Amount<?> cLAlphaClean,
 			Double cLmaxTakeOff,
@@ -152,7 +159,9 @@ public class MissionProfileCalc {
 		
 		this._theAircraft = theAircraft; 
 		this._theOperatingConditions = theOperatingConditions;
-		this._firstGuessInitialMissionMass = firstGuessInitialMissionMass;
+		this._operatingEmptyMass = operatingEmptyMass;
+		this._singlePassengerMass = singlePassengerMass;
+		this._firstGuessInitialFuelMass = firstGuessInitialFuelMass;
 		this._takeOffMissionAltitude = takeOffMissionAltitude;
 		this._firstGuessCruiseLength = firstGuessCruiseLength;
 		this._cruiseMissionMachNumber = cruiseMissionMachNumber;
@@ -163,6 +172,7 @@ public class MissionProfileCalc {
 		this._holdingAltitude = holdingAltitude;
 		this._holdingMachNumber = holdingMachNumber;
 		this._landingFuelFlow = landingFuelFlow;
+		this._fuelReserve = fuelReserve;
 		this._cLmaxClean = cLmaxClean;
 		this._cLAlphaClean = cLAlphaClean;
 		this._cLmaxTakeOff = cLmaxTakeOff;
@@ -214,450 +224,516 @@ public class MissionProfileCalc {
 	// METHODS:
 	
 	public void calculateProfiles() {
-		
-		//--------------------------------------------------------------------
-		// TAKE-OFF
-		Amount<Length> wingToGroundDistance = 
-				_theAircraft.getFuselage().getHeightFromGround()
-				.plus(_theAircraft.getFuselage().getSectionHeight().divide(2))
-				.plus(_theAircraft.getWing().getZApexConstructionAxes()
-						.plus(_theAircraft.getWing().getSemiSpan()
-								.times(
-										Math.sin(
-												_theAircraft.getWing()	
-												.getLiftingSurfaceCreator()	
-												.getDihedralMean()
-												.doubleValue(SI.RADIAN)
-												)
-										)
-								)
-						);
 
-		TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
-				_theAircraft,
-				_takeOffMissionAltitude,
-				_theOperatingConditions.getMachTakeOff(),
-				_firstGuessInitialMissionMass,
-				_dtRotation,
-				_dtHold,
-				_kCLmax,
-				_kRotation,
-				_kLiftOff,
-				_dragDueToEnigneFailure,
-				_theOperatingConditions.getThrottleTakeOff(), 
-				_kAlphaDot,
-				_alphaReductionRate,
-				_mu,
-				_muBrake,
-				wingToGroundDistance,
-				_obstacleTakeOff,
-				_windSpeed,
-				_alphaGround,
-				_theAircraft.getWing().getRiggingAngle(),
-				_cLmaxTakeOff,
-				_cLZeroTakeOff,
-				_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-				);
+		_initialMissionMass = _operatingEmptyMass
+				.plus(_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getNPax()))
+				.plus(_firstGuessInitialFuelMass); 
+		
+		_initialFuelMass = _firstGuessInitialFuelMass;
+		Amount<Mass> newInitialFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
+		_totalFuelUsed = Amount.valueOf(0.0, SI.KILOGRAM);
+		int i = 0;
+		
+		while (
+				(Math.abs(
+						(_initialFuelMass.to(SI.KILOGRAM).minus(_totalFuelUsed.to(SI.KILOGRAM)))
+						.divide(_initialFuelMass.to(SI.KILOGRAM))
+						.times(100)
+						.getEstimatedValue()
+						)- (_fuelReserve*100))
+				>= 0.01
+				) {
 			
-		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
-		
-		Amount<Length> groundRollDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
-		Amount<Length> rotationDistanceTakeOff = 
-				theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1)
-					.minus(groundRollDistanceTakeOff);
-		Amount<Length> airborneDistanceTakeOff = 
-				theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2)
-					.minus(rotationDistanceTakeOff)
-						.minus(groundRollDistanceTakeOff);
-		Amount<Length> takeOffDistanceAOE = 
-				groundRollDistanceTakeOff
-					.plus(rotationDistanceTakeOff)
-						.plus(airborneDistanceTakeOff);			
-		Amount<Duration> takeOffDuration = theTakeOffCalculator.getTakeOffResults().getTime().get(2);
-		
-		Amount<Mass> takeOffUsedFuel = Amount.valueOf(
-				MyMathUtils.integrate1DSimpsonSpline(
-						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theTakeOffCalculator.getTime().stream()
-									.map(t -> t.to(NonSI.MINUTE))
-										.collect(Collectors.toList()
-												)
-										),
-						MyArrayUtils.convertToDoublePrimitive(theTakeOffCalculator.getSfc())
-						),
-				SI.KILOGRAM					
-				);
-		
-		//--------------------------------------------------------------------
-		// CLIMB
-		ClimbCalc theClimbCalculator = new ClimbCalc(
-				_theAircraft,
-				_theOperatingConditions,
-				_cLmaxClean, 
-				_polarCLClimb,
-				_polarCDClimb,
-				_climbSpeed, 
-				_dragDueToEnigneFailure 
-				);
-				
-		Amount<Mass> intialClimbMass = _firstGuessInitialMissionMass.minus(takeOffUsedFuel);
-		
-		theClimbCalculator.calculateClimbPerformance(intialClimbMass, intialClimbMass);
-		
-		Amount<Length> totalClimbRange = theClimbCalculator.getClimbTotalRange();
-		Amount<Duration> totalClimbTime = null;
-		if(_climbSpeed != null)
-			totalClimbTime = theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAOE();
-		else
-			totalClimbTime = theClimbCalculator.getMinimumClimbTimeAOE();
-		Amount<Mass> totalClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
-		
-		//--------------------------------------------------------------------
-		// CRUISE
-		Amount<Mass> intialCruiseMass = 
-				_firstGuessInitialMissionMass
-					.minus(takeOffUsedFuel)
-					.minus(totalClimbFuelUsed);
-		
-		Amount<Duration> cruiseTime = 
-				Amount.valueOf(
-						_firstGuessCruiseLength.to(SI.METER)
-							.divide(_cruiseMissionMachNumber
-									*_theOperatingConditions.getAtmosphereCruise().getSpeedOfSound()
+			if(i >= 1)
+				_initialFuelMass = newInitialFuelMass;
+			
+			//--------------------------------------------------------------------
+			// TAKE-OFF
+			Amount<Length> wingToGroundDistance = 
+					_theAircraft.getFuselage().getHeightFromGround()
+					.plus(_theAircraft.getFuselage().getSectionHeight().divide(2))
+					.plus(_theAircraft.getWing().getZApexConstructionAxes()
+							.plus(_theAircraft.getWing().getSemiSpan()
+									.times(
+											Math.sin(
+													_theAircraft.getWing()	
+													.getLiftingSurfaceCreator()	
+													.getDihedralMean()
+													.doubleValue(SI.RADIAN)
+													)
+											)
 									)
-							.getEstimatedValue(),
-							SI.SECOND
 							);
-		
-		Double sfcCruise = 
-				ThrustCalc.calculateThrustDatabase(
-				_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-				_theAircraft.getPowerPlant().getEngineNumber(),
-				_theOperatingConditions.getThrottleCruise(),
-				_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-				_theAircraft.getPowerPlant().getEngineType(),
-				EngineOperatingConditionEnum.CRUISE,
-				_theAircraft.getPowerPlant(),
-				_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-				_cruiseMissionMachNumber
-				)
-				*(0.224809)*(0.454/60)
-				*EngineDatabaseManager.getSFC(
-						_cruiseMissionMachNumber,
-						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-						EngineDatabaseManager.getThrustRatio(
+
+			TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
+					_theAircraft,
+					_takeOffMissionAltitude,
+					_theOperatingConditions.getMachTakeOff(),
+					_initialMissionMass,
+					_dtRotation,
+					_dtHold,
+					_kCLmax,
+					_kRotation,
+					_kLiftOff,
+					_dragDueToEnigneFailure,
+					_theOperatingConditions.getThrottleTakeOff(), 
+					_kAlphaDot,
+					_alphaReductionRate,
+					_mu,
+					_muBrake,
+					wingToGroundDistance,
+					_obstacleTakeOff,
+					_windSpeed,
+					_alphaGround,
+					_theAircraft.getWing().getRiggingAngle(),
+					_cLmaxTakeOff,
+					_cLZeroTakeOff,
+					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+					);
+
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
+
+			Amount<Length> groundRollDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
+			Amount<Length> rotationDistanceTakeOff = 
+					theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1)
+					.minus(groundRollDistanceTakeOff);
+			Amount<Length> airborneDistanceTakeOff = 
+					theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2)
+					.minus(rotationDistanceTakeOff)
+					.minus(groundRollDistanceTakeOff);
+			Amount<Length> takeOffDistanceAOE = 
+					groundRollDistanceTakeOff
+					.plus(rotationDistanceTakeOff)
+					.plus(airborneDistanceTakeOff);			
+			Amount<Duration> takeOffDuration = theTakeOffCalculator.getTakeOffResults().getTime().get(2);
+
+			Amount<Mass> takeOffUsedFuel = Amount.valueOf(
+					MyMathUtils.integrate1DSimpsonSpline(
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									theTakeOffCalculator.getTime().stream()
+									.map(t -> t.to(NonSI.MINUTE))
+									.collect(Collectors.toList()
+											)
+									),
+							MyArrayUtils.convertToDoublePrimitive(theTakeOffCalculator.getSfc())
+							),
+					SI.KILOGRAM					
+					);
+
+			//--------------------------------------------------------------------
+			// CLIMB
+			ClimbCalc theClimbCalculator = new ClimbCalc(
+					_theAircraft,
+					_theOperatingConditions,
+					_cLmaxClean, 
+					_polarCLClimb,
+					_polarCDClimb,
+					_climbSpeed, 
+					_dragDueToEnigneFailure 
+					);
+
+			Amount<Mass> intialClimbMass = _initialMissionMass.minus(takeOffUsedFuel);
+
+			theClimbCalculator.calculateClimbPerformance(intialClimbMass, intialClimbMass);
+
+			Amount<Length> totalClimbRange = theClimbCalculator.getClimbTotalRange();
+			Amount<Duration> totalClimbTime = null;
+			if(_climbSpeed != null)
+				totalClimbTime = theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAOE();
+			else
+				totalClimbTime = theClimbCalculator.getMinimumClimbTimeAOE();
+			Amount<Mass> totalClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
+
+			//--------------------------------------------------------------------
+			// CRUISE
+			
+			Amount<Length> cruiseLength = _firstGuessCruiseLength;
+			_totalMissionRange = Amount.valueOf(0.0, SI.METER);
+			
+			while (
+					Math.abs(
+							(_theAircraft.getTheAnalysisManager().getReferenceRange().to(NonSI.NAUTICAL_MILE)
+									.plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)))
+							.minus(_totalMissionRange.to(NonSI.NAUTICAL_MILE))
+							.doubleValue(NonSI.NAUTICAL_MILE)
+							) 
+					>= 0.001
+					) {
+				
+				Amount<Mass> intialCruiseMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed);
+
+				Amount<Duration> cruiseTime = 
+						Amount.valueOf(
+								cruiseLength.to(SI.METER)
+								.divide(_cruiseMissionMachNumber
+										*_theOperatingConditions.getAtmosphereCruise().getSpeedOfSound()
+										)
+								.getEstimatedValue(),
+								SI.SECOND
+								);
+
+				Double sfcCruise = 
+						ThrustCalc.calculateThrustDatabase(
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								_theOperatingConditions.getThrottleCruise(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant(),
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_cruiseMissionMachNumber
+								)
+						*(0.224809)*(0.454/60)
+						*EngineDatabaseManager.getSFC(
 								_cruiseMissionMachNumber,
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								EngineDatabaseManager.getThrustRatio(
+										_cruiseMissionMachNumber,
+										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+										_theAircraft.getPowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.CRUISE,
+										_theAircraft.getPowerPlant()
+										),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getPowerPlant().getEngineType(),
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant()
-								),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.CRUISE,
-						_theAircraft.getPowerPlant()
+								);
+
+				Amount<Mass> totalCruiseFuelUsed = 
+						Amount.valueOf(
+								cruiseTime.doubleValue(NonSI.MINUTE)
+								*sfcCruise,
+								SI.KILOGRAM
+								);
+
+				//--------------------------------------------------------------------
+				// DESCENT (up to ALTERNATE altitude)
+				Amount<Mass> intialFirstDescentMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed);
+
+				DescentCalc theFirstDescentCalculator = new DescentCalc(
+						_theAircraft,
+						_speedDescentCAS,
+						_rateOfDescent,
+						_theOperatingConditions.getAltitudeCruise(),
+						_alternateCruiseAltitude
 						);
-		
-		Amount<Mass> totalCruiseFuelUsed = 
-				Amount.valueOf(
-						cruiseTime.doubleValue(NonSI.MINUTE)
-						*sfcCruise,
-						SI.KILOGRAM
-						);
-		
-		//--------------------------------------------------------------------
-		// DESCENT (up to ALTERNATE altitude)
-		Amount<Mass> intialFirstDescentMass = 
-				_firstGuessInitialMissionMass
-					.minus(takeOffUsedFuel)
-					.minus(totalClimbFuelUsed)
-					.minus(totalCruiseFuelUsed);
-		
-		DescentCalc theFirstDescentCalculator = new DescentCalc(
-				_theAircraft,
-				_speedDescentCAS,
-				_rateOfDescent,
-				_theOperatingConditions.getAltitudeCruise(),
-				_alternateCruiseAltitude
-				);
-		
-		theFirstDescentCalculator.calculateDescentPerformance();
-		Amount<Length> firstDescentLength = theFirstDescentCalculator.getTotalDescentLength();
-		Amount<Duration> firstDescentTime = theFirstDescentCalculator.getTotalDescentTime();
-		Amount<Mass> firstDescentFuelUsed = theFirstDescentCalculator.getTotalDescentFuelUsed();
-		
-		//--------------------------------------------------------------------
-		// ALTERNATE CRUISE
-		Amount<Mass> intialAlternateCruiseMass = 
-				_firstGuessInitialMissionMass
-					.minus(takeOffUsedFuel)
-					.minus(totalClimbFuelUsed)
-					.minus(totalCruiseFuelUsed)
-					.minus(firstDescentFuelUsed);
-		
-		double speedOfSoundAlternateCruiseAltitude = new StdAtmos1976(_alternateCruiseAltitude.doubleValue(SI.METER)).getSpeedOfSound();
-		
-		Amount<Duration> alternateCruiseTime = 
-				Amount.valueOf(
-						_alternateCruiseLength.to(SI.METER)
-							.divide(_alternateCruiseMachNumber*speedOfSoundAlternateCruiseAltitude)
-							.getEstimatedValue(),
-							SI.SECOND
-							);
-		
-		Double sfcAlternateCruise = 
-				ThrustCalc.calculateThrustDatabase(
-				_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-				_theAircraft.getPowerPlant().getEngineNumber(),
-				_theOperatingConditions.getThrottleCruise(),
-				_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-				_theAircraft.getPowerPlant().getEngineType(),
-				EngineOperatingConditionEnum.CRUISE,
-				_theAircraft.getPowerPlant(),
-				_alternateCruiseAltitude.doubleValue(SI.METER),
-				_alternateCruiseMachNumber
-				)
-				*(0.224809)*(0.454/60)
-				*EngineDatabaseManager.getSFC(
-						_alternateCruiseMachNumber,
-						_alternateCruiseAltitude.doubleValue(SI.METER),
-						EngineDatabaseManager.getThrustRatio(
+
+				theFirstDescentCalculator.calculateDescentPerformance();
+				Amount<Length> firstDescentLength = theFirstDescentCalculator.getTotalDescentLength();
+				Amount<Duration> firstDescentTime = theFirstDescentCalculator.getTotalDescentTime();
+				Amount<Mass> firstDescentFuelUsed = theFirstDescentCalculator.getTotalDescentFuelUsed();
+
+				//--------------------------------------------------------------------
+				// ALTERNATE CRUISE
+				Amount<Mass> intialAlternateCruiseMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed)
+						.minus(firstDescentFuelUsed);
+
+				double speedOfSoundAlternateCruiseAltitude = new StdAtmos1976(_alternateCruiseAltitude.doubleValue(SI.METER)).getSpeedOfSound();
+
+				Amount<Duration> alternateCruiseTime = 
+						Amount.valueOf(
+								_alternateCruiseLength.to(SI.METER)
+								.divide(_alternateCruiseMachNumber*speedOfSoundAlternateCruiseAltitude)
+								.getEstimatedValue(),
+								SI.SECOND
+								);
+
+				Double sfcAlternateCruise = 
+						ThrustCalc.calculateThrustDatabase(
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								_theOperatingConditions.getThrottleCruise(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant(),
+								_alternateCruiseAltitude.doubleValue(SI.METER),
+								_alternateCruiseMachNumber
+								)
+						*(0.224809)*(0.454/60)
+						*EngineDatabaseManager.getSFC(
 								_alternateCruiseMachNumber,
 								_alternateCruiseAltitude.doubleValue(SI.METER),
+								EngineDatabaseManager.getThrustRatio(
+										_alternateCruiseMachNumber,
+										_alternateCruiseAltitude.doubleValue(SI.METER),
+										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+										_theAircraft.getPowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.CRUISE,
+										_theAircraft.getPowerPlant()
+										),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getPowerPlant().getEngineType(),
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant()
-								),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.CRUISE,
-						_theAircraft.getPowerPlant()
+								);
+
+				Amount<Mass> totalAlternateCruiseFuelUsed = 
+						Amount.valueOf(
+								alternateCruiseTime.doubleValue(NonSI.MINUTE)
+								*sfcAlternateCruise,
+								SI.KILOGRAM
+								);
+
+				//--------------------------------------------------------------------
+				// DESCENT (up to HOLDING altitude)
+				Amount<Mass> intialSecondDescentMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed)
+						.minus(firstDescentFuelUsed)
+						.minus(totalAlternateCruiseFuelUsed);
+
+				DescentCalc theSecondDescentCalculator = new DescentCalc(
+						_theAircraft,
+						_speedDescentCAS,
+						_rateOfDescent,
+						_alternateCruiseAltitude,
+						_holdingAltitude
 						);
-		
-		Amount<Mass> totalAlternateCruiseFuelUsed = 
-				Amount.valueOf(
-						alternateCruiseTime.doubleValue(NonSI.MINUTE)
-						*sfcAlternateCruise,
-						SI.KILOGRAM
-						);
-		
-		//--------------------------------------------------------------------
-		// DESCENT (up to HOLDING altitude)
-		Amount<Mass> intialSecondDescentMass = 
-				_firstGuessInitialMissionMass
-					.minus(takeOffUsedFuel)
-					.minus(totalClimbFuelUsed)
-					.minus(totalCruiseFuelUsed)
-					.minus(firstDescentFuelUsed)
-					.minus(totalAlternateCruiseFuelUsed);
-		
-		DescentCalc theSecondDescentCalculator = new DescentCalc(
-				_theAircraft,
-				_speedDescentCAS,
-				_rateOfDescent,
-				_alternateCruiseAltitude,
-				_holdingAltitude
-				);
-		
-		theSecondDescentCalculator.calculateDescentPerformance();
-		Amount<Length> secondDescentLength = theSecondDescentCalculator.getTotalDescentLength();
-		Amount<Duration> secondDescentTime = theSecondDescentCalculator.getTotalDescentTime();
-		Amount<Mass> secondDescentFuelUsed = theSecondDescentCalculator.getTotalDescentFuelUsed();
-		
-		//--------------------------------------------------------------------
-		// HOLDING
-		Amount<Mass> intialHoldingMass = 
-				_firstGuessInitialMissionMass
-					.minus(takeOffUsedFuel)
-					.minus(totalClimbFuelUsed)
-					.minus(totalCruiseFuelUsed)
-					.minus(firstDescentFuelUsed)
-					.minus(totalAlternateCruiseFuelUsed)
-					.minus(secondDescentFuelUsed);
-		
-		Double sfcHolding = 
-				ThrustCalc.calculateThrustDatabase(
-				_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-				_theAircraft.getPowerPlant().getEngineNumber(),
-				1.0, // throttle
-				_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-				_theAircraft.getPowerPlant().getEngineType(),
-				EngineOperatingConditionEnum.DESCENT,
-				_theAircraft.getPowerPlant(),
-				_holdingAltitude.doubleValue(SI.METER),
-				_holdingMachNumber
-				)
-				*(0.224809)*(0.454/60)
-				*EngineDatabaseManager.getSFC(
-						_holdingMachNumber,
-						_holdingAltitude.doubleValue(SI.METER),
-						EngineDatabaseManager.getThrustRatio(
+
+				theSecondDescentCalculator.calculateDescentPerformance();
+				Amount<Length> secondDescentLength = theSecondDescentCalculator.getTotalDescentLength();
+				Amount<Duration> secondDescentTime = theSecondDescentCalculator.getTotalDescentTime();
+				Amount<Mass> secondDescentFuelUsed = theSecondDescentCalculator.getTotalDescentFuelUsed();
+
+				//--------------------------------------------------------------------
+				// HOLDING
+				Amount<Mass> intialHoldingMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed)
+						.minus(firstDescentFuelUsed)
+						.minus(totalAlternateCruiseFuelUsed)
+						.minus(secondDescentFuelUsed);
+
+				Double sfcHolding = 
+						ThrustCalc.calculateThrustDatabase(
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								1.0, // throttle
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.DESCENT,
+								_theAircraft.getPowerPlant(),
+								_holdingAltitude.doubleValue(SI.METER),
+								_holdingMachNumber
+								)
+						*(0.224809)*(0.454/60)
+						*EngineDatabaseManager.getSFC(
 								_holdingMachNumber,
 								_holdingAltitude.doubleValue(SI.METER),
+								EngineDatabaseManager.getThrustRatio(
+										_holdingMachNumber,
+										_holdingAltitude.doubleValue(SI.METER),
+										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+										_theAircraft.getPowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.DESCENT,
+										_theAircraft.getPowerPlant()
+										),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getPowerPlant().getEngineType(),
 								EngineOperatingConditionEnum.DESCENT,
 								_theAircraft.getPowerPlant()
-								),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.DESCENT,
-						_theAircraft.getPowerPlant()
+								);
+
+				Amount<Mass> totalHoldingFuelUsed = 
+						Amount.valueOf(
+								_holdingDuration.doubleValue(NonSI.MINUTE)
+								*sfcHolding,
+								SI.KILOGRAM
+								);
+
+				//--------------------------------------------------------------------
+				// DESCENT (up to LANDING altitude)
+				Amount<Mass> intialThirdDescentMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed)
+						.minus(firstDescentFuelUsed)
+						.minus(totalAlternateCruiseFuelUsed)
+						.minus(secondDescentFuelUsed)
+						.minus(totalHoldingFuelUsed);
+
+				DescentCalc theThirdDescentCalculator = new DescentCalc(
+						_theAircraft,
+						_speedDescentCAS,
+						_rateOfDescent,
+						_holdingAltitude,
+						Amount.valueOf(15.24, SI.METER)
 						);
-		
-		Amount<Mass> totalHoldingFuelUsed = 
-				Amount.valueOf(
-						_holdingDuration.doubleValue(NonSI.MINUTE)
-						*sfcHolding,
-						SI.KILOGRAM
+
+				theThirdDescentCalculator.calculateDescentPerformance();
+				Amount<Length> thirdDescentLength = theThirdDescentCalculator.getTotalDescentLength();
+				Amount<Duration> thirdDescentTime = theThirdDescentCalculator.getTotalDescentTime();
+				Amount<Mass> thirdDescentFuelUsed = theThirdDescentCalculator.getTotalDescentFuelUsed();
+
+				//--------------------------------------------------------------------
+				// LANDING
+				Amount<Mass> intialLandingMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed)
+						.minus(firstDescentFuelUsed)
+						.minus(totalAlternateCruiseFuelUsed)
+						.minus(secondDescentFuelUsed)
+						.minus(totalHoldingFuelUsed)
+						.minus(thirdDescentFuelUsed);
+
+				LandingCalc theLandingCalculator = new LandingCalc(
+						_theAircraft, 
+						_theOperatingConditions,
+						intialLandingMass,
+						_kApproach,
+						_kFlare,
+						_kTouchDown,
+						_mu,
+						_muBrake,
+						wingToGroundDistance,
+						_obstacleLanding, 
+						_windSpeed,
+						_alphaGround,
+						_theAircraft.getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE),
+						_thetaApproach,
+						_cLmaxLanding,
+						_cLZeroLanding,
+						_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+						_theOperatingConditions.getReverseThrottleLanding(),
+						_freeRollDuration
 						);
-		
-		//--------------------------------------------------------------------
-		// DESCENT (up to LANDING altitude)
-		Amount<Mass> intialThirdDescentMass = 
-				_firstGuessInitialMissionMass
-					.minus(takeOffUsedFuel)
-					.minus(totalClimbFuelUsed)
-					.minus(totalCruiseFuelUsed)
-					.minus(firstDescentFuelUsed)
-					.minus(totalAlternateCruiseFuelUsed)
-					.minus(secondDescentFuelUsed)
-					.minus(totalHoldingFuelUsed);
-		
-		DescentCalc theThirdDescentCalculator = new DescentCalc(
-				_theAircraft,
-				_speedDescentCAS,
-				_rateOfDescent,
-				_holdingAltitude,
-				Amount.valueOf(15.24, SI.METER)
-				);
-		
-		theThirdDescentCalculator.calculateDescentPerformance();
-		Amount<Length> thirdDescentLength = theThirdDescentCalculator.getTotalDescentLength();
-		Amount<Duration> thirdDescentTime = theThirdDescentCalculator.getTotalDescentTime();
-		Amount<Mass> thirdDescentFuelUsed = theThirdDescentCalculator.getTotalDescentFuelUsed();
-		
-		//--------------------------------------------------------------------
-		// LANDING
-		Amount<Mass> intialLandingMass = 
-				_firstGuessInitialMissionMass
-				.minus(takeOffUsedFuel)
-				.minus(totalClimbFuelUsed)
-				.minus(totalCruiseFuelUsed)
-				.minus(firstDescentFuelUsed)
-				.minus(totalAlternateCruiseFuelUsed)
-				.minus(secondDescentFuelUsed)
-				.minus(totalHoldingFuelUsed)
-				.minus(thirdDescentFuelUsed);
-		
-		LandingCalc theLandingCalculator = new LandingCalc(
-				_theAircraft, 
-				_theOperatingConditions,
-				intialLandingMass,
-				_kApproach,
-				_kFlare,
-				_kTouchDown,
-				_mu,
-				_muBrake,
-				wingToGroundDistance,
-				_obstacleLanding, 
-				_windSpeed,
-				_alphaGround,
-				_theAircraft.getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE),
-				_thetaApproach,
-				_cLmaxLanding,
-				_cLZeroLanding,
-				_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-				_theOperatingConditions.getReverseThrottleLanding(),
-				_freeRollDuration
-				);
-		
-		theLandingCalculator.calculateLandingDistance();
-		
-		Amount<Length> landingDistance = theLandingCalculator.getsTotal();
-		Amount<Duration> landingDuration = theLandingCalculator.getTime().get(theLandingCalculator.getTime().size()-1);
-		Amount<Mass> landingFuelUsed = 
-				Amount.valueOf(
-						landingDuration.to(NonSI.MINUTE).times(_landingFuelFlow).getEstimatedValue(),
-						SI.KILOGRAM
-						);
+
+				theLandingCalculator.calculateLandingDistance();
+
+				Amount<Length> landingDistance = theLandingCalculator.getsTotal();
+				Amount<Duration> landingDuration = theLandingCalculator.getTime().get(theLandingCalculator.getTime().size()-1);
+				Amount<Mass> landingFuelUsed = 
+						Amount.valueOf(
+								landingDuration.to(NonSI.MINUTE).times(_landingFuelFlow).getEstimatedValue(),
+								SI.KILOGRAM
+								);
+
+
+				//--------------------------------------------------------------------
+				// ALTITUDE
+				_altitudeList.clear();
 				
-		
-		//--------------------------------------------------------------------
-		// ALTITUDE
-		_altitudeList.add(Amount.valueOf(0.0, SI.METER));
-		_altitudeList.add(theTakeOffCalculator.getObstacle().to(SI.METER));
-		_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
-		_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
-		_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
-		_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
-		_altitudeList.add(_holdingAltitude.to(SI.METER));
-		_altitudeList.add(_holdingAltitude.to(SI.METER));
-		_altitudeList.add(Amount.valueOf(15.24, SI.METER)); // landing obstacle
-		_altitudeList.add(Amount.valueOf(0.0, SI.METER)); 
-		
-		//--------------------------------------------------------------------
-		// RANGE
-		_rangeList.add(Amount.valueOf(0.0, SI.KILOMETER));
-		_rangeList.add(_rangeList.get(0).plus(takeOffDistanceAOE.to(SI.KILOMETER)));
-		_rangeList.add(_rangeList.get(1).plus(totalClimbRange.to(SI.KILOMETER)));
-		_rangeList.add(_rangeList.get(2).plus(_firstGuessCruiseLength.to(SI.KILOMETER)));
-		_rangeList.add(_rangeList.get(3).plus(firstDescentLength.to(SI.KILOMETER)));
-		_rangeList.add(_rangeList.get(4).plus(_alternateCruiseLength.to(SI.KILOMETER)));
-		_rangeList.add(_rangeList.get(5).plus(secondDescentLength.to(SI.KILOMETER)));
-		_rangeList.add(_rangeList.get(6));
-		_rangeList.add(_rangeList.get(7).plus(thirdDescentLength).to(SI.KILOMETER));
-		_rangeList.add(_rangeList.get(8).plus(landingDistance).to(SI.KILOMETER));
-		
-		_totalMissionRange = _rangeList.get(_rangeList.size()-1);
-		
-		//--------------------------------------------------------------------
-		// TIME
-		_timeList.add(Amount.valueOf(0.0, NonSI.MINUTE));
-		_timeList.add(_timeList.get(0).plus(takeOffDuration.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(1).plus(totalClimbTime.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(2).plus(cruiseTime.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(3).plus(firstDescentTime.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(4).plus(alternateCruiseTime.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(5).plus(secondDescentTime.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(6).plus(_holdingDuration.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(7).plus(thirdDescentTime.to(NonSI.MINUTE)));
-		_timeList.add(_timeList.get(8).plus(landingDuration.to(NonSI.MINUTE)));
-		
-		_totalMissionTime = _timeList.get(_timeList.size()-1);
-		
-		//--------------------------------------------------------------------
-		// USED FUEL
-		_fuelUsedList.add(Amount.valueOf(0.0, SI.KILOGRAM));
-		_fuelUsedList.add(_fuelUsedList.get(0).plus(takeOffUsedFuel.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(1).plus(totalClimbFuelUsed.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(2).plus(totalCruiseFuelUsed.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(3).plus(firstDescentFuelUsed.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(4).plus(totalAlternateCruiseFuelUsed.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(5).plus(secondDescentFuelUsed.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(6).plus(totalHoldingFuelUsed.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(7).plus(thirdDescentFuelUsed.to(SI.KILOGRAM)));
-		_fuelUsedList.add(_fuelUsedList.get(8).plus(landingFuelUsed.to(SI.KILOGRAM)));
-		
-		
-		_totalFuelUsed = _fuelUsedList.get(_fuelUsedList.size()-1);
-		
-		//--------------------------------------------------------------------
-		// WEIGHT VARIATION
-		_massList.add(_firstGuessInitialMissionMass);
-		_massList.add(intialClimbMass);
-		_massList.add(intialCruiseMass);
-		_massList.add(intialFirstDescentMass);
-		_massList.add(intialAlternateCruiseMass);
-		_massList.add(intialSecondDescentMass);
-		_massList.add(intialHoldingMass);
-		_massList.add(intialThirdDescentMass);
-		_massList.add(intialLandingMass);
-		_massList.add(intialLandingMass.minus(landingFuelUsed));
-		
-		_endMissionMass = _massList.get(_massList.size()-1);
+				_altitudeList.add(Amount.valueOf(0.0, SI.METER));
+				_altitudeList.add(theTakeOffCalculator.getObstacle().to(SI.METER));
+				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
+				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
+				_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
+				_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
+				_altitudeList.add(_holdingAltitude.to(SI.METER));
+				_altitudeList.add(_holdingAltitude.to(SI.METER));
+				_altitudeList.add(Amount.valueOf(15.24, SI.METER)); // landing obstacle
+				_altitudeList.add(Amount.valueOf(0.0, SI.METER)); 
+
+				//--------------------------------------------------------------------
+				// RANGE
+				_rangeList.clear();
+				
+				_rangeList.add(Amount.valueOf(0.0, SI.KILOMETER));
+				_rangeList.add(_rangeList.get(0).plus(takeOffDistanceAOE.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(1).plus(totalClimbRange.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(2).plus(cruiseLength.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(3).plus(firstDescentLength.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(4).plus(_alternateCruiseLength.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(5).plus(secondDescentLength.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(6));
+				_rangeList.add(_rangeList.get(7).plus(thirdDescentLength).to(SI.KILOMETER));
+				_rangeList.add(_rangeList.get(8).plus(landingDistance).to(SI.KILOMETER));
+
+				_totalMissionRange = _rangeList.get(_rangeList.size()-1);
+
+				//--------------------------------------------------------------------
+				// TIME
+				_timeList.clear();
+				
+				_timeList.add(Amount.valueOf(0.0, NonSI.MINUTE));
+				_timeList.add(_timeList.get(0).plus(takeOffDuration.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(1).plus(totalClimbTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(2).plus(cruiseTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(3).plus(firstDescentTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(4).plus(alternateCruiseTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(5).plus(secondDescentTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(6).plus(_holdingDuration.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(7).plus(thirdDescentTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(8).plus(landingDuration.to(NonSI.MINUTE)));
+
+				_totalMissionTime = _timeList.get(_timeList.size()-1);
+
+				//--------------------------------------------------------------------
+				// USED FUEL
+				_fuelUsedList.clear();
+				
+				_fuelUsedList.add(Amount.valueOf(0.0, SI.KILOGRAM));
+				_fuelUsedList.add(_fuelUsedList.get(0).plus(takeOffUsedFuel.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(1).plus(totalClimbFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(2).plus(totalCruiseFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(3).plus(firstDescentFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(4).plus(totalAlternateCruiseFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(5).plus(secondDescentFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(6).plus(totalHoldingFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(7).plus(thirdDescentFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(8).plus(landingFuelUsed.to(SI.KILOGRAM)));
+
+
+				_totalFuelUsed = _fuelUsedList.get(_fuelUsedList.size()-1);
+
+				//--------------------------------------------------------------------
+				// WEIGHT VARIATION
+				_massList.clear();
+				
+				_massList.add(_initialMissionMass);
+				_massList.add(intialClimbMass);
+				_massList.add(intialCruiseMass);
+				_massList.add(intialFirstDescentMass);
+				_massList.add(intialAlternateCruiseMass);
+				_massList.add(intialSecondDescentMass);
+				_massList.add(intialHoldingMass);
+				_massList.add(intialThirdDescentMass);
+				_massList.add(intialLandingMass);
+				_massList.add(intialLandingMass.minus(landingFuelUsed));
+
+				_endMissionMass = _massList.get(_massList.size()-1);
+			
+				//.....................................................................
+				// NEW ITERATION CRUISE LENGTH
+				cruiseLength = cruiseLength.to(NonSI.NAUTICAL_MILE).plus( 
+						(_theAircraft.getTheAnalysisManager().getReferenceRange().to(NonSI.NAUTICAL_MILE)
+								.plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE))
+						.minus(_totalMissionRange).to(NonSI.NAUTICAL_MILE)
+						);
+			}
+			
+			//.....................................................................
+			// NEW INITIAL MISSION MASS
+			newInitialFuelMass = _totalFuelUsed.to(SI.KILOGRAM).divide(1-_fuelReserve); 
+			_initialMissionMass = _operatingEmptyMass
+					.plus(_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getNPax()))
+					.plus(newInitialFuelMass); 
+			i++;
+			
+		}
+		_initialFuelMass = newInitialFuelMass;
 	}
 
 	public void plotProfiles(
@@ -759,14 +835,6 @@ public class MissionProfileCalc {
 
 	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
 		this._theOperatingConditions = _theOperatingConditions;
-	}
-
-	public Amount<Mass> getFirstGuessInitialMissionMass() {
-		return _firstGuessInitialMissionMass;
-	}
-
-	public void setFirstGuessInitialMissionMass(Amount<Mass> _firstGuessInitialMissionMass) {
-		this._firstGuessInitialMissionMass = _firstGuessInitialMissionMass;
 	}
 
 	public Amount<Length> getFirstGuessCruiseLength() {
@@ -1231,5 +1299,45 @@ public class MissionProfileCalc {
 
 	public void setLandingFuelFlow(Double _landingFuelFlow) {
 		this._landingFuelFlow = _landingFuelFlow;
+	}
+
+	public Amount<Mass> getOperatingEmptyMass() {
+		return _operatingEmptyMass;
+	}
+
+	public void setOperatingEmptyMass(Amount<Mass> _operatingEmptyMass) {
+		this._operatingEmptyMass = _operatingEmptyMass;
+	}
+
+	public Amount<Mass> getSinglePassengerMass() {
+		return _singlePassengerMass;
+	}
+
+	public void setSinglePassengerMass(Amount<Mass> _singlePassengerMass) {
+		this._singlePassengerMass = _singlePassengerMass;
+	}
+
+	public Amount<Mass> getFirstGuessInitialFuelMass() {
+		return _firstGuessInitialFuelMass;
+	}
+
+	public void setFirstGuessInitialFuelMass(Amount<Mass> _firstGuessInitialFuelMass) {
+		this._firstGuessInitialFuelMass = _firstGuessInitialFuelMass;
+	}
+
+	public Amount<Mass> getInitialMissionMass() {
+		return _initialMissionMass;
+	}
+
+	public void setInitialMissionMass(Amount<Mass> _initialMissionMass) {
+		this._initialMissionMass = _initialMissionMass;
+	}
+
+	public Amount<Mass> getInitialFuelMass() {
+		return _initialFuelMass;
+	}
+
+	public void setInitialFuelMass(Amount<Mass> _initialFuelMass) {
+		this._initialFuelMass = _initialFuelMass;
 	}
 }

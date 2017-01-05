@@ -109,7 +109,7 @@
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
 				<holding_mach_number>0.18</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
-				<cruise_length unit="nmi">70</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<cruise_length unit="nmi">100</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<initial_mission_fuel unit="kg">3100</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
 				<cruise_mission_mach_number>0.42</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->

@@ -329,6 +329,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	// End of the builder pattern 
 	//============================================================================================
 		
+	@SuppressWarnings("unchecked")
 	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft) throws IOException {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -342,16 +343,67 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 		
-		Double positiveLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/positive_limit_load_factor"));
-		Double negativeLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/negative_limit_load_factor"));
-		Double cruiseCL = Double.valueOf(reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient"));
-		Amount<Length> maxAltitudeMaxSpeed = reader.getXMLAmountLengthByPath("//global_data/maximum_altitude_at_maximum_speed");
-		Double maxCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/maximum_cruise_mach_number"));
-		Amount<Length> optimumCruiseAltitude = reader.getXMLAmountLengthByPath("//global_data/optimum_cruise_altitude");
-		Double optimumCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/optimum_cruise_mach_number"));
-		Amount<Duration> blockTime = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/block_time")), NonSI.HOUR);
-		Amount<Duration> flightTime = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/flight_time")), NonSI.HOUR);
-		Amount<Length> referenceRange = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/reference_range")), NonSI.NAUTICAL_MILE);
+		Double positiveLimitLoadFactor = null;
+		Double negativeLimitLoadFactor = null;
+		Double cruiseCL = null; 
+		Amount<Length> maxAltitudeMaxSpeed = null;
+		Double maxCruiseMach = null;
+		Amount<Length> optimumCruiseAltitude = null;
+		Double optimumCruiseMach = null;
+		Amount<Duration> blockTime = null;
+		Amount<Duration> flightTime = null;
+		Amount<Length> referenceRange = null;
+
+		//-------------------------------------------------------------------------------------
+		// POSITIVE LIMIT LOAD FACTOR
+		String positiveLimitLoadFactorProperty = reader.getXMLPropertyByPath("//global_data/positive_limit_load_factor");
+		if(positiveLimitLoadFactorProperty != null)
+			positiveLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/positive_limit_load_factor"));
+		//-------------------------------------------------------------------------------------
+		// NEGATIVE LIMIT LOAD FACTOR
+		String negativeLimitLoadFactorProperty = reader.getXMLPropertyByPath("//global_data/negative_limit_load_factor");
+		if(negativeLimitLoadFactorProperty != null)
+			negativeLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/negative_limit_load_factor"));
+		//-------------------------------------------------------------------------------------
+		// CRUISE LIFT COEFFICIENT
+		String cruiseLiftCoefficientProperty = reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient");
+		if(cruiseLiftCoefficientProperty != null)
+			cruiseCL = Double.valueOf(reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient"));
+		//-------------------------------------------------------------------------------------
+		// MAX ALTITUDE AT MAX SPEED
+		String maxAltitudeMaxSpeedProperty = reader.getXMLPropertyByPath("//global_data/maximum_altitude_at_maximum_speed");
+		if(maxAltitudeMaxSpeedProperty != null)
+			maxAltitudeMaxSpeed = reader.getXMLAmountLengthByPath("//global_data/maximum_altitude_at_maximum_speed");
+		//-------------------------------------------------------------------------------------
+		// MAX CRUISE MACH NUMBER
+		String maxCruiseMachProperty = reader.getXMLPropertyByPath("//global_data/maximum_cruise_mach_number");
+		if(maxCruiseMachProperty != null)
+			maxCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/maximum_cruise_mach_number"));
+		//-------------------------------------------------------------------------------------
+		// OPTIMUM CRUISE ALTITUDE
+		String optimumCruiseAltitudeProperty = reader.getXMLPropertyByPath("//global_data/optimum_cruise_altitude");
+		if(optimumCruiseAltitudeProperty != null)
+			optimumCruiseAltitude = reader.getXMLAmountLengthByPath("//global_data/optimum_cruise_altitude");
+		//-------------------------------------------------------------------------------------
+		// OPTIMUM CRUISE MACH NUMBER
+		String optimumCruiseMachProperty = reader.getXMLPropertyByPath("//global_data/optimum_cruise_mach_number");
+		if(optimumCruiseMachProperty != null)
+			optimumCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/optimum_cruise_mach_number"));
+		//-------------------------------------------------------------------------------------
+		// BLOCK TIME
+		String blockTimeProperty = reader.getXMLPropertyByPath("//global_data/block_time");
+		if(blockTimeProperty != null)
+			blockTime = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//global_data/block_time");
+		//-------------------------------------------------------------------------------------
+		// FLIGHT TIME
+		String flightTimeProperty = reader.getXMLPropertyByPath("//global_data/flight_time");
+		if(flightTimeProperty != null)
+			flightTime = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//global_data/flight_time");
+		//-------------------------------------------------------------------------------------
+		// REFERENCE RANGE
+		String referenceRangeProperty = reader.getXMLPropertyByPath("//global_data/block_time");
+		if(referenceRangeProperty != null)
+			referenceRange = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/reference_range")), NonSI.NAUTICAL_MILE);
 		
 		//-------------------------------------------------------------------------------------------
 		// WEIGHTS ANALYSIS:
