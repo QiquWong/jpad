@@ -172,20 +172,6 @@ public final class MyArrayUtils {
 		return max;
 	}
 	
-	
-
-	@Deprecated
-	public static double getMax(double[] d) {
-		MathArrays.sortInPlace(d);
-		return d[d.length-1];
-	}
-
-	@Deprecated
-	public static double getMin(double[] d) {
-		MathArrays.sortInPlace(d);
-		return d[0];
-	}
-
 	public static int getIndexOfMin(double[] d) {
 		// http://stackoverflow.com/questions/31116190/java-8-find-index-of-minimum-value-from-a-list
 		int minIdx = IntStream.range(0,d.length)

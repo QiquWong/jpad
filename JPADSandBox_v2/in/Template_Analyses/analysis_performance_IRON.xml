@@ -31,11 +31,11 @@
 				<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
 				<cD0>0.0229</cD0>
 				<oswald_cruise>0.83</oswald_cruise> 
-				<oswald_climb>0.82</oswald_climb> 
+				<oswald_climb>0.82</oswald_climb>
 				<oswald_take_off>0.81</oswald_take_off>
-				<oswald_landing>0.79</oswald_landing>				
-				<delta_CD0_take_off>0.013</delta_CD0_take_off>
-				<delta_CD0_landing>0.017</delta_CD0_landing>
+				<oswald_landing>0.79</oswald_landing>
+				<delta_CD0_flap_take_off>0.013</delta_CD0_flap_take_off>
+				<delta_CD0_flap_landing>0.017</delta_CD0_flap_landing>
 				<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
 				<delta_CD0_spoilers>0.0</delta_CD0_spoilers>
 				<!---->
@@ -72,9 +72,9 @@
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<k_lift_off></k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
 				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
-				<drag_due_to_engine_failure></drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
-				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with increasing k_alpha_dot - (default 0.04) -->
-				<alpha_reduction_rate unit="deg/s"></alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
+				<drag_due_to_engine_failure>0.0005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
+				<k_alpha_dot>0.02</k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
+				<alpha_reduction_rate unit="deg/s">-6</alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
 				<!-- landing data -->
 				<k_landing_weight></k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
@@ -104,15 +104,15 @@
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
 				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">10000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
-				<alternate_cruise_mach_number>??</alternate_cruise_mach_number>
+				<alternate_cruise_mach_number></alternate_cruise_mach_number>
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
-				<holding_mach_number>??</holding_mach_number>
+				<holding_mach_number></holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_length unit="nmi">100</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<initial_mission_fuel unit="kg">1250</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
-				<cruise_mission_mach_number>??</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
+				<cruise_mission_mach_number></cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
 				<landing_ground_idle_fuel_flow unit="kg/min">5.17</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile>
         </performance>

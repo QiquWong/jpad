@@ -233,27 +233,27 @@ public class CompleteAnalysisTest extends Application {
 			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader
-					)
-					.build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader
+//					)
+//					.build();
 
 			// reading aircraft from xml ... 
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader);
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader);
 			
 			// activating system.out
 			System.setOut(originalOut);			

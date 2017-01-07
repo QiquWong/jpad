@@ -63,7 +63,6 @@ import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -3193,10 +3192,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							0.05,
 							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
 							),
-					SpeedCalc.calculateTAS(
-							_theOperatingConditions.getMachTakeOff(),
-							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
-							),
+					_theTakeOffCalculator.getvSTakeOff().doubleValue(SI.METERS_PER_SECOND),
 					250
 					);
 

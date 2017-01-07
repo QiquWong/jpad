@@ -1685,7 +1685,7 @@ public class TakeOffCalc {
 			if (time < tRec.getEstimatedValue())
 				cD = cD(cL(speed, alpha, gamma, time));
 			else
-				cD = kFailure*cD(cL(speed, alpha, gamma, time));
+				cD = kFailure + cD(cL(speed, alpha, gamma, time));
 
 			return 	0.5
 					*aircraft.getWing().getSurface().getEstimatedValue()

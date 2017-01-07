@@ -16,7 +16,7 @@
 			<throttle>1.0</throttle>
 		</cruise>
 		<take_off>
-			<mach></mach> <!-- default = 0.2 -->
+			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="m">0.0</altitude> <!-- default = 0.0 -->
 			<throttle></throttle> <!-- default = 1.0 -->
 			<delta_flap unit="deg">15;15</delta_flap>
