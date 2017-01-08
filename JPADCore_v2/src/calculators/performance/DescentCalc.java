@@ -92,11 +92,11 @@ public class DescentCalc {
 					altitudeDescent[i]).getDensity()*1000
 					/1.225;
 			
-			speedListTAS.add(_speedDescentCAS.divide(sigma));
+			speedListTAS.add(_speedDescentCAS.to(SI.METERS_PER_SECOND).divide(sigma));
 			
 			_descentAngles.add(
 					Amount.valueOf(
-							_rateOfDescent.divide(speedListTAS.get(i)).getEstimatedValue(), 
+							_rateOfDescent.to(SI.METERS_PER_SECOND).divide(speedListTAS.get(i)).getEstimatedValue(), 
 							SI.RADIAN
 							)
 					);

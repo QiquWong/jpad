@@ -3323,10 +3323,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							0.05,
 							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
 							)/_vStallTakeOff.doubleValue(SI.METERS_PER_SECOND),
-					SpeedCalc.calculateTAS(
-							_theOperatingConditions.getMachTakeOff(),
-							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
-							)/_vStallTakeOff.doubleValue(SI.METERS_PER_SECOND),
+					1.0,
 					250
 					);
 			
@@ -4423,7 +4420,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_thetaApproach,
 					_cLmaxLanding,
 					_cLZeroLanding,
-					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+					_cLAlphaLanding.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 					_theOperatingConditions.getReverseThrottleLanding(),
 					_freeRollDuration
 					);

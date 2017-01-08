@@ -27,7 +27,7 @@
 				<cL0_take_off_configuration>1.3</cL0_take_off_configuration>
 				<cLmax_landing_configuration>3.0</cLmax_landing_configuration>
 				<cL_alpha_landing unit="1/deg">0.1</cL_alpha_landing>
-				<cL0_landing_configuration>1.3</cL0_landing_configuration>
+				<cL0_landing_configuration>1.8</cL0_landing_configuration>
 				<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
 				<cD0>0.0229</cD0>
 				<oswald_cruise>0.83</oswald_cruise> 
@@ -35,7 +35,7 @@
 				<oswald_take_off>0.81</oswald_take_off>
 				<oswald_landing>0.79</oswald_landing>
 				<delta_CD0_flap_take_off>0.013</delta_CD0_flap_take_off>
-				<delta_CD0_flap_landing>0.017</delta_CD0_flap_landing>
+				<delta_CD0_flap_landing>0.0618</delta_CD0_flap_landing>
 				<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
 				<delta_CD0_spoilers>0.0</delta_CD0_spoilers>
 				<!---->
@@ -71,23 +71,23 @@
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
 				<k_lift_off></k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
-				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<k_cLmax>0.85</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.0005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
-				<k_alpha_dot>0.02</k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
-				<alpha_reduction_rate unit="deg/s">-6</alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
+				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
+				<alpha_reduction_rate unit="deg/s"></alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
 				<!-- landing data -->
-				<k_landing_weight></k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
+				<k_landing_weight>0.98</k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
 				<theta_approach unit="deg"></theta_approach> <!-- default = 3deg -->
 				<k_approach></k_approach> <!-- V_approach/V_stall in landing (default = 1.3) -->
 				<k_flare></k_flare> <!-- V_flare/V_stall in landing (default = 1.23) -->
 				<k_touch_down></k_touch_down> <!-- V_touch_down/V_stall in landing (default = 1.15) -->
-				<free_roll_duration unit="s"></free_roll_duration> <!-- default = 2s -->
+				<free_roll_duration unit="s">0</free_roll_duration> <!-- default = 2s -->
 			</takeoff_landing>
 			<climb>
 				<k_climb_weight_AOE></k_climb_weight_AOE> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
-				<climb_speed_CAS unit="m/s"></climb_speed_CAS>
+				<climb_speed_CAS unit="kn">190</climb_speed_CAS>
 			</climb>
 			<cruise>
 				<altitudes_array unit="ft">20000;25000;30000</altitudes_array>
@@ -95,7 +95,7 @@
 			</cruise>
 			<descent>
 				<rate_of_descent unit="ft/min">1500</rate_of_descent>
-				<descent_speed_CAS unti="kts">220</descent_speed_CAS>
+				<descent_speed_CAS unit="kn">220</descent_speed_CAS>
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 

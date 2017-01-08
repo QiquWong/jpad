@@ -842,7 +842,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				String descentFlagProperty = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
-								"//performance/@landing");
+								"//performance/@descent");
 				if (descentFlagProperty != null) {
 					if(descentFlagProperty.equalsIgnoreCase("TRUE")) {
 						descentFlag = Boolean.TRUE;

@@ -1675,7 +1675,16 @@ public class TakeOffCalc {
 							cL
 							);
 			
-			return cD;
+			double cD0 = MyArrayUtils.getMin(
+					MyArrayUtils.convertToDoublePrimitive(
+							aircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff()
+							)
+					);
+			double cDi = (cD-cD0)*kGround;
+
+			double cDnew = cD0 + cDi;
+			
+			return cDnew;
 		}
 
 		public double drag(double speed, double alpha, double gamma, double time) {

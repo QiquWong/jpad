@@ -608,7 +608,7 @@ public class LandingCalc {
 
 	public class DynamicsEquationsLanding implements FirstOrderDifferentialEquations {
 
-		double weight, g0, mu, muBrake, cD0, deltaCD0, oswald, ar, kGround, cLground, vWind, alphaGround;
+		double weight, g0, mu, muBrake, cD0, deltaCD0, ar, kGround, cLground, vWind, alphaGround;
 
 		public DynamicsEquationsLanding() {
 
@@ -683,12 +683,21 @@ public class LandingCalc {
 							LandingCalc.this.getcLground()
 							);
 
+			double cD0 = MyArrayUtils.getMin(
+					MyArrayUtils.convertToDoublePrimitive(
+							aircraft.getTheAnalysisManager().getThePerformance().getPolarCDLanding()
+							)
+					);
+			double cDi = (cD-cD0)*kGround;
+			
+			double cDnew = cD0 + cDi;
+
 			return 	0.5
 					*aircraft.getWing().getSurface().getEstimatedValue()
 					*AtmosphereCalc.getDensity(
 							theConditions.getAltitudeLanding().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
-					*cD;
+					*cDnew;
 		}
 
 		public double lift(double speed) {

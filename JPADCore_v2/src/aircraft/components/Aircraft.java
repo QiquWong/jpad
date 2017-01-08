@@ -859,7 +859,7 @@ public class Aircraft implements IAircraft {
 
 		this._theExposedWing = new LiftingSurfaceBuilder("Exposed wing", ComponentEnum.WING, theWing.getAerodynamicDatabaseReader(), theWing.getHighLiftDatabaseReader())
 				.liftingSurfaceCreator(
-						_theWing.getLiftingSurfaceCreator()
+						new LiftingSurfaceCreator("Exposed wing", Boolean.TRUE, ComponentEnum.WING)
 						)
 				.build();
 		this._theExposedWing.getLiftingSurfaceCreator().getPanels().clear();

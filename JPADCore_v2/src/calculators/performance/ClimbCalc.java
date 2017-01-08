@@ -112,7 +112,7 @@ public class ClimbCalc {
 		
 		double[] altitudeArray = MyArrayUtils.linspace(
 				0.0,
-				_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+				_theOperatingConditions.getAltitudeToReach().doubleValue(SI.METER),
 				5
 				);
 							

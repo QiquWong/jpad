@@ -95,7 +95,7 @@
 			</cruise>
 			<descent>
 				<rate_of_descent unit="m/s">7.62</rate_of_descent>
-				<descent_speed_CAS unti="m/s">113.17</descent_speed_CAS>
+				<descent_speed_CAS unit="m/s">113.17</descent_speed_CAS>
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 

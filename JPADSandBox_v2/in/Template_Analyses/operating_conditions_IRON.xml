@@ -9,10 +9,11 @@
 		</global_data>
 		<climb>
 			<mach>0.3</mach>
+			<altitude_to_reach unit="ft">25000</altitude_to_reach>
 		</climb>
 		<cruise>
 			<mach>0.62</mach>	
-			<altitude unit="ft">20000</altitude>
+			<altitude unit="ft">30000</altitude>
 			<throttle>1.0</throttle>
 		</cruise>
 		<take_off>
@@ -25,7 +26,7 @@
 		<landing>
 			<mach></mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
-			<reverse_throttle></reverse_throttle> <!-- default = 0.0 -->
+			<reverse_throttle>0.0059</reverse_throttle> <!-- default = 0.0 -->
 			<delta_flap unit="deg">40;40</delta_flap>
 			<delta_slat unit="deg"></delta_slat>
 		</landing>
