@@ -48,15 +48,15 @@
 		<!-- method_XXX="AVERAGED" if empty string -->
 		<performance 
 			file="analysis_performance.xml"
-			plot="TRUE"
-			take_off="TRUE"
-			climb="TRUE"
+			plot="FALSE"
+			take_off="FALSE"
+			climb="FALSE"
 			cruise="TRUE"
-			descent="TRUE"
-			landing="TRUE"
-			payload_range="TRUE"
-			V_n_diagram="TRUE"
-			mission_profile="TRUE"
+			descent="FALSE"
+			landing="FALSE"
+			payload_range="FALSE"
+			V_n_diagram="FALSE"
+			mission_profile="FALSE"
 		/>
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>

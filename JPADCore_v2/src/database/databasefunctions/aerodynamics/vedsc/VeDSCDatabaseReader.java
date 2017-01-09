@@ -184,6 +184,8 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	public double get_KHv_vs_zh_over_bv1(double horizPosOverVertical, double arVertical, double tailconeShape, double wingPosition) {
 
 		double x1, x2, x  = wingPosition, y1, y2, y = 0.0;
+		if(horizPosOverVertical < 0.0)
+			horizPosOverVertical = 0.0;
 
 		if (wingPosition <= -1.) { 
 			y = get_KHv_vs_zh_over_bv1_low_wing(horizPosOverVertical, arVertical, tailconeShape);

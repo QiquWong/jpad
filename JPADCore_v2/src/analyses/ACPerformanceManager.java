@@ -2103,17 +2103,16 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			_weightListCruise = new ArrayList<Amount<Force>>();
 			
-			for(int i=0; i<5; i++) {
-				Amount<Force> cruiseWeight = 
-						Amount.valueOf(
-								(_maximumTakeOffMass
-								.times(_kCruiseWeight)
-								.times(AtmosphereCalc.g0)
-								.getEstimatedValue()
-								),
-								SI.NEWTON
-								);
-				
+			Amount<Force> cruiseWeight = 
+					Amount.valueOf(
+							(_maximumTakeOffMass
+							.times(_kCruiseWeight)
+							.times(AtmosphereCalc.g0)
+							.getEstimatedValue()
+							),
+							SI.NEWTON
+							);
+			for(int i=0; i<5; i++) {			
 				_weightListCruise.add(
 						Amount.valueOf(
 								Math.round(
@@ -3192,7 +3191,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							0.05,
 							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
 							),
-					_theTakeOffCalculator.getvSTakeOff().doubleValue(SI.METERS_PER_SECOND),
+					_theTakeOffCalculator.getvRot().doubleValue(SI.METERS_PER_SECOND),
 					250
 					);
 
@@ -3289,10 +3288,16 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					indexOfVMC = i;
 				}			
 			
-			_vMC = Amount.valueOf(
-					speed[indexOfVMC],
-					SI.METERS_PER_SECOND
-					);
+			if(indexOfVMC != 0)
+				_vMC = Amount.valueOf(
+						speed[indexOfVMC],
+						SI.METERS_PER_SECOND
+						);
+			else
+				_vMC = Amount.valueOf(
+						0.0,
+						SI.METERS_PER_SECOND
+						);
 			
 		}
 
@@ -3323,7 +3328,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							0.05,
 							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
 							)/_vStallTakeOff.doubleValue(SI.METERS_PER_SECOND),
-					1.0,
+					_theTakeOffCalculator.getvRot().divide(_theTakeOffCalculator.getvSTakeOff()).getEstimatedValue(),
 					250
 					);
 			
@@ -3656,8 +3661,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_intersectionList = new ArrayList<>();
 			_cruiseEnvelopeList = new ArrayList<>();
 
-			int nPointSpeed = 500;
-			int nPointAltitude = 50;
+			int nPointSpeed = 50;
+			int nPointAltitude = 14;
 			double[] altitudeArray = MyArrayUtils.linspace(
 					0.0, // meter
 					15000, // meter 
@@ -3780,7 +3785,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 						_cruiseEnvelopeList.get(i).getAltitude()
 						).getDensity()*1000/1.225; 
 				
-				if(_cruiseEnvelopeList.get(i).getMinSpeed() != 0.0) {
+				if(_cruiseEnvelopeList.get(i).getMaxSpeed() != 0.0) {
 					altitudeList.add(_cruiseEnvelopeList.get(i).getAltitude());
 					minSpeedTASList.add(_cruiseEnvelopeList.get(i).getMinSpeed());
 					minSpeedCASList.add(_cruiseEnvelopeList.get(i).getMinSpeed()*(Math.sqrt(sigma)));
@@ -3842,7 +3847,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			if(_maxMachAtCruiseAltitude < _theOperatingConditions.getMachCruise()) {
 				System.err.println("THE CHOSEN CRUISE MACH NUMBER IS NOT INSIDE THE FLIGHT ENVELOPE !");
-				System.exit(1);
+//				System.exit(1);
 			}
 				
 
@@ -3944,20 +3949,75 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		public void calculateCruiseGrid() {
 
+			Airfoil meanAirfoil = new Airfoil(
+					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
+					_theAircraft.getWing().getAerodynamicDatabaseReader()
+					);
+			
+			List<DragMap> dragListWeightParameterization = new ArrayList<DragMap>();
+			List<ThrustMap> thrustListWeightParameterization = new ArrayList<ThrustMap>();
+			
+			double[] speedArrayWeightParameterization = new double[100];
+			speedArrayWeightParameterization = MyArrayUtils.linspace(
+					SpeedCalc.calculateSpeedStall(
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							_weightListCruise.get(_weightListCruise.size()-1).doubleValue(SI.NEWTON), 
+							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
+							_cLmaxClean
+							),
+					SpeedCalc.calculateTAS(
+							1.0,
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							),
+					100
+					);
+			
+			for(int i=0; i<_weightListCruise.size(); i++) {
+				//..................................................................................................
+				dragListWeightParameterization.add(
+						DragCalc.calculateDragAndPowerRequired(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_weightListCruise.get(i).doubleValue(SI.NEWTON),
+								speedArrayWeightParameterization,
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_cLmaxClean,
+								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+								meanAirfoil.getAirfoilCreator().getType()
+								)
+						);
+			}
+			//..................................................................................................
+			thrustListWeightParameterization.add(
+					ThrustCalc.calculateThrustAndPowerAvailable(
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							_theOperatingConditions.getThrottleCruise(),
+							speedArrayWeightParameterization,
+							EngineOperatingConditionEnum.CRUISE,
+							_theAircraft.getPowerPlant().getEngineType(), 
+							_theAircraft.getPowerPlant(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							_theAircraft.getPowerPlant().getEngineNumber(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+							)
+					);
+			
 			List<DragThrustIntersectionMap> intersectionList = new ArrayList<>();
 			for(int i=0; i<_dragListWeightParameterization.size(); i++) {
 				intersectionList.add(
 						PerformanceCalcUtils.calculateDragThrustIntersection(
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-								_thrustListWeightParameterization.get(0).getSpeed(),
+								thrustListWeightParameterization.get(0).getSpeed(),
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
 								_theOperatingConditions.getThrottleCruise(),
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								_cLmaxClean,
-								_dragListWeightParameterization,
-								_thrustListWeightParameterization
+								dragListWeightParameterization,
+								thrustListWeightParameterization
 								)
 						);
 			}
@@ -3970,63 +4030,67 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_specificRangeMap = new ArrayList<>();
 			
 			for(int i=0; i<_weightListCruise.size(); i++) { 
+				if(intersectionList.get(i).getMaxMach() != 0.0) {
+					machArray = MyArrayUtils.linspaceDouble(
+							intersectionList.get(i).getMinMach(),
+							intersectionList.get(i).getMaxMach(),
+							_dragListWeightParameterization.get(i).getSpeed().length);
 
-				machArray = MyArrayUtils.linspaceDouble(
-						intersectionList.get(i).getMinMach(),
-						intersectionList.get(i).getMaxMach(),
-						_dragListWeightParameterization.get(i).getSpeed().length);
+					sfc = SpecificRangeCalc.calculateSfcVsMach(
+							machArray,
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+							_theAircraft.getPowerPlant().getEngineType(),
+							_theAircraft.getPowerPlant()
+							);
 
-				sfc = SpecificRangeCalc.calculateSfcVsMach(
-						machArray,
-						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						_theAircraft.getPowerPlant()
-						);
+					efficiency = MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertToDoublePrimitive(
+									_efficiencyMapWeight.get(
+											"Weight = " + _dragListWeightParameterization.get(i).getWeight()
+											)
+									)
+							);
 
-				efficiency = MyArrayUtils.convertFromDoublePrimitive(
-						MyArrayUtils.convertToDoublePrimitive(
-								_efficiencyMapWeight.get(
-										"Weight = " + _dragListWeightParameterization.get(i).getWeight()
-										)
-								)
-						);
+					specificRange = SpecificRangeCalc.calculateSpecificRangeVsMach(
+							Amount.valueOf(
+									_weightListCruise.get(i).divide(AtmosphereCalc.g0).getEstimatedValue(),
+									SI.KILOGRAM
+									),
+							machArray,
+							sfc,
+							efficiency,
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller(),
+							_theAircraft.getPowerPlant().getEngineType()
+							);
 
-				specificRange = SpecificRangeCalc.calculateSpecificRangeVsMach(
-						Amount.valueOf(
-								_weightListCruise.get(i).divide(AtmosphereCalc.g0).getEstimatedValue(),
-								SI.KILOGRAM
-								),
-						machArray,
-						sfc,
-						efficiency,
-						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller(),
-						_theAircraft.getPowerPlant().getEngineType()
-						);
-				
-				_specificRangeMap.add(
-						new SpecificRangeMap(
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-								_theOperatingConditions.getThrottleCruise(),
-								_weightListCruise.get(i).doubleValue(SI.NEWTON),
-								EngineOperatingConditionEnum.CRUISE,
-								specificRange,
-								machArray,
-								efficiency,
-								sfc
-								)
-						);
+					_specificRangeMap.add(
+							new SpecificRangeMap(
+									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+									_theOperatingConditions.getThrottleCruise(),
+									_weightListCruise.get(i).doubleValue(SI.NEWTON),
+									EngineOperatingConditionEnum.CRUISE,
+									specificRange,
+									machArray,
+									efficiency,
+									sfc
+									)
+							);
+				}
 			}
 			
 			int weightIndex = _weightListCruise.size()-1;
-			_specificRangeAtCruiseAltitudeAndMach = 
-					MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getMach()),
-							MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getSpecificRange()),
-							_theOperatingConditions.getMachCruise()
-							);
+			if(_specificRangeMap.size() == weightIndex)
+				_specificRangeAtCruiseAltitudeAndMach = 
+				MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getMach()),
+						MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getSpecificRange()),
+						_theOperatingConditions.getMachCruise()
+						);
+			else
+				_specificRangeAtCruiseAltitudeAndMach = 0.0;
 		}
 				
 		public void plotCruiseOutput(String cruiseFolderPath) {
@@ -4072,7 +4136,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				List<Double[]> dragAndThrustWeights = new ArrayList<Double[]>();
 				List<String> legendWeights = new ArrayList<String>();
 
-				for (int i=0; i<_altitudeListCruise.size(); i++) {
+				for (int i=0; i<_weightListCruise.size(); i++) {
 					speedWeightsParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getSpeed()));
 					dragAndThrustWeights.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getDrag()));
 					legendWeights.add("Drag at " + Math.round(_dragListWeightParameterization.get(i).getWeight()/9.81) + " kg");
@@ -4140,7 +4204,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				List<Double[]> powerNeededAndAvailableWeights = new ArrayList<Double[]>();
 				List<String> legendWeights = new ArrayList<String>();
 
-				for (int i=0; i<_altitudeListCruise.size(); i++) {
+				for (int i=0; i<_weightListCruise.size(); i++) {
 					speedWeightsParameterization.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getSpeed()));
 					powerNeededAndAvailableWeights.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getPower()));
 					legendWeights.add("Power needed at " + Math.round(_dragListWeightParameterization.get(i).getWeight()/9.81) + " kg");

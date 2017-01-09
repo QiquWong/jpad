@@ -104,15 +104,15 @@
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
 				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">10000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
-				<alternate_cruise_mach_number></alternate_cruise_mach_number>
+				<alternate_cruise_mach_number>0.432</alternate_cruise_mach_number>
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
-				<holding_mach_number></holding_mach_number>
+				<holding_mach_number>0.336</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_length unit="nmi">100</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<initial_mission_fuel unit="kg">1250</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
-				<cruise_mission_mach_number></cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
+				<cruise_mission_mach_number>0.585</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
 				<landing_ground_idle_fuel_flow unit="kg/min">5.17</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile>
         </performance>
