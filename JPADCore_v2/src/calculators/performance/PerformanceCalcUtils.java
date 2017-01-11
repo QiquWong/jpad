@@ -237,7 +237,7 @@ public class PerformanceCalcUtils {
 		double[] altitudeFitted = MyArrayUtils.linspace(
 				0.0,
 				listRC.get(listRC.size()-1).getAltitude(),
-				100
+				200
 				);
 		double[] rcMaxAtAltitude = new double[nAlt];
 		double[] rcMaxAtAltitudeFitted = new double[altitudeFitted.length];

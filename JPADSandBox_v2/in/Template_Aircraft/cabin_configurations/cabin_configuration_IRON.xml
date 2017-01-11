@@ -3,7 +3,7 @@
     <configuration id="IRON Cabin Configuration">
 		<global_data>
 			<actual_passengers_number>130</actual_passengers_number>
-			<maximum_passengers_number>146</maximum_passengers_number>
+			<maximum_passengers_number>150</maximum_passengers_number>
 			<flight_crew_number>3</flight_crew_number>
 			<classes_number>1</classes_number>
 			<classes_type>ECONOMY</classes_type>

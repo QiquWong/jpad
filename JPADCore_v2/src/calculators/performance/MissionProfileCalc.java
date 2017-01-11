@@ -35,7 +35,9 @@ public class MissionProfileCalc {
 	private Amount<Length> _takeOffMissionAltitude;
 	private Amount<Mass> _operatingEmptyMass;
 	private Amount<Mass> _singlePassengerMass;
+	private Integer _passengersNumber;
 	private Amount<Mass> _firstGuessInitialFuelMass;
+	private Amount<Length> _missionRange;
 	private Amount<Length> _firstGuessCruiseLength;
 	private Double _cruiseMissionMachNumber;
 	private Amount<Length> _alternateCruiseLength;
@@ -47,21 +49,13 @@ public class MissionProfileCalc {
 	private Double _landingFuelFlow;
 	private Double _fuelReserve;
 	private Double _cLmaxClean;
-	private Amount<?> _cLAlphaClean;
 	private Double _cLmaxTakeOff;
 	private Amount<?> _cLAlphaTakeOff;
 	private Double _cLZeroTakeOff;
 	private Double _cLmaxLanding;
-	private Amount<?> _cLAlphaLanding;
 	private Double _cLZeroLanding;
-	private Double[] _polarCLCruise;
-	private Double[] _polarCDCruise;
 	private Double[] _polarCLClimb;
 	private Double[] _polarCDClimb;
-	private Double[] _polarCLTakeOff;
-	private Double[] _polarCDTakeOff;
-	private Double[] _polarCLLanding;
-	private Double[] _polarCDLanding;
 	private Amount<Velocity> _windSpeed;
 	private Double _mu;
 	private Double _muBrake;
@@ -105,7 +99,9 @@ public class MissionProfileCalc {
 			OperatingConditions theOperatingConditions,
 			Amount<Mass> operatingEmptyMass,
 			Amount<Mass> singlePassengerMass,
+			Integer passengersNumber,
 			Amount<Mass> firstGuessInitialFuelMass,
+			Amount<Length> missionRange,
 			Amount<Length> takeOffMissionAltitude,
 			Amount<Length> firstGuessCruiseLength,
 			Double cruiseMissionMachNumber,
@@ -118,21 +114,13 @@ public class MissionProfileCalc {
 			Double landingFuelFlow,
 			Double fuelReserve,
 			Double cLmaxClean,
-			Amount<?> cLAlphaClean,
 			Double cLmaxTakeOff,
 			Amount<?> cLAlphaTakeOff,
 			Double cLZeroTakeOff,
 			Double cLmaxLanding,
-			Amount<?> cLAlphaLanding,
 			Double cLZeroLanding,
-			Double[] polarCLCruise,
-			Double[] polarCDCruise,
 			Double[] polarCLClimb,
 			Double[] polarCDClimb,
-			Double[] polarCLTakeOff,
-			Double[] polarCDTakeOff,
-			Double[] polarCLLanding,
-			Double[] polarCDLanding,
 			Amount<Velocity> windSpeed,
 			Double mu,
 			Double muBrake,
@@ -161,7 +149,9 @@ public class MissionProfileCalc {
 		this._theOperatingConditions = theOperatingConditions;
 		this._operatingEmptyMass = operatingEmptyMass;
 		this._singlePassengerMass = singlePassengerMass;
+		this._passengersNumber = passengersNumber;
 		this._firstGuessInitialFuelMass = firstGuessInitialFuelMass;
+		this._missionRange = missionRange;
 		this._takeOffMissionAltitude = takeOffMissionAltitude;
 		this._firstGuessCruiseLength = firstGuessCruiseLength;
 		this._cruiseMissionMachNumber = cruiseMissionMachNumber;
@@ -174,21 +164,13 @@ public class MissionProfileCalc {
 		this._landingFuelFlow = landingFuelFlow;
 		this._fuelReserve = fuelReserve;
 		this._cLmaxClean = cLmaxClean;
-		this._cLAlphaClean = cLAlphaClean;
 		this._cLmaxTakeOff = cLmaxTakeOff;
 		this._cLAlphaTakeOff = cLAlphaTakeOff;
 		this._cLZeroTakeOff = cLZeroTakeOff;
 		this._cLmaxLanding = cLmaxLanding;
-		this._cLAlphaLanding = cLAlphaLanding;
 		this._cLZeroLanding = cLZeroLanding;
-		this._polarCLCruise = polarCLCruise;
-		this._polarCDCruise = polarCDCruise;
 		this._polarCLClimb = polarCLClimb;
 		this._polarCDClimb = polarCDClimb;
-		this._polarCLTakeOff = polarCLTakeOff;
-		this._polarCDTakeOff = polarCDTakeOff;
-		this._polarCLLanding = polarCLLanding;
-		this._polarCDLanding = polarCDLanding;
 		this._windSpeed = windSpeed;
 		this._mu = mu;
 		this._muBrake = muBrake;
@@ -226,7 +208,7 @@ public class MissionProfileCalc {
 	public void calculateProfiles() {
 
 		_initialMissionMass = _operatingEmptyMass
-				.plus(_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getNPax()))
+				.plus(_singlePassengerMass.times(_passengersNumber))
 				.plus(_firstGuessInitialFuelMass); 
 		
 		_initialFuelMass = _firstGuessInitialFuelMass;
@@ -352,7 +334,7 @@ public class MissionProfileCalc {
 			
 			while (
 					Math.abs(
-							(_theAircraft.getTheAnalysisManager().getReferenceRange().to(NonSI.NAUTICAL_MILE)
+							(_missionRange.to(NonSI.NAUTICAL_MILE)
 									.plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)))
 							.minus(_totalMissionRange.to(NonSI.NAUTICAL_MILE))
 							.doubleValue(NonSI.NAUTICAL_MILE)
@@ -718,7 +700,7 @@ public class MissionProfileCalc {
 				//.....................................................................
 				// NEW ITERATION CRUISE LENGTH
 				cruiseLength = cruiseLength.to(NonSI.NAUTICAL_MILE).plus( 
-						(_theAircraft.getTheAnalysisManager().getReferenceRange().to(NonSI.NAUTICAL_MILE)
+						(_missionRange.to(NonSI.NAUTICAL_MILE)
 								.plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE))
 						.minus(_totalMissionRange).to(NonSI.NAUTICAL_MILE)
 						);
@@ -893,14 +875,6 @@ public class MissionProfileCalc {
 		this._cLmaxClean = _cLmaxClean;
 	}
 
-	public Amount<?> getCLAlphaClean() {
-		return _cLAlphaClean;
-	}
-
-	public void setCLAlphaClean(Amount<?> _cLAlphaClean) {
-		this._cLAlphaClean = _cLAlphaClean;
-	}
-
 	public Double getCLmaxTakeOff() {
 		return _cLmaxTakeOff;
 	}
@@ -933,36 +907,12 @@ public class MissionProfileCalc {
 		this._cLmaxLanding = _cLmaxLanding;
 	}
 
-	public Amount<?> getCLAlphaLanding() {
-		return _cLAlphaLanding;
-	}
-
-	public void setCLAlphaLanding(Amount<?> _cLAlphaLanding) {
-		this._cLAlphaLanding = _cLAlphaLanding;
-	}
-
 	public Double getCLZeroLanding() {
 		return _cLZeroLanding;
 	}
 
 	public void setCLZeroLanding(Double _cLZeroLanding) {
 		this._cLZeroLanding = _cLZeroLanding;
-	}
-
-	public Double[] getPolarCLCruise() {
-		return _polarCLCruise;
-	}
-
-	public void setPolarCLCruise(Double[] _polarCLCruise) {
-		this._polarCLCruise = _polarCLCruise;
-	}
-
-	public Double[] getPolarCDCruise() {
-		return _polarCDCruise;
-	}
-
-	public void setPolarCDCruise(Double[] _polarCDCruise) {
-		this._polarCDCruise = _polarCDCruise;
 	}
 
 	public Double[] getPolarCLClimb() {
@@ -979,38 +929,6 @@ public class MissionProfileCalc {
 
 	public void setPolarCDClimb(Double[] _polarCDClimb) {
 		this._polarCDClimb = _polarCDClimb;
-	}
-
-	public Double[] getPolarCLTakeOff() {
-		return _polarCLTakeOff;
-	}
-
-	public void setPolarCLTakeOff(Double[] _polarCLTakeOff) {
-		this._polarCLTakeOff = _polarCLTakeOff;
-	}
-
-	public Double[] getPolarCDTakeOff() {
-		return _polarCDTakeOff;
-	}
-
-	public void setPolarCDTakeOff(Double[] _polarCDTakeOff) {
-		this._polarCDTakeOff = _polarCDTakeOff;
-	}
-
-	public Double[] getPolarCLLanding() {
-		return _polarCLLanding;
-	}
-
-	public void setPolarCLLanding(Double[] _polarCLLanding) {
-		this._polarCLLanding = _polarCLLanding;
-	}
-
-	public Double[] getPolarCDLanding() {
-		return _polarCDLanding;
-	}
-
-	public void setPolarCDLanding(Double[] _polarCDLanding) {
-		this._polarCDLanding = _polarCDLanding;
 	}
 
 	public Amount<Velocity> getWindSpeed() {
@@ -1339,5 +1257,21 @@ public class MissionProfileCalc {
 
 	public void setInitialFuelMass(Amount<Mass> _initialFuelMass) {
 		this._initialFuelMass = _initialFuelMass;
+	}
+
+	public Integer getPassengersNumber() {
+		return _passengersNumber;
+	}
+
+	public void setPassengersNumber(Integer _passengersNumber) {
+		this._passengersNumber = _passengersNumber;
+	}
+
+	public Amount<Length> getMissionRange() {
+		return _missionRange;
+	}
+
+	public void setMissionRange(Amount<Length> _missionRange) {
+		this._missionRange = _missionRange;
 	}
 }

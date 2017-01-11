@@ -50,7 +50,7 @@ import standaloneutils.atmosphere.SpeedCalc;
  * @author Vittorio Trifari
  */
 
-public class PayloadRangeCalc{
+public class PayloadRangeCalcBreguet{
 	//-------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
 	
@@ -136,7 +136,7 @@ public class PayloadRangeCalc{
 	//-------------------------------------------------------------------------------------
 	// BUILDER
 	
-	public PayloadRangeCalc (
+	public PayloadRangeCalcBreguet (
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
 			Amount<Mass> maxTakeOffMass,

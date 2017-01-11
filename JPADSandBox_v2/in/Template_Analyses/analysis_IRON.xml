@@ -9,7 +9,7 @@
         <positive_limit_load_factor>2.5</positive_limit_load_factor>
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
 		<cruise_lift_coefficient>0.61</cruise_lift_coefficient>
-		<reference_range unit="nmi">300</reference_range>
+		<reference_range unit="nmi">1425</reference_range>
 		<maximum_altitude_at_maximum_speed unit="ft">30000</maximum_altitude_at_maximum_speed>
 		<maximum_cruise_mach_number>0.62</maximum_cruise_mach_number>
 		<optimum_cruise_altitude unit="ft">30000</optimum_cruise_altitude>
@@ -54,9 +54,9 @@
 			cruise="FALSE"
 			descent="FALSE"
 			landing="FALSE"
-			payload_range="FALSE"
+			payload_range="TRUE"
 			V_n_diagram="FALSE"
-			mission_profile="TRUE"
+			mission_profile="FALSE"
 		/>
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>

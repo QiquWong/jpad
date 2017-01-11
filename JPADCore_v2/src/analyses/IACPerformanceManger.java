@@ -18,7 +18,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import calculators.performance.FlightManeuveringEnvelopeCalc;
 import calculators.performance.LandingCalc;
-import calculators.performance.PayloadRangeCalc;
+import calculators.performance.PayloadRangeCalcBreguet;
 import calculators.performance.TakeOffCalc;
 import calculators.performance.customdata.CeilingMap;
 import calculators.performance.customdata.DragMap;
@@ -309,129 +309,6 @@ public interface IACPerformanceManger {
 
 	public FlightManeuveringEnvelopeCalc getTheEnvelopeCalculator();
 	public void setTheEnvelopeCalculator(FlightManeuveringEnvelopeCalc _theEnvelopeCalculator);
-
-	public PayloadRangeCalc getThePayloadRangeCalculator();
-	public void setThePayloadRangeCalculator(PayloadRangeCalc _thePayloadRangeCalculator);
-
-	public Double getBestRangeMach();
-	public void setBestRangeMach(Double bestRangeMach);
-
-	public Amount<Length> getRangeAtMaxPayloadBestRange();
-	public void setRangeAtMaxPayloadBestRange(Amount<Length> rangeAtMaxPayloadBestRange);
-
-	public Amount<Length> getRangeAtMaxPayloadCurrentMach();
-	public void setRangeAtMaxPayloadCurrentMach(Amount<Length> rangeAtMaxPayloadCurrentMach);
-
-	public Amount<Mass> getFuelMassAtMaxPayload();
-	public void setFuelMassAtMaxPayload(Amount<Mass> fuelMassAtMaxPayload);
-
-	public Double getcLAtMaxPayloadBestRange();
-	public void setcLAtMaxPayloadBestRange(Double cLAtMaxPayloadBestRange);
-
-	public Double getcLAtMaxPayloadCurrentMach();
-	public void setcLAtMaxPayloadCurrentMach(Double cLAtMaxPayloadCurrentMach);
-
-	public Double getcDAtMaxPayloadBestRange();
-	public void setcDAtMaxPayloadBestRange(Double cDAtMaxPayloadBestRange);
-
-	public Double getcDAtMaxPayloadCurrentMach();
-	public void setcDAtMaxPayloadCurrentMach(Double cDAtMaxPayloadCurrentMach);
-
-	public Double getEfficiencyAtMaxPayloadBestRange();
-	public void setEfficiencyAtMaxPayloadBestRange(Double efficiencyAtMaxPayloadBestRange);
-
-	public Double getEfficiencyAtMaxPayloadCurrentMach();
-	public void setEfficiencyAtMaxPayloadCurrentMach(Double efficiencyAtMaxPayloadCurrentMach);
-
-	public Double getSfcAtMaxPayloadBestRange();
-	public void setSfcAtMaxPayloadBestRange(Double sfcAtMaxPayloadBestRange);
-
-	public Double getSfcAtMaxPayloadCurrentMach();
-	public void setSfcAtMaxPayloadCurrentMach(Double sfcAtMaxPayloadCurrentMach);
-
-	public Amount<Length> getRangeAtMaxFuelBestRange();
-	public void setRangeAtMaxFuelBestRange(Amount<Length> rangeAtMaxFuelBestRange);
-
-	public Amount<Length> getRangeAtMaxFuelCurrentMach();
-	public void setRangeAtMaxFuelCurrentMach(Amount<Length> rangeAtMaxFuelCurrentMach);
-
-	public Amount<Mass> getPayloadAtMaxFuel();
-	public void setPayloadAtMaxFuel(Amount<Mass> payloadAtMaxFuel);
-
-	public Double getNumberOfPassengersAtMaxFuel();
-	public void setNumberOfPassengersAtMaxFuel(Double numberOfPassengersAtMaxFuel);
-
-	public Double getcLAtMaxFuelBestRange();
-	public void setcLAtMaxFuelBestRange(Double cLAtMaxFuelBestRange);
-
-	public Double getcLAtMaxFuelCurrentMach();
-	public void setcLAtMaxFuelCurrentMach(Double cLAtMaxFuelCurrentMach);
-
-	public Double getcDAtMaxFuelBestRange();
-	public void setcDAtMaxFuelBestRange(Double cDAtMaxFuelBestRange);
-
-	public Double getcDAtMaxFuelCurrentMach();
-	public void setcDAtMaxFuelCurrentMach(Double cDAtMaxFuelCurrentMach);
-
-	public Double getEfficiencyAtMaxFuelBestRange();
-	public void setEfficiencyAtMaxFuelBestRange(Double efficiencyAtMaxFuelBestRange);
-
-	public Double getEfficiencyAtMaxFuelCurrentMach();
-	public void setEfficiencyAtMaxFuelCurrentMach(Double efficiencyAtMaxFuelCurrentMach);
-
-	public Double getSfcAtZeroPayloadBestRange();
-	public void setSfcAtZeroPayloadBestRange(Double sfcAtZeroPayloadBestRange);
-
-	public Double getSfcAtMaxFuelCurrentMach();
-	public void setSfcAtMaxFuelCurrentMach(Double sfcAtMaxFuelCurrentMach);
-
-	public Amount<Length> getRangeAtZeroPayloadBestRange();
-	public void setRangeAtZeroPayloadBestRange(Amount<Length> rangeAtZeroPayloadBestRange);
-
-	public Amount<Length> getRangeAtZeroPayloadCurrentMach();
-	public void setRangeAtZeroPayloadCurrentMach(Amount<Length> rangeAtZeroPayloadCurrentMach);
-
-	public Amount<Mass> getTakeOffMassAtZeroPayload();
-	public void setTakeOffMassAtZeroPayload(Amount<Mass> takeOffMassAtZeroPayload);
-
-	public Double getcLAtZeroPayloadBestRange();
-	public void setcLAtZeroPayloadBestRange(Double cLAtZeroPayloadBestRange);
-
-	public Double getcLAtZeroPayloadCurrentMach();
-	public void setcLAtZeroPayloadCurrentMach(Double cLAtZeroPayloadCurrentMach);
-
-	public Double getcDAtZeroPayloadBestRange();
-	public void setcDAtZeroPayloadBestRange(Double cDAtZeroPayloadBestRange);
-
-	public Double getcDAtZeroPayloadCurrentMach();
-	public void setcDAtZeroPayloadCurrentMach(Double cDAtZeroPayloadCurrentMach);
-	
-	public Double getEfficiencyAtZeroPayloadBestRange();
-	public void setEfficiencyAtZeroPayloadBestRange(Double efficiencyAtZeroPayloadBestRange);
-
-	public Double getEfficiencyAtZeroPayloadCurrentMach();
-	public void setEfficiencyAtZeroPayloadCurrentMach(double efficiencyAtZeroPayloadCurrentMach);
-
-	public Double getSfcAtMaxFuelBestRange();
-	public void setSfcAtMaxFuelBestRange(Double sfcAtMaxFuelBestRange);
-
-	public Double getSfcAtZeroPayloadCurrentMach();
-	public void setSfcAtZeroPayloadCurrentMach(Double sfcAtZeroPayloadCurrentMach);
-
-	public List<Amount<Length>> getRangeArrayBestRange();
-	public void setRangeArrayBestRange(List<Amount<Length>> rangeArrayBestRange);
-
-	public List<Amount<Length>> getRangeArrayCurrentMach();
-	public void setRangeArrayCurrentMach(List<Amount<Length>> rangeArrayCurrentMach);
-
-	public List<Double> getPayloadArray();
-	public void setPayloadArray(List<Double> payloadArray);
-
-	public double[][] getRangeMatrix();
-	public void setRangeMatrix(double[][] rangeMatrix);
-
-	public double[][] getPayloadMatrix();
-	public void setPayloadMatrix(double[][] payloadMatrix);
 
 	public Amount<Velocity> getMaxRateOfClimbAtCruiseAltitudeAOE();
 	public void setMaxRateOfClimbAtCruiseAltitudeAOE(Amount<Velocity> _maxRateOfClimbAtCruiseAltitude);
