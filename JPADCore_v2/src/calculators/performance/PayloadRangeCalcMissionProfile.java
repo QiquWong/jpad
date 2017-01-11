@@ -81,6 +81,8 @@ public class PayloadRangeCalcMissionProfile{
 	private Amount<Length> _rangeAtMaxPayload;
 	private Amount<Length> _rangeAtDesignPayload;
 	private Amount<Length> _rangeAtMaxFuel;	
+	private Amount<Length> _rangeAtZeroPayload;
+	private Amount<Mass> _takeOffMassZeroPayload;
 	private Amount<Mass> _maxPayload;
 	private Amount<Mass> _designPayload;
 	private Amount<Mass> _payloadAtMaxFuel;
@@ -219,7 +221,7 @@ public class PayloadRangeCalcMissionProfile{
 		Amount<Mass> initialMissionMass = maxTakeOffMassCurrent.to(SI.KILOGRAM); 
 		
 		Amount<Mass> targetFuelMass = 
-				_maximumTakeOffMass.to(SI.KILOGRAM)
+				maxTakeOffMassCurrent.to(SI.KILOGRAM)
 				.minus(_operatingEmptyMass.to(SI.KILOGRAM))
 				.minus(payloadMass.to(SI.KILOGRAM));
 		
@@ -238,13 +240,6 @@ public class PayloadRangeCalcMissionProfile{
 						) - (_fuelReserve*100))
 				>= 0.01
 				) {
-			
-			double check = (Math.abs(
-					(targetFuelMass.to(SI.KILOGRAM).minus(totalFuelUsed.to(SI.KILOGRAM)))
-					.divide(targetFuelMass.to(SI.KILOGRAM))
-					.times(100)
-					.getEstimatedValue()
-					) - (_fuelReserve*100));
 			
 			if(i >= 1)
 				initialCruiseLength = newCruiseLength;
@@ -627,9 +622,9 @@ public class PayloadRangeCalcMissionProfile{
 	 */
 	public void createPayloadRange() {
 		
-		// CURRENT MACH CONDITION
 		_rangeArray = new ArrayList<>();
 		
+		// RANGE AT MAX PAYLOAD
 		_rangeAtMaxPayload = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
 				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getMaxPax())
@@ -643,6 +638,7 @@ public class PayloadRangeCalcMissionProfile{
 								)
 						);
 		
+		// RANGE AT DESIGN PAYLOAD
 		_rangeAtDesignPayload = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
 				_singlePassengerMass.to(SI.KILOGRAM).times(_theAircraft.getCabinConfiguration().getNPax())
@@ -656,6 +652,7 @@ public class PayloadRangeCalcMissionProfile{
 								)
 						);
 		
+		// RANGE AT MAX FUEL
 		_rangeAtMaxFuel = calcRangeAtGivenPayload(
 				_maximumTakeOffMass.to(SI.KILOGRAM),
 				_maximumTakeOffMass.to(SI.KILOGRAM)
@@ -674,6 +671,13 @@ public class PayloadRangeCalcMissionProfile{
 				.getEstimatedValue()
 				);
 		
+		// RANGE AT ZERO PAYLOAD
+		_rangeAtZeroPayload = calcRangeAtGivenPayload(
+				_operatingEmptyMass.plus(_maxFuelMass),
+				Amount.valueOf(0.0, SI.KILOGRAM)
+				);
+		_takeOffMassZeroPayload = _operatingEmptyMass.plus(_maxFuelMass);
+		
 		// POINT 1
 		_rangeArray.add(Amount.valueOf(0.0, NonSI.NAUTICAL_MILE));
 		// POINT 2
@@ -682,6 +686,8 @@ public class PayloadRangeCalcMissionProfile{
 		_rangeArray.add(_rangeAtDesignPayload.to(NonSI.NAUTICAL_MILE));
 		// POINT 4
 		_rangeArray.add(_rangeAtMaxFuel.to(NonSI.NAUTICAL_MILE));
+		// POINT 4
+		_rangeArray.add(_rangeAtZeroPayload.to(NonSI.NAUTICAL_MILE));
 		
 		//--------------------------------------------------------------------------------------
 		// PAYLOAD ARRAY (both conditions)
@@ -705,6 +711,8 @@ public class PayloadRangeCalcMissionProfile{
 								)
 						)
 				);
+		// POINT 5
+		_payloadArray.add(0.0);
 
 	}
 
@@ -718,17 +726,17 @@ public class PayloadRangeCalcMissionProfile{
 		
 		double[] massArrayMTOM = new double[5];
 		Amount<Mass> maxTakeOffMassCurrent = Amount.valueOf(0.0, SI.KILOGRAM);
-		_rangeMatrix = new double [5][4];
-		_payloadMatrix = new double [5][4];
+		_rangeMatrix = new double [5][5];
+		_payloadMatrix = new double [5][5];
 		
 		// generating variation of mass of 5% until -20% of maxTakeOffMass
 		for (int i=0; i<5; i++){
-			massArrayMTOM[i] = _maximumTakeOffMass.getEstimatedValue()*(1-0.05*(4-i));
+			massArrayMTOM[i] = _maximumTakeOffMass.getEstimatedValue()*(1-0.025*(4-i));
 		}
 
 		// setting the i-value of the mass array to the current maxTakeOffMass
 		for (int i=0; i<5; i++){
-			for (int j=0; j<4; j++){
+			for (int j=0; j<5; j++){
 				maxTakeOffMassCurrent = Amount.valueOf(massArrayMTOM[i], SI.KILOGRAM);
 				switch (j){
 				case 0:
@@ -747,23 +755,31 @@ public class PayloadRangeCalcMissionProfile{
 							maxTakeOffMassCurrent,
 							_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getNPax())
 							).getEstimatedValue();
-					_payloadMatrix[i][j] = _theAircraft.getCabinConfiguration().getNPax();;
+					_payloadMatrix[i][j] = _theAircraft.getCabinConfiguration().getNPax();
+							
 					break;
 				case 3:
 					_rangeMatrix[i][j] = calcRangeAtGivenPayload(
 							maxTakeOffMassCurrent,
-							_maximumTakeOffMass
+							maxTakeOffMassCurrent
 							.minus(_operatingEmptyMass)
 							.minus(_maxFuelMass)
 							).getEstimatedValue();
 					_payloadMatrix[i][j] = 
 							Math.round(
-							(_maximumTakeOffMass
-									.minus(_operatingEmptyMass)
-									.minus(_maxFuelMass))
-							.divide(_singlePassengerMass)
-							.getEstimatedValue()
-							);
+									(maxTakeOffMassCurrent
+											.minus(_operatingEmptyMass)
+											.minus(_maxFuelMass))
+									.divide(_singlePassengerMass)
+									.getEstimatedValue()
+									);
+					break;
+				case 4:
+					_rangeMatrix[i][j] = calcRangeAtGivenPayload(
+							_operatingEmptyMass.plus(_maxFuelMass),
+							Amount.valueOf(0.0, SI.KILOGRAM)
+							).getEstimatedValue();
+					_payloadMatrix[i][j] = 0.0;
 					break;
 				}
 			}
@@ -851,6 +867,14 @@ public class PayloadRangeCalcMissionProfile{
 				.append("\t\t\tPayload mass = " + _payloadAtMaxFuel + "\n")
 				.append("\t\t\tPassengers number = " + _passengersNumberAtMaxFuel + "\n")
 				.append("\t\t\tFuel mass required = " + _maxFuelMass + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tRANGE AT ZERO PAYLOAD\n")
+				.append("\t\t.....................................\n")
+				.append("\t\t\tRange = " + _rangeAtZeroPayload + "\n")
+				.append("\t\t\tMax take-off mass = " + _takeOffMassZeroPayload + "\n")
+				.append("\t\t\tPayload mass = " + 0.0 + " kg \n")
+				.append("\t\t\tPassengers number = " + 0.0 + "\n")
+				.append("\t\t\tFuel mass required= " + _maxFuelMass + "\n")
 				.append("\t\t.....................................\n")
 				.append("\t\tRANGE MATRIX (WEIGHT PARAMETERIZATION)\n")
 				.append("\t\t.....................................\n");
@@ -1374,5 +1398,21 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setRequiredMassAtDesignPayload(Amount<Mass> _requiredMassAtDesignPayload) {
 		this._requiredMassAtDesignPayload = _requiredMassAtDesignPayload;
+	}
+
+	public Amount<Length> getRangeAtZeroPayload() {
+		return _rangeAtZeroPayload;
+	}
+
+	public void setRangeAtZeroPayload(Amount<Length> _rangeAtZeroPayload) {
+		this._rangeAtZeroPayload = _rangeAtZeroPayload;
+	}
+
+	public Amount<Mass> getTakeOffMassZeroPayload() {
+		return _takeOffMassZeroPayload;
+	}
+
+	public void setTakeOffMassZeroPayload(Amount<Mass> _takeOffMassZeroPayload) {
+		this._takeOffMassZeroPayload = _takeOffMassZeroPayload;
 	}	
 }

@@ -274,6 +274,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Amount<Length> _rangeAtMaxPayload;
 	private Amount<Length> _rangeAtDesignPayload;
 	private Amount<Length> _rangeAtMaxFuel;	
+	private Amount<Length> _rangeAtZeroPayload;
+	private Amount<Mass> _takeOffMassAtZeroPayload;
 	private Amount<Mass> _maxPayload;
 	private Amount<Mass> _designPayload;
 	private Amount<Mass> _payloadAtMaxFuel;
@@ -2626,26 +2628,31 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListPayloadRange.add(new Object[] {"ALTITUDE","ft",_theOperatingConditions.getAltitudeCruise().doubleValue(NonSI.FOOT)});
         	dataListPayloadRange.add(new Object[] {"MACH"," ",_theOperatingConditions.getMachCruise()});
         	dataListPayloadRange.add(new Object[] {" "});
-        	dataListPayloadRange.add(new Object[] {" "});
         	dataListPayloadRange.add(new Object[] {"RANGE AT MAX PAYLOAD"});
         	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _maxPayload.doubleValue(SI.KILOGRAM)});
-        	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxPayload});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxPayload.doubleValue()});
         	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtMaxPayload.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {""});
         	dataListPayloadRange.add(new Object[] {"RANGE AT DESIGN PAYLOAD"});
         	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtDesignPayload.doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _designPayload.doubleValue(SI.KILOGRAM)});
-        	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtDesignPayload});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtDesignPayload.doubleValue()});
         	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtDesignPayload.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {""});
         	dataListPayloadRange.add(new Object[] {"RANGE AT MAX FUEL"});
         	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxFuel.doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _payloadAtMaxFuel.doubleValue(SI.KILOGRAM)});
-        	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxFuel});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxFuel.doubleValue()});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _maximumFuelMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"RANGE AT ZERO PAYLOAD"});
+        	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtZeroPayload.doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _takeOffMassAtZeroPayload.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Payload mass","kg", 0.0});
+        	dataListPayloadRange.add(new Object[] {"Passengers number","", 0.0});
         	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _maximumFuelMass.doubleValue(SI.KILOGRAM)});
 
         	Row rowPayloadRange = sheetPayloadRange.createRow(0);
@@ -4534,6 +4541,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_rangeAtMaxPayload = _thePayloadRangeCalculator.getRangeAtMaxPayload();
 			_rangeAtDesignPayload = _thePayloadRangeCalculator.getRangeAtDesignPayload();
 			_rangeAtMaxFuel = _thePayloadRangeCalculator.getRangeAtMaxFuel();	
+			_rangeAtZeroPayload = _thePayloadRangeCalculator.getRangeAtZeroPayload();
+			_takeOffMassAtZeroPayload = _thePayloadRangeCalculator.getTakeOffMassZeroPayload();
 			_maxPayload = _thePayloadRangeCalculator.getMaxPayload();
 			_designPayload = _thePayloadRangeCalculator.getDesignPayload();
 			_payloadAtMaxFuel = _thePayloadRangeCalculator.getPayloadAtMaxFuel();
@@ -6188,6 +6197,22 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setThePayloadRangeCalculator(PayloadRangeCalcMissionProfile _thePayloadRangeCalculator) {
 		this._thePayloadRangeCalculator = _thePayloadRangeCalculator;
+	}
+
+	public Amount<Length> getRangeAtZeroPayload() {
+		return _rangeAtZeroPayload;
+	}
+
+	public void setRangeAtZeroPayload(Amount<Length> _rangeAtZeroPayload) {
+		this._rangeAtZeroPayload = _rangeAtZeroPayload;
+	}
+
+	public Amount<Mass> getTakeOffMassAtZeroPayload() {
+		return _takeOffMassAtZeroPayload;
+	}
+
+	public void setTakeOffMassAtZeroPayload(Amount<Mass> _takeOffMassAtZeroPayload) {
+		this._takeOffMassAtZeroPayload = _takeOffMassAtZeroPayload;
 	}
 
 }
