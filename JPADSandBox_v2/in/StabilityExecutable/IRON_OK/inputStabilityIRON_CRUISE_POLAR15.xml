@@ -13,7 +13,8 @@
                 <altitude unit="m">0.0</altitude>   <!-- cruise:30kft stall: 16.5kft-->
                 <mach_number>0.62</mach_number>   <!-- cruise:M=0.62 Take-Off:M=0.171 Landing: M=0.15-->
 				<delta_CD0_miscellaneous>0.0055</delta_CD0_miscellaneous>
-				<delta_CD0_gear>0.0055</delta_CD0_gear>
+				<delta_CD0_gear>0.0150</delta_CD0_gear>
+				<z_landing_gear unit="m">3.25</z_landing_gear>
     <!-- Reynolds number referred to MAC  -->
     <Reynolds_number>11100000</Reynolds_number>  <!-- Re cruise=18.2e6 Re Take-Off=12.5e6 Re Landing=12.3e6-->
     <!-- definition of alpha body array analysis  -->
@@ -28,8 +29,8 @@
     <wing_momentum_pole>[0.25, 0.26503]</wing_momentum_pole>
     <horizontal_tail_momentum_pole>[0.25]</horizontal_tail_momentum_pole>
     <!-- This is the pole used in the stability equation . This is the position of the AC for the user. This value for the wing will be modified for the fuselage effect-->
-    <wing_pole_in_equation>0.26503</wing_pole_in_equation>
-    <horizontal_tail_pole_in_equation>0.25</horizontal_tail_pole_in_equation>
+    <wing_pole_in_equation>0.26</wing_pole_in_equation> <!-- AC wing -->
+    <horizontal_tail_pole_in_equation>0.25</horizontal_tail_pole_in_equation> <!-- AC tail -->
     <!--
     <condition>CRUISE</condition>
     <condition>LANDING</condition>
@@ -42,13 +43,13 @@ CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula C
 CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
 CALCULATED_INPUT_AIRFOIL_PARASITE: the PARASITE drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input, the induced is calculated using the parabolic one 
 CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->    ,,
-    <wing WingAirfoilLiftCurve="INPUT" wingPolar="CALCULATED_INPUT_AIRFOIL_PARASITE" deltaDueToFlap="SEMIEMPIRICAL" ACmoment = "CURVE">
+    <wing WingAirfoilLiftCurve="INPUT" wingPolar="CALCULATED_INPUT_AIRFOIL_PARASITE" deltaDueToFlap="SEMIEMPIRICAL" C4moment = "CURVE">
     <!-- <wing airfoilLiftCurve="CALCULATED"> -->
     <!-- <wing polar="INPUT"> -->
     <!-- <wing polar="CALCULATED_PARABOLIC"> -->
     <!-- <wing polar="CALCULATED_INPUT_AIRFOIL"> -->
     <!-- <wing polar="CALCULATED_DATABASE_AIRFOIL"> -->
-    <!-- <ACmoment="CONSTANT"> if ACmoment="CURVE" there will be calculated both methods-->
+    <!-- <c4moment="CONSTANT"> if ACmoment="CURVE" there will be calculated both methods-->
 	 <!-- <deltaDragDueToFlap="INPUT_CURVE"> if ACmoment="CURVE" there will be calculated both methods-->
             <position>
     <!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
@@ -100,13 +101,13 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			<alpha station ="TIP" unit="°">[-3 , -2 , -1 , 0 , 1 , 2 , 2.5 , 3 , 3.5 , 4 , 4.25]</alpha>
 			<lift_coefficient>[0.1979 , 0.3711 , 0.5385 , 0.7065 , 0.8728 , 1.0325 , 1.1049 , 1.1801 , 1.2499 , 1.3136 , 1.3383]</lift_coefficient>
 	       </airfoil_lift_curve>
-	<moment>
-		<cl_moment_curve station="ROOT">[0.1661 , 0.2927 , 0.4183 , 0.543 , 0.6655 , 0.7797 , 0.8957 , 1.0093 , 1.1183 , 1.224 , 1.3297 , 1.4249 , 1.5023 , 1.5704 , 1.6348 , 1.6938 , 1.7475 , 1.7957 , 1.8393 , 1.8656]</cl_moment_curve>
-		<cm_curve>[-0.122787374 , -0.12230061 , -0.1235738 , -0.12599453 , -0.129294839 , -0.13331775 , -0.138736991 , -0.145985256 , -0.155562787 , -0.168250268 , -0.185388488 , -0.205688828 , -0.226349169 , -0.248146791 , -0.272314948 , -0.297853655 , -0.324218173 , -0.350643905 , -0.376974518 , -0.394040215 ] </cm_curve>
-		<cl_moment_curve station="KINK">[0.1639 , 0.2906 , 0.4162 , 0.5415 , 0.6656 , 0.7851 , 0.8974 , 1.0099 , 1.1169 , 1.2185 , 1.3186 , 1.4128 , 1.4728 , 1.5348 , 1.5934 , 1.6439 , 1.6884 , 1.73943 , 1.7769 , 1.8082 ]</cl_moment_curve>
-		<cm_curve>[-0.125351513 , -0.12326898 , -0.122138082 , -0.122564015 , -0.125129891 , -0.130185277 , -0.137737398 , -0.148485159 , -0.162074971 , -0.17837771 , -0.198007292 , -0.220000475 , -0.235912953 , -0.253999044 , -0.272696099 , -0.290108144 , -0.306482812 , -0.326487309 , -0.342034064 , -0.35559137 ]</cm_curve>
-		<cl_moment_curve station="ROOT">[0.1661 , 0.2927 , 0.4183 , 0.543 , 0.6655 , 0.7797 , 0.8957 , 1.0093 , 1.1183 , 1.224 , 1.3297 , 1.4249 , 1.5023 , 1.5704 , 1.6348 , 1.6938 , 1.7475 , 1.7957 , 1.8393 , 1.8656]</cl_moment_curve>
-		<cm_curve>[-0.122787374 , -0.12230061 , -0.1235738 , -0.12599453 , -0.129294839 , -0.13331775 , -0.138736991 , -0.145985256 , -0.155562787 , -0.168250268 , -0.185388488 , -0.205688828 , -0.226349169 , -0.248146791 , -0.272314948 , -0.297853655 , -0.324218173 , -0.350643905 , -0.376974518 , -0.394040215 ]</cm_curve>
+	<moment> <!-- this is the moment with respect to c4 chord -->
+		<cl_moment_curve station="ROOT">[0.2065 , 0.3773 , 0.4613 , 0.545 , 0.7132 , 0.8814 , 1.0538 , 1.0929 , 1.1188 , 1.1613 , 1.1769 , 1.2025 , 1.2344 , 1.2539 , 1.2833 , 1.2914 , 1.2978 , 1.3084 , 1.3122 , 1.313 , 1.3161 , 1.3188 , 1.321 ]</cl_moment_curve>
+		<cm_curve>[-0.1521 , -0.1584 , -0.1607 , -0.1623 , -0.165 , -0.1665 , -0.1672 , -0.1669 , -0.1662 , -0.166 , -0.165 , -0.1658 , -0.1651 , -0.1639 , -0.1659 , -0.1661 , -0.1661 , -0.1661 , -0.1661 , -0.166 , -0.166 , -0.1659 , -0.1659 ] </cm_curve>
+		<cl_moment_curve station="KINK">[0.2065 , 0.3773 , 0.4613 , 0.545 , 0.7132 , 0.8814 , 1.0538 , 1.0929 , 1.1188 , 1.1613 , 1.1769 , 1.2025 , 1.2344 , 1.2539 , 1.2833 , 1.2914 , 1.2978 , 1.3084 , 1.3122 , 1.313 , 1.3161 , 1.3188 , 1.321  ]</cl_moment_curve>
+		<cm_curve>[-0.1521 , -0.1584 , -0.1607 , -0.1623 , -0.165 , -0.1665 , -0.1672 , -0.1669 , -0.1662 , -0.166 , -0.165 , -0.1658 , -0.1651 , -0.1639 , -0.1659 , -0.1661 , -0.1661 , -0.1661 , -0.1661 , -0.166 , -0.166 , -0.1659 , -0.1659 ]</cm_curve>
+		<cl_moment_curve station="ROOT">[0.1979 , 0.3711 , 0.5385 , 0.7065 , 0.8728 , 1.0325 , 1.1049 , 1.1801 , 1.2499 , 1.3136 , 1.3383]</cl_moment_curve>
+		<cm_curve>[-0.1494 , -0.1579 , -0.1612 , -0.1638 , -0.1651 , -0.1639 , -0.1625 , -0.1621 , -0.162 , -0.1615 , -0.1603 ]</cm_curve>
 	</moment>
 	<distribution>
 				<geometry>			
@@ -184,7 +185,8 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
 			</flaps>
    </high_lift_devices>
   </wing>
-  <fuselage>
+  <fuselage fuselageMomentCalc="INPUT">
+  <!-- <fuselage momentCalc="FUSDES"> -->
        <!-- The fuselage doesn't need the position because its origin is the origin of BRF (0,0,0) -->
        <fuselageDiameter  unit="m">3.54</fuselageDiameter>
        <fuselageLength unit="m">38.04</fuselageLength>
@@ -201,6 +203,8 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
        <!--xPercentPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of 
         selage length respectively-->
        <xPercentPositionPole>0.5</xPercentPositionPole>
+	   <CM_0>-0.0267</CM_0>
+	   <CM_alpha>0.0261</CM_alpha>
 	    <polar>
 		  <alpha_body_polar_curve unit="°">[-5 , -4 , -3.794871795 , -3.58974359 , -3.384615385 , -3.179487179 , -2.974358974 , -2.769230769 , -2.564102564 , -2.358974359 , -2.153846154 , -1.948717949 , -1.743589744 , -1.538461538 , -1.333333333 , -1.128205128 , -0.923076923 , -0.717948718 , -0.512820513 , -0.307692308 , -0.102564103 , 0.102564103 , 0.307692308 , 0.512820513 , 0.717948718 , 0.923076923 , 1.128205128 , 1.333333333 , 1.538461538 , 1.743589744 , 1.948717949 , 2.153846154 , 2.358974359 , 2.564102564 , 2.769230769 , 2.974358974 , 3.179487179 , 3.384615385 , 3.58974359 , 3.794871795 , 4 , 4.3 , 4.4 , 4.5 , 5]</alpha_body_polar_curve>
 		  <cd_polar_curve>[0.008775 , 0.008393668 , 0.008342253 , 0.008290205 , 0.008237779 , 0.008185225 , 0.00813278 , 0.008080674 , 0.008029125 , 0.007978344 , 0.007928532 , 0.00787988 , 0.007832569 , 0.007786771 , 0.007742651 , 0.00770036 , 0.007660043 , 0.007621836 , 0.007585862 , 0.007552237 , 0.007521069 , 0.007492453 , 0.007466477 , 0.007443219 , 0.007422749 , 0.007405123 , 0.007390394 , 0.0073786 , 0.007369772 , 0.007363932 , 0.007361093 , 0.007361255 , 0.007364413 , 0.007370551 , 0.007379641 , 0.00739165 , 0.007406532 , 0.007424233 , 0.007444691 , 0.007467831 , 0.007493572 , 0.007535708 , 0.00755089 , 0.00756662 , 0.007652986]</cd_polar_curve>

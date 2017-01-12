@@ -150,6 +150,9 @@ public class Test_Stability{
 		theCalculator.calculateWingXAC();
 		theCalculator.calculateHTailXAC();
 		theCalculator.calculateFuselageMomentCharacterstics();
+		if (theCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theCalculator.getTheCondition() == ConditionEnum.LANDING){
+		theCalculator.calculateMomentdueToLandingGear();
+		}
 		theCalculator.calculateWingBodyXAC();
 		theCalculator.calculateWingMomentCharacterstics();
 		theCalculator.calculateHtailMomentCharacterstics();
@@ -158,6 +161,7 @@ public class Test_Stability{
 		theCalculator.calculateHTailEquilibriumLiftCoefficient();
 		theCalculator.calculateTotalEquilibriumLiftCoefficient();
 		theCalculator.calculateDeltaeEquilibrium();
+		theCalculator.calculateTrimmedPolar();
 		//...
 		theCalculator.calculateDistributions();
 		if (theCalculator.getTheCondition() == ConditionEnum.TAKE_OFF || theCalculator.getTheCondition() == ConditionEnum.LANDING){

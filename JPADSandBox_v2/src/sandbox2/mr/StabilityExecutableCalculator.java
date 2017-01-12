@@ -1428,6 +1428,62 @@ public class StabilityExecutableCalculator {
 		
 		theStabilityManager
 		.getDeltaCD0Elevator().put(elevatorDeflectionAngle, deltaCDList);
+		
+		//---------------------------------------------------------------
+		// deltaCM_c/4
+		Double mu1;
+
+				mu1=
+						highLiftDatabaseReader
+						.getMu1VsCfCFirstPlain(
+								(cfc)*(1/cFirstCElevator),
+								elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE)
+								);
+	
+		Double mu2;
+
+			mu2 = highLiftDatabaseReader
+					.getMu2VsBfB(
+							theStabilityManager.getElevatorEtaIn(),
+							theStabilityManager.getElevatorEtaOut(),
+							theStabilityManager.getHTailTaperRatio()
+							);
+
+		Double mu3 ;
+	
+			mu3 = highLiftDatabaseReader
+					.getMu3VsBfB(
+							theStabilityManager.getElevatorEtaIn(),
+							theStabilityManager.getElevatorEtaOut(),
+							theStabilityManager.getHTailTaperRatio()
+							);
+
+		
+		Double deltaCMc4List;
+	
+			deltaCMc4List= 
+					(mu2*(-(mu1
+							*deltaClmaxElevator
+							*cFirstCElevator)-(cFirstCElevator
+									*((cFirstCElevator)-1)
+									*(0.0 + 
+											(deltaClmaxElevator
+											*(1-(elevatorSurface/theStabilityManager
+													.getHTailSurface().doubleValue(SI.SQUARE_METRE)))))
+									*(1/8)))) + (0.7*(theStabilityManager
+											.getHTailAspectRatio()/(1+(theStabilityManager
+													.getHTailAspectRatio()/2)))
+											*mu3
+											*deltaClmaxElevator
+											*Math.tan(theStabilityManager
+													.getHTailSweepQuarterChord().doubleValue(SI.RADIAN)));
+			
+		theStabilityManager.set_deltaCMc4ListElevator(deltaCMc4List);
+
+		double deltaCMC4 = 0.0;
+
+			deltaCMC4 += deltaCMc4List.doubleValue();
+		theStabilityManager.set_deltaCMc4Elevator(deltaCMC4);
 
 	}
 	

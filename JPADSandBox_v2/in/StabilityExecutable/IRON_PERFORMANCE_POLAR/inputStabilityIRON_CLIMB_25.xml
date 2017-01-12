@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- All units can be choose by user with the exception of surfaces deflections. All values of each array must have the same unit-->    
+<!-- It is possible to choose a constant downwash calculation, or variable with the flag-->    
+<!-- If CONSTANT the downwash is calculated using Roskam method, if variable using Slingerland method-->   
+ <Longitudinal_static_stability_executable downwash="VARIABLE"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
+ <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
+ <aircraft_name>IRON_25_CLIMB_POLAR_PERFORMANCE</aircraft_name>
+        <operating_conditions>
+<!-- This is the position of the aircraft CG in the BRF -->
+                <x_cg unit="m">21.2175</x_cg>   <!--- 15, 25, 32% -->
+                <y_cg unit="m">0.0</y_cg>    
+                <z_cg unit="m">-1.1</z_cg> <!-- 10% MAC -->
+                <altitude unit="m">0.0</altitude>   <!-- cruise:30kft stall: 16.5kft-->
+                <mach_number>0.3</mach_number>   <!-- cruise:M=0.62 Take-Off:M=0.171 Landing: M=0.15-->
+				<delta_CD0_miscellaneous>0.0055</delta_CD0_miscellaneous>
+				<delta_CD0_gear>0.0150</delta_CD0_gear>
+				<z_landing_gear unit="m">3.25</z_landing_gear>
+    <!-- Reynolds number referred to MAC  -->
+    <Reynolds_number>18000000</Reynolds_number>  <!-- Re cruise=18.2e6 Re Take-Off=12.5e6 Re Landing=12.3e6-->
+    <!-- definition of alpha body array analysis  -->
+    <alpha_body_initial unit="°">-4</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
+                <alpha_body_final unit="°">4</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
+                <number_of_alphas_body>40</number_of_alphas_body>
+    <!-- 9 values at least. It will be added the alpha zero lift. THESE ARE ALPHAS WING -->
+    <alpha_wing_array_for_distribution unit="°">[0,4,8,10,11,12,13,14,15]</alpha_wing_array_for_distribution>
+    <alpha_horizontal_tail_array_for_distribution unit="°">[0,2,4,6,12,30]</alpha_horizontal_tail_array_for_distribution>
+    <condition>CRUISE</condition>
+    <!-- This is the pole for the calculation of the moment referred to the MAC. The momentum respect to the aerodynamic center is automatically calculated -->
+    <wing_momentum_pole>[0.25, 0.26503]</wing_momentum_pole>
+    <horizontal_tail_momentum_pole>[0.25]</horizontal_tail_momentum_pole>
+    <!-- This is the pole used in the stability equation . This is the position of the AC for the user. This value for the wing will be modified for the fuselage effect-->
+    <wing_pole_in_equation>0.26</wing_pole_in_equation> <!-- AC wing -->
+    <horizontal_tail_pole_in_equation>0.25</horizontal_tail_pole_in_equation> <!-- AC tail -->
+    <!--
+    <condition>CRUISE</condition>
+    <condition>LANDING</condition>
+    <condition>TAKE_OFF</condition>
+    -->
+        </operating_conditions>
+<!-- It is possible to choose the method to evaluate the drag polar of lifting surfaces. All data are given in the section <polar> below.
+INPUT: the 3D polar of the lifting surface is given as input
+CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
+CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
+CALCULATED_INPUT_AIRFOIL_PARASITE: the PARASITE drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input, the induced is calculated using the parabolic one 
+CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->    ,,
+    <wing WingAirfoilLiftCurve="INPUT" wingPolar="CALCULATED_INPUT_AIRFOIL_PARASITE" deltaDueToFlap="SEMIEMPIRICAL" C4moment = "CURVE">
+    <!-- <wing airfoilLiftCurve="CALCULATED"> -->
+    <!-- <wing polar="INPUT"> -->
+    <!-- <wing polar="CALCULATED_PARABOLIC"> -->
+    <!-- <wing polar="CALCULATED_INPUT_AIRFOIL"> -->
+    <!-- <wing polar="CALCULATED_DATABASE_AIRFOIL"> -->
+    <!-- <c4moment="CONSTANT"> if ACmoment="CURVE" there will be calculated both methods-->
+	 <!-- <deltaDragDueToFlap="INPUT_CURVE"> if ACmoment="CURVE" there will be calculated both methods-->
+            <position>
+    <!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
+                    <x unit="m">19.09</x>
+                    <y unit="m">0.0</y>
+                    <!-- <z unit="m">-1.415</z> --> <!--25%croot with respect to the fuselage ref. line-->
+                     <z unit="m">-1.3759</z> <!--25%croot with respect to the fuselage ref. line-->
+            </position>
+            <global>
+                <surface unit="m²">105</surface>
+                <aspect_ratio>12.0</aspect_ratio>
+                <number_of_point_semispan>60</number_of_point_semispan>
+                <adimensional_kink_station>0.3</adimensional_kink_station>
+				<wing_oswald_factor>0.83</wing_oswald_factor><!-- this value is necessary if <wing polar="CALCULATED_INPUT_AIRFOIL_PARASITE">-->
+	            <angle_of_incidence unit="°">2</angle_of_incidence>
+	            <number_of_given_sections>3</number_of_given_sections>
+	            <sweep_quarter_chord unit="°">7.8</sweep_quarter_chord>
+	            <sweep_LE unit="°">10</sweep_LE>
+	<!-- If your airfoil isn’t in the list, you can use the most similar one. -->
+	<mean_airfoil_family>NACA_64_SERIES</mean_airfoil_family>
+	<!--
+	<mean_airfoil_family>NACA_4_DIGIT</mean_airfoil_family>
+	<mean_airfoil_family>NACA_5_DIGIT</mean_airfoil_family>
+	<mean_airfoil_family>NACA_63_SERIES</mean_airfoil_family>
+	<mean_airfoil_family>NACA_64_SERIES</mean_airfoil_family>
+	<mean_airfoil_family>NACA_65_SERIES</mean_airfoil_family>
+	<mean_airfoil_family>BICONVEX</mean_airfoil_family>
+	<mean_airfoil_family>DOUBLE_WEDGE</mean_airfoil_family>
+	-->
+             </global>
+	<polar>
+	<!-- <"INPUT"> . NB: The polar is given in the current condition  
+	,<cl_polar_curve>[1,2,3,4,5,6,7,8]</cl_polar_curve>
+	<cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve> -->
+	<!-- <"CALCULATED_INPUT_AIRFOIL"> -->
+	<!-- for each airfoil of input station. The polar is given in the current condition-->
+		<cl_polar_curve station="ROOT">[0.0383 , 0.0597 , 0.2086 , 0.2929 , 0.3781 , 0.5465 , 0.7147 , 0.8844 , 1.0596 , 1.0794 , 1.2097 , 1.2798 , 1.3352 , 1.3499 , 1.3563 , 1.3682 , 1.3895 , 1.3976 , 1.4049 , 1.4116]</cl_polar_curve>
+		<cd_polar_curve>[0.00619 , 0.0061 , 0.00563 , 0.00546 , 0.00486 , 0.00385 , 0.00392 , 0.0042 , 0.00509 , 0.00545 , 0.01 , 0.01439 , 0.01922 , 0.02067 , 0.02131 , 0.02256 , 0.02492 , 0.02587 , 0.02674 , 0.02753]</cd_polar_curve>
+		<cl_polar_curve station="KINK">[0.036 , 0.0789 , 0.2065 , 0.2909 , 0.3773 , 0.545 , 0.7133 , 0.8814 , 1.0538 , 1.1285 , 1.2027 , 1.2205 , 1.2437 , 1.2716 , 1.282]</cl_polar_curve>
+		<cd_polar_curve>[0.00649 , 0.00628 , 0.00586 , 0.00566 , 0.00441 , 0.00394 , 0.00401 , 0.00436 , 0.00525 , 0.00703 , 0.00998 , 0.01095 , 0.01265 , 0.01429 , 0.01498]</cd_polar_curve>
+		<cl_polar_curve station="TIP">[0.0336 , 0.2033 , 0.3652 , 0.5297 , 0.6908 , 0.8497 , 0.9931 , 1.0598 , 1.1035 , 1.109 , 1.1493 , 1.1957 , 1.2612 , 1.2772 , 1.2999 , 1.3058 , 1.3213 , 1.3396 , 1.3551 , 1.3685 , 1.3738]</cl_polar_curve>
+		<cd_polar_curve>[0.00776 , 0.00581 , 0.00544 , 0.00395 , 0.00391 , 0.00427 , 0.00561 , 0.00655 , 0.00657 , 0.00658 , 0.00661 , 0.00675 , 0.00763 , 0.00798 , 0.00867 , 0.00888 , 0.00952 , 0.0104 , 0.0113 , 0.01215 , 0.01255]</cd_polar_curve>
+	</polar>
+		<airfoil_lift_curve>
+			<alpha station ="ROOT" unit="°">[-4 , -3.875 , -3 , -2.5 , -2 , -1 , 0 , 1 , 2 , 2.125 , 3 , 3.5 , 4 , 4.125 , 4.18 , 4.282 , 4.462 , 4.529 , 4.588 , 4.639]</alpha>
+			<lift_coefficient>[0.0383 , 0.0597 , 0.2086 , 0.2929 , 0.3781 , 0.5465 , 0.7147 , 0.8844 , 1.0596 , 1.0794 , 1.2097 , 1.2798 , 1.3352 , 1.3499 , 1.3563 , 1.3682 , 1.3895 , 1.3976 , 1.4049 , 1.4116]</lift_coefficient>
+			<alpha station ="KINK" unit="°">[-4 , -3.75 , -3 , -2.5 , -2 , -1 , 0 , 1 , 2 , 2.5 , 3 , 3.125 , 3.344 , 3.508 , 3.569]</alpha>
+			<lift_coefficient>[0.036 , 0.0789 , 0.2065 , 0.2909 , 0.3773 , 0.545 , 0.7133 , 0.8814 , 1.0538 , 1.1285 , 1.2027 , 1.2205 , 1.2437 , 1.2716 , 1.282]</lift_coefficient>
+			<alpha station ="TIP" unit="°">[-4 , -3 , -2 , -1 , 0 , 1 , 2 , 2.5 , 2.75 , 2.781 , 3 , 3.25 , 3.625 , 3.719 , 3.859 , 3.895 , 4 , 4.125 , 4.234 , 4.33 , 4.372]</alpha>
+			<lift_coefficient>[0.0336 , 0.2033 , 0.3652 , 0.5297 , 0.6908 , 0.8497 , 0.9931 , 1.0598 , 1.1035 , 1.109 , 1.1493 , 1.1957 , 1.2612 , 1.2772 , 1.2999 , 1.3058 , 1.3213 , 1.3396 , 1.3551 , 1.3685 , 1.3738]</lift_coefficient>
+	       </airfoil_lift_curve>
+	<moment> <!-- this is the moment with respect to c4 chord -->
+		<cl_moment_curve station="ROOT">[0.0383 , 0.0597 , 0.2086 , 0.2929 , 0.3781 , 0.5465 , 0.7147 , 0.8844 , 1.0596 , 1.0794 , 1.2097 , 1.2798 , 1.3352 , 1.3499 , 1.3563 , 1.3682 , 1.3895 , 1.3976 , 1.4049 , 1.4116]</cl_moment_curve>
+		<cm_curve>[-0.1486 , -0.1491 , -0.1528 , -0.1547 , -0.1576 , -0.1625 , -0.1652 , -0.167 , -0.1681 , -0.168 , -0.1671 , -0.1672 , -0.1649 , -0.1646 , -0.1645 , -0.1643 , -0.1641 , -0.1641 , -0.1641 , -0.1642 ] </cm_curve>
+		<cl_moment_curve station="KINK">[0.036 , 0.0789 , 0.2065 , 0.2909 , 0.3773 , 0.545 , 0.7133 , 0.8814 , 1.0538 , 1.1285 , 1.2027 , 1.2205 , 1.2437 , 1.2716 , 1.282]</cl_moment_curve>
+		<cm_curve>[-0.1477 , -0.1489 , -0.1521 , -0.154 , -0.1584 , -0.1623 , -0.165 , -0.1665 , -0.1672 , -0.1662 , -0.1659 , -0.1658 , -0.1644 , -0.1654 , -0.1659 ]</cm_curve>
+		<cl_moment_curve station="ROOT">[0.0336 , 0.2033 , 0.3652 , 0.5297 , 0.6908 , 0.8497 , 0.9931 , 1.0598 , 1.1035 , 1.109 , 1.1493 , 1.1957 , 1.2612 , 1.2772 , 1.2999 , 1.3058 , 1.3213 , 1.3396 , 1.3551 , 1.3685 , 1.3738]</cl_moment_curve>
+		<cm_curve>[-0.1468 , -0.1543 , -0.1573 , -0.1628 , -0.1649 , -0.1656 , -0.1625 , -0.1595 , -0.1589 , -0.1589 , -0.1584 , -0.1575 , -0.1554 , -0.1549 , -0.1539 , -0.1537 , -0.1529 , -0.1521 , -0.1513 , -0.1507 , -0.1504 ]</cm_curve>
+	</moment>
+	<distribution>
+				<geometry>			
+	  <y_adimensional_stations>[0, 0.3,  1]</y_adimensional_stations>
+	  <chord_distribution unit="m">[4.48, 3.47, 1.65]</chord_distribution>
+	  <!-- XLE is in LRF, so the root value of XLE  must be zero -->
+	  <x_le_distribution unit="m">[0,   0.91966, 3.12877]</x_le_distribution>
+	  <twist_distribution unit="°">[0,0, -2]</twist_distribution>
+	  <dihedral_distribution unit="°">[5,5,5]</dihedral_distribution>
+	  <max_thickness_airfoil>[0.18,0.18, 0.14]</max_thickness_airfoil>
+	  <radius_leading_edge unit="m">[0.15,0.15,0.15]</radius_leading_edge>
+					</geometry>
+					<aerodynamics>
+						<!-- <alpha_zero_lift_distribution unit="°">[-4.29, -4.29 , -2.61]</alpha_zero_lift_distribution> -->
+						 <alpha_zero_lift_distribution unit="°">[-4.17564, -4.17564 ,-4.0791]</alpha_zero_lift_distribution> 
+						<cl_alpha_distribution unit="1/deg">[0.1708,0.1708,0.1732]</cl_alpha_distribution> 
+						<alpha_star_distribution unit="°">[10,10,11]</alpha_star_distribution>
+						<maximum_lift_coefficient_distribution>[1.87,1.87,1.55]</maximum_lift_coefficient_distribution>
+						<!-- <x_ac_referred_to_chord>[0.11,0.08,0.04]</x_ac_referred_to_chord> -->
+						<x_ac_referred_to_chord>[0.27,0.27,0.27]</x_ac_referred_to_chord>
+						<c_m_ac>[-0.155,-0.155,-0.155]</c_m_ac>
+					</aerodynamics>	
+	</distribution>
+	<!--- if condition = TAKE_OFF or LANDING these values are used for build the clean cl vs alpha curve -->
+	<distribution_clean>
+	<number_of_given_sections_clean>3</number_of_given_sections_clean>
+				<geometry>
+	  <y_adimensional_stations>[0,0.3, 1]</y_adimensional_stations>
+	  <chord_distribution unit="m">[4.48, 3.47, 1.65]</chord_distribution>
+	  <!-- XLE is in LRF, so the root value of XLE  must be zero -->
+	  <x_le_distribution unit="m">[0,0.91966, 3.12877]</x_le_distribution>
+	  <twist_distribution unit="°">[0,0,-2]</twist_distribution>
+	  <dihedral_distribution unit="°">[5,5,5]</dihedral_distribution>
+	  <max_thickness_airfoil>[0.18,0.18, 0.14]</max_thickness_airfoil>
+	  <radius_leading_edge unit="m">[0.15,0.15,0.15]</radius_leading_edge>
+					</geometry>
+					<aerodynamics>
+	  <!-- <alpha_zero_lift_distribution unit="°">[-4.29, -4.29 , -2.61]</alpha_zero_lift_distribution> -->
+	   <alpha_zero_lift_distribution unit="°">[-4.2891,-4.2891 ,-4.27388]</alpha_zero_lift_distribution> 
+	  <cl_alpha_distribution unit="1/deg">[0.1266,0.13,0.1267]</cl_alpha_distribution> 
+	  <alpha_star_distribution unit="°">[10,10,8]</alpha_star_distribution>
+	  <maximum_lift_coefficient_distribution>[1.82,1.82,1.82]</maximum_lift_coefficient_distribution>
+	 </aerodynamics>
+	</distribution_clean>
+	<high_lift_devices>
+	<!-- if condition = CRUISE, these field will be not read  -->
+	<flaps>
+	<!-- It is possible to set a variable number of flap and slat using different id using progressive numbers   -->
+				<flap id = "1">
+					<flap_type>FOWLER</flap_type>
+	  <!--
+	  <flap_type>SINGLE_SLOTTED</flap_type>
+	  <flap_type>DOUBLE_SLOTTED</flap_type>
+	  <flap_type>PLAIN</flap_type>
+	  <flap_type>TRIPLE_SLOTTED</flap_type> -->
+	 				<flap_chord_ratio>0.2927</flap_chord_ratio>
+	  <!-- This value must be in degree -->
+					<flap_deflection unit = "°">15</flap_deflection>
+					<flap_non_dimensional_inner_station>0.1</flap_non_dimensional_inner_station>
+					<flap_non_dimensional_outer_station>0.3</flap_non_dimensional_outer_station>
+				</flap>
+				<flap id = "2">
+					<flap_type>FOWLER</flap_type>
+	   <!--
+	  <flap_type>SINGLE_SLOTTED</flap_type>
+	  <flap_type>DOUBLE_SLOTTED</flap_type>
+	  <flap_type>PLAIN</flap_type>
+	  <flap_type>TRIPLE_SLOTTED</flap_type> -->
+	 				<flap_chord_ratio>0.32</flap_chord_ratio>
+	  <!-- This value must be in degree -->
+					<flap_deflection unit = "°">15</flap_deflection>
+					<flap_non_dimensional_inner_station>0.3</flap_non_dimensional_inner_station>
+					<flap_non_dimensional_outer_station>0.78</flap_non_dimensional_outer_station>
+				</flap>
+			</flaps>
+   </high_lift_devices>
+  </wing>
+  <fuselage fuselageMomentCalc="INPUT">
+  <!-- <fuselage momentCalc="FUSDES"> -->
+       <!-- The fuselage doesn't need the position because its origin is the origin of BRF (0,0,0) -->
+       <fuselageDiameter  unit="m">3.54</fuselageDiameter>
+       <fuselageLength unit="m">38.04</fuselageLength>
+       <!--Nose fineness ratio is the ratio between nose fuselage length and maximum fuselage diameter. It varies between [1.2-1.7] -->
+       <noseFinenessRatio>1.19</noseFinenessRatio>
+       <!--Fuselage fineness ratio is the ratio between fuselage length and diameter. It varies between [7-12] -->
+       <finenessRatio>10.74</finenessRatio>
+       <!--Tailcone fineness ratio is the ratio between tailcone fuselage length and maximum fuselage diameter. It varies between [2.3-3.0] -->
+       <tailFinenessRatio>3.22</tailFinenessRatio>
+       <!--Windshield angle is the angle of the front window. It varies between [35 deg - 50 deg] -->
+       <windshieldAngle unit="°">39</windshieldAngle>
+       <!--Upsweep angle is the upward curvature angle of the aft fuselage. It varies between [10 deg - 18 deg]-->
+       <upsweepAngle unit="°">13</upsweepAngle>
+       <!--xPercentPositionPole is the position along x-axis of the reference moment point. It can be equal to 0.35, 0.50 or 0.60 which corresponds to 35%, 50% or 60% of 
+        selage length respectively-->
+       <xPercentPositionPole>0.5</xPercentPositionPole>
+	   <CM_0>-0.0267</CM_0>
+	   <CM_alpha>0.0261</CM_alpha>
+	    <polar>
+		  <alpha_body_polar_curve unit="°">[-5 , -4 , -3.794871795 , -3.58974359 , -3.384615385 , -3.179487179 , -2.974358974 , -2.769230769 , -2.564102564 , -2.358974359 , -2.153846154 , -1.948717949 , -1.743589744 , -1.538461538 , -1.333333333 , -1.128205128 , -0.923076923 , -0.717948718 , -0.512820513 , -0.307692308 , -0.102564103 , 0.102564103 , 0.307692308 , 0.512820513 , 0.717948718 , 0.923076923 , 1.128205128 , 1.333333333 , 1.538461538 , 1.743589744 , 1.948717949 , 2.153846154 , 2.358974359 , 2.564102564 , 2.769230769 , 2.974358974 , 3.179487179 , 3.384615385 , 3.58974359 , 3.794871795 , 4 , 4.3 , 4.4 , 4.5 , 5]</alpha_body_polar_curve>
+		  <cd_polar_curve>[0.008775 , 0.008393668 , 0.008342253 , 0.008290205 , 0.008237779 , 0.008185225 , 0.00813278 , 0.008080674 , 0.008029125 , 0.007978344 , 0.007928532 , 0.00787988 , 0.007832569 , 0.007786771 , 0.007742651 , 0.00770036 , 0.007660043 , 0.007621836 , 0.007585862 , 0.007552237 , 0.007521069 , 0.007492453 , 0.007466477 , 0.007443219 , 0.007422749 , 0.007405123 , 0.007390394 , 0.0073786 , 0.007369772 , 0.007363932 , 0.007361093 , 0.007361255 , 0.007364413 , 0.007370551 , 0.007379641 , 0.00739165 , 0.007406532 , 0.007424233 , 0.007444691 , 0.007467831 , 0.007493572 , 0.007535708 , 0.00755089 , 0.00756662 , 0.007652986]</cd_polar_curve>
+	    </polar>
+  </fuselage>
+  <!-- It is possible to choose the method to evaluate the drag polar of lifting surfaces. All data are given in the section <polar> below.
+  INPUT: the 3D polar of the lifting surface is given as input
+  CALCULATED_PARABOLIC: the drag polar is calculated using the parabolic formula CL0+kCL^2
+  CALCULATED_INPUT_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input
+  CALCULATED_INPUT_AIRFOIL_PARASITE: the PARASITE drag of the lifting surface is calculated starting from the 2D polar of airfoils given as input, the induced is calculated using the parabolic one 
+  CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated starting from the 2D polar of airfoils carculated using databases -->  
+  <horizontal_tail HtailAirfoilLiftCurve="INPUT" hTailPolar="CALCULATED_INPUT_AIRFOIL_PARASITE">
+  <!-- <horizontal_tail airfoilLiftCurve="CALCULATED"> -->
+     <!-- <horizontal_tail polar="INPUT"> -->
+     <!-- <horizontal_tail polar="CALCULATED_PARABOLIC"> -->
+     <!-- <horizontal_tail polar="CALCULATED_INPUT_AIRFOIL"> -->
+     <!-- <horizontal_tail polar="CALCULATED_DATABASE_AIRFOIL"> -->
+      <position>
+   <!-- This is the position of the component in BRF. The BRF has origin in 0,0,0 -->
+               <x unit="m">31.36</x>
+               <y unit="m">0.0</y>
+               <z unit="m">1.02</z>
+            </position>
+   <global>
+                <surface unit="m²">33.49</surface>
+                <aspect_ratio>2.44</aspect_ratio>
+                <number_of_point_semispan>30</number_of_point_semispan>
+                <adimensional_kink_station>1</adimensional_kink_station>
+				<tail_oswald_factor>0.9</tail_oswald_factor> <!-- this value is necessary if <horizontal_tail polar="CALCULATED_INPUT_AIRFOIL_PARASITE"> -->
+    <angle_of_incidence unit="°">-2</angle_of_incidence>
+    <!-- In this version this value must be 2. -->
+    <number_of_given_sections>2</number_of_given_sections>
+    <!-- If your airfoil isn’t in the list, you can use the most similar one. -->
+    <mean_airfoil_family>NACA_4_DIGIT</mean_airfoil_family>
+    <!--
+    <mean_airfoil_family>NACA_4_DIGIT</mean_airfoil_family>
+    <mean_airfoil_family>NACA_5_DIGIT</mean_airfoil_family>
+    <mean_airfoil_family>NACA_63_SERIES</mean_airfoil_family>
+    <mean_airfoil_family>NACA_64_SERIES</mean_airfoil_family>
+    <mean_airfoil_family>NACA_65_SERIES</mean_airfoil_family>
+    <mean_airfoil_family>BICONVEX</mean_airfoil_family>
+    <mean_airfoil_family>DOUBLE_WEDGE</mean_airfoil_family>
+    -->
+    <!-- Useful for the dynamic pressure ratio calculation -->
+    <vertical_tail_span unit="m">5.78</vertical_tail_span>
+            </global>
+    <polar>
+    <!-- <"INPUT">  NB: The polar is given in the current condition  
+    <cl_polar_curve>[1,2,3,4,5,6,7,8]</cl_polar_curve>
+    <cd_polar_curve>[1,2,3,4,5,6,7,8]</cd_polar_curve> -->
+   <!-- <"CALCULATED_INPUT_AIRFOIL"> -->
+    <!-- for each airfoil of input station . The polar is given in the current condition-->
+    <cl_polar_curve station="ROOT">[-0.5736 , -0.5169 , -0.4597 , -0.4026 , -0.3453 , -0.2879 , -0.2304 , -0.173 , -0.1153 , -0.0576 , 0 , 0.0576 , 0.1154 , 0.173 , 0.2303 , 0.2879 , 0.3453 , 0.4026 , 0.4596 , 0.5169 , 0.5737 , 0.6303 , 0.687]</cl_polar_curve>
+    <cd_polar_curve>[0.00606 , 0.00591 , 0.00578 , 0.00565 , 0.00555 , 0.00545 , 0.00536 , 0.00528 , 0.00526 , 0.00522 , 0.00519 , 0.00522 , 0.00524 , 0.00528 , 0.00536 , 0.00545 , 0.00555 , 0.00565 , 0.00578 , 0.00591 , 0.00606 , 0.00621 , 0.00636]</cd_polar_curve>
+    <cl_polar_curve station="TIP">[-0.5736 , -0.5169 , -0.4597 , -0.4026 , -0.3453 , -0.2879 , -0.2304 , -0.173 , -0.1153 , -0.0576 , 0 , 0.0576 , 0.1154 , 0.173 , 0.2303 , 0.2879 , 0.3453 , 0.4026 , 0.4596 , 0.5169 , 0.5737 , 0.6303 , 0.687]</cl_polar_curve>
+    <cd_polar_curve>[0.00606 , 0.00591 , 0.00578 , 0.00565 , 0.00555 , 0.00545 , 0.00536 , 0.00528 , 0.00526 , 0.00522 , 0.00519 , 0.00522 , 0.00524 , 0.00528 , 0.00536 , 0.00545 , 0.00555 , 0.00565 , 0.00578 , 0.00591 , 0.00606 , 0.00621 , 0.00636]</cd_polar_curve>
+   </polar>
+   <airfoil_lift_curve>
+     <alpha station ="ROOT" unit="°">[-5 , -4.5 , -4 , -3.5 , -3 , -2.5 , -2 , -1.5 , -1 , -0.5 , 0 , 0.5 , 1 , 1.5 , 2 , 2.5 , 3 , 3.5 , 4 , 4.5 , 5 , 5.5 , 6]</alpha>
+    <lift_coefficient>[-0.5736 , -0.5169 , -0.4597 , -0.4026 , -0.3453 , -0.2879 , -0.2304 , -0.173 , -0.1153 , -0.0576 , 0 , 0.0576 , 0.1154 , 0.173 , 0.2303 , 0.2879 , 0.3453 , 0.4026 , 0.4596 , 0.5169 , 0.5737 , 0.6303 , 0.687]</lift_coefficient>
+    <alpha station ="TIP" unit="°">[-5 , -4.5 , -4 , -3.5 , -3 , -2.5 , -2 , -1.5 , -1 , -0.5 , 0 , 0.5 , 1 , 1.5 , 2 , 2.5 , 3 , 3.5 , 4 , 4.5 , 5 , 5.5 , 6]</alpha>
+    <lift_coefficient>[-0.5736 , -0.5169 , -0.4597 , -0.4026 , -0.3453 , -0.2879 , -0.2304 , -0.173 , -0.1153 , -0.0576 , 0 , 0.0576 , 0.1154 , 0.173 , 0.2303 , 0.2879 , 0.3453 , 0.4026 , 0.4596 , 0.5169 , 0.5737 , 0.6303 , 0.687]</lift_coefficient>
+   </airfoil_lift_curve>
+            <distribution>
+                <geometry>
+     <y_adimensional_stations>[0,1]</y_adimensional_stations>
+     <chord_distribution unit="m">[4.58,2.86]</chord_distribution>
+     <!-- XLE is in LRF, so the root value of XLE  must be zero -->
+     <x_le_distribution unit="m">[0,1.40]</x_le_distribution>
+     <twist_distribution unit="°">[0,0]</twist_distribution>
+     <dihedral_distribution unit="°">[0,0]</dihedral_distribution>
+     <max_thickness_airfoil>[0.14,0.14]</max_thickness_airfoil>
+                </geometry>
+                <aerodynamics>
+     <alpha_zero_lift_distribution unit="°">[0.0,0.0]</alpha_zero_lift_distribution>
+     <alpha_star_distribution unit="°">[17,17]</alpha_star_distribution>
+     <alpha_stall_distribution unit="°">[15, 15]</alpha_stall_distribution>
+     <linear_slope_coefficient unit="1/°">[0.10, 0.10]</linear_slope_coefficient>
+     <maximum_lift_coefficient_distribution>[1.77,1.8]</maximum_lift_coefficient_distribution>
+     <x_ac_referred_to_chord>[0.25,0.25]</x_ac_referred_to_chord>
+     <c_m_ac>[0.0,0.0]</c_m_ac>
+       </aerodynamics>,
+            </distribution>
+   <elevator>
+            <!-- these values must be 7 or less  -->
+    <angles_of_elevator_deflection unit="°">[-25,-20,-15,-10,-5,0,5]</angles_of_elevator_deflection>
+    <!-- elevator is automatically modelled as plain flap  -->
+                <elevator_chord_ratio>0.3</elevator_chord_ratio>
+                <elevator_deflection unit = "°">40</elevator_deflection>
+                <elevator_non_dimensional_inner_station>0.12</elevator_non_dimensional_inner_station>
+                <elevator_non_dimensional_outer_station>0.9</elevator_non_dimensional_outer_station>
+   </elevator>
+  </horizontal_tail>
+  <!-- must be modified?  -->
+  <engine>
+      <tilting_angle unit="deg">0.0</tilting_angle>
+     <dimensions>
+       <length unit="m">4.371</length>
+    <propeller_diameter unit="m">3.6</propeller_diameter>
+   </dimensions>
+   <specifications>
+    <number_of_propeller_blades>6</number_of_propeller_blades>
+    <static_power unit="hp">7176.55</static_power>
+    <dry_mass unit="kg">4154.2</dry_mass>
+    <number_of_compressor_stages>5</number_of_compressor_stages>
+    <number_of_shafts>2</number_of_shafts>
+    <overall_pressure_ratio>15.0</overall_pressure_ratio>
+   </specifications>
+  </engine>
+  <!-- It is possible the plots using TRUE as value of the specific plot. If no plots are required it is possible to set <plot plot="FALSE"> as attribute of plot.  -->
+  <plot plot="TRUE">
+  <lift>
+   <wing>
+  <!-- This flag allows to plot CL 3d curve and cl distribution at CL MAX -->
+      <CL_clean_curve>TRUE</CL_clean_curve>
+    <CL_high_lift_curve>TRUE</CL_high_lift_curve>,,
+   </wing>
+   <horizontal_tail>
+      <CL_clean_curve>TRUE</CL_clean_curve>
+    <CL_curve_with_elevator_deflections>TRUE</CL_curve_with_elevator_deflections>,,
+   </horizontal_tail>
+  </lift>
+  <drag>
+  <wing>
+     <polar_drag>TRUE</polar_drag>
+     <polar_drag_with_high_lift_devices>TRUE</polar_drag_with_high_lift_devices>
+  </wing>
+  <horizontal_tail>
+     <polar_drag>TRUE</polar_drag>
+  </horizontal_tail>
+  </drag>
+  <moment>
+  <wing>
+     <moment_coefficient_respect_to_other_poles>TRUE</moment_coefficient_respect_to_other_poles>
+     <moment_coefficient_respect_to_aerodynamic_center>TRUE</moment_coefficient_respect_to_aerodynamic_center>
+  </wing>
+  <horizontal_tail>
+     <moment_coefficient_respect_to_quarter_chord>FALSE</moment_coefficient_respect_to_quarter_chord>
+     <moment_coefficient_respect_to_aerodynamic_center>FALSE</moment_coefficient_respect_to_aerodynamic_center>
+  </horizontal_tail>
+  <fuselage>
+     <moment_coefficient>TRUE</moment_coefficient>
+  </fuselage>
+  <engine>
+     <propulsive_System_CM_direct_effects>TRUE</propulsive_System_CM_direct_effects>
+     <propulsive_System_CM_indirect_effects>TRUE</propulsive_System_CM_indirect_effects>
+  </engine>
+  </moment>
+  <stability>
+   <CL_Total>TRUE</CL_Total>
+   <CM_cg_vs_alpha_body_components>TRUE</CM_cg_vs_alpha_body_components>
+   <CM_cg_vs_alpha_body_aircraft>TRUE</CM_cg_vs_alpha_body_aircraft>,
+   <CM_cg_vs_alpha_body_aircraft_var_deltae>TRUE</CM_cg_vs_alpha_body_aircraft_var_deltae>,,
+   <CL_tot_vs_alpha_body_aircraft_var_deltae>TRUE</CL_tot_vs_alpha_body_aircraft_var_deltae>
+   <CM_cg_vs_CL_tot_var_deltae>TRUE</CM_cg_vs_CL_tot_var_deltae>
+   <Downwash_angle>TRUE</Downwash_angle>
+   <Downwash_gradient>TRUE</Downwash_gradient>
+       <delta_e_equilibrium>TRUE</delta_e_equilibrium>
+   <neutral_point_stick_fixed>TRUE</neutral_point_stick_fixed>
+  </stability>
+  <distribution>
+   <cl_wing>TRUE</cl_wing>
+   <induced_angle_of_attack_wing>TRUE</induced_angle_of_attack_wing>
+   <center_of_pressure_wing>TRUE</center_of_pressure_wing>
+   <!-- The cm is referred to the pole defined in the tag <wing_pole_in_equation> -->
+   <cm_wing>TRUE</cm_wing>
+   <cl_horizontal_tail>TRUE</cl_horizontal_tail>
+   <induced_angle_of_attack_horizontal_tail>TRUE</induced_angle_of_attack_horizontal_tail>
+   <center_of_pressure_horizontal_tail>FALSE</center_of_pressure_horizontal_tail>
+   <!-- The cm is referred to the pole defined in the tag <horizontal_tail_pole_in_equation> -->
+   <cm_horizontal_tail>FALSE</cm_horizontal_tail>
+  </distribution>
+ </plot>
+</Longitudinal_static_stability_executable>

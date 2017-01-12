@@ -293,7 +293,7 @@ public class MomentCalc {
 		return cNbetaV + cNbetaFus + cNbetaWing;
 	}
 
-	
+//-----------------------------------------------------------------------------------	
 	public static List<Double> calcCMLiftingSurfaceWithIntegral(
 			NasaBlackwell theNasaBlackwellCalculator,
 			List<Amount<Angle>> anglesOfAttack,
@@ -301,8 +301,7 @@ public class MomentCalc {
 			List<Amount<Length>> liftingSurfaceDimensionalY,
 			List<Double> liftingSurfaceCl0Distribution, // all distributions must have the same length!!
 			List<Double> liftingSurfaceCLAlphaDegDistribution,
-			List<Double> liftingSurfaceCmACDistribution,
-			List<Double> liftingSurfaceXACadimensionalDistribution,
+			List<Double> liftingSurfaceCmC4Distribution,
 			List<Amount<Length>> liftingSurfaceChordDistribution,
 			List<Amount<Length>> liftingSurfaceXLEDistribution,
 			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
@@ -327,11 +326,9 @@ public class MomentCalc {
 			distancesArrayAC = new double[numberOfPointSemiSpanWise];
 			cmDistribution = new double[numberOfPointSemiSpanWise];
 			cCm = new double[numberOfPointSemiSpanWise];
-			xcPfracC = new double[numberOfPointSemiSpanWise];
 
 			theNasaBlackwellCalculator.calculate(anglesOfAttack.get(i));
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
-//			clInducedDistributionAtAlphaNew = clDistribution;
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
@@ -353,23 +350,19 @@ public class MomentCalc {
 							);
 				}
 
-
-				xcPfracC[ii] = liftingSurfaceXACadimensionalDistribution.get(ii) -
-						(liftingSurfaceCmACDistribution.get(ii)/
-								clInducedDistributionAtAlphaNew[ii]);
-
 				distancesArrayAC[ii] =
 						momentumPole.doubleValue(SI.METER) - 
 						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
-								(xcPfracC[ii]*liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)));
+								(liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)/4));
 
 				cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * 
 						(distancesArrayAC[ii]/
-								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER));
+								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER))+ liftingSurfaceCmC4Distribution.get(ii);
 
 				cCm[ii] = cmDistribution [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) *
 						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) ;
 			}
+			
 //			System.out.println(" distance " +  Arrays.toString(distancesArrayAC));
 //			System.out.println(" xcp " +  Arrays.toString(xcPfracC));
 //			System.out.println(" cl " +  Arrays.toString(clDistribution));
@@ -399,8 +392,7 @@ public class MomentCalc {
 			List<Double> liftingSurfaceCl0Distribution, // all distributions must have the same length!!
 			List<Double> liftingSurfaceCLAlphaDegDistribution,
 			List<Double> liftingSurfaceCLforCMMatrix,
-			List<List<Double>> liftingSurfaceCmACDistribution,
-			List<Double> liftingSurfaceXACadimensionalDistribution,
+			List<List<Double>> liftingSurfaceCmC4Distribution,
 			List<Amount<Length>> liftingSurfaceChordDistribution,
 			List<Amount<Length>> liftingSurfaceXLEDistribution,
 			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
@@ -425,11 +417,9 @@ public class MomentCalc {
 			distancesArrayAC = new double[numberOfPointSemiSpanWise];
 			cmDistribution = new double[numberOfPointSemiSpanWise];
 			cCm = new double[numberOfPointSemiSpanWise];
-			xcPfracC = new double[numberOfPointSemiSpanWise];
 
 			theNasaBlackwellCalculator.calculate(anglesOfAttack.get(i));
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
-//			clInducedDistributionAtAlphaNew = clDistribution;
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
@@ -453,26 +443,19 @@ public class MomentCalc {
 
 				cmActual = MyMathUtils.getInterpolatedValue1DLinear(
 						MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCLforCMMatrix),
-						MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCmACDistribution.get(ii)),
+						MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCmC4Distribution.get(ii)),
 						clInducedDistributionAtAlphaNew[ii]
 						);
 				
-//				xcPfracC[ii] = liftingSurfaceXACadimensionalDistribution.get(ii) -
-//						(cmActual/
-//								clInducedDistributionAtAlphaNew[ii]);
-				
-				xcPfracC[ii] = 0.25 -
-						(cmActual/
-								clInducedDistributionAtAlphaNew[ii]);
 
 				distancesArrayAC[ii] =
 						momentumPole.doubleValue(SI.METER) - 
 						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
-								(xcPfracC[ii]*liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)));
+								(liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)/4));
 
 				cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * 
 						(distancesArrayAC[ii]/
-								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER));
+								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER))+cmActual;
 
 				cCm[ii] = cmDistribution [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) *
 						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) ;
@@ -504,8 +487,7 @@ public class MomentCalc {
 			List<Amount<Length>> liftingSurfaceDimensionalY,
 			List<Double> liftingSurfaceCl0Distribution, // all distributions must have the same length!!
 			List<Double> liftingSurfaceCLAlphaDegDistribution,
-			List<Double> liftingSurfaceCmACDistribution,
-			List<Double> liftingSurfaceXACadimensionalDistribution,
+			List<Double> liftingSurfaceCmC4Distribution,
 			List<Amount<Length>> liftingSurfaceChordDistribution,
 			List<Amount<Length>> liftingSurfaceXLEDistribution,
 			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
@@ -522,7 +504,6 @@ public class MomentCalc {
 			alphaDistribution = new double[numberOfPointSemiSpanWise];
 			clInducedDistributionAtAlphaNew = new double[numberOfPointSemiSpanWise];
 			distancesArrayAC = new double[numberOfPointSemiSpanWise];
-			xcPfracC = new double[numberOfPointSemiSpanWise];
 
 			theNasaBlackwellCalculator.calculate(angleOfAttack);
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
@@ -548,18 +529,14 @@ public class MomentCalc {
 				}
 
 
-				xcPfracC[ii] = liftingSurfaceXACadimensionalDistribution.get(ii) -
-						(liftingSurfaceCmACDistribution.get(ii)/
-								clInducedDistributionAtAlphaNew[ii]);
-
 				distancesArrayAC[ii] =
 						momentumPole.doubleValue(SI.METER) - 
 						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
-								(xcPfracC[ii]*liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)));
+								(liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)/4));
 
 				cmDistribution.add(ii, clInducedDistributionAtAlphaNew[ii] * 
 						(distancesArrayAC[ii]/
-								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)));
+								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER))+ liftingSurfaceCmC4Distribution.get(ii));
 
 			}
 			cmDistribution.set(numberOfPointSemiSpanWise-1,0.);

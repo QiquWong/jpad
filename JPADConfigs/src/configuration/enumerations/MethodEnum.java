@@ -69,6 +69,7 @@ public enum MethodEnum {
 	DEYOUNG_HARPER, 
 	MULTHOPP,
 	GILRUTH,
+	VEDESC,
 	PHILLIPS_ALLEY;
 
 }

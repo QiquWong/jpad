@@ -94,7 +94,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setAltitude((Amount<Length>) reader.getXMLAmountWithUnitByPath("//operating_conditions/altitude"));
 		theStabilityCalculator.setMachCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/mach_number")));
 		theStabilityCalculator.setReynoldsCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/Reynolds_number")));
-
+		theStabilityCalculator.set_zLandingGear((Amount<Length>) reader.getXMLAmountWithUnitByPath("//operating_conditions/z_landing_gear"));
 		
 		theStabilityCalculator.setWingFinalMomentumPole(0.25);
 		theStabilityCalculator.setHTailFinalMomentumPole(0.25);
@@ -552,7 +552,7 @@ public class ReaderWriter{
 		String wingMomentAirfoilMethod = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@ACmoment");
+						"//@C4moment");
 		if(wingMomentAirfoilMethod.equalsIgnoreCase("CURVE"))
 			theStabilityCalculator.setWingairfoilMomentCoefficientCurve(MethodEnum.INPUTCURVE);
 		if(wingMomentAirfoilMethod.equalsIgnoreCase("CONSTANT"))
@@ -590,6 +590,21 @@ public class ReaderWriter{
 		
 		if (theStabilityCalculator.getTheCondition() == ConditionEnum.CRUISE){
 			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.AIRFOIL_INPUT);
+		}
+		
+		//fuselage
+		String fuselageMomentAirfoilMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@fuselageMomentCalc");
+		if(fuselageMomentAirfoilMethod.equalsIgnoreCase("INPUT"))
+			theStabilityCalculator.setFuselageMomentMethod(MethodEnum.INPUT);
+		if(fuselageMomentAirfoilMethod.equalsIgnoreCase("FUSDES"))
+			theStabilityCalculator.setFuselageMomentMethod(MethodEnum.FUSDES);
+		
+		if (theStabilityCalculator.getFuselageMomentMethod()==MethodEnum.INPUT){
+			theStabilityCalculator.setCM0fuselage(Double.valueOf(reader.getXMLPropertyByPath("//fuselage/CM_0")));
+			theStabilityCalculator.setCMalphafuselage(Double.valueOf(reader.getXMLPropertyByPath("//fuselage/CM_alpha")));
 		}
 		
 		//---------------------------------------------------------------------------------
