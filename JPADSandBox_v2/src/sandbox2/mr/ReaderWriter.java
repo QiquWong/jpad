@@ -95,6 +95,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setMachCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/mach_number")));
 		theStabilityCalculator.setReynoldsCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/Reynolds_number")));
 
+		
 		theStabilityCalculator.setWingFinalMomentumPole(0.25);
 		theStabilityCalculator.setHTailFinalMomentumPole(0.25);
 		theStabilityCalculator.setAlphaWingForDistribution(reader.readArrayofAmountFromXML("//operating_conditions/alpha_wing_array_for_distribution"));
@@ -109,6 +110,8 @@ public class ReaderWriter{
 		if ( condition.equals("LANDING") ||condition.equals("landing"))
 			theStabilityCalculator.setTheCondition(ConditionEnum.LANDING);
 
+		theStabilityCalculator.setDeltaCD0Miscellaneus(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/delta_CD0_miscellaneous")));
+		theStabilityCalculator.set_cDLandingGear(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/delta_CD0_gear")));
 		theStabilityCalculator.setAlphaBodyInitial((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//operating_conditions/alpha_body_initial"));
 		theStabilityCalculator.setAlphaBodyFinal((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//operating_conditions/alpha_body_final"));
 		theStabilityCalculator.setNumberOfAlphasBody((int)Double.parseDouble((reader.getXMLPropertyByPath("//operating_conditions/number_of_alphas_body"))));
@@ -316,6 +319,8 @@ public class ReaderWriter{
 		theStabilityCalculator.setFuselageWindshieldAngle((Amount<Angle>)reader.getXMLAmountWithUnitByPath("//fuselage/windshieldAngle"));
 		theStabilityCalculator.setFuselageUpSweepAngle((Amount<Angle>)reader.getXMLAmountWithUnitByPath("//fuselage/upsweepAngle"));
 		theStabilityCalculator.setFuselageXPercentPositionPole(Double.parseDouble((reader.getXMLPropertyByPath("//fuselage/xPercentPositionPole"))));
+		theStabilityCalculator.setAlphasFuselagePolar(reader.readArrayofAmountFromXML("//fuselage/polar/alpha_body_polar_curve"));
+		theStabilityCalculator.setCdDistributionFuselage(reader.readArrayDoubleFromXML("//fuselage/polar/cd_polar_curve"));
 
 		//---------------------------------------------------------------------------------
 		// HORIZONTAL TAIL:
@@ -332,6 +337,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setHTailNumberOfPointSemiSpanWise((int)Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/number_of_point_semispan"))));
 		theStabilityCalculator.setHTailnumberOfGivenSections((int)Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/number_of_given_sections"))));
 
+		
 		List<String> airfoilHtailFamilyProperty = reader.getXMLPropertiesByPath("//horizontal_tail/global/mean_airfoil_family");
 		//airfoil type
 		if(airfoilHtailFamilyProperty.get(0).equals("NACA_4_DIGIT"))
@@ -471,7 +477,8 @@ public class ReaderWriter{
 			theStabilityCalculator.setwingDragMethod(MethodEnum.AIRFOIL_INPUT);
 		if(wingDragMethod.equalsIgnoreCase("CALCULATED_DATABASE_AIRFOIL"))
 			theStabilityCalculator.setwingDragMethod(MethodEnum.AIRFOIL_DISTRIBUTION);
-		
+		if(wingDragMethod.equalsIgnoreCase("CALCULATED_INPUT_AIRFOIL_PARASITE"))
+			theStabilityCalculator.setwingDragMethod(MethodEnum.PARASITE_AIRFOIL_INPUT);
 		
 		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.INPUT){
 			theStabilityCalculator.setclWingDragPolar(reader.readArrayDoubleFromXML("//wing/polar/cl_polar_curve"));
@@ -479,7 +486,7 @@ public class ReaderWriter{
 		}
 		
 
-		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.AIRFOIL_INPUT){
+		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.AIRFOIL_INPUT || theStabilityCalculator.getwingDragMethod()==MethodEnum.PARASITE_AIRFOIL_INPUT ){
 			for (int i=0; i<theStabilityCalculator.getWingNumberOfGivenSections(); i++){
 				List<String> clWing = new ArrayList<>();
 				List<Double> clWingAmount = new ArrayList<>();
@@ -496,6 +503,9 @@ public class ReaderWriter{
 			}
 		}
 		
+		if(theStabilityCalculator.getwingDragMethod()==MethodEnum.PARASITE_AIRFOIL_INPUT)
+		theStabilityCalculator.setWingOswaldFactor(Double.parseDouble((reader.getXMLPropertyByPath("//wing/global/wing_oswald_factor"))));
+	
 		//h tail
 		String hTailDragMethod = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -509,12 +519,14 @@ public class ReaderWriter{
 			theStabilityCalculator.setHTailDragMethod(MethodEnum.AIRFOIL_INPUT);
 		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_DATABASE_AIRFOIL"))
 			theStabilityCalculator.setHTailDragMethod(MethodEnum.AIRFOIL_DISTRIBUTION);
+		if(hTailDragMethod.equalsIgnoreCase("CALCULATED_INPUT_AIRFOIL_PARASITE"))
+			theStabilityCalculator.setHTailDragMethod(MethodEnum.PARASITE_AIRFOIL_INPUT);
 		
 		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.INPUT){
 			theStabilityCalculator.setcLhTailDragPolar(reader.readArrayDoubleFromXML("//horizontal_tail/polar/cl_polar_curve"));
 			theStabilityCalculator.setcDPolarhTail(reader.readArrayDoubleFromXML("//horizontal_tail/polar/cd_polar_curve"));
 		}
-		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.AIRFOIL_INPUT){
+		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.AIRFOIL_INPUT || theStabilityCalculator.getHTailDragMethod()==MethodEnum.PARASITE_AIRFOIL_INPUT ){
 			for (int i=0; i<theStabilityCalculator.getHTailnumberOfGivenSections(); i++){
 				List<String> clTail = new ArrayList<>();
 				List<Double> clTailAmount = new ArrayList<>();
@@ -530,6 +542,8 @@ public class ReaderWriter{
 				theStabilityCalculator.getcDPolarAirfoilsHTail().add(i,cdTailAmount);
 			}
 		}
+		if(theStabilityCalculator.getHTailDragMethod()==MethodEnum.PARASITE_AIRFOIL_INPUT)
+			theStabilityCalculator.setHTailOswaldFactor(Double.parseDouble((reader.getXMLPropertyByPath("//horizontal_tail/global/tail_oswald_factor"))));
 		
 		//---------------------------------------------------------------------------------
 		// MOMENT CURVE:

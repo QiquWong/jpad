@@ -233,7 +233,7 @@ public class DragCalc {
 	 * --------------------------------------------------------------------------------------
 	 * where l_uc is the length of the main gear leg and cg is the mean geometric chord of the wing
 	 * (S/b).
-	 * 
+	 *  
 	 * @see: Torenbeek 1976 pag.570(pdf)
 	 */
 	public static double calculateDeltaCD0LandingGears(
@@ -652,6 +652,18 @@ public class DragCalc {
 		return (kn*(sWetNose/sWet) + kc*(sWetCabin/sWet) + kt*(sWetTail/sWet))*cDFlatPlate*sWet/sFront; 
 	}
 
+	
+	public static List<Double> calculateCDInducedParabolic(
+			Double[] clWing, double aspectRatio, double oswaldFactor) {
+		List<Double> cdInduced = new ArrayList<>();
+		
+		for (int i=0;i<clWing.length; i++){
+			cdInduced.add(i, (clWing[i]*clWing[i])/(Math.PI * aspectRatio * oswaldFactor));
+		}
+		return cdInduced;
+	}
+
+	
 	public static Map<String, Double> calculateMaximumEfficiency(double ar, double e, double cD0, double rho, double W, double S) {
 		
 		Map<String, Double> results = new HashMap<String, Double>();

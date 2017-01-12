@@ -146,6 +146,7 @@ public class Test_Stability{
 		theCalculator.calculateWingLiftCharacteristicsFromAirfoil();
 		theCalculator.calculateWingDragCharacterstics();
 		theCalculator.calculateHTailDragCharacterstics();
+		theCalculator.calculatePolarCurve();
 		theCalculator.calculateWingXAC();
 		theCalculator.calculateHTailXAC();
 		theCalculator.calculateFuselageMomentCharacterstics();
