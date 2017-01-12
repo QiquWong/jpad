@@ -362,7 +362,7 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		String altitudeToReachProperty = reader.getXMLPropertyByPath("//climb/altitude_to_reach");
 		if(altitudeToReachProperty != null)
-			altitudeToReach = reader.getXMLAmountLengthByPath("//climb/altitude_to_reach");
+			altitudeToReach = reader.getXMLAmountLengthByPath("//climb/altitude_to_reach").to(SI.METER);
 		//.............................................................
 		String machClimbProperty = reader.getXMLPropertyByPath("//climb/mach");
 		if(machClimbProperty != null)
@@ -380,7 +380,7 @@ public class OperatingConditions implements IOperatingConditions {
 		//.............................................................
 		String altitudeCruiseProperty = reader.getXMLPropertyByPath("//cruise/altitude");
 		if(altitudeCruiseProperty != null)
-			altitudeCruise = reader.getXMLAmountLengthByPath("//cruise/altitude");
+			altitudeCruise = reader.getXMLAmountLengthByPath("//cruise/altitude").to(SI.METER);
 		//.............................................................
 		String throttleCruiseProperty = reader.getXMLPropertyByPath("//cruise/throttle");
 		if(throttleCruiseProperty != null)
@@ -400,7 +400,7 @@ public class OperatingConditions implements IOperatingConditions {
 		//.............................................................
 		String altitudeTakeOffProperty = reader.getXMLPropertyByPath("//take_off/altitude");
 		if(altitudeTakeOffProperty != null)
-			altitudeTakeOff = reader.getXMLAmountLengthByPath("//take_off/altitude");
+			altitudeTakeOff = reader.getXMLAmountLengthByPath("//take_off/altitude").to(SI.METER);
 		//.............................................................
 		String throttleTakeOffProperty = reader.getXMLPropertyByPath("//take_off/throttle");
 		if(throttleTakeOffProperty != null)
@@ -450,7 +450,7 @@ public class OperatingConditions implements IOperatingConditions {
 		//.............................................................
 		String altitudeLandingProperty = reader.getXMLPropertyByPath("//landing/altitude");
 		if(altitudeLandingProperty != null)
-			altitudeLanding = reader.getXMLAmountLengthByPath("//landing/altitude");
+			altitudeLanding = reader.getXMLAmountLengthByPath("//landing/altitude").to(SI.METER);
 		//.............................................................
 		String reverseThrottleLandingProperty = reader.getXMLPropertyByPath("//landing/reverse_throttle");
 		if(reverseThrottleLandingProperty != null)

@@ -20,8 +20,8 @@
 				<xCG_max_aft unit="%">32</xCG_max_aft>
 			</balance>
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
-				<cLmax_clean_configuration>1.6</cLmax_clean_configuration>
-				<cL_alpha_clean_configuration unit="1/deg">0.106</cL_alpha_clean_configuration>
+				<cLmax_clean_configuration>1.61</cLmax_clean_configuration>
+				<cL_alpha_clean_configuration unit="1/deg">0.11</cL_alpha_clean_configuration>
 				<cLmax_take_off_configuration>2.4</cLmax_take_off_configuration>
 				<cL_alpha_take_off unit="1/deg">0.103</cL_alpha_take_off>
 				<cL0_take_off_configuration>1.3</cL0_take_off_configuration>
@@ -29,7 +29,7 @@
 				<cL_alpha_landing unit="1/deg">0.1</cL_alpha_landing>
 				<cL0_landing_configuration>1.8</cL0_landing_configuration>
 				<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
-				<cD0>0.0213</cD0>
+				<cD0>0.0239</cD0>
 				<oswald_cruise>0.85</oswald_cruise> 
 				<oswald_climb>0.83</oswald_climb>
 				<oswald_take_off>0.80</oswald_take_off>
@@ -41,8 +41,8 @@
 				<!---->
 				<polar_curves>
 					<cruise>
-						<polar_curve_CL></polar_curve_CL>
-						<polar_curve_CD></polar_curve_CD>
+						<polar_curve_CL>0.107578033;0.131520298;0.155466547;0.179407845;0.203305398;0.227169699;0.25101321;0.274876029;0.298771672;0.322699236;0.346582992;0.370470916;0.39436249;0.418251386;0.442148962;0.46605646;0.489977234;0.513914044;0.53785069;0.561796216;0.585741195;0.609679029;0.633630525;0.657587431;0.681549199;0.705512927;0.729478046;0.753442699;0.777403393;0.801378107;0.825363969;0.849357661;0.87335721;0.897362269;0.921374098;0.945394177;0.969422784;0.993465543;1.017517994;1.041571216</polar_curve_CL>
+						<polar_curve_CD>0.02807056;0.028064082;0.028102187;0.028183392;0.028243147;0.028285769;0.028342334;0.028451175;0.02862146;0.028861144;0.029151721;0.029481079;0.029845378;0.030244756;0.030681783;0.031178672;0.031735703;0.032347934;0.033012318;0.033721659;0.034471322;0.035263493;0.036099271;0.036983241;0.037949439;0.038986257;0.040062909;0.0411812;0.042343749;0.043561196;0.044828999;0.04614607;0.047508267;0.048915046;0.050368004;0.051866605;0.053442736;0.055126837;0.056880633;0.058724702</polar_curve_CD>
 					</cruise>
 					<climb>
 						<polar_curve_CL></polar_curve_CL>
@@ -105,15 +105,15 @@
 				<mission_range unit="nmi">1600</mission_range> 
 				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">10000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
-				<alternate_cruise_mach_number>0.528</alternate_cruise_mach_number>
+				<alternate_cruise_mach_number>0.524</alternate_cruise_mach_number>
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
-				<holding_mach_number>0.416</holding_mach_number>
+				<holding_mach_number>0.445</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_length unit="nmi">1300</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<initial_mission_fuel unit="kg">6475</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
-				<cruise_mission_mach_number>0.62</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
+				<cruise_mission_mach_number>0.585</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
 				<landing_ground_idle_fuel_flow unit="kg/min">5.17</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
         </performance>

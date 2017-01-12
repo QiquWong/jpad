@@ -12,7 +12,7 @@
 			<altitude_to_reach unit="ft">25000</altitude_to_reach>
 		</climb>
 		<cruise>
-			<mach>0.62</mach>	
+			<mach>0.605</mach>	
 			<altitude unit="ft">30000</altitude>
 			<throttle>1.0</throttle>
 		</cruise>

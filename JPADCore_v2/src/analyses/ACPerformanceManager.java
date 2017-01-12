@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
@@ -2540,7 +2541,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	List<Object[]> dataListMissionProfile = new ArrayList<>();
 
         	dataListMissionProfile.add(new Object[] {"Description","Unit","Value"});
-        	dataListMissionProfile.add(new Object[] {"Total mission distance","nmi", _theAircraft.getTheAnalysisManager().getReferenceRange().to(NonSI.NAUTICAL_MILE)
+        	dataListMissionProfile.add(new Object[] {"Total mission distance","nmi", _missionRange.to(NonSI.NAUTICAL_MILE)
         																						 .plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE)
         																						 .doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTime.doubleValue(NonSI.MINUTE)});
@@ -2919,7 +2920,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			sb.append("\tMISSION PROFILE\n")
 			.append("\t-------------------------------------\n")
-			.append("\t\tTotal mission distance = " + _theAircraft.getTheAnalysisManager().getReferenceRange().to(NonSI.NAUTICAL_MILE)
+			.append("\t\tTotal mission distance = " + _missionRange.to(NonSI.NAUTICAL_MILE)
 																  .plus(_alternateCruiseLength) + "\n")
 			.append("\t\tTotal mission duration = " + _totalMissionTime + "\n")
 			.append("\t\tAircraft mass at mission start = " + _initialMissionMass + "\n")
@@ -3394,11 +3395,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 										.getEstimatedValue()
 										),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean
+								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(
 								_theOperatingConditions.getMachCruise(),
-								MyArrayUtils.getMin(MyArrayUtils.convertListOfAmountToDoubleArray(_altitudeListCruise))
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 								),
 						100
 						);
@@ -3412,7 +3413,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 										),
 								speedArrayAltitudeParameterization,
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean,
+								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
@@ -3550,7 +3551,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean
+								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(
 								_theOperatingConditions.getMachCruise(),
@@ -3565,7 +3566,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
 								speedArrayWeightParameterization,
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean,
+								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
@@ -3584,7 +3585,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 											_weightListCruise.get(0).doubleValue(SI.NEWTON),
 											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-											_cLmaxClean
+											MyArrayUtils.getMax(_polarCLCruise)
 											),
 									SpeedCalc.calculateTAS(
 											_theOperatingConditions.getMachCruise(),
@@ -3613,7 +3614,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_cruiseEnvelopeList = new ArrayList<>();
 
 			int nPointSpeed = 50;
-			int nPointAltitude = 14;
+			int nPointAltitude = 30;
 			double[] altitudeArray = MyArrayUtils.linspace(
 					0.0, // meter
 					15000, // meter 
@@ -3632,7 +3633,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean
+								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
 						nPointSpeed
@@ -3647,7 +3648,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 									),
 								speedArray,
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean,
+								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
@@ -3681,7 +3682,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 										.getEstimatedValue()
 										),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean
+								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
 						nPointSpeed
@@ -3699,7 +3700,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean,
+								MyArrayUtils.getMax(_polarCLCruise),
 								dragList,
 								thrustList
 								)
@@ -3716,7 +3717,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								_theOperatingConditions.getThrottleCruise(),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean,
+								MyArrayUtils.getMax(_polarCLCruise),
 								EngineOperatingConditionEnum.CRUISE,
 								_intersectionList
 								)
@@ -3862,7 +3863,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			_efficiencyAtCruiseAltitudeAndMach = 
 					MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeListCruise),
+							MyArrayUtils.convertListOfAmountTodoubleArray(
+									_altitudeListCruise.stream()
+									.map(a -> a.to(SI.METER))
+									.collect(Collectors.toList())
+									),
 							MyArrayUtils.convertToDoublePrimitive(efficiencyAltitudesAtCruiseMach),
 							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 							);
@@ -3914,7 +3919,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 							_weightListCruise.get(_weightListCruise.size()-1).doubleValue(SI.NEWTON), 
 							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
-							_cLmaxClean
+							MyArrayUtils.getMax(_polarCLCruise)
 							),
 					SpeedCalc.calculateTAS(
 							1.0,
@@ -3931,7 +3936,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
 								speedArrayWeightParameterization,
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean,
+								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
 								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
@@ -3966,7 +3971,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								EngineOperatingConditionEnum.CRUISE,
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_cLmaxClean,
+								MyArrayUtils.getMax(_polarCLCruise),
 								dragListWeightParameterization,
 								thrustListWeightParameterization
 								)
@@ -4502,7 +4507,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_holdingMachNumber,
 					_landingFuelFlow,
 					_fuelReserve,
-					_cLmaxClean,
+					MyArrayUtils.getMax(_polarCLCruise),
 					_cLmaxTakeOff,
 					_cLAlphaTakeOff,
 					_cLZeroTakeOff,
@@ -4510,6 +4515,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_cLZeroLanding,
 					_polarCLClimb,
 					_polarCDClimb,
+					_polarCLCruise,
+					_polarCDCruise,
 					_windSpeed,
 					_mu,
 					_muBrake,
@@ -4664,7 +4671,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_holdingMachNumber,
 					_landingFuelFlow,
 					_fuelReserve,
-					_cLmaxClean,
+					MyArrayUtils.getMax(_polarCLCruise),
 					_cLmaxTakeOff,
 					_cLAlphaTakeOff,
 					_cLZeroTakeOff,
@@ -4672,6 +4679,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_cLZeroLanding,
 					_polarCLClimb,
 					_polarCDClimb,
+					_polarCLCruise,
+					_polarCDCruise,
 					_windSpeed,
 					_mu,
 					_muBrake,
