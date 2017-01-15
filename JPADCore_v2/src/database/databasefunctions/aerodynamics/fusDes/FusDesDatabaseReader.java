@@ -98,7 +98,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_Kn_vs_FRn(double noseFinenessRatio, double windshieldAngle) {
-		return kn_vs_FRn.value(noseFinenessRatio, windshieldAngle);
+		return kn_vs_FRn.valueBilinear(noseFinenessRatio, windshieldAngle);
 		
 	}
 	
@@ -122,7 +122,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_Kt_vs_FRt(double tailFinenessRatio, double upsweepAngle) {
-		return kt_vs_FRt.value(tailFinenessRatio, upsweepAngle);
+		return kt_vs_FRt.valueBilinear(tailFinenessRatio, upsweepAngle);
 	}
 	
 	// ***************************************************** CM0 *************************************************************************
@@ -136,7 +136,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_CM0_FR_vs_FR(double finenessRatio, double xPositionPole) {
-		return CM0_FR_vs_FR.value(finenessRatio, xPositionPole);
+		return CM0_FR_vs_FR.valueBilinear(finenessRatio, xPositionPole);
 	}
 	
 	/**
@@ -147,7 +147,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_dCM_nose_vs_wshield(double windshieldAngle,double noseFinenessRatio) {
-		return dCM_nose_vs_wshield.value(windshieldAngle, noseFinenessRatio);
+		return dCM_nose_vs_wshield.valueBilinear(windshieldAngle, noseFinenessRatio);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_dCM_tail_vs_upsweep(double upsweepAngle, double tailFinenessRatio) {
-		return dCM_tail_vs_upsweep.value(upsweepAngle, tailFinenessRatio);
+		return dCM_tail_vs_upsweep.valueBilinear(upsweepAngle, tailFinenessRatio);
 	}
 	
 	// ***************************************************** CMa *************************************************************************
@@ -172,7 +172,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_CMa_FR_vs_FR(double finenessRatio, double xPositionPole) {
-		return CMa_FR_vs_FR.value(finenessRatio, xPositionPole);
+		return CMa_FR_vs_FR.valueBilinear(finenessRatio, xPositionPole);
 	}
 	
 	/**
@@ -183,7 +183,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_dCMa_nose_vs_wshield(double windshieldAngle,double noseFinenessRatio) {
-		return dCMa_nose_vs_wshield.value(windshieldAngle, noseFinenessRatio);
+		return dCMa_nose_vs_wshield.valueBilinear(windshieldAngle, noseFinenessRatio);
 	}
 	
 	/**
@@ -194,7 +194,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_dCMa_tail_vs_upsweep(double upsweepAngle, double tailFinenessRatio) {
-		return dCMa_tail_vs_upsweep.value(upsweepAngle,  tailFinenessRatio);
+		return dCMa_tail_vs_upsweep.valueBilinear(upsweepAngle,  tailFinenessRatio);
 	}
 	
 	// ***************************************************** CNb *************************************************************************
@@ -207,7 +207,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_CNb_FR_vs_FR(double finenessRatio, double xPositionPole) {
-		return CNb_FR_vs_FR.value(finenessRatio, xPositionPole);
+		return CNb_FR_vs_FR.valueBilinear(finenessRatio, xPositionPole);
 	}
 	
 	/**
@@ -219,7 +219,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_dCNb_nose_vs_FRn(double noseFinenessRatio, double xPositionPole) {
-		return dCNb_nose_vs_FRn.value(noseFinenessRatio, xPositionPole);
+		return dCNb_nose_vs_FRn.valueBilinear(noseFinenessRatio, xPositionPole);
 	}
 	
 	/**
@@ -231,7 +231,7 @@ public class FusDesDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double get_dCNb_tail_vs_FRt(double tailFinenessRatio, double xPositionPole) {
-		return dCNb_tail_vs_FRt.value(tailFinenessRatio, xPositionPole);
+		return dCNb_tail_vs_FRt.valueBilinear(tailFinenessRatio, xPositionPole);
 	}
 	
 	public double getKn() {

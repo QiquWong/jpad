@@ -241,7 +241,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Amount<Velocity> _minSpeesCASAtCruiseAltitude;
 	private Double _maxMachAtCruiseAltitude;
 	private Double _minMachAtCruiseAltitude;
-	private Double _specificRangeAtCruiseAltitudeAndMach;
 	private Double _efficiencyAtCruiseAltitudeAndMach;
 	private Amount<Force> _thrustAtCruiseAltitudeAndMach;
 	private Amount<Force> _dragAtCruiseAltitudeAndMach;
@@ -1413,8 +1412,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 		// default values
 		Amount<Velocity> windSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		Double mu = 0.03;
-		Double muBrake = 0.4;
+		Double mu = 0.025;
+		Double muBrake = 0.3;
 		
 		Amount<Duration> dtRotation = Amount.valueOf(3.0, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
@@ -1584,7 +1583,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		//===========================================================================================
 		// READING CRUISE DATA ...	
 		List<Amount<Length>> altitudeListCruise = null;
-		Double kCruiseWeight = 0.98;
+		Double kCruiseWeight = 0.97;
 		
 		//...............................................................
 		// ALTITUDE LIST CRUISE
@@ -2387,7 +2386,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListCruise.add(new Object[] {" "});
         	dataListCruise.add(new Object[] {"Efficiency at cruise altitude and Mach","", _efficiencyAtCruiseAltitudeAndMach});
         	dataListCruise.add(new Object[] {" "});
-        	dataListCruise.add(new Object[] {"Specific range at cruise altitude and Mach","nmi/lbs", _specificRangeAtCruiseAltitudeAndMach});
 
         	Row rowCruise = sheetCruise.createRow(0);
         	Object[] objArrCruise = dataListCruise.get(0);
@@ -2882,8 +2880,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			.append("\t\tMax Mach at cruise altitude = " + _maxMachAtCruiseAltitude + "\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tEfficiency at cruise altitude and Mach = " + _efficiencyAtCruiseAltitudeAndMach + "\n")
-			.append("\t\t.....................................\n")
-			.append("\t\tSpecific range at cruise altitude and Mach = " + _specificRangeAtCruiseAltitudeAndMach + "nmi/lbs \n")
 			.append("\t-------------------------------------\n");
 			
 		}
@@ -3613,35 +3609,107 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_intersectionList = new ArrayList<>();
 			_cruiseEnvelopeList = new ArrayList<>();
 
-			int nPointSpeed = 50;
-			int nPointAltitude = 30;
-			double[] altitudeArray = MyArrayUtils.linspace(
-					0.0, // meter
-					15000, // meter 
-					nPointAltitude
-					);
-			double[] speedArray = new double[nPointSpeed];
 			List<DragMap> dragList = new ArrayList<>();
 			List<ThrustMap> thrustList = new ArrayList<>();
+			List<Amount<Length>> altitude = new ArrayList<>();
+			altitude.add(Amount.valueOf(0.0, SI.METER));
+			Amount<Length> deltaAltitude = Amount.valueOf(100, SI.METER);
 			
-			for(int i=0; i<altitudeArray.length; i++) {
+			int nPointSpeed = 1000;
+			double[] speedArray = new double[nPointSpeed];
+			int i=0;
+			
+			// FIRST ITERATION STEP:
+			//..................................................................................................
+			speedArray = MyArrayUtils.linspace(
+					SpeedCalc.calculateSpeedStall(
+							altitude.get(0).doubleValue(SI.METER),
+							(startCruiseMass
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()),
+							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							MyArrayUtils.getMax(_polarCLCruise)
+							),
+					SpeedCalc.calculateTAS(1.0, altitude.get(0).doubleValue(SI.METER)),
+					nPointSpeed
+					);
+			//..................................................................................................
+			dragList.add(
+					DragCalc.calculateDragAndPowerRequired(
+							altitude.get(0).doubleValue(SI.METER),
+							(startCruiseMass
+								.times(AtmosphereCalc.g0)
+								.getEstimatedValue()
+								),
+							speedArray,
+							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							MyArrayUtils.getMax(_polarCLCruise),
+							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+							_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							meanAirfoil.getAirfoilCreator().getType()
+							)
+					);
+					
+			//..................................................................................................
+			thrustList.add(
+					ThrustCalc.calculateThrustAndPowerAvailable(
+							altitude.get(0).doubleValue(SI.METER),
+							_theOperatingConditions.getThrottleCruise(),
+							speedArray,
+							EngineOperatingConditionEnum.CRUISE,
+							_theAircraft.getPowerPlant().getEngineType(), 
+							_theAircraft.getPowerPlant(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							_theAircraft.getPowerPlant().getEngineNumber(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+							)
+					);
+			//..................................................................................................
+			_intersectionList.add(
+					PerformanceCalcUtils.calculateDragThrustIntersection(
+							altitude.get(0).doubleValue(SI.METER),
+							speedArray,
+							(startCruiseMass
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()
+									),
+							_theOperatingConditions.getThrottleCruise(),
+							EngineOperatingConditionEnum.CRUISE,
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							MyArrayUtils.getMax(_polarCLCruise),
+							dragList,
+							thrustList
+							)
+					);
+			
+			while((_intersectionList.get(_intersectionList.size()-1).getMaxSpeed()
+					- _intersectionList.get(_intersectionList.size()-1).getMinSpeed())
+					>= 0.001
+					) {
+				
+				if(i >= 1)
+					altitude.add(altitude.get(i-1).plus(deltaAltitude));
+				
 				//..................................................................................................
 				speedArray = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
-								altitudeArray[i],
+								altitude.get(i).doubleValue(SI.METER),
 								(startCruiseMass
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()),
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise)
 								),
-						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
+						SpeedCalc.calculateTAS(1.0, altitude.get(i).doubleValue(SI.METER)),
 						nPointSpeed
 						);
 				//..................................................................................................
 				dragList.add(
 						DragCalc.calculateDragAndPowerRequired(
-								altitudeArray[i],
+								altitude.get(i).doubleValue(SI.METER),
 								(startCruiseMass
 									.times(AtmosphereCalc.g0)
 									.getEstimatedValue()
@@ -3660,7 +3728,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				//..................................................................................................
 				thrustList.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
-								altitudeArray[i],
+								altitude.get(i).doubleValue(SI.METER),
 								_theOperatingConditions.getThrottleCruise(),
 								speedArray,
 								EngineOperatingConditionEnum.CRUISE,
@@ -3671,26 +3739,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
 								)
 						);
-			}
-			for(int i=0; i<altitudeArray.length; i++) {
-				//..................................................................................................
-				speedArray = MyArrayUtils.linspace(
-						SpeedCalc.calculateSpeedStall(
-								altitudeArray[i],
-								(startCruiseMass
-										.times(AtmosphereCalc.g0)
-										.getEstimatedValue()
-										),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								MyArrayUtils.getMax(_polarCLCruise)
-								),
-						SpeedCalc.calculateTAS(1.0, altitudeArray[i]),
-						nPointSpeed
-						);
 				//..................................................................................................
 				_intersectionList.add(
 						PerformanceCalcUtils.calculateDragThrustIntersection(
-								altitudeArray[i],
+								altitude.get(i).doubleValue(SI.METER),
 								speedArray,
 								(startCruiseMass
 										.times(AtmosphereCalc.g0)
@@ -3705,11 +3757,14 @@ public class ACPerformanceManager implements IACPerformanceManger {
 								thrustList
 								)
 						);
+				i++;
+				
 			}
-			for (int i=0; i<altitudeArray.length; i++) 
+			
+			for (int j=0; j<altitude.size(); j++) 
 				_cruiseEnvelopeList.add(
 						PerformanceCalcUtils.calculateEnvelope(
-								altitudeArray[i],
+								altitude.get(j).doubleValue(SI.METER),
 								(startCruiseMass
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()
@@ -3731,20 +3786,20 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			List<Double> maxSpeedCASList = new ArrayList<>();
 			List<Double> maxMachList = new ArrayList<>();
 		
-			for(int i=0; i<_cruiseEnvelopeList.size(); i++) {
+			for(int j=0; j<_cruiseEnvelopeList.size(); j++) {
 				
 				double sigma = OperatingConditions.getAtmosphere(
-						_cruiseEnvelopeList.get(i).getAltitude()
+						_cruiseEnvelopeList.get(j).getAltitude()
 						).getDensity()*1000/1.225; 
 				
-				if(_cruiseEnvelopeList.get(i).getMaxSpeed() != 0.0) {
-					altitudeList.add(_cruiseEnvelopeList.get(i).getAltitude());
-					minSpeedTASList.add(_cruiseEnvelopeList.get(i).getMinSpeed());
-					minSpeedCASList.add(_cruiseEnvelopeList.get(i).getMinSpeed()*(Math.sqrt(sigma)));
-					minMachList.add(_cruiseEnvelopeList.get(i).getMinMach());
-					maxSpeedTASList.add(_cruiseEnvelopeList.get(i).getMaxSpeed());
-					maxSpeedCASList.add(_cruiseEnvelopeList.get(i).getMaxSpeed()*(Math.sqrt(sigma)));
-					maxMachList.add(_cruiseEnvelopeList.get(i).getMaxMach());
+				if(_cruiseEnvelopeList.get(j).getMaxSpeed() != 0.0) {
+					altitudeList.add(_cruiseEnvelopeList.get(j).getAltitude());
+					minSpeedTASList.add(_cruiseEnvelopeList.get(j).getMinSpeed());
+					minSpeedCASList.add(_cruiseEnvelopeList.get(j).getMinSpeed()*(Math.sqrt(sigma)));
+					minMachList.add(_cruiseEnvelopeList.get(j).getMinMach());
+					maxSpeedTASList.add(_cruiseEnvelopeList.get(j).getMaxSpeed());
+					maxSpeedCASList.add(_cruiseEnvelopeList.get(j).getMaxSpeed()*(Math.sqrt(sigma)));
+					maxMachList.add(_cruiseEnvelopeList.get(j).getMaxMach());
 				}
 			}
 				
@@ -3799,7 +3854,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			if(_maxMachAtCruiseAltitude < _theOperatingConditions.getMachCruise()) {
 				System.err.println("THE CHOSEN CRUISE MACH NUMBER IS NOT INSIDE THE FLIGHT ENVELOPE !");
-//				System.exit(1);
 			}
 				
 
@@ -4036,17 +4090,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							);
 				}
 			}
-			
-			int weightIndex = _weightListCruise.size()-1;
-			if(_specificRangeMap.size() == weightIndex)
-				_specificRangeAtCruiseAltitudeAndMach = 
-				MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getMach()),
-						MyArrayUtils.convertToDoublePrimitive(_specificRangeMap.get(weightIndex).getSpecificRange()),
-						_theOperatingConditions.getMachCruise()
-						);
-			else
-				_specificRangeAtCruiseAltitudeAndMach = 0.0;
 		}
 				
 		public void plotCruiseOutput(String cruiseFolderPath) {
@@ -5838,14 +5881,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setMinMachAtCruiseAltitude(Double _minMachAtCruiseAltitude) {
 		this._minMachAtCruiseAltitude = _minMachAtCruiseAltitude;
-	}
-
-	public Double getSpecificRangeAtCruiseAltitudeAndMach() {
-		return _specificRangeAtCruiseAltitudeAndMach;
-	}
-
-	public void setSpecificRangeAtCruiseAltitudeAndMach(Double _specificRangeAtCruiseAltitudeAndMach) {
-		this._specificRangeAtCruiseAltitudeAndMach = _specificRangeAtCruiseAltitudeAndMach;
 	}
 
 	public Double getEfficiencyAtCruiseAltitudeAndMach() {

@@ -58,31 +58,31 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 
 	@Override
 	public double getThrustTakeOff(double mach, double altitude, double bpr) {
-		return takeOffThrustFunction.value(mach, altitude/0.3048);
+		return takeOffThrustFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	@Override
 	public double getThrustContinuous(double mach, double altitude, double bpr) {
-		return continuousThrustFunction.value(mach, altitude/0.3048);
+		return continuousThrustFunction.valueBilinear(mach, altitude/0.3048);
 	}
 	
 	@Override
 	public double getThrustMaximumClimb(double mach, double altitude, double bpr) {
-		return climbThrustFunction.value(mach, altitude/0.3048);
+		return climbThrustFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	@Override
 	public double getThrustMaximumCruise(double mach, double altitude, double bpr) {
-		return cruiseThrustFunction.value(mach, altitude/0.3048);
+		return cruiseThrustFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	public double getThrustDescent(double mach, double altitude, double bpr) {
-		return descentThrustFunction.value(mach, altitude/0.3048);
+		return descentThrustFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	public double getThrustAPR(double mach, double altitude, double bpr) {
 		if( aprThrustFunction != null)
-			return aprThrustFunction.value(mach, altitude/0.3048);
+			return aprThrustFunction.valueBilinear(mach, altitude/0.3048);
 		else
 			return 0.0;
 	}
@@ -116,28 +116,28 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 	}
 	
 	public double getSFCTakeOff(double mach, double altitude, double bpr) {
-		return takeOffSFCFunction.value(mach, altitude/0.3048);
+		return takeOffSFCFunction.valueBilinear(mach, altitude/0.3048);
 	}
 	
 	public double getSFCContinuous(double mach, double altitude, double bpr) {
-		return continuousSFCFunction.value(mach, altitude/0.3048);
+		return continuousSFCFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	public double getSFCMaximumClimb(double mach, double altitude, double bpr) {
-		return climbSFCFunction.value(mach, altitude/0.3048);
+		return climbSFCFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	public double getSFCMaximumCruise(double mach, double altitude, double bpr) {
-		return cruiseSFCFunction.value(mach, altitude/0.3048);
+		return cruiseSFCFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	public double getSFCDescent(double mach, double altitude, double bpr) {
-		return descentSFCFunction.value(mach, altitude/0.3048);
+		return descentSFCFunction.valueBilinear(mach, altitude/0.3048);
 	}
 
 	public double getSFCAPR(double mach, double altitude, double bpr) {
 		if(aprSFCFunction != null)
-			return aprSFCFunction.value(mach, altitude/0.3048);
+			return aprSFCFunction.valueBilinear(mach, altitude/0.3048);
 		else
 			return 0.0;
 	}

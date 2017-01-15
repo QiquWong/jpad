@@ -26,7 +26,7 @@
 		<landing>
 			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
-			<reverse_throttle>0.0059</reverse_throttle> <!-- default = 0.0 -->
+			<reverse_throttle>0.08</reverse_throttle> <!-- default = 0.0 -->
 			<delta_flap unit="deg">40;40</delta_flap>
 			<delta_slat unit="deg"></delta_slat>
 		</landing>

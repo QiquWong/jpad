@@ -666,14 +666,14 @@ public class MyHDFReader {
 			// http://stackoverflow.com/questions/1817631/iterating-one-dimension-array-as-two-dimension-array
 			// http://www.kosbie.net/cmu/fall-08/15-100/handouts/notes-two-dimensional-arrays.html
 
-			double[][][] result = new double[nRows][nCols][nPages];
+			double[][][] result = new double[nPages][nRows][nCols];
 
 			int index = -1;
 			for(int i = 0; i < nRows; i++) {
 				for(int j = 0; j < nCols; j++) {
 					for(int k = 0; k < nPages; k++) {
 						index++;
-						result[i][j][k] = dset[index];
+						result[k][i][j] = dset[index];
 						// System.out.println(i + "," + j + "," + k + ": " + dset[index]);
 					}
 				}
@@ -828,7 +828,7 @@ public class MyHDFReader {
 
 			if (var01D != null) {
 				MyInterpolatingFunction f = new MyInterpolatingFunction();
-				f.interpolate(var01D, dset1D);
+				f.interpolateLinear(var01D, dset1D);
 				return f;
 
 			} else {
@@ -887,7 +887,7 @@ public class MyHDFReader {
 
 			
 			MyInterpolatingFunction f = new MyInterpolatingFunction();
-			f.interpolate(var1_2D, var0_2D, dset2D);
+			f.interpolateBilinear(var1_2D, var0_2D, dset2D);
 			return f;
 		}
 	}
@@ -921,7 +921,7 @@ public class MyHDFReader {
 			} 
 
 			MyInterpolatingFunction f = new MyInterpolatingFunction();
-			f.interpolate(var1_2D, var0_2D, dset2D);
+			f.interpolateBilinear(var1_2D, var0_2D, dset2D);
 			return f;
 		}
 	}
@@ -973,7 +973,7 @@ public class MyHDFReader {
 			}
 
 			MyInterpolatingFunction f = new MyInterpolatingFunction();
-			f.interpolate(var2, var1, var0, dset3D);
+			f.interpolateTrilinear(var0, var2, var1, dset3D);
 			return f;
 		}
 	}	

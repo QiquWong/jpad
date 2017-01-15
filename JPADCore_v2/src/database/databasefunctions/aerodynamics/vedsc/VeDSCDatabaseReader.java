@@ -1,11 +1,9 @@
 package database.databasefunctions.aerodynamics.vedsc;
 
-import java.io.File;
 
 import database.databasefunctions.DatabaseReader;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
-import writers.JPADStaticWriteUtils;
 
 public class VeDSCDatabaseReader extends DatabaseReader{
 
@@ -68,7 +66,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 */
 	public double get_KFv_vs_bv_over_dfv(double verticalSpan, double fuselageDiameterAtVerticalMAC, double tailconeShape) {
 		if (fuselageDiameterAtVerticalMAC == 0.) return 0.;
-		return kFv_vs_bv_over_dfv.value(verticalSpan/fuselageDiameterAtVerticalMAC, tailconeShape);
+		return kFv_vs_bv_over_dfv.valueBilinear(verticalSpan/fuselageDiameterAtVerticalMAC, tailconeShape);
 	}
 
 	/**
@@ -81,7 +79,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	public double get_KVf_vs_zw_over_dfv(double verticalSpan, double fuselageDiameterAtVerticalMAC, double tailconeShape) {
 
 		if (fuselageDiameterAtVerticalMAC == 0.) return 0.;
-		return kVf_vs_zw_over_dfv.value(verticalSpan/fuselageDiameterAtVerticalMAC, tailconeShape);
+		return kVf_vs_zw_over_dfv.valueBilinear(verticalSpan/fuselageDiameterAtVerticalMAC, tailconeShape);
 	}
 
 	/**
@@ -92,7 +90,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static stability derivative.
 	 */
 	public double get_KWv_vs_zw_over_rf(double wingPosition, double arWing, double tailconeShape) {
-		return kWv_vs_zw_over_rf.value(wingPosition, arWing, tailconeShape);
+		return kWv_vs_zw_over_rf.valueTrilinear(tailconeShape, wingPosition, arWing);
 	}
 
 	/**
@@ -103,7 +101,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static instability derivative.
 	 */
 	public double get_KWf_vs_zw_over_rf(double wingPosition, double arWing, double tailconeShape) {
-		return kWf_vs_zw_over_rf.value(wingPosition, arWing, tailconeShape);
+		return kWf_vs_zw_over_rf.valueTrilinear(tailconeShape, wingPosition, arWing);
 	}
 
 
@@ -115,7 +113,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static stability derivative.
 	 */
 	public double get_KHv_vs_zh_over_bv1_high_wing(double horizPosOverVertical, double arVertical, double tailconeShape) {
-		return kHv_vs_zh_over_bv1_high_wing.value(horizPosOverVertical, arVertical, tailconeShape);
+		return kHv_vs_zh_over_bv1_high_wing.valueTrilinear(tailconeShape, horizPosOverVertical, arVertical);
 	}
 
 	/**
@@ -126,7 +124,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static stability derivative.
 	 */
 	public double get_KHv_vs_zh_over_bv1_mid_wing(double horizPosOverVertical, double arVertical, double tailconeShape) {
-		return kHv_vs_zh_over_bv1_mid_wing.value(horizPosOverVertical, arVertical, tailconeShape);
+		return kHv_vs_zh_over_bv1_mid_wing.valueTrilinear(tailconeShape, horizPosOverVertical, arVertical);
 	}
 
 	/**
@@ -137,7 +135,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static stability derivative.
 	 */
 	public double get_KHv_vs_zh_over_bv1_low_wing(double horizPosOverVertical, double arVertical, double tailconeShape) {
-		return kHv_vs_zh_over_bv1_low_wing.value(horizPosOverVertical, arVertical, tailconeShape);
+		return kHv_vs_zh_over_bv1_low_wing.valueTrilinear(tailconeShape, horizPosOverVertical, arVertical);
 	}
 
 	/**
@@ -148,7 +146,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static instability derivative.
 	 */
 	public double get_KHf_vs_zh_over_bv1_high_wing(double horizPosOverVertical, double arVertical, double tailconeShape) {
-		return kHf_vs_zh_over_bv1_high_wing.value(horizPosOverVertical, arVertical, tailconeShape);
+		return kHf_vs_zh_over_bv1_high_wing.valueTrilinear(tailconeShape, horizPosOverVertical, arVertical);
 	}
 
 	/**
@@ -159,7 +157,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static instability derivative.
 	 */
 	public double get_KHf_vs_zh_over_bv1_mid_wing(double horizPosOverVertical, double arVertical, double tailconeShape) {
-		return kHf_vs_zh_over_bv1_mid_wing.value(horizPosOverVertical, arVertical, tailconeShape);
+		return kHf_vs_zh_over_bv1_mid_wing.valueTrilinear(tailconeShape, horizPosOverVertical, arVertical);
 	}
 
 	/**
@@ -170,7 +168,7 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	 * @return a number that if bigger than 1 means an increase aerodynamic interference effect, i.e. increases the component contribution to sideslip static instability derivative.
 	 */
 	public double get_KHf_vs_zh_over_bv1_low_wing(double horizPosOverVertical, double arVertical, double tailconeShape) {
-		return kHf_vs_zh_over_bv1_low_wing.value(horizPosOverVertical, arVertical, tailconeShape);
+		return kHf_vs_zh_over_bv1_low_wing.valueTrilinear(tailconeShape, horizPosOverVertical, arVertical);
 	}
 
 	/**
@@ -286,6 +284,5 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 	public double getkHf() {
 		return kHf;
 	}
-
-
+	
 }

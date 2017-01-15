@@ -454,9 +454,6 @@ public interface IACPerformanceManger {
 	public Double getMinMachAtCruiseAltitude();
 	public void setMinMachAtCruiseAltitude(Double _minMachAtCruiseAltitude);
 
-	public Double getSpecificRangeAtCruiseAltitudeAndMach();
-	public void setSpecificRangeAtCruiseAltitudeAndMach(Double _specificRangeAtCruiseAltitudeAndMach);
-
 	public Double getEfficiencyAtCruiseAltitudeAndMach();
 	public void setEfficiencyAtCruiseAltitudeAndMach(Double _efficiencyAtCruiseAltitudeAndMach);
 

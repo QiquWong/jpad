@@ -5,10 +5,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -17,14 +21,18 @@ import org.kohsuke.args4j.Option;
 import aircraft.components.Aircraft;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
+import calculators.performance.ThrustCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {

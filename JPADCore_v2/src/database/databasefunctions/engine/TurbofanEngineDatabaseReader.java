@@ -135,7 +135,7 @@ public class TurbofanEngineDatabaseReader extends EngineDatabaseReader {
 			double mach, 
 			double altitude, 
 			double bpr) {
-		return takeOffThrustFunction.value(mach, altitude/0.3048, bpr);
+		return takeOffThrustFunction.valueTrilinear(bpr, mach, altitude/0.3048);
 	}
 	
 	@Override
@@ -155,7 +155,7 @@ public class TurbofanEngineDatabaseReader extends EngineDatabaseReader {
 			double mach, 
 			double altitude, 
 			double bpr) {
-		return climbThrustFunction.value(mach, altitude/0.3048, bpr);
+		return climbThrustFunction.valueTrilinear(bpr, mach, altitude/0.3048);
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class TurbofanEngineDatabaseReader extends EngineDatabaseReader {
 			double mach, 
 			double altitude, 
 			double bpr) {
-		return cruiseThrustFunction.value(mach, altitude/0.3048, bpr);
+		return cruiseThrustFunction.valueTrilinear(bpr, mach, altitude/0.3048);
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class TurbofanEngineDatabaseReader extends EngineDatabaseReader {
 			double mach, 
 			double altitude, 
 			double bpr) {
-		return descentThrustFunction.value(mach, altitude/0.3048, bpr);
+		return descentThrustFunction.valueTrilinear(bpr, mach, altitude/0.3048);
 	}
 
 	/**
@@ -205,9 +205,10 @@ public class TurbofanEngineDatabaseReader extends EngineDatabaseReader {
 			EngineOperatingConditionEnum engineOperatingCondition) {
 		
 		return Math.pow(AtmosphereCalc.getAtmosphere(altitude).getTemperatureRatio(), 0.616)
-				* sfcFunction.value(
+				* sfcFunction.valueTrilinear(
+						bpr,
 						tT0Ratio/AtmosphereCalc.getAtmosphere(altitude).getPressureRatio(),
-						mach, bpr);
+						mach);
 	}
 
 	/**

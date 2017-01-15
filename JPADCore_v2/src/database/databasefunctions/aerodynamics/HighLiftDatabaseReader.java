@@ -68,7 +68,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
 	public double getDeltaCCfVsDeltaFlap(double deltaFlap, double flapTypeIndex) {
-		return deltaCCfVsDeltaFlap.value(deltaFlap, flapTypeIndex);
+		return deltaCCfVsDeltaFlap.valueBilinear(deltaFlap, flapTypeIndex);
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the specific curve at that thickness ratio (%)
 	 */
 	public double getDeltaCLmaxBaseVsTc(double tc, double flapTypeIndex) {
-		return deltaCLmaxBaseVsTc.value(tc*100, flapTypeIndex);
+		return deltaCLmaxBaseVsTc.valueBilinear(tc*100, flapTypeIndex);
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
 	public double getEtaDeltaVsDeltaFlap(double deltaFlap, double flapTypeIndex) {
-		return etaDeltaVsDeltaFlap.value(deltaFlap, flapTypeIndex);
+		return etaDeltaVsDeltaFlap.valueBilinear(deltaFlap, flapTypeIndex);
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
 	public double getEtaDeltaVsDeltaFlapPlain(double deltaFlap, double cfc) {
-		return etaDeltaVsDeltaFlapPlain.value(deltaFlap, cfc);
+		return etaDeltaVsDeltaFlapPlain.valueBilinear(deltaFlap, cfc);
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the specific curve at that flap chord ratio (%)
 	 */
 	public double getK1vsFlapChordRatio(double flapChordRatio, double flapTypeIndex) {
-		return k1VsFlapChordRatio.value(flapChordRatio*100, flapTypeIndex);
+		return k1VsFlapChordRatio.valueBilinear(flapChordRatio*100, flapTypeIndex);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the specific curve at that flap deflection
 	 */
 	public double getK2VsDeltaFlap(double deltaFlap, double flapTypeIndex) {
-		return k2VsDeltaFlap.value(deltaFlap, flapTypeIndex);
+		return k2VsDeltaFlap.valueBilinear(deltaFlap, flapTypeIndex);
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the specific curve at that flap deflection ratio
 	 */
 	public double getK3VsDfDfRef(double deltaFlap, double deltaFlapRef, double flapTypeIndex) {
-		return k3VsDfDfRef.value(deltaFlap/deltaFlapRef, flapTypeIndex);
+		return k3VsDfDfRef.valueBilinear(deltaFlap/deltaFlapRef, flapTypeIndex);
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that flap span ratio
 	 */
 	public double getKbVsFlapSpanRatio(double etaIn, double etaOut, double taperRatio) {
-		return kbVsFlapSpanRatio.value(etaOut, taperRatio)-kbVsFlapSpanRatio.value(etaIn, taperRatio);
+		return kbVsFlapSpanRatio.valueBilinear(etaOut, taperRatio)-kbVsFlapSpanRatio.valueBilinear(etaIn, taperRatio);
 	}
 	
 	/**
@@ -211,7 +211,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that AR and that alphaDelta values
 	 */
 	public double getKcVsAR(double ar, double alphaDelta) {
-		return kcVsAR.value(ar, alphaDelta);
+		return kcVsAR.valueBilinear(ar, alphaDelta);
 	}
 	
 	/**
@@ -239,7 +239,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that cf/c' and at that flap deflection
 	 */
 	public double getMu1VsCfCFirstPlain(double cfcFirst, double deltaFlap) {
-		return mu1VsCfCFirstPlain.value(cfcFirst, deltaFlap);
+		return mu1VsCfCFirstPlain.valueBilinear(cfcFirst, deltaFlap);
 	}
 	
 	/**
@@ -250,7 +250,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that flap span ratio for that taper ratio
 	 */
 	public double getMu2VsBfB(double etaIn, double etaOut, double taperRatio) {
-		return mu2VsBfB.value(etaOut-etaIn, taperRatio);
+		return mu2VsBfB.valueBilinear(etaOut-etaIn, taperRatio);
 	//	return mu_2_vs_bf_b.value(eta_out, taperRatio)-mu_2_vs_bf_b.value(eta_in, taperRatio);
 	}
 	
@@ -262,7 +262,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that flap span ratio for that taper ratio
 	 */
 	public double getMu3VsBfB(double etaIn, double etaOut, double taperRatio) {
-		return mu3VsBfB.value(etaOut-etaIn, taperRatio);
+		return mu3VsBfB.valueBilinear(etaOut-etaIn, taperRatio);
 	//  return mu_3_vs_bf_b.value(eta_out, taperRatio)-mu_3_vs_bf_b.value(eta_in, taperRatio);
 	}
 	
@@ -273,7 +273,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that cf_c for that tc
 	 */
 	public double getDelta1VsCfCPlain(double cfc, double tc) {
-		return delta1VsCfCPlain.value(cfc, tc);
+		return delta1VsCfCPlain.valueBilinear(cfc, tc);
 	}
 	
 	/**
@@ -283,7 +283,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that cf_c for that tc
 	 */
 	public double getDelta1VsCfCSlotted(double cfc, double tc) {
-		return delta1VsCfCSlotted.value(cfc, tc);
+		return delta1VsCfCSlotted.valueBilinear(cfc, tc);
 	}
 	
 	/**
@@ -302,7 +302,7 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return the interpolated value of the curve at that flap deflection for that tc
 	 */
 	public double getDelta2VsDeltaFlapSlotted(double deltaFlap, double tc) {
-		return delta2VsDeltaFlapSlotted.value(deltaFlap, tc);
+		return delta2VsDeltaFlapSlotted.valueBilinear(deltaFlap, tc);
 	}
 	
 	/**
@@ -313,6 +313,6 @@ public class HighLiftDatabaseReader extends DatabaseReader{
 	 * @return
 	 */
 	public double getDelta3VsBfB(double etaIn, double etaOut, double taperRatio) {
-		return delta3VsBfB.value(etaOut-etaIn, taperRatio);
+		return delta3VsBfB.valueBilinear(etaOut-etaIn, taperRatio);
 	}
 }
