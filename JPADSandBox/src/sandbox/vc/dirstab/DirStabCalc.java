@@ -646,6 +646,9 @@ public class DirStabCalc {
 		cNb.put(cNbetaContributionsEnum.cNbWing, cNbWing);
 		cNb.put(cNbetaContributionsEnum.cNbAC, cNbAC);
 
+		writeToFile(outputFileWithPathAndExt, veDSCDatabaseFileName, inputManager, outputManager);
+		writeToFile(outputFileWithPathAndExt, fusDesDatabaseFileName, inputManager, outputManager);
+		
 	return cNb;
 	}
 }
