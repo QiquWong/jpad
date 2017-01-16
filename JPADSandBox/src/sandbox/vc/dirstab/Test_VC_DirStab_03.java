@@ -85,9 +85,12 @@ public class Test_VC_DirStab_03 {
 		String outputFileNameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator + 
 				Files.getNameWithoutExtension(inputFileName) + "Out.xml";
 
-		DirStabCalc.executeStandaloneDirStab(veDSCDatabaseFileName,  
-				fusDesDatabaseFileName,
-				databaseDirectoryAbsolutePath,
+//		DirStabCalc.executeStandaloneDirStabMap(veDSCDatabaseFileName, fusDesDatabaseFileName, databaseDirectory, inputFileNamewithPathAndExt, outputFileWithPathAndExt)(veDSCDatabaseFileName,  
+//				fusDesDatabaseFileName,
+//				databaseDirectoryAbsolutePath,
+//				fileNameWithPathAndExt, 
+//				outputFileNameWithPathAndExt);
+		DirStabCalc.executeStandaloneDirStabMap(veDSCDatabaseFileName, fusDesDatabaseFileName, databaseDirectoryAbsolutePath,
 				fileNameWithPathAndExt, 
 				outputFileNameWithPathAndExt);
 

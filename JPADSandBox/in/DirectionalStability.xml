@@ -7,7 +7,7 @@
         </Mach_number>
         <Reynolds_number>
             <value unit="">202000000.0000</value>
-            <description unit="">Reynolds number</description>
+            <description unit="">Reynolds number referred to fuselage lenght</description>
         </Reynolds_number>
         <LiftCoefficient>
             <value unit="">0.5000</value>

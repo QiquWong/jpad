@@ -32,7 +32,7 @@ public class DirStabCalc {
 
 		ioManager.addElement(DirStabEnum.Mach_number, Amount.valueOf(0., Unit.ONE), "Mach number.");
 
-		ioManager.addElement(DirStabEnum.Reynolds_number, Amount.valueOf(0., Unit.ONE), "Reynolds number");
+		ioManager.addElement(DirStabEnum.Reynolds_number, Amount.valueOf(0., Unit.ONE), "Reynolds number referred to fuselage lenght");
 
 		ioManager.addElement(DirStabEnum.LiftCoefficient, Amount.valueOf(0., Unit.ONE), "Lift coefficient");
 

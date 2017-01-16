@@ -56,22 +56,22 @@ public class InputFileReader<E extends Enum<E>> {
 		List<Amount> valueList = new ArrayList<Amount>();
 		Document doc = MyXMLReaderUtils.importDocument(filenameWithPathAndExt);
 
-				System.out.println("tagList.size is : "+tagList.size());
+				//System.out.println("tagList.size is : "+tagList.size());
 
 		for (int i=0; i<tagList.size(); i++) {
-						System.out.println("Tag: "+tagList.get(i).name() );
+//						System.out.println("Tag: "+tagList.get(i).name() );
 
 			childNodes = doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes();
-						System.out.println("\t"+doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes());
-						System.out.println("Childs number: "+ childNodes.getLength());
+//						System.out.println("\t"+doc.getElementsByTagName(tagList.get(i).name()).item(0).getChildNodes());
+//						System.out.println("Childs number: "+ childNodes.getLength());
 
 			for (int j=0; j<childNodes.getLength(); j++) {
-								System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
+//								System.out.println("Childs node name: " + childNodes.item(j).getNodeName());
 				if(childNodes.item(j).getNodeName().equalsIgnoreCase("value")) {
 
 					if (childNodes.item(j).hasAttributes()) {
 						unitStr = childNodes.item(j).getAttributes().getNamedItem("unit").getNodeValue();
-											System.out.println(childNodes.item(j).getNodeName() + " " + childNodes.item(j).getTextContent() + " " + unitStr);
+//											System.out.println(childNodes.item(j).getNodeName() + " " + childNodes.item(j).getTextContent() + " " + unitStr);
 
 						if (!unitStr.contains("/")) {
 							valueList.add(i, 
