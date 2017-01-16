@@ -60,7 +60,8 @@ public class LiftCalc {
 		if (cLalpha2D == 0.) return 0.;
 
 		double effMach = AerodynamicCalc.calculatePrandtlGlauertCorrection(mach);
-		double eff3D = effMach * ar / (Math.toDegrees(cLalpha2D) / 2*Math.PI*effMach);
+		//double eff3D = effMach * ar / (Math.toDegrees(cLalpha2D) / 2*Math.PI*effMach);
+		double eff3D = effMach * ar / (cLalpha2D / (2*Math.PI*effMach));
 
 		//		return 2. * Math.PI * ar / 
 		//        		(2 + Math.sqrt( Math.pow(eff3D,2) * (1 + Math.tan(Math.toRadians(sweepV_c2) / Math.pow(effMach, 2)) + 4) ));
