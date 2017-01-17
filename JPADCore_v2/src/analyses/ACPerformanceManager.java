@@ -57,6 +57,7 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
+import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
@@ -3008,6 +3009,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_kRotation,
 					_kLiftOff,
 					_dragDueToEnigneFailure,
+					_theOperatingConditions.getThrottleGroundIdleTakeOff(),
 					_theOperatingConditions.getThrottleTakeOff(), 
 					_kAlphaDot,
 					_alphaReductionRate,
@@ -3107,13 +3109,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					tailConeTipToFuselageRadiusRatio
 					);
 
-			Airfoil vTailMeanAirfoil = new Airfoil(
-					LiftingSurface.calculateMeanAirfoil(
-							_theAircraft.getVTail()
-							),
-					_theAircraft.getVTail().getAerodynamicDatabaseReader()
-					);
-			
 			if(_theAircraft.getTheAnalysisManager().getTheBalance() == null)
 				_theAircraft.calculateArms(_theAircraft.getVTail(),_xCGMaxAft);
 			
@@ -3126,7 +3121,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 					_theAircraft.getVTail().getSurface().doubleValue(SI.SQUARE_METRE), 
 					_theAircraft.getVTail().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
-					vTailMeanAirfoil.getAirfoilCreator().getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
+					_theAircraft.getVTail().getAirfoilList().get(0)
+						.getAirfoilCreator().getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
 					_theOperatingConditions.getMachTakeOff(), 
 					veDSCDatabaseReader.getkFv(),
 					veDSCDatabaseReader.getkWv(),
@@ -4484,7 +4480,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_cLmaxLanding,
 					_cLZeroLanding,
 					_cLAlphaLanding.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-					_theOperatingConditions.getReverseThrottleLanding(),
+					_theOperatingConditions.getThrottleGroundIdleLanding(),
 					_freeRollDuration
 					);
 			

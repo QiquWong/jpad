@@ -1007,13 +1007,16 @@ public class Aircraft implements IAircraft {
 		theLiftingSurface.getLiftingSurfaceCreator().setLiftingSurfaceACTOWingACDistance(
 				Amount.valueOf(
 						Math.abs(
-								theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-								.plus(theLiftingSurface.getXApexConstructionAxes())
-								.getEstimatedValue() + 
-								theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()*0.25 - 
-								(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-										.plus(_theWing.getXApexConstructionAxes()).getEstimatedValue() + 
-										0.25*_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue())
+								(theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+										.plus(theLiftingSurface.getXApexConstructionAxes())
+										.plus(theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
+										.getEstimatedValue()
+										) 
+								- (_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+												.plus(_theWing.getXApexConstructionAxes()) 
+												.plus(_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
+												.getEstimatedValue()
+												)
 								),
 						SI.METER)
 				);

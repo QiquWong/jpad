@@ -70,7 +70,7 @@ public class LandingCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
-	private double mu, muBrake, cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiRev;
+	private double mu, muBrake, cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiGroundIdle;
 
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -87,7 +87,7 @@ public class LandingCalc {
 	 * @param kFlare percentage of the stall speed in landing which defines the flare speed
 	 * @param kTD percentage of the stall speed in landing which defines the touch-down speed
 	 * @param phiApproach throttle setting in approach phase
-	 * @param phiRev throttle setting for the reverse thrust
+	 * @param phiGroundIdle throttle setting for the reverse thrust
 	 * @param mu friction coefficient without brakes action
 	 * @param muBrake friction coefficient with brakes activated
 	 * @param wingToGroundDistance
@@ -141,7 +141,7 @@ public class LandingCalc {
 		this.thetaApproach = thetaApproach;
 		this.cLmaxLanding = cLmaxLanding;
 		this.cL0Landing = cL0Landing; 
-		this.phiRev = reverseThrottle;
+		this.phiGroundIdle = reverseThrottle;
 		this.nFreeRoll = nFreeRoll;
 		
 		this.cLground = cL0Landing + (cLalphaFlap*iw.getEstimatedValue());
@@ -637,12 +637,12 @@ public class LandingCalc {
 
 			if(t < LandingCalc.this.getnFreeRoll().getEstimatedValue()) {
 				xDot[0] = speed;
-				xDot[1] = (g0/weight)*(-thrust(speed) - drag(speed)
+				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
 						- (mu*(weight - lift(speed))));
 			}
 			else {
 				xDot[0] = speed;
-				xDot[1] = (g0/weight)*(-thrust(speed) - drag(speed)
+				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
 						- (muBrake*(weight - lift(speed))));
 			}
 		}
@@ -654,7 +654,7 @@ public class LandingCalc {
 			theThrust =	ThrustCalc.calculateThrustDatabase(
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().getEstimatedValue(),
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineNumber(),
-					LandingCalc.this.getPhiRev(),
+					LandingCalc.this.getPhiGroundIdle(),
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 					LandingCalc.this.getAircraft().getPowerPlant().getEngineType(),
 					EngineOperatingConditionEnum.TAKE_OFF,
@@ -918,11 +918,11 @@ public class LandingCalc {
 	public void setkTD(double kTD) {
 		this.kTD = kTD;
 	}
-	public double getPhiRev() {
-		return phiRev;
+	public double getPhiGroundIdle() {
+		return phiGroundIdle;
 	}
 	public void setPhiRev(double phiRev) {
-		this.phiRev = phiRev;
+		this.phiGroundIdle = phiRev;
 	}
 	public Amount<Length> getsApproach() {
 		return sApproach;

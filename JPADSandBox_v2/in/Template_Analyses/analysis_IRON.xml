@@ -50,12 +50,12 @@
 			file="analysis_performance_IRON.xml"
 			plot="TRUE"
 			take_off="TRUE"
-			climb="TRUE"
+			climb="FALSE"
 			cruise="FALSE"
-			descent="TRUE"
+			descent="FALSE"
 			landing="TRUE"
 			payload_range="FALSE"
-			V_n_diagram="TRUE"
+			V_n_diagram="FALSE"
 			mission_profile="FALSE"
 		/>
         <!--

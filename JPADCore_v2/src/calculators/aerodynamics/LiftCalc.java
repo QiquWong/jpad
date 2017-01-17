@@ -65,6 +65,7 @@ public class LiftCalc {
 
 		//		return 2. * Math.PI * ar / 
 		//        		(2 + Math.sqrt( Math.pow(eff3D,2) * (1 + Math.tan(Math.toRadians(sweepV_c2) / Math.pow(effMach, 2)) + 4) ));
+		
 		return 2. * Math.PI * ar / 
 				(2 + Math.sqrt(Math.pow(eff3D,2) * (1 + Math.pow(Math.tan(Math.toRadians(sweepV_c2)),2) / Math.pow(effMach, 2)) + 4 ));
 	}

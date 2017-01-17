@@ -77,7 +77,7 @@ public class TakeOffCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical, lift, drag, friction, totalForce;
 	private List<Amount<Length>> groundDistance, verticalDistance;
-	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial,
+	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial, groundIdlePhi,
 	alphaRed, cL0, cLground, kFailure;
 	private Double vFailure;
 	private boolean isAborted;
@@ -115,6 +115,7 @@ public class TakeOffCalc {
 			double kRot,
 			double kLO,
 			double kFailure,
+			double groundIdlePhi,
 			double phi,
 			double kAlphaDot,
 			double alphaRed,
@@ -141,6 +142,7 @@ public class TakeOffCalc {
 		this.kRot = kRot;
 		this.kLO = kLO;
 		this.kFailure = kFailure;
+		this.groundIdlePhi = groundIdlePhi;
 		this.phi = phi;
 		this.kAlphaDot = kAlphaDot;
 		this.alphaRed = alphaRed;
@@ -283,8 +285,8 @@ public class TakeOffCalc {
 		FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
 				1e-6,
 				1,
-				1e-17,
-				1e-17
+				1e-16,
+				1e-16
 				);
 		FirstOrderDifferentialEquations ode = new DynamicsEquationsTakeOff();
 
@@ -658,77 +660,30 @@ public class TakeOffCalc {
 				TakeOffCalc.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
 				//----------------------------------------------------------------------------------------
 				// THRUST:
-				if(!isAborted)
-					TakeOffCalc.this.getThrust().add(Amount.valueOf(
-							((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
-							SI.NEWTON)
-							);
-				else {
-					if(t < tRec.getEstimatedValue())
-						TakeOffCalc.this.getThrust().add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
-								SI.NEWTON)
-								);
-					else
-						TakeOffCalc.this.getThrust().add(Amount.valueOf(
-								0.0,
-								SI.NEWTON)
-								);
-				}
+				TakeOffCalc.this.getThrust().add(Amount.valueOf(
+						((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
+						SI.NEWTON)
+						);
 				//----------------------------------------------------------------------------------------
 				// THRUST HORIZONTAL:
-				if(!isAborted)
-					TakeOffCalc.this.getThrustHorizontal().add(Amount.valueOf(
-							((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
-									Amount.valueOf(
-											((DynamicsEquationsTakeOff)ode).alpha,
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-									),
-							SI.NEWTON)
-							);
-				else {
-					if(t < tRec.getEstimatedValue())
-						TakeOffCalc.this.getThrustHorizontal().add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
-										Amount.valueOf(
-												((DynamicsEquationsTakeOff)ode).alpha,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										),
-								SI.NEWTON)
-								);
-					else
-						TakeOffCalc.this.getThrustHorizontal().add(Amount.valueOf(
-								0.0,
-								SI.NEWTON)
-								);
-				}
+				TakeOffCalc.this.getThrustHorizontal().add(Amount.valueOf(
+						((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+								Amount.valueOf(
+										((DynamicsEquationsTakeOff)ode).alpha,
+										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+								),
+						SI.NEWTON)
+						);
 				//----------------------------------------------------------------------------------------
 				// THRUST VERTICAL:
-				if(!isAborted)
-					TakeOffCalc.this.getThrustVertical().add(Amount.valueOf(
-							((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
-									Amount.valueOf(
-											((DynamicsEquationsTakeOff)ode).alpha,
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-									),
-							SI.NEWTON)
-							);
-				else {
-					if(t < tRec.getEstimatedValue())
-						TakeOffCalc.this.getThrustVertical().add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
-										Amount.valueOf(
-												((DynamicsEquationsTakeOff)ode).alpha,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
-										),
-								SI.NEWTON)
-								);
-					else
-						TakeOffCalc.this.getThrustVertical().add(Amount.valueOf(
-								0.0,
-								SI.NEWTON)
-								);
-				}
+				TakeOffCalc.this.getThrustVertical().add(Amount.valueOf(
+						((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
+								Amount.valueOf(
+										((DynamicsEquationsTakeOff)ode).alpha,
+										NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
+								),
+						SI.NEWTON)
+						);
 				//--------------------------------------------------------------------------------
 				// SFC:
 				TakeOffCalc.this.getSfc().add(
@@ -1576,7 +1531,7 @@ public class TakeOffCalc {
 				}
 				else {
 					xDot[0] = speed;
-					xDot[1] = (g0/weight)*(-drag(speed, alpha, gamma, t)
+					xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
 							- (muBrake*(weight-lift(speed, alpha, gamma, t))));
 					xDot[2] = 0.0;
 					xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
@@ -1607,6 +1562,7 @@ public class TakeOffCalc {
 								)
 						);
 			else {
+				if(!isAborted) {
 				// CHECK ON THE APR SETTING, if present use this ...
 				if ((TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
 						&& (Double.valueOf(
@@ -1657,6 +1613,45 @@ public class TakeOffCalc {
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 									)
 							);
+				}
+				else {
+					if(time < tRec.doubleValue(SI.SECOND))
+						theThrust =	ThrustCalc.calculateThrustDatabase(
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
+								TakeOffCalc.this.getPhi(),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.TAKE_OFF,
+								TakeOffCalc.this.getAircraft().getPowerPlant(),
+								altitude,
+								SpeedCalc.calculateMach(
+										altitude,
+										speed + 
+										(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+												gamma,
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+										)
+								);
+					else
+						theThrust =	ThrustCalc.calculateThrustDatabase(
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
+								TakeOffCalc.this.getGroundIdlePhi(),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
+								EngineOperatingConditionEnum.TAKE_OFF,
+								TakeOffCalc.this.getAircraft().getPowerPlant(),
+								altitude,
+								SpeedCalc.calculateMach(
+										altitude,
+										speed + 
+										(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
+												gamma,
+												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+										)
+								);
+				}
 			}
 			
 			return theThrust;
@@ -2350,6 +2345,14 @@ public class TakeOffCalc {
 
 	public void setSfc(List<Double> sfc) {
 		this.sfc = sfc;
+	}
+
+	public double getGroundIdlePhi() {
+		return groundIdlePhi;
+	}
+
+	public void setGroundIdlePhi(double groundIdlePhi) {
+		this.groundIdlePhi = groundIdlePhi;
 	}
 
 }

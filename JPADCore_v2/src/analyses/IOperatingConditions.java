@@ -51,6 +51,9 @@ public interface IOperatingConditions {
 	public Double getThrottleTakeOff();
 	public void setThrottleTakeOff(Double _throttleTakeOff);
 
+	public Double getThrottleGroundIdleTakeOff();
+	public void setThrottleGroundIdleTakeOff(Double _throttleGroundIdleTakeOff);
+	
 	public List<Amount<Angle>> getFlapDeflectionTakeOff();
 	public void setFlapDeflectionTakeOff(List<Amount<Angle>> _flapDeflectionTakeOff);
 
@@ -63,8 +66,8 @@ public interface IOperatingConditions {
 	public Double getMachLanding();
 	public void setMachLanding(Double _machLanding);
 
-	public Double getReverseThrottleLanding();
-	public void setReverseThrottleLanding(Double _reverseThrottleLanding);
+	public Double getThrottleGroundIdleLanding();
+	public void setThrottleGroundIdleLanding(Double _throttleGroundIdleLanding);
 	
 	public List<Amount<Angle>> getFlapDeflectionLanding();
 	public void setFlapDeflectionLanding(List<Amount<Angle>> _flapDeflectionLanding);

@@ -52,13 +52,14 @@ public class OperatingConditions implements IOperatingConditions {
 	private Amount<Length> _altitudeTakeOff;
 	private Double _machTakeOff;
 	private Double _throttleTakeOff;
+	private Double _throttleGroundIdleTakeOff;
 	private List<Amount<Angle>> _flapDeflectionTakeOff;
 	private List<Amount<Angle>> _slatDeflectionTakeOff;
 
-	// Take-off data
+	// Landing data
 	private Amount<Length> _altitudeLanding;
 	private Double _machLanding;
-	private Double _reverseThrottleLanding;
+	private Double _throttleGroundIdleLanding;
 	private List<Amount<Angle>> _flapDeflectionLanding;
 	private List<Amount<Angle>> _slatDeflectionLanding;
 	
@@ -139,13 +140,14 @@ public class OperatingConditions implements IOperatingConditions {
 		private Amount<Length> __altitudeTakeOff;
 		private Double __machTakeOff;
 		private Double __throttleTakeOff;
+		private Double __throttleGroundIdleTakeOff;
 		private List<Amount<Angle>> __flapDeflectionTakeOff;
 		private List<Amount<Angle>> __slatDeflectionTakeOff;
 
 		// Take-off data
 		private Amount<Length> __altitudeLanding;
 		private Double __machLanding;
-		private Double __reverseThrottleLanding;
+		private Double __throttleGroundIdleLanding;
 		private List<Amount<Angle>> __flapDeflectionLanding;
 		private List<Amount<Angle>> __slatDeflectionLanding;
 		
@@ -204,6 +206,11 @@ public class OperatingConditions implements IOperatingConditions {
 			return this;
 		}
 		
+		public OperatingConditionsBuilder throttleGroundIdleTakeOff (Double throttleGroundIdleTakeOff) {
+			this.__throttleGroundIdleTakeOff = throttleGroundIdleTakeOff;
+			return this;
+		}
+		
 		public OperatingConditionsBuilder flapDeflectionTakeOff (List<Amount<Angle>> deltaFlapTakeOff) {
 			this.__flapDeflectionTakeOff = deltaFlapTakeOff;
 			return this;
@@ -224,8 +231,8 @@ public class OperatingConditions implements IOperatingConditions {
 			return this;
 		}
 		
-		public OperatingConditionsBuilder reverseThrottleLanding (Double reversethrottleLanding) {
-			this.__reverseThrottleLanding = reversethrottleLanding;
+		public OperatingConditionsBuilder throttleGroundIdleLanding (Double throttleGroundIdleLanding) {
+			this.__throttleGroundIdleLanding = throttleGroundIdleLanding;
 			return this;
 		}
 		
@@ -259,13 +266,13 @@ public class OperatingConditions implements IOperatingConditions {
 			
 			this.__machTakeOff = 0.2;
 			this.__altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
-			this.__throttleTakeOff = 1.0;
+			this.__throttleGroundIdleTakeOff = 1.0; 
 			this.__flapDeflectionTakeOff = new ArrayList<>();
 			this.__slatDeflectionTakeOff = new ArrayList<>();
 			
 			this.__machLanding = 0.2;
 			this.__altitudeLanding = Amount.valueOf(0.0, SI.METER);
-			this.__reverseThrottleLanding = 0.0;
+			this.__throttleGroundIdleLanding = 0.0;
 			this.__flapDeflectionLanding = new ArrayList<>();
 			this.__slatDeflectionLanding = new ArrayList<>();
 			
@@ -294,12 +301,13 @@ public class OperatingConditions implements IOperatingConditions {
 		this._machTakeOff = builder.__machTakeOff;
 		this._altitudeTakeOff = builder.__altitudeTakeOff;
 		this._throttleTakeOff = builder.__throttleTakeOff;
+		this._throttleGroundIdleTakeOff = builder.__throttleGroundIdleTakeOff;
 		this._flapDeflectionTakeOff = builder.__flapDeflectionTakeOff;
 		this._slatDeflectionTakeOff = builder.__slatDeflectionTakeOff;
 		
 		this._machLanding = builder.__machLanding;
 		this._altitudeLanding = builder.__altitudeLanding;
-		this._reverseThrottleLanding = builder.__reverseThrottleLanding;
+		this._throttleGroundIdleLanding = builder.__throttleGroundIdleLanding;
 		this._flapDeflectionLanding = builder.__flapDeflectionLanding;
 		this._slatDeflectionLanding = builder.__slatDeflectionLanding;
 		
@@ -391,6 +399,7 @@ public class OperatingConditions implements IOperatingConditions {
 		Double machTakeOff = 0.2;
 		Amount<Length> altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
 		Double throttleTakeOff = 1.0;
+		Double throttleGroundIdleTakeOff = 0.0;
 		List<Amount<Angle>> deltaFlapTakeOff = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatTakeOff = new ArrayList<>();
 		//.............................................................		
@@ -405,6 +414,10 @@ public class OperatingConditions implements IOperatingConditions {
 		String throttleTakeOffProperty = reader.getXMLPropertyByPath("//take_off/throttle");
 		if(throttleTakeOffProperty != null)
 			throttleTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//take_off/throttle"));
+		//.............................................................
+		String throttleGroundIdleTakeOffProperty = reader.getXMLPropertyByPath("//take_off/throttle_ground_idle");
+		if(throttleGroundIdleTakeOffProperty != null)
+			throttleGroundIdleTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//take_off/throttle_ground_idle"));
 		//.............................................................
 		List<String> deltaFlapTakeOffCheck = reader.getXMLPropertiesByPath(
 				"//take_off/delta_flap"
@@ -440,7 +453,7 @@ public class OperatingConditions implements IOperatingConditions {
 		// LANDING DATA:
 		Double machLanding = 0.2;
 		Amount<Length> altitudeLanding = Amount.valueOf(0.0, SI.METER);
-		Double reverseThrottleLanding = 0.0;
+		Double throttleGroundIdleLanding = 0.0;
 		List<Amount<Angle>> deltaFlapLanding = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatLanding = new ArrayList<>();
 		//.............................................................		
@@ -452,9 +465,9 @@ public class OperatingConditions implements IOperatingConditions {
 		if(altitudeLandingProperty != null)
 			altitudeLanding = reader.getXMLAmountLengthByPath("//landing/altitude").to(SI.METER);
 		//.............................................................
-		String reverseThrottleLandingProperty = reader.getXMLPropertyByPath("//landing/reverse_throttle");
-		if(reverseThrottleLandingProperty != null)
-			reverseThrottleLanding = Double.valueOf(reader.getXMLPropertyByPath("//landing/reverse_throttle"));
+		String throttleGroundIdleLandingProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle");
+		if(throttleGroundIdleLandingProperty != null)
+			throttleGroundIdleLanding = Double.valueOf(reader.getXMLPropertyByPath("//landing/throttle_ground_idle"));
 		//.............................................................
 		List<String> deltaFlapLandingCheck = reader.getXMLPropertiesByPath(
 				"//landing/delta_flap"
@@ -498,11 +511,12 @@ public class OperatingConditions implements IOperatingConditions {
 				.machTakeOff(machTakeOff)
 				.altitudeTakeOff(altitudeTakeOff)
 				.throttleTakeOff(throttleTakeOff)
+				.throttleGroundIdleTakeOff(throttleGroundIdleTakeOff)
 				.flapDeflectionTakeOff(deltaFlapTakeOff)
 				.slatDeflectionTakeOff(deltaSlatTakeOff)
 				.machLanding(machLanding)
 				.altitudeLanding(altitudeLanding)
-				.reverseThrottleLanding(reverseThrottleLanding)
+				.throttleGroundIdleLanding(throttleGroundIdleLanding)
 				.flapDeflectionLanding(deltaFlapLanding)
 				.slatDeflectionLanding(deltaSlatLanding)
 				.build();
@@ -534,7 +548,8 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\t.....................................\n")
 				.append("\tMach Take-off: " + _machTakeOff + "\n")
 				.append("\tAltitude Take-off: " + _altitudeTakeOff + "\n")
-				.append("\tThrottle Take-off (phi): " + _throttleTakeOff + "\n");
+				.append("\tThrottle Take-off (phi): " + _throttleTakeOff + "\n")
+				.append("\tThrottle Ground Idle Take-off (phi): " + _throttleGroundIdleTakeOff + "\n");
 		if(!_flapDeflectionTakeOff.isEmpty())
 				sb.append("\tFlap deflections Take-off: " + _flapDeflectionTakeOff + "\n");
 		if(!_slatDeflectionTakeOff.isEmpty())
@@ -542,7 +557,7 @@ public class OperatingConditions implements IOperatingConditions {
 				sb.append("\t.....................................\n")
 				.append("\tMach Landing: " + _machLanding + "\n")
 				.append("\tAltitude Landing: " + _altitudeLanding + "\n")
-				.append("\tReverse throttle Landing (phi): " + _reverseThrottleLanding + "\n");
+				.append("\tThrottle Ground Idle Landing (phi): " + _throttleGroundIdleLanding + "\n");
 		if(!_flapDeflectionLanding.isEmpty())
 				sb.append("\tFlap deflections Landing: " + _flapDeflectionLanding + "\n");
 		if(!_slatDeflectionLanding.isEmpty())
@@ -846,14 +861,6 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public void setMachLanding(Double _machLanding) {
 		this._machLanding = _machLanding;
-	}
-
-	public Double getReverseThrottleLanding() {
-		return _reverseThrottleLanding;
-	}
-
-	public void setReverseThrottleLanding(Double _reverseThrottleLanding) {
-		this._reverseThrottleLanding = _reverseThrottleLanding;
 	}
 
 	public List<Amount<Angle>> getFlapDeflectionLanding() {
@@ -1214,6 +1221,22 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public void setAltitudeToReach(Amount<Length> _altitudeToReach) {
 		this._altitudeToReach = _altitudeToReach;
+	}
+
+	public Double getThrottleGroundIdleTakeOff() {
+		return _throttleGroundIdleTakeOff;
+	}
+
+	public void setThrottleGroundIdleTakeOff(Double _throttleGroundIdleTakeOff) {
+		this._throttleGroundIdleTakeOff = _throttleGroundIdleTakeOff;
+	}
+
+	public Double getThrottleGroundIdleLanding() {
+		return _throttleGroundIdleLanding;
+	}
+
+	public void setThrottleGroundIdleLanding(Double _throttleGroundIdleLanding) {
+		this._throttleGroundIdleLanding = _throttleGroundIdleLanding;
 	}
 	
 } // end of class

@@ -283,6 +283,7 @@ public class PayloadRangeCalcMissionProfile{
 					_kRotation,
 					_kLiftOff,
 					_dragDueToEnigneFailure,
+					_theOperatingConditions.getThrottleGroundIdleTakeOff(),
 					_theOperatingConditions.getThrottleTakeOff(), 
 					_kAlphaDot,
 					_alphaReductionRate,
@@ -904,7 +905,7 @@ public class PayloadRangeCalcMissionProfile{
 						_cLmaxLanding,
 						_cLZeroLanding,
 						_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-						_theOperatingConditions.getReverseThrottleLanding(),
+						_theOperatingConditions.getThrottleGroundIdleLanding(),
 						_freeRollDuration
 						);
 
