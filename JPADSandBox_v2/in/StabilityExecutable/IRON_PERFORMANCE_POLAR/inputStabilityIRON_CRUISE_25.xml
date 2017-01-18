@@ -10,7 +10,7 @@
                 <x_cg unit="m">21.2175</x_cg>   <!--- 15, 25, 32% -->
                 <y_cg unit="m">0.0</y_cg>    
                 <z_cg unit="m">-1.1</z_cg> <!-- 10% MAC -->
-                <altitude unit="m">0.0</altitude>   <!-- cruise:30kft stall: 16.5kft-->
+                <altitude unit="m">9144</altitude>   <!-- cruise:30kft stall: 16.5kft-->
                 <mach_number>0.62</mach_number>   <!-- cruise:M=0.62 Take-Off:M=0.171 Landing: M=0.15-->
 				<delta_CD0_miscellaneous>0.0070</delta_CD0_miscellaneous>
 				<delta_CD0_gear>0.0150</delta_CD0_gear>
@@ -63,7 +63,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
                 <aspect_ratio>12.0</aspect_ratio>
                 <number_of_point_semispan>60</number_of_point_semispan>
                 <adimensional_kink_station>0.3</adimensional_kink_station>
-				<wing_oswald_factor>0.85</wing_oswald_factor><!-- this value is necessary if <wing polar="CALCULATED_INPUT_AIRFOIL_PARASITE">-->
+				<wing_oswald_factor>0.85</wing_oswald_factor><!-- this value is necessary if <wing polar="CALCULATED_INPUT_AIRFOIL_PARASITE"> 0.85-->
 	            <angle_of_incidence unit="°">2</angle_of_incidence>
 	            <number_of_given_sections>3</number_of_given_sections>
 	            <sweep_quarter_chord unit="°">7.8</sweep_quarter_chord>
@@ -229,7 +229,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
                <z unit="m">1.02</z>
             </position>
    <global>
-                <surface unit="m²">33.49</surface>
+                <surface unit="m²">33.62</surface>
                 <aspect_ratio>2.44</aspect_ratio>
                 <number_of_point_semispan>30</number_of_point_semispan>
                 <adimensional_kink_station>1</adimensional_kink_station>
@@ -271,7 +271,7 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
             <distribution>
                 <geometry>
      <y_adimensional_stations>[0,1]</y_adimensional_stations>
-     <chord_distribution unit="m">[4.58,2.86]</chord_distribution>
+     <chord_distribution unit="m">[4.55,2.84]</chord_distribution>
      <!-- XLE is in LRF, so the root value of XLE  must be zero -->
      <x_le_distribution unit="m">[0,1.40]</x_le_distribution>
      <twist_distribution unit="°">[0,0]</twist_distribution>

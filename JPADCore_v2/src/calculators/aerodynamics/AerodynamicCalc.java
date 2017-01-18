@@ -555,13 +555,10 @@ public class AerodynamicCalc {
 					clInducedDistributionAtAlphaNew[ii]
 					);
 			
-			cpDistribution.add(ii,0.25 -
+			cpDistribution.add(ii,0.25-
 					(cmActual/
 					clInducedDistributionAtAlphaNew[ii]));
-			
-//			cpDistribution.add(ii,liftingSurfaceXACadimensionalDistribution.get(ii) -
-//					(cmActual/
-//							clInducedDistributionAtAlphaNew[ii]));
+
 		}
 		cpDistribution.add(numberOfPointSemiSpanWise-1,0.0);
 		return cpDistribution;

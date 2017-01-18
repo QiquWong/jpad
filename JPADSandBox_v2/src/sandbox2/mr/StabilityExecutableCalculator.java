@@ -366,7 +366,7 @@ public class StabilityExecutableCalculator {
 			) {
 
 		double _vortexSemiSpanToSemiSpanRatio = 1./(2*_numberOfPointSemiSpanWise);
-		double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 40, 31);
+		double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 45, 31);
 		double[] clDistributionActualNasaBlackwell = new double[_numberOfPointSemiSpanWise]; 
 		boolean firstIntersectionFound = false;
 		int indexOfFirstIntersection = 0;
@@ -1388,43 +1388,47 @@ public class StabilityExecutableCalculator {
 		
 		//---------------------------------------------------------------
 		// deltaCD
-		Double delta1;
-
-				delta1 = (
-						highLiftDatabaseReader
-						.getDelta1VsCfCPlain(
-								cfc,
-								maxTicknessMeanElevator
-								)
-						);
-
-
-		Double delta2;
-
-				delta2 = (
-						highLiftDatabaseReader
-						.getDelta2VsDeltaFlapPlain(Math.abs(elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE)))
-						);
-		
-
-		Double delta3;
-			delta3=(
-					highLiftDatabaseReader
-					.getDelta3VsBfB(
-							theStabilityManager.getElevatorEtaIn(),
-							theStabilityManager.getElevatorEtaOut(),
-							theStabilityManager.getHTailTaperRatio()
-							)
-					);
-
-
-		Double deltaCDList;
-
-			deltaCDList = (
-					delta1*
-					delta2*
-					delta3
-					);
+//		Double delta1;
+//
+//				delta1 = (
+//						highLiftDatabaseReader
+//						.getDelta1VsCfCPlain(
+//								cfc,
+//								maxTicknessMeanElevator
+//								)
+//						);
+//
+//
+//		Double delta2;
+//
+//				delta2 = (
+//						highLiftDatabaseReader
+//						.getDelta2VsDeltaFlapPlain(Math.abs(elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE)))
+//						);
+//		
+//
+//		Double delta3;
+//			delta3=(
+//					highLiftDatabaseReader
+//					.getDelta3VsBfB(
+//							theStabilityManager.getElevatorEtaIn(),
+//							theStabilityManager.getElevatorEtaOut(),
+//							theStabilityManager.getHTailTaperRatio()
+//							)
+//					);
+//
+//
+//		Double deltaCDList;
+//
+//			deltaCDList = (
+//					delta1*
+//					delta2*
+//					delta3
+//					);
+//		
+		Double deltaCDList = 0.0000156*
+				Math.pow(elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE),2) + 
+				0.000002 * elevatorDeflectionAngle.doubleValue(NonSI.DEGREE_ANGLE);
 		
 		theStabilityManager
 		.getDeltaCD0Elevator().put(elevatorDeflectionAngle, deltaCDList);

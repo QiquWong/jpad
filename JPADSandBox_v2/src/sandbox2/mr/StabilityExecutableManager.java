@@ -709,7 +709,7 @@ public class StabilityExecutableManager {
 	List<List<Double>> clDistributions; 
 	Double[] cl3D;
 	
-	
+	Amount<Length> _wingHorizontalDistanceACtoCG,_wingVerticalDistranceACtoCG;
 	/*****************************************************************************************************************************************
 	 * In this section the arrays are initialized. These initialization wont be made in the final version because                            *
 	 * it will be recalled from the wing
@@ -2127,6 +2127,8 @@ public class StabilityExecutableManager {
 			.append("\n")
 			;
 		}
+		
+		sb.append("\t\tCL tail Eq. = " +_hTailEquilibriumLiftCoefficient+ "\n");
 		sb.append("\t\tCL Eq. = " +_totalEquilibriumLiftCoefficient+ "\n");
 		sb.append("\t\tCD Eq. = " +_totalTrimDrag+ "\n")
 	
@@ -2141,6 +2143,7 @@ public class StabilityExecutableManager {
 		.append("\t\tCM wing with pendular stability = " + _wingMomentCoefficientPendular + "\n")
 		.append("\t\tCM Horizontal tail = " + _hTailMomentCoefficientPendular + "\n")
 	    .append("\t\tCM Fuselage = " + _fuselageMomentCoefficient + "\n")
+	    .append("\t\tCM Fuselage due to drag = " + _fuselageMomentCoefficientdueToDrag + "\n")
 	    .append("\t\tCM Total delta e = 0 = " + _totalMomentCoefficientPendular + "\n")
 	    .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasBody, "\n\t\tAlpha Body", ","))
 		;
@@ -2227,28 +2230,37 @@ public class StabilityExecutableManager {
 		sb.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasTail, "\n\t\tAlpha Body", ","))
 		.append("\t\tcl wing = " + _hTailEquilibriumLiftCoefficient + "\n\n");
 		
-		
-		// CL FLAPPED CURVE
-		
-		if(_theCondition == ConditionEnum.TAKE_OFF || _theCondition == ConditionEnum.LANDING){
-		sb.append("\nFLAPPED 3D CURVE\n")
+//  	//DISTANCES ----------------------------------------------------------
+		sb.append("\nDISTANCES\n")
 		.append("-------------------------------------\n")
-		.append("\t\talpha zero lift = " + _alphaZeroLiftFlapped + "\n" )
-		.append("\t\tCL zero = " + _clZeroFlapped+ "\n")
-		.append("\t\tCL alpha = " + _clAlphaDegFlapped+ "\n")
-		.append("\t\tAlpha star = " + _alphaStarFlapped+ "\n")
-		.append("\t\tCL max = " + _clMaxFlapped+ "\n")
-		.append("\t\tAlpha stall = " + _alphaStallFlapped+ "\n")
-		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasWing, "\t\tAlpha Wing", ","))
-		.append("\t\tCL 3D Curve = " + Arrays.toString(_cl3DCurveWingFlapped)+ "\n")
-		.append("\t\teta wing = " + _wingYAdimensionalDistribution + "\n\n")
-		.append("\t\tCL max distribution at alpha " + _alphaStallLinearFlapped + " = " + _clMaxDistributionFlapped + "\n\n")
-		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphaWingForDistribution, "\t\tAlpha Wing", ","))
-		.append("\t\tCL 3D Curve  = " + Arrays.toString(cl3D) + "\n\n");
-		for (int i=0; i<_alphaWingForDistribution.size(); i++){
-			sb.append("\t\tCl distribution  at alpha " + _alphaWingForDistribution.get(i) +  " = " + clDistributions.get(i) + "\n\n");
-		}
-		}
+		.append("\t\tWing horizontal distance = " + _wingHorizontalDistanceACtoCG + "\n")
+		.append("\t\tWing vertical distance = " + _wingVerticalDistranceACtoCG + "\n")
+		.append("\t\tHorizontal tail horizontal distance = " + _hTailHorizontalDistanceACtoCG + "\n")
+		.append("\t\tHorizontal tail vertical distance = " + _hTailVerticalDistranceACtoCG + "\n")
+		.append("\t\tFuselage vertical distance = (-) " + _zCGAircraft + "\n")
+		.append("\t\tLanding gear arm = " + _landingGearArm + "\n");
+		
+//		// CL FLAPPED CURVE
+//		
+//		if(_theCondition == ConditionEnum.TAKE_OFF || _theCondition == ConditionEnum.LANDING){
+//		sb.append("\nFLAPPED 3D CURVE\n")
+//		.append("-------------------------------------\n")
+//		.append("\t\talpha zero lift = " + _alphaZeroLiftFlapped + "\n" )
+//		.append("\t\tCL zero = " + _clZeroFlapped+ "\n")
+//		.append("\t\tCL alpha = " + _clAlphaDegFlapped+ "\n")
+//		.append("\t\tAlpha star = " + _alphaStarFlapped+ "\n")
+//		.append("\t\tCL max = " + _clMaxFlapped+ "\n")
+//		.append("\t\tAlpha stall = " + _alphaStallFlapped+ "\n")
+//		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this. _alphasWing, "\t\tAlpha Wing", ","))
+//		.append("\t\tCL 3D Curve = " + Arrays.toString(_cl3DCurveWingFlapped)+ "\n")
+//		.append("\t\teta wing = " + _wingYAdimensionalDistribution + "\n\n")
+//		.append("\t\tCL max distribution at alpha " + _alphaStallLinearFlapped + " = " + _clMaxDistributionFlapped + "\n\n")
+//		.append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphaWingForDistribution, "\t\tAlpha Wing", ","))
+//		.append("\t\tCL 3D Curve  = " + Arrays.toString(cl3D) + "\n\n");
+//		for (int i=0; i<_alphaWingForDistribution.size(); i++){
+//			sb.append("\t\tCl distribution  at alpha " + _alphaWingForDistribution.get(i) +  " = " + clDistributions.get(i) + "\n\n");
+//		}
+//		}
 		return sb.toString();
 	}
 
@@ -4378,7 +4390,8 @@ public class StabilityExecutableManager {
 			cdTemp = new Double[_numberOfAlphasBody];
 			
 			for (int ii=0; ii<_numberOfAlphasBody; ii++){
-				cdTemp[ii] = _hTailDragCoefficient3DCurve.get(ii)+ _deltaCD0Elevator.get(_anglesOfElevatorDeflection.get(i));
+				cdTemp[ii] = _hTailDragCoefficient3DCurve.get(ii)
+						+ _deltaCD0Elevator.get(_anglesOfElevatorDeflection.get(i));
 			}
 			
 			_hTailDragCoefficient3DCurveWithElevator.put(
@@ -4405,8 +4418,8 @@ public class StabilityExecutableManager {
 				
 				
 				cdTemp[ii] = _hTailParasiteDragCoefficientDistribution.get(ii)+
-						inducedDragTemp.get(ii) +
-						_deltaCD0Elevator.get(_anglesOfElevatorDeflection.get(i));
+						inducedDragTemp.get(ii) 
+					+	_deltaCD0Elevator.get(_anglesOfElevatorDeflection.get(i));
 			}
 			
 			_hTailDragCoefficient3DCurveWithElevator.put(
@@ -5178,13 +5191,6 @@ public class StabilityExecutableManager {
 			}
 		}
 
-
-		// Moment due to drag
-		
-		for (int i=0; i<_numberOfAlphasBody; i++){
-			_fuselageMomentCoefficientdueToDrag.add(i, 
-					cdDistributionFuselageFinal.get(i) * (_zCGAircraft.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)) );	
-		}
 	}
 	public void calculateMomentdueToLandingGear(){
 		_landingGearArm = Amount.valueOf(
@@ -5202,7 +5208,7 @@ public class StabilityExecutableManager {
 		for (int i=0; i<this._anglesOfElevatorDeflection.size(); i++){
 			_clTotalList = new ArrayList<>();
 			for (int ii=0; ii<getNumberOfAlphasBody(); ii++){
-				_clTotalList.add(_wingliftCoefficient3DCurveCONDITION[ii] + (
+				_clTotalList.add(_fuselagewingliftCoefficient3DCurve[ii] + (
 						_hTailLiftCoefficient3DCurveWithElevator.get(_anglesOfElevatorDeflection.get(i))[ii]*
 						_dynamicPressureRatio*
 						(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))));
@@ -5220,11 +5226,17 @@ public class StabilityExecutableManager {
 		//normal force array
 
 		for (int i=0; i<_numberOfAlphasBody; i++){
+//			_wingNormalCoefficient.add(
+//					i,
+//					_wingliftCoefficient3DCurveCONDITION[i]*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN))+
+//					_wingDragCoefficient3DCurve.get(i)*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)));
+			
 			_wingNormalCoefficient.add(
 					i,
-					_wingliftCoefficient3DCurveCONDITION[i]*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN))+
+					_fuselagewingliftCoefficient3DCurve[i]*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN))+
 					_wingDragCoefficient3DCurve.get(i)*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)));
 
+			
 			_wingHorizontalCoefficient.add(
 					i,
 					_wingDragCoefficient3DCurve.get(i)*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN)) - 
@@ -5233,7 +5245,6 @@ public class StabilityExecutableManager {
 		}
 		
 		// moment 
-		Amount<Length> _wingHorizontalDistanceACtoCG,_wingVerticalDistranceACtoCG;
 		
 		
 		_wingHorizontalDistanceACtoCG = Amount.valueOf(
@@ -5246,8 +5257,10 @@ public class StabilityExecutableManager {
 		
 		double zVerticalDistance;
 
-			zVerticalDistance = _zApexWing.doubleValue(SI.METER)+_wingZACMAC.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
+			//zVerticalDistance = _zApexWing.doubleValue(SI.METER)+_wingZACMAC.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
 		
+			zVerticalDistance = _zApexWing.doubleValue(SI.METER) - _zCGAircraft.doubleValue(SI.METER);
+			
 		_wingVerticalDistranceACtoCG = Amount.valueOf(zVerticalDistance, SI.METER);
 		
 		for (int i=0; i<_numberOfAlphasBody; i++){
@@ -5315,11 +5328,16 @@ public class StabilityExecutableManager {
 				for (int i=0; i<_numberOfAlphasBody; i++){
 					_hTailMomentCoefficientPendular.add(i,
 							(_hTailNormalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE))*(_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/ _wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio)) 
-							+ (_hTailHorizontalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio))
-							
+							+ (_hTailHorizontalCoefficient.get(i)*(_hTailSurface.doubleValue(SI.SQUARE_METRE)/_wingSurface.doubleValue(SI.SQUARE_METRE)) * (_hTailVerticalDistranceACtoCG.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio))			
+							+ _hTailMomentCoefficientFinal.get(i)*
+							(_hTailSurface.doubleValue(SI.SQUARE_METRE)/
+									_wingSurface.doubleValue(SI.SQUARE_METRE))*
+							(_hTailMAC.doubleValue(SI.METER)/
+									_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio)
 							);
 				}
 			}
+		
 			if(_downwashConstant == Boolean.TRUE){
 				for (int i=0; i<_numberOfAlphasBody; i++){
 					_hTailMomentCoefficientPendular.add(i,
@@ -5335,20 +5353,44 @@ public class StabilityExecutableManager {
 			}
 
 
-		
+			//FUSELAGE-----------------------------------
+			
+			// Moment due to drag
+			
+			for (int i=0; i<_numberOfAlphasBody; i++){
+				_fuselageMomentCoefficientdueToDrag.add(i, 
+						cdDistributionFuselageFinal.get(i) * (-_zCGAircraft.doubleValue(SI.METER)/_wingMAC.doubleValue(SI.METER)) );	
+			}
+			
 			//PROPELLER------------------------------------
 		
 			//TOTAL------------------------------------
 			// delta e =0
+			if(_theCondition == ConditionEnum.CRUISE){
 			for (int ii=0; ii<_numberOfAlphasBody; ii++){
 			_totalMomentCoefficientPendular.add(ii,
 					_wingMomentCoefficientPendular.get(ii) +
 					_fuselageMomentCoefficient.get(ii) +
+					_fuselageMomentCoefficientdueToDrag.get(ii)+
 					_hTailMomentCoefficientPendular.get(ii));
+			}
+			}
+			
+			// delta e =0
+			if(_theCondition == ConditionEnum.TAKE_OFF || _theCondition == ConditionEnum.LANDING){
+			for (int ii=0; ii<_numberOfAlphasBody; ii++){
+			_totalMomentCoefficientPendular.add(ii,
+					_wingMomentCoefficientPendular.get(ii) +
+					_fuselageMomentCoefficient.get(ii) +
+					_fuselageMomentCoefficientdueToDrag.get(ii)+
+					_hTailMomentCoefficientPendular.get(ii)+
+			_landingGearMomentDueToDrag.get(ii));
+			}
 			}
 	
 			
-			//other values
+			//Whith elevator deflection------------------------------------------------
+			
 			List<Double> normalCoefficients, horizontalCoefficients, momentCoefficentHTail, momentCoefficientTotal ;
 			
 			//normal and horizontal forces
@@ -5459,9 +5501,26 @@ public class StabilityExecutableManager {
 							(_hTailMAC.doubleValue(SI.METER)/
 									_wingMAC.doubleValue(SI.METER)*_dynamicPressureRatio)
 							);
+
+				if(_theCondition== ConditionEnum.CRUISE){
+					momentCoefficientTotal.add(ii,
+							_wingMomentCoefficientPendular.get(ii) +
+							_fuselageMomentCoefficient.get(ii) +
+							_fuselageMomentCoefficientdueToDrag.get(ii)+
+							momentCoefficentHTail.get(ii));
+				}
 				
-				momentCoefficientTotal.add(ii,
-						_wingMomentCoefficientPendular.get(ii) + _fuselageMomentCoefficient.get(ii) + momentCoefficentHTail.get(ii));
+				if(_theCondition== ConditionEnum.TAKE_OFF || _theCondition== ConditionEnum.LANDING){
+					momentCoefficientTotal.add(ii,
+							_wingMomentCoefficientPendular.get(ii) +
+							_fuselageMomentCoefficient.get(ii) +
+							_fuselageMomentCoefficientdueToDrag.get(ii)+
+							_landingGearMomentDueToDrag.get(ii)+
+							momentCoefficentHTail.get(ii));
+				}
+				
+				
+				
 				}
 		
 			 
@@ -5479,12 +5538,14 @@ public class StabilityExecutableManager {
 	public void calculateHTailEquilibriumLiftCoefficient(){
 		
 		for (int i=0; i<_numberOfAlphasBody; i++){
-		_hTailEquilibriumLiftCoefficient.add(i,
-				(-_wingMomentCoefficientPendular.get(i)-_fuselageMomentCoefficient.get(i))*
-				(_wingSurface.doubleValue(SI.SQUARE_METRE)/_hTailSurface.doubleValue(SI.SQUARE_METRE)) *
-				(_wingMAC.doubleValue(SI.METER)/_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER))*
-				(1/_dynamicPressureRatio)
-				);
+			
+			_hTailEquilibriumLiftCoefficient.add(i,
+					(-_wingMomentCoefficientPendular.get(i)-_fuselageMomentCoefficient.get(i)-_fuselageMomentCoefficientdueToDrag.get(i))*
+					(_wingSurface.doubleValue(SI.SQUARE_METRE)/_hTailSurface.doubleValue(SI.SQUARE_METRE)) *
+					(_wingMAC.doubleValue(SI.METER)/_hTailHorizontalDistanceACtoCG.doubleValue(SI.METER))*
+					(1/_dynamicPressureRatio)
+					);
+	
 		}
 	}
 	public void calculateTotalEquilibriumLiftCoefficient(){
@@ -5643,8 +5704,8 @@ public class StabilityExecutableManager {
 				
 				
 				cdTemp[ii] = _hTailParasiteDragCoefficientDistribution.get(ii)+
-						inducedDragTemp.get(ii) +
-						_deltaCD0Elevator.get(deltaEforCDEquilibrium.get(i));
+						inducedDragTemp.get(ii) 
+					+ _deltaCD0Elevator.get(deltaEforCDEquilibrium.get(i));
 			}
 			//---------
 
