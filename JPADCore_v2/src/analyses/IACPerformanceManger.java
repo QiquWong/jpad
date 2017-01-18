@@ -81,12 +81,6 @@ public interface IACPerformanceManger {
 	public Amount<Length> getObstacleTakeOff() ;
 	public void setObstacleTakeOff(Amount<Length> _obstacleTakeOff) ;
 
-	public Double getMu() ;
-	public void setMu(Double _mu) ;
-
-	public Double getMuBrake() ;
-	public void setMuBrake(Double _muBrake) ;
-
 	public Double getCLmaxTakeOff() ;
 	public void setCLmaxTakeOff(Double _cLmaxTakeOff) ;
 

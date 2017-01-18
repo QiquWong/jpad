@@ -49,14 +49,14 @@
 		<performance 
 			file="analysis_performance_IRON.xml"
 			plot="TRUE"
-			take_off="TRUE"
+			take_off="FALSE"
 			climb="FALSE"
 			cruise="FALSE"
 			descent="FALSE"
-			landing="TRUE"
-			payload_range="FALSE"
+			landing="FALSE"
+			payload_range="TRUE"
 			V_n_diagram="FALSE"
-			mission_profile="FALSE"
+			mission_profile="TRUE"
 		/>
         <!--
 		<aerodynamics file="analysis_aerodynamics.xml"/>

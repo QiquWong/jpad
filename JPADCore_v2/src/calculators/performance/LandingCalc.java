@@ -28,6 +28,7 @@ import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
@@ -70,8 +71,9 @@ public class LandingCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
-	private double mu, muBrake, cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiGroundIdle;
-
+	private double cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiGroundIdle;
+	private MyInterpolatingFunction mu, muBrake;
+	
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -109,8 +111,8 @@ public class LandingCalc {
 			double kA,
 			double kFlare, 
 			double kTD,
-			double mu,
-			double muBrake,
+			MyInterpolatingFunction mu,
+			MyInterpolatingFunction muBrake,
 			Amount<Length> wingToGroundDistance,
 			Amount<Length> obstacle,
 			Amount<Velocity> vWind,
@@ -359,7 +361,7 @@ public class LandingCalc {
 				// FRICTION:
 				if(t < nFreeRoll.getEstimatedValue()) 
 					LandingCalc.this.getFriction().add(Amount.valueOf(
-							LandingCalc.this.getMu()
+							((DynamicsEquationsLanding)ode).mu(x[1])
 							*(((DynamicsEquationsLanding)ode).weight
 									- ((DynamicsEquationsLanding)ode).lift(
 											x[1])
@@ -368,7 +370,7 @@ public class LandingCalc {
 							);
 				else 
 					LandingCalc.this.getFriction().add(Amount.valueOf(
-							LandingCalc.this.getMuBrake()
+							((DynamicsEquationsLanding)ode).muBrake(x[1])
 							*(((DynamicsEquationsLanding)ode).weight
 									- ((DynamicsEquationsLanding)ode).lift(
 											x[1])
@@ -393,7 +395,8 @@ public class LandingCalc {
 					LandingCalc.this.getTotalForce().add(Amount.valueOf(
 							 - ((DynamicsEquationsLanding)ode).thrust(x[1])
 							 - ((DynamicsEquationsLanding)ode).drag(x[1])
-							 - LandingCalc.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+							 - ((DynamicsEquationsLanding)ode).mu(x[1])
+							 *(((DynamicsEquationsLanding)ode).weight
 										- ((DynamicsEquationsLanding)ode).lift(x[1])),
 								SI.NEWTON)
 								);
@@ -401,7 +404,8 @@ public class LandingCalc {
 					LandingCalc.this.getTotalForce().add(Amount.valueOf(
 							 -((DynamicsEquationsLanding)ode).thrust(x[1])
 							 - ((DynamicsEquationsLanding)ode).drag(x[1])
-							 - LandingCalc.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
+							 - ((DynamicsEquationsLanding)ode).muBrake(x[1])
+							 *(((DynamicsEquationsLanding)ode).weight
 										- ((DynamicsEquationsLanding)ode).lift(x[1])),
 								SI.NEWTON)
 								);
@@ -417,7 +421,8 @@ public class LandingCalc {
 							Amount.valueOf((AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
 									*(- ((DynamicsEquationsLanding)ode).thrust(x[1])
 											- ((DynamicsEquationsLanding)ode).drag(x[1])
-											- LandingCalc.this.getMu()*(((DynamicsEquationsLanding)ode).weight
+											- ((DynamicsEquationsLanding)ode).mu(x[1])
+											*(((DynamicsEquationsLanding)ode).weight
 													- ((DynamicsEquationsLanding)ode).lift(x[1]))),
 									SI.METERS_PER_SQUARE_SECOND)
 							);
@@ -426,7 +431,8 @@ public class LandingCalc {
 							Amount.valueOf((AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsLanding)ode).weight)
 									*(- ((DynamicsEquationsLanding)ode).thrust(x[1])
 											- ((DynamicsEquationsLanding)ode).drag(x[1])
-											- LandingCalc.this.getMuBrake()*(((DynamicsEquationsLanding)ode).weight
+											- ((DynamicsEquationsLanding)ode).muBrake(x[1])
+											*(((DynamicsEquationsLanding)ode).weight
 													- ((DynamicsEquationsLanding)ode).lift(x[1]))),
 									SI.METERS_PER_SQUARE_SECOND)
 							);
@@ -608,8 +614,9 @@ public class LandingCalc {
 
 	public class DynamicsEquationsLanding implements FirstOrderDifferentialEquations {
 
-		double weight, g0, mu, muBrake, cD0, deltaCD0, ar, kGround, cLground, vWind, alphaGround;
-
+		double weight, g0, cD0, deltaCD0, ar, kGround, cLground, vWind, alphaGround;
+		MyInterpolatingFunction mu, muBrake;
+		
 		public DynamicsEquationsLanding() {
 
 			// constants and known values
@@ -638,12 +645,12 @@ public class LandingCalc {
 			if(t < LandingCalc.this.getnFreeRoll().getEstimatedValue()) {
 				xDot[0] = speed;
 				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
-						- (mu*(weight - lift(speed))));
+						- (mu(speed)*(weight - lift(speed))));
 			}
 			else {
 				xDot[0] = speed;
 				xDot[1] = (g0/weight)*(thrust(speed) - drag(speed)
-						- (muBrake*(weight - lift(speed))));
+						- (muBrake(speed)*(weight - lift(speed))));
 			}
 		}
 
@@ -708,6 +715,14 @@ public class LandingCalc {
 							theConditions.getAltitudeLanding().getEstimatedValue())
 					*(Math.pow((speed + vWind), 2))
 					*LandingCalc.this.getcLground();
+		}
+		
+		public double mu(double speed) {
+			return mu.value(speed);
+		}
+		
+		public double muBrake(double speed) {
+			return muBrake.value(speed);
 		}
 	}
 	
@@ -864,16 +879,16 @@ public class LandingCalc {
 		this.verticalDistance = verticalDistance;
 	}
 
-	public double getMu() {
+	public MyInterpolatingFunction getMu() {
 		return mu;
 	}
-	public void setMu(double mu) {
+	public void setMu(MyInterpolatingFunction mu) {
 		this.mu = mu;
 	}
-	public double getMuBrake() {
+	public MyInterpolatingFunction getMuBrake() {
 		return muBrake;
 	}
-	public void setMuBrake(double muBrake) {
+	public void setMuBrake(MyInterpolatingFunction muBrake) {
 		this.muBrake = muBrake;
 	}
 	public double getcLmaxLanding() {

@@ -110,6 +110,8 @@ public class DescentCalc {
 							)
 					);
 			
+			// TODO : PERFORM DESCENT IN SEVERAL TIME STEPS
+			
 			sfcListDescent.add(
 					ThrustCalc.calculateThrustDatabase(
 							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),

@@ -15,18 +15,26 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.performance.customdata.DragMap;
+import calculators.performance.customdata.DragThrustIntersectionMap;
+import calculators.performance.customdata.ThrustMap;
+import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import database.databasefunctions.engine.EngineDatabaseManager;
 import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.atmosphere.SpeedCalc;
 
 public class MissionProfileCalc {
 
@@ -37,13 +45,15 @@ public class MissionProfileCalc {
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
 	private Amount<Length> _takeOffMissionAltitude;
+	private Amount<Mass> _maximumTakeOffMass;
 	private Amount<Mass> _operatingEmptyMass;
 	private Amount<Mass> _singlePassengerMass;
 	private Integer _passengersNumber;
 	private Amount<Mass> _firstGuessInitialFuelMass;
 	private Amount<Length> _missionRange;
 	private Amount<Length> _firstGuessCruiseLength;
-	private Double _cruiseMissionMachNumber;
+	private MyInterpolatingFunction _sfcFunctionCruise;
+	private MyInterpolatingFunction _sfcFunctionAlternateCruise;
 	private Amount<Length> _alternateCruiseLength;
 	private Amount<Length> _alternateCruiseAltitude;
 	private Double _alternateCruiseMachNumber;
@@ -63,8 +73,8 @@ public class MissionProfileCalc {
 	private Double[] _polarCLCruise;
 	private Double[] _polarCDCruise;
 	private Amount<Velocity> _windSpeed;
-	private Double _mu;
-	private Double _muBrake;
+	private MyInterpolatingFunction _mu;
+	private MyInterpolatingFunction _muBrake;
 	private Amount<Duration> _dtRotation;
 	private Amount<Duration> _dtHold;
 	private Amount<Angle> _alphaGround;
@@ -103,6 +113,7 @@ public class MissionProfileCalc {
 	public MissionProfileCalc(
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
+			Amount<Mass> maximumTakeOffMass,
 			Amount<Mass> operatingEmptyMass,
 			Amount<Mass> singlePassengerMass,
 			Integer passengersNumber,
@@ -110,7 +121,8 @@ public class MissionProfileCalc {
 			Amount<Length> missionRange,
 			Amount<Length> takeOffMissionAltitude,
 			Amount<Length> firstGuessCruiseLength,
-			Double cruiseMissionMachNumber,
+			MyInterpolatingFunction sfcFunctionCruise,
+			MyInterpolatingFunction sfcFunctionAlternateCruise,
 			Amount<Length> alternateCruiseLength,
 			Amount<Length> alternateCruiseAltitude,
 			Double alternateCruiseMachNumber,
@@ -130,8 +142,8 @@ public class MissionProfileCalc {
 			Double[] polarCLCruise,
 			Double[] polarCDCruise,
 			Amount<Velocity> windSpeed,
-			Double mu,
-			Double muBrake,
+			MyInterpolatingFunction mu,
+			MyInterpolatingFunction muBrake,
 			Amount<Duration> dtRotation,
 			Amount<Duration> dtHold,
 			Amount<Angle> alphaGround,
@@ -155,6 +167,7 @@ public class MissionProfileCalc {
 		
 		this._theAircraft = theAircraft; 
 		this._theOperatingConditions = theOperatingConditions;
+		this._maximumTakeOffMass = maximumTakeOffMass;
 		this._operatingEmptyMass = operatingEmptyMass;
 		this._singlePassengerMass = singlePassengerMass;
 		this._passengersNumber = passengersNumber;
@@ -162,7 +175,8 @@ public class MissionProfileCalc {
 		this._missionRange = missionRange;
 		this._takeOffMissionAltitude = takeOffMissionAltitude;
 		this._firstGuessCruiseLength = firstGuessCruiseLength;
-		this._cruiseMissionMachNumber = cruiseMissionMachNumber;
+		this._sfcFunctionCruise = sfcFunctionCruise;
+		this._sfcFunctionAlternateCruise = sfcFunctionAlternateCruise;
 		this._alternateCruiseLength = alternateCruiseLength;
 		this._alternateCruiseAltitude = alternateCruiseAltitude;
 		this._alternateCruiseMachNumber = alternateCruiseMachNumber;
@@ -222,6 +236,14 @@ public class MissionProfileCalc {
 				.plus(_firstGuessInitialFuelMass); 
 		
 		_initialFuelMass = _firstGuessInitialFuelMass;
+		
+		if(_initialMissionMass.doubleValue(SI.KILOGRAM) > _maximumTakeOffMass.doubleValue(SI.KILOGRAM)) {
+			_initialMissionMass = _maximumTakeOffMass;
+			_initialFuelMass = _maximumTakeOffMass
+					.minus(_operatingEmptyMass)
+					.minus(_singlePassengerMass.times(_passengersNumber)); 
+		}
+		
 		Amount<Mass> newInitialFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		_totalFuelUsed = Amount.valueOf(0.0, SI.KILOGRAM);
 		int i = 0;
@@ -348,9 +370,6 @@ public class MissionProfileCalc {
 			Amount<Length> cruiseLength = _firstGuessCruiseLength;
 			_totalMissionRange = Amount.valueOf(0.0, SI.METER);
 			
-			double speed = _cruiseMissionMachNumber
-					*_theOperatingConditions.getAtmosphereCruise().getSpeedOfSound();
-			
 			while (
 					Math.abs(
 							(_missionRange.to(NonSI.NAUTICAL_MILE)
@@ -364,21 +383,89 @@ public class MissionProfileCalc {
 					>= 0.001
 					) {
 				
-				double check = Math.abs(
-						(_missionRange.to(NonSI.NAUTICAL_MILE)
-								.plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE))
-						.minus(_totalMissionRange.to(NonSI.NAUTICAL_MILE)))
-						.divide(_missionRange.to(NonSI.NAUTICAL_MILE)
-								.plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)))
-						.getEstimatedValue()
-						*100
-						) ;
-				
 				double[] cruiseSteps = MyArrayUtils.linspace(
 						0.0,
 						cruiseLength.doubleValue(SI.METER),
 						5
 						);
+				
+				Airfoil meanAirfoil = new Airfoil(
+						LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
+						_theAircraft.getWing().getAerodynamicDatabaseReader()
+						);
+				
+				int nPointSpeed = 1000;
+				double[] speedArray = MyArrayUtils.linspace(
+						SpeedCalc.calculateSpeedStall(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								(intialCruiseMass
+										.times(AtmosphereCalc.g0)
+										.getEstimatedValue()),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								MyArrayUtils.getMax(_polarCLCruise)
+								),
+						SpeedCalc.calculateTAS(
+								1.0,
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+								),
+						nPointSpeed
+						);
+				
+				List<DragMap> dragList = new ArrayList<>();
+				dragList.add(
+						DragCalc.calculateDragAndPowerRequired(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								(intialCruiseMass
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()
+									),
+								speedArray,
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								MyArrayUtils.getMax(_polarCLCruise),
+								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+								meanAirfoil.getAirfoilCreator().getType()
+								)
+						);
+				
+				List<ThrustMap> thrustList = new ArrayList<>();
+				thrustList.add(
+						ThrustCalc.calculateThrustAndPowerAvailable(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_theOperatingConditions.getThrottleCruise(),
+								speedArray,
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineType(), 
+								_theAircraft.getPowerPlant(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_theAircraft.getPowerPlant().getEngineNumber(),
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								)
+						);
+
+				List<DragThrustIntersectionMap> intersectionList = new ArrayList<>();
+				intersectionList.add(
+						PerformanceCalcUtils.calculateDragThrustIntersection(
+								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								speedArray,
+								(intialCruiseMass
+										.times(AtmosphereCalc.g0)
+										.getEstimatedValue()
+										),
+								_theOperatingConditions.getThrottleCruise(),
+								EngineOperatingConditionEnum.CRUISE,
+								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								MyArrayUtils.getMax(_polarCLCruise),
+								dragList,
+								thrustList
+								)
+						);
+				
+				double cruiseMissionMachNumber = intersectionList.get(0).getMaxMach();
+				double speed = intersectionList.get(0).getMaxSpeed();
 				
 				List<Amount<Mass>> aircraftMassPerStep = new ArrayList<>();
 				aircraftMassPerStep.add(intialCruiseMass);
@@ -424,41 +511,20 @@ public class MissionProfileCalc {
 										EngineOperatingConditionEnum.CRUISE,
 										_theAircraft.getPowerPlant(),
 										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
-										_cruiseMissionMachNumber
+										cruiseMissionMachNumber
 										)
 								)
 						.getEstimatedValue()
 						);
 				
 				List<Double> fuelFlows = new ArrayList<>();
-				if(phi.get(0) < 1.0) {
+				if(phi.get(0) < 1.001) {
 					fuelFlows.add(
 							dragPerStep.get(0).doubleValue(SI.NEWTON)
 							*(0.224809)*(0.454/60)
-							*(-0.1671*phi.get(0) + 0.5951)
+							*_sfcFunctionCruise.value(phi.get(0))
 							);
 				}
-				
-//				fuelFlows.add(
-//						dragPerStep.get(0).doubleValue(SI.NEWTON)
-//						*(0.224809)*(0.454/60)
-//						*EngineDatabaseManager.getSFC(
-//								_cruiseMissionMachNumber,
-//								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//								EngineDatabaseManager.getThrustRatio(
-//										_cruiseMissionMachNumber,
-//										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//										_theAircraft.getPowerPlant().getEngineType(),
-//										EngineOperatingConditionEnum.CRUISE,
-//										_theAircraft.getPowerPlant()
-//										),
-//								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//								_theAircraft.getPowerPlant().getEngineType(),
-//								EngineOperatingConditionEnum.CRUISE,
-//								_theAircraft.getPowerPlant()
-//								)
-//						);
 				
 				List<Amount<Duration>> times = new ArrayList<>(); 
 				times.add(
@@ -521,7 +587,7 @@ public class MissionProfileCalc {
 											EngineOperatingConditionEnum.CRUISE,
 											_theAircraft.getPowerPlant(),
 											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
-											_cruiseMissionMachNumber
+											cruiseMissionMachNumber
 											)
 									)
 							.getEstimatedValue()
@@ -531,30 +597,9 @@ public class MissionProfileCalc {
 						fuelFlows.add(
 								dragPerStep.get(j).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*(-0.1671*phi.get(j) + 0.5951)
+								*_sfcFunctionCruise.value(phi.get(j))
 								);
 					}
-					
-//					fuelFlows.add(
-//							dragPerStep.get(j).doubleValue(SI.NEWTON)
-//							*(0.224809)*(0.454/60)
-//							*EngineDatabaseManager.getSFC(
-//									_cruiseMissionMachNumber,
-//									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//									EngineDatabaseManager.getThrustRatio(
-//											_cruiseMissionMachNumber,
-//											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//											_theAircraft.getPowerPlant().getEngineType(),
-//											EngineOperatingConditionEnum.CRUISE,
-//											_theAircraft.getPowerPlant()
-//											),
-//									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//									_theAircraft.getPowerPlant().getEngineType(),
-//									EngineOperatingConditionEnum.CRUISE,
-//									_theAircraft.getPowerPlant()
-//									)
-//							);
 					
 					times.add(
 							Amount.valueOf(
@@ -685,31 +730,9 @@ public class MissionProfileCalc {
 					fuelFlowsAlternateCruise.add(
 							dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
 							*(0.224809)*(0.454/60)
-							*(-0.2114*phiAlternateCruise.get(0) + 0.6483)
+							*_sfcFunctionAlternateCruise.value(phiAlternateCruise.get(0))						
 							);
 				}
-				
-//				List<Double> fuelFlowsAlternateCruise = new ArrayList<>();
-//				fuelFlowsAlternateCruise.add(
-//						dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
-//						*(0.224809)*(0.454/60)
-//						*EngineDatabaseManager.getSFC(
-//								_alternateCruiseMachNumber,
-//								_alternateCruiseAltitude.doubleValue(SI.METER),
-//								EngineDatabaseManager.getThrustRatio(
-//										_alternateCruiseMachNumber,
-//										_alternateCruiseAltitude.doubleValue(SI.METER),
-//										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//										_theAircraft.getPowerPlant().getEngineType(),
-//										EngineOperatingConditionEnum.CRUISE,
-//										_theAircraft.getPowerPlant()
-//										),
-//								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//								_theAircraft.getPowerPlant().getEngineType(),
-//								EngineOperatingConditionEnum.CRUISE,
-//								_theAircraft.getPowerPlant()
-//								)
-//						);
 				
 				List<Amount<Duration>> timesAlternateCruise = new ArrayList<>(); 
 				timesAlternateCruise.add(
@@ -782,30 +805,9 @@ public class MissionProfileCalc {
 						fuelFlowsAlternateCruise.add(
 								dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
 								*(0.224809)*(0.454/60)
-								*(-0.2114*phiAlternateCruise.get(j) + 0.6483)
+								*_sfcFunctionAlternateCruise.value(phiAlternateCruise.get(j))
 								);
 					}
-					
-//					fuelFlowsAlternateCruise.add(
-//							dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
-//							*(0.224809)*(0.454/60)
-//							*EngineDatabaseManager.getSFC(
-//									_alternateCruiseMachNumber,
-//									_alternateCruiseAltitude.doubleValue(SI.METER),
-//									EngineDatabaseManager.getThrustRatio(
-//											_alternateCruiseMachNumber,
-//											_alternateCruiseAltitude.doubleValue(SI.METER),
-//											_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//											_theAircraft.getPowerPlant().getEngineType(),
-//											EngineOperatingConditionEnum.CRUISE,
-//											_theAircraft.getPowerPlant()
-//											),
-//									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//									_theAircraft.getPowerPlant().getEngineType(),
-//									EngineOperatingConditionEnum.CRUISE,
-//									_theAircraft.getPowerPlant()
-//									)
-//							);
 					
 					timesAlternateCruise.add(
 							Amount.valueOf(
@@ -873,6 +875,8 @@ public class MissionProfileCalc {
 						.minus(totalAlternateCruiseFuelUsed)
 						.minus(secondDescentFuelUsed);
 
+				// TODO : PERFORM HOLDING IN SEVERAL TIME STEPS
+				
 				Double sfcHolding = 
 						ThrustCalc.calculateThrustDatabase(
 								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
@@ -1078,8 +1082,23 @@ public class MissionProfileCalc {
 			// NEW INITIAL MISSION MASS
 			newInitialFuelMass = _totalFuelUsed.to(SI.KILOGRAM).divide(1-_fuelReserve); 
 			_initialMissionMass = _operatingEmptyMass
-					.plus(_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getNPax()))
+					.plus(_singlePassengerMass.times(_passengersNumber))
 					.plus(newInitialFuelMass); 
+			
+			if(_initialMissionMass.doubleValue(SI.KILOGRAM) > _maximumTakeOffMass.doubleValue(SI.KILOGRAM)) {
+
+				System.err.println("MAXIMUM TAKE-OFF MASS SURPASSED !! REDUCING PASSENGERS NUMBER TO INCREASE THE FUEL ... ");
+				
+				_passengersNumber += (int) Math.floor(
+						(_maximumTakeOffMass.minus(_initialMissionMass))
+						.divide(_singlePassengerMass)
+						.getEstimatedValue()
+						)
+						;
+				_initialMissionMass = _maximumTakeOffMass;
+				
+			}
+			
 			i++;
 			
 		}
@@ -1167,7 +1186,60 @@ public class MissionProfileCalc {
 		}
 		
 	}
+	@Override
+	public String toString() {
 
+		MyConfiguration.customizeAmountOutput();
+
+		StringBuilder sb = new StringBuilder()
+				.append("\t-------------------------------------\n")
+				.append("\t\tTotal mission distance = " + _missionRange.to(NonSI.NAUTICAL_MILE)
+				.plus(_alternateCruiseLength) + "\n")
+				.append("\t\tTotal mission duration = " + _totalMissionTime + "\n")
+				.append("\t\tAircraft mass at mission start = " + _initialMissionMass + "\n")
+				.append("\t\tAircraft mass at mission end = " + _endMissionMass + "\n")
+				.append("\t\tInitial fuel mass for the assigned mission = " + _initialFuelMass + "\n")
+				.append("\t\tTotal fuel mass used = " + _totalFuelUsed + "\n")
+				.append("\t\tFuel reserve = " + _fuelReserve*100 + " %\n")
+				.append("\t\tDesign passengers number = " + _theAircraft.getCabinConfiguration().getNPax() + "\n")
+				.append("\t\tPassengers number for this mission = " + _passengersNumber + "\n")
+				.append("\t\t.....................................\n")
+				.append("\t\tTake-off range = " + _rangeList.get(1).to(NonSI.NAUTICAL_MILE) + " \n")
+				.append("\t\tClimb range = " + _rangeList.get(2).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(1).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tCruise range = " + _rangeList.get(3).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(2).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tFirst descent range = " + _rangeList.get(4).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(3).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tAlternate cruise range = " + _rangeList.get(5).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(4).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tSecond descent range = " + _rangeList.get(6).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(5).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tHolding range = " + _rangeList.get(7).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(6).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tThird descent range = " + _rangeList.get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(7).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tLanding range = " + _rangeList.get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(8).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\t.....................................\n")
+				.append("\t\tTake-off duration = " + _timeList.get(1).to(NonSI.MINUTE) + " \n")
+				.append("\t\tClimb duration = " + _timeList.get(2).to(NonSI.MINUTE).minus(_timeList.get(1).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tCruise duration = " + _timeList.get(3).to(NonSI.MINUTE).minus(_timeList.get(2).to(NonSI.MINUTE))+ " \n")
+				.append("\t\tFirst descent duration = " + _timeList.get(4).to(NonSI.MINUTE).minus(_timeList.get(3).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tAlternate cruise duration = " + _timeList.get(5).to(NonSI.MINUTE).minus(_timeList.get(4).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tSecond descent duration = " + _timeList.get(6).to(NonSI.MINUTE).minus(_timeList.get(5).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tHolding duration = " + _timeList.get(7).to(NonSI.MINUTE).minus(_timeList.get(6).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tThird descent duration = " + _timeList.get(8).to(NonSI.MINUTE).minus(_timeList.get(7).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tLanding duration = " + _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)) + " \n")
+				.append("\t\t.....................................\n")
+				.append("\t\tTake-off used fuel = " + _fuelUsedList.get(1).to(SI.KILOGRAM) + " \n")
+				.append("\t\tClimb used fuel = " + _fuelUsedList.get(2).to(SI.KILOGRAM).minus(_fuelUsedList.get(1).to(SI.KILOGRAM)) + " \n")
+				.append("\t\tCruise used fuel = " + _fuelUsedList.get(3).to(SI.KILOGRAM).minus(_fuelUsedList.get(2).to(SI.KILOGRAM)) + "\n")
+				.append("\t\tFirst descent used fuel = " + _fuelUsedList.get(4).to(SI.KILOGRAM).minus(_fuelUsedList.get(3).to(SI.KILOGRAM)) + " \n")
+				.append("\t\tAlternate cruise used fuel = " + _fuelUsedList.get(5).to(SI.KILOGRAM).minus(_fuelUsedList.get(4).to(SI.KILOGRAM)) + "\n")
+				.append("\t\tSecond descent used fuel = " + _fuelUsedList.get(6).to(SI.KILOGRAM).minus(_fuelUsedList.get(5).to(SI.KILOGRAM)) + "\n")
+				.append("\t\tHolding used fuel = " + _fuelUsedList.get(7).to(SI.KILOGRAM).minus(_fuelUsedList.get(6).to(SI.KILOGRAM)) + " \n")
+				.append("\t\tThird descent used fuel = " + _fuelUsedList.get(8).to(SI.KILOGRAM).minus(_fuelUsedList.get(7).to(SI.KILOGRAM)) + " \n")
+				.append("\t\tLanding used fuel = " + _fuelUsedList.get(9).to(SI.KILOGRAM).minus(_fuelUsedList.get(8).to(SI.KILOGRAM)) + " \n")
+				.append("\t-------------------------------------\n")
+				;
+		
+		return sb.toString();
+		
+	}
+	
 	//--------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	
@@ -1307,19 +1379,19 @@ public class MissionProfileCalc {
 		this._windSpeed = _windSpeed;
 	}
 
-	public Double getMu() {
+	public MyInterpolatingFunction getMu() {
 		return _mu;
 	}
 
-	public void setMu(Double _mu) {
+	public void setMu(MyInterpolatingFunction _mu) {
 		this._mu = _mu;
 	}
 
-	public Double getMuBrake() {
+	public MyInterpolatingFunction getMuBrake() {
 		return _muBrake;
 	}
 
-	public void setMuBrake(Double _muBrake) {
+	public void setMuBrake(MyInterpolatingFunction _muBrake) {
 		this._muBrake = _muBrake;
 	}
 
@@ -1555,14 +1627,6 @@ public class MissionProfileCalc {
 		this._takeOffMissionAltitude = _takeOffMissionAltitude;
 	}
 
-	public Double getCruiseMissionMachNumber() {
-		return _cruiseMissionMachNumber;
-	}
-
-	public void setCruiseMissionMachNumber(Double _cruiseMissionMachNumber) {
-		this._cruiseMissionMachNumber = _cruiseMissionMachNumber;
-	}
-
 	public Double getAlternateCruiseMachNumber() {
 		return _alternateCruiseMachNumber;
 	}
@@ -1657,5 +1721,29 @@ public class MissionProfileCalc {
 
 	public void setPolarCDCruise(Double[] _polarCDCruise) {
 		this._polarCDCruise = _polarCDCruise;
+	}
+
+	public Amount<Mass> getMaximumTakeOffMass() {
+		return _maximumTakeOffMass;
+	}
+
+	public void setMaximumTakeOffMass(Amount<Mass> _maximumTakeOffMass) {
+		this._maximumTakeOffMass = _maximumTakeOffMass;
+	}
+
+	public MyInterpolatingFunction getSFCFunctionCruise() {
+		return _sfcFunctionCruise;
+	}
+
+	public void setSFCFunctionCruise(MyInterpolatingFunction _sfcFunctionCruise) {
+		this._sfcFunctionCruise = _sfcFunctionCruise;
+	}
+
+	public MyInterpolatingFunction getSFCFunctionAlternateCruise() {
+		return _sfcFunctionAlternateCruise;
+	}
+
+	public void setSFCFunctionAlternateCruise(MyInterpolatingFunction _sfcFunctionAlternateCruise) {
+		this._sfcFunctionAlternateCruise = _sfcFunctionAlternateCruise;
 	}
 }

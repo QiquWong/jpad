@@ -77,7 +77,7 @@ public class TakeOffCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical, lift, drag, friction, totalForce;
 	private List<Amount<Length>> groundDistance, verticalDistance;
-	private double kAlphaDot, kcLMax, kRot, kLO, phi, mu, muBrake, cLmaxTO, kGround, alphaDotInitial, groundIdlePhi,
+	private double kAlphaDot, kcLMax, kRot, kLO, phi, cLmaxTO, kGround, alphaDotInitial, groundIdlePhi,
 	alphaRed, cL0, cLground, kFailure;
 	private Double vFailure;
 	private boolean isAborted;
@@ -89,6 +89,8 @@ public class TakeOffCalc {
 	// Interpolated function for balanced field length calculation
 	MyInterpolatingFunction continuedTakeOffFitted = new MyInterpolatingFunction();
 	MyInterpolatingFunction abortedTakeOffFitted = new MyInterpolatingFunction();
+	MyInterpolatingFunction mu;
+	MyInterpolatingFunction muBrake;
 	
 	// integration index
 	@SuppressWarnings("unused")
@@ -119,8 +121,8 @@ public class TakeOffCalc {
 			double phi,
 			double kAlphaDot,
 			double alphaRed,
-			double mu,
-			double muBrake,
+			MyInterpolatingFunction mu,
+			MyInterpolatingFunction muBrake,
 			Amount<Length> wingToGroundDistance,
 			Amount<Length> obstacle,
 			Amount<Velocity> vWind,
@@ -715,7 +717,7 @@ public class TakeOffCalc {
 				if(!isAborted) {
 					if(t < tEndRot.getEstimatedValue())
 						TakeOffCalc.this.getFriction().add(Amount.valueOf(
-								TakeOffCalc.this.getMu()
+								((DynamicsEquationsTakeOff)ode).mu(x[1])
 								*(((DynamicsEquationsTakeOff)ode).weight
 										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
@@ -730,7 +732,7 @@ public class TakeOffCalc {
 				else {
 					if(t < tRec.getEstimatedValue())
 						TakeOffCalc.this.getFriction().add(Amount.valueOf(
-								TakeOffCalc.this.getMu()
+								((DynamicsEquationsTakeOff)ode).mu(x[1])
 								*(((DynamicsEquationsTakeOff)ode).weight
 										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
@@ -741,7 +743,7 @@ public class TakeOffCalc {
 								);
 					else
 						TakeOffCalc.this.getFriction().add(Amount.valueOf(
-								TakeOffCalc.this.getMuBrake()
+								((DynamicsEquationsTakeOff)ode).muBrake(x[1])
 								*(((DynamicsEquationsTakeOff)ode).weight
 										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
@@ -785,7 +787,8 @@ public class TakeOffCalc {
 									((DynamicsEquationsTakeOff)ode).alpha,
 									x[2],
 									t)
-							- TakeOffCalc.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+							- ((DynamicsEquationsTakeOff)ode).mu(x[1])
+							*(((DynamicsEquationsTakeOff)ode).weight
 									- ((DynamicsEquationsTakeOff)ode).lift(
 											x[1],
 											((DynamicsEquationsTakeOff)ode).alpha,
@@ -811,7 +814,8 @@ public class TakeOffCalc {
 										((DynamicsEquationsTakeOff)ode).alpha,
 										x[2],
 										t)
-								- TakeOffCalc.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+								- ((DynamicsEquationsTakeOff)ode).mu(x[1])
+								*(((DynamicsEquationsTakeOff)ode).weight
 										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
 												((DynamicsEquationsTakeOff)ode).alpha,
@@ -830,7 +834,8 @@ public class TakeOffCalc {
 										((DynamicsEquationsTakeOff)ode).alpha,
 										x[2],
 										t)
-								- TakeOffCalc.this.getMuBrake()*(((DynamicsEquationsTakeOff)ode).weight
+								- ((DynamicsEquationsTakeOff)ode).muBrake(x[1])
+								*(((DynamicsEquationsTakeOff)ode).weight
 										- ((DynamicsEquationsTakeOff)ode).lift(
 												x[1],
 												((DynamicsEquationsTakeOff)ode).alpha,
@@ -880,7 +885,8 @@ public class TakeOffCalc {
 											((DynamicsEquationsTakeOff)ode).alpha,
 											x[2],
 											t)
-									- TakeOffCalc.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+									- ((DynamicsEquationsTakeOff)ode).mu(x[1])
+									*(((DynamicsEquationsTakeOff)ode).weight
 											- ((DynamicsEquationsTakeOff)ode).lift(
 													x[1],
 													((DynamicsEquationsTakeOff)ode).alpha,
@@ -906,7 +912,8 @@ public class TakeOffCalc {
 												((DynamicsEquationsTakeOff)ode).alpha,
 												x[2],
 												t)
-										- TakeOffCalc.this.getMu()*(((DynamicsEquationsTakeOff)ode).weight
+										- ((DynamicsEquationsTakeOff)ode).mu(x[1])
+										*(((DynamicsEquationsTakeOff)ode).weight
 												- ((DynamicsEquationsTakeOff)ode).lift(
 														x[1],
 														((DynamicsEquationsTakeOff)ode).alpha,
@@ -926,7 +933,8 @@ public class TakeOffCalc {
 										((DynamicsEquationsTakeOff)ode).alpha,
 										x[2],
 										t)
-										- TakeOffCalc.this.getMuBrake()*(((DynamicsEquationsTakeOff)ode).weight
+										- ((DynamicsEquationsTakeOff)ode).muBrake(x[1])
+										*(((DynamicsEquationsTakeOff)ode).weight
 												- ((DynamicsEquationsTakeOff)ode).lift(
 														x[1],
 														((DynamicsEquationsTakeOff)ode).alpha,
@@ -1461,8 +1469,9 @@ public class TakeOffCalc {
 
 	public class DynamicsEquationsTakeOff implements FirstOrderDifferentialEquations {
 
-		double weight, altitude, g0, mu, kAlpha, cD0, deltaCD0, oswald, ar, kGround, vWind, alphaDotInitial;
-
+		double weight, altitude, g0, kAlpha, cD0, deltaCD0, oswald, ar, kGround, vWind, alphaDotInitial;
+		MyInterpolatingFunction mu, muBrake;
+		
 		// visible variables
 		public double alpha, gamma;
 
@@ -1472,6 +1481,7 @@ public class TakeOffCalc {
 			weight = maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue();
 			g0 = AtmosphereCalc.g0.getEstimatedValue();
 			mu = TakeOffCalc.this.mu;
+			muBrake = TakeOffCalc.this.muBrake;
 			kAlpha = TakeOffCalc.this.kAlphaDot;
 			ar = aircraft.getWing().getAspectRatio();
 			kGround = TakeOffCalc.this.getkGround();
@@ -1504,7 +1514,7 @@ public class TakeOffCalc {
 				if( t < tEndRot.getEstimatedValue()) {
 					xDot[0] = speed;
 					xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
-							- (mu*(weight - lift(speed, alpha, gamma, t))));
+							- (mu(speed)*(weight - lift(speed, alpha, gamma, t))));
 					xDot[2] = 0.0;
 					xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 				}
@@ -1525,14 +1535,14 @@ public class TakeOffCalc {
 				if( t < tRec.getEstimatedValue()) {
 					xDot[0] = speed;
 					xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
-							- (mu*(weight - lift(speed, alpha, gamma, t))));
+							- (mu.value(speed)*(weight - lift(speed, alpha, gamma, t))));
 					xDot[2] = 0.0;
 					xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 				}
 				else {
 					xDot[0] = speed;
 					xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
-							- (muBrake*(weight-lift(speed, alpha, gamma, t))));
+							- (muBrake.value(speed)*(weight-lift(speed, alpha, gamma, t))));
 					xDot[2] = 0.0;
 					xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 				}
@@ -1733,6 +1743,14 @@ public class TakeOffCalc {
 					*cL;
 		}
 
+		public double mu(double speed) {
+			return mu.value(speed);
+		}
+		
+		public double muBrake(double speed) {
+			return muBrake.value(speed);
+		}
+		
 		public double alphaDot(double time) {
 
 			double alphaDot = 0.0;
@@ -2047,19 +2065,19 @@ public class TakeOffCalc {
 		this.kAlphaDot = kAlphaDot;
 	}
 
-	public double getMu() {
+	public MyInterpolatingFunction getMu() {
 		return mu;
 	}
 
-	public void setMu(double mu) {
+	public void setMu(MyInterpolatingFunction mu) {
 		this.mu = mu;
 	}
 
-	public double getMuBrake() {
+	public MyInterpolatingFunction getMuBrake() {
 		return muBrake;
 	}
 
-	public void setMuBrake(double muBrake) {
+	public void setMuBrake(MyInterpolatingFunction muBrake) {
 		this.muBrake = muBrake;
 	}
 

@@ -62,8 +62,16 @@
 			<takeoff_landing>
 				<!-- general data -->
 				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
-				<wheels_friction_coefficient></wheels_friction_coefficient> <!-- default = 0.025 -->
-				<wheels_friction_coefficient_with_brakes></wheels_friction_coefficient_with_brakes> <!-- default = 0.3 -->
+					<!-- here is possible to assign the fricition coefficient function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_function>
+					<friction_coefficient>0.025</friction_coefficient>
+					<speed unit="m/s"></speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_function>
+					<!-- here is possible to assign the fricition coefficient (with brakes) function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_with_brakes_function>
+					<friction_coefficient_with_brakes>0.3</friction_coefficient_with_brakes>
+					<speed unit="m/s"></speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_with_brakes_function>
 				<!-- take-off data -->
 				<dt_rotation unit="s">2</dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
@@ -111,9 +119,16 @@
 				<holding_mach_number>0.445</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_length unit="nmi">1300</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<cruise_sfc_function>
+					<sfc>0.47;0.435;0.429</sfc>
+					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</cruise_sfc_function>
+				<alternate_cruise_sfc_function>
+					<sfc>0.49;0.446;0.438</sfc>
+					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</alternate_cruise_sfc_function>
 				<initial_mission_fuel unit="kg">6475</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
-				<cruise_mission_mach_number>0.585</cruise_mission_mach_number> <!-- this is the value of the Mach number at the cruise altitude read from the cruise flight envelope with the assigned value of the throttle setting -->
 				<landing_ground_idle_fuel_flow unit="kg/min">5.17</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
         </performance>

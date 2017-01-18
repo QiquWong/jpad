@@ -68,6 +68,7 @@ import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
@@ -120,8 +121,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	//..............................................................................
 	// Take-off & Landing
 	private Amount<Velocity> _windSpeed;
-	private Double _mu;
-	private Double _muBrake;
+	private MyInterpolatingFunction _muFunction;
+	private MyInterpolatingFunction _muBrakeFunction;
 	
 	private Amount<Duration> _dtRotation;
 	private Amount<Duration> _dtHold;
@@ -168,9 +169,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Double _holdingMachNumber;
 	private Double _fuelReserve;
 	private Amount<Length> _firstGuessCruiseLength;
+	private MyInterpolatingFunction _sfcFunctionCruise;
+	private MyInterpolatingFunction _sfcFunctionAlternateCruise;
 	private Amount<Mass> _firstGuessInitialMissionFuelMass;
 	private Amount<Length> _takeOffMissionAltitude;
-	private Double _cruiseMissionMachNumber;
 	private Double _landingFuelFlow;
 	//..............................................................................
 	// Plot and Task Maps
@@ -371,8 +373,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		//..............................................................................
 		// Take-off & Landing
 		private Amount<Velocity> __windSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		private Double __mu = 0.03;
-		private Double __muBrake = 0.4;
+		private MyInterpolatingFunction __muFunction;
+		private MyInterpolatingFunction __muBrakeFunction;
 		
 		private Amount<Duration> __dtRotation = Amount.valueOf(3.0, SI.SECOND);
 		private Amount<Duration> __dtHold = Amount.valueOf(0.5, SI.SECOND);
@@ -419,9 +421,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		private Double __holdingMachNumber;
 		private Double __fuelReserve;
 		private Amount<Length> __firstGuessCruiseLength;
+		private MyInterpolatingFunction __sfcFunctionCruise;
+		private MyInterpolatingFunction __sfcFunctionAlternateCruise;
 		private Amount<Mass> __firstGuessInitialMissionFuelMass;
 		private Amount<Length> __takeOffMissionAltitude;
-		private Double __cruiseMissionMachNumber;
 		private Double __landingFuelFlow;
 		//..............................................................................
 		// Plot and Task Maps
@@ -579,13 +582,13 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 
-		public ACPerformanceCalculatorBuilder mu(Double mu) {
-			this.__mu = mu;
+		public ACPerformanceCalculatorBuilder muFunction(MyInterpolatingFunction muFunction) {
+			this.__muFunction = muFunction;
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder muBrake(Double muBrake) {
-			this.__muBrake = muBrake;
+		public ACPerformanceCalculatorBuilder muBrakeFunction(MyInterpolatingFunction muBrakeFunction) {
+			this.__muBrakeFunction = muBrakeFunction;
 			return this;
 		}
 		
@@ -734,6 +737,16 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder sfcFunctionCruise (MyInterpolatingFunction sfcFunctionCruise) {
+			this.__sfcFunctionCruise = sfcFunctionCruise;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder sfcFunctionAlternateCruise (MyInterpolatingFunction sfcAlternateCruiseFunction) {
+			this.__sfcFunctionAlternateCruise = sfcAlternateCruiseFunction;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder firstGuessFuelMass(Amount<Mass> firstGuessFuelMass) {
 			this.__firstGuessInitialMissionFuelMass = firstGuessFuelMass;
 			return this;
@@ -741,11 +754,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		public ACPerformanceCalculatorBuilder takeOffMissionAltitude(Amount<Length> takeOffMissionAltitude) {
 			this.__takeOffMissionAltitude = takeOffMissionAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cruiseMissionMachNumber(Double cruiseMissionMachNumber) {
-			this.__cruiseMissionMachNumber = cruiseMissionMachNumber;
 			return this;
 		}
 		
@@ -801,9 +809,9 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._polarCDLanding = builder.__polarCDLanding;
 		
 		this._windSpeed = builder.__windSpeed;
-		this._mu = builder.__mu;
-		this._muBrake = builder.__muBrake;
-
+		this._muFunction = builder.__muFunction;
+		this._muBrakeFunction = builder.__muBrakeFunction;
+		
 		this._dtRotation = builder.__dtRotation;
 		this._dtHold = builder.__dtHold;
 		this._alphaGround = builder.__alphaGround;
@@ -844,9 +852,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	    this._holdingMachNumber = builder.__holdingMachNumber;
 	    this._fuelReserve = builder.__fuelReserve;
 	    this._firstGuessCruiseLength = builder.__firstGuessCruiseLength;
+	    this._sfcFunctionCruise = builder.__sfcFunctionCruise;
+	    this._sfcFunctionAlternateCruise = builder.__sfcFunctionAlternateCruise;
 	    this._firstGuessInitialMissionFuelMass = builder.__firstGuessInitialMissionFuelMass;
 		this._takeOffMissionAltitude = builder.__takeOffMissionAltitude;
-		this._cruiseMissionMachNumber = builder.__cruiseMissionMachNumber;
 		this._landingFuelFlow = builder.__landingFuelFlow;
 	    
 		this._taskList = builder.__taskList;
@@ -1328,22 +1337,22 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				
 				//...............................................................
 				// POLAR CURVE CRUISE
-				polarCLCruise = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean+0.2, numberOfPolarPoints);				
+				polarCLCruise = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean, numberOfPolarPoints);				
 				polarCDCruise = new Double[polarCLCruise.length];
 				
 				//...............................................................
 				// POLAR CURVE CLIMB
-				polarCLClimb = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean+0.2, numberOfPolarPoints);				
+				polarCLClimb = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean, numberOfPolarPoints);				
 				polarCDClimb = new Double[polarCLClimb.length];
 				
 				//...............................................................
 				// POLAR CURVE TAKE-OFF
-				polarCLTakeOff = MyArrayUtils.linspaceDouble(-0.2, cLmaxTakeOff+0.2, numberOfPolarPoints);
+				polarCLTakeOff = MyArrayUtils.linspaceDouble(-0.2, cLmaxTakeOff, numberOfPolarPoints);
 				polarCDTakeOff = new Double[polarCLTakeOff.length]; 
 				
 				//...............................................................
 				// POLAR CURVE LANDING
-				polarCLLanding = MyArrayUtils.linspaceDouble(-0.2, cLmaxLanding+0.2, numberOfPolarPoints);
+				polarCLLanding = MyArrayUtils.linspaceDouble(-0.2, cLmaxLanding, numberOfPolarPoints);
 				polarCDLanding = new Double[polarCLLanding.length];
 				
 				// building the CD arrays...
@@ -1413,8 +1422,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 		// default values
 		Amount<Velocity> windSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		Double mu = 0.025;
-		Double muBrake = 0.3;
+		List<Double> muFunction = new ArrayList<>();
+		List<Amount<Velocity>> muFunctionSpeed = new ArrayList<>();
+		List<Double> muBrakeFunction = new ArrayList<>();
+		List<Amount<Velocity>> muBrakeFunctionSpeed = new ArrayList<>();
 		
 		Amount<Duration> dtRotation = Amount.valueOf(3.0, SI.SECOND);
 		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
@@ -1466,16 +1477,58 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			obstacleTakeOff = reader.getXMLAmountLengthByPath("//performance/takeoff_landing/obstacle_take_off");
 		
 		//...............................................................
-		// WHEELS FRICTION COEFFICIENT
-		String wheelsFrictionCoefficientProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient");
-		if(wheelsFrictionCoefficientProperty != null)
-			mu = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient"));
+		// WHEELS FRICTION COEFFICIENT FUNCTION
+		String wheelsFrictionCoefficientFunctionProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient_function/friction_coefficient");
+		if(wheelsFrictionCoefficientFunctionProperty != null)
+			muFunction = reader.readArrayDoubleFromXML("//performance/takeoff_landing/wheels_friction_coefficient_function/friction_coefficient"); 
+		String wheelsFrictionCoefficientFunctionSpeedProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient_function/speed");
+		if(wheelsFrictionCoefficientFunctionSpeedProperty != null)
+			muFunctionSpeed = reader.readArrayofAmountFromXML("//performance/takeoff_landing/wheels_friction_coefficient_function/speed");
 		
+		if(muFunction.size() > 1)
+			if(muFunction.size() != muFunctionSpeed.size())
+			{
+				System.err.println("FRICTION COEFFICIENT ARRAY AND THE RELATED SPEED ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(muFunction.size() == 1) {
+			muFunction.add(muFunction.get(0));
+			muFunctionSpeed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			muFunctionSpeed.add(Amount.valueOf(10000.0, SI.METERS_PER_SECOND));
+		}
+		
+		MyInterpolatingFunction muInterpolatingFunction = new MyInterpolatingFunction();
+		muInterpolatingFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(muFunctionSpeed),
+				MyArrayUtils.convertToDoublePrimitive(muFunction)
+				);
+			
 		//...............................................................
-		// WHEELS FRICTION COEFFICIENT WITH BRAKES
-		String wheelsFrictionCoefficientWithBrakesProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient_with_brakes");
-		if(wheelsFrictionCoefficientWithBrakesProperty != null)
-			muBrake = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient_with_brakes"));
+		// WHEELS FRICTION COEFFICIENT (WITH BRAKES) FUNCTION
+		String wheelsFrictionCoefficientBrakesFunctionProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient_with_brakes_function/friction_coefficient_with_brakes");
+		if(wheelsFrictionCoefficientBrakesFunctionProperty != null)
+			muBrakeFunction = reader.readArrayDoubleFromXML("//performance/takeoff_landing/wheels_friction_coefficient_with_brakes_function/friction_coefficient_with_brakes"); 
+		String wheelsFrictionCoefficientBrakesFunctionSpeedProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/wheels_friction_coefficient_with_brakes_function/speed");
+		if(wheelsFrictionCoefficientBrakesFunctionSpeedProperty != null)
+			muBrakeFunctionSpeed = reader.readArrayofAmountFromXML("//performance/takeoff_landing/wheels_friction_coefficient_with_brakes_function/speed");
+		
+		if(muBrakeFunction.size() > 1)
+			if(muBrakeFunction.size() != muBrakeFunctionSpeed.size())
+			{
+				System.err.println("FRICTION COEFFICIENT (WITH BRAKES) ARRAY AND THE RELATED SPEED ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(muBrakeFunction.size() == 1) {
+			muBrakeFunction.add(muBrakeFunction.get(0));
+			muBrakeFunctionSpeed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			muBrakeFunctionSpeed.add(Amount.valueOf(10000.0, SI.METERS_PER_SECOND));
+		}
+		
+		MyInterpolatingFunction muBrakeInterpolatingFunction = new MyInterpolatingFunction();
+		muBrakeInterpolatingFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(muBrakeFunctionSpeed),
+				MyArrayUtils.convertToDoublePrimitive(muBrakeFunction)
+				);
 		
 		//...............................................................
 		// K ROTATION
@@ -1636,9 +1689,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		Double holdingMachNumber = 0.01; // default value but != 0.0
 		Double fuelReserve = 0.0;
 		Amount<Length> firstGuessCruiseLength = null;
+		List<Double> sfcList = new ArrayList<>();
+		List<Double> throttleList = new ArrayList<>();
+		List<Double> sfcAlternateCruiseList = new ArrayList<>();
+		List<Double> throttleAlternateCruiseList = new ArrayList<>();
 		Amount<Mass> firstGuessInitialFuelMass = null;
 		Amount<Length> takeOffMissionAltitude = null;
-		Double cruiseMissionMachNumber = null;
 		Double landingFuelFlow = 0.0;
 		
 		//...............................................................
@@ -1696,6 +1752,58 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			firstGuessCruiseLength = reader.getXMLAmountLengthByPath("//performance/mission_profile_and_payload_range/cruise_length"); 
 		}
 		//...............................................................
+		// SFC FUNCTION CRUISE
+		String sfcFunctionCruiseProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/cruise_sfc_function/sfc");
+		if(sfcFunctionCruiseProperty != null)
+			sfcList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/cruise_sfc_function/sfc"); 
+		String throttleFunctionProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/cruise_sfc_function/throttle");
+		if(throttleFunctionProperty != null)
+			throttleList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/cruise_sfc_function/throttle");
+		
+		if(sfcList.size() > 1)
+			if(sfcList.size() != throttleList.size())
+			{
+				System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(sfcList.size() == 1) {
+			sfcList.add(sfcList.get(0));
+			throttleList.add(0.0);
+			throttleList.add(1.0);
+		}
+		
+		MyInterpolatingFunction sfcFunction = new MyInterpolatingFunction();
+		sfcFunction.interpolateLinear(
+				MyArrayUtils.convertToDoublePrimitive(throttleList),
+				MyArrayUtils.convertToDoublePrimitive(sfcList)
+				);
+		//...............................................................
+		// SFC FUNCTION ALTERNATE CRUISE
+		String sfcFunctionAlternateCruiseProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/sfc");
+		if(sfcFunctionAlternateCruiseProperty != null)
+			sfcAlternateCruiseList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/sfc"); 
+		String throttleAlternateCruiseFunctionProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/throttle");
+		if(throttleAlternateCruiseFunctionProperty != null)
+			throttleAlternateCruiseList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/alternate_cruise_sfc_function/throttle");
+		
+		if(sfcAlternateCruiseList.size() > 1)
+			if(sfcAlternateCruiseList.size() != throttleAlternateCruiseList.size())
+			{
+				System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(sfcAlternateCruiseList.size() == 1) {
+			sfcAlternateCruiseList.add(sfcAlternateCruiseList.get(0));
+			throttleAlternateCruiseList.add(0.0);
+			throttleAlternateCruiseList.add(1.0);
+		}
+		
+		MyInterpolatingFunction sfcAlternateCruiseFunction = new MyInterpolatingFunction();
+		sfcAlternateCruiseFunction.interpolateLinear(
+				MyArrayUtils.convertToDoublePrimitive(throttleAlternateCruiseList),
+				MyArrayUtils.convertToDoublePrimitive(sfcAlternateCruiseList)
+				);
+		//...............................................................
 		// FIRST GUESS INITIAL FUEL MASS
 		List<String> firstGuessInitialFuelMassProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/initial_mission_fuel");
 		if(!firstGuessInitialFuelMassProperty.isEmpty()) {
@@ -1706,12 +1814,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		List<String> takeOffMissionAltitudeProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/take_off_mission_altitude");
 		if(!takeOffMissionAltitudeProperty.isEmpty()) {
 			takeOffMissionAltitude = reader.getXMLAmountLengthByPath("//performance/mission_profile_and_payload_range/take_off_mission_altitude"); 
-		}
-		//...............................................................
-		// CRUISE MISSION MACH NUMBER
-		List<String> cruiseMissionMachNumberProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/cruise_mission_mach_number");
-		if(!cruiseMissionMachNumberProperty.isEmpty()) {
-			cruiseMissionMachNumber = Double.valueOf(reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/cruise_mission_mach_number")); 
 		}
 		//...............................................................
 		// LANDING FUEL FLOW
@@ -1981,13 +2083,13 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.polarCDTakeOff(polarCDTakeOff)
 				.polarCLLanding(polarCLLanding)
 				.polarCDLanding(polarCDLanding)
+				.muFunction(muInterpolatingFunction)
+				.muBrakeFunction(muBrakeInterpolatingFunction)
 				.dtRotation(dtRotation)
 				.dtHold(dtHold)
 				.alphaGround(alphaGround)
 				.windSpeed(windSpeed)
 				.obstacleTakeOff(obstacleTakeOff)
-				.mu(mu)
-				.muBrake(muBrake)
 				.kRotation(kRotation)
 				.kLiftOff(kLiftOff)
 				.kCLmax(kCLmax)
@@ -2018,9 +2120,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.holdingMachNumber(holdingMachNumber)
 				.fuelReserve(fuelReserve)
 				.firstGuessCruiseLength(firstGuessCruiseLength)
+				.sfcFunctionCruise(sfcFunction)
+				.sfcFunctionAlternateCruise(sfcAlternateCruiseFunction)
 				.firstGuessFuelMass(firstGuessInitialFuelMass)
 				.takeOffMissionAltitude(takeOffMissionAltitude)
-				.cruiseMissionMachNumber(cruiseMissionMachNumber)
 				.landingFuelFlow(landingFuelFlow)
 				.taskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.plotList(plotList)
@@ -2549,6 +2652,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMass.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsed.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _fuelReserve*100});
+        	dataListMissionProfile.add(new Object[] {"Design passengers number","", _theAircraft.getCabinConfiguration().getNPax().doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculator.getPassengersNumber().doubleValue()});
         	dataListMissionProfile.add(new Object[] {" "});
         	dataListMissionProfile.add(new Object[] {"Take-off range","nmi", _rangeList.get(1).doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListMissionProfile.add(new Object[] {"Climb range","nmi", _rangeList.get(2).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(1).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
@@ -2914,50 +3019,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			;
 		}
 		if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
-			
 			sb.append("\tMISSION PROFILE\n")
-			.append("\t-------------------------------------\n")
-			.append("\t\tTotal mission distance = " + _missionRange.to(NonSI.NAUTICAL_MILE)
-																  .plus(_alternateCruiseLength) + "\n")
-			.append("\t\tTotal mission duration = " + _totalMissionTime + "\n")
-			.append("\t\tAircraft mass at mission start = " + _initialMissionMass + "\n")
-			.append("\t\tAircraft mass at mission end = " + _endMissionMass + "\n")
-			.append("\t\tInitial fuel mass for the assigned mission = " + _initialFuelMass + "\n")
-			.append("\t\tTotal fuel mass used = " + _totalFuelUsed + "\n")
-			.append("\t\tFuel reserve = " + _fuelReserve*100 + " %\n")
-			.append("\t\t.....................................\n")
-			.append("\t\tTake-off range = " + _rangeList.get(1).to(NonSI.NAUTICAL_MILE) + " \n")
-			.append("\t\tClimb range = " + _rangeList.get(2).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(1).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\tCruise range = " + _rangeList.get(3).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(2).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\tFirst descent range = " + _rangeList.get(4).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(3).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\tAlternate cruise range = " + _rangeList.get(5).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(4).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\tSecond descent range = " + _rangeList.get(6).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(5).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\tHolding range = " + _rangeList.get(7).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(6).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\tThird descent range = " + _rangeList.get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(7).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\tLanding range = " + _rangeList.get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(8).to(NonSI.NAUTICAL_MILE)) + " \n")
-			.append("\t\t.....................................\n")
-			.append("\t\tTake-off duration = " + _timeList.get(1).to(NonSI.MINUTE) + " \n")
-			.append("\t\tClimb duration = " + _timeList.get(2).to(NonSI.MINUTE).minus(_timeList.get(1).to(NonSI.MINUTE)) + " \n")
-			.append("\t\tCruise duration = " + _timeList.get(3).to(NonSI.MINUTE).minus(_timeList.get(2).to(NonSI.MINUTE))+ " \n")
-			.append("\t\tFirst descent duration = " + _timeList.get(4).to(NonSI.MINUTE).minus(_timeList.get(3).to(NonSI.MINUTE)) + " \n")
-			.append("\t\tAlternate cruise duration = " + _timeList.get(5).to(NonSI.MINUTE).minus(_timeList.get(4).to(NonSI.MINUTE)) + " \n")
-			.append("\t\tSecond descent duration = " + _timeList.get(6).to(NonSI.MINUTE).minus(_timeList.get(5).to(NonSI.MINUTE)) + " \n")
-			.append("\t\tHolding duration = " + _timeList.get(7).to(NonSI.MINUTE).minus(_timeList.get(6).to(NonSI.MINUTE)) + " \n")
-			.append("\t\tThird descent duration = " + _timeList.get(8).to(NonSI.MINUTE).minus(_timeList.get(7).to(NonSI.MINUTE)) + " \n")
-			.append("\t\tLanding duration = " + _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)) + " \n")
-			.append("\t\t.....................................\n")
-			.append("\t\tTake-off used fuel = " + _fuelUsedList.get(1).to(SI.KILOGRAM) + " \n")
-			.append("\t\tClimb used fuel = " + _fuelUsedList.get(2).to(SI.KILOGRAM).minus(_fuelUsedList.get(1).to(SI.KILOGRAM)) + " \n")
-			.append("\t\tCruise used fuel = " + _fuelUsedList.get(3).to(SI.KILOGRAM).minus(_fuelUsedList.get(2).to(SI.KILOGRAM)) + "\n")
-			.append("\t\tFirst descent used fuel = " + _fuelUsedList.get(4).to(SI.KILOGRAM).minus(_fuelUsedList.get(3).to(SI.KILOGRAM)) + " \n")
-			.append("\t\tAlternate cruise used fuel = " + _fuelUsedList.get(5).to(SI.KILOGRAM).minus(_fuelUsedList.get(4).to(SI.KILOGRAM)) + "\n")
-			.append("\t\tSecond descent used fuel = " + _fuelUsedList.get(6).to(SI.KILOGRAM).minus(_fuelUsedList.get(5).to(SI.KILOGRAM)) + "\n")
-			.append("\t\tHolding used fuel = " + _fuelUsedList.get(7).to(SI.KILOGRAM).minus(_fuelUsedList.get(6).to(SI.KILOGRAM)) + " \n")
-			.append("\t\tThird descent used fuel = " + _fuelUsedList.get(8).to(SI.KILOGRAM).minus(_fuelUsedList.get(7).to(SI.KILOGRAM)) + " \n")
-			.append("\t\tLanding used fuel = " + _fuelUsedList.get(9).to(SI.KILOGRAM).minus(_fuelUsedList.get(8).to(SI.KILOGRAM)) + " \n")
-			.append("\t-------------------------------------\n")
-			;
-			
+			.append(_theMissionProfileCalculator.toString());
 		}
 		if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
 			sb.append("\tPAYLOAD-RANGE\n")
@@ -3013,8 +3076,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_theOperatingConditions.getThrottleTakeOff(), 
 					_kAlphaDot,
 					_alphaReductionRate,
-					_mu,
-					_muBrake,
+					_muFunction,
+					_muBrakeFunction,
 					wingToGroundDistance,
 					_obstacleTakeOff,
 					_windSpeed,
@@ -4469,8 +4532,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_kApproach,
 					_kFlare,
 					_kTouchDown,
-					_mu,
-					_muBrake,
+					_muFunction,
+					_muBrakeFunction,
 					wingToGroundDistance,
 					_obstacleLanding, 
 					_windSpeed,
@@ -4537,7 +4600,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_maximumFuelMass,
 					_singlePassengerMass,
 					_firstGuessCruiseLength,
-					_cruiseMissionMachNumber,
+					_sfcFunctionCruise,
+					_sfcFunctionAlternateCruise,
 					_alternateCruiseLength,
 					_alternateCruiseAltitude,
 					_alternateCruiseMachNumber,
@@ -4557,8 +4621,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_polarCLCruise,
 					_polarCDCruise,
 					_windSpeed,
-					_mu,
-					_muBrake,
+					_muFunction,
+					_muBrakeFunction,
 					_dtRotation,
 					_dtHold,
 					_alphaGround,
@@ -4598,22 +4662,21 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_requiredMassAtMaxPayload = _thePayloadRangeCalculator.getRequiredMassAtMaxPayload();
 			_requiredMassAtDesignPayload = _thePayloadRangeCalculator.getRequiredMassAtDesignPayload();
 			
-			//------------------------------------------------------------
-			// MAX TAKE-OFF MASS PARAMETERIZATION
-			_thePayloadRangeCalculator.createPayloadRangeMaxTakeOffMassParameterization();
-			
 			_rangeArray = _thePayloadRangeCalculator.getRangeArray();
 			_payloadArray = _thePayloadRangeCalculator.getPayloadArray();
-			
-			_rangeMatrix = _thePayloadRangeCalculator.getRangeMatrix();
-			_payloadMatrix = _thePayloadRangeCalculator.getPayloadMatrix();
+			//------------------------------------------------------------
+			// MAX TAKE-OFF MASS PARAMETERIZATION
+//			_thePayloadRangeCalculator.createPayloadRangeMaxTakeOffMassParameterization();
+//			
+//			_rangeMatrix = _thePayloadRangeCalculator.getRangeMatrix();
+//			_payloadMatrix = _thePayloadRangeCalculator.getPayloadMatrix();
 			
 		}
 		public void plotPayloadRange(String payloadRangeFolderPath) {
 			
 			if(_plotList.contains(PerformancePlotEnum.PAYLOAD_RANGE)) {
 				_thePayloadRangeCalculator.createPayloadRangeChart(payloadRangeFolderPath);
-				_thePayloadRangeCalculator.createPayloadRangeChartsMaxTakeOffMassParameterization(payloadRangeFolderPath);
+//				_thePayloadRangeCalculator.createPayloadRangeChartsMaxTakeOffMassParameterization(payloadRangeFolderPath);
 			}
 			
 		}
@@ -4694,6 +4757,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_theMissionProfileCalculator = new MissionProfileCalc(
 					_theAircraft,
 					_theOperatingConditions,
+					_maximumTakeOffMass,
 					_operatingEmptyMass,
 					_singlePassengerMass,
 					_theAircraft.getCabinConfiguration().getNPax(),
@@ -4701,7 +4765,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_missionRange,
 					_takeOffMissionAltitude,
 					_firstGuessCruiseLength,
-					_cruiseMissionMachNumber,
+					_sfcFunctionCruise,
+					_sfcFunctionAlternateCruise,
 					_alternateCruiseLength,
 					_alternateCruiseAltitude,
 					_alternateCruiseMachNumber,
@@ -4721,8 +4786,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_polarCLCruise,
 					_polarCDCruise,
 					_windSpeed,
-					_mu,
-					_muBrake,
+					_muFunction,
+					_muBrakeFunction,
 					_dtRotation,
 					_dtHold,
 					_alphaGround,
@@ -4873,18 +4938,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	}
 	public void setObstacleTakeOff(Amount<Length> _obstacleTakeOff) {
 		this._obstacleTakeOff = _obstacleTakeOff;
-	}
-	public Double getMu() {
-		return _mu;
-	}
-	public void setMu(Double _mu) {
-		this._mu = _mu;
-	}
-	public Double getMuBrake() {
-		return _muBrake;
-	}
-	public void setMuBrake(Double _muBrake) {
-		this._muBrake = _muBrake;
 	}
 	public Double getCLmaxTakeOff() {
 		return _cLmaxTakeOff;
@@ -6079,14 +6132,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._takeOffMissionAltitude = _takeOffMissionAltitude;
 	}
 
-	public Double getCruiseMissionMachNumber() {
-		return _cruiseMissionMachNumber;
-	}
-
-	public void setCruiseMissionMachNumber(Double _cruiseMissionMachNumber) {
-		this._cruiseMissionMachNumber = _cruiseMissionMachNumber;
-	}
-
 	public DescentCalc getTheDescentCalculator() {
 		return _theDescentCalculator;
 	}
@@ -6253,6 +6298,38 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setTakeOffMassAtZeroPayload(Amount<Mass> _takeOffMassAtZeroPayload) {
 		this._takeOffMassAtZeroPayload = _takeOffMassAtZeroPayload;
+	}
+
+	public MyInterpolatingFunction getMuFunction() {
+		return _muFunction;
+	}
+
+	public void setMuFunction(MyInterpolatingFunction _muFunction) {
+		this._muFunction = _muFunction;
+	}
+
+	public MyInterpolatingFunction getMuBrakeFunction() {
+		return _muBrakeFunction;
+	}
+
+	public void setMuBrakeFunction(MyInterpolatingFunction _muBrakeFunction) {
+		this._muBrakeFunction = _muBrakeFunction;
+	}
+
+	public MyInterpolatingFunction getSFCFunctionCruise() {
+		return _sfcFunctionCruise;
+	}
+
+	public void setSFCFunctionCruise(MyInterpolatingFunction _sfcFunctionCruise) {
+		this._sfcFunctionCruise = _sfcFunctionCruise;
+	}
+
+	public MyInterpolatingFunction getSFCFunctionAlternateCruise() {
+		return _sfcFunctionAlternateCruise;
+	}
+
+	public void setSFCFunctionAlternateCruise(MyInterpolatingFunction _sfcFunctionAlternateCruise) {
+		this._sfcFunctionAlternateCruise = _sfcFunctionAlternateCruise;
 	}
 
 }

@@ -15,18 +15,25 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
+import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.performance.customdata.DragMap;
+import calculators.performance.customdata.DragThrustIntersectionMap;
+import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import database.databasefunctions.engine.EngineDatabaseManager;
 import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.atmosphere.SpeedCalc;
 
 public class PayloadRangeCalcMissionProfile{
 	//-------------------------------------------------------------------------------------
@@ -41,7 +48,8 @@ public class PayloadRangeCalcMissionProfile{
 	private Amount<Mass> _maxFuelMass;
 	private Amount<Mass> _singlePassengerMass;
 	private Amount<Length> _firstGuessCruiseLength;
-	private Double _cruiseMissionMachNumber;
+	private MyInterpolatingFunction _sfcFunctionCruise;
+	private MyInterpolatingFunction _sfcFunctionAlternateCruise;
 	private Amount<Length> _alternateCruiseLength;
 	private Amount<Length> _alternateCruiseAltitude;
 	private Double _alternateCruiseMachNumber;
@@ -61,8 +69,8 @@ public class PayloadRangeCalcMissionProfile{
 	private Double[] _polarCLCruise;
 	private Double[] _polarCDCruise;
 	private Amount<Velocity> _windSpeed;
-	private Double _mu;
-	private Double _muBrake;
+	private MyInterpolatingFunction _mu;
+	private MyInterpolatingFunction _muBrake;
 	private Amount<Duration> _dtRotation;
 	private Amount<Duration> _dtHold;
 	private Amount<Angle> _alphaGround;
@@ -84,6 +92,7 @@ public class PayloadRangeCalcMissionProfile{
 	private Amount<Velocity> _rateOfDescent;
 	
 	// TO EVALUATE:
+	private Double _cruiseMachNumber;
 	private Amount<Length> _rangeAtMaxPayload;
 	private Amount<Length> _rangeAtDesignPayload;
 	private Amount<Length> _rangeAtMaxFuel;	
@@ -116,7 +125,8 @@ public class PayloadRangeCalcMissionProfile{
 			Amount<Mass> maxFuelMass,
 			Amount<Mass> singlePassengerMass,
 			Amount<Length> firstGuessCruiseLength,
-			Double cruiseMissionMachNumber,
+			MyInterpolatingFunction sfcFunctionCruise,
+			MyInterpolatingFunction sfcFunctionAlternateCruise,
 			Amount<Length> alternateCruiseLength,
 			Amount<Length> alternateCruiseAltitude,
 			Double alternateCruiseMachNumber,
@@ -136,8 +146,8 @@ public class PayloadRangeCalcMissionProfile{
 			Double[] polarCLCruise,
 			Double[] polarCDCruise,
 			Amount<Velocity> windSpeed,
-			Double mu,
-			Double muBrake,
+			MyInterpolatingFunction mu,
+			MyInterpolatingFunction muBrake,
 			Amount<Duration> dtRotation,
 			Amount<Duration> dtHold,
 			Amount<Angle> alphaGround,
@@ -167,7 +177,8 @@ public class PayloadRangeCalcMissionProfile{
 		this._maxFuelMass = maxFuelMass;
 		this._singlePassengerMass = singlePassengerMass;
 		this._firstGuessCruiseLength = firstGuessCruiseLength;
-		this._cruiseMissionMachNumber = cruiseMissionMachNumber;
+		this._sfcFunctionCruise = sfcFunctionCruise;
+		this._sfcFunctionAlternateCruise = sfcFunctionAlternateCruise;
 		this._alternateCruiseLength = alternateCruiseLength;
 		this._alternateCruiseAltitude = alternateCruiseAltitude;
 		this._alternateCruiseMachNumber = alternateCruiseMachNumber;
@@ -348,14 +359,89 @@ public class PayloadRangeCalcMissionProfile{
 
 			//--------------------------------------------------------------------
 			// CRUISE	
-			
 			Amount<Mass> intialCruiseMass = 
 					initialMissionMass
 					.minus(takeOffUsedFuel)
 					.minus(totalClimbFuelUsed);
 			
-			double speed = _cruiseMissionMachNumber
-					*_theOperatingConditions.getAtmosphereCruise().getSpeedOfSound();
+			Airfoil meanAirfoil = new Airfoil(
+					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
+					_theAircraft.getWing().getAerodynamicDatabaseReader()
+					);
+			
+			int nPointSpeed = 1000;
+			double[] speedArray = MyArrayUtils.linspace(
+					SpeedCalc.calculateSpeedStall(
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							(intialCruiseMass
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()),
+							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							MyArrayUtils.getMax(_polarCLCruise)
+							),
+					SpeedCalc.calculateTAS(
+							1.0,
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							),
+					nPointSpeed
+					);
+			
+			List<DragMap> dragList = new ArrayList<>();
+			dragList.add(
+					DragCalc.calculateDragAndPowerRequired(
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							(intialCruiseMass
+								.times(AtmosphereCalc.g0)
+								.getEstimatedValue()
+								),
+							speedArray,
+							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							MyArrayUtils.getMax(_polarCLCruise),
+							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
+							_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							meanAirfoil.getAirfoilCreator().getType()
+							)
+					);
+			
+			List<ThrustMap> thrustList = new ArrayList<>();
+			thrustList.add(
+					ThrustCalc.calculateThrustAndPowerAvailable(
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							_theOperatingConditions.getThrottleCruise(),
+							speedArray,
+							EngineOperatingConditionEnum.CRUISE,
+							_theAircraft.getPowerPlant().getEngineType(), 
+							_theAircraft.getPowerPlant(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							_theAircraft.getPowerPlant().getEngineNumber(),
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+							)
+					);
+
+			List<DragThrustIntersectionMap> intersectionList = new ArrayList<>();
+			intersectionList.add(
+					PerformanceCalcUtils.calculateDragThrustIntersection(
+							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							speedArray,
+							(intialCruiseMass
+									.times(AtmosphereCalc.g0)
+									.getEstimatedValue()
+									),
+							_theOperatingConditions.getThrottleCruise(),
+							EngineOperatingConditionEnum.CRUISE,
+							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							MyArrayUtils.getMax(_polarCLCruise),
+							dragList,
+							thrustList
+							)
+					);
+			
+			double cruiseMissionMachNumber = intersectionList.get(0).getMaxMach();
+			_cruiseMachNumber = cruiseMissionMachNumber;
+			double speed = intersectionList.get(0).getMaxSpeed();
 			
 			double[] cruiseSteps = MyArrayUtils.linspace(
 					0.0,
@@ -407,42 +493,21 @@ public class PayloadRangeCalcMissionProfile{
 									EngineOperatingConditionEnum.CRUISE,
 									_theAircraft.getPowerPlant(),
 									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
-									_cruiseMissionMachNumber
+									cruiseMissionMachNumber
 									)
 							)
 					.getEstimatedValue()
 					);
 			
 			List<Double> fuelFlows = new ArrayList<>();
-			if(phi.get(0) < 1.0) {
+			if(phi.get(0) < 1.002) {
 				fuelFlows.add(
 						dragPerStep.get(0).doubleValue(SI.NEWTON)
 						*(0.224809)*(0.454/60)
-						*(-0.1671*phi.get(0) + 0.5951)
+						*_sfcFunctionCruise.value(phi.get(0))
 						);
 			}
 			
-			
-//			fuelFlows.add(
-//					dragPerStep.get(0).doubleValue(SI.NEWTON)
-//					*(0.224809)*(0.454/60)
-//					*EngineDatabaseManager.getSFC(
-//							_cruiseMissionMachNumber,
-//							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//							EngineDatabaseManager.getThrustRatio(
-//									_cruiseMissionMachNumber,
-//									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//									_theAircraft.getPowerPlant().getEngineType(),
-//									EngineOperatingConditionEnum.CRUISE,
-//									_theAircraft.getPowerPlant()
-//									),
-//							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//							_theAircraft.getPowerPlant().getEngineType(),
-//							EngineOperatingConditionEnum.CRUISE,
-//							_theAircraft.getPowerPlant()
-//							)
-//					);
 			
 			List<Amount<Duration>> times = new ArrayList<>(); 
 			times.add(
@@ -505,40 +570,19 @@ public class PayloadRangeCalcMissionProfile{
 										EngineOperatingConditionEnum.CRUISE,
 										_theAircraft.getPowerPlant(),
 										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
-										_cruiseMissionMachNumber
+										cruiseMissionMachNumber
 										)
 								)
 						.getEstimatedValue()
 						);
 				
-				if(phi.get(j) < 1.0) {
+				if(phi.get(j) < 1.002) {
 					fuelFlows.add(
 							dragPerStep.get(j).doubleValue(SI.NEWTON)
 							*(0.224809)*(0.454/60)
-							*(-0.1671*phi.get(j) + 0.5951)
+							*_sfcFunctionCruise.value(phi.get(j))
 							);
 				}
-				
-//				fuelFlows.add(
-//						dragPerStep.get(j).doubleValue(SI.NEWTON)
-//						*(0.224809)*(0.454/60)
-//						*EngineDatabaseManager.getSFC(
-//								_cruiseMissionMachNumber,
-//								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//								EngineDatabaseManager.getThrustRatio(
-//										_cruiseMissionMachNumber,
-//										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-//										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//										_theAircraft.getPowerPlant().getEngineType(),
-//										EngineOperatingConditionEnum.CRUISE,
-//										_theAircraft.getPowerPlant()
-//										),
-//								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//								_theAircraft.getPowerPlant().getEngineType(),
-//								EngineOperatingConditionEnum.CRUISE,
-//								_theAircraft.getPowerPlant()
-//								)
-//						);
 				
 				times.add(
 						Amount.valueOf(
@@ -661,31 +705,9 @@ public class PayloadRangeCalcMissionProfile{
 				fuelFlowsAlternateCruise.add(
 						dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
 						*(0.224809)*(0.454/60)
-						*(-0.2114*phiAlternateCruise.get(0) + 0.6483)
+						*_sfcFunctionAlternateCruise.value(phiAlternateCruise.get(0))
 						);
 			}
-			
-//			List<Double> fuelFlowsAlternateCruise = new ArrayList<>();
-//			fuelFlowsAlternateCruise.add(
-//					dragPerStepAlternateCruise.get(0).doubleValue(SI.NEWTON)
-//					*(0.224809)*(0.454/60)
-//					*EngineDatabaseManager.getSFC(
-//							_alternateCruiseMachNumber,
-//							_alternateCruiseAltitude.doubleValue(SI.METER),
-//							EngineDatabaseManager.getThrustRatio(
-//									_alternateCruiseMachNumber,
-//									_alternateCruiseAltitude.doubleValue(SI.METER),
-//									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//									_theAircraft.getPowerPlant().getEngineType(),
-//									EngineOperatingConditionEnum.CRUISE,
-//									_theAircraft.getPowerPlant()
-//									),
-//							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//							_theAircraft.getPowerPlant().getEngineType(),
-//							EngineOperatingConditionEnum.CRUISE,
-//							_theAircraft.getPowerPlant()
-//							)
-//					);
 			
 			List<Amount<Duration>> timesAlternateCruise = new ArrayList<>(); 
 			timesAlternateCruise.add(
@@ -758,30 +780,9 @@ public class PayloadRangeCalcMissionProfile{
 					fuelFlowsAlternateCruise.add(
 							dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
 							*(0.224809)*(0.454/60)
-							*(-0.2114*phiAlternateCruise.get(j) + 0.6483)
+							*_sfcFunctionAlternateCruise.value(phiAlternateCruise.get(j))
 							);
 				}
-				
-//				fuelFlowsAlternateCruise.add(
-//						dragPerStepAlternateCruise.get(j).doubleValue(SI.NEWTON)
-//						*(0.224809)*(0.454/60)
-//						*EngineDatabaseManager.getSFC(
-//								_alternateCruiseMachNumber,
-//								_alternateCruiseAltitude.doubleValue(SI.METER),
-//								EngineDatabaseManager.getThrustRatio(
-//										_alternateCruiseMachNumber,
-//										_alternateCruiseAltitude.doubleValue(SI.METER),
-//										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//										_theAircraft.getPowerPlant().getEngineType(),
-//										EngineOperatingConditionEnum.CRUISE,
-//										_theAircraft.getPowerPlant()
-//										),
-//								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-//								_theAircraft.getPowerPlant().getEngineType(),
-//								EngineOperatingConditionEnum.CRUISE,
-//								_theAircraft.getPowerPlant()
-//								)
-//						);
 				
 				timesAlternateCruise.add(
 						Amount.valueOf(
@@ -960,7 +961,7 @@ public class PayloadRangeCalcMissionProfile{
 				Amount<Length> deltaCruiseLength = 
 						Amount.valueOf(
 								(deltaFuel.doubleValue(SI.KILOGRAM)/meanFuelFlow)
-								*_cruiseMissionMachNumber
+								*cruiseMissionMachNumber
 								*_theOperatingConditions.getAtmosphereCruise().getSpeedOfSound()
 								*60,
 								SI.METER
@@ -1164,7 +1165,7 @@ public class PayloadRangeCalcMissionProfile{
 				"Altitude = "
 				+ _theOperatingConditions.getAltitudeCruise().to(NonSI.FOOT) + 
 				", Mach = " + 
-				+ _cruiseMissionMachNumber;
+				+ _cruiseMachNumber;
 
 		MyChartToFileUtils.plot(
 				rangeDoubleArray, payloadDoubleArray,		// array to plot
@@ -1234,28 +1235,28 @@ public class PayloadRangeCalcMissionProfile{
 				.append("\t\t\tMax take-off mass = " + _takeOffMassZeroPayload + "\n")
 				.append("\t\t\tPayload mass = " + 0.0 + " kg \n")
 				.append("\t\t\tPassengers number = " + 0.0 + "\n")
-				.append("\t\t\tFuel mass required= " + _maxFuelMass + "\n")
-				.append("\t\t.....................................\n")
-				.append("\t\tRANGE MATRIX (WEIGHT PARAMETERIZATION)\n")
-				.append("\t\t.....................................\n");
-		
-		for (int i=0; i<_rangeMatrix.length; i++){
-			sb.append("\t\t\t");
-			for (int j=0; j<_rangeMatrix[0].length; j++)
-				sb.append(_rangeMatrix[i][j] + ", ");
-			sb.append("\n");
-		}
-		
-		sb.append("\t\t.....................................\n")
-		.append("\t\tPAYLOAD MATRIX [passengers number] (WEIGHT PARAMETERIZATION)\n")
-		.append("\t\t.....................................\n");
-		
-		for (int i=0; i<_payloadMatrix.length; i++){
-			sb.append("\t\t\t");
-			for (int j=0; j<_payloadMatrix[0].length; j++)
-				sb.append(_payloadMatrix[i][j] + ", ");
-			sb.append("\n");
-		}
+				.append("\t\t\tFuel mass required= " + _maxFuelMass + "\n");
+//				.append("\t\t.....................................\n")
+//				.append("\t\tRANGE MATRIX (WEIGHT PARAMETERIZATION)\n")
+//				.append("\t\t.....................................\n");
+//		
+//		for (int i=0; i<_rangeMatrix.length; i++){
+//			sb.append("\t\t\t");
+//			for (int j=0; j<_rangeMatrix[0].length; j++)
+//				sb.append(_rangeMatrix[i][j] + ", ");
+//			sb.append("\n");
+//		}
+//		
+//		sb.append("\t\t.....................................\n")
+//		.append("\t\tPAYLOAD MATRIX [passengers number] (WEIGHT PARAMETERIZATION)\n")
+//		.append("\t\t.....................................\n");
+//		
+//		for (int i=0; i<_payloadMatrix.length; i++){
+//			sb.append("\t\t\t");
+//			for (int j=0; j<_payloadMatrix[0].length; j++)
+//				sb.append(_payloadMatrix[i][j] + ", ");
+//			sb.append("\n");
+//		}
 		
 		sb.append("\t-------------------------------------\n");
 		
@@ -1326,14 +1327,6 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setFirstGuessCruiseLength(Amount<Length> _firstGuessCruiseLength) {
 		this._firstGuessCruiseLength = _firstGuessCruiseLength;
-	}
-
-	public Double getCruiseMissionMachNumber() {
-		return _cruiseMissionMachNumber;
-	}
-
-	public void setCruiseMissionMachNumber(Double _cruiseMissionMachNumber) {
-		this._cruiseMissionMachNumber = _cruiseMissionMachNumber;
 	}
 
 	public Amount<Length> getAlternateCruiseLength() {
@@ -1472,19 +1465,19 @@ public class PayloadRangeCalcMissionProfile{
 		this._windSpeed = _windSpeed;
 	}
 
-	public Double getMu() {
+	public MyInterpolatingFunction getMu() {
 		return _mu;
 	}
 
-	public void setMu(Double _mu) {
+	public void setMu(MyInterpolatingFunction _mu) {
 		this._mu = _mu;
 	}
 
-	public Double getMuBrake() {
+	public MyInterpolatingFunction getMuBrake() {
 		return _muBrake;
 	}
 
-	public void setMuBrake(Double _muBrake) {
+	public void setMuBrake(MyInterpolatingFunction _muBrake) {
 		this._muBrake = _muBrake;
 	}
 
@@ -1790,5 +1783,29 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setPolarCDCruise(Double[] _polarCDCruise) {
 		this._polarCDCruise = _polarCDCruise;
+	}
+
+	public Double getCruiseMachNumber() {
+		return _cruiseMachNumber;
+	}
+
+	public void setCruiseMachNumber(Double cruiseMachNumber) {
+		this._cruiseMachNumber = cruiseMachNumber;
+	}
+
+	public MyInterpolatingFunction getSFCFunctionCruise() {
+		return _sfcFunctionCruise;
+	}
+
+	public void setSFCFunctionCruise(MyInterpolatingFunction _sfcFunctionCruise) {
+		this._sfcFunctionCruise = _sfcFunctionCruise;
+	}
+
+	public MyInterpolatingFunction getSFCFunctionAlternateCruise() {
+		return _sfcFunctionAlternateCruise;
+	}
+
+	public void setSFCFunctionAlternateCruise(MyInterpolatingFunction _sfcFunctionAlternateCruise) {
+		this._sfcFunctionAlternateCruise = _sfcFunctionAlternateCruise;
 	}	
 }

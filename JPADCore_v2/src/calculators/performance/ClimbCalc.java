@@ -865,7 +865,20 @@ public class ClimbCalc {
 					climbFolderPath, "Max_Rate_of_Climb_envelope_(AOE)"
 					);
 
+			List<Double> maxClimbAngleListAOE = new ArrayList<Double>();
+			maxClimbAngleListAOE.add(0.0);
+			for(int i=0; i<_rcMapAOE.size(); i++) 
+				maxClimbAngleListAOE.add(MyArrayUtils.getMax(_rcMapAOE.get(_rcMapAOE.size()-1-i).getGamma()));
 
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListAOE),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListAOE),
+					0.0, null, 0.0, null,
+					"Maximum Climb Angle", "Altitude",
+					"rad", "m",
+					climbFolderPath, "Max_Climb_Angle_envelope_(AOE)"
+					);
+			
 			//.......................................................
 			// OEI
 			List<Double> maxRateOfClimbListOEI = new ArrayList<Double>();
@@ -887,6 +900,20 @@ public class ClimbCalc {
 					climbFolderPath, "Max_Rate_of_Climb_envelope_(OEI)"
 					);
 
+			List<Double> maxClimbAngleListOEI = new ArrayList<Double>();
+			maxClimbAngleListOEI.add(0.0);
+			for(int i=0; i<_rcMapOEI.size(); i++) 
+				maxClimbAngleListOEI.add(MyArrayUtils.getMax(_rcMapOEI.get(_rcMapOEI.size()-1-i).getGamma()));
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListAOE),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListOEI),
+					0.0, null, 0.0, null,
+					"Maximum Climb Angle", "Altitude",
+					"rad", "m",
+					climbFolderPath, "Max_Climb_Angle_envelope_(OEI)"
+					);
+			
 		}
 	}
 
