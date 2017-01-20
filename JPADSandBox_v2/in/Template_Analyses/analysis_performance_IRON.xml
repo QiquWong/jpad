@@ -104,6 +104,7 @@
 			<descent>
 				<rate_of_descent unit="ft/min">1500</rate_of_descent>
 				<descent_speed_CAS unit="kn">220</descent_speed_CAS>
+				<k_descent_weight></k_descent_weight> <!-- percentage of the maximum take-off weight to be used for the descent performance - (default = 0.9) -->
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 

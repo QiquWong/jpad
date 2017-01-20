@@ -700,11 +700,17 @@ public class TakeOffCalc {
 										x[1]
 										),
 								x[3],
-								(TakeOffCalc.this.getThrust().get(
-										TakeOffCalc.this.getThrust().size()-1
-										)
-										.doubleValue(SI.NEWTON)/aircraft.getPowerPlant().getEngineNumber())
-								/TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								EngineDatabaseManager.getThrustRatio(
+										SpeedCalc.calculateMach(
+												x[3],
+												x[1]
+												),
+										x[3],
+										TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+										TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.TAKE_OFF,
+										TakeOffCalc.this.getAircraft().getPowerPlant()
+										),
 								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
 								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
 								EngineOperatingConditionEnum.TAKE_OFF,

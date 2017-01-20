@@ -553,7 +553,9 @@ public class MissionProfileCalc {
 					
 					aircraftMassPerStep.add(
 							aircraftMassPerStep.get(j-1)
-							.minus(fuelUsedPerStep.get(j-1)
+							.minus(Amount.valueOf(
+									fuelUsedPerStep.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum(),
+									SI.KILOGRAM)
 									)
 							);
 					cLSteps.add(
@@ -652,7 +654,10 @@ public class MissionProfileCalc {
 						_speedDescentCAS,
 						_rateOfDescent,
 						_theOperatingConditions.getAltitudeCruise(),
-						_alternateCruiseAltitude
+						_holdingAltitude,
+						intialFirstDescentMass,
+						_polarCLCruise,
+						_polarCDCruise
 						);
 
 
@@ -662,13 +667,49 @@ public class MissionProfileCalc {
 				Amount<Mass> firstDescentFuelUsed = theFirstDescentCalculator.getTotalDescentFuelUsed();
 
 				//--------------------------------------------------------------------
+				// SECOND CLIMB (up to ALTERNATE altitude)
+				ClimbCalc theSecondClimbCalculator = new ClimbCalc(
+						_theAircraft,
+						_theOperatingConditions,
+						_cLmaxClean, 
+						_polarCLClimb,
+						_polarCDClimb,
+						_climbSpeed, 
+						_dragDueToEnigneFailure 
+						);
+
+				Amount<Mass> intialSecondClimbMass = 
+						_initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed)
+						.minus(firstDescentFuelUsed);
+
+				theSecondClimbCalculator.calculateClimbPerformance(
+						intialSecondClimbMass,
+						intialSecondClimbMass,
+						_holdingAltitude,
+						_alternateCruiseAltitude,
+						false
+						);
+
+				Amount<Length> totalSecondClimbRange = theSecondClimbCalculator.getClimbTotalRange();
+				Amount<Duration> totalSecondClimbTime = null;
+				if(_climbSpeed != null)
+					totalSecondClimbTime = theSecondClimbCalculator.getClimbTimeAtSpecificClimbSpeedAOE();
+				else
+					totalSecondClimbTime = theSecondClimbCalculator.getMinimumClimbTimeAOE();
+				Amount<Mass> totalSecondClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
+				
+				//--------------------------------------------------------------------
 				// ALTERNATE CRUISE
 				Amount<Mass> intialAlternateCruiseMass = 
 						_initialMissionMass
 						.minus(takeOffUsedFuel)
 						.minus(totalClimbFuelUsed)
 						.minus(totalCruiseFuelUsed)
-						.minus(firstDescentFuelUsed);
+						.minus(firstDescentFuelUsed)
+						.minus(totalSecondClimbFuelUsed);
 				
 				double speedOfSoundAlternateCruiseAltitude = new StdAtmos1976(
 						_alternateCruiseAltitude.doubleValue(SI.METER)
@@ -762,7 +803,9 @@ public class MissionProfileCalc {
 					
 					aircraftMassPerStepAlternateCruise.add(
 							aircraftMassPerStepAlternateCruise.get(j-1)
-							.minus(fuelUsedPerStepAlternateCruise.get(j-1)
+							.minus(Amount.valueOf(
+									fuelUsedPerStepAlternateCruise.stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM)).sum(),
+									SI.KILOGRAM)
 									)
 							);
 					cLStepsAlternateCruise.add(
@@ -856,6 +899,7 @@ public class MissionProfileCalc {
 						.minus(totalClimbFuelUsed)
 						.minus(totalCruiseFuelUsed)
 						.minus(firstDescentFuelUsed)
+						.minus(totalSecondClimbFuelUsed)
 						.minus(totalAlternateCruiseFuelUsed);
 
 				DescentCalc theSecondDescentCalculator = new DescentCalc(
@@ -863,7 +907,10 @@ public class MissionProfileCalc {
 						_speedDescentCAS,
 						_rateOfDescent,
 						_alternateCruiseAltitude,
-						_holdingAltitude
+						_holdingAltitude,
+						intialSecondDescentMass,
+						_polarCLCruise,
+						_polarCDCruise
 						);
 
 				theSecondDescentCalculator.calculateDescentPerformance();
@@ -879,6 +926,7 @@ public class MissionProfileCalc {
 						.minus(totalClimbFuelUsed)
 						.minus(totalCruiseFuelUsed)
 						.minus(firstDescentFuelUsed)
+						.minus(totalSecondClimbFuelUsed)
 						.minus(totalAlternateCruiseFuelUsed)
 						.minus(secondDescentFuelUsed);
 
@@ -929,6 +977,7 @@ public class MissionProfileCalc {
 						.minus(totalClimbFuelUsed)
 						.minus(totalCruiseFuelUsed)
 						.minus(firstDescentFuelUsed)
+						.minus(totalSecondClimbFuelUsed)
 						.minus(totalAlternateCruiseFuelUsed)
 						.minus(secondDescentFuelUsed)
 						.minus(totalHoldingFuelUsed);
@@ -938,7 +987,10 @@ public class MissionProfileCalc {
 						_speedDescentCAS,
 						_rateOfDescent,
 						_holdingAltitude,
-						Amount.valueOf(15.24, SI.METER)
+						Amount.valueOf(15.24, SI.METER),
+						intialThirdDescentMass,
+						_polarCLCruise,
+						_polarCDCruise
 						);
 
 				theThirdDescentCalculator.calculateDescentPerformance();
@@ -954,6 +1006,7 @@ public class MissionProfileCalc {
 						.minus(totalClimbFuelUsed)
 						.minus(totalCruiseFuelUsed)
 						.minus(firstDescentFuelUsed)
+						.minus(totalSecondClimbFuelUsed)
 						.minus(totalAlternateCruiseFuelUsed)
 						.minus(secondDescentFuelUsed)
 						.minus(totalHoldingFuelUsed)
@@ -1000,6 +1053,7 @@ public class MissionProfileCalc {
 				_altitudeList.add(theTakeOffCalculator.getObstacle().to(SI.METER));
 				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
 				_altitudeList.add(_theOperatingConditions.getAltitudeCruise().to(SI.METER));
+				_altitudeList.add(_holdingAltitude.to(SI.METER));
 				_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
 				_altitudeList.add(_alternateCruiseAltitude.to(SI.METER));
 				_altitudeList.add(_holdingAltitude.to(SI.METER));
@@ -1016,11 +1070,12 @@ public class MissionProfileCalc {
 				_rangeList.add(_rangeList.get(1).plus(totalClimbRange.to(SI.KILOMETER)));
 				_rangeList.add(_rangeList.get(2).plus(cruiseLength.to(SI.KILOMETER)));
 				_rangeList.add(_rangeList.get(3).plus(firstDescentLength.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(4).plus(_alternateCruiseLength.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(5).plus(secondDescentLength.to(SI.KILOMETER)));
-				_rangeList.add(_rangeList.get(6));
-				_rangeList.add(_rangeList.get(7).plus(thirdDescentLength).to(SI.KILOMETER));
-				_rangeList.add(_rangeList.get(8).plus(landingDistance).to(SI.KILOMETER));
+				_rangeList.add(_rangeList.get(4).plus(totalSecondClimbRange.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(5).plus(_alternateCruiseLength.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(6).plus(secondDescentLength.to(SI.KILOMETER)));
+				_rangeList.add(_rangeList.get(7));
+				_rangeList.add(_rangeList.get(8).plus(thirdDescentLength).to(SI.KILOMETER));
+				_rangeList.add(_rangeList.get(9).plus(landingDistance).to(SI.KILOMETER));
 
 				_totalMissionRange = _rangeList.get(_rangeList.size()-1);
 
@@ -1033,11 +1088,12 @@ public class MissionProfileCalc {
 				_timeList.add(_timeList.get(1).plus(totalClimbTime.to(NonSI.MINUTE)));
 				_timeList.add(_timeList.get(2).plus(cruiseTime.to(NonSI.MINUTE)));
 				_timeList.add(_timeList.get(3).plus(firstDescentTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(4).plus(alternateCruiseTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(5).plus(secondDescentTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(6).plus(_holdingDuration.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(7).plus(thirdDescentTime.to(NonSI.MINUTE)));
-				_timeList.add(_timeList.get(8).plus(landingDuration.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(4).plus(totalSecondClimbTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(5).plus(alternateCruiseTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(6).plus(secondDescentTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(7).plus(_holdingDuration.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(8).plus(thirdDescentTime.to(NonSI.MINUTE)));
+				_timeList.add(_timeList.get(9).plus(landingDuration.to(NonSI.MINUTE)));
 
 				_totalMissionTime = _timeList.get(_timeList.size()-1);
 
@@ -1050,11 +1106,12 @@ public class MissionProfileCalc {
 				_fuelUsedList.add(_fuelUsedList.get(1).plus(totalClimbFuelUsed.to(SI.KILOGRAM)));
 				_fuelUsedList.add(_fuelUsedList.get(2).plus(totalCruiseFuelUsed.to(SI.KILOGRAM)));
 				_fuelUsedList.add(_fuelUsedList.get(3).plus(firstDescentFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(4).plus(totalAlternateCruiseFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(5).plus(secondDescentFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(6).plus(totalHoldingFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(7).plus(thirdDescentFuelUsed.to(SI.KILOGRAM)));
-				_fuelUsedList.add(_fuelUsedList.get(8).plus(landingFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(4).plus(totalSecondClimbFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(5).plus(totalAlternateCruiseFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(6).plus(secondDescentFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(7).plus(totalHoldingFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(8).plus(thirdDescentFuelUsed.to(SI.KILOGRAM)));
+				_fuelUsedList.add(_fuelUsedList.get(9).plus(landingFuelUsed.to(SI.KILOGRAM)));
 
 
 				_totalFuelUsed = _fuelUsedList.get(_fuelUsedList.size()-1);
@@ -1067,6 +1124,7 @@ public class MissionProfileCalc {
 				_massList.add(intialClimbMass);
 				_massList.add(intialCruiseMass);
 				_massList.add(intialFirstDescentMass);
+				_massList.add(intialSecondClimbMass);
 				_massList.add(intialAlternateCruiseMass);
 				_massList.add(intialSecondDescentMass);
 				_massList.add(intialHoldingMass);
@@ -1286,41 +1344,45 @@ public class MissionProfileCalc {
 				.append("\t\tClimb range = " + _rangeList.get(2).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(1).to(NonSI.NAUTICAL_MILE)) + " \n")
 				.append("\t\tCruise range = " + _rangeList.get(3).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(2).to(NonSI.NAUTICAL_MILE)) + " \n")
 				.append("\t\tFirst descent range = " + _rangeList.get(4).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(3).to(NonSI.NAUTICAL_MILE)) + " \n")
-				.append("\t\tAlternate cruise range = " + _rangeList.get(5).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(4).to(NonSI.NAUTICAL_MILE)) + " \n")
-				.append("\t\tSecond descent range = " + _rangeList.get(6).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(5).to(NonSI.NAUTICAL_MILE)) + " \n")
-				.append("\t\tHolding range = " + _rangeList.get(7).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(6).to(NonSI.NAUTICAL_MILE)) + " \n")
-				.append("\t\tThird descent range = " + _rangeList.get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(7).to(NonSI.NAUTICAL_MILE)) + " \n")
-				.append("\t\tLanding range = " + _rangeList.get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(8).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tSecond climb range = " + _rangeList.get(5).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(4).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tAlternate cruise range = " + _rangeList.get(6).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(5).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tSecond descent range = " + _rangeList.get(7).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(6).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tHolding range = " + _rangeList.get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(7).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tThird descent range = " + _rangeList.get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(8).to(NonSI.NAUTICAL_MILE)) + " \n")
+				.append("\t\tLanding range = " + _rangeList.get(10).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(9).to(NonSI.NAUTICAL_MILE)) + " \n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTake-off duration = " + _timeList.get(1).to(NonSI.MINUTE) + " \n")
 				.append("\t\tClimb duration = " + _timeList.get(2).to(NonSI.MINUTE).minus(_timeList.get(1).to(NonSI.MINUTE)) + " \n")
 				.append("\t\tCruise duration = " + _timeList.get(3).to(NonSI.MINUTE).minus(_timeList.get(2).to(NonSI.MINUTE))+ " \n")
 				.append("\t\tFirst descent duration = " + _timeList.get(4).to(NonSI.MINUTE).minus(_timeList.get(3).to(NonSI.MINUTE)) + " \n")
-				.append("\t\tAlternate cruise duration = " + _timeList.get(5).to(NonSI.MINUTE).minus(_timeList.get(4).to(NonSI.MINUTE)) + " \n")
-				.append("\t\tSecond descent duration = " + _timeList.get(6).to(NonSI.MINUTE).minus(_timeList.get(5).to(NonSI.MINUTE)) + " \n")
-				.append("\t\tHolding duration = " + _timeList.get(7).to(NonSI.MINUTE).minus(_timeList.get(6).to(NonSI.MINUTE)) + " \n")
-				.append("\t\tThird descent duration = " + _timeList.get(8).to(NonSI.MINUTE).minus(_timeList.get(7).to(NonSI.MINUTE)) + " \n")
-				.append("\t\tLanding duration = " + _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tSecond climb duration = " + _timeList.get(5).to(NonSI.MINUTE).minus(_timeList.get(4).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tAlternate cruise duration = " + _timeList.get(6).to(NonSI.MINUTE).minus(_timeList.get(5).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tSecond descent duration = " + _timeList.get(7).to(NonSI.MINUTE).minus(_timeList.get(6).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tHolding duration = " + _timeList.get(8).to(NonSI.MINUTE).minus(_timeList.get(7).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tThird descent duration = " + _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)) + " \n")
+				.append("\t\tLanding duration = " + _timeList.get(10).to(NonSI.MINUTE).minus(_timeList.get(9).to(NonSI.MINUTE)) + " \n")
 				.append("\t\t.....................................\n")
 				.append("\t\tTake-off used fuel = " + _fuelUsedList.get(1).to(NonSI.POUND) + " \n")
 				.append("\t\tClimb used fuel = " + _fuelUsedList.get(2).to(NonSI.POUND).minus(_fuelUsedList.get(1).to(NonSI.POUND)) + " \n")
 				.append("\t\tCruise used fuel = " + _fuelUsedList.get(3).to(NonSI.POUND).minus(_fuelUsedList.get(2).to(NonSI.POUND)) + "\n")
 				.append("\t\tFirst descent used fuel = " + _fuelUsedList.get(4).to(NonSI.POUND).minus(_fuelUsedList.get(3).to(NonSI.POUND)) + " \n")
-				.append("\t\tAlternate cruise used fuel = " + _fuelUsedList.get(5).to(NonSI.POUND).minus(_fuelUsedList.get(4).to(NonSI.POUND)) + "\n")
-				.append("\t\tSecond descent used fuel = " + _fuelUsedList.get(6).to(NonSI.POUND).minus(_fuelUsedList.get(5).to(NonSI.POUND)) + "\n")
-				.append("\t\tHolding used fuel = " + _fuelUsedList.get(7).to(NonSI.POUND).minus(_fuelUsedList.get(6).to(NonSI.POUND)) + " \n")
-				.append("\t\tThird descent used fuel = " + _fuelUsedList.get(8).to(NonSI.POUND).minus(_fuelUsedList.get(7).to(NonSI.POUND)) + " \n")
-				.append("\t\tLanding used fuel = " + _fuelUsedList.get(9).to(NonSI.POUND).minus(_fuelUsedList.get(8).to(NonSI.POUND)) + " \n")
+				.append("\t\tSecond climb used fuel = " + _fuelUsedList.get(5).to(NonSI.POUND).minus(_fuelUsedList.get(4).to(NonSI.POUND)) + " \n")
+				.append("\t\tAlternate cruise used fuel = " + _fuelUsedList.get(6).to(NonSI.POUND).minus(_fuelUsedList.get(5).to(NonSI.POUND)) + "\n")
+				.append("\t\tSecond descent used fuel = " + _fuelUsedList.get(7).to(NonSI.POUND).minus(_fuelUsedList.get(6).to(NonSI.POUND)) + "\n")
+				.append("\t\tHolding used fuel = " + _fuelUsedList.get(8).to(NonSI.POUND).minus(_fuelUsedList.get(7).to(NonSI.POUND)) + " \n")
+				.append("\t\tThird descent used fuel = " + _fuelUsedList.get(9).to(NonSI.POUND).minus(_fuelUsedList.get(8).to(NonSI.POUND)) + " \n")
+				.append("\t\tLanding used fuel = " + _fuelUsedList.get(10).to(NonSI.POUND).minus(_fuelUsedList.get(9).to(NonSI.POUND)) + " \n")
 				.append("\t\t.....................................\n")
 				.append("\t\tAircraft weight at take-off start  = " + _massList.get(1).to(NonSI.POUND) + " \n")
 				.append("\t\tAircraft weight at climb start = " + _massList.get(2).to(NonSI.POUND) + " \n")
 				.append("\t\tAircraft weight at cruise start = " + _massList.get(3).to(NonSI.POUND) + "\n")
 				.append("\t\tAircraft weight at first descent start = " + _massList.get(4).to(NonSI.POUND) + " \n")
-				.append("\t\tAircraft weight at alternate cruise start = " + _massList.get(5).to(NonSI.POUND) + "\n")
-				.append("\t\tAircraft weight at second descent start = " + _massList.get(6).to(NonSI.POUND) + "\n")
-				.append("\t\tAircraft weight at holding start = " + _massList.get(7).to(NonSI.POUND) + " \n")
-				.append("\t\tAircraft weight at third descnet start = " + _massList.get(8).to(NonSI.POUND) + " \n")
-				.append("\t\tAircraft weight at landing start = " + _massList.get(9).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at second climb start = " + _massList.get(5).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at alternate cruise start = " + _massList.get(6).to(NonSI.POUND) + "\n")
+				.append("\t\tAircraft weight at second descent start = " + _massList.get(7).to(NonSI.POUND) + "\n")
+				.append("\t\tAircraft weight at holding start = " + _massList.get(8).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at third descnet start = " + _massList.get(9).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at landing start = " + _massList.get(10).to(NonSI.POUND) + " \n")
 				.append("\t-------------------------------------\n")
 				;
 		

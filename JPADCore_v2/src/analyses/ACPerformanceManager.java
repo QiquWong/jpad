@@ -158,6 +158,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	// Descent
 	private Amount<Velocity> _speedDescentCAS;
 	private Amount<Velocity> _rateOfDescent;
+	private Double _kDescentWeight;
 	//..............................................................................
 	// Mission Profile:
 	private Amount<Length> _missionRange;
@@ -412,6 +413,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		// Descent
 		private Amount<Velocity> __speedDescent;
 		private Amount<Velocity> __rateOfDescent;
+		private Double __kDescentWeight = 0.9;
 		//..............................................................................
 		// Mission profile
 		private Amount<Length> __missionRange;
@@ -684,6 +686,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder kDescentWeight(Double kDescentWeight) {
+			this.__kDescentWeight = kDescentWeight;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder rateOfDescent(Amount<Velocity> rateOfDescent) {
 			this.__rateOfDescent = rateOfDescent;
 			return this;
@@ -842,6 +849,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		this._cLmaxInverted = builder.__cLmaxInverted;
 		
+		this._kDescentWeight = builder.__kDescentWeight;
 		this._rateOfDescent = builder.__rateOfDescent;
 		this._speedDescentCAS = builder.__speedDescent;
 		
@@ -1648,7 +1656,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			altitudeListCruise = reader.readArrayofAmountFromXML("//performance/cruise/altitudes_array"); 
 		}
 		//...............................................................
-		// K CLIMB WEIGHT AOE
+		// K CRUISE WEIGHT 
 		String kCruiseWeightProperty = reader.getXMLPropertyByPath("//performance/cruise/k_cruise_weight");
 		if(kCruiseWeightProperty != null)
 			kCruiseWeight = Double.valueOf(reader.getXMLPropertyByPath("//performance/cruise/k_cruise_weight"));
@@ -1668,6 +1676,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		// READING DESCENT DATA ...
 		Amount<Velocity> rateOfDescent = null;
 		Amount<Velocity> speedDescentCAS = null;
+		Double kDescentWeight = 0.9;
 		//...............................................................
 		// RATE OF DESCENT 
 		String rateOfDescentProperty = reader.getXMLPropertyByPath("//performance/descent/rate_of_descent");
@@ -1678,7 +1687,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		String speedDescentCASProperty = reader.getXMLPropertyByPath("//performance/descent/descent_speed_CAS");
 		if(speedDescentCASProperty != null)
 			speedDescentCAS = (Amount<Velocity>) reader.getXMLAmountWithUnitByPath("//performance/descent/descent_speed_CAS");
-		
+		//...............................................................
+		// K DESCENT WEIGHT
+		String kDescentWeightProperty = reader.getXMLPropertyByPath("//performance/descent/k_descent_weight");
+		if(kDescentWeightProperty != null)
+			kDescentWeight = Double.valueOf(reader.getXMLPropertyByPath("//performance/descent/k_descent_weight"));
 		
 		//===========================================================================================
 		// READING MISSION PROFILE DATA ...
@@ -2131,6 +2144,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.cLmaxInverted(cLmaxInverted)
 				.rateOfDescent(rateOfDescent)
 				.speedDescentCAS(speedDescentCAS)
+				.kDescentWeight(kDescentWeight)
 				.missionRange(missionRange)
 				.alternateCruiseLength(alternateCruiseLength)
 				.alternateCruiseAltitude(alternateCruiseAltitude)
@@ -2265,7 +2279,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			CalcDescent calcDescent = new CalcDescent();
 			calcDescent.calculateDescentPerformance(
 					_theOperatingConditions.getAltitudeCruise(),
-					Amount.valueOf(15.24, SI.METER)
+					Amount.valueOf(15.24, SI.METER),
+					_maximumTakeOffMass.times(_kDescentWeight)
 					);
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
 				calcDescent.plotDescentPerformance(descentFolderPath);
@@ -2682,41 +2697,45 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListMissionProfile.add(new Object[] {"Climb range","nmi", _rangeList.get(2).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(1).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListMissionProfile.add(new Object[] {"Cruise range","nmi", _rangeList.get(3).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(2).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListMissionProfile.add(new Object[] {"First descent range","nmi", _rangeList.get(4).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(3).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListMissionProfile.add(new Object[] {"Alternate cruise range","nmi", _rangeList.get(5).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(4).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListMissionProfile.add(new Object[] {"Second descent range","nmi", _rangeList.get(6).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(5).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListMissionProfile.add(new Object[] {"Holding range","nmi", _rangeList.get(7).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(6).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListMissionProfile.add(new Object[] {"Third descent range","nmi", _rangeList.get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(7).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListMissionProfile.add(new Object[] {"Landing range","nmi", _rangeList.get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(8).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListMissionProfile.add(new Object[] {"Second climb range","nmi", _rangeList.get(5).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(1).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListMissionProfile.add(new Object[] {"Alternate cruise range","nmi", _rangeList.get(6).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(4).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListMissionProfile.add(new Object[] {"Second descent range","nmi", _rangeList.get(7).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(5).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListMissionProfile.add(new Object[] {"Holding range","nmi", _rangeList.get(8).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(6).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListMissionProfile.add(new Object[] {"Third descent range","nmi", _rangeList.get(9).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(7).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
+        	dataListMissionProfile.add(new Object[] {"Landing range","nmi", _rangeList.get(10).to(NonSI.NAUTICAL_MILE).minus(_rangeList.get(8).to(NonSI.NAUTICAL_MILE)).doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListMissionProfile.add(new Object[] {" "});
         	dataListMissionProfile.add(new Object[] {"Take-off duration","min", _timeList.get(1).doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {"Climb duration","min", _timeList.get(2).to(NonSI.MINUTE).minus(_timeList.get(1).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {"Cruise duration","min", _timeList.get(3).to(NonSI.MINUTE).minus(_timeList.get(2).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {"First descent duration","min", _timeList.get(4).to(NonSI.MINUTE).minus(_timeList.get(3).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
-        	dataListMissionProfile.add(new Object[] {"Alternate cruise duration","min", _timeList.get(5).to(NonSI.MINUTE).minus(_timeList.get(4).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
-        	dataListMissionProfile.add(new Object[] {"Second descent duration","min", _timeList.get(6).to(NonSI.MINUTE).minus(_timeList.get(5).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
-        	dataListMissionProfile.add(new Object[] {"Holding duration","min", _timeList.get(7).to(NonSI.MINUTE).minus(_timeList.get(6).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
-        	dataListMissionProfile.add(new Object[] {"Third descent duration","min", _timeList.get(8).to(NonSI.MINUTE).minus(_timeList.get(7).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
-        	dataListMissionProfile.add(new Object[] {"Landing duration","min", _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
+        	dataListMissionProfile.add(new Object[] {"Second climb duration","min", _timeList.get(5).to(NonSI.MINUTE).minus(_timeList.get(4).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
+        	dataListMissionProfile.add(new Object[] {"Alternate cruise duration","min", _timeList.get(6).to(NonSI.MINUTE).minus(_timeList.get(5).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
+        	dataListMissionProfile.add(new Object[] {"Second descent duration","min", _timeList.get(7).to(NonSI.MINUTE).minus(_timeList.get(6).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
+        	dataListMissionProfile.add(new Object[] {"Holding duration","min", _timeList.get(8).to(NonSI.MINUTE).minus(_timeList.get(7).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
+        	dataListMissionProfile.add(new Object[] {"Third descent duration","min", _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
+        	dataListMissionProfile.add(new Object[] {"Landing duration","min", _timeList.get(10).to(NonSI.MINUTE).minus(_timeList.get(9).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {" "});
         	dataListMissionProfile.add(new Object[] {"Take-off used fuel","lb", _fuelUsedList.get(1).doubleValue(NonSI.POUND)});
         	dataListMissionProfile.add(new Object[] {"Climb used fuel","lb", _fuelUsedList.get(2).to(NonSI.POUND).minus(_fuelUsedList.get(1).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
         	dataListMissionProfile.add(new Object[] {"Cruise used fuel","lb", _fuelUsedList.get(3).to(NonSI.POUND).minus(_fuelUsedList.get(2).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
         	dataListMissionProfile.add(new Object[] {"First descent used fuel","lb", _fuelUsedList.get(4).to(NonSI.POUND).minus(_fuelUsedList.get(3).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Alternate cruise used fuel","lb", _fuelUsedList.get(5).to(NonSI.POUND).minus(_fuelUsedList.get(4).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Second descent used fuel","lb", _fuelUsedList.get(6).to(NonSI.POUND).minus(_fuelUsedList.get(5).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Holding used fuel","lb", _fuelUsedList.get(7).to(NonSI.POUND).minus(_fuelUsedList.get(6).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Third descent used fuel","lb", _fuelUsedList.get(8).to(NonSI.POUND).minus(_fuelUsedList.get(7).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Landing used fuel","lb", _fuelUsedList.get(9).to(NonSI.POUND).minus(_fuelUsedList.get(8).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Climb used fuel","lb", _fuelUsedList.get(5).to(NonSI.POUND).minus(_fuelUsedList.get(4).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Alternate cruise used fuel","lb", _fuelUsedList.get(6).to(NonSI.POUND).minus(_fuelUsedList.get(5).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Second descent used fuel","lb", _fuelUsedList.get(7).to(NonSI.POUND).minus(_fuelUsedList.get(6).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Holding used fuel","lb", _fuelUsedList.get(8).to(NonSI.POUND).minus(_fuelUsedList.get(7).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Third descent used fuel","lb", _fuelUsedList.get(9).to(NonSI.POUND).minus(_fuelUsedList.get(8).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Landing used fuel","lb", _fuelUsedList.get(10).to(NonSI.POUND).minus(_fuelUsedList.get(9).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
         	dataListMissionProfile.add(new Object[] {" "});
         	dataListMissionProfile.add(new Object[] {"Aircraft weight at take-off start","lb", _massList.get(1).doubleValue(NonSI.POUND)});
         	dataListMissionProfile.add(new Object[] {"Aircraft weight at climb start","lb", _massList.get(2).doubleValue(NonSI.POUND)});
         	dataListMissionProfile.add(new Object[] {"Aircraft weight at cruise start","lb", _massList.get(3).doubleValue(NonSI.POUND)});
         	dataListMissionProfile.add(new Object[] {"Aircraft weight at first descent start","lb", _massList.get(4).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at alternate cruise start","lb", _massList.get(5).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at second descent start","lb", _massList.get(6).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at holding start","lb", _massList.get(7).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at third descnet start","lb", _massList.get(8).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at landing start","lb", _massList.get(9).doubleValue(NonSI.POUND)});        	
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at second climb start","lb", _massList.get(5).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at alternate cruise start","lb", _massList.get(6).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at second descent start","lb", _massList.get(7).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at holding start","lb", _massList.get(8).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at third descnet start","lb", _massList.get(9).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at landing start","lb", _massList.get(10).doubleValue(NonSI.POUND)});        	
 
         	Row rowMissionProfile = sheetMissionProfile.createRow(0);
         	Object[] objArrMissionProfile = dataListMissionProfile.get(0);
@@ -4514,7 +4533,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		public void calculateDescentPerformance(
 				Amount<Length> initialDescentAltitude,
-				Amount<Length> endDescentAltitude
+				Amount<Length> endDescentAltitude,
+				Amount<Mass> initialDescentMass
 				) {
 			
 			_theDescentCalculator = new DescentCalc(
@@ -4522,7 +4542,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_speedDescentCAS,
 					_rateOfDescent,
 					initialDescentAltitude,
-					endDescentAltitude
+					endDescentAltitude,
+					initialDescentMass,
+					_polarCLCruise,
+					_polarCDCruise
 					);
 					
 			_theDescentCalculator.calculateDescentPerformance();
@@ -6387,6 +6410,14 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setEfficiencyMapAltitudeOEI(Map<String, List<Double>> _efficiencyMapAltitudeOEI) {
 		this._efficiencyMapAltitudeOEI = _efficiencyMapAltitudeOEI;
+	}
+
+	public Double getKDescentWeight() {
+		return _kDescentWeight;
+	}
+
+	public void setKDescentWeight(Double _kDescentWeight) {
+		this._kDescentWeight = _kDescentWeight;
 	}
 
 }

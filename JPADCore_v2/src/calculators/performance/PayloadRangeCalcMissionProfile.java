@@ -352,7 +352,13 @@ public class PayloadRangeCalcMissionProfile{
 
 			Amount<Mass> intialClimbMass = initialMissionMass.minus(takeOffUsedFuel);
 
-			theClimbCalculator.calculateClimbPerformance(intialClimbMass, intialClimbMass);
+			theClimbCalculator.calculateClimbPerformance(
+					intialClimbMass,
+					intialClimbMass,
+					Amount.valueOf(0.0, SI.METER),
+					_theOperatingConditions.getAltitudeToReach(),
+					false
+					);
 
 			Amount<Length> totalClimbRange = theClimbCalculator.getClimbTotalRange();
 			Amount<Mass> totalClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
@@ -615,19 +621,58 @@ public class PayloadRangeCalcMissionProfile{
 					.getAsDouble();
 
 			//--------------------------------------------------------------------
-			// DESCENT (up to ALTERNATE altitude)
+			// DESCENT (up to HOLDING altitude)
+			Amount<Mass> intialFirstDescentMass = 
+					initialMissionMass
+					.minus(takeOffUsedFuel)
+					.minus(totalClimbFuelUsed)
+					.minus(totalCruiseFuelUsed);
+			
 			DescentCalc theFirstDescentCalculator = new DescentCalc(
 					_theAircraft,
 					_speedDescentCAS,
 					_rateOfDescent,
 					_theOperatingConditions.getAltitudeCruise(),
-					_alternateCruiseAltitude
+					_holdingAltitude,
+					intialFirstDescentMass,
+					_polarCLCruise,
+					_polarCDCruise
 					);
 
 			theFirstDescentCalculator.calculateDescentPerformance();
 			Amount<Length> firstDescentLength = theFirstDescentCalculator.getTotalDescentLength();
 			Amount<Mass> firstDescentFuelUsed = theFirstDescentCalculator.getTotalDescentFuelUsed();
 
+			//--------------------------------------------------------------------
+			// SECOND CLIMB (up to ALTERNATE altitude)
+			ClimbCalc theSecondClimbCalculator = new ClimbCalc(
+					_theAircraft,
+					_theOperatingConditions,
+					_cLmaxClean, 
+					_polarCLClimb,
+					_polarCDClimb,
+					_climbSpeed, 
+					_dragDueToEnigneFailure 
+					);
+
+			Amount<Mass> intialSecondClimbMass = 
+					initialMissionMass
+					.minus(takeOffUsedFuel)
+					.minus(totalClimbFuelUsed)
+					.minus(totalCruiseFuelUsed)
+					.minus(firstDescentFuelUsed);
+
+			theSecondClimbCalculator.calculateClimbPerformance(
+					intialSecondClimbMass,
+					intialSecondClimbMass,
+					_holdingAltitude,
+					_alternateCruiseAltitude,
+					false
+					);
+
+			Amount<Length> totalSecondClimbRange = theSecondClimbCalculator.getClimbTotalRange();
+			Amount<Mass> totalSecondClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
+			
 			//--------------------------------------------------------------------
 			// ALTERNATE CRUISE
 			
@@ -636,7 +681,8 @@ public class PayloadRangeCalcMissionProfile{
 					.minus(takeOffUsedFuel)
 					.minus(totalClimbFuelUsed)
 					.minus(totalCruiseFuelUsed)
-					.minus(firstDescentFuelUsed);
+					.minus(firstDescentFuelUsed)
+					.minus(totalSecondClimbFuelUsed);
 			
 			double speedOfSoundAlternateCruiseAltitude = new StdAtmos1976(
 					_alternateCruiseAltitude.doubleValue(SI.METER)
@@ -810,12 +856,24 @@ public class PayloadRangeCalcMissionProfile{
 
 			//--------------------------------------------------------------------
 			// DESCENT (up to HOLDING altitude)
+			Amount<Mass> intialSecondDescentMass = 
+					initialMissionMass
+					.minus(takeOffUsedFuel)
+					.minus(totalClimbFuelUsed)
+					.minus(totalCruiseFuelUsed)
+					.minus(firstDescentFuelUsed)
+					.minus(totalSecondClimbFuelUsed)
+					.minus(totalAlternateCruiseFuelUsed);
+			
 			DescentCalc theSecondDescentCalculator = new DescentCalc(
 					_theAircraft,
 					_speedDescentCAS,
 					_rateOfDescent,
 					_alternateCruiseAltitude,
-					_holdingAltitude
+					_holdingAltitude,
+					intialSecondDescentMass,
+					_polarCLCruise,
+					_polarCDCruise
 					);
 
 			theSecondDescentCalculator.calculateDescentPerformance();
@@ -824,6 +882,18 @@ public class PayloadRangeCalcMissionProfile{
 
 			//--------------------------------------------------------------------
 			// HOLDING
+			Amount<Mass> intialHoldingMass = 
+					initialMissionMass
+					.minus(takeOffUsedFuel)
+					.minus(totalClimbFuelUsed)
+					.minus(totalCruiseFuelUsed)
+					.minus(firstDescentFuelUsed)
+					.minus(totalSecondClimbFuelUsed)
+					.minus(totalAlternateCruiseFuelUsed)
+					.minus(secondDescentFuelUsed);
+			
+			// TODO : PERFORM HOLDING IN SEVERAL TIME STEPS
+			
 			Double sfcHolding = 
 					ThrustCalc.calculateThrustDatabase(
 							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
@@ -863,12 +933,26 @@ public class PayloadRangeCalcMissionProfile{
 
 				//--------------------------------------------------------------------
 				// DESCENT (up to LANDING altitude)
+				Amount<Mass> intialThirdDescentMass = 
+						initialMissionMass
+						.minus(takeOffUsedFuel)
+						.minus(totalClimbFuelUsed)
+						.minus(totalCruiseFuelUsed)
+						.minus(firstDescentFuelUsed)
+						.minus(totalSecondClimbFuelUsed)
+						.minus(totalAlternateCruiseFuelUsed)
+						.minus(secondDescentFuelUsed)
+						.minus(totalHoldingFuelUsed);
+				
 				DescentCalc theThirdDescentCalculator = new DescentCalc(
 						_theAircraft,
 						_speedDescentCAS,
 						_rateOfDescent,
 						_holdingAltitude,
-						Amount.valueOf(15.24, SI.METER)
+						Amount.valueOf(15.24, SI.METER),
+						intialThirdDescentMass,
+						_polarCLCruise,
+						_polarCDCruise
 						);
 
 				theThirdDescentCalculator.calculateDescentPerformance();
@@ -929,11 +1013,12 @@ public class PayloadRangeCalcMissionProfile{
 				rangeList.add(rangeList.get(1).plus(totalClimbRange.to(NonSI.NAUTICAL_MILE)));
 				rangeList.add(rangeList.get(2).plus(initialCruiseLength.to(NonSI.NAUTICAL_MILE)));
 				rangeList.add(rangeList.get(3).plus(firstDescentLength.to(NonSI.NAUTICAL_MILE)));
-				rangeList.add(rangeList.get(4).plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)));
-				rangeList.add(rangeList.get(5).plus(secondDescentLength.to(NonSI.NAUTICAL_MILE)));
-				rangeList.add(rangeList.get(6));
-				rangeList.add(rangeList.get(7).plus(thirdDescentLength).to(NonSI.NAUTICAL_MILE));
-				rangeList.add(rangeList.get(8).plus(landingDistance).to(NonSI.NAUTICAL_MILE));
+				rangeList.add(rangeList.get(4).plus(totalSecondClimbRange.to(NonSI.NAUTICAL_MILE)));
+				rangeList.add(rangeList.get(5).plus(_alternateCruiseLength.to(NonSI.NAUTICAL_MILE)));
+				rangeList.add(rangeList.get(6).plus(secondDescentLength.to(NonSI.NAUTICAL_MILE)));
+				rangeList.add(rangeList.get(7));
+				rangeList.add(rangeList.get(8).plus(thirdDescentLength).to(NonSI.NAUTICAL_MILE));
+				rangeList.add(rangeList.get(9).plus(landingDistance).to(NonSI.NAUTICAL_MILE));
 
 				totalMissionRange = rangeList.get(rangeList.size()-1);
 
@@ -946,11 +1031,12 @@ public class PayloadRangeCalcMissionProfile{
 				fuelUsedList.add(fuelUsedList.get(1).plus(totalClimbFuelUsed.to(SI.KILOGRAM)));
 				fuelUsedList.add(fuelUsedList.get(2).plus(totalCruiseFuelUsed.to(SI.KILOGRAM)));
 				fuelUsedList.add(fuelUsedList.get(3).plus(firstDescentFuelUsed.to(SI.KILOGRAM)));
-				fuelUsedList.add(fuelUsedList.get(4).plus(totalAlternateCruiseFuelUsed.to(SI.KILOGRAM)));
-				fuelUsedList.add(fuelUsedList.get(5).plus(secondDescentFuelUsed.to(SI.KILOGRAM)));
-				fuelUsedList.add(fuelUsedList.get(6).plus(totalHoldingFuelUsed.to(SI.KILOGRAM)));
-				fuelUsedList.add(fuelUsedList.get(7).plus(thirdDescentFuelUsed.to(SI.KILOGRAM)));
-				fuelUsedList.add(fuelUsedList.get(8).plus(landingFuelUsed.to(SI.KILOGRAM)));
+				fuelUsedList.add(fuelUsedList.get(4).plus(totalSecondClimbFuelUsed.to(SI.KILOGRAM)));
+				fuelUsedList.add(fuelUsedList.get(5).plus(totalAlternateCruiseFuelUsed.to(SI.KILOGRAM)));
+				fuelUsedList.add(fuelUsedList.get(6).plus(secondDescentFuelUsed.to(SI.KILOGRAM)));
+				fuelUsedList.add(fuelUsedList.get(7).plus(totalHoldingFuelUsed.to(SI.KILOGRAM)));
+				fuelUsedList.add(fuelUsedList.get(8).plus(thirdDescentFuelUsed.to(SI.KILOGRAM)));
+				fuelUsedList.add(fuelUsedList.get(9).plus(landingFuelUsed.to(SI.KILOGRAM)));
 
 				totalFuelUsed = fuelUsedList.get(fuelUsedList.size()-1);
 
