@@ -1758,12 +1758,12 @@ public class TakeOffCalc {
 			if(isAborted)
 				alphaDot = 0.0;
 			else {
-				if((time > tRot.getEstimatedValue()) && (time < tHold.getEstimatedValue())) {
+				if((time > tRot.getEstimatedValue()) && (time < tEndRot.getEstimatedValue())) {
 					alphaDot = alphaDotInitial*(1-(kAlpha*(TakeOffCalc.this.getAlpha().get(
 							TakeOffCalc.this.getAlpha().size()-1).getEstimatedValue()))
 							);
 				}
-				else if((time > tEndHold.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
+				else if((time > tEndRot.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
 					alphaDot = alphaRed;
 				}
 			}

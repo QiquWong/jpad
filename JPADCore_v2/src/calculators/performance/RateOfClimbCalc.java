@@ -75,9 +75,12 @@ public class RateOfClimbCalc {
 						int rcMaxSpeedIndex = MyArrayUtils.getIndexOfMax(rc);
 						rcMaxSpeed = speed[rcMaxSpeedIndex];
 
-						list.add(new RCMap(altitude[i], phi[p], powerRequired, 
+						list.add(
+								new RCMap(altitude[i], phi[p], powerRequired, 
 								powerAvailable, rc, rcMax, bpr, weight[w], 
-								flightCondition[f], speed, rcMaxSpeed));
+								flightCondition[f], speed, rcMaxSpeed
+								)
+								);
 
 					}
 				}

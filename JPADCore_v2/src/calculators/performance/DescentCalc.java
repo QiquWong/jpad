@@ -112,6 +112,21 @@ public class DescentCalc {
 			
 			// TODO : PERFORM DESCENT IN SEVERAL TIME STEPS
 			
+			double thrust = ThrustCalc.calculateThrustDatabase(
+					_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+					_theAircraft.getPowerPlant().getEngineNumber(),
+					1.0,
+					_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+					_theAircraft.getPowerPlant().getEngineType(),
+					EngineOperatingConditionEnum.CRUISE,
+					_theAircraft.getPowerPlant(),
+					altitudeDescent[i],
+					SpeedCalc.calculateMach(
+							altitudeDescent[i],
+							speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
+							)
+					);
+			
 			sfcListDescent.add(
 					ThrustCalc.calculateThrustDatabase(
 							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),

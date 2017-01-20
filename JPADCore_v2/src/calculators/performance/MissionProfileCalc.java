@@ -349,7 +349,13 @@ public class MissionProfileCalc {
 
 			Amount<Mass> intialClimbMass = _initialMissionMass.minus(takeOffUsedFuel);
 
-			theClimbCalculator.calculateClimbPerformance(intialClimbMass, intialClimbMass);
+			theClimbCalculator.calculateClimbPerformance(
+					intialClimbMass,
+					intialClimbMass,
+					Amount.valueOf(0.0, SI.METER),
+					_theOperatingConditions.getAltitudeToReach(),
+					false
+					);
 
 			Amount<Length> totalClimbRange = theClimbCalculator.getClimbTotalRange();
 			Amount<Duration> totalClimbTime = null;
@@ -634,7 +640,7 @@ public class MissionProfileCalc {
 								); 
 
 				//--------------------------------------------------------------------
-				// DESCENT (up to ALTERNATE altitude)
+				// DESCENT (up to HOLDING altitude)
 				Amount<Mass> intialFirstDescentMass = 
 						_initialMissionMass
 						.minus(takeOffUsedFuel)
@@ -648,6 +654,7 @@ public class MissionProfileCalc {
 						_theOperatingConditions.getAltitudeCruise(),
 						_alternateCruiseAltitude
 						);
+
 
 				theFirstDescentCalculator.calculateDescentPerformance();
 				Amount<Length> firstDescentLength = theFirstDescentCalculator.getTotalDescentLength();
@@ -1112,24 +1119,22 @@ public class MissionProfileCalc {
 		if(_plotList.contains(PerformancePlotEnum.RANGE_PROFILE)) { 
 			
 			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(_rangeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_rangeList.stream()
+							.map(r -> r.to(NonSI.NAUTICAL_MILE))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(NonSI.FOOT))
+							.collect(Collectors.toList()
+									)
+							),
 					0.0, null, 0.0, null,
 					"Range", "Altitude",
-					"km", "m",
-					_missionProfilesFolderPath, "Range_Profile_(km)"
-					);
-			
-			double[] rangeNauticalMiles = new double[_rangeList.size()];
-			for(int i=0; i<rangeNauticalMiles.length; i++)
-				rangeNauticalMiles[i] = _rangeList.get(i).doubleValue(NonSI.NAUTICAL_MILE);
-			MyChartToFileUtils.plotNoLegend(
-					rangeNauticalMiles,
-					MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
-					0.0, null, 0.0, null,
-					"Range", "Altitude",
-					"nmi", "m",
-					_missionProfilesFolderPath, "Range_Profile_(nmi)"
+					"nmi", "ft",
+					_missionProfilesFolderPath, "Range_Profile"
 					);
 			
 		}
@@ -1137,23 +1142,40 @@ public class MissionProfileCalc {
 		if(_plotList.contains(PerformancePlotEnum.TIME_PROFILE)) { 
 			
 			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(_timeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_timeList.stream()
+							.map(t -> t.to(NonSI.MINUTE))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(NonSI.FOOT))
+							.collect(Collectors.toList()
+									)
+							),
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
-					"min", "m",
-					_missionProfilesFolderPath, "Time_Profile_(minutes)"
+					"min", "ft",
+					_missionProfilesFolderPath, "Time_Profile_(min)"
 					);
 			
-			double[] timeHours = new double[_timeList.size()];
-			for(int i=0; i<timeHours.length; i++)
-				timeHours[i] = _timeList.get(i).doubleValue(NonSI.HOUR);
 			MyChartToFileUtils.plotNoLegend(
-					timeHours,
-					MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_timeList.stream()
+							.map(t -> t.to(NonSI.HOUR))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(NonSI.FOOT))
+							.collect(Collectors.toList()
+									)
+							),
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
-					"hr", "m",
+					"hr", "ft",
 					_missionProfilesFolderPath, "Time_Profile_(hours)"
 					);
 			
@@ -1162,27 +1184,83 @@ public class MissionProfileCalc {
 		if(_plotList.contains(PerformancePlotEnum.FUEL_USED_PROFILE)) { 
 			
 			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(_fuelUsedList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_fuelUsedList.stream()
+							.map(f -> f.to(NonSI.POUND))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(NonSI.FOOT))
+							.collect(Collectors.toList()
+									)
+							),
 					0.0, null, 0.0, null,
 					"Fuel used", "Altitude",
-					"kg", "m",
-					_missionProfilesFolderPath, "Fuel_used_Profile_(kg)"
+					"lb", "ft",
+					_missionProfilesFolderPath, "Fuel_used_Profile_(lb)"
 					);
 			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_fuelUsedList.stream()
+							.map(f -> f.to(SI.KILOGRAM))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(NonSI.FOOT))
+							.collect(Collectors.toList()
+									)
+							),
+					0.0, null, 0.0, null,
+					"Fuel used", "Altitude",
+					"kg", "ft",
+					_missionProfilesFolderPath, "Fuel_used_Profile_(kg)"
+					);
 		}
 		
 		if(_plotList.contains(PerformancePlotEnum.WEIGHT_PROFILE)) { 
 			
 			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(_timeList),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_massList),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_timeList.stream()
+							.map(t -> t.to(NonSI.MINUTE))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_massList.stream()
+							.map(m -> m.to(SI.KILOGRAM))
+							.collect(Collectors.toList()
+									)
+							),
 					0.0, null, null, null,
 					"Time", "Aircraft mass",
-					"s", "kg",
+					"min", "kg",
 					_missionProfilesFolderPath, "Mass_Profile_(kg)"
 					);
 			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_timeList.stream()
+							.map(t -> t.to(NonSI.MINUTE))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_massList.stream()
+							.map(m -> m.to(NonSI.POUND))
+							.collect(Collectors.toList()
+									)
+							),
+					0.0, null, null, null,
+					"Time", "Aircraft mass",
+					"min", "lb",
+					_missionProfilesFolderPath, "Mass_Profile_(lb)"
+					);
 		}
 		
 	}
@@ -1224,15 +1302,25 @@ public class MissionProfileCalc {
 				.append("\t\tThird descent duration = " + _timeList.get(8).to(NonSI.MINUTE).minus(_timeList.get(7).to(NonSI.MINUTE)) + " \n")
 				.append("\t\tLanding duration = " + _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)) + " \n")
 				.append("\t\t.....................................\n")
-				.append("\t\tTake-off used fuel = " + _fuelUsedList.get(1).to(SI.KILOGRAM) + " \n")
-				.append("\t\tClimb used fuel = " + _fuelUsedList.get(2).to(SI.KILOGRAM).minus(_fuelUsedList.get(1).to(SI.KILOGRAM)) + " \n")
-				.append("\t\tCruise used fuel = " + _fuelUsedList.get(3).to(SI.KILOGRAM).minus(_fuelUsedList.get(2).to(SI.KILOGRAM)) + "\n")
-				.append("\t\tFirst descent used fuel = " + _fuelUsedList.get(4).to(SI.KILOGRAM).minus(_fuelUsedList.get(3).to(SI.KILOGRAM)) + " \n")
-				.append("\t\tAlternate cruise used fuel = " + _fuelUsedList.get(5).to(SI.KILOGRAM).minus(_fuelUsedList.get(4).to(SI.KILOGRAM)) + "\n")
-				.append("\t\tSecond descent used fuel = " + _fuelUsedList.get(6).to(SI.KILOGRAM).minus(_fuelUsedList.get(5).to(SI.KILOGRAM)) + "\n")
-				.append("\t\tHolding used fuel = " + _fuelUsedList.get(7).to(SI.KILOGRAM).minus(_fuelUsedList.get(6).to(SI.KILOGRAM)) + " \n")
-				.append("\t\tThird descent used fuel = " + _fuelUsedList.get(8).to(SI.KILOGRAM).minus(_fuelUsedList.get(7).to(SI.KILOGRAM)) + " \n")
-				.append("\t\tLanding used fuel = " + _fuelUsedList.get(9).to(SI.KILOGRAM).minus(_fuelUsedList.get(8).to(SI.KILOGRAM)) + " \n")
+				.append("\t\tTake-off used fuel = " + _fuelUsedList.get(1).to(NonSI.POUND) + " \n")
+				.append("\t\tClimb used fuel = " + _fuelUsedList.get(2).to(NonSI.POUND).minus(_fuelUsedList.get(1).to(NonSI.POUND)) + " \n")
+				.append("\t\tCruise used fuel = " + _fuelUsedList.get(3).to(NonSI.POUND).minus(_fuelUsedList.get(2).to(NonSI.POUND)) + "\n")
+				.append("\t\tFirst descent used fuel = " + _fuelUsedList.get(4).to(NonSI.POUND).minus(_fuelUsedList.get(3).to(NonSI.POUND)) + " \n")
+				.append("\t\tAlternate cruise used fuel = " + _fuelUsedList.get(5).to(NonSI.POUND).minus(_fuelUsedList.get(4).to(NonSI.POUND)) + "\n")
+				.append("\t\tSecond descent used fuel = " + _fuelUsedList.get(6).to(NonSI.POUND).minus(_fuelUsedList.get(5).to(NonSI.POUND)) + "\n")
+				.append("\t\tHolding used fuel = " + _fuelUsedList.get(7).to(NonSI.POUND).minus(_fuelUsedList.get(6).to(NonSI.POUND)) + " \n")
+				.append("\t\tThird descent used fuel = " + _fuelUsedList.get(8).to(NonSI.POUND).minus(_fuelUsedList.get(7).to(NonSI.POUND)) + " \n")
+				.append("\t\tLanding used fuel = " + _fuelUsedList.get(9).to(NonSI.POUND).minus(_fuelUsedList.get(8).to(NonSI.POUND)) + " \n")
+				.append("\t\t.....................................\n")
+				.append("\t\tAircraft weight at take-off start  = " + _massList.get(1).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at climb start = " + _massList.get(2).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at cruise start = " + _massList.get(3).to(NonSI.POUND) + "\n")
+				.append("\t\tAircraft weight at first descent start = " + _massList.get(4).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at alternate cruise start = " + _massList.get(5).to(NonSI.POUND) + "\n")
+				.append("\t\tAircraft weight at second descent start = " + _massList.get(6).to(NonSI.POUND) + "\n")
+				.append("\t\tAircraft weight at holding start = " + _massList.get(7).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at third descnet start = " + _massList.get(8).to(NonSI.POUND) + " \n")
+				.append("\t\tAircraft weight at landing start = " + _massList.get(9).to(NonSI.POUND) + " \n")
 				.append("\t-------------------------------------\n")
 				;
 		
