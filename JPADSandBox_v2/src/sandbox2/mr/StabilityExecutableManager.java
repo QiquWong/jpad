@@ -709,6 +709,8 @@ public class StabilityExecutableManager {
 	List<List<Double>> clDistributions; 
 	Double[] cl3D;
 	
+	MethodEnum _horizontalTailCL;
+	
 	Amount<Length> _wingHorizontalDistanceACtoCG,_wingVerticalDistranceACtoCG;
 	/*****************************************************************************************************************************************
 	 * In this section the arrays are initialized. These initialization wont be made in the final version because                            *
@@ -3848,6 +3850,11 @@ public class StabilityExecutableManager {
 		this._hTailcLAlphaDeg = (clTwoMachActual-clOneMachActual)/(4);
 		this._hTailclAlpha = Amount.valueOf( this._hTailcLAlphaRad , SI.RADIAN.inverse());
 
+		
+		if(_horizontalTailCL==MethodEnum.FROMCFD) {
+			this._hTailclAlpha = this._hTailclAlpha.times(1.459);
+		}
+		
 		// alpha zero lift
 		this._hTailAlphaZeroLift = (
 				Amount.valueOf(
@@ -3936,6 +3943,7 @@ public class StabilityExecutableManager {
 					this,
 					_anglesOfElevatorDeflection.get(i));
 
+			if( _horizontalTailCL==MethodEnum.FROMCFD){
 			_tauElevator.put(_anglesOfElevatorDeflection.get(i),
 					LiftCalc.calculateTauIndexElevator(
 							_elevatorCfC, 
@@ -3943,7 +3951,22 @@ public class StabilityExecutableManager {
 							highLiftDatabaseReader, 
 							aeroDatabaseReader, 
 							_anglesOfElevatorDeflection.get(i)
-							));
+							) 
+					- 0.0374    // NANDO CORRECTION
+					);
+			}
+			
+			if( _horizontalTailCL==MethodEnum.SEMPIEMPIRICAL){
+				_tauElevator.put(_anglesOfElevatorDeflection.get(i),
+						LiftCalc.calculateTauIndexElevator(
+								_elevatorCfC, 
+								_hTailAspectRatio,
+								highLiftDatabaseReader, 
+								aeroDatabaseReader, 
+								_anglesOfElevatorDeflection.get(i)
+								)
+						);
+			}
 
 			//------------------------------------------------------
 			// ALPHA ZERO LIFT HIGH LIFT
@@ -3954,6 +3977,99 @@ public class StabilityExecutableManager {
 							(_tauElevator.get(_anglesOfElevatorDeflection.get(i))*_anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)),
 							NonSI.DEGREE_ANGLE));
 
+			
+			if( _horizontalTailCL==MethodEnum.FROMCFD){
+			// CL ALPHA ---- NANDO CORRECTION--------------
+			
+			if( Math.abs(_anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)) <=15){
+			_hTailCLAlphaElevator.put(_anglesOfElevatorDeflection.get(i),
+					_hTailcLAlphaDeg*(
+				 -0.0006*Math.pow(Math.abs(_anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)),3) + 
+				 0.0092*Math.pow(Math.abs(_anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)), 2) -
+				 0.0023* Math.abs(_anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)) + 
+				 1.459)
+				 );
+			}
+			
+			if( Math.abs(_anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)) >15){
+				_hTailCLAlphaElevator.put(_anglesOfElevatorDeflection.get(i),
+						_hTailcLAlphaDeg*(
+					 -0.0006*Math.pow(Math.abs(15),3) + 
+					 0.0092*Math.pow(Math.abs(15), 2) -
+					 0.0023* Math.abs(15) + 
+					 1.459)
+					 );
+			}
+		
+			
+			//------------------------------------------------------
+			// CL ZERO HIGH LIFT
+			_hTailCLZeroElevator.put(
+					_anglesOfElevatorDeflection.get(i), 
+					-_hTailCLAlphaElevator.get(_anglesOfElevatorDeflection.get(i)) *
+					_hTailalphaZeroLiftElevator.get(_anglesOfElevatorDeflection.get(i)).doubleValue(NonSI.DEGREE_ANGLE));
+
+			//------------------------------------------------------
+			// CL MAX HIGH LIFT
+
+			_hTailcLMaxElevator.put(
+					_anglesOfElevatorDeflection.get(i),
+					_hTailcLMax + _deltaCLMaxElevator.get(_anglesOfElevatorDeflection.get(i)));
+
+
+			//------------------------------------------------------
+			// ALPHA STALL HIGH LIFT
+			double deltaYPercent = aeroDatabaseReader
+					.getDeltaYvsThickness(
+							_hTailMaxThicknessMeanAirfoil,
+							_hTailMeanAirfoilFamily
+							);
+
+			Amount<Angle> deltaAlpha = Amount.valueOf(
+					aeroDatabaseReader
+					.getDAlphaVsLambdaLEVsDy(
+							_hTailSweepLE.doubleValue(NonSI.DEGREE_ANGLE),
+							deltaYPercent
+							),
+					NonSI.DEGREE_ANGLE);
+
+			_hTailalphaStallLiftElevator.put(
+					_anglesOfElevatorDeflection.get(i),
+					Amount.valueOf((((_hTailcLMaxElevator.get(_anglesOfElevatorDeflection.get(i)) - 
+							_hTailCLZeroElevator.get(_anglesOfElevatorDeflection.get(i))) /
+							_hTailCLAlphaElevator.get(_anglesOfElevatorDeflection.get(i)))
+							+ deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE)),
+							NonSI.DEGREE_ANGLE));
+
+			//------------------------------------------------------
+			// ALPHA STAR HIGH LIFT		
+			_hTailalphaStarElevator.put(
+					_anglesOfElevatorDeflection.get(i),
+					Amount.valueOf(_hTailalphaStar.doubleValue(NonSI.DEGREE_ANGLE)-
+							(_tauElevator.get(_anglesOfElevatorDeflection.get(i)) * _anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)), 
+							NonSI.DEGREE_ANGLE));
+
+			//------------------------------------------------------
+			// CL STAR HIGH LIFT
+			_hTailCLStarElevator.put(
+					_anglesOfElevatorDeflection.get(i),
+					_hTailCLAlphaElevator.get(_anglesOfElevatorDeflection.get(i)) * 
+					_hTailalphaStarElevator.get(_anglesOfElevatorDeflection.get(i)).doubleValue(NonSI.DEGREE_ANGLE)+
+					_hTailCLZeroElevator.get(_anglesOfElevatorDeflection.get(i))); 
+
+			_hTailLiftCoefficient3DCurveWithElevator.put(
+					_anglesOfElevatorDeflection.get(i),
+					LiftCalc.calculateCLvsAlphaArray(
+							_hTailCLZeroElevator.get(_anglesOfElevatorDeflection.get(i)),
+							_hTailcLMaxElevator.get(_anglesOfElevatorDeflection.get(i)),
+							_hTailalphaStarElevator.get(_anglesOfElevatorDeflection.get(i)),
+							_hTailalphaStallLiftElevator.get(_anglesOfElevatorDeflection.get(i)),
+							Amount.valueOf(_hTailCLAlphaElevator.get(_anglesOfElevatorDeflection.get(i)), NonSI.DEGREE_ANGLE.inverse()),
+							MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasTail)
+							));
+		}
+			
+			if(_horizontalTailCL == MethodEnum.SEMPIEMPIRICAL) {
 			//------------------------------------------------------
 			// CL ZERO HIGH LIFT
 			_hTailCLZeroElevator.put(
@@ -4018,7 +4134,9 @@ public class StabilityExecutableManager {
 							Amount.valueOf(_hTailcLAlphaDeg, NonSI.DEGREE_ANGLE.inverse()),
 							MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasTail)
 							));
+			}
 		}
+		
 
 		 this._deltaEAnglesArray = MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyArrayUtils.convertFromDoublePrimitive(
@@ -4031,6 +4149,7 @@ public class StabilityExecutableManager {
 					this,
 					_deltaEAnglesArray.get(i));
 
+			if(_horizontalTailCL == MethodEnum.FROMCFD){
 			_tauElevatorArray.put(_deltaEAnglesArray.get(i),
 					LiftCalc.calculateTauIndexElevator(
 							_elevatorCfC, 
@@ -4038,8 +4157,24 @@ public class StabilityExecutableManager {
 							highLiftDatabaseReader, 
 							aeroDatabaseReader, 
 							_deltaEAnglesArray.get(i)
-							)); 
+							)
+					- 0.0374    // NANDO CORRECTION
+					); 
 		}
+			if(_horizontalTailCL == MethodEnum.SEMPIEMPIRICAL){
+				_tauElevatorArray.put(_deltaEAnglesArray.get(i),
+						LiftCalc.calculateTauIndexElevator(
+								_elevatorCfC, 
+								_hTailAspectRatio,
+								highLiftDatabaseReader, 
+								aeroDatabaseReader, 
+								_deltaEAnglesArray.get(i)
+								)
+						); 
+			
+		}
+		}
+		
 	}
 
 
@@ -5658,7 +5793,7 @@ public class StabilityExecutableManager {
 							));
 		}
 		
-		for (int i=0; i<_numberOfAlphasBody; i++){
+		for (int i=0; i<_numberOfAlphasBody-5; i++){
 			Double [] clTemp = new Double[deltaEforDeltaEEquilibrium.size()];
 			for (int ii = 0; ii<deltaEforDeltaEEquilibrium.size(); ii++){
 				clTemp[ii] = _clMapForDeltaeElevator.get(deltaEforDeltaEEquilibrium.get(ii))[i];
@@ -8159,6 +8294,14 @@ public class StabilityExecutableManager {
 
 	public void set_deltaCMc4Elevator(Double _deltaCMc4Elevator) {
 		this._deltaCMc4Elevator = _deltaCMc4Elevator;
+	}
+
+	public MethodEnum get_horizontalWingCL() {
+		return _horizontalTailCL;
+	}
+
+	public void set_horizontalWingCL(MethodEnum _horizontalWingCL) {
+		this._horizontalTailCL = _horizontalWingCL;
 	}
 
 	

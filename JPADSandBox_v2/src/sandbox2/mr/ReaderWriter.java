@@ -96,7 +96,7 @@ public class ReaderWriter{
 		theStabilityCalculator.setReynoldsCurrent(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/Reynolds_number")));
 		theStabilityCalculator.set_zLandingGear((Amount<Length>) reader.getXMLAmountWithUnitByPath("//operating_conditions/z_landing_gear"));
 		
-		theStabilityCalculator.setWingFinalMomentumPole(0.25);
+		theStabilityCalculator.setWingFinalMomentumPole(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/wing_pole_in_equation")));
 		theStabilityCalculator.setHTailFinalMomentumPole(0.25);
 		theStabilityCalculator.setAlphaWingForDistribution(reader.readArrayofAmountFromXML("//operating_conditions/alpha_wing_array_for_distribution"));
 		theStabilityCalculator.setAlphaHorizontalTailForDistribution(reader.readArrayofAmountFromXML("//operating_conditions/alpha_horizontal_tail_array_for_distribution"));
@@ -606,6 +606,18 @@ public class ReaderWriter{
 			theStabilityCalculator.setCM0fuselage(Double.valueOf(reader.getXMLPropertyByPath("//fuselage/CM_0")));
 			theStabilityCalculator.setCMalphafuselage(Double.valueOf(reader.getXMLPropertyByPath("//fuselage/CM_alpha")));
 		}
+		
+		//---------------------------------------------------------------------------------
+		// CONFRONTO NANDO
+		
+		String horizontalTailLiftMethod = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@horizontalTailLift");
+		if(horizontalTailLiftMethod.equalsIgnoreCase("CFD_CORRECTION"))
+			theStabilityCalculator.set_horizontalWingCL(MethodEnum.FROMCFD);
+		if(horizontalTailLiftMethod.equalsIgnoreCase("SEMIEMPIRICAL"))
+			theStabilityCalculator.set_horizontalWingCL(MethodEnum.SEMPIEMPIRICAL);
 		
 		//---------------------------------------------------------------------------------
 		// PLOT:

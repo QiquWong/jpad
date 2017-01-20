@@ -2,9 +2,9 @@
 <!-- All units can be choose by user with the exception of surfaces deflections. All values of each array must have the same unit-->    
 <!-- It is possible to choose a constant downwash calculation, or variable with the flag-->    
 <!-- If CONSTANT the downwash is calculated using Roskam method, if variable using Slingerland method-->   
- <Longitudinal_static_stability_executable downwash="VARIABLE"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" -->
+ <Longitudinal_static_stability_executable downwash="VARIABLE" horizontalTailLift="SEMIEMPIRICAL"> <!-- Longitudinal_static_stability_executable downwash="VARIABLE" horizontalTailLift="SEMIEMPIRICAL" -->
  <!-- Longitudinal_static_stability_executable downwash="CONSTANT" -->
- <aircraft_name>1a_CRUISE_WITH_WINGLET_15</aircraft_name>
+ <aircraft_name>1c_CRUISE_WITH_WINGLET_33</aircraft_name>
         <operating_conditions>
 <!-- This is the position of the aircraft CG in the BRF -->
                 <x_cg unit="m">21.47</x_cg>   <!--- 15, 25, 32% -->
@@ -12,7 +12,7 @@
                 <z_cg unit="m">-1.1</z_cg> <!-- 10% MAC -->
                 <altitude unit="m">9144</altitude>   <!-- cruise:30kft stall: 16.5kft-->
                 <mach_number>0.62</mach_number>   <!-- cruise:M=0.62 Take-Off:M=0.171 Landing: M=0.15-->
-				<delta_CD0_miscellaneous>0.0092</delta_CD0_miscellaneous>
+				<delta_CD0_miscellaneous>0.00735</delta_CD0_miscellaneous>
 				<delta_CD0_gear>0.0150</delta_CD0_gear>
 				<z_landing_gear unit="m">3.25</z_landing_gear>
     <!-- Reynolds number referred to MAC  -->
