@@ -3,6 +3,7 @@ package analyses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.DynamicViscosity;
@@ -20,6 +21,8 @@ import configuration.MyConfiguration;
 //WARNING: Density is in g/cm3 ( = 1000 kg/m3)
 import jahuwaldt.aero.StdAtmos1976;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.PressureCalc;
 import standaloneutils.atmosphere.SpeedCalc;
@@ -52,14 +55,14 @@ public class OperatingConditions implements IOperatingConditions {
 	private Amount<Length> _altitudeTakeOff;
 	private Double _machTakeOff;
 	private Double _throttleTakeOff;
-	private Double _throttleGroundIdleTakeOff;
+	private MyInterpolatingFunction _throttleGroundIdleTakeOff;
 	private List<Amount<Angle>> _flapDeflectionTakeOff;
 	private List<Amount<Angle>> _slatDeflectionTakeOff;
 
 	// Landing data
 	private Amount<Length> _altitudeLanding;
 	private Double _machLanding;
-	private Double _throttleGroundIdleLanding;
+	private MyInterpolatingFunction _throttleGroundIdleLanding;
 	private List<Amount<Angle>> _flapDeflectionLanding;
 	private List<Amount<Angle>> _slatDeflectionLanding;
 	
@@ -140,14 +143,14 @@ public class OperatingConditions implements IOperatingConditions {
 		private Amount<Length> __altitudeTakeOff;
 		private Double __machTakeOff;
 		private Double __throttleTakeOff;
-		private Double __throttleGroundIdleTakeOff;
+		private MyInterpolatingFunction __throttleGroundIdleTakeOff;
 		private List<Amount<Angle>> __flapDeflectionTakeOff;
 		private List<Amount<Angle>> __slatDeflectionTakeOff;
 
-		// Take-off data
+		// Landing data
 		private Amount<Length> __altitudeLanding;
 		private Double __machLanding;
-		private Double __throttleGroundIdleLanding;
+		private MyInterpolatingFunction __throttleGroundIdleLanding;
 		private List<Amount<Angle>> __flapDeflectionLanding;
 		private List<Amount<Angle>> __slatDeflectionLanding;
 		
@@ -206,7 +209,7 @@ public class OperatingConditions implements IOperatingConditions {
 			return this;
 		}
 		
-		public OperatingConditionsBuilder throttleGroundIdleTakeOff (Double throttleGroundIdleTakeOff) {
+		public OperatingConditionsBuilder throttleGroundIdleTakeOff (MyInterpolatingFunction throttleGroundIdleTakeOff) {
 			this.__throttleGroundIdleTakeOff = throttleGroundIdleTakeOff;
 			return this;
 		}
@@ -231,7 +234,7 @@ public class OperatingConditions implements IOperatingConditions {
 			return this;
 		}
 		
-		public OperatingConditionsBuilder throttleGroundIdleLanding (Double throttleGroundIdleLanding) {
+		public OperatingConditionsBuilder throttleGroundIdleLanding (MyInterpolatingFunction throttleGroundIdleLanding) {
 			this.__throttleGroundIdleLanding = throttleGroundIdleLanding;
 			return this;
 		}
@@ -266,13 +269,13 @@ public class OperatingConditions implements IOperatingConditions {
 			
 			this.__machTakeOff = 0.2;
 			this.__altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
-			this.__throttleGroundIdleTakeOff = 1.0; 
+			this.__throttleGroundIdleTakeOff = null; 
 			this.__flapDeflectionTakeOff = new ArrayList<>();
 			this.__slatDeflectionTakeOff = new ArrayList<>();
 			
 			this.__machLanding = 0.2;
 			this.__altitudeLanding = Amount.valueOf(0.0, SI.METER);
-			this.__throttleGroundIdleLanding = 0.0;
+			this.__throttleGroundIdleLanding = null;
 			this.__flapDeflectionLanding = new ArrayList<>();
 			this.__slatDeflectionLanding = new ArrayList<>();
 			
@@ -399,7 +402,8 @@ public class OperatingConditions implements IOperatingConditions {
 		Double machTakeOff = 0.2;
 		Amount<Length> altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
 		Double throttleTakeOff = 1.0;
-		Double throttleGroundIdleTakeOff = 0.0;
+		List<Double> throttleGroundIdleTakeOffFunction = new ArrayList<>();
+		List<Amount<Velocity>> speedThrottleGroundIdleTakeOffFunction = new ArrayList<>();
 		List<Amount<Angle>> deltaFlapTakeOff = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatTakeOff = new ArrayList<>();
 		//.............................................................		
@@ -415,9 +419,35 @@ public class OperatingConditions implements IOperatingConditions {
 		if(throttleTakeOffProperty != null)
 			throttleTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//take_off/throttle"));
 		//.............................................................
-		String throttleGroundIdleTakeOffProperty = reader.getXMLPropertyByPath("//take_off/throttle_ground_idle");
-		if(throttleGroundIdleTakeOffProperty != null)
-			throttleGroundIdleTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//take_off/throttle_ground_idle"));
+		String throttleGroundIdleTakeOffFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/throttle");
+		if(throttleGroundIdleTakeOffFunctionProperty != null)
+			throttleGroundIdleTakeOffFunction = reader.readArrayDoubleFromXML("//landing/throttle_ground_idle/throttle"); 
+		String speedThrottleGroundIdleTakeOffFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/speed");
+		if(speedThrottleGroundIdleTakeOffFunctionProperty != null) 
+			speedThrottleGroundIdleTakeOffFunction = reader.readArrayofAmountFromXML("//landing/throttle_ground_idle/speed");
+		
+		List<Amount<Velocity>> speedMeterPerSecondThrottleGroundIdleTakeOffFunction = 
+				speedThrottleGroundIdleTakeOffFunction.stream()
+				.map(s -> s.to(SI.METERS_PER_SECOND))
+				.collect(Collectors.toList());
+		
+		if(throttleGroundIdleTakeOffFunction.size() > 1)
+			if(throttleGroundIdleTakeOffFunction.size() != throttleGroundIdleTakeOffFunction.size())
+			{
+				System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(throttleGroundIdleTakeOffFunction.size() == 1) {
+			throttleGroundIdleTakeOffFunction.add(throttleGroundIdleTakeOffFunction.get(0));
+			speedMeterPerSecondThrottleGroundIdleTakeOffFunction.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			speedMeterPerSecondThrottleGroundIdleTakeOffFunction.add(Amount.valueOf(1.0, SI.METERS_PER_SECOND));
+		}
+		
+		MyInterpolatingFunction throttleGroundIdleTakeOffInterpolatingFunction = new MyInterpolatingFunction();
+		throttleGroundIdleTakeOffInterpolatingFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(speedMeterPerSecondThrottleGroundIdleTakeOffFunction),
+				MyArrayUtils.convertToDoublePrimitive(throttleGroundIdleTakeOffFunction)
+				);
 		//.............................................................
 		List<String> deltaFlapTakeOffCheck = reader.getXMLPropertiesByPath(
 				"//take_off/delta_flap"
@@ -453,7 +483,8 @@ public class OperatingConditions implements IOperatingConditions {
 		// LANDING DATA:
 		Double machLanding = 0.2;
 		Amount<Length> altitudeLanding = Amount.valueOf(0.0, SI.METER);
-		Double throttleGroundIdleLanding = 0.0;
+		List<Double> throttleGroundIdleLandingFunction = new ArrayList<>();
+		List<Amount<Velocity>> speedThrottleGroundIdleLanidngFunction = new ArrayList<>();
 		List<Amount<Angle>> deltaFlapLanding = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatLanding = new ArrayList<>();
 		//.............................................................		
@@ -465,9 +496,36 @@ public class OperatingConditions implements IOperatingConditions {
 		if(altitudeLandingProperty != null)
 			altitudeLanding = reader.getXMLAmountLengthByPath("//landing/altitude").to(SI.METER);
 		//.............................................................
-		String throttleGroundIdleLandingProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle");
-		if(throttleGroundIdleLandingProperty != null)
-			throttleGroundIdleLanding = Double.valueOf(reader.getXMLPropertyByPath("//landing/throttle_ground_idle"));
+		String throttleGroundIdleLandingFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/throttle");
+		if(throttleGroundIdleLandingFunctionProperty != null)
+			throttleGroundIdleLandingFunction = reader.readArrayDoubleFromXML("//landing/throttle_ground_idle/throttle"); 
+		String speedThrottleGroundIdleLanidngFunctionProperty = reader.getXMLPropertyByPath("//landing/throttle_ground_idle/speed");
+		if(speedThrottleGroundIdleLanidngFunctionProperty != null) {
+			speedThrottleGroundIdleLanidngFunction = reader.readArrayofAmountFromXML("//landing/throttle_ground_idle/speed");
+		}
+		
+		List<Amount<Velocity>> speedMeterPerSecondThrottleGroundIdleLanidngFunction = 
+				speedThrottleGroundIdleLanidngFunction.stream()
+				.map(s -> s.to(SI.METERS_PER_SECOND))
+				.collect(Collectors.toList());
+		
+		if(throttleGroundIdleLandingFunction.size() > 1)
+			if(throttleGroundIdleLandingFunction.size() != throttleGroundIdleLandingFunction.size())
+			{
+				System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(throttleGroundIdleLandingFunction.size() == 1) {
+			throttleGroundIdleLandingFunction.add(throttleGroundIdleLandingFunction.get(0));
+			speedMeterPerSecondThrottleGroundIdleLanidngFunction.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			speedMeterPerSecondThrottleGroundIdleLanidngFunction.add(Amount.valueOf(1.0, SI.METERS_PER_SECOND));
+		}
+		
+		MyInterpolatingFunction throttleGroundIdleLandingInterpolatingFunction = new MyInterpolatingFunction();
+		throttleGroundIdleLandingInterpolatingFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(speedMeterPerSecondThrottleGroundIdleLanidngFunction),
+				MyArrayUtils.convertToDoublePrimitive(throttleGroundIdleLandingFunction)
+				);
 		//.............................................................
 		List<String> deltaFlapLandingCheck = reader.getXMLPropertiesByPath(
 				"//landing/delta_flap"
@@ -511,12 +569,12 @@ public class OperatingConditions implements IOperatingConditions {
 				.machTakeOff(machTakeOff)
 				.altitudeTakeOff(altitudeTakeOff)
 				.throttleTakeOff(throttleTakeOff)
-				.throttleGroundIdleTakeOff(throttleGroundIdleTakeOff)
+				.throttleGroundIdleTakeOff(throttleGroundIdleTakeOffInterpolatingFunction)
 				.flapDeflectionTakeOff(deltaFlapTakeOff)
 				.slatDeflectionTakeOff(deltaSlatTakeOff)
 				.machLanding(machLanding)
 				.altitudeLanding(altitudeLanding)
-				.throttleGroundIdleLanding(throttleGroundIdleLanding)
+				.throttleGroundIdleLanding(throttleGroundIdleLandingInterpolatingFunction)
 				.flapDeflectionLanding(deltaFlapLanding)
 				.slatDeflectionLanding(deltaSlatLanding)
 				.build();
@@ -1223,19 +1281,19 @@ public class OperatingConditions implements IOperatingConditions {
 		this._altitudeToReach = _altitudeToReach;
 	}
 
-	public Double getThrottleGroundIdleTakeOff() {
+	public MyInterpolatingFunction getThrottleGroundIdleTakeOff() {
 		return _throttleGroundIdleTakeOff;
 	}
 
-	public void setThrottleGroundIdleTakeOff(Double _throttleGroundIdleTakeOff) {
+	public void setThrottleGroundIdleTakeOff(MyInterpolatingFunction _throttleGroundIdleTakeOff) {
 		this._throttleGroundIdleTakeOff = _throttleGroundIdleTakeOff;
 	}
 
-	public Double getThrottleGroundIdleLanding() {
+	public MyInterpolatingFunction getThrottleGroundIdleLanding() {
 		return _throttleGroundIdleLanding;
 	}
 
-	public void setThrottleGroundIdleLanding(Double _throttleGroundIdleLanding) {
+	public void setThrottleGroundIdleLanding(MyInterpolatingFunction _throttleGroundIdleLanding) {
 		this._throttleGroundIdleLanding = _throttleGroundIdleLanding;
 	}
 	

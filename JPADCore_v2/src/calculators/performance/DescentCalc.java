@@ -92,13 +92,12 @@ public class DescentCalc {
 		List<Double> machList = new ArrayList<>();
 		List<Amount<Mass>> aircraftMassPerStep = new ArrayList<>();
 		List<Double> cLSteps = new ArrayList<>();
-		List<Amount<Force>> dragPerStep = new ArrayList<>();
+		List<Double> cDSteps = new ArrayList<>();
+		List<Double> efficiencyPerStep = new ArrayList<>();
 		List<Amount<Force>> thrustPerStep = new ArrayList<>();
-		List<Double> sfcIdleInterpolation = new ArrayList<>();
-		List<Double> sfcCruiseInterpolation = new ArrayList<>();
-		List<Double> thrustIdleInterpolation = new ArrayList<>();
-		List<Double> thrustCruiseInterpolation = new ArrayList<>();
-		List<Double> interpolatedSFC = new ArrayList<>();
+		List<Double> sfcCruise = new ArrayList<>();
+		List<Double> thrustCruise = new ArrayList<>();
+		List<Double> requiredSFC = new ArrayList<>();
 		List<Double> fuelFlows = new ArrayList<>();
 		List<Amount<Mass>> fuelUsedPerStep = new ArrayList<>();
 		
@@ -124,7 +123,10 @@ public class DescentCalc {
 				);
 		_descentAngles.add(
 				Amount.valueOf(
-						_rateOfDescent.to(SI.METERS_PER_SECOND).divide(speedListTAS.get(0)).getEstimatedValue(), 
+						Math.asin(
+								_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
+								/speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND)
+								), 
 						SI.RADIAN
 						)
 				.to(NonSI.DEGREE_ANGLE)
@@ -165,70 +167,29 @@ public class DescentCalc {
 						_initialDescentAltitude.doubleValue(SI.METER)
 						)
 				);
-		dragPerStep.add(
-				Amount.valueOf(
-						DragCalc.calculateDragAtSpeed(
-								aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
-									*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-								_initialDescentAltitude.doubleValue(SI.METER),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
-								MyMathUtils.getInterpolatedValue1DLinear(
-										MyArrayUtils.convertToDoublePrimitive(_polarCLClean),
-										MyArrayUtils.convertToDoublePrimitive(_polarCDClean),
-										cLSteps.get(0))
-								),
-						SI.NEWTON
-						)
+		cDSteps.add(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(_polarCLClean),
+						MyArrayUtils.convertToDoublePrimitive(_polarCDClean),
+						cLSteps.get(0))
+				);
+		efficiencyPerStep.add(
+				cLSteps.get(0)
+				/cDSteps.get(0)
 				);
 		thrustPerStep.add(
 				Amount.valueOf(
-						(_rateOfDescent.to(SI.METERS_PER_SECOND)
-						.divide(speedListTAS.get(0).to(SI.METERS_PER_SECOND))
-						.times(aircraftMassPerStep.get(0).to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue())
-						)
-						.getEstimatedValue()
-						- dragPerStep.get(0).doubleValue(SI.NEWTON),
+						(-_descentAngles.get(0).doubleValue(SI.RADIAN)
+						+ (1/efficiencyPerStep.get(0)))
+						*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
+						*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 						SI.NEWTON
 						)
 				);
 		
 		//---------------------------------------------------------------------------------------
 		// SFC INTERPOLATION BETWEEN CRUISE AND IDLE:
-		
-		sfcIdleInterpolation.add(
-				EngineDatabaseManager.getSFC(
-						machList.get(0),
-						altitudeDescent[0],
-						EngineDatabaseManager.getThrustRatio(
-								machList.get(0),
-								altitudeDescent[0],
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.DESCENT,
-								_theAircraft.getPowerPlant()
-								),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.DESCENT,
-						_theAircraft.getPowerPlant()
-						)
-				);
-		thrustIdleInterpolation.add(
-				ThrustCalc.calculateThrustDatabase(
-						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						_theAircraft.getPowerPlant().getEngineNumber(),
-						1.0, // phi
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineType(),
-						EngineOperatingConditionEnum.DESCENT, 
-						_theAircraft.getPowerPlant(),
-						altitudeDescent[0],
-						machList.get(0)
-						)
-				);
-		
-		sfcCruiseInterpolation.add(
+		sfcCruise.add(
 				EngineDatabaseManager.getSFC(
 						machList.get(0),
 						altitudeDescent[0],
@@ -246,7 +207,7 @@ public class DescentCalc {
 						_theAircraft.getPowerPlant()
 						)
 				);
-		thrustCruiseInterpolation.add(
+		thrustCruise.add(
 				ThrustCalc.calculateThrustDatabase(
 						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 						_theAircraft.getPowerPlant().getEngineNumber(),
@@ -260,21 +221,19 @@ public class DescentCalc {
 						)
 				);
 		
-		interpolatedSFC.add(
-				MyMathUtils.getInterpolatedValue1DLinear(
-						new double[] { thrustIdleInterpolation.get(0), thrustCruiseInterpolation.get(0) },
-						new double[] { sfcIdleInterpolation.get(0), sfcCruiseInterpolation.get(0) },
-						thrustPerStep.get(0).doubleValue(SI.NEWTON)
-						)
+		requiredSFC.add(
+				(thrustPerStep.get(0).doubleValue(SI.NEWTON)
+				/thrustCruise.get(0))
+				*sfcCruise.get(0)
 				);
 				
 		if(thrustPerStep.get(0).doubleValue(SI.NEWTON)
 				*(0.224809)*(0.454/60)
-				*interpolatedSFC.get(0) > 0)
+				*requiredSFC.get(0) > 0)
 			fuelFlows.add(
 					thrustPerStep.get(0).doubleValue(SI.NEWTON)
 					*(0.224809)*(0.454/60)
-					*interpolatedSFC.get(0)
+					*requiredSFC.get(0)
 					);
 		else
 			fuelFlows.add(0.0);
@@ -306,7 +265,10 @@ public class DescentCalc {
 					);
 			_descentAngles.add(
 					Amount.valueOf(
-							_rateOfDescent.to(SI.METERS_PER_SECOND).divide(speedListTAS.get(i)).getEstimatedValue(), 
+							Math.asin(
+									_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
+									/speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
+									), 
 							SI.RADIAN
 							)
 					.to(NonSI.DEGREE_ANGLE)
@@ -353,30 +315,22 @@ public class DescentCalc {
 							_initialDescentAltitude.doubleValue(SI.METER)
 							)
 					);
-			dragPerStep.add(
-					Amount.valueOf(
-							DragCalc.calculateDragAtSpeed(
-									aircraftMassPerStep.get(i).doubleValue(SI.KILOGRAM)
-										*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-									_initialDescentAltitude.doubleValue(SI.METER),
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-									speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
-									MyMathUtils.getInterpolatedValue1DLinear(
-											MyArrayUtils.convertToDoublePrimitive(_polarCLClean),
-											MyArrayUtils.convertToDoublePrimitive(_polarCDClean),
-											cLSteps.get(i))
-									),
-							SI.NEWTON
-							)
+			cDSteps.add(
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(_polarCLClean),
+							MyArrayUtils.convertToDoublePrimitive(_polarCDClean),
+							cLSteps.get(i))
+					);
+			efficiencyPerStep.add(
+					cLSteps.get(i)
+					/cDSteps.get(i)
 					);
 			thrustPerStep.add(
 					Amount.valueOf(
-							(_rateOfDescent.to(SI.METERS_PER_SECOND)
-							.divide(speedListTAS.get(i).to(SI.METERS_PER_SECOND))
-							.times(aircraftMassPerStep.get(i).to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue())
-							)
-							.getEstimatedValue()
-							- dragPerStep.get(i).doubleValue(SI.NEWTON),
+							(-_descentAngles.get(i).doubleValue(SI.RADIAN)
+							+ (1/efficiencyPerStep.get(i)))
+							*aircraftMassPerStep.get(i).doubleValue(SI.KILOGRAM)
+							*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 							SI.NEWTON
 							)
 					);
@@ -384,39 +338,7 @@ public class DescentCalc {
 			//---------------------------------------------------------------------------------------
 			// SFC INTERPOLATION BETWEEN CRUISE AND IDLE:
 			
-			sfcIdleInterpolation.add(
-					EngineDatabaseManager.getSFC(
-							machList.get(i),
-							altitudeDescent[i],
-							EngineDatabaseManager.getThrustRatio(
-									machList.get(0),
-									altitudeDescent[0],
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-									_theAircraft.getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.DESCENT,
-									_theAircraft.getPowerPlant()
-									),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							_theAircraft.getPowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.DESCENT,
-							_theAircraft.getPowerPlant()
-							)
-					);
-			thrustIdleInterpolation.add(
-					ThrustCalc.calculateThrustDatabase(
-							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-							_theAircraft.getPowerPlant().getEngineNumber(),
-							1.0, // phi
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							_theAircraft.getPowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.DESCENT, 
-							_theAircraft.getPowerPlant(),
-							altitudeDescent[i],
-							machList.get(i)
-							)
-					);
-			
-			sfcCruiseInterpolation.add(
+			sfcCruise.add(
 					EngineDatabaseManager.getSFC(
 							machList.get(i),
 							altitudeDescent[i],
@@ -434,7 +356,7 @@ public class DescentCalc {
 							_theAircraft.getPowerPlant()
 							)
 					);
-			thrustCruiseInterpolation.add(
+			thrustCruise.add(
 					ThrustCalc.calculateThrustDatabase(
 							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 							_theAircraft.getPowerPlant().getEngineNumber(),
@@ -448,21 +370,19 @@ public class DescentCalc {
 							)
 					);
 			
-			interpolatedSFC.add(
-					MyMathUtils.getInterpolatedValue1DLinear(
-							new double[] { thrustIdleInterpolation.get(i), thrustCruiseInterpolation.get(i) },
-							new double[] { sfcIdleInterpolation.get(i), sfcCruiseInterpolation.get(i) },
-							thrustPerStep.get(i).doubleValue(SI.NEWTON)
-							)
+			requiredSFC.add(
+					(thrustPerStep.get(i).doubleValue(SI.NEWTON)
+					/thrustCruise.get(i))
+					*sfcCruise.get(i)
 					);
 					
 			if(thrustPerStep.get(i).doubleValue(SI.NEWTON)
 					*(0.224809)*(0.454/60)
-					*interpolatedSFC.get(i) > 0)
+					*requiredSFC.get(i) > 0)
 				fuelFlows.add(
 						thrustPerStep.get(i).doubleValue(SI.NEWTON)
 						*(0.224809)*(0.454/60)
-						*interpolatedSFC.get(i)
+						*requiredSFC.get(i)
 						);
 			else
 				fuelFlows.add(0.0);

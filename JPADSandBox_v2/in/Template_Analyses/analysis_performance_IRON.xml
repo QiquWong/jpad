@@ -117,7 +117,7 @@
 				<alternate_cruise_mach_number>0.524</alternate_cruise_mach_number>
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
-				<holding_mach_number>0.4</holding_mach_number>
+				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_length unit="nmi">1300</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<cruise_sfc_function>
@@ -125,12 +125,16 @@
 					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
 				</cruise_sfc_function>
 				<alternate_cruise_sfc_function>
-					<sfc>0.49;0.446;0.438</sfc>
+					<sfc>0.46;0.422;0.415</sfc>
 					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
 				</alternate_cruise_sfc_function>
+				<holding_sfc_function>
+					<sfc>0.444;0.3285;0.3047</sfc>
+					<throttle>0.4;0.75;0.95</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</holding_sfc_function>
 				<initial_mission_fuel unit="kg">6475</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>
-				<landing_ground_idle_fuel_flow unit="kg/min">5.17</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
+				<landing_ground_idle_fuel_flow unit="kg/min"></landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
         </performance>
     </analysis>

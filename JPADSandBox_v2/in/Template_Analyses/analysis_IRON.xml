@@ -55,7 +55,7 @@
 			descent="FALSE"
 			landing="FALSE"
 			payload_range="TRUE"
-			V_n_diagram="TRUE"
+			V_n_diagram="FALSE"
 			mission_profile="TRUE"
 		/>
         <!--

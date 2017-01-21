@@ -172,6 +172,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Amount<Length> _firstGuessCruiseLength;
 	private MyInterpolatingFunction _sfcFunctionCruise;
 	private MyInterpolatingFunction _sfcFunctionAlternateCruise;
+	private MyInterpolatingFunction _sfcFunctionHolding;
 	private Amount<Mass> _firstGuessInitialMissionFuelMass;
 	private Amount<Length> _takeOffMissionAltitude;
 	private Double _landingFuelFlow;
@@ -427,6 +428,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		private Amount<Length> __firstGuessCruiseLength;
 		private MyInterpolatingFunction __sfcFunctionCruise;
 		private MyInterpolatingFunction __sfcFunctionAlternateCruise;
+		private MyInterpolatingFunction __sfcFunctionHolding;
 		private Amount<Mass> __firstGuessInitialMissionFuelMass;
 		private Amount<Length> __takeOffMissionAltitude;
 		private Double __landingFuelFlow;
@@ -756,6 +758,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder sfcFunctionHolding (MyInterpolatingFunction sfcFunctionHolding) {
+			this.__sfcFunctionHolding = sfcFunctionHolding;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder firstGuessFuelMass(Amount<Mass> firstGuessFuelMass) {
 			this.__firstGuessInitialMissionFuelMass = firstGuessFuelMass;
 			return this;
@@ -864,6 +871,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	    this._firstGuessCruiseLength = builder.__firstGuessCruiseLength;
 	    this._sfcFunctionCruise = builder.__sfcFunctionCruise;
 	    this._sfcFunctionAlternateCruise = builder.__sfcFunctionAlternateCruise;
+	    this._sfcFunctionHolding = builder.__sfcFunctionHolding;
 	    this._firstGuessInitialMissionFuelMass = builder.__firstGuessInitialMissionFuelMass;
 		this._takeOffMissionAltitude = builder.__takeOffMissionAltitude;
 		this._landingFuelFlow = builder.__landingFuelFlow;
@@ -1708,6 +1716,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		List<Double> throttleList = new ArrayList<>();
 		List<Double> sfcAlternateCruiseList = new ArrayList<>();
 		List<Double> throttleAlternateCruiseList = new ArrayList<>();
+		List<Double> sfcHoldingList = new ArrayList<>();
+		List<Double> throttleHoldingList = new ArrayList<>();
 		Amount<Mass> firstGuessInitialFuelMass = null;
 		Amount<Length> takeOffMissionAltitude = null;
 		Double landingFuelFlow = 0.0;
@@ -1817,6 +1827,32 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		sfcAlternateCruiseFunction.interpolateLinear(
 				MyArrayUtils.convertToDoublePrimitive(throttleAlternateCruiseList),
 				MyArrayUtils.convertToDoublePrimitive(sfcAlternateCruiseList)
+				);
+		//...............................................................
+		// SFC FUNCTION HOLDING
+		String sfcFunctionHoldingProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/holding_sfc_function/sfc");
+		if(sfcFunctionHoldingProperty != null)
+			sfcHoldingList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/holding_sfc_function/sfc"); 
+		String throttleHoldingFunctionProperty = reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/holding_sfc_function/throttle");
+		if(throttleHoldingFunctionProperty != null)
+			throttleHoldingList = reader.readArrayDoubleFromXML("//performance/mission_profile_and_payload_range/holding_sfc_function/throttle");
+		
+		if(sfcHoldingList.size() > 1)
+			if(sfcHoldingList.size() != throttleHoldingList.size())
+			{
+				System.err.println("SFC ARRAY AND THE RELATED THROTTLE ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(sfcHoldingList.size() == 1) {
+			sfcHoldingList.add(sfcHoldingList.get(0));
+			throttleHoldingList.add(0.0);
+			throttleHoldingList.add(1.0);
+		}
+		
+		MyInterpolatingFunction sfcHoldingFunction = new MyInterpolatingFunction();
+		sfcHoldingFunction.interpolateLinear(
+				MyArrayUtils.convertToDoublePrimitive(throttleHoldingList),
+				MyArrayUtils.convertToDoublePrimitive(sfcHoldingList)
 				);
 		//...............................................................
 		// FIRST GUESS INITIAL FUEL MASS
@@ -2156,6 +2192,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.firstGuessCruiseLength(firstGuessCruiseLength)
 				.sfcFunctionCruise(sfcFunction)
 				.sfcFunctionAlternateCruise(sfcAlternateCruiseFunction)
+				.sfcFunctionHolding(sfcHoldingFunction)
 				.firstGuessFuelMass(firstGuessInitialFuelMass)
 				.takeOffMissionAltitude(takeOffMissionAltitude)
 				.landingFuelFlow(landingFuelFlow)
@@ -2685,10 +2722,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
         																						 .plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE)
         																						 .doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTime.doubleValue(NonSI.MINUTE)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","lb", _initialMissionMass.doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","lb", _endMissionMass.doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","lb", _initialFuelMass.doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Total fuel used","lb", _totalFuelUsed.doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","kg", _initialMissionMass.doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","kg", _endMissionMass.doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMass.doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsed.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _fuelReserve*100});
         	dataListMissionProfile.add(new Object[] {"Design passengers number","", _theAircraft.getCabinConfiguration().getNPax().doubleValue()});
         	dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculator.getPassengersNumber().doubleValue()});
@@ -2715,27 +2752,27 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListMissionProfile.add(new Object[] {"Third descent duration","min", _timeList.get(9).to(NonSI.MINUTE).minus(_timeList.get(8).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {"Landing duration","min", _timeList.get(10).to(NonSI.MINUTE).minus(_timeList.get(9).to(NonSI.MINUTE)).doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {" "});
-        	dataListMissionProfile.add(new Object[] {"Take-off used fuel","lb", _fuelUsedList.get(1).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Climb used fuel","lb", _fuelUsedList.get(2).to(NonSI.POUND).minus(_fuelUsedList.get(1).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Cruise used fuel","lb", _fuelUsedList.get(3).to(NonSI.POUND).minus(_fuelUsedList.get(2).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"First descent used fuel","lb", _fuelUsedList.get(4).to(NonSI.POUND).minus(_fuelUsedList.get(3).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Climb used fuel","lb", _fuelUsedList.get(5).to(NonSI.POUND).minus(_fuelUsedList.get(4).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Alternate cruise used fuel","lb", _fuelUsedList.get(6).to(NonSI.POUND).minus(_fuelUsedList.get(5).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Second descent used fuel","lb", _fuelUsedList.get(7).to(NonSI.POUND).minus(_fuelUsedList.get(6).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Holding used fuel","lb", _fuelUsedList.get(8).to(NonSI.POUND).minus(_fuelUsedList.get(7).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Third descent used fuel","lb", _fuelUsedList.get(9).to(NonSI.POUND).minus(_fuelUsedList.get(8).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Landing used fuel","lb", _fuelUsedList.get(10).to(NonSI.POUND).minus(_fuelUsedList.get(9).to(NonSI.POUND)).doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Take-off used fuel","kg", _fuelUsedList.get(1).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Climb used fuel","kg", _fuelUsedList.get(2).to(SI.KILOGRAM).minus(_fuelUsedList.get(1).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Cruise used fuel","kg", _fuelUsedList.get(3).to(SI.KILOGRAM).minus(_fuelUsedList.get(2).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"First descent used fuel","kg", _fuelUsedList.get(4).to(SI.KILOGRAM).minus(_fuelUsedList.get(3).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Climb used fuel","kg", _fuelUsedList.get(5).to(SI.KILOGRAM).minus(_fuelUsedList.get(4).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Alternate cruise used fuel","kg", _fuelUsedList.get(6).to(SI.KILOGRAM).minus(_fuelUsedList.get(5).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Second descent used fuel","kg", _fuelUsedList.get(7).to(SI.KILOGRAM).minus(_fuelUsedList.get(6).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Holding used fuel","kg", _fuelUsedList.get(8).to(SI.KILOGRAM).minus(_fuelUsedList.get(7).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Third descent used fuel","kg", _fuelUsedList.get(9).to(SI.KILOGRAM).minus(_fuelUsedList.get(8).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Landing used fuel","kg", _fuelUsedList.get(10).to(SI.KILOGRAM).minus(_fuelUsedList.get(9).to(SI.KILOGRAM)).doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {" "});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at take-off start","lb", _massList.get(1).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at climb start","lb", _massList.get(2).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at cruise start","lb", _massList.get(3).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at first descent start","lb", _massList.get(4).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at second climb start","lb", _massList.get(5).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at alternate cruise start","lb", _massList.get(6).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at second descent start","lb", _massList.get(7).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at holding start","lb", _massList.get(8).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at third descnet start","lb", _massList.get(9).doubleValue(NonSI.POUND)});
-        	dataListMissionProfile.add(new Object[] {"Aircraft weight at landing start","lb", _massList.get(10).doubleValue(NonSI.POUND)});        	
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at take-off start","kg", _massList.get(1).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at climb start","kg", _massList.get(2).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at cruise start","kg", _massList.get(3).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at first descent start","kg", _massList.get(4).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at second climb start","kg", _massList.get(5).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at alternate cruise start","kg", _massList.get(6).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at second descent start","kg", _massList.get(7).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at holding start","kg", _massList.get(8).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at third descnet start","kg", _massList.get(9).doubleValue(SI.KILOGRAM)});
+        	dataListMissionProfile.add(new Object[] {"Aircraft weight at landing start","kg", _massList.get(10).doubleValue(SI.KILOGRAM)});        	
 
         	Row rowMissionProfile = sheetMissionProfile.createRow(0);
         	Object[] objArrMissionProfile = dataListMissionProfile.get(0);
@@ -4666,6 +4703,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_firstGuessCruiseLength,
 					_sfcFunctionCruise,
 					_sfcFunctionAlternateCruise,
+					_sfcFunctionHolding,
 					_alternateCruiseLength,
 					_alternateCruiseAltitude,
 					_alternateCruiseMachNumber,
@@ -4831,6 +4869,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_firstGuessCruiseLength,
 					_sfcFunctionCruise,
 					_sfcFunctionAlternateCruise,
+					_sfcFunctionHolding,
 					_alternateCruiseLength,
 					_alternateCruiseAltitude,
 					_alternateCruiseMachNumber,
@@ -6418,6 +6457,14 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setKDescentWeight(Double _kDescentWeight) {
 		this._kDescentWeight = _kDescentWeight;
+	}
+
+	public MyInterpolatingFunction getSFCFunctionHolding() {
+		return _sfcFunctionHolding;
+	}
+
+	public void setSFCFunctionHolding(MyInterpolatingFunction _sfcFunctionHolding) {
+		this._sfcFunctionHolding = _sfcFunctionHolding;
 	}
 
 }

@@ -77,7 +77,7 @@ public class TakeOffCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, thrustHorizontal, thrustVertical, lift, drag, friction, totalForce;
 	private List<Amount<Length>> groundDistance, verticalDistance;
-	private double kAlphaDot, kcLMax, kRot, kLO, phi, cLmaxTO, kGround, alphaDotInitial, groundIdlePhi,
+	private double kAlphaDot, kcLMax, kRot, kLO, phi, cLmaxTO, kGround, alphaDotInitial, 
 	alphaRed, cL0, cLground, kFailure;
 	private Double vFailure;
 	private boolean isAborted;
@@ -91,6 +91,7 @@ public class TakeOffCalc {
 	MyInterpolatingFunction abortedTakeOffFitted = new MyInterpolatingFunction();
 	MyInterpolatingFunction mu;
 	MyInterpolatingFunction muBrake;
+	MyInterpolatingFunction groundIdlePhi;
 	
 	// integration index
 	@SuppressWarnings("unused")
@@ -117,7 +118,7 @@ public class TakeOffCalc {
 			double kRot,
 			double kLO,
 			double kFailure,
-			double groundIdlePhi,
+			MyInterpolatingFunction groundIdlePhi,
 			double phi,
 			double kAlphaDot,
 			double alphaRed,
@@ -1650,23 +1651,11 @@ public class TakeOffCalc {
 										)
 								);
 					else
-						theThrust =	ThrustCalc.calculateThrustDatabase(
-								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
-								TakeOffCalc.this.getGroundIdlePhi(),
-								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.TAKE_OFF,
-								TakeOffCalc.this.getAircraft().getPowerPlant(),
-								altitude,
-								SpeedCalc.calculateMach(
-										altitude,
-										speed + 
-										(TakeOffCalc.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-												gamma,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-										)
-								);
+						theThrust =	
+								TakeOffCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON)
+								*throttleGrounIdle(speed)
+								*(TakeOffCalc.this.getAircraft().getPowerPlant().getEngineNumber() - 1)
+								;
 				}
 			}
 			
@@ -1755,6 +1744,10 @@ public class TakeOffCalc {
 		
 		public double muBrake(double speed) {
 			return muBrake.value(speed);
+		}
+		
+		public double throttleGrounIdle(double speed) {
+			return groundIdlePhi.value(speed);
 		}
 		
 		public double alphaDot(double time) {
@@ -2371,11 +2364,11 @@ public class TakeOffCalc {
 		this.sfc = sfc;
 	}
 
-	public double getGroundIdlePhi() {
+	public MyInterpolatingFunction getGroundIdlePhi() {
 		return groundIdlePhi;
 	}
 
-	public void setGroundIdlePhi(double groundIdlePhi) {
+	public void setGroundIdlePhi(MyInterpolatingFunction groundIdlePhi) {
 		this.groundIdlePhi = groundIdlePhi;
 	}
 

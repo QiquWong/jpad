@@ -13,6 +13,7 @@ import javax.measure.quantity.VolumetricDensity;
 import org.jscience.physics.amount.Amount;
 
 import jahuwaldt.aero.StdAtmos1976;
+import standaloneutils.MyInterpolatingFunction;
 
 public interface IOperatingConditions {
 
@@ -51,8 +52,8 @@ public interface IOperatingConditions {
 	public Double getThrottleTakeOff();
 	public void setThrottleTakeOff(Double _throttleTakeOff);
 
-	public Double getThrottleGroundIdleTakeOff();
-	public void setThrottleGroundIdleTakeOff(Double _throttleGroundIdleTakeOff);
+	public MyInterpolatingFunction getThrottleGroundIdleTakeOff();
+	public void setThrottleGroundIdleTakeOff(MyInterpolatingFunction _throttleGroundIdleTakeOff);
 	
 	public List<Amount<Angle>> getFlapDeflectionTakeOff();
 	public void setFlapDeflectionTakeOff(List<Amount<Angle>> _flapDeflectionTakeOff);
@@ -66,8 +67,8 @@ public interface IOperatingConditions {
 	public Double getMachLanding();
 	public void setMachLanding(Double _machLanding);
 
-	public Double getThrottleGroundIdleLanding();
-	public void setThrottleGroundIdleLanding(Double _throttleGroundIdleLanding);
+	public MyInterpolatingFunction getThrottleGroundIdleLanding();
+	public void setThrottleGroundIdleLanding(MyInterpolatingFunction _throttleGroundIdleLanding);
 	
 	public List<Amount<Angle>> getFlapDeflectionLanding();
 	public void setFlapDeflectionLanding(List<Amount<Angle>> _flapDeflectionLanding);

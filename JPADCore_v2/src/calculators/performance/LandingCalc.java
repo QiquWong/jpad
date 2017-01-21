@@ -71,8 +71,9 @@ public class LandingCalc {
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Force>> thrust, lift, drag, friction, totalForce;
 	private List<Amount<Length>> landingDistance, verticalDistance;
-	private double cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD, phiGroundIdle;
-	private MyInterpolatingFunction mu, muBrake;
+	private double cLmaxLanding, kGround, cL0Landing, cLground, kA, kFlare, kTD;
+	private MyInterpolatingFunction mu, muBrake, phiGroundIdle;
+	
 	
 	//-------------------------------------------------------------------------------------
 	// BUILDER:
@@ -122,7 +123,7 @@ public class LandingCalc {
 			double cLmaxLanding,
 			double cL0Landing,
 			double cLalphaFlap,
-			double reverseThrottle,
+			MyInterpolatingFunction groundIdleThrottle,
 			Amount<Duration> nFreeRoll
 			) {
 
@@ -143,7 +144,7 @@ public class LandingCalc {
 		this.thetaApproach = thetaApproach;
 		this.cLmaxLanding = cLmaxLanding;
 		this.cL0Landing = cL0Landing; 
-		this.phiGroundIdle = reverseThrottle;
+		this.phiGroundIdle = groundIdleThrottle;
 		this.nFreeRoll = nFreeRoll;
 		
 		this.cLground = cL0Landing + (cLalphaFlap*iw.getEstimatedValue());
@@ -354,7 +355,7 @@ public class LandingCalc {
 				//----------------------------------------------------------------------------------------
 				// THRUST:
 				LandingCalc.this.getThrust().add(Amount.valueOf(
-							-((DynamicsEquationsLanding)ode).thrust(x[1]),
+							((DynamicsEquationsLanding)ode).thrust(x[1]),
 							SI.NEWTON)
 							);
 				//--------------------------------------------------------------------------------
@@ -658,21 +659,10 @@ public class LandingCalc {
 
 			double theThrust = 0.0;
 
-			theThrust =	ThrustCalc.calculateThrustDatabase(
-					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().getEstimatedValue(),
-					LandingCalc.this.getAircraft().getPowerPlant().getEngineNumber(),
-					LandingCalc.this.getPhiGroundIdle(),
-					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-					LandingCalc.this.getAircraft().getPowerPlant().getEngineType(),
-					EngineOperatingConditionEnum.TAKE_OFF,
-					LandingCalc.this.getAircraft().getPowerPlant(),
-					LandingCalc.this.getTheConditions().getAltitudeLanding().getEstimatedValue(),
-					SpeedCalc.calculateMach(
-							LandingCalc.this.getTheConditions().getAltitudeLanding().getEstimatedValue(),
-							speed + 
-							LandingCalc.this.getvWind().getEstimatedValue()
-							)
-					);
+			theThrust =	
+					LandingCalc.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().getEstimatedValue()
+					*throttleGroundIdle(speed)
+					*LandingCalc.this.getAircraft().getPowerPlant().getEngineNumber();
 
 			return theThrust;
 		}
@@ -723,6 +713,11 @@ public class LandingCalc {
 		
 		public double muBrake(double speed) {
 			return muBrake.value(speed);
+		}
+		
+		public double throttleGroundIdle(double speed) {
+			double phiGIDL = phiGroundIdle.value(speed);
+			return phiGIDL;
 		}
 	}
 	
@@ -933,11 +928,11 @@ public class LandingCalc {
 	public void setkTD(double kTD) {
 		this.kTD = kTD;
 	}
-	public double getPhiGroundIdle() {
+	public MyInterpolatingFunction getPhiGroundIdle() {
 		return phiGroundIdle;
 	}
-	public void setPhiRev(double phiRev) {
-		this.phiGroundIdle = phiRev;
+	public void setPhiRev(MyInterpolatingFunction phiGIDL) {
+		this.phiGroundIdle = phiGIDL;
 	}
 	public Amount<Length> getsApproach() {
 		return sApproach;
