@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
@@ -66,6 +67,10 @@ public class ClimbCalc {
 	private Amount<Length> _serviceCeilingAOE;
 	private Amount<Duration> _minimumClimbTimeAOE;
 	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAOE;
+	private Amount<Force> _thrustAtClimbStart;
+	private Amount<Force> _thrustAtClimbEnding;
+	private Amount<Force> _dragAtClimbStart;
+	private Amount<Force> _dragAtClimbEnding;
 	
 	private Amount<Length> _absoluteCeilingOEI;
 	private Amount<Length> _serviceCeilingOEI;
@@ -112,6 +117,12 @@ public class ClimbCalc {
 			Amount<Length> finalClimbAltitude,
 			boolean performOEI
 			) {
+		
+		if(initialClimbAltitude.doubleValue(SI.METER) == finalClimbAltitude.doubleValue(SI.METER))
+			finalClimbAltitude = Amount.valueOf(
+					initialClimbAltitude.doubleValue(SI.METER) + 0.00001,
+					SI.METER
+					);
 		
 		Airfoil meanAirfoil = new Airfoil(
 				LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
@@ -206,6 +217,44 @@ public class ClimbCalc {
 					efficiencyListCurrentAltitude
 					);
 		}
+		
+		_thrustAtClimbStart = 
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								_thrustListAOE.get(0).getSpeed(),
+								_thrustListAOE.get(0).getThrust(),
+								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								),
+						SI.NEWTON
+						).to(NonSI.POUND_FORCE);
+		_thrustAtClimbEnding = 
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								_thrustListAOE.get(_thrustListAOE.size()-1).getSpeed(),
+								_thrustListAOE.get(_thrustListAOE.size()-1).getThrust(),
+								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								),
+						SI.NEWTON
+						).to(NonSI.POUND_FORCE);
+		_dragAtClimbStart = 
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								_dragListAOE.get(0).getSpeed(),
+								_dragListAOE.get(0).getDrag(),
+								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								),
+						SI.NEWTON
+						).to(NonSI.POUND_FORCE);
+		_dragAtClimbEnding = 
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								_dragListAOE.get(_dragListAOE.size()-1).getSpeed(),
+								_dragListAOE.get(_dragListAOE.size()-1).getDrag(),
+								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
+								),
+						SI.NEWTON
+						).to(NonSI.POUND_FORCE);
+		
 		//..................................................................................................
 		_rcMapAOE.addAll(
 				RateOfClimbCalc.calculateRC(
@@ -1362,6 +1411,38 @@ public class ClimbCalc {
 
 	public void setEfficiencyMapAltitudeOEI(Map<String, List<Double>> _efficiencyMapAltitudeOEI) {
 		this._efficiencyMapAltitudeOEI = _efficiencyMapAltitudeOEI;
+	}
+
+	public Amount<Force> getDragAtClimbEnding() {
+		return _dragAtClimbEnding;
+	}
+
+	public void setDragAtClimbEnding(Amount<Force> _dragAtClimbEnding) {
+		this._dragAtClimbEnding = _dragAtClimbEnding;
+	}
+
+	public Amount<Force> getDragAtClimbStart() {
+		return _dragAtClimbStart;
+	}
+
+	public void setDragAtClimbStart(Amount<Force> _dragAtClimbStart) {
+		this._dragAtClimbStart = _dragAtClimbStart;
+	}
+
+	public Amount<Force> getThrustAtClimbEnding() {
+		return _thrustAtClimbEnding;
+	}
+
+	public void setThrustAtClimbEnding(Amount<Force> _thrustAtClimbEnding) {
+		this._thrustAtClimbEnding = _thrustAtClimbEnding;
+	}
+
+	public Amount<Force> getThrustAtClimbStart() {
+		return _thrustAtClimbStart;
+	}
+
+	public void setThrustAtClimbStart(Amount<Force> _thrustAtClimbStart) {
+		this._thrustAtClimbStart = _thrustAtClimbStart;
 	}
 	
 }

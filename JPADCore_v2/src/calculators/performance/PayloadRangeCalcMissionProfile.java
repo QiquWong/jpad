@@ -92,7 +92,7 @@ public class PayloadRangeCalcMissionProfile{
 	private Amount<Velocity> _rateOfDescent;
 	
 	// TO EVALUATE:
-	private Double _cruiseMachNumber;
+	private List<Double> _cruiseMachNumber;
 	private Amount<Length> _rangeAtMaxPayload;
 	private Amount<Length> _rangeAtDesignPayload;
 	private Amount<Length> _rangeAtMaxFuel;	
@@ -287,7 +287,7 @@ public class PayloadRangeCalcMissionProfile{
 
 			TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
 					_theAircraft,
-					_takeOffMissionAltitude,
+					_takeOffMissionAltitude.to(SI.METER),
 					_theOperatingConditions.getMachTakeOff(),
 					initialMissionMass.to(SI.KILOGRAM),
 					_dtRotation,
@@ -448,7 +448,7 @@ public class PayloadRangeCalcMissionProfile{
 					);
 			
 			double cruiseMissionMachNumber = intersectionList.get(0).getMaxMach();
-			_cruiseMachNumber = cruiseMissionMachNumber;
+			_cruiseMachNumber.add(cruiseMissionMachNumber);
 			double speed = intersectionList.get(0).getMaxSpeed();
 			
 			double[] cruiseSteps = MyArrayUtils.linspace(
@@ -1182,6 +1182,7 @@ public class PayloadRangeCalcMissionProfile{
 	public void createPayloadRange() {
 		
 		_rangeArray = new ArrayList<>();
+		_cruiseMachNumber = new ArrayList<>();
 		
 		// RANGE AT MAX PAYLOAD
 		_rangeAtMaxPayload = calcRangeAtGivenPayload(
@@ -1362,8 +1363,8 @@ public class PayloadRangeCalcMissionProfile{
 		legendValue[0] = 
 				"Altitude = "
 				+ _theOperatingConditions.getAltitudeCruise().to(NonSI.FOOT) + 
-				", Mach = " + 
-				+ _cruiseMachNumber;
+				", Mach @ design payload = " + 
+				+ _cruiseMachNumber.get(1);
 
 		MyChartToFileUtils.plot(
 				rangeDoubleArray, payloadDoubleArray,		// array to plot
@@ -1983,11 +1984,11 @@ public class PayloadRangeCalcMissionProfile{
 		this._polarCDCruise = _polarCDCruise;
 	}
 
-	public Double getCruiseMachNumber() {
+	public List<Double> getCruiseMachNumber() {
 		return _cruiseMachNumber;
 	}
 
-	public void setCruiseMachNumber(Double cruiseMachNumber) {
+	public void setCruiseMachNumber(List<Double> cruiseMachNumber) {
 		this._cruiseMachNumber = cruiseMachNumber;
 	}
 

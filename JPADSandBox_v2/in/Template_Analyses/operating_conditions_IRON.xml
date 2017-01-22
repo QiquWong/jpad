@@ -18,7 +18,7 @@
 		</cruise>
 		<take_off>
 			<mach>0.172</mach> <!-- default = 0.2 -->
-			<altitude unit="m">0.0</altitude> <!-- default = 0.0 -->
+			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
 			<throttle></throttle> <!-- default = 1.0 -->
 			<throttle_ground_idle>
 				<throttle>0.0143;-0.055;-0.19;-0.348</throttle>

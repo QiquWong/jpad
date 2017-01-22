@@ -57,7 +57,6 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
-import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
@@ -330,6 +329,14 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private List<Amount<Duration>> _timeList;
 	private List<Amount<Mass>> _fuelUsedList;
 	private List<Amount<Mass>> _massList;
+	private List<Amount<Velocity>> _speedTASMissionList;
+	private List<Double> _machMissionList;
+	private List<Double> _liftingCoefficientMissionList;
+	private List<Double> _dragCoefficientMissionList;
+	private List<Double> _efficiencyMissionList;
+	private List<Amount<Force>> _thrustMissionList;
+	private List<Amount<Force>> _dragMissionList;
+	
 	private Amount<Mass> _initialFuelMass;
 	private Amount<Mass> _totalFuelUsed;
 	private Amount<Duration> _totalMissionTime;
@@ -2226,7 +2233,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			CalcTakeOff calcTakeOff = new CalcTakeOff();
 			calcTakeOff.performTakeOffSimulation(
 					_maximumTakeOffMass, 
-					_theOperatingConditions.getAltitudeTakeOff(),
+					_theOperatingConditions.getAltitudeTakeOff().to(SI.METER),
 					_theOperatingConditions.getMachTakeOff()
 					);
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
@@ -2773,7 +2780,171 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListMissionProfile.add(new Object[] {"Aircraft weight at holding start","kg", _massList.get(8).doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Aircraft weight at third descnet start","kg", _massList.get(9).doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Aircraft weight at landing start","kg", _massList.get(10).doubleValue(SI.KILOGRAM)});        	
-
+        	dataListMissionProfile.add(new Object[] {" "});
+        	dataListMissionProfile.add(new Object[] {"TAKE-OFF"});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at take-off start","kn", _speedTASMissionList.get(0).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at take-off ending","kn", _speedTASMissionList.get(1).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Mach at take-off start"," ", _machMissionList.get(0).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Mach at take-off ending"," ", _machMissionList.get(1).doubleValue()});        	
+        	dataListMissionProfile.add(new Object[] {"CL at take-off start"," ", _liftingCoefficientMissionList.get(0).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at take-off ending"," ", _liftingCoefficientMissionList.get(1).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at take-off start"," ", _dragCoefficientMissionList.get(0).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at take-off ending"," ", _dragCoefficientMissionList.get(1).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at take-off start"," ", _efficiencyMissionList.get(0).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at take-off ending"," ", _efficiencyMissionList.get(1).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Thrust at take-off start","lbf", _thrustMissionList.get(0).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Thrust at take-off ending","lbf", _thrustMissionList.get(1).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at take-off start","lbf", _dragMissionList.get(0).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at take-off ending","lbf", _dragMissionList.get(1).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {" "});
+        	dataListMissionProfile.add(new Object[] {"CLIMB"});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at climb start","kn", _speedTASMissionList.get(2).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at climb ending","kn", _speedTASMissionList.get(3).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Mach at climb start"," ", _machMissionList.get(2).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Mach at climb ending"," ", _machMissionList.get(3).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at climb start"," ", _liftingCoefficientMissionList.get(2).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at climb ending"," ", _liftingCoefficientMissionList.get(3).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at climb start"," ", _dragCoefficientMissionList.get(2).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at climb ending"," ", _dragCoefficientMissionList.get(3).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at climb start"," ", _efficiencyMissionList.get(2).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at climb ending"," ", _efficiencyMissionList.get(3).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Thrust at climb start","lbf", _thrustMissionList.get(2).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Thrust at climb ending","lbf", _thrustMissionList.get(3).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at climb start","lbf", _dragMissionList.get(2).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at climb ending","lbf", _dragMissionList.get(3).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {" "});
+        	dataListMissionProfile.add(new Object[] {"CRUISE"});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at cruise start","kn", _speedTASMissionList.get(4).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at cruise ending","kn", _speedTASMissionList.get(5).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Mach at cruise start"," ", _machMissionList.get(4).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Mach at cruise ending"," ", _machMissionList.get(5).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at cruise start"," ", _liftingCoefficientMissionList.get(4).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at cruise ending"," ", _liftingCoefficientMissionList.get(5).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at cruise start"," ", _dragCoefficientMissionList.get(4).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at cruise ending"," ", _dragCoefficientMissionList.get(5).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at cruise start"," ", _efficiencyMissionList.get(4).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at cruise ending"," ", _efficiencyMissionList.get(5).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Thrust at cruise start","lbf", _thrustMissionList.get(4).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Thrust at cruise ending","lbf", _thrustMissionList.get(5).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at cruise start","lbf", _dragMissionList.get(4).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at cruise ending","lbf", _dragMissionList.get(5).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {" "});
+        	dataListMissionProfile.add(new Object[] {"FIRST DESCENT"});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at first descent start","kn", _speedTASMissionList.get(6).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at first descent ending","kn", _speedTASMissionList.get(7).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Mach at first descent start"," ", _machMissionList.get(6).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Mach at first descent ending"," ", _machMissionList.get(7).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at first descent start"," ", _liftingCoefficientMissionList.get(6).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at first descent ending"," ", _liftingCoefficientMissionList.get(7).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at first descent start"," ", _dragCoefficientMissionList.get(6).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at first descent ending"," ", _dragCoefficientMissionList.get(7).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at first descent start"," ", _efficiencyMissionList.get(6).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at first descent ending"," ", _efficiencyMissionList.get(7).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Thrust at first descent start","lbf", _thrustMissionList.get(6).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Thrust at first descent ending","lbf", _thrustMissionList.get(7).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at second climb start", "lbf", _dragMissionList.get(6).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at second climb ending", "lbf", _dragMissionList.get(7).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {" "});
+        	if(_alternateCruiseAltitude.doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
+        		dataListMissionProfile.add(new Object[] {"SECOND CLIMB"});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at second climb start","kn", _speedTASMissionList.get(8).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at second climb ending","kn", _speedTASMissionList.get(9).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Mach at second climb start"," ", _machMissionList.get(8).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Mach at second climb ending"," ", _machMissionList.get(9).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at second climb start", " ", _liftingCoefficientMissionList.get(8).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at second climb ending", " ", _liftingCoefficientMissionList.get(9).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at second climb start", " ", _dragCoefficientMissionList.get(8).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at second climb ending", " ", _dragCoefficientMissionList.get(9).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at second climb start", " ", _efficiencyMissionList.get(8).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at second climb ending", " ", _efficiencyMissionList.get(9).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Thrust at second climb start", "lbf", _thrustMissionList.get(8).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Thrust at second climb ending", "lbf", _thrustMissionList.get(9).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at first descent start","lbf", _dragMissionList.get(8).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at first descent ending","lbf", _dragMissionList.get(9).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"ALTERNATE CRUISE"});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at alternate cruise start","kn", _speedTASMissionList.get(10).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at alternate cruise ending","kn", _speedTASMissionList.get(11).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Mach at alternate cruise start"," ", _machMissionList.get(10).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Mach at alternate cruise ending"," ", _machMissionList.get(11).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at alternate cruise start"," ", _liftingCoefficientMissionList.get(10).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at alternate cruise ending"," ", _liftingCoefficientMissionList.get(11).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at alternate cruise start"," ", _dragCoefficientMissionList.get(10).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at alternate cruise ending"," ", _dragCoefficientMissionList.get(11).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at alternate cruise start"," ", _efficiencyMissionList.get(10).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at alternate cruise ending"," ", _efficiencyMissionList.get(11).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Thrust at alternate cruise start","lbf", _thrustMissionList.get(10).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Thrust at alternate cruise ending","lbf", _thrustMissionList.get(11).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at alternate cruise start","lbf", _dragMissionList.get(10).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at alternate cruise ending","lbf", _dragMissionList.get(11).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"SECOND DESCENT"});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at second descent start","kn", _speedTASMissionList.get(12).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at second descent ending","kn", _speedTASMissionList.get(13).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Mach at second descent start"," ", _machMissionList.get(12).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Mach at second descent ending"," ", _machMissionList.get(13).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at second descent start"," ", _liftingCoefficientMissionList.get(12).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at second descent ending"," ", _liftingCoefficientMissionList.get(13).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at second descent start"," ", _dragCoefficientMissionList.get(12).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at second descent ending"," ", _dragCoefficientMissionList.get(13).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at second descent start"," ", _efficiencyMissionList.get(12).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at second descent ending"," ", _efficiencyMissionList.get(13).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Thrust at second descent start","lbf", _thrustMissionList.get(12).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Thrust at second descent ending","lbf", _thrustMissionList.get(13).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at second descent start","lbf", _dragMissionList.get(12).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at second descent ending","lbf", _dragMissionList.get(13).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        	}
+        	if(_holdingDuration.doubleValue(NonSI.MINUTE) != 0.0) {
+        		dataListMissionProfile.add(new Object[] {"HOLDING"});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at holding start","kn", _speedTASMissionList.get(14).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at holding ending","kn", _speedTASMissionList.get(15).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Mach at holding start"," ", _machMissionList.get(14).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Mach at holding ending"," ", _machMissionList.get(15).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at holding start"," ", _liftingCoefficientMissionList.get(14).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at holding ending"," ", _liftingCoefficientMissionList.get(15).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at holding start"," ", _dragCoefficientMissionList.get(14).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at holding ending"," ", _dragCoefficientMissionList.get(15).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at holding start"," ", _efficiencyMissionList.get(14).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at holding ending"," ", _efficiencyMissionList.get(15).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Thrust at holding start","lbf", _thrustMissionList.get(14).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Thrust at holding ending","lbf", _thrustMissionList.get(15).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at holding start","lbf", _dragMissionList.get(14).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at holding ending","lbf", _dragMissionList.get(15).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        		dataListMissionProfile.add(new Object[] {"THIRD DESCENT"});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at third descent start","kn", _speedTASMissionList.get(16).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Speed (TAS) at third descent ending","kn", _speedTASMissionList.get(17).doubleValue(NonSI.KNOT)});
+        		dataListMissionProfile.add(new Object[] {"Mach at third descent start"," ", _machMissionList.get(16).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Mach at third descent ending"," ", _machMissionList.get(17).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at third descent start"," ", _liftingCoefficientMissionList.get(16).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CL at third descent ending"," ", _liftingCoefficientMissionList.get(17).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at third descent start"," ", _dragCoefficientMissionList.get(16).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"CD at third descent ending"," ", _dragCoefficientMissionList.get(17).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at third descent start"," ", _efficiencyMissionList.get(16).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Efficiency at third descent ending"," ", _efficiencyMissionList.get(17).doubleValue()});
+        		dataListMissionProfile.add(new Object[] {"Thrust at third descent start","lbf", _thrustMissionList.get(16).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Thrust at third descent ending","lbf", _thrustMissionList.get(17).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at third descent start","lbf", _dragMissionList.get(16).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {"Drag at third descent ending","lbf", _dragMissionList.get(17).doubleValue(NonSI.POUND_FORCE)});
+        		dataListMissionProfile.add(new Object[] {" "});
+        	}
+        	dataListMissionProfile.add(new Object[] {"LANDING"});
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at landing start","kn", _speedTASMissionList.get(18).doubleValue(NonSI.KNOT)});        	
+        	dataListMissionProfile.add(new Object[] {"Speed (TAS) at landing ending","kn", _speedTASMissionList.get(19).doubleValue(NonSI.KNOT)});
+        	dataListMissionProfile.add(new Object[] {"Mach at landing start"," ", _machMissionList.get(18).doubleValue()});        	
+        	dataListMissionProfile.add(new Object[] {"Mach at landing ending"," ", _machMissionList.get(19).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CL at landing start", " ", _liftingCoefficientMissionList.get(18).doubleValue()});        	
+        	dataListMissionProfile.add(new Object[] {"CL at landing ending", " ", _liftingCoefficientMissionList.get(19).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"CD at landing start", " ", _dragCoefficientMissionList.get(18).doubleValue()});        	
+        	dataListMissionProfile.add(new Object[] {"CD at landing ending", " ", _dragCoefficientMissionList.get(19).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Efficiency at landing start", " ", _efficiencyMissionList.get(18).doubleValue()});        	
+        	dataListMissionProfile.add(new Object[] {"Efficiency at landing ending", " ", _efficiencyMissionList.get(19).doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Thrust at landing start", "lbf", _thrustMissionList.get(18).doubleValue(NonSI.POUND_FORCE)});        	
+        	dataListMissionProfile.add(new Object[] {"Thrust at landing ending", "lbf", _thrustMissionList.get(19).doubleValue(NonSI.POUND_FORCE)});
+        	dataListMissionProfile.add(new Object[] {"Drag at landing start", "lbf", _dragMissionList.get(18).doubleValue(NonSI.POUND_FORCE)});        	
+        	dataListMissionProfile.add(new Object[] {"Drag at landing ending", "lbf", _dragMissionList.get(19).doubleValue(NonSI.POUND_FORCE)});
+        	
         	Row rowMissionProfile = sheetMissionProfile.createRow(0);
         	Object[] objArrMissionProfile = dataListMissionProfile.get(0);
         	int cellnumMissionProfile = 0;
@@ -4919,6 +5090,14 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_timeList = _theMissionProfileCalculator.getTimeList();
 			_fuelUsedList = _theMissionProfileCalculator.getFuelUsedList();
 			_massList = _theMissionProfileCalculator.getMassList();
+			_speedTASMissionList = _theMissionProfileCalculator.getSpeedTASMissionList();
+			_machMissionList = _theMissionProfileCalculator.getMachMissionList();
+			_liftingCoefficientMissionList = _theMissionProfileCalculator.getLiftingCoefficientMissionList();
+			_dragCoefficientMissionList = _theMissionProfileCalculator.getDragCoefficientMissionList();
+			_efficiencyMissionList = _theMissionProfileCalculator.getEfficiencyMissionList();
+			_thrustMissionList = _theMissionProfileCalculator.getThrustMissionList();
+			_dragMissionList = _theMissionProfileCalculator.getDragMissionList();
+			
 			_initialFuelMass = _theMissionProfileCalculator.getInitialFuelMass();
 			_totalFuelUsed = _theMissionProfileCalculator.getTotalFuelUsed();
 			_totalMissionTime = _theMissionProfileCalculator.getTotalMissionTime();
@@ -6465,6 +6644,62 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setSFCFunctionHolding(MyInterpolatingFunction _sfcFunctionHolding) {
 		this._sfcFunctionHolding = _sfcFunctionHolding;
+	}
+
+	public List<Amount<Velocity>> getSpeedTASMissionList() {
+		return _speedTASMissionList;
+	}
+
+	public void setSpeedTASMissionList(List<Amount<Velocity>> _speedTASMissionList) {
+		this._speedTASMissionList = _speedTASMissionList;
+	}
+
+	public List<Double> getMachMissionList() {
+		return _machMissionList;
+	}
+
+	public void setMachMissionList(List<Double> _machMissionList) {
+		this._machMissionList = _machMissionList;
+	}
+
+	public List<Double> getLiftingCoefficientMissionList() {
+		return _liftingCoefficientMissionList;
+	}
+
+	public void setLiftingCoefficientMissionList(List<Double> _liftingCoefficientMissionList) {
+		this._liftingCoefficientMissionList = _liftingCoefficientMissionList;
+	}
+
+	public List<Double> getDragCoefficientMissionList() {
+		return _dragCoefficientMissionList;
+	}
+
+	public void setDragCoefficientMissionList(List<Double> _dragCoefficientMissionList) {
+		this._dragCoefficientMissionList = _dragCoefficientMissionList;
+	}
+
+	public List<Double> getEfficiencyMissionList() {
+		return _efficiencyMissionList;
+	}
+
+	public void setEfficiencyMissionList(List<Double> _efficiencyMissionList) {
+		this._efficiencyMissionList = _efficiencyMissionList;
+	}
+
+	public List<Amount<Force>> getThrustMissionList() {
+		return _thrustMissionList;
+	}
+
+	public void setThrustMissionList(List<Amount<Force>> _thrustMissionList) {
+		this._thrustMissionList = _thrustMissionList;
+	}
+
+	public List<Amount<Force>> getDragMissionList() {
+		return _dragMissionList;
+	}
+
+	public void setDragMissionList(List<Amount<Force>> _dragMissionList) {
+		this._dragMissionList = _dragMissionList;
 	}
 
 }

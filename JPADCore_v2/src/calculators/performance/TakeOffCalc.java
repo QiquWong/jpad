@@ -288,8 +288,8 @@ public class TakeOffCalc {
 		FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
 				1e-6,
 				1,
-				1e-16,
-				1e-16
+				1e-15,
+				1e-15
 				);
 		FirstOrderDifferentialEquations ode = new DynamicsEquationsTakeOff();
 
@@ -1075,7 +1075,7 @@ public class TakeOffCalc {
 		failureSpeedArray = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).getEstimatedValue(),
 				vRot.getEstimatedValue(),
-				10);
+				5);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length];
 		// aborted take-off array
@@ -1089,15 +1089,34 @@ public class TakeOffCalc {
 			abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 		}
 
-
+		MyInterpolatingFunction continuedTakeOffFunction = new MyInterpolatingFunction();
+		MyInterpolatingFunction abortedTakeOffFunction = new MyInterpolatingFunction();
+		
+		continuedTakeOffFunction.interpolateLinear(failureSpeedArray, continuedTakeOffArray);
+		abortedTakeOffFunction.interpolateLinear(failureSpeedArray, abortedTakeOffArray);
+		
+		failureSpeedArrayFitted = MyArrayUtils.linspace(
+				vSTakeOff.times(0.5).getEstimatedValue(),
+				vRot.getEstimatedValue(),
+				1000);
+		
+		double[] continuedTakeOffArrayFitted = new double[failureSpeedArrayFitted.length];
+		double[] abortedTakeOffArrayFitted = new double[failureSpeedArrayFitted.length];
+		for(int i=0; i<failureSpeedArrayFitted.length; i++) {
+			
+			continuedTakeOffArrayFitted[i] = continuedTakeOffFunction.value(failureSpeedArrayFitted[i]);
+			abortedTakeOffArrayFitted[i] = abortedTakeOffFunction.value(failureSpeedArrayFitted[i]);
+			
+		}
+		
 		// arrays intersection
 		double[] intersection = MyArrayUtils.intersectArraysSimple(
-				continuedTakeOffArray,
-				abortedTakeOffArray);
+				continuedTakeOffArrayFitted,
+				abortedTakeOffArrayFitted);
 		for(int i=0; i<intersection.length; i++)
 			if(intersection[i] != 0.0) {
 				balancedFieldLength = Amount.valueOf(intersection[i], SI.METER);
-				v1 = Amount.valueOf(failureSpeedArray[i], SI.METERS_PER_SECOND);
+				v1 = Amount.valueOf(failureSpeedArrayFitted[i], SI.METERS_PER_SECOND);
 			}
 		
 		// write again
@@ -1757,12 +1776,12 @@ public class TakeOffCalc {
 			if(isAborted)
 				alphaDot = 0.0;
 			else {
-				if((time > tRot.getEstimatedValue()) && (time < tEndRot.getEstimatedValue())) {
+				if((time > tRot.getEstimatedValue()) && (time < tEndHold.getEstimatedValue())) {
 					alphaDot = alphaDotInitial*(1-(kAlpha*(TakeOffCalc.this.getAlpha().get(
 							TakeOffCalc.this.getAlpha().size()-1).getEstimatedValue()))
 							);
 				}
-				else if((time > tEndRot.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
+				else if((time > tEndHold.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
 					alphaDot = alphaRed;
 				}
 			}

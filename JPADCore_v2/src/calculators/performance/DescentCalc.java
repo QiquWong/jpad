@@ -49,6 +49,10 @@ public class DescentCalc {
 	private List<Amount<Length>> _descentLengths;
 	private List<Amount<Duration>> _descentTimes;
 	private List<Amount<Angle>> _descentAngles;
+	private List<Amount<Velocity>> _speedListTAS;
+	private List<Double> _cLSteps;
+	private List<Amount<Force>> _thrustPerStep;
+	private List<Amount<Force>> _dragPerStep;
 	private Amount<Length> _totalDescentLength;
 	private Amount<Duration> _totalDescentTime;
 	private Amount<Mass> _totalDescentFuelUsed;
@@ -78,7 +82,10 @@ public class DescentCalc {
 		this._descentLengths = new ArrayList<>();
 		this._descentTimes = new ArrayList<>();
 		this._descentAngles = new ArrayList<>();
-		
+		this._speedListTAS = new ArrayList<>();
+		this._cLSteps = new ArrayList<>();
+		this._thrustPerStep = new ArrayList<>();
+		this._dragPerStep = new ArrayList<>();
 	}
 	
 	//--------------------------------------------------------------------------------------------
@@ -87,14 +94,11 @@ public class DescentCalc {
 	public void calculateDescentPerformance() {
 		
 		List<Double> sigmaList = new ArrayList<>();
-		List<Amount<Velocity>> speedListTAS = new ArrayList<>();
 		List<Amount<Velocity>> horizontalSpeedListTAS = new ArrayList<>();
 		List<Double> machList = new ArrayList<>();
 		List<Amount<Mass>> aircraftMassPerStep = new ArrayList<>();
-		List<Double> cLSteps = new ArrayList<>();
 		List<Double> cDSteps = new ArrayList<>();
 		List<Double> efficiencyPerStep = new ArrayList<>();
-		List<Amount<Force>> thrustPerStep = new ArrayList<>();
 		List<Double> sfcCruise = new ArrayList<>();
 		List<Double> thrustCruise = new ArrayList<>();
 		List<Double> requiredSFC = new ArrayList<>();
@@ -112,20 +116,20 @@ public class DescentCalc {
 				.getDensity()*1000
 				/1.225
 				);
-		speedListTAS.add(
+		_speedListTAS.add(
 				_speedDescentCAS.to(SI.METERS_PER_SECOND)
 				.divide(Math.sqrt(sigmaList.get(0))));
 		machList.add(
 				SpeedCalc.calculateMach(
 						_initialDescentAltitude.doubleValue(SI.METER),
-						speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND)
+						_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND)
 						)
 				);
 		_descentAngles.add(
 				Amount.valueOf(
 						Math.asin(
 								_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
-								/speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND)
+								/_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND)
 								), 
 						SI.RADIAN
 						)
@@ -133,7 +137,7 @@ public class DescentCalc {
 				);
 		horizontalSpeedListTAS.add(
 				Amount.valueOf(
-						speedListTAS.get(0).times(
+						_speedListTAS.get(0).times(
 								Math.cos(_descentAngles.get(0).doubleValue(SI.RADIAN))
 								).getEstimatedValue(),
 						SI.METERS_PER_SECOND
@@ -157,12 +161,12 @@ public class DescentCalc {
 						.to(NonSI.NAUTICAL_MILE)
 				);
 		aircraftMassPerStep.add(_initialDescentMass);
-		cLSteps.add(
+		_cLSteps.add(
 				LiftCalc.calculateLiftCoeff(
 						Math.cos(_descentAngles.get(0).doubleValue(SI.RADIAN))*
 						aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
 							*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-						speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
+						_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
 						_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 						_initialDescentAltitude.doubleValue(SI.METER)
 						)
@@ -171,18 +175,30 @@ public class DescentCalc {
 				MyMathUtils.getInterpolatedValue1DLinear(
 						MyArrayUtils.convertToDoublePrimitive(_polarCLClean),
 						MyArrayUtils.convertToDoublePrimitive(_polarCDClean),
-						cLSteps.get(0))
+						_cLSteps.get(0))
 				);
 		efficiencyPerStep.add(
-				cLSteps.get(0)
+				_cLSteps.get(0)
 				/cDSteps.get(0)
 				);
-		thrustPerStep.add(
+		_thrustPerStep.add(
 				Amount.valueOf(
 						(-_descentAngles.get(0).doubleValue(SI.RADIAN)
 						+ (1/efficiencyPerStep.get(0)))
 						*aircraftMassPerStep.get(0).doubleValue(SI.KILOGRAM)
 						*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+						SI.NEWTON
+						)
+				);
+		_dragPerStep.add(
+				Amount.valueOf(
+						DragCalc.calculateDragAtSpeed(
+								aircraftMassPerStep.get(0).times(AtmosphereCalc.g0).getEstimatedValue(),
+								altitudeDescent[0],
+								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_speedListTAS.get(0).doubleValue(SI.METERS_PER_SECOND),
+								cDSteps.get(0)
+								),
 						SI.NEWTON
 						)
 				);
@@ -222,16 +238,16 @@ public class DescentCalc {
 				);
 		
 		requiredSFC.add(
-				(thrustPerStep.get(0).doubleValue(SI.NEWTON)
+				(_thrustPerStep.get(0).doubleValue(SI.NEWTON)
 				/thrustCruise.get(0))
 				*sfcCruise.get(0)
 				);
 				
-		if(thrustPerStep.get(0).doubleValue(SI.NEWTON)
+		if(_thrustPerStep.get(0).doubleValue(SI.NEWTON)
 				*(0.224809)*(0.454/60)
 				*requiredSFC.get(0) > 0)
 			fuelFlows.add(
-					thrustPerStep.get(0).doubleValue(SI.NEWTON)
+					_thrustPerStep.get(0).doubleValue(SI.NEWTON)
 					*(0.224809)*(0.454/60)
 					*requiredSFC.get(0)
 					);
@@ -254,20 +270,20 @@ public class DescentCalc {
 					.getDensity()*1000
 					/1.225
 					);
-			speedListTAS.add(
+			_speedListTAS.add(
 					_speedDescentCAS.to(SI.METERS_PER_SECOND)
 					.divide(Math.sqrt(sigmaList.get(i))));
 			machList.add(
 					SpeedCalc.calculateMach(
 							altitudeDescent[i],
-							speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
+							_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
 							)
 					);
 			_descentAngles.add(
 					Amount.valueOf(
 							Math.asin(
 									_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
-									/speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
+									/_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
 									), 
 							SI.RADIAN
 							)
@@ -275,7 +291,7 @@ public class DescentCalc {
 					);
 			horizontalSpeedListTAS.add(
 					Amount.valueOf(
-							speedListTAS.get(i).times(
+							_speedListTAS.get(i).times(
 									Math.cos(_descentAngles.get(i).doubleValue(SI.RADIAN))
 									).getEstimatedValue(),
 							SI.METERS_PER_SECOND
@@ -305,12 +321,12 @@ public class DescentCalc {
 							SI.KILOGRAM)
 							)
 					);
-			cLSteps.add(
+			_cLSteps.add(
 					LiftCalc.calculateLiftCoeff(
 							Math.cos(_descentAngles.get(i).doubleValue(SI.RADIAN))*
 							aircraftMassPerStep.get(i).doubleValue(SI.KILOGRAM)
 								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
-							speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
+							_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
 							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 							_initialDescentAltitude.doubleValue(SI.METER)
 							)
@@ -319,18 +335,30 @@ public class DescentCalc {
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(_polarCLClean),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDClean),
-							cLSteps.get(i))
+							_cLSteps.get(i))
 					);
 			efficiencyPerStep.add(
-					cLSteps.get(i)
+					_cLSteps.get(i)
 					/cDSteps.get(i)
 					);
-			thrustPerStep.add(
+			_thrustPerStep.add(
 					Amount.valueOf(
 							(-_descentAngles.get(i).doubleValue(SI.RADIAN)
 							+ (1/efficiencyPerStep.get(i)))
 							*aircraftMassPerStep.get(i).doubleValue(SI.KILOGRAM)
 							*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
+							SI.NEWTON
+							)
+					);
+			_dragPerStep.add(
+					Amount.valueOf(
+							DragCalc.calculateDragAtSpeed(
+									aircraftMassPerStep.get(i).times(AtmosphereCalc.g0).getEstimatedValue(),
+									altitudeDescent[i],
+									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
+									cDSteps.get(i)
+									),
 							SI.NEWTON
 							)
 					);
@@ -371,16 +399,16 @@ public class DescentCalc {
 					);
 			
 			requiredSFC.add(
-					(thrustPerStep.get(i).doubleValue(SI.NEWTON)
+					(_thrustPerStep.get(i).doubleValue(SI.NEWTON)
 					/thrustCruise.get(i))
 					*sfcCruise.get(i)
 					);
 					
-			if(thrustPerStep.get(i).doubleValue(SI.NEWTON)
+			if(_thrustPerStep.get(i).doubleValue(SI.NEWTON)
 					*(0.224809)*(0.454/60)
 					*requiredSFC.get(i) > 0)
 				fuelFlows.add(
-						thrustPerStep.get(i).doubleValue(SI.NEWTON)
+						_thrustPerStep.get(i).doubleValue(SI.NEWTON)
 						*(0.224809)*(0.454/60)
 						*requiredSFC.get(i)
 						);
@@ -595,5 +623,37 @@ public class DescentCalc {
 
 	public void setSFCFunctionDescent(MyInterpolatingFunction _sfcFunctionDescent) {
 		this._sfcFunctionDescent = _sfcFunctionDescent;
+	}
+
+	public List<Amount<Velocity>> getSpeedListTAS() {
+		return _speedListTAS;
+	}
+
+	public void setSpeedListTAS(List<Amount<Velocity>> _speedListTAS) {
+		this._speedListTAS = _speedListTAS;
+	}
+
+	public List<Double> getCLSteps() {
+		return _cLSteps;
+	}
+
+	public void setCLSteps(List<Double> _cLSteps) {
+		this._cLSteps = _cLSteps;
+	}
+
+	public List<Amount<Force>> getThrustPerStep() {
+		return _thrustPerStep;
+	}
+
+	public void setThrustPerStep(List<Amount<Force>> _thrustPerStep) {
+		this._thrustPerStep = _thrustPerStep;
+	}
+
+	public List<Amount<Force>> getDragPerStep() {
+		return _dragPerStep;
+	}
+
+	public void setDragPerStep(List<Amount<Force>> _dragPerStep) {
+		this._dragPerStep = _dragPerStep;
 	}
 }
