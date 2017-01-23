@@ -80,7 +80,6 @@ public class PayloadRangeCalcMissionProfile{
 	private Double _kCLmax;
 	private Double _dragDueToEnigneFailure;
 	private Double _kAlphaDot;
-	private Double _alphaReductionRate;
 	private Amount<Length> _obstacleLanding;
 	private Amount<Angle> _thetaApproach;
 	private Double _kApproach;
@@ -158,7 +157,6 @@ public class PayloadRangeCalcMissionProfile{
 			Double kCLmax,
 			Double dragDueToEnigneFailure,
 			Double kAlphaDot,
-			Double alphaReductionRate,
 			Amount<Length> obstacleLanding,
 			Amount<Angle> thetaApproach,
 			Double kApproach,
@@ -211,7 +209,6 @@ public class PayloadRangeCalcMissionProfile{
 		this._kCLmax = kCLmax;
 		this._dragDueToEnigneFailure = dragDueToEnigneFailure;
 		this._kAlphaDot = kAlphaDot;
-		this._alphaReductionRate = alphaReductionRate;
 		this._obstacleLanding = obstacleLanding;
 		this._thetaApproach = thetaApproach;
 		this._kApproach = kApproach;
@@ -299,7 +296,6 @@ public class PayloadRangeCalcMissionProfile{
 					_theOperatingConditions.getThrottleGroundIdleTakeOff(),
 					_theOperatingConditions.getThrottleTakeOff(), 
 					_kAlphaDot,
-					_alphaReductionRate,
 					_mu,
 					_muBrake,
 					wingToGroundDistance,
@@ -1750,14 +1746,6 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setKAlphaDot(Double _kAlphaDot) {
 		this._kAlphaDot = _kAlphaDot;
-	}
-
-	public Double getAlphaReductionRate() {
-		return _alphaReductionRate;
-	}
-
-	public void setAlphaReductionRate(Double _alphaReductionRate) {
-		this._alphaReductionRate = _alphaReductionRate;
 	}
 
 	public Amount<Length> getObstacleLanding() {

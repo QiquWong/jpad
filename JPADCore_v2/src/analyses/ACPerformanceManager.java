@@ -128,11 +128,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Amount<Angle> _alphaGround;
 	private Amount<Length> _obstacleTakeOff;
 	private Double _kRotation;
-	private Double _kLiftOff;
+	private Double _alphaDotRotation;
 	private Double _kCLmax;
 	private Double _dragDueToEnigneFailure;
 	private Double _kAlphaDot;
-	private Double _alphaReductionRate;
 	
 	private Double _kLandingWeight;
 	private Amount<Length> _obstacleLanding;
@@ -392,11 +391,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		private Amount<Angle> __alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		private Amount<Length> __obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		private Double __kRotation = 1.05;
-		private Double __kLiftOff = 1.1;
+		private Double __alphaDotRotation;
 		private Double __kCLmax = 0.9;
 		private Double __dragDueToEngineFailure = 0.0;
 		private Double __kAlphaDot = 0.04;
-		private Double __alphaReductionRate = -4.0; //(deg/s)
 		
 		private Double __kLandingWeight = 0.97;
 		private Amount<Length> __obstacleLanding = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
@@ -610,8 +608,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder kLiftOff(Double kLO) {
-			this.__kLiftOff = kLO;
+		public ACPerformanceCalculatorBuilder alphaDotRotation(Double alphaDotRotation) {
+			this.__alphaDotRotation = alphaDotRotation;
 			return this;
 		}
 		
@@ -627,11 +625,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		public ACPerformanceCalculatorBuilder kAlphaDot(Double kAlphaDot) {
 			this.__kAlphaDot = kAlphaDot;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder alphaReductionRate(Double alphaRed) {
-			this.__alphaReductionRate = alphaRed;
 			return this;
 		}
 		
@@ -840,11 +833,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._alphaGround = builder.__alphaGround;
 		this._obstacleTakeOff = builder.__obstacleTakeOff;
 		this._kRotation = builder.__kRotation;
-		this._kLiftOff = builder.__kLiftOff;
+		this._alphaDotRotation = builder.__alphaDotRotation;
 		this._kCLmax = builder.__kCLmax;
 		this._dragDueToEnigneFailure = builder.__dragDueToEngineFailure;
 		this._kAlphaDot = builder.__kAlphaDot;
-		this._alphaReductionRate = builder.__alphaReductionRate;
 		
 		this._kLandingWeight = builder.__kLandingWeight;
 		this._obstacleLanding = builder.__obstacleLanding;
@@ -1457,11 +1449,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		Amount<Length> obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
 		Double kRotation = 1.05;
-		Double kLiftOff = 1.1;
+		Double alphaDotRotation = 3.0;
 		Double kCLmax = 0.9;
 		Double dragDueToEngineFailure = 0.0;
 		Double kAlphaDot = 0.04;
-		Double alphaReductionRate = -4.0;
 		
 		Double kLandingWeight = 0.97;
 		Amount<Length> obstacleLanding = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
@@ -1562,10 +1553,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			kRotation = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/k_rotation"));
 		
 		//...............................................................
-		// K LIFT OFF
-		String kLiftOffProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/k_lift_off");
-		if(kLiftOffProperty != null)
-			kLiftOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/k_lift_off"));
+		// ALPHA DOT ROTATION
+		String alphaDotRotationProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/alpha_dot_rotation");
+		if(alphaDotRotationProperty != null)
+			alphaDotRotation = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/alpha_dot_rotation"));
 		
 		//...............................................................
 		// K CLmax
@@ -1584,12 +1575,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		String kAlphaDotProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/k_alpha_dot");
 		if(kAlphaDotProperty != null)
 			kAlphaDot = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/k_alpha_dot"));
-
-		//...............................................................
-		// ALPHA REDUCTION RATE
-		String alphaReductionRateProperty = reader.getXMLPropertyByPath("//performance/takeoff_landing/alpha_reduction_rate");
-		if(alphaReductionRateProperty != null)
-			alphaReductionRate = Double.valueOf(reader.getXMLPropertyByPath("//performance/takeoff_landing/alpha_reduction_rate"));
 
 		//...............................................................
 		// K LANDING WEIGHT
@@ -2167,11 +2152,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.windSpeed(windSpeed)
 				.obstacleTakeOff(obstacleTakeOff)
 				.kRotation(kRotation)
-				.kLiftOff(kLiftOff)
+				.alphaDotRotation(alphaDotRotation)
 				.kCLmax(kCLmax)
 				.dragDueToEngineFailure(dragDueToEngineFailure)
 				.kAlphaDot(kAlphaDot)
-				.alphaReductionRate(alphaReductionRate)
 				.kLandingWeight(kLandingWeight)
 				.obstacleLanding(obstacleLanding)
 				.thetaApproach(thetaApproach)
@@ -3330,12 +3314,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_dtHold,
 					_kCLmax,
 					_kRotation,
-					_kLiftOff,
+					_alphaDotRotation,
 					_dragDueToEnigneFailure,
 					_theOperatingConditions.getThrottleGroundIdleTakeOff(),
 					_theOperatingConditions.getThrottleTakeOff(), 
 					_kAlphaDot,
-					_alphaReductionRate,
 					_muFunction,
 					_muBrakeFunction,
 					wingToGroundDistance,
@@ -3350,7 +3333,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
+			_theTakeOffCalculator.calculateTakeOffDistanceODE(0.0, false);
 
 			// Distances:
 			_groundRollDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT);
@@ -3363,7 +3346,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_vStallTakeOff = _theTakeOffCalculator.getvSTakeOff().to(NonSI.KNOT);
 			_vRotation = _theTakeOffCalculator.getvRot().to(NonSI.KNOT);
 			_vLiftOff = _theTakeOffCalculator.getvLO().to(NonSI.KNOT);
-			_v2 = _theTakeOffCalculator.getTakeOffResults().getSpeed().get(2).to(NonSI.KNOT);
+			_v2 = _theTakeOffCalculator.getV2().to(NonSI.KNOT);
 			
 			// Duration:
 			_takeOffDuration = _theTakeOffCalculator.getTakeOffResults().getTime().get(2);
@@ -4901,11 +4884,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_alphaGround,
 					_obstacleTakeOff,
 					_kRotation,
-					_kLiftOff,
+					_alphaDotRotation,
 					_kCLmax,
 					_dragDueToEnigneFailure,
 					_kAlphaDot,
-					_alphaReductionRate,
 					_obstacleLanding,
 					_thetaApproach,
 					_kApproach,
@@ -5067,11 +5049,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_alphaGround,
 					_obstacleTakeOff,
 					_kRotation,
-					_kLiftOff,
+					_alphaDotRotation,
 					_kCLmax,
 					_dragDueToEnigneFailure,
 					_kAlphaDot,
-					_alphaReductionRate,
 					_obstacleLanding,
 					_thetaApproach,
 					_kApproach,
@@ -5245,12 +5226,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	public void setKRotation(Double _kRotation) {
 		this._kRotation = _kRotation;
 	}
-	public Double getKLiftOff() {
-		return _kLiftOff;
-	}
-	public void setKLiftOff(Double _kLiftOff) {
-		this._kLiftOff = _kLiftOff;
-	}
 	public Double getKCLmax() {
 		return _kCLmax;
 	}
@@ -5268,12 +5243,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	}
 	public void setKAlphaDot(Double _kAlphaDot) {
 		this._kAlphaDot = _kAlphaDot;
-	}
-	public Double getAlphaReductionRate() {
-		return _alphaReductionRate;
-	}
-	public void setAlphaReductionRate(Double _alphaReductionRate) {
-		this._alphaReductionRate = _alphaReductionRate;
 	}
 	public Double getCLmaxLanding() {
 		return _cLmaxLanding;
@@ -6700,6 +6669,14 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setDragMissionList(List<Amount<Force>> _dragMissionList) {
 		this._dragMissionList = _dragMissionList;
+	}
+
+	public Double getAlphaDotRotation() {
+		return _alphaDotRotation;
+	}
+
+	public void setAlphaDotRotation(Double _alphaDotRotation) {
+		this._alphaDotRotation = _alphaDotRotation;
 	}
 
 }

@@ -22,9 +22,9 @@
 			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 				<cLmax_clean_configuration>1.61</cLmax_clean_configuration>
 				<cL_alpha_clean_configuration unit="1/deg">0.11</cL_alpha_clean_configuration>
-				<cLmax_take_off_configuration>2.4</cLmax_take_off_configuration>
-				<cL_alpha_take_off unit="1/deg">0.103</cL_alpha_take_off>
-				<cL0_take_off_configuration>1.3</cL0_take_off_configuration>
+				<cLmax_take_off_configuration>2.58</cLmax_take_off_configuration>
+				<cL_alpha_take_off unit="1/deg">0.152</cL_alpha_take_off>
+				<cL0_take_off_configuration>1.35</cL0_take_off_configuration>
 				<cLmax_landing_configuration>3.0</cLmax_landing_configuration>
 				<cL_alpha_landing unit="1/deg">0.1</cL_alpha_landing>
 				<cL0_landing_configuration>1.8</cL0_landing_configuration>
@@ -77,12 +77,11 @@
 				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
 				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
-				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
-				<k_lift_off></k_lift_off> <!-- V_lift-off/V_stall in take-off (default = 1.1) -->
+				<k_rotation>1.03</k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<alpha_dot_rotation>3</alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
 				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
 				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
-				<alpha_reduction_rate unit="deg/s"></alpha_reduction_rate> <!-- negative angular velocity after reaching max allowed CL in rotation (default = -4 deg/s)-->
 				<!-- landing data -->
 				<k_landing_weight></k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
 				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->

@@ -93,9 +93,6 @@ public interface IACPerformanceManger {
 	public Double getKRotation() ;
 	public void setKRotation(Double _kRotation) ;
 
-	public Double getKLiftOff() ;
-	public void setKLiftOff(Double _kLiftOff) ;
-
 	public Double getKCLmax() ;
 	public void setKCLmax(Double _kCLmax) ;
 
@@ -104,9 +101,6 @@ public interface IACPerformanceManger {
 
 	public Double getKAlphaDot() ;
 	public void setKAlphaDot(Double _kAlphaDot) ;
-
-	public Double getAlphaReductionRate() ;
-	public void setAlphaReductionRate(Double _alphaReductionRate) ;
 
 	public Double getCLmaxLanding() ;
 	public void setCLmaxLanding(Double _cLmaxLanding) ;
