@@ -45,8 +45,8 @@
 						<polar_curve_CD></polar_curve_CD>
 					</cruise>
 					<climb>
-						<polar_curve_CL></polar_curve_CL>
-						<polar_curve_CD></polar_curve_CD>
+						<polar_curve_CL>0.074094656;0.164637869;0.255273202;0.34598965;0.436758067;0.527625136;0.618567896;0.709572936;0.800692941;0.891893729;0.983180144;1.074585696;1.166061602;1.25823474;1.351480396;1.442135025;1.526404611;1.600303194;1.659886007;1.701362773;1.720911295</polar_curve_CL>
+						<polar_curve_CD>0.025938242;0.02574636;0.026068839;0.027095231;0.028945139;0.031597907;0.035038569;0.039358494;0.044328035;0.04988608;0.056107253;0.062838857;0.070087492;0.077918415;0.086506752;0.095604698;0.10486729;0.113938782;0.122842759;0.13199229;0.138327958</polar_curve_CD>
 					</climb>
 					<take_off>
 						<polar_curve_CL></polar_curve_CL>
@@ -151,6 +151,7 @@
 			<climb_angle_curves perform="TRUE"/>
 			<max_rate_of_climb_envelope perform="TRUE"/>
 			<max_climb_angle_envelope perform="TRUE"/>
+			<climb_time perform="TRUE"/>
 		</climb>
 		<cruise>
 			<thrust_drag perform="TRUE"/>

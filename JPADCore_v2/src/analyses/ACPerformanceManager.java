@@ -1966,6 +1966,16 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					if(maxClimbAngleEnvelopeProperty.equalsIgnoreCase("TRUE")) 
 						plotList.add(PerformancePlotEnum.MAX_CLIMB_ANGLE_ENVELOPE);
 				}	
+				
+				String climbTimeChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/climb_time/@perform");
+				if (climbTimeChartProperty != null) {
+					if(climbTimeChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.CLIMB_TIME);
+				}	
+				
 			}
 
 			//...............................................................
