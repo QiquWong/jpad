@@ -49,9 +49,9 @@
 		<performance 
 			file="analysis_performance_IRON.xml"
 			plot="TRUE"
-			take_off="TRUE"
+			take_off="FALSE"
 			climb="FALSE"
-			cruise="FALSE"
+			cruise="TRUE"
 			descent="FALSE"
 			landing="FALSE"
 			payload_range="FALSE"

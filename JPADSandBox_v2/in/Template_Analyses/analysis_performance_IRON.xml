@@ -19,7 +19,7 @@
 			<balance>
 				<xCG_max_aft unit="%">32</xCG_max_aft>
 			</balance>
-			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
+			<aerodynamics parabolicDragPolar="FALSE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 				<cLmax_clean_configuration>1.61</cLmax_clean_configuration>
 				<cL_alpha_clean_configuration unit="1/deg">0.11</cL_alpha_clean_configuration>
 				<cLmax_take_off_configuration>2.58</cLmax_take_off_configuration>
@@ -29,20 +29,20 @@
 				<cL_alpha_landing unit="1/deg">0.1</cL_alpha_landing>
 				<cL0_landing_configuration>1.8</cL0_landing_configuration>
 				<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
-				<cD0>0.0239</cD0>
-				<oswald_cruise>0.85</oswald_cruise> 
-				<oswald_climb>0.83</oswald_climb>
-				<oswald_take_off>0.80</oswald_take_off>
-				<oswald_landing>0.78</oswald_landing>
-				<delta_CD0_flap_take_off>0.0142</delta_CD0_flap_take_off>
-				<delta_CD0_flap_landing>0.0618</delta_CD0_flap_landing>
-				<delta_CD0_landing_gears>0.015</delta_CD0_landing_gears>
-				<delta_CD0_spoilers>0.0</delta_CD0_spoilers>
+				<cD0></cD0>
+				<oswald_cruise></oswald_cruise> 
+				<oswald_climb></oswald_climb>
+				<oswald_take_off></oswald_take_off>
+				<oswald_landing></oswald_landing>
+				<delta_CD0_flap_take_off></delta_CD0_flap_take_off>
+				<delta_CD0_flap_landing></delta_CD0_flap_landing>
+				<delta_CD0_landing_gears></delta_CD0_landing_gears>
+				<delta_CD0_spoilers></delta_CD0_spoilers>
 				<!---->
 				<polar_curves>
 					<cruise>
-						<polar_curve_CL>0.107578033;0.131520298;0.155466547;0.179407845;0.203305398;0.227169699;0.25101321;0.274876029;0.298771672;0.322699236;0.346582992;0.370470916;0.39436249;0.418251386;0.442148962;0.46605646;0.489977234;0.513914044;0.53785069;0.561796216;0.585741195;0.609679029;0.633630525;0.657587431;0.681549199;0.705512927;0.729478046;0.753442699;0.777403393;0.801378107;0.825363969;0.849357661;0.87335721;0.897362269;0.921374098;0.945394177;0.969422784;0.993465543;1.017517994;1.041571216</polar_curve_CL>
-						<polar_curve_CD>0.02807056;0.028064082;0.028102187;0.028183392;0.028243147;0.028285769;0.028342334;0.028451175;0.02862146;0.028861144;0.029151721;0.029481079;0.029845378;0.030244756;0.030681783;0.031178672;0.031735703;0.032347934;0.033012318;0.033721659;0.034471322;0.035263493;0.036099271;0.036983241;0.037949439;0.038986257;0.040062909;0.0411812;0.042343749;0.043561196;0.044828999;0.04614607;0.047508267;0.048915046;0.050368004;0.051866605;0.053442736;0.055126837;0.056880633;0.058724702</polar_curve_CD>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
 					</cruise>
 					<climb>
 						<polar_curve_CL></polar_curve_CL>

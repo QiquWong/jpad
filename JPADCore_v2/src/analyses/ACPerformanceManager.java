@@ -3997,7 +3997,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			while((_intersectionList.get(_intersectionList.size()-1).getMaxSpeed()
 					- _intersectionList.get(_intersectionList.size()-1).getMinSpeed())
-					>= 0.001
+					>= 0.0001
 					) {
 				
 				if(i >= 1)
