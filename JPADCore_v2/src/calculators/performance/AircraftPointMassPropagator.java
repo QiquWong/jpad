@@ -1,5 +1,23 @@
 package calculators.performance;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.measure.unit.SI;
+
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
+import org.apache.commons.math3.ode.FirstOrderIntegrator;
+import org.apache.commons.math3.ode.events.EventHandler;
+import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
+import org.apache.commons.math3.ode.sampling.StepHandler;
+import org.apache.commons.math3.ode.sampling.StepInterpolator;
+
+import aircraft.components.Aircraft;
+import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.atmosphere.AtmosphereCalc;
+
 /*
  * See the book by D. K. Schmidt, Modern Flight Dynamics McGraw-Hill
  * Example 8.11 (Chapter 8): Case Study - A Nonlinear Aircraft-Performance Simulation
@@ -154,9 +172,200 @@ package calculators.performance;
 
 public class AircraftPointMassPropagator {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	private Aircraft aircraft;
+	
+	public AircraftPointMassPropagator(Aircraft ac) {
+		this.aircraft = ac;
+		// TODO
+		
 	}
+	
+	//-------------------------------------------------------------------------------------
+	//										NESTED CLASS
+	//-------------------------------------------------------------------------------------
+	// ODE integration
+	// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
 
+	public class DynamicsEquationsAircraftPointMass implements FirstOrderDifferentialEquations {
+
+		double mass, g0, kAlpha, cD0, oswald, ar, kGround, vWind;
+		MyInterpolatingFunction thrustMax;
+		
+		// visible variables
+		public double speedInertial, flightPathAngle, heading, xInertial, yInertial, altitude;
+		
+		public DynamicsEquationsAircraftPointMass() {
+			
+		}
+		
+		@Override
+		public int getDimension() {
+			return 6;
+		}
+
+		@Override
+		public void computeDerivatives(double t, double[] x, double[] xDot)
+				throws MaxCountExceededException, DimensionMismatchException {
+			
+			speedInertial   = x[0];
+			flightPathAngle = x[1];
+			heading         = x[2];
+			xInertial       = x[3];
+			yInertial       = x[4];
+			altitude        = x[5];
+			// TODO: consider an augmented state vector
+			// thrust, lift, bank, xDotT, xDotL, 
+
+			// TODO: steady wind velocity components in the inertial frame
+			double windXI = 0.0; // TODO: getActualWindXI
+			double windYI = 0.0; // TODO: getActualWindYI
+			double windZI = 0.0; // TODO: getActualWindZI (positive downwards)
+			
+			// intermediate variables
+			double xDotI = speedInertial*Math.cos(flightPathAngle)*Math.cos(heading);
+			double yDotI = speedInertial*Math.cos(flightPathAngle)*Math.sin(heading);
+			double hDot  = speedInertial*Math.sin(flightPathAngle);
+			double airspeed = Math.sqrt(
+					Math.pow(xDotI - windXI, 2)	
+					+ Math.pow(yDotI - windYI, 2)
+					+ Math.pow(hDot - windZI, 2)
+					);
+
+			// TODO: calculate these quantities accordingly
+			double mass = 1.0; // TODO: getActualMass
+			double thrust = 1.0; // TODO: getActualThrust
+			double lift = 0.5; // TODO: getActualLift
+			double drag = 0.0; // TODO: getActualDrag
+			double bank = 0.0; // getActualBank
+			double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
+			
+			// Assign the derivatives
+			xDot[0] = ((thrust - drag)/mass) - g0*Math.sin(flightPathAngle);
+			xDot[1] = (lift*Math.cos(bank) - mass*g0*Math.cos(flightPathAngle))/(mass * speedInertial);
+			xDot[2] = (lift*Math.sin(bank))/(mass*speedInertial*Math.cos(flightPathAngle));
+			xDot[3] = xDotI;
+			xDot[4] = yDotI;
+			xDot[5] = hDot;
+			
+		}
+		
+	}	
+	
+	/***************************************************************************************
+	 * This method performs the integration of the total following systema of equations:
+	 * 
+	 *   dot( Vv ) = (T - D)/m - g sinγ
+	 *   dot( γ  ) = (L cosϕ - m g cosγ)/(m Vv)
+	 *   dot( ψ  ) = L sinϕ /(m Vv cosγ)
+	 *   dot( Xi ) = Vv cosγ cosψ
+	 *   dot( Yi ) = Vv cosγ sinψ
+	 *   dot( h  ) = Vv sinγ
+	 *   dot( m  ) = - dot_wf/g = - Kwf T
+	 *   
+	 * In presence of wind:
+	 * 
+	 *   vec W = Wx vec Ii + Wy vec Ji - Wh vec Ki
+	 *   Ii, Ji, Ki = versors of inertial reference frame (flat-Earth)
+	 *   vec Va = - vec Vv + vec W
+	 * 
+	 *   dot( Xw ) = Vv cosγ cosψ - Wx
+	 *   dot( Yw ) = Vv cosγ sinψ - Wy
+	 *   dot( hw ) = Vv sinγ      - Wh
+	 *   
+	 *   Va = sqrt( dot( Xw )^2 + dot( Yw )^2 + dot( hw )^2 )	 * 
+	 * 
+	 * ODE with a HighamHall54Integrator. The library used is the Apache Math3. 
+	 * 
+	 * see: https://commons.apache.org/proper/commons-math/userguide/ode.html
+	 * 
+	 * @author Agostino De Marco
+	 */
+	public void propagate(String eventsFileName) {
+
+		System.out.println("---------------------------------------------------");
+		System.out.println("AircraftPointMassPropagator :: ODE integration\n\n");
+		
+		FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
+				1e-6,
+				1,
+				1e-15,
+				1e-15
+				);
+		
+		FirstOrderDifferentialEquations ode = new DynamicsEquationsAircraftPointMass();
+		
+		List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
+		// TODO: readEvents(eventsFileName);
+		// TODO: eventHandlers.stream.map(e -> theIntegrator.addEventHandler(e, 1.0, 1e-3, 20))
+		
+		
+		// TODO: modify accordingly
+		EventHandler commandedEvents = new EventHandler() {
+
+			@Override
+			public void init(double t0, double[] y0, double t) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public double g(double t, double[] y) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public Action eventOccurred(double t, double[] y, boolean increasing) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public void resetState(double t, double[] y) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		
+		theIntegrator.addEventHandler(commandedEvents, 1.0, 1e-3, 20);
+
+		// handle detailed info
+		StepHandler stepHandler = new StepHandler() {
+
+			@Override
+			public void init(double t0, double[] y0, double t) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
+				// TODO Auto-generated method stub
+				
+				System.out.println("step");
+				
+			}
+			
+		};
+
+		theIntegrator.addStepHandler(stepHandler);
+
+		double[] xAt0 = new double[] { // initial state
+				0.0, // Vv 
+				0.0, // gamma
+				0.0, // psi
+				0.0, // XI
+				0.0, // YI
+				0.0  // h
+				};
+		double tInitial = 0.0, tFinal = 1000.0;
+		theIntegrator.integrate(ode, tInitial, xAt0, tFinal, xAt0); // now xAt0 contains final state
+
+		theIntegrator.clearEventHandlers();
+		theIntegrator.clearStepHandlers();		
+		
+		System.out.println("\n---------------------------END!!-------------------------------");
+	}	
+	
 }
