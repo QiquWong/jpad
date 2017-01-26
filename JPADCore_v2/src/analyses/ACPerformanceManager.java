@@ -222,8 +222,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	
 	private Amount<Length> _absoluteCeilingOEI;
 	private Amount<Length> _serviceCeilingOEI;
-	private Amount<Duration> _minimumClimbTimeOEI;
-	private Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI;
 	//..............................................................................
 	// Cruise
 	private List<DragMap> _dragListAltitudeParameterization;
@@ -1515,7 +1513,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		MyInterpolatingFunction muInterpolatingFunction = new MyInterpolatingFunction();
 		muInterpolatingFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(muFunctionSpeed),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						muFunctionSpeed.stream()
+						.map(f -> f.to(SI.METERS_PER_SECOND))
+						.collect(Collectors.toList())
+						),
 				MyArrayUtils.convertToDoublePrimitive(muFunction)
 				);
 			
@@ -1542,7 +1544,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		MyInterpolatingFunction muBrakeInterpolatingFunction = new MyInterpolatingFunction();
 		muBrakeInterpolatingFunction.interpolateLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(muBrakeFunctionSpeed),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						muBrakeFunctionSpeed.stream()
+						.map(f -> f.to(SI.METERS_PER_SECOND))
+						.collect(Collectors.toList())
+						),
 				MyArrayUtils.convertToDoublePrimitive(muBrakeFunction)
 				);
 		
@@ -2502,9 +2508,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListClimb.add(new Object[] {" "});
         	dataListClimb.add(new Object[] {"Absolute ceiling OEI","m", _absoluteCeilingOEI.doubleValue(SI.METER)});
         	dataListClimb.add(new Object[] {"Service ceiling OEI","m", _serviceCeilingOEI.doubleValue(SI.METER)});
-        	dataListClimb.add(new Object[] {"Minimum time to climb OEI","min", _minimumClimbTimeOEI.doubleValue(NonSI.MINUTE)});
-        	if(_climbTimeAtSpecificClimbSpeedOEI != null)
-        		dataListClimb.add(new Object[] {"Time to climb at given climb speed OEI","min", _climbTimeAtSpecificClimbSpeedOEI.doubleValue(NonSI.MINUTE)});
 
         	Row rowClimb = sheetClimb.createRow(0);
         	Object[] objArrClimb = dataListClimb.get(0);
@@ -2725,7 +2728,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTime.doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","kg", _initialMissionMass.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","kg", _endMissionMass.doubleValue(SI.KILOGRAM)});
-        	dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMass.doubleValue(NonSI.POUND)});
+        	dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMass.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsed.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _fuelReserve*100});
         	dataListMissionProfile.add(new Object[] {"Design passengers number","", _theAircraft.getCabinConfiguration().getNPax().doubleValue()});
@@ -3215,10 +3218,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			sb.append("\t\t.....................................\n")
 			.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEI + "\n")
-			.append("\t\tService ceiling OEI = " + _serviceCeilingOEI + "\n")
-			.append("\t\tMinimum time to climb at absolute ceiling OEI = " + _minimumClimbTimeOEI + "\n");
-			if(_climbTimeAtSpecificClimbSpeedOEI != null)
-				sb.append("\t\tTime to climb at given climb speed OEI = " + _climbTimeAtSpecificClimbSpeedOEI + "\n");
+			.append("\t\tService ceiling OEI = " + _serviceCeilingOEI + "\n");
 			
 			sb.append("\t-------------------------------------\n");
 		}
@@ -3667,8 +3667,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			_absoluteCeilingOEI = _theClimbCalculator.getAbsoluteCeilingOEI();
 			_serviceCeilingOEI = _theClimbCalculator.getServiceCeilingOEI();
-			_minimumClimbTimeOEI = _theClimbCalculator.getMinimumClimbTimeOEI();
-			_climbTimeAtSpecificClimbSpeedOEI = _theClimbCalculator.getClimbTimeAtSpecificClimbSpeedOEI();
 			
 		}
 		
@@ -5850,22 +5848,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setServiceCeilingOEI(Amount<Length> _serviceCeilingOEI) {
 		this._serviceCeilingOEI = _serviceCeilingOEI;
-	}
-
-	public Amount<Duration> getMinimumClimbTimeOEI() {
-		return _minimumClimbTimeOEI;
-	}
-
-	public void setMinimumClimbTimeOEI(Amount<Duration> _minimumClimbTimeOEI) {
-		this._minimumClimbTimeOEI = _minimumClimbTimeOEI;
-	}
-
-	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedOEI() {
-		return _climbTimeAtSpecificClimbSpeedOEI;
-	}
-
-	public void setClimbTimeAtSpecificClimbSpeedOEI(Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI) {
-		this._climbTimeAtSpecificClimbSpeedOEI = _climbTimeAtSpecificClimbSpeedOEI;
 	}
 
 	public List<RCMap> getRCMapAOE() {

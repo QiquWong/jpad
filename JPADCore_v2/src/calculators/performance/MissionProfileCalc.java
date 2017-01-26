@@ -488,7 +488,7 @@ public class MissionProfileCalc {
 					intialClimbMass,
 					intialClimbMass,
 					Amount.valueOf(0.0, SI.METER),
-					_theOperatingConditions.getAltitudeToReach(),
+					_theOperatingConditions.getAltitudeCruise().to(SI.METER),
 					false
 					);
 
@@ -1669,7 +1669,7 @@ public class MissionProfileCalc {
 
 				System.err.println("MAXIMUM TAKE-OFF MASS SURPASSED !! REDUCING PASSENGERS NUMBER TO INCREASE THE FUEL ... ");
 				
-				_passengersNumber += (int) Math.floor(
+				_passengersNumber += (int) Math.ceil(
 						(_maximumTakeOffMass.minus(_initialMissionMass))
 						.divide(_singlePassengerMass)
 						.getEstimatedValue()

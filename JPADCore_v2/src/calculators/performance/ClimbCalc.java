@@ -62,7 +62,7 @@ public class ClimbCalc {
 	private Map<String, List<Double>> _efficiencyMapAltitudeAOE;
 	private Map<String, List<Double>> _efficiencyMapAltitudeOEI;
 	private List<Amount<Duration>> _climbTimeListAOE;
-	private List<Amount<Duration>> _climbTimeListOEI;
+	private List<Amount<Duration>> _climbTimeListRCmax;
 	private Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeAOE;
 	private Amount<Angle> _maxThetaAtCruiseAltitudeAOE;
 	private Amount<Length> _absoluteCeilingAOE;
@@ -76,8 +76,6 @@ public class ClimbCalc {
 	
 	private Amount<Length> _absoluteCeilingOEI;
 	private Amount<Length> _serviceCeilingOEI;
-	private Amount<Duration> _minimumClimbTimeOEI;
-	private Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI;
 	private Amount<Length> _climbTotalRange;
 	private Amount<Mass> _climbTotalFuelUsed;
 	
@@ -407,22 +405,17 @@ public class ClimbCalc {
 					SI.METER
 					);
 
-			_minimumClimbTimeOEI = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapOEI).to(NonSI.MINUTE);
-
-			if(_climbSpeed != null)
-				_climbTimeAtSpecificClimbSpeedOEI = PerformanceCalcUtils.calculateClimbTime(_rcMapOEI, _climbSpeed).to(NonSI.MINUTE);
-
 		}
 		
 		//----------------------------------------------------------------------------------
 		// SFC, TIME AND RANGE IN AOE CONDITION (for the mission profile)
 		List<Double> sfcListClimb = new ArrayList<>();
-		_climbTimeListAOE = new ArrayList<>();
+		List<Amount<Duration>> climbTimeListAOE = new ArrayList<>();
 		List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
 		List<Double> rcAtClimbSpeed = new ArrayList<>();
 		List<Amount<Velocity>> climbSpeedTAS = new ArrayList<>();
 		
-		_climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
+		climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
 		rangeArrayClimb.add(Amount.valueOf(0.0, SI.METER));
 		
 		for(int i=0; i<_rcMapAOE.size(); i++) {
@@ -446,8 +439,8 @@ public class ClimbCalc {
 		for(int i=1; i<_rcMapAOE.size(); i++) {
 			
 			if(_climbSpeed == null) {
-				_climbTimeListAOE.add(
-						_climbTimeListAOE.get(_climbTimeListAOE.size()-1)
+				climbTimeListAOE.add(
+						climbTimeListAOE.get(climbTimeListAOE.size()-1)
 						.plus(
 								Amount.valueOf(
 										MyMathUtils.integrate1DSimpsonSpline(
@@ -470,7 +463,7 @@ public class ClimbCalc {
 						.plus(
 								Amount.valueOf(
 										((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
-										*(_climbTimeListAOE.get(i).minus(_climbTimeListAOE.get(i-1)).doubleValue(SI.SECOND))
+										*(climbTimeListAOE.get(i).minus(climbTimeListAOE.get(i-1)).doubleValue(SI.SECOND))
 										*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2)),
 										SI.METER
 										)
@@ -478,8 +471,8 @@ public class ClimbCalc {
 						);
 			}
 			else {
-				_climbTimeListAOE.add(
-						_climbTimeListAOE.get(_climbTimeListAOE.size()-1)
+				climbTimeListAOE.add(
+						climbTimeListAOE.get(climbTimeListAOE.size()-1)
 						.plus(
 								Amount.valueOf(
 										MyMathUtils.integrate1DSimpsonSpline(
@@ -502,7 +495,7 @@ public class ClimbCalc {
 						.plus(
 								Amount.valueOf(
 										((climbSpeedTAS.get(i-1).plus(climbSpeedTAS.get(i))).divide(2)).getEstimatedValue()
-										*(_climbTimeListAOE.get(i).minus(_climbTimeListAOE.get(i-1)).doubleValue(SI.SECOND))
+										*(climbTimeListAOE.get(i).minus(climbTimeListAOE.get(i-1)).doubleValue(SI.SECOND))
 										*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2)),
 										SI.METER
 										)
@@ -572,7 +565,7 @@ public class ClimbCalc {
 		_climbTotalFuelUsed = Amount.valueOf(
 				MyMathUtils.integrate1DSimpsonSpline(
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								_climbTimeListAOE.stream()
+								climbTimeListAOE.stream()
 									.map(t -> t.to(NonSI.MINUTE))
 										.collect(Collectors.toList()
 												)
@@ -583,69 +576,61 @@ public class ClimbCalc {
 				);
 		
 		//--------------------------------------------------------------------------------------
-		// TIME IN OEI CONDITION
-		_climbTimeListOEI = new ArrayList<>();
-		List<Double> rcAtClimbSpeedOEI = new ArrayList<>();
+		// TIME AT RCMax SPEED
+		_climbTimeListRCmax = new ArrayList<>();
+		_climbTimeListRCmax.add(Amount.valueOf(0.0, SI.SECOND));
 		
-		_climbTimeListOEI.add(Amount.valueOf(0.0, SI.SECOND));
-		
-		for(int i=0; i<_rcMapOEI.size(); i++) {
-			if(_climbSpeed != null) {
-				
-				rcAtClimbSpeedOEI.add(
-						MyMathUtils.getInterpolatedValue1DLinear(
-								_rcMapOEI.get(i).getSpeed(),
-								_rcMapOEI.get(i).getRC(),
-								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
-								)
-						);
-			}
-		}
-		
-		for(int i=1; i<_rcMapOEI.size(); i++) {
+		for(int i=1; i<_rcMapAOE.size(); i++) {
 			
-			if(_climbSpeed == null) {
-				_climbTimeListOEI.add(
-						_climbTimeListOEI.get(_climbTimeListOEI.size()-1)
-						.plus(
-								Amount.valueOf(
-										MyMathUtils.integrate1DSimpsonSpline(
-												new double[] { 
-														_rcMapOEI.get(i-1).getAltitude(),
-														_rcMapOEI.get(i).getAltitude()
-												},
-												new double[] {
-														1/_rcMapOEI.get(i-1).getRCmax(),
-														1/_rcMapOEI.get(i).getRCmax()
-												}
-												),
-										SI.SECOND
-										)
-								)
-						);
-			}
-			else {
-				_climbTimeListOEI.add(
-						_climbTimeListOEI.get(_climbTimeListOEI.size()-1)
-						.plus(
-								Amount.valueOf(
-										MyMathUtils.integrate1DSimpsonSpline(
-												new double[] { 
-														_rcMapOEI.get(i-1).getAltitude(),
-														_rcMapOEI.get(i).getAltitude()
-												},
-												new double[] {
-														1/rcAtClimbSpeedOEI.get(i-1),
-														1/rcAtClimbSpeedOEI.get(i)
-												}
-												),
-										SI.SECOND
-										)
-								)
-						);
-			}
-			
+			_climbTimeListRCmax.add(
+					_climbTimeListRCmax.get(_climbTimeListRCmax.size()-1)
+					.plus(
+							Amount.valueOf(
+									MyMathUtils.integrate1DSimpsonSpline(
+											new double[] { 
+													_rcMapAOE.get(i-1).getAltitude(),
+													_rcMapAOE.get(i).getAltitude()
+											},
+											new double[] {
+													1/_rcMapAOE.get(i-1).getRCmax(),
+													1/_rcMapAOE.get(i).getRCmax()
+											}
+											),
+									SI.SECOND
+									)
+							)
+					);
 		}
+		//--------------------------------------------------------------------------------------
+		// TIME AT Climb Speed
+		_climbTimeListAOE = new ArrayList<>();
+		_climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
+
+		for(int i=1; i<_rcMapAOE.size(); i++) {
+			_climbTimeListAOE.add(
+					_climbTimeListAOE.get(_climbTimeListAOE.size()-1)
+					.plus(
+							Amount.valueOf(
+									MyMathUtils.integrate1DSimpsonSpline(
+											new double[] { 
+													_rcMapAOE.get(i-1).getAltitude(),
+													_rcMapAOE.get(i).getAltitude()
+											},
+											new double[] {
+													1/rcAtClimbSpeed.get(i-1),
+													1/rcAtClimbSpeed.get(i)
+											}
+											),
+									SI.SECOND
+									)
+							)
+					);
+		}
+
+		_minimumClimbTimeAOE = _climbTimeListRCmax.get(_climbTimeListRCmax.size()-1);
+		
+		if(_climbSpeed != null)
+			_climbTimeAtSpecificClimbSpeedAOE = _climbTimeListAOE.get(_climbTimeListAOE.size()-1);
 		
 	}
 	
@@ -1198,25 +1183,48 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.CLIMB_TIME)) {
 
 			//.......................................................
-			// AOE
-			List<Double> altitudeListAOE = new ArrayList<Double>();
+			// AOE (V CLimb)
+			List<Double[]> timeList = new ArrayList<>();
+			List<Double[]> altitudeListAOE = new ArrayList<Double[]>();
+			List<String> legend = new ArrayList<>();
 			
+			Double[] altitudeAOE = new Double[_rcMapAOE.size()];
 			for(int i=0; i<_rcMapAOE.size(); i++) {
-				altitudeListAOE.add(_rcMapAOE.get(i).getAltitude());
+				altitudeAOE[i] = _rcMapAOE.get(i).getAltitude();
 			}
 			
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							_climbTimeListAOE.stream()
-							.map(t -> t.to(NonSI.MINUTE))
-							.collect(Collectors.toList())
-							),
-					MyArrayUtils.convertToDoublePrimitive(altitudeListAOE),
-					0.0, null, 0.0, null,
-					"Climb Time", "Altitude",
-					"min", "m",
-					climbFolderPath, "Climb_Time_(AOE)"
-					);
+			altitudeListAOE.add(altitudeAOE);
+			altitudeListAOE.add(altitudeAOE);
+			timeList.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+					_climbTimeListAOE.stream()
+					.map(t -> t.to(NonSI.MINUTE))
+					.collect(Collectors.toList())
+					));
+			timeList.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+					_climbTimeListRCmax.stream()
+					.map(t -> t.to(NonSI.MINUTE))
+					.collect(Collectors.toList())
+					));
+			legend.add("Climb Speed");
+			legend.add("RC max speed");
+			
+			try {
+				MyChartToFileUtils.plot(
+						timeList, altitudeListAOE,
+						"Climb times",
+						"Time", "Altitude",
+						null, null, null, null,
+						"min", "m",
+						true, legend,
+						climbFolderPath, "Climb_Time_(AOE)"
+						);
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			
+			
 		}
 		
 	}
@@ -1453,26 +1461,6 @@ public class ClimbCalc {
 		this._serviceCeilingOEI = _serviceCeilingOEI;
 	}
 
-
-	public Amount<Duration> getMinimumClimbTimeOEI() {
-		return _minimumClimbTimeOEI;
-	}
-
-
-	public void setMinimumClimbTimeOEI(Amount<Duration> _minimumClimbTimeOEI) {
-		this._minimumClimbTimeOEI = _minimumClimbTimeOEI;
-	}
-
-
-	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedOEI() {
-		return _climbTimeAtSpecificClimbSpeedOEI;
-	}
-
-
-	public void setClimbTimeAtSpecificClimbSpeedOEI(Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI) {
-		this._climbTimeAtSpecificClimbSpeedOEI = _climbTimeAtSpecificClimbSpeedOEI;
-	}
-
 	public Amount<Length> getClimbTotalRange() {
 		return _climbTotalRange;
 	}
@@ -1545,12 +1533,12 @@ public class ClimbCalc {
 		this._climbTimeListAOE = _climbTimeListAOE;
 	}
 	
-	public List<Amount<Duration>> getClimbTimeListOEI() {
-		return _climbTimeListOEI;
+	public List<Amount<Duration>> getClimbTimeListRCmax() {
+		return _climbTimeListRCmax;
 	}
 
-	public void setClimbTimeListOEI(List<Amount<Duration>> _climbTimeListOEI) {
-		this._climbTimeListOEI = _climbTimeListOEI;
+	public void setClimbTimeListRCmax(List<Amount<Duration>> _climbTimeListRCmax) {
+		this._climbTimeListRCmax = _climbTimeListRCmax;
 	}
 	
 }

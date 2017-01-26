@@ -275,7 +275,7 @@ public class TakeOffCalc {
 		
 		v2 = Amount.valueOf(10000.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
 		
-		while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.01) {
+		while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.005) {
 
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
@@ -284,7 +284,8 @@ public class TakeOffCalc {
 					break;
 			}
 			
-
+			double check = Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2));
+			
 			initialize();
 			
 			this.isAborted = isAborted;
@@ -295,7 +296,7 @@ public class TakeOffCalc {
 				this.vFailure = vFailure;
 
 			FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
-					1e-6,
+					1e-8,
 					1,
 					1e-15,
 					1e-15
@@ -494,6 +495,7 @@ public class TakeOffCalc {
 							);
 					
 					v2 = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+					System.out.println("V2/VsTO = " + v2.divide(vSTakeOff));
 					
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					return  Action.STOP;
@@ -568,13 +570,13 @@ public class TakeOffCalc {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
+				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-2, 50);
 			}
 			else {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckBrakes, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-6, 20);
+				theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-7, 50);
 			}
 
 			// handle detailed info
@@ -1052,6 +1054,10 @@ public class TakeOffCalc {
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
 
+			if(isAborted) {
+					break;
+			}
+			
 			//--------------------------------------------------------------------------------
 			// NEW ALPHA REDUCTION RATE 
 			if(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2) >= 0.0)
@@ -1078,13 +1084,13 @@ public class TakeOffCalc {
 	 */
 	public void calculateBalancedFieldLength() {
 
-		final PrintStream originalOut = System.out;
-		PrintStream filterStream = new PrintStream(new OutputStream() {
-		    public void write(int b) {
-		         // write nothing
-		    }
-		});
-		System.setOut(filterStream);
+//		final PrintStream originalOut = System.out;
+//		PrintStream filterStream = new PrintStream(new OutputStream() {
+//		    public void write(int b) {
+//		         // write nothing
+//		    }
+//		});
+//		System.setOut(filterStream);
 		
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
@@ -1135,7 +1141,7 @@ public class TakeOffCalc {
 			}
 		
 		// write again
-		System.setOut(originalOut);
+//		System.setOut(originalOut);
 	}
 
 	/**************************************************************************************

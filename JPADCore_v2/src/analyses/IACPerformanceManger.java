@@ -322,12 +322,6 @@ public interface IACPerformanceManger {
 	public Amount<Length> getServiceCeilingOEI();
 	public void setServiceCeilingOEI(Amount<Length> _serviceCeilingOEI);
 
-	public Amount<Duration> getMinimumClimbTimeOEI();
-	public void setMinimumClimbTimeOEI(Amount<Duration> _minimumClimbTimeOEI);
-
-	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedOEI();
-	public void setClimbTimeAtSpecificClimbSpeedOEI(Amount<Duration> _climbTimeAtSpecificClimbSpeedOEI);
-
 	public List<RCMap> getRCMapAOE();
 	public void setRCMapAOE(List<RCMap> _rcMapAOE);
 
