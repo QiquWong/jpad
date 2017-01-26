@@ -23,7 +23,7 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
-class MyArgumentsAircraftPointMassPropagator {
+class AircraftPointMassPropagatorArguments {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -35,6 +35,10 @@ class MyArgumentsAircraftPointMassPropagator {
 	@Option(name = "-ioc", aliases = { "--input-operating-condition" }, required = true,
 			usage = "operating conditions input file")
 	private File _inputFileOperatingCondition;
+
+	@Option(name = "-ime", aliases = { "--input-mission-events" }, required = true,
+			usage = "mission events input file for mission simulation")
+	private File _inputFileMissionEvents;
 	
 	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
 			usage = "airfoil directory path")
@@ -80,8 +84,12 @@ class MyArgumentsAircraftPointMassPropagator {
 		return _inputFileAnalyses;
 	}
 	
-	public File getOperatingConditionsInputFile() {
+	public File getInputFileOperatingConditions() {
 		return _inputFileOperatingCondition;
+	}
+	
+	public File getInputFileMissionEvents() {
+		return _inputFileMissionEvents;
 	}
 	
 	public File getAirfoilDirectory() {
@@ -141,14 +149,12 @@ public class AircraftPointMassPropagatorTest {
 		long startTime = System.currentTimeMillis();        
 		
 		System.out.println("-------------------");
-		System.out.println("Complete Analysis Test");
+		System.out.println("Aincraft Point-Mass Propagation Test");
 		System.out.println("-------------------");
 		
-		MyArgumentsAircraftPointMassPropagator  va = new MyArgumentsAircraftPointMassPropagator();
+		AircraftPointMassPropagatorArguments  va = new AircraftPointMassPropagatorArguments();
 		AircraftPointMassPropagatorTest.theCmdLineParser = new CmdLineParser(va);
 
-		// populate the wing static object in the class
-		// before launching the JavaFX application thread (launch --> start ...)
 		try {
 			AircraftPointMassPropagatorTest.theCmdLineParser.parseArgument(args);
 			
@@ -158,8 +164,11 @@ public class AircraftPointMassPropagatorTest {
 			String pathToAnalysesXML = va.getInputFileAnalyses().getAbsolutePath();
 			System.out.println("ANALYSES INPUT ===> " + pathToAnalysesXML);
 			
-			String pathToOperatingConditionsXML = va.getOperatingConditionsInputFile().getAbsolutePath();
+			String pathToOperatingConditionsXML = va.getInputFileOperatingConditions().getAbsolutePath();
 			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
+
+			String pathToMissionEventsXML = va.getInputFileMissionEvents().getAbsolutePath();
+			System.out.println("MISSION EVENTS INPUT ===> " + pathToMissionEventsXML);
 			
 			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
 			System.out.println("AIRFOILS ===> " + dirAirfoil);
@@ -273,7 +282,11 @@ public class AircraftPointMassPropagatorTest {
 			// Propagator test
 			System.setOut(originalOut);
 			AircraftPointMassPropagator propagator = new AircraftPointMassPropagator(theAircraft);
-			propagator.propagate("pippoEvents.xml" /*TODO: ... */);
+			
+			propagator.readMissionEvents(pathToMissionEventsXML);
+			
+			// TODO: enable propagation in time
+			propagator.propagate();
 			
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;

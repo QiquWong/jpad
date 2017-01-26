@@ -132,7 +132,6 @@ public class AVLInputGenerator {
 									 */
 									getAG38AirfoilSection()
 								)
-								
 								.setOrigin(new Double[]{0.0, 0.0, 0.0})
 								.setChord(3.0)
 								.setTwist(0.0)

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <mission_simulation id="JPAD Test analysis - Point-Mass Propagation">
+            <event id="Event 1" action="CONTINUE">
+                <time unit="s"> 0.0 </time>
+                <commanded_speed unit="kn"> 391 </commanded_speed>
+                <commanded_flightpath_angle unit="deg"> 5.0 </commanded_flightpath_angle>
+                <commanded_heading_angle unit="deg"> 15.0 </commanded_heading_angle>
+                <wind_speed_XE unit="mph"> 25.0 </wind_speed_XE>
+                <wind_speed_YE unit="mph"> 25.0 </wind_speed_YE>
+                <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
+            </event>
+        </mission_simulation>
+    </analysis>
+</jpad_config>

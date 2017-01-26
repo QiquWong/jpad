@@ -3,19 +3,35 @@ package calculators.performance;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Duration;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.SI;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
+import org.apache.commons.math3.ode.events.EventHandler.Action;
 import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
+import org.jscience.physics.amount.Amount;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
+import standaloneutils.JPADXmlReader;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /*
@@ -172,12 +188,98 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 
 public class AircraftPointMassPropagator {
 
-	private Aircraft aircraft;
+	private Aircraft theAircraft;
+
+	List<MissionEvent> missionEvents = new ArrayList<MissionEvent>();	
+
+	Amount<Velocity> commandedSpeed;
 	
 	public AircraftPointMassPropagator(Aircraft ac) {
-		this.aircraft = ac;
-		// TODO
+		this.theAircraft = ac;
+	}
+	
+	public void readMissionEvents(String pathToXML) {
 		
+		// clear old events, if present
+		missionEvents.clear();
+		
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
+
+		String missionId = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//mission_simulation/@id");
+
+		if (missionId != null)
+			missionId = "Mission-Untitled-";
+		System.out.println("Mission id: " + missionId);
+
+		System.out.println("Reading mission events ...");
+		
+		NodeList nodelistEvents = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//mission_simulation/event");
+		
+		System.out.println("No. events found: " + nodelistEvents.getLength());
+		
+		for (int i = 0; i < nodelistEvents.getLength(); i++) {
+			Node nodeEvent  = nodelistEvents.item(i); // .getNodeValue();
+			Element elementEvent = (Element) nodeEvent;
+			String eventID = elementEvent.getAttribute("id");
+			System.out.println("[" + i + "]\nEvent id: " + eventID);
+			// get data from the current <event/> node
+			MissionEvent event = AircraftPointMassPropagator.importFromEventNode(nodeEvent);
+			if (event != null) {
+				System.out.println(event);
+				missionEvents.add(event);
+			}
+		}
+	}
+	
+	public static MissionEvent importFromEventNode(Node nodeEvent) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(nodeEvent, true);
+			doc.appendChild(importedNode);
+			return AircraftPointMassPropagator.importFromEventNodeImpl(doc);
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	private static MissionEvent importFromEventNodeImpl(Document doc) {
+		System.out.println("Reading mission event data from XML doc node ...");
+		XPathFactory xpathFactory = XPathFactory.newInstance();
+		XPath xpath = xpathFactory.newXPath();
+		String id = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						doc, xpath,
+						"//event/@id");
+		Amount<Duration> time = MyXMLReaderUtils.getXMLAmountTimeByPath(doc, xpath, "//time");
+		Amount<Velocity> commandedSpeed = MyXMLReaderUtils.getXMLAmountVelocityByPath(doc, xpath, "//commanded_speed");
+		Amount<Angle> commandedFlightpathAngle = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//commanded_flightpath_angle");
+		Amount<Angle> commandedHeadingAngle = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//commanded_heading_angle");
+		Amount<Velocity> windSpeedXE = MyXMLReaderUtils.getXMLAmountVelocityByPath(doc, xpath, "//wind_speed_XE");
+		Amount<Velocity> windSpeedYE = MyXMLReaderUtils.getXMLAmountVelocityByPath(doc, xpath, "//wind_speed_YE");
+		Amount<Velocity> windSpeedZE = MyXMLReaderUtils.getXMLAmountVelocityByPath(doc, xpath, "//wind_speed_ZE");
+
+		// create the MissionEvent object
+		MissionEvent event = new MissionEvent
+				.Builder()
+				.setDescription(id)
+				.setTime(time.doubleValue(SI.SECOND))
+				.setCommandedSpeed(commandedSpeed.doubleValue(SI.METERS_PER_SECOND))
+				.setCommandedFlightpathAngle(commandedFlightpathAngle.doubleValue(SI.RADIAN))
+				.setCommandedHeadingAngle(commandedHeadingAngle.doubleValue(SI.RADIAN))
+				.setWindSpeedXE(windSpeedXE.doubleValue(SI.METERS_PER_SECOND))
+				.setWindSpeedYE(windSpeedYE.doubleValue(SI.METERS_PER_SECOND))
+				.setWindSpeedZE(windSpeedZE.doubleValue(SI.METERS_PER_SECOND))
+				.build();
+		return event;
 	}
 	
 	//-------------------------------------------------------------------------------------
@@ -250,7 +352,7 @@ public class AircraftPointMassPropagator {
 		}
 		
 	}	
-	
+
 	/***************************************************************************************
 	 * This method performs the integration of the total following systema of equations:
 	 * 
@@ -280,8 +382,14 @@ public class AircraftPointMassPropagator {
 	 * 
 	 * @author Agostino De Marco
 	 */
-	public void propagate(String eventsFileName) {
+	public void propagate() {
 
+		if (missionEvents.isEmpty()) {
+			System.out.println("---------------------------------------------------");
+			System.out.println("AircraftPointMassPropagator :: empty list of mission events, time propagation aborted!\n\n");
+			return;
+		}
+		
 		System.out.println("---------------------------------------------------");
 		System.out.println("AircraftPointMassPropagator :: ODE integration\n\n");
 		
@@ -294,41 +402,44 @@ public class AircraftPointMassPropagator {
 		
 		FirstOrderDifferentialEquations ode = new DynamicsEquationsAircraftPointMass();
 		
-		List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
-		// TODO: readEvents(eventsFileName);
-		// TODO: eventHandlers.stream.map(e -> theIntegrator.addEventHandler(e, 1.0, 1e-3, 20))
+//		List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
+
+		missionEvents.stream()
+			.forEach(me -> {
+				EventHandler eventHandler = new EventHandler() {
+
+					@Override
+					public void init(double t0, double[] y0, double t) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public double g(double t, double[] y) {
+						return t - me.getTime();
+					}
+
+					@Override
+					public Action eventOccurred(double t, double[] y, boolean increasing) {
+						commandedSpeed = Amount.valueOf(me.getCommandedSpeed(), SI.METERS_PER_SECOND);
+						// TODO: do the rest
+						
+						System.out.println("EVENT OCCURRED_____________________________ " + me.getDescription());
+						
+						return  Action.STOP;
+					}
+
+					@Override
+					public void resetState(double t, double[] y) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+				};
+				theIntegrator.addEventHandler(eventHandler, 1.0, 1e-3, 20);
+			});
 		
-		
-		// TODO: modify accordingly
-		EventHandler commandedEvents = new EventHandler() {
-
-			@Override
-			public void init(double t0, double[] y0, double t) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public double g(double t, double[] y) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public Action eventOccurred(double t, double[] y, boolean increasing) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public void resetState(double t, double[] y) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		};
-		
-		theIntegrator.addEventHandler(commandedEvents, 1.0, 1e-3, 20);
+		// TODO: add a STOP event at the end
 
 		// handle detailed info
 		StepHandler stepHandler = new StepHandler() {
@@ -366,6 +477,6 @@ public class AircraftPointMassPropagator {
 		theIntegrator.clearStepHandlers();		
 		
 		System.out.println("\n---------------------------END!!-------------------------------");
-	}	
-	
+	}
+
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -647,7 +648,92 @@ public class MyXMLReaderUtils {
 
 		return values;  }
 
+	/*
+	 * Get a speed quantity from XML path; unit attribute is not mandatory, if not present
+	 * the numeric value is assumed as SI.METRE_PER_SECOND ; if search fails return null
+	 * <p>
+	 * Examples:
+	 *     <speed unit="kts">105</speed>
+	 *     <speed >155</speed>
+	 * <p>
+	 * @param xmlDoc     the Document object
+	 * @param xpath      the XPath object
+	 * @param expression XPath expression
+	 * @return           amount, dimensions according to unit attribute value
+	 */
+	public static Amount<Velocity> getXMLAmountVelocityByPath(Document xmlDoc, XPath xpath, String expression) {
 
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
+
+		if ((valueStr != null) && (!valueStr.equals(""))) {
+			try {
+				Double value = Double.parseDouble(valueStr);
+				Amount<Velocity> quantity;
+				if (unitStr != null) {
+					switch (unitStr) {
+					case "kts": case "KTS":
+					case "knots": case "KNOTS":
+						unitStr = "kn";
+						break;
+					}					
+					quantity = (Amount<Velocity>) Amount.valueOf(value, 1e-9, Unit.valueOf(unitStr));
+				} else
+					quantity = Amount.valueOf(value, 1e-8, SI.METERS_PER_SECOND);
+
+				return quantity;
+
+			} catch (NumberFormatException | AmountException e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else
+			return null;
+	}
+	
+	/*
+	 * Get a time quantity from XML path; unit attribute is not mandatory, if not present
+	 * the numeric value is assumed as SI.SECOND ; if search fails return null
+	 * <p>
+	 * Examples:
+	 *     <time unit="min"> 5 </time>
+	 *     <time> 0.005 </time>
+	 * <p>
+	 * @param xmlDoc     the Document object
+	 * @param xpath      the XPath object
+	 * @param expression XPath expression
+	 * @return           amount, dimensions according to unit attribute value
+	 */
+	public static Amount<javax.measure.quantity.Duration> getXMLAmountTimeByPath(Document xmlDoc, XPath xpath, String expression) {
+
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
+
+		if ((valueStr != null) && (!valueStr.equals(""))) {
+			try {
+				Double value = Double.parseDouble(valueStr);
+				Amount<javax.measure.quantity.Duration> quantity;
+				if (unitStr != null) {
+					switch (unitStr) {
+					case "sec": case "SEC":
+						unitStr = "s";
+						break;
+					}					
+					quantity = (Amount<javax.measure.quantity.Duration>) Amount.valueOf(value, 1e-9, Unit.valueOf(unitStr));
+				} else
+					quantity = Amount.valueOf(value, 1e-8, SI.SECOND);
+
+				return quantity;
+
+			} catch (NumberFormatException | AmountException e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else
+			return null;
+	}
+
+	
 	// TODO: implement similar functions, such as:
 	// getXMLAmountSurfaceByPath
 	// getXMLAmountVolumeByPath
