@@ -5,8 +5,11 @@ import java.util.List;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Velocity;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,7 +21,6 @@ import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
-import org.apache.commons.math3.ode.events.EventHandler.Action;
 import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
@@ -29,8 +31,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
+import analyses.OperatingConditions;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
@@ -67,13 +71,18 @@ import standaloneutils.atmosphere.AtmosphereCalc;
  * 
  * Equations of motion:
  * 
- *   dot( Vv ) = (T - D)/m - g sinγ
- *   dot( γ  ) = (L cosϕ - m g cosγ)/(m Vv)
- *   dot( ψ  ) = L sinϕ /(m Vv cosγ)
- *   dot( Xi ) = Vv cosγ cosψ
- *   dot( Yi ) = Vv cosγ sinψ
- *   dot( h  ) = Vv sinγ
- *   dot( m  ) = - dot_wf/g = - Kwf T
+ *    1) dot( Vv ) = (T - D)/m - g sinγ
+ *    2) dot( γ  ) = (L cosϕ - m g cosγ)/(m Vv)
+ *    3) dot( ψ  ) = L sinϕ /(m Vv cosγ)
+ *    4) dot( Xi ) = Vv cosγ cosψ
+ *    5) dot( Yi ) = Vv cosγ sinψ
+ *    6) dot( h  ) = Vv sinγ
+ *    7) dot( xT ) = m (Vc - Vv)
+ *    8) dot( T  ) = -pT T + pT (KTi xT + KTp m (Vc - Vv) )
+ *    9) dot( xL ) = m Vc ( sinγc - sinγ)
+ *   10) dot( L  ) = -pL L + pL (KLi xL + KLp m Vc ( sinγc - sinγ))
+ *   11) dot( ϕ  ) = -pϕ ϕ + pϕ Kϕp Vc (ψc - ψ)/g 
+ *   12) dot( m  ) = - dot_wf/g = - Kwf T
  *   
  * In presence of wind:
  * 
@@ -189,13 +198,27 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 public class AircraftPointMassPropagator {
 
 	private Aircraft theAircraft;
+	private OperatingConditions theOperatingConditions;
 
 	List<MissionEvent> missionEvents = new ArrayList<MissionEvent>();	
 
+	Amount<?> pT    = Amount.valueOf(2.0, MyUnits.RADIAN_PER_SECOND);
+	Amount<? extends Quantity> pL    = Amount.valueOf(2.5, MyUnits.RADIAN_PER_SECOND);
+	Amount<? extends Quantity> pPhi  = Amount.valueOf(1.0, MyUnits.RADIAN_PER_SECOND);
+	Amount<? extends Quantity> kTp   = Amount.valueOf(0.08, MyUnits.ONE_PER_SECOND);
+	Amount<? extends Quantity> kTi   = Amount.valueOf(0.002, MyUnits.ONE_PER_SECOND_SQUARED);
+	Amount<? extends Quantity> kLp   = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
+	Amount<? extends Quantity> kLi   = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
+	Amount<? extends Quantity> kPhip = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
+	Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
+
 	Amount<Velocity> commandedSpeed;
+	Amount<Angle> commandedFlightpathAngle;
+	Amount<Angle> commandedHeadingAngle;
 	
-	public AircraftPointMassPropagator(Aircraft ac) {
+	public AircraftPointMassPropagator(Aircraft ac, OperatingConditions op) {
 		this.theAircraft = ac;
+		this.theOperatingConditions = op;
 	}
 	
 	public void readMissionEvents(String pathToXML) {
@@ -290,11 +313,21 @@ public class AircraftPointMassPropagator {
 
 	public class DynamicsEquationsAircraftPointMass implements FirstOrderDifferentialEquations {
 
-		double mass, g0, kAlpha, cD0, oswald, ar, kGround, vWind;
+		double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
+
+		double kAlpha, cD0, oswald, ar;
 		MyInterpolatingFunction thrustMax;
 		
-		// visible variables
-		public double speedInertial, flightPathAngle, heading, xInertial, yInertial, altitude;
+		// state variables
+		private double time,
+			speedInertial, flightpathAngle, heading, xInertial, yInertial, altitude, 
+			xThrust, thrust, xLift, lift, bankAngle, mass;
+		
+		// auxiliary variables
+		private double 
+			windSpeedXE, windSpeedYE, windSpeedZE,
+			airspeed, 
+			drag, angleOfAttack, airDensity;
 		
 		public DynamicsEquationsAircraftPointMass() {
 			
@@ -302,31 +335,65 @@ public class AircraftPointMassPropagator {
 		
 		@Override
 		public int getDimension() {
-			return 6;
+			return 12;
 		}
 
 		@Override
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
 			
-			speedInertial   = x[0];
-			flightPathAngle = x[1];
-			heading         = x[2];
-			xInertial       = x[3];
-			yInertial       = x[4];
-			altitude        = x[5];
-			// TODO: consider an augmented state vector
-			// thrust, lift, bank, xDotT, xDotL, 
-
+			/*
+			 * x0  = Vv
+			 * x1  = γ
+			 * x2  = ψ
+			 * x3  = Xi
+			 * x4  = Yi
+			 * x5  = h
+			 * x6  = xT
+			 * x7  = T
+			 * x8  = xL
+			 * x9  = L
+			 * x10 = ϕ
+			 * x11 = m
+			 * 
+			 * Equations of motion:
+			 * 
+			 *    1) dot( Vv ) = (T - D)/m - g sinγ
+			 *    2) dot( γ  ) = (L cosϕ - m g cosγ)/(m Vv)
+			 *    3) dot( ψ  ) = L sinϕ /(m Vv cosγ)
+			 *    4) dot( Xi ) = Vv cosγ cosψ
+			 *    5) dot( Yi ) = Vv cosγ sinψ
+			 *    6) dot( h  ) = Vv sinγ
+			 *    7) dot( xT ) = m (Vc - Vv)
+			 *    8) dot( T  ) = -pT T + pT (KTi xT + KTp m (Vc - Vv) )
+			 *    9) dot( xL ) = m Vc ( sinγc - sinγ)
+			 *   10) dot( L  ) = -pL L + pL (KLi xL + KLp m Vc ( sinγc - sinγ))
+			 *   11) dot( ϕ  ) = -pϕ ϕ + pϕ Kϕp Vc (ψc - ψ)/g 
+			 *   12) dot( m  ) = - dot_wf/g = - Kwf T 
+			 */
+			this.time            = t;
+			this.speedInertial   = x[0];
+			this.flightpathAngle = x[1];
+			this.heading         = x[2];
+			this.xInertial       = x[3];
+			this.yInertial       = x[4];
+			this.altitude        = x[5];
+			this.xThrust         = x[6];
+			this.thrust          = x[7];
+			this.xLift           = x[8];
+			this.lift            = x[9];
+			this.bankAngle       = x[10];
+			this.mass            = x[11];
+			
 			// TODO: steady wind velocity components in the inertial frame
 			double windXI = 0.0; // TODO: getActualWindXI
 			double windYI = 0.0; // TODO: getActualWindYI
 			double windZI = 0.0; // TODO: getActualWindZI (positive downwards)
 			
 			// intermediate variables
-			double xDotI = speedInertial*Math.cos(flightPathAngle)*Math.cos(heading);
-			double yDotI = speedInertial*Math.cos(flightPathAngle)*Math.sin(heading);
-			double hDot  = speedInertial*Math.sin(flightPathAngle);
+			double xDotI = speedInertial*Math.cos(flightpathAngle)*Math.cos(heading);
+			double yDotI = speedInertial*Math.cos(flightpathAngle)*Math.sin(heading);
+			double hDot  = speedInertial*Math.sin(flightpathAngle);
 			double airspeed = Math.sqrt(
 					Math.pow(xDotI - windXI, 2)	
 					+ Math.pow(yDotI - windYI, 2)
@@ -334,21 +401,187 @@ public class AircraftPointMassPropagator {
 					);
 
 			// TODO: calculate these quantities accordingly
-			double mass = 1.0; // TODO: getActualMass
-			double thrust = 1.0; // TODO: getActualThrust
-			double lift = 0.5; // TODO: getActualLift
-			double drag = 0.0; // TODO: getActualDrag
-			double bank = 0.0; // getActualBank
-			double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
+//			this.thrust    = 1.0; // TODO: getActualThrust
+//			this.lift      = 0.5; // TODO: getActualLift
+//			this.drag      = 0.0; // TODO: getActualDrag
+//			this.bankAngle = 0.0; // getActualBank
 			
 			// Assign the derivatives
-			xDot[0] = ((thrust - drag)/mass) - g0*Math.sin(flightPathAngle);
-			xDot[1] = (lift*Math.cos(bank) - mass*g0*Math.cos(flightPathAngle))/(mass * speedInertial);
-			xDot[2] = (lift*Math.sin(bank))/(mass*speedInertial*Math.cos(flightPathAngle));
-			xDot[3] = xDotI;
-			xDot[4] = yDotI;
-			xDot[5] = hDot;
+			xDot[ 0] = ((thrust - drag)/mass) - g0*Math.sin(flightpathAngle);
+			xDot[ 1] = (lift*Math.cos(bankAngle) - mass*g0*Math.cos(flightpathAngle))/(mass * speedInertial);
+			xDot[ 2] = (lift*Math.sin(bankAngle))/(mass*speedInertial*Math.cos(flightpathAngle));
+			xDot[ 3] = xDotI;
+			xDot[ 4] = yDotI;
+			xDot[ 5] = hDot;
+			xDot[ 6] = mass*(commandedSpeed.doubleValue(SI.METERS_PER_SECOND) - speedInertial);
+			xDot[ 7] = pT.getEstimatedValue()*( 
+						+ kTi.getEstimatedValue()*x[6] 
+						+ kTp.getEstimatedValue()*xDot[6]
+						- thrust);
+			xDot[ 8] = mass*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
+						Math.sin(commandedFlightpathAngle.doubleValue(SI.RADIAN)) - Math.sin(flightpathAngle));
+			xDot[ 9] = pL.getEstimatedValue()*( 
+						+ kLi.getEstimatedValue()*x[8] 
+						+ kLp.getEstimatedValue()*xDot[8]
+						- lift);
+			xDot[10] = pPhi.getEstimatedValue()*( 
+					kPhip.getEstimatedValue()*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
+							commandedHeadingAngle.doubleValue(SI.RADIAN) - x[2])/g0
+					- bankAngle);
+			xDot[11] = 0.0; // TODO: make a variable mass
 			
+		}
+
+		public double getSpeedInertial() {
+			return speedInertial;
+		}
+
+		public double getFlightpathAngle() {
+			return flightpathAngle;
+		}
+
+		public double getHeading() {
+			return heading;
+		}
+
+		public double getxInertial() {
+			return xInertial;
+		}
+
+		public double getyInertial() {
+			return yInertial;
+		}
+
+		public double getAltitude() {
+			return altitude;
+		}
+
+		public double getxThrust() {
+			return xThrust;
+		}
+
+		public double getThrust() {
+			return thrust;
+		}
+
+		public double getxLift() {
+			return xLift;
+		}
+
+		public double getLift() {
+			return lift;
+		}
+
+		public double getBankAngle() {
+			return bankAngle;
+		}
+
+		public double getMass() {
+			return mass;
+		}
+
+		public double getWindSpeedXE() {
+			return windSpeedXE;
+		}
+
+		public double getWindSpeedYE() {
+			return windSpeedYE;
+		}
+
+		public double getWindSpeedZE() {
+			return windSpeedZE;
+		}
+
+		public double getAirspeed() {
+			return airspeed;
+		}
+
+		public double getDrag() {
+			return drag;
+		}
+
+		public double getAngleOfAttack() {
+			return angleOfAttack;
+		}
+
+		public double getAirDensity() {
+			return airDensity;
+		}
+
+		public void setSpeedInertial(double speedInertial) {
+			this.speedInertial = speedInertial;
+		}
+
+		public void setFlightpathAngle(double flightpathAngle) {
+			this.flightpathAngle = flightpathAngle;
+		}
+
+		public void setHeading(double heading) {
+			this.heading = heading;
+		}
+
+		public void setxInertial(double xInertial) {
+			this.xInertial = xInertial;
+		}
+
+		public void setyInertial(double yInertial) {
+			this.yInertial = yInertial;
+		}
+
+		public void setAltitude(double altitude) {
+			this.altitude = altitude;
+		}
+
+		public void setxThrust(double xThrust) {
+			this.xThrust = xThrust;
+		}
+
+		public void setThrust(double thrust) {
+			this.thrust = thrust;
+		}
+
+		public void setxLift(double xLift) {
+			this.xLift = xLift;
+		}
+
+		public void setLift(double lift) {
+			this.lift = lift;
+		}
+
+		public void setBankAngle(double bankAngle) {
+			this.bankAngle = bankAngle;
+		}
+
+		public void setMass(double mass) {
+			this.mass = mass;
+		}
+
+		public void setWindSpeedXE(double windSpeedXE) {
+			this.windSpeedXE = windSpeedXE;
+		}
+
+		public void setWindSpeedYE(double windSpeedYE) {
+			this.windSpeedYE = windSpeedYE;
+		}
+
+		public void setWindSpeedZE(double windSpeedZE) {
+			this.windSpeedZE = windSpeedZE;
+		}
+
+		public void setAirspeed(double airspeed) {
+			this.airspeed = airspeed;
+		}
+
+		public void setDrag(double drag) {
+			this.drag = drag;
+		}
+
+		public void setAngleOfAttack(double angleOfAttack) {
+			this.angleOfAttack = angleOfAttack;
+		}
+
+		public void setAirDensity(double airDensity) {
+			this.airDensity = airDensity;
 		}
 		
 	}	
@@ -422,7 +655,8 @@ public class AircraftPointMassPropagator {
 					@Override
 					public Action eventOccurred(double t, double[] y, boolean increasing) {
 						commandedSpeed = Amount.valueOf(me.getCommandedSpeed(), SI.METERS_PER_SECOND);
-						// TODO: do the rest
+						commandedFlightpathAngle = Amount.valueOf(me.getCommandedFlightpathAngle(), SI.RADIAN);
+						commandedHeadingAngle = Amount.valueOf(me.getCommandedHeadingAngle(), SI.RADIAN);
 						
 						System.out.println("EVENT OCCURRED_____________________________ " + me.getDescription());
 						
@@ -452,25 +686,51 @@ public class AircraftPointMassPropagator {
 
 			@Override
 			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
-				// TODO Auto-generated method stub
 				
-				System.out.println("step");
-				
+				double   t = interpolator.getCurrentTime();
+				double[] x = interpolator.getInterpolatedState();
+
+				System.out.println("-------------------------"+
+						"\n\tt = " + t + " s" +
+						"\n\tx[0] = V = " + x[0] + " m/s" +
+						"\n\tx[1] = gamma = " + x[1] + " rad" + 
+						"\n\tx[2] = psi = " + x[2] + " rad" +
+						"\n\tx[3] = XI = " + x[3] + " m" +
+						"\n\tx[4] = YI = " + x[4] + " m" +
+						"\n\tx[5] = h  = " + x[5] + " m"
+						);
 			}
 			
 		};
 
 		theIntegrator.addStepHandler(stepHandler);
 
+		// Initial values
+		double v0 = 100.0; // m/s
+		commandedSpeed = Amount.valueOf(v0,SI.METERS_PER_SECOND);
+		
+		double gamma0 = 0.0; // rad
+		commandedFlightpathAngle = Amount.valueOf(gamma0,SI.RADIAN);
+
+		double psi0 = 0.0; // rad
+		commandedHeadingAngle = Amount.valueOf(psi0,SI.RADIAN);
+		
+		// TODO: pass these values from outside
 		double[] xAt0 = new double[] { // initial state
-				0.0, // Vv 
-				0.0, // gamma
-				0.0, // psi
+				v0, // Vv 
+				gamma0, // gamma
+				psi0, // psi
 				0.0, // XI
 				0.0, // YI
-				0.0  // h
+				1000.0, // h
+				0.0, // xT 
+				200000, // T
+				0.0, // xL
+				350000, // L
+				0.0, // phi
+				53000, // m
 				};
-		double tInitial = 0.0, tFinal = 1000.0;
+		double tInitial = 0.0, tFinal = 10.0;
 		theIntegrator.integrate(ode, tInitial, xAt0, tFinal, xAt0); // now xAt0 contains final state
 
 		theIntegrator.clearEventHandlers();

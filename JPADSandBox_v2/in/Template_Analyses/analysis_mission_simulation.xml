@@ -2,6 +2,32 @@
 <jpad_config>
     <analysis>
         <mission_simulation id="JPAD Test analysis - Point-Mass Propagation">
+            <constants>
+                <p_T unit="rad/s"> 2.0 </p_T>
+                <p_L unit="rad/s"> 2.5 </p_L>
+                <p_phi unit="rad/s"> 1.0 </p_phi>
+                <k_T_p unit="1/s"> 0.08 </k_T_p>
+                <k_T_i unit="1/s²"> 0.002 </k_T_i>
+                <k_L_p unit="1/s"> 0.5 </k_L_p>
+                <k_L_i unit="1/s²"> 0.01 </k_L_i>
+                <k_phi_p unit="1/s"> 0.075 </k_phi_p>
+                <bank_angle_max unit="deg"> 30.0 </bank_angle_max>
+            </constants>
+            <!-- 
+                <condition> altitude_m >= 2000.0 </condition>
+
+                ___Accepted variable names___
+                time_s, time_min, 
+                altitude_ft, altitude_m
+                speed_mps, speed_fps, speed_kn, speed_mph, 
+                flightpath_angle_deg, flightpath_angle_rad, 
+                heading_angle_deg, heading_angle_rad, 
+                bank_angle_deg, bank_angle_rad, 
+                rate_of_climb_mps, rate_of_climb_fpm, rate_of_climb_fps, 
+                ground_distance_m, ground_distance_ft, ground_distance_km, 
+                thrust_N, thrust_kgf, thrust_lbs,
+                lift_N, lift_kgf, lift_lbs
+            -->
             <event id="Event 1" action="CONTINUE">
                 <time unit="s"> 0.0 </time>
                 <commanded_speed unit="kn"> 391 </commanded_speed>

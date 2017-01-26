@@ -3,8 +3,10 @@ package standaloneutils;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Frequency;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Pressure;
+import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
 import javax.measure.quantity.VolumetricDensity;
@@ -17,11 +19,12 @@ import org.jscience.physics.amount.Amount;
 /** 
  * Define custom units of measurement not included in SI or NonSI libraries
  * 
- * @author Lorenzo Attanasio
+ * @author Lorenzo Attanasio, Agostino De Marco
  *
  */
 public class MyUnits {
 
+	private static Amount<Length> _lengthSIUnit = Amount.valueOf(1, SI.METER);
 	private static Amount<Mass> _massSIUnit = Amount.valueOf(1, SI.KILOGRAM);
 	private static Amount<Volume> _volSIUnit = Amount.valueOf(1, SI.CUBIC_METRE);
 	private static double _densConvSI2Eng = _massSIUnit.doubleValue(NonSI.POUND)/
@@ -37,6 +40,22 @@ public class MyUnits {
 																		divide(_densConvSI2Eng);
 	public static final Unit<Dimensionless> NON_DIMENSIONAL = Unit.ONE;
 
+	// used in mission simulations
+	public static final Unit<? extends Quantity> ONE_PER_SECOND = Unit.ONE.divide(SI.SECOND);
+	public static final Unit<?> RADIAN_PER_SECOND = Unit.ONE.divide(SI.SECOND);
+	public static final Unit<? extends Quantity> SECOND_SQUARED = SI.SECOND.times(SI.SECOND);
+	public static final Unit<? extends Quantity> ONE_PER_SECOND_SQUARED = Unit.ONE.divide(MyUnits.SECOND_SQUARED);
+	
+	public static final Unit<? extends Quantity> KILOGRAM_PER_METER = SI.KILOGRAM.divide(SI.METER);
+	public static final Unit<? extends Quantity> SLUG = SI.KILOGRAM.times(14.593903); // https://en.wikipedia.org/wiki/Slug_(mass)
+	public static final Unit<? extends Quantity> SLUG_PER_FT = MyUnits.SLUG.divide(NonSI.FOOT);
+	public static final Unit<? extends Quantity> METER_PER_KILOGRAM = SI.METER.divide(SI.KILOGRAM);
+	public static final Unit<? extends Quantity> FT_PER_SLUG = NonSI.FOOT.divide(MyUnits.SLUG);
+	public static final Unit<? extends Quantity> RAD_METER_PER_KILOGRAM = SI.RADIAN.times(MyUnits.METER_PER_KILOGRAM);
+	public static final Unit<? extends Quantity> DEG_METER_PER_KILOGRAM = NonSI.DEGREE_ANGLE.times(MyUnits.METER_PER_KILOGRAM);
+	public static final Unit<? extends Quantity> RAD_FT_PER_SLUG = SI.RADIAN.times(MyUnits.FT_PER_SLUG);
+	public static final Unit<? extends Quantity> DEG_FT_PER_SLUG = NonSI.DEGREE_ANGLE.times(MyUnits.FT_PER_SLUG);
+	
 	/**
 	 * Method that converts a price per kilogram (US$/Kg) to a price per pound (US$/lb)
 	 * 

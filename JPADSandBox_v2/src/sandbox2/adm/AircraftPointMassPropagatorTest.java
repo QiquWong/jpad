@@ -281,13 +281,14 @@ public class AircraftPointMassPropagatorTest {
 			
 			// Propagator test
 			System.setOut(originalOut);
-			AircraftPointMassPropagator propagator = new AircraftPointMassPropagator(theAircraft);
+			AircraftPointMassPropagator propagator = new AircraftPointMassPropagator(theAircraft, theOperatingConditions);
 			
 			propagator.readMissionEvents(pathToMissionEventsXML);
 			
-			// TODO: enable propagation in time
+			// propagation in time
+			// TODO: define a function to pass initial conditions
+			//       propagator.setInitialConditions(/* ... */)
 			propagator.propagate();
-			
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
