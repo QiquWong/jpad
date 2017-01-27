@@ -284,8 +284,6 @@ public class TakeOffCalc {
 					break;
 			}
 			
-			double check = Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2));
-			
 			initialize();
 			
 			this.isAborted = isAborted;
@@ -298,8 +296,8 @@ public class TakeOffCalc {
 			FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
 					1e-8,
 					1,
-					1e-15,
-					1e-15
+					1e-16,
+					1e-16
 					);
 			FirstOrderDifferentialEquations ode = new DynamicsEquationsTakeOff();
 
@@ -1061,9 +1059,9 @@ public class TakeOffCalc {
 			//--------------------------------------------------------------------------------
 			// NEW ALPHA REDUCTION RATE 
 			if(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2) >= 0.0)
-				newAlphaRed = alphaRed + 0.5;
+				newAlphaRed = alphaRed + 0.1;
 			else
-				newAlphaRed = alphaRed - 0.5;
+				newAlphaRed = alphaRed - 0.1;
 			
 			i++;
 		}
@@ -1096,7 +1094,7 @@ public class TakeOffCalc {
 		failureSpeedArray = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).getEstimatedValue(),
 				vRot.getEstimatedValue(),
-				5);
+				4);
 		// continued take-off array
 		continuedTakeOffArray = new double[failureSpeedArray.length]; 
 		// aborted take-off array

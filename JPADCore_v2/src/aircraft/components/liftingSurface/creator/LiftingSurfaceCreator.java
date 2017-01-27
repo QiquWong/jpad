@@ -1670,6 +1670,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	public Amount<Area> getSurfacePlanform() {
 		return this.surfacePlanform;
 	}
+	
 	@Override
 	public Amount<Area> getSurfacePlanform(boolean recalculate) {
 		if (recalculate) this.calculateGeometry(this._type, this._mirrored);

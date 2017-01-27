@@ -2238,12 +2238,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					);
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
 				calcTakeOff.plotTakeOffPerformance(takeOffFolderPath);
-			calcTakeOff.calculateBalancedFieldLength();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
-				calcTakeOff.plotBalancedFieldLength(takeOffFolderPath);
-			calcTakeOff.calculateVMC();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
-				calcTakeOff.plotVMC(takeOffFolderPath);
+//			calcTakeOff.calculateBalancedFieldLength();
+//			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+//				calcTakeOff.plotBalancedFieldLength(takeOffFolderPath);
+//			calcTakeOff.calculateVMC();
+//			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+//				calcTakeOff.plotVMC(takeOffFolderPath);
 			
 		}
 		
@@ -2442,11 +2442,11 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListTakeOff.add(new Object[] {"Airborne distance","m", _airborneDistanceTakeOff.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {"AOE take-off distance","m", _takeOffDistanceAOE.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","m", _takeOffDistanceFAR25.doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {"Balanced field length","m", _balancedFieldLength.doubleValue(SI.METER)});
+//        	dataListTakeOff.add(new Object[] {"Balanced field length","m", _balancedFieldLength.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","m/s", _vMC.doubleValue(SI.METERS_PER_SECOND)});
+//        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","m/s", _vMC.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","m/s", _vStallTakeOff.doubleValue(SI.METERS_PER_SECOND)});
-        	dataListTakeOff.add(new Object[] {"Decision speed (V1)","m/s", _v1.doubleValue(SI.METERS_PER_SECOND)});
+//        	dataListTakeOff.add(new Object[] {"Decision speed (V1)","m/s", _v1.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","m/s", _vRotation.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","m/s", _vLiftOff.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","m/s", _v2.doubleValue(SI.METERS_PER_SECOND)});
@@ -3451,7 +3451,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							0.05,
 							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
 							),
-					_theTakeOffCalculator.getvRot().doubleValue(SI.METERS_PER_SECOND),
+					_theTakeOffCalculator.getvSTakeOff().times(1.13).doubleValue(SI.METERS_PER_SECOND),
 					250
 					);
 
@@ -3516,13 +3516,15 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			// CALCULATING THE VERTICAL TAIL YAWING MOMENT
 			_yawingMomentOEI = new double[_thrustMomentOEI.length];
 			
-			double tau = LiftCalc.calculateTauIndexElevator(
-					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
-					_theAircraft.getVTail().getAspectRatio(), 
-					_theAircraft.getVTail().getHighLiftDatabaseReader(),
-					_theAircraft.getVTail().getAerodynamicDatabaseReader(),
-					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
-					);
+//			double tau = LiftCalc.calculateTauIndexElevator(
+//					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+//					_theAircraft.getVTail().getAspectRatio(), 
+//					_theAircraft.getVTail().getHighLiftDatabaseReader(),
+//					_theAircraft.getVTail().getAerodynamicDatabaseReader(),
+//					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
+//					);
+			
+			double tau = 0.5284;
 			
 			for(int i=0; i < thrust.length; i++){
 			_yawingMomentOEI[i] = cNbVertical*
@@ -3588,7 +3590,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 							0.05,
 							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
 							)/_vStallTakeOff.doubleValue(SI.METERS_PER_SECOND),
-					_theTakeOffCalculator.getvRot().divide(_theTakeOffCalculator.getvSTakeOff()).getEstimatedValue(),
+					1.13, // maximum value of the VMC from FAR regulations
 					250
 					);
 			
