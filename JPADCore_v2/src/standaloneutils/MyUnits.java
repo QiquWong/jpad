@@ -22,6 +22,7 @@ import org.jscience.physics.amount.Amount;
  * @author Lorenzo Attanasio, Agostino De Marco
  *
  */
+@SuppressWarnings("rawtypes")
 public class MyUnits {
 
 	private static Amount<Length> _lengthSIUnit = Amount.valueOf(1, SI.METER);
@@ -41,20 +42,21 @@ public class MyUnits {
 	public static final Unit<Dimensionless> NON_DIMENSIONAL = Unit.ONE;
 
 	// used in mission simulations
-	public static final Unit<? extends Quantity> ONE_PER_SECOND = Unit.ONE.divide(SI.SECOND);
-	public static final Unit<?> RADIAN_PER_SECOND = Unit.ONE.divide(SI.SECOND);
-	public static final Unit<? extends Quantity> SECOND_SQUARED = SI.SECOND.times(SI.SECOND);
-	public static final Unit<? extends Quantity> ONE_PER_SECOND_SQUARED = Unit.ONE.divide(MyUnits.SECOND_SQUARED);
 	
-	public static final Unit<? extends Quantity> KILOGRAM_PER_METER = SI.KILOGRAM.divide(SI.METER);
-	public static final Unit<? extends Quantity> SLUG = SI.KILOGRAM.times(14.593903); // https://en.wikipedia.org/wiki/Slug_(mass)
-	public static final Unit<? extends Quantity> SLUG_PER_FT = MyUnits.SLUG.divide(NonSI.FOOT);
-	public static final Unit<? extends Quantity> METER_PER_KILOGRAM = SI.METER.divide(SI.KILOGRAM);
-	public static final Unit<? extends Quantity> FT_PER_SLUG = NonSI.FOOT.divide(MyUnits.SLUG);
-	public static final Unit<? extends Quantity> RAD_METER_PER_KILOGRAM = SI.RADIAN.times(MyUnits.METER_PER_KILOGRAM);
-	public static final Unit<? extends Quantity> DEG_METER_PER_KILOGRAM = NonSI.DEGREE_ANGLE.times(MyUnits.METER_PER_KILOGRAM);
-	public static final Unit<? extends Quantity> RAD_FT_PER_SLUG = SI.RADIAN.times(MyUnits.FT_PER_SLUG);
-	public static final Unit<? extends Quantity> DEG_FT_PER_SLUG = NonSI.DEGREE_ANGLE.times(MyUnits.FT_PER_SLUG);
+	public static final Unit ONE_PER_SECOND = Unit.ONE.divide(SI.SECOND);
+	public static final Unit RADIAN_PER_SECOND = Unit.ONE.divide(SI.SECOND);
+	public static final Unit SECOND_SQUARED = SI.SECOND.times(SI.SECOND);
+	public static final Unit ONE_PER_SECOND_SQUARED = Unit.ONE.divide(MyUnits.SECOND_SQUARED);
+	
+	public static final Unit KILOGRAM_PER_METER = SI.KILOGRAM.divide(SI.METER);
+	public static final Unit SLUG = SI.KILOGRAM.times(14.593903); // https://en.wikipedia.org/wiki/Slug_(mass)
+	public static final Unit SLUG_PER_FT = MyUnits.SLUG.divide(NonSI.FOOT);
+	public static final Unit METER_PER_KILOGRAM = SI.METER.divide(SI.KILOGRAM);
+	public static final Unit FT_PER_SLUG = NonSI.FOOT.divide(MyUnits.SLUG);
+	public static final Unit RAD_METER_PER_KILOGRAM = SI.RADIAN.times(MyUnits.METER_PER_KILOGRAM);
+	public static final Unit DEG_METER_PER_KILOGRAM = NonSI.DEGREE_ANGLE.times(MyUnits.METER_PER_KILOGRAM);
+	public static final Unit RAD_FT_PER_SLUG = SI.RADIAN.times(MyUnits.FT_PER_SLUG);
+	public static final Unit DEG_FT_PER_SLUG = NonSI.DEGREE_ANGLE.times(MyUnits.FT_PER_SLUG);
 	
 	/**
 	 * Method that converts a price per kilogram (US$/Kg) to a price per pound (US$/lb)

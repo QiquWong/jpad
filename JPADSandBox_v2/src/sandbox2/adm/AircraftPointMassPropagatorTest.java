@@ -7,6 +7,9 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -21,6 +24,7 @@ import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
 class AircraftPointMassPropagatorArguments {
@@ -279,15 +283,44 @@ public class AircraftPointMassPropagatorTest {
 //			System.out.println(theAircraft.getTheAnalysisManager().toString());
 //			System.out.println("\n\n\tDone!! \n\n");
 			
+			//======================================================================
 			// Propagator test
-			System.setOut(originalOut);
-			AircraftPointMassPropagator propagator = new AircraftPointMassPropagator(theAircraft, theOperatingConditions);
 			
+			System.setOut(originalOut);
+			AircraftPointMassPropagator propagator = new AircraftPointMassPropagator(theAircraft);
+			
+			// read the list of events from file
 			propagator.readMissionEvents(pathToMissionEventsXML);
 			
-			// propagation in time
-			// TODO: define a function to pass initial conditions
-			//       propagator.setInitialConditions(/* ... */)
+			// setup the initial state
+			// Initial values
+			double v0 = 100.0; // m/s
+			if (!propagator.getMissionEvents().isEmpty()) {
+				v0 = 0.75*propagator.getMissionEvents().get(0).getCommandedSpeed();
+			}
+			double gamma0 = 0.0; // rad
+			double psi0 = 0.0; // rad
+			double h0 = 1000.0; // m
+			double thrust0 = 200000.0; // N
+			double mass0 = 53000.0; // kg
+//			double cL0 = 0.15;
+//			double rho0 = AtmosphereCalc.getDensity(h0); // kg/m^3
+//			double lift0 = 0.5*rho0*Math.pow(v0, 2)
+//					*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
+//					*cL0;
+			double lift0 = mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
+			double phi0 = 0.0; // rad
+			propagator.setInitialConditions(
+					v0, gamma0, psi0,
+					0.0, 0.0, h0, // XI, YI, h
+					0.0, thrust0, // xT, T
+					0.0, lift0, // xL, L
+					phi0, mass0);
+			
+			// Final time
+			propagator.setTimeFinal(15.0); // sec
+			
+			// propagate in time
 			propagator.propagate();
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;

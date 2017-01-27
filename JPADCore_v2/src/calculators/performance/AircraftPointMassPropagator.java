@@ -194,31 +194,38 @@ import standaloneutils.atmosphere.AtmosphereCalc;
  * Wh = 0 mph
  * 
  */
-
+@SuppressWarnings("unchecked")
 public class AircraftPointMassPropagator {
 
 	private Aircraft theAircraft;
-	private OperatingConditions theOperatingConditions;
 
-	List<MissionEvent> missionEvents = new ArrayList<MissionEvent>();	
+	private List<MissionEvent> missionEvents = new ArrayList<MissionEvent>();	
 
-	Amount<?> pT    = Amount.valueOf(2.0, MyUnits.RADIAN_PER_SECOND);
-	Amount<? extends Quantity> pL    = Amount.valueOf(2.5, MyUnits.RADIAN_PER_SECOND);
-	Amount<? extends Quantity> pPhi  = Amount.valueOf(1.0, MyUnits.RADIAN_PER_SECOND);
-	Amount<? extends Quantity> kTp   = Amount.valueOf(0.08, MyUnits.ONE_PER_SECOND);
-	Amount<? extends Quantity> kTi   = Amount.valueOf(0.002, MyUnits.ONE_PER_SECOND_SQUARED);
-	Amount<? extends Quantity> kLp   = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
-	Amount<? extends Quantity> kLi   = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
-	Amount<? extends Quantity> kPhip = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
-	Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
+	private Amount<?> pT    = Amount.valueOf(2.0, MyUnits.RADIAN_PER_SECOND);
+	private Amount<?> pL    = Amount.valueOf(2.5, MyUnits.RADIAN_PER_SECOND);
+	private Amount<?> pPhi  = Amount.valueOf(1.0, MyUnits.RADIAN_PER_SECOND);
+	private Amount<?> kTp   = Amount.valueOf(0.08, MyUnits.ONE_PER_SECOND);
+	private Amount<?> kTi   = Amount.valueOf(0.002, MyUnits.ONE_PER_SECOND_SQUARED);
+	private Amount<?> kLp   = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
+	private Amount<?> kLi   = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
+	private Amount<?> kPhip = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
+	private Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
 
-	Amount<Velocity> commandedSpeed;
-	Amount<Angle> commandedFlightpathAngle;
-	Amount<Angle> commandedHeadingAngle;
+	private Amount<Velocity> commandedSpeed;
+	private Amount<Angle> commandedFlightpathAngle;
+	private Amount<Angle> commandedHeadingAngle;
 	
-	public AircraftPointMassPropagator(Aircraft ac, OperatingConditions op) {
+	// Initial state variables
+	private double
+		speedInertial0, flightpathAngle0, headingAngle0,
+		xInertial0, yInertial0, altitude0, 
+		xThrust0, thrust0, xLift0, lift0, 
+		bankAngle0, mass0;
+	
+	private double timeFinal = 10.0;
+	
+	public AircraftPointMassPropagator(Aircraft ac) {
 		this.theAircraft = ac;
-		this.theOperatingConditions = op;
 	}
 	
 	public void readMissionEvents(String pathToXML) {
@@ -338,6 +345,7 @@ public class AircraftPointMassPropagator {
 			return 12;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
@@ -414,18 +422,19 @@ public class AircraftPointMassPropagator {
 			xDot[ 4] = yDotI;
 			xDot[ 5] = hDot;
 			xDot[ 6] = mass*(commandedSpeed.doubleValue(SI.METERS_PER_SECOND) - speedInertial);
-			xDot[ 7] = pT.getEstimatedValue()*( 
-						+ kTi.getEstimatedValue()*x[6] 
-						+ kTp.getEstimatedValue()*xDot[6]
+			xDot[ 7] = pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
+						+ kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6] 
+						+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[6]
 						- thrust);
 			xDot[ 8] = mass*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
 						Math.sin(commandedFlightpathAngle.doubleValue(SI.RADIAN)) - Math.sin(flightpathAngle));
-			xDot[ 9] = pL.getEstimatedValue()*( 
-						+ kLi.getEstimatedValue()*x[8] 
-						+ kLp.getEstimatedValue()*xDot[8]
+			xDot[ 9] = pL.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
+						+ kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8] 
+						+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[8]
 						- lift);
-			xDot[10] = pPhi.getEstimatedValue()*( 
-					kPhip.getEstimatedValue()*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
+			xDot[10] = pPhi.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
+					kPhip.doubleValue(MyUnits.ONE_PER_SECOND)
+						*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
 							commandedHeadingAngle.doubleValue(SI.RADIAN) - x[2])/g0
 					- bankAngle);
 			xDot[11] = 0.0; // TODO: make a variable mass
@@ -706,37 +715,71 @@ public class AircraftPointMassPropagator {
 		theIntegrator.addStepHandler(stepHandler);
 
 		// Initial values
-		double v0 = 100.0; // m/s
-		commandedSpeed = Amount.valueOf(v0,SI.METERS_PER_SECOND);
+		commandedSpeed = Amount.valueOf(this.speedInertial0,SI.METERS_PER_SECOND);
+		commandedFlightpathAngle = Amount.valueOf(this.flightpathAngle0,SI.RADIAN);
+		commandedHeadingAngle = Amount.valueOf(headingAngle0,SI.RADIAN);
 		
-		double gamma0 = 0.0; // rad
-		commandedFlightpathAngle = Amount.valueOf(gamma0,SI.RADIAN);
-
-		double psi0 = 0.0; // rad
-		commandedHeadingAngle = Amount.valueOf(psi0,SI.RADIAN);
-		
-		// TODO: pass these values from outside
+		// initial state vector
 		double[] xAt0 = new double[] { // initial state
-				v0, // Vv 
-				gamma0, // gamma
-				psi0, // psi
-				0.0, // XI
-				0.0, // YI
-				1000.0, // h
-				0.0, // xT 
-				200000, // T
-				0.0, // xL
-				350000, // L
-				0.0, // phi
-				53000, // m
+				this.speedInertial0,
+				this.flightpathAngle0,
+				this.headingAngle0,
+				this.xInertial0, 
+				this.yInertial0,
+				this.altitude0, 
+				this.xThrust0,
+				this.thrust0,
+				this.xLift0,
+				this.lift0, 
+				this.bankAngle0,
+				this.mass0
 				};
-		double tInitial = 0.0, tFinal = 10.0;
+		
+		double tInitial = 0.0;
+		double tFinal = this.timeFinal;
+		
 		theIntegrator.integrate(ode, tInitial, xAt0, tFinal, xAt0); // now xAt0 contains final state
 
 		theIntegrator.clearEventHandlers();
 		theIntegrator.clearStepHandlers();		
 		
 		System.out.println("\n---------------------------END!!-------------------------------");
+	}
+
+	public void setInitialConditions(
+			double v0, double gamma0, double psi0,
+			double x0, double y0, double h0,
+			double xT0, double thr0, double xL0, double lft0,
+			double phi0, double m0
+			) {
+		this.speedInertial0   = v0;
+		this.flightpathAngle0 = gamma0;
+		this.headingAngle0    = psi0;
+		this.xInertial0       = x0; 
+		this.yInertial0       = y0;
+		this.altitude0        = h0; 
+		this.xThrust0         = xT0;
+		this.thrust0          = thr0;
+		this.xLift0           = xL0;
+		this.lift0            = lft0; 
+		this.bankAngle0       = phi0;
+		this.mass0            = m0;
+	}
+
+	public List<MissionEvent> getMissionEvents() {
+		return missionEvents;
+	}
+
+	public void setMissionEvents(List<MissionEvent> missionEvents) {
+		this.missionEvents = missionEvents;
+	}
+
+	public double getTimeFinal() {
+		return timeFinal;
+	}
+
+	public void setTimeFinal(double timeFinal) {
+		this.timeFinal = timeFinal;
 	}
 
 }
