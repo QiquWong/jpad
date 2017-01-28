@@ -162,7 +162,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Amount<Length> _missionRange;
 	private Amount<Length> _alternateCruiseLength;
 	private Amount<Length> _alternateCruiseAltitude;
-	private Double _alternateCruiseMachNumber;
 	private Amount<Duration> _holdingDuration;
 	private Amount<Length> _holdingAltitude;
 	private Double _holdingMachNumber;
@@ -423,7 +422,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		private Amount<Length> __missionRange;
 		private Amount<Length> __alternateCruiseLength;
 		private Amount<Length> __alternateCruiseAltitude;
-		private Double __alternateCruiseMachNumber;
 		private Amount<Duration> __holdingDuration;
 		private Amount<Length> __holdingAltitude;
 		private Double __holdingMachNumber;
@@ -716,11 +714,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder alternateCruiseMachNumber(Double alternateCruiseMachNumber) {
-			this.__alternateCruiseMachNumber = alternateCruiseMachNumber;
-			return this;
-		}
-		
 		public ACPerformanceCalculatorBuilder holdingDuration(Amount<Duration> holdingDuration) {
 			this.__holdingDuration = holdingDuration;
 			return this;
@@ -860,7 +853,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._missionRange = builder.__missionRange;
 	    this._alternateCruiseLength = builder.__alternateCruiseLength;
 	    this._alternateCruiseAltitude = builder.__alternateCruiseAltitude;
-	    this._alternateCruiseMachNumber = builder.__alternateCruiseMachNumber;
 	    this._holdingDuration = builder.__holdingDuration;
 	    this._holdingAltitude = builder.__holdingAltitude;
 	    this._holdingMachNumber = builder.__holdingMachNumber;
@@ -1704,7 +1696,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		Amount<Length> missionRange = null;
 		Amount<Length> alternateCruiseLength = Amount.valueOf(0.0, SI.METER);
 		Amount<Length> alternateCruiseAltitude = Amount.valueOf(15.24, SI.METER);
-		Double alternateCruiseMachNumber = 0.01; // default value but != 0.0
 		Amount<Duration> holdingDuration = Amount.valueOf(0.0, SI.SECOND);
 		Amount<Length> holdingAltitude = Amount.valueOf(15.24, SI.METER);
 		Double holdingMachNumber = 0.01; // default value but != 0.0
@@ -1737,12 +1728,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		List<String> alternateCruiseAltitudeProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/alternate_cruise_altitude");
 		if(!alternateCruiseAltitudeProperty.isEmpty()) {
 			alternateCruiseAltitude = reader.getXMLAmountLengthByPath("//performance/mission_profile_and_payload_range/alternate_cruise_altitude"); 
-		}
-		//...............................................................
-		// ALTERNATE CRUISE MACH NUMBER
-		List<String> alternateCruiseMachNumberProperty = reader.getXMLPropertiesByPath("//performance/mission_profile_and_payload_range/alternate_cruise_mach_number");
-		if(!alternateCruiseMachNumberProperty.isEmpty()) {
-			alternateCruiseMachNumber = Double.valueOf(reader.getXMLPropertyByPath("//performance/mission_profile_and_payload_range/alternate_cruise_mach_number")); 
 		}
 		//...............................................................
 		// HOLDING DURATION
@@ -2191,7 +2176,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.missionRange(missionRange)
 				.alternateCruiseLength(alternateCruiseLength)
 				.alternateCruiseAltitude(alternateCruiseAltitude)
-				.alternateCruiseMachNumber(alternateCruiseMachNumber)
 				.holdingDuration(holdingDuration)
 				.holdingAltitude(holdingAltitude)
 				.holdingMachNumber(holdingMachNumber)
@@ -4870,7 +4854,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_sfcFunctionHolding,
 					_alternateCruiseLength,
 					_alternateCruiseAltitude,
-					_alternateCruiseMachNumber,
 					_holdingDuration,
 					_holdingAltitude,
 					_holdingMachNumber,
@@ -5035,7 +5018,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					_sfcFunctionHolding,
 					_alternateCruiseLength,
 					_alternateCruiseAltitude,
-					_alternateCruiseMachNumber,
 					_holdingDuration,
 					_holdingAltitude,
 					_holdingMachNumber,
@@ -6383,14 +6365,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setTheDescentCalculator(DescentCalc _theDescentCalculator) {
 		this._theDescentCalculator = _theDescentCalculator;
-	}
-
-	public Double getAlternateCruiseMachNumber() {
-		return _alternateCruiseMachNumber;
-	}
-
-	public void setAlternateCruiseMachNumber(Double _alternateCruiseMachNumber) {
-		this._alternateCruiseMachNumber = _alternateCruiseMachNumber;
 	}
 
 	public Double getHoldingMachNumber() {

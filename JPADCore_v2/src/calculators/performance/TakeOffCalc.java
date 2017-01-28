@@ -275,7 +275,7 @@ public class TakeOffCalc {
 		
 		v2 = Amount.valueOf(10000.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
 		
-		while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.005) {
+		while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.009) {
 
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
@@ -568,7 +568,7 @@ public class TakeOffCalc {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
-				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-2, 50);
+				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 50);
 			}
 			else {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
