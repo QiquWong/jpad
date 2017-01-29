@@ -3,8 +3,12 @@ package calculators.performance;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Force;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
@@ -32,6 +36,8 @@ import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
+import calculators.performance.TakeOffCalc.DynamicsEquationsTakeOff;
+import calculators.performance.customdata.AircraftPointMassSimulationResultMap;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyUnits;
@@ -215,6 +221,10 @@ public class AircraftPointMassPropagator {
 	private Amount<Angle> commandedFlightpathAngle;
 	private Amount<Angle> commandedHeadingAngle;
 	
+	private Amount<Velocity> windVelocityXI = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+	private Amount<Velocity> windVelocityYI = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+	private Amount<Velocity> windVelocityZI = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+	
 	// Initial state variables
 	private double
 		speedInertial0, flightpathAngle0, headingAngle0,
@@ -224,8 +234,43 @@ public class AircraftPointMassPropagator {
 	
 	private double timeFinal = 10.0;
 	
+	// Simulation outputs
+	private List<Amount<Duration>> time;
+	private List<Amount<Mass>> mass;
+	private List<Amount<Force>> thrust, lift, drag, totalForce;
+	private List<Amount<Velocity>> speedInertial, airspeed, rateOfClimb;
+	private List<Amount<Acceleration>> acceleration;
+	private List<Amount<Length>> altitude, groundDistanceX, groundDistanceY;
+	private List<Amount<Angle>> angleOfAttack, flightpathAngle, headingAngle, bankAngle;
+	private List<Double> cL, cD, loadFactor;	
+	private AircraftPointMassSimulationResultMap simulationResults = new AircraftPointMassSimulationResultMap();
+	
+	
 	public AircraftPointMassPropagator(Aircraft ac) {
 		this.theAircraft = ac;
+		
+		this.time = new ArrayList<Amount<Duration>>();
+		this.mass = new ArrayList<Amount<Mass>>();
+		this.thrust = new ArrayList<Amount<Force>>();
+		this.lift = new ArrayList<Amount<Force>>();
+		this.drag = new ArrayList<Amount<Force>>();
+		this.totalForce = new ArrayList<Amount<Force>>();
+		this.speedInertial = new ArrayList<Amount<Velocity>>();
+		this.airspeed = new ArrayList<Amount<Velocity>>();
+		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
+		this.acceleration = new ArrayList<Amount<Acceleration>>();
+		this.altitude = new ArrayList<Amount<Length>>();
+		this.groundDistanceX = new ArrayList<Amount<Length>>();
+		this.groundDistanceY = new ArrayList<Amount<Length>>();
+		this.angleOfAttack = new ArrayList<Amount<Angle>>();
+		this.flightpathAngle = new ArrayList<Amount<Angle>>();
+		this.headingAngle = new ArrayList<Amount<Angle>>();
+		this.bankAngle = new ArrayList<Amount<Angle>>();
+		this.cL = new ArrayList<Double>();
+		this.cD = new ArrayList<Double>();
+		this.loadFactor = new ArrayList<Double>();
+		
+		simulationResults.initialize();
 	}
 	
 	public void readMissionEvents(String pathToXML) {
@@ -394,9 +439,9 @@ public class AircraftPointMassPropagator {
 			this.mass            = x[11];
 			
 			// TODO: steady wind velocity components in the inertial frame
-			double windXI = 0.0; // TODO: getActualWindXI
-			double windYI = 0.0; // TODO: getActualWindYI
-			double windZI = 0.0; // TODO: getActualWindZI (positive downwards)
+			double windXI = windVelocityXI.doubleValue(SI.METERS_PER_SECOND); // TODO: getActualWindXI
+			double windYI = windVelocityYI.doubleValue(SI.METERS_PER_SECOND); // TODO: getActualWindYI
+			double windZI = windVelocityZI.doubleValue(SI.METERS_PER_SECOND); // TODO: getActualWindZI (positive downwards)
 			
 			// intermediate variables
 			double xDotI = speedInertial*Math.cos(flightpathAngle)*Math.cos(heading);
@@ -405,15 +450,9 @@ public class AircraftPointMassPropagator {
 			double airspeed = Math.sqrt(
 					Math.pow(xDotI - windXI, 2)	
 					+ Math.pow(yDotI - windYI, 2)
-					+ Math.pow(hDot - windZI, 2)
+					+ Math.pow(hDot + windZI, 2)
 					);
 
-			// TODO: calculate these quantities accordingly
-//			this.thrust    = 1.0; // TODO: getActualThrust
-//			this.lift      = 0.5; // TODO: getActualLift
-//			this.drag      = 0.0; // TODO: getActualDrag
-//			this.bankAngle = 0.0; // getActualBank
-			
 			// Assign the derivatives
 			xDot[ 0] = ((thrust - drag)/mass) - g0*Math.sin(flightpathAngle);
 			xDot[ 1] = (lift*Math.cos(bankAngle) - mass*g0*Math.cos(flightpathAngle))/(mass * speedInertial);
@@ -652,8 +691,6 @@ public class AircraftPointMassPropagator {
 
 					@Override
 					public void init(double t0, double[] y0, double t) {
-						// TODO Auto-generated method stub
-						
 					}
 
 					@Override
@@ -674,8 +711,6 @@ public class AircraftPointMassPropagator {
 
 					@Override
 					public void resetState(double t, double[] y) {
-						// TODO Auto-generated method stub
-						
 					}
 					
 				};
@@ -689,8 +724,6 @@ public class AircraftPointMassPropagator {
 
 			@Override
 			public void init(double t0, double[] y0, double t) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
@@ -698,7 +731,21 @@ public class AircraftPointMassPropagator {
 				
 				double   t = interpolator.getCurrentTime();
 				double[] x = interpolator.getInterpolatedState();
+				double[] xdot = interpolator.getInterpolatedDerivatives();
 
+				// TODO: state limiters go here
+				// Example
+				
+				// * BANK ANGLE
+				// if (phi > phimax) then phi = phimax  
+				// if (phi < -phimax) then phi = -phimax
+				
+				// * THRUST
+				// ...
+				
+				// * LIFT
+				// ...
+				
 				System.out.println("-------------------------"+
 						"\n\tt = " + t + " s" +
 						"\n\tx[0] = V = " + x[0] + " m/s" +
@@ -708,6 +755,62 @@ public class AircraftPointMassPropagator {
 						"\n\tx[4] = YI = " + x[4] + " m" +
 						"\n\tx[5] = h  = " + x[5] + " m"
 						);
+				
+				/* PICKING UP ALL DATA AT EVERY STEP
+				 *
+				 * x0  = Vv,  x1  = γ,  x2  = ψ
+				 * x3  = Xi,  x4  = Yi, x5  = h
+				 * x6  = xT,  x7  = T,  x8  = xL
+				 * x9  = L,   x10 = ϕ,  x11 = m
+				 * 
+				 */
+				//----------------------------------------------------------------------------------------
+				// TIME:
+				AircraftPointMassPropagator.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+				//----------------------------------------------------------------------------------------
+				// GROUND DISTANCE -XI:
+				AircraftPointMassPropagator.this.getGroundDistanceX().add(Amount.valueOf(x[3], SI.METER));
+				// GROUND DISTANCE -YI:
+				AircraftPointMassPropagator.this.getGroundDistanceY().add(Amount.valueOf(x[4], SI.METER));
+				//----------------------------------------------------------------------------------------
+				// ALTITUDE:
+				AircraftPointMassPropagator.this.getAltitude().add(Amount.valueOf(x[5], SI.METER));
+				//----------------------------------------------------------------------------------------
+				// FLIGHTPATH ANGLE:
+				AircraftPointMassPropagator.this.getFlightpathAngle().add(Amount.valueOf(x[1], SI.RADIAN));
+				//----------------------------------------------------------------------------------------
+				// HEADING ANGLE:
+				AircraftPointMassPropagator.this.getHeadingAngle().add(Amount.valueOf(x[2], SI.RADIAN));
+				//----------------------------------------------------------------------------------------
+				// BANK ANGLE:
+				AircraftPointMassPropagator.this.getBankAngle().add(Amount.valueOf(x[10], SI.RADIAN));
+				//----------------------------------------------------------------------------------------
+				// SPEED:
+				AircraftPointMassPropagator.this.getSpeedInertial().add(Amount.valueOf(x[0], SI.METERS_PER_SECOND));
+				//----------------------------------------------------------------------------------------
+				// AIRSPEED:
+				double windXI = AircraftPointMassPropagator.this.windVelocityXI.doubleValue(SI.METERS_PER_SECOND);
+				double windYI = AircraftPointMassPropagator.this.windVelocityYI.doubleValue(SI.METERS_PER_SECOND);
+				double windZI = AircraftPointMassPropagator.this.windVelocityZI.doubleValue(SI.METERS_PER_SECOND);				
+				double xDotI = xdot[3];
+				double yDotI = xdot[4];
+				double hDot  = xdot[5];
+				double airspeed = Math.sqrt(Math.pow(xDotI - windXI, 2)	
+						+ Math.pow(yDotI - windYI, 2) 
+						+ Math.pow(hDot  + windZI, 2));				
+				AircraftPointMassPropagator.this.getAirspeed().add(Amount.valueOf(airspeed, SI.METERS_PER_SECOND));
+				//----------------------------------------------------------------------------------------
+				// MASS:
+				AircraftPointMassPropagator.this.getMass().add(Amount.valueOf(x[11], SI.KILOGRAM));
+				//----------------------------------------------------------------------------------------
+				// THRUST:
+				AircraftPointMassPropagator.this.getThrust().add(Amount.valueOf(x[7],SI.NEWTON));
+				//----------------------------------------------------------------------------------------
+				// LIFT:
+				AircraftPointMassPropagator.this.getLift().add(Amount.valueOf(x[9],SI.NEWTON));
+				//----------------------------------------------------------------------------------------
+				// DRAG:
+				// TODO
 			}
 			
 		};
@@ -746,6 +849,21 @@ public class AircraftPointMassPropagator {
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
 
+	/**************************************************************************************
+	 * This method allows users to plot all take-off performance producing several output charts
+	 * which have time or ground distance as independent variables.
+	 *
+	 * @author Agostino De Marco
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 */
+	public void createTakeOffCharts(String missionSimulationFolderPath) throws InstantiationException, IllegalAccessException {
+
+		System.out.println("\n---------WRITING MISSION SIM CHARTS TO FILE-----------");
+		
+		// TODO
+	}
+	
 	public void setInitialConditions(
 			double v0, double gamma0, double psi0,
 			double x0, double y0, double h0,
@@ -780,6 +898,167 @@ public class AircraftPointMassPropagator {
 
 	public void setTimeFinal(double timeFinal) {
 		this.timeFinal = timeFinal;
+	}
+
+	public List<Amount<Duration>> getTime() {
+		return time;
+	}
+
+	public void setTime(List<Amount<Duration>> time) {
+		this.time = time;
+	}
+
+	public List<Amount<Mass>> getMass() {
+		return mass;
+	}
+
+	public void setMass(List<Amount<Mass>> mass) {
+		this.mass = mass;
+	}
+
+	public List<Amount<Force>> getThrust() {
+		return thrust;
+	}
+
+	public void setThrust(List<Amount<Force>> thrust) {
+		this.thrust = thrust;
+	}
+
+	public List<Amount<Force>> getLift() {
+		return lift;
+	}
+
+	public void setLift(List<Amount<Force>> lift) {
+		this.lift = lift;
+	}
+
+	
+	public List<Amount<Force>> getDrag() {
+		return drag;
+	}
+
+	public void setDrag(List<Amount<Force>> drag) {
+		this.drag = drag;
+	}
+
+	public List<Amount<Force>> getTotalForce() {
+		return totalForce;
+	}
+
+	public void setTotalForce(List<Amount<Force>> totalForce) {
+		this.totalForce = totalForce;
+	}
+
+	public List<Amount<Velocity>> getSpeedInertial() {
+		return speedInertial;
+	}
+
+	public void setSpeedInertial(List<Amount<Velocity>> speedInertial) {
+		this.speedInertial = speedInertial;
+	}
+
+	public List<Amount<Velocity>> getAirspeed() {
+		return airspeed;
+	}
+
+	public void setAirspeed(List<Amount<Velocity>> airspeed) {
+		this.airspeed = airspeed;
+	}
+
+	public List<Amount<Velocity>> getRateOfClimb() {
+		return rateOfClimb;
+	}
+
+	public void setRateOfClimb(List<Amount<Velocity>> rateOfClimb) {
+		this.rateOfClimb = rateOfClimb;
+	}
+
+	public List<Amount<Acceleration>> getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(List<Amount<Acceleration>> acceleration) {
+		this.acceleration = acceleration;
+	}
+
+	public List<Amount<Length>> getAltitude() {
+		return altitude;
+	}
+
+	public void setAltitude(List<Amount<Length>> altitude) {
+		this.altitude = altitude;
+	}
+
+	public List<Amount<Length>> getGroundDistanceX() {
+		return groundDistanceX;
+	}
+
+	public void setGroundDistanceX(List<Amount<Length>> groundDistanceX) {
+		this.groundDistanceX = groundDistanceX;
+	}
+
+	public List<Amount<Length>> getGroundDistanceY() {
+		return groundDistanceY;
+	}
+
+	public void setGroundDistanceY(List<Amount<Length>> groundDistanceY) {
+		this.groundDistanceY = groundDistanceY;
+	}
+
+	public List<Amount<Angle>> getAngleOfAttack() {
+		return angleOfAttack;
+	}
+
+	public void setAngleOfAttack(List<Amount<Angle>> angleOfAttack) {
+		this.angleOfAttack = angleOfAttack;
+	}
+
+	public List<Amount<Angle>> getFlightpathAngle() {
+		return flightpathAngle;
+	}
+
+	public void setFlightpathAngle(List<Amount<Angle>> flightpathAngle) {
+		this.flightpathAngle = flightpathAngle;
+	}
+
+	public List<Amount<Angle>> getHeadingAngle() {
+		return headingAngle;
+	}
+
+	public void setHeadingAngle(List<Amount<Angle>> headingAngle) {
+		this.headingAngle = headingAngle;
+	}
+
+	public List<Amount<Angle>> getBankAngle() {
+		return bankAngle;
+	}
+
+	public void setBankAngle(List<Amount<Angle>> bankAngle) {
+		this.bankAngle = bankAngle;
+	}
+
+	public List<Double> getcL() {
+		return cL;
+	}
+
+	public void setcL(List<Double> cL) {
+		this.cL = cL;
+	}
+
+	public List<Double> getcD() {
+		return cD;
+	}
+
+	public void setcD(List<Double> cD) {
+		this.cD = cD;
+	}
+
+	public List<Double> getLoadFactor() {
+		return loadFactor;
+	}
+
+	public void setLoadFactor(List<Double> loadFactor) {
+		this.loadFactor = loadFactor;
 	}
 
 }
