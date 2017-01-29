@@ -57,6 +57,9 @@ public class MyUnits {
 	public static final Unit DEG_METER_PER_KILOGRAM = NonSI.DEGREE_ANGLE.times(MyUnits.METER_PER_KILOGRAM);
 	public static final Unit RAD_FT_PER_SLUG = SI.RADIAN.times(MyUnits.FT_PER_SLUG);
 	public static final Unit DEG_FT_PER_SLUG = NonSI.DEGREE_ANGLE.times(MyUnits.FT_PER_SLUG);
+
+	public static final Unit KILOGRAM_METER = SI.KILOGRAM.times(SI.METER);
+	public static final Unit KILOGRAM_METER_PER_SECOND = SI.KILOGRAM.times(SI.METER).divide(SI.SECOND);
 	
 	/**
 	 * Method that converts a price per kilogram (US$/Kg) to a price per pound (US$/lb)

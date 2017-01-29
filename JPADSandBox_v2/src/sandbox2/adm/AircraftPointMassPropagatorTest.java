@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.measure.unit.SI;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -320,8 +321,16 @@ public class AircraftPointMassPropagatorTest {
 			// Final time
 			propagator.setTimeFinal(15.0); // sec
 			
+			propagator.enableCharts(true);
+			
 			// propagate in time
 			propagator.propagate();
+			
+			// Plot
+			String missionOutputDir = JPADStaticWriteUtils.createNewFolder(
+					aircraftFolder + "MISSION_SIM" + File.separator);
+			propagator.setOutputChartDir(missionOutputDir);
+			propagator.createOutputCharts();
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
@@ -334,6 +343,10 @@ public class AircraftPointMassPropagatorTest {
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
+		} catch (InstantiationException  | IllegalAccessException e) {
+			System.err.println("Error: " + e.getMessage());
+			System.err.println("  A problem occurred with the output chart function.");
+			e.printStackTrace();
 		}	    
 
 	}

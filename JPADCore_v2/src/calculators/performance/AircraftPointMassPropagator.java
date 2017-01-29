@@ -1,6 +1,7 @@
 package calculators.performance;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Acceleration;
@@ -9,11 +10,9 @@ import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
-import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,10 +34,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
-import analyses.OperatingConditions;
-import calculators.performance.TakeOffCalc.DynamicsEquationsTakeOff;
 import calculators.performance.customdata.AircraftPointMassSimulationResultMap;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
@@ -238,6 +236,8 @@ public class AircraftPointMassPropagator {
 	private List<Amount<Duration>> time;
 	private List<Amount<Mass>> mass;
 	private List<Amount<Force>> thrust, lift, drag, totalForce;
+	private List<Amount<?>> xT, xL;
+	private List<Amount<?>> xTDot, xLDot;
 	private List<Amount<Velocity>> speedInertial, airspeed, rateOfClimb;
 	private List<Amount<Acceleration>> acceleration;
 	private List<Amount<Length>> altitude, groundDistanceX, groundDistanceY;
@@ -245,7 +245,9 @@ public class AircraftPointMassPropagator {
 	private List<Double> cL, cD, loadFactor;	
 	private AircraftPointMassSimulationResultMap simulationResults = new AircraftPointMassSimulationResultMap();
 	
-	
+	private Boolean chartsEnabled = false;
+	private String outputChartDir;
+
 	public AircraftPointMassPropagator(Aircraft ac) {
 		this.theAircraft = ac;
 		
@@ -253,6 +255,10 @@ public class AircraftPointMassPropagator {
 		this.mass = new ArrayList<Amount<Mass>>();
 		this.thrust = new ArrayList<Amount<Force>>();
 		this.lift = new ArrayList<Amount<Force>>();
+		this.xT = new ArrayList<Amount<?>>();
+		this.xL = new ArrayList<Amount<?>>();
+		this.xTDot = new ArrayList<Amount<?>>();
+		this.xLDot = new ArrayList<Amount<?>>();
 		this.drag = new ArrayList<Amount<Force>>();
 		this.totalForce = new ArrayList<Amount<Force>>();
 		this.speedInertial = new ArrayList<Amount<Velocity>>();
@@ -806,8 +812,18 @@ public class AircraftPointMassPropagator {
 				// THRUST:
 				AircraftPointMassPropagator.this.getThrust().add(Amount.valueOf(x[7],SI.NEWTON));
 				//----------------------------------------------------------------------------------------
+				// x-THRUST:
+				AircraftPointMassPropagator.this.getXThrust().add(Amount.valueOf(x[6],MyUnits.KILOGRAM_METER));
+				// x-THRUST-DOT:
+				AircraftPointMassPropagator.this.getXThrustDot().add(Amount.valueOf(xdot[6],MyUnits.KILOGRAM_METER_PER_SECOND));
+				//----------------------------------------------------------------------------------------
 				// LIFT:
 				AircraftPointMassPropagator.this.getLift().add(Amount.valueOf(x[9],SI.NEWTON));
+				//----------------------------------------------------------------------------------------
+				// x-LIFT:
+				AircraftPointMassPropagator.this.getXLift().add(Amount.valueOf(x[8],MyUnits.KILOGRAM_METER));
+				// x-LIFT-DOT:
+				AircraftPointMassPropagator.this.getXLiftDot().add(Amount.valueOf(xdot[8],MyUnits.KILOGRAM_METER_PER_SECOND));
 				//----------------------------------------------------------------------------------------
 				// DRAG:
 				// TODO
@@ -857,11 +873,199 @@ public class AircraftPointMassPropagator {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void createTakeOffCharts(String missionSimulationFolderPath) throws InstantiationException, IllegalAccessException {
+	public void createOutputCharts() throws InstantiationException, IllegalAccessException {
 
-		System.out.println("\n---------WRITING MISSION SIM CHARTS TO FILE-----------");
-		
-		// TODO
+		if (chartsEnabled && (outputChartDir != null)) {
+			System.out.println("\n---------WRITING MISSION SIM CHARTS TO FILE-----------");
+
+			// speed vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getSpeedInertial().stream()
+							.map(vV -> vV.doubleValue(SI.METERS_PER_SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, 0.0, null,
+					"Time", "Speed", "s", "m/s",
+					outputChartDir, "Speed_Inertial");
+
+			// speed, airspeed vs. time
+			double[][] xMatrix2 = new double[2][getTime().size()];
+			for(int i=0; i<xMatrix2.length; i++)
+				xMatrix2[i] = Arrays.stream(
+						getTime().stream()
+						.map(t -> t.doubleValue(SI.SECOND))
+						.toArray(size -> new Double[size])
+						).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+
+			double[][] yMatrix2 = new double[2][getTime().size()];
+			yMatrix2[0] = Arrays.stream(
+					getSpeedInertial().stream()
+					.map(vV -> vV.doubleValue(SI.METERS_PER_SECOND))
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			yMatrix2[1] = Arrays.stream(
+					getAirspeed().stream()
+					.map(vVa -> vVa.doubleValue(SI.METERS_PER_SECOND))
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			
+			MyChartToFileUtils.plot(
+							xMatrix2, yMatrix2,
+							0.0, null, null, null,
+							"Time", "Vv, Va", "s", "m/s",
+							new String[] {"Velocity Inertial", "Airspeed"},
+							outputChartDir, "Velocities");
+			
+			// altitude vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getAltitude().stream()
+							.map(h -> h.doubleValue(SI.METER))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, 0.0, null,
+					"Time", "Altitude", "s", "m",
+					outputChartDir, "Altitude");
+
+			// flightpath angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getFlightpathAngle().stream()
+							.map(gamma -> gamma.doubleValue(NonSI.DEGREE_ANGLE))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, -20.0, 20.0,
+					"Time", "Flightpath Angle", "s", "deg",
+					outputChartDir, "Flightpath_Angle");
+			
+			// heading angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getHeadingAngle().stream()
+							.map(psi -> psi.doubleValue(NonSI.DEGREE_ANGLE))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, -180.0, 180.0,
+					"Time", "Heading Angle", "s", "deg",
+					outputChartDir, "Heading_Angle");
+
+			// bank angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getBankAngle().stream()
+							.map(phi -> phi.doubleValue(NonSI.DEGREE_ANGLE))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, -180.0, 180.0,
+					"Time", "Bank Angle", "s", "deg",
+					outputChartDir, "Bank_Angle");
+
+			// int( m(Vc - V) ) angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getXThrust().stream()
+							.map(xt -> xt.doubleValue(MyUnits.KILOGRAM_METER))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, null, null,
+					"Time", "xT = int(m(Vc - V))", "s", "kg*m",
+					outputChartDir, "xT");
+
+			// m(Vc - V) angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getXThrustDot().stream()
+							.map(xtd -> xtd.doubleValue(MyUnits.KILOGRAM_METER_PER_SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, null, null,
+					"Time", "xTDot = m(Vc - V)", "s", "kg*m/s",
+					outputChartDir, "xTDot");
+			
+			// thrust angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getThrust().stream()
+							.map(thrust -> thrust.doubleValue(SI.NEWTON))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, null, null,
+					"Time", "Thrust", "s", "N",
+					outputChartDir, "Thrust");
+			
+			// int( m (hdotc - hdot)) angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getXLift().stream()
+							.map(xl -> xl.doubleValue(MyUnits.KILOGRAM_METER))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, null, null,
+					"Time", "xL = int(m(hdotc - hdot))", "s", "kg*m",
+					outputChartDir, "xL");
+
+			// m(hdotc - hdot) angle vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getXLiftDot().stream()
+							.map(xld -> xld.doubleValue(MyUnits.KILOGRAM_METER_PER_SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, null, null,
+					"Time", "xLDot = m(hdotc - hdot)", "s", "kg*m/s",
+					outputChartDir, "xLDot");
+		}
 	}
 	
 	public void setInitialConditions(
@@ -924,6 +1128,22 @@ public class AircraftPointMassPropagator {
 		this.thrust = thrust;
 	}
 
+	public List<Amount<?>> getXThrust() {
+		return xT;
+	}
+
+	public void setXThrust(List<Amount<?>> x) {
+		this.xT = x;
+	}
+
+	public List<Amount<?>> getXThrustDot() {
+		return xTDot;
+	}
+
+	public void setXThrustDot(List<Amount<?>> xd) {
+		this.xTDot = xd;
+	}
+	
 	public List<Amount<Force>> getLift() {
 		return lift;
 	}
@@ -932,6 +1152,21 @@ public class AircraftPointMassPropagator {
 		this.lift = lift;
 	}
 
+	public List<Amount<?>> getXLift() {
+		return xL;
+	}
+
+	public void setXLift(List<Amount<?>> x) {
+		this.xL = x;
+	}
+
+	public List<Amount<?>> getXLiftDot() {
+		return xLDot;
+	}
+
+	public void setXLiftDot(List<Amount<?>> xd) {
+		this.xLDot = xd;
+	}
 	
 	public List<Amount<Force>> getDrag() {
 		return drag;
@@ -1059,6 +1294,27 @@ public class AircraftPointMassPropagator {
 
 	public void setLoadFactor(List<Double> loadFactor) {
 		this.loadFactor = loadFactor;
+	}
+
+	public Boolean chartsEnabled() {
+		return chartsEnabled;
+	}
+
+	public void enableCharts(Boolean chartsEnabled) {
+		this.chartsEnabled = chartsEnabled;
+	}
+
+	public void enableCharts(Boolean chartsEnabled, String outputChartDir) {
+		this.chartsEnabled = chartsEnabled;
+		this.outputChartDir = outputChartDir;
+	}
+	
+	public String getOutputChartDir() {
+		return outputChartDir;
+	}
+
+	public void setOutputChartDir(String outputChartDir) {
+		this.outputChartDir = outputChartDir;
 	}
 
 }
