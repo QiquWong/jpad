@@ -373,7 +373,6 @@ public class AircraftPointMassPropagator {
 
 		double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
 
-		double kAlpha, cD0, oswald, ar;
 		MyInterpolatingFunction thrustMax;
 		
 		// state variables
@@ -458,6 +457,21 @@ public class AircraftPointMassPropagator {
 					+ Math.pow(yDotI - windYI, 2)
 					+ Math.pow(hDot + windZI, 2)
 					);
+
+			// drag
+			double cD0 = 0.03;
+			double aspectRatio = theAircraft.getWing().getAspectRatio();
+			double oswaldFactor = 0.85;
+			double kD = Math.PI * aspectRatio * oswaldFactor;
+			double airDensity = AtmosphereCalc.getDensity(altitude);
+			double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
+			double kD0 = 0.5 * airDensity * surfaceWing * cD0;
+			double kD1 = 2.0/(airDensity * surfaceWing * kD);
+			this.drag = kD0 * Math.pow(airspeed, 2) 
+					+ kD1 * Math.pow(lift, 2)/Math.pow(airspeed, 2);
+			
+			// alpha
+			// TODO
 
 			// Assign the derivatives
 			xDot[ 0] = ((thrust - drag)/mass) - g0*Math.sin(flightpathAngle);
@@ -689,8 +703,6 @@ public class AircraftPointMassPropagator {
 		
 		FirstOrderDifferentialEquations ode = new DynamicsEquationsAircraftPointMass();
 		
-//		List<EventHandler> eventHandlers = new ArrayList<EventHandler>();
-
 		missionEvents.stream()
 			.forEach(me -> {
 				EventHandler eventHandler = new EventHandler() {
@@ -712,7 +724,7 @@ public class AircraftPointMassPropagator {
 						
 						System.out.println("EVENT OCCURRED_____________________________ " + me.getDescription());
 						
-						return  Action.STOP;
+						return  Action.CONTINUE;
 					}
 
 					@Override
