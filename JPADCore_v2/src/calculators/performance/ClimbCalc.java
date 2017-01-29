@@ -63,6 +63,7 @@ public class ClimbCalc {
 	private Map<String, List<Double>> _efficiencyMapAltitudeOEI;
 	private List<Amount<Duration>> _climbTimeListAOE;
 	private List<Amount<Duration>> _climbTimeListRCmax;
+	private List<Amount<Mass>> _fuelUsedList;
 	private Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeAOE;
 	private Amount<Angle> _maxThetaAtCruiseAltitudeAOE;
 	private Amount<Length> _absoluteCeilingAOE;
@@ -105,6 +106,7 @@ public class ClimbCalc {
 		this._thrustListAOE = new ArrayList<>();
 		this._dragListOEI = new ArrayList<>();
 		this._thrustListOEI = new ArrayList<>();
+		this._fuelUsedList = new ArrayList<>();
 		
 	}
 	
@@ -407,16 +409,39 @@ public class ClimbCalc {
 
 		}
 		
-		//----------------------------------------------------------------------------------
-		// SFC, TIME AND RANGE IN AOE CONDITION (for the mission profile)
-		List<Double> sfcListClimb = new ArrayList<>();
-		List<Amount<Duration>> climbTimeListAOE = new ArrayList<>();
-		List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
+		//--------------------------------------------------------------------------------------
+		// TIME AT RCMax SPEED
+		_climbTimeListRCmax = new ArrayList<>();
+		_climbTimeListRCmax.add(Amount.valueOf(0.0, SI.SECOND));
+		
+		for(int i=1; i<_rcMapAOE.size(); i++) {
+			
+			_climbTimeListRCmax.add(
+					_climbTimeListRCmax.get(_climbTimeListRCmax.size()-1)
+					.plus(
+							Amount.valueOf(
+									MyMathUtils.integrate1DSimpsonSpline(
+											new double[] { 
+													_rcMapAOE.get(i-1).getAltitude(),
+													_rcMapAOE.get(i).getAltitude()
+											},
+											new double[] {
+													1/_rcMapAOE.get(i-1).getRCmax(),
+													1/_rcMapAOE.get(i).getRCmax()
+											}
+											),
+									SI.SECOND
+									)
+							)
+					);
+		}
+		
+		//--------------------------------------------------------------------------------------
+		// TIME AT Climb Speed
+		_climbTimeListAOE = new ArrayList<>();
+		_climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
 		List<Double> rcAtClimbSpeed = new ArrayList<>();
 		List<Amount<Velocity>> climbSpeedTAS = new ArrayList<>();
-		
-		climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
-		rangeArrayClimb.add(Amount.valueOf(0.0, SI.METER));
 		
 		for(int i=0; i<_rcMapAOE.size(); i++) {
 			if(_climbSpeed != null) {
@@ -435,6 +460,41 @@ public class ClimbCalc {
 				climbSpeedTAS.add(_climbSpeed.divide(Math.sqrt(sigma)));
 			}
 		}
+		
+		for(int i=1; i<_rcMapAOE.size(); i++) {
+			_climbTimeListAOE.add(
+					_climbTimeListAOE.get(_climbTimeListAOE.size()-1)
+					.plus(
+							Amount.valueOf(
+									MyMathUtils.integrate1DSimpsonSpline(
+											new double[] { 
+													_rcMapAOE.get(i-1).getAltitude(),
+													_rcMapAOE.get(i).getAltitude()
+											},
+											new double[] {
+													1/rcAtClimbSpeed.get(i-1),
+													1/rcAtClimbSpeed.get(i)
+											}
+											),
+									SI.SECOND
+									)
+							)
+					);
+		}
+
+		_minimumClimbTimeAOE = _climbTimeListRCmax.get(_climbTimeListRCmax.size()-1);
+		
+		if(_climbSpeed != null)
+			_climbTimeAtSpecificClimbSpeedAOE = _climbTimeListAOE.get(_climbTimeListAOE.size()-1);
+		
+		//----------------------------------------------------------------------------------
+		// SFC, TIME AND RANGE IN AOE CONDITION (for the mission profile)
+		List<Double> fuelFlowListClimb = new ArrayList<>();
+		List<Amount<Duration>> climbTimeListAOE = new ArrayList<>();
+		List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
+		
+		climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
+		rangeArrayClimb.add(Amount.valueOf(0.0, SI.METER));
 		
 		for(int i=1; i<_rcMapAOE.size(); i++) {
 			
@@ -509,8 +569,8 @@ public class ClimbCalc {
 		
 		for(int i=0; i<_rcMapAOE.size(); i++) {
 
-			if(_climbSpeed == null)
-				sfcListClimb.add(
+			if(_climbSpeed == null) {
+				fuelFlowListClimb.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_thrustListAOE.get(i).getSpeed(),
 								_thrustListAOE.get(i).getThrust(),
@@ -534,9 +594,15 @@ public class ClimbCalc {
 								_theAircraft.getPowerPlant()
 								)
 						);
-			
-			else
-				sfcListClimb.add(
+				_fuelUsedList.add(
+						Amount.valueOf(
+								fuelFlowListClimb.get(i)*_climbTimeListRCmax.get(i).doubleValue(NonSI.MINUTE),
+								SI.KILOGRAM
+								)
+						);
+			}
+			else {
+				fuelFlowListClimb.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_thrustListAOE.get(i).getSpeed(),
 								_thrustListAOE.get(i).getThrust(),
@@ -560,6 +626,13 @@ public class ClimbCalc {
 								_theAircraft.getPowerPlant()
 								)
 						);
+				_fuelUsedList.add(
+						Amount.valueOf(
+								fuelFlowListClimb.get(i)*_climbTimeListAOE.get(i).doubleValue(NonSI.MINUTE),
+								SI.KILOGRAM
+								)
+						);
+			}
 		}
 
 		_climbTotalFuelUsed = Amount.valueOf(
@@ -570,67 +643,10 @@ public class ClimbCalc {
 										.collect(Collectors.toList()
 												)
 										),
-						MyArrayUtils.convertToDoublePrimitive(sfcListClimb)
+						MyArrayUtils.convertToDoublePrimitive(fuelFlowListClimb)
 						),
 				SI.KILOGRAM					
 				);
-		
-		//--------------------------------------------------------------------------------------
-		// TIME AT RCMax SPEED
-		_climbTimeListRCmax = new ArrayList<>();
-		_climbTimeListRCmax.add(Amount.valueOf(0.0, SI.SECOND));
-		
-		for(int i=1; i<_rcMapAOE.size(); i++) {
-			
-			_climbTimeListRCmax.add(
-					_climbTimeListRCmax.get(_climbTimeListRCmax.size()-1)
-					.plus(
-							Amount.valueOf(
-									MyMathUtils.integrate1DSimpsonSpline(
-											new double[] { 
-													_rcMapAOE.get(i-1).getAltitude(),
-													_rcMapAOE.get(i).getAltitude()
-											},
-											new double[] {
-													1/_rcMapAOE.get(i-1).getRCmax(),
-													1/_rcMapAOE.get(i).getRCmax()
-											}
-											),
-									SI.SECOND
-									)
-							)
-					);
-		}
-		//--------------------------------------------------------------------------------------
-		// TIME AT Climb Speed
-		_climbTimeListAOE = new ArrayList<>();
-		_climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
-
-		for(int i=1; i<_rcMapAOE.size(); i++) {
-			_climbTimeListAOE.add(
-					_climbTimeListAOE.get(_climbTimeListAOE.size()-1)
-					.plus(
-							Amount.valueOf(
-									MyMathUtils.integrate1DSimpsonSpline(
-											new double[] { 
-													_rcMapAOE.get(i-1).getAltitude(),
-													_rcMapAOE.get(i).getAltitude()
-											},
-											new double[] {
-													1/rcAtClimbSpeed.get(i-1),
-													1/rcAtClimbSpeed.get(i)
-											}
-											),
-									SI.SECOND
-									)
-							)
-					);
-		}
-
-		_minimumClimbTimeAOE = _climbTimeListRCmax.get(_climbTimeListRCmax.size()-1);
-		
-		if(_climbSpeed != null)
-			_climbTimeAtSpecificClimbSpeedAOE = _climbTimeListAOE.get(_climbTimeListAOE.size()-1);
 		
 	}
 	
@@ -1227,6 +1243,27 @@ public class ClimbCalc {
 			
 		}
 		
+		if(plotList.contains(PerformancePlotEnum.CLIMB_FUEL_USED)) {
+
+			List<Double> altitudeList = new ArrayList<Double>();
+			List<Double> fuelUsedList = new ArrayList<Double>();
+			
+			for(int i=0; i<_rcMapAOE.size(); i++) {
+				altitudeList.add(_rcMapAOE.get(i).getAltitude());	
+				fuelUsedList.add(_fuelUsedList.get(i).doubleValue(SI.KILOGRAM));
+			}
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(altitudeList),
+					MyArrayUtils.convertToDoublePrimitive(fuelUsedList),
+					0.0, null, 0.0, null,
+					"Altitude", "Fuel  used",
+					"m", "kg",
+					climbFolderPath, "Fuel_used_(AOE)"
+					);
+			
+		}
+		
 	}
 
 	//--------------------------------------------------------------------------------------------
@@ -1539,6 +1576,14 @@ public class ClimbCalc {
 
 	public void setClimbTimeListRCmax(List<Amount<Duration>> _climbTimeListRCmax) {
 		this._climbTimeListRCmax = _climbTimeListRCmax;
+	}
+
+	public List<Amount<Mass>> getFuelUsedList() {
+		return _fuelUsedList;
+	}
+
+	public void setFuelUsedList(List<Amount<Mass>> _fuelUsedList) {
+		this._fuelUsedList = _fuelUsedList;
 	}
 	
 }

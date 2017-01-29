@@ -145,6 +145,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Double _kClimbWeightAOE;
 	private Double _kClimbWeightOEI;
 	private Amount<Velocity> _climbSpeed;
+	private Amount<Length> _initialClimbAltitude;
+	private Amount<Length> _finalClimbAltitude;
 	//..............................................................................
 	// Cruise
 	private List<Amount<Length>> _altitudeListCruise;
@@ -405,6 +407,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		private Double __kClimbWeightAOE = 1.0;
 		private Double __kClimbWeightOEI = 0.97;
 		private Amount<Velocity> __climbSpeed;
+		private Amount<Length> __initialClimbAltitude;
+		private Amount<Length> __finalClimbAltitude;
 		//..............................................................................
 		// Cruise
 		private List<Amount<Length>> __altitudeListCruise;
@@ -674,6 +678,16 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
+		public ACPerformanceCalculatorBuilder initialClimbAltitude(Amount<Length> initialClimbAltitude) {
+			this.__initialClimbAltitude = initialClimbAltitude;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder finalClimbAltitude(Amount<Length> finalClimbAltitude) {
+			this.__finalClimbAltitude = finalClimbAltitude;
+			return this;
+		}
+		
 		public ACPerformanceCalculatorBuilder altitudeListCruise(List<Amount<Length>> altitudeListCruise) {
 			this.__altitudeListCruise = altitudeListCruise;
 			return this;
@@ -840,6 +854,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._kClimbWeightAOE = builder.__kClimbWeightAOE;
 		this._kClimbWeightOEI = builder.__kClimbWeightOEI;
 		this._climbSpeed = builder.__climbSpeed;
+		this._initialClimbAltitude = builder.__initialClimbAltitude;
+		this._finalClimbAltitude = builder.__finalClimbAltitude;
 		
 		this._altitudeListCruise = builder.__altitudeListCruise;
 		this._kCruiseWeight = builder.__kCruiseWeight;
@@ -1622,6 +1638,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		Double kClimbWeightAOE = 1.0;
 		Double kClimbWeightOEI = 0.97;
 		Amount<Velocity> climbSpeed = null;
+		Amount<Length> initialClimbAltitude = null;
+		Amount<Length> finalClimbAltitude = null;
 		
 		//...............................................................
 		// K CLIMB WEIGHT AOE
@@ -1641,6 +1659,17 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		if(climbSpeedProperty != null)
 			climbSpeed = reader.getXMLAmountWithUnitByPath("//performance/climb/climb_speed_CAS").to(SI.METERS_PER_SECOND);
 		
+		//...............................................................
+		// INITIAL CLIMB ALTITUDE
+		String initialClimbAltitudeProperty = reader.getXMLPropertyByPath("//performance/climb/initial_climb_altitude");
+		if(initialClimbAltitudeProperty != null)
+			initialClimbAltitude = reader.getXMLAmountLengthByPath("//performance/climb/initial_climb_altitude");
+		
+		//...............................................................
+		// FINAL CLIMB ALTITUDE
+		String finalClimbAltitudeProperty = reader.getXMLPropertyByPath("//performance/climb/final_climb_altitude");
+		if(finalClimbAltitudeProperty != null)
+			finalClimbAltitude = reader.getXMLAmountLengthByPath("//performance/climb/final_climb_altitude");
 		
 		//===========================================================================================
 		// READING CRUISE DATA ...	
@@ -1967,6 +1996,15 @@ public class ACPerformanceManager implements IACPerformanceManger {
 						plotList.add(PerformancePlotEnum.CLIMB_TIME);
 				}	
 				
+				String fuelUsedChartProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/climb/fuel_used/@perform");
+				if (fuelUsedChartProperty != null) {
+					if(fuelUsedChartProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(PerformancePlotEnum.CLIMB_FUEL_USED);
+				}	
+				
 			}
 
 			//...............................................................
@@ -2167,6 +2205,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.kClimbWeightAOE(kClimbWeightAOE)
 				.kClimbWeightOEI(kClimbWeightOEI)
 				.climbSpeed(climbSpeed)
+				.initialClimbAltitude(initialClimbAltitude)
+				.finalClimbAltitude(finalClimbAltitude)
 				.altitudeListCruise(altitudeListCruise)
 				.kCruiseWeight(kCruiseWeight)
 				.cLmaxInverted(cLmaxInverted)
@@ -2243,8 +2283,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			calcClimb.calculateClimbPerformance(
 					_maximumTakeOffMass.times(_kClimbWeightAOE),
 					_maximumTakeOffMass.times(_kClimbWeightOEI),
-					Amount.valueOf(0.0, SI.METER),
-					_theOperatingConditions.getAltitudeToReach(),
+					_initialClimbAltitude,
+					_finalClimbAltitude,
 					true
 					);
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
@@ -6645,6 +6685,22 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setAlphaDotRotation(Double _alphaDotRotation) {
 		this._alphaDotRotation = _alphaDotRotation;
+	}
+
+	public Amount<Length> getInitialClimbAltitude() {
+		return _initialClimbAltitude;
+	}
+
+	public void setInitialClimbAltitude(Amount<Length> _initialClimbAltitude) {
+		this._initialClimbAltitude = _initialClimbAltitude;
+	}
+
+	public Amount<Length> getFinalClimbAltitude() {
+		return _finalClimbAltitude;
+	}
+
+	public void setFinalClimbAltitude(Amount<Length> _finalClimbAltitude) {
+		this._finalClimbAltitude = _finalClimbAltitude;
 	}
 
 }
