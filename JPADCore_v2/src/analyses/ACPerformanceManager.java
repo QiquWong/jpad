@@ -2262,12 +2262,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					);
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
 				calcTakeOff.plotTakeOffPerformance(takeOffFolderPath);
-//			calcTakeOff.calculateBalancedFieldLength();
-//			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
-//				calcTakeOff.plotBalancedFieldLength(takeOffFolderPath);
-//			calcTakeOff.calculateVMC();
-//			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
-//				calcTakeOff.plotVMC(takeOffFolderPath);
+			calcTakeOff.calculateBalancedFieldLength();
+			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+				calcTakeOff.plotBalancedFieldLength(takeOffFolderPath);
+			calcTakeOff.calculateVMC();
+			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+				calcTakeOff.plotVMC(takeOffFolderPath);
 			
 		}
 		
