@@ -838,6 +838,18 @@ public class AircraftPointMassPropagator {
 				AircraftPointMassPropagator.this.getXLiftDot().add(Amount.valueOf(xdot[8],MyUnits.KILOGRAM_METER_PER_SECOND));
 				//----------------------------------------------------------------------------------------
 				// DRAG:
+				double cD0 = 0.03;
+				double aspectRatio = theAircraft.getWing().getAspectRatio();
+				double oswaldFactor = 0.85; // TODO
+				double kD = Math.PI * aspectRatio * oswaldFactor;
+				double airDensity = AtmosphereCalc.getDensity(x[5]); // f(altitude)
+				double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
+				double kD0 = 0.5 * airDensity * surfaceWing * cD0;
+				double kD1 = 2.0/(airDensity * surfaceWing * kD);
+				double d = kD0 * Math.pow(airspeed, 2) 
+						+ kD1 * Math.pow(x[9], 2)/Math.pow(airspeed, 2);
+				AircraftPointMassPropagator.this.getDrag().add(Amount.valueOf(d, SI.NEWTON));
+				
 				// TODO
 			}
 			
@@ -1030,7 +1042,7 @@ public class AircraftPointMassPropagator {
 					"Time", "xTDot = m(Vc - V)", "s", "kg*m/s",
 					outputChartDir, "xTDot");
 			
-			// thrust angle vs. time
+			// thrust vs. time
 			MyChartToFileUtils.plotNoLegend(
 					Arrays.stream(
 							getTime().stream()
@@ -1077,6 +1089,22 @@ public class AircraftPointMassPropagator {
 					0.0, null, null, null,
 					"Time", "xLDot = m(hdotc - hdot)", "s", "kg*m/s",
 					outputChartDir, "xLDot");
+			
+			// drag vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getDrag().stream()
+							.map(thrust -> thrust.doubleValue(SI.NEWTON))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, null, null,
+					"Time", "Drag", "s", "N",
+					outputChartDir, "Drag");
 		}
 	}
 	
