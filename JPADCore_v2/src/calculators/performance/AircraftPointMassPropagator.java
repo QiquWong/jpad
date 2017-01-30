@@ -35,12 +35,14 @@ import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
 import calculators.performance.customdata.AircraftPointMassSimulationResultMap;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import standaloneutils.atmosphere.SpeedCalc;
 
 /*
  * See the book by D. K. Schmidt, Modern Flight Dynamics McGraw-Hill
@@ -213,8 +215,16 @@ public class AircraftPointMassPropagator {
 	private Amount<?> kLp   = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
 	private Amount<?> kLi   = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
 	private Amount<?> kPhip = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
+	
 	private Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
-
+	private double thrustMax;
+	private double signDeltaThrustAtMax = 1.0;
+	private double thrustMin = 0.0;
+	private double signDeltaThrustAtMin = 1.0;
+	
+	private boolean resetThrustDerivative = false;
+	private double thrustDerivativeResetValue;
+	
 	private Amount<Velocity> commandedSpeed;
 	private Amount<Angle> commandedFlightpathAngle;
 	private Amount<Angle> commandedHeadingAngle;
@@ -373,7 +383,7 @@ public class AircraftPointMassPropagator {
 
 		double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
 
-		MyInterpolatingFunction thrustMax;
+		// MyInterpolatingFunction thrustMax; // TODO
 		
 		// state variables
 		private double time,
@@ -473,33 +483,66 @@ public class AircraftPointMassPropagator {
 			// alpha
 			// TODO
 
-			// Assign the derivatives
+			//=======================================================================
+			// ASSIGN THE DERIVATIVES
+			// LIMITERS GO HERE
+			
+			/* STATE VARIABLES
+			 *
+			 * x0  = Vv,  x1  = γ,  x2  = ψ
+			 * x3  = Xi,  x4  = Yi, x5  = h
+			 * x6  = xT,  x7  = T,  x8  = xL
+			 * x9  = L,   x10 = ϕ,  x11 = m
+			 * 
+			 */
+
+			// Vv, speed
 			xDot[ 0] = ((thrust - drag)/mass) - g0*Math.sin(flightpathAngle);
+			// gamma, flight-path angle
 			xDot[ 1] = (lift*Math.cos(bankAngle) - mass*g0*Math.cos(flightpathAngle))/(mass * speedInertial);
+			// psi, heading
 			xDot[ 2] = (lift*Math.sin(bankAngle))/(mass*speedInertial*Math.cos(flightpathAngle));
+			// XI, ground distance X-
 			xDot[ 3] = xDotI;
+			// YI, ground distance Y-
 			xDot[ 4] = yDotI;
+			// h, altitude
 			xDot[ 5] = hDot;
+			// xT, int(m(Vc - Vv))
 			xDot[ 6] = mass*(commandedSpeed.doubleValue(SI.METERS_PER_SECOND) - speedInertial);
-			xDot[ 7] = pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
+			
+			// T, thrust
+			if (resetThrustDerivative) {
+				xDot[7] = thrustDerivativeResetValue;
+				System.out.println("-------> t       = " + t);
+				System.out.println("-------> x[7]    = " + x[7]);
+				System.out.println("-------> xDot[7] = " + xDot[7]);
+				resetThrustDerivative = false;
+			} else
+				xDot[ 7] = pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
 						+ kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6] 
-						+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[6]
-						- thrust);
+								+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[6]
+										- thrust);
+
+			// xL, int(m(hdotc - hdot))
 			xDot[ 8] = mass*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
 						Math.sin(commandedFlightpathAngle.doubleValue(SI.RADIAN)) - Math.sin(flightpathAngle));
+			// L, lift
 			xDot[ 9] = pL.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
 						+ kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8] 
 						+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[8]
 						- lift);
+			// phi, bank angle
 			xDot[10] = pPhi.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
 					kPhip.doubleValue(MyUnits.ONE_PER_SECOND)
 						*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
 							commandedHeadingAngle.doubleValue(SI.RADIAN) - x[2])/g0
 					- bankAngle);
+			// m, mass
 			xDot[11] = 0.0; // TODO: make a variable mass
 			
 		}
-
+		
 		public double getSpeedInertial() {
 			return speedInertial;
 		}
@@ -703,6 +746,8 @@ public class AircraftPointMassPropagator {
 		
 		FirstOrderDifferentialEquations ode = new DynamicsEquationsAircraftPointMass();
 		
+		//=============================================================================
+		// EVENT HANDLERS AS READ FROM FILE, AS COMMANDED MISSION EVENTS 
 		missionEvents.stream()
 			.forEach(me -> {
 				EventHandler eventHandler = new EventHandler() {
@@ -735,6 +780,133 @@ public class AircraftPointMassPropagator {
 				theIntegrator.addEventHandler(eventHandler, 1.0, 1e-3, 20);
 			});
 		
+		//=============================================================================
+		// HANDLERS AS LIMITERS
+		
+		EventHandler handlerMaxThrustLimiter = new EventHandler() {
+
+			/* STATE VARIABLES
+			 *
+			 * x0  = Vv,  x1  = γ,  x2  = ψ
+			 * x3  = Xi,  x4  = Yi, x5  = h
+			 * x6  = xT,  x7  = T,  x8  = xL
+			 * x9  = L,   x10 = ϕ,  x11 = m
+			 * 
+			 */
+
+			@Override
+			public void init(double t0, double[] x0, double t) {
+			}
+
+			@Override
+			public double g(double t, double[] x) {
+				
+				// max available thrust
+				AircraftPointMassPropagator.this.thrustMax = AircraftPointMassPropagator.this.getThrustMax(
+						AircraftPointMassPropagator.this.windVelocityXI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindXI
+						AircraftPointMassPropagator.this.windVelocityYI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindYI
+						AircraftPointMassPropagator.this.windVelocityZI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindZI
+						x[0], // V 
+						x[1], // gamma
+						x[2], // psi
+						x[5], // altitude
+						AircraftPointMassPropagator.this.theAircraft);
+
+				// switching condition 
+//				if ( 1.0 //AircraftPointMassPropagator.this.signDeltaThrustAtMax
+//						* (x[7] - AircraftPointMassPropagator.this.thrustMax) < 0) {
+//					System.out.println("sign = " + signDeltaThrustAtMax);					
+//					System.out.println("x[7] = " + x[7]);					
+//					System.out.println("Tmax = " + AircraftPointMassPropagator.this.thrustMax);					
+//				}
+				return 
+						1.0 //AircraftPointMassPropagator.this.signDeltaThrustAtMax
+						* (x[7] - AircraftPointMassPropagator.this.thrustMax);
+			}
+
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+//				AircraftPointMassPropagator.this.signDeltaThrustAtMax = -AircraftPointMassPropagator.this.signDeltaThrustAtMax;
+				return  Action.RESET_STATE;
+			}
+
+			@Override
+			public void resetState(double t, double[] x) {
+				System.out.println("handlerMaxThrustLimiter - STATE RESET - t="+t);
+				// max available thrust
+				AircraftPointMassPropagator.this.thrustMax = AircraftPointMassPropagator.this.getThrustMax(
+						AircraftPointMassPropagator.this.windVelocityXI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindXI
+						AircraftPointMassPropagator.this.windVelocityYI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindYI
+						AircraftPointMassPropagator.this.windVelocityZI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindZI
+						x[0], // V 
+						x[1], // gamma
+						x[2], // psi
+						x[5], // altitude
+						AircraftPointMassPropagator.this.theAircraft);
+				System.out.println("T0 = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON));
+				System.out.println("engineNumber = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineNumber());
+				System.out.println("BPR = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineList().get(0).getBPR());
+				System.out.println("engineType = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineType());
+				System.out.println("altitude = " + x[5]);
+				System.out.println("Tmax = " + AircraftPointMassPropagator.this.thrustMax);
+
+				x[7] = AircraftPointMassPropagator.this.thrustMax;
+			}
+		};
+		theIntegrator.addEventHandler(handlerMaxThrustLimiter, 1.0, 1e-3, 20);		
+
+		EventHandler handlerMinThrustLimiter = new EventHandler() {
+
+			/* STATE VARIABLES
+			 *
+			 * x0  = Vv,  x1  = γ,  x2  = ψ
+			 * x3  = Xi,  x4  = Yi, x5  = h
+			 * x6  = xT,  x7  = T,  x8  = xL
+			 * x9  = L,   x10 = ϕ,  x11 = m
+			 * 
+			 */
+			
+			double sign = 1.0;
+
+			@Override
+			public void init(double t0, double[] x0, double t) {
+			}
+
+			@Override
+			public double g(double t, double[] x) {
+				// minimum available thrust
+				AircraftPointMassPropagator.this.thrustMin = AircraftPointMassPropagator.this.getThrustMin();
+				//System.out.println(x[7] + " ___ " + AircraftPointMassPropagator.this.thrustMin);
+				return
+						x[7] - AircraftPointMassPropagator.this.thrustMin;
+			}
+
+			@Override
+			public Action eventOccurred(double t, double[] x, boolean increasing) {
+				sign = -sign;
+				System.out.println("sign = " + sign);
+				AircraftPointMassPropagator.this.resetThrustDerivative = true;
+				AircraftPointMassPropagator.this.thrustDerivativeResetValue = 0.0;
+				System.out.println(x[7] + " ___ " + AircraftPointMassPropagator.this.thrustMin);
+				return  Action.RESET_STATE;
+			}
+
+			@Override
+			public void resetState(double t, double[] x) {
+				System.out.println("handlerMinThrustLimiter - STATE RESET - t="+t);
+				// max available thrust
+				AircraftPointMassPropagator.this.thrustMin = AircraftPointMassPropagator.this.getThrustMin();
+				System.out.println("T0 = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON));
+				System.out.println("engineNumber = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineNumber());
+				System.out.println("BPR = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineList().get(0).getBPR());
+				System.out.println("engineType = " + AircraftPointMassPropagator.this.theAircraft.getPowerPlant().getEngineType());
+				System.out.println("altitude = " + x[5]);
+				System.out.println("Tmin = " + AircraftPointMassPropagator.this.thrustMin);
+				x[7] = AircraftPointMassPropagator.this.thrustMin;
+			}
+		};
+		theIntegrator.addEventHandler(handlerMinThrustLimiter, 1.0, 1e-6, 20);		
+		
 		// TODO: add a STOP event at the end
 
 		// handle detailed info
@@ -747,32 +919,27 @@ public class AircraftPointMassPropagator {
 			@Override
 			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
 				
+				/* STATE VARIABLES
+				 *
+				 * x0  = Vv,  x1  = γ,  x2  = ψ
+				 * x3  = Xi,  x4  = Yi, x5  = h
+				 * x6  = xT,  x7  = T,  x8  = xL
+				 * x9  = L,   x10 = ϕ,  x11 = m
+				 * 
+				 */
 				double   t = interpolator.getCurrentTime();
 				double[] x = interpolator.getInterpolatedState();
 				double[] xdot = interpolator.getInterpolatedDerivatives();
 
-				// TODO: state limiters go here
-				// Example
-				
-				// * BANK ANGLE
-				// if (phi > phimax) then phi = phimax  
-				// if (phi < -phimax) then phi = -phimax
-				
-				// * THRUST
-				// ...
-				
-				// * LIFT
-				// ...
-				
-				System.out.println("-------------------------"+
-						"\n\tt = " + t + " s" +
-						"\n\tx[0] = V = " + x[0] + " m/s" +
-						"\n\tx[1] = gamma = " + x[1] + " rad" + 
-						"\n\tx[2] = psi = " + x[2] + " rad" +
-						"\n\tx[3] = XI = " + x[3] + " m" +
-						"\n\tx[4] = YI = " + x[4] + " m" +
-						"\n\tx[5] = h  = " + x[5] + " m"
-						);
+//				System.out.println("-------------------------"+
+//						"\n\tt = " + t + " s" +
+//						"\n\tx[0] = V = " + x[0] + " m/s" +
+//						"\n\tx[1] = gamma = " + x[1] + " rad" + 
+//						"\n\tx[2] = psi = " + x[2] + " rad" +
+//						"\n\tx[3] = XI = " + x[3] + " m" +
+//						"\n\tx[4] = YI = " + x[4] + " m" +
+//						"\n\tx[5] = h  = " + x[5] + " m"
+//						);
 				
 				/* PICKING UP ALL DATA AT EVERY STEP
 				 *
@@ -850,7 +1017,6 @@ public class AircraftPointMassPropagator {
 						+ kD1 * Math.pow(x[9], 2)/Math.pow(airspeed, 2);
 				AircraftPointMassPropagator.this.getDrag().add(Amount.valueOf(d, SI.NEWTON));
 				
-				// TODO
 			}
 			
 		};
@@ -1043,20 +1209,20 @@ public class AircraftPointMassPropagator {
 					outputChartDir, "xTDot");
 			
 			// thrust vs. time
-			MyChartToFileUtils.plotNoLegend(
-					Arrays.stream(
-							getTime().stream()
-							.map(t -> t.doubleValue(SI.SECOND))
-							.toArray(size -> new Double[size])
-							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-					Arrays.stream(
-							getThrust().stream()
-							.map(thrust -> thrust.doubleValue(SI.NEWTON))
-							.toArray(size -> new Double[size])
-							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-					0.0, null, null, null,
-					"Time", "Thrust", "s", "N",
-					outputChartDir, "Thrust");
+//			MyChartToFileUtils.plotNoLegend(
+//					Arrays.stream(
+//							getTime().stream()
+//							.map(t -> t.doubleValue(SI.SECOND))
+//							.toArray(size -> new Double[size])
+//							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+//					Arrays.stream(
+//							getThrust().stream()
+//							.map(thrust -> thrust.doubleValue(SI.NEWTON))
+//							.toArray(size -> new Double[size])
+//							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+//					0.0, null, null, null,
+//					"Time", "Thrust", "s", "N",
+//					outputChartDir, "Thrust");
 			
 			// int( m (hdotc - hdot)) angle vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1091,20 +1257,51 @@ public class AircraftPointMassPropagator {
 					outputChartDir, "xLDot");
 			
 			// drag vs. time
-			MyChartToFileUtils.plotNoLegend(
-					Arrays.stream(
-							getTime().stream()
-							.map(t -> t.doubleValue(SI.SECOND))
-							.toArray(size -> new Double[size])
-							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-					Arrays.stream(
-							getDrag().stream()
-							.map(thrust -> thrust.doubleValue(SI.NEWTON))
-							.toArray(size -> new Double[size])
-							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-					0.0, null, null, null,
-					"Time", "Drag", "s", "N",
-					outputChartDir, "Drag");
+//			MyChartToFileUtils.plotNoLegend(
+//					Arrays.stream(
+//							getTime().stream()
+//							.map(t -> t.doubleValue(SI.SECOND))
+//							.toArray(size -> new Double[size])
+//							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+//					Arrays.stream(
+//							getDrag().stream()
+//							.map(thrust -> thrust.doubleValue(SI.NEWTON))
+//							.toArray(size -> new Double[size])
+//							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+//					0.0, null, null, null,
+//					"Time", "Drag", "s", "N",
+//					outputChartDir, "Drag");
+			
+			// thrust, drag vs. time
+			xMatrix2 = null;
+			yMatrix2 = null;
+			xMatrix2 = new double[2][getTime().size()];
+			for(int i=0; i<xMatrix2.length; i++)
+				xMatrix2[i] = Arrays.stream(
+						getTime().stream()
+						.map(t -> t.doubleValue(SI.SECOND))
+						.toArray(size -> new Double[size])
+						).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+
+			yMatrix2 = new double[2][getTime().size()];
+			yMatrix2[0] = Arrays.stream(
+					getThrust().stream()
+					.map(vV -> vV.doubleValue(SI.NEWTON))
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			yMatrix2[1] = Arrays.stream(
+					getDrag().stream()
+					.map(vVa -> vVa.doubleValue(SI.NEWTON))
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			
+			MyChartToFileUtils.plot(
+							xMatrix2, yMatrix2,
+							0.0, null, null, null,
+							"Time", "T, D", "s", "N",
+							new String[] {"Thrust", "Drag"},
+							outputChartDir, "Thrust_Drag");
+
 		}
 	}
 	
@@ -1357,4 +1554,37 @@ public class AircraftPointMassPropagator {
 		this.outputChartDir = outputChartDir;
 	}
 
+	public double getThrustMax(
+			double windXI, double windYI, double windZI,
+			double vV, double gamma, double psi, double altitude,
+			Aircraft aircraft
+			) {
+		// intermediate variables
+		double xDotI = vV*Math.cos(gamma)*Math.cos(psi);
+		double yDotI = vV*Math.cos(gamma)*Math.sin(psi);
+		double hDot  = vV*Math.sin(gamma);
+		double airspeed = Math.sqrt(
+				Math.pow(xDotI - windXI, 2)	
+				+ Math.pow(yDotI - windYI, 2)
+				+ Math.pow(hDot + windZI, 2)
+				);
+		// max available thrust
+		return ThrustCalc.calculateThrustDatabase(
+				aircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON), 
+				aircraft.getPowerPlant().getEngineNumber(), 
+				1.0, // throttle setting at max 
+				aircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
+				aircraft.getPowerPlant().getEngineType(), 
+				EngineOperatingConditionEnum.CRUISE, // TODO: set a condition linked to the mission event  type 
+				aircraft.getPowerPlant(), 
+				altitude, // altitude in meters 
+				SpeedCalc.calculateMach(altitude, airspeed) 
+				);
+	}
+
+	public double getThrustMin() {
+		// minimum thrust TODO: see if idle thrust makes sense
+		return 0.0;
+	}
+	
 }

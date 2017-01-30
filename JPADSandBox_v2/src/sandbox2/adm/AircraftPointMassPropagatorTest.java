@@ -342,7 +342,6 @@ public class AircraftPointMassPropagatorTest {
 			AircraftPointMassPropagatorTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
 		} catch (InstantiationException  | IllegalAccessException e) {
 			System.err.println("Error: " + e.getMessage());
 			System.err.println("  A problem occurred with the output chart function.");
