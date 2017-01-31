@@ -60,6 +60,10 @@ public class MyUnits {
 
 	public static final Unit KILOGRAM_METER = SI.KILOGRAM.times(SI.METER);
 	public static final Unit KILOGRAM_METER_PER_SECOND = SI.KILOGRAM.times(SI.METER).divide(SI.SECOND);
+
+	public static final Unit KILOGRAM_PER_SECOND = SI.KILOGRAM.divide(SI.SECOND);
+	public static final Unit KILOGRAM_PER_SECOND_PER_NEWTON = SI.KILOGRAM.divide(SI.SECOND).divide(SI.NEWTON);
+	public static final Unit SLUG_PER_SECOND_PER_POUND = MyUnits.SLUG.divide(SI.SECOND).divide(NonSI.POUND_FORCE);
 	
 	/**
 	 * Method that converts a price per kilogram (US$/Kg) to a price per pound (US$/lb)

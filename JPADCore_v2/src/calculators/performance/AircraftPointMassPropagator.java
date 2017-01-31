@@ -215,6 +215,7 @@ public class AircraftPointMassPropagator {
 	private Amount<?> kLp   = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
 	private Amount<?> kLi   = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
 	private Amount<?> kPhip = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
+	private Amount<?> kWDot = Amount.valueOf(4.0e-6, MyUnits.SLUG_PER_SECOND_PER_POUND);
 	
 	private Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
 	private double thrustMax;
@@ -385,10 +386,10 @@ public class AircraftPointMassPropagator {
 
 		// MyInterpolatingFunction thrustMax; // TODO
 		
-		// state variables
-		private double time,
-			speedInertial, flightpathAngle, heading, xInertial, yInertial, altitude, 
-			xThrust, thrust, xLift, lift, bankAngle, mass;
+//		// state variables
+//		private double time,
+//			speedInertial, flightpathAngle, heading, xInertial, yInertial, altitude, 
+//			xThrust, thrust, xLift, lift, bankAngle, mass;
 		
 		// auxiliary variables
 		private double 
@@ -439,19 +440,19 @@ public class AircraftPointMassPropagator {
 			 *   11) dot( ϕ  ) = -pϕ ϕ + pϕ Kϕp Vc (ψc - ψ)/g 
 			 *   12) dot( m  ) = - dot_wf/g = - Kwf T 
 			 */
-			this.time            = t;
-			this.speedInertial   = x[0];
-			this.flightpathAngle = x[1];
-			this.heading         = x[2];
-			this.xInertial       = x[3];
-			this.yInertial       = x[4];
-			this.altitude        = x[5];
-			this.xThrust         = x[6];
-			this.thrust          = x[7];
-			this.xLift           = x[8];
-			this.lift            = x[9];
-			this.bankAngle       = x[10];
-			this.mass            = x[11];
+			double time            = t;
+			double speedInertial   = x[0];
+			double flightpathAngle = x[1];
+			double heading         = x[2];
+			double xInertial       = x[3];
+			double yInertial       = x[4];
+			double altitude        = x[5];
+			double xThrust         = x[6];
+			double thrust          = x[7];
+			double xLift           = x[8];
+			double lift            = x[9];
+			double bankAngle       = x[10];
+			double mass            = x[11];
 			
 			// TODO: steady wind velocity components in the inertial frame
 			double windXI = windVelocityXI.doubleValue(SI.METERS_PER_SECOND); // TODO: getActualWindXI
@@ -539,162 +540,31 @@ public class AircraftPointMassPropagator {
 							commandedHeadingAngle.doubleValue(SI.RADIAN) - x[2])/g0
 					- bankAngle);
 			// m, mass
-			xDot[11] = 0.0; // TODO: make a variable mass
+			xDot[11] = -AircraftPointMassPropagator.this.kWDot.doubleValue(MyUnits.KILOGRAM_PER_SECOND_PER_NEWTON) * x[7];
 			
 		}
 		
-		public double getSpeedInertial() {
-			return speedInertial;
-		}
-
-		public double getFlightpathAngle() {
-			return flightpathAngle;
-		}
-
-		public double getHeading() {
-			return heading;
-		}
-
-		public double getxInertial() {
-			return xInertial;
-		}
-
-		public double getyInertial() {
-			return yInertial;
-		}
-
-		public double getAltitude() {
-			return altitude;
-		}
-
-		public double getxThrust() {
-			return xThrust;
-		}
-
-		public double getThrust() {
-			return thrust;
-		}
-
-		public double getxLift() {
-			return xLift;
-		}
-
-		public double getLift() {
-			return lift;
-		}
-
-		public double getBankAngle() {
-			return bankAngle;
-		}
-
-		public double getMass() {
-			return mass;
-		}
-
 		public double getWindSpeedXE() {
 			return windSpeedXE;
+		}
+		public void setWindSpeedXE(double windSpeedXE) {
+			this.windSpeedXE = windSpeedXE;
 		}
 
 		public double getWindSpeedYE() {
 			return windSpeedYE;
 		}
-
-		public double getWindSpeedZE() {
-			return windSpeedZE;
-		}
-
-		public double getAirspeed() {
-			return airspeed;
-		}
-
-		public double getDrag() {
-			return drag;
-		}
-
-		public double getAngleOfAttack() {
-			return angleOfAttack;
-		}
-
-		public double getAirDensity() {
-			return airDensity;
-		}
-
-		public void setSpeedInertial(double speedInertial) {
-			this.speedInertial = speedInertial;
-		}
-
-		public void setFlightpathAngle(double flightpathAngle) {
-			this.flightpathAngle = flightpathAngle;
-		}
-
-		public void setHeading(double heading) {
-			this.heading = heading;
-		}
-
-		public void setxInertial(double xInertial) {
-			this.xInertial = xInertial;
-		}
-
-		public void setyInertial(double yInertial) {
-			this.yInertial = yInertial;
-		}
-
-		public void setAltitude(double altitude) {
-			this.altitude = altitude;
-		}
-
-		public void setxThrust(double xThrust) {
-			this.xThrust = xThrust;
-		}
-
-		public void setThrust(double thrust) {
-			this.thrust = thrust;
-		}
-
-		public void setxLift(double xLift) {
-			this.xLift = xLift;
-		}
-
-		public void setLift(double lift) {
-			this.lift = lift;
-		}
-
-		public void setBankAngle(double bankAngle) {
-			this.bankAngle = bankAngle;
-		}
-
-		public void setMass(double mass) {
-			this.mass = mass;
-		}
-
-		public void setWindSpeedXE(double windSpeedXE) {
-			this.windSpeedXE = windSpeedXE;
-		}
-
 		public void setWindSpeedYE(double windSpeedYE) {
 			this.windSpeedYE = windSpeedYE;
 		}
 
+		public double getWindSpeedZE() {
+			return windSpeedZE;
+		}
 		public void setWindSpeedZE(double windSpeedZE) {
 			this.windSpeedZE = windSpeedZE;
 		}
 
-		public void setAirspeed(double airspeed) {
-			this.airspeed = airspeed;
-		}
-
-		public void setDrag(double drag) {
-			this.drag = drag;
-		}
-
-		public void setAngleOfAttack(double angleOfAttack) {
-			this.angleOfAttack = angleOfAttack;
-		}
-
-		public void setAirDensity(double airDensity) {
-			this.airDensity = airDensity;
-		}
-		
 	}	
 
 	/***************************************************************************************
@@ -1024,7 +894,10 @@ public class AircraftPointMassPropagator {
 		theIntegrator.addStepHandler(stepHandler);
 
 		// Initial values
-		commandedSpeed = Amount.valueOf(this.speedInertial0,SI.METERS_PER_SECOND);
+//		commandedSpeed = Amount.valueOf(this.speedInertial0,SI.METERS_PER_SECOND);
+		
+		commandedSpeed = Amount.valueOf(this.getMissionEvents().get(0).getCommandedSpeed(),SI.METERS_PER_SECOND);
+		
 		commandedFlightpathAngle = Amount.valueOf(this.flightpathAngle0,SI.RADIAN);
 		commandedHeadingAngle = Amount.valueOf(headingAngle0,SI.RADIAN);
 		
