@@ -839,6 +839,8 @@ public class AircraftPointMassPropagator {
 		};
 		theIntegrator.addEventHandler(handlerMinThrustLimiter, 1.0, 1e-6, 20);		
 		
+		// TODO: add Lift-limiter event
+		
 		// TODO: add a STOP event at the end
 
 		// handle detailed info
@@ -1598,6 +1600,102 @@ public class AircraftPointMassPropagator {
 	public double getThrustMin() {
 		// minimum thrust TODO: see if idle thrust makes sense
 		return 0.0;
+	}
+
+	public double getSpeedInertial0() {
+		return speedInertial0;
+	}
+
+	public void setSpeedInertial0(double speedInertial0) {
+		this.speedInertial0 = speedInertial0;
+	}
+
+	public double getFlightpathAngle0() {
+		return flightpathAngle0;
+	}
+
+	public void setFlightpathAngle0(double flightpathAngle0) {
+		this.flightpathAngle0 = flightpathAngle0;
+	}
+
+	public double getHeadingAngle0() {
+		return headingAngle0;
+	}
+
+	public void setHeadingAngle0(double headingAngle0) {
+		this.headingAngle0 = headingAngle0;
+	}
+
+	public double getxInertial0() {
+		return xInertial0;
+	}
+
+	public void setxInertial0(double xInertial0) {
+		this.xInertial0 = xInertial0;
+	}
+
+	public double getyInertial0() {
+		return yInertial0;
+	}
+
+	public void setyInertial0(double yInertial0) {
+		this.yInertial0 = yInertial0;
+	}
+
+	public double getAltitude0() {
+		return altitude0;
+	}
+
+	public void setAltitude0(double altitude0) {
+		this.altitude0 = altitude0;
+	}
+
+	public double getxThrust0() {
+		return xThrust0;
+	}
+
+	public void setXThrust0(double xThrust0) {
+		this.xThrust0 = xThrust0;
+	}
+
+	public double getThrust0() {
+		return thrust0;
+	}
+
+	public void setThrust0(double thrust0) {
+		this.thrust0 = thrust0;
+	}
+
+	public double getxLift0() {
+		return xLift0;
+	}
+
+	public void setXLift0(double xLift0) {
+		this.xLift0 = xLift0;
+	}
+
+	public double getLift0() {
+		return lift0;
+	}
+
+	public void setLift0(double lift0) {
+		this.lift0 = lift0;
+	}
+
+	public double getBankAngle0() {
+		return bankAngle0;
+	}
+
+	public void setBankAngle0(double bankAngle0) {
+		this.bankAngle0 = bankAngle0;
+	}
+
+	public double getMass0() {
+		return mass0;
+	}
+
+	public void setMass0(double mass0) {
+		this.mass0 = mass0;
 	}
 	
 }

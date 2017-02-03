@@ -290,40 +290,53 @@ public class AircraftPointMassPropagatorTest {
 			System.setOut(originalOut);
 			AircraftPointMassPropagator propagator = new AircraftPointMassPropagator(theAircraft);
 			
+			// read initial values of some state variables
 			// read the list of events from file
 			propagator.readMissionScript(pathToMissionEventsXML);
 			
-			// setup the initial state
-			// Initial values
-			double v0 = 100.0; // m/s
-			if (!propagator.getMissionEvents().isEmpty()) {
-				v0 = 0.75*propagator.getMissionEvents().get(0).getCommandedSpeed();
-			}
-			double gamma0 = 0.0; // rad
-//			if (!propagator.getMissionEvents().isEmpty()) {
-//				gamma0 = propagator.getMissionEvents().get(0).getCommandedFlightpathAngle();
-//			}			
-			double psi0 = 0.0; // rad
-			double h0 = 1000.0; // m
-			double thrust0 = 200000.0; // N
+			// lift = weight
 			double mass0 = 53000.0; // kg
 //			double cL0 = 0.15;
-//			double rho0 = AtmosphereCalc.getDensity(h0); // kg/m^3
-//			double lift0 = 0.5*rho0*Math.pow(v0, 2)
+			double rho0 = AtmosphereCalc.getDensity(propagator.getAltitude0()); // kg/m^3
+//			double lift0 = 0.5*rho0*Math.pow(propagator.getSpeedInertial0(), 2)
 //					*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
 //					*cL0;
 			double lift0 = mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
-			double phi0 = 0.0; // rad
+			double cL0 = lift0
+					/(0.5*rho0
+							*Math.pow(propagator.getSpeedInertial0(), 2)
+							*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
+							);
+			System.out.println("Initial lift coefficient, CL(0) = " + cL0);
+			double thrust0 = 200000.0; // N
+			// drag = thrust
+			double cD0 = 0.03;
+			double aspectRatio = theAircraft.getWing().getAspectRatio();
+			double oswaldFactor = 0.85;
+			double kD = Math.PI * aspectRatio * oswaldFactor;
+			double airDensity = AtmosphereCalc.getDensity(propagator.getAltitude0());
+			double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
+			double kD0 = 0.5 * airDensity * surfaceWing * cD0;
+			double kD1 = 2.0/(airDensity * surfaceWing * kD);
+			thrust0 = kD0 * Math.pow(propagator.getSpeedInertial0(), 2) 
+					+ kD1 * Math.pow(lift0, 2)/Math.pow(propagator.getSpeedInertial0(), 2);
+			
+			// complete the initial settings
+			propagator.setXThrust0(0.0);
+			propagator.setThrust0(thrust0);
+			propagator.setXLift0(0.0);
+			propagator.setLift0(thrust0);
+			propagator.setMass0(mass0);
 
-			propagator.setInitialConditions(
-					v0, gamma0, psi0,
-					0.0, 0.0, h0, // XI, YI, h
-					0.0, thrust0, // xT, T
-					0.0, lift0, // xL, L
-					phi0, mass0);
+//			propagator.setInitialConditions(
+//					v0, gamma0, psi0,
+//					0.0, 0.0, h0, // XI, YI, h
+//					0.0, thrust0, // xT, T
+//					0.0, lift0, // xL, L
+//					phi0, mass0);
 			
 			// Final time
-			propagator.setTimeFinal(300.0); // sec
+			propagator.setTimeFinal(60.0); // sec
 			
 			propagator.enableCharts(true);
 			

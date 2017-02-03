@@ -24,7 +24,7 @@
             </initial_conditions>
             <events>
                 <event id="Event 0" action="CONTINUE">
-                    <time unit="s"> 0.0 </time>
+                    <time unit="s"> 10.0 </time>
                     <commanded_speed unit="kn"> 391 </commanded_speed>
                     <commanded_flightpath_angle unit="deg"> 0.0 </commanded_flightpath_angle>
                     <commanded_heading_angle unit="deg"> 0.0 </commanded_heading_angle>
@@ -33,7 +33,7 @@
                     <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
                 </event>
                 <event id="Event 1" action="CONTINUE">
-                    <time unit="s"> 5.0 </time>
+                    <time unit="s"> 25.0 </time>
                     <commanded_speed unit="kn"> 391 </commanded_speed>
                     <commanded_flightpath_angle unit="deg"> 5.0 </commanded_flightpath_angle>
                     <commanded_heading_angle unit="deg"> 15.0 </commanded_heading_angle>
