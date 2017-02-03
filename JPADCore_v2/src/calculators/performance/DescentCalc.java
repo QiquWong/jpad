@@ -243,16 +243,17 @@ public class DescentCalc {
 				*sfcCruise.get(0)
 				);
 				
-		if(_thrustPerStep.get(0).doubleValue(SI.NEWTON)
-				*(0.224809)*(0.454/60)
-				*requiredSFC.get(0) > 0)
-			fuelFlows.add(
-					_thrustPerStep.get(0).doubleValue(SI.NEWTON)
-					*(0.224809)*(0.454/60)
-					*requiredSFC.get(0)
-					);
-		else
-			fuelFlows.add(0.0);
+//		if(_thrustPerStep.get(0).doubleValue(SI.NEWTON)
+//				*(0.224809)*(0.454/60)
+//				*requiredSFC.get(0) > 0)
+//			fuelFlows.add(
+//					_thrustPerStep.get(0).doubleValue(SI.NEWTON)
+//					*(0.224809)*(0.454/60)
+//					*requiredSFC.get(0)
+//					);
+//		else
+//			fuelFlows.add(0.0);
+		fuelFlows.add(12.5);
 		
 		//---------------------------------------------------------------------------------------
 		
@@ -264,7 +265,7 @@ public class DescentCalc {
 						)
 				);
 		
-		for(int i=1; i<altitudeDescent.length; i++) {
+		for(int i=1; i<altitudeDescent.length-1; i++) {
 			sigmaList.add(OperatingConditions.getAtmosphere(
 					altitudeDescent[i])
 					.getDensity()*1000
@@ -328,7 +329,7 @@ public class DescentCalc {
 								*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND),
 							_speedListTAS.get(i).doubleValue(SI.METERS_PER_SECOND),
 							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-							_initialDescentAltitude.doubleValue(SI.METER)
+							altitudeDescent[i]
 							)
 					);
 			cDSteps.add(
@@ -404,22 +405,23 @@ public class DescentCalc {
 					*sfcCruise.get(i)
 					);
 					
-			if(_thrustPerStep.get(i).doubleValue(SI.NEWTON)
-					*(0.224809)*(0.454/60)
-					*requiredSFC.get(i) > 0)
-				fuelFlows.add(
-						_thrustPerStep.get(i).doubleValue(SI.NEWTON)
-						*(0.224809)*(0.454/60)
-						*requiredSFC.get(i)
-						);
-			else
-				fuelFlows.add(0.0);
+//			if(_thrustPerStep.get(i).doubleValue(SI.NEWTON)
+//					*(0.224809)*(0.454/60)
+//					*requiredSFC.get(i) > 0)
+//				fuelFlows.add(
+//						_thrustPerStep.get(i).doubleValue(SI.NEWTON)
+//						*(0.224809)*(0.454/60)
+//						*requiredSFC.get(i)
+//						);
+//			else
+//				fuelFlows.add(0.0);
+			fuelFlows.add(12.5);
 			
 			//---------------------------------------------------------------------------------------
 			
 			fuelUsedPerStep.add(
 					Amount.valueOf(
-							fuelFlows.get(i)
+							fuelFlows.get(0)
 							*_descentTimes.get(i).doubleValue(NonSI.MINUTE),
 							SI.KILOGRAM
 							)

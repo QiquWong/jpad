@@ -1,7 +1,5 @@
 package calculators.performance;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.measure.quantity.Acceleration;

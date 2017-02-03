@@ -904,8 +904,8 @@ public class MissionProfileCalc {
 						_theOperatingConditions.getAltitudeCruise().to(SI.METER),
 						_holdingAltitude.to(SI.METER),
 						intialFirstDescentMass,
-						_polarCLCruise,
-						_polarCDCruise
+						_polarCLClimb,
+						_polarCDClimb
 						);
 
 
@@ -1377,8 +1377,8 @@ public class MissionProfileCalc {
 						_alternateCruiseAltitude.to(SI.METER),
 						_holdingAltitude.to(SI.METER),
 						intialSecondDescentMass,
-						_polarCLCruise,
-						_polarCDCruise
+						_polarCLClimb,
+						_polarCDClimb
 						);
 
 				theSecondDescentCalculator.calculateDescentPerformance();
@@ -1605,8 +1605,8 @@ public class MissionProfileCalc {
 						_holdingAltitude.to(SI.METER),
 						Amount.valueOf(15.24, SI.METER),
 						intialThirdDescentMass,
-						_polarCLCruise,
-						_polarCDCruise
+						_polarCLClimb,
+						_polarCDClimb
 						);
 
 				theThirdDescentCalculator.calculateDescentPerformance();

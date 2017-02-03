@@ -1186,7 +1186,7 @@ public class ClimbCalc {
 			}
 			
 			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListAOE),
+					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListOEI),
 					MyArrayUtils.convertToDoublePrimitive(altitudeListOEI),
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",

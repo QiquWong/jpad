@@ -111,4 +111,12 @@ public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {
 		return _spoilers;
 	}
 
+	public Amount<Area> getSurfacePlanform() {
+		return surfacePlanform;
+	}
+
+	public void setSurfacePlanform(Amount<Area> surfacePlanform) {
+		this.surfacePlanform = surfacePlanform;
+	}
+
 }
