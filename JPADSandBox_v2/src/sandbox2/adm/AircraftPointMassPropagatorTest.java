@@ -300,6 +300,9 @@ public class AircraftPointMassPropagatorTest {
 				v0 = 0.75*propagator.getMissionEvents().get(0).getCommandedSpeed();
 			}
 			double gamma0 = 0.0; // rad
+//			if (!propagator.getMissionEvents().isEmpty()) {
+//				gamma0 = propagator.getMissionEvents().get(0).getCommandedFlightpathAngle();
+//			}			
 			double psi0 = 0.0; // rad
 			double h0 = 1000.0; // m
 			double thrust0 = 200000.0; // N
@@ -311,6 +314,7 @@ public class AircraftPointMassPropagatorTest {
 //					*cL0;
 			double lift0 = mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
 			double phi0 = 0.0; // rad
+
 			propagator.setInitialConditions(
 					v0, gamma0, psi0,
 					0.0, 0.0, h0, // XI, YI, h
@@ -319,7 +323,7 @@ public class AircraftPointMassPropagatorTest {
 					phi0, mass0);
 			
 			// Final time
-			propagator.setTimeFinal(15.0); // sec
+			propagator.setTimeFinal(300.0); // sec
 			
 			propagator.enableCharts(true);
 			

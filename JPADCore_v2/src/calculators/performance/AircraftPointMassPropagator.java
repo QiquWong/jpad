@@ -247,6 +247,7 @@ public class AircraftPointMassPropagator {
 	private List<Amount<Duration>> time;
 	private List<Amount<Mass>> mass;
 	private List<Amount<Force>> thrust, lift, drag, totalForce;
+	private List<Amount<Force>> commandedThrust, commandedLift;
 	private List<Amount<?>> xT, xL;
 	private List<Amount<?>> xTDot, xLDot;
 	private List<Amount<Velocity>> speedInertial, airspeed, rateOfClimb;
@@ -265,7 +266,9 @@ public class AircraftPointMassPropagator {
 		this.time = new ArrayList<Amount<Duration>>();
 		this.mass = new ArrayList<Amount<Mass>>();
 		this.thrust = new ArrayList<Amount<Force>>();
+		this.commandedThrust = new ArrayList<Amount<Force>>();
 		this.lift = new ArrayList<Amount<Force>>();
+		this.commandedLift = new ArrayList<Amount<Force>>();
 		this.xT = new ArrayList<Amount<?>>();
 		this.xL = new ArrayList<Amount<?>>();
 		this.xTDot = new ArrayList<Amount<?>>();
@@ -486,7 +489,7 @@ public class AircraftPointMassPropagator {
 
 			//=======================================================================
 			// ASSIGN THE DERIVATIVES
-			// LIMITERS GO HERE
+			// DERIVATIVES-RESET LOGIC GO HERE
 			
 			/* STATE VARIABLES
 			 *
@@ -519,20 +522,23 @@ public class AircraftPointMassPropagator {
 				System.out.println("-------> x[7]    = " + x[7]);
 				System.out.println("-------> xDot[7] = " + xDot[7]);
 				resetThrustDerivative = false;
-			} else
-				xDot[ 7] = pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
-						+ kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6] 
-								+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[6]
-										- thrust);
+			} else {
+				double commandedThrust = kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6]
+						+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[6];
+				
+				xDot[ 7] = - pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*thrust
+						+ pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*commandedThrust;
+			}
 
 			// xL, int(m(hdotc - hdot))
 			xDot[ 8] = mass*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
 						Math.sin(commandedFlightpathAngle.doubleValue(SI.RADIAN)) - Math.sin(flightpathAngle));
 			// L, lift
-			xDot[ 9] = pL.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
-						+ kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8] 
-						+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[8]
-						- lift);
+			double commandedLift = kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8]
+					+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[8];
+			xDot[ 9] = -pL.doubleValue(MyUnits.RADIAN_PER_SECOND)*lift
+					+ pL.doubleValue(MyUnits.RADIAN_PER_SECOND)*commandedLift;
+
 			// phi, bank angle
 			xDot[10] = pPhi.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
 					kPhip.doubleValue(MyUnits.ONE_PER_SECOND)
@@ -834,6 +840,9 @@ public class AircraftPointMassPropagator {
 				// FLIGHTPATH ANGLE:
 				AircraftPointMassPropagator.this.getFlightpathAngle().add(Amount.valueOf(x[1], SI.RADIAN));
 				//----------------------------------------------------------------------------------------
+				// RATE OF CLIMB:
+				AircraftPointMassPropagator.this.getRateOfClimb().add(Amount.valueOf(xdot[5], SI.METERS_PER_SECOND));
+				//----------------------------------------------------------------------------------------
 				// HEADING ANGLE:
 				AircraftPointMassPropagator.this.getHeadingAngle().add(Amount.valueOf(x[2], SI.RADIAN));
 				//----------------------------------------------------------------------------------------
@@ -887,6 +896,17 @@ public class AircraftPointMassPropagator {
 						+ kD1 * Math.pow(x[9], 2)/Math.pow(airspeed, 2);
 				AircraftPointMassPropagator.this.getDrag().add(Amount.valueOf(d, SI.NEWTON));
 				
+				//----------------------------------------------------------------------------------------
+				// COMMANDED THRUST & LIFT
+				double commandedThrust = 
+						kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6]
+						+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xdot[6];
+				AircraftPointMassPropagator.this.getCommandedThrust().add(Amount.valueOf(commandedThrust,SI.NEWTON));
+				double commandedLift = 
+						kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8]
+						+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xdot[8];
+				AircraftPointMassPropagator.this.getCommandedLift().add(Amount.valueOf(commandedLift,SI.NEWTON));
+
 			}
 			
 		};
@@ -1001,6 +1021,22 @@ public class AircraftPointMassPropagator {
 					"Time", "Altitude", "s", "m",
 					outputChartDir, "Altitude");
 
+			// rate-of-climb vs. time
+			MyChartToFileUtils.plotNoLegend(
+					Arrays.stream(
+							getTime().stream()
+							.map(t -> t.doubleValue(SI.SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					Arrays.stream(
+							getRateOfClimb().stream()
+							.map(roc -> roc.doubleValue(SI.METERS_PER_SECOND))
+							.toArray(size -> new Double[size])
+							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+					0.0, null, null, null,
+					"Time", "Rate Of Climb", "s", "m/s",
+					outputChartDir, "Rate_of_Climb");
+			
 			// flightpath angle vs. time
 			MyChartToFileUtils.plotNoLegend(
 					Arrays.stream(
@@ -1013,7 +1049,7 @@ public class AircraftPointMassPropagator {
 							.map(gamma -> gamma.doubleValue(NonSI.DEGREE_ANGLE))
 							.toArray(size -> new Double[size])
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-					0.0, null, -20.0, 20.0,
+					0.0, null, null, null,
 					"Time", "Flightpath Angle", "s", "deg",
 					outputChartDir, "Flightpath_Angle");
 			
@@ -1145,10 +1181,43 @@ public class AircraftPointMassPropagator {
 //					"Time", "Drag", "s", "N",
 //					outputChartDir, "Drag");
 			
-			// thrust, drag vs. time
-			xMatrix2 = null;
-			yMatrix2 = null;
+			// thrust, commandedThrust drag vs. time
+			double[][] xMatrix3 = new double[3][getTime().size()];
+			double[][] yMatrix3 = new double[3][getTime().size()];
+			for(int i=0; i<xMatrix3.length; i++)
+				xMatrix3[i] = Arrays.stream(
+						getTime().stream()
+						.map(t -> t.doubleValue(SI.SECOND))
+						.toArray(size -> new Double[size])
+						).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+
+			yMatrix3[0] = Arrays.stream(
+					getThrust().stream()
+					.map(th -> th.doubleValue(SI.NEWTON))
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			yMatrix3[1] = Arrays.stream(
+					getCommandedThrust().stream()
+					.map(thc -> thc.doubleValue(SI.NEWTON))
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			yMatrix3[2] = Arrays.stream(
+					getDrag().stream()
+					.map(d -> d.doubleValue(SI.NEWTON))
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			
+			MyChartToFileUtils.plot(
+							xMatrix3, yMatrix3,
+							0.0, null, null, null,
+							"Time", "T, Tc, D", "s", "N",
+							new String[] {"Thrust", "Commanded-Thrust", "Drag"},
+							outputChartDir, "Thrust_Drag");
+
+			// lift, commandedLift vs. time
+			xMatrix2 = null; yMatrix2 = null;
 			xMatrix2 = new double[2][getTime().size()];
+			yMatrix2 = new double[2][getTime().size()];
 			for(int i=0; i<xMatrix2.length; i++)
 				xMatrix2[i] = Arrays.stream(
 						getTime().stream()
@@ -1156,25 +1225,24 @@ public class AircraftPointMassPropagator {
 						.toArray(size -> new Double[size])
 						).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
 
-			yMatrix2 = new double[2][getTime().size()];
 			yMatrix2[0] = Arrays.stream(
-					getThrust().stream()
-					.map(vV -> vV.doubleValue(SI.NEWTON))
+					getLift().stream()
+					.map(l -> l.doubleValue(SI.NEWTON))
 					.toArray(size -> new Double[size])
 					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
 			yMatrix2[1] = Arrays.stream(
-					getDrag().stream()
-					.map(vVa -> vVa.doubleValue(SI.NEWTON))
+					getCommandedLift().stream()
+					.map(lc -> lc.doubleValue(SI.NEWTON))
 					.toArray(size -> new Double[size])
 					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
 			
 			MyChartToFileUtils.plot(
 							xMatrix2, yMatrix2,
 							0.0, null, null, null,
-							"Time", "T, D", "s", "N",
-							new String[] {"Thrust", "Drag"},
-							outputChartDir, "Thrust_Drag");
-
+							"Time", "L, Lc", "s", "N",
+							new String[] {"Lift", "Commanded-Lift"},
+							outputChartDir, "Lift");
+			
 		}
 	}
 	
@@ -1238,6 +1306,14 @@ public class AircraftPointMassPropagator {
 		this.thrust = thrust;
 	}
 
+	public List<Amount<Force>> getCommandedThrust() {
+		return this.commandedThrust;
+	}
+
+	public void setCommandedThrust(List<Amount<Force>> cthrust) {
+		this.commandedThrust = cthrust;
+	}
+	
 	public List<Amount<?>> getXThrust() {
 		return xT;
 	}
@@ -1262,6 +1338,14 @@ public class AircraftPointMassPropagator {
 		this.lift = lift;
 	}
 
+	public List<Amount<Force>> getCommandedLift() {
+		return this.commandedLift;
+	}
+
+	public void setCommandedLift(List<Amount<Force>> clift) {
+		this.commandedLift = clift;
+	}
+	
 	public List<Amount<?>> getXLift() {
 		return xL;
 	}
