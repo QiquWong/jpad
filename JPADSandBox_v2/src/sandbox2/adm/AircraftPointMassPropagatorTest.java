@@ -291,7 +291,7 @@ public class AircraftPointMassPropagatorTest {
 			AircraftPointMassPropagator propagator = new AircraftPointMassPropagator(theAircraft);
 			
 			// read the list of events from file
-			propagator.readMissionEvents(pathToMissionEventsXML);
+			propagator.readMissionScript(pathToMissionEventsXML);
 			
 			// setup the initial state
 			// Initial values

@@ -541,6 +541,38 @@ public class MyXMLReaderUtils {
 			return null;
 	}
 
+	public static Amount<?> getXMLAmountWithUnitByPath(Document xmlDoc, String expression) {
+
+		try {
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			XPathExpression expr =
+					xpath.compile(expression);
+			// evaluate expression result on XML document
+			String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
+			String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
+			
+			if ((valueStr != null) && (!valueStr.equals("")) && (unitStr != null)) {
+
+					Double value = Double.parseDouble(valueStr);
+					Amount<?> quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
+
+					return quantity;
+
+			} else
+				return null;
+
+		} catch (NumberFormatException | AmountException e) {
+			e.printStackTrace();
+			return null;
+		} catch (XPathExpressionException ex1) {
+				System.err.println("########################## MyXMLReaderUtils :: getXMLNodeListByPath");
+				ex1.printStackTrace();
+				return null; // ??
+		}
+		
+	}
+	
 	/*
 	 * Get a length quantity from XML path; unit attribute is not mandatory, if not present
 	 * the numeric value is assumed as SI.METRE ; if search fails return null

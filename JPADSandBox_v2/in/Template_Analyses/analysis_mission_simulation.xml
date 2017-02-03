@@ -13,6 +13,37 @@
                 <k_phi_p unit="1/s"> 0.075 </k_phi_p>
                 <bank_angle_max unit="deg"> 30.0 </bank_angle_max>
             </constants>
+            <initial_conditions>
+                <speed unit="kn"> 380.0 </speed>
+                <flightpath_angle unit="deg"> 0.0 </flightpath_angle>
+                <heading_angle unit="deg"> 0.0 </heading_angle>
+                <bank_angle unit="deg"> 0.0 </bank_angle>
+                <position_XE unit="m"> 0.0 </position_XE>
+                <position_YE unit="m"> 0.0 </position_YE>
+                <altitude unit="m"> 1000.0 </altitude>
+            </initial_conditions>
+            <events>
+                <event id="Event 0" action="CONTINUE">
+                    <time unit="s"> 0.0 </time>
+                    <commanded_speed unit="kn"> 391 </commanded_speed>
+                    <commanded_flightpath_angle unit="deg"> 0.0 </commanded_flightpath_angle>
+                    <commanded_heading_angle unit="deg"> 0.0 </commanded_heading_angle>
+                    <wind_speed_XE unit="mph"> 25.0 </wind_speed_XE>
+                    <wind_speed_YE unit="mph"> 25.0 </wind_speed_YE>
+                    <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
+                </event>
+                <event id="Event 1" action="CONTINUE">
+                    <time unit="s"> 5.0 </time>
+                    <commanded_speed unit="kn"> 391 </commanded_speed>
+                    <commanded_flightpath_angle unit="deg"> 5.0 </commanded_flightpath_angle>
+                    <commanded_heading_angle unit="deg"> 15.0 </commanded_heading_angle>
+                    <wind_speed_XE unit="mph"> 25.0 </wind_speed_XE>
+                    <wind_speed_YE unit="mph"> 25.0 </wind_speed_YE>
+                    <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
+                </event>
+            </events>
+        </mission_simulation>
+    </analysis>
             <!-- 
                 <condition> altitude_m >= 2000.0 </condition>
 
@@ -27,16 +58,5 @@
                 ground_distance_m, ground_distance_ft, ground_distance_km, 
                 thrust_N, thrust_kgf, thrust_lbs,
                 lift_N, lift_kgf, lift_lbs
-            -->
-            <event id="Event 1" action="CONTINUE">
-                <time unit="s"> 0.0 </time>
-                <commanded_speed unit="kn"> 391 </commanded_speed>
-                <commanded_flightpath_angle unit="deg"> 5.0 </commanded_flightpath_angle>
-                <commanded_heading_angle unit="deg"> 15.0 </commanded_heading_angle>
-                <wind_speed_XE unit="mph"> 25.0 </wind_speed_XE>
-                <wind_speed_YE unit="mph"> 25.0 </wind_speed_YE>
-                <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
-            </event>
-        </mission_simulation>
-    </analysis>
+            -->    
 </jpad_config>

@@ -293,7 +293,7 @@ public class AircraftPointMassPropagator {
 		simulationResults.initialize();
 	}
 	
-	public void readMissionEvents(String pathToXML) {
+	public void readMissionScript(String pathToXML) {
 		
 		// clear old events, if present
 		missionEvents.clear();
@@ -309,10 +309,66 @@ public class AircraftPointMassPropagator {
 			missionId = "Mission-Untitled-";
 		System.out.println("Mission id: " + missionId);
 
+		//--------------------------------------------------------------------------------------
+		System.out.println("Reading mission CONSTANTS (TODO) ...");
+
+		// TODO
+		
+		//--------------------------------------------------------------------------------------
+		System.out.println("Reading mission initial conditions ...");
+
+		this.speedInertial0   =
+				((Amount<Velocity>)
+					MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+							"//mission_simulation/initial_conditions/speed")
+				).doubleValue(SI.METERS_PER_SECOND);
+		System.out.println("Initial vehicle speed (m/s) = " + this.speedInertial0);
+		this.flightpathAngle0 = 
+				((Amount<Angle>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+								"//mission_simulation/initial_conditions/flightpath_angle")
+					).doubleValue(SI.RADIAN);
+		System.out.println("Initial flight-path angle (rad) = " + this.flightpathAngle0);
+		this.headingAngle0    =
+				((Amount<Angle>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+								"//mission_simulation/initial_conditions/heading_angle")
+					).doubleValue(SI.RADIAN);				
+		System.out.println("Initial heading angle (rad) = " + this.flightpathAngle0);
+		this.bankAngle0    =
+				((Amount<Angle>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+								"//mission_simulation/initial_conditions/bank_angle")
+					).doubleValue(SI.RADIAN);				
+		System.out.println("Initial bank angle (rad) = " + this.flightpathAngle0);
+		this.xInertial0       =
+				((Amount<Length>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+								"//mission_simulation/initial_conditions/position_XE")
+					).doubleValue(SI.METER);				
+		this.yInertial0       =
+				((Amount<Length>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+								"//mission_simulation/initial_conditions/position_YE")
+					).doubleValue(SI.METER);				
+		this.altitude0        =
+				((Amount<Length>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+								"//mission_simulation/initial_conditions/altitude")
+					).doubleValue(SI.METER);				
+		System.out.println("Initial position (xE, yE, h) = (" 
+					+ this.xInertial0 + "m , " + this.yInertial0 + " m, " + this.altitude0 +" m)");
+
+		// TODO
+		// xThrust0, thrust0, xLift0, lift0, 
+		// this.mass0            =
+		
+
+		//--------------------------------------------------------------------------------------
 		System.out.println("Reading mission events ...");
 		
 		NodeList nodelistEvents = MyXMLReaderUtils
-				.getXMLNodeListByPath(reader.getXmlDoc(), "//mission_simulation/event");
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//mission_simulation/events/event");
 		
 		System.out.println("No. events found: " + nodelistEvents.getLength());
 		
