@@ -529,6 +529,7 @@ public class AircraftPointMassPropagator {
 					);
 
 			// drag
+			// TODO: get constants from file
 			double cD0 = 0.03;
 			double aspectRatio = theAircraft.getWing().getAspectRatio();
 			double oswaldFactor = 0.85;
@@ -571,6 +572,10 @@ public class AircraftPointMassPropagator {
 			// xT, int(m(Vc - Vv))
 			xDot[ 6] = mass*(commandedSpeed.doubleValue(SI.METERS_PER_SECOND) - speedInertial);
 			
+//			System.out.println("Vc = " + commandedSpeed.doubleValue(SI.METERS_PER_SECOND));
+//			System.out.println("V  = " + speedInertial);
+//			System.out.println("-----------------------------");
+			
 			// T, thrust
 			if (resetThrustDerivative) {
 				xDot[7] = thrustDerivativeResetValue;
@@ -579,10 +584,12 @@ public class AircraftPointMassPropagator {
 				System.out.println("-------> xDot[7] = " + xDot[7]);
 				resetThrustDerivative = false;
 			} else {
-				double commandedThrust = kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6]
+				double commandedThrust = 
+						+ kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6]
 						+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[6];
 				
-				xDot[ 7] = - pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*thrust
+				xDot[ 7] = 
+						- pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*thrust
 						+ pT.doubleValue(MyUnits.RADIAN_PER_SECOND)*commandedThrust;
 			}
 
@@ -590,7 +597,8 @@ public class AircraftPointMassPropagator {
 			xDot[ 8] = mass*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
 						Math.sin(commandedFlightpathAngle.doubleValue(SI.RADIAN)) - Math.sin(flightpathAngle));
 			// L, lift
-			double commandedLift = kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8]
+			double commandedLift = 
+					+ kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8]
 					+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xDot[8];
 			xDot[ 9] = -pL.doubleValue(MyUnits.RADIAN_PER_SECOND)*lift
 					+ pL.doubleValue(MyUnits.RADIAN_PER_SECOND)*commandedLift;
@@ -699,7 +707,7 @@ public class AircraftPointMassPropagator {
 						commandedFlightpathAngle = Amount.valueOf(me.getCommandedFlightpathAngle(), SI.RADIAN);
 						commandedHeadingAngle = Amount.valueOf(me.getCommandedHeadingAngle(), SI.RADIAN);
 						
-						System.out.println("EVENT OCCURRED_____________________________ " + me.getDescription());
+						System.out.println("\t====> EVENT OCCURRED ====> " + me.getDescription());
 						
 						return  Action.CONTINUE;
 					}
@@ -1107,7 +1115,7 @@ public class AircraftPointMassPropagator {
 							.map(gamma -> gamma.doubleValue(NonSI.DEGREE_ANGLE))
 							.toArray(size -> new Double[size])
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-					0.0, null, null, null,
+					0.0, null, -45.0, 45.0,
 					"Time", "Flightpath Angle", "s", "deg",
 					outputChartDir, "Flightpath_Angle");
 			
@@ -1696,6 +1704,78 @@ public class AircraftPointMassPropagator {
 
 	public void setMass0(double mass0) {
 		this.mass0 = mass0;
+	}
+
+	public Amount<?> getpT() {
+		return pT;
+	}
+
+	public void setpT(Amount<?> pT) {
+		this.pT = pT;
+	}
+
+	public Amount<?> getpL() {
+		return pL;
+	}
+
+	public void setpL(Amount<?> pL) {
+		this.pL = pL;
+	}
+
+	public Amount<?> getpPhi() {
+		return pPhi;
+	}
+
+	public void setpPhi(Amount<?> pPhi) {
+		this.pPhi = pPhi;
+	}
+
+	public Amount<?> getkTp() {
+		return kTp;
+	}
+
+	public void setkTp(Amount<?> kTp) {
+		this.kTp = kTp;
+	}
+
+	public Amount<?> getkTi() {
+		return kTi;
+	}
+
+	public void setkTi(Amount<?> kTi) {
+		this.kTi = kTi;
+	}
+
+	public Amount<?> getkLp() {
+		return kLp;
+	}
+
+	public void setkLp(Amount<?> kLp) {
+		this.kLp = kLp;
+	}
+
+	public Amount<?> getkLi() {
+		return kLi;
+	}
+
+	public void setkLi(Amount<?> kLi) {
+		this.kLi = kLi;
+	}
+
+	public Amount<?> getkPhip() {
+		return kPhip;
+	}
+
+	public void setkPhip(Amount<?> kPhip) {
+		this.kPhip = kPhip;
+	}
+
+	public Amount<?> getkWDot() {
+		return kWDot;
+	}
+
+	public void setkWDot(Amount<?> kWDot) {
+		this.kWDot = kWDot;
 	}
 	
 }

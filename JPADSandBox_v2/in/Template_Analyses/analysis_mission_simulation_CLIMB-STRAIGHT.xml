@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <mission_simulation id="JPAD Test analysis - Point-Mass Propagation">
+            <constants>
+                <p_T unit="rad/s"> 2.0 </p_T>
+                <p_L unit="rad/s"> 2.5 </p_L>
+                <p_phi unit="rad/s"> 1.0 </p_phi>
+                <k_T_p unit="1/s"> 0.08 </k_T_p>
+                <k_T_i unit="1/s²"> 0.002 </k_T_i>
+                <k_L_p unit="1/s"> 0.5 </k_L_p>
+                <k_L_i unit="1/s²"> 0.01 </k_L_i>
+                <k_phi_p unit="1/s"> 0.075 </k_phi_p>
+                <bank_angle_max unit="deg"> 30.0 </bank_angle_max>
+            </constants>
+            <initial_conditions>
+                <speed unit="kn"> 391.0 </speed>
+                <flightpath_angle unit="deg"> 0.0 </flightpath_angle>
+                <heading_angle unit="deg"> 0.0 </heading_angle>
+                <bank_angle unit="deg"> 0.0 </bank_angle>
+                <position_XE unit="m"> 0.0 </position_XE>
+                <position_YE unit="m"> 0.0 </position_YE>
+                <altitude unit="m"> 1000.0 </altitude>
+            </initial_conditions>
+            <events>
+                <event id="Event 0" action="CONTINUE">
+                    <time unit="s"> 5.0 </time>
+                    <commanded_speed unit="kn"> 410 </commanded_speed>
+                    <commanded_flightpath_angle unit="deg"> 5.0 </commanded_flightpath_angle>
+                    <commanded_heading_angle unit="deg"> 0.0 </commanded_heading_angle>
+                    <wind_speed_XE unit="mph"> 0.0 </wind_speed_XE>
+                    <wind_speed_YE unit="mph"> 0.0 </wind_speed_YE>
+                    <wind_speed_ZE unit="mph"> 0.0 </wind_speed_ZE>
+                </event>
+            </events>
+        </mission_simulation>
+    </analysis>
+</jpad_config>

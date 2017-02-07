@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import writers.JPADStaticWriteUtils;
 
@@ -294,23 +297,24 @@ public class AircraftPointMassPropagatorTest {
 			// read the list of events from file
 			propagator.readMissionScript(pathToMissionEventsXML);
 			
-			// lift = weight
+			// initial mass
 			double mass0 = 53000.0; // kg
-//			double cL0 = 0.15;
+			
+			// initial air density (at initial altitude)
 			double rho0 = AtmosphereCalc.getDensity(propagator.getAltitude0()); // kg/m^3
-//			double lift0 = 0.5*rho0*Math.pow(propagator.getSpeedInertial0(), 2)
-//					*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
-//					*cL0;
-			double lift0 = mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
+			
+			// initial lift
+			double lift0 = mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)
+					*Math.cos(propagator.getFlightpathAngle0())
+					/Math.cos(propagator.getBankAngle0());
+			// initial lift coefficient
 			double cL0 = lift0
 					/(0.5*rho0
 							*Math.pow(propagator.getSpeedInertial0(), 2)
 							*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)
 							);
-			System.out.println("Initial lift coefficient, CL(0) = " + cL0);
-			double thrust0 = 200000.0; // N
-			// drag = thrust
-			double cD0 = 0.03;
+			// initial drag
+			double cD0 = 0.025;
 			double aspectRatio = theAircraft.getWing().getAspectRatio();
 			double oswaldFactor = 0.85;
 			double kD = Math.PI * aspectRatio * oswaldFactor;
@@ -318,16 +322,34 @@ public class AircraftPointMassPropagatorTest {
 			double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
 			double kD0 = 0.5 * airDensity * surfaceWing * cD0;
 			double kD1 = 2.0/(airDensity * surfaceWing * kD);
-			thrust0 = kD0 * Math.pow(propagator.getSpeedInertial0(), 2) 
+			double drag0 = kD0 * Math.pow(propagator.getSpeedInertial0(), 2) 
 					+ kD1 * Math.pow(lift0, 2)/Math.pow(propagator.getSpeedInertial0(), 2);
 			
+			double thrust0 = drag0  // 200000.0; // N
+					+ mass0*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)*Math.sin(propagator.getFlightpathAngle0());
+			
+			double xT0 = thrust0/propagator.getkTi().doubleValue(MyUnits.ONE_PER_SECOND_SQUARED);
+			double xL0 = lift0/propagator.getkLi().doubleValue(MyUnits.ONE_PER_SECOND_SQUARED);
+			
+			
 			// complete the initial settings
-			propagator.setXThrust0(0.0);
+			propagator.setXThrust0(xT0);
 			propagator.setThrust0(thrust0);
-			propagator.setXLift0(0.0);
-			propagator.setLift0(thrust0);
+			propagator.setXLift0(xL0);
+			propagator.setLift0(lift0);
 			propagator.setMass0(mass0);
 
+			System.out.println("========================================");
+			System.out.println("m(0)   = " + mass0);
+			System.out.println("rho(0) = " + rho0);			
+			System.out.println("xL(0)  = " + xL0);
+			System.out.println("L(0)   = " + lift0);
+			System.out.println("CL(0)  = " + cL0);
+			System.out.println("D(0)   = " + lift0);
+			System.out.println("xT(0)  = " + xT0);
+			System.out.println("T(0)   = " + thrust0);
+			System.out.println("========================================");
+			
 //			propagator.setInitialConditions(
 //					v0, gamma0, psi0,
 //					0.0, 0.0, h0, // XI, YI, h
@@ -336,7 +358,7 @@ public class AircraftPointMassPropagatorTest {
 //					phi0, mass0);
 			
 			// Final time
-			propagator.setTimeFinal(60.0); // sec
+			propagator.setTimeFinal(120.0); // sec
 			
 			propagator.enableCharts(true);
 			
@@ -344,8 +366,13 @@ public class AircraftPointMassPropagatorTest {
 			propagator.propagate();
 			
 			// Plot
+			Path path = Paths.get(pathToMissionEventsXML);
+			String missionID = path.getFileName().toString().replace("analysis_mission_simulation_", "").replace(".xml", "");
 			String missionOutputDir = JPADStaticWriteUtils.createNewFolder(
-					aircraftFolder + "MISSION_SIM" + File.separator);
+					aircraftFolder + "MISSION_SIM" + File.separator + missionID + File.separator);
+			if (propagator.chartsEnabled())
+				System.out.println("\nPlots saved in folder: " + missionOutputDir);
+			
 			propagator.setOutputChartDir(missionOutputDir);
 			propagator.createOutputCharts();
 			
