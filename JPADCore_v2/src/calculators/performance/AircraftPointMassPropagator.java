@@ -207,14 +207,15 @@ public class AircraftPointMassPropagator {
 
 	private List<MissionEvent> missionEvents = new ArrayList<MissionEvent>();	
 
-	private Amount<?> pT    = Amount.valueOf(2.0, MyUnits.RADIAN_PER_SECOND);
-	private Amount<?> pL    = Amount.valueOf(2.5, MyUnits.RADIAN_PER_SECOND);
-	private Amount<?> pPhi  = Amount.valueOf(1.0, MyUnits.RADIAN_PER_SECOND);
-	private Amount<?> kTp   = Amount.valueOf(0.08, MyUnits.ONE_PER_SECOND);
-	private Amount<?> kTi   = Amount.valueOf(0.002, MyUnits.ONE_PER_SECOND_SQUARED);
-	private Amount<?> kLp   = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
-	private Amount<?> kLi   = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
-	private Amount<?> kPhip = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
+	private Amount<?> pT;    //    = Amount.valueOf(2.0, MyUnits.RADIAN_PER_SECOND);
+	private Amount<?> pL;    //    = Amount.valueOf(2.5, MyUnits.RADIAN_PER_SECOND);
+	private Amount<?> pPhi;  //    = Amount.valueOf(1.0, MyUnits.RADIAN_PER_SECOND);
+	private Amount<?> kTp;   //    = Amount.valueOf(0.08, MyUnits.ONE_PER_SECOND);
+	private Amount<?> kTi;   //    = Amount.valueOf(0.002, MyUnits.ONE_PER_SECOND_SQUARED);
+	private Amount<?> kLp;   //    = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
+	private Amount<?> kLi;   //    = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
+	private Amount<?> kPhip; //    = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
+	// TODO: read from file
 	private Amount<?> kWDot = Amount.valueOf(4.0e-6, MyUnits.SLUG_PER_SECOND_PER_POUND);
 	
 	private Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
@@ -312,7 +313,39 @@ public class AircraftPointMassPropagator {
 		//--------------------------------------------------------------------------------------
 		System.out.println("Reading mission CONSTANTS (TODO) ...");
 
-		// TODO
+		this.pT = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/p_T");
+		System.out.println("p_T = " + this.pT.doubleValue(MyUnits.ONE_PER_SECOND) + "·rad/s");
+
+		this.pL = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/p_L");
+		System.out.println("p_L = " + this.pL.doubleValue(MyUnits.ONE_PER_SECOND) + "·rad/s");
+
+		this.pPhi = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/p_phi");
+		System.out.println("p_phi = " + this.pPhi.doubleValue(MyUnits.ONE_PER_SECOND) + "·rad/s");
+		
+		this.kTp = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/k_T_p");
+		System.out.println("k_T_p = " + this.kTp.doubleValue(MyUnits.ONE_PER_SECOND) + "·1/s"); 
+
+		this.kTi = MyXMLReaderUtils.getXMLAmountOnePerSecondSquaredByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/k_T_i");
+		System.out.println("k_T_i = " + this.kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED) + "·1/s²"); 
+
+		this.kLp = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/k_L_p");
+		System.out.println("k_L_p = " + this.kLp.doubleValue(MyUnits.ONE_PER_SECOND) + "·1/s"); 
+
+		this.kLi = MyXMLReaderUtils.getXMLAmountOnePerSecondSquaredByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/k_L_i");
+		System.out.println("k_L_i = " + this.kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED) + "·1/s²"); 
+		
+		this.kPhip = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/k_phi_p");
+		System.out.println("k_phi_p = " + this.kPhip.doubleValue(MyUnits.ONE_PER_SECOND) + "·1/s"); 
+
+		// TODO: max bank angle
 		
 		//--------------------------------------------------------------------------------------
 		System.out.println("Reading mission initial conditions ...");

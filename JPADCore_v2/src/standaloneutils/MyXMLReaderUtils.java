@@ -566,7 +566,7 @@ public class MyXMLReaderUtils {
 			e.printStackTrace();
 			return null;
 		} catch (XPathExpressionException ex1) {
-				System.err.println("########################## MyXMLReaderUtils :: getXMLNodeListByPath");
+				System.err.println("########################## MyXMLReaderUtils :: getXMLAmountWithUnitByPath");
 				ex1.printStackTrace();
 				return null; // ??
 		}
@@ -766,14 +766,6 @@ public class MyXMLReaderUtils {
 	}
 
 	
-	// TODO: implement similar functions, such as:
-	// getXMLAmountSurfaceByPath
-	// getXMLAmountVolumeByPath
-	// getXMLAmountAngleByPath
-	// getXMLAmountMassByPath
-	// etc
-
-
 	public static Amount<Angle> getXMLAmountAngleByPath(Document xmlDoc, XPath xpath, String expression) {
 
 		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
@@ -806,7 +798,116 @@ public class MyXMLReaderUtils {
 			return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static Amount<?> getXMLAmountOnePerSecondByPath(Document xmlDoc, XPath xpath, String expression) {
 
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
+
+		if ((valueStr != null) && (!valueStr.equals(""))) {
+			try {
+
+				Double value = Double.parseDouble(valueStr);
+				Amount<?> quantity;
+				if (unitStr != null) {
+					switch (unitStr) {
+					case "s^(-1)":
+					case "sec^(-1)":
+					case "rad/s":
+					case "RAD/s":
+					case "rad/sec":
+					case "RAD/SEC":
+						unitStr = "1/s";
+						break;
+					}
+					quantity = Amount.valueOf(value, 1e-9, MyUnits.ONE_PER_SECOND);
+				} else
+					quantity = Amount.valueOf(value, 1e-9, MyUnits.ONE_PER_SECOND);
+
+				return quantity;
+
+			} catch (NumberFormatException | AmountException e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else
+			return null;
+	}
+	public static Amount<?> getXMLAmountOnePerSecondByPath(Document xmlDoc, String expression) {
+		try {
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			Amount<?> quantity = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(xmlDoc, xpath, expression);
+			return quantity;
+			
+		} catch (NumberFormatException | AmountException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> getXMLAmountOnePerSecondSquaredByPath(Document xmlDoc, XPath xpath, String expression) {
+		
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/@unit");
+
+		if ((valueStr != null) && (!valueStr.equals(""))) {
+			try {
+
+				Double value = Double.parseDouble(valueStr);
+				Amount<?> quantity;
+				if (unitStr != null) {
+					switch (unitStr) {
+					case "s^(-2)":
+					case "sec^(-2)":
+					case "rad/s²":
+					case "rad/s^(-2)":
+					case "RAD/s^(-2)":
+					case "rad/sec^(-2)":
+					case "RAD/SEC^(-2)":
+						unitStr = "1/s²";
+						break;
+					}
+					quantity = Amount.valueOf(value, 1e-9, MyUnits.ONE_PER_SECOND_SQUARED);
+				} else
+					quantity = Amount.valueOf(value, 1e-9, MyUnits.ONE_PER_SECOND_SQUARED);
+
+				return quantity;
+
+			} catch (NumberFormatException | AmountException e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else
+			return null;
+	}
+
+	public static Amount<?> getXMLAmountOnePerSecondSquaredByPath(Document xmlDoc, String expression) {
+		try {
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			Amount<?> quantity = MyXMLReaderUtils.getXMLAmountOnePerSecondSquaredByPath(xmlDoc, xpath, expression);
+			return quantity;
+			
+		} catch (NumberFormatException | AmountException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+
+	
+	
+	
+	// TODO: implement similar functions, such as:
+	// getXMLAmountSurfaceByPath
+	// getXMLAmountVolumeByPath
+	// getXMLAmountAngleByPath
+	// getXMLAmountMassByPath
+	// etc
+	
+	
 
 	/**
 	 * Group together actions needed to import an xml document
