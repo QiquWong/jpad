@@ -329,6 +329,263 @@ public class StabilityExecutableCalculator {
 		}
 	}
 
+	public void calculateDownwashNonLinearSlingerlandNew(
+			StabilityExecutableManager theStabilityManager,
+			Amount<Length> horizontalDistanceInitial,
+			Amount<Length> verticalDistanceInitial,
+			double [] clArray,
+			double []  alphasWing, // deg
+			double [] alphaBody //deg
+			){
+		
+		double zApexWing = theStabilityManager.getZApexWing().doubleValue(SI.METER);
+		double zApexHTail = theStabilityManager.getZApexHTail().doubleValue(SI.METER);
+		
+		// angles
+		double iw = theStabilityManager.getWingAngleOfIncidence().doubleValue(SI.RADIAN); //rad
+		double alphaZeroLift = 0 ; //rad
+		alphaZeroLift = theStabilityManager.getWingAlphaZeroLiftCONDITION().doubleValue(SI.RADIAN); 
+
+		double startingAngle = iw - alphaZeroLift; // rad
+		
+		// Alpha Absolute array 
+		
+				double alphaFirst = 0.0;
+				double alphaLast = 40.0;
+				int nValue = 100;
+
+				double [] alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue); //deg
+				double [] alphaWingArray =  new double [alphaAbsoluteArray.length]; //deg
+				for(int i=0; i< alphaAbsoluteArray.length; i++){
+					alphaWingArray[i] = alphaAbsoluteArray[i] + alphaZeroLift*57.3; 
+				}
+				double deltaAlpha = Amount.valueOf(
+						Math.toRadians(alphaAbsoluteArray[1] - alphaAbsoluteArray[0]), SI.RADIAN).getEstimatedValue(); // rad
+
+				Double[] cLArray = MyMathUtils.getInterpolatedValue1DLinear(
+						alphasWing,
+						clArray, 
+						alphaWingArray);
+		
+				
+		// calculate first values
+				Amount<Length> zDistanceZero = null;
+				Amount<Length> xDistanceZero = horizontalDistanceInitial; 
+				
+				if (zApexWing < zApexHTail  ){
+
+					zDistanceZero = Amount.valueOf(
+							verticalDistanceInitial.doubleValue(SI.METER) + (
+									(horizontalDistanceInitial.doubleValue(SI.METER) *
+									Math.tan(startingAngle))),
+							SI.METER);
+				}
+
+				if (zApexWing > zApexHTail  ){
+
+					zDistanceZero = Amount.valueOf(
+							verticalDistanceInitial.doubleValue(SI.METER) - (
+									(horizontalDistanceInitial.doubleValue(SI.METER) *
+									Math.tan(startingAngle))),
+							SI.METER);
+				}
+
+				zDistanceZero = Amount.valueOf(
+						zDistanceZero.doubleValue(SI.METER) * 
+						Math.cos(startingAngle), SI.METER);
+				
+		double epsilonTemp, zDistTemp, downwashRad, epsilonTempRad,  downwashArrayTemp;
+		double zTemp = 0;
+		Amount<Angle> epsilonZero;
+		
+		// Initialize Array
+		
+		double [] downwashArray = new double [nValue];
+		double [] alphaBodyArray = new double [nValue];
+		double [] zDistanceArray = new double [nValue];
+		double [] xDistanceArray = new double [nValue];	
+		
+		// First step
+		
+		zDistanceArray[0] = zDistanceZero.doubleValue(SI.METER);
+		xDistanceArray[0] = xDistanceZero.doubleValue(SI.METER);
+		downwashArray[0] = calculateDownwashGradientSlingerland( xDistanceArray[0],
+				zDistanceArray[0], 
+				cLArray[0], 
+				theStabilityManager.getWingSweepQuarterChord(),
+				theStabilityManager.getWingAspectRatio(),
+				theStabilityManager.getWingSemiSpan()
+				);
+
+		epsilonZero = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		
+	
+		alphaBodyArray[0] = alphaAbsoluteArray[0] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
+
+		this.epsilonZero = epsilonZero;
+		this.downwashGradientConstant = 0.0;
+		this.verticalDistanceConstant = Amount.valueOf(zDistanceArray[0], SI.METER);
+		
+		// Other step
+		for ( int i = 1 ; i<alphaAbsoluteArray.length ; i++){
+			
+			epsilonTemp = downwashArray[i-1];
+			epsilonTempRad = Amount.valueOf(
+					Math.toRadians(epsilonTemp), SI.RADIAN).getEstimatedValue();
+
+			if (zApexWing < zApexHTail  ){
+
+				zTemp = 
+						verticalDistanceInitial.doubleValue(SI.METER) + (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + epsilonTempRad)));
+			}
+
+			if (zApexWing > zApexHTail  ){
+
+				zTemp = 
+						verticalDistanceInitial.doubleValue(SI.METER) - (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + epsilonTempRad)));
+			}
+
+			zTemp = 
+					zTemp * 
+					Math.cos(startingAngle- i * deltaAlpha + epsilonTempRad);
+	
+		
+			downwashArrayTemp = calculateDownwashGradientSlingerland( 
+					xDistanceZero.doubleValue(SI.METER),
+					zTemp, 
+					cLArray[i], 
+					theStabilityManager.getWingSweepQuarterChord(),
+					theStabilityManager.getWingAspectRatio(),
+					theStabilityManager.getWingSemiSpan()
+					);
+					
+			downwashArray[i] =  downwashArrayTemp;
+				
+			downwashRad = Amount.valueOf(
+					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
+	
+					if (zApexWing < zApexHTail  ){
+
+						zDistanceArray[i] =
+								verticalDistanceInitial.doubleValue(SI.METER) + (
+										(horizontalDistanceInitial.doubleValue(SI.METER) *
+										Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+					}
+
+					if (zApexWing > zApexHTail  ){
+
+						zDistanceArray[i] =
+								verticalDistanceInitial.doubleValue(SI.METER) - (
+										(horizontalDistanceInitial.doubleValue(SI.METER) *
+										Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+					}
+
+					zDistanceArray[i] =
+							zDistanceArray[i] * 
+							Math.cos(startingAngle- i * deltaAlpha + downwashRad);
+
+			downwashArray[i] = calculateDownwashGradientSlingerland( 
+					xDistanceZero.doubleValue(SI.METER),
+					zDistanceArray[i],
+					cLArray[i], 
+					theStabilityManager.getWingSweepQuarterChord(),
+					theStabilityManager.getWingAspectRatio(),
+					theStabilityManager.getWingSemiSpan()
+					);
+
+			downwashRad = Amount.valueOf(
+					Math.toRadians(downwashArray[i]), SI.RADIAN).getEstimatedValue();
+			
+			if (zApexWing < zApexHTail  ){
+
+				zDistanceArray[i] =
+						verticalDistanceInitial.doubleValue(SI.METER) + (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+			}
+
+			if (zApexWing > zApexHTail  ){
+
+				zDistanceArray[i] =
+						verticalDistanceInitial.doubleValue(SI.METER) - (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+								Math.tan(startingAngle- i * deltaAlpha + downwashRad)));
+			}
+
+			zDistanceArray[i] =
+					zDistanceArray[i] * 
+					Math.cos(startingAngle- i * deltaAlpha + downwashRad);
+
+			xDistanceArray[i] = xDistanceZero.doubleValue(SI.METER);
+			downwashArray[i] = calculateDownwashGradientSlingerland( 
+					xDistanceZero.doubleValue(SI.METER),
+					zDistanceArray[i],
+					cLArray[i], 
+					theStabilityManager.getWingSweepQuarterChord(),
+					theStabilityManager.getWingAspectRatio(),
+					theStabilityManager.getWingSemiSpan()
+					);
+
+			alphaBodyArray[i] = alphaAbsoluteArray[i] - Math.toDegrees(iw) + Math.toDegrees(alphaZeroLift);
+		}
+		
+//		System.out.println("\n Downwash Arrays");
+//		System.out.println("DownwashGradient " + Arrays.toString(downwashGradientArray));
+//		System.out.println("Downwash Angle (deg) " + Arrays.toString(downwashArray));
+//		System.out.println("Alpha Absolute (deg) " + Arrays.toString(alphaAbsoluteArray));
+//		System.out.println("Alpha Body (deg)" + Arrays.toString(alphaBodyArray));
+//		System.out.println("m Distances  (m) " + Arrays.toString(zDistanceArray));	
+//		System.out.println("x Distances (m) " + Arrays.toString(xDistanceArray));	
+
+		Double[] downwashArrayTemporary = MyMathUtils.getInterpolatedValue1DLinear(
+				alphaBodyArray,
+				downwashArray,
+				alphaBody
+				);
+		
+		Double[] downwashGradientArrayTemporary = MyMathUtils.getInterpolatedValue1DLinear(
+				alphaBodyArray,
+				downwashArray,
+				alphaBody
+				);
+		
+		Double[] horizontalDistanceTemporary = MyMathUtils.getInterpolatedValue1DLinear(
+				alphaBodyArray,
+				xDistanceArray,
+				alphaBody
+				);
+		
+		Double[] verticalDistanceTemporary = MyMathUtils.getInterpolatedValue1DLinear(
+				alphaBodyArray,
+				zDistanceArray,
+				alphaBody
+				);
+		
+		int k=0, j=0;
+	
+		while ( alphaBodyArray[0] > alphaBody[j]){
+			j++;
+		}
+		
+		double gradientTemporary = (downwashArrayTemporary[j+2]-downwashArrayTemporary[j+1])/( alphaBodyArray[j+2]- alphaBodyArray[j+1]);
+		
+		while ( alphaBodyArray[0] > alphaBody[k]){
+			downwashArrayTemporary[k] = gradientTemporary*(alphaBodyArray[k]-alphaBodyArray[j+1])+downwashArrayTemporary[j+1];
+			k++;
+		}
+		downwashAngle = new ArrayList<>();
+		for (int i=0; i<alphaBody.length; i++){
+		downwashGradient.add(downwashGradientArrayTemporary[i]);
+		downwashAngle.add(Amount.valueOf(downwashArrayTemporary[i]*57.3,NonSI.DEGREE_ANGLE));
+		horizontalDistance.add(Amount.valueOf(horizontalDistanceTemporary[i],SI.METER));
+		verticalDistance.add(Amount.valueOf(verticalDistanceTemporary[i],SI.METER));
+		}
+	}
+	
 	public double calculateDownwashGradientSlingerland(
 			Double rHorizontalDistance,
 			Double mVerticalDistance,
@@ -357,6 +614,33 @@ public class StabilityExecutableCalculator {
 
 	}
 
+	public double calculateDownwashGradientSlingerlandNew(
+			Double rHorizontalDistance,
+			Double mVerticalDistance,
+			Double cl,
+			Amount<Angle> sweepQuarterChord,
+			double aspectRatio,
+			Amount<Length> semispanWing){
+
+		double keGamma, keGammaZero;
+
+		double rPow=Math.pow(rHorizontalDistance/semispanWing.doubleValue(SI.METER),2);
+		double mpow=Math.pow(mVerticalDistance/semispanWing.doubleValue(SI.METER), 2);
+
+		keGamma=(0.1124+0.1265*sweepQuarterChord.doubleValue(SI.RADIAN)+0.1766*Math.pow(sweepQuarterChord.doubleValue(SI.RADIAN),2))
+				/rPow+0.1024/(rHorizontalDistance/semispanWing.doubleValue(SI.METER))+2;
+		keGammaZero=0.1124/rPow+0.1024/(rHorizontalDistance/semispanWing.doubleValue(SI.METER))+2;
+
+		double kFraction=keGamma/keGammaZero;
+		double first= ((rHorizontalDistance/semispanWing.doubleValue(SI.METER))/(rPow+ mpow))*(0.4876/Math.sqrt(rPow+0.6319+mpow));
+		double second= 1+Math.pow(rPow/(rPow+0.7915+5.0734*mpow),0.3113);
+		double third = 1-Math.sqrt(mpow/(1+mpow));
+
+		double downwashGradientLinearatZ=kFraction*(first+second*third)*((cl/(Math.PI*aspectRatio)));
+
+		return downwashGradientLinearatZ;
+
+	}
 	
 	
 	public void nasaBlackwellCLMax(

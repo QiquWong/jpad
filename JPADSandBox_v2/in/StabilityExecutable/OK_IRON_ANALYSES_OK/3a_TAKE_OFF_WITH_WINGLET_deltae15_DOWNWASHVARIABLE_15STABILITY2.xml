@@ -16,13 +16,13 @@
 				<delta_CD0_gear>0.0150</delta_CD0_gear>
 				<delta_CD0_flap>0.0164</delta_CD0_flap>
 				<z_landing_gear unit="m">3.25</z_landing_gear>
-				<tau_index>0.65</tau_index>
+				<tau_index>0.5</tau_index>
     <!-- Reynolds number referred to MAC  -->
     <Reynolds_number>12700000</Reynolds_number>  <!-- Re cruise=18.2e6 Re Take-Off=12.5e6 Re Landing=12.3e6-->
     <!-- definition of alpha body array analysis  -->
-    <alpha_body_initial unit="°">-21</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
-                <alpha_body_final unit="°">17</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
-                <number_of_alphas_body>35</number_of_alphas_body>
+    <alpha_body_initial unit="°">-10</alpha_body_initial> <!-- must be about equal to( wingALPAzeroLift - iw) [ about -5 cruise, -19 landing] -->
+                <alpha_body_final unit="°">10</alpha_body_final> <!-- must be >( wingALPAstall - iw) [ about 20 cruise, 23 landing] -->
+                <number_of_alphas_body>101</number_of_alphas_body>
     <!-- 9 values at least. It will be added the alpha zero lift. THESE ARE ALPHAS WING -->
     <alpha_wing_array_for_distribution unit="°">[0,4,8,10,11,12,13,14,15]</alpha_wing_array_for_distribution>
     <alpha_horizontal_tail_array_for_distribution unit="°">[0,2,4,6,12,30]</alpha_horizontal_tail_array_for_distribution>
