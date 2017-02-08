@@ -2,6 +2,8 @@ package calculators.performance;
 
 import org.inferred.freebuilder.FreeBuilder;
 
+import configuration.enumerations.EngineOperatingConditionEnum;
+
 @FreeBuilder
 public interface MissionEvent {
 
@@ -14,12 +16,14 @@ public interface MissionEvent {
 	Double getWindSpeedXE();
 	Double getWindSpeedYE();
 	Double getWindSpeedZE();
+	EngineOperatingConditionEnum getEngineCondition();
 
 	/** Builder of MissionEvent instances. */
 	class Builder extends MissionEvent_Builder {
 		public Builder() {
 			// Set defaults in the builder constructor.
 			setDescription("Mission event - untitled");
+			setEngineCondition(EngineOperatingConditionEnum.UNKNOWN);
 			setCoefficientLiftMax(1.1);
 			setCommandedFlightpathAngle(0.0);
 			setCommandedHeadingAngle(0.0);

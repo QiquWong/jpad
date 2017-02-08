@@ -412,10 +412,6 @@ public class MyXMLReaderUtils {
 		}
 	} // end-of-getXMLPropertyByPath:
 
-
-
-
-
 	/*
 	 * Get the list of property values for a given XPath expression
 	 * @param document

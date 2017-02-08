@@ -358,7 +358,7 @@ public class AircraftPointMassPropagatorTest {
 //					phi0, mass0);
 			
 			// Final time
-			propagator.setTimeFinal(120.0); // sec
+			propagator.setTimeFinal(180.0); // sec
 			
 			propagator.enableCharts(true);
 			
