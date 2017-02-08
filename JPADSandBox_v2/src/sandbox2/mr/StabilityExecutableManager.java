@@ -230,7 +230,8 @@ public class StabilityExecutableManager {
 	private List<Double> _wingSlatCsC;
 	private List<Double> _wingCExtCSlat;
 	private List<Double> _wingLeRadiusCSLat;
-
+	private Map<Double, Map<Double, Double[]>> _supermappa = new HashMap<>();
+	 
 
 	//Fuselage -------------------------------------------
 	//----------------------------------------------------------------
@@ -410,6 +411,7 @@ public class StabilityExecutableManager {
 	private List<Amount<Angle>> _downwashAngleConstantSlingerland;
 	private List<Double> _downwashGradientVariableSlingerland;
 	private List<Amount<Angle>> _downwashAngleVariableSlingerland;
+	private List<Amount<Angle>> _downwashAngleVariableSlingerlandOld;
 	private List<Amount<Length>> _horizontalDistance;
 	private List<Amount<Length>> _verticalDistance;
 	private List<Amount<Length>> _horizontalDistanceConstant = new ArrayList<>();
@@ -1661,39 +1663,73 @@ public class StabilityExecutableManager {
 
 		//Slingerland
 
-		double downwashGradientConstantSlingerland = theStabilityCalculator.calculateDownwashGradientSlingerland(
-				_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER), 
-				_verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER), 
-				this._wingcLAlphaRadCONDITION, 
-				this._wingSweepQuarterChord,
-				this._wingAspectRatio, 
-				this._wingSemiSpan);
-
+//		double downwashGradientConstantSlingerland = theStabilityCalculator.calculateDownwashGradientSlingerland(
+//				_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER), 
+//				_verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER), 
+//				this._wingcLAlphaRadCONDITION, 
+//				this._wingSweepQuarterChord,
+//				this._wingAspectRatio, 
+//				this._wingSemiSpan);
+//
+//		for (int i=0; i<this._numberOfAlphasBody; i++){
+//			_downwashGradientConstantSlingerland.add(downwashGradientConstantSlingerland);
+//		}
+//
+//		double epsilonZeroSlingerland = - downwashGradientConstantSlingerland * 
+//				_wingAlphaZeroLiftCONDITION.doubleValue(NonSI.DEGREE_ANGLE);
+//
+//		//fill the downwash array
+//		for (int i=0; i<this._numberOfAlphasBody; i++){
+//			this._downwashAngleConstantSlingerland.add(i,
+//					Amount.valueOf( epsilonZeroSlingerland + 
+//							_downwashGradientConstantSlingerland.get(i)*
+//							_alphasWing.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+//							, NonSI.DEGREE_ANGLE));
+//		}
+		
 		for (int i=0; i<this._numberOfAlphasBody; i++){
-			_downwashGradientConstantSlingerland.add(downwashGradientConstantSlingerland);
-		}
-
-		double epsilonZeroSlingerland = - downwashGradientConstantSlingerland * 
-				_wingAlphaZeroLiftCONDITION.doubleValue(NonSI.DEGREE_ANGLE);
-
-		//fill the downwash array
+			_downwashGradientConstantSlingerland.add(0.0);}
+		
+		
 		for (int i=0; i<this._numberOfAlphasBody; i++){
+			double cl = _wingcLAlphaDeg*_alphasWing.get(i).doubleValue(NonSI.DEGREE_ANGLE)+_wingcLZeroCONDITION;
+			
+			double downwashConstantSlingerland = theStabilityCalculator.calculateDownwashGradientSlingerlandNew(
+					_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER), 
+					_verticalDistanceZeroLiftDirectionWingHTail.doubleValue(SI.METER), 
+					cl, 
+					this._wingSweepQuarterChord,
+					this._wingAspectRatio, 
+					this._wingSemiSpan);
+			
 			this._downwashAngleConstantSlingerland.add(i,
-					Amount.valueOf( epsilonZeroSlingerland + 
-							_downwashGradientConstantSlingerland.get(i)*
-							_alphasWing.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-							, NonSI.DEGREE_ANGLE));
-		}
+					Amount.valueOf(Math.toDegrees(downwashConstantSlingerland),NonSI.DEGREE_ANGLE)
+					);
+			}
+		
 
 
 		//--------------end linear downwash-----------------------------------------
 
 
-			theStabilityCalculator.calculateDownwashNonLinearSlingerland(
+//			theStabilityCalculator.calculateDownwashNonLinearSlingerland(
+//					this, 
+//					_horizontalDistanceQuarterChordWingHTail,
+//					_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
+//					MyArrayUtils.convertToDoublePrimitive(this._wingclAlphaArrayCONDITION),
+//					MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
+//					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasBody)));
+//
+//			_downwashAngleVariableSlingerlandOld= theStabilityCalculator.getDownwashAngle();
+
+	  //-------------------new downwash---------------------------------------------
+			
+
+			theStabilityCalculator.calculateDownwashNonLinearSlingerlandNew(
 					this, 
 					_horizontalDistanceQuarterChordWingHTail,
 					_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
-					MyArrayUtils.convertToDoublePrimitive(this._wingclAlphaArrayCONDITION),
+					MyArrayUtils.convertToDoublePrimitive(this._wingliftCoefficient3DCurveCONDITION),
 					MyArrayUtils.convertListOfAmountTodoubleArray(_alphasWing),
 					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasBody)));
 
@@ -1717,8 +1753,8 @@ public class StabilityExecutableManager {
 			for (int i=0; i<_numberOfAlphasBody; i++){
 				this._alphasTail.add(
 						Amount.valueOf((
-								this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) + this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE))-
-								this._downwashAngleConstantRoskam.get(i).doubleValue(NonSI.DEGREE_ANGLE)+this._hTailAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE)
+								this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) )-
+								this._downwashAngleConstantSlingerland.get(i).doubleValue(NonSI.DEGREE_ANGLE)+this._hTailAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE)
 								, NonSI.DEGREE_ANGLE
 								)
 						);
@@ -1730,7 +1766,7 @@ public class StabilityExecutableManager {
 			for (int i=0; i<_numberOfAlphasBody; i++){
 				this._alphasTail.add(
 						Amount.valueOf((
-								this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) + this._wingAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE))-
+								this._alphasBody.get(i).doubleValue(NonSI.DEGREE_ANGLE) )-
 								this._downwashAngleVariableSlingerland.get(i).doubleValue(NonSI.DEGREE_ANGLE)+this._hTailAngleOfIncidence.doubleValue(NonSI.DEGREE_ANGLE)
 								, NonSI.DEGREE_ANGLE
 								)
@@ -2197,6 +2233,11 @@ public class StabilityExecutableManager {
 					.append("\n")
 					;
 				}
+					for (int i = 0; i< this._anglesOfElevatorDeflection.size(); i++){
+						sb.append("\t\tCD total at delta_e= " + _anglesOfElevatorDeflection.get(i) + " -->" + (this._totalDragPolar.get( _anglesOfElevatorDeflection.get(i))))
+						.append("\n")
+						;
+				}
 
 //-----------------------------------	
 			
@@ -2263,6 +2304,25 @@ public class StabilityExecutableManager {
 //			sb.append("\t\tCl distribution  at alpha " + _alphaWingForDistribution.get(i) +  " = " + clDistributions.get(i) + "\n\n");
 //		}
 //		}
+		
+		//DRAG ----------------------------------------------------------
+		sb.append("\nDRAG BREAKDOWN\n")
+	   .append("-------------------------------------\n")
+	   .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._alphasBody, "\t\tAlpha Body", ","))
+	   .append("\t\tCD Parasite = " + _wingParasiteDragCoefficientDistribution+ "\n")
+	   .append("\t\tCD Induced = " + _wingInducedDragCoefficientDistribution+ "\n")
+	   .append("\t\tCD Total = " + _wingDragCoefficient3DCurve+ "\n")
+	   .append("\t\tFuselage drag = " + cdDistributionFuselageFinal + "\n")
+		.append("\t\tCD Parasite TAIL  = " + _hTailParasiteDragCoefficientDistribution+ "\n")
+		.append("\t\tCD Induced TAIL= " + _hTailInducedDragCoefficientDistribution+ "\n")
+		.append("\t\tCD Total TAIL = " + _hTailDragCoefficient3DCurve+ "\n")
+		.append("\t\tLanding gear drag = " + _cDLandingGear + "\n")
+		.append("\t\tMiscellaneous drag = " + _deltaCD0Miscellaneus + "\n")
+		.append("\t\tCD total at delta_e= 0  -->" + (this._totalDragPolar.get(0.0)))
+		 .append("-------------------------------------\n")
+		 .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleConstantSlingerland, "\t\tDownwash angle constant new", ","))
+		 .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleVariableSlingerland, "\t\tDownwash angle variable new", ","));
+		// .append(MyArrayUtils.ListOfAmountWithUnitsInEvidenceString(this._downwashAngleVariableSlingerlandOld, "\t\tDownwash angle variable old", ","));
 		return sb.toString();
 	}
 
@@ -5419,8 +5479,8 @@ public class StabilityExecutableManager {
 			for (int i=0; i<_numberOfAlphasBody; i++){
 				_hTailNormalCoefficientDownwashConstant.add(
 						i,
-						_hTailliftCoefficient3DCurve[i]*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantRoskam.get(i).doubleValue(SI.RADIAN))+
-						_hTailDragCoefficient3DCurve.get(i)*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantRoskam.get(i).doubleValue(SI.RADIAN)));
+						_hTailliftCoefficient3DCurve[i]*Math.cos(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantSlingerland.get(i).doubleValue(SI.RADIAN))+
+						_hTailDragCoefficient3DCurve.get(i)*Math.sin(_alphasBody.get(i).doubleValue(SI.RADIAN)-_downwashAngleConstantSlingerland.get(i).doubleValue(SI.RADIAN)));
 
 				_hTailHorizontalCoefficientDownwashConstant.add(
 						i,
@@ -5793,7 +5853,7 @@ public class StabilityExecutableManager {
 							));
 		}
 		
-		for (int i=0; i<_numberOfAlphasBody-5; i++){
+		for (int i=0; i<_numberOfAlphasBody; i++){
 			Double [] clTemp = new Double[deltaEforDeltaEEquilibrium.size()];
 			for (int ii = 0; ii<deltaEforDeltaEEquilibrium.size(); ii++){
 				clTemp[ii] = _clMapForDeltaeElevator.get(deltaEforDeltaEEquilibrium.get(ii))[i];
