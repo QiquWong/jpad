@@ -219,6 +219,9 @@ public class AircraftPointMassPropagator {
 	private Amount<?> kWDot = Amount.valueOf(4.0e-6, MyUnits.SLUG_PER_SECOND_PER_POUND);
 	
 	private Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
+	
+	private double cLMax = 1.2;
+	
 	private double thrustMax;
 	private double signDeltaThrustAtMax = 1.0;
 	private double thrustMin = 0.0;
@@ -311,7 +314,7 @@ public class AircraftPointMassPropagator {
 		System.out.println("Mission id: " + missionId);
 
 		//--------------------------------------------------------------------------------------
-		System.out.println("Reading mission CONSTANTS (TODO) ...");
+		System.out.println("Reading mission CONSTANTS ...");
 
 		this.pT = MyXMLReaderUtils.getXMLAmountOnePerSecondByPath(reader.getXmlDoc(),
 				"//mission_simulation/constants/p_T");
@@ -345,8 +348,16 @@ public class AircraftPointMassPropagator {
 				"//mission_simulation/constants/k_phi_p");
 		System.out.println("k_phi_p = " + this.kPhip.doubleValue(MyUnits.ONE_PER_SECOND) + "·1/s"); 
 
-		// TODO: max bank angle
+		this.bankAngleMax = MyXMLReaderUtils.getXMLAmountAngleByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/bank_angle_max");
+		System.out.println("bank_angle_max = " + this.bankAngleMax.doubleValue(NonSI.DEGREE_ANGLE) + " deg"); 
+
+		this.cLMax = MyXMLReaderUtils.getXMLDoubleByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/cL_max");
+		System.out.println("cL_max = " + this.cLMax); 
 		
+		System.out.println("---");
+
 		//--------------------------------------------------------------------------------------
 		System.out.println("Reading mission initial conditions ...");
 
@@ -444,6 +455,7 @@ public class AircraftPointMassPropagator {
 						doc, xpath,
 						"//event/@id");
 		Amount<Duration> time = MyXMLReaderUtils.getXMLAmountTimeByPath(doc, xpath, "//time");
+		Double cLMax = MyXMLReaderUtils.getXMLDoubleByPath(doc, xpath, "//cL_max");
 		Amount<Velocity> commandedSpeed = MyXMLReaderUtils.getXMLAmountVelocityByPath(doc, xpath, "//commanded_speed");
 		Amount<Angle> commandedFlightpathAngle = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//commanded_flightpath_angle");
 		Amount<Angle> commandedHeadingAngle = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//commanded_heading_angle");
@@ -456,6 +468,7 @@ public class AircraftPointMassPropagator {
 				.Builder()
 				.setDescription(id)
 				.setTime(time.doubleValue(SI.SECOND))
+				.setCoefficientLiftMax(cLMax)
 				.setCommandedSpeed(commandedSpeed.doubleValue(SI.METERS_PER_SECOND))
 				.setCommandedFlightpathAngle(commandedFlightpathAngle.doubleValue(SI.RADIAN))
 				.setCommandedHeadingAngle(commandedHeadingAngle.doubleValue(SI.RADIAN))
@@ -991,9 +1004,9 @@ public class AircraftPointMassPropagator {
 				double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
 				double kD0 = 0.5 * airDensity * surfaceWing * cD0;
 				double kD1 = 2.0/(airDensity * surfaceWing * kD);
-				double d = kD0 * Math.pow(airspeed, 2) 
+				double drag = kD0 * Math.pow(airspeed, 2) 
 						+ kD1 * Math.pow(x[9], 2)/Math.pow(airspeed, 2);
-				AircraftPointMassPropagator.this.getDrag().add(Amount.valueOf(d, SI.NEWTON));
+				AircraftPointMassPropagator.this.getDrag().add(Amount.valueOf(drag, SI.NEWTON));
 				
 				//----------------------------------------------------------------------------------------
 				// COMMANDED THRUST & LIFT
@@ -1005,7 +1018,18 @@ public class AircraftPointMassPropagator {
 						kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8]
 						+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xdot[8];
 				AircraftPointMassPropagator.this.getCommandedLift().add(Amount.valueOf(commandedLift,SI.NEWTON));
-
+				//----------------------------------------------------------------------------------------
+				// CD, CL, Load factor
+				double dynamicPressure = 0.5*airDensity*Math.pow(airspeed, 2);
+				AircraftPointMassPropagator.this.getcD().add(
+						drag/(dynamicPressure*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
+						);
+				AircraftPointMassPropagator.this.getcL().add(
+						x[9]/(dynamicPressure*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
+						);
+				AircraftPointMassPropagator.this.getLoadFactor().add(
+						x[9]/(x[11]*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)) // Lift/Weight
+						);
 			}
 			
 		};
@@ -1341,7 +1365,38 @@ public class AircraftPointMassPropagator {
 							"Time", "L, Lc", "s", "N",
 							new String[] {"Lift", "Commanded-Lift"},
 							outputChartDir, "Lift");
+
+			// CD, CL, fza vs. time
+			xMatrix3 = null; yMatrix3 = null;
+			xMatrix3 = new double[3][getTime().size()];
+			yMatrix3 = new double[3][getTime().size()];
+			for(int i=0; i<xMatrix3.length; i++)
+				xMatrix3[i] = Arrays.stream(
+						getTime().stream()
+						.map(t -> t.doubleValue(SI.SECOND))
+						.toArray(size -> new Double[size])
+						).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+
+			yMatrix3[0] = Arrays.stream(
+					getcD().stream()
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			yMatrix3[1] = Arrays.stream(
+					getcL().stream()
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
+			yMatrix3[2] = Arrays.stream(
+					getLoadFactor().stream()
+					.toArray(size -> new Double[size])
+					).mapToDouble(Double::doubleValue).toArray(); // list-of-Amount --> double[];
 			
+			MyChartToFileUtils.plot(
+							xMatrix3, yMatrix3,
+							0.0, null, null, null,
+							"Time", "CD, CL, fza", "s", "-",
+							new String[] {"Drag Coeff.", "Lift Coeff.", "Load Factor"},
+							outputChartDir, "Coefficients");
+
 		}
 	}
 	

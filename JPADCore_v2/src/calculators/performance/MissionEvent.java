@@ -7,6 +7,7 @@ public interface MissionEvent {
 
 	String getDescription();
 	Double getTime();
+	Double getCoefficientLiftMax();
 	Double getCommandedSpeed();
 	Double getCommandedFlightpathAngle();
 	Double getCommandedHeadingAngle();
@@ -19,6 +20,7 @@ public interface MissionEvent {
 		public Builder() {
 			// Set defaults in the builder constructor.
 			setDescription("Mission event - untitled");
+			setCoefficientLiftMax(1.1);
 			setCommandedFlightpathAngle(0.0);
 			setCommandedHeadingAngle(0.0);
 			setWindSpeedXE(0.0);

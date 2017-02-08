@@ -11,7 +11,8 @@
                 <k_L_p unit="1/s"> 0.5 </k_L_p>
                 <k_L_i unit="1/s²"> 0.01 </k_L_i>
                 <k_phi_p unit="1/s"> 0.075 </k_phi_p>
-                <bank_angle_max unit="deg"> 30.0 </bank_angle_max>
+                <bank_angle_max unit="deg"> 35.0 </bank_angle_max>
+                <cL_max> 1.6 </cL_max>
             </constants>
             <initial_conditions>
                 <speed unit="kn"> 391.0 </speed>
@@ -25,6 +26,7 @@
             <events>
                 <event id="Event 0" action="CONTINUE">
                     <time unit="s"> 5.0 </time>
+                    <cL_max> 1.6 </cL_max>
                     <commanded_speed unit="kn"> 410 </commanded_speed>
                     <commanded_flightpath_angle unit="deg"> 5.0 </commanded_flightpath_angle>
                     <commanded_heading_angle unit="deg"> 15.0 </commanded_heading_angle>

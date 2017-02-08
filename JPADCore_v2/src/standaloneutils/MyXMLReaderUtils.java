@@ -508,6 +508,27 @@ public class MyXMLReaderUtils {
 		}
 	} // end-of-getXMLNodeListByPath:
 
+	
+	public static Double getXMLDoubleByPath(Document xmlDoc, XPath xpath, String expression) {
+		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(xmlDoc, xpath, expression + "/text()");
+		if ((valueStr != null) && (!valueStr.equals(""))) {
+			try {
+				Double value = Double.parseDouble(valueStr);
+				return value;
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				System.err.println("########################## MyXMLReaderUtils :: getXMLDoubleByPath");
+				return null;
+			}
+		} else
+			return null;
+	}
+	public static Double getXMLDoubleByPath(Document xmlDoc, String expression) {
+		XPathFactory xpathFactory = XPathFactory.newInstance();
+		XPath xpath = xpathFactory.newXPath();
+		return MyXMLReaderUtils.getXMLDoubleByPath(xmlDoc, xpath, expression);
+	}
+	
 
 	/*
 	 * Get the quantity from XML path; unit attribute is mandatory; if search fails return null
@@ -556,9 +577,7 @@ public class MyXMLReaderUtils {
 
 					Double value = Double.parseDouble(valueStr);
 					Amount<?> quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
-
 					return quantity;
-
 			} else
 				return null;
 
@@ -570,7 +589,6 @@ public class MyXMLReaderUtils {
 				ex1.printStackTrace();
 				return null; // ??
 		}
-		
 	}
 	
 	/*
@@ -797,6 +815,18 @@ public class MyXMLReaderUtils {
 		} else
 			return null;
 	}
+	public static Amount<Angle> getXMLAmountAngleByPath(Document xmlDoc, String expression) {
+		try {
+			XPathFactory xpathFactory = XPathFactory.newInstance();
+			XPath xpath = xpathFactory.newXPath();
+			Amount<Angle> quantity = MyXMLReaderUtils.getXMLAmountAngleByPath(xmlDoc, xpath, expression);
+			return quantity;
+		} catch (NumberFormatException | AmountException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	public static Amount<?> getXMLAmountOnePerSecondByPath(Document xmlDoc, XPath xpath, String expression) {
@@ -820,9 +850,9 @@ public class MyXMLReaderUtils {
 						unitStr = "1/s";
 						break;
 					}
-					quantity = Amount.valueOf(value, 1e-9, MyUnits.ONE_PER_SECOND);
+					quantity = Amount.valueOf(value, 1e-12, MyUnits.ONE_PER_SECOND);
 				} else
-					quantity = Amount.valueOf(value, 1e-9, MyUnits.ONE_PER_SECOND);
+					quantity = Amount.valueOf(value, 1e-12, MyUnits.ONE_PER_SECOND);
 
 				return quantity;
 
