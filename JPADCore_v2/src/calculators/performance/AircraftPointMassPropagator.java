@@ -251,6 +251,8 @@ public class AircraftPointMassPropagator {
 	
 	private double timeFinal = 10.0;
 	
+	FirstOrderIntegrator theIntegrator;
+	
 	// Simulation outputs
 	private List<Amount<Duration>> time;
 	private List<Amount<Mass>> mass;
@@ -746,7 +748,7 @@ public class AircraftPointMassPropagator {
 		System.out.println("---------------------------------------------------");
 		System.out.println("AircraftPointMassPropagator :: ODE integration\n\n");
 		
-		FirstOrderIntegrator theIntegrator = new HighamHall54Integrator(
+		this.theIntegrator = new HighamHall54Integrator(
 				1e-6,
 				1,
 				1e-15,
@@ -787,7 +789,7 @@ public class AircraftPointMassPropagator {
 					}
 					
 				};
-				theIntegrator.addEventHandler(eventHandler, 1.0, 1e-3, 20);
+				this.theIntegrator.addEventHandler(eventHandler, 1.0, 1e-3, 20);
 			});
 		
 		//=============================================================================
@@ -856,7 +858,7 @@ public class AircraftPointMassPropagator {
 				x[7] = this.thrMax;
 			}
 		};
-		theIntegrator.addEventHandler(handlerMaxThrustLimiter, 1.0, 1e-3, 20);		
+		this.theIntegrator.addEventHandler(handlerMaxThrustLimiter, 1.0, 1e-3, 20);		
 
 		EventHandler handlerMinThrustLimiter = new EventHandler() {
 
@@ -908,7 +910,7 @@ public class AircraftPointMassPropagator {
 				x[7] = this.thrMin;
 			}
 		};
-		theIntegrator.addEventHandler(handlerMinThrustLimiter, 1.0, 1e-6, 20);		
+		this.theIntegrator.addEventHandler(handlerMinThrustLimiter, 1.0, 1e-6, 20);		
 		
 		// TODO: add Lift-limiter event
 		
@@ -1066,12 +1068,12 @@ public class AircraftPointMassPropagator {
 			}
 			
 		};
-		theIntegrator.addStepHandler(stepHandler);
+		this.theIntegrator.addStepHandler(stepHandler);
 
 		//##############################################################################################
 		// TEST ( TODO )
 		
-		theIntegrator.addStepHandler(new ContinuousOutputModel());
+		this.theIntegrator.addStepHandler(new ContinuousOutputModel());
 
 		//##############################################################################################
 		
@@ -1102,31 +1104,11 @@ public class AircraftPointMassPropagator {
 		double tInitial = 0.0;
 		double tFinal = this.timeFinal;
 		
-		theIntegrator.integrate(ode, tInitial, xAt0, tFinal, xAt0); // now xAt0 contains final state
+		this.theIntegrator.integrate(ode, tInitial, xAt0, tFinal, xAt0); // now xAt0 contains final state
 
-		//#############################################################################
-		for (  StepHandler handler : theIntegrator.getStepHandlers() ) {
-			System.out.println(handler instanceof ContinuousOutputModel);
-			if (handler instanceof ContinuousOutputModel) {
-				System.out.println("=== Stored state variables ===");
-				ContinuousOutputModel cm = (ContinuousOutputModel) handler;
-				System.out.println("Initial time: " + cm.getInitialTime());
-				System.out.println("Final time: " + cm.getFinalTime());
-				int nTime = 100;
-				double dt = (cm.getFinalTime() - cm.getInitialTime())/nTime;
-				for (int i=0; i <= nTime; ++i) {
-				    double time = cm.getInitialTime() + i*dt;
-				    cm.setInterpolatedTime(time);
-				    double[] interpolatedY = cm.getInterpolatedState();
-				    System.out.println("t="+time+", Y="+Arrays.toString(interpolatedY));
-				    
-				  }
-			}
-		}
-		//#############################################################################
-		
-		theIntegrator.clearEventHandlers();
-		theIntegrator.clearStepHandlers();		
+		// done by the class user
+//		this.theIntegrator.clearEventHandlers();
+//		this.theIntegrator.clearStepHandlers();
 		
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
@@ -1141,6 +1123,68 @@ public class AircraftPointMassPropagator {
 	 */
 	public void createOutputCharts() throws InstantiationException, IllegalAccessException {
 
+		
+		//#############################################################################
+		// TODO
+		
+		List<Double> times = new ArrayList<Double>();
+		List<double[]> states = new ArrayList<double[]>();
+		for (  StepHandler handler : this.theIntegrator.getStepHandlers() ) {
+			System.out.println(handler instanceof ContinuousOutputModel);
+			if (handler instanceof ContinuousOutputModel) {
+				System.out.println("=== Stored state variables ===");
+				ContinuousOutputModel cm = (ContinuousOutputModel) handler;
+				System.out.println("Initial time: " + cm.getInitialTime());
+				System.out.println("Final time: " + cm.getFinalTime());
+
+				// build time vector keeping event-times as breakpoints
+				double dt = 0.5; // sec
+				double time = cm.getInitialTime();
+				do {
+					System.out.println("......... " +  time);
+					times.add(time);
+					cm.setInterpolatedTime(time);
+					states.add(cm.getInterpolatedState());
+					System.out.println("_________ " +  Arrays.toString(cm.getInterpolatedState()));
+
+					// detect breakpoints
+					time += dt;
+					//loopOverEvents:
+						for(MissionEvent me : this.getMissionEvents()) {
+							double t_ = me.getTime();
+							if ((time-dt < t_) && (time > t_)) {
+								time = t_;
+								//break loopOverEvents;
+							}
+						}
+
+						// TODO: check this
+						
+				} while (time > cm.getFinalTime());
+
+				// try a plot
+				// speed vs. time
+//				MyChartToFileUtils.plotNoLegend(
+//						Arrays.stream(
+//								times.stream()
+//								.toArray(size -> new Double[size])
+//								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+//						Arrays.stream(
+//								states.stream()
+//								.map(x -> x[0])
+//								.toArray(size -> new Double[size])
+//								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+//						0.0, 200, 0.0, 1000.0,
+//						"Time", "Speed", "s", "m/s",
+//						outputChartDir, "aaa");
+
+			}
+		}
+		//#############################################################################
+		
+		
+		
+		
 		double[][] xMatrix2, xMatrix3, xMatrix4;
 		double[][] yMatrix2, yMatrix3, yMatrix4;
 
@@ -1956,6 +2000,14 @@ public class AircraftPointMassPropagator {
 
 	public void setEngineConditionCurrent(EngineOperatingConditionEnum engineConditionCurrent) {
 		this.engineConditionCurrent = engineConditionCurrent;
+	}
+
+	public FirstOrderIntegrator getTheIntegrator() {
+		return theIntegrator;
+	}
+
+	public void setTheIntegrator(FirstOrderIntegrator theIntegrator) {
+		this.theIntegrator = theIntegrator;
 	}
 	
 }

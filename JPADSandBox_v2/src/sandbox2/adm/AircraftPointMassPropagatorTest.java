@@ -375,6 +375,10 @@ public class AircraftPointMassPropagatorTest {
 			
 			propagator.setOutputChartDir(missionOutputDir);
 			propagator.createOutputCharts();
+
+			propagator.getTheIntegrator().clearEventHandlers();
+			propagator.getTheIntegrator().clearStepHandlers();
+
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
