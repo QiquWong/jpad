@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
@@ -51,25 +50,23 @@ public class ClimbCalc {
 	private Double _dragDueToEnigneFailure;
 	//............................................................................................
 	// Output:
-	private List<RCMap> _rcMapAOE;
+	private List<RCMap> _rcMapAEO;
 	private List<RCMap> _rcMapOEI;
-	private CeilingMap _ceilingMapAOE;
+	private CeilingMap _ceilingMapAEO;
 	private CeilingMap _ceilingMapOEI;
-	private List<DragMap> _dragListAOE;
-	private List<ThrustMap> _thrustListAOE;
+	private List<DragMap> _dragListAEO;
+	private List<ThrustMap> _thrustListAEO;
 	private List<DragMap> _dragListOEI;
 	private List<ThrustMap> _thrustListOEI;
-	private Map<String, List<Double>> _efficiencyMapAltitudeAOE;
+	private Map<String, List<Double>> _efficiencyMapAltitudeAEO;
 	private Map<String, List<Double>> _efficiencyMapAltitudeOEI;
-	private List<Amount<Duration>> _climbTimeListAOE;
+	private List<Amount<Duration>> _climbTimeListAEO;
 	private List<Amount<Duration>> _climbTimeListRCmax;
 	private List<Amount<Mass>> _fuelUsedList;
-	private Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeAOE;
-	private Amount<Angle> _maxThetaAtCruiseAltitudeAOE;
-	private Amount<Length> _absoluteCeilingAOE;
-	private Amount<Length> _serviceCeilingAOE;
-	private Amount<Duration> _minimumClimbTimeAOE;
-	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAOE;
+	private Amount<Length> _absoluteCeilingAEO;
+	private Amount<Length> _serviceCeilingAEO;
+	private Amount<Duration> _minimumClimbTimeAEO;
+	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAEO;
 	private Amount<Force> _thrustAtClimbStart;
 	private Amount<Force> _thrustAtClimbEnding;
 	private Amount<Force> _dragAtClimbStart;
@@ -100,10 +97,10 @@ public class ClimbCalc {
 		this._climbSpeed = climbSpeed;
 		this._dragDueToEnigneFailure = dragDueToEnigneFailure;
 		
-		this._rcMapAOE = new ArrayList<>();
+		this._rcMapAEO = new ArrayList<>();
 		this._rcMapOEI = new ArrayList<>();
-		this._dragListAOE = new ArrayList<>();
-		this._thrustListAOE = new ArrayList<>();
+		this._dragListAEO = new ArrayList<>();
+		this._thrustListAEO = new ArrayList<>();
 		this._dragListOEI = new ArrayList<>();
 		this._thrustListOEI = new ArrayList<>();
 		this._fuelUsedList = new ArrayList<>();
@@ -113,7 +110,7 @@ public class ClimbCalc {
 	//--------------------------------------------------------------------------------------------
 	// METHODS:
 	public void calculateClimbPerformance(
-			Amount<Mass> startClimbMassAOE,
+			Amount<Mass> startClimbMassAEO,
 			Amount<Mass> startClimbMassOEI,
 			Amount<Length> initialClimbAltitude,
 			Amount<Length> finalClimbAltitude,
@@ -138,21 +135,21 @@ public class ClimbCalc {
 				);
 							
 		//----------------------------------------------------------------------------------
-		// ALL OPERATIVE ENGINES (AOE)
-		_rcMapAOE = new ArrayList<RCMap>();
+		// ALL OPERATIVE ENGINES (AEO)
+		_rcMapAEO = new ArrayList<RCMap>();
 		
-		_dragListAOE = new ArrayList<DragMap>();
-		_thrustListAOE = new ArrayList<ThrustMap>();
-		_efficiencyMapAltitudeAOE = new HashMap<>();
+		_dragListAEO = new ArrayList<DragMap>();
+		_thrustListAEO = new ArrayList<ThrustMap>();
+		_efficiencyMapAltitudeAEO = new HashMap<>();
 		
-		double[] speedArrayAOE = new double[100];
+		double[] speedArrayAEO = new double[100];
 		
 		for(int i=0; i<altitudeArray.length; i++) {
 			//..................................................................................................
-			speedArrayAOE = MyArrayUtils.linspace(
+			speedArrayAEO = MyArrayUtils.linspace(
 					SpeedCalc.calculateSpeedStall(
 							altitudeArray[i],
-							startClimbMassAOE.times(AtmosphereCalc.g0).getEstimatedValue(),
+							startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue(),
 							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 							_cLmaxClean
 							),
@@ -163,11 +160,11 @@ public class ClimbCalc {
 					100
 					);
 			//..................................................................................................
-			_dragListAOE.add(
+			_dragListAEO.add(
 					DragCalc.calculateDragAndPowerRequired(
 							altitudeArray[i],
-							startClimbMassAOE.times(AtmosphereCalc.g0).getEstimatedValue(),
-							speedArrayAOE,
+							startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue(),
+							speedArrayAEO,
 							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 							_cLmaxClean,
 							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
@@ -179,11 +176,11 @@ public class ClimbCalc {
 					);
 					
 			//..................................................................................................
-			_thrustListAOE.add(
+			_thrustListAEO.add(
 					ThrustCalc.calculateThrustAndPowerAvailable(
 							altitudeArray[i],
 							1.0, 	// throttle setting array
-							speedArrayAOE,
+							speedArrayAEO,
 							EngineOperatingConditionEnum.CLIMB,
 							_theAircraft.getPowerPlant().getEngineType(), 
 							_theAircraft.getPowerPlant(),
@@ -195,27 +192,27 @@ public class ClimbCalc {
 			//..................................................................................................
 			List<Double> liftAltitudeParameterization = new ArrayList<>();
 			List<Double> efficiencyListCurrentAltitude = new ArrayList<>();
-			for(int j=0; j<_dragListAOE.get(i).getSpeed().length; j++) {
+			for(int j=0; j<_dragListAEO.get(i).getSpeed().length; j++) {
 				liftAltitudeParameterization.add(
 						LiftCalc.calculateLift(
-								_dragListAOE.get(i).getSpeed()[j],
+								_dragListAEO.get(i).getSpeed()[j],
 								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-								_dragListAOE.get(i).getAltitude(),
+								_dragListAEO.get(i).getAltitude(),
 								LiftCalc.calculateLiftCoeff(
-										startClimbMassAOE.times(AtmosphereCalc.g0).getEstimatedValue(),
-										_dragListAOE.get(i).getSpeed()[j],
+										startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue(),
+										_dragListAEO.get(i).getSpeed()[j],
 										_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-										_dragListAOE.get(i).getAltitude()
+										_dragListAEO.get(i).getAltitude()
 										)
 								)			
 						);
 				efficiencyListCurrentAltitude.add(
 						liftAltitudeParameterization.get(j)
-						/ _dragListAOE.get(i).getDrag()[j]
+						/ _dragListAEO.get(i).getDrag()[j]
 						);
 			}
-			_efficiencyMapAltitudeAOE.put(
-					"Altitude = " + _dragListAOE.get(i).getAltitude(),
+			_efficiencyMapAltitudeAEO.put(
+					"Altitude = " + _dragListAEO.get(i).getAltitude(),
 					efficiencyListCurrentAltitude
 					);
 		}
@@ -223,8 +220,8 @@ public class ClimbCalc {
 		_thrustAtClimbStart = 
 				Amount.valueOf(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAOE.get(0).getSpeed(),
-								_thrustListAOE.get(0).getThrust(),
+								_thrustListAEO.get(0).getSpeed(),
+								_thrustListAEO.get(0).getThrust(),
 								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
@@ -232,8 +229,8 @@ public class ClimbCalc {
 		_thrustAtClimbEnding = 
 				Amount.valueOf(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAOE.get(_thrustListAOE.size()-1).getSpeed(),
-								_thrustListAOE.get(_thrustListAOE.size()-1).getThrust(),
+								_thrustListAEO.get(_thrustListAEO.size()-1).getSpeed(),
+								_thrustListAEO.get(_thrustListAEO.size()-1).getThrust(),
 								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
@@ -241,8 +238,8 @@ public class ClimbCalc {
 		_dragAtClimbStart = 
 				Amount.valueOf(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_dragListAOE.get(0).getSpeed(),
-								_dragListAOE.get(0).getDrag(),
+								_dragListAEO.get(0).getSpeed(),
+								_dragListAEO.get(0).getDrag(),
 								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
@@ -250,53 +247,43 @@ public class ClimbCalc {
 		_dragAtClimbEnding = 
 				Amount.valueOf(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_dragListAOE.get(_dragListAOE.size()-1).getSpeed(),
-								_dragListAOE.get(_dragListAOE.size()-1).getDrag(),
+								_dragListAEO.get(_dragListAEO.size()-1).getSpeed(),
+								_dragListAEO.get(_dragListAEO.size()-1).getDrag(),
 								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
 								),
 						SI.NEWTON
 						).to(NonSI.POUND_FORCE);
 		
 		//..................................................................................................
-		_rcMapAOE.addAll(
+		_rcMapAEO.addAll(
 				RateOfClimbCalc.calculateRC(
 						altitudeArray,
 						new double[] {1.0}, 	// throttle setting array
-						new double[] {startClimbMassAOE.times(AtmosphereCalc.g0).getEstimatedValue()},
+						new double[] {startClimbMassAEO.times(AtmosphereCalc.g0).getEstimatedValue()},
 						new EngineOperatingConditionEnum[] {EngineOperatingConditionEnum.CLIMB}, 
 						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_dragListAOE,
-						_thrustListAOE
+						_dragListAEO,
+						_thrustListAEO
 						)
 				);
 		//..................................................................................................
-		_ceilingMapAOE = PerformanceCalcUtils.calculateCeiling(_rcMapAOE);
+		_ceilingMapAEO = PerformanceCalcUtils.calculateCeiling(_rcMapAEO);
 		//..................................................................................................
 		// COLLECTING RESULTS
-		_absoluteCeilingAOE = Amount.valueOf(
-				_ceilingMapAOE.getAbsoluteCeiling(),
+		_absoluteCeilingAEO = Amount.valueOf(
+				_ceilingMapAEO.getAbsoluteCeiling(),
 				SI.METER
 				);
 		
-		_serviceCeilingAOE = Amount.valueOf(
-				_ceilingMapAOE.getServiceCeiling(),
+		_serviceCeilingAEO = Amount.valueOf(
+				_ceilingMapAEO.getServiceCeiling(),
 				SI.METER
 				);
 		
-		_maxRateOfClimbAtCruiseAltitudeAOE = Amount.valueOf(
-				_rcMapAOE.get(_rcMapAOE.size()-1).getRCmax(),
-				SI.METERS_PER_SECOND
-				);
-		
-		_maxThetaAtCruiseAltitudeAOE = Amount.valueOf(
-				MyArrayUtils.getMax(_rcMapAOE.get(_rcMapAOE.size()-1).getGamma()),
-				SI.RADIAN
-				);
-		
-		_minimumClimbTimeAOE = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapAOE).to(NonSI.MINUTE);
+		_minimumClimbTimeAEO = PerformanceCalcUtils.calculateMinimumClimbTime(_rcMapAEO).to(NonSI.MINUTE);
 		
 		if(_climbSpeed != null)
-			_climbTimeAtSpecificClimbSpeedAOE = PerformanceCalcUtils.calculateClimbTime(_rcMapAOE, _climbSpeed).to(NonSI.MINUTE);
+			_climbTimeAtSpecificClimbSpeedAEO = PerformanceCalcUtils.calculateClimbTime(_rcMapAEO, _climbSpeed).to(NonSI.MINUTE);
 		
 		//----------------------------------------------------------------------------------
 		// ONE ENGINE INOPERATIVE (OEI)
@@ -414,7 +401,7 @@ public class ClimbCalc {
 		_climbTimeListRCmax = new ArrayList<>();
 		_climbTimeListRCmax.add(Amount.valueOf(0.0, SI.SECOND));
 		
-		for(int i=1; i<_rcMapAOE.size(); i++) {
+		for(int i=1; i<_rcMapAEO.size(); i++) {
 			
 			_climbTimeListRCmax.add(
 					_climbTimeListRCmax.get(_climbTimeListRCmax.size()-1)
@@ -422,12 +409,12 @@ public class ClimbCalc {
 							Amount.valueOf(
 									MyMathUtils.integrate1DSimpsonSpline(
 											new double[] { 
-													_rcMapAOE.get(i-1).getAltitude(),
-													_rcMapAOE.get(i).getAltitude()
+													_rcMapAEO.get(i-1).getAltitude(),
+													_rcMapAEO.get(i).getAltitude()
 											},
 											new double[] {
-													1/_rcMapAOE.get(i-1).getRCmax(),
-													1/_rcMapAOE.get(i).getRCmax()
+													1/_rcMapAEO.get(i-1).getRCmax(),
+													1/_rcMapAEO.get(i).getRCmax()
 											}
 											),
 									SI.SECOND
@@ -438,22 +425,22 @@ public class ClimbCalc {
 		
 		//--------------------------------------------------------------------------------------
 		// TIME AT Climb Speed
-		_climbTimeListAOE = new ArrayList<>();
-		_climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
+		_climbTimeListAEO = new ArrayList<>();
+		_climbTimeListAEO.add(Amount.valueOf(0.0, SI.SECOND));
 		List<Double> rcAtClimbSpeed = new ArrayList<>();
 		List<Amount<Velocity>> climbSpeedTAS = new ArrayList<>();
 		
-		for(int i=0; i<_rcMapAOE.size(); i++) {
+		for(int i=0; i<_rcMapAEO.size(); i++) {
 			if(_climbSpeed != null) {
 				
 				double sigma = OperatingConditions.getAtmosphere(
-						_rcMapAOE.get(i).getAltitude()
+						_rcMapAEO.get(i).getAltitude()
 						).getDensity()*1000/1.225;
 				
 				rcAtClimbSpeed.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_rcMapAOE.get(i).getSpeed(),
-								_rcMapAOE.get(i).getRC(),
+								_rcMapAEO.get(i).getSpeed(),
+								_rcMapAEO.get(i).getRC(),
 								_climbSpeed.doubleValue(SI.METERS_PER_SECOND)
 								)
 						);
@@ -461,15 +448,15 @@ public class ClimbCalc {
 			}
 		}
 		
-		for(int i=1; i<_rcMapAOE.size(); i++) {
-			_climbTimeListAOE.add(
-					_climbTimeListAOE.get(_climbTimeListAOE.size()-1)
+		for(int i=1; i<_rcMapAEO.size(); i++) {
+			_climbTimeListAEO.add(
+					_climbTimeListAEO.get(_climbTimeListAEO.size()-1)
 					.plus(
 							Amount.valueOf(
 									MyMathUtils.integrate1DSimpsonSpline(
 											new double[] { 
-													_rcMapAOE.get(i-1).getAltitude(),
-													_rcMapAOE.get(i).getAltitude()
+													_rcMapAEO.get(i-1).getAltitude(),
+													_rcMapAEO.get(i).getAltitude()
 											},
 											new double[] {
 													1/rcAtClimbSpeed.get(i-1),
@@ -482,35 +469,35 @@ public class ClimbCalc {
 					);
 		}
 
-		_minimumClimbTimeAOE = _climbTimeListRCmax.get(_climbTimeListRCmax.size()-1);
+		_minimumClimbTimeAEO = _climbTimeListRCmax.get(_climbTimeListRCmax.size()-1);
 		
 		if(_climbSpeed != null)
-			_climbTimeAtSpecificClimbSpeedAOE = _climbTimeListAOE.get(_climbTimeListAOE.size()-1);
+			_climbTimeAtSpecificClimbSpeedAEO = _climbTimeListAEO.get(_climbTimeListAEO.size()-1);
 		
 		//----------------------------------------------------------------------------------
-		// SFC, TIME AND RANGE IN AOE CONDITION (for the mission profile)
+		// SFC, TIME AND RANGE IN AEO CONDITION (for the mission profile)
 		List<Double> fuelFlowListClimb = new ArrayList<>();
-		List<Amount<Duration>> climbTimeListAOE = new ArrayList<>();
+		List<Amount<Duration>> climbTimeListAEO = new ArrayList<>();
 		List<Amount<Length>> rangeArrayClimb = new ArrayList<>();
 		
-		climbTimeListAOE.add(Amount.valueOf(0.0, SI.SECOND));
+		climbTimeListAEO.add(Amount.valueOf(0.0, SI.SECOND));
 		rangeArrayClimb.add(Amount.valueOf(0.0, SI.METER));
 		
-		for(int i=1; i<_rcMapAOE.size(); i++) {
+		for(int i=1; i<_rcMapAEO.size(); i++) {
 			
 			if(_climbSpeed == null) {
-				climbTimeListAOE.add(
-						climbTimeListAOE.get(climbTimeListAOE.size()-1)
+				climbTimeListAEO.add(
+						climbTimeListAEO.get(climbTimeListAEO.size()-1)
 						.plus(
 								Amount.valueOf(
 										MyMathUtils.integrate1DSimpsonSpline(
 												new double[] { 
-														_rcMapAOE.get(i-1).getAltitude(),
-														_rcMapAOE.get(i).getAltitude()
+														_rcMapAEO.get(i-1).getAltitude(),
+														_rcMapAEO.get(i).getAltitude()
 												},
 												new double[] {
-														1/_rcMapAOE.get(i-1).getRCmax(),
-														1/_rcMapAOE.get(i).getRCmax()
+														1/_rcMapAEO.get(i-1).getRCmax(),
+														1/_rcMapAEO.get(i).getRCmax()
 												}
 												),
 										SI.SECOND
@@ -522,23 +509,23 @@ public class ClimbCalc {
 						rangeArrayClimb.get(rangeArrayClimb.size()-1)
 						.plus(
 								Amount.valueOf(
-										((_rcMapAOE.get(i-1).getRCMaxSpeed()+_rcMapAOE.get(i).getRCMaxSpeed())/2)
-										*(climbTimeListAOE.get(i).minus(climbTimeListAOE.get(i-1)).doubleValue(SI.SECOND))
-										*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2)),
+										((_rcMapAEO.get(i-1).getRCMaxSpeed()+_rcMapAEO.get(i).getRCMaxSpeed())/2)
+										*(climbTimeListAEO.get(i).minus(climbTimeListAEO.get(i-1)).doubleValue(SI.SECOND))
+										*Math.cos(((_rcMapAEO.get(i-1).getTheta()+_rcMapAEO.get(i).getTheta())/2)),
 										SI.METER
 										)
 								)
 						);
 			}
 			else {
-				climbTimeListAOE.add(
-						climbTimeListAOE.get(climbTimeListAOE.size()-1)
+				climbTimeListAEO.add(
+						climbTimeListAEO.get(climbTimeListAEO.size()-1)
 						.plus(
 								Amount.valueOf(
 										MyMathUtils.integrate1DSimpsonSpline(
 												new double[] { 
-														_rcMapAOE.get(i-1).getAltitude(),
-														_rcMapAOE.get(i).getAltitude()
+														_rcMapAEO.get(i-1).getAltitude(),
+														_rcMapAEO.get(i).getAltitude()
 												},
 												new double[] {
 														1/rcAtClimbSpeed.get(i-1),
@@ -555,8 +542,8 @@ public class ClimbCalc {
 						.plus(
 								Amount.valueOf(
 										((climbSpeedTAS.get(i-1).plus(climbSpeedTAS.get(i))).divide(2)).getEstimatedValue()
-										*(climbTimeListAOE.get(i).minus(climbTimeListAOE.get(i-1)).doubleValue(SI.SECOND))
-										*Math.cos(((_rcMapAOE.get(i-1).getTheta()+_rcMapAOE.get(i).getTheta())/2)),
+										*(climbTimeListAEO.get(i).minus(climbTimeListAEO.get(i-1)).doubleValue(SI.SECOND))
+										*Math.cos(((_rcMapAEO.get(i-1).getTheta()+_rcMapAEO.get(i).getTheta())/2)),
 										SI.METER
 										)
 								)
@@ -567,26 +554,26 @@ public class ClimbCalc {
 		
 		_climbTotalRange = rangeArrayClimb.get(rangeArrayClimb.size()-1);
 		
-		for(int i=0; i<_rcMapAOE.size(); i++) {
+		for(int i=0; i<_rcMapAEO.size(); i++) {
 
 			if(_climbSpeed == null) {
 				fuelFlowListClimb.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAOE.get(i).getSpeed(),
-								_thrustListAOE.get(i).getThrust(),
-								_rcMapAOE.get(i).getRCMaxSpeed()
+								_thrustListAEO.get(i).getSpeed(),
+								_thrustListAEO.get(i).getThrust(),
+								_rcMapAEO.get(i).getRCMaxSpeed()
 								)
 						*(0.224809)*(0.454/60)
 						*EngineDatabaseManager.getSFC(
 								SpeedCalc.calculateMach(
-										_rcMapAOE.get(i).getAltitude(),
-										_rcMapAOE.get(i).getRCMaxSpeed()
+										_rcMapAEO.get(i).getAltitude(),
+										_rcMapAEO.get(i).getRCMaxSpeed()
 										),
-								_rcMapAOE.get(i).getAltitude(),
+								_rcMapAEO.get(i).getAltitude(),
 								(MyMathUtils.getInterpolatedValue1DLinear(
-										_thrustListAOE.get(i).getSpeed(),
-										_thrustListAOE.get(i).getThrust(),
-										_rcMapAOE.get(i).getRCMaxSpeed()
+										_thrustListAEO.get(i).getSpeed(),
+										_thrustListAEO.get(i).getThrust(),
+										_rcMapAEO.get(i).getRCMaxSpeed()
 										)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
 								_theAircraft.getPowerPlant().getEngineType(),
@@ -604,20 +591,20 @@ public class ClimbCalc {
 			else {
 				fuelFlowListClimb.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
-								_thrustListAOE.get(i).getSpeed(),
-								_thrustListAOE.get(i).getThrust(),
+								_thrustListAEO.get(i).getSpeed(),
+								_thrustListAEO.get(i).getThrust(),
 								climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
 								)
 						*(0.224809)*(0.454/60)
 						*EngineDatabaseManager.getSFC(
 								SpeedCalc.calculateMach(
-										_rcMapAOE.get(i).getAltitude(),
+										_rcMapAEO.get(i).getAltitude(),
 										climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
 										),
-								_rcMapAOE.get(i).getAltitude(),
+								_rcMapAEO.get(i).getAltitude(),
 								(MyMathUtils.getInterpolatedValue1DLinear(
-										_thrustListAOE.get(i).getSpeed(),
-										_thrustListAOE.get(i).getThrust(),
+										_thrustListAEO.get(i).getSpeed(),
+										_thrustListAEO.get(i).getThrust(),
 										climbSpeedTAS.get(i).doubleValue(SI.METERS_PER_SECOND)
 										)/2)/_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
@@ -628,7 +615,7 @@ public class ClimbCalc {
 						);
 				_fuelUsedList.add(
 						Amount.valueOf(
-								fuelFlowListClimb.get(i)*_climbTimeListAOE.get(i).doubleValue(NonSI.MINUTE),
+								fuelFlowListClimb.get(i)*_climbTimeListAEO.get(i).doubleValue(NonSI.MINUTE),
 								SI.KILOGRAM
 								)
 						);
@@ -638,7 +625,7 @@ public class ClimbCalc {
 		_climbTotalFuelUsed = Amount.valueOf(
 				MyMathUtils.integrate1DSimpsonSpline(
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								climbTimeListAOE.stream()
+								climbTimeListAEO.stream()
 									.map(t -> t.to(NonSI.MINUTE))
 										.collect(Collectors.toList()
 												)
@@ -655,31 +642,31 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.THRUST_DRAG_CURVES_CLIMB)) {
 
 			//.......................................................
-			// AOE
+			// AEO
 			List<Double[]> speed = new ArrayList<Double[]>();
-			List<Double[]> dragAndThrustAOE = new ArrayList<Double[]>();
+			List<Double[]> dragAndThrustAEO = new ArrayList<Double[]>();
 			List<String> legend = new ArrayList<String>();
 
-			for (int i=0; i<_dragListAOE.size(); i++) {
-				speed.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAOE.get(i).getSpeed()));
-				dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAOE.get(i).getDrag()));
-				legend.add("Drag at " + _dragListAOE.get(i).getAltitude() + " m");
+			for (int i=0; i<_dragListAEO.size(); i++) {
+				speed.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAEO.get(i).getSpeed()));
+				dragAndThrustAEO.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAEO.get(i).getDrag()));
+				legend.add("Drag at " + _dragListAEO.get(i).getAltitude() + " m");
 			}
-			for (int i=0; i<_thrustListAOE.size(); i++) {
-				speed.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAOE.get(i).getSpeed()));
-				dragAndThrustAOE.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAOE.get(i).getThrust()));
-				legend.add("Thrust at " + _thrustListAOE.get(i).getAltitude() + " m");
+			for (int i=0; i<_thrustListAEO.size(); i++) {
+				speed.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAEO.get(i).getSpeed()));
+				dragAndThrustAEO.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAEO.get(i).getThrust()));
+				legend.add("Thrust at " + _thrustListAEO.get(i).getAltitude() + " m");
 			}
 
 			try {
 				MyChartToFileUtils.plot(
-						speed, dragAndThrustAOE,
-						"Drag and Thrust curves (AOE)",
+						speed, dragAndThrustAEO,
+						"Drag and Thrust curves (AEO)",
 						"Speed", "Forces",
 						null, null, null, null,
 						"m/s", "N",
 						true, legend,
-						climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AOE"
+						climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AEO"
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -691,8 +678,8 @@ public class ClimbCalc {
 			// OEI
 			List<Double[]> dragAndThrustOEI = new ArrayList<Double[]>();
 
-			for (int i=0; i<_dragListAOE.size(); i++) {
-				dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAOE.get(i).getDrag()));
+			for (int i=0; i<_dragListAEO.size(); i++) {
+				dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAEO.get(i).getDrag()));
 			}
 			for (int i=0; i<_thrustListOEI.size(); i++) {
 				dragAndThrustOEI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListOEI.get(i).getThrust()));
@@ -718,31 +705,31 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CLIMB)) {
 
 			//.......................................................
-			// AOE
+			// AEO
 			List<Double[]> speed = new ArrayList<Double[]>();
-			List<Double[]> powerNeededAndAvailableAOE = new ArrayList<Double[]>();
+			List<Double[]> powerNeededAndAvailableAEO = new ArrayList<Double[]>();
 			List<String> legend = new ArrayList<String>();
 
-			for (int i=0; i<_dragListAOE.size(); i++) {
-				speed.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAOE.get(i).getSpeed()));
-				powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAOE.get(i).getPower()));
-				legend.add("Power needed at " + _dragListAOE.get(i).getAltitude() + " m");
+			for (int i=0; i<_dragListAEO.size(); i++) {
+				speed.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAEO.get(i).getSpeed()));
+				powerNeededAndAvailableAEO.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAEO.get(i).getPower()));
+				legend.add("Power needed at " + _dragListAEO.get(i).getAltitude() + " m");
 			}
-			for (int i=0; i<_thrustListAOE.size(); i++) {
-				speed.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAOE.get(i).getSpeed()));
-				powerNeededAndAvailableAOE.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAOE.get(i).getPower()));
-				legend.add("Power available at " + _thrustListAOE.get(i).getAltitude() + " m");
+			for (int i=0; i<_thrustListAEO.size(); i++) {
+				speed.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAEO.get(i).getSpeed()));
+				powerNeededAndAvailableAEO.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAEO.get(i).getPower()));
+				legend.add("Power available at " + _thrustListAEO.get(i).getAltitude() + " m");
 			}
 
 			try {
 				MyChartToFileUtils.plot(
-						speed, powerNeededAndAvailableAOE,
-						"Power Needed and Power Available curves (AOE)",
+						speed, powerNeededAndAvailableAEO,
+						"Power Needed and Power Available curves (AEO)",
 						"Speed", "Power",
 						null, null, null, null,
 						"m/s", "W",
 						true, legend,
-						climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AOE"
+						climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AEO"
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -754,8 +741,8 @@ public class ClimbCalc {
 			// OEI
 			List<Double[]> powerNeededAndAvailableOEI = new ArrayList<Double[]>();
 
-			for (int i=0; i<_dragListAOE.size(); i++) {
-				powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAOE.get(i).getPower()));
+			for (int i=0; i<_dragListAEO.size(); i++) {
+				powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAEO.get(i).getPower()));
 			}
 			for (int i=0; i<_thrustListOEI.size(); i++) {
 				powerNeededAndAvailableOEI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListOEI.get(i).getPower()));
@@ -781,37 +768,37 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.EFFICIENCY_CURVES_CLIMB)) {
 
 			//.......................................................
-			// AOE
-			List<Double[]> speedListAltitudeParameterizationAOE = new ArrayList<>();
-			List<Double[]> efficiencyListAltitudeParameterizationAOE = new ArrayList<>();
-			List<String> legendAltitudeAOE = new ArrayList<>();
-			for(int i=0; i<_dragListAOE.size(); i++) {
-				speedListAltitudeParameterizationAOE.add(
+			// AEO
+			List<Double[]> speedListAltitudeParameterizationAEO = new ArrayList<>();
+			List<Double[]> efficiencyListAltitudeParameterizationAEO = new ArrayList<>();
+			List<String> legendAltitudeAEO = new ArrayList<>();
+			for(int i=0; i<_dragListAEO.size(); i++) {
+				speedListAltitudeParameterizationAEO.add(
 						MyArrayUtils.convertFromDoublePrimitive(
-								_dragListAOE.get(i).getSpeed()
+								_dragListAEO.get(i).getSpeed()
 								)
 						);
-				efficiencyListAltitudeParameterizationAOE.add(
+				efficiencyListAltitudeParameterizationAEO.add(
 						MyArrayUtils.convertFromDoublePrimitive(
 								MyArrayUtils.convertToDoublePrimitive(
-										_efficiencyMapAltitudeAOE.get(
-												"Altitude = " + _dragListAOE.get(i).getAltitude()
+										_efficiencyMapAltitudeAEO.get(
+												"Altitude = " + _dragListAEO.get(i).getAltitude()
 												)
 										)
 								)
 						);
-				legendAltitudeAOE.add("Altitude = " + _dragListAOE.get(i).getAltitude());
+				legendAltitudeAEO.add("Altitude = " + _dragListAEO.get(i).getAltitude());
 			}
 			
 			try {
 				MyChartToFileUtils.plot(
-						speedListAltitudeParameterizationAOE, efficiencyListAltitudeParameterizationAOE,
-						"Efficiency curves at different altitudes (AOE)",
+						speedListAltitudeParameterizationAEO, efficiencyListAltitudeParameterizationAEO,
+						"Efficiency curves at different altitudes (AEO)",
 						"Speed", "Efficiency",
 						null, null, null, null,
 						"m/s", "",
-						true, legendAltitudeAOE,
-						climbFolderPath, "Efficiency_curves_altitude_AOE"
+						true, legendAltitudeAEO,
+						climbFolderPath, "Efficiency_curves_altitude_AEO"
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -862,23 +849,23 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.RATE_OF_CLIMB_CURVES)) {
 
 			//.......................................................
-			// AOE
+			// AEO
 			List<Double[]> speed = new ArrayList<Double[]>();
 			List<Double[]> speedCAS = new ArrayList<Double[]>();
 			List<Double[]> mach = new ArrayList<Double[]>();
-			List<Double[]> rateOfClimbAOE = new ArrayList<Double[]>();
+			List<Double[]> rateOfClimbAEO = new ArrayList<Double[]>();
 			List<String> legend = new ArrayList<String>();
 
-			for (int i=0; i<_rcMapAOE.size(); i++) {
+			for (int i=0; i<_rcMapAEO.size(); i++) {
 				
 				double sigma = OperatingConditions.getAtmosphere(
-						_rcMapAOE.get(i).getAltitude()
+						_rcMapAEO.get(i).getAltitude()
 						).getDensity()*1000/1.225;
 				double speedOfSound = OperatingConditions.getAtmosphere(
-						_rcMapAOE.get(i).getAltitude()
+						_rcMapAEO.get(i).getAltitude()
 						).getSpeedOfSound();
 				
-				speed.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAOE.get(i).getSpeed()));
+				speed.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAEO.get(i).getSpeed()));
 				speedCAS.add(
 						MyArrayUtils.convertFromDoublePrimitive(
 								MyArrayUtils.scaleArray(
@@ -895,37 +882,37 @@ public class ClimbCalc {
 										)
 								)
 						);
-				rateOfClimbAOE.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAOE.get(i).getRC()));
-				legend.add("Rate of climb at " + _rcMapAOE.get(i).getAltitude() + " m");
+				rateOfClimbAEO.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAEO.get(i).getRC()));
+				legend.add("Rate of climb at " + _rcMapAEO.get(i).getAltitude() + " m");
 			}
 
 			try {
 				MyChartToFileUtils.plot(
-						speed, rateOfClimbAOE,
-						"Rate of Climb curves (AOE)",
+						speed, rateOfClimbAEO,
+						"Rate of Climb curves (AEO)",
 						"Speed (TAS)", "Rate of Climb",
 						null, null, null, null,
 						"m/s", "m/s",
 						true, legend,
-						climbFolderPath, "Rate_of_Climb_curves_AOE_TAS"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_TAS"
 						);
 				MyChartToFileUtils.plot(
-						speedCAS, rateOfClimbAOE,
-						"Rate of Climb curves (AOE)",
+						speedCAS, rateOfClimbAEO,
+						"Rate of Climb curves (AEO)",
 						"Speed (CAS)", "Rate of Climb",
 						null, null, null, null,
 						"m/s", "m/s",
 						true, legend,
-						climbFolderPath, "Rate_of_Climb_curves_AOE_CAS"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_CAS"
 						);
 				MyChartToFileUtils.plot(
-						mach, rateOfClimbAOE,
-						"Rate of Climb curves (AOE)",
+						mach, rateOfClimbAEO,
+						"Rate of Climb curves (AEO)",
 						"Mach", "Rate of Climb",
 						null, null, null, null,
 						" ", "m/s",
 						true, legend,
-						climbFolderPath, "Rate_of_Climb_curves_AOE_MACH"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_MACH"
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -979,23 +966,23 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.CLIMB_ANGLE_CURVES)) {
 
 			//.......................................................
-			// AOE
+			// AEO
 			List<Double[]> speed = new ArrayList<Double[]>();
 			List<Double[]> speedCAS = new ArrayList<Double[]>();
 			List<Double[]> mach = new ArrayList<Double[]>();
-			List<Double[]> climbAngleAOE = new ArrayList<Double[]>();
+			List<Double[]> climbAngleAEO = new ArrayList<Double[]>();
 			List<String> legend = new ArrayList<String>();
 
-			for (int i=0; i<_rcMapAOE.size(); i++) {
+			for (int i=0; i<_rcMapAEO.size(); i++) {
 				
 				double sigma = OperatingConditions.getAtmosphere(
-						_rcMapAOE.get(i).getAltitude()
+						_rcMapAEO.get(i).getAltitude()
 						).getDensity()*1000/1.225;
 				double speedOfSound = OperatingConditions.getAtmosphere(
-						_rcMapAOE.get(i).getAltitude()
+						_rcMapAEO.get(i).getAltitude()
 						).getSpeedOfSound();
 				
-				speed.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAOE.get(i).getSpeed()));
+				speed.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAEO.get(i).getSpeed()));
 				speedCAS.add(
 						MyArrayUtils.convertFromDoublePrimitive(
 								MyArrayUtils.scaleArray(
@@ -1012,43 +999,43 @@ public class ClimbCalc {
 										)
 								)
 						);
-				climbAngleAOE.add(
+				climbAngleAEO.add(
 						MyArrayUtils.convertFromDoublePrimitive(
 								MyArrayUtils.scaleArray(
-										_rcMapAOE.get(i).getGamma(),
+										_rcMapAEO.get(i).getGamma(),
 										57.3)
 								)
 						);
-				legend.add("Climb angle at " + _rcMapAOE.get(i).getAltitude() + " m");
+				legend.add("Climb angle at " + _rcMapAEO.get(i).getAltitude() + " m");
 			}
 
 			try {
 				MyChartToFileUtils.plot(
-						speed, climbAngleAOE,
-						"Climb angle curves (AOE)",
+						speed, climbAngleAEO,
+						"Climb angle curves (AEO)",
 						"Speed (TAS)", "Climb angle",
 						null, null, null, null,
 						"m/s", "deg",
 						true, legend,
-						climbFolderPath, "Climb_angle_curves_AOE_TAS"
+						climbFolderPath, "Climb_angle_curves_AEO_TAS"
 						);
 				MyChartToFileUtils.plot(
-						speedCAS, climbAngleAOE,
-						"Climb angle curves (AOE)",
+						speedCAS, climbAngleAEO,
+						"Climb angle curves (AEO)",
 						"Speed (CAS)", "Climb angle",
 						null, null, null, null,
 						"m/s", "deg",
 						true, legend,
-						climbFolderPath, "Climb_angle_curves_AOE_CAS"
+						climbFolderPath, "Climb_angle_curves_AEO_CAS"
 						);
 				MyChartToFileUtils.plot(
-						mach, climbAngleAOE,
-						"Climb angle curves (AOE)",
+						mach, climbAngleAEO,
+						"Climb angle curves (AEO)",
 						"Mach", "Climb angle",
 						null, null, null, null,
 						" ", "deg",
 						true, legend,
-						climbFolderPath, "Climb_angle_curves_AOE_MACH"
+						climbFolderPath, "Climb_angle_curves_AEO_MACH"
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1108,24 +1095,24 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.MAX_RATE_OF_CLIMB_ENVELOPE)) {
 
 			//.......................................................
-			// AOE
-			List<Double> maxRateOfClimbListAOE = new ArrayList<Double>();
-			List<Double> altitudeListAOE = new ArrayList<Double>();
+			// AEO
+			List<Double> maxRateOfClimbListAEO = new ArrayList<Double>();
+			List<Double> altitudeListAEO = new ArrayList<Double>();
 
-			maxRateOfClimbListAOE.add(0.0);
-			altitudeListAOE.add(_absoluteCeilingAOE.doubleValue(SI.METER));
-			for(int i=0; i<_rcMapAOE.size(); i++) {
-				maxRateOfClimbListAOE.add(_rcMapAOE.get(_rcMapAOE.size()-1-i).getRCmax());
-				altitudeListAOE.add(_rcMapAOE.get(_rcMapAOE.size()-1-i).getAltitude());
+			maxRateOfClimbListAEO.add(0.0);
+			altitudeListAEO.add(_absoluteCeilingAEO.doubleValue(SI.METER));
+			for(int i=0; i<_rcMapAEO.size(); i++) {
+				maxRateOfClimbListAEO.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getRCmax());
+				altitudeListAEO.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getAltitude());
 			}
 
 			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListAOE),
-					MyArrayUtils.convertToDoublePrimitive(altitudeListAOE),
+					MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListAEO),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListAEO),
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"m/s", "m",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_(AOE)"
+					climbFolderPath, "Max_Rate_of_Climb_envelope_(AEO)"
 					);
 
 			//.......................................................
@@ -1154,23 +1141,23 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.MAX_CLIMB_ANGLE_ENVELOPE)) {
 
 			//.......................................................
-			// AOE
-			List<Double> maxClimbAngleListAOE = new ArrayList<Double>();
-			List<Double> altitudeListAOE = new ArrayList<Double>();
+			// AEO
+			List<Double> maxClimbAngleListAEO = new ArrayList<Double>();
+			List<Double> altitudeListAEO = new ArrayList<Double>();
 			
-			maxClimbAngleListAOE.add(0.0);
-			altitudeListAOE.add(_absoluteCeilingAOE.doubleValue(SI.METER));
-			for(int i=0; i<_rcMapAOE.size(); i++) {
-				maxClimbAngleListAOE.add(MyArrayUtils.getMax(_rcMapAOE.get(_rcMapAOE.size()-1-i).getGamma()));
-				altitudeListAOE.add(_rcMapAOE.get(_rcMapAOE.size()-1-i).getAltitude());
+			maxClimbAngleListAEO.add(0.0);
+			altitudeListAEO.add(_absoluteCeilingAEO.doubleValue(SI.METER));
+			for(int i=0; i<_rcMapAEO.size(); i++) {
+				maxClimbAngleListAEO.add(MyArrayUtils.getMax(_rcMapAEO.get(_rcMapAEO.size()-1-i).getGamma()));
+				altitudeListAEO.add(_rcMapAEO.get(_rcMapAEO.size()-1-i).getAltitude());
 			}
 			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListAOE),
-					MyArrayUtils.convertToDoublePrimitive(altitudeListAOE),
+					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListAEO),
+					MyArrayUtils.convertToDoublePrimitive(altitudeListAEO),
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "m",
-					climbFolderPath, "Max_Climb_Angle_envelope_(AOE)"
+					climbFolderPath, "Max_Climb_Angle_envelope_(AEO)"
 					);
 			
 			//.......................................................
@@ -1199,20 +1186,20 @@ public class ClimbCalc {
 		if(plotList.contains(PerformancePlotEnum.CLIMB_TIME)) {
 
 			//.......................................................
-			// AOE (V CLimb)
+			// AEO (V CLimb)
 			List<Double[]> timeList = new ArrayList<>();
-			List<Double[]> altitudeListAOE = new ArrayList<Double[]>();
+			List<Double[]> altitudeListAEO = new ArrayList<Double[]>();
 			List<String> legend = new ArrayList<>();
 			
-			Double[] altitudeAOE = new Double[_rcMapAOE.size()];
-			for(int i=0; i<_rcMapAOE.size(); i++) {
-				altitudeAOE[i] = _rcMapAOE.get(i).getAltitude();
+			Double[] altitudeAEO = new Double[_rcMapAEO.size()];
+			for(int i=0; i<_rcMapAEO.size(); i++) {
+				altitudeAEO[i] = _rcMapAEO.get(i).getAltitude();
 			}
 			
-			altitudeListAOE.add(altitudeAOE);
-			altitudeListAOE.add(altitudeAOE);
+			altitudeListAEO.add(altitudeAEO);
+			altitudeListAEO.add(altitudeAEO);
 			timeList.add(MyArrayUtils.convertListOfAmountToDoubleArray(
-					_climbTimeListAOE.stream()
+					_climbTimeListAEO.stream()
 					.map(t -> t.to(NonSI.MINUTE))
 					.collect(Collectors.toList())
 					));
@@ -1226,13 +1213,13 @@ public class ClimbCalc {
 			
 			try {
 				MyChartToFileUtils.plot(
-						timeList, altitudeListAOE,
+						timeList, altitudeListAEO,
 						"Climb times",
 						"Time", "Altitude",
 						null, null, null, null,
 						"min", "m",
 						true, legend,
-						climbFolderPath, "Climb_Time_(AOE)"
+						climbFolderPath, "Climb_Time_(AEO)"
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1248,8 +1235,8 @@ public class ClimbCalc {
 			List<Double> altitudeList = new ArrayList<Double>();
 			List<Double> fuelUsedList = new ArrayList<Double>();
 			
-			for(int i=0; i<_rcMapAOE.size(); i++) {
-				altitudeList.add(_rcMapAOE.get(i).getAltitude());	
+			for(int i=0; i<_rcMapAEO.size(); i++) {
+				altitudeList.add(_rcMapAEO.get(i).getAltitude());	
 				fuelUsedList.add(_fuelUsedList.get(i).doubleValue(SI.KILOGRAM));
 			}
 			
@@ -1259,7 +1246,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Altitude", "Fuel  used",
 					"m", "kg",
-					climbFolderPath, "Fuel_used_(AOE)"
+					climbFolderPath, "Fuel_used_(AEO)"
 					);
 			
 		}
@@ -1339,13 +1326,13 @@ public class ClimbCalc {
 	}
 
 
-	public List<RCMap> getRCMapAOE() {
-		return _rcMapAOE;
+	public List<RCMap> getRCMapAEO() {
+		return _rcMapAEO;
 	}
 
 
-	public void setRCMapAOE(List<RCMap> _rcMapAOE) {
-		this._rcMapAOE = _rcMapAOE;
+	public void setRCMapAEO(List<RCMap> _rcMapAEo) {
+		this._rcMapAEO = _rcMapAEO;
 	}
 
 
@@ -1359,13 +1346,13 @@ public class ClimbCalc {
 	}
 
 
-	public CeilingMap getCeilingMapAOE() {
-		return _ceilingMapAOE;
+	public CeilingMap getCeilingMapAEO() {
+		return _ceilingMapAEO;
 	}
 
 
-	public void setCeilingMapAOE(CeilingMap _ceilingMapAOE) {
-		this._ceilingMapAOE = _ceilingMapAOE;
+	public void setCeilingMapAEO(CeilingMap _ceilingMapAEO) {
+		this._ceilingMapAEO = _ceilingMapAEO;
 	}
 
 
@@ -1379,23 +1366,23 @@ public class ClimbCalc {
 	}
 
 
-	public List<DragMap> getDragListAOE() {
-		return _dragListAOE;
+	public List<DragMap> getDragListAEO() {
+		return _dragListAEO;
 	}
 
 
-	public void setDragListAOE(List<DragMap> _dragListAOE) {
-		this._dragListAOE = _dragListAOE;
+	public void setDragListAEO(List<DragMap> _dragListAEO) {
+		this._dragListAEO = _dragListAEO;
 	}
 
 
-	public List<ThrustMap> getThrustListAOE() {
-		return _thrustListAOE;
+	public List<ThrustMap> getThrustListAEO() {
+		return _thrustListAEO;
 	}
 
 
-	public void setThrustListAOE(List<ThrustMap> _thrustListAOE) {
-		this._thrustListAOE = _thrustListAOE;
+	public void setThrustListAEO(List<ThrustMap> _thrustListAEO) {
+		this._thrustListAEO = _thrustListAEO;
 	}
 
 
@@ -1419,63 +1406,43 @@ public class ClimbCalc {
 	}
 
 
-	public Amount<Velocity> getMaxRateOfClimbAtCruiseAltitudeAOE() {
-		return _maxRateOfClimbAtCruiseAltitudeAOE;
+	public Amount<Length> getAbsoluteCeilingAEO() {
+		return _absoluteCeilingAEO;
 	}
 
 
-	public void setMaxRateOfClimbAtCruiseAltitudeAOE(Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeAOE) {
-		this._maxRateOfClimbAtCruiseAltitudeAOE = _maxRateOfClimbAtCruiseAltitudeAOE;
+	public void setAbsoluteCeilingAEO(Amount<Length> _absoluteCeilingAEO) {
+		this._absoluteCeilingAEO = _absoluteCeilingAEO;
 	}
 
 
-	public Amount<Angle> getMaxThetaAtCruiseAltitudeAOE() {
-		return _maxThetaAtCruiseAltitudeAOE;
+	public Amount<Length> getServiceCeilingAEO() {
+		return _serviceCeilingAEO;
 	}
 
 
-	public void setMaxThetaAtCruiseAltitudeAOE(Amount<Angle> _maxThetaAtCruiseAltitudeAOE) {
-		this._maxThetaAtCruiseAltitudeAOE = _maxThetaAtCruiseAltitudeAOE;
+	public void setServiceCeilingAEO(Amount<Length> _serviceCeilingAEO) {
+		this._serviceCeilingAEO = _serviceCeilingAEO;
 	}
 
 
-	public Amount<Length> getAbsoluteCeilingAOE() {
-		return _absoluteCeilingAOE;
+	public Amount<Duration> getMinimumClimbTimeAEO() {
+		return _minimumClimbTimeAEO;
 	}
 
 
-	public void setAbsoluteCeilingAOE(Amount<Length> _absoluteCeilingAOE) {
-		this._absoluteCeilingAOE = _absoluteCeilingAOE;
+	public void setMinimumClimbTimeAEO(Amount<Duration> _minimumClimbTimeAEO) {
+		this._minimumClimbTimeAEO = _minimumClimbTimeAEO;
 	}
 
 
-	public Amount<Length> getServiceCeilingAOE() {
-		return _serviceCeilingAOE;
+	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedAEO() {
+		return _climbTimeAtSpecificClimbSpeedAEO;
 	}
 
 
-	public void setServiceCeilingAOE(Amount<Length> _serviceCeilingAOE) {
-		this._serviceCeilingAOE = _serviceCeilingAOE;
-	}
-
-
-	public Amount<Duration> getMinimumClimbTimeAOE() {
-		return _minimumClimbTimeAOE;
-	}
-
-
-	public void setMinimumClimbTimeAOE(Amount<Duration> _minimumClimbTimeAOE) {
-		this._minimumClimbTimeAOE = _minimumClimbTimeAOE;
-	}
-
-
-	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedAOE() {
-		return _climbTimeAtSpecificClimbSpeedAOE;
-	}
-
-
-	public void setClimbTimeAtSpecificClimbSpeedAOE(Amount<Duration> _climbTimeAtSpecificClimbSpeedAOE) {
-		this._climbTimeAtSpecificClimbSpeedAOE = _climbTimeAtSpecificClimbSpeedAOE;
+	public void setClimbTimeAtSpecificClimbSpeedAEO(Amount<Duration> _climbTimeAtSpecificClimbSpeedAEO) {
+		this._climbTimeAtSpecificClimbSpeedAEO = _climbTimeAtSpecificClimbSpeedAEO;
 	}
 
 
@@ -1514,12 +1481,12 @@ public class ClimbCalc {
 		this._climbTotalFuelUsed = _climbTotalFuelUsed;
 	}
 
-	public Map<String, List<Double>> getEfficiencyMapAltitudeAOE() {
-		return _efficiencyMapAltitudeAOE;
+	public Map<String, List<Double>> getEfficiencyMapAltitudeAEO() {
+		return _efficiencyMapAltitudeAEO;
 	}
 
-	public void setEfficiencyMapAltitudeAOE(Map<String, List<Double>> _efficiencyMapAltitude) {
-		this._efficiencyMapAltitudeAOE = _efficiencyMapAltitude;
+	public void setEfficiencyMapAltitudeAEO(Map<String, List<Double>> _efficiencyMapAltitude) {
+		this._efficiencyMapAltitudeAEO = _efficiencyMapAltitude;
 	}
 
 	public Map<String, List<Double>> getEfficiencyMapAltitudeOEI() {
@@ -1562,12 +1529,12 @@ public class ClimbCalc {
 		this._thrustAtClimbStart = _thrustAtClimbStart;
 	}
 
-	public List<Amount<Duration>> getClimbTimeListAOE() {
-		return _climbTimeListAOE;
+	public List<Amount<Duration>> getClimbTimeListAEO() {
+		return _climbTimeListAEO;
 	}
 
-	public void setClimbTimeListAOE(List<Amount<Duration>> _climbTimeListAOE) {
-		this._climbTimeListAOE = _climbTimeListAOE;
+	public void setClimbTimeListAEO(List<Amount<Duration>> _climbTimeListAEO) {
+		this._climbTimeListAEO = _climbTimeListAEO;
 	}
 	
 	public List<Amount<Duration>> getClimbTimeListRCmax() {

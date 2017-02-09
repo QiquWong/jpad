@@ -75,7 +75,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 import writers.JPADStaticWriteUtils;
 
-public class ACPerformanceManager implements IACPerformanceManger {
+public class ACPerformanceManager {
 
 	/*
 	 *******************************************************************************
@@ -142,7 +142,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Amount<Duration> _freeRollDuration;
 	//..............................................................................
 	// Climb
-	private Double _kClimbWeightAOE;
+	private Double _kClimbWeightAEO;
 	private Double _kClimbWeightOEI;
 	private Amount<Velocity> _climbSpeed;
 	private Amount<Length> _initialClimbAltitude;
@@ -159,6 +159,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private Amount<Velocity> _speedDescentCAS;
 	private Amount<Velocity> _rateOfDescent;
 	private Double _kDescentWeight;
+	private Amount<Length> _initialDescentAltitude;
+	private Amount<Length> _finalDescentAltitude;
 	//..............................................................................
 	// Mission Profile:
 	private Amount<Length> _missionRange;
@@ -185,7 +187,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	//..............................................................................
 	// Take-Off
 	private TakeOffCalc _theTakeOffCalculator;
-	private Amount<Length> _takeOffDistanceAOE;
+	private Amount<Length> _takeOffDistanceAEO;
 	private Amount<Length> _takeOffDistanceFAR25;
 	private Amount<Length> _balancedFieldLength;
 	private Amount<Length> _groundRollDistanceTakeOff;
@@ -203,23 +205,22 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	//..............................................................................
 	// Climb
 	private ClimbCalc _theClimbCalculator;
-	private List<RCMap> _rcMapAOE;
+	private List<RCMap> _rcMapAEO;
 	private List<RCMap> _rcMapOEI;
-	private CeilingMap _ceilingMapAOE;
+	private CeilingMap _ceilingMapAEO;
 	private CeilingMap _ceilingMapOEI;
-	private List<DragMap> _dragListAOE;
-	private List<ThrustMap> _thrustListAOE;
+	private List<DragMap> _dragListAEO;
+	private List<ThrustMap> _thrustListAEO;
 	private List<DragMap> _dragListOEI;
 	private List<ThrustMap> _thrustListOEI;
-	private Map<String, List<Double>> _efficiencyMapAltitudeAOE;
+	private Map<String, List<Double>> _efficiencyMapAltitudeAEO;
 	private Map<String, List<Double>> _efficiencyMapAltitudeOEI;
 	
-	private Amount<Velocity> _maxRateOfClimbAtCruiseAltitudeAOE;
-	private Amount<Angle> _maxThetaAtCruiseAltitudeAOE;
-	private Amount<Length> _absoluteCeilingAOE;
-	private Amount<Length> _serviceCeilingAOE;
-	private Amount<Duration> _minimumClimbTimeAOE;
-	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAOE;
+	private Amount<Length> _absoluteCeilingAEO;
+	private Amount<Length> _serviceCeilingAEO;
+	private Amount<Duration> _minimumClimbTimeAEO;
+	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAEO;
+	private Amount<Mass> _fuelUsedDuringClimb;
 	
 	private Amount<Length> _absoluteCeilingOEI;
 	private Amount<Length> _serviceCeilingOEI;
@@ -258,6 +259,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	private List<Amount<Angle>> _descentAngles;
 	private Amount<Length> _totalDescentLength;
 	private Amount<Duration> _totalDescentTime;
+	private Amount<Mass> _totalDescentFuelUsed;
 	//..............................................................................
 	// Landing
 	private LandingCalc _theLandingCalculator;
@@ -404,7 +406,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		private Amount<Duration> __freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
 		//..............................................................................
 		// Climb
-		private Double __kClimbWeightAOE = 1.0;
+		private Double __kClimbWeightAEO = 1.0;
 		private Double __kClimbWeightOEI = 0.97;
 		private Amount<Velocity> __climbSpeed;
 		private Amount<Length> __initialClimbAltitude;
@@ -421,6 +423,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		private Amount<Velocity> __speedDescent;
 		private Amount<Velocity> __rateOfDescent;
 		private Double __kDescentWeight = 0.9;
+		private Amount<Length> __initialDescentAltitude;
+		private Amount<Length> __finalDescentAltitude;
 		//..............................................................................
 		// Mission profile
 		private Amount<Length> __missionRange;
@@ -663,8 +667,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			return this;
 		}
 		
-		public ACPerformanceCalculatorBuilder kClimbWeightAOE(Double kClimbWeightAOE) {
-			this.__kClimbWeightAOE = kClimbWeightAOE;
+		public ACPerformanceCalculatorBuilder kClimbWeightAEO(Double kClimbWeightAEO) {
+			this.__kClimbWeightAEO = kClimbWeightAEO;
 			return this;
 		}
 		
@@ -710,6 +714,16 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		public ACPerformanceCalculatorBuilder speedDescentCAS(Amount<Velocity> speedDescent) {
 			this.__speedDescent = speedDescent;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder initialDescentAltitude(Amount<Length> initialDescentAltitude) {
+			this.__initialDescentAltitude = initialDescentAltitude;
+			return this;
+		}
+		
+		public ACPerformanceCalculatorBuilder finalDescentAltitude(Amount<Length> finalDescentAltitude) {
+			this.__finalDescentAltitude = finalDescentAltitude;
 			return this;
 		}
 		
@@ -851,7 +865,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._kTouchDown = builder.__kTouchDown;
 		this._freeRollDuration = builder.__freeRollDuration;
 		
-		this._kClimbWeightAOE = builder.__kClimbWeightAOE;
+		this._kClimbWeightAEO = builder.__kClimbWeightAEO;
 		this._kClimbWeightOEI = builder.__kClimbWeightOEI;
 		this._climbSpeed = builder.__climbSpeed;
 		this._initialClimbAltitude = builder.__initialClimbAltitude;
@@ -865,6 +879,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._kDescentWeight = builder.__kDescentWeight;
 		this._rateOfDescent = builder.__rateOfDescent;
 		this._speedDescentCAS = builder.__speedDescent;
+		this._initialDescentAltitude = builder.__initialDescentAltitude;
+		this._finalDescentAltitude = builder.__finalDescentAltitude;
 		
 		this._missionRange = builder.__missionRange;
 	    this._alternateCruiseLength = builder.__alternateCruiseLength;
@@ -1635,17 +1651,17 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		
 		//===========================================================================================
 		// READING CLIMB DATA ...	
-		Double kClimbWeightAOE = 1.0;
+		Double kClimbWeightAEO = 1.0;
 		Double kClimbWeightOEI = 0.97;
 		Amount<Velocity> climbSpeed = null;
 		Amount<Length> initialClimbAltitude = null;
 		Amount<Length> finalClimbAltitude = null;
 		
 		//...............................................................
-		// K CLIMB WEIGHT AOE
-		String kClimbWeightAOEProperty = reader.getXMLPropertyByPath("//performance/climb/k_climb_weight_AOE");
-		if(kClimbWeightAOEProperty != null)
-			kClimbWeightAOE = Double.valueOf(reader.getXMLPropertyByPath("//performance/climb/k_climb_weight_AOE"));
+		// K CLIMB WEIGHT AEO
+		String kClimbWeightAEOProperty = reader.getXMLPropertyByPath("//performance/climb/k_climb_weight_AEO");
+		if(kClimbWeightAEOProperty != null)
+			kClimbWeightAEO = Double.valueOf(reader.getXMLPropertyByPath("//performance/climb/k_climb_weight_AEO"));
 		
 		//...............................................................
 		// K CLIMB WEIGHT OEI
@@ -1704,6 +1720,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		Amount<Velocity> rateOfDescent = null;
 		Amount<Velocity> speedDescentCAS = null;
 		Double kDescentWeight = 0.9;
+		Amount<Length> initialDescentAltitude = null;
+		Amount<Length> finalDescentAltitude = null;
 		//...............................................................
 		// RATE OF DESCENT 
 		String rateOfDescentProperty = reader.getXMLPropertyByPath("//performance/descent/rate_of_descent");
@@ -1719,6 +1737,17 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		String kDescentWeightProperty = reader.getXMLPropertyByPath("//performance/descent/k_descent_weight");
 		if(kDescentWeightProperty != null)
 			kDescentWeight = Double.valueOf(reader.getXMLPropertyByPath("//performance/descent/k_descent_weight"));
+		//...............................................................
+		// INITIAL DESCENT ALTITUDE
+		String initialDescentAltitudeProperty = reader.getXMLPropertyByPath("//performance/descent/initial_descent_altitude");
+		if(initialDescentAltitudeProperty != null)
+			initialDescentAltitude = reader.getXMLAmountLengthByPath("//performance/descent/initial_descent_altitude");
+		
+		//...............................................................
+		// FINAL DESCENT ALTITUDE
+		String finalDescentAltitudeProperty = reader.getXMLPropertyByPath("//performance/descent/final_descent_altitude");
+		if(finalDescentAltitudeProperty != null)
+			finalDescentAltitude = reader.getXMLAmountLengthByPath("//performance/descent/final_descent_altitude");
 		
 		//===========================================================================================
 		// READING MISSION PROFILE DATA ...
@@ -2202,7 +2231,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.kFlare(kFlare)
 				.kTouchDown(kTouchDown)
 				.freeRollDuration(freeRollDuration)
-				.kClimbWeightAOE(kClimbWeightAOE)
+				.kClimbWeightAEO(kClimbWeightAEO)
 				.kClimbWeightOEI(kClimbWeightOEI)
 				.climbSpeed(climbSpeed)
 				.initialClimbAltitude(initialClimbAltitude)
@@ -2213,6 +2242,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 				.rateOfDescent(rateOfDescent)
 				.speedDescentCAS(speedDescentCAS)
 				.kDescentWeight(kDescentWeight)
+				.initialDescentAltitude(initialDescentAltitude)
+				.finalDescentAltitude(finalDescentAltitude)
 				.missionRange(missionRange)
 				.alternateCruiseLength(alternateCruiseLength)
 				.alternateCruiseAltitude(alternateCruiseAltitude)
@@ -2281,7 +2312,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			CalcClimb calcClimb = new CalcClimb();
 			calcClimb.calculateClimbPerformance(
-					_maximumTakeOffMass.times(_kClimbWeightAOE),
+					_maximumTakeOffMass.times(_kClimbWeightAEO),
 					_maximumTakeOffMass.times(_kClimbWeightOEI),
 					_initialClimbAltitude,
 					_finalClimbAltitude,
@@ -2346,8 +2377,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			CalcDescent calcDescent = new CalcDescent();
 			calcDescent.calculateDescentPerformance(
-					_theOperatingConditions.getAltitudeCruise(),
-					Amount.valueOf(15.24, SI.METER),
+					_initialDescentAltitude.to(SI.METER),
+					_finalDescentAltitude.to(SI.METER),
 					_maximumTakeOffMass.times(_kDescentWeight)
 					);
 			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
@@ -2464,16 +2495,36 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListTakeOff.add(new Object[] {"Ground roll distance","m", _groundRollDistanceTakeOff.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {"Rotation distance","m", _rotationDistanceTakeOff.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {"Airborne distance","m", _airborneDistanceTakeOff.doubleValue(SI.METER)});
-        	dataListTakeOff.add(new Object[] {"AOE take-off distance","m", _takeOffDistanceAOE.doubleValue(SI.METER)});
+        	dataListTakeOff.add(new Object[] {"AEO take-off distance","m", _takeOffDistanceAEO.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","m", _takeOffDistanceFAR25.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {"Balanced field length","m", _balancedFieldLength.doubleValue(SI.METER)});
         	dataListTakeOff.add(new Object[] {" "});
-        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","m/s", _vMC.doubleValue(SI.METERS_PER_SECOND)});
+           	dataListTakeOff.add(new Object[] {"Ground roll distance","ft", _groundRollDistanceTakeOff.doubleValue(NonSI.FOOT)});
+        	dataListTakeOff.add(new Object[] {"Rotation distance","ft", _rotationDistanceTakeOff.doubleValue(NonSI.FOOT)});
+        	dataListTakeOff.add(new Object[] {"Airborne distance","ft", _airborneDistanceTakeOff.doubleValue(NonSI.FOOT)});
+        	dataListTakeOff.add(new Object[] {"AEO take-off distance","ft", _takeOffDistanceAEO.doubleValue(NonSI.FOOT)});
+        	dataListTakeOff.add(new Object[] {"FAR-25 take-off field length","ft", _takeOffDistanceFAR25.doubleValue(NonSI.FOOT)});
+        	dataListTakeOff.add(new Object[] {"Balanced field length","ft", _balancedFieldLength.doubleValue(NonSI.FOOT)});
+        	dataListTakeOff.add(new Object[] {" "});
         	dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","m/s", _vStallTakeOff.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Decision speed (V1)","m/s", _v1.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","m/s", _vRotation.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","m/s", _vMC.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","m/s", _vLiftOff.doubleValue(SI.METERS_PER_SECOND)});
         	dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","m/s", _v2.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListTakeOff.add(new Object[] {" "});
+        	dataListTakeOff.add(new Object[] {"Stall speed take-off (VsTO)","kn", _vStallTakeOff.doubleValue(NonSI.KNOT)});
+        	dataListTakeOff.add(new Object[] {"Decision speed (V1)","kn", _v1.doubleValue(NonSI.KNOT)});
+        	dataListTakeOff.add(new Object[] {"Rotation speed (V_Rot)","kn", _vRotation.doubleValue(NonSI.KNOT)});
+        	dataListTakeOff.add(new Object[] {"Minimum control speed (VMC)","kn", _vMC.doubleValue(NonSI.KNOT)});
+        	dataListTakeOff.add(new Object[] {"Lift-off speed (V_LO)","kn", _vLiftOff.doubleValue(NonSI.KNOT)});
+        	dataListTakeOff.add(new Object[] {"Take-off safety speed (V2)","kn", _v2.doubleValue(NonSI.KNOT)});
+        	dataListTakeOff.add(new Object[] {" "});
+        	dataListTakeOff.add(new Object[] {"V1/VsTO","", _v1.divide(_vStallTakeOff).getEstimatedValue()});
+        	dataListTakeOff.add(new Object[] {"V_Rot/VsTO","", _vRotation.divide(_vStallTakeOff).getEstimatedValue()});
+        	dataListTakeOff.add(new Object[] {"VMC/VsTO"," ", _vMC.divide(_vStallTakeOff).getEstimatedValue()});
+        	dataListTakeOff.add(new Object[] {"V_LO/VsTO","", _vLiftOff.divide(_vStallTakeOff).getEstimatedValue()});
+        	dataListTakeOff.add(new Object[] {"V2/VsTO","", _v2.divide(_vStallTakeOff).getEstimatedValue()});
         	dataListTakeOff.add(new Object[] {" "});
         	dataListTakeOff.add(new Object[] {"Take-off duration","s", _takeOffDuration.doubleValue(SI.SECOND)});
 
@@ -2522,16 +2573,19 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	List<Object[]> dataListClimb = new ArrayList<>();
 
         	dataListClimb.add(new Object[] {"Description","Unit","Value"});
-        	dataListClimb.add(new Object[] {"Absolute ceiling AOE","m", _absoluteCeilingAOE.doubleValue(SI.METER)});
-        	dataListClimb.add(new Object[] {"Service ceiling AOE","m", _serviceCeilingAOE.doubleValue(SI.METER)});
-        	dataListClimb.add(new Object[] {"Max rate of climb at cruise altitude AOE","m/s", _maxRateOfClimbAtCruiseAltitudeAOE.doubleValue(SI.METERS_PER_SECOND)});
-        	dataListClimb.add(new Object[] {"Max climb angle at cruise altitude AOE","rad", _maxThetaAtCruiseAltitudeAOE.doubleValue(NonSI.DEGREE_ANGLE)});
-        	dataListClimb.add(new Object[] {"Minimum time to climb AOE","min", _minimumClimbTimeAOE.doubleValue(NonSI.MINUTE)});
-        	if(_climbTimeAtSpecificClimbSpeedAOE != null)
-        		dataListClimb.add(new Object[] {"Time to climb at given climb speed AOE","min", _climbTimeAtSpecificClimbSpeedAOE.doubleValue(NonSI.MINUTE)});
+        	dataListClimb.add(new Object[] {"Absolute ceiling AEO","m", _absoluteCeilingAEO.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Absolute ceiling AEO","ft", _absoluteCeilingAEO.doubleValue(NonSI.FOOT)});
+        	dataListClimb.add(new Object[] {"Service ceiling AEO","m", _serviceCeilingAEO.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Service ceiling AEO","ft", _serviceCeilingAEO.doubleValue(NonSI.FOOT)});
+        	dataListClimb.add(new Object[] {"Minimum time to climb AEO","min", _minimumClimbTimeAEO.doubleValue(NonSI.MINUTE)});
+        	if(_climbTimeAtSpecificClimbSpeedAEO != null)
+        		dataListClimb.add(new Object[] {"Time to climb at given climb speed AEO","min", _climbTimeAtSpecificClimbSpeedAEO.doubleValue(NonSI.MINUTE)});
+        	dataListClimb.add(new Object[] {"Fuel used during climb AEO","kg", _fuelUsedDuringClimb.doubleValue(SI.KILOGRAM)});
         	dataListClimb.add(new Object[] {" "});
         	dataListClimb.add(new Object[] {"Absolute ceiling OEI","m", _absoluteCeilingOEI.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Absolute ceiling OEI","ft", _absoluteCeilingOEI.doubleValue(NonSI.FOOT)});
         	dataListClimb.add(new Object[] {"Service ceiling OEI","m", _serviceCeilingOEI.doubleValue(SI.METER)});
+        	dataListClimb.add(new Object[] {"Service ceiling OEI","ft", _serviceCeilingOEI.doubleValue(NonSI.FOOT)});
 
         	Row rowClimb = sheetClimb.createRow(0);
         	Object[] objArrClimb = dataListClimb.get(0);
@@ -2579,15 +2633,25 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	
         	dataListCruise.add(new Object[] {"Description","Unit","Value"});
         	dataListCruise.add(new Object[] {"Thrust at cruise altitude and Mach","N", _thrustAtCruiseAltitudeAndMach.doubleValue(SI.NEWTON)});
+        	dataListCruise.add(new Object[] {"Thrust at cruise altitude and Mach","lb", _thrustAtCruiseAltitudeAndMach.doubleValue(NonSI.POUND_FORCE)});
         	dataListCruise.add(new Object[] {"Drag at cruise altitude and Mach","N", _dragAtCruiseAltitudeAndMach.doubleValue(SI.NEWTON)});
+        	dataListCruise.add(new Object[] {"Drag at cruise altitude and Mach","lb", _dragAtCruiseAltitudeAndMach.doubleValue(NonSI.POUND_FORCE)});
         	dataListCruise.add(new Object[] {" "});
         	dataListCruise.add(new Object[] {"Power available at cruise altitude and Mach","W", _powerAvailableAtCruiseAltitudeAndMach.doubleValue(SI.WATT)});
+        	dataListCruise.add(new Object[] {"Power available at cruise altitude and Mach","hp", _powerAvailableAtCruiseAltitudeAndMach.doubleValue(NonSI.HORSEPOWER)});
         	dataListCruise.add(new Object[] {"Power needed at cruise altitude and Mach","W", _powerNeededAtCruiseAltitudeAndMach.doubleValue(SI.WATT)});
+        	dataListCruise.add(new Object[] {"Power needed at cruise altitude and Mach","hp", _powerNeededAtCruiseAltitudeAndMach.doubleValue(NonSI.HORSEPOWER)});
         	dataListCruise.add(new Object[] {" "});
         	dataListCruise.add(new Object[] {"Min speed at cruise altitude (CAS)","m/s", _minSpeesCASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
         	dataListCruise.add(new Object[] {"Max speed at cruise altitude (CAS)","m/s", _maxSpeesCASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (CAS)","kn", _minSpeesCASAtCruiseAltitude.doubleValue(NonSI.KNOT)});
+        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (CAS)","kn", _maxSpeesCASAtCruiseAltitude.doubleValue(NonSI.KNOT)});
+        	dataListCruise.add(new Object[] {" "});
         	dataListCruise.add(new Object[] {"Min speed at cruise altitude (TAS)","m/s", _minSpeesTASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
         	dataListCruise.add(new Object[] {"Max speed at cruise altitude (TAS)","m/s", _maxSpeesTASAtCruiseAltitude.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListCruise.add(new Object[] {"Min speed at cruise altitude (TAS)","kn", _minSpeesTASAtCruiseAltitude.doubleValue(NonSI.KNOT)});
+        	dataListCruise.add(new Object[] {"Max speed at cruise altitude (TAS)","kn", _maxSpeesTASAtCruiseAltitude.doubleValue(NonSI.KNOT)});
+        	dataListCruise.add(new Object[] {" "});
         	dataListCruise.add(new Object[] {"Min Mach number at cruise altitude","", _minMachAtCruiseAltitude});
         	dataListCruise.add(new Object[] {"Max Mach number at cruise altitude","", _maxMachAtCruiseAltitude});
         	dataListCruise.add(new Object[] {" "});
@@ -2642,6 +2706,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListDescent.add(new Object[] {"Descent length","nmi", _totalDescentLength.doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListDescent.add(new Object[] {"Descent length","km", _totalDescentLength.doubleValue(SI.KILOMETER)});
         	dataListDescent.add(new Object[] {"Descent duration","min", _totalDescentTime.doubleValue(NonSI.MINUTE)});
+        	dataListDescent.add(new Object[] {"Fuel used during descent","kg", _totalDescentFuelUsed.doubleValue(SI.KILOGRAM)});
 
         	Row rowDescent = sheetDescent.createRow(0);
         	Object[] objArrDescent = dataListDescent.get(0);
@@ -2694,10 +2759,25 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListLanding.add(new Object[] {"Landing distance","m", _landingDistance.doubleValue(SI.METER)});
         	dataListLanding.add(new Object[] {"FAR-25 landing field length","m", _landingDistanceFAR25.doubleValue(SI.METER)});
         	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Ground roll distance","ft", _groundRollDistanceLanding.doubleValue(NonSI.FOOT)});
+        	dataListLanding.add(new Object[] {"Flare distance","ft", _flareDistanceLanding.doubleValue(NonSI.FOOT)});
+        	dataListLanding.add(new Object[] {"Airborne distance","ft", _airborneDistanceLanding.doubleValue(NonSI.FOOT)});
+        	dataListLanding.add(new Object[] {"Landing distance","ft", _landingDistance.doubleValue(NonSI.FOOT)});
+        	dataListLanding.add(new Object[] {"FAR-25 landing field length","ft", _landingDistanceFAR25.doubleValue(NonSI.FOOT)});
+        	dataListLanding.add(new Object[] {" "});
         	dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","m/s", _vStallLanding.doubleValue(SI.METERS_PER_SECOND)});
         	dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","m/s", _vTouchDown.doubleValue(SI.METERS_PER_SECOND)});
         	dataListLanding.add(new Object[] {"Flare speed (V_Flare)","m/s", _vFlare.doubleValue(SI.METERS_PER_SECOND)});
         	dataListLanding.add(new Object[] {"Approach speed (V_A)","m/s", _vApproach.doubleValue(SI.METERS_PER_SECOND)});
+        	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"Stall speed landing (VsLND)","kn", _vStallLanding.doubleValue(NonSI.KNOT)});
+        	dataListLanding.add(new Object[] {"Touchdown speed (V_TD)","kn", _vTouchDown.doubleValue(NonSI.KNOT)});
+        	dataListLanding.add(new Object[] {"Flare speed (V_Flare)","kn", _vFlare.doubleValue(NonSI.KNOT)});
+        	dataListLanding.add(new Object[] {"Approach speed (V_A)","kn", _vApproach.doubleValue(NonSI.KNOT)});
+        	dataListLanding.add(new Object[] {" "});
+        	dataListLanding.add(new Object[] {"V_TD/VsLND","", _vTouchDown.divide(_vStallLanding).getEstimatedValue()});
+        	dataListLanding.add(new Object[] {"V_Flare/VsLND","", _vFlare.divide(_vStallLanding).getEstimatedValue()});
+        	dataListLanding.add(new Object[] {"V_A/VsLND","", _vApproach.divide(_vStallLanding).getEstimatedValue()});
         	dataListLanding.add(new Object[] {" "});
         	dataListLanding.add(new Object[] {"Landing duration","s", _landingDuration.doubleValue(SI.SECOND)});
 
@@ -3092,62 +3172,81 @@ public class ACPerformanceManager implements IACPerformanceManger {
         	dataListVnDiagram.add(new Object[] {" "});
         	dataListVnDiagram.add(new Object[] {"BASIC MANEUVERING DIAGRAM"});
         	dataListVnDiagram.add(new Object[] {"Stall speed clean","m/s", _theEnvelopeCalculator.getStallSpeedClean().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Stall speed clean","kn", _theEnvelopeCalculator.getStallSpeedClean().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Stall speed inverted","m/s", _theEnvelopeCalculator.getStallSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Stall speed inverted","kn", _theEnvelopeCalculator.getStallSpeedInverted().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Point A"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculator.getManeuveringSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorManeuveringSpeed()});
         	dataListVnDiagram.add(new Object[] {"Point C"});
         	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorCruisingSpeed()});
         	dataListVnDiagram.add(new Object[] {"Point D"});
         	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculator.getDiveSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDiveSpeed()});
         	dataListVnDiagram.add(new Object[] {"Point E"});
         	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculator.getDiveSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorDiveSpeed()});
         	dataListVnDiagram.add(new Object[] {"Point F"});
         	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorCruisingSpeed()});
         	dataListVnDiagram.add(new Object[] {"Point H"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculator.getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","kn", _theEnvelopeCalculator.getManeuveringSpeedInverted().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorManeuveringSpeedInverted()});
         	dataListVnDiagram.add(new Object[] {" "});
         	dataListVnDiagram.add(new Object[] {"GUST ENVELOPE"});
         	dataListVnDiagram.add(new Object[] {"Point A'"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getManeuveringSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculator.getManeuveringSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorManeuveringSpeedWithGust()});
         	dataListVnDiagram.add(new Object[] {"Point C'"});
         	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorCruisingSpeedWithGust()});
         	dataListVnDiagram.add(new Object[] {"Point D'"});
         	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculator.getDiveSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDiveSpeedWithGust()});
         	dataListVnDiagram.add(new Object[] {"Point E'"});
         	dataListVnDiagram.add(new Object[] {"Dive speed","m/s", _theEnvelopeCalculator.getDiveSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Dive speed","kn", _theEnvelopeCalculator.getDiveSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorDiveSpeedWithGust()});
         	dataListVnDiagram.add(new Object[] {"Point F'"});
         	dataListVnDiagram.add(new Object[] {"Cruising speed","m/s", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Cruising speed","kn", _theEnvelopeCalculator.getCruisingSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorCruisingSpeedWithGust()});
         	dataListVnDiagram.add(new Object[] {"Point H'"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","m/s", _theEnvelopeCalculator.getManeuveringSpeedInverted().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed (inverted)","kn", _theEnvelopeCalculator.getManeuveringSpeedInverted().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getNegativeLoadFactorManeuveringSpeedInvertedWithGust()});
         	dataListVnDiagram.add(new Object[] {" "});
         	dataListVnDiagram.add(new Object[] {" "});
         	dataListVnDiagram.add(new Object[] {"FLAP MANEUVERING DIAGRAM"});
         	dataListVnDiagram.add(new Object[] {"Stall speed full flap","m/s", _theEnvelopeCalculator.getStallSpeedFullFlap().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Stall speed full flap","kn", _theEnvelopeCalculator.getStallSpeedFullFlap().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Point A_flap"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculator.getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","kn", _theEnvelopeCalculator.getManeuveringFlapSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeed()});
         	dataListVnDiagram.add(new Object[] {"Point I"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculator.getDesignFlapSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeed()});
         	dataListVnDiagram.add(new Object[] {" "});
         	dataListVnDiagram.add(new Object[] {"GUST ENVELOPE (with flaps)"});
         	dataListVnDiagram.add(new Object[] {"Point A'_flap"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","m/s", _theEnvelopeCalculator.getManeuveringFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed full flap","kn", _theEnvelopeCalculator.getManeuveringFlapSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeedWithGust()});
         	dataListVnDiagram.add(new Object[] {"Point I'"});
         	dataListVnDiagram.add(new Object[] {"Maneuvering speed","m/s", _theEnvelopeCalculator.getDesignFlapSpeed().doubleValue(SI.METERS_PER_SECOND)});
+        	dataListVnDiagram.add(new Object[] {"Maneuvering speed","kn", _theEnvelopeCalculator.getDesignFlapSpeed().doubleValue(NonSI.KNOT)});
         	dataListVnDiagram.add(new Object[] {"Load factor","", _theEnvelopeCalculator.getPositiveLoadFactorDesignFlapSpeedWithGust()});
 
         	Row rowVnDiagram = sheetVnDiagram.createRow(0);
@@ -3210,19 +3309,39 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			sb.append("\tTAKE-OFF\n")
 			.append("\t-------------------------------------\n")
-			.append("\t\tGround roll distance = " + _groundRollDistanceTakeOff + "\n")
-			.append("\t\tRotation distance = " + _rotationDistanceTakeOff + "\n")
-			.append("\t\tAirborne distance = " + _airborneDistanceTakeOff + "\n")
-			.append("\t\tAOE take-off distance = " + _takeOffDistanceAOE + "\n")
-			.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25 + "\n")
-			.append("\t\tBalanced field length = " + _balancedFieldLength + "\n")
+			.append("\t\tGround roll distance = " + _groundRollDistanceTakeOff.to(SI.METER) + "\n")
+			.append("\t\tRotation distance = " + _rotationDistanceTakeOff.to(SI.METER) + "\n")
+			.append("\t\tAirborne distance = " + _airborneDistanceTakeOff.to(SI.METER) + "\n")
+			.append("\t\tAEO take-off distance = " + _takeOffDistanceAEO.to(SI.METER) + "\n")
+			.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25.to(SI.METER) + "\n")
+			.append("\t\tBalanced field length = " + _balancedFieldLength.to(SI.METER) + "\n")
 			.append("\t\t.....................................\n")
-			.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOff + "\n")
-			.append("\t\tMiminum control speed (VMC) = " + _vMC + "\n")
-			.append("\t\tDecision speed (V1) = " + _v1 + "\n")
-			.append("\t\tRotation speed (V_Rot) = " + _vRotation + "\n")
-			.append("\t\tLift-off speed (V_LO) = " + _vLiftOff + "\n")
-			.append("\t\tTake-off safety speed (V2) = " + _v2 + "\n")
+			.append("\t\tGround roll distance = " + _groundRollDistanceTakeOff.to(NonSI.FOOT) + "\n")
+			.append("\t\tRotation distance = " + _rotationDistanceTakeOff.to(NonSI.FOOT) + "\n")
+			.append("\t\tAirborne distance = " + _airborneDistanceTakeOff.to(NonSI.FOOT) + "\n")
+			.append("\t\tAEO take-off distance = " + _takeOffDistanceAEO.to(NonSI.FOOT) + "\n")
+			.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25.to(NonSI.FOOT) + "\n")
+			.append("\t\tBalanced field length = " + _balancedFieldLength.to(NonSI.FOOT) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOff.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tDecision speed (V1) = " + _v1.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tRotation speed (V_Rot) = " + _vRotation.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tMiminum control speed (VMC) = " + _vMC.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tLift-off speed (V_LO) = " + _vLiftOff.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tTake-off safety speed (V2) = " + _v2.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOff.to(NonSI.KNOT) + "\n")
+			.append("\t\tDecision speed (V1) = " + _v1.to(NonSI.KNOT) + "\n")
+			.append("\t\tRotation speed (V_Rot) = " + _vRotation.to(NonSI.KNOT) + "\n")
+			.append("\t\tMiminum control speed (VMC) = " + _vMC.to(NonSI.KNOT) + "\n")
+			.append("\t\tLift-off speed (V_LO) = " + _vLiftOff.to(NonSI.KNOT) + "\n")
+			.append("\t\tTake-off safety speed (V2) = " + _v2.to(NonSI.KNOT) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tV1/VsTO = " + _v1.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
+			.append("\t\tV_Rot/VsTO = " + _vRotation.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
+			.append("\t\tVMC/VsTO = " + _vMC.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
+			.append("\t\tV_LO/VsTO = " + _vLiftOff.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
+			.append("\t\tV2/VsTO = " + _v2.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tTake-off duration = " + _takeOffDuration + "\n")
 			.append("\t-------------------------------------\n")
@@ -3232,34 +3351,47 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			sb.append("\tCLIMB\n")
 			.append("\t-------------------------------------\n")
-			.append("\t\tAbsolute ceiling AOE = " + _absoluteCeilingAOE + "\n")
-			.append("\t\tService ceiling AOE = " + _serviceCeilingAOE + "\n")
-			.append("\t\tMaximum rate of climb at cruise altitude AOE = " + _maxRateOfClimbAtCruiseAltitudeAOE + "\n")
-			.append("\t\tMaximum theta at cruise altitude AOE = " + _maxThetaAtCruiseAltitudeAOE + "\n")
-			.append("\t\tMinimum time to climb AOE = " + _minimumClimbTimeAOE + "\n");
-			if(_climbTimeAtSpecificClimbSpeedAOE != null)
-				sb.append("\t\tTime to climb at given climb speed AOE = " + _climbTimeAtSpecificClimbSpeedAOE + "\n");
-			
-			sb.append("\t\t.....................................\n")
-			.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEI + "\n")
-			.append("\t\tService ceiling OEI = " + _serviceCeilingOEI + "\n");
+			.append("\t\tAbsolute ceiling AEO = " + _absoluteCeilingAEO.to(SI.METER) + "\n")
+			.append("\t\tAbsolute ceiling AEO = " + _absoluteCeilingAEO.to(NonSI.FOOT) + "\n")
+			.append("\t\tService ceiling AEO = " + _serviceCeilingAEO.to(SI.METER) + "\n")
+			.append("\t\tService ceiling AEO = " + _serviceCeilingAEO.to(NonSI.FOOT) + "\n")
+			.append("\t\tMinimum time to climb AEO = " + _minimumClimbTimeAEO.to(NonSI.MINUTE) + "\n");
+			if(_climbTimeAtSpecificClimbSpeedAEO != null)
+				sb.append("\t\tTime to climb at given climb speed AEO = " + _climbTimeAtSpecificClimbSpeedAEO.to(NonSI.MINUTE) + "\n");
+			sb.append("\t\tFuel used durign climb AEO = " + _fuelUsedDuringClimb.to(SI.KILOGRAM) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEI.to(SI.METER) + "\n")
+			.append("\t\tAbsolute ceiling OEI = " + _absoluteCeilingOEI.to(NonSI.FOOT) + "\n")
+			.append("\t\tService ceiling OEI = " + _serviceCeilingOEI.to(SI.METER) + "\n")
+			.append("\t\tService ceiling OEI = " + _serviceCeilingOEI.to(NonSI.FOOT) + "\n");
 			
 			sb.append("\t-------------------------------------\n");
+			
 		}
 		if(_taskList.contains(PerformanceEnum.CRUISE)) {
 			
 			sb.append("\tCRUISE\n")
 			.append("\t-------------------------------------\n")
-			.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMach + "\n")
-			.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMach + "\n")
+			.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMach.to(SI.NEWTON) + "\n")
+			.append("\t\tThrust at cruise altitude and Mach = " + _thrustAtCruiseAltitudeAndMach.to(NonSI.POUND_FORCE) + "\n")
+			.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMach.to(SI.NEWTON) + "\n")
+			.append("\t\tDrag at cruise altitude and Mach = " + _dragAtCruiseAltitudeAndMach.to(NonSI.POUND_FORCE) + "\n")
 			.append("\t\t.....................................\n")
-			.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMach + "\n")
-			.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMach + "\n")
+			.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMach.to(SI.WATT) + "\n")
+			.append("\t\tPower available at cruise altitude and Mach = " + _powerAvailableAtCruiseAltitudeAndMach.to(NonSI.HORSEPOWER) + "\n")
+			.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMach.to(SI.WATT) + "\n")
+			.append("\t\tPower needed at cruise altitude and Mach = " + _powerNeededAtCruiseAltitudeAndMach.to(NonSI.HORSEPOWER) + "\n")
 			.append("\t\t.....................................\n")
-			.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitude + "\n")
-			.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitude + "\n")
-			.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitude + "\n")
-			.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitude + "\n")
+			.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitude.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitude.to(NonSI.KNOT) + "\n")
+			.append("\t\tMin CAS speed at cruise altitude = " + _minSpeesCASAtCruiseAltitude.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tMax CAS speed at cruise altitude = " + _maxSpeesCASAtCruiseAltitude.to(NonSI.KNOT) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitude.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitude.to(NonSI.KNOT) + "\n")
+			.append("\t\tMin TAS speed at cruise altitude = " + _minSpeesTASAtCruiseAltitude.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tMax TAS speed at cruise altitude = " + _maxSpeesTASAtCruiseAltitude.to(NonSI.KNOT) + "\n")
+			.append("\t\t.....................................\n")
 			.append("\t\tMin Mach at cruise altitude = " + _minMachAtCruiseAltitude + "\n")
 			.append("\t\tMax Mach at cruise altitude = " + _maxMachAtCruiseAltitude + "\n")
 			.append("\t\t.....................................\n")
@@ -3271,8 +3403,10 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			sb.append("\tDESCENT\n")
 			.append("\t-------------------------------------\n")
+			.append("\t\tDescent length = " + _totalDescentLength.to(SI.KILOMETER) + "\n")
 			.append("\t\tDescent length = " + _totalDescentLength.to(NonSI.NAUTICAL_MILE) + "\n")
-			.append("\t\tDescent duration = " + _totalDescentTime + "\n")
+			.append("\t\tDescent duration = " + _totalDescentTime.to(NonSI.MINUTE) + "\n")
+			.append("\t\tFuel used during descent = " + _totalDescentFuelUsed.to(SI.KILOGRAM) + "\n")
 			.append("\t-------------------------------------\n");
 			;
 			
@@ -3281,16 +3415,31 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			sb.append("\tLANDING\n")
 			.append("\t-------------------------------------\n")
-			.append("\t\tGround roll distance = " + _groundRollDistanceLanding + "\n")
-			.append("\t\tFlare distance = " + _flareDistanceLanding + "\n")
-			.append("\t\tAirborne distance = " + _airborneDistanceLanding + "\n")
-			.append("\t\tLanding distance = " + _landingDistance + "\n")
-			.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25 + "\n")
+			.append("\t\tGround roll distance = " + _groundRollDistanceLanding.to(SI.METER) + "\n")
+			.append("\t\tFlare distance = " + _flareDistanceLanding.to(SI.METER) + "\n")
+			.append("\t\tAirborne distance = " + _airborneDistanceLanding.to(SI.METER) + "\n")
+			.append("\t\tLanding distance = " + _landingDistance.to(SI.METER) + "\n")
+			.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25.to(SI.METER) + "\n")
 			.append("\t\t.....................................\n")
-			.append("\t\tStall speed landing (VsLND)= " + _vStallLanding + "\n")
-			.append("\t\tTouchdown speed (V_TD) = " + _vTouchDown + "\n")
-			.append("\t\tFlare speed (V_Flare) = " + _vFlare + "\n")
-			.append("\t\tApproach speed (V_Approach) = " + _vApproach + "\n")
+			.append("\t\tGround roll distance = " + _groundRollDistanceLanding.to(NonSI.FOOT) + "\n")
+			.append("\t\tFlare distance = " + _flareDistanceLanding.to(NonSI.FOOT) + "\n")
+			.append("\t\tAirborne distance = " + _airborneDistanceLanding.to(NonSI.FOOT) + "\n")
+			.append("\t\tLanding distance = " + _landingDistance.to(NonSI.FOOT) + "\n")
+			.append("\t\tFAR-25 landing field length = " + _landingDistanceFAR25.to(NonSI.FOOT) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tStall speed landing (VsLND)= " + _vStallLanding.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tTouchdown speed (V_TD) = " + _vTouchDown.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tFlare speed (V_Flare) = " + _vFlare.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tApproach speed (V_Approach) = " + _vApproach.to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tStall speed landing (VsLND)= " + _vStallLanding.to(NonSI.KNOT) + "\n")
+			.append("\t\tTouchdown speed (V_TD) = " + _vTouchDown.to(NonSI.KNOT) + "\n")
+			.append("\t\tFlare speed (V_Flare) = " + _vFlare.to(NonSI.KNOT) + "\n")
+			.append("\t\tApproach speed (V_Approach) = " + _vApproach.to(NonSI.KNOT) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tV_TD/VsLND = " + _vTouchDown.to(SI.METERS_PER_SECOND).divide(_vStallLanding.to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
+			.append("\t\tV_Flare/VsLND = " + _vFlare.to(SI.METERS_PER_SECOND).divide(_vStallLanding.to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
+			.append("\t\tV_Approach/VsLND = " + _vApproach.to(SI.METERS_PER_SECOND).divide(_vStallLanding.to(SI.METERS_PER_SECOND)).getEstimatedValue() + "\n")
 			.append("\t\t.....................................\n")
 			.append("\t\tLanding duration = " + _landingDuration + "\n")
 			.append("\t-------------------------------------\n")
@@ -3341,9 +3490,9 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			
 			_theTakeOffCalculator = new TakeOffCalc(
 					_theAircraft,
-					altitude,
+					altitude.to(SI.METER),
 					mach,
-					takeOffMass,
+					takeOffMass.to(SI.KILOGRAM),
 					_dtRotation,
 					_dtHold,
 					_kCLmax,
@@ -3373,8 +3522,8 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			_groundRollDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT);
 			_rotationDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(_groundRollDistanceTakeOff).to(NonSI.FOOT);
 			_airborneDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(_rotationDistanceTakeOff).minus(_groundRollDistanceTakeOff).to(NonSI.FOOT);
-			_takeOffDistanceAOE = _groundRollDistanceTakeOff.plus(_rotationDistanceTakeOff).plus(_airborneDistanceTakeOff).to(NonSI.FOOT);
-			_takeOffDistanceFAR25 = _takeOffDistanceAOE.times(1.15).to(NonSI.FOOT);
+			_takeOffDistanceAEO = _groundRollDistanceTakeOff.plus(_rotationDistanceTakeOff).plus(_airborneDistanceTakeOff).to(NonSI.FOOT);
+			_takeOffDistanceFAR25 = _takeOffDistanceAEO.times(1.15).to(NonSI.FOOT);
 			
 			// Velocities:
 			_vStallTakeOff = _theTakeOffCalculator.getvSTakeOff().to(NonSI.KNOT);
@@ -3633,7 +3782,6 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					"V/VsTO", "Thrust - Yawing Moment",
 					"", "N m",legendValue,
 					takeOffFolderPath, "VMC");
-
 			
 		}
 		
@@ -3648,7 +3796,7 @@ public class ACPerformanceManager implements IACPerformanceManger {
 	public class CalcClimb {
 
 		public void calculateClimbPerformance(
-				Amount<Mass> startClimbMassAOE,
+				Amount<Mass> startClimbMassAEO,
 				Amount<Mass> startClimbMassOEI,
 				Amount<Length> initialClimbAltitude,
 				Amount<Length> finalClimbAltitude,
@@ -3666,30 +3814,27 @@ public class ACPerformanceManager implements IACPerformanceManger {
 					);
 			
 			_theClimbCalculator.calculateClimbPerformance(
-					startClimbMassAOE,
+					startClimbMassAEO,
 					startClimbMassOEI,
 					initialClimbAltitude,
 					finalClimbAltitude,
 					performOEI
 					);
 			
-			_rcMapAOE = _theClimbCalculator.getRCMapAOE();
+			_rcMapAEO = _theClimbCalculator.getRCMapAEO();
 			_rcMapOEI = _theClimbCalculator.getRCMapOEI();
-			_ceilingMapAOE = _theClimbCalculator.getCeilingMapAOE();
+			_ceilingMapAEO = _theClimbCalculator.getCeilingMapAEO();
 			_ceilingMapOEI = _theClimbCalculator.getCeilingMapOEI();
-			_dragListAOE = _theClimbCalculator.getDragListAOE();
-			_thrustListAOE = _theClimbCalculator.getThrustListOEI();
+			_dragListAEO = _theClimbCalculator.getDragListAEO();
+			_thrustListAEO = _theClimbCalculator.getThrustListOEI();
 			_dragListOEI = _theClimbCalculator.getDragListOEI();
 			_thrustListOEI = _theClimbCalculator.getThrustListOEI();
-			_efficiencyMapAltitudeAOE = _theClimbCalculator.getEfficiencyMapAltitudeAOE();
-			_efficiencyMapAltitudeOEI = _theClimbCalculator.getEfficiencyMapAltitudeOEI();
-			
-			_maxRateOfClimbAtCruiseAltitudeAOE = _theClimbCalculator.getMaxRateOfClimbAtCruiseAltitudeAOE();
-			_maxThetaAtCruiseAltitudeAOE = _theClimbCalculator.getMaxThetaAtCruiseAltitudeAOE();
-			_absoluteCeilingAOE = _theClimbCalculator.getAbsoluteCeilingAOE();
-			_serviceCeilingAOE = _theClimbCalculator.getServiceCeilingAOE();
-			_minimumClimbTimeAOE = _theClimbCalculator.getMinimumClimbTimeAOE();
-			_climbTimeAtSpecificClimbSpeedAOE = _theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAOE();
+			_efficiencyMapAltitudeAEO = _theClimbCalculator.getEfficiencyMapAltitudeAEO();
+			_absoluteCeilingAEO = _theClimbCalculator.getAbsoluteCeilingAEO();
+			_serviceCeilingAEO = _theClimbCalculator.getServiceCeilingAEO();
+			_minimumClimbTimeAEO = _theClimbCalculator.getMinimumClimbTimeAEO();
+			_climbTimeAtSpecificClimbSpeedAEO = _theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
+			_fuelUsedDuringClimb = _theClimbCalculator.getClimbTotalFuelUsed();
 			
 			_absoluteCeilingOEI = _theClimbCalculator.getAbsoluteCeilingOEI();
 			_serviceCeilingOEI = _theClimbCalculator.getServiceCeilingOEI();
@@ -5337,12 +5482,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._plotList = _plotList;
 	}
 
-	public Amount<Length> getTakeOffDistanceAOE() {
-		return _takeOffDistanceAOE;
+	public Amount<Length> getTakeOffDistanceAEO() {
+		return _takeOffDistanceAEO;
 	}
 
-	public void setTakeOffDistanceAOE(Amount<Length> _takeOffDistanceAOE) {
-		this._takeOffDistanceAOE = _takeOffDistanceAOE;
+	public void setTakeOffDistanceAEO(Amount<Length> _takeOffDistanceAEO) {
+		this._takeOffDistanceAEO = _takeOffDistanceAEO;
 	}
 
 	public Amount<Length> getTakeOffDistanceFAR25() {
@@ -5810,52 +5955,36 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._payloadMatrix = payloadMatrix;
 	}
 
-	public Amount<Velocity> getMaxRateOfClimbAtCruiseAltitudeAOE() {
-		return _maxRateOfClimbAtCruiseAltitudeAOE;
+	public Amount<Length> getAbsoluteCeilingAEO() {
+		return _absoluteCeilingAEO;
 	}
 
-	public void setMaxRateOfClimbAtCruiseAltitudeAOE(Amount<Velocity> _maxRateOfClimbAtCruiseAltitude) {
-		this._maxRateOfClimbAtCruiseAltitudeAOE = _maxRateOfClimbAtCruiseAltitude;
+	public void setAbsoluteCeilingAEO(Amount<Length> _absoluteCeiling) {
+		this._absoluteCeilingAEO = _absoluteCeiling;
 	}
 
-	public Amount<Angle> getMaxThetaAtCruiseAltitudeAOE() {
-		return _maxThetaAtCruiseAltitudeAOE;
+	public Amount<Length> getServiceCeilingAEO() {
+		return _serviceCeilingAEO;
 	}
 
-	public void setMaxThetaAtCruiseAltitudeAOE(Amount<Angle> _maxThetaAtCruiseAltitude) {
-		this._maxThetaAtCruiseAltitudeAOE = _maxThetaAtCruiseAltitude;
+	public void setServiceCeilingAEO(Amount<Length> _serviceCeiling) {
+		this._serviceCeilingAEO = _serviceCeiling;
 	}
 
-	public Amount<Length> getAbsoluteCeilingAOE() {
-		return _absoluteCeilingAOE;
+	public Amount<Duration> getMinimumClimbTimeAEO() {
+		return _minimumClimbTimeAEO;
 	}
 
-	public void setAbsoluteCeilingAOE(Amount<Length> _absoluteCeiling) {
-		this._absoluteCeilingAOE = _absoluteCeiling;
+	public void setMinimumClimbTimeAEO(Amount<Duration> _minimumClimbTime) {
+		this._minimumClimbTimeAEO = _minimumClimbTime;
 	}
 
-	public Amount<Length> getServiceCeilingAOE() {
-		return _serviceCeilingAOE;
+	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedAEO() {
+		return _climbTimeAtSpecificClimbSpeedAEO;
 	}
 
-	public void setServiceCeilingAOE(Amount<Length> _serviceCeiling) {
-		this._serviceCeilingAOE = _serviceCeiling;
-	}
-
-	public Amount<Duration> getMinimumClimbTimeAOE() {
-		return _minimumClimbTimeAOE;
-	}
-
-	public void setMinimumClimbTimeAOE(Amount<Duration> _minimumClimbTime) {
-		this._minimumClimbTimeAOE = _minimumClimbTime;
-	}
-
-	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedAOE() {
-		return _climbTimeAtSpecificClimbSpeedAOE;
-	}
-
-	public void setClimbTimeAtSpecificClimbSpeedAOE(Amount<Duration> _climbTimeAtSpecificClimbSpeed) {
-		this._climbTimeAtSpecificClimbSpeedAOE = _climbTimeAtSpecificClimbSpeed;
+	public void setClimbTimeAtSpecificClimbSpeedAEO(Amount<Duration> _climbTimeAtSpecificClimbSpeed) {
+		this._climbTimeAtSpecificClimbSpeedAEO = _climbTimeAtSpecificClimbSpeed;
 	}
 
 	public Amount<Length> getAbsoluteCeilingOEI() {
@@ -5874,12 +6003,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._serviceCeilingOEI = _serviceCeilingOEI;
 	}
 
-	public List<RCMap> getRCMapAOE() {
-		return _rcMapAOE;
+	public List<RCMap> getRCMapAEO() {
+		return _rcMapAEO;
 	}
 
-	public void setRCMapAOE(List<RCMap> _rcMapAOE) {
-		this._rcMapAOE = _rcMapAOE;
+	public void setRCMapAEO(List<RCMap> _rcMapAEO) {
+		this._rcMapAEO = _rcMapAEO;
 	}
 
 	public List<RCMap> getRCMapOEI() {
@@ -5890,12 +6019,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._rcMapOEI = _rcMapOEI;
 	}
 
-	public CeilingMap getCeilingMapAOE() {
-		return _ceilingMapAOE;
+	public CeilingMap getCeilingMapAEO() {
+		return _ceilingMapAEO;
 	}
 
-	public void setCeilingMapAOE(CeilingMap _ceilingMapAOE) {
-		this._ceilingMapAOE = _ceilingMapAOE;
+	public void setCeilingMapAEO(CeilingMap _ceilingMapAEO) {
+		this._ceilingMapAEO = _ceilingMapAEO;
 	}
 
 	public CeilingMap getCeilingMapOEI() {
@@ -6079,12 +6208,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._landingDuration = _landingDuration;
 	}
 
-	public List<DragMap> getDragListAOE() {
-		return _dragListAOE;
+	public List<DragMap> getDragListAEO() {
+		return _dragListAEO;
 	}
 
-	public void setDragListAOE(List<DragMap> _dragListAOE) {
-		this._dragListAOE = _dragListAOE;
+	public void setDragListAEO(List<DragMap> _dragListAEO) {
+		this._dragListAEO = _dragListAEO;
 	}
 
 	public List<DragMap> getDragListOEI() {
@@ -6095,12 +6224,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._dragListOEI = _dragListOEI;
 	}
 
-	public List<ThrustMap> getThrustListAOE() {
-		return _thrustListAOE;
+	public List<ThrustMap> getThrustListAEO() {
+		return _thrustListAEO;
 	}
 
-	public void setThrustListAOE(List<ThrustMap> _thrustListAOE) {
-		this._thrustListAOE = _thrustListAOE;
+	public void setThrustListAEO(List<ThrustMap> _thrustListAEO) {
+		this._thrustListAEO = _thrustListAEO;
 	}
 
 	public List<ThrustMap> getThrustListOEI() {
@@ -6295,12 +6424,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._kLandingWeight = _kLandingWeight;
 	}
 
-	public Double getKClimbWeightAOE() {
-		return _kClimbWeightAOE;
+	public Double getKClimbWeightAEO() {
+		return _kClimbWeightAEO;
 	}
 
-	public void setKClimbWeightAOE(Double _kClimbWeightAOE) {
-		this._kClimbWeightAOE = _kClimbWeightAOE;
+	public void setKClimbWeightAEO(Double _kClimbWeightAEO) {
+		this._kClimbWeightAEO = _kClimbWeightAEO;
 	}
 	
 	public Double getKClimbWeightOEI() {
@@ -6591,12 +6720,12 @@ public class ACPerformanceManager implements IACPerformanceManger {
 		this._sfcFunctionAlternateCruise = _sfcFunctionAlternateCruise;
 	}
 
-	public Map<String, List<Double>> getEfficiencyMapAltitudeAOE() {
-		return _efficiencyMapAltitudeAOE;
+	public Map<String, List<Double>> getEfficiencyMapAltitudeAEO() {
+		return _efficiencyMapAltitudeAEO;
 	}
 
-	public void setEfficiencyMapAltitudeAOE(Map<String, List<Double>> _efficiencyMapAltitudeAOE) {
-		this._efficiencyMapAltitudeAOE = _efficiencyMapAltitudeAOE;
+	public void setEfficiencyMapAltitudeAEO(Map<String, List<Double>> _efficiencyMapAltitudeAEO) {
+		this._efficiencyMapAltitudeAEO = _efficiencyMapAltitudeAEO;
 	}
 
 	public Map<String, List<Double>> getEfficiencyMapAltitudeOEI() {
@@ -6701,6 +6830,38 @@ public class ACPerformanceManager implements IACPerformanceManger {
 
 	public void setFinalClimbAltitude(Amount<Length> _finalClimbAltitude) {
 		this._finalClimbAltitude = _finalClimbAltitude;
+	}
+
+	public Amount<Length> getInitialDescentAltitude() {
+		return _initialDescentAltitude;
+	}
+
+	public void setInitialDescentAltitude(Amount<Length> _initialDescentAltitude) {
+		this._initialDescentAltitude = _initialDescentAltitude;
+	}
+
+	public Amount<Length> getFinalDescentAltitude() {
+		return _finalDescentAltitude;
+	}
+
+	public void setFinalDescentAltitude(Amount<Length> _finalDescentAltitude) {
+		this._finalDescentAltitude = _finalDescentAltitude;
+	}
+
+	public Amount<Mass> getFuelUsedDuringClimb() {
+		return _fuelUsedDuringClimb;
+	}
+
+	public void setFuelUsedDuringClimb(Amount<Mass> _fuelUsedDuringClimb) {
+		this._fuelUsedDuringClimb = _fuelUsedDuringClimb;
+	}
+
+	public Amount<Mass> getTotalDescentFuelUsed() {
+		return _totalDescentFuelUsed;
+	}
+
+	public void setTotalDescentFuelUsed(Amount<Mass> _totalDescentFuelUsed) {
+		this._totalDescentFuelUsed = _totalDescentFuelUsed;
 	}
 
 }

@@ -44,7 +44,6 @@ public class OperatingConditions implements IOperatingConditions {
 	
 	// Climb data
 	private Double _machClimb;
-	private Amount<Length> _altitudeToReach;
 	
 	// Cruise data
 	private Amount<Length> _altitudeCruise;
@@ -132,7 +131,6 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		// Climb data
 		private Double __machClimb;
-		private Amount<Length> __altitudeToReach;
 		
 		// Cruise data
 		private Amount<Length> __altitudeCruise;
@@ -176,11 +174,6 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		public OperatingConditionsBuilder machClimb (Double machClimb) {
 			this.__machClimb = machClimb;
-			return this;
-		}
-		
-		public OperatingConditionsBuilder altitudeToReach (Amount<Length> altitudeToReach) {
-			this.__altitudeToReach = altitudeToReach;
 			return this;
 		}
 		
@@ -261,7 +254,6 @@ public class OperatingConditions implements IOperatingConditions {
 			this.__alpha = new Double[] {2.0,6.0,10.0,14.0,18.0,22.0,24.0};
 			
 			this.__machClimb = 0.3;
-			this.__altitudeToReach = Amount.valueOf(6000.0, SI.METER);
 			
 			this.__machCruise = 0.6;
 			this.__altitudeCruise = Amount.valueOf(6000.0, SI.METER);
@@ -295,7 +287,6 @@ public class OperatingConditions implements IOperatingConditions {
 		this._alphaCurrent = builder.__alphaCurrent;
 		
 		this._machClimb = builder.__machClimb;
-		this._altitudeToReach = builder.__altitudeToReach;
 		
 		this._machCruise = builder.__machCruise;
 		this._altitudeCruise = builder.__altitudeCruise;
@@ -369,12 +360,7 @@ public class OperatingConditions implements IOperatingConditions {
 		///////////////////////////////////////////////////////////////
 		// CLIMB DATA:
 		Double machClimb = null;
-		Amount<Length> altitudeToReach = null;
 		
-		String altitudeToReachProperty = reader.getXMLPropertyByPath("//climb/altitude_to_reach");
-		if(altitudeToReachProperty != null)
-			altitudeToReach = reader.getXMLAmountLengthByPath("//climb/altitude_to_reach").to(SI.METER);
-		//.............................................................
 		String machClimbProperty = reader.getXMLPropertyByPath("//climb/mach");
 		if(machClimbProperty != null)
 			machClimb = Double.valueOf(reader.getXMLPropertyByPath("//climb/mach"));
@@ -562,7 +548,6 @@ public class OperatingConditions implements IOperatingConditions {
 				.alphaCurrent(alphaCurrent)
 				.alphaArray(alphaArray)
 				.machClimb(machClimb)
-				.altitudeToReach(altitudeToReach)
 				.machCruise(machCruise)
 				.altitudeCruise(altitudeCruise)
 				.throttleCruise(throttleCruise)
@@ -598,7 +583,6 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\tAlpha current: " + _alphaCurrent + "\n")
 				.append("\t.....................................\n")
 				.append("\tMach Climb: " + _machClimb + "\n")
-				.append("\tAltitude to reach: " + _altitudeToReach + "\n")
 				.append("\t.....................................\n")
 				.append("\tMach Cruise: " + _machCruise + "\n")
 				.append("\tAltitude Cruise: " + _altitudeCruise + "\n")
@@ -1271,14 +1255,6 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public void setAtmosphereLanding(StdAtmos1976 _atmoshpereLanding) {
 		this._atmosphereLanding = _atmoshpereLanding;
-	}
-
-	public Amount<Length> getAltitudeToReach() {
-		return _altitudeToReach;
-	}
-
-	public void setAltitudeToReach(Amount<Length> _altitudeToReach) {
-		this._altitudeToReach = _altitudeToReach;
 	}
 
 	public MyInterpolatingFunction getThrottleGroundIdleTakeOff() {

@@ -1,7 +1,11 @@
 package calculators.performance;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Duration;
@@ -30,6 +34,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -1080,14 +1085,6 @@ public class TakeOffCalc {
 	 */
 	public void calculateBalancedFieldLength() {
 
-//		final PrintStream originalOut = System.out;
-//		PrintStream filterStream = new PrintStream(new OutputStream() {
-//		    public void write(int b) {
-//		         // write nothing
-//		    }
-//		});
-//		System.setOut(filterStream);
-		
 		// failure speed array
 		failureSpeedArray = MyArrayUtils.linspace(
 				vSTakeOff.times(0.5).getEstimatedValue(),
@@ -1136,8 +1133,6 @@ public class TakeOffCalc {
 				v1 = Amount.valueOf(failureSpeedArrayFitted[i], SI.METERS_PER_SECOND);
 			}
 		
-		// write again
-//		System.setOut(originalOut);
 	}
 
 	/**************************************************************************************
@@ -1152,267 +1147,510 @@ public class TakeOffCalc {
 
 		System.out.println("\n---------WRITING TAKE-OFF PERFORMANCE CHARTS TO FILE-----------");
 
-		// data setup
-		double[] time = new double[getTime().size()];
-		for(int i=0; i<time.length; i++)
-			time[i] = getTime().get(i).getEstimatedValue();
-
-		double[] verticalDistance = new double[getVerticalDistance().size()];
-		for(int i=0; i<verticalDistance.length; i++)
-			verticalDistance[i] = getVerticalDistance().get(i).getEstimatedValue();
-
-		double[] groundDistance = new double[getGroundDistance().size()];
-		for(int i=0; i<groundDistance.length; i++)
-			groundDistance[i] = getGroundDistance().get(i).getEstimatedValue();
-
-		double[] thrust = new double[getThrust().size()];
-		for(int i=0; i<thrust.length; i++)
-			thrust[i] = getThrust().get(i).getEstimatedValue();
-
-		double[] thrustHorizontal = new double[getThrustHorizontal().size()];
-		for(int i=0; i<thrustHorizontal.length; i++)
-			thrustHorizontal[i] = getThrustHorizontal().get(i).getEstimatedValue();
-
-		double[] thrustVertical = new double[getThrustVertical().size()];
-		for(int i=0; i<thrustVertical.length; i++)
-			thrustVertical[i] = getThrustVertical().get(i).getEstimatedValue();
-
-		double[] lift = new double[getLift().size()];
-		for(int i=0; i<lift.length; i++)
-			lift[i] = getLift().get(i).getEstimatedValue();
-
-		double[] drag = new double[getDrag().size()];
-		for(int i=0; i<drag.length; i++)
-			drag[i] = getDrag().get(i).getEstimatedValue();
-
-		double[] friction = new double[getFriction().size()];
-		for(int i=0; i<friction.length; i++)
-			friction[i] = getFriction().get(i).getEstimatedValue();
-
-		double[] totalForce = new double[getTotalForce().size()];
-		for(int i=0; i<totalForce.length; i++)
-			totalForce[i] = getTotalForce().get(i).getEstimatedValue();
-
-		double[] loadFactor = new double[getLoadFactor().size()];
-		for(int i=0; i<loadFactor.length; i++)
-			loadFactor[i] = getLoadFactor().get(i);
-
-		double[] acceleration = new double[getAcceleration().size()];
-		for(int i=0; i<acceleration.length; i++)
-			acceleration[i] = getAcceleration().get(i).getEstimatedValue();
-
-		double[] speed = new double[getSpeed().size()];
-		for(int i=0; i<speed.length; i++)
-			speed[i] = getSpeed().get(i).getEstimatedValue();
-
-		double[] alpha = new double[getAlpha().size()];
-		for(int i=0; i<alpha.length; i++)
-			alpha[i] = getAlpha().get(i).getEstimatedValue();
-
-		double[] gamma = new double[getGamma().size()];
-		for(int i=0; i<gamma.length; i++)
-			gamma[i] = getGamma().get(i).getEstimatedValue();
-
-		double[] theta = new double[getTime().size()];
-		for(int i=0; i<theta.length; i++)
-			theta[i] = getTheta().get(i).getEstimatedValue();
-
-		double[] alphaDot = new double[getAlphaDot().size()];
-		for(int i=0; i<alphaDot.length; i++)
-			alphaDot[i] = getAlphaDot().get(i);
-
-		double[] gammaDot = new double[getGammaDot().size()];
-		for(int i=0; i<gammaDot.length; i++)
-			gammaDot[i] = getGammaDot().get(i);
-
-		double[] cL = new double[getcL().size()];
-		for(int i=0; i<cL.length; i++)
-			cL[i] = getcL().get(i);
-
-		double[] rateOfClimb = new double[getRateOfClimb().size()];
-		for(int i=0; i<rateOfClimb.length; i++)
-			rateOfClimb[i] = getRateOfClimb().get(i).getEstimatedValue();
-
-		double[] weightVertical = new double[getTime().size()];
-		for(int i=0; i<weightVertical.length; i++)
-			weightVertical[i] = maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()
-			*Math.cos(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
-
-		double[] weightHorizontal = new double[getTime().size()];
-		for(int i=0; i<weightHorizontal.length; i++)
-			weightHorizontal[i] = maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue()
-			*Math.sin(getGamma().get(i).to(SI.RADIAN).getEstimatedValue());
-
 		if(!isAborted) {
+			//.................................................................................
 			// take-off trajectory
+			
 			MyChartToFileUtils.plotNoLegend(
-					groundDistance, verticalDistance,
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance),
 					0.0, null, 0.0, null,
 					"Ground Distance", "Altitude", "m", "m",
-					takeOffFolderPath, "TakeOff_Trajectory");
+					takeOffFolderPath, "TakeOff_Trajectory_SI)");
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistance.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							verticalDistance.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							),
+					0.0, null, 0.0, null,
+					"Ground Distance", "Altitude", "ft", "ft",
+					takeOffFolderPath, "TakeOff_Trajectory_IMPERIAL");
 
+			//.................................................................................
 			// vertical distance v.s. time
 			MyChartToFileUtils.plotNoLegend(
-					time, verticalDistance,
+					MyArrayUtils.convertListOfAmountTodoubleArray(time),
+					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance),
 					0.0, null, 0.0, null,
 					"Time", "Altitude", "s", "m",
-					takeOffFolderPath, "Altitude_evolution");
+					takeOffFolderPath, "Altitude_evolution_SI");
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(time),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							verticalDistance.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							),
+					0.0, null, 0.0, null,
+					"Time", "Altitude", "s", "ft",
+					takeOffFolderPath, "Altitude_evolution_IMPERIAL");
+			
 		}
 		
+		//.................................................................................
 		// speed v.s. time
 		MyChartToFileUtils.plotNoLegend(
-				time, speed,
+				MyArrayUtils.convertListOfAmountTodoubleArray(time),
+				MyArrayUtils.convertListOfAmountTodoubleArray(speed),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
-				takeOffFolderPath, "Speed_evolution");
-
+				takeOffFolderPath, "Speed_evolution_SI");
+		
+		
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(time),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						speed.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null,
+				"Time", "Speed", "s", "kn",
+				takeOffFolderPath, "Speed_evolution_IMPERIAL");
+		
+		//.................................................................................
 		// speed v.s. ground distance
 		MyChartToFileUtils.plotNoLegend(
-				groundDistance, speed,
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance),
+				MyArrayUtils.convertListOfAmountTodoubleArray(speed),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
-				takeOffFolderPath, "Speed_vs_GroundDistance");
+				takeOffFolderPath, "Speed_vs_GroundDistance_SI");
+		
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						speed.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						),
+				0.0, null, 0.0, null,
+				"Ground Distance", "Speed", "ft", "kn",
+				takeOffFolderPath, "Speed_vs_GroundDistance_IMPERIAL");
 
+		//.................................................................................
 		// acceleration v.s. time
 		MyChartToFileUtils.plotNoLegend(
-				time, acceleration,
+				MyArrayUtils.convertListOfAmountTodoubleArray(time),
+				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
 				0.0, null, null, null,
 				"Time", "Acceleration", "s", "m/(s^2)",
-				takeOffFolderPath, "Acceleration_evolution");
-
+				takeOffFolderPath, "Acceleration_evolution_SI");
+		
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(time),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						acceleration.stream()
+						.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
+						.collect(Collectors.toList())
+						),
+				0.0, null, null, null,
+				"Time", "Acceleration", "s", "ft/(min^2)",
+				takeOffFolderPath, "Acceleration_evolution_IMPERIAL");
+		
+		//.................................................................................
 		// acceleration v.s. time
 		MyChartToFileUtils.plotNoLegend(
-				groundDistance, acceleration,
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance),
+				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
 				0.0, null, null, null,
 				"Ground Distance", "Acceleration", "m", "m/(s^2)",
-				takeOffFolderPath, "Acceleration_vs_GroundDistance");
+				takeOffFolderPath, "Acceleration_vs_GroundDistance_SI");
+		
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						acceleration.stream()
+						.map(x -> x.to(MyUnits.FOOT_PER_SQUARE_MINUTE))
+						.collect(Collectors.toList())
+						),
+				0.0, null, null, null,
+				"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
+				takeOffFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL");
 
+		//.................................................................................
 		// load factor v.s. time
 		MyChartToFileUtils.plotNoLegend(
-				time, loadFactor,
+				MyArrayUtils.convertListOfAmountTodoubleArray(time),
+				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Time", "Load Factor", "s", "",
 				takeOffFolderPath, "LoadFactor_evolution");
 
+		//.................................................................................
 		// load factor v.s. ground distance
 		MyChartToFileUtils.plotNoLegend(
-				groundDistance, loadFactor,
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance), 
+				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				takeOffFolderPath, "LoadFactor_vs_GroundDistance");
+				takeOffFolderPath, "LoadFactor_vs_GroundDistance_SI");
+		
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						), 
+				MyArrayUtils.convertToDoublePrimitive(loadFactor),
+				0.0, null, 0.0, null,
+				"Ground distance", "Load Factor", "m", "",
+				takeOffFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL");
 
 		if(!isAborted) {
+			//.................................................................................
 			// Rate of Climb v.s. Time
 			MyChartToFileUtils.plotNoLegend(
-					time, rateOfClimb,
+					MyArrayUtils.convertListOfAmountTodoubleArray(time),
+					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimb),
 					0.0, null, 0.0, null,
 					"Time", "Rate of Climb", "s", "m/s",
-					takeOffFolderPath, "RateOfClimb_evolution");
+					takeOffFolderPath, "RateOfClimb_evolution_SI");
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(time),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							rateOfClimb.stream()
+							.map(x -> x.to(MyUnits.FOOT_PER_MINUTE))
+							.collect(Collectors.toList())
+							),
+					0.0, null, 0.0, null,
+					"Time", "Rate of Climb", "s", "ft/min",
+					takeOffFolderPath, "RateOfClimb_evolution_IMPERIAL");
 
+			//.................................................................................
 			// Rate of Climb v.s. Ground distance
 			MyChartToFileUtils.plotNoLegend(
-					groundDistance, rateOfClimb,
+					MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimb),
 					0.0, null, 0.0, null,
 					"Ground distance", "Rate of Climb", "m", "m/s",
-					takeOffFolderPath, "RateOfClimb_vs_GroundDistance");
+					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_SI");
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							groundDistance.stream()
+							.map(x -> x.to(NonSI.FOOT))
+							.collect(Collectors.toList())
+							), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							rateOfClimb.stream()
+							.map(x -> x.to(MyUnits.FOOT_PER_MINUTE))
+							.collect(Collectors.toList())
+							),
+					0.0, null, 0.0, null,
+					"Ground distance", "Rate of Climb", "ft", "ft/min",
+					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_IMPERIAL");
 		}
 		
+		//.................................................................................
 		// CL v.s. Time
 		MyChartToFileUtils.plotNoLegend(
-				time, cL,
+				MyArrayUtils.convertListOfAmountTodoubleArray(time),
+				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Time", "CL", "s", "",
 				takeOffFolderPath, "CL_evolution");
 
+		//.................................................................................
 		// CL v.s. Ground distance
 		MyChartToFileUtils.plotNoLegend(
-				groundDistance, cL,
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance),
+				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "m", "",
-				takeOffFolderPath, "CL_vs_GroundDistance");
+				takeOffFolderPath, "CL_vs_GroundDistance_SI");
 
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertToDoublePrimitive(cL),
+				0.0, null, 0.0, null,
+				"Ground distance", "CL", "ft", "",
+				takeOffFolderPath, "CL_vs_GroundDistance_IMPERIAL");
+		
+		//.................................................................................
 		// Horizontal Forces v.s. Time
-		double[][] xMatrix1 = new double[5][totalForce.length];
-		for(int i=0; i<xMatrix1.length; i++)
-			xMatrix1[i] = time;
+		double[][] xMatrix1SI = new double[5][totalForce.size()];
+		for(int i=0; i<xMatrix1SI.length; i++)
+			xMatrix1SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(time);
 
-		double[][] yMatrix1 = new double[5][totalForce.length];
-		yMatrix1[0] = totalForce;
-		yMatrix1[1] = thrustHorizontal;
-		yMatrix1[2] = drag;
-		yMatrix1[3] = friction;
-		yMatrix1[4] = weightHorizontal;
+		double[][] yMatrix1SI = new double[5][totalForce.size()];
+		yMatrix1SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(totalForce);
+		yMatrix1SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(thrustHorizontal);
+		yMatrix1SI[2] = MyArrayUtils.convertListOfAmountTodoubleArray(drag);
+		yMatrix1SI[3] = MyArrayUtils.convertListOfAmountTodoubleArray(friction);
+		yMatrix1SI[4] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.sin(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.collect(Collectors.toList())
+				);
 
 		MyChartToFileUtils.plot(
-				xMatrix1, yMatrix1,
+				xMatrix1SI, yMatrix1SI,
 				0.0, null, null, null,
 				"Time", "Horizontal Forces", "s", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution");
+				takeOffFolderPath, "HorizontalForces_evolution_SI");
 
-		// Horizontal Forces v.s. Ground Distance
-		double[][] xMatrix2 = new double[5][totalForce.length];
-		for(int i=0; i<xMatrix2.length; i++)
-			xMatrix2[i] = groundDistance;
+		double[][] xMatrix1IMPERIAL = new double[5][totalForce.size()];
+		for(int i=0; i<xMatrix1IMPERIAL.length; i++)
+			xMatrix1IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(time);
 
-		double[][] yMatrix2 = new double[5][totalForce.length];
-		yMatrix2[0] = totalForce;
-		yMatrix2[1] = thrustHorizontal;
-		yMatrix2[2] = drag;
-		yMatrix2[3] = friction;
-		yMatrix2[4] = weightHorizontal;
+		double[][] yMatrix1IMPERIAL = new double[5][totalForce.size()];
+		yMatrix1IMPERIAL[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				totalForce.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix1IMPERIAL[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				thrustHorizontal.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix1IMPERIAL[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				drag.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix1IMPERIAL[3] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				friction.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix1IMPERIAL[4] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.sin(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.map(x -> x.times(0.224809))
+				.collect(Collectors.toList())
+				);
 
 		MyChartToFileUtils.plot(
-				xMatrix2, yMatrix2,
+				xMatrix1IMPERIAL, yMatrix1IMPERIAL,
 				0.0, null, null, null,
-				"Ground Distance", "Horizontal Forces", "m", "N",
+				"Time", "Horizontal Forces", "s", "lb",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_vs_GroundDistance");
+				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
+		
+		//.................................................................................
+		// Horizontal Forces v.s. Ground Distance
+		double[][] xMatrix2SI = new double[5][totalForce.size()];
+		for(int i=0; i<xMatrix2SI.length; i++)
+			xMatrix2SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance);
 
-		// Vertical Forces v.s. Time
-		double[][] xMatrix3 = new double[3][totalForce.length];
-		for(int i=0; i<xMatrix3.length; i++)
-			xMatrix3[i] = time;
-
-		double[][] yMatrix3 = new double[3][totalForce.length];
-		yMatrix3[0] = lift;
-		yMatrix3[1] = thrustVertical;
-		yMatrix3[2] = weightVertical;
+		double[][] yMatrix2SI = new double[5][totalForce.size()];
+		yMatrix2SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(totalForce);
+		yMatrix2SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(thrustHorizontal);
+		yMatrix2SI[2] = MyArrayUtils.convertListOfAmountTodoubleArray(drag);
+		yMatrix2SI[3] = MyArrayUtils.convertListOfAmountTodoubleArray(friction);
+		yMatrix2SI[4] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.sin(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.collect(Collectors.toList())
+				);
 
 		MyChartToFileUtils.plot(
-				xMatrix3, yMatrix3,
+				xMatrix2SI, yMatrix2SI,
+				0.0, null, null, null,
+				"Time", "Horizontal Forces", "m", "N",
+				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
+				takeOffFolderPath, "HorizontalForces_evolution_SI");
+
+		double[][] xMatrix2IMPERIAL = new double[5][totalForce.size()];
+		for(int i=0; i<xMatrix2IMPERIAL.length; i++)
+			xMatrix2IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance);
+
+		double[][] yMatrix2IMPERIAL = new double[5][totalForce.size()];
+		yMatrix2IMPERIAL[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				totalForce.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix2IMPERIAL[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				thrustHorizontal.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix2IMPERIAL[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				drag.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix2IMPERIAL[3] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				friction.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix2IMPERIAL[4] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.sin(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.map(x -> x.times(0.224809))
+				.collect(Collectors.toList())
+				);
+
+		MyChartToFileUtils.plot(
+				xMatrix2IMPERIAL, yMatrix2IMPERIAL,
+				0.0, null, null, null,
+				"Time", "Horizontal Forces", "ft", "lb",
+				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
+				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
+
+		//.................................................................................
+		// Vertical Forces v.s. Time
+		double[][] xMatrix3SI = new double[3][totalForce.size()];
+		for(int i=0; i<xMatrix3SI.length; i++)
+			xMatrix3SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(time);
+
+		double[][] yMatrix3SI = new double[3][totalForce.size()];
+		yMatrix3SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(lift);
+		yMatrix3SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(thrustVertical);
+		yMatrix3SI[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.cos(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.collect(Collectors.toList())
+				);
+
+		MyChartToFileUtils.plot(
+				xMatrix3SI, yMatrix3SI,
 				0.0, null, null, null,
 				"Time", "Vertical Forces", "s", "N",
 				new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
 				takeOffFolderPath, "VerticalForces_evolution");
 
-		// Vertical Forces v.s. ground distance
-		double[][] xMatrix4 = new double[3][totalForce.length];
-		for(int i=0; i<xMatrix4.length; i++)
-			xMatrix4[i] = groundDistance;
+		double[][] xMatrix3IMPERIAL = new double[3][totalForce.size()];
+		for(int i=0; i<xMatrix3IMPERIAL.length; i++)
+			xMatrix3IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(time);
 
-		double[][] yMatrix4 = new double[3][totalForce.length];
-		yMatrix4[0] = lift;
-		yMatrix4[1] = thrustVertical;
-		yMatrix4[2] = weightVertical;
+		double[][] yMatrix3IMPERIAL = new double[3][totalForce.size()];
+		yMatrix3IMPERIAL[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				lift.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix3IMPERIAL[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				thrustVertical.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix3IMPERIAL[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.cos(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.map(x -> x.times(0.224809))
+				.collect(Collectors.toList())
+				);
 
 		MyChartToFileUtils.plot(
-				xMatrix4, yMatrix4,
+				xMatrix3IMPERIAL, yMatrix3IMPERIAL,
+				0.0, null, null, null,
+				"Time", "Vertical Forces", "s", "lb",
+				new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
+				takeOffFolderPath, "VerticalForces_evolution_IMPERIAL");
+		
+		//.................................................................................
+		// Vertical Forces v.s. ground distance
+		double[][] xMatrix4SI = new double[3][totalForce.size()];
+		for(int i=0; i<xMatrix4SI.length; i++)
+			xMatrix4SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance);
+
+		double[][] yMatrix4SI = new double[3][totalForce.size()];
+		yMatrix4SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(lift);
+		yMatrix4SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(thrustVertical);
+		yMatrix4SI[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.cos(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.collect(Collectors.toList())
+				);
+
+		MyChartToFileUtils.plot(
+				xMatrix4SI, yMatrix4SI,
 				0.0, null, null, null,
 				"Ground distance", "Vertical Forces", "m", "N",
 				new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
-				takeOffFolderPath, "VerticalForces_vs_GroundDistance");
+				takeOffFolderPath, "VerticalForces_vs_GroundDistance_SI");
 
+		double[][] xMatrix4IMPERIAL = new double[3][totalForce.size()];
+		for(int i=0; i<xMatrix4IMPERIAL.length; i++)
+			xMatrix4IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					groundDistance.stream()
+					.map(x -> x.to(NonSI.FOOT))
+					.collect(Collectors.toList())
+					);
+
+		double[][] yMatrix4IMPERIAL = new double[3][totalForce.size()];
+		yMatrix4IMPERIAL[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				lift.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix4IMPERIAL[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				thrustVertical.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix4IMPERIAL[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				gamma.stream()
+				.map(x -> Math.cos(x.doubleValue(SI.RADIAN)))
+				.map(x -> maxTakeOffMass.times(AtmosphereCalc.g0).times(x))
+				.map(x -> x.times(0.224809))
+				.collect(Collectors.toList())
+				);
+
+		MyChartToFileUtils.plot(
+				xMatrix4IMPERIAL, yMatrix4IMPERIAL,
+				0.0, null, null, null,
+				"Ground distance", "Vertical Forces", "ft", "lb",
+				new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
+				takeOffFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL");
+		
 		if(!isAborted) {
+			//.................................................................................
 			// Angles v.s. time
-			double[][] xMatrix5 = new double[3][totalForce.length];
+			double[][] xMatrix5 = new double[3][totalForce.size()];
 			for(int i=0; i<xMatrix5.length; i++)
-				xMatrix5[i] = time;
+				xMatrix5[i] = MyArrayUtils.convertListOfAmountTodoubleArray(time);
 
-			double[][] yMatrix5 = new double[3][totalForce.length];
-			yMatrix5[0] = alpha;
-			yMatrix5[1] = theta;
-			yMatrix5[2] = gamma;
+			double[][] yMatrix5 = new double[3][totalForce.size()];
+			yMatrix5[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					alpha.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
+			yMatrix5[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					theta.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
+			yMatrix5[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					gamma.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
 
 			MyChartToFileUtils.plot(
 					xMatrix5, yMatrix5,
@@ -1421,31 +1659,77 @@ public class TakeOffCalc {
 					new String[] {"Alpha Body", "Theta", "Gamma"},
 					takeOffFolderPath, "Angles_evolution");
 
+			//.................................................................................
 			// Angles v.s. Ground Distance
-			double[][] xMatrix6 = new double[3][totalForce.length];
-			for(int i=0; i<xMatrix6.length; i++)
-				xMatrix6[i] = groundDistance;
+			double[][] xMatrix6SI = new double[3][totalForce.size()];
+			for(int i=0; i<xMatrix6SI.length; i++)
+				xMatrix6SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance);
 
-			double[][] yMatrix6 = new double[3][totalForce.length];
-			yMatrix6[0] = alpha;
-			yMatrix6[1] = theta;
-			yMatrix6[2] = gamma;
+			double[][] yMatrix6SI = new double[3][totalForce.size()];
+			yMatrix6SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					alpha.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
+			yMatrix6SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					theta.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
+			yMatrix6SI[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					gamma.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
 
 			MyChartToFileUtils.plot(
-					xMatrix6, yMatrix6,
+					xMatrix6SI, yMatrix6SI,
 					0.0, null, null, null,
 					"Ground Distance", "Angles", "m", "deg",
 					new String[] {"Alpha Body", "Theta", "Gamma"},
-					takeOffFolderPath, "Angles_vs_GroundDistance");
+					takeOffFolderPath, "Angles_vs_GroundDistance_SI");
 
+			double[][] xMatrix6IMPERIAL = new double[3][totalForce.size()];
+			for(int i=0; i<xMatrix6IMPERIAL.length; i++)
+				xMatrix6IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						);
+
+			double[][] yMatrix6IMPERIAL = new double[3][totalForce.size()];
+			yMatrix6IMPERIAL[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					alpha.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
+			yMatrix6IMPERIAL[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					theta.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
+			yMatrix6IMPERIAL[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+					gamma.stream()
+					.map(x -> x.to(NonSI.DEGREE_ANGLE))
+					.collect(Collectors.toList())
+					);
+
+			MyChartToFileUtils.plot(
+					xMatrix6IMPERIAL, yMatrix6IMPERIAL,
+					0.0, null, null, null,
+					"Ground Distance", "Angles", "ft", "deg",
+					new String[] {"Alpha Body", "Theta", "Gamma"},
+					takeOffFolderPath, "Angles_vs_GroundDistance_IMPERIAL");
+			
+			//.................................................................................
 			// Angular velocity v.s. time
-			double[][] xMatrix7 = new double[2][totalForce.length];
+			double[][] xMatrix7 = new double[2][totalForce.size()];
 			for(int i=0; i<xMatrix7.length; i++)
-				xMatrix7[i] = time;
+				xMatrix7[i] = MyArrayUtils.convertListOfAmountTodoubleArray(time);
 
-			double[][] yMatrix7 = new double[2][totalForce.length];
-			yMatrix7[0] = alphaDot;
-			yMatrix7[1] = gammaDot;
+			double[][] yMatrix7 = new double[2][totalForce.size()];
+			yMatrix7[0] = MyArrayUtils.convertToDoublePrimitive(alphaDot);
+			yMatrix7[1] = MyArrayUtils.convertToDoublePrimitive(gammaDot);
 
 			MyChartToFileUtils.plot(
 					xMatrix7, yMatrix7,
@@ -1454,21 +1738,41 @@ public class TakeOffCalc {
 					new String[] {"Alpha_dot", "Gamma_dot"},
 					takeOffFolderPath, "AngularVelocity_evolution");
 
+			//.................................................................................
 			// Angular velocity v.s. Ground Distance
-			double[][] xMatrix8 = new double[2][totalForce.length];
-			for(int i=0; i<xMatrix8.length; i++)
-				xMatrix8[i] = groundDistance;
+			double[][] xMatrix8SI = new double[2][totalForce.size()];
+			for(int i=0; i<xMatrix8SI.length; i++)
+				xMatrix8SI[i] = MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance);
 
-			double[][] yMatrix8 = new double[2][totalForce.length];
-			yMatrix8[0] = alphaDot;
-			yMatrix8[1] = gammaDot;
+			double[][] yMatrix8SI = new double[2][totalForce.size()];
+			yMatrix8SI[0] = MyArrayUtils.convertToDoublePrimitive(alphaDot);
+			yMatrix8SI[1] = MyArrayUtils.convertToDoublePrimitive(gammaDot);
 
 			MyChartToFileUtils.plot(
-					xMatrix8, yMatrix8,
+					xMatrix8SI, yMatrix8SI,
 					0.0, null, null, null,
 					"Ground Distance", "Angular Velocity", "m", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
-					takeOffFolderPath, "AngularVelocity_vs_GroundDistance");
+					takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI");
+			
+			double[][] xMatrix8IMPERIAL = new double[2][totalForce.size()];
+			for(int i=0; i<xMatrix8IMPERIAL.length; i++)
+				xMatrix8IMPERIAL[i] = MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						);
+
+			double[][] yMatrix8SIMPERIAL = new double[2][totalForce.size()];
+			yMatrix8SIMPERIAL[0] = MyArrayUtils.convertToDoublePrimitive(alphaDot);
+			yMatrix8SIMPERIAL[1] = MyArrayUtils.convertToDoublePrimitive(gammaDot);
+
+			MyChartToFileUtils.plot(
+					xMatrix8IMPERIAL, yMatrix8SIMPERIAL,
+					0.0, null, null, null,
+					"Ground Distance", "Angular Velocity", "ft", "deg/s",
+					new String[] {"Alpha_dot", "Gamma_dot"},
+					takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI");
 		}
 		
 		System.out.println("\n---------------------------DONE!-------------------------------");
@@ -1491,15 +1795,31 @@ public class TakeOffCalc {
 
 		double[][] xArray = new double[][]
 				{failureSpeedArrayFitted, failureSpeedArrayFitted};
-		double[][] yArray = new double[][]
+		double[][] yArraySI = new double[][]
 				{continuedTakeOffArrayFitted, abortedTakeOffArrayFitted};
 
 		MyChartToFileUtils.plot(
-				xArray, yArray,
+				xArray, yArraySI,
 				null, null, null, null,
 				"Vfailure/VsTO", "Distance", "", "m",
 				new String[] {"OEI Take-Off", "Aborted Take-Off"},
-				takeOffFolderPath, "BalancedTakeOffLength");
+				takeOffFolderPath, "BalancedTakeOffLength_SI");
+		
+		double[][] yArrayIMPERIAL = new double[][]	{
+			Arrays.stream(continuedTakeOffArrayFitted)
+			.map(x -> x*3.28084)
+			.toArray(), 
+			Arrays.stream(abortedTakeOffArrayFitted)
+			.map(x -> x*3.28084)
+			.toArray()
+			};
+
+		MyChartToFileUtils.plot(
+				xArray, yArrayIMPERIAL,
+				null, null, null, null,
+				"Vfailure/VsTO", "Distance", "", "ft",
+				new String[] {"OEI Take-Off", "Aborted Take-Off"},
+				takeOffFolderPath, "BalancedTakeOffLength_IMPERIAL");
 
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}

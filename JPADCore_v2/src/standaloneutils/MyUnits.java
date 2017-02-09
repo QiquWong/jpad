@@ -1,5 +1,6 @@
 package standaloneutils;
 
+import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Frequency;
@@ -40,7 +41,9 @@ public class MyUnits {
 	public static final Unit<VolumetricDensity> POUND_PER_USGALLON = KILOGRAM_PER_CUBIC_METER.
 																		divide(_densConvSI2Eng);
 	public static final Unit<Dimensionless> NON_DIMENSIONAL = Unit.ONE;
-
+	public static final Unit<Acceleration> FOOT_PER_SQUARE_MINUTE = SI.METERS_PER_SQUARE_SECOND.times(0.000084666666666667);
+	public static final Unit<Velocity> FOOT_PER_MINUTE = SI.METERS_PER_SECOND.times(0.00508);
+	
 	// used in mission simulations
 	
 	public static final Unit ONE_PER_SECOND = Unit.ONE.divide(SI.SECOND);

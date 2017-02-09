@@ -186,14 +186,14 @@
 			</takeoff_landing>
 			<climb>
 			<!-- CLIMB TO CRUISE -->
-				<k_climb_weight_AOE></k_climb_weight_AOE> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
+				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
 				<initial_climb_altitude unit="ft">0.0</initial_climb_altitude>
 				<final_climb_altitude unit="ft">25000.0</final_climb_altitude>
 				<climb_speed_CAS unit="kn">190</climb_speed_CAS>
 			<!-- SECOND SEGMENT TAKE-OFF -->
 			<!--
-				<k_climb_weight_AOE></k_climb_weight_AOE>
+				<k_climb_weight_AEO></k_climb_weight_AEO>
 				<k_climb_weight_OEI></k_climb_weight_OEI>
 				<initial_climb_altitude unit="ft">0.0</initial_climb_altitude>
 				<final_climb_altitude unit="ft">25000</final_climb_altitude>
@@ -208,6 +208,8 @@
 				<rate_of_descent unit="ft/min">1500</rate_of_descent>
 				<descent_speed_CAS unit="kn">220</descent_speed_CAS>
 				<k_descent_weight></k_descent_weight> <!-- percentage of the maximum take-off weight to be used for the descent performance - (default = 0.9) -->
+				<initial_descent_altitude unit="ft">30000</initial_descent_altitude>
+				<final_descent_altitude unit="ft">1500.0</final_descent_altitude>
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
 				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 
