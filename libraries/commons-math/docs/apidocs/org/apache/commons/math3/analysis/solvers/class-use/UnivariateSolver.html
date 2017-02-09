@@ -1,467 +1,415 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-Uses of Interface org.apache.commons.math3.analysis.solvers.UnivariateSolver (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Uses of Interface org.apache.commons.math3.analysis.solvers.UnivariateSolver (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Uses of Interface org.apache.commons.math3.analysis.solvers.UnivariateSolver (Commons Math 3.2 API)";
+        parent.document.title="Uses of Interface org.apache.commons.math3.analysis.solvers.UnivariateSolver (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers"><FONT CLASS="NavBarFont1"><B>Class</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Use</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV&nbsp;
-&nbsp;NEXT</FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../../index.html?org/apache/commons/math3/analysis/solvers//class-useUnivariateSolver.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UnivariateSolver.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="../package-summary.html">Package</a></li>
+<li><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">Class</a></li>
+<li class="navBarCell1Rev">Use</li>
+<li><a href="../package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li>Prev</li>
+<li>Next</li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?org/apache/commons/math3/analysis/solvers/class-use/UnivariateSolver.html" target="_top">Frames</a></li>
+<li><a href="UnivariateSolver.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
-<CENTER>
-<H2>
-<B>Uses of Interface<br>org.apache.commons.math3.analysis.solvers.UnivariateSolver</B></H2>
-</CENTER>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-Packages that use <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><A HREF="#org.apache.commons.math3.analysis.solvers"><B>org.apache.commons.math3.analysis.solvers</B></A></TD>
-<TD>Root finding algorithms, for univariate real functions.&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><A HREF="#org.apache.commons.math3.ode"><B>org.apache.commons.math3.ode</B></A></TD>
-<TD>
- This package provides classes to solve Ordinary Differential Equations problems.&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><A HREF="#org.apache.commons.math3.ode.events"><B>org.apache.commons.math3.ode.events</B></A></TD>
-<TD>
+<div class="header">
+<h2 title="Uses of Interface org.apache.commons.math3.analysis.solvers.UnivariateSolver" class="title">Uses of Interface<br>org.apache.commons.math3.analysis.solvers.UnivariateSolver</h2>
+</div>
+<div class="classUseContainer">
+<ul class="blockList">
+<li class="blockList">
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing packages, and an explanation">
+<caption><span>Packages that use <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Package</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><a href="#org.apache.commons.math3.analysis.solvers">org.apache.commons.math3.analysis.solvers</a></td>
+<td class="colLast">
+<div class="block">Root finding algorithms, for univariate real functions.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#org.apache.commons.math3.ode">org.apache.commons.math3.ode</a></td>
+<td class="colLast">
+<div class="block">
+ This package provides classes to solve Ordinary Differential Equations problems.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#org.apache.commons.math3.ode.events">org.apache.commons.math3.ode.events</a></td>
+<td class="colLast">
+<div class="block">
  This package provides classes to handle discrete events occurring during
- Ordinary Differential Equations integration.&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><A HREF="#org.apache.commons.math3.ode.nonstiff"><B>org.apache.commons.math3.ode.nonstiff</B></A></TD>
-<TD>
- This package provides classes to solve non-stiff Ordinary Differential Equations problems.&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><A HREF="#org.apache.commons.math3.optim.nonlinear.scalar.gradient"><B>org.apache.commons.math3.optim.nonlinear.scalar.gradient</B></A></TD>
-<TD>This package provides optimization algorithms that require derivatives.&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><A HREF="#org.apache.commons.math3.optimization.general"><B>org.apache.commons.math3.optimization.general</B></A></TD>
-<TD>This package provides optimization algorithms that require derivatives.&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-<A NAME="org.apache.commons.math3.analysis.solvers"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-Uses of <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A> in <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/package-summary.html">org.apache.commons.math3.analysis.solvers</A></FONT></TH>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left" COLSPAN="2">Classes in <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/package-summary.html">org.apache.commons.math3.analysis.solvers</A> that implement <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/AbstractUnivariateSolver.html" title="class in org.apache.commons.math3.analysis.solvers">AbstractUnivariateSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Base class for solvers.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/BaseSecantSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BaseSecantSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Base class for all bracketing <em>Secant</em>-based methods for root-finding
- (approximating a zero of a univariate real function).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/BisectionSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BisectionSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Implements the <a href="http://mathworld.wolfram.com/Bisection.html">
- bisection algorithm</a> for finding zeros of univariate real functions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/BracketingNthOrderBrentSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BracketingNthOrderBrentSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This class implements a modification of the <a
- href="http://mathworld.wolfram.com/BrentsMethod.html"> Brent algorithm</a>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/BrentSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BrentSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This class implements the <a href="http://mathworld.wolfram.com/BrentsMethod.html">
- Brent algorithm</a> for finding zeros of real univariate functions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/IllinoisSolver.html" title="class in org.apache.commons.math3.analysis.solvers">IllinoisSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Implements the <em>Illinois</em> method for root-finding (approximating
- a zero of a univariate real function).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/MullerSolver.html" title="class in org.apache.commons.math3.analysis.solvers">MullerSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This class implements the <a href="http://mathworld.wolfram.com/MullersMethod.html">
- Muller's Method</a> for root finding of real univariate functions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/MullerSolver2.html" title="class in org.apache.commons.math3.analysis.solvers">MullerSolver2</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This class implements the <a href="http://mathworld.wolfram.com/MullersMethod.html">
- Muller's Method</a> for root finding of real univariate functions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/PegasusSolver.html" title="class in org.apache.commons.math3.analysis.solvers">PegasusSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Implements the <em>Pegasus</em> method for root-finding (approximating
- a zero of a univariate real function).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/RegulaFalsiSolver.html" title="class in org.apache.commons.math3.analysis.solvers">RegulaFalsiSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Implements the <em>Regula Falsi</em> or <em>False position</em> method for
- root-finding (approximating a zero of a univariate real function).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/RiddersSolver.html" title="class in org.apache.commons.math3.analysis.solvers">RiddersSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Implements the <a href="http://mathworld.wolfram.com/RiddersMethod.html">
- Ridders' Method</a> for root finding of real univariate functions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/SecantSolver.html" title="class in org.apache.commons.math3.analysis.solvers">SecantSolver</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Implements the <em>Secant</em> method for root-finding (approximating a
- zero of a univariate real function).</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-<A NAME="org.apache.commons.math3.ode"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-Uses of <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A> in <A HREF="../../../../../../../org/apache/commons/math3/ode/package-summary.html">org.apache.commons.math3.ode</A></FONT></TH>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left" COLSPAN="2">Methods in <A HREF="../../../../../../../org/apache/commons/math3/ode/package-summary.html">org.apache.commons.math3.ode</A> with parameters of type <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B>AbstractIntegrator.</B><B><A HREF="../../../../../../../org/apache/commons/math3/ode/AbstractIntegrator.html#addEventHandler(org.apache.commons.math3.ode.events.EventHandler, double, double, int, org.apache.commons.math3.analysis.solvers.UnivariateSolver)">addEventHandler</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</A>&nbsp;handler,
-                double&nbsp;maxCheckInterval,
-                double&nbsp;convergence,
-                int&nbsp;maxIterationCount,
-                <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;solver)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add an event handler to the integrator.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B>ODEIntegrator.</B><B><A HREF="../../../../../../../org/apache/commons/math3/ode/ODEIntegrator.html#addEventHandler(org.apache.commons.math3.ode.events.EventHandler, double, double, int, org.apache.commons.math3.analysis.solvers.UnivariateSolver)">addEventHandler</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</A>&nbsp;handler,
-                double&nbsp;maxCheckInterval,
-                double&nbsp;convergence,
-                int&nbsp;maxIterationCount,
-                <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;solver)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add an event handler to the integrator.</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-<A NAME="org.apache.commons.math3.ode.events"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-Uses of <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A> in <A HREF="../../../../../../../org/apache/commons/math3/ode/events/package-summary.html">org.apache.commons.math3.ode.events</A></FONT></TH>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left" COLSPAN="2">Constructors in <A HREF="../../../../../../../org/apache/commons/math3/ode/events/package-summary.html">org.apache.commons.math3.ode.events</A> with parameters of type <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/ode/events/EventState.html#EventState(org.apache.commons.math3.ode.events.EventHandler, double, double, int, org.apache.commons.math3.analysis.solvers.UnivariateSolver)">EventState</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</A>&nbsp;handler,
-           double&nbsp;maxCheckInterval,
-           double&nbsp;convergence,
-           int&nbsp;maxIterationCount,
-           <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;solver)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simple constructor.</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-<A NAME="org.apache.commons.math3.ode.nonstiff"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-Uses of <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A> in <A HREF="../../../../../../../org/apache/commons/math3/ode/nonstiff/package-summary.html">org.apache.commons.math3.ode.nonstiff</A></FONT></TH>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left" COLSPAN="2">Methods in <A HREF="../../../../../../../org/apache/commons/math3/ode/nonstiff/package-summary.html">org.apache.commons.math3.ode.nonstiff</A> with parameters of type <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B>GraggBulirschStoerIntegrator.</B><B><A HREF="../../../../../../../org/apache/commons/math3/ode/nonstiff/GraggBulirschStoerIntegrator.html#addEventHandler(org.apache.commons.math3.ode.events.EventHandler, double, double, int, org.apache.commons.math3.analysis.solvers.UnivariateSolver)">addEventHandler</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</A>&nbsp;function,
-                double&nbsp;maxCheckInterval,
-                double&nbsp;convergence,
-                int&nbsp;maxIterationCount,
-                <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;solver)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add an event handler to the integrator.</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-<A NAME="org.apache.commons.math3.optim.nonlinear.scalar.gradient"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-Uses of <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A> in <A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/package-summary.html">org.apache.commons.math3.optim.nonlinear.scalar.gradient</A></FONT></TH>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left" COLSPAN="2">Constructors in <A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/package-summary.html">org.apache.commons.math3.optim.nonlinear.scalar.gradient</A> with parameters of type <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.Formula, org.apache.commons.math3.optim.ConvergenceChecker, org.apache.commons.math3.analysis.solvers.UnivariateSolver)">NonLinearConjugateGradientOptimizer</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.Formula.html" title="enum in org.apache.commons.math3.optim.nonlinear.scalar.gradient">NonLinearConjugateGradientOptimizer.Formula</A>&nbsp;updateFormula,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/optim/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optim">ConvergenceChecker</A>&lt;<A HREF="../../../../../../../org/apache/commons/math3/optim/PointValuePair.html" title="class in org.apache.commons.math3.optim">PointValuePair</A>&gt;&nbsp;checker,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;lineSearchSolver)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructor with default <A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.IdentityPreconditioner.html" title="class in org.apache.commons.math3.optim.nonlinear.scalar.gradient"><CODE>preconditioner</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.Formula, org.apache.commons.math3.optim.ConvergenceChecker, org.apache.commons.math3.analysis.solvers.UnivariateSolver, org.apache.commons.math3.optim.nonlinear.scalar.gradient.Preconditioner)">NonLinearConjugateGradientOptimizer</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.Formula.html" title="enum in org.apache.commons.math3.optim.nonlinear.scalar.gradient">NonLinearConjugateGradientOptimizer.Formula</A>&nbsp;updateFormula,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/optim/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optim">ConvergenceChecker</A>&lt;<A HREF="../../../../../../../org/apache/commons/math3/optim/PointValuePair.html" title="class in org.apache.commons.math3.optim">PointValuePair</A>&gt;&nbsp;checker,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;lineSearchSolver,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/Preconditioner.html" title="interface in org.apache.commons.math3.optim.nonlinear.scalar.gradient">Preconditioner</A>&nbsp;preconditioner)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-<A NAME="org.apache.commons.math3.optimization.general"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-Uses of <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A> in <A HREF="../../../../../../../org/apache/commons/math3/optimization/general/package-summary.html">org.apache.commons.math3.optimization.general</A></FONT></TH>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left" COLSPAN="2">Constructors in <A HREF="../../../../../../../org/apache/commons/math3/optimization/general/package-summary.html">org.apache.commons.math3.optimization.general</A> with parameters of type <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/optimization/general/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optimization.general.ConjugateGradientFormula, org.apache.commons.math3.optimization.ConvergenceChecker, org.apache.commons.math3.analysis.solvers.UnivariateSolver)">NonLinearConjugateGradientOptimizer</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/optimization/general/ConjugateGradientFormula.html" title="enum in org.apache.commons.math3.optimization.general">ConjugateGradientFormula</A>&nbsp;updateFormula,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</A>&lt;<A HREF="../../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A>&gt;&nbsp;checker,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;lineSearchSolver)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Constructor with default <A HREF="../../../../../../../org/apache/commons/math3/optimization/general/NonLinearConjugateGradientOptimizer.IdentityPreconditioner.html" title="class in org.apache.commons.math3.optimization.general"><CODE>preconditioner</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/optimization/general/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optimization.general.ConjugateGradientFormula, org.apache.commons.math3.optimization.ConvergenceChecker, org.apache.commons.math3.analysis.solvers.UnivariateSolver, org.apache.commons.math3.optimization.general.Preconditioner)">NonLinearConjugateGradientOptimizer</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/optimization/general/ConjugateGradientFormula.html" title="enum in org.apache.commons.math3.optimization.general">ConjugateGradientFormula</A>&nbsp;updateFormula,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</A>&lt;<A HREF="../../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A>&gt;&nbsp;checker,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</A>&nbsp;lineSearchSolver,
-                                    <A HREF="../../../../../../../org/apache/commons/math3/optimization/general/Preconditioner.html" title="interface in org.apache.commons.math3.optimization.general">Preconditioner</A>&nbsp;preconditioner)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-<HR>
-
-
+ Ordinary Differential Equations integration.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#org.apache.commons.math3.ode.nonstiff">org.apache.commons.math3.ode.nonstiff</a></td>
+<td class="colLast">
+<div class="block">
+ This package provides classes to solve non-stiff Ordinary Differential Equations problems.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><a href="#org.apache.commons.math3.optim.nonlinear.scalar.gradient">org.apache.commons.math3.optim.nonlinear.scalar.gradient</a></td>
+<td class="colLast">
+<div class="block">This package provides optimization algorithms that require derivatives.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><a href="#org.apache.commons.math3.optimization.general">org.apache.commons.math3.optimization.general</a></td>
+<td class="colLast">
+<div class="block">This package provides optimization algorithms that require derivatives.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList">
+<ul class="blockList">
+<li class="blockList"><a name="org.apache.commons.math3.analysis.solvers">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a> in <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/package-summary.html">org.apache.commons.math3.analysis.solvers</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing classes, and an explanation">
+<caption><span>Classes in <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/package-summary.html">org.apache.commons.math3.analysis.solvers</a> that implement <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Class and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/AbstractUnivariateSolver.html" title="class in org.apache.commons.math3.analysis.solvers">AbstractUnivariateSolver</a></strong></code>
+<div class="block">Base class for solvers.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/BaseSecantSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BaseSecantSolver</a></strong></code>
+<div class="block">Base class for all bracketing <em>Secant</em>-based methods for root-finding
+ (approximating a zero of a univariate real function).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/BisectionSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BisectionSolver</a></strong></code>
+<div class="block">Implements the <a href="http://mathworld.wolfram.com/Bisection.html">
+ bisection algorithm</a> for finding zeros of univariate real functions.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/BracketingNthOrderBrentSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BracketingNthOrderBrentSolver</a></strong></code>
+<div class="block">This class implements a modification of the <a
+ href="http://mathworld.wolfram.com/BrentsMethod.html"> Brent algorithm</a>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/BrentSolver.html" title="class in org.apache.commons.math3.analysis.solvers">BrentSolver</a></strong></code>
+<div class="block">This class implements the <a href="http://mathworld.wolfram.com/BrentsMethod.html">
+ Brent algorithm</a> for finding zeros of real univariate functions.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/IllinoisSolver.html" title="class in org.apache.commons.math3.analysis.solvers">IllinoisSolver</a></strong></code>
+<div class="block">Implements the <em>Illinois</em> method for root-finding (approximating
+ a zero of a univariate real function).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/MullerSolver.html" title="class in org.apache.commons.math3.analysis.solvers">MullerSolver</a></strong></code>
+<div class="block">This class implements the <a href="http://mathworld.wolfram.com/MullersMethod.html">
+ Muller's Method</a> for root finding of real univariate functions.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/MullerSolver2.html" title="class in org.apache.commons.math3.analysis.solvers">MullerSolver2</a></strong></code>
+<div class="block">This class implements the <a href="http://mathworld.wolfram.com/MullersMethod.html">
+ Muller's Method</a> for root finding of real univariate functions.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/PegasusSolver.html" title="class in org.apache.commons.math3.analysis.solvers">PegasusSolver</a></strong></code>
+<div class="block">Implements the <em>Pegasus</em> method for root-finding (approximating
+ a zero of a univariate real function).</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/RegulaFalsiSolver.html" title="class in org.apache.commons.math3.analysis.solvers">RegulaFalsiSolver</a></strong></code>
+<div class="block">Implements the <em>Regula Falsi</em> or <em>False position</em> method for
+ root-finding (approximating a zero of a univariate real function).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/RiddersSolver.html" title="class in org.apache.commons.math3.analysis.solvers">RiddersSolver</a></strong></code>
+<div class="block">Implements the <a href="http://mathworld.wolfram.com/RiddersMethod.html">
+ Ridders' Method</a> for root finding of real univariate functions.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/SecantSolver.html" title="class in org.apache.commons.math3.analysis.solvers">SecantSolver</a></strong></code>
+<div class="block">Implements the <em>Secant</em> method for root-finding (approximating a
+ zero of a univariate real function).</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="org.apache.commons.math3.ode">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a> in <a href="../../../../../../../org/apache/commons/math3/ode/package-summary.html">org.apache.commons.math3.ode</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../../../org/apache/commons/math3/ode/package-summary.html">org.apache.commons.math3.ode</a> with parameters of type <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">ODEIntegrator.</span><code><strong><a href="../../../../../../../org/apache/commons/math3/ode/ODEIntegrator.html#addEventHandler(org.apache.commons.math3.ode.events.EventHandler,%20double,%20double,%20int,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver)">addEventHandler</a></strong>(<a href="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</a>&nbsp;handler,
+               double&nbsp;maxCheckInterval,
+               double&nbsp;convergence,
+               int&nbsp;maxIterationCount,
+               <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;solver)</code>
+<div class="block">Add an event handler to the integrator.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">AbstractIntegrator.</span><code><strong><a href="../../../../../../../org/apache/commons/math3/ode/AbstractIntegrator.html#addEventHandler(org.apache.commons.math3.ode.events.EventHandler,%20double,%20double,%20int,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver)">addEventHandler</a></strong>(<a href="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</a>&nbsp;handler,
+               double&nbsp;maxCheckInterval,
+               double&nbsp;convergence,
+               int&nbsp;maxIterationCount,
+               <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;solver)</code>
+<div class="block">Add an event handler to the integrator.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="org.apache.commons.math3.ode.events">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a> in <a href="../../../../../../../org/apache/commons/math3/ode/events/package-summary.html">org.apache.commons.math3.ode.events</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
+<caption><span>Constructors in <a href="../../../../../../../org/apache/commons/math3/ode/events/package-summary.html">org.apache.commons.math3.ode.events</a> with parameters of type <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/ode/events/EventState.html#EventState(org.apache.commons.math3.ode.events.EventHandler,%20double,%20double,%20int,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver)">EventState</a></strong>(<a href="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</a>&nbsp;handler,
+          double&nbsp;maxCheckInterval,
+          double&nbsp;convergence,
+          int&nbsp;maxIterationCount,
+          <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;solver)</code>
+<div class="block">Simple constructor.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="org.apache.commons.math3.ode.nonstiff">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a> in <a href="../../../../../../../org/apache/commons/math3/ode/nonstiff/package-summary.html">org.apache.commons.math3.ode.nonstiff</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing methods, and an explanation">
+<caption><span>Methods in <a href="../../../../../../../org/apache/commons/math3/ode/nonstiff/package-summary.html">org.apache.commons.math3.ode.nonstiff</a> with parameters of type <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><span class="strong">GraggBulirschStoerIntegrator.</span><code><strong><a href="../../../../../../../org/apache/commons/math3/ode/nonstiff/GraggBulirschStoerIntegrator.html#addEventHandler(org.apache.commons.math3.ode.events.EventHandler,%20double,%20double,%20int,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver)">addEventHandler</a></strong>(<a href="../../../../../../../org/apache/commons/math3/ode/events/EventHandler.html" title="interface in org.apache.commons.math3.ode.events">EventHandler</a>&nbsp;function,
+               double&nbsp;maxCheckInterval,
+               double&nbsp;convergence,
+               int&nbsp;maxIterationCount,
+               <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;solver)</code>
+<div class="block">Add an event handler to the integrator.</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="org.apache.commons.math3.optim.nonlinear.scalar.gradient">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a> in <a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/package-summary.html">org.apache.commons.math3.optim.nonlinear.scalar.gradient</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
+<caption><span>Constructors in <a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/package-summary.html">org.apache.commons.math3.optim.nonlinear.scalar.gradient</a> with parameters of type <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.Formula,%20org.apache.commons.math3.optim.ConvergenceChecker,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver)">NonLinearConjugateGradientOptimizer</a></strong>(<a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.Formula.html" title="enum in org.apache.commons.math3.optim.nonlinear.scalar.gradient">NonLinearConjugateGradientOptimizer.Formula</a>&nbsp;updateFormula,
+                                   <a href="../../../../../../../org/apache/commons/math3/optim/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optim">ConvergenceChecker</a>&lt;<a href="../../../../../../../org/apache/commons/math3/optim/PointValuePair.html" title="class in org.apache.commons.math3.optim">PointValuePair</a>&gt;&nbsp;checker,
+                                   <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;lineSearchSolver)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>as of 3.3. Please use
+ <a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.Formula,%20org.apache.commons.math3.optim.ConvergenceChecker,%20double,%20double,%20double)"><code>NonLinearConjugateGradientOptimizer.NonLinearConjugateGradientOptimizer(Formula,ConvergenceChecker,double,double,double)</code></a> instead.</i></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.Formula,%20org.apache.commons.math3.optim.ConvergenceChecker,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver,%20org.apache.commons.math3.optim.nonlinear.scalar.gradient.Preconditioner)">NonLinearConjugateGradientOptimizer</a></strong>(<a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.Formula.html" title="enum in org.apache.commons.math3.optim.nonlinear.scalar.gradient">NonLinearConjugateGradientOptimizer.Formula</a>&nbsp;updateFormula,
+                                   <a href="../../../../../../../org/apache/commons/math3/optim/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optim">ConvergenceChecker</a>&lt;<a href="../../../../../../../org/apache/commons/math3/optim/PointValuePair.html" title="class in org.apache.commons.math3.optim">PointValuePair</a>&gt;&nbsp;checker,
+                                   <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;lineSearchSolver,
+                                   <a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/Preconditioner.html" title="interface in org.apache.commons.math3.optim.nonlinear.scalar.gradient">Preconditioner</a>&nbsp;preconditioner)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>as of 3.3. Please use
+ <a href="../../../../../../../org/apache/commons/math3/optim/nonlinear/scalar/gradient/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.Formula,%20org.apache.commons.math3.optim.ConvergenceChecker,%20double,%20double,%20double,%20org.apache.commons.math3.optim.nonlinear.scalar.gradient.Preconditioner)"><code>NonLinearConjugateGradientOptimizer.NonLinearConjugateGradientOptimizer(Formula,ConvergenceChecker,double,double,double,Preconditioner)</code></a> instead.</i></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="blockList"><a name="org.apache.commons.math3.optimization.general">
+<!--   -->
+</a>
+<h3>Uses of <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a> in <a href="../../../../../../../org/apache/commons/math3/optimization/general/package-summary.html">org.apache.commons.math3.optimization.general</a></h3>
+<table border="0" cellpadding="3" cellspacing="0" summary="Use table, listing constructors, and an explanation">
+<caption><span>Constructors in <a href="../../../../../../../org/apache/commons/math3/optimization/general/package-summary.html">org.apache.commons.math3.optimization.general</a> with parameters of type <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/optimization/general/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optimization.general.ConjugateGradientFormula,%20org.apache.commons.math3.optimization.ConvergenceChecker,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver)">NonLinearConjugateGradientOptimizer</a></strong>(<a href="../../../../../../../org/apache/commons/math3/optimization/general/ConjugateGradientFormula.html" title="enum in org.apache.commons.math3.optimization.general">ConjugateGradientFormula</a>&nbsp;updateFormula,
+                                   <a href="../../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</a>&lt;<a href="../../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&gt;&nbsp;checker,
+                                   <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;lineSearchSolver)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Constructor with default <a href="../../../../../../../org/apache/commons/math3/optimization/general/NonLinearConjugateGradientOptimizer.IdentityPreconditioner.html" title="class in org.apache.commons.math3.optimization.general"><code>preconditioner</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/optimization/general/NonLinearConjugateGradientOptimizer.html#NonLinearConjugateGradientOptimizer(org.apache.commons.math3.optimization.general.ConjugateGradientFormula,%20org.apache.commons.math3.optimization.ConvergenceChecker,%20org.apache.commons.math3.analysis.solvers.UnivariateSolver,%20org.apache.commons.math3.optimization.general.Preconditioner)">NonLinearConjugateGradientOptimizer</a></strong>(<a href="../../../../../../../org/apache/commons/math3/optimization/general/ConjugateGradientFormula.html" title="enum in org.apache.commons.math3.optimization.general">ConjugateGradientFormula</a>&nbsp;updateFormula,
+                                   <a href="../../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</a>&lt;<a href="../../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&gt;&nbsp;checker,
+                                   <a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">UnivariateSolver</a>&nbsp;lineSearchSolver,
+                                   <a href="../../../../../../../org/apache/commons/math3/optimization/general/Preconditioner.html" title="interface in org.apache.commons.math3.optimization.general">Preconditioner</a>&nbsp;preconditioner)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers"><FONT CLASS="NavBarFont1"><B>Class</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Use</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV&nbsp;
-&nbsp;NEXT</FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../../index.html?org/apache/commons/math3/analysis/solvers//class-useUnivariateSolver.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="UnivariateSolver.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="../package-summary.html">Package</a></li>
+<li><a href="../../../../../../../org/apache/commons/math3/analysis/solvers/UnivariateSolver.html" title="interface in org.apache.commons.math3.analysis.solvers">Class</a></li>
+<li class="navBarCell1Rev">Use</li>
+<li><a href="../package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li>Prev</li>
+<li>Next</li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?org/apache/commons/math3/analysis/solvers/class-use/UnivariateSolver.html" target="_top">Frames</a></li>
+<li><a href="UnivariateSolver.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

@@ -21,6 +21,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.ode.ContinuousOutputModel;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
@@ -1065,9 +1066,15 @@ public class AircraftPointMassPropagator {
 			}
 			
 		};
-
 		theIntegrator.addStepHandler(stepHandler);
 
+		//##############################################################################################
+		// TEST ( TODO )
+		
+		theIntegrator.addStepHandler(new ContinuousOutputModel());
+
+		//##############################################################################################
+		
 		// Initial values
 //		commandedSpeed = Amount.valueOf(this.speedInertial0,SI.METERS_PER_SECOND);
 		
@@ -1097,6 +1104,27 @@ public class AircraftPointMassPropagator {
 		
 		theIntegrator.integrate(ode, tInitial, xAt0, tFinal, xAt0); // now xAt0 contains final state
 
+		//#############################################################################
+		for (  StepHandler handler : theIntegrator.getStepHandlers() ) {
+			System.out.println(handler instanceof ContinuousOutputModel);
+			if (handler instanceof ContinuousOutputModel) {
+				System.out.println("=== Stored state variables ===");
+				ContinuousOutputModel cm = (ContinuousOutputModel) handler;
+				System.out.println("Initial time: " + cm.getInitialTime());
+				System.out.println("Final time: " + cm.getFinalTime());
+				int nTime = 100;
+				double dt = (cm.getFinalTime() - cm.getInitialTime())/nTime;
+				for (int i=0; i <= nTime; ++i) {
+				    double time = cm.getInitialTime() + i*dt;
+				    cm.setInterpolatedTime(time);
+				    double[] interpolatedY = cm.getInterpolatedState();
+				    System.out.println("t="+time+", Y="+Arrays.toString(interpolatedY));
+				    
+				  }
+			}
+		}
+		//#############################################################################
+		
 		theIntegrator.clearEventHandlers();
 		theIntegrator.clearStepHandlers();		
 		

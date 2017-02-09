@@ -1,114 +1,123 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-CMAESOptimizer (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CMAESOptimizer (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="CMAESOptimizer (Commons Math 3.2 API)";
+        parent.document.title="CMAESOptimizer (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/CMAESOptimizer.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BOBYQAOptimizer.html" title="class in org.apache.commons.math3.optimization.direct"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../index.html?org/apache/commons/math3/optimization/direct/CMAESOptimizer.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="CMAESOptimizer.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/CMAESOptimizer.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../org/apache/commons/math3/optimization/direct/BOBYQAOptimizer.html" title="class in org.apache.commons.math3.optimization.direct"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../index.html?org/apache/commons/math3/optimization/direct/CMAESOptimizer.html" target="_top">Frames</a></li>
+<li><a href="CMAESOptimizer.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.optimization.direct</FONT>
-<BR>
-Class CMAESOptimizer</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateOptimizer</A>&lt;FUNC&gt;
-      <IMG SRC="../../../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimpleBoundsOptimizer</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&gt;
-          <IMG SRC="../../../../../../resources/inherit.gif" ALT="extended by "><B>org.apache.commons.math3.optimization.direct.CMAESOptimizer</B>
-</PRE>
-<DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseMultivariateOptimizer</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&gt;, <A HREF="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateSimpleBoundsOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseMultivariateSimpleBoundsOptimizer</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&gt;, <A HREF="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseOptimizer</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A>&gt;, <A HREF="../../../../../../org/apache/commons/math3/optimization/MultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">MultivariateOptimizer</A></DD>
-</DL>
-<HR>
-<B>Deprecated.</B>&nbsp;<I>As of 3.1 (to be removed in 4.0).</I>
-<P>
-<DL>
-<DT><PRE><FONT SIZE="-1"><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</A>
-</FONT>public class <B>CMAESOptimizer</B><DT>extends <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateSimpleBoundsOptimizer</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&gt;<DT>implements <A HREF="../../../../../../org/apache/commons/math3/optimization/MultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">MultivariateOptimizer</A></DL>
-</PRE>
-
-<P>
-<p>An implementation of the active Covariance Matrix Adaptation Evolution Strategy (CMA-ES)
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.optimization.direct</div>
+<h2 title="Class CMAESOptimizer" class="title">Class CMAESOptimizer</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateOptimizer</a>&lt;FUNC&gt;</li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimpleBoundsOptimizer</a>&lt;<a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&gt;</li>
+<li>
+<ul class="inheritance">
+<li>org.apache.commons.math3.optimization.direct.CMAESOptimizer</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseMultivariateOptimizer</a>&lt;<a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&gt;, <a href="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateSimpleBoundsOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseMultivariateSimpleBoundsOptimizer</a>&lt;<a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&gt;, <a href="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseOptimizer</a>&lt;<a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&gt;, <a href="../../../../../../org/apache/commons/math3/optimization/MultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">MultivariateOptimizer</a></dd>
+</dl>
+<hr>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>As of 3.1 (to be removed in 4.0).</i></div>
+</div>
+<br>
+<pre><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
+public class <span class="strong">CMAESOptimizer</span>
+extends <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateSimpleBoundsOptimizer</a>&lt;<a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&gt;
+implements <a href="../../../../../../org/apache/commons/math3/optimization/MultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">MultivariateOptimizer</a></pre>
+<div class="block"><p>An implementation of the active Covariance Matrix Adaptation Evolution Strategy (CMA-ES)
  for non-linear, non-convex, non-smooth, global function minimization.
  The CMA-Evolution Strategy (CMA-ES) is a reliable stochastic optimization method
  which should be applied if derivative-based methods, e.g. quasi-Newton BFGS or
@@ -141,673 +150,647 @@ Class CMAESOptimizer</H2>
   <li><a href="http://www.lri.fr/~hansen/cmaes.m">Matlab code</a></li>
   <li><a href="http://www.lri.fr/~hansen/cmaesintro.html">Introduction to CMA-ES</a></li>
   <li><a href="http://en.wikipedia.org/wiki/CMA-ES">Wikipedia</a></li>
- </ul>
-<P>
-
-<P>
-<DL>
-<DT><B>Since:</B></DT>
-  <DD>3.0</DD>
-<DT><B>Version:</B></DT>
-  <DD>$Id: CMAESOptimizer.java 1462503 2013-03-29 15:48:27Z luc $</DD>
-</DL>
-<HR>
-
-<P>
+ </ul></div>
+<dl><dt><span class="strong">Since:</span></dt>
+  <dd>3.0</dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- ======== NESTED CLASS SUMMARY ======== -->
-
-<A NAME="nested_class_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Nested Class Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct">CMAESOptimizer.PopulationSize</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Population size.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.Sigma.html" title="class in org.apache.commons.math3.optimization.direct">CMAESOptimizer.Sigma</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Input sigma values.</TD>
-</TR>
-</TABLE>
-&nbsp;<!-- =========== FIELD SUMMARY =========== -->
-
-<A NAME="field_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Field Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_CHECKFEASABLECOUNT">DEFAULT_CHECKFEASABLECOUNT</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#checkFeasableCount"><CODE>checkFeasableCount</CODE></A>: 0.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_DIAGONALONLY">DEFAULT_DIAGONALONLY</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#diagonalOnly"><CODE>diagonalOnly</CODE></A>: 0.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_ISACTIVECMA">DEFAULT_ISACTIVECMA</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#isActiveCMA"><CODE>isActiveCMA</CODE></A>: true.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_MAXITERATIONS">DEFAULT_MAXITERATIONS</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#maxIterations"><CODE>maxIterations</CODE></A>: 30000.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_RANDOMGENERATOR">DEFAULT_RANDOMGENERATOR</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#random"><CODE>random</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_STOPFITNESS">DEFAULT_STOPFITNESS</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#stopFitness"><CODE>stopFitness</CODE></A>: 0.0.</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="fields_inherited_from_class_org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateOptimizer"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Fields inherited from class org.apache.commons.math3.optimization.direct.<A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#evaluations">evaluations</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="nested_class_summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Class and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct">CMAESOptimizer.PopulationSize</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Population size.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.Sigma.html" title="class in org.apache.commons.math3.optimization.direct">CMAESOptimizer.Sigma</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Input sigma values.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_CHECKFEASABLECOUNT">DEFAULT_CHECKFEASABLECOUNT</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#checkFeasableCount"><code>checkFeasableCount</code></a>: 0.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_DIAGONALONLY">DEFAULT_DIAGONALONLY</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#diagonalOnly"><code>diagonalOnly</code></a>: 0.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_ISACTIVECMA">DEFAULT_ISACTIVECMA</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#isActiveCMA"><code>isActiveCMA</code></a>: true.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_MAXITERATIONS">DEFAULT_MAXITERATIONS</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#maxIterations"><code>maxIterations</code></a>: 30000.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_RANDOMGENERATOR">DEFAULT_RANDOMGENERATOR</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#random"><code>random</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#DEFAULT_STOPFITNESS">DEFAULT_STOPFITNESS</a></strong></code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#stopFitness"><code>stopFitness</code></a>: 0.0.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="fields_inherited_from_class_org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateOptimizer">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;org.apache.commons.math3.optimization.direct.<a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</a></h3>
+<code><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#evaluations">evaluations</a></code></li>
+</ul>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer()">CMAESOptimizer</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameter <code>lambda</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A> (whereas in the current code it is set to an undocumented value).</I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int)">CMAESOptimizer</A></B>(int&nbsp;lambda)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameter <code>lambda</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A> (whereas in the current code it is set to an undocumented value)..</I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int, double[])">CMAESOptimizer</A></B>(int&nbsp;lambda,
-               double[]&nbsp;inputSigma)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A>.</I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int, double[], int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean)">CMAESOptimizer</A></B>(int&nbsp;lambda,
-               double[]&nbsp;inputSigma,
-               int&nbsp;maxIterations,
-               double&nbsp;stopFitness,
-               boolean&nbsp;isActiveCMA,
-               int&nbsp;diagonalOnly,
-               int&nbsp;checkFeasableCount,
-               <A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A>&nbsp;random,
-               boolean&nbsp;generateStatistics)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>See <A HREF="../../../../../../org/apache/commons/math3/optimization/SimpleValueChecker.html#SimpleValueChecker()"><CODE>SimpleValueChecker.SimpleValueChecker()</CODE></A></I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int, double[], int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean, org.apache.commons.math3.optimization.ConvergenceChecker)">CMAESOptimizer</A></B>(int&nbsp;lambda,
-               double[]&nbsp;inputSigma,
-               int&nbsp;maxIterations,
-               double&nbsp;stopFitness,
-               boolean&nbsp;isActiveCMA,
-               int&nbsp;diagonalOnly,
-               int&nbsp;checkFeasableCount,
-               <A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A>&nbsp;random,
-               boolean&nbsp;generateStatistics,
-               <A HREF="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A>&gt;&nbsp;checker)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A>.</I></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean, org.apache.commons.math3.optimization.ConvergenceChecker)">CMAESOptimizer</A></B>(int&nbsp;maxIterations,
-               double&nbsp;stopFitness,
-               boolean&nbsp;isActiveCMA,
-               int&nbsp;diagonalOnly,
-               int&nbsp;checkFeasableCount,
-               <A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A>&nbsp;random,
-               boolean&nbsp;generateStatistics,
-               <A HREF="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A>&gt;&nbsp;checker)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer()">CMAESOptimizer</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>As of version 3.1: Parameter <code>lambda</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a> (whereas in the current code it is set to an undocumented value).</i></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int)">CMAESOptimizer</a></strong>(int&nbsp;lambda)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>As of version 3.1: Parameter <code>lambda</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a> (whereas in the current code it is set to an undocumented value)..</i></div>
+</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int,%20double[])">CMAESOptimizer</a></strong>(int&nbsp;lambda,
+              double[]&nbsp;inputSigma)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a>.</i></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int,%20double[],%20int,%20double,%20boolean,%20int,%20int,%20org.apache.commons.math3.random.RandomGenerator,%20boolean)">CMAESOptimizer</a></strong>(int&nbsp;lambda,
+              double[]&nbsp;inputSigma,
+              int&nbsp;maxIterations,
+              double&nbsp;stopFitness,
+              boolean&nbsp;isActiveCMA,
+              int&nbsp;diagonalOnly,
+              int&nbsp;checkFeasableCount,
+              <a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;random,
+              boolean&nbsp;generateStatistics)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>See <a href="../../../../../../org/apache/commons/math3/optimization/SimpleValueChecker.html#SimpleValueChecker()"><code>SimpleValueChecker.SimpleValueChecker()</code></a></i></div>
+</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int,%20double[],%20int,%20double,%20boolean,%20int,%20int,%20org.apache.commons.math3.random.RandomGenerator,%20boolean,%20org.apache.commons.math3.optimization.ConvergenceChecker)">CMAESOptimizer</a></strong>(int&nbsp;lambda,
+              double[]&nbsp;inputSigma,
+              int&nbsp;maxIterations,
+              double&nbsp;stopFitness,
+              boolean&nbsp;isActiveCMA,
+              int&nbsp;diagonalOnly,
+              int&nbsp;checkFeasableCount,
+              <a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;random,
+              boolean&nbsp;generateStatistics,
+              <a href="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</a>&lt;<a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&gt;&nbsp;checker)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;
+<div class="block"><i>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a>.</i></div>
+</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#CMAESOptimizer(int,%20double,%20boolean,%20int,%20int,%20org.apache.commons.math3.random.RandomGenerator,%20boolean,%20org.apache.commons.math3.optimization.ConvergenceChecker)">CMAESOptimizer</a></strong>(int&nbsp;maxIterations,
+              double&nbsp;stopFitness,
+              boolean&nbsp;isActiveCMA,
+              int&nbsp;diagonalOnly,
+              int&nbsp;checkFeasableCount,
+              <a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;random,
+              boolean&nbsp;generateStatistics,
+              <a href="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</a>&lt;<a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&gt;&nbsp;checker)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;<A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#doOptimize()">doOptimize</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Perform the bulk of the optimization algorithm.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsDHistory()">getStatisticsDHistory</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsFitnessHistory()">getStatisticsFitnessHistory</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsMeanHistory()">getStatisticsMeanHistory</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsSigmaHistory()">getStatisticsSigmaHistory</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;<A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#optimizeInternal(int, org.apache.commons.math3.analysis.MultivariateFunction, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)">optimizeInternal</A></B>(int&nbsp;maxEval,
-                 <A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&nbsp;f,
-                 <A HREF="../../../../../../org/apache/commons/math3/optimization/GoalType.html" title="enum in org.apache.commons.math3.optimization">GoalType</A>&nbsp;goalType,
-                 <A HREF="../../../../../../org/apache/commons/math3/optimization/OptimizationData.html" title="interface in org.apache.commons.math3.optimization">OptimizationData</A>...&nbsp;optData)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;Optimize an objective function.</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimpleBoundsOptimizer"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class org.apache.commons.math3.optimization.direct.<A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateSimpleBoundsOptimizer</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, double[])">optimize</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, double[], double[], double[])">optimize</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateOptimizer"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class org.apache.commons.math3.optimization.direct.<A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#computeObjectiveValue(double[])">computeObjectiveValue</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getConvergenceChecker()">getConvergenceChecker</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getEvaluations()">getEvaluations</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getGoalType()">getGoalType</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getLowerBound()">getLowerBound</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getMaxEvaluations()">getMaxEvaluations</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getStartPoint()">getStartPoint</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getUpperBound()">getUpperBound</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)">optimize</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimizeInternal(int, FUNC, org.apache.commons.math3.optimization.GoalType, double[])">optimizeInternal</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_org.apache.commons.math3.optimization.BaseMultivariateOptimizer"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from interface org.apache.commons.math3.optimization.<A HREF="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseMultivariateOptimizer</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, double[])">optimize</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_org.apache.commons.math3.optimization.BaseOptimizer"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from interface org.apache.commons.math3.optimization.<A HREF="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseOptimizer</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html#getConvergenceChecker()">getConvergenceChecker</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html#getEvaluations()">getEvaluations</A>, <A HREF="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html#getMaxEvaluations()">getMaxEvaluations</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected <a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#doOptimize()">doOptimize</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Perform the bulk of the optimization algorithm.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsDHistory()">getStatisticsDHistory</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsFitnessHistory()">getStatisticsFitnessHistory</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsMeanHistory()">getStatisticsMeanHistory</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#getStatisticsSigmaHistory()">getStatisticsSigmaHistory</a></strong>()</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected <a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#optimizeInternal(int,%20org.apache.commons.math3.analysis.MultivariateFunction,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)">optimizeInternal</a></strong>(int&nbsp;maxEval,
+                <a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&nbsp;f,
+                <a href="../../../../../../org/apache/commons/math3/optimization/GoalType.html" title="enum in org.apache.commons.math3.optimization">GoalType</a>&nbsp;goalType,
+                <a href="../../../../../../org/apache/commons/math3/optimization/OptimizationData.html" title="interface in org.apache.commons.math3.optimization">OptimizationData</a>...&nbsp;optData)</code>
+<div class="block"><strong>Deprecated.</strong>&nbsp;</div>
+<div class="block">Optimize an objective function.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateSimpleBoundsOptimizer">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.apache.commons.math3.optimization.direct.<a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateSimpleBoundsOptimizer</a></h3>
+<code><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20double[])">optimize</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateSimpleBoundsOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20double[],%20double[],%20double[])">optimize</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.commons.math3.optimization.direct.BaseAbstractMultivariateOptimizer">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.apache.commons.math3.optimization.direct.<a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</a></h3>
+<code><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#computeObjectiveValue(double[])">computeObjectiveValue</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getConvergenceChecker()">getConvergenceChecker</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getEvaluations()">getEvaluations</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getGoalType()">getGoalType</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getLowerBound()">getLowerBound</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getMaxEvaluations()">getMaxEvaluations</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getStartPoint()">getStartPoint</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#getUpperBound()">getUpperBound</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)">optimize</a>, <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimizeInternal(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20double[])">optimizeInternal</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.commons.math3.optimization.BaseMultivariateOptimizer">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.apache.commons.math3.optimization.<a href="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseMultivariateOptimizer</a></h3>
+<code><a href="../../../../../../org/apache/commons/math3/optimization/BaseMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20double[])">optimize</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.commons.math3.optimization.BaseOptimizer">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.apache.commons.math3.optimization.<a href="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html" title="interface in org.apache.commons.math3.optimization">BaseOptimizer</a></h3>
+<code><a href="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html#getConvergenceChecker()">getConvergenceChecker</a>, <a href="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html#getEvaluations()">getEvaluations</a>, <a href="../../../../../../org/apache/commons/math3/optimization/BaseOptimizer.html#getMaxEvaluations()">getMaxEvaluations</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ FIELD DETAIL =========== -->
-
-<A NAME="field_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Field Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="DEFAULT_CHECKFEASABLECOUNT"><!-- --></A><H3>
-DEFAULT_CHECKFEASABLECOUNT</H3>
-<PRE>
-public static final int <B>DEFAULT_CHECKFEASABLECOUNT</B></PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#checkFeasableCount"><CODE>checkFeasableCount</CODE></A>: 0.
-<P>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_CHECKFEASABLECOUNT">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="DEFAULT_STOPFITNESS"><!-- --></A><H3>
-DEFAULT_STOPFITNESS</H3>
-<PRE>
-public static final double <B>DEFAULT_STOPFITNESS</B></PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#stopFitness"><CODE>stopFitness</CODE></A>: 0.0.
-<P>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_STOPFITNESS">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="DEFAULT_ISACTIVECMA"><!-- --></A><H3>
-DEFAULT_ISACTIVECMA</H3>
-<PRE>
-public static final boolean <B>DEFAULT_ISACTIVECMA</B></PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#isActiveCMA"><CODE>isActiveCMA</CODE></A>: true.
-<P>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_ISACTIVECMA">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="DEFAULT_MAXITERATIONS"><!-- --></A><H3>
-DEFAULT_MAXITERATIONS</H3>
-<PRE>
-public static final int <B>DEFAULT_MAXITERATIONS</B></PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#maxIterations"><CODE>maxIterations</CODE></A>: 30000.
-<P>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_MAXITERATIONS">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="DEFAULT_DIAGONALONLY"><!-- --></A><H3>
-DEFAULT_DIAGONALONLY</H3>
-<PRE>
-public static final int <B>DEFAULT_DIAGONALONLY</B></PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#diagonalOnly"><CODE>diagonalOnly</CODE></A>: 0.
-<P>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_DIAGONALONLY">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="DEFAULT_RANDOMGENERATOR"><!-- --></A><H3>
-DEFAULT_RANDOMGENERATOR</H3>
-<PRE>
-public static final <A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A> <B>DEFAULT_RANDOMGENERATOR</B></PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Default value for <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#random"><CODE>random</CODE></A>.
-<P>
-<DL>
-</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="DEFAULT_CHECKFEASABLECOUNT">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DEFAULT_CHECKFEASABLECOUNT</h4>
+<pre>public static final&nbsp;int DEFAULT_CHECKFEASABLECOUNT</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#checkFeasableCount"><code>checkFeasableCount</code></a>: 0.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_CHECKFEASABLECOUNT">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="DEFAULT_STOPFITNESS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DEFAULT_STOPFITNESS</h4>
+<pre>public static final&nbsp;double DEFAULT_STOPFITNESS</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#stopFitness"><code>stopFitness</code></a>: 0.0.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_STOPFITNESS">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="DEFAULT_ISACTIVECMA">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DEFAULT_ISACTIVECMA</h4>
+<pre>public static final&nbsp;boolean DEFAULT_ISACTIVECMA</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#isActiveCMA"><code>isActiveCMA</code></a>: true.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_ISACTIVECMA">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="DEFAULT_MAXITERATIONS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DEFAULT_MAXITERATIONS</h4>
+<pre>public static final&nbsp;int DEFAULT_MAXITERATIONS</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#maxIterations"><code>maxIterations</code></a>: 30000.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_MAXITERATIONS">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="DEFAULT_DIAGONALONLY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>DEFAULT_DIAGONALONLY</h4>
+<pre>public static final&nbsp;int DEFAULT_DIAGONALONLY</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#diagonalOnly"><code>diagonalOnly</code></a>: 0.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../constant-values.html#org.apache.commons.math3.optimization.direct.CMAESOptimizer.DEFAULT_DIAGONALONLY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="DEFAULT_RANDOMGENERATOR">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>DEFAULT_RANDOMGENERATOR</h4>
+<pre>public static final&nbsp;<a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a> DEFAULT_RANDOMGENERATOR</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Default value for <a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.html#random"><code>random</code></a>.</div>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="CMAESOptimizer()"><!-- --></A><H3>
-CMAESOptimizer</H3>
-<PRE>
-public <B>CMAESOptimizer</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameter <code>lambda</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A> (whereas in the current code it is set to an undocumented value).</I>
-<P>
-<DD>Default constructor, uses default parameters
-<P>
-</DL>
-<HR>
-
-<A NAME="CMAESOptimizer(int)"><!-- --></A><H3>
-CMAESOptimizer</H3>
-<PRE>
-public <B>CMAESOptimizer</B>(int&nbsp;lambda)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameter <code>lambda</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A> (whereas in the current code it is set to an undocumented value)..</I>
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>lambda</CODE> - Population size.</DL>
-</DL>
-<HR>
-
-<A NAME="CMAESOptimizer(int, double[])"><!-- --></A><H3>
-CMAESOptimizer</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</A>
-</FONT>public <B>CMAESOptimizer</B>(int&nbsp;lambda,
-                                 double[]&nbsp;inputSigma)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A>.</I>
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>lambda</CODE> - Population size.<DD><CODE>inputSigma</CODE> - Initial standard deviations to sample new points
- around the initial guess.</DL>
-</DL>
-<HR>
-
-<A NAME="CMAESOptimizer(int, double[], int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean)"><!-- --></A><H3>
-CMAESOptimizer</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</A>
-</FONT>public <B>CMAESOptimizer</B>(int&nbsp;lambda,
-                                 double[]&nbsp;inputSigma,
-                                 int&nbsp;maxIterations,
-                                 double&nbsp;stopFitness,
-                                 boolean&nbsp;isActiveCMA,
-                                 int&nbsp;diagonalOnly,
-                                 int&nbsp;checkFeasableCount,
-                                 <A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A>&nbsp;random,
-                                 boolean&nbsp;generateStatistics)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>See <A HREF="../../../../../../org/apache/commons/math3/optimization/SimpleValueChecker.html#SimpleValueChecker()"><CODE>SimpleValueChecker.SimpleValueChecker()</CODE></A></I>
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>lambda</CODE> - Population size.<DD><CODE>inputSigma</CODE> - Initial standard deviations to sample new points
- around the initial guess.<DD><CODE>maxIterations</CODE> - Maximal number of iterations.<DD><CODE>stopFitness</CODE> - Whether to stop if objective function value is smaller than
- <code>stopFitness</code>.<DD><CODE>isActiveCMA</CODE> - Chooses the covariance matrix update method.<DD><CODE>diagonalOnly</CODE> - Number of initial iterations, where the covariance matrix
- remains diagonal.<DD><CODE>checkFeasableCount</CODE> - Determines how often new random objective variables are
- generated in case they are out of bounds.<DD><CODE>random</CODE> - Random generator.<DD><CODE>generateStatistics</CODE> - Whether statistic data is collected.</DL>
-</DL>
-<HR>
-
-<A NAME="CMAESOptimizer(int, double[], int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean, org.apache.commons.math3.optimization.ConvergenceChecker)"><!-- --></A><H3>
-CMAESOptimizer</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</A>
-</FONT>public <B>CMAESOptimizer</B>(int&nbsp;lambda,
-                                 double[]&nbsp;inputSigma,
-                                 int&nbsp;maxIterations,
-                                 double&nbsp;stopFitness,
-                                 boolean&nbsp;isActiveCMA,
-                                 int&nbsp;diagonalOnly,
-                                 int&nbsp;checkFeasableCount,
-                                 <A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A>&nbsp;random,
-                                 boolean&nbsp;generateStatistics,
-                                 <A HREF="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A>&gt;&nbsp;checker)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
- passed with the call to <A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><CODE>optimize</CODE></A>.</I>
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>lambda</CODE> - Population size.<DD><CODE>inputSigma</CODE> - Initial standard deviations to sample new points
- around the initial guess.<DD><CODE>maxIterations</CODE> - Maximal number of iterations.<DD><CODE>stopFitness</CODE> - Whether to stop if objective function value is smaller than
- <code>stopFitness</code>.<DD><CODE>isActiveCMA</CODE> - Chooses the covariance matrix update method.<DD><CODE>diagonalOnly</CODE> - Number of initial iterations, where the covariance matrix
- remains diagonal.<DD><CODE>checkFeasableCount</CODE> - Determines how often new random objective variables are
- generated in case they are out of bounds.<DD><CODE>random</CODE> - Random generator.<DD><CODE>generateStatistics</CODE> - Whether statistic data is collected.<DD><CODE>checker</CODE> - Convergence checker.</DL>
-</DL>
-<HR>
-
-<A NAME="CMAESOptimizer(int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean, org.apache.commons.math3.optimization.ConvergenceChecker)"><!-- --></A><H3>
-CMAESOptimizer</H3>
-<PRE>
-public <B>CMAESOptimizer</B>(int&nbsp;maxIterations,
-                      double&nbsp;stopFitness,
-                      boolean&nbsp;isActiveCMA,
-                      int&nbsp;diagonalOnly,
-                      int&nbsp;checkFeasableCount,
-                      <A HREF="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</A>&nbsp;random,
-                      boolean&nbsp;generateStatistics,
-                      <A HREF="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A>&gt;&nbsp;checker)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DL>
-<DT><B>Parameters:</B><DD><CODE>maxIterations</CODE> - Maximal number of iterations.<DD><CODE>stopFitness</CODE> - Whether to stop if objective function value is smaller than
- <code>stopFitness</code>.<DD><CODE>isActiveCMA</CODE> - Chooses the covariance matrix update method.<DD><CODE>diagonalOnly</CODE> - Number of initial iterations, where the covariance matrix
- remains diagonal.<DD><CODE>checkFeasableCount</CODE> - Determines how often new random objective variables are
- generated in case they are out of bounds.<DD><CODE>random</CODE> - Random generator.<DD><CODE>generateStatistics</CODE> - Whether statistic data is collected.<DD><CODE>checker</CODE> - Convergence checker.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="CMAESOptimizer()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CMAESOptimizer</h4>
+<pre><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
+public&nbsp;CMAESOptimizer()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>As of version 3.1: Parameter <code>lambda</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a> (whereas in the current code it is set to an undocumented value).</i></div>
+<div class="block">Default constructor, uses default parameters</div>
+</li>
+</ul>
+<a name="CMAESOptimizer(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CMAESOptimizer</h4>
+<pre><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
+public&nbsp;CMAESOptimizer(int&nbsp;lambda)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>As of version 3.1: Parameter <code>lambda</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a> (whereas in the current code it is set to an undocumented value)..</i></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>lambda</code> - Population size.</dd></dl>
+</li>
+</ul>
+<a name="CMAESOptimizer(int, double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CMAESOptimizer</h4>
+<pre><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
+public&nbsp;CMAESOptimizer(int&nbsp;lambda,
+                         double[]&nbsp;inputSigma)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a>.</i></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>lambda</code> - Population size.</dd><dd><code>inputSigma</code> - Initial standard deviations to sample new points
+ around the initial guess.</dd></dl>
+</li>
+</ul>
+<a name="CMAESOptimizer(int, double[], int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CMAESOptimizer</h4>
+<pre><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
+public&nbsp;CMAESOptimizer(int&nbsp;lambda,
+                         double[]&nbsp;inputSigma,
+                         int&nbsp;maxIterations,
+                         double&nbsp;stopFitness,
+                         boolean&nbsp;isActiveCMA,
+                         int&nbsp;diagonalOnly,
+                         int&nbsp;checkFeasableCount,
+                         <a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;random,
+                         boolean&nbsp;generateStatistics)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>See <a href="../../../../../../org/apache/commons/math3/optimization/SimpleValueChecker.html#SimpleValueChecker()"><code>SimpleValueChecker.SimpleValueChecker()</code></a></i></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>lambda</code> - Population size.</dd><dd><code>inputSigma</code> - Initial standard deviations to sample new points
+ around the initial guess.</dd><dd><code>maxIterations</code> - Maximal number of iterations.</dd><dd><code>stopFitness</code> - Whether to stop if objective function value is smaller than
+ <code>stopFitness</code>.</dd><dd><code>isActiveCMA</code> - Chooses the covariance matrix update method.</dd><dd><code>diagonalOnly</code> - Number of initial iterations, where the covariance matrix
+ remains diagonal.</dd><dd><code>checkFeasableCount</code> - Determines how often new random objective variables are
+ generated in case they are out of bounds.</dd><dd><code>random</code> - Random generator.</dd><dd><code>generateStatistics</code> - Whether statistic data is collected.</dd></dl>
+</li>
+</ul>
+<a name="CMAESOptimizer(int, double[], int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean, org.apache.commons.math3.optimization.ConvergenceChecker)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CMAESOptimizer</h4>
+<pre><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</a>
+public&nbsp;CMAESOptimizer(int&nbsp;lambda,
+                         double[]&nbsp;inputSigma,
+                         int&nbsp;maxIterations,
+                         double&nbsp;stopFitness,
+                         boolean&nbsp;isActiveCMA,
+                         int&nbsp;diagonalOnly,
+                         int&nbsp;checkFeasableCount,
+                         <a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;random,
+                         boolean&nbsp;generateStatistics,
+                         <a href="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</a>&lt;<a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&gt;&nbsp;checker)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;<i>As of version 3.1: Parameters <code>lambda</code> and <code>inputSigma</code> must be
+ passed with the call to <a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimize(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)"><code>optimize</code></a>.</i></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>lambda</code> - Population size.</dd><dd><code>inputSigma</code> - Initial standard deviations to sample new points
+ around the initial guess.</dd><dd><code>maxIterations</code> - Maximal number of iterations.</dd><dd><code>stopFitness</code> - Whether to stop if objective function value is smaller than
+ <code>stopFitness</code>.</dd><dd><code>isActiveCMA</code> - Chooses the covariance matrix update method.</dd><dd><code>diagonalOnly</code> - Number of initial iterations, where the covariance matrix
+ remains diagonal.</dd><dd><code>checkFeasableCount</code> - Determines how often new random objective variables are
+ generated in case they are out of bounds.</dd><dd><code>random</code> - Random generator.</dd><dd><code>generateStatistics</code> - Whether statistic data is collected.</dd><dd><code>checker</code> - Convergence checker.</dd></dl>
+</li>
+</ul>
+<a name="CMAESOptimizer(int, double, boolean, int, int, org.apache.commons.math3.random.RandomGenerator, boolean, org.apache.commons.math3.optimization.ConvergenceChecker)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>CMAESOptimizer</h4>
+<pre>public&nbsp;CMAESOptimizer(int&nbsp;maxIterations,
+              double&nbsp;stopFitness,
+              boolean&nbsp;isActiveCMA,
+              int&nbsp;diagonalOnly,
+              int&nbsp;checkFeasableCount,
+              <a href="../../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;random,
+              boolean&nbsp;generateStatistics,
+              <a href="../../../../../../org/apache/commons/math3/optimization/ConvergenceChecker.html" title="interface in org.apache.commons.math3.optimization">ConvergenceChecker</a>&lt;<a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&gt;&nbsp;checker)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>maxIterations</code> - Maximal number of iterations.</dd><dd><code>stopFitness</code> - Whether to stop if objective function value is smaller than
+ <code>stopFitness</code>.</dd><dd><code>isActiveCMA</code> - Chooses the covariance matrix update method.</dd><dd><code>diagonalOnly</code> - Number of initial iterations, where the covariance matrix
+ remains diagonal.</dd><dd><code>checkFeasableCount</code> - Determines how often new random objective variables are
+ generated in case they are out of bounds.</dd><dd><code>random</code> - Random generator.</dd><dd><code>generateStatistics</code> - Whether statistic data is collected.</dd><dd><code>checker</code> - Convergence checker.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="getStatisticsSigmaHistory()"><!-- --></A><H3>
-getStatisticsSigmaHistory</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</A>&gt; <B>getStatisticsSigmaHistory</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>History of sigma values.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getStatisticsMeanHistory()"><!-- --></A><H3>
-getStatisticsMeanHistory</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</A>&gt; <B>getStatisticsMeanHistory</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>History of mean matrix.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getStatisticsFitnessHistory()"><!-- --></A><H3>
-getStatisticsFitnessHistory</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</A>&gt; <B>getStatisticsFitnessHistory</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>History of fitness values.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getStatisticsDHistory()"><!-- --></A><H3>
-getStatisticsDHistory</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</A>&gt; <B>getStatisticsDHistory</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>History of D matrix.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="optimizeInternal(int, org.apache.commons.math3.analysis.MultivariateFunction, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)"><!-- --></A><H3>
-optimizeInternal</H3>
-<PRE>
-protected <A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A> <B>optimizeInternal</B>(int&nbsp;maxEval,
-                                          <A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&nbsp;f,
-                                          <A HREF="../../../../../../org/apache/commons/math3/optimization/GoalType.html" title="enum in org.apache.commons.math3.optimization">GoalType</A>&nbsp;goalType,
-                                          <A HREF="../../../../../../org/apache/commons/math3/optimization/OptimizationData.html" title="interface in org.apache.commons.math3.optimization">OptimizationData</A>...&nbsp;optData)</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Optimize an objective function.
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimizeInternal(int, FUNC, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)">optimizeInternal</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>maxEval</CODE> - Allowed number of evaluations of the objective function.<DD><CODE>f</CODE> - Objective function.<DD><CODE>goalType</CODE> - Optimization type.<DD><CODE>optData</CODE> - Optimization data. The following data will be looked for:
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="getStatisticsSigmaHistory()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getStatisticsSigmaHistory</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;getStatisticsSigmaHistory()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>History of sigma values.</dd></dl>
+</li>
+</ul>
+<a name="getStatisticsMeanHistory()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getStatisticsMeanHistory</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</a>&gt;&nbsp;getStatisticsMeanHistory()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>History of mean matrix.</dd></dl>
+</li>
+</ul>
+<a name="getStatisticsFitnessHistory()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getStatisticsFitnessHistory</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang">Double</a>&gt;&nbsp;getStatisticsFitnessHistory()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>History of fitness values.</dd></dl>
+</li>
+</ul>
+<a name="getStatisticsDHistory()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getStatisticsDHistory</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</a>&gt;&nbsp;getStatisticsDHistory()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>History of D matrix.</dd></dl>
+</li>
+</ul>
+<a name="optimizeInternal(int, org.apache.commons.math3.analysis.MultivariateFunction, org.apache.commons.math3.optimization.GoalType, org.apache.commons.math3.optimization.OptimizationData...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>optimizeInternal</h4>
+<pre>protected&nbsp;<a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&nbsp;optimizeInternal(int&nbsp;maxEval,
+                              <a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&nbsp;f,
+                              <a href="../../../../../../org/apache/commons/math3/optimization/GoalType.html" title="enum in org.apache.commons.math3.optimization">GoalType</a>&nbsp;goalType,
+                              <a href="../../../../../../org/apache/commons/math3/optimization/OptimizationData.html" title="interface in org.apache.commons.math3.optimization">OptimizationData</a>...&nbsp;optData)</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Optimize an objective function.</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#optimizeInternal(int,%20FUNC,%20org.apache.commons.math3.optimization.GoalType,%20org.apache.commons.math3.optimization.OptimizationData...)">optimizeInternal</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</a>&lt;<a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>maxEval</code> - Allowed number of evaluations of the objective function.</dd><dd><code>f</code> - Objective function.</dd><dd><code>goalType</code> - Optimization type.</dd><dd><code>optData</code> - Optimization data. The following data will be looked for:
  <ul>
-  <li><A HREF="../../../../../../org/apache/commons/math3/optimization/InitialGuess.html" title="class in org.apache.commons.math3.optimization"><CODE>InitialGuess</CODE></A></li>
-  <li><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.Sigma.html" title="class in org.apache.commons.math3.optimization.direct"><CODE>CMAESOptimizer.Sigma</CODE></A></li>
-  <li><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct"><CODE>CMAESOptimizer.PopulationSize</CODE></A></li>
- </ul>
-<DT><B>Returns:</B><DD>the point/value pair giving the optimal value for objective
- function.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="doOptimize()"><!-- --></A><H3>
-doOptimize</H3>
-<PRE>
-protected <A HREF="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</A> <B>doOptimize</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<DD>Perform the bulk of the optimization algorithm.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#doOptimize()">doOptimize</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</A>&lt;<A HREF="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the point/value pair giving the optimal value of the
- objective function.</DL>
-</DD>
-</DL>
+  <li><a href="../../../../../../org/apache/commons/math3/optimization/InitialGuess.html" title="class in org.apache.commons.math3.optimization"><code>InitialGuess</code></a></li>
+  <li><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.Sigma.html" title="class in org.apache.commons.math3.optimization.direct"><code>CMAESOptimizer.Sigma</code></a></li>
+  <li><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct"><code>CMAESOptimizer.PopulationSize</code></a></li>
+ </ul></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the point/value pair giving the optimal value for objective
+ function.</dd></dl>
+</li>
+</ul>
+<a name="doOptimize()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>doOptimize</h4>
+<pre>protected&nbsp;<a href="../../../../../../org/apache/commons/math3/optimization/PointValuePair.html" title="class in org.apache.commons.math3.optimization">PointValuePair</a>&nbsp;doOptimize()</pre>
+<div class="block"><span class="strong">Deprecated.</span>&nbsp;</div>
+<div class="block">Perform the bulk of the optimization algorithm.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html#doOptimize()">doOptimize</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/optimization/direct/BaseAbstractMultivariateOptimizer.html" title="class in org.apache.commons.math3.optimization.direct">BaseAbstractMultivariateOptimizer</a>&lt;<a href="../../../../../../org/apache/commons/math3/analysis/MultivariateFunction.html" title="interface in org.apache.commons.math3.analysis">MultivariateFunction</a>&gt;</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the point/value pair giving the optimal value of the
+ objective function.</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/CMAESOptimizer.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/optimization/direct/BOBYQAOptimizer.html" title="class in org.apache.commons.math3.optimization.direct"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../index.html?org/apache/commons/math3/optimization/direct/CMAESOptimizer.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="CMAESOptimizer.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/CMAESOptimizer.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../org/apache/commons/math3/optimization/direct/BOBYQAOptimizer.html" title="class in org.apache.commons.math3.optimization.direct"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../org/apache/commons/math3/optimization/direct/CMAESOptimizer.PopulationSize.html" title="class in org.apache.commons.math3.optimization.direct"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../index.html?org/apache/commons/math3/optimization/direct/CMAESOptimizer.html" target="_top">Frames</a></li>
+<li><a href="CMAESOptimizer.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

@@ -1,752 +1,573 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-Vector (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Vector (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Vector (Commons Math 3.2 API)";
+        parent.document.title="Vector (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Vector.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/VectorFormat.html" title="class in org.apache.commons.math3.geometry"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/geometry/Vector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Vector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Vector.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/geometry/VectorFormat.html" title="class in org.apache.commons.math3.geometry"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/geometry/Vector.html" target="_top">Frames</a></li>
+<li><a href="Vector.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.geometry</FONT>
-<BR>
-Interface Vector&lt;S extends <A HREF="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry">Space</A>&gt;</H2>
-<DL>
-<DT><DT><B>Type Parameters:</B><DD><CODE>S</CODE> - Type of the space.</DL>
-<DL>
-<DT><B>All Superinterfaces:</B> <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A></DD>
-</DL>
-<DL>
-<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../org/apache/commons/math3/geometry/euclidean/oned/Vector1D.html" title="class in org.apache.commons.math3.geometry.euclidean.oned">Vector1D</A>, <A HREF="../../../../../org/apache/commons/math3/geometry/euclidean/twod/Vector2D.html" title="class in org.apache.commons.math3.geometry.euclidean.twod">Vector2D</A>, <A HREF="../../../../../org/apache/commons/math3/geometry/euclidean/threed/Vector3D.html" title="class in org.apache.commons.math3.geometry.euclidean.threed">Vector3D</A></DD>
-</DL>
-<HR>
-<DL>
-<DT><PRE>public interface <B>Vector&lt;S extends <A HREF="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry">Space</A>&gt;</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A></DL>
-</PRE>
-
-<P>
-This interface represents a generic vector in a vectorial space or a point in an affine space.
-<P>
-
-<P>
-<DL>
-<DT><B>Since:</B></DT>
-  <DD>3.0</DD>
-<DT><B>Version:</B></DT>
-  <DD>$Id: Vector.java 1416643 2012-12-03 19:37:14Z tn $</DD>
-<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry"><CODE>Space</CODE></A>, 
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry"><CODE>Vector</CODE></A></DL>
-<HR>
-
-<P>
-
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.geometry</div>
+<h2 title="Interface Vector" class="title">Interface Vector&lt;S extends <a href="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry">Space</a>&gt;</h2>
+</div>
+<div class="contentContainer">
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl><dt><span class="strong">Type Parameters:</span></dt><dd><code>S</code> - Type of the space.</dd></dl>
+<dl>
+<dt>All Superinterfaces:</dt>
+<dd><a href="../../../../../org/apache/commons/math3/geometry/Point.html" title="interface in org.apache.commons.math3.geometry">Point</a>&lt;S&gt;, <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a></dd>
+</dl>
+<dl>
+<dt>All Known Implementing Classes:</dt>
+<dd><a href="../../../../../org/apache/commons/math3/geometry/euclidean/oned/Vector1D.html" title="class in org.apache.commons.math3.geometry.euclidean.oned">Vector1D</a>, <a href="../../../../../org/apache/commons/math3/geometry/euclidean/twod/Vector2D.html" title="class in org.apache.commons.math3.geometry.euclidean.twod">Vector2D</a>, <a href="../../../../../org/apache/commons/math3/geometry/euclidean/threed/Vector3D.html" title="class in org.apache.commons.math3.geometry.euclidean.threed">Vector3D</a></dd>
+</dl>
+<hr>
+<br>
+<pre>public interface <span class="strong">Vector&lt;S extends <a href="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry">Space</a>&gt;</span>
+extends <a href="../../../../../org/apache/commons/math3/geometry/Point.html" title="interface in org.apache.commons.math3.geometry">Point</a>&lt;S&gt;</pre>
+<div class="block">This interface represents a generic vector in a vectorial space or a point in an affine space.</div>
+<dl><dt><span class="strong">Since:</span></dt>
+  <dd>3.0</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry"><code>Space</code></a>, 
+<a href="../../../../../org/apache/commons/math3/geometry/Point.html" title="interface in org.apache.commons.math3.geometry"><code>Point</code></a></dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#add(double, org.apache.commons.math3.geometry.Vector)">add</A></B>(double&nbsp;factor,
-    <A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a scaled vector to the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#add(org.apache.commons.math3.geometry.Vector)">add</A></B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add a vector to the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#distance(org.apache.commons.math3.geometry.Vector)">distance</A></B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the distance between the instance and another vector according to the L<sub>2</sub> norm.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#distance1(org.apache.commons.math3.geometry.Vector)">distance1</A></B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the distance between the instance and another vector according to the L<sub>1</sub> norm.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#distanceInf(org.apache.commons.math3.geometry.Vector)">distanceInf</A></B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the distance between the instance and another vector according to the L<sub>&infin;</sub> norm.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#distanceSq(org.apache.commons.math3.geometry.Vector)">distanceSq</A></B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the square of the distance between the instance and another vector.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#dotProduct(org.apache.commons.math3.geometry.Vector)">dotProduct</A></B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the dot-product of the instance and another vector.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#getNorm()">getNorm</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the L<sub>2</sub> norm for the vector.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#getNorm1()">getNorm1</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the L<sub>1</sub> norm for the vector.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#getNormInf()">getNormInf</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the L<sub>&infin;</sub> norm for the vector.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#getNormSq()">getNormSq</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the square of the norm for the vector.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry">Space</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#getSpace()">getSpace</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the space to which the vector belongs.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#getZero()">getZero</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the null vector of the vectorial space or origin point of the affine space.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#isInfinite()">isInfinite</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns true if any coordinate of this vector is infinite and none are NaN;
- false otherwise</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#isNaN()">isNaN</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns true if any coordinate of this vector is NaN; false otherwise</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#negate()">negate</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the opposite of the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#normalize()">normalize</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get a normalized vector aligned with the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#scalarMultiply(double)">scalarMultiply</A></B>(double&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Multiply the instance by a scalar.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#subtract(double, org.apache.commons.math3.geometry.Vector)">subtract</A></B>(double&nbsp;factor,
-         <A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subtract a scaled vector from the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#subtract(org.apache.commons.math3.geometry.Vector)">subtract</A></B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subtract a vector from the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html#toString(java.text.NumberFormat)">toString</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text">NumberFormat</A>&nbsp;format)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get a string representation of this vector.</TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#add(double,%20org.apache.commons.math3.geometry.Vector)">add</a></strong>(double&nbsp;factor,
+   <a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Add a scaled vector to the instance.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#add(org.apache.commons.math3.geometry.Vector)">add</a></strong>(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Add a vector to the instance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#distance(org.apache.commons.math3.geometry.Vector)">distance</a></strong>(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Compute the distance between the instance and another vector according to the L<sub>2</sub> norm.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#distance1(org.apache.commons.math3.geometry.Vector)">distance1</a></strong>(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Compute the distance between the instance and another vector according to the L<sub>1</sub> norm.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#distanceInf(org.apache.commons.math3.geometry.Vector)">distanceInf</a></strong>(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Compute the distance between the instance and another vector according to the L<sub>&infin;</sub> norm.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#distanceSq(org.apache.commons.math3.geometry.Vector)">distanceSq</a></strong>(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Compute the square of the distance between the instance and another vector.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#dotProduct(org.apache.commons.math3.geometry.Vector)">dotProduct</a></strong>(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Compute the dot-product of the instance and another vector.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#getNorm()">getNorm</a></strong>()</code>
+<div class="block">Get the L<sub>2</sub> norm for the vector.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#getNorm1()">getNorm1</a></strong>()</code>
+<div class="block">Get the L<sub>1</sub> norm for the vector.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#getNormInf()">getNormInf</a></strong>()</code>
+<div class="block">Get the L<sub>&infin;</sub> norm for the vector.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#getNormSq()">getNormSq</a></strong>()</code>
+<div class="block">Get the square of the norm for the vector.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#getZero()">getZero</a></strong>()</code>
+<div class="block">Get the null vector of the vectorial space or origin point of the affine space.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#isInfinite()">isInfinite</a></strong>()</code>
+<div class="block">Returns true if any coordinate of this vector is infinite and none are NaN;
+ false otherwise</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#negate()">negate</a></strong>()</code>
+<div class="block">Get the opposite of the instance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#normalize()">normalize</a></strong>()</code>
+<div class="block">Get a normalized vector aligned with the instance.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#scalarMultiply(double)">scalarMultiply</a></strong>(double&nbsp;a)</code>
+<div class="block">Multiply the instance by a scalar.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#subtract(double,%20org.apache.commons.math3.geometry.Vector)">subtract</a></strong>(double&nbsp;factor,
+        <a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Subtract a scaled vector from the instance.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#subtract(org.apache.commons.math3.geometry.Vector)">subtract</a></strong>(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</code>
+<div class="block">Subtract a vector from the instance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/geometry/Vector.html#toString(java.text.NumberFormat)">toString</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text">NumberFormat</a>&nbsp;format)</code>
+<div class="block">Get a string representation of this vector.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.commons.math3.geometry.Point">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;org.apache.commons.math3.geometry.<a href="../../../../../org/apache/commons/math3/geometry/Point.html" title="interface in org.apache.commons.math3.geometry">Point</a></h3>
+<code><a href="../../../../../org/apache/commons/math3/geometry/Point.html#distance(org.apache.commons.math3.geometry.Point)">distance</a>, <a href="../../../../../org/apache/commons/math3/geometry/Point.html#getSpace()">getSpace</a>, <a href="../../../../../org/apache/commons/math3/geometry/Point.html#isNaN()">isNaN</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="getSpace()"><!-- --></A><H3>
-getSpace</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry">Space</A> <B>getSpace</B>()</PRE>
-<DL>
-<DD>Get the space to which the vector belongs.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>containing space</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getZero()"><!-- --></A><H3>
-getZero</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>getZero</B>()</PRE>
-<DL>
-<DD>Get the null vector of the vectorial space or origin point of the affine space.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>null vector of the vectorial space or origin point of the affine space</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getNorm1()"><!-- --></A><H3>
-getNorm1</H3>
-<PRE>
-double <B>getNorm1</B>()</PRE>
-<DL>
-<DD>Get the L<sub>1</sub> norm for the vector.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>L<sub>1</sub> norm for the vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getNorm()"><!-- --></A><H3>
-getNorm</H3>
-<PRE>
-double <B>getNorm</B>()</PRE>
-<DL>
-<DD>Get the L<sub>2</sub> norm for the vector.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>Euclidean norm for the vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getNormSq()"><!-- --></A><H3>
-getNormSq</H3>
-<PRE>
-double <B>getNormSq</B>()</PRE>
-<DL>
-<DD>Get the square of the norm for the vector.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>square of the Euclidean norm for the vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getNormInf()"><!-- --></A><H3>
-getNormInf</H3>
-<PRE>
-double <B>getNormInf</B>()</PRE>
-<DL>
-<DD>Get the L<sub>&infin;</sub> norm for the vector.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>L<sub>&infin;</sub> norm for the vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-add</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>add</B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Add a vector to the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - vector to add
-<DT><B>Returns:</B><DD>a new vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(double, org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-add</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>add</B>(double&nbsp;factor,
-              <A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Add a scaled vector to the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>factor</CODE> - scale factor to apply to v before adding it<DD><CODE>v</CODE> - vector to add
-<DT><B>Returns:</B><DD>a new vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="subtract(org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-subtract</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>subtract</B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Subtract a vector from the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - vector to subtract
-<DT><B>Returns:</B><DD>a new vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="subtract(double, org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-subtract</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>subtract</B>(double&nbsp;factor,
-                   <A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Subtract a scaled vector from the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>factor</CODE> - scale factor to apply to v before subtracting it<DD><CODE>v</CODE> - vector to subtract
-<DT><B>Returns:</B><DD>a new vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="negate()"><!-- --></A><H3>
-negate</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>negate</B>()</PRE>
-<DL>
-<DD>Get the opposite of the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a new vector which is opposite to the instance</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="normalize()"><!-- --></A><H3>
-normalize</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>normalize</B>()
-                                  throws <A HREF="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</A></PRE>
-<DL>
-<DD>Get a normalized vector aligned with the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a new normalized vector
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</A></CODE> - if the norm is zero</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="scalarMultiply(double)"><!-- --></A><H3>
-scalarMultiply</H3>
-<PRE>
-<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt; <B>scalarMultiply</B>(double&nbsp;a)</PRE>
-<DL>
-<DD>Multiply the instance by a scalar.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - scalar
-<DT><B>Returns:</B><DD>a new vector</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isNaN()"><!-- --></A><H3>
-isNaN</H3>
-<PRE>
-boolean <B>isNaN</B>()</PRE>
-<DL>
-<DD>Returns true if any coordinate of this vector is NaN; false otherwise
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>true if any coordinate of this vector is NaN; false otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isInfinite()"><!-- --></A><H3>
-isInfinite</H3>
-<PRE>
-boolean <B>isInfinite</B>()</PRE>
-<DL>
-<DD>Returns true if any coordinate of this vector is infinite and none are NaN;
- false otherwise
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>true if any coordinate of this vector is infinite and none are NaN;
- false otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distance1(org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-distance1</H3>
-<PRE>
-double <B>distance1</B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Compute the distance between the instance and another vector according to the L<sub>1</sub> norm.
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="getZero()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getZero</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;getZero()</pre>
+<div class="block">Get the null vector of the vectorial space or origin point of the affine space.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>null vector of the vectorial space or origin point of the affine space</dd></dl>
+</li>
+</ul>
+<a name="getNorm1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNorm1</h4>
+<pre>double&nbsp;getNorm1()</pre>
+<div class="block">Get the L<sub>1</sub> norm for the vector.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>L<sub>1</sub> norm for the vector</dd></dl>
+</li>
+</ul>
+<a name="getNorm()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNorm</h4>
+<pre>double&nbsp;getNorm()</pre>
+<div class="block">Get the L<sub>2</sub> norm for the vector.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>Euclidean norm for the vector</dd></dl>
+</li>
+</ul>
+<a name="getNormSq()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNormSq</h4>
+<pre>double&nbsp;getNormSq()</pre>
+<div class="block">Get the square of the norm for the vector.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>square of the Euclidean norm for the vector</dd></dl>
+</li>
+</ul>
+<a name="getNormInf()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNormInf</h4>
+<pre>double&nbsp;getNormInf()</pre>
+<div class="block">Get the L<sub>&infin;</sub> norm for the vector.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>L<sub>&infin;</sub> norm for the vector</dd></dl>
+</li>
+</ul>
+<a name="add(org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>add</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;add(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Add a vector to the instance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - vector to add</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new vector</dd></dl>
+</li>
+</ul>
+<a name="add(double, org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>add</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;add(double&nbsp;factor,
+            <a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Add a scaled vector to the instance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>factor</code> - scale factor to apply to v before adding it</dd><dd><code>v</code> - vector to add</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new vector</dd></dl>
+</li>
+</ul>
+<a name="subtract(org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtract</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;subtract(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Subtract a vector from the instance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - vector to subtract</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new vector</dd></dl>
+</li>
+</ul>
+<a name="subtract(double, org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtract</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;subtract(double&nbsp;factor,
+                 <a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Subtract a scaled vector from the instance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>factor</code> - scale factor to apply to v before subtracting it</dd><dd><code>v</code> - vector to subtract</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new vector</dd></dl>
+</li>
+</ul>
+<a name="negate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>negate</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;negate()</pre>
+<div class="block">Get the opposite of the instance.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>a new vector which is opposite to the instance</dd></dl>
+</li>
+</ul>
+<a name="normalize()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>normalize</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;normalize()
+                                  throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Get a normalized vector aligned with the instance.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>a new normalized vector</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if the norm is zero</dd></dl>
+</li>
+</ul>
+<a name="scalarMultiply(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scalarMultiply</h4>
+<pre><a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;scalarMultiply(double&nbsp;a)</pre>
+<div class="block">Multiply the instance by a scalar.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - scalar</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new vector</dd></dl>
+</li>
+</ul>
+<a name="isInfinite()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isInfinite</h4>
+<pre>boolean&nbsp;isInfinite()</pre>
+<div class="block">Returns true if any coordinate of this vector is infinite and none are NaN;
+ false otherwise</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>true if any coordinate of this vector is infinite and none are NaN;
+ false otherwise</dd></dl>
+</li>
+</ul>
+<a name="distance1(org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distance1</h4>
+<pre>double&nbsp;distance1(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Compute the distance between the instance and another vector according to the L<sub>1</sub> norm.
  <p>Calling this method is equivalent to calling:
  <code>q.subtract(p).getNorm1()</code> except that no intermediate
- vector is built</p>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - second vector
-<DT><B>Returns:</B><DD>the distance between the instance and p according to the L<sub>1</sub> norm</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distance(org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-distance</H3>
-<PRE>
-double <B>distance</B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Compute the distance between the instance and another vector according to the L<sub>2</sub> norm.
+ vector is built</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - second vector</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the distance between the instance and p according to the L<sub>1</sub> norm</dd></dl>
+</li>
+</ul>
+<a name="distance(org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distance</h4>
+<pre>double&nbsp;distance(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Compute the distance between the instance and another vector according to the L<sub>2</sub> norm.
  <p>Calling this method is equivalent to calling:
  <code>q.subtract(p).getNorm()</code> except that no intermediate
- vector is built</p>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - second vector
-<DT><B>Returns:</B><DD>the distance between the instance and p according to the L<sub>2</sub> norm</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distanceInf(org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-distanceInf</H3>
-<PRE>
-double <B>distanceInf</B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Compute the distance between the instance and another vector according to the L<sub>&infin;</sub> norm.
+ vector is built</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - second vector</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the distance between the instance and p according to the L<sub>2</sub> norm</dd></dl>
+</li>
+</ul>
+<a name="distanceInf(org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distanceInf</h4>
+<pre>double&nbsp;distanceInf(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Compute the distance between the instance and another vector according to the L<sub>&infin;</sub> norm.
  <p>Calling this method is equivalent to calling:
  <code>q.subtract(p).getNormInf()</code> except that no intermediate
- vector is built</p>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - second vector
-<DT><B>Returns:</B><DD>the distance between the instance and p according to the L<sub>&infin;</sub> norm</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distanceSq(org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-distanceSq</H3>
-<PRE>
-double <B>distanceSq</B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Compute the square of the distance between the instance and another vector.
+ vector is built</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - second vector</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the distance between the instance and p according to the L<sub>&infin;</sub> norm</dd></dl>
+</li>
+</ul>
+<a name="distanceSq(org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distanceSq</h4>
+<pre>double&nbsp;distanceSq(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Compute the square of the distance between the instance and another vector.
  <p>Calling this method is equivalent to calling:
  <code>q.subtract(p).getNormSq()</code> except that no intermediate
- vector is built</p>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - second vector
-<DT><B>Returns:</B><DD>the square of the distance between the instance and p</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="dotProduct(org.apache.commons.math3.geometry.Vector)"><!-- --></A><H3>
-dotProduct</H3>
-<PRE>
-double <B>dotProduct</B>(<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</A>&lt;<A HREF="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</A>&gt;&nbsp;v)</PRE>
-<DL>
-<DD>Compute the dot-product of the instance and another vector.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - second vector
-<DT><B>Returns:</B><DD>the dot product this.v</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="toString(java.text.NumberFormat)"><!-- --></A><H3>
-toString</H3>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>toString</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text">NumberFormat</A>&nbsp;format)</PRE>
-<DL>
-<DD>Get a string representation of this vector.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>format</CODE> - the custom format for components
-<DT><B>Returns:</B><DD>a string representation of this vector</DL>
-</DD>
-</DL>
+ vector is built</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - second vector</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the square of the distance between the instance and p</dd></dl>
+</li>
+</ul>
+<a name="dotProduct(org.apache.commons.math3.geometry.Vector)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>dotProduct</h4>
+<pre>double&nbsp;dotProduct(<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="interface in org.apache.commons.math3.geometry">Vector</a>&lt;<a href="../../../../../org/apache/commons/math3/geometry/Vector.html" title="type parameter in Vector">S</a>&gt;&nbsp;v)</pre>
+<div class="block">Compute the dot-product of the instance and another vector.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - second vector</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the dot product this.v</dd></dl>
+</li>
+</ul>
+<a name="toString(java.text.NumberFormat)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toString</h4>
+<pre><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;toString(<a href="http://docs.oracle.com/javase/7/docs/api/java/text/NumberFormat.html?is-external=true" title="class or interface in java.text">NumberFormat</a>&nbsp;format)</pre>
+<div class="block">Get a string representation of this vector.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>format</code> - the custom format for components</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a string representation of this vector</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Vector.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/geometry/VectorFormat.html" title="class in org.apache.commons.math3.geometry"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/geometry/Vector.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Vector.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Vector.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/geometry/Space.html" title="interface in org.apache.commons.math3.geometry"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/geometry/VectorFormat.html" title="class in org.apache.commons.math3.geometry"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/geometry/Vector.html" target="_top">Frames</a></li>
+<li><a href="Vector.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

@@ -1,828 +1,741 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-Complex (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Complex (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Complex (Commons Math 3.2 API)";
+        parent.document.title="Complex (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Complex.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/complex/Complex.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Complex.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Complex.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li>Prev Class</li>
+<li><a href="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/complex/Complex.html" target="_top">Frames</a></li>
+<li><a href="Complex.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.complex</FONT>
-<BR>
-Class Complex</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.apache.commons.math3.complex.Complex</B>
-</PRE>
-<DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A>, <A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</DD>
-</DL>
-<HR>
-<DL>
-<DT><PRE>public class <B>Complex</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A><DT>implements <A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;, <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A></DL>
-</PRE>
-
-<P>
-Representation of a Complex number, i.e. a number which has both a
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.complex</div>
+<h2 title="Class Complex" class="title">Class Complex</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li>org.apache.commons.math3.complex.Complex</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a>, <a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</dd>
+</dl>
+<hr>
+<br>
+<pre>public class <span class="strong">Complex</span>
+extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
+implements <a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;, <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a></pre>
+<div class="block">Representation of a Complex number, i.e. a number which has both a
  real and imaginary part.
- <br/>
+ <p>
  Implementations of arithmetic operations handle <code>NaN</code> and
- infinite values according to the rules for <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><CODE>Double</CODE></A>, i.e.
- <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#equals(java.lang.Object)"><CODE>equals(java.lang.Object)</CODE></A> is an equivalence relation for all instances that have
+ infinite values according to the rules for <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><code>Double</code></a>, i.e.
+ <a href="../../../../../org/apache/commons/math3/complex/Complex.html#equals(java.lang.Object)"><code>equals(java.lang.Object)</code></a> is an equivalence relation for all instances that have
  a <code>NaN</code> in either real or imaginary part, e.g. the following are
  considered equal:
  <ul>
   <li><code>1 + NaNi</code></li>
   <li><code>NaN + i</code></li>
   <li><code>NaN + NaNi</code></li>
- </ul>
- Note that this is in contradiction with the IEEE-754 standard for floating
+ </ul><p>
+ Note that this contradicts the IEEE-754 standard for floating
  point numbers (according to which the test <code>x == x</code> must fail if
  <code>x</code> is <code>NaN</code>). The method
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equals(double, double, int)"><CODE>equals for primitive double</CODE></A> in <A HREF="../../../../../org/apache/commons/math3/util/Precision.html" title="class in org.apache.commons.math3.util"><CODE>Precision</CODE></A>
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equals(double,%20double,%20int)"><code>equals for primitive double</code></a> in <a href="../../../../../org/apache/commons/math3/util/Precision.html" title="class in org.apache.commons.math3.util"><code>Precision</code></a>
  conforms with IEEE-754 while this class conforms with the standard behavior
- for Java object types.
- <br/>
- Implements Serializable since 2.0
-<P>
-
-<P>
-<DL>
-<DT><B>Version:</B></DT>
-  <DD>$Id: Complex.java 1459927 2013-03-22 18:55:58Z luc $</DD>
-<DT><B>See Also:</B><DD><A HREF="../../../../../serialized-form.html#org.apache.commons.math3.complex.Complex">Serialized Form</A></DL>
-<HR>
-
-<P>
+ for Java object types.</p></div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../serialized-form.html#org.apache.commons.math3.complex.Complex">Serialized Form</a></dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- =========== FIELD SUMMARY =========== -->
-
-<A NAME="field_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Field Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#I">I</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The square root of -1.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#INF">INF</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A complex number representing "+INF + INFi"</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN">NaN</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A complex number representing "NaN + NaNi"</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#ONE">ONE</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A complex number representing "1.0 + 0.0i"</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO">ZERO</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A complex number representing "0.0 + 0.0i"</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#I">I</a></strong></code>
+<div class="block">The square root of -1.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#INF">INF</a></strong></code>
+<div class="block">A complex number representing "+INF + INFi"</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN">NaN</a></strong></code>
+<div class="block">A complex number representing "NaN + NaNi"</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#ONE">ONE</a></strong></code>
+<div class="block">A complex number representing "1.0 + 0.0i"</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO">ZERO</a></strong></code>
+<div class="block">A complex number representing "0.0 + 0.0i"</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#Complex(double)">Complex</A></B>(double&nbsp;real)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create a complex number given only the real part.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#Complex(double, double)">Complex</A></B>(double&nbsp;real,
-        double&nbsp;imaginary)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create a complex number given the real and imaginary parts.</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#Complex(double)">Complex</a></strong>(double&nbsp;real)</code>
+<div class="block">Create a complex number given only the real part.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#Complex(double,%20double)">Complex</a></strong>(double&nbsp;real,
+       double&nbsp;imaginary)</code>
+<div class="block">Create a complex number given the real and imaginary parts.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#abs()">abs</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return the absolute value of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#acos()">acos</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#abs()">abs</a></strong>()</code>
+<div class="block">Return the absolute value of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#acos()">acos</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/InverseCosine.html" TARGET="_top">
- inverse cosine</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#add(org.apache.commons.math3.complex.Complex)">add</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;addend)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is
- <code>(this + addend)</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#add(double)">add</A></B>(double&nbsp;addend)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is <code>(this + addend)</code>,
- with <code>addend</code> interpreted as a real number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#asin()">asin</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ inverse cosine</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#add(org.apache.commons.math3.complex.Complex)">add</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;addend)</code>
+<div class="block">Returns a <code>Complex</code> whose value is
+ <code>(this + addend)</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#add(double)">add</a></strong>(double&nbsp;addend)</code>
+<div class="block">Returns a <code>Complex</code> whose value is <code>(this + addend)</code>,
+ with <code>addend</code> interpreted as a real number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#asin()">asin</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/InverseSine.html" TARGET="_top">
- inverse sine</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#atan()">atan</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ inverse sine</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#atan()">atan</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/InverseTangent.html" TARGET="_top">
- inverse tangent</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#conjugate()">conjugate</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return the conjugate of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#cos()">cos</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ inverse tangent</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#conjugate()">conjugate</a></strong>()</code>
+<div class="block">Returns the conjugate of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#cos()">cos</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/Cosine.html" TARGET="_top">
- cosine</a>
- of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#cosh()">cosh</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ cosine</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#cosh()">cosh</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/HyperbolicCosine.html" TARGET="_top">
- hyperbolic cosine</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#createComplex(double, double)">createComplex</A></B>(double&nbsp;realPart,
-              double&nbsp;imaginaryPart)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create a complex number given the real and imaginary parts.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#divide(org.apache.commons.math3.complex.Complex)">divide</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;divisor)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is
- <code>(this / divisor)</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#divide(double)">divide</A></B>(double&nbsp;divisor)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is <code>(this / divisor)</code>,
- with <code>divisor</code> interpreted as a real number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#equals(java.lang.Object)">equals</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;other)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test for the equality of two Complex objects.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#exp()">exp</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ hyperbolic cosine</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#createComplex(double,%20double)">createComplex</a></strong>(double&nbsp;realPart,
+             double&nbsp;imaginaryPart)</code>
+<div class="block">Create a complex number given the real and imaginary parts.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#divide(org.apache.commons.math3.complex.Complex)">divide</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;divisor)</code>
+<div class="block">Returns a <code>Complex</code> whose value is
+ <code>(this / divisor)</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#divide(double)">divide</a></strong>(double&nbsp;divisor)</code>
+<div class="block">Returns a <code>Complex</code> whose value is <code>(this / divisor)</code>,
+ with <code>divisor</code> interpreted as a real number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#equals(org.apache.commons.math3.complex.Complex,%20org.apache.commons.math3.complex.Complex)">equals</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+      <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y)</code>
+<div class="block">Returns <code>true</code> iff the values are equal as defined by
+ <a href="../../../../../org/apache/commons/math3/complex/Complex.html#equals(org.apache.commons.math3.complex.Complex,%20org.apache.commons.math3.complex.Complex,%20int)"><code>equals(x, y, 1)</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#equals(org.apache.commons.math3.complex.Complex,%20org.apache.commons.math3.complex.Complex,%20double)">equals</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+      <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y,
+      double&nbsp;eps)</code>
+<div class="block">Returns <code>true</code> if, both for the real part and for the imaginary
+ part, there is no double value strictly between the arguments or the
+ difference between them is within the range of allowed error
+ (inclusive).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#equals(org.apache.commons.math3.complex.Complex,%20org.apache.commons.math3.complex.Complex,%20int)">equals</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+      <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y,
+      int&nbsp;maxUlps)</code>
+<div class="block">Test for the floating-point equality between Complex objects.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#equals(java.lang.Object)">equals</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;other)</code>
+<div class="block">Test for equality with another object.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#equalsWithRelativeTolerance(org.apache.commons.math3.complex.Complex,%20org.apache.commons.math3.complex.Complex,%20double)">equalsWithRelativeTolerance</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+                           <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y,
+                           double&nbsp;eps)</code>
+<div class="block">Returns <code>true</code> if, both for the real part and for the imaginary
+ part, there is no double value strictly between the arguments or the
+ relative difference between them is smaller or equal to the given
+ tolerance.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#exp()">exp</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/ExponentialFunction.html" TARGET="_top">
- exponential function</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#getArgument()">getArgument</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the argument of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex">ComplexField</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#getField()">getField</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the <A HREF="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3"><CODE>Field</CODE></A> to which the instance belongs.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#getImaginary()">getImaginary</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Access the imaginary part.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#getReal()">getReal</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Access the real part.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#hashCode()">hashCode</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get a hashCode for the complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#isInfinite()">isInfinite</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks whether either the real or imaginary part of this complex number
+ exponential function</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#getArgument()">getArgument</a></strong>()</code>
+<div class="block">Compute the argument of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex">ComplexField</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#getField()">getField</a></strong>()</code>
+<div class="block">Get the <a href="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3"><code>Field</code></a> to which the instance belongs.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#getImaginary()">getImaginary</a></strong>()</code>
+<div class="block">Access the imaginary part.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#getReal()">getReal</a></strong>()</code>
+<div class="block">Access the real part.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#hashCode()">hashCode</a></strong>()</code>
+<div class="block">Get a hashCode for the complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#isInfinite()">isInfinite</a></strong>()</code>
+<div class="block">Checks whether either the real or imaginary part of this complex number
  takes an infinite value (either <code>Double.POSITIVE_INFINITY</code> or
  <code>Double.NEGATIVE_INFINITY</code>) and neither part
- is <code>NaN</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#isNaN()">isNaN</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks whether either or both parts of this complex number is
- <code>NaN</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#log()">log</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ is <code>NaN</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#isNaN()">isNaN</a></strong>()</code>
+<div class="block">Checks whether either or both parts of this complex number is
+ <code>NaN</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#log()">log</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/NaturalLogarithm.html" TARGET="_top">
- natural logarithm</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(org.apache.commons.math3.complex.Complex)">multiply</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;factor)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is <code>this * factor</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(double)">multiply</A></B>(double&nbsp;factor)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
- interpreted as a real number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(int)">multiply</A></B>(int&nbsp;factor)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
- interpreted as a integer number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#negate()">negate</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is <code>(-this)</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#nthRoot(int)">nthRoot</A></B>(int&nbsp;n)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the n-th roots of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#pow(org.apache.commons.math3.complex.Complex)">pow</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns of value of this complex number raised to the power of <code>x</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#pow(double)">pow</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns of value of this complex number raised to the power of <code>x</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>protected &nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#readResolve()">readResolve</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Resolve the transient fields in a deserialized Complex Object.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#reciprocal()">reciprocal</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the multiplicative inverse of <code>this</code> element.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#sin()">sin</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ natural logarithm</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(org.apache.commons.math3.complex.Complex)">multiply</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;factor)</code>
+<div class="block">Returns a <code>Complex</code> whose value is <code>this * factor</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(double)">multiply</a></strong>(double&nbsp;factor)</code>
+<div class="block">Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
+ interpreted as a real number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(int)">multiply</a></strong>(int&nbsp;factor)</code>
+<div class="block">Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
+ interpreted as a integer number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#negate()">negate</a></strong>()</code>
+<div class="block">Returns a <code>Complex</code> whose value is <code>(-this)</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#nthRoot(int)">nthRoot</a></strong>(int&nbsp;n)</code>
+<div class="block">Computes the n-th roots of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#pow(org.apache.commons.math3.complex.Complex)">pow</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x)</code>
+<div class="block">Returns of value of this complex number raised to the power of <code>x</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#pow(double)">pow</a></strong>(double&nbsp;x)</code>
+<div class="block">Returns of value of this complex number raised to the power of <code>x</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>protected <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#readResolve()">readResolve</a></strong>()</code>
+<div class="block">Resolve the transient fields in a deserialized Complex Object.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#reciprocal()">reciprocal</a></strong>()</code>
+<div class="block">Returns the multiplicative inverse of <code>this</code> element.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#sin()">sin</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/Sine.html" TARGET="_top">
  sine</a>
- of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#sinh()">sinh</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#sinh()">sinh</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/HyperbolicSine.html" TARGET="_top">
- hyperbolic sine</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#sqrt()">sqrt</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ hyperbolic sine</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#sqrt()">sqrt</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/SquareRoot.html" TARGET="_top">
- square root</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#sqrt1z()">sqrt1z</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ square root</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#sqrt1z()">sqrt1z</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/SquareRoot.html" TARGET="_top">
  square root</a> of <code>1 - this<sup>2</sup></code> for this complex
- number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#subtract(org.apache.commons.math3.complex.Complex)">subtract</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;subtrahend)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is
- <code>(this - subtrahend)</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#subtract(double)">subtract</A></B>(double&nbsp;subtrahend)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a <code>Complex</code> whose value is
- <code>(this - subtrahend)</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#tan()">tan</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#subtract(org.apache.commons.math3.complex.Complex)">subtract</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;subtrahend)</code>
+<div class="block">Returns a <code>Complex</code> whose value is
+ <code>(this - subtrahend)</code>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#subtract(double)">subtract</a></strong>(double&nbsp;subtrahend)</code>
+<div class="block">Returns a <code>Complex</code> whose value is
+ <code>(this - subtrahend)</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#tan()">tan</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/Tangent.html" TARGET="_top">
- tangent</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#tanh()">tanh</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the
+ tangent</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#tanh()">tanh</a></strong>()</code>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/HyperbolicTangent.html" TARGET="_top">
- hyperbolic tangent</a> of this complex number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#toString()">toString</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#valueOf(double)">valueOf</A></B>(double&nbsp;realPart)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create a complex number given only the real part.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#valueOf(double, double)">valueOf</A></B>(double&nbsp;realPart,
-        double&nbsp;imaginaryPart)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create a complex number given the real and imaginary parts.</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+ hyperbolic tangent</a> of this complex number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#toString()">toString</a></strong>()</code></td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#valueOf(double)">valueOf</a></strong>(double&nbsp;realPart)</code>
+<div class="block">Create a complex number given only the real part.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Complex.html#valueOf(double,%20double)">valueOf</a></strong>(double&nbsp;realPart,
+       double&nbsp;imaginaryPart)</code>
+<div class="block">Create a complex number given the real and imaginary parts.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ FIELD DETAIL =========== -->
-
-<A NAME="field_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Field Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="I"><!-- --></A><H3>
-I</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>I</B></PRE>
-<DL>
-<DD>The square root of -1. A number representing "0.0 + 1.0i"
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="NaN"><!-- --></A><H3>
-NaN</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>NaN</B></PRE>
-<DL>
-<DD>A complex number representing "NaN + NaNi"
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="INF"><!-- --></A><H3>
-INF</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>INF</B></PRE>
-<DL>
-<DD>A complex number representing "+INF + INFi"
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="ONE"><!-- --></A><H3>
-ONE</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>ONE</B></PRE>
-<DL>
-<DD>A complex number representing "1.0 + 0.0i"
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="ZERO"><!-- --></A><H3>
-ZERO</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>ZERO</B></PRE>
-<DL>
-<DD>A complex number representing "0.0 + 0.0i"
-<P>
-<DL>
-</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="I">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>I</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a> I</pre>
+<div class="block">The square root of -1. A number representing "0.0 + 1.0i"</div>
+</li>
+</ul>
+<a name="NaN">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>NaN</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a> NaN</pre>
+<div class="block">A complex number representing "NaN + NaNi"</div>
+</li>
+</ul>
+<a name="INF">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>INF</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a> INF</pre>
+<div class="block">A complex number representing "+INF + INFi"</div>
+</li>
+</ul>
+<a name="ONE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ONE</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a> ONE</pre>
+<div class="block">A complex number representing "1.0 + 0.0i"</div>
+</li>
+</ul>
+<a name="ZERO">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ZERO</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a> ZERO</pre>
+<div class="block">A complex number representing "0.0 + 0.0i"</div>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="Complex(double)"><!-- --></A><H3>
-Complex</H3>
-<PRE>
-public <B>Complex</B>(double&nbsp;real)</PRE>
-<DL>
-<DD>Create a complex number given only the real part.
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>real</CODE> - Real part.</DL>
-</DL>
-<HR>
-
-<A NAME="Complex(double, double)"><!-- --></A><H3>
-Complex</H3>
-<PRE>
-public <B>Complex</B>(double&nbsp;real,
-               double&nbsp;imaginary)</PRE>
-<DL>
-<DD>Create a complex number given the real and imaginary parts.
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>real</CODE> - Real part.<DD><CODE>imaginary</CODE> - Imaginary part.</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="Complex(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Complex</h4>
+<pre>public&nbsp;Complex(double&nbsp;real)</pre>
+<div class="block">Create a complex number given only the real part.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>real</code> - Real part.</dd></dl>
+</li>
+</ul>
+<a name="Complex(double, double)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Complex</h4>
+<pre>public&nbsp;Complex(double&nbsp;real,
+       double&nbsp;imaginary)</pre>
+<div class="block">Create a complex number given the real and imaginary parts.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>real</code> - Real part.</dd><dd><code>imaginary</code> - Imaginary part.</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="abs()"><!-- --></A><H3>
-abs</H3>
-<PRE>
-public double <B>abs</B>()</PRE>
-<DL>
-<DD>Return the absolute value of this complex number.
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="abs()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>abs</h4>
+<pre>public&nbsp;double&nbsp;abs()</pre>
+<div class="block">Return the absolute value of this complex number.
  Returns <code>NaN</code> if either real or imaginary part is <code>NaN</code>
  and <code>Double.POSITIVE_INFINITY</code> if neither part is <code>NaN</code>,
- but at least one part is infinite.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the absolute value.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(org.apache.commons.math3.complex.Complex)"><!-- --></A><H3>
-add</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>add</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;addend)
-            throws <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is
+ but at least one part is infinite.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the absolute value.</dd></dl>
+</li>
+</ul>
+<a name="add(org.apache.commons.math3.complex.Complex)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>add</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;add(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;addend)
+            throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></pre>
+<div class="block">Returns a <code>Complex</code> whose value is
  <code>(this + addend)</code>.
  Uses the definitional formula
- <pre>
-  <code>
-   (a + bi) + (c + di) = (a+c) + (b+d)i
-  </code>
- </pre>
- <br/>
+ <p>
+   <code>(a + bi) + (c + di) = (a+c) + (b+d)i</code>
+ </p>
  If either <code>this</code> or <code>addend</code> has a <code>NaN</code> value in
- either part, <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> is returned; otherwise <code>Infinite</code>
+ either part, <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> is returned; otherwise <code>Infinite</code>
  and <code>NaN</code> values are returned in the parts of the result
- according to the rules for <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><CODE>Double</CODE></A> arithmetic.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#add(T)">add</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>addend</CODE> - Value to be added to this <code>Complex</code>.
-<DT><B>Returns:</B><DD><code>this + addend</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if <code>addend</code> is <code>null</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(double)"><!-- --></A><H3>
-add</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>add</B>(double&nbsp;addend)</PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is <code>(this + addend)</code>,
- with <code>addend</code> interpreted as a real number.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>addend</CODE> - Value to be added to this <code>Complex</code>.
-<DT><B>Returns:</B><DD><code>this + addend</code>.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#add(org.apache.commons.math3.complex.Complex)"><CODE>add(Complex)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="conjugate()"><!-- --></A><H3>
-conjugate</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>conjugate</B>()</PRE>
-<DL>
-<DD>Return the conjugate of this complex number.
+ according to the rules for <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><code>Double</code></a> arithmetic.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#add(T)">add</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>addend</code> - Value to be added to this <code>Complex</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this + addend</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if <code>addend</code> is <code>null</code>.</dd></dl>
+</li>
+</ul>
+<a name="add(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>add</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;add(double&nbsp;addend)</pre>
+<div class="block">Returns a <code>Complex</code> whose value is <code>(this + addend)</code>,
+ with <code>addend</code> interpreted as a real number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>addend</code> - Value to be added to this <code>Complex</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this + addend</code>.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Complex.html#add(org.apache.commons.math3.complex.Complex)"><code>add(Complex)</code></a></dd></dl>
+</li>
+</ul>
+<a name="conjugate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>conjugate</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;conjugate()</pre>
+<div class="block">Returns the conjugate of this complex number.
  The conjugate of <code>a + bi</code> is <code>a - bi</code>.
- <br/>
- <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> is returned if either the real or imaginary
+ <p>
+ <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> is returned if either the real or imaginary
  part of this Complex number equals <code>Double.NaN</code>.
- <br/>
+ </p><p>
  If the imaginary part is infinite, and the real part is not
  <code>NaN</code>, the returned value has infinite imaginary part
  of the opposite sign, e.g. the conjugate of
  <code>1 + POSITIVE_INFINITY i</code> is <code>1 - NEGATIVE_INFINITY i</code>.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the conjugate of this Complex object.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="divide(org.apache.commons.math3.complex.Complex)"><!-- --></A><H3>
-divide</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>divide</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;divisor)
-               throws <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is
+ </p></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the conjugate of this Complex object.</dd></dl>
+</li>
+</ul>
+<a name="divide(org.apache.commons.math3.complex.Complex)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>divide</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;divide(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;divisor)
+               throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></pre>
+<div class="block">Returns a <code>Complex</code> whose value is
  <code>(this / divisor)</code>.
  Implements the definitional formula
  <pre>
@@ -836,489 +749,475 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
  <a href="http://doi.acm.org/10.1145/1039813.1039814">
  prescaling of operands</a> to limit the effects of overflows and
  underflows in the computation.
- <br/>
+ <p>
  <code>Infinite</code> and <code>NaN</code> values are handled according to the
  following rules, applied in the order presented:
  <ul>
   <li>If either <code>this</code> or <code>divisor</code> has a <code>NaN</code> value
-   in either part, <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> is returned.
+   in either part, <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> is returned.
   </li>
-  <li>If <code>divisor</code> equals <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO"><CODE>ZERO</CODE></A>, <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> is returned.
+  <li>If <code>divisor</code> equals <a href="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO"><code>ZERO</code></a>, <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> is returned.
   </li>
   <li>If <code>this</code> and <code>divisor</code> are both infinite,
-   <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> is returned.
+   <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> is returned.
   </li>
   <li>If <code>this</code> is finite (i.e., has no <code>Infinite</code> or
    <code>NaN</code> parts) and <code>divisor</code> is infinite (one or both parts
-   infinite), <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO"><CODE>ZERO</CODE></A> is returned.
+   infinite), <a href="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO"><code>ZERO</code></a> is returned.
   </li>
   <li>If <code>this</code> is infinite and <code>divisor</code> is finite,
    <code>NaN</code> values are returned in the parts of the result if the
-   <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><CODE>Double</CODE></A> rules applied to the definitional formula
+   <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><code>Double</code></a> rules applied to the definitional formula
    force <code>NaN</code> results.
   </li>
- </ul>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#divide(T)">divide</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>divisor</CODE> - Value by which this <code>Complex</code> is to be divided.
-<DT><B>Returns:</B><DD><code>this / divisor</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if <code>divisor</code> is <code>null</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="divide(double)"><!-- --></A><H3>
-divide</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>divide</B>(double&nbsp;divisor)</PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is <code>(this / divisor)</code>,
- with <code>divisor</code> interpreted as a real number.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>divisor</CODE> - Value by which this <code>Complex</code> is to be divided.
-<DT><B>Returns:</B><DD><code>this / divisor</code>.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#divide(org.apache.commons.math3.complex.Complex)"><CODE>divide(Complex)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="reciprocal()"><!-- --></A><H3>
-reciprocal</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>reciprocal</B>()</PRE>
-<DL>
-<DD>Returns the multiplicative inverse of <code>this</code> element.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#reciprocal()">reciprocal</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the inverse of <code>this</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equals(java.lang.Object)"><!-- --></A><H3>
-equals</H3>
-<PRE>
-public boolean <B>equals</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;other)</PRE>
-<DL>
-<DD>Test for the equality of two Complex objects.
+ </ul></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#divide(T)">divide</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>divisor</code> - Value by which this <code>Complex</code> is to be divided.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this / divisor</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if <code>divisor</code> is <code>null</code>.</dd></dl>
+</li>
+</ul>
+<a name="divide(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>divide</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;divide(double&nbsp;divisor)</pre>
+<div class="block">Returns a <code>Complex</code> whose value is <code>(this / divisor)</code>,
+ with <code>divisor</code> interpreted as a real number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>divisor</code> - Value by which this <code>Complex</code> is to be divided.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this / divisor</code>.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Complex.html#divide(org.apache.commons.math3.complex.Complex)"><code>divide(Complex)</code></a></dd></dl>
+</li>
+</ul>
+<a name="reciprocal()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>reciprocal</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;reciprocal()</pre>
+<div class="block">Returns the multiplicative inverse of <code>this</code> element.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#reciprocal()">reciprocal</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the inverse of <code>this</code>.</dd></dl>
+</li>
+</ul>
+<a name="equals(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public&nbsp;boolean&nbsp;equals(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;other)</pre>
+<div class="block">Test for equality with another object.
  If both the real and imaginary parts of two complex numbers
  are exactly the same, and neither is <code>Double.NaN</code>, the two
  Complex objects are considered to be equal.
- All <code>NaN</code> values are considered to be equal - i.e, if either
- (or both) real and imaginary parts of the complex number are equal
- to <code>Double.NaN</code>, the complex number is equal to
- <code>NaN</code>.
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>other</CODE> - Object to test for equality to this
-<DT><B>Returns:</B><DD>true if two Complex objects are equal, false if object is
- <code>null</code>, not an instance of Complex, or not equal to this Complex
- instance.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="hashCode()"><!-- --></A><H3>
-hashCode</H3>
-<PRE>
-public int <B>hashCode</B>()</PRE>
-<DL>
-<DD>Get a hashCode for the complex number.
+ The behavior is the same as for JDK's <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang"><code>Double</code></a>:
+ <ul>
+  <li>All <code>NaN</code> values are considered to be equal,
+   i.e, if either (or both) real and imaginary parts of the complex
+   number are equal to <code>Double.NaN</code>, the complex number is equal
+   to <code>NaN</code>.
+  </li>
+  <li>
+   Instances constructed with different representations of zero (i.e.
+   either "0" or "-0") are <em>not</em> considered to be equal.
+  </li>
+ </ul></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a></code>&nbsp;in class&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>other</code> - Object to test for equality with this instance.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the objects are equal, <code>false</code> if object
+ is <code>null</code>, not an instance of <code>Complex</code>, or not equal to
+ this instance.</dd></dl>
+</li>
+</ul>
+<a name="equals(org.apache.commons.math3.complex.Complex, org.apache.commons.math3.complex.Complex, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public static&nbsp;boolean&nbsp;equals(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+             <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y,
+             int&nbsp;maxUlps)</pre>
+<div class="block">Test for the floating-point equality between Complex objects.
+ It returns <code>true</code> if both arguments are equal or within the
+ range of allowed error (inclusive).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - First value (cannot be <code>null</code>).</dd><dd><code>y</code> - Second value (cannot be <code>null</code>).</dd><dd><code>maxUlps</code> - <code>(maxUlps - 1)</code> is the number of floating point
+ values between the real (resp. imaginary) parts of <code>x</code> and
+ <code>y</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if there are fewer than <code>maxUlps</code> floating
+ point values between the real (resp. imaginary) parts of <code>x</code>
+ and <code>y</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/Precision.html#equals(double,%20double,%20int)"><code>Precision.equals(double,double,int)</code></a></dd></dl>
+</li>
+</ul>
+<a name="equals(org.apache.commons.math3.complex.Complex, org.apache.commons.math3.complex.Complex)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public static&nbsp;boolean&nbsp;equals(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+             <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y)</pre>
+<div class="block">Returns <code>true</code> iff the values are equal as defined by
+ <a href="../../../../../org/apache/commons/math3/complex/Complex.html#equals(org.apache.commons.math3.complex.Complex,%20org.apache.commons.math3.complex.Complex,%20int)"><code>equals(x, y, 1)</code></a>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - First value (cannot be <code>null</code>).</dd><dd><code>y</code> - Second value (cannot be <code>null</code>).</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the values are equal.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd></dl>
+</li>
+</ul>
+<a name="equals(org.apache.commons.math3.complex.Complex, org.apache.commons.math3.complex.Complex, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public static&nbsp;boolean&nbsp;equals(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+             <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y,
+             double&nbsp;eps)</pre>
+<div class="block">Returns <code>true</code> if, both for the real part and for the imaginary
+ part, there is no double value strictly between the arguments or the
+ difference between them is within the range of allowed error
+ (inclusive).  Returns <code>false</code> if either of the arguments is NaN.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - First value (cannot be <code>null</code>).</dd><dd><code>y</code> - Second value (cannot be <code>null</code>).</dd><dd><code>eps</code> - Amount of allowed absolute error.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the values are two adjacent floating point
+ numbers or they are within range of each other.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/Precision.html#equals(double,%20double,%20double)"><code>Precision.equals(double,double,double)</code></a></dd></dl>
+</li>
+</ul>
+<a name="equalsWithRelativeTolerance(org.apache.commons.math3.complex.Complex, org.apache.commons.math3.complex.Complex, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equalsWithRelativeTolerance</h4>
+<pre>public static&nbsp;boolean&nbsp;equalsWithRelativeTolerance(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x,
+                                  <a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;y,
+                                  double&nbsp;eps)</pre>
+<div class="block">Returns <code>true</code> if, both for the real part and for the imaginary
+ part, there is no double value strictly between the arguments or the
+ relative difference between them is smaller or equal to the given
+ tolerance. Returns <code>false</code> if either of the arguments is NaN.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - First value (cannot be <code>null</code>).</dd><dd><code>y</code> - Second value (cannot be <code>null</code>).</dd><dd><code>eps</code> - Amount of allowed relative error.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the values are two adjacent floating point
+ numbers or they are within range of each other.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/Precision.html#equalsWithRelativeTolerance(double,%20double,%20double)"><code>Precision.equalsWithRelativeTolerance(double,double,double)</code></a></dd></dl>
+</li>
+</ul>
+<a name="hashCode()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre>public&nbsp;int&nbsp;hashCode()</pre>
+<div class="block">Get a hashCode for the complex number.
  Any <code>Double.NaN</code> value in real or imaginary part produces
- the same hash code <code>7</code>.
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a hash code value for this object.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getImaginary()"><!-- --></A><H3>
-getImaginary</H3>
-<PRE>
-public double <B>getImaginary</B>()</PRE>
-<DL>
-<DD>Access the imaginary part.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the imaginary part.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getReal()"><!-- --></A><H3>
-getReal</H3>
-<PRE>
-public double <B>getReal</B>()</PRE>
-<DL>
-<DD>Access the real part.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the real part.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isNaN()"><!-- --></A><H3>
-isNaN</H3>
-<PRE>
-public boolean <B>isNaN</B>()</PRE>
-<DL>
-<DD>Checks whether either or both parts of this complex number is
- <code>NaN</code>.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>true if either or both parts of this complex number is
- <code>NaN</code>; false otherwise.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isInfinite()"><!-- --></A><H3>
-isInfinite</H3>
-<PRE>
-public boolean <B>isInfinite</B>()</PRE>
-<DL>
-<DD>Checks whether either the real or imaginary part of this complex number
+ the same hash code <code>7</code>.</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>a hash code value for this object.</dd></dl>
+</li>
+</ul>
+<a name="getImaginary()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getImaginary</h4>
+<pre>public&nbsp;double&nbsp;getImaginary()</pre>
+<div class="block">Access the imaginary part.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the imaginary part.</dd></dl>
+</li>
+</ul>
+<a name="getReal()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getReal</h4>
+<pre>public&nbsp;double&nbsp;getReal()</pre>
+<div class="block">Access the real part.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the real part.</dd></dl>
+</li>
+</ul>
+<a name="isNaN()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isNaN</h4>
+<pre>public&nbsp;boolean&nbsp;isNaN()</pre>
+<div class="block">Checks whether either or both parts of this complex number is
+ <code>NaN</code>.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>true if either or both parts of this complex number is
+ <code>NaN</code>; false otherwise.</dd></dl>
+</li>
+</ul>
+<a name="isInfinite()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isInfinite</h4>
+<pre>public&nbsp;boolean&nbsp;isInfinite()</pre>
+<div class="block">Checks whether either the real or imaginary part of this complex number
  takes an infinite value (either <code>Double.POSITIVE_INFINITY</code> or
  <code>Double.NEGATIVE_INFINITY</code>) and neither part
- is <code>NaN</code>.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>true if one or both parts of this complex number are infinite
- and neither part is <code>NaN</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="multiply(org.apache.commons.math3.complex.Complex)"><!-- --></A><H3>
-multiply</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>multiply</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;factor)
-                 throws <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is <code>this * factor</code>.
+ is <code>NaN</code>.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>true if one or both parts of this complex number are infinite
+ and neither part is <code>NaN</code>.</dd></dl>
+</li>
+</ul>
+<a name="multiply(org.apache.commons.math3.complex.Complex)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiply</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;multiply(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;factor)
+                 throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></pre>
+<div class="block">Returns a <code>Complex</code> whose value is <code>this * factor</code>.
  Implements preliminary checks for <code>NaN</code> and infinity followed by
  the definitional formula:
- <pre>
-  <code>
-   (a + bi)(c + di) = (ac - bd) + (ad + bc)i
-  </code>
- </pre>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either <code>this</code> or <code>factor</code> has one or
+ <p>
+   <code>(a + bi)(c + di) = (ac - bd) + (ad + bc)i</code>
+ </p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either <code>this</code> or <code>factor</code> has one or
  more <code>NaN</code> parts.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#INF"><CODE>INF</CODE></A> if neither <code>this</code> nor <code>factor</code> has one
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#INF"><code>INF</code></a> if neither <code>this</code> nor <code>factor</code> has one
  or more <code>NaN</code> parts and if either <code>this</code> or <code>factor</code>
  has one or more infinite parts (same result is returned regardless of
  the sign of the components).
- <br/>
+ </p><p>
  Returns finite values in components of the result per the definitional
- formula in all remaining cases.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#multiply(T)">multiply</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>factor</CODE> - value to be multiplied by this <code>Complex</code>.
-<DT><B>Returns:</B><DD><code>this * factor</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if <code>factor</code> is <code>null</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="multiply(int)"><!-- --></A><H3>
-multiply</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>multiply</B>(int&nbsp;factor)</PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
- interpreted as a integer number.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#multiply(int)">multiply</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>factor</CODE> - value to be multiplied by this <code>Complex</code>.
-<DT><B>Returns:</B><DD><code>this * factor</code>.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(org.apache.commons.math3.complex.Complex)"><CODE>multiply(Complex)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="multiply(double)"><!-- --></A><H3>
-multiply</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>multiply</B>(double&nbsp;factor)</PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
- interpreted as a real number.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>factor</CODE> - value to be multiplied by this <code>Complex</code>.
-<DT><B>Returns:</B><DD><code>this * factor</code>.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(org.apache.commons.math3.complex.Complex)"><CODE>multiply(Complex)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="negate()"><!-- --></A><H3>
-negate</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>negate</B>()</PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is <code>(-this)</code>.
+ formula in all remaining cases.</p></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#multiply(T)">multiply</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>factor</code> - value to be multiplied by this <code>Complex</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this * factor</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if <code>factor</code> is <code>null</code>.</dd></dl>
+</li>
+</ul>
+<a name="multiply(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiply</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;multiply(int&nbsp;factor)</pre>
+<div class="block">Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
+ interpreted as a integer number.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#multiply(int)">multiply</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>factor</code> - value to be multiplied by this <code>Complex</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this * factor</code>.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(org.apache.commons.math3.complex.Complex)"><code>multiply(Complex)</code></a></dd></dl>
+</li>
+</ul>
+<a name="multiply(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiply</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;multiply(double&nbsp;factor)</pre>
+<div class="block">Returns a <code>Complex</code> whose value is <code>this * factor</code>, with <code>factor</code>
+ interpreted as a real number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>factor</code> - value to be multiplied by this <code>Complex</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this * factor</code>.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Complex.html#multiply(org.apache.commons.math3.complex.Complex)"><code>multiply(Complex)</code></a></dd></dl>
+</li>
+</ul>
+<a name="negate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>negate</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;negate()</pre>
+<div class="block">Returns a <code>Complex</code> whose value is <code>(-this)</code>.
  Returns <code>NaN</code> if either real or imaginary
- part of this Complex number equals <code>Double.NaN</code>.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#negate()">negate</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD><code>-this</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="subtract(org.apache.commons.math3.complex.Complex)"><!-- --></A><H3>
-subtract</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>subtract</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;subtrahend)
-                 throws <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is
+ part of this Complex number is <code>Double.NaN</code>.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#negate()">negate</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>-this</code>.</dd></dl>
+</li>
+</ul>
+<a name="subtract(org.apache.commons.math3.complex.Complex)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtract</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;subtract(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;subtrahend)
+                 throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></pre>
+<div class="block">Returns a <code>Complex</code> whose value is
  <code>(this - subtrahend)</code>.
  Uses the definitional formula
- <pre>
-  <code>
-   (a + bi) - (c + di) = (a-c) + (b-d)i
-  </code>
- </pre>
+ <p>
+  <code>(a + bi) - (c + di) = (a-c) + (b-d)i</code>
+ </p>
  If either <code>this</code> or <code>subtrahend</code> has a <code>NaN]</code> value in either part,
- <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> is returned; otherwise infinite and <code>NaN</code> values are
+ <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> is returned; otherwise infinite and <code>NaN</code> values are
  returned in the parts of the result according to the rules for
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><CODE>Double</CODE></A> arithmetic.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#subtract(T)">subtract</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>subtrahend</CODE> - value to be subtracted from this <code>Complex</code>.
-<DT><B>Returns:</B><DD><code>this - subtrahend</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if <code>subtrahend</code> is <code>null</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="subtract(double)"><!-- --></A><H3>
-subtract</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>subtract</B>(double&nbsp;subtrahend)</PRE>
-<DL>
-<DD>Returns a <code>Complex</code> whose value is
- <code>(this - subtrahend)</code>.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>subtrahend</CODE> - value to be subtracted from this <code>Complex</code>.
-<DT><B>Returns:</B><DD><code>this - subtrahend</code>.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#subtract(org.apache.commons.math3.complex.Complex)"><CODE>subtract(Complex)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="acos()"><!-- --></A><H3>
-acos</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>acos</B>()</PRE>
-<DL>
-<DD>Compute the
+ <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html?is-external=true" title="class or interface in java.lang"><code>Double</code></a> arithmetic.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#subtract(T)">subtract</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>subtrahend</code> - value to be subtracted from this <code>Complex</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this - subtrahend</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if <code>subtrahend</code> is <code>null</code>.</dd></dl>
+</li>
+</ul>
+<a name="subtract(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtract</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;subtract(double&nbsp;subtrahend)</pre>
+<div class="block">Returns a <code>Complex</code> whose value is
+ <code>(this - subtrahend)</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>subtrahend</code> - value to be subtracted from this <code>Complex</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this - subtrahend</code>.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Complex.html#subtract(org.apache.commons.math3.complex.Complex)"><code>subtract(Complex)</code></a></dd></dl>
+</li>
+</ul>
+<a name="acos()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>acos</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;acos()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/InverseCosine.html" TARGET="_top">
  inverse cosine</a> of this complex number.
  Implements the formula:
- <pre>
-  <code>
-   acos(z) = -i (log(z + i (sqrt(1 - z<sup>2</sup>))))
-  </code>
- </pre>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
- input argument is <code>NaN</code> or infinite.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the inverse cosine of this complex number.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="asin()"><!-- --></A><H3>
-asin</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>asin</B>()</PRE>
-<DL>
-<DD>Compute the
+ <p>
+  <code>acos(z) = -i (log(z + i (sqrt(1 - z&lt;sup&gt;2&lt;/sup&gt;))))</code>
+ </p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
+ input argument is <code>NaN</code> or infinite.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the inverse cosine of this complex number.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="asin()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asin</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;asin()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/InverseSine.html" TARGET="_top">
  inverse sine</a> of this complex number.
  Implements the formula:
- <pre>
-  <code>
-   asin(z) = -i (log(sqrt(1 - z<sup>2</sup>) + iz))
-  </code>
- </pre>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
- input argument is <code>NaN</code> or infinite.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the inverse sine of this complex number.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="atan()"><!-- --></A><H3>
-atan</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>atan</B>()</PRE>
-<DL>
-<DD>Compute the
+ <p>
+  <code>asin(z) = -i (log(sqrt(1 - z&lt;sup&gt;2&lt;/sup&gt;) + iz))</code>
+ </p><p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
+ input argument is <code>NaN</code> or infinite.</p></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the inverse sine of this complex number.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="atan()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>atan</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;atan()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/InverseTangent.html" TARGET="_top">
  inverse tangent</a> of this complex number.
  Implements the formula:
- <pre>
-  <code>
-   atan(z) = (i/2) log((i + z)/(i - z))
-  </code>
- </pre>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
- input argument is <code>NaN</code> or infinite.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the inverse tangent of this complex number<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="cos()"><!-- --></A><H3>
-cos</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>cos</B>()</PRE>
-<DL>
-<DD>Compute the
+ <p>
+ <code>atan(z) = (i/2) log((i + z)/(i - z))</code>
+ </p><p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
+ input argument is <code>NaN</code> or infinite.</p></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the inverse tangent of this complex number</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="cos()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cos</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;cos()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/Cosine.html" TARGET="_top">
- cosine</a>
- of this complex number.
+ cosine</a> of this complex number.
  Implements the formula:
- <pre>
-  <code>
-   cos(a + bi) = cos(a)cosh(b) - sin(a)sinh(b)i
-  </code>
- </pre>
+ <p>
+  <code>cos(a + bi) = cos(a)cosh(b) - sin(a)sinh(b)i</code>
+ </p><p>
  where the (real) functions on the right-hand side are
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#sin(double)" title="class or interface in java.lang"><CODE>Math.sin(double)</CODE></A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#cos(double)" title="class or interface in java.lang"><CODE>Math.cos(double)</CODE></A>,
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><CODE>FastMath.cosh(double)</CODE></A> and <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><CODE>FastMath.sinh(double)</CODE></A>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><code>FastMath.sin(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><code>FastMath.cos(double)</code></a>,
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><code>FastMath.cosh(double)</code></a> and <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><code>FastMath.sinh(double)</code></a>.
+ </p><p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p><p>
  Infinite values in real or imaginary parts of the input may result in
- infinite or NaN values returned in parts of the result.
+ infinite or NaN values returned in parts of the result.</p>
  <pre>
   Examples:
   <code>
-   cos(1 &plusmn; INFINITY i) = 1 &#x2213; INFINITY i
+   cos(1 &plusmn; INFINITY i) = 1 ∓ INFINITY i
    cos(&plusmn;INFINITY + i) = NaN + NaN i
    cos(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the cosine of this complex number.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="cosh()"><!-- --></A><H3>
-cosh</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>cosh</B>()</PRE>
-<DL>
-<DD>Compute the
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the cosine of this complex number.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="cosh()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cosh</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;cosh()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/HyperbolicCosine.html" TARGET="_top">
  hyperbolic cosine</a> of this complex number.
  Implements the formula:
  <pre>
   <code>
-   cosh(a + bi) = cosh(a)cos(b) + sinh(a)sin(b)i}
+   cosh(a + bi) = cosh(a)cos(b) + sinh(a)sin(b)i
   </code>
  </pre>
  where the (real) functions on the right-hand side are
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#sin(double)" title="class or interface in java.lang"><CODE>Math.sin(double)</CODE></A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#cos(double)" title="class or interface in java.lang"><CODE>Math.cos(double)</CODE></A>,
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><CODE>FastMath.cosh(double)</CODE></A> and <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><CODE>FastMath.sinh(double)</CODE></A>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><code>FastMath.sin(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><code>FastMath.cos(double)</code></a>,
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><code>FastMath.cosh(double)</code></a> and <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><code>FastMath.sinh(double)</code></a>.
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p>
  Infinite values in real or imaginary parts of the input may result in
  infinite or NaN values returned in parts of the result.
  <pre>
@@ -1328,26 +1227,19 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    cosh(&plusmn;INFINITY + i) = INFINITY &plusmn; INFINITY i
    cosh(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the hyperbolic cosine of this complex number.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="exp()"><!-- --></A><H3>
-exp</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>exp</B>()</PRE>
-<DL>
-<DD>Compute the
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the hyperbolic cosine of this complex number.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="exp()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>exp</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;exp()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/ExponentialFunction.html" TARGET="_top">
  exponential function</a> of this complex number.
  Implements the formula:
@@ -1357,12 +1249,12 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
   </code>
  </pre>
  where the (real) functions on the right-hand side are
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#exp(double)" title="class or interface in java.lang"><CODE>Math.exp(double)</CODE></A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#cos(double)" title="class or interface in java.lang"><CODE>Math.cos(double)</CODE></A>, and
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#sin(double)" title="class or interface in java.lang"><CODE>Math.sin(double)</CODE></A>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#exp(double)"><code>FastMath.exp(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><code>FastMath.cos(double)</code></a>, and
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><code>FastMath.sin(double)</code></a>.
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p>
  Infinite values in real or imaginary parts of the input may result in
  infinite or NaN values returned in parts of the result.
  <pre>
@@ -1373,26 +1265,19 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    exp(-INFINITY + i) = 0 + 0i
    exp(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD><code><i>e</i><sup>this</sup></code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log()"><!-- --></A><H3>
-log</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>log</B>()</PRE>
-<DL>
-<DD>Compute the
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd><code><i>e</i><sup>this</sup></code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="log()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>log</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;log()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/NaturalLogarithm.html" TARGET="_top">
  natural logarithm</a> of this complex number.
  Implements the formula:
@@ -1401,13 +1286,13 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    log(a + bi) = ln(|a + bi|) + arg(a + bi)i
   </code>
  </pre>
- where ln on the right hand side is <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#log(double)" title="class or interface in java.lang"><CODE>Math.log(double)</CODE></A>,
- <code>|a + bi|</code> is the modulus, <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#abs()"><CODE>abs()</CODE></A>,  and
- <code>arg(a + bi) = </code><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#atan2(double, double)" title="class or interface in java.lang"><CODE>Math.atan2(double, double)</CODE></A>(b, a).
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ where ln on the right hand side is <a href="../../../../../org/apache/commons/math3/util/FastMath.html#log(double)"><code>FastMath.log(double)</code></a>,
+ <code>|a + bi|</code> is the modulus, <a href="../../../../../org/apache/commons/math3/complex/Complex.html#abs()"><code>abs()</code></a>,  and
+ <code>arg(a + bi) = </code><a href="../../../../../org/apache/commons/math3/util/FastMath.html#atan2(double,%20double)"><code>FastMath.atan2(double, double)</code></a>(b, a).
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p>
  Infinite (or critical) values in real or imaginary parts of the input may
  result in infinite or NaN values returned in parts of the result.
  <pre>
@@ -1420,78 +1305,60 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    log(-INFINITY &plusmn; INFINITY i) = INFINITY &plusmn; (3&pi;/4)i
    log(0 + 0i) = -INFINITY + 0i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the value <code>ln &nbsp; this</code>, the natural logarithm
- of <code>this</code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="pow(org.apache.commons.math3.complex.Complex)"><!-- --></A><H3>
-pow</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>pow</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&nbsp;x)
-            throws <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></PRE>
-<DL>
-<DD>Returns of value of this complex number raised to the power of <code>x</code>.
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the value <code>ln &nbsp; this</code>, the natural logarithm
+ of <code>this</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="pow(org.apache.commons.math3.complex.Complex)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>pow</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;pow(<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;x)
+            throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></pre>
+<div class="block">Returns of value of this complex number raised to the power of <code>x</code>.
  Implements the formula:
  <pre>
   <code>
    y<sup>x</sup> = exp(x&middot;log(y))
   </code>
  </pre>
- where <code>exp</code> and <code>log</code> are <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#exp()"><CODE>exp()</CODE></A> and
- <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#log()"><CODE>log()</CODE></A>, respectively.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ where <code>exp</code> and <code>log</code> are <a href="../../../../../org/apache/commons/math3/complex/Complex.html#exp()"><code>exp()</code></a> and
+ <a href="../../../../../org/apache/commons/math3/complex/Complex.html#log()"><code>log()</code></a>, respectively.
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code> or infinite, or if <code>y</code>
- equals <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO"><CODE>ZERO</CODE></A>.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - exponent to which this <code>Complex</code> is to be raised.
-<DT><B>Returns:</B><DD><code> this<sup><code>x</code></sup></code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if x is <code>null</code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="pow(double)"><!-- --></A><H3>
-pow</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>pow</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Returns of value of this complex number raised to the power of <code>x</code>.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - exponent to which this <code>Complex</code> is to be raised.
-<DT><B>Returns:</B><DD><code>this<sup>x</sup></code>.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#pow(org.apache.commons.math3.complex.Complex)"><CODE>pow(Complex)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sin()"><!-- --></A><H3>
-sin</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>sin</B>()</PRE>
-<DL>
-<DD>Compute the
+ equals <a href="../../../../../org/apache/commons/math3/complex/Complex.html#ZERO"><code>ZERO</code></a>.</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - exponent to which this <code>Complex</code> is to be raised.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code> this<sup>x</sup></code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if x is <code>null</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="pow(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>pow</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;pow(double&nbsp;x)</pre>
+<div class="block">Returns of value of this complex number raised to the power of <code>x</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - exponent to which this <code>Complex</code> is to be raised.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>this<sup>x</sup></code>.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Complex.html#pow(org.apache.commons.math3.complex.Complex)"><code>pow(Complex)</code></a></dd></dl>
+</li>
+</ul>
+<a name="sin()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sin</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;sin()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/Sine.html" TARGET="_top">
  sine</a>
  of this complex number.
@@ -1502,12 +1369,12 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
   </code>
  </pre>
  where the (real) functions on the right-hand side are
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#sin(double)" title="class or interface in java.lang"><CODE>Math.sin(double)</CODE></A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#cos(double)" title="class or interface in java.lang"><CODE>Math.cos(double)</CODE></A>,
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><CODE>FastMath.cosh(double)</CODE></A> and <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><CODE>FastMath.sinh(double)</CODE></A>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><code>FastMath.sin(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><code>FastMath.cos(double)</code></a>,
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><code>FastMath.cosh(double)</code></a> and <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><code>FastMath.sinh(double)</code></a>.
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p><p>
  Infinite values in real or imaginary parts of the input may result in
  infinite or <code>NaN</code> values returned in parts of the result.
  <pre>
@@ -1517,26 +1384,19 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    sin(&plusmn;INFINITY + i) = NaN + NaN i
    sin(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the sine of this complex number.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sinh()"><!-- --></A><H3>
-sinh</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>sinh</B>()</PRE>
-<DL>
-<DD>Compute the
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the sine of this complex number.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="sinh()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sinh</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;sinh()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/HyperbolicSine.html" TARGET="_top">
  hyperbolic sine</a> of this complex number.
  Implements the formula:
@@ -1546,12 +1406,12 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
   </code>
  </pre>
  where the (real) functions on the right-hand side are
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#sin(double)" title="class or interface in java.lang"><CODE>Math.sin(double)</CODE></A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#cos(double)" title="class or interface in java.lang"><CODE>Math.cos(double)</CODE></A>,
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><CODE>FastMath.cosh(double)</CODE></A> and <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><CODE>FastMath.sinh(double)</CODE></A>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><code>FastMath.sin(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><code>FastMath.cos(double)</code></a>,
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><code>FastMath.cosh(double)</code></a> and <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><code>FastMath.sinh(double)</code></a>.
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p><p>
  Infinite values in real or imaginary parts of the input may result in
  infinite or NaN values returned in parts of the result.
  <pre>
@@ -1561,26 +1421,19 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    sinh(&plusmn;INFINITY + i) = &plusmn; INFINITY + INFINITY i
    sinh(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the hyperbolic sine of <code>this</code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sqrt()"><!-- --></A><H3>
-sqrt</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>sqrt</B>()</PRE>
-<DL>
-<DD>Compute the
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the hyperbolic sine of <code>this</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="sqrt()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sqrt</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;sqrt()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/SquareRoot.html" TARGET="_top">
  square root</a> of this complex number.
  Implements the following algorithm to compute <code>sqrt(a + bi)</code>:
@@ -1589,14 +1442,14 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
   else return <code>|b|/2t + sign(b)t i </code></pre></li>
  </ol>
  where <ul>
- <li><code>|a| = </code><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#abs(int)" title="class or interface in java.lang"><CODE>Math.abs(int)</CODE></A>(a)</li>
- <li><code>|a + bi| = </code><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#abs()"><CODE>abs()</CODE></A>(a + bi)</li>
- <li><code>sign(b) =  </code><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(double, double)"><CODE>copySign(1d, b)</CODE></A>
+ <li><code>|a| = </code><a href="../../../../../org/apache/commons/math3/util/FastMath.html#abs(int)"><code>FastMath.abs(int)</code></a>(a)</li>
+ <li><code>|a + bi| = </code><a href="../../../../../org/apache/commons/math3/complex/Complex.html#abs()"><code>abs()</code></a>(a + bi)</li>
+ <li><code>sign(b) =  </code><a href="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(double,%20double)"><code>copySign(1d, b)</code></a>
  </ul>
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p>
  Infinite values in real or imaginary parts of the input may result in
  infinite or NaN values returned in parts of the result.
  <pre>
@@ -1608,56 +1461,42 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    sqrt(INFINITY &plusmn; INFINITY i) = INFINITY + NaN i
    sqrt(-INFINITY &plusmn; INFINITY i) = NaN &plusmn; INFINITY i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the square root of <code>this</code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sqrt1z()"><!-- --></A><H3>
-sqrt1z</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>sqrt1z</B>()</PRE>
-<DL>
-<DD>Compute the
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the square root of <code>this</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="sqrt1z()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sqrt1z</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;sqrt1z()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/SquareRoot.html" TARGET="_top">
  square root</a> of <code>1 - this<sup>2</sup></code> for this complex
  number.
  Computes the result directly as
  <code>sqrt(ONE.subtract(z.multiply(z)))</code>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p>
  Infinite values in real or imaginary parts of the input may result in
- infinite or NaN values returned in parts of the result.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the square root of <code>1 - this<sup>2</sup></code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="tan()"><!-- --></A><H3>
-tan</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>tan</B>()</PRE>
-<DL>
-<DD>Compute the
+ infinite or NaN values returned in parts of the result.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the square root of <code>1 - this<sup>2</sup></code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="tan()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tan</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;tan()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/Tangent.html" TARGET="_top">
  tangent</a> of this complex number.
  Implements the formula:
@@ -1667,12 +1506,12 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
   </code>
  </pre>
  where the (real) functions on the right-hand side are
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><CODE>FastMath.sin(double)</CODE></A>, <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><CODE>FastMath.cos(double)</CODE></A>, <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><CODE>FastMath.cosh(double)</CODE></A> and
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><CODE>FastMath.sinh(double)</CODE></A>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><code>FastMath.sin(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><code>FastMath.cos(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><code>FastMath.cosh(double)</code></a> and
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><code>FastMath.sinh(double)</code></a>.
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p>
  Infinite (or critical) values in real or imaginary parts of the input may
  result in infinite or NaN values returned in parts of the result.
  <pre>
@@ -1683,26 +1522,19 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    tan(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
    tan(&plusmn;&pi;/2 + 0 i) = &plusmn;INFINITY + NaN i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the tangent of <code>this</code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="tanh()"><!-- --></A><H3>
-tanh</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>tanh</B>()</PRE>
-<DL>
-<DD>Compute the
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the tangent of <code>this</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="tanh()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tanh</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;tanh()</pre>
+<div class="block">Compute the
  <a href="http://mathworld.wolfram.com/HyperbolicTangent.html" TARGET="_top">
  hyperbolic tangent</a> of this complex number.
  Implements the formula:
@@ -1712,12 +1544,12 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
   </code>
  </pre>
  where the (real) functions on the right-hand side are
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><CODE>FastMath.sin(double)</CODE></A>, <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><CODE>FastMath.cos(double)</CODE></A>, <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><CODE>FastMath.cosh(double)</CODE></A> and
- <A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><CODE>FastMath.sinh(double)</CODE></A>.
- <br/>
- Returns <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> if either real or imaginary part of the
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)"><code>FastMath.sin(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)"><code>FastMath.cos(double)</code></a>, <a href="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)"><code>FastMath.cosh(double)</code></a> and
+ <a href="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)"><code>FastMath.sinh(double)</code></a>.
+ <p>
+ Returns <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> if either real or imaginary part of the
  input argument is <code>NaN</code>.
- <br/>
+ </p>
  Infinite values in real or imaginary parts of the input may result in
  infinite or NaN values returned in parts of the result.
  <pre>
@@ -1728,56 +1560,43 @@ public <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" ti
    tanh(&plusmn;INFINITY &plusmn; INFINITY i) = NaN + NaN i
    tanh(0 + (&pi;/2)i) = NaN + INFINITY i
   </code>
- </pre>
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the hyperbolic tangent of <code>this</code>.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getArgument()"><!-- --></A><H3>
-getArgument</H3>
-<PRE>
-public double <B>getArgument</B>()</PRE>
-<DL>
-<DD>Compute the argument of this complex number.
+ </pre></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the hyperbolic tangent of <code>this</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd></dl>
+</li>
+</ul>
+<a name="getArgument()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getArgument</h4>
+<pre>public&nbsp;double&nbsp;getArgument()</pre>
+<div class="block">Compute the argument of this complex number.
  The argument is the angle phi between the positive real axis and
  the point representing this number in the complex plane.
  The value returned is between -PI (not inclusive)
  and PI (inclusive), with negative values returned for numbers with
  negative imaginary parts.
- <br/>
+ <p>
  If either real or imaginary part (or both) is NaN, NaN is returned.
  Infinite parts are handled as <code>Math.atan2</code> handles them,
  essentially treating finite parts as zero in the presence of an
  infinite coordinate and returning a multiple of pi/4 depending on
  the signs of the infinite parts.
- See the javadoc for <code>Math.atan2</code> for full details.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the argument of <code>this</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="nthRoot(int)"><!-- --></A><H3>
-nthRoot</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt; <B>nthRoot</B>(int&nbsp;n)
-                      throws <A HREF="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</A></PRE>
-<DL>
-<DD>Computes the n-th roots of this complex number.
+ See the javadoc for <code>Math.atan2</code> for full details.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the argument of <code>this</code>.</dd></dl>
+</li>
+</ul>
+<a name="nthRoot(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nthRoot</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;&nbsp;nthRoot(int&nbsp;n)
+                      throws <a href="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</a></pre>
+<div class="block">Computes the n-th roots of this complex number.
  The nth roots are defined by the formula:
  <pre>
   <code>
@@ -1785,196 +1604,169 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html
   </code>
  </pre>
  for <i><code>k=0, 1, ..., n-1</code></i>, where <code>abs</code> and <code>phi</code>
- are respectively the <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#abs()"><CODE>modulus</CODE></A> and
- <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#getArgument()"><CODE>argument</CODE></A> of this complex number.
- <br/>
+ are respectively the <a href="../../../../../org/apache/commons/math3/complex/Complex.html#abs()"><code>modulus</code></a> and
+ <a href="../../../../../org/apache/commons/math3/complex/Complex.html#getArgument()"><code>argument</code></a> of this complex number.
+ <p>
  If one or both parts of this complex number is NaN, a list with just
- one element, <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><CODE>NaN</CODE></A> is returned.
+ one element, <a href="../../../../../org/apache/commons/math3/complex/Complex.html#NaN"><code>NaN</code></a> is returned.
  if neither part is NaN, but at least one part is infinite, the result
- is a one-element list containing <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#INF"><CODE>INF</CODE></A>.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>n</CODE> - Degree of root.
-<DT><B>Returns:</B><DD>a List<Complex> of all <code>n</code>-th roots of <code>this</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</A></CODE> - if <code>n &lt;= 0</code>.<DT><B>Since:</B></DT>
-  <DD>2.0</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="createComplex(double, double)"><!-- --></A><H3>
-createComplex</H3>
-<PRE>
-protected <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>createComplex</B>(double&nbsp;realPart,
-                                double&nbsp;imaginaryPart)</PRE>
-<DL>
-<DD>Create a complex number given the real and imaginary parts.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>realPart</CODE> - Real part.<DD><CODE>imaginaryPart</CODE> - Imaginary part.
-<DT><B>Returns:</B><DD>a new complex number instance.<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#valueOf(double, double)"><CODE>valueOf(double, double)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="valueOf(double, double)"><!-- --></A><H3>
-valueOf</H3>
-<PRE>
-public static <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>valueOf</B>(double&nbsp;realPart,
-                              double&nbsp;imaginaryPart)</PRE>
-<DL>
-<DD>Create a complex number given the real and imaginary parts.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>realPart</CODE> - Real part.<DD><CODE>imaginaryPart</CODE> - Imaginary part.
-<DT><B>Returns:</B><DD>a Complex instance.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="valueOf(double)"><!-- --></A><H3>
-valueOf</H3>
-<PRE>
-public static <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A> <B>valueOf</B>(double&nbsp;realPart)</PRE>
-<DL>
-<DD>Create a complex number given only the real part.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>realPart</CODE> - Real part.
-<DT><B>Returns:</B><DD>a Complex instance.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="readResolve()"><!-- --></A><H3>
-readResolve</H3>
-<PRE>
-protected final <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A> <B>readResolve</B>()</PRE>
-<DL>
-<DD>Resolve the transient fields in a deserialized Complex Object.
- Subclasses will need to override <A HREF="../../../../../org/apache/commons/math3/complex/Complex.html#createComplex(double, double)"><CODE>createComplex(double, double)</CODE></A> to
- deserialize properly.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>A Complex instance with all fields resolved.<DT><B>Since:</B></DT>
-  <DD>2.0</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getField()"><!-- --></A><H3>
-getField</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex">ComplexField</A> <B>getField</B>()</PRE>
-<DL>
-<DD>Get the <A HREF="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3"><CODE>Field</CODE></A> to which the instance belongs.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html#getField()">getField</A></CODE> in interface <CODE><A HREF="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</A>&lt;<A HREF="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</A>&gt;</CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD><A HREF="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3"><CODE>Field</CODE></A> to which the instance belongs</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="toString()"><!-- --></A><H3>
-toString</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>toString</B>()</PRE>
-<DL>
-<DD>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>
-</DD>
-<DD><DL>
-</DL>
-</DD>
-</DL>
+ is a one-element list containing <a href="../../../../../org/apache/commons/math3/complex/Complex.html#INF"><code>INF</code></a>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>n</code> - Degree of root.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a List of all <code>n</code>-th roots of <code>this</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</a></code> - if <code>n &lt;= 0</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.0</dd></dl>
+</li>
+</ul>
+<a name="createComplex(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createComplex</h4>
+<pre>protected&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;createComplex(double&nbsp;realPart,
+                    double&nbsp;imaginaryPart)</pre>
+<div class="block">Create a complex number given the real and imaginary parts.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>realPart</code> - Real part.</dd><dd><code>imaginaryPart</code> - Imaginary part.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new complex number instance.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Complex.html#valueOf(double,%20double)"><code>valueOf(double, double)</code></a></dd></dl>
+</li>
+</ul>
+<a name="valueOf(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>valueOf</h4>
+<pre>public static&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;valueOf(double&nbsp;realPart,
+              double&nbsp;imaginaryPart)</pre>
+<div class="block">Create a complex number given the real and imaginary parts.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>realPart</code> - Real part.</dd><dd><code>imaginaryPart</code> - Imaginary part.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a Complex instance.</dd></dl>
+</li>
+</ul>
+<a name="valueOf(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>valueOf</h4>
+<pre>public static&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&nbsp;valueOf(double&nbsp;realPart)</pre>
+<div class="block">Create a complex number given only the real part.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>realPart</code> - Real part.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a Complex instance.</dd></dl>
+</li>
+</ul>
+<a name="readResolve()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readResolve</h4>
+<pre>protected final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;readResolve()</pre>
+<div class="block">Resolve the transient fields in a deserialized Complex Object.
+ Subclasses will need to override <a href="../../../../../org/apache/commons/math3/complex/Complex.html#createComplex(double,%20double)"><code>createComplex(double, double)</code></a> to
+ deserialize properly.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>A Complex instance with all fields resolved.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.0</dd></dl>
+</li>
+</ul>
+<a name="getField()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getField</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex">ComplexField</a>&nbsp;getField()</pre>
+<div class="block">Get the <a href="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3"><code>Field</code></a> to which the instance belongs.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/FieldElement.html#getField()">getField</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../org/apache/commons/math3/FieldElement.html" title="interface in org.apache.commons.math3">FieldElement</a>&lt;<a href="../../../../../org/apache/commons/math3/complex/Complex.html" title="class in org.apache.commons.math3.complex">Complex</a>&gt;</code></dd>
+<dt><span class="strong">Returns:</span></dt><dd><a href="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3"><code>Field</code></a> to which the instance belongs</dd></dl>
+</li>
+</ul>
+<a name="toString()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toString</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;toString()</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Complex.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;PREV CLASS&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/complex/Complex.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Complex.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Complex.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li>Prev Class</li>
+<li><a href="../../../../../org/apache/commons/math3/complex/ComplexField.html" title="class in org.apache.commons.math3.complex"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/complex/Complex.html" target="_top">Frames</a></li>
+<li><a href="Complex.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

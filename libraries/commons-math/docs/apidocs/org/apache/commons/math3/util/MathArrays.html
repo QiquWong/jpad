@@ -1,955 +1,1082 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-MathArrays (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>MathArrays (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="MathArrays (Commons Math 3.2 API)";
+        parent.document.title="MathArrays (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/MathArrays.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/IterationManager.html" title="class in org.apache.commons.math3.util"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/util/MathArrays.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="MathArrays.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/MathArrays.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/util/KthSelector.html" title="class in org.apache.commons.math3.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/util/MathArrays.html" target="_top">Frames</a></li>
+<li><a href="MathArrays.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.util</FONT>
-<BR>
-Class MathArrays</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.apache.commons.math3.util.MathArrays</B>
-</PRE>
-<HR>
-<DL>
-<DT><PRE>public class <B>MathArrays</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
-</PRE>
-
-<P>
-Arrays utilities.
-<P>
-
-<P>
-<DL>
-<DT><B>Since:</B></DT>
-  <DD>3.0</DD>
-<DT><B>Version:</B></DT>
-  <DD>$Id: MathArrays.java 1462423 2013-03-29 07:25:18Z luc $</DD>
-</DL>
-<HR>
-
-<P>
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.util</div>
+<h2 title="Class MathArrays" class="title">Class MathArrays</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li>org.apache.commons.math3.util.MathArrays</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public class <span class="strong">MathArrays</span>
+extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
+<div class="block">Arrays utilities.</div>
+<dl><dt><span class="strong">Since:</span></dt>
+  <dd>3.0</dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- ======== NESTED CLASS SUMMARY ======== -->
-
-<A NAME="nested_class_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Nested Class Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;interface</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util">MathArrays.Function</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Real-valued function that operate on an array or a part of it.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;class</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Specification of ordering direction.</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="nested_class_summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Nested Class Summary table, listing nested classes, and an explanation">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Class and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static interface&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util">MathArrays.Function</a></strong></code>
+<div class="block">Real-valued function that operate on an array or a part of it.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a></strong></code>
+<div class="block">Specification of ordering direction.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html" title="enum in org.apache.commons.math3.util">MathArrays.Position</a></strong></code>
+<div class="block">Specification for indicating that some operation applies
+ before or after a given index.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T&gt; T[]</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#buildArray(org.apache.commons.math3.Field, int)">buildArray</A></B>(<A HREF="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</A>&lt;T&gt;&nbsp;field,
-           int&nbsp;length)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Build an array of elements.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T&gt; T[][]</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#buildArray(org.apache.commons.math3.Field, int, int)">buildArray</A></B>(<A HREF="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</A>&lt;T&gt;&nbsp;field,
-           int&nbsp;rows,
-           int&nbsp;columns)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Build a double dimension  array of elements.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#checkNonNegative(long[])">checkNonNegative</A></B>(long[]&nbsp;in)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check that all entries of the input array are >= 0.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#checkNonNegative(long[][])">checkNonNegative</A></B>(long[][]&nbsp;in)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check all entries of the input array are >= 0.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#checkOrder(double[])">checkOrder</A></B>(double[]&nbsp;val)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check that the given array is sorted in strictly increasing order.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#checkOrder(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)">checkOrder</A></B>(double[]&nbsp;val,
-           <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-           boolean&nbsp;strict)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check that the given array is sorted.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#checkOrder(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean, boolean)">checkOrder</A></B>(double[]&nbsp;val,
-           <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-           boolean&nbsp;strict,
-           boolean&nbsp;abort)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check that the given array is sorted.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#checkPositive(double[])">checkPositive</A></B>(double[]&nbsp;in)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check that all entries of the input array are strictly positive.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#checkRectangular(long[][])">checkRectangular</A></B>(long[][]&nbsp;in)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Throws DimensionMismatchException if the input array is not rectangular.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(double[])">copyOf</A></B>(double[]&nbsp;source)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a copy of the <code>source</code> array.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(double[], int)">copyOf</A></B>(double[]&nbsp;source,
-       int&nbsp;len)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a copy of the <code>source</code> array.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(int[])">copyOf</A></B>(int[]&nbsp;source)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a copy of the <code>source</code> array.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(int[], int)">copyOf</A></B>(int[]&nbsp;source,
-       int&nbsp;len)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a copy of the <code>source</code> array.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#distance(double[], double[])">distance</A></B>(double[]&nbsp;p1,
-         double[]&nbsp;p2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculates the L<sub>2</sub> (Euclidean) distance between two points.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#distance(int[], int[])">distance</A></B>(int[]&nbsp;p1,
-         int[]&nbsp;p2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculates the L<sub>2</sub> (Euclidean) distance between two points.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#distance1(double[], double[])">distance1</A></B>(double[]&nbsp;p1,
-          double[]&nbsp;p2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculates the L<sub>1</sub> (sum of abs) distance between two points.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#distance1(int[], int[])">distance1</A></B>(int[]&nbsp;p1,
-          int[]&nbsp;p2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculates the L<sub>1</sub> (sum of abs) distance between two points.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#distanceInf(double[], double[])">distanceInf</A></B>(double[]&nbsp;p1,
-            double[]&nbsp;p2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#distanceInf(int[], int[])">distanceInf</A></B>(int[]&nbsp;p1,
-            int[]&nbsp;p2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeAdd(double[], double[])">ebeAdd</A></B>(double[]&nbsp;a,
-       double[]&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an array whose contents will be the element-by-element
- addition of the arguments.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeDivide(double[], double[])">ebeDivide</A></B>(double[]&nbsp;a,
-          double[]&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an array whose contents will be the element-by-element
- division of the first argument by the second.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeMultiply(double[], double[])">ebeMultiply</A></B>(double[]&nbsp;a,
-            double[]&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an array whose contents will be the element-by-element
- multiplication of the arguments.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeSubtract(double[], double[])">ebeSubtract</A></B>(double[]&nbsp;a,
-            double[]&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an array whose contents will be the element-by-element
- subtraction of the second argument from the first.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#equals(double[], double[])">equals</A></B>(double[]&nbsp;x,
-       double[]&nbsp;y)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns <code>true</code> iff both arguments are <code>null</code> or have same
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;T[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#buildArray(org.apache.commons.math3.Field,%20int)">buildArray</a></strong>(<a href="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</a>&lt;T&gt;&nbsp;field,
+          int&nbsp;length)</code>
+<div class="block">Build an array of elements.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;T[][]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#buildArray(org.apache.commons.math3.Field,%20int,%20int)">buildArray</a></strong>(<a href="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</a>&lt;T&gt;&nbsp;field,
+          int&nbsp;rows,
+          int&nbsp;columns)</code>
+<div class="block">Build a double dimension  array of elements.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkEqualLength(double[],%20double[])">checkEqualLength</a></strong>(double[]&nbsp;a,
+                double[]&nbsp;b)</code>
+<div class="block">Check that both arrays have the same length.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkEqualLength(double[],%20double[],%20boolean)">checkEqualLength</a></strong>(double[]&nbsp;a,
+                double[]&nbsp;b,
+                boolean&nbsp;abort)</code>
+<div class="block">Check that both arrays have the same length.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkEqualLength(int[],%20int[])">checkEqualLength</a></strong>(int[]&nbsp;a,
+                int[]&nbsp;b)</code>
+<div class="block">Check that both arrays have the same length.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkEqualLength(int[],%20int[],%20boolean)">checkEqualLength</a></strong>(int[]&nbsp;a,
+                int[]&nbsp;b,
+                boolean&nbsp;abort)</code>
+<div class="block">Check that both arrays have the same length.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkNonNegative(long[])">checkNonNegative</a></strong>(long[]&nbsp;in)</code>
+<div class="block">Check that all entries of the input array are >= 0.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkNonNegative(long[][])">checkNonNegative</a></strong>(long[][]&nbsp;in)</code>
+<div class="block">Check all entries of the input array are >= 0.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkNotNaN(double[])">checkNotNaN</a></strong>(double[]&nbsp;in)</code>
+<div class="block">Check that no entry of the input array is <code>NaN</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkOrder(double[])">checkOrder</a></strong>(double[]&nbsp;val)</code>
+<div class="block">Check that the given array is sorted in strictly increasing order.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkOrder(double[],%20org.apache.commons.math3.util.MathArrays.OrderDirection,%20boolean)">checkOrder</a></strong>(double[]&nbsp;val,
+          <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+          boolean&nbsp;strict)</code>
+<div class="block">Check that the given array is sorted.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkOrder(double[],%20org.apache.commons.math3.util.MathArrays.OrderDirection,%20boolean,%20boolean)">checkOrder</a></strong>(double[]&nbsp;val,
+          <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+          boolean&nbsp;strict,
+          boolean&nbsp;abort)</code>
+<div class="block">Check that the given array is sorted.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkPositive(double[])">checkPositive</a></strong>(double[]&nbsp;in)</code>
+<div class="block">Check that all entries of the input array are strictly positive.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#checkRectangular(long[][])">checkRectangular</a></strong>(long[][]&nbsp;in)</code>
+<div class="block">Throws DimensionMismatchException if the input array is not rectangular.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#concatenate(double[]...)">concatenate</a></strong>(double[]...&nbsp;x)</code>
+<div class="block">Concatenates a sequence of arrays.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#convolve(double[],%20double[])">convolve</a></strong>(double[]&nbsp;x,
+        double[]&nbsp;h)</code>
+<div class="block">Calculates the <a href="http://en.wikipedia.org/wiki/Convolution">
+ convolution</a> between two sequences.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(double[])">copyOf</a></strong>(double[]&nbsp;source)</code>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(double[],%20int)">copyOf</a></strong>(double[]&nbsp;source,
+      int&nbsp;len)</code>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(int[])">copyOf</a></strong>(int[]&nbsp;source)</code>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOf(int[],%20int)">copyOf</a></strong>(int[]&nbsp;source,
+      int&nbsp;len)</code>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#copyOfRange(double[],%20int,%20int)">copyOfRange</a></strong>(double[]&nbsp;source,
+           int&nbsp;from,
+           int&nbsp;to)</code>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#cosAngle(double[],%20double[])">cosAngle</a></strong>(double[]&nbsp;v1,
+        double[]&nbsp;v2)</code>
+<div class="block">Calculates the cosine of the angle between two vectors.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#distance(double[],%20double[])">distance</a></strong>(double[]&nbsp;p1,
+        double[]&nbsp;p2)</code>
+<div class="block">Calculates the L<sub>2</sub> (Euclidean) distance between two points.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#distance(int[],%20int[])">distance</a></strong>(int[]&nbsp;p1,
+        int[]&nbsp;p2)</code>
+<div class="block">Calculates the L<sub>2</sub> (Euclidean) distance between two points.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#distance1(double[],%20double[])">distance1</a></strong>(double[]&nbsp;p1,
+         double[]&nbsp;p2)</code>
+<div class="block">Calculates the L<sub>1</sub> (sum of abs) distance between two points.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#distance1(int[],%20int[])">distance1</a></strong>(int[]&nbsp;p1,
+         int[]&nbsp;p2)</code>
+<div class="block">Calculates the L<sub>1</sub> (sum of abs) distance between two points.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#distanceInf(double[],%20double[])">distanceInf</a></strong>(double[]&nbsp;p1,
+           double[]&nbsp;p2)</code>
+<div class="block">Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#distanceInf(int[],%20int[])">distanceInf</a></strong>(int[]&nbsp;p1,
+           int[]&nbsp;p2)</code>
+<div class="block">Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeAdd(double[],%20double[])">ebeAdd</a></strong>(double[]&nbsp;a,
+      double[]&nbsp;b)</code>
+<div class="block">Creates an array whose contents will be the element-by-element
+ addition of the arguments.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeDivide(double[],%20double[])">ebeDivide</a></strong>(double[]&nbsp;a,
+         double[]&nbsp;b)</code>
+<div class="block">Creates an array whose contents will be the element-by-element
+ division of the first argument by the second.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeMultiply(double[],%20double[])">ebeMultiply</a></strong>(double[]&nbsp;a,
+           double[]&nbsp;b)</code>
+<div class="block">Creates an array whose contents will be the element-by-element
+ multiplication of the arguments.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#ebeSubtract(double[],%20double[])">ebeSubtract</a></strong>(double[]&nbsp;a,
+           double[]&nbsp;b)</code>
+<div class="block">Creates an array whose contents will be the element-by-element
+ subtraction of the second argument from the first.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#equals(double[],%20double[])">equals</a></strong>(double[]&nbsp;x,
+      double[]&nbsp;y)</code>
+<div class="block">Returns <code>true</code> iff both arguments are <code>null</code> or have same
  dimensions and all their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equals(double, double)"><CODE>Precision.equals(double,double)</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#equals(float[], float[])">equals</A></B>(float[]&nbsp;x,
-       float[]&nbsp;y)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns true iff both arguments are null or have same dimensions and all
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equals(double,%20double)"><code>Precision.equals(double,double)</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#equals(float[],%20float[])">equals</a></strong>(float[]&nbsp;x,
+      float[]&nbsp;y)</code>
+<div class="block">Returns true iff both arguments are null or have same dimensions and all
  their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equals(float, float)"><CODE>Precision.equals(float,float)</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#equalsIncludingNaN(double[], double[])">equalsIncludingNaN</A></B>(double[]&nbsp;x,
-                   double[]&nbsp;y)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns <code>true</code> iff both arguments are <code>null</code> or have same
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equals(float,%20float)"><code>Precision.equals(float,float)</code></a>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#equalsIncludingNaN(double[],%20double[])">equalsIncludingNaN</a></strong>(double[]&nbsp;x,
+                  double[]&nbsp;y)</code>
+<div class="block">Returns <code>true</code> iff both arguments are <code>null</code> or have same
  dimensions and all their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double, double)"><CODE>this method</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#equalsIncludingNaN(float[], float[])">equalsIncludingNaN</A></B>(float[]&nbsp;x,
-                   float[]&nbsp;y)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns true iff both arguments are null or have same dimensions and all
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double,%20double)"><code>this method</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#equalsIncludingNaN(float[],%20float[])">equalsIncludingNaN</a></strong>(float[]&nbsp;x,
+                  float[]&nbsp;y)</code>
+<div class="block">Returns true iff both arguments are null or have same dimensions and all
  their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double, double)"><CODE>this method</CODE></A>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#isMonotonic(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)">isMonotonic</A></B>(double[]&nbsp;val,
-            <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-            boolean&nbsp;strict)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check that an array is monotonically increasing or decreasing.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Comparable.html?is-external=true" title="class or interface in java.lang">Comparable</A>&lt;? super T&gt;&gt; 
-<BR>
-boolean</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#isMonotonic(T[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)">isMonotonic</A></B>(T[]&nbsp;val,
-            <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-            boolean&nbsp;strict)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check that an array is monotonically increasing or decreasing.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double[], double[])">linearCombination</A></B>(double[]&nbsp;a,
-                  double[]&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute a linear combination accurately.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double)">linearCombination</A></B>(double&nbsp;a1,
-                  double&nbsp;b1,
-                  double&nbsp;a2,
-                  double&nbsp;b2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute a linear combination accurately.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double, double, double)">linearCombination</A></B>(double&nbsp;a1,
-                  double&nbsp;b1,
-                  double&nbsp;a2,
-                  double&nbsp;b2,
-                  double&nbsp;a3,
-                  double&nbsp;b3)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute a linear combination accurately.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double, double, double, double, double)">linearCombination</A></B>(double&nbsp;a1,
-                  double&nbsp;b1,
-                  double&nbsp;a2,
-                  double&nbsp;b2,
-                  double&nbsp;a3,
-                  double&nbsp;b3,
-                  double&nbsp;a4,
-                  double&nbsp;b4)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute a linear combination accurately.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#normalizeArray(double[], double)">normalizeArray</A></B>(double[]&nbsp;values,
-               double&nbsp;normalizedSum)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Normalizes an array to make it sum to a specified value.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#safeNorm(double[])">safeNorm</A></B>(double[]&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the Cartesian norm (2-norm), handling both overflow and underflow.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#scale(double, double[])">scale</A></B>(double&nbsp;val,
-      double[]&nbsp;arr)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create a copy of an array scaled by a value.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#scaleInPlace(double, double[])">scaleInPlace</A></B>(double&nbsp;val,
-             double[]&nbsp;arr)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Multiply each element of an array by a value.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#sortInPlace(double[], double[]...)">sortInPlace</A></B>(double[]&nbsp;x,
-            double[]...&nbsp;yList)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sort an array in ascending order in place and perform the same reordering
- of entries on other arrays.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#sortInPlace(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, double[]...)">sortInPlace</A></B>(double[]&nbsp;x,
-            <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-            double[]...&nbsp;yList)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sort an array in place and perform the same reordering of entries on
- other arrays.</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double,%20double)"><code>this method</code></a>.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#isMonotonic(double[],%20org.apache.commons.math3.util.MathArrays.OrderDirection,%20boolean)">isMonotonic</a></strong>(double[]&nbsp;val,
+           <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+           boolean&nbsp;strict)</code>
+<div class="block">Check that an array is monotonically increasing or decreasing.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static &lt;T extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Comparable.html?is-external=true" title="class or interface in java.lang">Comparable</a>&lt;? super T&gt;&gt;&nbsp;<br>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#isMonotonic(T[],%20org.apache.commons.math3.util.MathArrays.OrderDirection,%20boolean)">isMonotonic</a></strong>(T[]&nbsp;val,
+           <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+           boolean&nbsp;strict)</code>
+<div class="block">Check that an array is monotonically increasing or decreasing.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double[],%20double[])">linearCombination</a></strong>(double[]&nbsp;a,
+                 double[]&nbsp;b)</code>
+<div class="block">Compute a linear combination accurately.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double)">linearCombination</a></strong>(double&nbsp;a1,
+                 double&nbsp;b1,
+                 double&nbsp;a2,
+                 double&nbsp;b2)</code>
+<div class="block">Compute a linear combination accurately.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double,%20double,%20double)">linearCombination</a></strong>(double&nbsp;a1,
+                 double&nbsp;b1,
+                 double&nbsp;a2,
+                 double&nbsp;b2,
+                 double&nbsp;a3,
+                 double&nbsp;b3)</code>
+<div class="block">Compute a linear combination accurately.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double,%20double,%20double,%20double,%20double)">linearCombination</a></strong>(double&nbsp;a1,
+                 double&nbsp;b1,
+                 double&nbsp;a2,
+                 double&nbsp;b2,
+                 double&nbsp;a3,
+                 double&nbsp;b3,
+                 double&nbsp;a4,
+                 double&nbsp;b4)</code>
+<div class="block">Compute a linear combination accurately.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#natural(int)">natural</a></strong>(int&nbsp;n)</code>
+<div class="block">Returns an array representing the natural number <code>n</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#normalizeArray(double[],%20double)">normalizeArray</a></strong>(double[]&nbsp;values,
+              double&nbsp;normalizedSum)</code>
+<div class="block">Normalizes an array to make it sum to a specified value.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#safeNorm(double[])">safeNorm</a></strong>(double[]&nbsp;v)</code>
+<div class="block">Returns the Cartesian norm (2-norm), handling both overflow and underflow.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#scale(double,%20double[])">scale</a></strong>(double&nbsp;val,
+     double[]&nbsp;arr)</code>
+<div class="block">Create a copy of an array scaled by a value.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#scaleInPlace(double,%20double[])">scaleInPlace</a></strong>(double&nbsp;val,
+            double[]&nbsp;arr)</code>
+<div class="block">Multiply each element of an array by a value.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#sequence(int,%20int,%20int)">sequence</a></strong>(int&nbsp;size,
+        int&nbsp;start,
+        int&nbsp;stride)</code>
+<div class="block">Returns an array of <code>size</code> integers starting at <code>start</code>,
+ skipping <code>stride</code> numbers.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#shuffle(int[])">shuffle</a></strong>(int[]&nbsp;list)</code>
+<div class="block">Shuffle the entries of the given array.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#shuffle(int[],%20int,%20org.apache.commons.math3.util.MathArrays.Position)">shuffle</a></strong>(int[]&nbsp;list,
+       int&nbsp;start,
+       <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html" title="enum in org.apache.commons.math3.util">MathArrays.Position</a>&nbsp;pos)</code>
+<div class="block">Shuffle the entries of the given array.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#shuffle(int[],%20int,%20org.apache.commons.math3.util.MathArrays.Position,%20org.apache.commons.math3.random.RandomGenerator)">shuffle</a></strong>(int[]&nbsp;list,
+       int&nbsp;start,
+       <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html" title="enum in org.apache.commons.math3.util">MathArrays.Position</a>&nbsp;pos,
+       <a href="../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;rng)</code>
+<div class="block">Shuffle the entries of the given array, using the
+ <a href="http://en.wikipedia.org/wiki/Fisher–Yates_shuffle#The_modern_algorithm">
+ Fisher–Yates</a> algorithm.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#shuffle(int[],%20org.apache.commons.math3.random.RandomGenerator)">shuffle</a></strong>(int[]&nbsp;list,
+       <a href="../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;rng)</code>
+<div class="block">Shuffle the entries of the given array.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#sortInPlace(double[],%20double[]...)">sortInPlace</a></strong>(double[]&nbsp;x,
+           double[]...&nbsp;yList)</code>
+<div class="block">Sort an array in ascending order in place and perform the same reordering
+ of entries on other arrays.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#sortInPlace(double[],%20org.apache.commons.math3.util.MathArrays.OrderDirection,%20double[]...)">sortInPlace</a></strong>(double[]&nbsp;x,
+           <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+           double[]...&nbsp;yList)</code>
+<div class="block">Sort an array in place and perform the same reordering of entries on
+ other arrays.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#unique(double[])">unique</a></strong>(double[]&nbsp;data)</code>
+<div class="block">Returns an array consisting of the unique values in <code>data</code>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#verifyValues(double[],%20double[],%20int,%20int)">verifyValues</a></strong>(double[]&nbsp;values,
+            double[]&nbsp;weights,
+            int&nbsp;begin,
+            int&nbsp;length)</code>
+<div class="block">This method is used
+ to verify that the begin and length parameters designate a subarray of positive length
+ and the weights are all non-negative, non-NaN, finite, and not all zero.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#verifyValues(double[],%20double[],%20int,%20int,%20boolean)">verifyValues</a></strong>(double[]&nbsp;values,
+            double[]&nbsp;weights,
+            int&nbsp;begin,
+            int&nbsp;length,
+            boolean&nbsp;allowEmpty)</code>
+<div class="block">This method is used
+ to verify that the begin and length parameters designate a subarray of positive length
+ and the weights are all non-negative, non-NaN, finite, and not all zero.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#verifyValues(double[],%20int,%20int)">verifyValues</a></strong>(double[]&nbsp;values,
+            int&nbsp;begin,
+            int&nbsp;length)</code>
+<div class="block">This method is used
+ to verify that the input parameters designate a subarray of positive length.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#verifyValues(double[],%20int,%20int,%20boolean)">verifyValues</a></strong>(double[]&nbsp;values,
+            int&nbsp;begin,
+            int&nbsp;length,
+            boolean&nbsp;allowEmpty)</code>
+<div class="block">This method is used
+ to verify that the input parameters designate a subarray of positive length.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="scale(double, double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scale</h4>
+<pre>public static&nbsp;double[]&nbsp;scale(double&nbsp;val,
+             double[]&nbsp;arr)</pre>
+<div class="block">Create a copy of an array scaled by a value.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>arr</code> - Array to scale.</dd><dd><code>val</code> - Scalar.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>scaled copy of array with each entry multiplied by val.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.2</dd></dl>
+</li>
+</ul>
+<a name="scaleInPlace(double, double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scaleInPlace</h4>
+<pre>public static&nbsp;void&nbsp;scaleInPlace(double&nbsp;val,
+                double[]&nbsp;arr)</pre>
+<div class="block"><p>Multiply each element of an array by a value.</p>
 
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="scale(double, double[])"><!-- --></A><H3>
-scale</H3>
-<PRE>
-public static double[] <B>scale</B>(double&nbsp;val,
-                             double[]&nbsp;arr)</PRE>
-<DL>
-<DD>Create a copy of an array scaled by a value.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>arr</CODE> - Array to scale.<DD><CODE>val</CODE> - Scalar.
-<DT><B>Returns:</B><DD>scaled copy of array with each entry multiplied by val.<DT><B>Since:</B></DT>
-  <DD>3.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="scaleInPlace(double, double[])"><!-- --></A><H3>
-scaleInPlace</H3>
-<PRE>
-public static void <B>scaleInPlace</B>(double&nbsp;val,
-                                double[]&nbsp;arr)</PRE>
-<DL>
-<DD><p>Multiply each element of an array by a value.</p>
-
- <p>The array is modified in place (no copy is created).</p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>arr</CODE> - Array to scale<DD><CODE>val</CODE> - Scalar<DT><B>Since:</B></DT>
-  <DD>3.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ebeAdd(double[], double[])"><!-- --></A><H3>
-ebeAdd</H3>
-<PRE>
-public static double[] <B>ebeAdd</B>(double[]&nbsp;a,
-                              double[]&nbsp;b)
-                       throws <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Creates an array whose contents will be the element-by-element
- addition of the arguments.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - First term of the addition.<DD><CODE>b</CODE> - Second term of the addition.
-<DT><B>Returns:</B><DD>a new array <code>r</code> where <code>r[i] = a[i] + b[i]</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array lengths differ.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ebeSubtract(double[], double[])"><!-- --></A><H3>
-ebeSubtract</H3>
-<PRE>
-public static double[] <B>ebeSubtract</B>(double[]&nbsp;a,
-                                   double[]&nbsp;b)
-                            throws <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Creates an array whose contents will be the element-by-element
- subtraction of the second argument from the first.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - First term.<DD><CODE>b</CODE> - Element to be subtracted.
-<DT><B>Returns:</B><DD>a new array <code>r</code> where <code>r[i] = a[i] - b[i]</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array lengths differ.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ebeMultiply(double[], double[])"><!-- --></A><H3>
-ebeMultiply</H3>
-<PRE>
-public static double[] <B>ebeMultiply</B>(double[]&nbsp;a,
-                                   double[]&nbsp;b)
-                            throws <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Creates an array whose contents will be the element-by-element
- multiplication of the arguments.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - First factor of the multiplication.<DD><CODE>b</CODE> - Second factor of the multiplication.
-<DT><B>Returns:</B><DD>a new array <code>r</code> where <code>r[i] = a[i] * b[i]</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array lengths differ.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ebeDivide(double[], double[])"><!-- --></A><H3>
-ebeDivide</H3>
-<PRE>
-public static double[] <B>ebeDivide</B>(double[]&nbsp;a,
-                                 double[]&nbsp;b)
-                          throws <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Creates an array whose contents will be the element-by-element
- division of the first argument by the second.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - Numerator of the division.<DD><CODE>b</CODE> - Denominator of the division.
-<DT><B>Returns:</B><DD>a new array <code>r</code> where <code>r[i] = a[i] / b[i]</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array lengths differ.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distance1(double[], double[])"><!-- --></A><H3>
-distance1</H3>
-<PRE>
-public static double <B>distance1</B>(double[]&nbsp;p1,
-                               double[]&nbsp;p2)</PRE>
-<DL>
-<DD>Calculates the L<sub>1</sub> (sum of abs) distance between two points.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p1</CODE> - the first point<DD><CODE>p2</CODE> - the second point
-<DT><B>Returns:</B><DD>the L<sub>1</sub> distance between the two points</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distance1(int[], int[])"><!-- --></A><H3>
-distance1</H3>
-<PRE>
-public static int <B>distance1</B>(int[]&nbsp;p1,
-                            int[]&nbsp;p2)</PRE>
-<DL>
-<DD>Calculates the L<sub>1</sub> (sum of abs) distance between two points.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p1</CODE> - the first point<DD><CODE>p2</CODE> - the second point
-<DT><B>Returns:</B><DD>the L<sub>1</sub> distance between the two points</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distance(double[], double[])"><!-- --></A><H3>
-distance</H3>
-<PRE>
-public static double <B>distance</B>(double[]&nbsp;p1,
-                              double[]&nbsp;p2)</PRE>
-<DL>
-<DD>Calculates the L<sub>2</sub> (Euclidean) distance between two points.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p1</CODE> - the first point<DD><CODE>p2</CODE> - the second point
-<DT><B>Returns:</B><DD>the L<sub>2</sub> distance between the two points</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distance(int[], int[])"><!-- --></A><H3>
-distance</H3>
-<PRE>
-public static double <B>distance</B>(int[]&nbsp;p1,
-                              int[]&nbsp;p2)</PRE>
-<DL>
-<DD>Calculates the L<sub>2</sub> (Euclidean) distance between two points.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p1</CODE> - the first point<DD><CODE>p2</CODE> - the second point
-<DT><B>Returns:</B><DD>the L<sub>2</sub> distance between the two points</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distanceInf(double[], double[])"><!-- --></A><H3>
-distanceInf</H3>
-<PRE>
-public static double <B>distanceInf</B>(double[]&nbsp;p1,
-                                 double[]&nbsp;p2)</PRE>
-<DL>
-<DD>Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p1</CODE> - the first point<DD><CODE>p2</CODE> - the second point
-<DT><B>Returns:</B><DD>the L<sub>&infin;</sub> distance between the two points</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="distanceInf(int[], int[])"><!-- --></A><H3>
-distanceInf</H3>
-<PRE>
-public static int <B>distanceInf</B>(int[]&nbsp;p1,
-                              int[]&nbsp;p2)</PRE>
-<DL>
-<DD>Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>p1</CODE> - the first point<DD><CODE>p2</CODE> - the second point
-<DT><B>Returns:</B><DD>the L<sub>&infin;</sub> distance between the two points</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isMonotonic(java.lang.Comparable[],org.apache.commons.math3.util.MathArrays.OrderDirection,boolean)"><!-- --></A><A NAME="isMonotonic(T[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)"><!-- --></A><H3>
-isMonotonic</H3>
-<PRE>
-public static &lt;T extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Comparable.html?is-external=true" title="class or interface in java.lang">Comparable</A>&lt;? super T&gt;&gt; boolean <B>isMonotonic</B>(T[]&nbsp;val,
-                                                                    <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-                                                                    boolean&nbsp;strict)</PRE>
-<DL>
-<DD>Check that an array is monotonically increasing or decreasing.
-<P>
-<DD><DL>
-<DT><B>Type Parameters:</B><DD><CODE>T</CODE> - the type of the elements in the specified array<DT><B>Parameters:</B><DD><CODE>val</CODE> - Values.<DD><CODE>dir</CODE> - Ordering direction.<DD><CODE>strict</CODE> - Whether the order should be strict.
-<DT><B>Returns:</B><DD><code>true</code> if sorted, <code>false</code> otherwise.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isMonotonic(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)"><!-- --></A><H3>
-isMonotonic</H3>
-<PRE>
-public static boolean <B>isMonotonic</B>(double[]&nbsp;val,
-                                  <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-                                  boolean&nbsp;strict)</PRE>
-<DL>
-<DD>Check that an array is monotonically increasing or decreasing.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>val</CODE> - Values.<DD><CODE>dir</CODE> - Ordering direction.<DD><CODE>strict</CODE> - Whether the order should be strict.
-<DT><B>Returns:</B><DD><code>true</code> if sorted, <code>false</code> otherwise.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="checkOrder(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean, boolean)"><!-- --></A><H3>
-checkOrder</H3>
-<PRE>
-public static boolean <B>checkOrder</B>(double[]&nbsp;val,
-                                 <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-                                 boolean&nbsp;strict,
-                                 boolean&nbsp;abort)
-                          throws <A HREF="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</A></PRE>
-<DL>
-<DD>Check that the given array is sorted.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>val</CODE> - Values.<DD><CODE>dir</CODE> - Ordering direction.<DD><CODE>strict</CODE> - Whether the order should be strict.<DD><CODE>abort</CODE> - Whether to throw an exception if the check fails.
-<DT><B>Returns:</B><DD><code>true</code> if the array is sorted.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</A></CODE> - if the array is not sorted
- and <code>abort</code> is <code>true</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="checkOrder(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)"><!-- --></A><H3>
-checkOrder</H3>
-<PRE>
-public static void <B>checkOrder</B>(double[]&nbsp;val,
-                              <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-                              boolean&nbsp;strict)
-                       throws <A HREF="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</A></PRE>
-<DL>
-<DD>Check that the given array is sorted.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>val</CODE> - Values.<DD><CODE>dir</CODE> - Ordering direction.<DD><CODE>strict</CODE> - Whether the order should be strict.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</A></CODE> - if the array is not sorted.<DT><B>Since:</B></DT>
-  <DD>2.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="checkOrder(double[])"><!-- --></A><H3>
-checkOrder</H3>
-<PRE>
-public static void <B>checkOrder</B>(double[]&nbsp;val)
-                       throws <A HREF="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</A></PRE>
-<DL>
-<DD>Check that the given array is sorted in strictly increasing order.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>val</CODE> - Values.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</A></CODE> - if the array is not sorted.<DT><B>Since:</B></DT>
-  <DD>2.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="checkRectangular(long[][])"><!-- --></A><H3>
-checkRectangular</H3>
-<PRE>
-public static void <B>checkRectangular</B>(long[][]&nbsp;in)
-                             throws <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A>,
-                                    <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Throws DimensionMismatchException if the input array is not rectangular.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>in</CODE> - array to be tested
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if input array is null
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if input array is not rectangular<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="checkPositive(double[])"><!-- --></A><H3>
-checkPositive</H3>
-<PRE>
-public static void <B>checkPositive</B>(double[]&nbsp;in)
-                          throws <A HREF="../../../../../org/apache/commons/math3/exception/NotStrictlyPositiveException.html" title="class in org.apache.commons.math3.exception">NotStrictlyPositiveException</A></PRE>
-<DL>
-<DD>Check that all entries of the input array are strictly positive.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>in</CODE> - Array to be tested
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NotStrictlyPositiveException.html" title="class in org.apache.commons.math3.exception">NotStrictlyPositiveException</A></CODE> - if any entries of the array are not
- strictly positive.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="checkNonNegative(long[])"><!-- --></A><H3>
-checkNonNegative</H3>
-<PRE>
-public static void <B>checkNonNegative</B>(long[]&nbsp;in)
-                             throws <A HREF="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</A></PRE>
-<DL>
-<DD>Check that all entries of the input array are >= 0.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>in</CODE> - Array to be tested
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</A></CODE> - if any array entries are less than 0.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="checkNonNegative(long[][])"><!-- --></A><H3>
-checkNonNegative</H3>
-<PRE>
-public static void <B>checkNonNegative</B>(long[][]&nbsp;in)
-                             throws <A HREF="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</A></PRE>
-<DL>
-<DD>Check all entries of the input array are >= 0.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>in</CODE> - Array to be tested
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</A></CODE> - if any array entries are less than 0.<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="safeNorm(double[])"><!-- --></A><H3>
-safeNorm</H3>
-<PRE>
-public static double <B>safeNorm</B>(double[]&nbsp;v)</PRE>
-<DL>
-<DD>Returns the Cartesian norm (2-norm), handling both overflow and underflow.
+ <p>The array is modified in place (no copy is created).</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>arr</code> - Array to scale</dd><dd><code>val</code> - Scalar</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.2</dd></dl>
+</li>
+</ul>
+<a name="ebeAdd(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ebeAdd</h4>
+<pre>public static&nbsp;double[]&nbsp;ebeAdd(double[]&nbsp;a,
+              double[]&nbsp;b)
+                       throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Creates an array whose contents will be the element-by-element
+ addition of the arguments.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - First term of the addition.</dd><dd><code>b</code> - Second term of the addition.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new array <code>r</code> where <code>r[i] = a[i] + b[i]</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="ebeSubtract(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ebeSubtract</h4>
+<pre>public static&nbsp;double[]&nbsp;ebeSubtract(double[]&nbsp;a,
+                   double[]&nbsp;b)
+                            throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Creates an array whose contents will be the element-by-element
+ subtraction of the second argument from the first.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - First term.</dd><dd><code>b</code> - Element to be subtracted.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new array <code>r</code> where <code>r[i] = a[i] - b[i]</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="ebeMultiply(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ebeMultiply</h4>
+<pre>public static&nbsp;double[]&nbsp;ebeMultiply(double[]&nbsp;a,
+                   double[]&nbsp;b)
+                            throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Creates an array whose contents will be the element-by-element
+ multiplication of the arguments.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - First factor of the multiplication.</dd><dd><code>b</code> - Second factor of the multiplication.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new array <code>r</code> where <code>r[i] = a[i] * b[i]</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="ebeDivide(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ebeDivide</h4>
+<pre>public static&nbsp;double[]&nbsp;ebeDivide(double[]&nbsp;a,
+                 double[]&nbsp;b)
+                          throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Creates an array whose contents will be the element-by-element
+ division of the first argument by the second.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - Numerator of the division.</dd><dd><code>b</code> - Denominator of the division.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new array <code>r</code> where <code>r[i] = a[i] / b[i]</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="distance1(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distance1</h4>
+<pre>public static&nbsp;double&nbsp;distance1(double[]&nbsp;p1,
+               double[]&nbsp;p2)
+                        throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Calculates the L<sub>1</sub> (sum of abs) distance between two points.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>p1</code> - the first point</dd><dd><code>p2</code> - the second point</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the L<sub>1</sub> distance between the two points</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd></dl>
+</li>
+</ul>
+<a name="distance1(int[], int[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distance1</h4>
+<pre>public static&nbsp;int&nbsp;distance1(int[]&nbsp;p1,
+            int[]&nbsp;p2)
+                     throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Calculates the L<sub>1</sub> (sum of abs) distance between two points.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>p1</code> - the first point</dd><dd><code>p2</code> - the second point</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the L<sub>1</sub> distance between the two points</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd></dl>
+</li>
+</ul>
+<a name="distance(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distance</h4>
+<pre>public static&nbsp;double&nbsp;distance(double[]&nbsp;p1,
+              double[]&nbsp;p2)
+                       throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Calculates the L<sub>2</sub> (Euclidean) distance between two points.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>p1</code> - the first point</dd><dd><code>p2</code> - the second point</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the L<sub>2</sub> distance between the two points</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd></dl>
+</li>
+</ul>
+<a name="cosAngle(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cosAngle</h4>
+<pre>public static&nbsp;double&nbsp;cosAngle(double[]&nbsp;v1,
+              double[]&nbsp;v2)</pre>
+<div class="block">Calculates the cosine of the angle between two vectors.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v1</code> - Cartesian coordinates of the first vector.</dd><dd><code>v2</code> - Cartesian coordinates of the second vector.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the cosine of the angle between the vectors.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+<a name="distance(int[], int[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distance</h4>
+<pre>public static&nbsp;double&nbsp;distance(int[]&nbsp;p1,
+              int[]&nbsp;p2)
+                       throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Calculates the L<sub>2</sub> (Euclidean) distance between two points.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>p1</code> - the first point</dd><dd><code>p2</code> - the second point</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the L<sub>2</sub> distance between the two points</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd></dl>
+</li>
+</ul>
+<a name="distanceInf(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distanceInf</h4>
+<pre>public static&nbsp;double&nbsp;distanceInf(double[]&nbsp;p1,
+                 double[]&nbsp;p2)
+                          throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>p1</code> - the first point</dd><dd><code>p2</code> - the second point</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the L<sub>&infin;</sub> distance between the two points</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd></dl>
+</li>
+</ul>
+<a name="distanceInf(int[], int[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>distanceInf</h4>
+<pre>public static&nbsp;int&nbsp;distanceInf(int[]&nbsp;p1,
+              int[]&nbsp;p2)
+                       throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Calculates the L<sub>&infin;</sub> (max of abs) distance between two points.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>p1</code> - the first point</dd><dd><code>p2</code> - the second point</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the L<sub>&infin;</sub> distance between the two points</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array lengths differ.</dd></dl>
+</li>
+</ul>
+<a name="isMonotonic(java.lang.Comparable[],org.apache.commons.math3.util.MathArrays.OrderDirection,boolean)">
+<!--   -->
+</a><a name="isMonotonic(T[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isMonotonic</h4>
+<pre>public static&nbsp;&lt;T extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Comparable.html?is-external=true" title="class or interface in java.lang">Comparable</a>&lt;? super T&gt;&gt;&nbsp;boolean&nbsp;isMonotonic(T[]&nbsp;val,
+                                                    <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+                                                    boolean&nbsp;strict)</pre>
+<div class="block">Check that an array is monotonically increasing or decreasing.</div>
+<dl><dt><span class="strong">Type Parameters:</span></dt><dd><code>T</code> - the type of the elements in the specified array</dd><dt><span class="strong">Parameters:</span></dt><dd><code>val</code> - Values.</dd><dd><code>dir</code> - Ordering direction.</dd><dd><code>strict</code> - Whether the order should be strict.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if sorted, <code>false</code> otherwise.</dd></dl>
+</li>
+</ul>
+<a name="isMonotonic(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isMonotonic</h4>
+<pre>public static&nbsp;boolean&nbsp;isMonotonic(double[]&nbsp;val,
+                  <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+                  boolean&nbsp;strict)</pre>
+<div class="block">Check that an array is monotonically increasing or decreasing.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>val</code> - Values.</dd><dd><code>dir</code> - Ordering direction.</dd><dd><code>strict</code> - Whether the order should be strict.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if sorted, <code>false</code> otherwise.</dd></dl>
+</li>
+</ul>
+<a name="checkEqualLength(double[], double[], boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkEqualLength</h4>
+<pre>public static&nbsp;boolean&nbsp;checkEqualLength(double[]&nbsp;a,
+                       double[]&nbsp;b,
+                       boolean&nbsp;abort)</pre>
+<div class="block">Check that both arrays have the same length.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - Array.</dd><dd><code>b</code> - Array.</dd><dd><code>abort</code> - Whether to throw an exception if the check fails.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the arrays have the same length.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the lengths differ and
+ <code>abort</code> is <code>true</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+<a name="checkEqualLength(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkEqualLength</h4>
+<pre>public static&nbsp;void&nbsp;checkEqualLength(double[]&nbsp;a,
+                    double[]&nbsp;b)</pre>
+<div class="block">Check that both arrays have the same length.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - Array.</dd><dd><code>b</code> - Array.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the lengths differ.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+<a name="checkEqualLength(int[], int[], boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkEqualLength</h4>
+<pre>public static&nbsp;boolean&nbsp;checkEqualLength(int[]&nbsp;a,
+                       int[]&nbsp;b,
+                       boolean&nbsp;abort)</pre>
+<div class="block">Check that both arrays have the same length.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - Array.</dd><dd><code>b</code> - Array.</dd><dd><code>abort</code> - Whether to throw an exception if the check fails.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the arrays have the same length.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the lengths differ and
+ <code>abort</code> is <code>true</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+<a name="checkEqualLength(int[], int[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkEqualLength</h4>
+<pre>public static&nbsp;void&nbsp;checkEqualLength(int[]&nbsp;a,
+                    int[]&nbsp;b)</pre>
+<div class="block">Check that both arrays have the same length.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - Array.</dd><dd><code>b</code> - Array.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the lengths differ.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+<a name="checkOrder(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkOrder</h4>
+<pre>public static&nbsp;boolean&nbsp;checkOrder(double[]&nbsp;val,
+                 <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+                 boolean&nbsp;strict,
+                 boolean&nbsp;abort)
+                          throws <a href="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</a></pre>
+<div class="block">Check that the given array is sorted.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>val</code> - Values.</dd><dd><code>dir</code> - Ordering direction.</dd><dd><code>strict</code> - Whether the order should be strict.</dd><dd><code>abort</code> - Whether to throw an exception if the check fails.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the array is sorted.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</a></code> - if the array is not sorted
+ and <code>abort</code> is <code>true</code>.</dd></dl>
+</li>
+</ul>
+<a name="checkOrder(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkOrder</h4>
+<pre>public static&nbsp;void&nbsp;checkOrder(double[]&nbsp;val,
+              <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+              boolean&nbsp;strict)
+                       throws <a href="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</a></pre>
+<div class="block">Check that the given array is sorted.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>val</code> - Values.</dd><dd><code>dir</code> - Ordering direction.</dd><dd><code>strict</code> - Whether the order should be strict.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</a></code> - if the array is not sorted.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.2</dd></dl>
+</li>
+</ul>
+<a name="checkOrder(double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkOrder</h4>
+<pre>public static&nbsp;void&nbsp;checkOrder(double[]&nbsp;val)
+                       throws <a href="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</a></pre>
+<div class="block">Check that the given array is sorted in strictly increasing order.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>val</code> - Values.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NonMonotonicSequenceException.html" title="class in org.apache.commons.math3.exception">NonMonotonicSequenceException</a></code> - if the array is not sorted.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.2</dd></dl>
+</li>
+</ul>
+<a name="checkRectangular(long[][])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkRectangular</h4>
+<pre>public static&nbsp;void&nbsp;checkRectangular(long[][]&nbsp;in)
+                             throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a>,
+                                    <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Throws DimensionMismatchException if the input array is not rectangular.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>in</code> - array to be tested</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if input array is null</dd>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if input array is not rectangular</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="checkPositive(double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkPositive</h4>
+<pre>public static&nbsp;void&nbsp;checkPositive(double[]&nbsp;in)
+                          throws <a href="../../../../../org/apache/commons/math3/exception/NotStrictlyPositiveException.html" title="class in org.apache.commons.math3.exception">NotStrictlyPositiveException</a></pre>
+<div class="block">Check that all entries of the input array are strictly positive.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>in</code> - Array to be tested</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NotStrictlyPositiveException.html" title="class in org.apache.commons.math3.exception">NotStrictlyPositiveException</a></code> - if any entries of the array are not
+ strictly positive.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="checkNotNaN(double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkNotNaN</h4>
+<pre>public static&nbsp;void&nbsp;checkNotNaN(double[]&nbsp;in)
+                        throws <a href="../../../../../org/apache/commons/math3/exception/NotANumberException.html" title="class in org.apache.commons.math3.exception">NotANumberException</a></pre>
+<div class="block">Check that no entry of the input array is <code>NaN</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>in</code> - Array to be tested.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NotANumberException.html" title="class in org.apache.commons.math3.exception">NotANumberException</a></code> - if an entry is <code>NaN</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="checkNonNegative(long[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkNonNegative</h4>
+<pre>public static&nbsp;void&nbsp;checkNonNegative(long[]&nbsp;in)
+                             throws <a href="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</a></pre>
+<div class="block">Check that all entries of the input array are >= 0.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>in</code> - Array to be tested</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</a></code> - if any array entries are less than 0.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="checkNonNegative(long[][])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkNonNegative</h4>
+<pre>public static&nbsp;void&nbsp;checkNonNegative(long[][]&nbsp;in)
+                             throws <a href="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</a></pre>
+<div class="block">Check all entries of the input array are >= 0.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>in</code> - Array to be tested</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NotPositiveException.html" title="class in org.apache.commons.math3.exception">NotPositiveException</a></code> - if any array entries are less than 0.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="safeNorm(double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>safeNorm</h4>
+<pre>public static&nbsp;double&nbsp;safeNorm(double[]&nbsp;v)</pre>
+<div class="block">Returns the Cartesian norm (2-norm), handling both overflow and underflow.
  Translation of the minpack enorm subroutine.
 
  The redistribution policy for MINPACK is available
@@ -1002,144 +1129,141 @@ public static double <B>safeNorm</B>(double[]&nbsp;v)</PRE>
      EVEN IF ANY OF SAID PARTIES HAS BEEN WARNED OF THE
      POSSIBILITY OF SUCH LOSS OR DAMAGES.</strong></li>
  <ol></td></tr>
- </table>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - Vector of doubles.
-<DT><B>Returns:</B><DD>the 2-norm of the vector.<DT><B>Since:</B></DT>
-  <DD>2.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sortInPlace(double[], double[]...)"><!-- --></A><H3>
-sortInPlace</H3>
-<PRE>
-public static void <B>sortInPlace</B>(double[]&nbsp;x,
-                               double[]...&nbsp;yList)
-                        throws <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                               <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></PRE>
-<DL>
-<DD>Sort an array in ascending order in place and perform the same reordering
+ </table></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - Vector of doubles.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the 2-norm of the vector.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.2</dd></dl>
+</li>
+</ul>
+<a name="sortInPlace(double[], double[]...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sortInPlace</h4>
+<pre>public static&nbsp;void&nbsp;sortInPlace(double[]&nbsp;x,
+               double[]...&nbsp;yList)
+                        throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                               <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></pre>
+<div class="block">Sort an array in ascending order in place and perform the same reordering
  of entries on other arrays. For example, if
  <code>x = [3, 1, 2], y = [1, 2, 3]</code> and <code>z = [0, 5, 7]</code>, then
  <code>sortInPlace(x, y, z)</code> will update <code>x</code> to <code>[1, 2, 3]</code>,
- <code>y</code> to <code>[2, 3, 1]</code> and <code>z</code> to <code>[5, 7, 0]</code>.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - Array to be sorted and used as a pattern for permutation
- of the other arrays.<DD><CODE>yList</CODE> - Set of arrays whose permutations of entries will follow
- those performed on <code>x</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if any <code>y</code> is not the same
- size as <code>x</code>.
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if <code>x</code> or any <code>y</code> is null.<DT><B>Since:</B></DT>
-  <DD>3.0</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sortInPlace(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, double[]...)"><!-- --></A><H3>
-sortInPlace</H3>
-<PRE>
-public static void <B>sortInPlace</B>(double[]&nbsp;x,
-                               <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</A>&nbsp;dir,
-                               double[]...&nbsp;yList)
-                        throws <A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A>,
-                               <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Sort an array in place and perform the same reordering of entries on
+ <code>y</code> to <code>[2, 3, 1]</code> and <code>z</code> to <code>[5, 7, 0]</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - Array to be sorted and used as a pattern for permutation
+ of the other arrays.</dd><dd><code>yList</code> - Set of arrays whose permutations of entries will follow
+ those performed on <code>x</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if any <code>y</code> is not the same
+ size as <code>x</code>.</dd>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if <code>x</code> or any <code>y</code> is null.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.0</dd></dl>
+</li>
+</ul>
+<a name="sortInPlace(double[], org.apache.commons.math3.util.MathArrays.OrderDirection, double[]...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sortInPlace</h4>
+<pre>public static&nbsp;void&nbsp;sortInPlace(double[]&nbsp;x,
+               <a href="../../../../../org/apache/commons/math3/util/MathArrays.OrderDirection.html" title="enum in org.apache.commons.math3.util">MathArrays.OrderDirection</a>&nbsp;dir,
+               double[]...&nbsp;yList)
+                        throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a>,
+                               <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Sort an array in place and perform the same reordering of entries on
  other arrays.  This method works the same as the other
- <A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#sortInPlace(double[], double[]...)"><CODE>sortInPlace</CODE></A> method, but
+ <a href="../../../../../org/apache/commons/math3/util/MathArrays.html#sortInPlace(double[],%20double[]...)"><code>sortInPlace</code></a> method, but
  allows the order of the sort to be provided in the <code>dir</code>
- parameter.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - Array to be sorted and used as a pattern for permutation
- of the other arrays.<DD><CODE>dir</CODE> - Order direction.<DD><CODE>yList</CODE> - Set of arrays whose permutations of entries will follow
- those performed on <code>x</code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if any <code>y</code> is not the same
- size as <code>x</code>.
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if <code>x</code> or any <code>y</code> is null<DT><B>Since:</B></DT>
-  <DD>3.0</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="copyOf(int[])"><!-- --></A><H3>
-copyOf</H3>
-<PRE>
-public static int[] <B>copyOf</B>(int[]&nbsp;source)</PRE>
-<DL>
-<DD>Creates a copy of the <code>source</code> array.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>source</CODE> - Array to be copied.
-<DT><B>Returns:</B><DD>the copied array.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="copyOf(double[])"><!-- --></A><H3>
-copyOf</H3>
-<PRE>
-public static double[] <B>copyOf</B>(double[]&nbsp;source)</PRE>
-<DL>
-<DD>Creates a copy of the <code>source</code> array.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>source</CODE> - Array to be copied.
-<DT><B>Returns:</B><DD>the copied array.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="copyOf(int[], int)"><!-- --></A><H3>
-copyOf</H3>
-<PRE>
-public static int[] <B>copyOf</B>(int[]&nbsp;source,
-                           int&nbsp;len)</PRE>
-<DL>
-<DD>Creates a copy of the <code>source</code> array.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>source</CODE> - Array to be copied.<DD><CODE>len</CODE> - Number of entries to copy. If smaller then the source
+ parameter.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - Array to be sorted and used as a pattern for permutation
+ of the other arrays.</dd><dd><code>dir</code> - Order direction.</dd><dd><code>yList</code> - Set of arrays whose permutations of entries will follow
+ those performed on <code>x</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if any <code>y</code> is not the same
+ size as <code>x</code>.</dd>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if <code>x</code> or any <code>y</code> is null</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.0</dd></dl>
+</li>
+</ul>
+<a name="copyOf(int[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>copyOf</h4>
+<pre>public static&nbsp;int[]&nbsp;copyOf(int[]&nbsp;source)</pre>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>source</code> - Array to be copied.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the copied array.</dd></dl>
+</li>
+</ul>
+<a name="copyOf(double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>copyOf</h4>
+<pre>public static&nbsp;double[]&nbsp;copyOf(double[]&nbsp;source)</pre>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>source</code> - Array to be copied.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the copied array.</dd></dl>
+</li>
+</ul>
+<a name="copyOf(int[], int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>copyOf</h4>
+<pre>public static&nbsp;int[]&nbsp;copyOf(int[]&nbsp;source,
+           int&nbsp;len)</pre>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>source</code> - Array to be copied.</dd><dd><code>len</code> - Number of entries to copy. If smaller then the source
  length, the copy will be truncated, if larger it will padded with
- zeroes.
-<DT><B>Returns:</B><DD>the copied array.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="copyOf(double[], int)"><!-- --></A><H3>
-copyOf</H3>
-<PRE>
-public static double[] <B>copyOf</B>(double[]&nbsp;source,
-                              int&nbsp;len)</PRE>
-<DL>
-<DD>Creates a copy of the <code>source</code> array.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>source</CODE> - Array to be copied.<DD><CODE>len</CODE> - Number of entries to copy. If smaller then the source
+ zeroes.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the copied array.</dd></dl>
+</li>
+</ul>
+<a name="copyOf(double[], int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>copyOf</h4>
+<pre>public static&nbsp;double[]&nbsp;copyOf(double[]&nbsp;source,
+              int&nbsp;len)</pre>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>source</code> - Array to be copied.</dd><dd><code>len</code> - Number of entries to copy. If smaller then the source
  length, the copy will be truncated, if larger it will padded with
- zeroes.
-<DT><B>Returns:</B><DD>the copied array.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="linearCombination(double[], double[])"><!-- --></A><H3>
-linearCombination</H3>
-<PRE>
-public static double <B>linearCombination</B>(double[]&nbsp;a,
-                                       double[]&nbsp;b)
-                                throws <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Compute a linear combination accurately.
+ zeroes.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the copied array.</dd></dl>
+</li>
+</ul>
+<a name="copyOfRange(double[], int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>copyOfRange</h4>
+<pre>public static&nbsp;double[]&nbsp;copyOfRange(double[]&nbsp;source,
+                   int&nbsp;from,
+                   int&nbsp;to)</pre>
+<div class="block">Creates a copy of the <code>source</code> array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>source</code> - Array to be copied.</dd><dd><code>from</code> - Initial index of the range to be copied, inclusive.</dd><dd><code>to</code> - Final index of the range to be copied, exclusive. (This index may lie outside the array.)</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the copied array.</dd></dl>
+</li>
+</ul>
+<a name="linearCombination(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>linearCombination</h4>
+<pre>public static&nbsp;double&nbsp;linearCombination(double[]&nbsp;a,
+                       double[]&nbsp;b)
+                                throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Compute a linear combination accurately.
  This method computes the sum of the products
  <code>a<sub>i</sub> b<sub>i</sub></code> to high accuracy.
  It does so by using specific multiplication and addition algorithms to
@@ -1148,26 +1272,24 @@ public static double <B>linearCombination</B>(double[]&nbsp;a,
  It is based on the 2005 paper
  <a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
  Accurate Sum and Dot Product</a> by Takeshi Ogita, Siegfried M. Rump,
- and Shin'ichi Oishi published in SIAM J. Sci. Comput.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - Factors.<DD><CODE>b</CODE> - Factors.
-<DT><B>Returns:</B><DD><code>&Sigma;<sub>i</sub> a<sub>i</sub> b<sub>i</sub></code>.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if arrays dimensions don't match</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="linearCombination(double, double, double, double)"><!-- --></A><H3>
-linearCombination</H3>
-<PRE>
-public static double <B>linearCombination</B>(double&nbsp;a1,
-                                       double&nbsp;b1,
-                                       double&nbsp;a2,
-                                       double&nbsp;b2)</PRE>
-<DL>
-<DD>Compute a linear combination accurately.
+ and Shin'ichi Oishi published in SIAM J. Sci. Comput.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - Factors.</dd><dd><code>b</code> - Factors.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>&Sigma;<sub>i</sub> a<sub>i</sub> b<sub>i</sub></code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if arrays dimensions don't match</dd></dl>
+</li>
+</ul>
+<a name="linearCombination(double, double, double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>linearCombination</h4>
+<pre>public static&nbsp;double&nbsp;linearCombination(double&nbsp;a1,
+                       double&nbsp;b1,
+                       double&nbsp;a2,
+                       double&nbsp;b2)</pre>
+<div class="block">Compute a linear combination accurately.
  <p>
  This method computes a<sub>1</sub>&times;b<sub>1</sub> +
  a<sub>2</sub>&times;b<sub>2</sub> to high accuracy. It does
@@ -1177,28 +1299,26 @@ public static double <B>linearCombination</B>(double&nbsp;a1,
  href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
  Accurate Sum and Dot Product</a> by Takeshi Ogita,
  Siegfried M. Rump, and Shin'ichi Oishi published in SIAM J. Sci. Comput.
- </p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a1</CODE> - first factor of the first term<DD><CODE>b1</CODE> - second factor of the first term<DD><CODE>a2</CODE> - first factor of the second term<DD><CODE>b2</CODE> - second factor of the second term
-<DT><B>Returns:</B><DD>a<sub>1</sub>&times;b<sub>1</sub> +
- a<sub>2</sub>&times;b<sub>2</sub><DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double, double, double)"><CODE>linearCombination(double, double, double, double, double, double)</CODE></A>, 
-<A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double, double, double, double, double)"><CODE>linearCombination(double, double, double, double, double, double, double, double)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="linearCombination(double, double, double, double, double, double)"><!-- --></A><H3>
-linearCombination</H3>
-<PRE>
-public static double <B>linearCombination</B>(double&nbsp;a1,
-                                       double&nbsp;b1,
-                                       double&nbsp;a2,
-                                       double&nbsp;b2,
-                                       double&nbsp;a3,
-                                       double&nbsp;b3)</PRE>
-<DL>
-<DD>Compute a linear combination accurately.
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a1</code> - first factor of the first term</dd><dd><code>b1</code> - second factor of the first term</dd><dd><code>a2</code> - first factor of the second term</dd><dd><code>b2</code> - second factor of the second term</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a<sub>1</sub>&times;b<sub>1</sub> +
+ a<sub>2</sub>&times;b<sub>2</sub></dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double,%20double,%20double)"><code>linearCombination(double, double, double, double, double, double)</code></a>, 
+<a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double,%20double,%20double,%20double,%20double)"><code>linearCombination(double, double, double, double, double, double, double, double)</code></a></dd></dl>
+</li>
+</ul>
+<a name="linearCombination(double, double, double, double, double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>linearCombination</h4>
+<pre>public static&nbsp;double&nbsp;linearCombination(double&nbsp;a1,
+                       double&nbsp;b1,
+                       double&nbsp;a2,
+                       double&nbsp;b2,
+                       double&nbsp;a3,
+                       double&nbsp;b3)</pre>
+<div class="block">Compute a linear combination accurately.
  <p>
  This method computes a<sub>1</sub>&times;b<sub>1</sub> +
  a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub>
@@ -1208,30 +1328,28 @@ public static double <B>linearCombination</B>(double&nbsp;a1,
  href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
  Accurate Sum and Dot Product</a> by Takeshi Ogita,
  Siegfried M. Rump, and Shin'ichi Oishi published in SIAM J. Sci. Comput.
- </p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a1</CODE> - first factor of the first term<DD><CODE>b1</CODE> - second factor of the first term<DD><CODE>a2</CODE> - first factor of the second term<DD><CODE>b2</CODE> - second factor of the second term<DD><CODE>a3</CODE> - first factor of the third term<DD><CODE>b3</CODE> - second factor of the third term
-<DT><B>Returns:</B><DD>a<sub>1</sub>&times;b<sub>1</sub> +
- a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub><DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double)"><CODE>linearCombination(double, double, double, double)</CODE></A>, 
-<A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double, double, double, double, double)"><CODE>linearCombination(double, double, double, double, double, double, double, double)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="linearCombination(double, double, double, double, double, double, double, double)"><!-- --></A><H3>
-linearCombination</H3>
-<PRE>
-public static double <B>linearCombination</B>(double&nbsp;a1,
-                                       double&nbsp;b1,
-                                       double&nbsp;a2,
-                                       double&nbsp;b2,
-                                       double&nbsp;a3,
-                                       double&nbsp;b3,
-                                       double&nbsp;a4,
-                                       double&nbsp;b4)</PRE>
-<DL>
-<DD>Compute a linear combination accurately.
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a1</code> - first factor of the first term</dd><dd><code>b1</code> - second factor of the first term</dd><dd><code>a2</code> - first factor of the second term</dd><dd><code>b2</code> - second factor of the second term</dd><dd><code>a3</code> - first factor of the third term</dd><dd><code>b3</code> - second factor of the third term</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a<sub>1</sub>&times;b<sub>1</sub> +
+ a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub></dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double)"><code>linearCombination(double, double, double, double)</code></a>, 
+<a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double,%20double,%20double,%20double,%20double)"><code>linearCombination(double, double, double, double, double, double, double, double)</code></a></dd></dl>
+</li>
+</ul>
+<a name="linearCombination(double, double, double, double, double, double, double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>linearCombination</h4>
+<pre>public static&nbsp;double&nbsp;linearCombination(double&nbsp;a1,
+                       double&nbsp;b1,
+                       double&nbsp;a2,
+                       double&nbsp;b2,
+                       double&nbsp;a3,
+                       double&nbsp;b3,
+                       double&nbsp;a4,
+                       double&nbsp;b4)</pre>
+<div class="block">Compute a linear combination accurately.
  <p>
  This method computes a<sub>1</sub>&times;b<sub>1</sub> +
  a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub> +
@@ -1242,229 +1360,507 @@ public static double <B>linearCombination</B>(double&nbsp;a1,
  href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.2.1547">
  Accurate Sum and Dot Product</a> by Takeshi Ogita,
  Siegfried M. Rump, and Shin'ichi Oishi published in SIAM J. Sci. Comput.
- </p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a1</CODE> - first factor of the first term<DD><CODE>b1</CODE> - second factor of the first term<DD><CODE>a2</CODE> - first factor of the second term<DD><CODE>b2</CODE> - second factor of the second term<DD><CODE>a3</CODE> - first factor of the third term<DD><CODE>b3</CODE> - second factor of the third term<DD><CODE>a4</CODE> - first factor of the third term<DD><CODE>b4</CODE> - second factor of the third term
-<DT><B>Returns:</B><DD>a<sub>1</sub>&times;b<sub>1</sub> +
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a1</code> - first factor of the first term</dd><dd><code>b1</code> - second factor of the first term</dd><dd><code>a2</code> - first factor of the second term</dd><dd><code>b2</code> - second factor of the second term</dd><dd><code>a3</code> - first factor of the third term</dd><dd><code>b3</code> - second factor of the third term</dd><dd><code>a4</code> - first factor of the third term</dd><dd><code>b4</code> - second factor of the third term</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a<sub>1</sub>&times;b<sub>1</sub> +
  a<sub>2</sub>&times;b<sub>2</sub> + a<sub>3</sub>&times;b<sub>3</sub> +
- a<sub>4</sub>&times;b<sub>4</sub><DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double)"><CODE>linearCombination(double, double, double, double)</CODE></A>, 
-<A HREF="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double, double, double, double, double, double)"><CODE>linearCombination(double, double, double, double, double, double)</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equals(float[], float[])"><!-- --></A><H3>
-equals</H3>
-<PRE>
-public static boolean <B>equals</B>(float[]&nbsp;x,
-                             float[]&nbsp;y)</PRE>
-<DL>
-<DD>Returns true iff both arguments are null or have same dimensions and all
+ a<sub>4</sub>&times;b<sub>4</sub></dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double)"><code>linearCombination(double, double, double, double)</code></a>, 
+<a href="../../../../../org/apache/commons/math3/util/MathArrays.html#linearCombination(double,%20double,%20double,%20double,%20double,%20double)"><code>linearCombination(double, double, double, double, double, double)</code></a></dd></dl>
+</li>
+</ul>
+<a name="equals(float[], float[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public static&nbsp;boolean&nbsp;equals(float[]&nbsp;x,
+             float[]&nbsp;y)</pre>
+<div class="block">Returns true iff both arguments are null or have same dimensions and all
  their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equals(float, float)"><CODE>Precision.equals(float,float)</CODE></A>.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - first array<DD><CODE>y</CODE> - second array
-<DT><B>Returns:</B><DD>true if the values are both null or have same dimension
- and equal elements.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equalsIncludingNaN(float[], float[])"><!-- --></A><H3>
-equalsIncludingNaN</H3>
-<PRE>
-public static boolean <B>equalsIncludingNaN</B>(float[]&nbsp;x,
-                                         float[]&nbsp;y)</PRE>
-<DL>
-<DD>Returns true iff both arguments are null or have same dimensions and all
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equals(float,%20float)"><code>Precision.equals(float,float)</code></a>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - first array</dd><dd><code>y</code> - second array</dd>
+<dt><span class="strong">Returns:</span></dt><dd>true if the values are both null or have same dimension
+ and equal elements.</dd></dl>
+</li>
+</ul>
+<a name="equalsIncludingNaN(float[], float[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equalsIncludingNaN</h4>
+<pre>public static&nbsp;boolean&nbsp;equalsIncludingNaN(float[]&nbsp;x,
+                         float[]&nbsp;y)</pre>
+<div class="block">Returns true iff both arguments are null or have same dimensions and all
  their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double, double)"><CODE>this method</CODE></A>.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - first array<DD><CODE>y</CODE> - second array
-<DT><B>Returns:</B><DD>true if the values are both null or have same dimension and
- equal elements<DT><B>Since:</B></DT>
-  <DD>2.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equals(double[], double[])"><!-- --></A><H3>
-equals</H3>
-<PRE>
-public static boolean <B>equals</B>(double[]&nbsp;x,
-                             double[]&nbsp;y)</PRE>
-<DL>
-<DD>Returns <code>true</code> iff both arguments are <code>null</code> or have same
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double,%20double)"><code>this method</code></a>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - first array</dd><dd><code>y</code> - second array</dd>
+<dt><span class="strong">Returns:</span></dt><dd>true if the values are both null or have same dimension and
+ equal elements</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.2</dd></dl>
+</li>
+</ul>
+<a name="equals(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public static&nbsp;boolean&nbsp;equals(double[]&nbsp;x,
+             double[]&nbsp;y)</pre>
+<div class="block">Returns <code>true</code> iff both arguments are <code>null</code> or have same
  dimensions and all their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equals(double, double)"><CODE>Precision.equals(double,double)</CODE></A>.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - First array.<DD><CODE>y</CODE> - Second array.
-<DT><B>Returns:</B><DD><code>true</code> if the values are both <code>null</code> or have same
- dimension and equal elements.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equalsIncludingNaN(double[], double[])"><!-- --></A><H3>
-equalsIncludingNaN</H3>
-<PRE>
-public static boolean <B>equalsIncludingNaN</B>(double[]&nbsp;x,
-                                         double[]&nbsp;y)</PRE>
-<DL>
-<DD>Returns <code>true</code> iff both arguments are <code>null</code> or have same
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equals(double,%20double)"><code>Precision.equals(double,double)</code></a>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - First array.</dd><dd><code>y</code> - Second array.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the values are both <code>null</code> or have same
+ dimension and equal elements.</dd></dl>
+</li>
+</ul>
+<a name="equalsIncludingNaN(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equalsIncludingNaN</h4>
+<pre>public static&nbsp;boolean&nbsp;equalsIncludingNaN(double[]&nbsp;x,
+                         double[]&nbsp;y)</pre>
+<div class="block">Returns <code>true</code> iff both arguments are <code>null</code> or have same
  dimensions and all their elements are equal as defined by
- <A HREF="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double, double)"><CODE>this method</CODE></A>.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - First array.<DD><CODE>y</CODE> - Second array.
-<DT><B>Returns:</B><DD><code>true</code> if the values are both <code>null</code> or have same
- dimension and equal elements.<DT><B>Since:</B></DT>
-  <DD>2.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="normalizeArray(double[], double)"><!-- --></A><H3>
-normalizeArray</H3>
-<PRE>
-public static double[] <B>normalizeArray</B>(double[]&nbsp;values,
-                                      double&nbsp;normalizedSum)
-                               throws <A HREF="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</A>,
-                                      <A HREF="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</A></PRE>
-<DL>
-<DD>Normalizes an array to make it sum to a specified value.
- Returns the result of the transformation <pre>
+ <a href="../../../../../org/apache/commons/math3/util/Precision.html#equalsIncludingNaN(double,%20double)"><code>this method</code></a>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - First array.</dd><dd><code>y</code> - Second array.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the values are both <code>null</code> or have same
+ dimension and equal elements.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.2</dd></dl>
+</li>
+</ul>
+<a name="normalizeArray(double[], double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>normalizeArray</h4>
+<pre>public static&nbsp;double[]&nbsp;normalizeArray(double[]&nbsp;values,
+                      double&nbsp;normalizedSum)
+                               throws <a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a>,
+                                      <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Normalizes an array to make it sum to a specified value.
+ Returns the result of the transformation
+ <pre>
     x |-> x * normalizedSum / sum
  </pre>
  applied to each non-NaN element x of the input array, where sum is the
- sum of the non-NaN entries in the input array.</p>
-
- <p>Throws IllegalArgumentException if <code>normalizedSum</code> is infinite
+ sum of the non-NaN entries in the input array.
+ <p>
+ Throws IllegalArgumentException if <code>normalizedSum</code> is infinite
  or NaN and ArithmeticException if the input array contains any infinite elements
- or sums to 0.</p>
-
- <p>Ignores (i.e., copies unchanged to the output array) NaNs in the input array.</p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>values</CODE> - Input array to be normalized<DD><CODE>normalizedSum</CODE> - Target sum for the normalized array
-<DT><B>Returns:</B><DD>the normalized array.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</A></CODE> - if the input array contains infinite
- elements or sums to zero.
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</A></CODE> - if the target sum is infinite or <code>NaN</code>.<DT><B>Since:</B></DT>
-  <DD>2.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="buildArray(org.apache.commons.math3.Field, int)"><!-- --></A><H3>
-buildArray</H3>
-<PRE>
-public static &lt;T&gt; T[] <B>buildArray</B>(<A HREF="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</A>&lt;T&gt;&nbsp;field,
-                                 int&nbsp;length)</PRE>
-<DL>
-<DD>Build an array of elements.
+ or sums to 0.
  <p>
- Arrays are filled with field.getZero()
- </p>
-<P>
-<DD><DL>
-<DT><B>Type Parameters:</B><DD><CODE>T</CODE> - the type of the field elements<DT><B>Parameters:</B><DD><CODE>field</CODE> - field to which array elements belong<DD><CODE>length</CODE> - of the array
-<DT><B>Returns:</B><DD>a new array<DT><B>Since:</B></DT>
-  <DD>3.2</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="buildArray(org.apache.commons.math3.Field, int, int)"><!-- --></A><H3>
-buildArray</H3>
-<PRE>
-public static &lt;T&gt; T[][] <B>buildArray</B>(<A HREF="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</A>&lt;T&gt;&nbsp;field,
-                                   int&nbsp;rows,
-                                   int&nbsp;columns)</PRE>
-<DL>
-<DD>Build a double dimension  array of elements.
+ Ignores (i.e., copies unchanged to the output array) NaNs in the input array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>values</code> - Input array to be normalized</dd><dd><code>normalizedSum</code> - Target sum for the normalized array</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the normalized array.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if the input array contains infinite
+ elements or sums to zero.</dd>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></code> - if the target sum is infinite or <code>NaN</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>2.1</dd></dl>
+</li>
+</ul>
+<a name="buildArray(org.apache.commons.math3.Field, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildArray</h4>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;T[]&nbsp;buildArray(<a href="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</a>&lt;T&gt;&nbsp;field,
+                 int&nbsp;length)</pre>
+<div class="block">Build an array of elements.
  <p>
- Arrays are filled with field.getZero()
- </p>
-<P>
-<DD><DL>
-<DT><B>Type Parameters:</B><DD><CODE>T</CODE> - the type of the field elements<DT><B>Parameters:</B><DD><CODE>field</CODE> - field to which array elements belong<DD><CODE>rows</CODE> - number of rows in the array<DD><CODE>columns</CODE> - number of columns (may be negative to build partial
- arrays in the same way <code>new Field[rows][]</code> works)
-<DT><B>Returns:</B><DD>a new array<DT><B>Since:</B></DT>
-  <DD>3.2</DD>
-</DL>
-</DD>
-</DL>
+ Arrays are filled with field.getZero()</div>
+<dl><dt><span class="strong">Type Parameters:</span></dt><dd><code>T</code> - the type of the field elements</dd><dt><span class="strong">Parameters:</span></dt><dd><code>field</code> - field to which array elements belong</dd><dd><code>length</code> - of the array</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new array</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.2</dd></dl>
+</li>
+</ul>
+<a name="buildArray(org.apache.commons.math3.Field, int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildArray</h4>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;T[][]&nbsp;buildArray(<a href="../../../../../org/apache/commons/math3/Field.html" title="interface in org.apache.commons.math3">Field</a>&lt;T&gt;&nbsp;field,
+                   int&nbsp;rows,
+                   int&nbsp;columns)</pre>
+<div class="block">Build a double dimension  array of elements.
+ <p>
+ Arrays are filled with field.getZero()</div>
+<dl><dt><span class="strong">Type Parameters:</span></dt><dd><code>T</code> - the type of the field elements</dd><dt><span class="strong">Parameters:</span></dt><dd><code>field</code> - field to which array elements belong</dd><dd><code>rows</code> - number of rows in the array</dd><dd><code>columns</code> - number of columns (may be negative to build partial
+ arrays in the same way <code>new Field[rows][]</code> works)</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new array</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.2</dd></dl>
+</li>
+</ul>
+<a name="convolve(double[], double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>convolve</h4>
+<pre>public static&nbsp;double[]&nbsp;convolve(double[]&nbsp;x,
+                double[]&nbsp;h)
+                         throws <a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a>,
+                                <a href="../../../../../org/apache/commons/math3/exception/NoDataException.html" title="class in org.apache.commons.math3.exception">NoDataException</a></pre>
+<div class="block">Calculates the <a href="http://en.wikipedia.org/wiki/Convolution">
+ convolution</a> between two sequences.
+ <p>
+ The solution is obtained via straightforward computation of the
+ convolution sum (and not via FFT). Whenever the computation needs
+ an element that would be located at an index outside the input arrays,
+ the value is assumed to be zero.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - First sequence.
+ Typically, this sequence will represent an input signal to a system.</dd><dd><code>h</code> - Second sequence.
+ Typically, this sequence will represent the impulse response of the system.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the convolution of <code>x</code> and <code>h</code>.
+ This array's length will be <code>x.length + h.length - 1</code>.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if either <code>x</code> or <code>h</code> is <code>null</code>.</dd>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NoDataException.html" title="class in org.apache.commons.math3.exception">NoDataException</a></code> - if either <code>x</code> or <code>h</code> is empty.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd></dl>
+</li>
+</ul>
+<a name="shuffle(int[], int, org.apache.commons.math3.util.MathArrays.Position)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>shuffle</h4>
+<pre>public static&nbsp;void&nbsp;shuffle(int[]&nbsp;list,
+           int&nbsp;start,
+           <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html" title="enum in org.apache.commons.math3.util">MathArrays.Position</a>&nbsp;pos)</pre>
+<div class="block">Shuffle the entries of the given array.
+ The <code>start</code> and <code>pos</code> parameters select which portion
+ of the array is randomized and which is left untouched.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>list</code> - Array whose entries will be shuffled (in-place).</dd><dd><code>start</code> - Index at which shuffling begins.</dd><dd><code>pos</code> - Shuffling is performed for index positions between
+ <code>start</code> and either the end (if <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html#TAIL"><code>MathArrays.Position.TAIL</code></a>)
+ or the beginning (if <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html#HEAD"><code>MathArrays.Position.HEAD</code></a>) of the array.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#shuffle(int[],%20int,%20org.apache.commons.math3.util.MathArrays.Position,%20org.apache.commons.math3.random.RandomGenerator)"><code>shuffle(int[],int,Position,RandomGenerator)</code></a></dd></dl>
+</li>
+</ul>
+<a name="shuffle(int[], int, org.apache.commons.math3.util.MathArrays.Position, org.apache.commons.math3.random.RandomGenerator)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>shuffle</h4>
+<pre>public static&nbsp;void&nbsp;shuffle(int[]&nbsp;list,
+           int&nbsp;start,
+           <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html" title="enum in org.apache.commons.math3.util">MathArrays.Position</a>&nbsp;pos,
+           <a href="../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;rng)</pre>
+<div class="block">Shuffle the entries of the given array, using the
+ <a href="http://en.wikipedia.org/wiki/Fisher–Yates_shuffle#The_modern_algorithm">
+ Fisher–Yates</a> algorithm.
+ The <code>start</code> and <code>pos</code> parameters select which portion
+ of the array is randomized and which is left untouched.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>list</code> - Array whose entries will be shuffled (in-place).</dd><dd><code>start</code> - Index at which shuffling begins.</dd><dd><code>pos</code> - Shuffling is performed for index positions between
+ <code>start</code> and either the end (if <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html#TAIL"><code>MathArrays.Position.TAIL</code></a>)
+ or the beginning (if <a href="../../../../../org/apache/commons/math3/util/MathArrays.Position.html#HEAD"><code>MathArrays.Position.HEAD</code></a>) of the array.</dd><dd><code>rng</code> - Random number generator.</dd></dl>
+</li>
+</ul>
+<a name="shuffle(int[], org.apache.commons.math3.random.RandomGenerator)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>shuffle</h4>
+<pre>public static&nbsp;void&nbsp;shuffle(int[]&nbsp;list,
+           <a href="../../../../../org/apache/commons/math3/random/RandomGenerator.html" title="interface in org.apache.commons.math3.random">RandomGenerator</a>&nbsp;rng)</pre>
+<div class="block">Shuffle the entries of the given array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>list</code> - Array whose entries will be shuffled (in-place).</dd><dd><code>rng</code> - Random number generator.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#shuffle(int[],%20int,%20org.apache.commons.math3.util.MathArrays.Position,%20org.apache.commons.math3.random.RandomGenerator)"><code>shuffle(int[],int,Position,RandomGenerator)</code></a></dd></dl>
+</li>
+</ul>
+<a name="shuffle(int[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>shuffle</h4>
+<pre>public static&nbsp;void&nbsp;shuffle(int[]&nbsp;list)</pre>
+<div class="block">Shuffle the entries of the given array.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>list</code> - Array whose entries will be shuffled (in-place).</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/MathArrays.html#shuffle(int[],%20int,%20org.apache.commons.math3.util.MathArrays.Position,%20org.apache.commons.math3.random.RandomGenerator)"><code>shuffle(int[],int,Position,RandomGenerator)</code></a></dd></dl>
+</li>
+</ul>
+<a name="natural(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>natural</h4>
+<pre>public static&nbsp;int[]&nbsp;natural(int&nbsp;n)</pre>
+<div class="block">Returns an array representing the natural number <code>n</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>n</code> - Natural number.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>an array whose entries are the numbers 0, 1, ..., <code>n</code>-1.
+ If <code>n == 0</code>, the returned array is empty.</dd></dl>
+</li>
+</ul>
+<a name="sequence(int, int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sequence</h4>
+<pre>public static&nbsp;int[]&nbsp;sequence(int&nbsp;size,
+             int&nbsp;start,
+             int&nbsp;stride)</pre>
+<div class="block">Returns an array of <code>size</code> integers starting at <code>start</code>,
+ skipping <code>stride</code> numbers.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>size</code> - Natural number.</dd><dd><code>start</code> - Natural number.</dd><dd><code>stride</code> - Natural number.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>an array whose entries are the numbers
+ <code>start, start + stride, ..., start + (size - 1) * stride</code>.
+ If <code>size == 0</code>, the returned array is empty.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="verifyValues(double[], int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>verifyValues</h4>
+<pre>public static&nbsp;boolean&nbsp;verifyValues(double[]&nbsp;values,
+                   int&nbsp;begin,
+                   int&nbsp;length)
+                            throws <a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></pre>
+<div class="block">This method is used
+ to verify that the input parameters designate a subarray of positive length.
+ <p>
+ <ul>
+ <li>returns <code>true</code> iff the parameters designate a subarray of
+ positive length</li>
+ <li>throws <code>MathIllegalArgumentException</code> if the array is null or
+ or the indices are invalid</li>
+ <li>returns <code>false</li> if the array is non-null, but
+ <code>length</code> is 0.
+ </ul></p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>values</code> - the input array</dd><dd><code>begin</code> - index of the first array element to include</dd><dd><code>length</code> - the number of elements to include</dd>
+<dt><span class="strong">Returns:</span></dt><dd>true if the parameters are valid and designate a subarray of positive length</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></code> - if the indices are invalid or the array is null</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd></dl>
+</li>
+</ul>
+<a name="verifyValues(double[], int, int, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>verifyValues</h4>
+<pre>public static&nbsp;boolean&nbsp;verifyValues(double[]&nbsp;values,
+                   int&nbsp;begin,
+                   int&nbsp;length,
+                   boolean&nbsp;allowEmpty)
+                            throws <a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></pre>
+<div class="block">This method is used
+ to verify that the input parameters designate a subarray of positive length.
+ <p>
+ <ul>
+ <li>returns <code>true</code> iff the parameters designate a subarray of
+ non-negative length</li>
+ <li>throws <code>IllegalArgumentException</code> if the array is null or
+ or the indices are invalid</li>
+ <li>returns <code>false</li> if the array is non-null, but
+ <code>length</code> is 0 unless <code>allowEmpty</code> is <code>true</code>
+ </ul></p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>values</code> - the input array</dd><dd><code>begin</code> - index of the first array element to include</dd><dd><code>length</code> - the number of elements to include</dd><dd><code>allowEmpty</code> - if <code>true</code> then zero length arrays are allowed</dd>
+<dt><span class="strong">Returns:</span></dt><dd>true if the parameters are valid</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></code> - if the indices are invalid or the array is null</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd></dl>
+</li>
+</ul>
+<a name="verifyValues(double[], double[], int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>verifyValues</h4>
+<pre>public static&nbsp;boolean&nbsp;verifyValues(double[]&nbsp;values,
+                   double[]&nbsp;weights,
+                   int&nbsp;begin,
+                   int&nbsp;length)
+                            throws <a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></pre>
+<div class="block">This method is used
+ to verify that the begin and length parameters designate a subarray of positive length
+ and the weights are all non-negative, non-NaN, finite, and not all zero.
+ <p>
+ <ul>
+ <li>returns <code>true</code> iff the parameters designate a subarray of
+ positive length and the weights array contains legitimate values.</li>
+ <li>throws <code>IllegalArgumentException</code> if any of the following are true:
+ <ul><li>the values array is null</li>
+     <li>the weights array is null</li>
+     <li>the weights array does not have the same length as the values array</li>
+     <li>the weights array contains one or more infinite values</li>
+     <li>the weights array contains one or more NaN values</li>
+     <li>the weights array contains negative values</li>
+     <li>the start and length arguments do not determine a valid array</li></ul>
+ </li>
+ <li>returns <code>false</li> if the array is non-null, but
+ <code>length</code> is 0.
+ </ul></p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>values</code> - the input array</dd><dd><code>weights</code> - the weights array</dd><dd><code>begin</code> - index of the first array element to include</dd><dd><code>length</code> - the number of elements to include</dd>
+<dt><span class="strong">Returns:</span></dt><dd>true if the parameters are valid and designate a subarray of positive length</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></code> - if the indices are invalid or the array is null</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd></dl>
+</li>
+</ul>
+<a name="verifyValues(double[], double[], int, int, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>verifyValues</h4>
+<pre>public static&nbsp;boolean&nbsp;verifyValues(double[]&nbsp;values,
+                   double[]&nbsp;weights,
+                   int&nbsp;begin,
+                   int&nbsp;length,
+                   boolean&nbsp;allowEmpty)
+                            throws <a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></pre>
+<div class="block">This method is used
+ to verify that the begin and length parameters designate a subarray of positive length
+ and the weights are all non-negative, non-NaN, finite, and not all zero.
+ <p>
+ <ul>
+ <li>returns <code>true</code> iff the parameters designate a subarray of
+ non-negative length and the weights array contains legitimate values.</li>
+ <li>throws <code>MathIllegalArgumentException</code> if any of the following are true:
+ <ul><li>the values array is null</li>
+     <li>the weights array is null</li>
+     <li>the weights array does not have the same length as the values array</li>
+     <li>the weights array contains one or more infinite values</li>
+     <li>the weights array contains one or more NaN values</li>
+     <li>the weights array contains negative values</li>
+     <li>the start and length arguments do not determine a valid array</li></ul>
+ </li>
+ <li>returns <code>false</li> if the array is non-null, but
+ <code>length</code> is 0 unless <code>allowEmpty</code> is <code>true</code>.
+ </ul></p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>values</code> - the input array.</dd><dd><code>weights</code> - the weights array.</dd><dd><code>begin</code> - index of the first array element to include.</dd><dd><code>length</code> - the number of elements to include.</dd><dd><code>allowEmpty</code> - if <code>true</code> than allow zero length arrays to pass.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the parameters are valid.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if either of the arrays are null</dd>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathIllegalArgumentException.html" title="class in org.apache.commons.math3.exception">MathIllegalArgumentException</a></code> - if the array indices are not valid,
+ the weights array contains NaN, infinite or negative elements, or there
+ are no positive weights.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.3</dd></dl>
+</li>
+</ul>
+<a name="concatenate(double[]...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>concatenate</h4>
+<pre>public static&nbsp;double[]&nbsp;concatenate(double[]...&nbsp;x)</pre>
+<div class="block">Concatenates a sequence of arrays. The return array consists of the
+ entries of the input arrays concatenated in the order they appear in
+ the argument list.  Null arrays cause NullPointerExceptions; zero
+ length arrays are allowed (contributing nothing to the output array).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - list of double[] arrays to concatenate</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new array consisting of the entries of the argument arrays</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/NullPointerException.html?is-external=true" title="class or interface in java.lang">NullPointerException</a></code> - if any of the arrays are null</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+<a name="unique(double[])">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>unique</h4>
+<pre>public static&nbsp;double[]&nbsp;unique(double[]&nbsp;data)</pre>
+<div class="block">Returns an array consisting of the unique values in <code>data</code>.
+ The return array is sorted in descending order.  Empty arrays
+ are allowed, but null arrays result in NullPointerException.
+ Infinities are allowed.  NaN values are allowed with maximum
+ sort order - i.e., if there are NaN values in <code>data</code>,
+ <code>Double.NaN</code> will be the first element of the output array,
+ even if the array also contains <code>Double.POSITIVE_INFINITY</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - array to scan</dd>
+<dt><span class="strong">Returns:</span></dt><dd>descending list of values included in the input array</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/NullPointerException.html?is-external=true" title="class or interface in java.lang">NullPointerException</a></code> - if data is null</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/MathArrays.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/IterationManager.html" title="class in org.apache.commons.math3.util"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/util/MathArrays.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="MathArrays.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/MathArrays.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/util/KthSelector.html" title="class in org.apache.commons.math3.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/util/MathArrays.html" target="_top">Frames</a></li>
+<li><a href="MathArrays.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested_class_summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

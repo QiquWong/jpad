@@ -1,169 +1,86 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-org.apache.commons.math3.linear (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
-
-
-</HEAD>
-
-<BODY BGCOLOR="white">
-<FONT size="+1" CLASS="FrameTitleFont">
-<A HREF="../../../../../org/apache/commons/math3/linear/package-summary.html" target="classFrame">org.apache.commons.math3.linear</A></FONT>
-<TABLE BORDER="0" WIDTH="100%" SUMMARY="">
-<TR>
-<TD NOWRAP><FONT size="+1" CLASS="FrameHeadingFont">
-Interfaces</FONT>&nbsp;
-<FONT CLASS="FrameItemFont">
-<BR>
-<A HREF="AnyMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>AnyMatrix</I></A>
-<BR>
-<A HREF="DecompositionSolver.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>DecompositionSolver</I></A>
-<BR>
-<A HREF="FieldDecompositionSolver.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>FieldDecompositionSolver</I></A>
-<BR>
-<A HREF="FieldMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>FieldMatrix</I></A>
-<BR>
-<A HREF="FieldMatrixChangingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>FieldMatrixChangingVisitor</I></A>
-<BR>
-<A HREF="FieldMatrixPreservingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>FieldMatrixPreservingVisitor</I></A>
-<BR>
-<A HREF="FieldVector.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>FieldVector</I></A>
-<BR>
-<A HREF="RealMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>RealMatrix</I></A>
-<BR>
-<A HREF="RealMatrixChangingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>RealMatrixChangingVisitor</I></A>
-<BR>
-<A HREF="RealMatrixPreservingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>RealMatrixPreservingVisitor</I></A>
-<BR>
-<A HREF="RealVectorChangingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>RealVectorChangingVisitor</I></A>
-<BR>
-<A HREF="RealVectorPreservingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>RealVectorPreservingVisitor</I></A>
-<BR>
-<A HREF="SparseRealMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><I>SparseRealMatrix</I></A></FONT></TD>
-</TR>
-</TABLE>
-
-
-<TABLE BORDER="0" WIDTH="100%" SUMMARY="">
-<TR>
-<TD NOWRAP><FONT size="+1" CLASS="FrameHeadingFont">
-Classes</FONT>&nbsp;
-<FONT CLASS="FrameItemFont">
-<BR>
-<A HREF="AbstractFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">AbstractFieldMatrix</A>
-<BR>
-<A HREF="AbstractRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">AbstractRealMatrix</A>
-<BR>
-<A HREF="Array2DRowFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">Array2DRowFieldMatrix</A>
-<BR>
-<A HREF="Array2DRowRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">Array2DRowRealMatrix</A>
-<BR>
-<A HREF="ArrayFieldVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">ArrayFieldVector</A>
-<BR>
-<A HREF="ArrayRealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">ArrayRealVector</A>
-<BR>
-<A HREF="BlockFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">BlockFieldMatrix</A>
-<BR>
-<A HREF="BlockRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">BlockRealMatrix</A>
-<BR>
-<A HREF="CholeskyDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">CholeskyDecomposition</A>
-<BR>
-<A HREF="ConjugateGradient.html" title="class in org.apache.commons.math3.linear" target="classFrame">ConjugateGradient</A>
-<BR>
-<A HREF="DefaultFieldMatrixChangingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultFieldMatrixChangingVisitor</A>
-<BR>
-<A HREF="DefaultFieldMatrixPreservingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultFieldMatrixPreservingVisitor</A>
-<BR>
-<A HREF="DefaultIterativeLinearSolverEvent.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultIterativeLinearSolverEvent</A>
-<BR>
-<A HREF="DefaultRealMatrixChangingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultRealMatrixChangingVisitor</A>
-<BR>
-<A HREF="DefaultRealMatrixPreservingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultRealMatrixPreservingVisitor</A>
-<BR>
-<A HREF="DiagonalMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">DiagonalMatrix</A>
-<BR>
-<A HREF="EigenDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">EigenDecomposition</A>
-<BR>
-<A HREF="FieldLUDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">FieldLUDecomposition</A>
-<BR>
-<A HREF="IterativeLinearSolver.html" title="class in org.apache.commons.math3.linear" target="classFrame">IterativeLinearSolver</A>
-<BR>
-<A HREF="IterativeLinearSolverEvent.html" title="class in org.apache.commons.math3.linear" target="classFrame">IterativeLinearSolverEvent</A>
-<BR>
-<A HREF="JacobiPreconditioner.html" title="class in org.apache.commons.math3.linear" target="classFrame">JacobiPreconditioner</A>
-<BR>
-<A HREF="LUDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">LUDecomposition</A>
-<BR>
-<A HREF="MatrixUtils.html" title="class in org.apache.commons.math3.linear" target="classFrame">MatrixUtils</A>
-<BR>
-<A HREF="OpenMapRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">OpenMapRealMatrix</A>
-<BR>
-<A HREF="OpenMapRealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">OpenMapRealVector</A>
-<BR>
-<A HREF="PreconditionedIterativeLinearSolver.html" title="class in org.apache.commons.math3.linear" target="classFrame">PreconditionedIterativeLinearSolver</A>
-<BR>
-<A HREF="QRDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">QRDecomposition</A>
-<BR>
-<A HREF="RealLinearOperator.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealLinearOperator</A>
-<BR>
-<A HREF="RealMatrixFormat.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealMatrixFormat</A>
-<BR>
-<A HREF="RealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealVector</A>
-<BR>
-<A HREF="RealVectorFormat.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealVectorFormat</A>
-<BR>
-<A HREF="RectangularCholeskyDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">RectangularCholeskyDecomposition</A>
-<BR>
-<A HREF="RRQRDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">RRQRDecomposition</A>
-<BR>
-<A HREF="SingularValueDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">SingularValueDecomposition</A>
-<BR>
-<A HREF="SparseFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">SparseFieldMatrix</A>
-<BR>
-<A HREF="SparseFieldVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">SparseFieldVector</A>
-<BR>
-<A HREF="SparseRealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">SparseRealVector</A>
-<BR>
-<A HREF="SymmLQ.html" title="class in org.apache.commons.math3.linear" target="classFrame">SymmLQ</A></FONT></TD>
-</TR>
-</TABLE>
-
-
-<TABLE BORDER="0" WIDTH="100%" SUMMARY="">
-<TR>
-<TD NOWRAP><FONT size="+1" CLASS="FrameHeadingFont">
-Exceptions</FONT>&nbsp;
-<FONT CLASS="FrameItemFont">
-<BR>
-<A HREF="IllConditionedOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">IllConditionedOperatorException</A>
-<BR>
-<A HREF="MatrixDimensionMismatchException.html" title="class in org.apache.commons.math3.linear" target="classFrame">MatrixDimensionMismatchException</A>
-<BR>
-<A HREF="NonPositiveDefiniteMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonPositiveDefiniteMatrixException</A>
-<BR>
-<A HREF="NonPositiveDefiniteOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonPositiveDefiniteOperatorException</A>
-<BR>
-<A HREF="NonSelfAdjointOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSelfAdjointOperatorException</A>
-<BR>
-<A HREF="NonSquareMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSquareMatrixException</A>
-<BR>
-<A HREF="NonSquareOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSquareOperatorException</A>
-<BR>
-<A HREF="NonSymmetricMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSymmetricMatrixException</A>
-<BR>
-<A HREF="SingularMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">SingularMatrixException</A>
-<BR>
-<A HREF="SingularOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">SingularOperatorException</A></FONT></TD>
-</TR>
-</TABLE>
-
-
-</BODY>
-</HTML>
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>org.apache.commons.math3.linear (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<h1 class="bar"><a href="../../../../../org/apache/commons/math3/linear/package-summary.html" target="classFrame">org.apache.commons.math3.linear</a></h1>
+<div class="indexContainer">
+<h2 title="Interfaces">Interfaces</h2>
+<ul title="Interfaces">
+<li><a href="AnyMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>AnyMatrix</i></a></li>
+<li><a href="DecompositionSolver.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>DecompositionSolver</i></a></li>
+<li><a href="FieldDecompositionSolver.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>FieldDecompositionSolver</i></a></li>
+<li><a href="FieldMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>FieldMatrix</i></a></li>
+<li><a href="FieldMatrixChangingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>FieldMatrixChangingVisitor</i></a></li>
+<li><a href="FieldMatrixPreservingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>FieldMatrixPreservingVisitor</i></a></li>
+<li><a href="FieldVector.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>FieldVector</i></a></li>
+<li><a href="FieldVectorChangingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>FieldVectorChangingVisitor</i></a></li>
+<li><a href="FieldVectorPreservingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>FieldVectorPreservingVisitor</i></a></li>
+<li><a href="RealMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>RealMatrix</i></a></li>
+<li><a href="RealMatrixChangingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>RealMatrixChangingVisitor</i></a></li>
+<li><a href="RealMatrixPreservingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>RealMatrixPreservingVisitor</i></a></li>
+<li><a href="RealVectorChangingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>RealVectorChangingVisitor</i></a></li>
+<li><a href="RealVectorPreservingVisitor.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>RealVectorPreservingVisitor</i></a></li>
+<li><a href="SparseRealMatrix.html" title="interface in org.apache.commons.math3.linear" target="classFrame"><i>SparseRealMatrix</i></a></li>
+</ul>
+<h2 title="Classes">Classes</h2>
+<ul title="Classes">
+<li><a href="AbstractFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">AbstractFieldMatrix</a></li>
+<li><a href="AbstractRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">AbstractRealMatrix</a></li>
+<li><a href="Array2DRowFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">Array2DRowFieldMatrix</a></li>
+<li><a href="Array2DRowRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">Array2DRowRealMatrix</a></li>
+<li><a href="ArrayFieldVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">ArrayFieldVector</a></li>
+<li><a href="ArrayRealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">ArrayRealVector</a></li>
+<li><a href="BlockFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">BlockFieldMatrix</a></li>
+<li><a href="BlockRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">BlockRealMatrix</a></li>
+<li><a href="CholeskyDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">CholeskyDecomposition</a></li>
+<li><a href="ConjugateGradient.html" title="class in org.apache.commons.math3.linear" target="classFrame">ConjugateGradient</a></li>
+<li><a href="DefaultFieldMatrixChangingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultFieldMatrixChangingVisitor</a></li>
+<li><a href="DefaultFieldMatrixPreservingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultFieldMatrixPreservingVisitor</a></li>
+<li><a href="DefaultIterativeLinearSolverEvent.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultIterativeLinearSolverEvent</a></li>
+<li><a href="DefaultRealMatrixChangingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultRealMatrixChangingVisitor</a></li>
+<li><a href="DefaultRealMatrixPreservingVisitor.html" title="class in org.apache.commons.math3.linear" target="classFrame">DefaultRealMatrixPreservingVisitor</a></li>
+<li><a href="DiagonalMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">DiagonalMatrix</a></li>
+<li><a href="EigenDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">EigenDecomposition</a></li>
+<li><a href="FieldLUDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">FieldLUDecomposition</a></li>
+<li><a href="IterativeLinearSolver.html" title="class in org.apache.commons.math3.linear" target="classFrame">IterativeLinearSolver</a></li>
+<li><a href="IterativeLinearSolverEvent.html" title="class in org.apache.commons.math3.linear" target="classFrame">IterativeLinearSolverEvent</a></li>
+<li><a href="JacobiPreconditioner.html" title="class in org.apache.commons.math3.linear" target="classFrame">JacobiPreconditioner</a></li>
+<li><a href="LUDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">LUDecomposition</a></li>
+<li><a href="MatrixUtils.html" title="class in org.apache.commons.math3.linear" target="classFrame">MatrixUtils</a></li>
+<li><a href="OpenMapRealMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">OpenMapRealMatrix</a></li>
+<li><a href="OpenMapRealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">OpenMapRealVector</a></li>
+<li><a href="PreconditionedIterativeLinearSolver.html" title="class in org.apache.commons.math3.linear" target="classFrame">PreconditionedIterativeLinearSolver</a></li>
+<li><a href="QRDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">QRDecomposition</a></li>
+<li><a href="RealLinearOperator.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealLinearOperator</a></li>
+<li><a href="RealMatrixFormat.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealMatrixFormat</a></li>
+<li><a href="RealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealVector</a></li>
+<li><a href="RealVectorFormat.html" title="class in org.apache.commons.math3.linear" target="classFrame">RealVectorFormat</a></li>
+<li><a href="RectangularCholeskyDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">RectangularCholeskyDecomposition</a></li>
+<li><a href="RRQRDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">RRQRDecomposition</a></li>
+<li><a href="SingularValueDecomposition.html" title="class in org.apache.commons.math3.linear" target="classFrame">SingularValueDecomposition</a></li>
+<li><a href="SparseFieldMatrix.html" title="class in org.apache.commons.math3.linear" target="classFrame">SparseFieldMatrix</a></li>
+<li><a href="SparseFieldVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">SparseFieldVector</a></li>
+<li><a href="SparseRealVector.html" title="class in org.apache.commons.math3.linear" target="classFrame">SparseRealVector</a></li>
+<li><a href="SymmLQ.html" title="class in org.apache.commons.math3.linear" target="classFrame">SymmLQ</a></li>
+</ul>
+<h2 title="Exceptions">Exceptions</h2>
+<ul title="Exceptions">
+<li><a href="IllConditionedOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">IllConditionedOperatorException</a></li>
+<li><a href="MatrixDimensionMismatchException.html" title="class in org.apache.commons.math3.linear" target="classFrame">MatrixDimensionMismatchException</a></li>
+<li><a href="NonPositiveDefiniteMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonPositiveDefiniteMatrixException</a></li>
+<li><a href="NonPositiveDefiniteOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonPositiveDefiniteOperatorException</a></li>
+<li><a href="NonSelfAdjointOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSelfAdjointOperatorException</a></li>
+<li><a href="NonSquareMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSquareMatrixException</a></li>
+<li><a href="NonSquareOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSquareOperatorException</a></li>
+<li><a href="NonSymmetricMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">NonSymmetricMatrixException</a></li>
+<li><a href="SingularMatrixException.html" title="class in org.apache.commons.math3.linear" target="classFrame">SingularMatrixException</a></li>
+<li><a href="SingularOperatorException.html" title="class in org.apache.commons.math3.linear" target="classFrame">SingularOperatorException</a></li>
+</ul>
+</div>
+</body>
+</html>

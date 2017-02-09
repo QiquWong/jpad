@@ -1,1098 +1,895 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-Quaternion (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Quaternion (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Quaternion (Commons Math 3.2 API)";
+        parent.document.title="Quaternion (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Quaternion.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/ComplexUtils.html" title="class in org.apache.commons.math3.complex"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/RootsOfUnity.html" title="class in org.apache.commons.math3.complex"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/complex/Quaternion.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Quaternion.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Quaternion.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/complex/ComplexUtils.html" title="class in org.apache.commons.math3.complex"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/complex/RootsOfUnity.html" title="class in org.apache.commons.math3.complex"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/complex/Quaternion.html" target="_top">Frames</a></li>
+<li><a href="Quaternion.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.complex</FONT>
-<BR>
-Class Quaternion</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.apache.commons.math3.complex.Quaternion</B>
-</PRE>
-<DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A></DD>
-</DL>
-<HR>
-<DL>
-<DT><PRE>public final class <B>Quaternion</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A><DT>implements <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A></DL>
-</PRE>
-
-<P>
-This class implements <a href="http://mathworld.wolfram.com/Quaternion.html">
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.complex</div>
+<h2 title="Class Quaternion" class="title">Class Quaternion</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li>org.apache.commons.math3.complex.Quaternion</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a></dd>
+</dl>
+<hr>
+<br>
+<pre>public final class <span class="strong">Quaternion</span>
+extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>
+implements <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a></pre>
+<div class="block">This class implements <a href="http://mathworld.wolfram.com/Quaternion.html">
  quaternions</a> (Hamilton's hypercomplex numbers).
  <br/>
- Instance of this class are guaranteed to be immutable.
-<P>
-
-<P>
-<DL>
-<DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-<DT><B>Version:</B></DT>
-  <DD>$Id: Quaternion.java 1421249 2012-12-13 12:32:03Z erans $</DD>
-<DT><B>See Also:</B><DD><A HREF="../../../../../serialized-form.html#org.apache.commons.math3.complex.Quaternion">Serialized Form</A></DL>
-<HR>
-
-<P>
+ Instance of this class are guaranteed to be immutable.</div>
+<dl><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../serialized-form.html#org.apache.commons.math3.complex.Quaternion">Serialized Form</a></dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- =========== FIELD SUMMARY =========== -->
-
-<A NAME="field_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Field Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#I">I</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#IDENTITY">IDENTITY</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Identity quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#J">J</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;j</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#K">K</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#ZERO">ZERO</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Zero quaternion.</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#I">I</a></strong></code>
+<div class="block">i</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#IDENTITY">IDENTITY</a></strong></code>
+<div class="block">Identity quaternion.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#J">J</a></strong></code>
+<div class="block">j</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#K">K</a></strong></code>
+<div class="block">k</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#ZERO">ZERO</a></strong></code>
+<div class="block">Zero quaternion.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#Quaternion(double[])">Quaternion</A></B>(double[]&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Builds a pure quaternion from a vector (assuming that the scalar
- part is zero).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#Quaternion(double, double[])">Quaternion</A></B>(double&nbsp;scalar,
-           double[]&nbsp;v)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Builds a quaternion from scalar and vector parts.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#Quaternion(double, double, double, double)">Quaternion</A></B>(double&nbsp;a,
-           double&nbsp;b,
-           double&nbsp;c,
-           double&nbsp;d)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Builds a quaternion from its components.</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#Quaternion(double[])">Quaternion</a></strong>(double[]&nbsp;v)</code>
+<div class="block">Builds a pure quaternion from a vector (assuming that the scalar
+ part is zero).</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#Quaternion(double,%20double[])">Quaternion</a></strong>(double&nbsp;scalar,
+          double[]&nbsp;v)</code>
+<div class="block">Builds a quaternion from scalar and vector parts.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#Quaternion(double,%20double,%20double,%20double)">Quaternion</a></strong>(double&nbsp;a,
+          double&nbsp;b,
+          double&nbsp;c,
+          double&nbsp;d)</code>
+<div class="block">Builds a quaternion from its components.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#add(org.apache.commons.math3.complex.Quaternion)">add</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the sum of the instance and another quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#add(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">add</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-    <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the sum of two quaternions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#dotProduct(org.apache.commons.math3.complex.Quaternion)">dotProduct</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the dot-product of the instance by a quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#dotProduct(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">dotProduct</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-           <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the dot-product of two quaternions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#equals(java.lang.Object)">equals</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;other)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#equals(org.apache.commons.math3.complex.Quaternion, double)">equals</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q,
-       double&nbsp;eps)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks whether this instance is equal to another quaternion
- within a given tolerance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getConjugate()">getConjugate</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the conjugate quaternion of the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getInverse()">getInverse</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the inverse of this instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getNorm()">getNorm</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the norm of the quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getPositivePolarForm()">getPositivePolarForm</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the polar form of the quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ0()">getQ0</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the first component of the quaternion (scalar part).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ1()">getQ1</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the second component of the quaternion (first component
- of the vector part).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ2()">getQ2</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the third component of the quaternion (second component
- of the vector part).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ3()">getQ3</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the fourth component of the quaternion (third component
- of the vector part).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getScalarPart()">getScalarPart</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the scalar part of the quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getVectorPart()">getVectorPart</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gets the three components of the vector part of the quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#hashCode()">hashCode</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#isPureQuaternion(double)">isPureQuaternion</A></B>(double&nbsp;eps)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks whether the instance is a pure quaternion within a given
- tolerance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#isUnitQuaternion(double)">isUnitQuaternion</A></B>(double&nbsp;eps)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks whether the instance is a unit quaternion within a given
- tolerance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#multiply(double)">multiply</A></B>(double&nbsp;alpha)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Multiplies the instance by a scalar.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#multiply(org.apache.commons.math3.complex.Quaternion)">multiply</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the Hamilton product of the instance by a quaternion.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#multiply(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">multiply</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-         <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the Hamilton product of two quaternions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#normalize()">normalize</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the normalized quaternion (the versor of the instance).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#subtract(org.apache.commons.math3.complex.Quaternion)">subtract</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subtracts a quaternion from the instance.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#subtract(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">subtract</A></B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-         <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subtracts two quaternions.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#toString()">toString</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#add(org.apache.commons.math3.complex.Quaternion)">add</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</code>
+<div class="block">Computes the sum of the instance and another quaternion.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#add(org.apache.commons.math3.complex.Quaternion,%20org.apache.commons.math3.complex.Quaternion)">add</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+   <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</code>
+<div class="block">Computes the sum of two quaternions.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#dotProduct(org.apache.commons.math3.complex.Quaternion)">dotProduct</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</code>
+<div class="block">Computes the dot-product of the instance by a quaternion.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#dotProduct(org.apache.commons.math3.complex.Quaternion,%20org.apache.commons.math3.complex.Quaternion)">dotProduct</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+          <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</code>
+<div class="block">Computes the dot-product of two quaternions.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#equals(java.lang.Object)">equals</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;other)</code></td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#equals(org.apache.commons.math3.complex.Quaternion,%20double)">equals</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q,
+      double&nbsp;eps)</code>
+<div class="block">Checks whether this instance is equal to another quaternion
+ within a given tolerance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getConjugate()">getConjugate</a></strong>()</code>
+<div class="block">Returns the conjugate quaternion of the instance.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getInverse()">getInverse</a></strong>()</code>
+<div class="block">Returns the inverse of this instance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getNorm()">getNorm</a></strong>()</code>
+<div class="block">Computes the norm of the quaternion.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getPositivePolarForm()">getPositivePolarForm</a></strong>()</code>
+<div class="block">Returns the polar form of the quaternion.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ0()">getQ0</a></strong>()</code>
+<div class="block">Gets the first component of the quaternion (scalar part).</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ1()">getQ1</a></strong>()</code>
+<div class="block">Gets the second component of the quaternion (first component
+ of the vector part).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ2()">getQ2</a></strong>()</code>
+<div class="block">Gets the third component of the quaternion (second component
+ of the vector part).</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ3()">getQ3</a></strong>()</code>
+<div class="block">Gets the fourth component of the quaternion (third component
+ of the vector part).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getScalarPart()">getScalarPart</a></strong>()</code>
+<div class="block">Gets the scalar part of the quaternion.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getVectorPart()">getVectorPart</a></strong>()</code>
+<div class="block">Gets the three components of the vector part of the quaternion.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#hashCode()">hashCode</a></strong>()</code></td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#isPureQuaternion(double)">isPureQuaternion</a></strong>(double&nbsp;eps)</code>
+<div class="block">Checks whether the instance is a pure quaternion within a given
+ tolerance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#isUnitQuaternion(double)">isUnitQuaternion</a></strong>(double&nbsp;eps)</code>
+<div class="block">Checks whether the instance is a unit quaternion within a given
+ tolerance.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#multiply(double)">multiply</a></strong>(double&nbsp;alpha)</code>
+<div class="block">Multiplies the instance by a scalar.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#multiply(org.apache.commons.math3.complex.Quaternion)">multiply</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</code>
+<div class="block">Returns the Hamilton product of the instance by a quaternion.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#multiply(org.apache.commons.math3.complex.Quaternion,%20org.apache.commons.math3.complex.Quaternion)">multiply</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+        <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</code>
+<div class="block">Returns the Hamilton product of two quaternions.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#normalize()">normalize</a></strong>()</code>
+<div class="block">Computes the normalized quaternion (the versor of the instance).</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#subtract(org.apache.commons.math3.complex.Quaternion)">subtract</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</code>
+<div class="block">Subtracts a quaternion from the instance.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#subtract(org.apache.commons.math3.complex.Quaternion,%20org.apache.commons.math3.complex.Quaternion)">subtract</a></strong>(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+        <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</code>
+<div class="block">Subtracts two quaternions.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#toString()">toString</a></strong>()</code></td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ FIELD DETAIL =========== -->
-
-<A NAME="field_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Field Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="IDENTITY"><!-- --></A><H3>
-IDENTITY</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>IDENTITY</B></PRE>
-<DL>
-<DD>Identity quaternion.
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="ZERO"><!-- --></A><H3>
-ZERO</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>ZERO</B></PRE>
-<DL>
-<DD>Zero quaternion.
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="I"><!-- --></A><H3>
-I</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>I</B></PRE>
-<DL>
-<DD>i
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="J"><!-- --></A><H3>
-J</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>J</B></PRE>
-<DL>
-<DD>j
-<P>
-<DL>
-</DL>
-</DL>
-<HR>
-
-<A NAME="K"><!-- --></A><H3>
-K</H3>
-<PRE>
-public static final <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>K</B></PRE>
-<DL>
-<DD>k
-<P>
-<DL>
-</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="IDENTITY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>IDENTITY</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a> IDENTITY</pre>
+<div class="block">Identity quaternion.</div>
+</li>
+</ul>
+<a name="ZERO">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ZERO</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a> ZERO</pre>
+<div class="block">Zero quaternion.</div>
+</li>
+</ul>
+<a name="I">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>I</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a> I</pre>
+<div class="block">i</div>
+</li>
+</ul>
+<a name="J">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>J</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a> J</pre>
+<div class="block">j</div>
+</li>
+</ul>
+<a name="K">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>K</h4>
+<pre>public static final&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a> K</pre>
+<div class="block">k</div>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="Quaternion(double, double, double, double)"><!-- --></A><H3>
-Quaternion</H3>
-<PRE>
-public <B>Quaternion</B>(double&nbsp;a,
-                  double&nbsp;b,
-                  double&nbsp;c,
-                  double&nbsp;d)</PRE>
-<DL>
-<DD>Builds a quaternion from its components.
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - Scalar component.<DD><CODE>b</CODE> - First vector component.<DD><CODE>c</CODE> - Second vector component.<DD><CODE>d</CODE> - Third vector component.</DL>
-</DL>
-<HR>
-
-<A NAME="Quaternion(double, double[])"><!-- --></A><H3>
-Quaternion</H3>
-<PRE>
-public <B>Quaternion</B>(double&nbsp;scalar,
-                  double[]&nbsp;v)
-           throws <A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Builds a quaternion from scalar and vector parts.
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>scalar</CODE> - Scalar part of the quaternion.<DD><CODE>v</CODE> - Components of the vector part of the quaternion.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array length is not 3.</DL>
-</DL>
-<HR>
-
-<A NAME="Quaternion(double[])"><!-- --></A><H3>
-Quaternion</H3>
-<PRE>
-public <B>Quaternion</B>(double[]&nbsp;v)</PRE>
-<DL>
-<DD>Builds a pure quaternion from a vector (assuming that the scalar
- part is zero).
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>v</CODE> - Components of the vector part of the pure quaternion.</DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="Quaternion(double, double, double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Quaternion</h4>
+<pre>public&nbsp;Quaternion(double&nbsp;a,
+          double&nbsp;b,
+          double&nbsp;c,
+          double&nbsp;d)</pre>
+<div class="block">Builds a quaternion from its components.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - Scalar component.</dd><dd><code>b</code> - First vector component.</dd><dd><code>c</code> - Second vector component.</dd><dd><code>d</code> - Third vector component.</dd></dl>
+</li>
+</ul>
+<a name="Quaternion(double, double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Quaternion</h4>
+<pre>public&nbsp;Quaternion(double&nbsp;scalar,
+          double[]&nbsp;v)
+           throws <a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Builds a quaternion from scalar and vector parts.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>scalar</code> - Scalar part of the quaternion.</dd><dd><code>v</code> - Components of the vector part of the quaternion.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array length is not 3.</dd></dl>
+</li>
+</ul>
+<a name="Quaternion(double[])">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Quaternion</h4>
+<pre>public&nbsp;Quaternion(double[]&nbsp;v)</pre>
+<div class="block">Builds a pure quaternion from a vector (assuming that the scalar
+ part is zero).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>v</code> - Components of the vector part of the pure quaternion.</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="getConjugate()"><!-- --></A><H3>
-getConjugate</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>getConjugate</B>()</PRE>
-<DL>
-<DD>Returns the conjugate quaternion of the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the conjugate quaternion</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="multiply(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-multiply</H3>
-<PRE>
-public static <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>multiply</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-                                  <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</PRE>
-<DL>
-<DD>Returns the Hamilton product of two quaternions.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q1</CODE> - First quaternion.<DD><CODE>q2</CODE> - Second quaternion.
-<DT><B>Returns:</B><DD>the product <code>q1</code> and <code>q2</code>, in that order.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="multiply(org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-multiply</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>multiply</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</PRE>
-<DL>
-<DD>Returns the Hamilton product of the instance by a quaternion.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q</CODE> - Quaternion.
-<DT><B>Returns:</B><DD>the product of this instance with <code>q</code>, in that order.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-add</H3>
-<PRE>
-public static <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>add</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-                             <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</PRE>
-<DL>
-<DD>Computes the sum of two quaternions.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q1</CODE> - Quaternion.<DD><CODE>q2</CODE> - Quaternion.
-<DT><B>Returns:</B><DD>the sum of <code>q1</code> and <code>q2</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="add(org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-add</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>add</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</PRE>
-<DL>
-<DD>Computes the sum of the instance and another quaternion.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q</CODE> - Quaternion.
-<DT><B>Returns:</B><DD>the sum of this instance and <code>q</code></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="subtract(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-subtract</H3>
-<PRE>
-public static <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>subtract</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-                                  <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</PRE>
-<DL>
-<DD>Subtracts two quaternions.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q1</CODE> - First Quaternion.<DD><CODE>q2</CODE> - Second quaternion.
-<DT><B>Returns:</B><DD>the difference between <code>q1</code> and <code>q2</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="subtract(org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-subtract</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>subtract</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</PRE>
-<DL>
-<DD>Subtracts a quaternion from the instance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q</CODE> - Quaternion.
-<DT><B>Returns:</B><DD>the difference between this instance and <code>q</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="dotProduct(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-dotProduct</H3>
-<PRE>
-public static double <B>dotProduct</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q1,
-                                <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q2)</PRE>
-<DL>
-<DD>Computes the dot-product of two quaternions.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q1</CODE> - Quaternion.<DD><CODE>q2</CODE> - Quaternion.
-<DT><B>Returns:</B><DD>the dot product of <code>q1</code> and <code>q2</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="dotProduct(org.apache.commons.math3.complex.Quaternion)"><!-- --></A><H3>
-dotProduct</H3>
-<PRE>
-public double <B>dotProduct</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q)</PRE>
-<DL>
-<DD>Computes the dot-product of the instance by a quaternion.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q</CODE> - Quaternion.
-<DT><B>Returns:</B><DD>the dot product of this instance and <code>q</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getNorm()"><!-- --></A><H3>
-getNorm</H3>
-<PRE>
-public double <B>getNorm</B>()</PRE>
-<DL>
-<DD>Computes the norm of the quaternion.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the norm.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="normalize()"><!-- --></A><H3>
-normalize</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>normalize</B>()</PRE>
-<DL>
-<DD>Computes the normalized quaternion (the versor of the instance).
- The norm of the quaternion must not be zero.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a normalized quaternion.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/ZeroException.html" title="class in org.apache.commons.math3.exception">ZeroException</A></CODE> - if the norm of the quaternion is zero.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equals(java.lang.Object)"><!-- --></A><H3>
-equals</H3>
-<PRE>
-public boolean <B>equals</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;other)</PRE>
-<DL>
-<DD>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>
-</DD>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="hashCode()"><!-- --></A><H3>
-hashCode</H3>
-<PRE>
-public int <B>hashCode</B>()</PRE>
-<DL>
-<DD>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>
-</DD>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equals(org.apache.commons.math3.complex.Quaternion, double)"><!-- --></A><H3>
-equals</H3>
-<PRE>
-public boolean <B>equals</B>(<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A>&nbsp;q,
-                      double&nbsp;eps)</PRE>
-<DL>
-<DD>Checks whether this instance is equal to another quaternion
- within a given tolerance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>q</CODE> - Quaternion with which to compare the current quaternion.<DD><CODE>eps</CODE> - Tolerance.
-<DT><B>Returns:</B><DD><code>true</code> if the each of the components are equal
- within the allowed absolute error.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isUnitQuaternion(double)"><!-- --></A><H3>
-isUnitQuaternion</H3>
-<PRE>
-public boolean <B>isUnitQuaternion</B>(double&nbsp;eps)</PRE>
-<DL>
-<DD>Checks whether the instance is a unit quaternion within a given
- tolerance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>eps</CODE> - Tolerance (absolute error).
-<DT><B>Returns:</B><DD><code>true</code> if the norm is 1 within the given tolerance,
- <code>false</code> otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="isPureQuaternion(double)"><!-- --></A><H3>
-isPureQuaternion</H3>
-<PRE>
-public boolean <B>isPureQuaternion</B>(double&nbsp;eps)</PRE>
-<DL>
-<DD>Checks whether the instance is a pure quaternion within a given
- tolerance.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>eps</CODE> - Tolerance (absolute error).
-<DT><B>Returns:</B><DD><code>true</code> if the scalar part of the quaternion is zero.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getPositivePolarForm()"><!-- --></A><H3>
-getPositivePolarForm</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>getPositivePolarForm</B>()</PRE>
-<DL>
-<DD>Returns the polar form of the quaternion.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the unit quaternion with positive scalar part.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getInverse()"><!-- --></A><H3>
-getInverse</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>getInverse</B>()</PRE>
-<DL>
-<DD>Returns the inverse of this instance.
- The norm of the quaternion must not be zero.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the inverse.
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../org/apache/commons/math3/exception/ZeroException.html" title="class in org.apache.commons.math3.exception">ZeroException</A></CODE> - if the norm (squared) of the quaternion is zero.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getQ0()"><!-- --></A><H3>
-getQ0</H3>
-<PRE>
-public double <B>getQ0</B>()</PRE>
-<DL>
-<DD>Gets the first component of the quaternion (scalar part).
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the scalar part.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getQ1()"><!-- --></A><H3>
-getQ1</H3>
-<PRE>
-public double <B>getQ1</B>()</PRE>
-<DL>
-<DD>Gets the second component of the quaternion (first component
- of the vector part).
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the first component of the vector part.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getQ2()"><!-- --></A><H3>
-getQ2</H3>
-<PRE>
-public double <B>getQ2</B>()</PRE>
-<DL>
-<DD>Gets the third component of the quaternion (second component
- of the vector part).
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the second component of the vector part.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getQ3()"><!-- --></A><H3>
-getQ3</H3>
-<PRE>
-public double <B>getQ3</B>()</PRE>
-<DL>
-<DD>Gets the fourth component of the quaternion (third component
- of the vector part).
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the third component of the vector part.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getScalarPart()"><!-- --></A><H3>
-getScalarPart</H3>
-<PRE>
-public double <B>getScalarPart</B>()</PRE>
-<DL>
-<DD>Gets the scalar part of the quaternion.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the scalar part.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ0()"><CODE>getQ0()</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getVectorPart()"><!-- --></A><H3>
-getVectorPart</H3>
-<PRE>
-public double[] <B>getVectorPart</B>()</PRE>
-<DL>
-<DD>Gets the three components of the vector part of the quaternion.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the vector part.<DT><B>See Also:</B><DD><A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ1()"><CODE>getQ1()</CODE></A>, 
-<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ2()"><CODE>getQ2()</CODE></A>, 
-<A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ3()"><CODE>getQ3()</CODE></A></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="multiply(double)"><!-- --></A><H3>
-multiply</H3>
-<PRE>
-public <A HREF="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</A> <B>multiply</B>(double&nbsp;alpha)</PRE>
-<DL>
-<DD>Multiplies the instance by a scalar.
-<P>
-<DD><DL>
-</DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>alpha</CODE> - Scalar factor.
-<DT><B>Returns:</B><DD>a scaled quaternion.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="toString()"><!-- --></A><H3>
-toString</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>toString</B>()</PRE>
-<DL>
-<DD>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A></CODE> in class <CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></CODE></DL>
-</DD>
-<DD><DL>
-</DL>
-</DD>
-</DL>
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="getConjugate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConjugate</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;getConjugate()</pre>
+<div class="block">Returns the conjugate quaternion of the instance.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the conjugate quaternion</dd></dl>
+</li>
+</ul>
+<a name="multiply(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiply</h4>
+<pre>public static&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;multiply(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+                  <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</pre>
+<div class="block">Returns the Hamilton product of two quaternions.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q1</code> - First quaternion.</dd><dd><code>q2</code> - Second quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the product <code>q1</code> and <code>q2</code>, in that order.</dd></dl>
+</li>
+</ul>
+<a name="multiply(org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiply</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;multiply(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</pre>
+<div class="block">Returns the Hamilton product of the instance by a quaternion.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q</code> - Quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the product of this instance with <code>q</code>, in that order.</dd></dl>
+</li>
+</ul>
+<a name="add(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>add</h4>
+<pre>public static&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;add(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+             <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</pre>
+<div class="block">Computes the sum of two quaternions.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q1</code> - Quaternion.</dd><dd><code>q2</code> - Quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the sum of <code>q1</code> and <code>q2</code>.</dd></dl>
+</li>
+</ul>
+<a name="add(org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>add</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;add(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</pre>
+<div class="block">Computes the sum of the instance and another quaternion.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q</code> - Quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the sum of this instance and <code>q</code></dd></dl>
+</li>
+</ul>
+<a name="subtract(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtract</h4>
+<pre>public static&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;subtract(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+                  <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</pre>
+<div class="block">Subtracts two quaternions.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q1</code> - First Quaternion.</dd><dd><code>q2</code> - Second quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the difference between <code>q1</code> and <code>q2</code>.</dd></dl>
+</li>
+</ul>
+<a name="subtract(org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtract</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;subtract(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</pre>
+<div class="block">Subtracts a quaternion from the instance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q</code> - Quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the difference between this instance and <code>q</code>.</dd></dl>
+</li>
+</ul>
+<a name="dotProduct(org.apache.commons.math3.complex.Quaternion, org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>dotProduct</h4>
+<pre>public static&nbsp;double&nbsp;dotProduct(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q1,
+                <a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q2)</pre>
+<div class="block">Computes the dot-product of two quaternions.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q1</code> - Quaternion.</dd><dd><code>q2</code> - Quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the dot product of <code>q1</code> and <code>q2</code>.</dd></dl>
+</li>
+</ul>
+<a name="dotProduct(org.apache.commons.math3.complex.Quaternion)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>dotProduct</h4>
+<pre>public&nbsp;double&nbsp;dotProduct(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q)</pre>
+<div class="block">Computes the dot-product of the instance by a quaternion.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q</code> - Quaternion.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the dot product of this instance and <code>q</code>.</dd></dl>
+</li>
+</ul>
+<a name="getNorm()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNorm</h4>
+<pre>public&nbsp;double&nbsp;getNorm()</pre>
+<div class="block">Computes the norm of the quaternion.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the norm.</dd></dl>
+</li>
+</ul>
+<a name="normalize()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>normalize</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;normalize()</pre>
+<div class="block">Computes the normalized quaternion (the versor of the instance).
+ The norm of the quaternion must not be zero.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>a normalized quaternion.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/ZeroException.html" title="class in org.apache.commons.math3.exception">ZeroException</a></code> - if the norm of the quaternion is zero.</dd></dl>
+</li>
+</ul>
+<a name="equals(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public&nbsp;boolean&nbsp;equals(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;other)</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a></code>&nbsp;in class&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="hashCode()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre>public&nbsp;int&nbsp;hashCode()</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="equals(org.apache.commons.math3.complex.Quaternion, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public&nbsp;boolean&nbsp;equals(<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;q,
+             double&nbsp;eps)</pre>
+<div class="block">Checks whether this instance is equal to another quaternion
+ within a given tolerance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>q</code> - Quaternion with which to compare the current quaternion.</dd><dd><code>eps</code> - Tolerance.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the each of the components are equal
+ within the allowed absolute error.</dd></dl>
+</li>
+</ul>
+<a name="isUnitQuaternion(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isUnitQuaternion</h4>
+<pre>public&nbsp;boolean&nbsp;isUnitQuaternion(double&nbsp;eps)</pre>
+<div class="block">Checks whether the instance is a unit quaternion within a given
+ tolerance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>eps</code> - Tolerance (absolute error).</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the norm is 1 within the given tolerance,
+ <code>false</code> otherwise</dd></dl>
+</li>
+</ul>
+<a name="isPureQuaternion(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isPureQuaternion</h4>
+<pre>public&nbsp;boolean&nbsp;isPureQuaternion(double&nbsp;eps)</pre>
+<div class="block">Checks whether the instance is a pure quaternion within a given
+ tolerance.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>eps</code> - Tolerance (absolute error).</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>true</code> if the scalar part of the quaternion is zero.</dd></dl>
+</li>
+</ul>
+<a name="getPositivePolarForm()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPositivePolarForm</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;getPositivePolarForm()</pre>
+<div class="block">Returns the polar form of the quaternion.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the unit quaternion with positive scalar part.</dd></dl>
+</li>
+</ul>
+<a name="getInverse()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getInverse</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;getInverse()</pre>
+<div class="block">Returns the inverse of this instance.
+ The norm of the quaternion must not be zero.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the inverse.</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/ZeroException.html" title="class in org.apache.commons.math3.exception">ZeroException</a></code> - if the norm (squared) of the quaternion is zero.</dd></dl>
+</li>
+</ul>
+<a name="getQ0()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQ0</h4>
+<pre>public&nbsp;double&nbsp;getQ0()</pre>
+<div class="block">Gets the first component of the quaternion (scalar part).</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the scalar part.</dd></dl>
+</li>
+</ul>
+<a name="getQ1()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQ1</h4>
+<pre>public&nbsp;double&nbsp;getQ1()</pre>
+<div class="block">Gets the second component of the quaternion (first component
+ of the vector part).</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the first component of the vector part.</dd></dl>
+</li>
+</ul>
+<a name="getQ2()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQ2</h4>
+<pre>public&nbsp;double&nbsp;getQ2()</pre>
+<div class="block">Gets the third component of the quaternion (second component
+ of the vector part).</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the second component of the vector part.</dd></dl>
+</li>
+</ul>
+<a name="getQ3()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getQ3</h4>
+<pre>public&nbsp;double&nbsp;getQ3()</pre>
+<div class="block">Gets the fourth component of the quaternion (third component
+ of the vector part).</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the third component of the vector part.</dd></dl>
+</li>
+</ul>
+<a name="getScalarPart()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getScalarPart</h4>
+<pre>public&nbsp;double&nbsp;getScalarPart()</pre>
+<div class="block">Gets the scalar part of the quaternion.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the scalar part.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ0()"><code>getQ0()</code></a></dd></dl>
+</li>
+</ul>
+<a name="getVectorPart()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getVectorPart</h4>
+<pre>public&nbsp;double[]&nbsp;getVectorPart()</pre>
+<div class="block">Gets the three components of the vector part of the quaternion.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>the vector part.</dd><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ1()"><code>getQ1()</code></a>, 
+<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ2()"><code>getQ2()</code></a>, 
+<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html#getQ3()"><code>getQ3()</code></a></dd></dl>
+</li>
+</ul>
+<a name="multiply(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiply</h4>
+<pre>public&nbsp;<a href="../../../../../org/apache/commons/math3/complex/Quaternion.html" title="class in org.apache.commons.math3.complex">Quaternion</a>&nbsp;multiply(double&nbsp;alpha)</pre>
+<div class="block">Multiplies the instance by a scalar.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>alpha</code> - Scalar factor.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a scaled quaternion.</dd></dl>
+</li>
+</ul>
+<a name="toString()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>toString</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;toString()</pre>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a></code>&nbsp;in class&nbsp;<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></code></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Quaternion.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/ComplexUtils.html" title="class in org.apache.commons.math3.complex"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/complex/RootsOfUnity.html" title="class in org.apache.commons.math3.complex"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/complex/Quaternion.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Quaternion.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Quaternion.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/complex/ComplexUtils.html" title="class in org.apache.commons.math3.complex"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/complex/RootsOfUnity.html" title="class in org.apache.commons.math3.complex"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/complex/Quaternion.html" target="_top">Frames</a></li>
+<li><a href="Quaternion.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

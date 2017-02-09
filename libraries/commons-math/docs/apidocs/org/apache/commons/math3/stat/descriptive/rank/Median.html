@@ -1,285 +1,432 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-Median (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Median (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Median (Commons Math 3.2 API)";
+        parent.document.title="Median (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Median.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Max.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Min.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../../index.html?org/apache/commons/math3/stat/descriptive/rank/Median.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Median.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Median.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Max.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Min.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?org/apache/commons/math3/stat/descriptive/rank/Median.html" target="_top">Frames</a></li>
+<li><a href="Median.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.apache.commons.math3.stat.descriptive.rank.Percentile">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested_classes_inherited_from_class_org.apache.commons.math3.stat.descriptive.rank.Percentile">Nested</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.stat.descriptive.rank</FONT>
-<BR>
-Class Median</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html" title="class in org.apache.commons.math3.stat.descriptive">org.apache.commons.math3.stat.descriptive.AbstractUnivariateStatistic</A>
-      <IMG SRC="../../../../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">org.apache.commons.math3.stat.descriptive.rank.Percentile</A>
-          <IMG SRC="../../../../../../../resources/inherit.gif" ALT="extended by "><B>org.apache.commons.math3.stat.descriptive.rank.Median</B>
-</PRE>
-<DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/UnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">UnivariateStatistic</A>, <A HREF="../../../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util">MathArrays.Function</A></DD>
-</DL>
-<HR>
-<DL>
-<DT><PRE>public class <B>Median</B><DT>extends <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</A><DT>implements <A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A></DL>
-</PRE>
-
-<P>
-Returns the median of the available values.  This is the same as the 50th percentile.
- See <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><CODE>Percentile</CODE></A> for a description of the algorithm used.
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.stat.descriptive.rank</div>
+<h2 title="Class Median" class="title">Class Median</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html" title="class in org.apache.commons.math3.stat.descriptive">org.apache.commons.math3.stat.descriptive.AbstractUnivariateStatistic</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">org.apache.commons.math3.stat.descriptive.rank.Percentile</a></li>
+<li>
+<ul class="inheritance">
+<li>org.apache.commons.math3.stat.descriptive.rank.Median</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/UnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">UnivariateStatistic</a>, <a href="../../../../../../../org/apache/commons/math3/util/MathArrays.Function.html" title="interface in org.apache.commons.math3.util">MathArrays.Function</a></dd>
+</dl>
+<hr>
+<br>
+<pre>public class <span class="strong">Median</span>
+extends <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</a>
+implements <a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a></pre>
+<div class="block">Returns the median of the available values.  This is the same as the 50th percentile.
+ See <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><code>Percentile</code></a> for a description of the algorithm used.
  <p>
  <strong>Note that this implementation is not synchronized.</strong> If
  multiple threads access an instance of this class concurrently, and at least
  one of the threads invokes the <code>increment()</code> or
- <code>clear()</code> method, it must be synchronized externally.</p>
-<P>
-
-<P>
-<DL>
-<DT><B>Version:</B></DT>
-  <DD>$Id: Median.java 1416643 2012-12-03 19:37:14Z tn $</DD>
-<DT><B>See Also:</B><DD><A HREF="../../../../../../../serialized-form.html#org.apache.commons.math3.stat.descriptive.rank.Median">Serialized Form</A></DL>
-<HR>
-
-<P>
-
+ <code>clear()</code> method, it must be synchronized externally.</p></div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../../serialized-form.html#org.apache.commons.math3.stat.descriptive.rank.Median">Serialized Form</a></dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<ul class="blockList">
+<li class="blockList"><a name="nested_class_summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="nested_classes_inherited_from_class_org.apache.commons.math3.stat.descriptive.rank.Percentile">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from class&nbsp;org.apache.commons.math3.stat.descriptive.rank.<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</a></h3>
+<code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.EstimationType.html" title="enum in org.apache.commons.math3.stat.descriptive.rank">Percentile.EstimationType</a></code></li>
+</ul>
+</li>
+</ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html#Median()">Median</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default constructor.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html#Median(org.apache.commons.math3.stat.descriptive.rank.Median)">Median</A></B>(<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</A>&nbsp;original)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copy constructor, creates a new <code>Median</code> identical
- to the <code>original</code></TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html#Median()">Median</a></strong>()</code>
+<div class="block">Default constructor.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colOne"><code><strong><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html#Median(org.apache.commons.math3.stat.descriptive.rank.Median)">Median</a></strong>(<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a>&nbsp;original)</code>
+<div class="block">Copy constructor, creates a new <code>Median</code> identical
+ to the <code>original</code></div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_org.apache.commons.math3.stat.descriptive.rank.Percentile"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class org.apache.commons.math3.stat.descriptive.rank.<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#copy()">copy</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#copy(org.apache.commons.math3.stat.descriptive.rank.Percentile, org.apache.commons.math3.stat.descriptive.rank.Percentile)">copy</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double)">evaluate</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double[], double)">evaluate</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double[], int, int)">evaluate</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double[], int, int, double)">evaluate</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#getQuantile()">getQuantile</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#setData(double[])">setData</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#setData(double[], int, int)">setData</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#setQuantile(double)">setQuantile</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_org.apache.commons.math3.stat.descriptive.AbstractUnivariateStatistic"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class org.apache.commons.math3.stat.descriptive.<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html" title="class in org.apache.commons.math3.stat.descriptive">AbstractUnivariateStatistic</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#evaluate()">evaluate</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#evaluate(double[])">evaluate</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#getData()">getData</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#getDataRef()">getDataRef</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[], double[], int, int)">test</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[], double[], int, int, boolean)">test</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[], int, int)">test</A>, <A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[], int, int, boolean)">test</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html#withEstimationType(org.apache.commons.math3.stat.descriptive.rank.Percentile.EstimationType)">withEstimationType</a></strong>(<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.EstimationType.html" title="enum in org.apache.commons.math3.stat.descriptive.rank">Percentile.EstimationType</a>&nbsp;newEstimationType)</code>
+<div class="block">Build a new instance similar to the current one except for the
+ <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.EstimationType.html" title="enum in org.apache.commons.math3.stat.descriptive.rank"><code>estimation type</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html#withKthSelector(org.apache.commons.math3.util.KthSelector)">withKthSelector</a></strong>(<a href="../../../../../../../org/apache/commons/math3/util/KthSelector.html" title="class in org.apache.commons.math3.util">KthSelector</a>&nbsp;newKthSelector)</code>
+<div class="block">Build a new instance similar to the current one except for the
+ <a href="../../../../../../../org/apache/commons/math3/util/KthSelector.html" title="class in org.apache.commons.math3.util"><code>kthSelector</code></a> instance specifically set.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html#withNaNStrategy(org.apache.commons.math3.stat.ranking.NaNStrategy)">withNaNStrategy</a></strong>(<a href="../../../../../../../org/apache/commons/math3/stat/ranking/NaNStrategy.html" title="enum in org.apache.commons.math3.stat.ranking">NaNStrategy</a>&nbsp;newNaNStrategy)</code>
+<div class="block">Build a new instance similar to the current one except for the
+ <a href="../../../../../../../org/apache/commons/math3/stat/ranking/NaNStrategy.html" title="enum in org.apache.commons.math3.stat.ranking"><code>NaN handling</code></a> strategy.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.commons.math3.stat.descriptive.rank.Percentile">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.apache.commons.math3.stat.descriptive.rank.<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</a></h3>
+<code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#copy()">copy</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#copy(org.apache.commons.math3.stat.descriptive.rank.Percentile,%20org.apache.commons.math3.stat.descriptive.rank.Percentile)">copy</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double)">evaluate</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double[],%20double)">evaluate</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double[],%20int,%20int)">evaluate</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#evaluate(double[],%20int,%20int,%20double)">evaluate</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#getEstimationType()">getEstimationType</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#getKthSelector()">getKthSelector</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#getNaNStrategy()">getNaNStrategy</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#getPivotingStrategy()">getPivotingStrategy</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#getQuantile()">getQuantile</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#getWorkArray(double[],%20int,%20int)">getWorkArray</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#setData(double[])">setData</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#setData(double[],%20int,%20int)">setData</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#setQuantile(double)">setQuantile</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_org.apache.commons.math3.stat.descriptive.AbstractUnivariateStatistic">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;org.apache.commons.math3.stat.descriptive.<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html" title="class in org.apache.commons.math3.stat.descriptive">AbstractUnivariateStatistic</a></h3>
+<code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#evaluate()">evaluate</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#evaluate(double[])">evaluate</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#getData()">getData</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#getDataRef()">getDataRef</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[],%20double[],%20int,%20int)">test</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[],%20double[],%20int,%20int,%20boolean)">test</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[],%20int,%20int)">test</a>, <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/AbstractUnivariateStatistic.html#test(double[],%20int,%20int,%20boolean)">test</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="Median()"><!-- --></A><H3>
-Median</H3>
-<PRE>
-public <B>Median</B>()</PRE>
-<DL>
-<DD>Default constructor.
-<P>
-</DL>
-<HR>
-
-<A NAME="Median(org.apache.commons.math3.stat.descriptive.rank.Median)"><!-- --></A><H3>
-Median</H3>
-<PRE>
-public <B>Median</B>(<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</A>&nbsp;original)
-       throws <A HREF="../../../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></PRE>
-<DL>
-<DD>Copy constructor, creates a new <code>Median</code> identical
- to the <code>original</code>
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>original</CODE> - the <code>Median</code> instance to copy
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</A></CODE> - if original is null</DL>
-</DL>
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="Median()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Median</h4>
+<pre>public&nbsp;Median()</pre>
+<div class="block">Default constructor.</div>
+</li>
+</ul>
+<a name="Median(org.apache.commons.math3.stat.descriptive.rank.Median)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Median</h4>
+<pre>public&nbsp;Median(<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a>&nbsp;original)
+       throws <a href="../../../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></pre>
+<div class="block">Copy constructor, creates a new <code>Median</code> identical
+ to the <code>original</code></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>original</code> - the <code>Median</code> instance to copy</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../../org/apache/commons/math3/exception/NullArgumentException.html" title="class in org.apache.commons.math3.exception">NullArgumentException</a></code> - if original is null</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="withEstimationType(org.apache.commons.math3.stat.descriptive.rank.Percentile.EstimationType)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withEstimationType</h4>
+<pre>public&nbsp;<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a>&nbsp;withEstimationType(<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.EstimationType.html" title="enum in org.apache.commons.math3.stat.descriptive.rank">Percentile.EstimationType</a>&nbsp;newEstimationType)</pre>
+<div class="block">Build a new instance similar to the current one except for the
+ <a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.EstimationType.html" title="enum in org.apache.commons.math3.stat.descriptive.rank"><code>estimation type</code></a>.
+ <p>
+ This method is intended to be used as part of a fluent-type builder
+ pattern. Building finely tune instances should be done as follows:
+ </p>
+ <pre>
+   Percentile customized = new Percentile(quantile).
+                           withEstimationType(estimationType).
+                           withNaNStrategy(nanStrategy).
+                           withKthSelector(kthSelector);
+ </pre>
+ <p>
+ If any of the <code>withXxx</code> method is omitted, the default value for
+ the corresponding customization parameter will be used.
+ </p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#withEstimationType(org.apache.commons.math3.stat.descriptive.rank.Percentile.EstimationType)">withEstimationType</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>newEstimationType</code> - estimation type for the new instance</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new instance, with changed estimation type</dd></dl>
+</li>
+</ul>
+<a name="withNaNStrategy(org.apache.commons.math3.stat.ranking.NaNStrategy)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withNaNStrategy</h4>
+<pre>public&nbsp;<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a>&nbsp;withNaNStrategy(<a href="../../../../../../../org/apache/commons/math3/stat/ranking/NaNStrategy.html" title="enum in org.apache.commons.math3.stat.ranking">NaNStrategy</a>&nbsp;newNaNStrategy)</pre>
+<div class="block">Build a new instance similar to the current one except for the
+ <a href="../../../../../../../org/apache/commons/math3/stat/ranking/NaNStrategy.html" title="enum in org.apache.commons.math3.stat.ranking"><code>NaN handling</code></a> strategy.
+ <p>
+ This method is intended to be used as part of a fluent-type builder
+ pattern. Building finely tune instances should be done as follows:
+ </p>
+ <pre>
+   Percentile customized = new Percentile(quantile).
+                           withEstimationType(estimationType).
+                           withNaNStrategy(nanStrategy).
+                           withKthSelector(kthSelector);
+ </pre>
+ <p>
+ If any of the <code>withXxx</code> method is omitted, the default value for
+ the corresponding customization parameter will be used.
+ </p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#withNaNStrategy(org.apache.commons.math3.stat.ranking.NaNStrategy)">withNaNStrategy</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>newNaNStrategy</code> - NaN strategy for the new instance</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new instance, with changed NaN handling strategy</dd></dl>
+</li>
+</ul>
+<a name="withKthSelector(org.apache.commons.math3.util.KthSelector)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>withKthSelector</h4>
+<pre>public&nbsp;<a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Median.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Median</a>&nbsp;withKthSelector(<a href="../../../../../../../org/apache/commons/math3/util/KthSelector.html" title="class in org.apache.commons.math3.util">KthSelector</a>&nbsp;newKthSelector)</pre>
+<div class="block">Build a new instance similar to the current one except for the
+ <a href="../../../../../../../org/apache/commons/math3/util/KthSelector.html" title="class in org.apache.commons.math3.util"><code>kthSelector</code></a> instance specifically set.
+ <p>
+ This method is intended to be used as part of a fluent-type builder
+ pattern. Building finely tune instances should be done as follows:
+ </p>
+ <pre>
+   Percentile customized = new Percentile(quantile).
+                           withEstimationType(estimationType).
+                           withNaNStrategy(nanStrategy).
+                           withKthSelector(newKthSelector);
+ </pre>
+ <p>
+ If any of the <code>withXxx</code> method is omitted, the default value for
+ the corresponding customization parameter will be used.
+ </p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html#withKthSelector(org.apache.commons.math3.util.KthSelector)">withKthSelector</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Percentile.html" title="class in org.apache.commons.math3.stat.descriptive.rank">Percentile</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>newKthSelector</code> - KthSelector for the new instance</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a new instance, with changed KthSelector</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/Median.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Max.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Min.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../../index.html?org/apache/commons/math3/stat/descriptive/rank/Median.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="Median.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/Median.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Max.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../../org/apache/commons/math3/stat/descriptive/rank/Min.html" title="class in org.apache.commons.math3.stat.descriptive.rank"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../../index.html?org/apache/commons/math3/stat/descriptive/rank/Median.html" target="_top">Frames</a></li>
+<li><a href="Median.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#methods_inherited_from_class_org.apache.commons.math3.stat.descriptive.rank.Percentile">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;METHOD</FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested_classes_inherited_from_class_org.apache.commons.math3.stat.descriptive.rank.Percentile">Nested</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

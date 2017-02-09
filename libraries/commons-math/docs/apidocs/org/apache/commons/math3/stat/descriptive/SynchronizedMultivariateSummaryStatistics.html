@@ -1,1121 +1,1015 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-SynchronizedMultivariateSummaryStatistics (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>SynchronizedMultivariateSummaryStatistics (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="SynchronizedMultivariateSummaryStatistics (Commons Math 3.2 API)";
+        parent.document.title="SynchronizedMultivariateSummaryStatistics (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/SynchronizedMultivariateSummaryStatistics.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedDescriptiveStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../index.html?org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="SynchronizedMultivariateSummaryStatistics.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/SynchronizedMultivariateSummaryStatistics.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedDescriptiveStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../index.html?org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html" target="_top">Frames</a></li>
+<li><a href="SynchronizedMultivariateSummaryStatistics.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.stat.descriptive</FONT>
-<BR>
-Class SynchronizedMultivariateSummaryStatistics</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">org.apache.commons.math3.stat.descriptive.MultivariateSummaryStatistics</A>
-      <IMG SRC="../../../../../../resources/inherit.gif" ALT="extended by "><B>org.apache.commons.math3.stat.descriptive.SynchronizedMultivariateSummaryStatistics</B>
-</PRE>
-<DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</A>, <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></DD>
-</DL>
-<HR>
-<DL>
-<DT><PRE>public class <B>SynchronizedMultivariateSummaryStatistics</B><DT>extends <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></DL>
-</PRE>
-
-<P>
-Implementation of
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><CODE>MultivariateSummaryStatistics</CODE></A> that
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.stat.descriptive</div>
+<h2 title="Class SynchronizedMultivariateSummaryStatistics" class="title">Class SynchronizedMultivariateSummaryStatistics</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">org.apache.commons.math3.stat.descriptive.MultivariateSummaryStatistics</a></li>
+<li>
+<ul class="inheritance">
+<li>org.apache.commons.math3.stat.descriptive.SynchronizedMultivariateSummaryStatistics</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><a href="http://docs.oracle.com/javase/7/docs/api/java/io/Serializable.html?is-external=true" title="class or interface in java.io">Serializable</a>, <a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></dd>
+</dl>
+<hr>
+<br>
+<pre>public class <span class="strong">SynchronizedMultivariateSummaryStatistics</span>
+extends <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></pre>
+<div class="block">Implementation of
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><code>MultivariateSummaryStatistics</code></a> that
  is safe to use in a multithreaded environment.  Multiple threads can safely
  operate on a single instance without causing runtime exceptions due to race
  conditions.  In effect, this implementation makes modification and access
  methods atomic operations for a single instance.  That is to say, as one
  thread is computing a statistic from the instance, no other thread can modify
- the instance nor compute another statistic.
-<P>
-
-<P>
-<DL>
-<DT><B>Since:</B></DT>
-  <DD>1.2</DD>
-<DT><B>Version:</B></DT>
-  <DD>$Id: SynchronizedMultivariateSummaryStatistics.java 1416643 2012-12-03 19:37:14Z tn $</DD>
-<DT><B>See Also:</B><DD><A HREF="../../../../../../serialized-form.html#org.apache.commons.math3.stat.descriptive.SynchronizedMultivariateSummaryStatistics">Serialized Form</A></DL>
-<HR>
-
-<P>
-
+ the instance nor compute another statistic.</div>
+<dl><dt><span class="strong">Since:</span></dt>
+  <dd>1.2</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../../serialized-form.html#org.apache.commons.math3.stat.descriptive.SynchronizedMultivariateSummaryStatistics">Serialized Form</a></dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-
-<A NAME="constructor_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Constructor Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#SynchronizedMultivariateSummaryStatistics(int, boolean)">SynchronizedMultivariateSummaryStatistics</A></B>(int&nbsp;k,
-                                          boolean&nbsp;isCovarianceBiasCorrected)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Construct a SynchronizedMultivariateSummaryStatistics instance</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="constructor_summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Constructor Summary table, listing constructors, and an explanation">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colOne" scope="col">Constructor and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colOne"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#SynchronizedMultivariateSummaryStatistics(int,%20boolean)">SynchronizedMultivariateSummaryStatistics</a></strong>(int&nbsp;k,
+                                         boolean&nbsp;isCovarianceBiasCorrected)</code>
+<div class="block">Construct a SynchronizedMultivariateSummaryStatistics instance</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#addValue(double[])">addValue</A></B>(double[]&nbsp;value)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add an n-tuple to the data</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#clear()">clear</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Resets all statistics and storage</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#equals(java.lang.Object)">equals</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;object)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns true iff <code>object</code> is a <code>MultivariateSummaryStatistics</code>
- instance and all statistics have the same values as this.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getCovariance()">getCovariance</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the covariance matrix of the values that have been added.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getDimension()">getDimension</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the dimension of the data</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getGeoMeanImpl()">getGeoMeanImpl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the currently configured geometric mean implementation</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getGeometricMean()">getGeometricMean</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the geometric mean of the
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#addValue(double[])">addValue</a></strong>(double[]&nbsp;value)</code>
+<div class="block">Add an n-tuple to the data</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#clear()">clear</a></strong>()</code>
+<div class="block">Resets all statistics and storage</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#equals(java.lang.Object)">equals</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;object)</code>
+<div class="block">Returns true iff <code>object</code> is a <code>MultivariateSummaryStatistics</code>
+ instance and all statistics have the same values as this.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getCovariance()">getCovariance</a></strong>()</code>
+<div class="block">Returns the covariance matrix of the values that have been added.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getDimension()">getDimension</a></strong>()</code>
+<div class="block">Returns the dimension of the data</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getGeoMeanImpl()">getGeoMeanImpl</a></strong>()</code>
+<div class="block">Returns the currently configured geometric mean implementation</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getGeometricMean()">getGeometricMean</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the geometric mean of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMax()">getMax</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the maximum of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMax()">getMax</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the maximum of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMaxImpl()">getMaxImpl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the currently configured maximum implementation</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMean()">getMean</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the mean of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMaxImpl()">getMaxImpl</a></strong>()</code>
+<div class="block">Returns the currently configured maximum implementation</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMean()">getMean</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the mean of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMeanImpl()">getMeanImpl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the currently configured mean implementation</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMin()">getMin</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the minimum of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMeanImpl()">getMeanImpl</a></strong>()</code>
+<div class="block">Returns the currently configured mean implementation</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMin()">getMin</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the minimum of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMinImpl()">getMinImpl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the currently configured minimum implementation</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;long</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getN()">getN</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the number of available values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getStandardDeviation()">getStandardDeviation</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the standard deviation of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getMinImpl()">getMinImpl</a></strong>()</code>
+<div class="block">Returns the currently configured minimum implementation</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getN()">getN</a></strong>()</code>
+<div class="block">Returns the number of available values</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getStandardDeviation()">getStandardDeviation</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the standard deviation of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSum()">getSum</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the sum of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSum()">getSum</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the sum of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumImpl()">getSumImpl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the currently configured Sum implementation</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumLog()">getSumLog</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the sum of logs of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumImpl()">getSumImpl</a></strong>()</code>
+<div class="block">Returns the currently configured Sum implementation</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumLog()">getSumLog</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the sum of logs of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumLogImpl()">getSumLogImpl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the currently configured sum of logs implementation</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;double[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumSq()">getSumSq</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an array whose i<sup>th</sup> entry is the sum of squares of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumLogImpl()">getSumLogImpl</a></strong>()</code>
+<div class="block">Returns the currently configured sum of logs implementation</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>double[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumSq()">getSumSq</a></strong>()</code>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the sum of squares of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A></TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumsqImpl()">getSumsqImpl</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the currently configured sum of squares implementation</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#hashCode()">hashCode</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns hash code based on values of statistics</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setGeoMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setGeoMeanImpl</A></B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;geoMeanImpl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the implementation for the geometric mean.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setMaxImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMaxImpl</A></B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;maxImpl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the implementation for the maximum.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMeanImpl</A></B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;meanImpl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the implementation for the mean.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setMinImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMinImpl</A></B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;minImpl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the implementation for the minimum.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setSumImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumImpl</A></B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;sumImpl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the implementation for the Sum.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setSumLogImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumLogImpl</A></B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;sumLogImpl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the implementation for the sum of logs.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setSumsqImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumsqImpl</A></B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;sumsqImpl)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets the implementation for the sum of squares.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#toString()">toString</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generates a text report displaying
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#getSumsqImpl()">getSumsqImpl</a></strong>()</code>
+<div class="block">Returns the currently configured sum of squares implementation</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#hashCode()">hashCode</a></strong>()</code>
+<div class="block">Returns hash code based on values of statistics</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setGeoMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setGeoMeanImpl</a></strong>(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;geoMeanImpl)</code>
+<div class="block">Sets the implementation for the geometric mean.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setMaxImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMaxImpl</a></strong>(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;maxImpl)</code>
+<div class="block">Sets the implementation for the maximum.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMeanImpl</a></strong>(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;meanImpl)</code>
+<div class="block">Sets the implementation for the mean.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setMinImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMinImpl</a></strong>(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;minImpl)</code>
+<div class="block">Sets the implementation for the minimum.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setSumImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumImpl</a></strong>(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;sumImpl)</code>
+<div class="block">Sets the implementation for the Sum.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setSumLogImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumLogImpl</a></strong>(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;sumLogImpl)</code>
+<div class="block">Sets the implementation for the sum of logs.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#setSumsqImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumsqImpl</a></strong>(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;sumsqImpl)</code>
+<div class="block">Sets the implementation for the sum of squares.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
+<td class="colLast"><code><strong><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html#toString()">toString</a></strong>()</code>
+<div class="block">Generates a text report displaying
  summary statistics from values that
- have been added.</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+ have been added.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
-
-<A NAME="constructor_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Constructor Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="SynchronizedMultivariateSummaryStatistics(int, boolean)"><!-- --></A><H3>
-SynchronizedMultivariateSummaryStatistics</H3>
-<PRE>
-public <B>SynchronizedMultivariateSummaryStatistics</B>(int&nbsp;k,
-                                                 boolean&nbsp;isCovarianceBiasCorrected)</PRE>
-<DL>
-<DD>Construct a SynchronizedMultivariateSummaryStatistics instance
-<P>
-<DL>
-<DT><B>Parameters:</B><DD><CODE>k</CODE> - dimension of the data<DD><CODE>isCovarianceBiasCorrected</CODE> - if true, the unbiased sample
+<ul class="blockList">
+<li class="blockList"><a name="constructor_detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a name="SynchronizedMultivariateSummaryStatistics(int, boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>SynchronizedMultivariateSummaryStatistics</h4>
+<pre>public&nbsp;SynchronizedMultivariateSummaryStatistics(int&nbsp;k,
+                                         boolean&nbsp;isCovarianceBiasCorrected)</pre>
+<div class="block">Construct a SynchronizedMultivariateSummaryStatistics instance</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>k</code> - dimension of the data</dd><dd><code>isCovarianceBiasCorrected</code> - if true, the unbiased sample
  covariance is computed, otherwise the biased population covariance
- is computed</DL>
-</DL>
-
+ is computed</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="addValue(double[])"><!-- --></A><H3>
-addValue</H3>
-<PRE>
-public void <B>addValue</B>(double[]&nbsp;value)
-              throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></PRE>
-<DL>
-<DD>Add an n-tuple to the data
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])">addValue</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>value</CODE> - the n-tuple to add
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the length of the array
- does not match the one used at construction</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getDimension()"><!-- --></A><H3>
-getDimension</H3>
-<PRE>
-public int <B>getDimension</B>()</PRE>
-<DL>
-<DD>Returns the dimension of the data
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getDimension()">getDimension</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getDimension()">getDimension</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>The dimension of the data</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getN()"><!-- --></A><H3>
-getN</H3>
-<PRE>
-public long <B>getN</B>()</PRE>
-<DL>
-<DD>Returns the number of available values
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getN()">getN</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getN()">getN</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>The number of available values</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getSum()"><!-- --></A><H3>
-getSum</H3>
-<PRE>
-public double[] <B>getSum</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the sum of the
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="addValue(double[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addValue</h4>
+<pre>public&nbsp;void&nbsp;addValue(double[]&nbsp;value)
+              throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></pre>
+<div class="block">Add an n-tuple to the data</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])">addValue</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>value</code> - the n-tuple to add</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the length of the array
+ does not match the one used at construction</dd></dl>
+</li>
+</ul>
+<a name="getDimension()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDimension</h4>
+<pre>public&nbsp;int&nbsp;getDimension()</pre>
+<div class="block">Returns the dimension of the data</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getDimension()">getDimension</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getDimension()">getDimension</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>The dimension of the data</dd></dl>
+</li>
+</ul>
+<a name="getN()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getN</h4>
+<pre>public&nbsp;long&nbsp;getN()</pre>
+<div class="block">Returns the number of available values</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getN()">getN</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getN()">getN</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>The number of available values</dd></dl>
+</li>
+</ul>
+<a name="getSum()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSum</h4>
+<pre>public&nbsp;double[]&nbsp;getSum()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the sum of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getSum()">getSum</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSum()">getSum</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component sums</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getSumSq()"><!-- --></A><H3>
-getSumSq</H3>
-<PRE>
-public double[] <B>getSumSq</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the sum of squares of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getSum()">getSum</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSum()">getSum</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component sums</dd></dl>
+</li>
+</ul>
+<a name="getSumSq()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSumSq</h4>
+<pre>public&nbsp;double[]&nbsp;getSumSq()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the sum of squares of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getSumSq()">getSumSq</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumSq()">getSumSq</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component sums of squares</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getSumLog()"><!-- --></A><H3>
-getSumLog</H3>
-<PRE>
-public double[] <B>getSumLog</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the sum of logs of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getSumSq()">getSumSq</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumSq()">getSumSq</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component sums of squares</dd></dl>
+</li>
+</ul>
+<a name="getSumLog()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSumLog</h4>
+<pre>public&nbsp;double[]&nbsp;getSumLog()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the sum of logs of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getSumLog()">getSumLog</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumLog()">getSumLog</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component log sums</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getMean()"><!-- --></A><H3>
-getMean</H3>
-<PRE>
-public double[] <B>getMean</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the mean of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getSumLog()">getSumLog</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumLog()">getSumLog</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component log sums</dd></dl>
+</li>
+</ul>
+<a name="getMean()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMean</h4>
+<pre>public&nbsp;double[]&nbsp;getMean()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the mean of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getMean()">getMean</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMean()">getMean</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component means</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getStandardDeviation()"><!-- --></A><H3>
-getStandardDeviation</H3>
-<PRE>
-public double[] <B>getStandardDeviation</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the standard deviation of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getMean()">getMean</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMean()">getMean</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component means</dd></dl>
+</li>
+</ul>
+<a name="getStandardDeviation()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getStandardDeviation</h4>
+<pre>public&nbsp;double[]&nbsp;getStandardDeviation()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the standard deviation of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getStandardDeviation()">getStandardDeviation</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getStandardDeviation()">getStandardDeviation</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component standard deviations</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getCovariance()"><!-- --></A><H3>
-getCovariance</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</A> <B>getCovariance</B>()</PRE>
-<DL>
-<DD>Returns the covariance matrix of the values that have been added.
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getCovariance()">getCovariance</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getCovariance()">getCovariance</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the covariance matrix</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getMax()"><!-- --></A><H3>
-getMax</H3>
-<PRE>
-public double[] <B>getMax</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the maximum of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getStandardDeviation()">getStandardDeviation</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getStandardDeviation()">getStandardDeviation</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component standard deviations</dd></dl>
+</li>
+</ul>
+<a name="getCovariance()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCovariance</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/linear/RealMatrix.html" title="interface in org.apache.commons.math3.linear">RealMatrix</a>&nbsp;getCovariance()</pre>
+<div class="block">Returns the covariance matrix of the values that have been added.</div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getCovariance()">getCovariance</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getCovariance()">getCovariance</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the covariance matrix</dd></dl>
+</li>
+</ul>
+<a name="getMax()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMax</h4>
+<pre>public&nbsp;double[]&nbsp;getMax()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the maximum of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getMax()">getMax</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMax()">getMax</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component maxima</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getMin()"><!-- --></A><H3>
-getMin</H3>
-<PRE>
-public double[] <B>getMin</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the minimum of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getMax()">getMax</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMax()">getMax</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component maxima</dd></dl>
+</li>
+</ul>
+<a name="getMin()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMin</h4>
+<pre>public&nbsp;double[]&nbsp;getMin()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the minimum of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getMin()">getMin</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMin()">getMin</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component minima</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getGeometricMean()"><!-- --></A><H3>
-getGeometricMean</H3>
-<PRE>
-public double[] <B>getGeometricMean</B>()</PRE>
-<DL>
-<DD>Returns an array whose i<sup>th</sup> entry is the geometric mean of the
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getMin()">getMin</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMin()">getMin</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component minima</dd></dl>
+</li>
+</ul>
+<a name="getGeometricMean()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getGeometricMean</h4>
+<pre>public&nbsp;double[]&nbsp;getGeometricMean()</pre>
+<div class="block">Returns an array whose i<sup>th</sup> entry is the geometric mean of the
  i<sup>th</sup> entries of the arrays that have been added using
- <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>MultivariateSummaryStatistics.addValue(double[])</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getGeometricMean()">getGeometricMean</A></CODE> in interface <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</A></CODE><DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getGeometricMean()">getGeometricMean</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the array of component geometric means</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="toString()"><!-- --></A><H3>
-toString</H3>
-<PRE>
-public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A> <B>toString</B>()</PRE>
-<DL>
-<DD>Generates a text report displaying
+ <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>MultivariateSummaryStatistics.addValue(double[])</code></a></div>
+<dl>
+<dt><strong>Specified by:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html#getGeometricMean()">getGeometricMean</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/StatisticalMultivariateSummary.html" title="interface in org.apache.commons.math3.stat.descriptive">StatisticalMultivariateSummary</a></code></dd>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getGeometricMean()">getGeometricMean</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the array of component geometric means</dd></dl>
+</li>
+</ul>
+<a name="toString()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toString</h4>
+<pre>public&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;toString()</pre>
+<div class="block">Generates a text report displaying
  summary statistics from values that
- have been added.
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#toString()">toString</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>String with line feeds displaying statistics</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="clear()"><!-- --></A><H3>
-clear</H3>
-<PRE>
-public void <B>clear</B>()</PRE>
-<DL>
-<DD>Resets all statistics and storage
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#clear()">clear</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="equals(java.lang.Object)"><!-- --></A><H3>
-equals</H3>
-<PRE>
-public boolean <B>equals</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&nbsp;object)</PRE>
-<DL>
-<DD>Returns true iff <code>object</code> is a <code>MultivariateSummaryStatistics</code>
- instance and all statistics have the same values as this.
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#equals(java.lang.Object)">equals</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>object</CODE> - the object to test equality against.
-<DT><B>Returns:</B><DD>true if object equals this</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="hashCode()"><!-- --></A><H3>
-hashCode</H3>
-<PRE>
-public int <B>hashCode</B>()</PRE>
-<DL>
-<DD>Returns hash code based on values of statistics
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#hashCode()">hashCode</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>hash code</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getSumImpl()"><!-- --></A><H3>
-getSumImpl</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[] <B>getSumImpl</B>()</PRE>
-<DL>
-<DD>Returns the currently configured Sum implementation
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumImpl()">getSumImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the StorelessUnivariateStatistic implementing the sum</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setSumImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])"><!-- --></A><H3>
-setSumImpl</H3>
-<PRE>
-public void <B>setSumImpl</B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;sumImpl)
-                throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                       <A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></PRE>
-<DL>
-<DD><p>Sets the implementation for the Sum.</p>
+ have been added.</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#toString()">toString</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>String with line feeds displaying statistics</dd></dl>
+</li>
+</ul>
+<a name="clear()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>clear</h4>
+<pre>public&nbsp;void&nbsp;clear()</pre>
+<div class="block">Resets all statistics and storage</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#clear()">clear</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+</dl>
+</li>
+</ul>
+<a name="equals(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre>public&nbsp;boolean&nbsp;equals(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a>&nbsp;object)</pre>
+<div class="block">Returns true iff <code>object</code> is a <code>MultivariateSummaryStatistics</code>
+ instance and all statistics have the same values as this.</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#equals(java.lang.Object)">equals</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>object</code> - the object to test equality against.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>true if object equals this</dd></dl>
+</li>
+</ul>
+<a name="hashCode()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre>public&nbsp;int&nbsp;hashCode()</pre>
+<div class="block">Returns hash code based on values of statistics</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#hashCode()">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>hash code</dd></dl>
+</li>
+</ul>
+<a name="getSumImpl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSumImpl</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;getSumImpl()</pre>
+<div class="block">Returns the currently configured Sum implementation</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumImpl()">getSumImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the StorelessUnivariateStatistic implementing the sum</dd></dl>
+</li>
+</ul>
+<a name="setSumImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSumImpl</h4>
+<pre>public&nbsp;void&nbsp;setSumImpl(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;sumImpl)
+                throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                       <a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></pre>
+<div class="block"><p>Sets the implementation for the Sum.</p>
  <p>This method must be activated before any data has been added - i.e.,
- before <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>addValue</CODE></A> has been used to add data;
- otherwise an IllegalStateException will be thrown.</p>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setSumImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>sumImpl</CODE> - the StorelessUnivariateStatistic instance to use
- for computing the Sum
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array dimension
- does not match the one used at construction
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></CODE> - if data has already been added
-  (i.e if n > 0)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getSumsqImpl()"><!-- --></A><H3>
-getSumsqImpl</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[] <B>getSumsqImpl</B>()</PRE>
-<DL>
-<DD>Returns the currently configured sum of squares implementation
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumsqImpl()">getSumsqImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the StorelessUnivariateStatistic implementing the sum of squares</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setSumsqImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])"><!-- --></A><H3>
-setSumsqImpl</H3>
-<PRE>
-public void <B>setSumsqImpl</B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;sumsqImpl)
-                  throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                         <A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></PRE>
-<DL>
-<DD><p>Sets the implementation for the sum of squares.</p>
+ before <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>addValue</code></a> has been used to add data;
+ otherwise an IllegalStateException will be thrown.</p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setSumImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>sumImpl</code> - the StorelessUnivariateStatistic instance to use
+ for computing the Sum</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array dimension
+ does not match the one used at construction</dd>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></code> - if data has already been added
+  (i.e if n > 0)</dd></dl>
+</li>
+</ul>
+<a name="getSumsqImpl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSumsqImpl</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;getSumsqImpl()</pre>
+<div class="block">Returns the currently configured sum of squares implementation</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumsqImpl()">getSumsqImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the StorelessUnivariateStatistic implementing the sum of squares</dd></dl>
+</li>
+</ul>
+<a name="setSumsqImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSumsqImpl</h4>
+<pre>public&nbsp;void&nbsp;setSumsqImpl(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;sumsqImpl)
+                  throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                         <a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></pre>
+<div class="block"><p>Sets the implementation for the sum of squares.</p>
  <p>This method must be activated before any data has been added - i.e.,
- before <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>addValue</CODE></A> has been used to add data;
- otherwise an IllegalStateException will be thrown.</p>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setSumsqImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumsqImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>sumsqImpl</CODE> - the StorelessUnivariateStatistic instance to use
- for computing the sum of squares
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array dimension
- does not match the one used at construction
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></CODE> - if data has already been added
-  (i.e if n > 0)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getMinImpl()"><!-- --></A><H3>
-getMinImpl</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[] <B>getMinImpl</B>()</PRE>
-<DL>
-<DD>Returns the currently configured minimum implementation
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMinImpl()">getMinImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the StorelessUnivariateStatistic implementing the minimum</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setMinImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])"><!-- --></A><H3>
-setMinImpl</H3>
-<PRE>
-public void <B>setMinImpl</B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;minImpl)
-                throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                       <A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></PRE>
-<DL>
-<DD><p>Sets the implementation for the minimum.</p>
+ before <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>addValue</code></a> has been used to add data;
+ otherwise an IllegalStateException will be thrown.</p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setSumsqImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumsqImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>sumsqImpl</code> - the StorelessUnivariateStatistic instance to use
+ for computing the sum of squares</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array dimension
+ does not match the one used at construction</dd>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></code> - if data has already been added
+  (i.e if n > 0)</dd></dl>
+</li>
+</ul>
+<a name="getMinImpl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMinImpl</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;getMinImpl()</pre>
+<div class="block">Returns the currently configured minimum implementation</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMinImpl()">getMinImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the StorelessUnivariateStatistic implementing the minimum</dd></dl>
+</li>
+</ul>
+<a name="setMinImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setMinImpl</h4>
+<pre>public&nbsp;void&nbsp;setMinImpl(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;minImpl)
+                throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                       <a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></pre>
+<div class="block"><p>Sets the implementation for the minimum.</p>
  <p>This method must be activated before any data has been added - i.e.,
- before <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>addValue</CODE></A> has been used to add data;
- otherwise an IllegalStateException will be thrown.</p>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setMinImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMinImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>minImpl</CODE> - the StorelessUnivariateStatistic instance to use
- for computing the minimum
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array dimension
- does not match the one used at construction
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></CODE> - if data has already been added
-  (i.e if n > 0)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getMaxImpl()"><!-- --></A><H3>
-getMaxImpl</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[] <B>getMaxImpl</B>()</PRE>
-<DL>
-<DD>Returns the currently configured maximum implementation
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMaxImpl()">getMaxImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the StorelessUnivariateStatistic implementing the maximum</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setMaxImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])"><!-- --></A><H3>
-setMaxImpl</H3>
-<PRE>
-public void <B>setMaxImpl</B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;maxImpl)
-                throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                       <A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></PRE>
-<DL>
-<DD><p>Sets the implementation for the maximum.</p>
+ before <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>addValue</code></a> has been used to add data;
+ otherwise an IllegalStateException will be thrown.</p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setMinImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMinImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>minImpl</code> - the StorelessUnivariateStatistic instance to use
+ for computing the minimum</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array dimension
+ does not match the one used at construction</dd>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></code> - if data has already been added
+  (i.e if n > 0)</dd></dl>
+</li>
+</ul>
+<a name="getMaxImpl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxImpl</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;getMaxImpl()</pre>
+<div class="block">Returns the currently configured maximum implementation</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMaxImpl()">getMaxImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the StorelessUnivariateStatistic implementing the maximum</dd></dl>
+</li>
+</ul>
+<a name="setMaxImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setMaxImpl</h4>
+<pre>public&nbsp;void&nbsp;setMaxImpl(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;maxImpl)
+                throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                       <a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></pre>
+<div class="block"><p>Sets the implementation for the maximum.</p>
  <p>This method must be activated before any data has been added - i.e.,
- before <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>addValue</CODE></A> has been used to add data;
- otherwise an IllegalStateException will be thrown.</p>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setMaxImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMaxImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>maxImpl</CODE> - the StorelessUnivariateStatistic instance to use
- for computing the maximum
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array dimension
- does not match the one used at construction
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></CODE> - if data has already been added
-  (i.e if n > 0)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getSumLogImpl()"><!-- --></A><H3>
-getSumLogImpl</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[] <B>getSumLogImpl</B>()</PRE>
-<DL>
-<DD>Returns the currently configured sum of logs implementation
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumLogImpl()">getSumLogImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the StorelessUnivariateStatistic implementing the log sum</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setSumLogImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])"><!-- --></A><H3>
-setSumLogImpl</H3>
-<PRE>
-public void <B>setSumLogImpl</B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;sumLogImpl)
-                   throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                          <A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></PRE>
-<DL>
-<DD><p>Sets the implementation for the sum of logs.</p>
+ before <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>addValue</code></a> has been used to add data;
+ otherwise an IllegalStateException will be thrown.</p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setMaxImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMaxImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>maxImpl</code> - the StorelessUnivariateStatistic instance to use
+ for computing the maximum</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array dimension
+ does not match the one used at construction</dd>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></code> - if data has already been added
+  (i.e if n > 0)</dd></dl>
+</li>
+</ul>
+<a name="getSumLogImpl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSumLogImpl</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;getSumLogImpl()</pre>
+<div class="block">Returns the currently configured sum of logs implementation</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getSumLogImpl()">getSumLogImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the StorelessUnivariateStatistic implementing the log sum</dd></dl>
+</li>
+</ul>
+<a name="setSumLogImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setSumLogImpl</h4>
+<pre>public&nbsp;void&nbsp;setSumLogImpl(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;sumLogImpl)
+                   throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                          <a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></pre>
+<div class="block"><p>Sets the implementation for the sum of logs.</p>
  <p>This method must be activated before any data has been added - i.e.,
- before <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>addValue</CODE></A> has been used to add data;
- otherwise an IllegalStateException will be thrown.</p>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setSumLogImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumLogImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>sumLogImpl</CODE> - the StorelessUnivariateStatistic instance to use
- for computing the log sum
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array dimension
- does not match the one used at construction
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></CODE> - if data has already been added
-  (i.e if n > 0)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getGeoMeanImpl()"><!-- --></A><H3>
-getGeoMeanImpl</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[] <B>getGeoMeanImpl</B>()</PRE>
-<DL>
-<DD>Returns the currently configured geometric mean implementation
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getGeoMeanImpl()">getGeoMeanImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the StorelessUnivariateStatistic implementing the geometric mean</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setGeoMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])"><!-- --></A><H3>
-setGeoMeanImpl</H3>
-<PRE>
-public void <B>setGeoMeanImpl</B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;geoMeanImpl)
-                    throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                           <A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></PRE>
-<DL>
-<DD><p>Sets the implementation for the geometric mean.</p>
+ before <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>addValue</code></a> has been used to add data;
+ otherwise an IllegalStateException will be thrown.</p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setSumLogImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setSumLogImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>sumLogImpl</code> - the StorelessUnivariateStatistic instance to use
+ for computing the log sum</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array dimension
+ does not match the one used at construction</dd>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></code> - if data has already been added
+  (i.e if n > 0)</dd></dl>
+</li>
+</ul>
+<a name="getGeoMeanImpl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getGeoMeanImpl</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;getGeoMeanImpl()</pre>
+<div class="block">Returns the currently configured geometric mean implementation</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getGeoMeanImpl()">getGeoMeanImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the StorelessUnivariateStatistic implementing the geometric mean</dd></dl>
+</li>
+</ul>
+<a name="setGeoMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setGeoMeanImpl</h4>
+<pre>public&nbsp;void&nbsp;setGeoMeanImpl(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;geoMeanImpl)
+                    throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                           <a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></pre>
+<div class="block"><p>Sets the implementation for the geometric mean.</p>
  <p>This method must be activated before any data has been added - i.e.,
- before <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>addValue</CODE></A> has been used to add data;
- otherwise an IllegalStateException will be thrown.</p>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setGeoMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setGeoMeanImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>geoMeanImpl</CODE> - the StorelessUnivariateStatistic instance to use
- for computing the geometric mean
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array dimension
- does not match the one used at construction
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></CODE> - if data has already been added
-  (i.e if n > 0)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getMeanImpl()"><!-- --></A><H3>
-getMeanImpl</H3>
-<PRE>
-public <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[] <B>getMeanImpl</B>()</PRE>
-<DL>
-<DD>Returns the currently configured mean implementation
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMeanImpl()">getMeanImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>the StorelessUnivariateStatistic implementing the mean</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="setMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])"><!-- --></A><H3>
-setMeanImpl</H3>
-<PRE>
-public void <B>setMeanImpl</B>(<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</A>[]&nbsp;meanImpl)
-                 throws <A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A>,
-                        <A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></PRE>
-<DL>
-<DD><p>Sets the implementation for the mean.</p>
+ before <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>addValue</code></a> has been used to add data;
+ otherwise an IllegalStateException will be thrown.</p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setGeoMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setGeoMeanImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>geoMeanImpl</code> - the StorelessUnivariateStatistic instance to use
+ for computing the geometric mean</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array dimension
+ does not match the one used at construction</dd>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></code> - if data has already been added
+  (i.e if n > 0)</dd></dl>
+</li>
+</ul>
+<a name="getMeanImpl()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMeanImpl</h4>
+<pre>public&nbsp;<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;getMeanImpl()</pre>
+<div class="block">Returns the currently configured mean implementation</div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#getMeanImpl()">getMeanImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Returns:</span></dt><dd>the StorelessUnivariateStatistic implementing the mean</dd></dl>
+</li>
+</ul>
+<a name="setMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setMeanImpl</h4>
+<pre>public&nbsp;void&nbsp;setMeanImpl(<a href="../../../../../../org/apache/commons/math3/stat/descriptive/StorelessUnivariateStatistic.html" title="interface in org.apache.commons.math3.stat.descriptive">StorelessUnivariateStatistic</a>[]&nbsp;meanImpl)
+                 throws <a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a>,
+                        <a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></pre>
+<div class="block"><p>Sets the implementation for the mean.</p>
  <p>This method must be activated before any data has been added - i.e.,
- before <A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><CODE>addValue</CODE></A> has been used to add data;
- otherwise an IllegalStateException will be thrown.</p>
-<P>
-<DD><DL>
-<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMeanImpl</A></CODE> in class <CODE><A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</A></CODE></DL>
-</DD>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>meanImpl</CODE> - the StorelessUnivariateStatistic instance to use
- for computing the mean
-<DT><B>Throws:</B>
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</A></CODE> - if the array dimension
- does not match the one used at construction
-<DD><CODE><A HREF="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</A></CODE> - if data has already been added
-  (i.e if n > 0)</DL>
-</DD>
-</DL>
+ before <a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#addValue(double[])"><code>addValue</code></a> has been used to add data;
+ otherwise an IllegalStateException will be thrown.</p></div>
+<dl>
+<dt><strong>Overrides:</strong></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html#setMeanImpl(org.apache.commons.math3.stat.descriptive.StorelessUnivariateStatistic[])">setMeanImpl</a></code>&nbsp;in class&nbsp;<code><a href="../../../../../../org/apache/commons/math3/stat/descriptive/MultivariateSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive">MultivariateSummaryStatistics</a></code></dd>
+<dt><span class="strong">Parameters:</span></dt><dd><code>meanImpl</code> - the StorelessUnivariateStatistic instance to use
+ for computing the mean</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/DimensionMismatchException.html" title="class in org.apache.commons.math3.exception">DimensionMismatchException</a></code> - if the array dimension
+ does not match the one used at construction</dd>
+<dd><code><a href="../../../../../../org/apache/commons/math3/exception/MathIllegalStateException.html" title="class in org.apache.commons.math3.exception">MathIllegalStateException</a></code> - if data has already been added
+  (i.e if n > 0)</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/SynchronizedMultivariateSummaryStatistics.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedDescriptiveStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../../index.html?org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="SynchronizedMultivariateSummaryStatistics.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/SynchronizedMultivariateSummaryStatistics.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedDescriptiveStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../../org/apache/commons/math3/stat/descriptive/SynchronizedSummaryStatistics.html" title="class in org.apache.commons.math3.stat.descriptive"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../../index.html?org/apache/commons/math3/stat/descriptive/SynchronizedMultivariateSummaryStatistics.html" target="_top">Frames</a></li>
+<li><a href="SynchronizedMultivariateSummaryStatistics.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor_detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>

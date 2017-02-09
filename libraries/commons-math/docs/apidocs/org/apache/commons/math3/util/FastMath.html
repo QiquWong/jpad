@@ -1,107 +1,105 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--NewPage-->
-<HTML>
-<HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>
-FastMath (Commons Math 3.2 API)
-</TITLE>
-
-
-<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../../stylesheet.css" TITLE="Style">
-
-<SCRIPT type="text/javascript">
-function windowTitle()
-{
+<!-- NewPage -->
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>FastMath (Apache Commons Math 3.6.1 API)</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="FastMath (Commons Math 3.2 API)";
+        parent.document.title="FastMath (Apache Commons Math 3.6.1 API)";
     }
-}
-</SCRIPT>
-<NOSCRIPT>
-</NOSCRIPT>
-
-</HEAD>
-
-<BODY BGCOLOR="white" onload="windowTitle();">
-<HR>
-
-
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
 <!-- ========= START OF TOP NAVBAR ======= -->
-<A NAME="navbar_top"><!-- --></A>
-<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_top_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/FastMath.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/DoubleArray.html" title="interface in org.apache.commons.math3.util"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/Incrementor.html" title="class in org.apache.commons.math3.util"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/util/FastMath.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="FastMath.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/FastMath.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/util/DoubleArray.html" title="interface in org.apache.commons.math3.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/util/Incrementor.html" title="class in org.apache.commons.math3.util"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/util/FastMath.html" target="_top">Frames</a></li>
+<li><a href="FastMath.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_top"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-
-<HR>
 <!-- ======== START OF CLASS DATA ======== -->
-<H2>
-<FONT SIZE="-1">
-org.apache.commons.math3.util</FONT>
-<BR>
-Class FastMath</H2>
-<PRE>
-<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</A>
-  <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>org.apache.commons.math3.util.FastMath</B>
-</PRE>
-<HR>
-<DL>
-<DT><PRE>public class <B>FastMath</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
-</PRE>
-
-<P>
-Faster, more accurate, portable alternative to <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true" title="class or interface in java.lang"><CODE>Math</CODE></A> and
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/StrictMath.html?is-external=true" title="class or interface in java.lang"><CODE>StrictMath</CODE></A> for large scale computation.
+<div class="header">
+<div class="subTitle">org.apache.commons.math3.util</div>
+<h2 title="Class FastMath" class="title">Class FastMath</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li>org.apache.commons.math3.util.FastMath</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public class <span class="strong">FastMath</span>
+extends <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
+<div class="block">Faster, more accurate, portable alternative to <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Math.html?is-external=true" title="class or interface in java.lang"><code>Math</code></a> and
+ <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/StrictMath.html?is-external=true" title="class or interface in java.lang"><code>StrictMath</code></a> for large scale computation.
  <p>
  FastMath is a drop-in replacement for both Math and StrictMath. This
  means that for any method in Math (say <code>Math.sin(x)</code> or
@@ -136,814 +134,813 @@ Faster, more accurate, portable alternative to <A HREF="http://download.oracle.c
  <p>
  FastMath additionally implements the following methods not found in Math/StrictMath:
  <ul>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#asinh(double)"><CODE>asinh(double)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#acosh(double)"><CODE>acosh(double)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#atanh(double)"><CODE>atanh(double)</CODE></A></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#asinh(double)"><code>asinh(double)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#acosh(double)"><code>acosh(double)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#atanh(double)"><code>atanh(double)</code></a></li>
  </ul>
  The following methods are found in Math/StrictMath since 1.6 only, they are provided
  by FastMath even in 1.5 Java virtual machines
  <ul>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(double, double)"><CODE>copySign(double, double)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(double)"><CODE>getExponent(double)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(double, double)"><CODE>nextAfter(double,double)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(double)"><CODE>nextUp(double)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(double, int)"><CODE>scalb(double, int)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(float, float)"><CODE>copySign(float, float)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(float)"><CODE>getExponent(float)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(float, double)"><CODE>nextAfter(float,double)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(float)"><CODE>nextUp(float)</CODE></A></li>
- <li><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(float, int)"><CODE>scalb(float, int)</CODE></A></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(double,%20double)"><code>copySign(double, double)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(double)"><code>getExponent(double)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(double,%20double)"><code>nextAfter(double,double)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(double)"><code>nextUp(double)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(double,%20int)"><code>scalb(double, int)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(float,%20float)"><code>copySign(float, float)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(float)"><code>getExponent(float)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(float,%20double)"><code>nextAfter(float,double)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(float)"><code>nextUp(float)</code></a></li>
+ <li><a href="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(float,%20int)"><code>scalb(float, int)</code></a></li>
  </ul>
- </p>
-<P>
-
-<P>
-<DL>
-<DT><B>Since:</B></DT>
-  <DD>2.2</DD>
-<DT><B>Version:</B></DT>
-  <DD>$Id: FastMath.java 1462503 2013-03-29 15:48:27Z luc $</DD>
-</DL>
-<HR>
-
-<P>
+ </p></div>
+<dl><dt><span class="strong">Since:</span></dt>
+  <dd>2.2</dd></dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
 <!-- =========== FIELD SUMMARY =========== -->
-
-<A NAME="field_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Field Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#E">E</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Napier's constant e, base of the natural logarithm.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#PI">PI</A></B></CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Archimede's constant PI, ratio of circle circumference to diameter.</TD>
-</TR>
-</TABLE>
-&nbsp;
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#E">E</a></strong></code>
+<div class="block">Napier's constant e, base of the natural logarithm.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#PI">PI</a></strong></code>
+<div class="block">Archimede's constant PI, ratio of circle circumference to diameter.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
 <!-- ========== METHOD SUMMARY =========== -->
-
-<A NAME="method_summary"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
-<B>Method Summary</B></FONT></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#abs(double)">abs</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Absolute value.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#abs(float)">abs</A></B>(float&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Absolute value.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#abs(int)">abs</A></B>(int&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Absolute value.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;long</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#abs(long)">abs</A></B>(long&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Absolute value.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#acos(double)">acos</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the arc cosine of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#acosh(double)">acosh</A></B>(double&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the inverse hyperbolic cosine of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#asin(double)">asin</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the arc sine of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#asinh(double)">asinh</A></B>(double&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the inverse hyperbolic sine of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#atan(double)">atan</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Arctangent function</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#atan2(double, double)">atan2</A></B>(double&nbsp;y,
-      double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Two arguments arctangent function</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#atanh(double)">atanh</A></B>(double&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the inverse hyperbolic tangent of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cbrt(double)">cbrt</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the cubic root of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#ceil(double)">ceil</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the smallest whole number larger than x.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(double, double)">copySign</A></B>(double&nbsp;magnitude,
-         double&nbsp;sign)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first argument with the sign of the second argument.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(float, float)">copySign</A></B>(float&nbsp;magnitude,
-         float&nbsp;sign)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the first argument with the sign of the second argument.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)">cos</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cosine function.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)">cosh</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the hyperbolic cosine of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#exp(double)">exp</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Exponential function.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#expm1(double)">expm1</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute exp(x) - 1</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#floor(double)">floor</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the largest whole number smaller than x.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(double)">getExponent</A></B>(double&nbsp;d)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return the exponent of a double number, removing the bias.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(float)">getExponent</A></B>(float&nbsp;f)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return the exponent of a float number, removing the bias.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#hypot(double, double)">hypot</A></B>(double&nbsp;x,
-      double&nbsp;y)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns the hypotenuse of a triangle with sides <code>x</code> and <code>y</code>
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#abs(double)">abs</a></strong>(double&nbsp;x)</code>
+<div class="block">Absolute value.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#abs(float)">abs</a></strong>(float&nbsp;x)</code>
+<div class="block">Absolute value.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#abs(int)">abs</a></strong>(int&nbsp;x)</code>
+<div class="block">Absolute value.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#abs(long)">abs</a></strong>(long&nbsp;x)</code>
+<div class="block">Absolute value.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#acos(double)">acos</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute the arc cosine of a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#acosh(double)">acosh</a></strong>(double&nbsp;a)</code>
+<div class="block">Compute the inverse hyperbolic cosine of a number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#addExact(int,%20int)">addExact</a></strong>(int&nbsp;a,
+        int&nbsp;b)</code>
+<div class="block">Add two numbers, detecting overflows.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#addExact(long,%20long)">addExact</a></strong>(long&nbsp;a,
+        long&nbsp;b)</code>
+<div class="block">Add two numbers, detecting overflows.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#asin(double)">asin</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute the arc sine of a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#asinh(double)">asinh</a></strong>(double&nbsp;a)</code>
+<div class="block">Compute the inverse hyperbolic sine of a number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#atan(double)">atan</a></strong>(double&nbsp;x)</code>
+<div class="block">Arctangent function</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#atan2(double,%20double)">atan2</a></strong>(double&nbsp;y,
+     double&nbsp;x)</code>
+<div class="block">Two arguments arctangent function</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#atanh(double)">atanh</a></strong>(double&nbsp;a)</code>
+<div class="block">Compute the inverse hyperbolic tangent of a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#cbrt(double)">cbrt</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute the cubic root of a number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#ceil(double)">ceil</a></strong>(double&nbsp;x)</code>
+<div class="block">Get the smallest whole number larger than x.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(double,%20double)">copySign</a></strong>(double&nbsp;magnitude,
+        double&nbsp;sign)</code>
+<div class="block">Returns the first argument with the sign of the second argument.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#copySign(float,%20float)">copySign</a></strong>(float&nbsp;magnitude,
+        float&nbsp;sign)</code>
+<div class="block">Returns the first argument with the sign of the second argument.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#cos(double)">cos</a></strong>(double&nbsp;x)</code>
+<div class="block">Cosine function.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#cosh(double)">cosh</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute the hyperbolic cosine of a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#decrementExact(int)">decrementExact</a></strong>(int&nbsp;n)</code>
+<div class="block">Decrement a number, detecting overflows.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#decrementExact(long)">decrementExact</a></strong>(long&nbsp;n)</code>
+<div class="block">Decrement a number, detecting overflows.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#exp(double)">exp</a></strong>(double&nbsp;x)</code>
+<div class="block">Exponential function.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#expm1(double)">expm1</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute exp(x) - 1</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floor(double)">floor</a></strong>(double&nbsp;x)</code>
+<div class="block">Get the largest whole number smaller than x.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorDiv(int,%20int)">floorDiv</a></strong>(int&nbsp;a,
+        int&nbsp;b)</code>
+<div class="block">Finds q such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorDiv(long,%20long)">floorDiv</a></strong>(long&nbsp;a,
+        long&nbsp;b)</code>
+<div class="block">Finds q such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorMod(int,%20int)">floorMod</a></strong>(int&nbsp;a,
+        int&nbsp;b)</code>
+<div class="block">Finds r such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorMod(long,%20long)">floorMod</a></strong>(long&nbsp;a,
+        long&nbsp;b)</code>
+<div class="block">Finds r such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(double)">getExponent</a></strong>(double&nbsp;d)</code>
+<div class="block">Return the exponent of a double number, removing the bias.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#getExponent(float)">getExponent</a></strong>(float&nbsp;f)</code>
+<div class="block">Return the exponent of a float number, removing the bias.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#hypot(double,%20double)">hypot</a></strong>(double&nbsp;x,
+     double&nbsp;y)</code>
+<div class="block">Returns the hypotenuse of a triangle with sides <code>x</code> and <code>y</code>
  - sqrt(<i>x</i><sup>2</sup>&nbsp;+<i>y</i><sup>2</sup>)<br/>
- avoiding intermediate overflow or underflow.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#IEEEremainder(double, double)">IEEEremainder</A></B>(double&nbsp;dividend,
-              double&nbsp;divisor)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the remainder as prescribed by the IEEE 754 standard.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#log(double)">log</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Natural logarithm.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#log(double, double)">log</A></B>(double&nbsp;base,
-    double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes the <a href="http://mathworld.wolfram.com/Logarithm.html">
- logarithm</a> in a given base.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#log10(double)">log10</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the base 10 logarithm.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#log1p(double)">log1p</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Computes log(1 + x).</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#main(java.lang.String[])">main</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>[]&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Print out contents of arrays, and check the length.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#max(double, double)">max</A></B>(double&nbsp;a,
-    double&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the maximum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#max(float, float)">max</A></B>(float&nbsp;a,
-    float&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the maximum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#max(int, int)">max</A></B>(int&nbsp;a,
-    int&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the maximum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;long</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#max(long, long)">max</A></B>(long&nbsp;a,
-    long&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the maximum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#min(double, double)">min</A></B>(double&nbsp;a,
-    double&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the minimum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#min(float, float)">min</A></B>(float&nbsp;a,
-    float&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the minimum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#min(int, int)">min</A></B>(int&nbsp;a,
-    int&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the minimum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;long</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#min(long, long)">min</A></B>(long&nbsp;a,
-    long&nbsp;b)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the minimum of two values</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(double, double)">nextAfter</A></B>(double&nbsp;d,
-          double&nbsp;direction)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the next machine representable number after a number, moving
- in the direction of another number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(float, double)">nextAfter</A></B>(float&nbsp;f,
-          double&nbsp;direction)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the next machine representable number after a number, moving
- in the direction of another number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(double)">nextUp</A></B>(double&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute next number towards positive infinity.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(float)">nextUp</A></B>(float&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute next number towards positive infinity.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#pow(double, double)">pow</A></B>(double&nbsp;x,
-    double&nbsp;y)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Power function.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#pow(double, int)">pow</A></B>(double&nbsp;d,
-    int&nbsp;e)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Raise a double to an int power.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#random()">random</A></B>()</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a pseudo-random number between 0.0 and 1.0.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#rint(double)">rint</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the whole number that is the nearest to x, or the even one if x is exactly half way between two integers.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;long</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#round(double)">round</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the closest long to x.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;int</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#round(float)">round</A></B>(float&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the closest int to x.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(double, int)">scalb</A></B>(double&nbsp;d,
-      int&nbsp;n)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Multiply a double number by a power of 2.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(float, int)">scalb</A></B>(float&nbsp;f,
-      int&nbsp;n)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Multiply a float number by a power of 2.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#signum(double)">signum</A></B>(double&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the signum of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#signum(float)">signum</A></B>(float&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the signum of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)">sin</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sine function.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)">sinh</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the hyperbolic sine of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#sqrt(double)">sqrt</A></B>(double&nbsp;a)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the square root of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#tan(double)">tan</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tangent function.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#tanh(double)">tanh</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute the hyperbolic tangent of a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#toDegrees(double)">toDegrees</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Convert radians to degrees, with error of less than 0.5 ULP</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#toRadians(double)">toRadians</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Convert degrees to radians, with error of less than 0.5 ULP</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;double</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#ulp(double)">ulp</A></B>(double&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute least significant bit (Unit in Last Position) for a number.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;float</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../org/apache/commons/math3/util/FastMath.html#ulp(float)">ulp</A></B>(float&nbsp;x)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compute least significant bit (Unit in Last Position) for a number.</TD>
-</TR>
-</TABLE>
-&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Methods inherited from class java.lang.<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></B></TH>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</A>, <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#wait(long, int)" title="class or interface in java.lang">wait</A></CODE></TD>
-</TR>
-</TABLE>
-&nbsp;
-<P>
-
+ avoiding intermediate overflow or underflow.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#IEEEremainder(double,%20double)">IEEEremainder</a></strong>(double&nbsp;dividend,
+             double&nbsp;divisor)</code>
+<div class="block">Computes the remainder as prescribed by the IEEE 754 standard.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#incrementExact(int)">incrementExact</a></strong>(int&nbsp;n)</code>
+<div class="block">Increment a number, detecting overflows.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#incrementExact(long)">incrementExact</a></strong>(long&nbsp;n)</code>
+<div class="block">Increment a number, detecting overflows.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#log(double)">log</a></strong>(double&nbsp;x)</code>
+<div class="block">Natural logarithm.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#log(double,%20double)">log</a></strong>(double&nbsp;base,
+   double&nbsp;x)</code>
+<div class="block">Computes the <a href="http://mathworld.wolfram.com/Logarithm.html">
+ logarithm</a> in a given base.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#log10(double)">log10</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute the base 10 logarithm.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#log1p(double)">log1p</a></strong>(double&nbsp;x)</code>
+<div class="block">Computes log(1 + x).</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#main(java.lang.String[])">main</a></strong>(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;a)</code>
+<div class="block">Print out contents of arrays, and check the length.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#max(double,%20double)">max</a></strong>(double&nbsp;a,
+   double&nbsp;b)</code>
+<div class="block">Compute the maximum of two values</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#max(float,%20float)">max</a></strong>(float&nbsp;a,
+   float&nbsp;b)</code>
+<div class="block">Compute the maximum of two values</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#max(int,%20int)">max</a></strong>(int&nbsp;a,
+   int&nbsp;b)</code>
+<div class="block">Compute the maximum of two values</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#max(long,%20long)">max</a></strong>(long&nbsp;a,
+   long&nbsp;b)</code>
+<div class="block">Compute the maximum of two values</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#min(double,%20double)">min</a></strong>(double&nbsp;a,
+   double&nbsp;b)</code>
+<div class="block">Compute the minimum of two values</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#min(float,%20float)">min</a></strong>(float&nbsp;a,
+   float&nbsp;b)</code>
+<div class="block">Compute the minimum of two values</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#min(int,%20int)">min</a></strong>(int&nbsp;a,
+   int&nbsp;b)</code>
+<div class="block">Compute the minimum of two values</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#min(long,%20long)">min</a></strong>(long&nbsp;a,
+   long&nbsp;b)</code>
+<div class="block">Compute the minimum of two values</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#multiplyExact(int,%20int)">multiplyExact</a></strong>(int&nbsp;a,
+             int&nbsp;b)</code>
+<div class="block">Multiply two numbers, detecting overflows.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#multiplyExact(long,%20long)">multiplyExact</a></strong>(long&nbsp;a,
+             long&nbsp;b)</code>
+<div class="block">Multiply two numbers, detecting overflows.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(double,%20double)">nextAfter</a></strong>(double&nbsp;d,
+         double&nbsp;direction)</code>
+<div class="block">Get the next machine representable number after a number, moving
+ in the direction of another number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextAfter(float,%20double)">nextAfter</a></strong>(float&nbsp;f,
+         double&nbsp;direction)</code>
+<div class="block">Get the next machine representable number after a number, moving
+ in the direction of another number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextDown(double)">nextDown</a></strong>(double&nbsp;a)</code>
+<div class="block">Compute next number towards negative infinity.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextDown(float)">nextDown</a></strong>(float&nbsp;a)</code>
+<div class="block">Compute next number towards negative infinity.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(double)">nextUp</a></strong>(double&nbsp;a)</code>
+<div class="block">Compute next number towards positive infinity.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#nextUp(float)">nextUp</a></strong>(float&nbsp;a)</code>
+<div class="block">Compute next number towards positive infinity.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#pow(double,%20double)">pow</a></strong>(double&nbsp;x,
+   double&nbsp;y)</code>
+<div class="block">Power function.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#pow(double,%20int)">pow</a></strong>(double&nbsp;d,
+   int&nbsp;e)</code>
+<div class="block">Raise a double to an int power.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#pow(double,%20long)">pow</a></strong>(double&nbsp;d,
+   long&nbsp;e)</code>
+<div class="block">Raise a double to a long power.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#random()">random</a></strong>()</code>
+<div class="block">Returns a pseudo-random number between 0.0 and 1.0.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#rint(double)">rint</a></strong>(double&nbsp;x)</code>
+<div class="block">Get the whole number that is the nearest to x, or the even one if x is exactly half way between two integers.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#round(double)">round</a></strong>(double&nbsp;x)</code>
+<div class="block">Get the closest long to x.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#round(float)">round</a></strong>(float&nbsp;x)</code>
+<div class="block">Get the closest int to x.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(double,%20int)">scalb</a></strong>(double&nbsp;d,
+     int&nbsp;n)</code>
+<div class="block">Multiply a double number by a power of 2.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#scalb(float,%20int)">scalb</a></strong>(float&nbsp;f,
+     int&nbsp;n)</code>
+<div class="block">Multiply a float number by a power of 2.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#signum(double)">signum</a></strong>(double&nbsp;a)</code>
+<div class="block">Compute the signum of a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#signum(float)">signum</a></strong>(float&nbsp;a)</code>
+<div class="block">Compute the signum of a number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#sin(double)">sin</a></strong>(double&nbsp;x)</code>
+<div class="block">Sine function.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#sinh(double)">sinh</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute the hyperbolic sine of a number.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#sqrt(double)">sqrt</a></strong>(double&nbsp;a)</code>
+<div class="block">Compute the square root of a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#subtractExact(int,%20int)">subtractExact</a></strong>(int&nbsp;a,
+             int&nbsp;b)</code>
+<div class="block">Subtract two numbers, detecting overflows.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static long</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#subtractExact(long,%20long)">subtractExact</a></strong>(long&nbsp;a,
+             long&nbsp;b)</code>
+<div class="block">Subtract two numbers, detecting overflows.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#tan(double)">tan</a></strong>(double&nbsp;x)</code>
+<div class="block">Tangent function.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#tanh(double)">tanh</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute the hyperbolic tangent of a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#toDegrees(double)">toDegrees</a></strong>(double&nbsp;x)</code>
+<div class="block">Convert radians to degrees, with error of less than 0.5 ULP</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#toIntExact(long)">toIntExact</a></strong>(long&nbsp;n)</code>
+<div class="block">Convert a long to interger, detecting overflows</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#toRadians(double)">toRadians</a></strong>(double&nbsp;x)</code>
+<div class="block">Convert degrees to radians, with error of less than 0.5 ULP</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static double</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#ulp(double)">ulp</a></strong>(double&nbsp;x)</code>
+<div class="block">Compute least significant bit (Unit in Last Position) for a number.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static float</code></td>
+<td class="colLast"><code><strong><a href="../../../../../org/apache/commons/math3/util/FastMath.html#ulp(float)">ulp</a></strong>(float&nbsp;x)</code>
+<div class="block">Compute least significant bit (Unit in Last Position) for a number.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a name="methods_inherited_from_class_java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></h3>
+<code><a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang">equals</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang">hashCode</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang">toString</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Object.html?is-external=true#wait(long,%20int)" title="class or interface in java.lang">wait</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
 <!-- ============ FIELD DETAIL =========== -->
-
-<A NAME="field_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Field Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="PI"><!-- --></A><H3>
-PI</H3>
-<PRE>
-public static final double <B>PI</B></PRE>
-<DL>
-<DD>Archimede's constant PI, ratio of circle circumference to diameter.
-<P>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../../constant-values.html#org.apache.commons.math3.util.FastMath.PI">Constant Field Values</A></DL>
-</DL>
-<HR>
-
-<A NAME="E"><!-- --></A><H3>
-E</H3>
-<PRE>
-public static final double <B>E</B></PRE>
-<DL>
-<DD>Napier's constant e, base of the natural logarithm.
-<P>
-<DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../../constant-values.html#org.apache.commons.math3.util.FastMath.E">Constant Field Values</A></DL>
-</DL>
-
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="PI">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>PI</h4>
+<pre>public static final&nbsp;double PI</pre>
+<div class="block">Archimede's constant PI, ratio of circle circumference to diameter.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../constant-values.html#org.apache.commons.math3.util.FastMath.PI">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="E">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>E</h4>
+<pre>public static final&nbsp;double E</pre>
+<div class="block">Napier's constant e, base of the natural logarithm.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../constant-values.html#org.apache.commons.math3.util.FastMath.E">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ============ METHOD DETAIL ========== -->
-
-<A NAME="method_detail"><!-- --></A>
-<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
-<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
-<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
-<B>Method Detail</B></FONT></TH>
-</TR>
-</TABLE>
-
-<A NAME="sqrt(double)"><!-- --></A><H3>
-sqrt</H3>
-<PRE>
-public static double <B>sqrt</B>(double&nbsp;a)</PRE>
-<DL>
-<DD>Compute the square root of a number.
- <p><b>Note:</b> this implementation currently delegates to <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#sqrt(double)" title="class or interface in java.lang"><CODE>Math.sqrt(double)</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>square root of a</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="cosh(double)"><!-- --></A><H3>
-cosh</H3>
-<PRE>
-public static double <B>cosh</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute the hyperbolic cosine of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>hyperbolic cosine of x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sinh(double)"><!-- --></A><H3>
-sinh</H3>
-<PRE>
-public static double <B>sinh</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute the hyperbolic sine of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>hyperbolic sine of x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="tanh(double)"><!-- --></A><H3>
-tanh</H3>
-<PRE>
-public static double <B>tanh</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute the hyperbolic tangent of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>hyperbolic tangent of x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="acosh(double)"><!-- --></A><H3>
-acosh</H3>
-<PRE>
-public static double <B>acosh</B>(double&nbsp;a)</PRE>
-<DL>
-<DD>Compute the inverse hyperbolic cosine of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>inverse hyperbolic cosine of a</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="asinh(double)"><!-- --></A><H3>
-asinh</H3>
-<PRE>
-public static double <B>asinh</B>(double&nbsp;a)</PRE>
-<DL>
-<DD>Compute the inverse hyperbolic sine of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>inverse hyperbolic sine of a</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="atanh(double)"><!-- --></A><H3>
-atanh</H3>
-<PRE>
-public static double <B>atanh</B>(double&nbsp;a)</PRE>
-<DL>
-<DD>Compute the inverse hyperbolic tangent of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>inverse hyperbolic tangent of a</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="signum(double)"><!-- --></A><H3>
-signum</H3>
-<PRE>
-public static double <B>signum</B>(double&nbsp;a)</PRE>
-<DL>
-<DD>Compute the signum of a number.
- The signum is -1 for negative numbers, +1 for positive numbers and 0 otherwise
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>-1.0, -0.0, +0.0, +1.0 or NaN depending on sign of a</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="signum(float)"><!-- --></A><H3>
-signum</H3>
-<PRE>
-public static float <B>signum</B>(float&nbsp;a)</PRE>
-<DL>
-<DD>Compute the signum of a number.
- The signum is -1 for negative numbers, +1 for positive numbers and 0 otherwise
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>-1.0, -0.0, +0.0, +1.0 or NaN depending on sign of a</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="nextUp(double)"><!-- --></A><H3>
-nextUp</H3>
-<PRE>
-public static double <B>nextUp</B>(double&nbsp;a)</PRE>
-<DL>
-<DD>Compute next number towards positive infinity.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number to which neighbor should be computed
-<DT><B>Returns:</B><DD>neighbor of a towards positive infinity</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="nextUp(float)"><!-- --></A><H3>
-nextUp</H3>
-<PRE>
-public static float <B>nextUp</B>(float&nbsp;a)</PRE>
-<DL>
-<DD>Compute next number towards positive infinity.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - number to which neighbor should be computed
-<DT><B>Returns:</B><DD>neighbor of a towards positive infinity</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="random()"><!-- --></A><H3>
-random</H3>
-<PRE>
-public static double <B>random</B>()</PRE>
-<DL>
-<DD>Returns a pseudo-random number between 0.0 and 1.0.
- <p><b>Note:</b> this implementation currently delegates to <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Math.html?is-external=true#random()" title="class or interface in java.lang"><CODE>Math.random()</CODE></A>
-<P>
-<DD><DL>
-
-<DT><B>Returns:</B><DD>a random number between 0.0 and 1.0</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="exp(double)"><!-- --></A><H3>
-exp</H3>
-<PRE>
-public static double <B>exp</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Exponential function.
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="sqrt(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sqrt</h4>
+<pre>public static&nbsp;double&nbsp;sqrt(double&nbsp;a)</pre>
+<div class="block">Compute the square root of a number.
+ <p><b>Note:</b> this implementation currently delegates to <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Math.html?is-external=true#sqrt(double)" title="class or interface in java.lang"><code>Math.sqrt(double)</code></a></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>square root of a</dd></dl>
+</li>
+</ul>
+<a name="cosh(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cosh</h4>
+<pre>public static&nbsp;double&nbsp;cosh(double&nbsp;x)</pre>
+<div class="block">Compute the hyperbolic cosine of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>hyperbolic cosine of x</dd></dl>
+</li>
+</ul>
+<a name="sinh(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sinh</h4>
+<pre>public static&nbsp;double&nbsp;sinh(double&nbsp;x)</pre>
+<div class="block">Compute the hyperbolic sine of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>hyperbolic sine of x</dd></dl>
+</li>
+</ul>
+<a name="tanh(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tanh</h4>
+<pre>public static&nbsp;double&nbsp;tanh(double&nbsp;x)</pre>
+<div class="block">Compute the hyperbolic tangent of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>hyperbolic tangent of x</dd></dl>
+</li>
+</ul>
+<a name="acosh(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>acosh</h4>
+<pre>public static&nbsp;double&nbsp;acosh(double&nbsp;a)</pre>
+<div class="block">Compute the inverse hyperbolic cosine of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>inverse hyperbolic cosine of a</dd></dl>
+</li>
+</ul>
+<a name="asinh(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asinh</h4>
+<pre>public static&nbsp;double&nbsp;asinh(double&nbsp;a)</pre>
+<div class="block">Compute the inverse hyperbolic sine of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>inverse hyperbolic sine of a</dd></dl>
+</li>
+</ul>
+<a name="atanh(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>atanh</h4>
+<pre>public static&nbsp;double&nbsp;atanh(double&nbsp;a)</pre>
+<div class="block">Compute the inverse hyperbolic tangent of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>inverse hyperbolic tangent of a</dd></dl>
+</li>
+</ul>
+<a name="signum(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>signum</h4>
+<pre>public static&nbsp;double&nbsp;signum(double&nbsp;a)</pre>
+<div class="block">Compute the signum of a number.
+ The signum is -1 for negative numbers, +1 for positive numbers and 0 otherwise</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>-1.0, -0.0, +0.0, +1.0 or NaN depending on sign of a</dd></dl>
+</li>
+</ul>
+<a name="signum(float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>signum</h4>
+<pre>public static&nbsp;float&nbsp;signum(float&nbsp;a)</pre>
+<div class="block">Compute the signum of a number.
+ The signum is -1 for negative numbers, +1 for positive numbers and 0 otherwise</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>-1.0, -0.0, +0.0, +1.0 or NaN depending on sign of a</dd></dl>
+</li>
+</ul>
+<a name="nextUp(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextUp</h4>
+<pre>public static&nbsp;double&nbsp;nextUp(double&nbsp;a)</pre>
+<div class="block">Compute next number towards positive infinity.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number to which neighbor should be computed</dd>
+<dt><span class="strong">Returns:</span></dt><dd>neighbor of a towards positive infinity</dd></dl>
+</li>
+</ul>
+<a name="nextUp(float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextUp</h4>
+<pre>public static&nbsp;float&nbsp;nextUp(float&nbsp;a)</pre>
+<div class="block">Compute next number towards positive infinity.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number to which neighbor should be computed</dd>
+<dt><span class="strong">Returns:</span></dt><dd>neighbor of a towards positive infinity</dd></dl>
+</li>
+</ul>
+<a name="nextDown(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextDown</h4>
+<pre>public static&nbsp;double&nbsp;nextDown(double&nbsp;a)</pre>
+<div class="block">Compute next number towards negative infinity.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number to which neighbor should be computed</dd>
+<dt><span class="strong">Returns:</span></dt><dd>neighbor of a towards negative infinity</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="nextDown(float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextDown</h4>
+<pre>public static&nbsp;float&nbsp;nextDown(float&nbsp;a)</pre>
+<div class="block">Compute next number towards negative infinity.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - number to which neighbor should be computed</dd>
+<dt><span class="strong">Returns:</span></dt><dd>neighbor of a towards negative infinity</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="random()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>random</h4>
+<pre>public static&nbsp;double&nbsp;random()</pre>
+<div class="block">Returns a pseudo-random number between 0.0 and 1.0.
+ <p><b>Note:</b> this implementation currently delegates to <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Math.html?is-external=true#random()" title="class or interface in java.lang"><code>Math.random()</code></a></div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>a random number between 0.0 and 1.0</dd></dl>
+</li>
+</ul>
+<a name="exp(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>exp</h4>
+<pre>public static&nbsp;double&nbsp;exp(double&nbsp;x)</pre>
+<div class="block">Exponential function.
 
  Computes exp(x), function result is nearly rounded.   It will be correctly
  rounded to the theoretical value for 99.9% of input values, otherwise it will
- have a 1 UPL error.
+ have a 1 ULP error.
 
  Method:
     Lookup intVal = exp(int(x))
@@ -953,390 +950,350 @@ public static double <B>exp</B>(double&nbsp;x)</PRE>
 
  Accuracy:
     Calculation is done with 63 bits of precision, so result should be correctly
-    rounded for 99.9% of input values, with less than 1 ULP error otherwise.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - a double
-<DT><B>Returns:</B><DD>double e<sup>x</sup></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="expm1(double)"><!-- --></A><H3>
-expm1</H3>
-<PRE>
-public static double <B>expm1</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute exp(x) - 1
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number to compute shifted exponential
-<DT><B>Returns:</B><DD>exp(x) - 1</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log(double)"><!-- --></A><H3>
-log</H3>
-<PRE>
-public static double <B>log</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Natural logarithm.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - a double
-<DT><B>Returns:</B><DD>log(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log1p(double)"><!-- --></A><H3>
-log1p</H3>
-<PRE>
-public static double <B>log1p</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Computes log(1 + x).
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - Number.
-<DT><B>Returns:</B><DD><code>log(1 + x)</code>.</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log10(double)"><!-- --></A><H3>
-log10</H3>
-<PRE>
-public static double <B>log10</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute the base 10 logarithm.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - a number
-<DT><B>Returns:</B><DD>log10(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="log(double, double)"><!-- --></A><H3>
-log</H3>
-<PRE>
-public static double <B>log</B>(double&nbsp;base,
-                         double&nbsp;x)</PRE>
-<DL>
-<DD>Computes the <a href="http://mathworld.wolfram.com/Logarithm.html">
+    rounded for 99.9% of input values, with less than 1 ULP error otherwise.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - a double</dd>
+<dt><span class="strong">Returns:</span></dt><dd>double e<sup>x</sup></dd></dl>
+</li>
+</ul>
+<a name="expm1(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>expm1</h4>
+<pre>public static&nbsp;double&nbsp;expm1(double&nbsp;x)</pre>
+<div class="block">Compute exp(x) - 1</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number to compute shifted exponential</dd>
+<dt><span class="strong">Returns:</span></dt><dd>exp(x) - 1</dd></dl>
+</li>
+</ul>
+<a name="log(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>log</h4>
+<pre>public static&nbsp;double&nbsp;log(double&nbsp;x)</pre>
+<div class="block">Natural logarithm.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - a double</dd>
+<dt><span class="strong">Returns:</span></dt><dd>log(x)</dd></dl>
+</li>
+</ul>
+<a name="log1p(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>log1p</h4>
+<pre>public static&nbsp;double&nbsp;log1p(double&nbsp;x)</pre>
+<div class="block">Computes log(1 + x).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - Number.</dd>
+<dt><span class="strong">Returns:</span></dt><dd><code>log(1 + x)</code>.</dd></dl>
+</li>
+</ul>
+<a name="log10(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>log10</h4>
+<pre>public static&nbsp;double&nbsp;log10(double&nbsp;x)</pre>
+<div class="block">Compute the base 10 logarithm.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - a number</dd>
+<dt><span class="strong">Returns:</span></dt><dd>log10(x)</dd></dl>
+</li>
+</ul>
+<a name="log(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>log</h4>
+<pre>public static&nbsp;double&nbsp;log(double&nbsp;base,
+         double&nbsp;x)</pre>
+<div class="block">Computes the <a href="http://mathworld.wolfram.com/Logarithm.html">
  logarithm</a> in a given base.
 
  Returns <code>NaN</code> if either argument is negative.
  If <code>base</code> is 0 and <code>x</code> is positive, 0 is returned.
  If <code>base</code> is positive and <code>x</code> is 0,
  <code>Double.NEGATIVE_INFINITY</code> is returned.
- If both arguments are 0, the result is <code>NaN</code>.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>base</CODE> - Base of the logarithm, must be greater than 0.<DD><CODE>x</CODE> - Argument, must be greater than 0.
-<DT><B>Returns:</B><DD>the value of the logarithm, i.e. the number <code>y</code> such that
- <code>base<sup>y</sup> = x</code>.<DT><B>Since:</B></DT>
-  <DD>1.2 (previously in <code>MathUtils</code>, moved as of version 3.0)</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="pow(double, double)"><!-- --></A><H3>
-pow</H3>
-<PRE>
-public static double <B>pow</B>(double&nbsp;x,
-                         double&nbsp;y)</PRE>
-<DL>
-<DD>Power function.  Compute x^y.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - a double<DD><CODE>y</CODE> - a double
-<DT><B>Returns:</B><DD>double</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="pow(double, int)"><!-- --></A><H3>
-pow</H3>
-<PRE>
-public static double <B>pow</B>(double&nbsp;d,
-                         int&nbsp;e)</PRE>
-<DL>
-<DD>Raise a double to an int power.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>d</CODE> - Number to raise.<DD><CODE>e</CODE> - Exponent.
-<DT><B>Returns:</B><DD>d<sup>e</sup><DT><B>Since:</B></DT>
-  <DD>3.1</DD>
-</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="sin(double)"><!-- --></A><H3>
-sin</H3>
-<PRE>
-public static double <B>sin</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Sine function.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - Argument.
-<DT><B>Returns:</B><DD>sin(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="cos(double)"><!-- --></A><H3>
-cos</H3>
-<PRE>
-public static double <B>cos</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Cosine function.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - Argument.
-<DT><B>Returns:</B><DD>cos(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="tan(double)"><!-- --></A><H3>
-tan</H3>
-<PRE>
-public static double <B>tan</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Tangent function.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - Argument.
-<DT><B>Returns:</B><DD>tan(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="atan(double)"><!-- --></A><H3>
-atan</H3>
-<PRE>
-public static double <B>atan</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Arctangent function
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - a number
-<DT><B>Returns:</B><DD>atan(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="atan2(double, double)"><!-- --></A><H3>
-atan2</H3>
-<PRE>
-public static double <B>atan2</B>(double&nbsp;y,
-                           double&nbsp;x)</PRE>
-<DL>
-<DD>Two arguments arctangent function
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>y</CODE> - ordinate<DD><CODE>x</CODE> - abscissa
-<DT><B>Returns:</B><DD>phase angle of point (x,y) between <code>-PI</code> and <code>PI</code></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="asin(double)"><!-- --></A><H3>
-asin</H3>
-<PRE>
-public static double <B>asin</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute the arc sine of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>arc sine of x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="acos(double)"><!-- --></A><H3>
-acos</H3>
-<PRE>
-public static double <B>acos</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute the arc cosine of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>arc cosine of x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="cbrt(double)"><!-- --></A><H3>
-cbrt</H3>
-<PRE>
-public static double <B>cbrt</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute the cubic root of a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number on which evaluation is done
-<DT><B>Returns:</B><DD>cubic root of x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="toRadians(double)"><!-- --></A><H3>
-toRadians</H3>
-<PRE>
-public static double <B>toRadians</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Convert degrees to radians, with error of less than 0.5 ULP
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - angle in degrees
-<DT><B>Returns:</B><DD>x converted into radians</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="toDegrees(double)"><!-- --></A><H3>
-toDegrees</H3>
-<PRE>
-public static double <B>toDegrees</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Convert radians to degrees, with error of less than 0.5 ULP
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - angle in radians
-<DT><B>Returns:</B><DD>x converted into degrees</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="abs(int)"><!-- --></A><H3>
-abs</H3>
-<PRE>
-public static int <B>abs</B>(int&nbsp;x)</PRE>
-<DL>
-<DD>Absolute value.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which absolute value is requested
-<DT><B>Returns:</B><DD>abs(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="abs(long)"><!-- --></A><H3>
-abs</H3>
-<PRE>
-public static long <B>abs</B>(long&nbsp;x)</PRE>
-<DL>
-<DD>Absolute value.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which absolute value is requested
-<DT><B>Returns:</B><DD>abs(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="abs(float)"><!-- --></A><H3>
-abs</H3>
-<PRE>
-public static float <B>abs</B>(float&nbsp;x)</PRE>
-<DL>
-<DD>Absolute value.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which absolute value is requested
-<DT><B>Returns:</B><DD>abs(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="abs(double)"><!-- --></A><H3>
-abs</H3>
-<PRE>
-public static double <B>abs</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Absolute value.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which absolute value is requested
-<DT><B>Returns:</B><DD>abs(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ulp(double)"><!-- --></A><H3>
-ulp</H3>
-<PRE>
-public static double <B>ulp</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Compute least significant bit (Unit in Last Position) for a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which ulp is requested
-<DT><B>Returns:</B><DD>ulp(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ulp(float)"><!-- --></A><H3>
-ulp</H3>
-<PRE>
-public static float <B>ulp</B>(float&nbsp;x)</PRE>
-<DL>
-<DD>Compute least significant bit (Unit in Last Position) for a number.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which ulp is requested
-<DT><B>Returns:</B><DD>ulp(x)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="scalb(double, int)"><!-- --></A><H3>
-scalb</H3>
-<PRE>
-public static double <B>scalb</B>(double&nbsp;d,
-                           int&nbsp;n)</PRE>
-<DL>
-<DD>Multiply a double number by a power of 2.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>d</CODE> - number to multiply<DD><CODE>n</CODE> - power of 2
-<DT><B>Returns:</B><DD>d &times; 2<sup>n</sup></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="scalb(float, int)"><!-- --></A><H3>
-scalb</H3>
-<PRE>
-public static float <B>scalb</B>(float&nbsp;f,
-                          int&nbsp;n)</PRE>
-<DL>
-<DD>Multiply a float number by a power of 2.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>f</CODE> - number to multiply<DD><CODE>n</CODE> - power of 2
-<DT><B>Returns:</B><DD>f &times; 2<sup>n</sup></DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="nextAfter(double, double)"><!-- --></A><H3>
-nextAfter</H3>
-<PRE>
-public static double <B>nextAfter</B>(double&nbsp;d,
-                               double&nbsp;direction)</PRE>
-<DL>
-<DD>Get the next machine representable number after a number, moving
+ If both arguments are 0, the result is <code>NaN</code>.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>base</code> - Base of the logarithm, must be greater than 0.</dd><dd><code>x</code> - Argument, must be greater than 0.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the value of the logarithm, i.e. the number <code>y</code> such that
+ <code>base<sup>y</sup> = x</code>.</dd><dt><span class="strong">Since:</span></dt>
+  <dd>1.2 (previously in <code>MathUtils</code>, moved as of version 3.0)</dd></dl>
+</li>
+</ul>
+<a name="pow(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>pow</h4>
+<pre>public static&nbsp;double&nbsp;pow(double&nbsp;x,
+         double&nbsp;y)</pre>
+<div class="block">Power function.  Compute x^y.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - a double</dd><dd><code>y</code> - a double</dd>
+<dt><span class="strong">Returns:</span></dt><dd>double</dd></dl>
+</li>
+</ul>
+<a name="pow(double, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>pow</h4>
+<pre>public static&nbsp;double&nbsp;pow(double&nbsp;d,
+         int&nbsp;e)</pre>
+<div class="block">Raise a double to an int power.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>d</code> - Number to raise.</dd><dd><code>e</code> - Exponent.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>d<sup>e</sup></dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.1</dd></dl>
+</li>
+</ul>
+<a name="pow(double, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>pow</h4>
+<pre>public static&nbsp;double&nbsp;pow(double&nbsp;d,
+         long&nbsp;e)</pre>
+<div class="block">Raise a double to a long power.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>d</code> - Number to raise.</dd><dd><code>e</code> - Exponent.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>d<sup>e</sup></dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.6</dd></dl>
+</li>
+</ul>
+<a name="sin(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sin</h4>
+<pre>public static&nbsp;double&nbsp;sin(double&nbsp;x)</pre>
+<div class="block">Sine function.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - Argument.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>sin(x)</dd></dl>
+</li>
+</ul>
+<a name="cos(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cos</h4>
+<pre>public static&nbsp;double&nbsp;cos(double&nbsp;x)</pre>
+<div class="block">Cosine function.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - Argument.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>cos(x)</dd></dl>
+</li>
+</ul>
+<a name="tan(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tan</h4>
+<pre>public static&nbsp;double&nbsp;tan(double&nbsp;x)</pre>
+<div class="block">Tangent function.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - Argument.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>tan(x)</dd></dl>
+</li>
+</ul>
+<a name="atan(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>atan</h4>
+<pre>public static&nbsp;double&nbsp;atan(double&nbsp;x)</pre>
+<div class="block">Arctangent function</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - a number</dd>
+<dt><span class="strong">Returns:</span></dt><dd>atan(x)</dd></dl>
+</li>
+</ul>
+<a name="atan2(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>atan2</h4>
+<pre>public static&nbsp;double&nbsp;atan2(double&nbsp;y,
+           double&nbsp;x)</pre>
+<div class="block">Two arguments arctangent function</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>y</code> - ordinate</dd><dd><code>x</code> - abscissa</dd>
+<dt><span class="strong">Returns:</span></dt><dd>phase angle of point (x,y) between <code>-PI</code> and <code>PI</code></dd></dl>
+</li>
+</ul>
+<a name="asin(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>asin</h4>
+<pre>public static&nbsp;double&nbsp;asin(double&nbsp;x)</pre>
+<div class="block">Compute the arc sine of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>arc sine of x</dd></dl>
+</li>
+</ul>
+<a name="acos(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>acos</h4>
+<pre>public static&nbsp;double&nbsp;acos(double&nbsp;x)</pre>
+<div class="block">Compute the arc cosine of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>arc cosine of x</dd></dl>
+</li>
+</ul>
+<a name="cbrt(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cbrt</h4>
+<pre>public static&nbsp;double&nbsp;cbrt(double&nbsp;x)</pre>
+<div class="block">Compute the cubic root of a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number on which evaluation is done</dd>
+<dt><span class="strong">Returns:</span></dt><dd>cubic root of x</dd></dl>
+</li>
+</ul>
+<a name="toRadians(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toRadians</h4>
+<pre>public static&nbsp;double&nbsp;toRadians(double&nbsp;x)</pre>
+<div class="block">Convert degrees to radians, with error of less than 0.5 ULP</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - angle in degrees</dd>
+<dt><span class="strong">Returns:</span></dt><dd>x converted into radians</dd></dl>
+</li>
+</ul>
+<a name="toDegrees(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toDegrees</h4>
+<pre>public static&nbsp;double&nbsp;toDegrees(double&nbsp;x)</pre>
+<div class="block">Convert radians to degrees, with error of less than 0.5 ULP</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - angle in radians</dd>
+<dt><span class="strong">Returns:</span></dt><dd>x converted into degrees</dd></dl>
+</li>
+</ul>
+<a name="abs(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>abs</h4>
+<pre>public static&nbsp;int&nbsp;abs(int&nbsp;x)</pre>
+<div class="block">Absolute value.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which absolute value is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>abs(x)</dd></dl>
+</li>
+</ul>
+<a name="abs(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>abs</h4>
+<pre>public static&nbsp;long&nbsp;abs(long&nbsp;x)</pre>
+<div class="block">Absolute value.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which absolute value is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>abs(x)</dd></dl>
+</li>
+</ul>
+<a name="abs(float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>abs</h4>
+<pre>public static&nbsp;float&nbsp;abs(float&nbsp;x)</pre>
+<div class="block">Absolute value.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which absolute value is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>abs(x)</dd></dl>
+</li>
+</ul>
+<a name="abs(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>abs</h4>
+<pre>public static&nbsp;double&nbsp;abs(double&nbsp;x)</pre>
+<div class="block">Absolute value.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which absolute value is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>abs(x)</dd></dl>
+</li>
+</ul>
+<a name="ulp(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ulp</h4>
+<pre>public static&nbsp;double&nbsp;ulp(double&nbsp;x)</pre>
+<div class="block">Compute least significant bit (Unit in Last Position) for a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which ulp is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>ulp(x)</dd></dl>
+</li>
+</ul>
+<a name="ulp(float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ulp</h4>
+<pre>public static&nbsp;float&nbsp;ulp(float&nbsp;x)</pre>
+<div class="block">Compute least significant bit (Unit in Last Position) for a number.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which ulp is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>ulp(x)</dd></dl>
+</li>
+</ul>
+<a name="scalb(double, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scalb</h4>
+<pre>public static&nbsp;double&nbsp;scalb(double&nbsp;d,
+           int&nbsp;n)</pre>
+<div class="block">Multiply a double number by a power of 2.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>d</code> - number to multiply</dd><dd><code>n</code> - power of 2</dd>
+<dt><span class="strong">Returns:</span></dt><dd>d &times; 2<sup>n</sup></dd></dl>
+</li>
+</ul>
+<a name="scalb(float, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>scalb</h4>
+<pre>public static&nbsp;float&nbsp;scalb(float&nbsp;f,
+          int&nbsp;n)</pre>
+<div class="block">Multiply a float number by a power of 2.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>f</code> - number to multiply</dd><dd><code>n</code> - power of 2</dd>
+<dt><span class="strong">Returns:</span></dt><dd>f &times; 2<sup>n</sup></dd></dl>
+</li>
+</ul>
+<a name="nextAfter(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextAfter</h4>
+<pre>public static&nbsp;double&nbsp;nextAfter(double&nbsp;d,
+               double&nbsp;direction)</pre>
+<div class="block">Get the next machine representable number after a number, moving
  in the direction of another number.
  <p>
  The ordering is as follows (increasing):
@@ -1359,23 +1316,21 @@ public static double <B>nextAfter</B>(double&nbsp;d,
  strictly less than <code>d</code> is returned.</p>
  <p>
  If <code>d</code> is infinite and direction does not
- bring it back to finite numbers, it is returned unchanged.</p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>d</CODE> - base number<DD><CODE>direction</CODE> - (the only important thing is whether
- <code>direction</code> is greater or smaller than <code>d</code>)
-<DT><B>Returns:</B><DD>the next machine representable number in the specified direction</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="nextAfter(float, double)"><!-- --></A><H3>
-nextAfter</H3>
-<PRE>
-public static float <B>nextAfter</B>(float&nbsp;f,
-                              double&nbsp;direction)</PRE>
-<DL>
-<DD>Get the next machine representable number after a number, moving
+ bring it back to finite numbers, it is returned unchanged.</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>d</code> - base number</dd><dd><code>direction</code> - (the only important thing is whether
+ <code>direction</code> is greater or smaller than <code>d</code>)</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the next machine representable number in the specified direction</dd></dl>
+</li>
+</ul>
+<a name="nextAfter(float, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>nextAfter</h4>
+<pre>public static&nbsp;float&nbsp;nextAfter(float&nbsp;f,
+              double&nbsp;direction)</pre>
+<div class="block">Get the next machine representable number after a number, moving
  in the direction of another number.
  <p>
  The ordering is as follows (increasing):
@@ -1398,235 +1353,205 @@ public static float <B>nextAfter</B>(float&nbsp;f,
  strictly less than <code>f</code> is returned.</p>
  <p>
  If <code>f</code> is infinite and direction does not
- bring it back to finite numbers, it is returned unchanged.</p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>f</CODE> - base number<DD><CODE>direction</CODE> - (the only important thing is whether
- <code>direction</code> is greater or smaller than <code>f</code>)
-<DT><B>Returns:</B><DD>the next machine representable number in the specified direction</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="floor(double)"><!-- --></A><H3>
-floor</H3>
-<PRE>
-public static double <B>floor</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Get the largest whole number smaller than x.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which floor is requested
-<DT><B>Returns:</B><DD>a double number f such that f is an integer f <= x < f + 1.0</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="ceil(double)"><!-- --></A><H3>
-ceil</H3>
-<PRE>
-public static double <B>ceil</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Get the smallest whole number larger than x.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which ceil is requested
-<DT><B>Returns:</B><DD>a double number c such that c is an integer c - 1.0 < x <= c</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="rint(double)"><!-- --></A><H3>
-rint</H3>
-<PRE>
-public static double <B>rint</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Get the whole number that is the nearest to x, or the even one if x is exactly half way between two integers.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which nearest whole number is requested
-<DT><B>Returns:</B><DD>a double number r such that r is an integer r - 0.5 <= x <= r + 0.5</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="round(double)"><!-- --></A><H3>
-round</H3>
-<PRE>
-public static long <B>round</B>(double&nbsp;x)</PRE>
-<DL>
-<DD>Get the closest long to x.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which closest long is requested
-<DT><B>Returns:</B><DD>closest long to x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="round(float)"><!-- --></A><H3>
-round</H3>
-<PRE>
-public static int <B>round</B>(float&nbsp;x)</PRE>
-<DL>
-<DD>Get the closest int to x.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - number from which closest int is requested
-<DT><B>Returns:</B><DD>closest int to x</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="min(int, int)"><!-- --></A><H3>
-min</H3>
-<PRE>
-public static int <B>min</B>(int&nbsp;a,
-                      int&nbsp;b)</PRE>
-<DL>
-<DD>Compute the minimum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>a if a is lesser or equal to b, b otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="min(long, long)"><!-- --></A><H3>
-min</H3>
-<PRE>
-public static long <B>min</B>(long&nbsp;a,
-                       long&nbsp;b)</PRE>
-<DL>
-<DD>Compute the minimum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>a if a is lesser or equal to b, b otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="min(float, float)"><!-- --></A><H3>
-min</H3>
-<PRE>
-public static float <B>min</B>(float&nbsp;a,
-                        float&nbsp;b)</PRE>
-<DL>
-<DD>Compute the minimum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>a if a is lesser or equal to b, b otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="min(double, double)"><!-- --></A><H3>
-min</H3>
-<PRE>
-public static double <B>min</B>(double&nbsp;a,
-                         double&nbsp;b)</PRE>
-<DL>
-<DD>Compute the minimum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>a if a is lesser or equal to b, b otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="max(int, int)"><!-- --></A><H3>
-max</H3>
-<PRE>
-public static int <B>max</B>(int&nbsp;a,
-                      int&nbsp;b)</PRE>
-<DL>
-<DD>Compute the maximum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>b if a is lesser or equal to b, a otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="max(long, long)"><!-- --></A><H3>
-max</H3>
-<PRE>
-public static long <B>max</B>(long&nbsp;a,
-                       long&nbsp;b)</PRE>
-<DL>
-<DD>Compute the maximum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>b if a is lesser or equal to b, a otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="max(float, float)"><!-- --></A><H3>
-max</H3>
-<PRE>
-public static float <B>max</B>(float&nbsp;a,
-                        float&nbsp;b)</PRE>
-<DL>
-<DD>Compute the maximum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>b if a is lesser or equal to b, a otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="max(double, double)"><!-- --></A><H3>
-max</H3>
-<PRE>
-public static double <B>max</B>(double&nbsp;a,
-                         double&nbsp;b)</PRE>
-<DL>
-<DD>Compute the maximum of two values
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - first value<DD><CODE>b</CODE> - second value
-<DT><B>Returns:</B><DD>b if a is lesser or equal to b, a otherwise</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="hypot(double, double)"><!-- --></A><H3>
-hypot</H3>
-<PRE>
-public static double <B>hypot</B>(double&nbsp;x,
-                           double&nbsp;y)</PRE>
-<DL>
-<DD>Returns the hypotenuse of a triangle with sides <code>x</code> and <code>y</code>
+ bring it back to finite numbers, it is returned unchanged.</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>f</code> - base number</dd><dd><code>direction</code> - (the only important thing is whether
+ <code>direction</code> is greater or smaller than <code>f</code>)</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the next machine representable number in the specified direction</dd></dl>
+</li>
+</ul>
+<a name="floor(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>floor</h4>
+<pre>public static&nbsp;double&nbsp;floor(double&nbsp;x)</pre>
+<div class="block">Get the largest whole number smaller than x.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which floor is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a double number f such that f is an integer f <= x < f + 1.0</dd></dl>
+</li>
+</ul>
+<a name="ceil(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ceil</h4>
+<pre>public static&nbsp;double&nbsp;ceil(double&nbsp;x)</pre>
+<div class="block">Get the smallest whole number larger than x.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which ceil is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a double number c such that c is an integer c - 1.0 < x <= c</dd></dl>
+</li>
+</ul>
+<a name="rint(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>rint</h4>
+<pre>public static&nbsp;double&nbsp;rint(double&nbsp;x)</pre>
+<div class="block">Get the whole number that is the nearest to x, or the even one if x is exactly half way between two integers.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which nearest whole number is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a double number r such that r is an integer r - 0.5 <= x <= r + 0.5</dd></dl>
+</li>
+</ul>
+<a name="round(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>round</h4>
+<pre>public static&nbsp;long&nbsp;round(double&nbsp;x)</pre>
+<div class="block">Get the closest long to x.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which closest long is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>closest long to x</dd></dl>
+</li>
+</ul>
+<a name="round(float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>round</h4>
+<pre>public static&nbsp;int&nbsp;round(float&nbsp;x)</pre>
+<div class="block">Get the closest int to x.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - number from which closest int is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>closest int to x</dd></dl>
+</li>
+</ul>
+<a name="min(int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>min</h4>
+<pre>public static&nbsp;int&nbsp;min(int&nbsp;a,
+      int&nbsp;b)</pre>
+<div class="block">Compute the minimum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a if a is lesser or equal to b, b otherwise</dd></dl>
+</li>
+</ul>
+<a name="min(long, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>min</h4>
+<pre>public static&nbsp;long&nbsp;min(long&nbsp;a,
+       long&nbsp;b)</pre>
+<div class="block">Compute the minimum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a if a is lesser or equal to b, b otherwise</dd></dl>
+</li>
+</ul>
+<a name="min(float, float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>min</h4>
+<pre>public static&nbsp;float&nbsp;min(float&nbsp;a,
+        float&nbsp;b)</pre>
+<div class="block">Compute the minimum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a if a is lesser or equal to b, b otherwise</dd></dl>
+</li>
+</ul>
+<a name="min(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>min</h4>
+<pre>public static&nbsp;double&nbsp;min(double&nbsp;a,
+         double&nbsp;b)</pre>
+<div class="block">Compute the minimum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a if a is lesser or equal to b, b otherwise</dd></dl>
+</li>
+</ul>
+<a name="max(int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>max</h4>
+<pre>public static&nbsp;int&nbsp;max(int&nbsp;a,
+      int&nbsp;b)</pre>
+<div class="block">Compute the maximum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>b if a is lesser or equal to b, a otherwise</dd></dl>
+</li>
+</ul>
+<a name="max(long, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>max</h4>
+<pre>public static&nbsp;long&nbsp;max(long&nbsp;a,
+       long&nbsp;b)</pre>
+<div class="block">Compute the maximum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>b if a is lesser or equal to b, a otherwise</dd></dl>
+</li>
+</ul>
+<a name="max(float, float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>max</h4>
+<pre>public static&nbsp;float&nbsp;max(float&nbsp;a,
+        float&nbsp;b)</pre>
+<div class="block">Compute the maximum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>b if a is lesser or equal to b, a otherwise</dd></dl>
+</li>
+</ul>
+<a name="max(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>max</h4>
+<pre>public static&nbsp;double&nbsp;max(double&nbsp;a,
+         double&nbsp;b)</pre>
+<div class="block">Compute the maximum of two values</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first value</dd><dd><code>b</code> - second value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>b if a is lesser or equal to b, a otherwise</dd></dl>
+</li>
+</ul>
+<a name="hypot(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hypot</h4>
+<pre>public static&nbsp;double&nbsp;hypot(double&nbsp;x,
+           double&nbsp;y)</pre>
+<div class="block">Returns the hypotenuse of a triangle with sides <code>x</code> and <code>y</code>
  - sqrt(<i>x</i><sup>2</sup>&nbsp;+<i>y</i><sup>2</sup>)<br/>
  avoiding intermediate overflow or underflow.
 
  <ul>
  <li> If either argument is infinite, then the result is positive infinity.</li>
  <li> else, if either argument is NaN then the result is NaN.</li>
- </ul>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>x</CODE> - a value<DD><CODE>y</CODE> - a value
-<DT><B>Returns:</B><DD>sqrt(<i>x</i><sup>2</sup>&nbsp;+<i>y</i><sup>2</sup>)</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="IEEEremainder(double, double)"><!-- --></A><H3>
-IEEEremainder</H3>
-<PRE>
-public static double <B>IEEEremainder</B>(double&nbsp;dividend,
-                                   double&nbsp;divisor)</PRE>
-<DL>
-<DD>Computes the remainder as prescribed by the IEEE 754 standard.
+ </ul></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>x</code> - a value</dd><dd><code>y</code> - a value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>sqrt(<i>x</i><sup>2</sup>&nbsp;+<i>y</i><sup>2</sup>)</dd></dl>
+</li>
+</ul>
+<a name="IEEEremainder(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>IEEEremainder</h4>
+<pre>public static&nbsp;double&nbsp;IEEEremainder(double&nbsp;dividend,
+                   double&nbsp;divisor)</pre>
+<div class="block">Computes the remainder as prescribed by the IEEE 754 standard.
  The remainder value is mathematically equal to <code>x - y*n</code>
  where <code>n</code> is the mathematical integer closest to the exact mathematical value
  of the quotient <code>x/y</code>.
@@ -1640,156 +1565,420 @@ public static double <B>IEEEremainder</B>(double&nbsp;dividend,
  <li>If the dividend is finite and the divisor is an infinity, the result equals the dividend.</li>
  <li>If the dividend is a zero and the divisor is finite, the result equals the dividend.</li>
  </ul>
- <p><b>Note:</b> this implementation currently delegates to <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/StrictMath.html?is-external=true#IEEEremainder(double, double)" title="class or interface in java.lang"><CODE>StrictMath.IEEEremainder(double, double)</CODE></A>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>dividend</CODE> - the number to be divided<DD><CODE>divisor</CODE> - the number by which to divide
-<DT><B>Returns:</B><DD>the remainder, rounded</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="copySign(double, double)"><!-- --></A><H3>
-copySign</H3>
-<PRE>
-public static double <B>copySign</B>(double&nbsp;magnitude,
-                              double&nbsp;sign)</PRE>
-<DL>
-<DD>Returns the first argument with the sign of the second argument.
- A NaN <code>sign</code> argument is treated as positive.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>magnitude</CODE> - the value to return<DD><CODE>sign</CODE> - the sign for the returned value
-<DT><B>Returns:</B><DD>the magnitude with the same sign as the <code>sign</code> argument</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="copySign(float, float)"><!-- --></A><H3>
-copySign</H3>
-<PRE>
-public static float <B>copySign</B>(float&nbsp;magnitude,
-                             float&nbsp;sign)</PRE>
-<DL>
-<DD>Returns the first argument with the sign of the second argument.
- A NaN <code>sign</code> argument is treated as positive.
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>magnitude</CODE> - the value to return<DD><CODE>sign</CODE> - the sign for the returned value
-<DT><B>Returns:</B><DD>the magnitude with the same sign as the <code>sign</code> argument</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getExponent(double)"><!-- --></A><H3>
-getExponent</H3>
-<PRE>
-public static int <B>getExponent</B>(double&nbsp;d)</PRE>
-<DL>
-<DD>Return the exponent of a double number, removing the bias.
+ <p><b>Note:</b> this implementation currently delegates to <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/StrictMath.html?is-external=true#IEEEremainder(double,%20double)" title="class or interface in java.lang"><code>StrictMath.IEEEremainder(double, double)</code></a></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>dividend</code> - the number to be divided</dd><dd><code>divisor</code> - the number by which to divide</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the remainder, rounded</dd></dl>
+</li>
+</ul>
+<a name="toIntExact(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toIntExact</h4>
+<pre>public static&nbsp;int&nbsp;toIntExact(long&nbsp;n)
+                      throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Convert a long to interger, detecting overflows</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>n</code> - number to convert to int</dd>
+<dt><span class="strong">Returns:</span></dt><dd>integer with same valie as n if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if n cannot fit into an int</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="incrementExact(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>incrementExact</h4>
+<pre>public static&nbsp;int&nbsp;incrementExact(int&nbsp;n)
+                          throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Increment a number, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>n</code> - number to increment</dd>
+<dt><span class="strong">Returns:</span></dt><dd>n+1 if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="incrementExact(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>incrementExact</h4>
+<pre>public static&nbsp;long&nbsp;incrementExact(long&nbsp;n)
+                           throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Increment a number, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>n</code> - number to increment</dd>
+<dt><span class="strong">Returns:</span></dt><dd>n+1 if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="decrementExact(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>decrementExact</h4>
+<pre>public static&nbsp;int&nbsp;decrementExact(int&nbsp;n)
+                          throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Decrement a number, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>n</code> - number to decrement</dd>
+<dt><span class="strong">Returns:</span></dt><dd>n-1 if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="decrementExact(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>decrementExact</h4>
+<pre>public static&nbsp;long&nbsp;decrementExact(long&nbsp;n)
+                           throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Decrement a number, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>n</code> - number to decrement</dd>
+<dt><span class="strong">Returns:</span></dt><dd>n-1 if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="addExact(int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addExact</h4>
+<pre>public static&nbsp;int&nbsp;addExact(int&nbsp;a,
+           int&nbsp;b)
+                    throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Add two numbers, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first number to add</dd><dd><code>b</code> - second number to add</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a+b if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="addExact(long, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addExact</h4>
+<pre>public static&nbsp;long&nbsp;addExact(long&nbsp;a,
+            long&nbsp;b)
+                     throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Add two numbers, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first number to add</dd><dd><code>b</code> - second number to add</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a+b if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="subtractExact(int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtractExact</h4>
+<pre>public static&nbsp;int&nbsp;subtractExact(int&nbsp;a,
+                int&nbsp;b)</pre>
+<div class="block">Subtract two numbers, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first number</dd><dd><code>b</code> - second number to subtract from a</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a-b if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="subtractExact(long, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>subtractExact</h4>
+<pre>public static&nbsp;long&nbsp;subtractExact(long&nbsp;a,
+                 long&nbsp;b)</pre>
+<div class="block">Subtract two numbers, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first number</dd><dd><code>b</code> - second number to subtract from a</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a-b if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="multiplyExact(int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiplyExact</h4>
+<pre>public static&nbsp;int&nbsp;multiplyExact(int&nbsp;a,
+                int&nbsp;b)</pre>
+<div class="block">Multiply two numbers, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first number to multiply</dd><dd><code>b</code> - second number to multiply</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a*b if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="multiplyExact(long, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>multiplyExact</h4>
+<pre>public static&nbsp;long&nbsp;multiplyExact(long&nbsp;a,
+                 long&nbsp;b)</pre>
+<div class="block">Multiply two numbers, detecting overflows.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - first number to multiply</dd><dd><code>b</code> - second number to multiply</dd>
+<dt><span class="strong">Returns:</span></dt><dd>a*b if no overflows occur</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if an overflow occurs</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd></dl>
+</li>
+</ul>
+<a name="floorDiv(int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>floorDiv</h4>
+<pre>public static&nbsp;int&nbsp;floorDiv(int&nbsp;a,
+           int&nbsp;b)
+                    throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Finds q such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.
+ <p>
+ This methods returns the same value as integer division when
+ a and b are same signs, but returns a different value when
+ they are opposite (i.e. q is negative).
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - dividend</dd><dd><code>b</code> - divisor</dd>
+<dt><span class="strong">Returns:</span></dt><dd>q such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if b == 0</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorMod(int,%20int)"><code>floorMod(int, int)</code></a></dd></dl>
+</li>
+</ul>
+<a name="floorDiv(long, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>floorDiv</h4>
+<pre>public static&nbsp;long&nbsp;floorDiv(long&nbsp;a,
+            long&nbsp;b)
+                     throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Finds q such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.
+ <p>
+ This methods returns the same value as integer division when
+ a and b are same signs, but returns a different value when
+ they are opposite (i.e. q is negative).
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - dividend</dd><dd><code>b</code> - divisor</dd>
+<dt><span class="strong">Returns:</span></dt><dd>q such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if b == 0</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorMod(long,%20long)"><code>floorMod(long, long)</code></a></dd></dl>
+</li>
+</ul>
+<a name="floorMod(int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>floorMod</h4>
+<pre>public static&nbsp;int&nbsp;floorMod(int&nbsp;a,
+           int&nbsp;b)
+                    throws <a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></pre>
+<div class="block">Finds r such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.
+ <p>
+ This methods returns the same value as integer modulo when
+ a and b are same signs, but returns a different value when
+ they are opposite (i.e. q is negative).
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - dividend</dd><dd><code>b</code> - divisor</dd>
+<dt><span class="strong">Returns:</span></dt><dd>r such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if b == 0</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorDiv(int,%20int)"><code>floorDiv(int, int)</code></a></dd></dl>
+</li>
+</ul>
+<a name="floorMod(long, long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>floorMod</h4>
+<pre>public static&nbsp;long&nbsp;floorMod(long&nbsp;a,
+            long&nbsp;b)</pre>
+<div class="block">Finds r such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0.
+ <p>
+ This methods returns the same value as integer modulo when
+ a and b are same signs, but returns a different value when
+ they are opposite (i.e. q is negative).
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - dividend</dd><dd><code>b</code> - divisor</dd>
+<dt><span class="strong">Returns:</span></dt><dd>r such that a = q b + r with 0 <= r < b if b > 0 and b < r <= 0 if b < 0</dd>
+<dt><span class="strong">Throws:</span></dt>
+<dd><code><a href="../../../../../org/apache/commons/math3/exception/MathArithmeticException.html" title="class in org.apache.commons.math3.exception">MathArithmeticException</a></code> - if b == 0</dd><dt><span class="strong">Since:</span></dt>
+  <dd>3.4</dd>
+<dt><span class="strong">See Also:</span></dt><dd><a href="../../../../../org/apache/commons/math3/util/FastMath.html#floorDiv(long,%20long)"><code>floorDiv(long, long)</code></a></dd></dl>
+</li>
+</ul>
+<a name="copySign(double, double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>copySign</h4>
+<pre>public static&nbsp;double&nbsp;copySign(double&nbsp;magnitude,
+              double&nbsp;sign)</pre>
+<div class="block">Returns the first argument with the sign of the second argument.
+ A NaN <code>sign</code> argument is treated as positive.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>magnitude</code> - the value to return</dd><dd><code>sign</code> - the sign for the returned value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the magnitude with the same sign as the <code>sign</code> argument</dd></dl>
+</li>
+</ul>
+<a name="copySign(float, float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>copySign</h4>
+<pre>public static&nbsp;float&nbsp;copySign(float&nbsp;magnitude,
+             float&nbsp;sign)</pre>
+<div class="block">Returns the first argument with the sign of the second argument.
+ A NaN <code>sign</code> argument is treated as positive.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>magnitude</code> - the value to return</dd><dd><code>sign</code> - the sign for the returned value</dd>
+<dt><span class="strong">Returns:</span></dt><dd>the magnitude with the same sign as the <code>sign</code> argument</dd></dl>
+</li>
+</ul>
+<a name="getExponent(double)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getExponent</h4>
+<pre>public static&nbsp;int&nbsp;getExponent(double&nbsp;d)</pre>
+<div class="block">Return the exponent of a double number, removing the bias.
  <p>
  For double numbers of the form 2<sup>x</sup>, the unbiased
  exponent is exactly x.
- </p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>d</CODE> - number from which exponent is requested
-<DT><B>Returns:</B><DD>exponent for d in IEEE754 representation, without bias</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="getExponent(float)"><!-- --></A><H3>
-getExponent</H3>
-<PRE>
-public static int <B>getExponent</B>(float&nbsp;f)</PRE>
-<DL>
-<DD>Return the exponent of a float number, removing the bias.
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>d</code> - number from which exponent is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>exponent for d in IEEE754 representation, without bias</dd></dl>
+</li>
+</ul>
+<a name="getExponent(float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getExponent</h4>
+<pre>public static&nbsp;int&nbsp;getExponent(float&nbsp;f)</pre>
+<div class="block">Return the exponent of a float number, removing the bias.
  <p>
  For float numbers of the form 2<sup>x</sup>, the unbiased
  exponent is exactly x.
- </p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>f</CODE> - number from which exponent is requested
-<DT><B>Returns:</B><DD>exponent for d in IEEE754 representation, without bias</DL>
-</DD>
-</DL>
-<HR>
-
-<A NAME="main(java.lang.String[])"><!-- --></A><H3>
-main</H3>
-<PRE>
-public static void <B>main</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>[]&nbsp;a)</PRE>
-<DL>
-<DD>Print out contents of arrays, and check the length.
- <p>used to generate the preset arrays originally.</p>
-<P>
-<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>a</CODE> - unused</DL>
-</DD>
-</DL>
+ </p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>f</code> - number from which exponent is requested</dd>
+<dt><span class="strong">Returns:</span></dt><dd>exponent for d in IEEE754 representation, without bias</dd></dl>
+</li>
+</ul>
+<a name="main(java.lang.String[])">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>main</h4>
+<pre>public static&nbsp;void&nbsp;main(<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>[]&nbsp;a)</pre>
+<div class="block">Print out contents of arrays, and check the length.
+ <p>used to generate the preset arrays originally.</p></div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>a</code> - unused</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <!-- ========= END OF CLASS DATA ========= -->
-<HR>
-
-
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
-<A NAME="navbar_bottom"><!-- --></A>
-<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
-<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
-<TR>
-<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
-<A NAME="navbar_bottom_firstrow"><!-- --></A>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
-  <TR ALIGN="center" VALIGN="top">
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/FastMath.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
-  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
-  </TR>
-</TABLE>
-</TD>
-<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
-</EM>
-</TD>
-</TR>
-
-<TR>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/DoubleArray.html" title="interface in org.apache.commons.math3.util"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../org/apache/commons/math3/util/Incrementor.html" title="class in org.apache.commons.math3.util"><B>NEXT CLASS</B></A></FONT></TD>
-<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-  <A HREF="../../../../../index.html?org/apache/commons/math3/util/FastMath.html" target="_top"><B>FRAMES</B></A>  &nbsp;
-&nbsp;<A HREF="FastMath.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
-&nbsp;<SCRIPT type="text/javascript">
-  <!--
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="class-use/FastMath.html">Use</a></li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><em><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></em></div>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../../../../../org/apache/commons/math3/util/DoubleArray.html" title="interface in org.apache.commons.math3.util"><span class="strong">Prev Class</span></a></li>
+<li><a href="../../../../../org/apache/commons/math3/util/Incrementor.html" title="class in org.apache.commons.math3.util"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../../../../../index.html?org/apache/commons/math3/util/FastMath.html" target="_top">Frames</a></li>
+<li><a href="FastMath.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
   if(window==top) {
-    document.writeln('<A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
   }
   //-->
-</SCRIPT>
-<NOSCRIPT>
-  <A HREF="../../../../../allclasses-noframe.html"><B>All Classes</B></A>
-</NOSCRIPT>
-
-
-</FONT></TD>
-</TR>
-<TR>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;<A HREF="#field_summary">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
-<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-DETAIL:&nbsp;<A HREF="#field_detail">FIELD</A>&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
-</TR>
-</TABLE>
-<A NAME="skip-navbar_bottom"></A>
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-
-<HR>
-Copyright &#169; 2003-2013 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All Rights Reserved.
-</BODY>
-</HTML>
+<p class="legalCopy"><small>Copyright &#169; 2003&#x2013;2016 <a href="http://www.apache.org/">The Apache Software Foundation</a>. All rights reserved.</small></p>
+</body>
+</html>
