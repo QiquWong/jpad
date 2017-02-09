@@ -94,23 +94,23 @@
 		<horizontal_tail>
 			<lift>
 				<!-- choose which plot has to be done --> 
-				<cL_vs_alpha>TRUE</cL_vs_alpha>
-				<stall_path>TRUE</stall_path> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
-				<cl_distribution>TRUE</cl_distribution>
-				<cl_additional_distribution>TRUE</cl_additional_distribution>
-				<cl_basic_distribution>TRUE</cl_basic_distribution>
-				<ccl_distribution>TRUE</ccl_distribution>
-				<ccl_additional_distribution>TRUE</ccl_additional_distribution>
-				<ccl_basic_distribution>TRUE</ccl_basic_distribution>
-				<gamma_distribution>TRUE</gamma_distribution>
-				<gamma_additional_distribution>TRUE</gamma_additional_distribution>
-				<gamma_basic_distribution>TRUE</gamma_basic_distribution>
-				<total_load_distribution>TRUE</total_load_distribution>
-				<additional_load_distribution>TRUE</additional_load_distribution>
-				<basic_load_distribution>TRUE</basic_load_distribution>
+				<cL_vs_alpha perform="TRUE"/>
+				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
+				<cl_distribution perform="TRUE"/>
+				<cl_additional_distribution perform="TRUE"/>
+				<cl_basic_distribution perform="TRUE"/>
+				<ccl_distribution perform="TRUE"/>
+				<ccl_additional_distribution perform="TRUE"/>
+				<ccl_basic_distribution perform="TRUE"/>
+				<gamma_distribution perform="TRUE"/>
+				<gamma_additional_distribution perform="TRUE"/>
+				<gamma_basic_distribution perform="TRUE"/>
+				<total_load_distribution perform="TRUE"/>
+				<additional_load_distribution perform="TRUE"/>
+				<basic_load_distribution perform="TRUE"/>
 			</lift>
 			<high_lift>
-				<cL_vs_alpha_high_lift>TRUE</cL_vs_alpha_high_lift>
+				<cL_vs_alpha_high_lift perform="TRUE"/>
 			</high_lift>
 			<drag>
 			
@@ -122,23 +122,23 @@
 		<vertical_tail>
 			<lift>
 				<!-- choose which plot has to be done --> 
-				<cL_vs_alpha>TRUE</cL_vs_alpha>
-				<stall_path>TRUE</stall_path> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
-				<cl_distribution>TRUE</cl_distribution>
-				<cl_additional_distribution>TRUE</cl_additional_distribution>
-				<cl_basic_distribution>TRUE</cl_basic_distribution>
-				<ccl_distribution>TRUE</ccl_distribution>
-				<ccl_additional_distribution>TRUE</ccl_additional_distribution>
-				<ccl_basic_distribution>TRUE</ccl_basic_distribution>
-				<gamma_distribution>TRUE</gamma_distribution>
-				<gamma_additional_distribution>TRUE</gamma_additional_distribution>
-				<gamma_basic_distribution>TRUE</gamma_basic_distribution>
-				<total_load_distribution>TRUE</total_load_distribution>
-				<additional_load_distribution>TRUE</additional_load_distribution>
-				<basic_load_distribution>TRUE</basic_load_distribution>
+				<cL_vs_alpha perform="TRUE"/>
+				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
+				<cl_distribution perform="TRUE"/>
+				<cl_additional_distribution perform="TRUE"/>
+				<cl_basic_distribution perform="TRUE"/>
+				<ccl_distribution perform="TRUE"/>
+				<ccl_additional_distribution perform="TRUE"/>
+				<ccl_basic_distribution perform="TRUE"/>
+				<gamma_distribution perform="TRUE"/>
+				<gamma_additional_distribution perform="TRUE"/>
+				<gamma_basic_distribution perform="TRUE"/>
+				<total_load_distribution perform="TRUE"/>
+				<additional_load_distribution perform="TRUE"/>
+				<basic_load_distribution perform="TRUE"/>
 			</lift>
 			<high_lift>
-				<cL_vs_alpha_high_lift>TRUE</cL_vs_alpha_high_lift>
+				<cL_vs_alpha_high_lift perform="TRUE"/>
 			</high_lift>
 			<drag>
 			

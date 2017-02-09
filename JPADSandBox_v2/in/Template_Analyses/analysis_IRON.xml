@@ -45,11 +45,20 @@
 			method_canard=""
 		/>
 	-->
-	<!-- method_XXX="AVERAGED" if empty string -->
-		<performance 
+	<!--
+	<aerodynamic_and_stability
+			file="analysis_aerodynamic.xml"
+			plot="TRUE"
+			take_off_condition="TRUE"
+			climb_condition="TRUE"
+			cruise_condition="FALSE"
+			landing_condition="FALSE"
+	/>
+	-->
+	<performance 
 			file="analysis_performance_IRON.xml"
 			plot="TRUE"
-			take_off="FALSE"
+			take_off="TRUE"
 			climb="TRUE"
 			cruise="FALSE"
 			descent="FALSE"
@@ -57,9 +66,8 @@
 			payload_range="FALSE"
 			V_n_diagram="FALSE"
 			mission_profile="FALSE"
-		/>
+	/>
         <!--
-		<aerodynamics file="analysis_aerodynamics.xml"/>
         <costs file="analysis_costs.xml"/>
 		-->
     </analyses>

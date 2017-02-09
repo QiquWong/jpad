@@ -3540,15 +3540,15 @@ public class ACPerformanceManager implements IACPerformanceManger {
 			// CALCULATING THE VERTICAL TAIL YAWING MOMENT
 			_yawingMomentOEI = new double[_thrustMomentOEI.length];
 			
-//			double tau = LiftCalc.calculateTauIndexElevator(
-//					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
-//					_theAircraft.getVTail().getAspectRatio(), 
-//					_theAircraft.getVTail().getHighLiftDatabaseReader(),
-//					_theAircraft.getVTail().getAerodynamicDatabaseReader(),
-//					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
-//					);
+			double tau = LiftCalc.calculateTauIndexElevator(
+					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+					_theAircraft.getVTail().getAspectRatio(), 
+					_theAircraft.getVTail().getHighLiftDatabaseReader(),
+					_theAircraft.getVTail().getAerodynamicDatabaseReader(),
+					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
+					);
 			
-			double tau = 0.5284;
+//			double tau = 0.5284; // (Only for IRON)
 			
 			for(int i=0; i < thrust.length; i++){
 			_yawingMomentOEI[i] = cNbVertical*
