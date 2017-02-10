@@ -1123,47 +1123,77 @@ public class AircraftPointMassPropagator {
 	 */
 	public void createOutputCharts() throws InstantiationException, IllegalAccessException {
 
+		/*
+		 * x0  = Vv
+		 * x1  = γ
+		 * x2  = ψ
+		 * x3  = Xi
+		 * x4  = Yi
+		 * x5  = h
+		 * x6  = xT
+		 * x7  = T
+		 * x8  = xL
+		 * x9  = L
+		 * x10 = ϕ
+		 * x11 = m
+		 * */
 		
 		//#############################################################################
-		// TODO
+		// TODO use ContinuousOutputModel for post-processing tasks
 		
 		List<Double> times = new ArrayList<Double>();
 		List<double[]> states = new ArrayList<double[]>();
 		for (  StepHandler handler : this.theIntegrator.getStepHandlers() ) {
-			System.out.println(handler instanceof ContinuousOutputModel);
 			if (handler instanceof ContinuousOutputModel) {
+				System.out.println("Found handler instanceof ContinuousOutputModel");
 				System.out.println("=== Stored state variables ===");
 				ContinuousOutputModel cm = (ContinuousOutputModel) handler;
 				System.out.println("Initial time: " + cm.getInitialTime());
 				System.out.println("Final time: " + cm.getFinalTime());
 
 				// build time vector keeping event-times as breakpoints
-				double dt = 0.5; // sec
+				double dt = 1.0; // sec
 				double time = cm.getInitialTime();
 				do {
-					System.out.println("......... " +  time);
 					times.add(time);
 					cm.setInterpolatedTime(time);
 					states.add(cm.getInterpolatedState());
-					System.out.println("_________ " +  Arrays.toString(cm.getInterpolatedState()));
+					// System.out.println("......... " +  time);
+					// System.out.println("_________ " +  Arrays.toString(cm.getInterpolatedState()));
 
-					// detect breakpoints
 					time += dt;
-					//loopOverEvents:
+					
+					// detect breakpoints adjusting time as appropriate
+					loopOverEvents:
 						for(MissionEvent me : this.getMissionEvents()) {
 							double t_ = me.getTime();
+							//  bracketing
 							if ((time-dt < t_) && (time > t_)) {
+								// set back time to breakpoint-time
 								time = t_;
-								//break loopOverEvents;
+								break loopOverEvents;
 							}
 						}
-
-						// TODO: check this
-						
-				} while (time > cm.getFinalTime());
+				} while (time <= cm.getFinalTime());
 
 				// try a plot
 				// speed vs. time
+				MyChartToFileUtils.plotNoLegend(
+						Arrays.stream(
+								times.stream()
+								.toArray(size -> new Double[size])
+								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+						Arrays.stream(
+								states.stream()
+								.map(x -> x[0]) // x0 = Vv
+								.toArray(size -> new Double[size])
+								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+						0.0, null, null, null,
+						"Time", "Speed", "s", "m/s",
+						outputChartDir, "aaa");
+
+//				// TODO try .map(x -> new double[] {x[0], x[1]})
+//				//      to extract a slice of the original state vector
 //				MyChartToFileUtils.plotNoLegend(
 //						Arrays.stream(
 //								times.stream()
@@ -1171,15 +1201,20 @@ public class AircraftPointMassPropagator {
 //								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 //						Arrays.stream(
 //								states.stream()
-//								.map(x -> x[0])
-//								.toArray(size -> new Double[size])
-//								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-//						0.0, 200, 0.0, 1000.0,
-//						"Time", "Speed", "s", "m/s",
-//						outputChartDir, "aaa");
-
-			}
+//								.map(x -> new Double[]{x[7], x[9]})
+//								.map(x -> y)
+//							).toArray()
+//							,
+//						0.0, null, null, null,
+//						"Time", "T, L", "s", "N",
+//						new String[] {"Thrust", "Lift"},
+//						outputChartDir, "bbb");
+				
+				
+			} // end if instanceof ContinuousModel
 		}
+
+		
 		//#############################################################################
 		
 		
