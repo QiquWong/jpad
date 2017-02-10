@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.ContinuousOutputModel;
@@ -1176,7 +1177,7 @@ public class AircraftPointMassPropagator {
 						}
 				} while (time <= cm.getFinalTime());
 
-				// try a plot
+				// try a single curve plot
 				// speed vs. time
 				MyChartToFileUtils.plotNoLegend(
 						Arrays.stream(
@@ -1192,23 +1193,19 @@ public class AircraftPointMassPropagator {
 						"Time", "Speed", "s", "m/s",
 						outputChartDir, "aaa");
 
-//				// TODO try .map(x -> new double[] {x[0], x[1]})
-//				//      to extract a slice of the original state vector
-//				MyChartToFileUtils.plotNoLegend(
-//						Arrays.stream(
-//								times.stream()
-//								.toArray(size -> new Double[size])
-//								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-//						Arrays.stream(
-//								states.stream()
-//								.map(x -> new Double[]{x[7], x[9]})
-//								.map(x -> y)
-//							).toArray()
-//							,
-//						0.0, null, null, null,
-//						"Time", "T, L", "s", "N",
-//						new String[] {"Thrust", "Lift"},
-//						outputChartDir, "bbb");
+				// try a multiple curve plot
+				MyChartToFileUtils.plot(
+						Arrays.stream(
+								times.stream()
+								.toArray(size -> new Double[size])
+								).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
+						states.stream()
+							.map(x -> new Double[]{x[7], x[9]})
+							.toArray(Double[][]::new),
+						0.0, null, null, null,
+						"Time", "T, L", "s", "N",
+						new String[] {"Thrust", "Lift"},
+						outputChartDir, "bbb");
 				
 				
 			} // end if instanceof ContinuousModel

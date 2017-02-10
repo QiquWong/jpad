@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,6 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -416,6 +418,31 @@ public class MyChartToFileUtils {
 				legendValue, path, fileName);
 	}
 
+	public static void plot( //xArrays is 1D
+			double[] xArray, Double[][] yArrays,
+			Double xMin, Double xMax,
+			Double yMin, Double yMax,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			String[] legendValue, String path,
+			String fileName) {
+
+		double[][] xArrays = new double[1][xArray.length];
+		for (int i=0; i < xArray.length; i++)
+			xArrays[0][i] = xArray[i];
+
+		RealMatrix m = new Array2DRowRealMatrix(yArrays.length,yArrays[0].length);
+		for (int i=0; i < yArrays.length; i++)
+			m.setRow(i, ArrayUtils.toPrimitive(yArrays[i]));
+		
+		plot(xArrays, m.transpose().getData(), xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
+				legendValue, path, fileName);
+	}
+	
+
+	
+	
+	
 	public static void plot(
 			double[] xArray, double[] yArray,
 			Double xMin, Double xMax,
@@ -480,6 +507,23 @@ public class MyChartToFileUtils {
 		if (yMax != null) chartFactory.setyMax(yMax);
 
 		chartFactory.createMultiTraceChartNoLegend();
+	}
+
+	public static void plotNoLegend( //xArrays is 1D
+			double[] xArray, Double[][] yArrays,
+			Double xMin, Double xMax,
+			Double yMin, Double yMax,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+		     String path,
+			String fileName) {
+
+		RealMatrix m = new Array2DRowRealMatrix();
+		for (int i=0; i < yArrays.length; i++)
+			m.setRow(i, ArrayUtils.toPrimitive(yArrays[i]));
+
+		plotNoLegend(xArray, m.transpose().getData(), xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
+				 path, fileName);
 	}
 
 	
