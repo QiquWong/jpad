@@ -374,7 +374,7 @@ public class AircraftPointMassPropagatorTest {
 				System.out.println("\nPlots saved in folder: " + missionOutputDir);
 			
 			propagator.setOutputChartDir(missionOutputDir);
-			propagator.createOutputCharts();
+			propagator.createOutputCharts(0.5);
 
 			propagator.getTheIntegrator().clearEventHandlers();
 			propagator.getTheIntegrator().clearStepHandlers();
