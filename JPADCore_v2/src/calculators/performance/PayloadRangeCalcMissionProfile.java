@@ -106,9 +106,6 @@ public class PayloadRangeCalcMissionProfile{
 	private List<Amount<Length>> _rangeArray;
 	private List<Double> _payloadArray;
 	
-	private double[][] _rangeMatrix;
-	private double[][] _payloadMatrix;
-	
 	//-------------------------------------------------------------------------------------
 	// BUILDER
 	
@@ -349,7 +346,7 @@ public class PayloadRangeCalcMissionProfile{
 					intialClimbMass,
 					intialClimbMass,
 					Amount.valueOf(0.0, SI.METER),
-					_theOperatingConditions.getAltitudeToReach(),
+					_theOperatingConditions.getAltitudeCruise(),
 					false
 					);
 
@@ -1479,78 +1476,6 @@ public class PayloadRangeCalcMissionProfile{
 
 	}
 
-	/******************************************************************************************
-	 * Method that allows users to generate Range and Payload matrices to be used in 
-	 * Payload-Range plot parameterized in maxTakeOffMass.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public void createPayloadRangeMaxTakeOffMassParameterization() {
-		
-		double[] massArrayMTOM = new double[5];
-		Amount<Mass> maxTakeOffMassCurrent = Amount.valueOf(0.0, SI.KILOGRAM);
-		_rangeMatrix = new double [5][5];
-		_payloadMatrix = new double [5][5];
-		
-		// generating variation of mass of 5% until -20% of maxTakeOffMass
-		for (int i=0; i<5; i++){
-			massArrayMTOM[i] = _maximumTakeOffMass.getEstimatedValue()*(1-0.025*(4-i));
-		}
-
-		// setting the i-value of the mass array to the current maxTakeOffMass
-		for (int i=0; i<5; i++){
-			for (int j=0; j<5; j++){
-				maxTakeOffMassCurrent = Amount.valueOf(massArrayMTOM[i], SI.KILOGRAM);
-				switch (j){
-				case 0:
-					_rangeMatrix[i][j] = 0.0;
-					_payloadMatrix[i][j] = _theAircraft.getCabinConfiguration().getMaxPax();
-					break;
-				case 1:
-					_rangeMatrix[i][j] = calcRangeAtGivenPayload(
-							maxTakeOffMassCurrent,
-							_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getMaxPax())
-							).doubleValue(NonSI.NAUTICAL_MILE);	
-					_payloadMatrix[i][j] = _theAircraft.getCabinConfiguration().getMaxPax();
-					break;
-				case 2:
-					_rangeMatrix[i][j] = calcRangeAtGivenPayload(
-							maxTakeOffMassCurrent,
-							_singlePassengerMass.times(_theAircraft.getCabinConfiguration().getNPax())
-							).getEstimatedValue();
-					_payloadMatrix[i][j] = _theAircraft.getCabinConfiguration().getNPax();
-							
-					break;
-				case 3:
-					_rangeMatrix[i][j] = calcRangeAtGivenPayload(
-							maxTakeOffMassCurrent,
-							maxTakeOffMassCurrent
-							.minus(_operatingEmptyMass)
-							.minus(_maxFuelMass)
-							).getEstimatedValue();
-					_payloadMatrix[i][j] = 
-							Math.round(
-									(maxTakeOffMassCurrent
-											.minus(_operatingEmptyMass)
-											.minus(_maxFuelMass))
-									.divide(_singlePassengerMass)
-									.getEstimatedValue()
-									);
-					break;
-				case 4:
-					_rangeMatrix[i][j] = calcRangeAtGivenPayload(
-							_operatingEmptyMass.plus(_maxFuelMass),
-							Amount.valueOf(0.0, SI.KILOGRAM)
-							).getEstimatedValue();
-					_payloadMatrix[i][j] = 0.0;
-					break;
-				}
-			}
-		}
-	
-		return;
-	}
-	
 	/********************************************************************************************
 	 * This method allows users to plot the Payload-Range chart, for the best range
 	 * Mach and the current one, to the output default folder.
@@ -1573,29 +1498,6 @@ public class PayloadRangeCalcMissionProfile{
 				"Range", "Payload", "nmi", "No. Pass",	    // label with unit
 				legendValue,								// legend
 				subFolderPath, "Payload-Range");		    // output informations
-	}
-
-	/********************************************************************************************
-	 * This method allows users to plot the Payload-Range chart, parameterized in
-	 * maxTakeOffMass, to the output default folder.
-	 * 
-	 * @author Vittorio Trifari
-	 */
-	public void createPayloadRangeChartsMaxTakeOffMassParameterization(String subFolderPath){
-		
-		double[] massArray = new double[11];
-		
-		// generating variation of mass of 5% until -20% of maxTakeOffMass
-		for (int i=0; i<5; i++){
-			massArray[i] = _maximumTakeOffMass.getEstimatedValue()*(1-0.05*(4-i));
-		}
-		
-		MyChartToFileUtils.plot(
-				_rangeMatrix, _payloadMatrix,						// array to plot
-				0.0, null, 0.0, null,					    	// axis with limits
-				"Range", "Payload", "nmi", "No. Pass",	    	// label with unit
-				"MTOM = ", massArray, " Kg ",					// legend
-				subFolderPath, "Payload-Range_MaxTakeOffMass"); // output informations
 	}
 
 	@Override
@@ -1636,27 +1538,6 @@ public class PayloadRangeCalcMissionProfile{
 				.append("\t\t\tPayload mass = " + 0.0 + " kg \n")
 				.append("\t\t\tPassengers number = " + 0.0 + "\n")
 				.append("\t\t\tFuel mass required= " + _maxFuelMass + "\n");
-//				.append("\t\t.....................................\n")
-//				.append("\t\tRANGE MATRIX (WEIGHT PARAMETERIZATION)\n")
-//				.append("\t\t.....................................\n");
-//		
-//		for (int i=0; i<_rangeMatrix.length; i++){
-//			sb.append("\t\t\t");
-//			for (int j=0; j<_rangeMatrix[0].length; j++)
-//				sb.append(_rangeMatrix[i][j] + ", ");
-//			sb.append("\n");
-//		}
-//		
-//		sb.append("\t\t.....................................\n")
-//		.append("\t\tPAYLOAD MATRIX [passengers number] (WEIGHT PARAMETERIZATION)\n")
-//		.append("\t\t.....................................\n");
-//		
-//		for (int i=0; i<_payloadMatrix.length; i++){
-//			sb.append("\t\t\t");
-//			for (int j=0; j<_payloadMatrix[0].length; j++)
-//				sb.append(_payloadMatrix[i][j] + ", ");
-//			sb.append("\n");
-//		}
 		
 		sb.append("\t-------------------------------------\n");
 		
@@ -2055,22 +1936,6 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setPayloadArray(List<Double> _payloadArray) {
 		this._payloadArray = _payloadArray;
-	}
-
-	public double[][] getRangeMatrix() {
-		return _rangeMatrix;
-	}
-
-	public void setRangeMatrix(double[][] _rangeMatrix) {
-		this._rangeMatrix = _rangeMatrix;
-	}
-
-	public double[][] getPayloadMatrix() {
-		return _payloadMatrix;
-	}
-
-	public void setPayloadMatrix(double[][] _payloadMatrix) {
-		this._payloadMatrix = _payloadMatrix;
 	}
 
 	public Amount<Mass> getMaxPayload() {

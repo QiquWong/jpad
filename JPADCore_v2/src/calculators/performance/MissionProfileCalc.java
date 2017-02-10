@@ -491,9 +491,9 @@ public class MissionProfileCalc {
 			Amount<Length> totalClimbRange = theClimbCalculator.getClimbTotalRange();
 			Amount<Duration> totalClimbTime = null;
 			if(_climbSpeed != null)
-				totalClimbTime = theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAOE();
+				totalClimbTime = theClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
 			else
-				totalClimbTime = theClimbCalculator.getMinimumClimbTimeAOE();
+				totalClimbTime = theClimbCalculator.getMinimumClimbTimeAEO();
 			Amount<Mass> totalClimbFuelUsed = theClimbCalculator.getClimbTotalFuelUsed();
 
 			speedAtClimbStart = theClimbCalculator.getClimbSpeed().to(NonSI.KNOT)
@@ -507,7 +507,7 @@ public class MissionProfileCalc {
 					.divide(
 							Math.sqrt(
 									OperatingConditions.getAtmosphere(
-											_theOperatingConditions.getAltitudeToReach().doubleValue(SI.METER)
+											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 											)
 									.getDensityRatio()
 									)
@@ -525,7 +525,7 @@ public class MissionProfileCalc {
 					.getEstimatedValue(),
 					speedAtClimbStart.doubleValue(SI.METERS_PER_SECOND),					
 					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-					_theOperatingConditions.getAltitudeToReach().doubleValue(SI.METER)
+					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
 					);
 			thrustAtClimbStart = theClimbCalculator.getThrustAtClimbStart().to(NonSI.POUND_FORCE);
 			thrustAtClimbEnding = theClimbCalculator.getThrustAtClimbEnding().to(NonSI.POUND_FORCE);
@@ -959,9 +959,9 @@ public class MissionProfileCalc {
 				Amount<Length> totalSecondClimbRange = theSecondClimbCalculator.getClimbTotalRange();
 				Amount<Duration> totalSecondClimbTime = null;
 				if(_climbSpeed != null)
-					totalSecondClimbTime = theSecondClimbCalculator.getClimbTimeAtSpecificClimbSpeedAOE();
+					totalSecondClimbTime = theSecondClimbCalculator.getClimbTimeAtSpecificClimbSpeedAEO();
 				else
-					totalSecondClimbTime = theSecondClimbCalculator.getMinimumClimbTimeAOE();
+					totalSecondClimbTime = theSecondClimbCalculator.getMinimumClimbTimeAEO();
 				Amount<Mass> totalSecondClimbFuelUsed = theSecondClimbCalculator.getClimbTotalFuelUsed();
 				
 				if (_alternateCruiseAltitude.doubleValue(SI.METER) != 15.24) {
@@ -1865,7 +1865,7 @@ public class MissionProfileCalc {
 				);
 		_machMissionList.add(
 				SpeedCalc.calculateMach(
-						_theOperatingConditions.getAltitudeToReach().doubleValue(SI.METER),
+						_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
 						_speedTASMissionList.get(3).doubleValue(SI.METERS_PER_SECOND)
 						)
 				);
