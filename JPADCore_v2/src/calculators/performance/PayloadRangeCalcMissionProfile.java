@@ -1484,20 +1484,36 @@ public class PayloadRangeCalcMissionProfile{
 	 */
 	public void createPayloadRangeChart(String subFolderPath){
 
-		double rangeDoubleArray[] = MyArrayUtils.convertListOfAmountTodoubleArray(_rangeArray);
+		double rangeDoubleArray_Imperial[] = MyArrayUtils.convertListOfAmountTodoubleArray(_rangeArray);
+		double rangeDoubleArray_SI[] = 
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						_rangeArray.stream()
+						.map(x -> x.to(SI.KILOMETER))
+						.collect(Collectors.toList())
+						);
 		double payloadDoubleArray[]= MyArrayUtils.convertToDoublePrimitive(_payloadArray);
 
-		String[] legendValue = new String[2];
-		legendValue[0] = 
+		String[] legendValue_SI = new String[1];
+		String[] legendValue_Imperial = new String[1];
+		legendValue_SI[0] = 
 				"Altitude = "
-				+ _theOperatingConditions.getAltitudeCruise().to(NonSI.FOOT); 
+				+ _theOperatingConditions.getAltitudeCruise().to(SI.METER); 
+		legendValue_Imperial[0] = 
+				"Altitude = "
+				+ _theOperatingConditions.getAltitudeCruise().to(NonSI.FOOT);
 
 		MyChartToFileUtils.plot(
-				rangeDoubleArray, payloadDoubleArray,		// array to plot
+				rangeDoubleArray_SI, payloadDoubleArray,    // array to plot
 				null, null, 0.0, null,					    // axis with limits
-				"Range", "Payload", "nmi", "No. Pass",	    // label with unit
-				legendValue,								// legend
-				subFolderPath, "Payload-Range");		    // output informations
+				"Range", "Payload", "km", "No. Pass",	    // label with unit
+				legendValue_SI,								// legend
+				subFolderPath, "Payload-Range_SI");		    // output informations
+		MyChartToFileUtils.plot(
+				rangeDoubleArray_Imperial, payloadDoubleArray,    // array to plot
+				null, null, 0.0, null,					          // axis with limits
+				"Range", "Payload", "nmi", "No. Pass",	          // label with unit
+				legendValue_Imperial,						      // legend
+				subFolderPath, "Payload-Range_IMPERIAL");         // output informations
 	}
 
 	@Override

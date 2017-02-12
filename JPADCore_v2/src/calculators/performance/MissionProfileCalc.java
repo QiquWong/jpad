@@ -2180,6 +2180,25 @@ public class MissionProfileCalc {
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
 							_rangeList.stream()
+							.map(r -> r.to(SI.KILOMETER))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(SI.METER))
+							.collect(Collectors.toList()
+									)
+							),
+					0.0, null, 0.0, null,
+					"Range", "Altitude",
+					"km", "m",
+					_missionProfilesFolderPath, "Range_Profile_SI"
+					);
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_rangeList.stream()
 							.map(r -> r.to(NonSI.NAUTICAL_MILE))
 							.collect(Collectors.toList()
 									)
@@ -2193,13 +2212,31 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Range", "Altitude",
 					"nmi", "ft",
-					_missionProfilesFolderPath, "Range_Profile"
+					_missionProfilesFolderPath, "Range_Profile_IMPERIAL"
 					);
 			
 		}
 		
 		if(_plotList.contains(PerformancePlotEnum.TIME_PROFILE)) { 
 			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_timeList.stream()
+							.map(t -> t.to(NonSI.MINUTE))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(SI.METER))
+							.collect(Collectors.toList()
+									)
+							),
+					0.0, null, 0.0, null,
+					"Time", "Altitude",
+					"min", "m",
+					_missionProfilesFolderPath, "Time_Profile_(min)_SI"
+					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
 							_timeList.stream()
@@ -2216,9 +2253,28 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
 					"min", "ft",
-					_missionProfilesFolderPath, "Time_Profile_(min)"
+					_missionProfilesFolderPath, "Time_Profile_(min)_IMPERIAL"
 					);
 			
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_timeList.stream()
+							.map(t -> t.to(NonSI.HOUR))
+							.collect(Collectors.toList()
+									)
+							),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							_altitudeList.stream()
+							.map(a -> a.to(SI.METER))
+							.collect(Collectors.toList()
+									)
+							),
+					0.0, null, 0.0, null,
+					"Time", "Altitude",
+					"hr", "m",
+					_missionProfilesFolderPath, "Time_Profile_(hours)_SI"
+					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
 							_timeList.stream()
@@ -2235,7 +2291,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
 					"hr", "ft",
-					_missionProfilesFolderPath, "Time_Profile_(hours)"
+					_missionProfilesFolderPath, "Time_Profile_(hours)_IMPERIAL"
 					);
 			
 		}
@@ -2245,20 +2301,20 @@ public class MissionProfileCalc {
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
 							_fuelUsedList.stream()
-							.map(f -> f.to(NonSI.POUND))
+							.map(f -> f.to(SI.KILOGRAM))
 							.collect(Collectors.toList()
 									)
 							),
 					MyArrayUtils.convertListOfAmountTodoubleArray(
 							_altitudeList.stream()
-							.map(a -> a.to(NonSI.FOOT))
+							.map(a -> a.to(SI.METER))
 							.collect(Collectors.toList()
 									)
 							),
 					0.0, null, 0.0, null,
 					"Fuel used", "Altitude",
-					"lb", "ft",
-					_missionProfilesFolderPath, "Fuel_used_Profile_(lb)"
+					"kg", "m",
+					_missionProfilesFolderPath, "Fuel_used_Profile_SI"
 					);
 			
 			MyChartToFileUtils.plotNoLegend(
@@ -2277,7 +2333,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Fuel used", "Altitude",
 					"kg", "ft",
-					_missionProfilesFolderPath, "Fuel_used_Profile_(kg)"
+					_missionProfilesFolderPath, "Fuel_used_Profile_IMPERIAL"
 					);
 		}
 		
@@ -2299,26 +2355,7 @@ public class MissionProfileCalc {
 					0.0, null, null, null,
 					"Time", "Aircraft mass",
 					"min", "kg",
-					_missionProfilesFolderPath, "Mass_Profile_(kg)"
-					);
-			
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							_timeList.stream()
-							.map(t -> t.to(NonSI.MINUTE))
-							.collect(Collectors.toList()
-									)
-							),
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							_massList.stream()
-							.map(m -> m.to(NonSI.POUND))
-							.collect(Collectors.toList()
-									)
-							),
-					0.0, null, null, null,
-					"Time", "Aircraft mass",
-					"min", "lb",
-					_missionProfilesFolderPath, "Mass_Profile_(lb)"
+					_missionProfilesFolderPath, "Mass_Profile"
 					);
 		}
 		

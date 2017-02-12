@@ -2,6 +2,7 @@ package calculators.performance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -1108,13 +1109,57 @@ public class FlightManeuveringEnvelopeCalc {
 						)
 				);
 		
-		List<Double[]> xList = new ArrayList<>();
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_basicManeuveringDiagramSpeedEAS));
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_envelopeSpeedEAS));
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_gustCurvesSpeedEAS));
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_flapManeuveringDiagramSpeedEAS));
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_envelopeSpeedEASWithFlaps));
-		xList.add(MyArrayUtils.convertListOfAmountToDoubleArray(_gustCurvesSpeedEASWithFlaps));
+		List<Double[]> xList_SI = new ArrayList<>();
+		xList_SI.add(MyArrayUtils.convertListOfAmountToDoubleArray(_basicManeuveringDiagramSpeedEAS));
+		xList_SI.add(MyArrayUtils.convertListOfAmountToDoubleArray(_envelopeSpeedEAS));
+		xList_SI.add(MyArrayUtils.convertListOfAmountToDoubleArray(_gustCurvesSpeedEAS));
+		xList_SI.add(MyArrayUtils.convertListOfAmountToDoubleArray(_flapManeuveringDiagramSpeedEAS));
+		xList_SI.add(MyArrayUtils.convertListOfAmountToDoubleArray(_envelopeSpeedEASWithFlaps));
+		xList_SI.add(MyArrayUtils.convertListOfAmountToDoubleArray(_gustCurvesSpeedEASWithFlaps));
+		
+		List<Double[]> xList_Imperial = new ArrayList<>();
+		xList_Imperial.add(
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_basicManeuveringDiagramSpeedEAS.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						)
+				);
+		xList_Imperial.add(
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_envelopeSpeedEAS.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						)
+				);
+		xList_Imperial.add(
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_gustCurvesSpeedEAS.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						)
+				);
+		xList_Imperial.add(
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_flapManeuveringDiagramSpeedEAS.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						)
+				);
+		xList_Imperial.add(
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_envelopeSpeedEASWithFlaps.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						)
+				);
+		xList_Imperial.add(
+				MyArrayUtils.convertListOfAmountToDoubleArray(
+						_gustCurvesSpeedEASWithFlaps.stream()
+						.map(x -> x.to(NonSI.KNOT))
+						.collect(Collectors.toList())
+						)
+				);
 		
 		List<Double[]> yList = new ArrayList<>();
 		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_basicManeuveringDiagramLoadFactors));
@@ -1134,11 +1179,18 @@ public class FlightManeuveringEnvelopeCalc {
 		
 		try {
 			MyChartToFileUtils.plot(
-					xList, yList,
+					xList_SI, yList,
 					"Flight Maneuvering Envelope", "V (EAS)", "",
 					0.0, null, null, null, "m/s", "",
 					true, legend, 
-					folderPathName, "Flight Maneuvering Envelope"
+					folderPathName, "Flight Maneuvering Envelope_SI"
+					);
+			MyChartToFileUtils.plot(
+					xList_Imperial, yList,
+					"Flight Maneuvering Envelope", "V (EAS)", "",
+					0.0, null, null, null, "kn", "",
+					true, legend, 
+					folderPathName, "Flight Maneuvering Envelope_IMPERIAL"
 					);
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
