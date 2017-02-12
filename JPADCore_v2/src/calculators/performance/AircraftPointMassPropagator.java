@@ -41,13 +41,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
-import calculators.performance.customdata.AircraftPointMassSimulationResultMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
-import javaslang.Tuple;
-import javaslang.Tuple2;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -243,16 +239,13 @@ public class AircraftPointMassPropagator {
 	private Amount<Angle> commandedFlightpathAngle;
 	private Amount<Angle> commandedHeadingAngle;
 	
-	private Amount<Velocity> windVelocityXI = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-	private Amount<Velocity> windVelocityYI = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-	private Amount<Velocity> windVelocityZI = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-	
 	// Initial state variables
 	private double
 		speedInertial0, flightpathAngle0, headingAngle0,
 		xInertial0, yInertial0, altitude0, 
 		xThrust0, thrust0, xLift0, lift0, 
-		bankAngle0, mass0;
+		bankAngle0, mass0,
+		windSpeedXE0, windSpeedYE0, windSpeedZE0;
 
 	private EngineOperatingConditionEnum engineCondition0 = EngineOperatingConditionEnum.UNKNOWN;
 	private EngineOperatingConditionEnum engineConditionCurrent = EngineOperatingConditionEnum.UNKNOWN;
@@ -424,9 +417,27 @@ public class AircraftPointMassPropagator {
 						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
 								"//mission_simulation/initial_conditions/altitude")
 					).doubleValue(SI.METER);				
-		System.out.println("Initial position (xE, yE, h) = (" 
-					+ this.xInertial0 + "m , " + this.yInertial0 + " m, " + this.altitude0 +" m)");
-
+		System.out.println("Initial position {xE, yE, h} (m) = {" 
+					+ this.xInertial0 + ", " + this.yInertial0 + ", " + this.altitude0 +"}");
+		
+		this.windSpeedXE0     =
+				((Amount<Velocity>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+						"//mission_simulation/initial_conditions/wind_speed_XE")
+					).doubleValue(SI.METERS_PER_SECOND);
+		this.windSpeedYE0     =
+				((Amount<Velocity>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+						"//mission_simulation/initial_conditions/wind_speed_YE")
+					).doubleValue(SI.METERS_PER_SECOND);
+		this.windSpeedZE0     =
+				((Amount<Velocity>)
+						MyXMLReaderUtils.getXMLAmountWithUnitByPath(reader.getXmlDoc(), 
+						"//mission_simulation/initial_conditions/wind_speed_ZE")
+					).doubleValue(SI.METERS_PER_SECOND);
+		System.out.println("Initial wind {WxE, WyE, WzE} (m/s) = {" 
+				+ this.windSpeedXE0 + ", " + this.windSpeedYE0 + ", " + this.windSpeedZE0 +"}");
+ 
 		//--------------------------------------------------------------------------------------
 		System.out.println("Reading mission events ...");
 		
@@ -587,21 +598,26 @@ public class AircraftPointMassPropagator {
 			double bankAngle       = x[10];
 			double mass            = x[11];
 			
-			// TODO: steady wind velocity components in the inertial frame
-			double windXI = windVelocityXI.doubleValue(SI.METERS_PER_SECOND); // TODO: getActualWindXI
-			double windYI = windVelocityYI.doubleValue(SI.METERS_PER_SECOND); // TODO: getActualWindYI
-			double windZI = windVelocityZI.doubleValue(SI.METERS_PER_SECOND); // TODO: getActualWindZI (positive downwards)
+			// Wind velocity components in the inertial/Earth frame
+			double[] windVelocity = AircraftPointMassPropagator.this.getWindVelocity(t);
 			
+			//System.out.println(Arrays.toString(windVelocity));
+			
+			double windXE = windVelocity[0];
+			double windYE = windVelocity[1];
+			double windZE = windVelocity[2];				
+
 			// intermediate variables
 			double xDotI = speedInertial*Math.cos(flightpathAngle)*Math.cos(heading);
 			double yDotI = speedInertial*Math.cos(flightpathAngle)*Math.sin(heading);
 			double hDot  = speedInertial*Math.sin(flightpathAngle);
 			double airspeed = Math.sqrt(
-					Math.pow(xDotI - windXI, 2)	
-					+ Math.pow(yDotI - windYI, 2)
-					+ Math.pow(hDot + windZI, 2)
+					Math.pow(xDotI - windXE, 2)	
+					+ Math.pow(yDotI - windYE, 2)
+					+ Math.pow(hDot + windZE, 2)
 					);
-
+			//System.out.println(airspeed);
+			
 			// drag
 			// TODO: get constants from file
 			double cD0 = 0.03;
@@ -752,7 +768,7 @@ public class AircraftPointMassPropagator {
 		System.out.println("AircraftPointMassPropagator :: ODE integration\n\n");
 		
 		this.theIntegrator = new HighamHall54Integrator(
-				1e-6,
+				1e-10,
 				1,
 				1e-15,
 				1e-15
@@ -818,12 +834,11 @@ public class AircraftPointMassPropagator {
 			@Override
 			public double g(double t, double[] x) {
 				
+				double[] windVelocity = AircraftPointMassPropagator.this.getWindVelocity(t);
 				// max available thrust
 				this.thrMax = AircraftPointMassPropagator.this.calculateThrustMax(
 						AircraftPointMassPropagator.this.engineConditionCurrent,
-						AircraftPointMassPropagator.this.windVelocityXI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindXI
-						AircraftPointMassPropagator.this.windVelocityYI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindYI
-						AircraftPointMassPropagator.this.windVelocityZI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindZI
+						windVelocity[0], windVelocity[1], windVelocity[2],
 						x[0], // V 
 						x[1], // gamma
 						x[2], // psi
@@ -951,123 +966,6 @@ public class AircraftPointMassPropagator {
 //						"\n\tx[5] = h  = " + x[5] + " m"
 //						);
 				
-				/* PICKING UP ALL DATA AT EVERY STEP
-				 *
-				 * x0  = Vv,  x1  = γ,  x2  = ψ
-				 * x3  = Xi,  x4  = Yi, x5  = h
-				 * x6  = xT,  x7  = T,  x8  = xL
-				 * x9  = L,   x10 = ϕ,  x11 = m
-				 * 
-				 */
-//				//----------------------------------------------------------------------------------------
-//				// TIME:
-//				AircraftPointMassPropagator.this.getTime().add(Amount.valueOf(t, SI.SECOND));
-//				//----------------------------------------------------------------------------------------
-//				// GROUND DISTANCE -XI:
-//				AircraftPointMassPropagator.this.getGroundDistanceX().add(Amount.valueOf(x[3], SI.METER));
-//				// GROUND DISTANCE -YI:
-//				AircraftPointMassPropagator.this.getGroundDistanceY().add(Amount.valueOf(x[4], SI.METER));
-//				//----------------------------------------------------------------------------------------
-//				// ALTITUDE:
-//				AircraftPointMassPropagator.this.getAltitude().add(Amount.valueOf(x[5], SI.METER));
-//				//----------------------------------------------------------------------------------------
-//				// FLIGHTPATH ANGLE:
-//				AircraftPointMassPropagator.this.getFlightpathAngle().add(Amount.valueOf(x[1], SI.RADIAN));
-//				//----------------------------------------------------------------------------------------
-//				// RATE OF CLIMB:
-//				AircraftPointMassPropagator.this.getRateOfClimb().add(Amount.valueOf(xdot[5], SI.METERS_PER_SECOND));
-//				//----------------------------------------------------------------------------------------
-//				// HEADING ANGLE:
-//				AircraftPointMassPropagator.this.getHeadingAngle().add(Amount.valueOf(x[2], SI.RADIAN));
-//				//----------------------------------------------------------------------------------------
-//				// BANK ANGLE:
-//				AircraftPointMassPropagator.this.getBankAngle().add(Amount.valueOf(x[10], SI.RADIAN));
-//				//----------------------------------------------------------------------------------------
-//				// SPEED:
-//				AircraftPointMassPropagator.this.getSpeedInertial().add(Amount.valueOf(x[0], SI.METERS_PER_SECOND));
-//				//----------------------------------------------------------------------------------------
-//				// AIRSPEED:
-//				double windXI = AircraftPointMassPropagator.this.windVelocityXI.doubleValue(SI.METERS_PER_SECOND);
-//				double windYI = AircraftPointMassPropagator.this.windVelocityYI.doubleValue(SI.METERS_PER_SECOND);
-//				double windZI = AircraftPointMassPropagator.this.windVelocityZI.doubleValue(SI.METERS_PER_SECOND);				
-//				double xDotI = xdot[3];
-//				double yDotI = xdot[4];
-//				double hDot  = xdot[5];
-//				double airspeed = Math.sqrt(Math.pow(xDotI - windXI, 2)	
-//						+ Math.pow(yDotI - windYI, 2) 
-//						+ Math.pow(hDot  + windZI, 2));				
-//				AircraftPointMassPropagator.this.getAirspeed().add(Amount.valueOf(airspeed, SI.METERS_PER_SECOND));
-//				//----------------------------------------------------------------------------------------
-//				// MASS:
-//				AircraftPointMassPropagator.this.getMass().add(Amount.valueOf(x[11], SI.KILOGRAM));
-//				//----------------------------------------------------------------------------------------
-//				// THRUST:
-//				AircraftPointMassPropagator.this.getThrust().add(Amount.valueOf(x[7],SI.NEWTON));
-//				//----------------------------------------------------------------------------------------
-//				// x-THRUST:
-//				AircraftPointMassPropagator.this.getXThrust().add(Amount.valueOf(x[6],MyUnits.KILOGRAM_METER));
-//				// x-THRUST-DOT:
-//				AircraftPointMassPropagator.this.getXThrustDot().add(Amount.valueOf(xdot[6],MyUnits.KILOGRAM_METER_PER_SECOND));
-//				//----------------------------------------------------------------------------------------
-//				// LIFT:
-//				AircraftPointMassPropagator.this.getLift().add(Amount.valueOf(x[9],SI.NEWTON));
-//				//----------------------------------------------------------------------------------------
-//				// x-LIFT:
-//				AircraftPointMassPropagator.this.getXLift().add(Amount.valueOf(x[8],MyUnits.KILOGRAM_METER));
-//				// x-LIFT-DOT:
-//				AircraftPointMassPropagator.this.getXLiftDot().add(Amount.valueOf(xdot[8],MyUnits.KILOGRAM_METER_PER_SECOND));
-//				//----------------------------------------------------------------------------------------
-//				// DRAG:
-//				double cD0 = 0.03;
-//				double aspectRatio = theAircraft.getWing().getAspectRatio();
-//				double oswaldFactor = 0.85; // TODO
-//				double kD = Math.PI * aspectRatio * oswaldFactor;
-//				double airDensity = AtmosphereCalc.getDensity(x[5]); // f(altitude)
-//				double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
-//				double kD0 = 0.5 * airDensity * surfaceWing * cD0;
-//				double kD1 = 2.0/(airDensity * surfaceWing * kD);
-//				double drag = kD0 * Math.pow(airspeed, 2) 
-//						+ kD1 * Math.pow(x[9], 2)/Math.pow(airspeed, 2);
-//				AircraftPointMassPropagator.this.getDrag().add(Amount.valueOf(drag, SI.NEWTON));
-//				
-//				//----------------------------------------------------------------------------------------
-//				// COMMANDED THRUST & LIFT
-//				double commandedThrust = 
-//						kTi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[6]
-//						+ kTp.doubleValue(MyUnits.ONE_PER_SECOND)*xdot[6];
-//				AircraftPointMassPropagator.this.getCommandedThrust().add(Amount.valueOf(commandedThrust,SI.NEWTON));
-//				double commandedLift = 
-//						kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8]
-//						+ kLp.doubleValue(MyUnits.ONE_PER_SECOND)*xdot[8];
-//				AircraftPointMassPropagator.this.getCommandedLift().add(Amount.valueOf(commandedLift,SI.NEWTON));
-//				//----------------------------------------------------------------------------------------
-//				// CD, CL, Load factor
-//				double dynamicPressure = 0.5*airDensity*Math.pow(airspeed, 2);
-//				AircraftPointMassPropagator.this.getcD().add(
-//						drag/(dynamicPressure*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
-//						);
-//				AircraftPointMassPropagator.this.getcL().add(
-//						x[9]/(dynamicPressure*theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE))
-//						);
-//				AircraftPointMassPropagator.this.getLoadFactor().add(
-//						x[9]/(x[11]*AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND)) // Lift/Weight
-//						);
-//				//----------------------------------------------------------------------------------------
-//				// Max thrust
-//				
-//				// max available thrust
-//				double thrMax = AircraftPointMassPropagator.this.calculateThrustMax(
-//						engineConditionCurrent,
-//						AircraftPointMassPropagator.this.windVelocityXI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindXI
-//						AircraftPointMassPropagator.this.windVelocityYI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindYI
-//						AircraftPointMassPropagator.this.windVelocityZI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindZI
-//						x[0], // V 
-//						x[1], // gamma
-//						x[2], // psi
-//						x[5], // altitude
-//						AircraftPointMassPropagator.this.theAircraft);
-//				AircraftPointMassPropagator.this.getThrustMax().add(Amount.valueOf(thrMax, SI.NEWTON));
-				
 			}
 			
 		};
@@ -1082,7 +980,6 @@ public class AircraftPointMassPropagator {
 		
 		// Initial values
 //		commandedSpeed = Amount.valueOf(this.speedInertial0,SI.METERS_PER_SECOND);
-		
 		commandedSpeed = Amount.valueOf(this.getMissionEvents().get(0).getCommandedSpeed(),SI.METERS_PER_SECOND);
 		
 		commandedFlightpathAngle = Amount.valueOf(this.flightpathAngle0,SI.RADIAN);
@@ -1116,6 +1013,57 @@ public class AircraftPointMassPropagator {
 		System.out.println("\n---------------------------END!!-------------------------------");
 	}
 
+	public double[] getWindVelocity(double t) {
+		/*
+		 *  detect wind between 
+		 *   ==> t=0 and first event
+		 *   ==> two consecutive events 
+		 *   ==> last event and final sim time
+		 */
+		
+		double windXE = this.getWindSpeedXE0();
+		double windYE = this.getWindSpeedYE0();
+		double windZE = this.getWindSpeedZE0();				
+		int nEvents = this.getMissionEvents().size();
+		
+		if (t < this.getMissionEvents().get(0).getTime()) {
+			/*
+			 *  do nothing
+			 *  we are in the segment between t=0 and first scheduled event
+			 */
+		} else if (
+				(t >= this.getMissionEvents().get(0).getTime())
+				&&
+				(t < this.getMissionEvents().get(nEvents - 1).getTime())
+				) {
+			/*
+			 *  we are in the generic segment between two consecutive events
+			 *  check if tCurrent is between events kME and kME+1 
+			 */
+			for (int kME = 0; kME < this.missionEvents.size() - 1; kME++) {
+				double tME = this.getMissionEvents().get(kME).getTime(); // event time
+				double tMEp = this.getMissionEvents().get(kME+1).getTime(); // event time plus 1
+				if ((t >= tME) && (t < tMEp)) {
+					/*
+					 *  assign wind velocity components from the event kME
+					 *  then break the loop
+					 */
+					windXE = this.getMissionEvents().get(kME).getWindSpeedXE();
+					windYE = this.getMissionEvents().get(kME).getWindSpeedYE();
+					windZE = this.getMissionEvents().get(kME).getWindSpeedZE();				
+					break;
+				}
+			}
+			
+		} else { // wind speeds from last event-time to final sim time
+			windXE = this.getMissionEvents().get(nEvents - 1).getWindSpeedXE();
+			windYE = this.getMissionEvents().get(nEvents - 1).getWindSpeedYE();
+			windZE = this.getMissionEvents().get(nEvents - 1).getWindSpeedZE();
+		}
+		
+		return new double[] {windXE, windYE, windZE};	
+	}
+	
 	/**************************************************************************************
 	 * This method allows users to plot all simulation results producing several output charts
 	 * which have time as independent variables.
@@ -1242,40 +1190,27 @@ public class AircraftPointMassPropagator {
 					speedInertial.add(Amount.valueOf(x[0], SI.METERS_PER_SECOND));
 					//----------------------------------------------------------------------------------------
 					// AIRSPEED:
+
+					/*
+					 *  detect wind between 
+					 *   ==> t=0 and first event
+					 *   ==> two consecutive events 
+					 *   ==> last event and final sim time
+					 */
 					
-					// detect wind between two events
 					double tCurrent = times.get(i).doubleValue(SI.SECOND);
-					List<Tuple2<Double,Integer>> timeDiffsAndIndices = new ArrayList<>();
-					for(MissionEvent me : this.getMissionEvents()) {
-						double t_ = me.getTime(); // event time
-						timeDiffsAndIndices.add(Tuple.of(tCurrent - t_, i));
-					}
-					// http://stackoverflow.com/questions/31116190/java-8-find-index-of-minimum-value-from-a-list
-					int minIdx = -999;
-					try {
-						minIdx = IntStream.range(0,
-								timeDiffsAndIndices.stream()
-								.filter(tu -> tu._1 < 0)
-								.collect(Collectors.toList()) // filter out all deltaT >0, i.e. past events w.r.t. tCurrent
-								.size())
-								.reduce((a,b) -> timeDiffsAndIndices.get(a)._1() > timeDiffsAndIndices.get(b)._1() ? b : a)
-								.getAsInt();  // or throw
-					} catch (NoSuchElementException e) {
-						minIdx = AircraftPointMassPropagator.this.getMissionEvents().size() - 1;
-					}
+					double[] windVelocity = this.getWindVelocity(tCurrent);
 					
-					// TODO: check this result
-					//System.out.println("idx event: " + minIdx);
+					double windXE = windVelocity[0];
+					double windYE = windVelocity[1];
+					double windZE = windVelocity[2];				
 					
-					double windXI = AircraftPointMassPropagator.this.getMissionEvents().get(minIdx).getWindSpeedXE();
-					double windYI = AircraftPointMassPropagator.this.getMissionEvents().get(minIdx).getWindSpeedYE();
-					double windZI = AircraftPointMassPropagator.this.getMissionEvents().get(minIdx).getWindSpeedZE();				
 					double xDotI = xdot[3];
 					double yDotI = xdot[4];
 					double hDot  = xdot[5];
-					double vinf_ = Math.sqrt(Math.pow(xDotI - windXI, 2)	
-							+ Math.pow(yDotI - windYI, 2) 
-							+ Math.pow(hDot  + windZI, 2));				
+					double vinf_ = Math.sqrt(Math.pow(xDotI - windXE, 2)	
+							+ Math.pow(yDotI - windYE, 2) 
+							+ Math.pow(hDot  + windZE, 2));				
 					airspeed.add(Amount.valueOf(vinf_, SI.METERS_PER_SECOND));
 					//----------------------------------------------------------------------------------------
 					// MASS:
@@ -1334,13 +1269,9 @@ public class AircraftPointMassPropagator {
 							);
 					//----------------------------------------------------------------------------------------
 					// Max thrust
-					
-					// max available thrust
 					double thrMax_ = AircraftPointMassPropagator.this.calculateThrustMax(
-							engineConditionCurrent,
-							AircraftPointMassPropagator.this.windVelocityXI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindXI
-							AircraftPointMassPropagator.this.windVelocityYI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindYI
-							AircraftPointMassPropagator.this.windVelocityZI.doubleValue(SI.METERS_PER_SECOND), // TODO: getActualWindZI
+							AircraftPointMassPropagator.this.engineConditionCurrent,
+							windVelocity[0], windVelocity[1], windVelocity[2],
 							x[0], // V 
 							x[1], // gamma
 							x[2], // psi
@@ -1469,7 +1400,7 @@ public class AircraftPointMassPropagator {
 							.map(roc -> roc.doubleValue(SI.METERS_PER_SECOND))
 							.toArray(size -> new Double[size])
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
-					0.0, null, null, null,
+					0.0, null, -20.0, 20.0,
 					"Time", "Rate Of Climb", "s", "m/s",
 					outputChartDir, "Rate_of_Climb");
 			
@@ -2213,6 +2144,30 @@ public class AircraftPointMassPropagator {
 
 	public void setTheIntegrator(FirstOrderIntegrator theIntegrator) {
 		this.theIntegrator = theIntegrator;
+	}
+
+	public double getWindSpeedXE0() {
+		return windSpeedXE0;
+	}
+
+	public void setWindVelocityXE0(double windVelocityXE0) {
+		this.windSpeedXE0 = windVelocityXE0;
+	}
+
+	public double getWindSpeedYE0() {
+		return windSpeedYE0;
+	}
+
+	public void setWindVelocityYE0(double windVelocityYE0) {
+		this.windSpeedYE0 = windVelocityYE0;
+	}
+
+	public double getWindSpeedZE0() {
+		return windSpeedZE0;
+	}
+
+	public void setWindVelocityZE0(double windVelocityZE0) {
+		this.windSpeedZE0 = windVelocityZE0;
 	}
 	
 }

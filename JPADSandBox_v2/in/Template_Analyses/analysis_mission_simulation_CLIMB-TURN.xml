@@ -23,18 +23,21 @@
                 <position_XE unit="m"> 0.0 </position_XE>
                 <position_YE unit="m"> 0.0 </position_YE>
                 <altitude unit="m"> 1000.0 </altitude>
+                <wind_speed_XE unit="mph">  0.0 </wind_speed_XE>
+                <wind_speed_YE unit="mph">  0.0 </wind_speed_YE>
+                <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
             </initial_conditions>
             <events>
                 <event id="Event 0" action="CONTINUE">
-                    <time unit="s"> 5.0 </time>
+                    <time unit="s"> 15.0 </time>
                     <engine_setting value="CLIMB"/> <!-- CLIMB, CONTINUOUS, CRUISE, DESCENT, TAKE_OFF, APR-->
                     <cL_max> 1.6 </cL_max>
                     <commanded_speed unit="kn"> 210 </commanded_speed>
                     <commanded_flightpath_angle unit="deg"> 5.0 </commanded_flightpath_angle>
                     <commanded_heading_angle unit="deg"> 15.0 </commanded_heading_angle>
-                    <wind_speed_XE unit="mph"> 0.0 </wind_speed_XE>
-                    <wind_speed_YE unit="mph"> 0.0 </wind_speed_YE>
-                    <wind_speed_ZE unit="mph"> 0.0 </wind_speed_ZE>
+                    <wind_speed_XE unit="mph">  0.0 </wind_speed_XE>
+                    <wind_speed_YE unit="mph">  0.0 </wind_speed_YE>
+                    <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
                 </event>
                 <event id="Event 1" action="CONTINUE">
                     <time unit="s"> 85.0 </time>
@@ -43,9 +46,9 @@
                     <commanded_speed unit="kn"> 195 </commanded_speed>
                     <commanded_flightpath_angle unit="deg"> 0.0 </commanded_flightpath_angle>
                     <commanded_heading_angle unit="deg"> 15.0 </commanded_heading_angle>
-                    <wind_speed_XE unit="mph"> 0.0 </wind_speed_XE>
-                    <wind_speed_YE unit="mph"> 0.0 </wind_speed_YE>
-                    <wind_speed_ZE unit="mph"> 0.0 </wind_speed_ZE>
+                    <wind_speed_XE unit="mph">  0.0 </wind_speed_XE>
+                    <wind_speed_YE unit="mph">  0.0 </wind_speed_YE>
+                    <wind_speed_ZE unit="mph">  0.0 </wind_speed_ZE>
                 </event>
             </events>
         </mission_simulation>
