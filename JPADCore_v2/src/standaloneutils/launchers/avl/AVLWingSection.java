@@ -57,7 +57,7 @@ public interface AVLWingSection {
 				}
 				try{
 					PrintWriter writer = new PrintWriter(file.getAbsolutePath(), "UTF-8");
-					writer.println("x z ! " + airfoil.getId());
+					writer.println("x z ! " + airfoil.getName());
 					// writer.println("The second line");
 
 					Double[] xs = airfoil.getAirfoilCreator().getXCoords();

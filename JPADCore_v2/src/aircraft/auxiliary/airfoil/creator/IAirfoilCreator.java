@@ -11,11 +11,8 @@ import configuration.enumerations.AirfoilTypeEnum;
 
 public interface IAirfoilCreator {
 	
-	String getID();
-	void setID(String id);
-
-	AirfoilEnum getName();
-	void setName(AirfoilEnum name);
+	String getName();
+	void setName(String name);
 	
 	AirfoilTypeEnum getType();
 	void setType(AirfoilTypeEnum type);
@@ -23,15 +20,9 @@ public interface IAirfoilCreator {
 	AirfoilFamilyEnum getFamily();
 	void setFamily(AirfoilFamilyEnum fam);
 
-	double[][] getNormalizedCornerPointsXZ();
-	void setNormalizedCornerPointsXZ(double[][] xz);
-	
 	Double getThicknessToChordRatio();
 	void setThicknessToChordRatio(Double tOverC);
 
-	Double getCamberRatio();
-	void setCamberRatio(Double fOverC);
-	
 	Amount<Length> getRadiusLeadingEdge();
 	void setRadiusLeadingEdge(Amount<Length> rLE);
 	
@@ -73,9 +64,6 @@ public interface IAirfoilCreator {
     
     Double getKFactorDragPolar();
     void setKFactorDragPolar(Double kFactorDragPolar);
-    
-    Double getMExponentDragPolar();
-    void setMExponentDragPolar(Double mExponentDragPolar);
     
     Double getCmAlphaQuarterChord();
     void setCmAlphaQuarterChord(Double cmAlphaQuarterChord);

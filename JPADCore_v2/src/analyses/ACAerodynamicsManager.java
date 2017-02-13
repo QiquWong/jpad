@@ -692,7 +692,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
 			cLMaxWingClean = _theAircraft.getWing().getAerodynamics().get_cLMaxClean();
 			cLAlphaWing = _theAircraft.getWing().getAerodynamics().getcLLinearSlopeNB();
-			alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+			alphaStar = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait();
 			cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
 			LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
 			LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
@@ -716,7 +716,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 				
 				cLAlphaWing = Math.toDegrees(_theAircraft.getWing().getHigLiftCalculator().getcLalpha_new());
 				
-				alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+				alphaStar = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait();
 				cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
 				LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
 				LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();

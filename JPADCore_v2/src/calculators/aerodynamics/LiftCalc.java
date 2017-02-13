@@ -463,7 +463,7 @@ public class LiftCalc {
 		Airfoil meanAirfoil = new Airfoil(
 				LiftingSurface.calculateMeanAirfoil(theLiftingSurface), 
 				theLiftingSurface.getAerodynamicDatabaseReader());
-		double alphaStarClean = meanAirfoil.getAerodynamics().get_alphaStar().getEstimatedValue();
+		double alphaStarClean = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait().getEstimatedValue();
 
 		Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
 

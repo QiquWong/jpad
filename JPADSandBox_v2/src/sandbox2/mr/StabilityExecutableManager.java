@@ -134,7 +134,6 @@ public class StabilityExecutableManager {
 
 	private AirfoilFamilyEnum _wingMeanAirfoilFamily;
 	private Double _wingMaxThicknessMeanAirfoil;
-	private Double _wingMaxThicknessMeanAirfoilCLEAN;
 	
 	//airfoil input curve 
 	private MethodEnum _wingairfoilLiftCoefficientCurve;

@@ -29,7 +29,6 @@ public class Geometry {
 
 	private Double _thicknessOverChordUnit, _deltaYPercent; 
 	
-	private Double _camberRatio;
 	private Double _maximumThicknessOverChord; 
 	private Amount<Length> _radiusLE; 
 	private Amount<Angle> _anglePhiTE = Amount.valueOf(0,SI.RADIAN);
@@ -64,7 +63,6 @@ public class Geometry {
 				);
 		this._anglePhiTE = airfoilCreator.getAngleAtTrailingEdge();
 		this._maximumThicknessOverChord = airfoilCreator.getThicknessToChordRatio();
-		this._camberRatio = airfoilCreator.getCamberRatio();
 		this._radiusLE = airfoilCreator.getRadiusLeadingEdge();
 		this._xCoords = airfoilCreator.getXCoords();
 		this._zCoords = airfoilCreator.getZCoords();

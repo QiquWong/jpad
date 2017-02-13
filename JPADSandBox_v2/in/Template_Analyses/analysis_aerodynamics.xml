@@ -3,13 +3,24 @@
 	<!-- 
 		plot=TRUE -> enters the plot tag.
 		plot=FALSE -> plot nothing.
+		
+		All the variables which have METHOD as attirubte, can be calculated with the deifned method or can be assigned filling the value if the METHOD is equal to "INPUT"
 	-->
     <analysis plot="TRUE">
         <aerodynamics id="JPAD Test analysis - AERODYNAMICS">
+			<global_data>
+				<alpha_body_initial unit="deg"></alpha_body_initial>
+				<alpha_body_final unit="deg"></alpha_body_final>
+				<number_of_alpha_body></number_of_alpha_body>
+				<number_of_points_semispawise></number_of_points_semispawise>
+				<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
+				<alpha_horizontal_tail_array_for_distributions unit="deg"></alpha_horizontal_tail_array_for_distributions>
+			</global_data>
 			<wing>
+				<aerodynamic_centre method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
 					<cL_Alpha method="NASA_BLACKWELL"></cL_Alpha>
-					<cL_vs_alpha method="NASA_BLACKWELL"></cL_vs_alpha> <!-- TODO : read more than one method -->
+					<cL_vs_alpha method="NASA_BLACKWELL"></cL_vs_alpha> 
 				</lift>
 				<high_lift>
 				
@@ -22,6 +33,8 @@
 				</pitching_moment>
 			</wing>
 			<horizontal_tail>
+				<aerodynamic_centre method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
+				<dynamic_pressure_ratio method="SEMPIEMPIRICAL"></dynamic_pressure_ratio>
 				<lift>
 				
 				</lift>
@@ -57,7 +70,9 @@
 			</nacelles>
 			<aircraft>
 				<longitudinal_static_stability>
-				
+				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+					<adimensional_centre_of_gravity_x_position></adimensional_centre_of_gravity_x_position>
+					<adimensional_centre_of_gravity_z_position></adimensional_centre_of_gravity_x_position>
 				</longitudinal_static_stability>
 			</aircraft>
         </aerodynamics>
@@ -66,23 +81,23 @@
 		<wing>
 			<lift>
 				<!-- choose which plot has to be done --> 
-				<cL_vs_alpha>TRUE</cL_vs_alpha>
-				<stall_path>TRUE</stall_path> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
-				<cl_distribution>TRUE</cl_distribution>
-				<cl_additional_distribution>TRUE</cl_additional_distribution>
-				<cl_basic_distribution>TRUE</cl_basic_distribution>
-				<ccl_distribution>TRUE</ccl_distribution>
-				<ccl_additional_distribution>TRUE</ccl_additional_distribution>
-				<ccl_basic_distribution>TRUE</ccl_basic_distribution>
-				<gamma_distribution>TRUE</gamma_distribution>
-				<gamma_additional_distribution>TRUE</gamma_additional_distribution>
-				<gamma_basic_distribution>TRUE</gamma_basic_distribution>
-				<total_load_distribution>TRUE</total_load_distribution>
-				<additional_load_distribution>TRUE</additional_load_distribution>
-				<basic_load_distribution>TRUE</basic_load_distribution>
+				<cL_vs_alpha perform="TRUE"/>
+				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
+				<cl_distribution perform="TRUE"/>
+				<cl_additional_distribution perform="TRUE"/>
+				<cl_basic_distribution perform="TRUE"/>
+				<ccl_distribution perform="TRUE"/>
+				<ccl_additional_distribution perform="TRUE"/>
+				<ccl_basic_distribution perform="TRUE"/>
+				<gamma_distribution perform="TRUE"/>
+				<gamma_additional_distribution perform="TRUE"/>
+				<gamma_basic_distribution perform="TRUE"/>
+				<total_load_distribution perform="TRUE"/>
+				<additional_load_distribution perform="TRUE"/>
+				<basic_load_distribution perform="TRUE"/>
 			</lift>
 			<high_lift>
-				<cL_vs_alpha_high_lift>TRUE</cL_vs_alpha_high_lift>
+				<cL_vs_alpha_high_lift perform="TRUE"/>
 			</high_lift>
 			<drag>
 			

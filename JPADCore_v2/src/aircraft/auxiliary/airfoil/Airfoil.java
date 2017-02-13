@@ -18,20 +18,9 @@ public class Airfoil {
 	// NOTE: all X's and Z's are non-dimensional
 	// NOTE: curvilinear coordinate oriented as follows: TE->upper->LE->lower
 
-	private String _id = "";
-	public static int idCounter = 0;
-	public static int nAirfoil = 0;
-	public static final Integer _xmlLevel = 3;
-
-	private static Map<AirfoilEnum, Double> _kWaveDragMap = new HashMap<AirfoilEnum, Double> ();
-
-	AirfoilEnum _name;
-	AirfoilFamilyEnum _family;
-	AirfoilTypeEnum _type;
-	Geometry geometry;
-	Aerodynamics aerodynamics;
-	double _chordLocal;
-	private LiftingSurface _theLiftingSurface;
+	private String _name;
+	private AirfoilFamilyEnum _family;
+	private AirfoilTypeEnum _type;
 	private AirfoilCreator _theAirfoilCreator;
 
 	/**
@@ -43,7 +32,6 @@ public class Airfoil {
 			) {
 		
 		this._theAirfoilCreator = airfoilCreator;
-		this._id = airfoilCreator.getID();
 		this._name = airfoilCreator.getName();
 		this._type = airfoilCreator.getType();
 		this._family = airfoilCreator.getFamily();
@@ -92,55 +80,11 @@ public class Airfoil {
 		}
 	}
 	
-	//*********************************************************************
-	// These methods initialize an airfoil from the default ones.
-	public void initialize(Airfoil airfoil, AirfoilEnum airfoilName) {
-		
-		// FIXME : Geometry initialize always to the NACA 66(3)-418
-		//		  or to the NACA 0012 in case of HTail or VTail
-		
-		geometry = new Geometry(airfoil);	
-		aerodynamics = new Aerodynamics(airfoil, airfoilName);
-		
-	}
-	//*********************************************************************	
-	
-	public static void populateKWaveDragMap() {
-
-		_kWaveDragMap.put(AirfoilEnum.NACA63_209, 0.095);
-		_kWaveDragMap.put(AirfoilEnum.NACA64_208, 0.080);
-		_kWaveDragMap.put(AirfoilEnum.NACA65_209, 0.071);
-		_kWaveDragMap.put(AirfoilEnum.NACA66_209, 0.050);
-		_kWaveDragMap.put(AirfoilEnum.NACA63_412, 0.080);
-		_kWaveDragMap.put(AirfoilEnum.NACA64_412, 0.068);
-		_kWaveDragMap.put(AirfoilEnum.NACA65_410, 0.066);
-	}
-
-	public Map<AirfoilEnum, Double> getKWaveDragMap() {
-		return _kWaveDragMap;
-	}
-
-	public void setKWaveDragMap(Map<AirfoilEnum, Double> kWaveDragMap) {
-		_kWaveDragMap = kWaveDragMap;
-	}
-
-	public Geometry getGeometry() {
-		return geometry;
-	}
-
-	public Aerodynamics getAerodynamics() {
-		return aerodynamics;
-	}
-
-	public void setAerodynamics(Aerodynamics aerodynamics) {
-		this.aerodynamics = aerodynamics;
-	}
-	
-	public AirfoilEnum getName() {
+	public String getName() {
 		return _name;
 	}
 
-	public void setName(AirfoilEnum _name) {
+	public void setName(String _name) {
 		this._name = _name;
 	}
 
@@ -160,28 +104,6 @@ public class Airfoil {
 		this._type = _type;
 	}
 	
-	public String getId() {
-		return _id;
-	}
-	
-	public String getIdNew() {
-		String id = _theLiftingSurface.getId() + "af" + nAirfoil;
-		nAirfoil++;
-		return id;
-	}
-
-	public double getChordLocal() {
-		return _chordLocal;
-	}
-
-	public void setChordLocal(double _chordLocal) {
-		this._chordLocal = _chordLocal;
-	}
-
-	public LiftingSurface getLiftingSurface() {
-		return _theLiftingSurface;
-	}
-
 	public AirfoilCreator getAirfoilCreator() {
 		return _theAirfoilCreator;
 	}

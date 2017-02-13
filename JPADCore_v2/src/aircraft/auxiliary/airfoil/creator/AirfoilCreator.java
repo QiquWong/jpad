@@ -1,37 +1,31 @@
 package aircraft.auxiliary.airfoil.creator;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import configuration.MyConfiguration;
-import configuration.enumerations.AirfoilEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
 
 public class AirfoilCreator implements IAirfoilCreator {
 
-	private String _id;
-	private AirfoilEnum _name;
+	private String _name;
 	private AirfoilTypeEnum _type;
 	private AirfoilFamilyEnum _family;
-	private RealMatrix _NormalizedCornerPointsXZ;
 	private Double[] _xCoords;
 	private Double[] _zCoords;
 	private Double _thicknessToChordRatio;
-	private Double _camberRatio;
 	private Amount<Length> _radiusLeadingEdge;
 	private Amount<Angle> _angleAtTrailingEdge;
 	private Amount<Angle> _alphaZeroLift;
@@ -44,7 +38,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double _clEndLinearTrait;
 	private Double _clMax;
 	private Double _kFactorDragPolar;
-	private Double _mExponentDragPolar;
 	private Double _cmAlphaQuarterChord;
 	private Double _xACNormalized;
 	private Double _cmAC;
@@ -53,27 +46,25 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double _xTransitionUpper;
 	private Double _xTransitionLower;
 
-	@Override
-	public String getID() {
-		return _id;
-	}
-
-	@Override
-	public void setID(String id) {
-		_id = id;
-	}
-
+	private List<Double> _clCurve;
+	private List<Double> _cdCurve;
+	private List<Double> _cmCurve;
+	private List<Amount<Angle>> _alphaForClCurve;
+	private List<Double> _clForCdCurve;
+	private List<Amount<Angle>> _alphaForCmCurve;
+	
+	
 	/**
 	 * @return the _name
 	 */
-	public AirfoilEnum getName() {
+	public String getName() {
 		return _name;
 	}
 
 	/**
 	 * @param _name the _name to set
 	 */
-	public void setName(AirfoilEnum _name) {
+	public void setName(String _name) {
 		this._name = _name;
 	}
 
@@ -98,16 +89,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	}
 
 	@Override
-	public double[][] getNormalizedCornerPointsXZ() {
-		return _NormalizedCornerPointsXZ.getData();
-	}
-
-	@Override
-	public void setNormalizedCornerPointsXZ(double[][] xz) {
-		_NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(xz);
-	}
-
-	@Override
 	public Double getThicknessToChordRatio() {
 		return _thicknessToChordRatio;
 	}
@@ -115,16 +96,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	@Override
 	public void setThicknessToChordRatio(Double tOverC) {
 		_thicknessToChordRatio = tOverC;
-	}
-
-	@Override
-	public Double getCamberRatio() {
-		return _camberRatio;
-	}
-
-	@Override
-	public void setCamberRatio(Double fOverC) {
-		_camberRatio = fOverC;
 	}
 
 	@Override
@@ -268,16 +239,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	}
 
 	@Override
-	public Double getMExponentDragPolar() {
-		return _mExponentDragPolar;
-	}
-
-	@Override
-	public void setMExponentDragPolar(Double mExponentDragPolar) {
-		_mExponentDragPolar = mExponentDragPolar;
-	}
-
-	@Override
 	public Double getCmAlphaQuarterChord() {
 		return _cmAlphaQuarterChord;
 	}
@@ -350,45 +311,44 @@ public class AirfoilCreator implements IAirfoilCreator {
 	public static class AirfoilBuilder {
 
 		// required parameters
-		private String __id;
+		private String __name;
+		private AirfoilTypeEnum __type;
+		private AirfoilFamilyEnum __family;
 
 		// optional, set to default values
-		private AirfoilEnum __name = AirfoilEnum.NACA65_209;
-		private AirfoilTypeEnum __type = AirfoilTypeEnum.LAMINAR;
-		private AirfoilFamilyEnum __family = AirfoilFamilyEnum.NACA_65_Series;
-
-		private RealMatrix __NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(30, 2);
-		private Double __thicknessToChordRatio = 0.12;
-		private Double __camberRatio = 0.9;
-		private Amount<Length> __radiusLeadingEdge = Amount.valueOf(0.15, SI.METER);
+		private Double __thicknessToChordRatio;
+		private Amount<Length> __radiusLeadingEdge;
 		private Double[] __xCoords;
 		private Double[] __zCoords;
-		private Amount<Angle> __angleAtTrailingEdge = Amount.valueOf(4.0,1e-8,NonSI.DEGREE_ANGLE);
+		private Amount<Angle> __angleAtTrailingEdge;
 
-		private Amount<Angle> __alphaZeroLift = Amount.valueOf(-1.5,1e-8,NonSI.DEGREE_ANGLE);
-		private Amount<Angle> __alphaEndLinearTrait = Amount.valueOf(9.0,1e-8,NonSI.DEGREE_ANGLE);;
-		private Amount<Angle> __alphaStall = Amount.valueOf(12.0,1e-8,NonSI.DEGREE_ANGLE);;
-		private Amount<?> __clAlphaLinearTrait = Amount.valueOf(6.10, SI.RADIAN.inverse());
-		private Double __cdMin = 0.002;
-		private Double __clAtCdMin = 0.10;
-		private Double __clAtAlphaZero = 0.09;
-		private Double __clEndLinearTrait = 0.8;
-		private Double __clMax = 1.3;
-		private Double __kFactorDragPolar = 0.10;
-		private Double __mExponentDragPolar = 2.0;
-		private Double __cmAlphaQuarterChord = -0.50;
-		private Double __xACNormalized = 0.30;
-		private Double __cmAC = -0.070;
-		private Double __cmACAtStall = -0.090;
-		private Double __machCritical = 0.7;
-		private Double __xTransitionUpper = 0.15;
-		private Double __xTransitionLower = 0.12;
-
-		public AirfoilBuilder(String id){
-			this.__id = id;
-		}
+		private Amount<Angle> __alphaZeroLift;
+		private Amount<Angle> __alphaEndLinearTrait;
+		private Amount<Angle> __alphaStall;
+		private Amount<?> __clAlphaLinearTrait;
+		private Double __cdMin;
+		private Double __clAtCdMin;
+		private Double __clAtAlphaZero;
+		private Double __clEndLinearTrait;
+		private Double __clMax;
+		private Double __kFactorDragPolar;
+		private Double __cmAlphaQuarterChord;
+		private Double __xACNormalized;
+		private Double __cmAC;
+		private Double __cmACAtStall;
+		private Double __machCritical;
+		private Double __xTransitionUpper;
+		private Double __xTransitionLower;
 		
-		public AirfoilBuilder name (AirfoilEnum name) {
+		private List<Double> __clCurve;
+		private List<Double> __cdCurve;
+		private List<Double> __cmCurve;
+		private List<Amount<Angle>> __alphaForClCurve;
+		private List<Double> __clForCdCurve;
+		private List<Amount<Angle>> __alphaForCmCurve;
+		
+
+		public AirfoilBuilder name (String name) {
 			__name = name;
 			return this;
 		}
@@ -403,18 +363,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 
-		public AirfoilBuilder cornerPointsXZNormalized(double[][] xz) {
-			__NormalizedCornerPointsXZ = MatrixUtils.createRealMatrix(xz);
-			return this;
-		}
-
 		public AirfoilBuilder thicknessToChordRatio(Double tOverC) {
 			__thicknessToChordRatio = tOverC;
-			return this;
-		}
-
-		public AirfoilBuilder camberRatio(Double fOverC) {
-			__camberRatio = fOverC;
 			return this;
 		}
 
@@ -488,11 +438,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 
-		public AirfoilBuilder mExponentDragPolar(Double mExponentDragPolar) {
-			__mExponentDragPolar = mExponentDragPolar;
-			return this;
-		}
-
 		public AirfoilBuilder cmAlphaQuarterChord(Double cmAlphaQuarterChord) {
 			__cmAlphaQuarterChord = cmAlphaQuarterChord;
 			return this;
@@ -528,19 +473,46 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 		
+		public AirfoilBuilder clCurve(List<Double> clCurve) {
+			__clCurve = clCurve;
+			return this;
+		}
+		
+		public AirfoilBuilder cdCurve(List<Double> cdCurve) {
+			__cdCurve = cdCurve;
+			return this;
+		}
+		
+		public AirfoilBuilder cmCurve(List<Double> cmCurve) {
+			__cmCurve = cmCurve;
+			return this;
+		}
+		
+		public AirfoilBuilder alphaForClCurve(List<Amount<Angle>> alphaForClCurve) {
+			__alphaForClCurve = alphaForClCurve;
+			return this;
+		}
+		
+		public AirfoilBuilder clForCdCurve(List<Double> clForCdCurve) {
+			__clForCdCurve = clForCdCurve;
+			return this;
+		}
+		
+		public AirfoilBuilder alphaForCmCurve(List<Amount<Angle>> alphaForCmCurve) {
+			__alphaForCmCurve = alphaForCmCurve;
+			return this;
+		}
+		
 		public AirfoilCreator build() {
 			return new AirfoilCreator(this);
 		}
 	}
 	
 	private AirfoilCreator(AirfoilBuilder builder) {
-		_id = builder.__id;
 		_name = builder.__name;
 		_type = builder.__type;
 		_family = builder.__family;
-		_NormalizedCornerPointsXZ = builder.__NormalizedCornerPointsXZ;
 		_thicknessToChordRatio = builder.__thicknessToChordRatio;
-		_camberRatio = builder.__camberRatio;
 		_radiusLeadingEdge = builder.__radiusLeadingEdge;
 		_xCoords = builder.__xCoords;
 		_zCoords = builder.__zCoords;
@@ -555,7 +527,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_clEndLinearTrait = builder.__clEndLinearTrait;
 		_clMax = builder.__clMax;
 		_kFactorDragPolar = builder.__kFactorDragPolar;
-		_mExponentDragPolar = builder.__mExponentDragPolar;
 		_cmAlphaQuarterChord = builder.__cmAlphaQuarterChord;
 		_xACNormalized = builder.__xACNormalized;
 		_cmAC = builder.__cmAC;
@@ -563,6 +534,13 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_machCritical = builder.__machCritical;
 		_xTransitionUpper = builder.__xTransitionUpper;
 		_xTransitionLower = builder.__xTransitionLower;
+		
+		_clCurve = builder.__clCurve;
+		_cdCurve = builder.__cdCurve;
+		_cmCurve = builder.__cmCurve;
+		_alphaForClCurve = builder.__alphaForClCurve;
+		_clForCdCurve = builder.__clForCdCurve;
+		_alphaForCmCurve = builder.__alphaForCmCurve;
 		
 	}
 
@@ -572,7 +550,17 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 		System.out.println("Reading airfoil data ...");
 
-		String nameProperty = MyXMLReaderUtils
+		Boolean externalAirfoilCurveFlag;
+		String externalAirfoilCurveProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@external_airfoil_curve");
+		if(externalAirfoilCurveProperty.equalsIgnoreCase("true"))
+			externalAirfoilCurveFlag = Boolean.TRUE;
+		else
+			externalAirfoilCurveFlag = Boolean.FALSE;
+		
+		String name = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//airfoil/@name");
@@ -588,11 +576,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 						"//airfoil/@type");
 		
 		// check if the airfoil type given in file is a legal enumerated type
-		AirfoilEnum name = Arrays.stream(AirfoilEnum.values())
-	            .filter(e -> e.toString().equals(nameProperty))
-	            .findFirst()
-	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil name %s.", nameProperty)));
-
 		AirfoilTypeEnum type = Arrays.stream(AirfoilTypeEnum.values())
 	            .filter(e -> e.toString().equals(typeProperty))
 	            .findFirst()
@@ -603,149 +586,166 @@ public class AirfoilCreator implements IAirfoilCreator {
 	            .findFirst()
 	            .orElseThrow(() -> new IllegalStateException(String.format("Unsupported airfoil family %s.", familyProperty)));
 		
-		Double thicknessRatio = Double.valueOf(
-				MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//airfoil/geometry/thickness_to_chord_ratio_max/text()"));
-
-		Double camberRatio = Double.valueOf(
-				MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//airfoil/geometry/camber_ratio/text()"));
-
-		Amount<Length> radiusLeadingEdge = Amount.valueOf(
-				Double.valueOf(
-						MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//airfoil/geometry/radius_leading_edge_normalized/text()")
-						),
-				SI.METER
-				);
+		Double thicknessRatio = null;
+		Amount<Length> radiusLeadingEdge = null;
+		Double[] xCoords = null;
+		Double[] zCoords = null;
+		Amount<Angle> alphaZeroLift = null;
+		Amount<Angle> alphaEndLinearTrait = null;
+		Amount<Angle> alphaStall = null;
+		Amount<?> clAlphaLinearTrait = null;
+		Double clAtAlphaZero = null;
+		Double clEndLinearTrait = null;
+		Double clMax = null;
+		Double cDmin = null;
+		Double clAtCdMin = null;
+		Double kFactorDragPolar = null;
+		Double cmAlphaQuarterChord = null;
+		Double cmAC = null;
+		Double cmACAtStall = null;
+		List<Double> clCurve = new ArrayList<>();
+		List<Double> cdCurve = new ArrayList<>();
+		List<Double> cmCurve = new ArrayList<>();
+		List<Amount<Angle>> alphaForClCurve = new ArrayList<>();
+		List<Amount<Angle>> alphaForCmCurve = new ArrayList<>();
+		List<Double> clForCdCurve = new ArrayList<>();
+		Double xACNormalized = null;
+		Double machCritical = null;
+		Double xTransitionUpper = null;
+		Double xTransitionLower = null;
 		
-		List<String> xCoordsProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//airfoil/geometry/x_coordinates").get(0));
-		Double[] xCoords = new Double[xCoordsProperty.size()];
-		for(int i=0; i<xCoordsProperty.size(); i++)
-			xCoords[i] = Double.valueOf(xCoordsProperty.get(i));
+		String thicknessRatioProperty = reader.getXMLPropertyByPath("//geometry/thickness_to_chord_ratio_max");
+		if(thicknessRatioProperty != null)
+			thicknessRatio = Double.valueOf(reader.getXMLPropertyByPath("//geometry/thickness_to_chord_ratio_max"));
+		
+		String radiusLeadingEdgeProperty = reader.getXMLPropertyByPath("//geometry/radius_leading_edge_normalized");
+		if(radiusLeadingEdgeProperty != null)
+			radiusLeadingEdge = reader.getXMLAmountLengthByPath("//airfoil/geometry/radius_leading_edge_normalized");
+		
+		List<String> xCoordsProperty = reader.getXMLPropertiesByPath("//geometry/x_coordinates");
+		if(!xCoordsProperty.isEmpty()) 
+			xCoords = MyArrayUtils.convertListOfDoubleToDoubleArray(
+					JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/x_coordinates").get(0)).stream()
+					.map(x -> Double.valueOf(x))
+					.collect(Collectors.toList())
+					);
 			
-		List<String> zCoordsProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//airfoil/geometry/z_coordinates").get(0));
-		Double[] zCoords = new Double[zCoordsProperty.size()];
-		for(int i=0; i<zCoordsProperty.size(); i++)
-			zCoords[i] = Double.valueOf(zCoordsProperty.get(i));
+		List<String> zCoordsProperty = reader.getXMLPropertiesByPath("//geometry/z_coordinates");
+		if(!zCoordsProperty.isEmpty()) 
+			zCoords = MyArrayUtils.convertListOfDoubleToDoubleArray(
+					JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//geometry/z_coordinates").get(0)).stream()
+					.map(x -> Double.valueOf(x))
+					.collect(Collectors.toList())
+					);
 		
-		Amount<Angle> alphaZeroLift = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_zero_lift");
-
-		Amount<Angle> alphaEndLinearTrait = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_end_linear_trait");
-
-		Amount<Angle> alphaStall = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_stall");
-
-		Amount<?> clAlphaLinearTrait = Amount.valueOf( 
-				Double.valueOf(
-						MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//airfoil/aerodynamics/Cl_alpha_linear_trait/text()")),
-				SI.RADIAN
-				);
-
-		Double cDmin = Double.valueOf(
-				MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//airfoil/aerodynamics/Cd_min/text()"));
-
-		Double clAtCdMin = Double.valueOf(
-				MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//airfoil/aerodynamics/Cl_at_Cdmin/text()"));
-
-		Double clAtAlphaZero = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/Cl_at_alpha_zero/text()"));
-
-		Double clEndLinearTrait = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/Cl_end_linear_trait/text()"));
-
-		Double clMax = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/Cl_max/text()"));
-
-		Double kFactorDragPolar = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/K_factor_drag_polar/text()"));
-
-		Double mExponentDragPolar = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/m_exponent_drag_polar/text()"));
-
-		Double cmAlphaQuarterChord = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/Cm_alpha_quarter_chord/text()"));
-
-		Double xACNormalized = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/x_ac_normalized/text()"));
-
-		Double cmAC = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/Cm_ac/text()"));
-
-		Double cmACAtStall = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/Cm_ac_at_stall/text()"));
-
-		Double machCritical = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/mach_critical/text()"));
+		if(externalAirfoilCurveFlag == Boolean.TRUE) {
 		
-		Double xTransitionUpper = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/x_transition_upper/text()"));
-		
-		Double xTransitionLower = Double.valueOf(
-				MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//airfoil/aerodynamics/x_transition_lower/text()"));
+			String alphaZeroLiftProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/alpha_zero_lift");
+			if (alphaZeroLiftProperty!= null)
+				alphaZeroLift = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_zero_lift");
 
-		String formedID = "Imported from ";
-		Path p = Paths.get(pathToXML);
-		String strippedFileName = p.getFileName().toString();
-		formedID += strippedFileName;
+			String alphaEndLinearTraitProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/alpha_end_linear_trait");
+			if (alphaEndLinearTraitProperty!= null)
+				alphaEndLinearTrait = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_end_linear_trait");
+
+			String alphaStallProperty =  reader.getXMLPropertyByPath("//airfoil/aerodynamics/alpha_stall");
+			if (alphaStallProperty!= null)
+				alphaStall = reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/alpha_stall");
+
+
+			String clAlphaLinearTraitProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_alpha_linear_trait");
+			if (clAlphaLinearTraitProperty != null)
+				clAlphaLinearTrait =  reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/Cl_alpha_linear_trait");
+
+
+			String clAtAlphaZeroProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_at_alpha_zero");
+			if (clAtAlphaZeroProperty!= null)
+				clAtAlphaZero = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_at_alpha_zero"));
+
+
+			String clEndLinearTraitProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_end_linear_trait");
+			if (clEndLinearTraitProperty!= null)
+				clEndLinearTrait = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_end_linear_trait"));
+
+			String clMaxProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_max");
+			if (clMaxProperty!= null)
+				clMax = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_max"));
+
+			String cDminProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cd_min");
+			if (cDminProperty!= null)
+				cDmin = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cd_min"));
+
+			String clAtCdMinProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_at_Cdmin");
+			if (clAtCdMinProperty!= null)
+				clAtCdMin = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_at_Cdmin"));
+
+			String kFactorDragPolarProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/K_factor_drag_polar");
+			if (kFactorDragPolarProperty!= null)
+				kFactorDragPolar = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/K_factor_drag_polar"));
+
+			String cmAlphaQuarterChordProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_alpha_quarter_chord");
+			if (cmAlphaQuarterChordProperty!= null)
+				cmAlphaQuarterChord = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_alpha_quarter_chord"));
+
+			String cmACProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_ac");
+			if (cmACProperty!= null)
+				cmAC = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_ac"));
+
+			String cmACAtStallProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_ac_at_stall");
+			if (cmACAtStallProperty!= null)
+				cmACAtStall = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_ac_at_stall"));
+
+		}
+		else {
+			
+			List<String> clCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cl_curve");
+			if(!clCurveProperty.isEmpty()) 
+				clCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cl_curve"); 
+			
+			List<String> cdCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cd_curve");
+			if(!cdCurveProperty.isEmpty()) 
+				cdCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cd_curve");
+			
+			List<String> cmCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cm_curve");
+			if(!cmCurveProperty.isEmpty()) 
+				cmCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cm_curve");
+			
+			List<String> alphaForClCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/alpha_for_Cl_curve");
+			if(!alphaForClCurveProperty.isEmpty()) 
+				alphaForClCurve = reader.readArrayofAmountFromXML("//aerodynamics/airfoil_curves/alpha_for_Cl_curve"); 
+			
+			List<String> clForCdCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cl_for_Cd_curve");
+			if(!clForCdCurveProperty.isEmpty()) 
+				clForCdCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cl_for_Cd_curve"); 
+			
+			List<String> alphaForCmCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/alpha_for_Cm_curve");
+			if(!alphaForCmCurveProperty.isEmpty()) 
+				alphaForCmCurve = reader.readArrayofAmountFromXML("//aerodynamics/airfoil_curves/alpha_for_Cm_curve"); 
+			
+		}
+		
+		String xACNormalizedProperty = reader.getXMLPropertyByPath("//aerodynamics/x_ac_normalized");
+		if(xACNormalizedProperty != null)
+			xACNormalized = Double.valueOf(reader.getXMLPropertyByPath("//aerodynamics/x_ac_normalized"));
+		
+		String machCriticalProperty = reader.getXMLPropertyByPath("//aerodynamics/mach_critical");
+		if(machCriticalProperty != null)
+			machCritical = Double.valueOf(reader.getXMLPropertyByPath("//aerodynamics/mach_critical"));
+		
+		String xTransitionUpperProperty = reader.getXMLPropertyByPath("//aerodynamics/x_transition_upper");
+		if(xTransitionUpperProperty != null)
+			xTransitionUpper = Double.valueOf(reader.getXMLPropertyByPath("//aerodynamics/x_transition_upper"));
+		
+		String xTransitionLowerProperty = reader.getXMLPropertyByPath("//aerodynamics/x_transition_lower");
+		if(xTransitionLowerProperty != null)
+			xTransitionLower = Double.valueOf(reader.getXMLPropertyByPath("//aerodynamics/x_transition_lower"));
 
 		// create an Airfoil object with the Builder pattern
-		AirfoilCreator airfoil = new AirfoilBuilder(formedID)
+		AirfoilCreator airfoil = new AirfoilBuilder()
 				.name(name)
 				.type(type)
 				.family(family)
 				.thicknessToChordRatio(thicknessRatio)
-				.camberRatio(camberRatio)
 				.radiusLeadingEdge(radiusLeadingEdge)
 				.xCoords(xCoords)
 				.zCoords(zCoords)
@@ -759,7 +759,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.clEndLinearTrait(clEndLinearTrait)
 				.clMax(clMax)
 				.kFactorDragPolar(kFactorDragPolar)
-				.mExponentDragPolar(mExponentDragPolar)
 				.cmAlphaQuarterChord(cmAlphaQuarterChord)
 				.xACNormalized(xACNormalized)
 				.cmAC(cmAC)
@@ -767,6 +766,12 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.machCritical(machCritical)
 				.xTransitionUpper(xTransitionUpper)
 				.xTransitionLower(xTransitionLower)
+				.clCurve(clCurve)
+				.cdCurve(cdCurve)
+				.cmCurve(cmCurve)
+				.alphaForClCurve(alphaForClCurve)
+				.clForCdCurve(clForCdCurve)
+				.alphaForCmCurve(alphaForCmCurve)
 				.build();
 
 		return airfoil;
@@ -804,10 +809,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\t-------------------------------------\n")
 				.append("\tAirfoil\n")
 				.append("\t-------------------------------------\n")
-				.append("\tID: '" + _id + "'\n")
+				.append("\tName: " + _name + "\n")
 				.append("\tType: " + _type + "\n")
 				.append("\tt/c = " + _thicknessToChordRatio + "\n")
-				.append("\tf/c = " + _camberRatio + "\n")
 				.append("\tr_le/c = " + _radiusLeadingEdge + "\n")
 				.append("\tx coordinates = " + Arrays.toString(_xCoords) + "\n")
 				.append("\tz coordinates = " + Arrays.toString(_zCoords) + "\n")
@@ -822,7 +826,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\tCl_star = " + _clEndLinearTrait + "\n")
 				.append("\tCl_max = " + _clMax + "\n")
 				.append("\tk-factor (drag polar) = " + _kFactorDragPolar + "\n")
-				.append("\tm-exponent (drag polar) = " + _mExponentDragPolar + "\n")
 				.append("\tCm_alpha wrt c/4 = " + _cmAlphaQuarterChord + "\n")
 				.append("\tx_ac/c = " + _xACNormalized + "\n")
 				.append("\tCm_ac = " + _cmAC + "\n")
@@ -832,6 +835,54 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\tTransition point lower side = " + _xTransitionLower + "\n")
 				;
 		return sb.toString();
+	}
+
+	public List<Double> getClCurve() {
+		return _clCurve;
+	}
+
+	public void setClCurve(List<Double> _clCurve) {
+		this._clCurve = _clCurve;
+	}
+
+	public List<Double> getCdCurve() {
+		return _cdCurve;
+	}
+
+	public void setCdCurve(List<Double> _cdCurve) {
+		this._cdCurve = _cdCurve;
+	}
+
+	public List<Double> getCmCurve() {
+		return _cmCurve;
+	}
+
+	public void setCmCurve(List<Double> _cmCurve) {
+		this._cmCurve = _cmCurve;
+	}
+
+	public List<Amount<Angle>> getAlphaForClCurve() {
+		return _alphaForClCurve;
+	}
+
+	public void setAlphaForClCurve(List<Amount<Angle>> _alphaForClCurve) {
+		this._alphaForClCurve = _alphaForClCurve;
+	}
+
+	public List<Double> getClForCdCurve() {
+		return _clForCdCurve;
+	}
+
+	public void setClForCdCurve(List<Double> _clForCdCurve) {
+		this._clForCdCurve = _clForCdCurve;
+	}
+
+	public List<Amount<Angle>> getAlphaForCmCurve() {
+		return _alphaForCmCurve;
+	}
+
+	public void setAlphaForCmCurve(List<Amount<Angle>> _alphaForCmCurve) {
+		this._alphaForCmCurve = _alphaForCmCurve;
 	}
 
 }
