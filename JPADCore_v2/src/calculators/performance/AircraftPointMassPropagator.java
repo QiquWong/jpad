@@ -220,11 +220,15 @@ public class AircraftPointMassPropagator {
 	private Amount<?> kLp;   //    = Amount.valueOf(0.5, MyUnits.ONE_PER_SECOND);
 	private Amount<?> kLi;   //    = Amount.valueOf(0.01, MyUnits.ONE_PER_SECOND_SQUARED);
 	private Amount<?> kPhip; //    = Amount.valueOf(0.075, MyUnits.ONE_PER_SECOND);
+
+	private Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
+
 	// TODO: read from file
 	private Amount<?> kWDot = Amount.valueOf(4.0e-6, MyUnits.SLUG_PER_SECOND_PER_POUND);
 	
-	private Amount<Angle> bankAngleMax = Amount.valueOf(30.0, NonSI.DEGREE_ANGLE);
 	
+	private double cD0 = 0.025;
+	private double oswaldFactor = 0.80;
 	private double cLMax = 1.2;
 	
 //	private double thrustMaxCurrent;
@@ -235,10 +239,13 @@ public class AircraftPointMassPropagator {
 	private boolean resetThrustDerivative = false;
 	private double thrustDerivativeResetValue;
 	
-	private Amount<Velocity> commandedSpeed;
-	private Amount<Angle> commandedFlightpathAngle;
-	private Amount<Angle> commandedHeadingAngle;
+	private Amount<Velocity> commandedSpeedCurrent;
+	private Amount<Angle> commandedFlightpathAngleCurrent;
+	private Amount<Angle> commandedHeadingAngleCurrent;
 	
+	private EngineOperatingConditionEnum engineCondition0 = EngineOperatingConditionEnum.UNKNOWN;
+	private EngineOperatingConditionEnum engineConditionCurrent = EngineOperatingConditionEnum.UNKNOWN;
+
 	// Initial state variables
 	private double
 		speedInertial0, flightpathAngle0, headingAngle0,
@@ -246,63 +253,16 @@ public class AircraftPointMassPropagator {
 		xThrust0, thrust0, xLift0, lift0, 
 		bankAngle0, mass0,
 		windSpeedXE0, windSpeedYE0, windSpeedZE0;
-
-	private EngineOperatingConditionEnum engineCondition0 = EngineOperatingConditionEnum.UNKNOWN;
-	private EngineOperatingConditionEnum engineConditionCurrent = EngineOperatingConditionEnum.UNKNOWN;
 	
 	private double timeFinal = 10.0;
 	
 	FirstOrderIntegrator theIntegrator;
-	
-	// Simulation outputs
-//	private List<Amount<Duration>> time;
-//	private List<Amount<Mass>> mass;
-//	private List<Amount<Force>> thrust, thrustMax, lift, drag, totalForce;
-//	private List<Amount<Force>> commandedThrust, commandedLift;
-//	private List<Amount<?>> xT, xL;
-//	private List<Amount<?>> xTDot, xLDot;
-//	private List<Amount<Velocity>> speedInertial, airspeed, rateOfClimb;
-//	private List<Amount<Acceleration>> acceleration;
-//	private List<Amount<Length>> altitude, groundDistanceX, groundDistanceY;
-//	private List<Amount<Angle>> angleOfAttack, flightpathAngle, headingAngle, bankAngle;
-//	private List<Double> cL, cD, loadFactor;	
-//	private AircraftPointMassSimulationResultMap simulationResults = new AircraftPointMassSimulationResultMap();
 	
 	private Boolean chartsEnabled = false;
 	private String outputChartDir;
 
 	public AircraftPointMassPropagator(Aircraft ac) {
 		this.theAircraft = ac;
-		
-//		this.time = new ArrayList<Amount<Duration>>();
-//		this.mass = new ArrayList<Amount<Mass>>();
-//		this.thrust = new ArrayList<Amount<Force>>();
-//		this.thrustMax = new ArrayList<Amount<Force>>();
-//		this.commandedThrust = new ArrayList<Amount<Force>>();
-//		this.lift = new ArrayList<Amount<Force>>();
-//		this.commandedLift = new ArrayList<Amount<Force>>();
-//		this.xT = new ArrayList<Amount<?>>();
-//		this.xL = new ArrayList<Amount<?>>();
-//		this.xTDot = new ArrayList<Amount<?>>();
-//		this.xLDot = new ArrayList<Amount<?>>();
-//		this.drag = new ArrayList<Amount<Force>>();
-//		this.totalForce = new ArrayList<Amount<Force>>();
-//		this.speedInertial = new ArrayList<Amount<Velocity>>();
-//		this.airspeed = new ArrayList<Amount<Velocity>>();
-//		this.rateOfClimb = new ArrayList<Amount<Velocity>>();
-//		this.acceleration = new ArrayList<Amount<Acceleration>>();
-//		this.altitude = new ArrayList<Amount<Length>>();
-//		this.groundDistanceX = new ArrayList<Amount<Length>>();
-//		this.groundDistanceY = new ArrayList<Amount<Length>>();
-//		this.angleOfAttack = new ArrayList<Amount<Angle>>();
-//		this.flightpathAngle = new ArrayList<Amount<Angle>>();
-//		this.headingAngle = new ArrayList<Amount<Angle>>();
-//		this.bankAngle = new ArrayList<Amount<Angle>>();
-//		this.cL = new ArrayList<Double>();
-//		this.cD = new ArrayList<Double>();
-//		this.loadFactor = new ArrayList<Double>();
-//		
-//		simulationResults.initialize();
 	}
 	
 	public void readMissionScript(String pathToXML) {
@@ -360,6 +320,14 @@ public class AircraftPointMassPropagator {
 				"//mission_simulation/constants/bank_angle_max");
 		System.out.println("bank_angle_max = " + this.bankAngleMax.doubleValue(NonSI.DEGREE_ANGLE) + " deg"); 
 
+		this.cD0 = MyXMLReaderUtils.getXMLDoubleByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/cD0");
+		System.out.println("cD0 = " + this.cD0); 
+
+		this.oswaldFactor = MyXMLReaderUtils.getXMLDoubleByPath(reader.getXmlDoc(),
+				"//mission_simulation/constants/oswald_factor");
+		System.out.println("oswaldFactor = " + this.oswaldFactor); 
+		
 		this.cLMax = MyXMLReaderUtils.getXMLDoubleByPath(reader.getXmlDoc(),
 				"//mission_simulation/constants/cL_max");
 		System.out.println("cL_max = " + this.cLMax); 
@@ -619,14 +587,11 @@ public class AircraftPointMassPropagator {
 			//System.out.println(airspeed);
 			
 			// drag
-			// TODO: get constants from file
-			double cD0 = 0.03;
 			double aspectRatio = theAircraft.getWing().getAspectRatio();
-			double oswaldFactor = 0.85;
-			double kD = Math.PI * aspectRatio * oswaldFactor;
+			double kD = Math.PI * aspectRatio * AircraftPointMassPropagator.this.oswaldFactor;
 			double airDensity = AtmosphereCalc.getDensity(altitude);
 			double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
-			double kD0 = 0.5 * airDensity * surfaceWing * cD0;
+			double kD0 = 0.5 * airDensity * surfaceWing * AircraftPointMassPropagator.this.cD0;
 			double kD1 = 2.0/(airDensity * surfaceWing * kD);
 			this.drag = kD0 * Math.pow(airspeed, 2) 
 					+ kD1 * Math.pow(lift, 2)/Math.pow(airspeed, 2);
@@ -660,9 +625,9 @@ public class AircraftPointMassPropagator {
 			// h, altitude
 			xDot[ 5] = hDot;
 			// xT, int(m(Vc - Vv))
-			xDot[ 6] = mass*(commandedSpeed.doubleValue(SI.METERS_PER_SECOND) - speedInertial);
+			xDot[ 6] = mass*(commandedSpeedCurrent.doubleValue(SI.METERS_PER_SECOND) - speedInertial);
 			
-//			System.out.println("Vc = " + commandedSpeed.doubleValue(SI.METERS_PER_SECOND));
+//			System.out.println("Vc = " + commandedSpeedCurrent.doubleValue(SI.METERS_PER_SECOND));
 //			System.out.println("V  = " + speedInertial);
 //			System.out.println("-----------------------------");
 			
@@ -684,8 +649,8 @@ public class AircraftPointMassPropagator {
 			}
 
 			// xL, int(m(hdotc - hdot))
-			xDot[ 8] = mass*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
-						Math.sin(commandedFlightpathAngle.doubleValue(SI.RADIAN)) - Math.sin(flightpathAngle));
+			xDot[ 8] = mass*commandedSpeedCurrent.doubleValue(SI.METERS_PER_SECOND)*(
+						Math.sin(commandedFlightpathAngleCurrent.doubleValue(SI.RADIAN)) - Math.sin(flightpathAngle));
 			// L, lift
 			double commandedLift = 
 					+ kLi.doubleValue(MyUnits.ONE_PER_SECOND_SQUARED)*x[8]
@@ -696,8 +661,8 @@ public class AircraftPointMassPropagator {
 			// phi, bank angle
 			xDot[10] = pPhi.doubleValue(MyUnits.RADIAN_PER_SECOND)*( 
 					kPhip.doubleValue(MyUnits.ONE_PER_SECOND)
-						*commandedSpeed.doubleValue(SI.METERS_PER_SECOND)*(
-							commandedHeadingAngle.doubleValue(SI.RADIAN) - x[2])/g0
+						*commandedSpeedCurrent.doubleValue(SI.METERS_PER_SECOND)*(
+							commandedHeadingAngleCurrent.doubleValue(SI.RADIAN) - x[2])/g0
 					- bankAngle);
 			// m, mass
 			xDot[11] = -AircraftPointMassPropagator.this.kWDot.doubleValue(MyUnits.KILOGRAM_PER_SECOND_PER_NEWTON) * x[7];
@@ -793,9 +758,9 @@ public class AircraftPointMassPropagator {
 
 					@Override
 					public Action eventOccurred(double t, double[] y, boolean increasing) {
-						commandedSpeed = Amount.valueOf(me.getCommandedSpeed(), SI.METERS_PER_SECOND);
-						commandedFlightpathAngle = Amount.valueOf(me.getCommandedFlightpathAngle(), SI.RADIAN);
-						commandedHeadingAngle = Amount.valueOf(me.getCommandedHeadingAngle(), SI.RADIAN);
+						commandedSpeedCurrent = Amount.valueOf(me.getCommandedSpeed(), SI.METERS_PER_SECOND);
+						commandedFlightpathAngleCurrent = Amount.valueOf(me.getCommandedFlightpathAngle(), SI.RADIAN);
+						commandedHeadingAngleCurrent = Amount.valueOf(me.getCommandedHeadingAngle(), SI.RADIAN);
 						engineConditionCurrent = me.getEngineCondition();
 						
 						System.out.println("\t====> EVENT OCCURRED ====> " + me.getDescription());
@@ -979,11 +944,11 @@ public class AircraftPointMassPropagator {
 		//##############################################################################################
 		
 		// Initial values
-//		commandedSpeed = Amount.valueOf(this.speedInertial0,SI.METERS_PER_SECOND);
-		commandedSpeed = Amount.valueOf(this.getMissionEvents().get(0).getCommandedSpeed(),SI.METERS_PER_SECOND);
+//		commandedSpeedCurrent = Amount.valueOf(this.speedInertial0,SI.METERS_PER_SECOND);
+		commandedSpeedCurrent = Amount.valueOf(this.getMissionEvents().get(0).getCommandedSpeed(),SI.METERS_PER_SECOND);
 		
-		commandedFlightpathAngle = Amount.valueOf(this.flightpathAngle0,SI.RADIAN);
-		commandedHeadingAngle = Amount.valueOf(headingAngle0,SI.RADIAN);
+		commandedFlightpathAngleCurrent = Amount.valueOf(this.flightpathAngle0,SI.RADIAN);
+		commandedHeadingAngleCurrent = Amount.valueOf(headingAngle0,SI.RADIAN);
 		
 		// initial state vector
 		double[] xAt0 = new double[] { // initial state
@@ -1233,13 +1198,11 @@ public class AircraftPointMassPropagator {
 					xLDot.add(Amount.valueOf(xdot[8],MyUnits.KILOGRAM_METER_PER_SECOND));
 					//----------------------------------------------------------------------------------------
 					// DRAG:
-					double cD0 = 0.03;
 					double aspectRatio = theAircraft.getWing().getAspectRatio();
-					double oswaldFactor = 0.85; // TODO
-					double kD = Math.PI * aspectRatio * oswaldFactor;
+					double kD = Math.PI * aspectRatio * AircraftPointMassPropagator.this.oswaldFactor;
 					double airDensity = AtmosphereCalc.getDensity(x[5]); // f(altitude)
 					double surfaceWing = theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE);
-					double kD0 = 0.5 * airDensity * surfaceWing * cD0;
+					double kD0 = 0.5 * airDensity * surfaceWing * AircraftPointMassPropagator.this.cD0;
 					double kD1 = 2.0/(airDensity * surfaceWing * kD);
 					double drg_ = kD0 * Math.pow(vinf_, 2) 
 							+ kD1 * Math.pow(x[9], 2)/Math.pow(vinf_, 2);
@@ -2168,6 +2131,42 @@ public class AircraftPointMassPropagator {
 
 	public void setWindVelocityZE0(double windVelocityZE0) {
 		this.windSpeedZE0 = windVelocityZE0;
+	}
+
+	public double getcD0() {
+		return cD0;
+	}
+
+	public void setcD0(double cD0) {
+		this.cD0 = cD0;
+	}
+
+	public double getOswaldFactor() {
+		return oswaldFactor;
+	}
+
+	public void setOswaldFactor(double oswaldFactor) {
+		this.oswaldFactor = oswaldFactor;
+	}
+
+	public double getcLMax() {
+		return cLMax;
+	}
+
+	public void setcLMax(double cLMax) {
+		this.cLMax = cLMax;
+	}
+
+	public void setWindSpeedXE0(double windSpeedXE0) {
+		this.windSpeedXE0 = windSpeedXE0;
+	}
+
+	public void setWindSpeedYE0(double windSpeedYE0) {
+		this.windSpeedYE0 = windSpeedYE0;
+	}
+
+	public void setWindSpeedZE0(double windSpeedZE0) {
+		this.windSpeedZE0 = windSpeedZE0;
 	}
 	
 }
