@@ -26,6 +26,10 @@ public class Test_VC_DirStab_03 {
 	@Option(name = "-d", aliases = { "--database-path" }, required = true,
 			usage = "path for database files")
 	private File _databasePath;
+	
+	@Option(name = "-o", aliases = { "--output" }, required = true,
+			usage = "my output file")
+	private File _outputFile;
 
 	// declaration necessary for Concrete Object usage
 	public CmdLineParser theCmdLineParser;
