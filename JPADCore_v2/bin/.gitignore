@@ -1,7 +1,6 @@
-/standaloneutils/
-/aircraft/
-/analyses/
+/database/
 /cad/
 /calculators/
-/database/
+/standaloneutils/
+/analyses/
 /writers/
