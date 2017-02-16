@@ -120,14 +120,28 @@ public class AirfoilCalc {
 			AirfoilCreator theAirfoilCreator
 			) {
 
-		Double [] cdCurve = null;
+		Double [] cdCurve = new Double [clCurveAirfoil.length];
 
 		double cdMin = theAirfoilCreator.getCdMin();
 		double clAtCdMin = theAirfoilCreator.getClAtCdMin();
 		double kFctorDragPolar = theAirfoilCreator.getKFactorDragPolar();
-
+		double laminarBucketDept = theAirfoilCreator.getLaminarBucketDept();
+		double laminarBucketSemiExtension = theAirfoilCreator.getLaminarBucketSemiExtension();
+		
 		for (int i=0; i<clCurveAirfoil.length; i++){
-			cdCurve[i] = cdMin + Math.pow(( clCurveAirfoil[i] - clAtCdMin), 2)*kFctorDragPolar;
+			if((clCurveAirfoil[i] >= (clAtCdMin + laminarBucketSemiExtension)) || (clCurveAirfoil[i] <= (clAtCdMin - laminarBucketSemiExtension))){
+			cdCurve[i] = (
+					cdMin +
+					Math.pow(( clCurveAirfoil[i] - clAtCdMin), 2)*kFctorDragPolar)+
+			        laminarBucketDept;
+			}
+			else{
+				cdCurve[i] = (
+						cdMin +
+						Math.pow(( clCurveAirfoil[i] - clAtCdMin), 2)*kFctorDragPolar);
+			}
+			
+		
 		}
 		theAirfoilCreator.setCdCurve(MyArrayUtils.convertDoubleArrayToListDouble(cdCurve));
 	}
