@@ -379,11 +379,8 @@ public class LiftCalc {
 		double b = 0.0;
 		double c = 0.0;
 		double d = 0.0;
+		double e = 0.0;
 		
-		
-		double clstarprima = (cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-				* alphaStar.doubleValue(NonSI.DEGREE_ANGLE))
-				+ cL0;
 
 		double cLStar = (cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 				* alphaStar.doubleValue(NonSI.DEGREE_ANGLE))
@@ -396,30 +393,40 @@ public class LiftCalc {
 			}
 			else {
 				double[][] matrixData = { 
-						{Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 3),
+						{Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 4),
+							Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 3),
 							Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 2),
 							alphaStall.doubleValue(NonSI.DEGREE_ANGLE),
 							1.0},
-						{3* Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 2),
+						{4* Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 3),
+								3* Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 2),
 								2*alphaStall.doubleValue(NonSI.DEGREE_ANGLE),
 								1.0,
 								0.0},
-						{3* Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
-									2*alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
-									1.0,
-									0.0},
-						{Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 3),
-										Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
-										alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
-										1.0}
+						{Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 4),
+									Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 3),
+									Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
+									alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+									1.0},
+						{4* Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 3),
+										3* Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
+										2*alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+										1.0,
+										0.0},
+						{12* Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
+											6*alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+											2.0,
+											0.0,
+											0.0},
 									};
 
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 				double [] vector = {
 						cLmax,
 						0,
+						cLStar,
 						cLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-						cLStar
+						0
 						};
 
 				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
@@ -428,18 +435,15 @@ public class LiftCalc {
 				b = solSystem[1];
 				c = solSystem[2];
 				d = solSystem[3];
+				e = solSystem[4];
 
-				cLArray[i] = a * Math.pow(alphaArray[i], 3) + 
-						b * Math.pow(alphaArray[i], 2) + 
-						c * alphaArray[i] +
-						d;
+				cLArray[i] = a * Math.pow(alphaArray[i], 4) + 
+						b * Math.pow(alphaArray[i], 3) + 
+						c* Math.pow(alphaArray[i], 2) +
+						d * alphaArray[i]+
+						e;
 			}
 		}
-		
-		double clStardopo = a * Math.pow( alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 3) + 
-				b * Math.pow( alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2) + 
-				c *  alphaStar.doubleValue(NonSI.DEGREE_ANGLE) +
-				d;
 
 		return cLArray;
 	}
