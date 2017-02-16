@@ -65,8 +65,8 @@ public interface IAirfoilCreator {
     Double getKFactorDragPolar();
     void setKFactorDragPolar(Double kFactorDragPolar);
     
-    Double getCmAlphaQuarterChord();
-    void setCmAlphaQuarterChord(Double cmAlphaQuarterChord);
+    Amount<?> getCmAlphaQuarterChord();
+    void setCmAlphaQuarterChord(Amount<?> cmAlphaQuarterChord);
     
     Double getXACNormalized();
     void setXACNormalized(Double xACNormalized);

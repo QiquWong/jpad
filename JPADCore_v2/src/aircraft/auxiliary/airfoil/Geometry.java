@@ -70,7 +70,7 @@ public class Geometry {
 	
 	public Geometry(Airfoil airfoil) {	
 
-		_id = airfoil.getId() + "0" + idCounter + "99";
+		_id = airfoil.getName() + "0" + idCounter + "99";
 		idCounter++;
 
 		isMirrored = airfoil.getLiftingSurface().getLiftingSurfaceCreator().isMirrored();
@@ -116,7 +116,7 @@ public class Geometry {
 	 */
 	public Geometry(Airfoil airfoil, Double yLoc) {	
 
-		_id = airfoil.getId() + "0" + idCounter + "99";
+		_id = airfoil.getName() + "0" + idCounter + "99";
 		idCounter++;
 
 		isMirrored = airfoil.getLiftingSurface().getLiftingSurfaceCreator().isMirrored();
@@ -326,7 +326,7 @@ public class Geometry {
 	}
 	
 	public String getIdNew() {
-		String id = _theAirfoil.getId() + "geo" + nGeo;
+		String id = _theAirfoil.getName() + "geo" + nGeo;
 		nGeo++;
 		return id;
 	}
@@ -353,14 +353,6 @@ public class Geometry {
 
 	public void set_cornerPointsZ(List<Double> _cornerPointsZ) {
 		this._cornerPointsZ = _cornerPointsZ;
-	}
-
-	public Double get_camberRatio() {
-		return _camberRatio;
-	}
-
-	public void set_camberRatio(Double _camberRatio) {
-		this._camberRatio = _camberRatio;
 	}
 
 }

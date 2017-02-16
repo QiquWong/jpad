@@ -32,6 +32,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Amount<Angle> _alphaEndLinearTrait;
 	private Amount<Angle> _alphaStall;
 	private Amount<?> _clAlphaLinearTrait;
+	private Amount<?> _cmAlphaQuarterChord;
 	private Double _cdMin;
 	private Double _clAtCdMin;
 	private Double _clAtAlphaZero;
@@ -39,8 +40,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double _clMax;
 	private Double _kFactorDragPolar;
 	private Double _laminarBucketSemiExtension;
-	private Double _laminarBucketDept;
-	private Double _cmAlphaQuarterChord;
+	private Double _laminarBucketDepth;
 	private Double _xACNormalized;
 	private Double _cmAC;
 	private Double _cmACAtStall;
@@ -241,12 +241,12 @@ public class AirfoilCreator implements IAirfoilCreator {
 	}
 
 	@Override
-	public Double getCmAlphaQuarterChord() {
+	public Amount<?> getCmAlphaQuarterChord() {
 		return _cmAlphaQuarterChord;
 	}
 
 	@Override
-	public void setCmAlphaQuarterChord(Double cmAlphaQuarterChord) {
+	public void setCmAlphaQuarterChord(Amount<?> cmAlphaQuarterChord) {
 		_cmAlphaQuarterChord = cmAlphaQuarterChord;
 	}
 
@@ -328,13 +328,15 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private Amount<Angle> __alphaEndLinearTrait;
 		private Amount<Angle> __alphaStall;
 		private Amount<?> __clAlphaLinearTrait;
+		private Amount<?> __cmAlphaQuarterChord;
 		private Double __cdMin;
 		private Double __clAtCdMin;
 		private Double __clAtAlphaZero;
 		private Double __clEndLinearTrait;
 		private Double __clMax;
 		private Double __kFactorDragPolar;
-		private Double __cmAlphaQuarterChord;
+		private Double __laminarBucketSemiExtension;
+		private Double __laminarBucketDepth;
 		private Double __xACNormalized;
 		private Double __cmAC;
 		private Double __cmACAtStall;
@@ -440,7 +442,17 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 
-		public AirfoilBuilder cmAlphaQuarterChord(Double cmAlphaQuarterChord) {
+		public AirfoilBuilder laminarBucketSemiExtension(Double laminarBucketSemiExtension) {
+			__laminarBucketSemiExtension = laminarBucketSemiExtension;
+			return this;
+		}
+		
+		public AirfoilBuilder laminarBucketDepth(Double laminarBucketDepth) {
+			__laminarBucketDepth = laminarBucketDepth;
+			return this;
+		}
+		
+		public AirfoilBuilder cmAlphaQuarterChord(Amount<?> cmAlphaQuarterChord) {
 			__cmAlphaQuarterChord = cmAlphaQuarterChord;
 			return this;
 		}
@@ -529,6 +541,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_clEndLinearTrait = builder.__clEndLinearTrait;
 		_clMax = builder.__clMax;
 		_kFactorDragPolar = builder.__kFactorDragPolar;
+		_laminarBucketSemiExtension = builder.__laminarBucketSemiExtension;
+		_laminarBucketDepth = builder.__laminarBucketDepth;
 		_cmAlphaQuarterChord = builder.__cmAlphaQuarterChord;
 		_xACNormalized = builder.__xACNormalized;
 		_cmAC = builder.__cmAC;
@@ -552,15 +566,35 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 		System.out.println("Reading airfoil data ...");
 
-		Boolean externalAirfoilCurveFlag;
-		String externalAirfoilCurveProperty = MyXMLReaderUtils
+		Boolean externalClCurveFlag;
+		String externalClCurveProperty = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@external_airfoil_curve");
-		if(externalAirfoilCurveProperty.equalsIgnoreCase("true"))
-			externalAirfoilCurveFlag = Boolean.TRUE;
+						"//@external_cl_curve");
+		if(externalClCurveProperty.equalsIgnoreCase("true"))
+			externalClCurveFlag = Boolean.TRUE;
 		else
-			externalAirfoilCurveFlag = Boolean.FALSE;
+			externalClCurveFlag = Boolean.FALSE;
+		
+		Boolean externalCdCurveFlag;
+		String externalCdCurveProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@external_cd_curve");
+		if(externalCdCurveProperty.equalsIgnoreCase("true"))
+			externalCdCurveFlag = Boolean.TRUE;
+		else
+			externalCdCurveFlag = Boolean.FALSE;
+		
+		Boolean externalCmCurveFlag;
+		String externalCmCurveProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@external_cm_curve");
+		if(externalCmCurveProperty.equalsIgnoreCase("true"))
+			externalCmCurveFlag = Boolean.TRUE;
+		else
+			externalCmCurveFlag = Boolean.FALSE;
 		
 		String name = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -602,7 +636,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 		Double cDmin = null;
 		Double clAtCdMin = null;
 		Double kFactorDragPolar = null;
-		Double cmAlphaQuarterChord = null;
+		Double laminarBucketSemiExtension = 0.0;
+		Double laminarBucketDepth = 0.0;
+		Amount<?> cmAlphaQuarterChord = null;
 		Double cmAC = null;
 		Double cmACAtStall = null;
 		List<Double> clCurve = new ArrayList<>();
@@ -640,7 +676,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 					.collect(Collectors.toList())
 					);
 		
-		if(externalAirfoilCurveFlag == Boolean.TRUE) {
+		if(externalClCurveFlag == Boolean.FALSE) {
 		
 			String alphaZeroLiftProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/alpha_zero_lift");
 			if (alphaZeroLiftProperty!= null)
@@ -657,7 +693,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 			String clAlphaLinearTraitProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_alpha_linear_trait");
 			if (clAlphaLinearTraitProperty != null)
-				clAlphaLinearTrait =  reader.getXMLAmountAngleByPath("//airfoil/aerodynamics/Cl_alpha_linear_trait");
+				clAlphaLinearTrait =  reader.getXMLAmountWithUnitByPath("//airfoil/aerodynamics/Cl_alpha_linear_trait");
 
 
 			String clAtAlphaZeroProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_at_alpha_zero");
@@ -673,6 +709,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 			if (clMaxProperty!= null)
 				clMax = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_max"));
 
+		}
+		else if(externalCdCurveFlag == Boolean.FALSE) {
+			
 			String cDminProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cd_min");
 			if (cDminProperty!= null)
 				cDmin = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cd_min"));
@@ -685,9 +724,20 @@ public class AirfoilCreator implements IAirfoilCreator {
 			if (kFactorDragPolarProperty!= null)
 				kFactorDragPolar = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/K_factor_drag_polar"));
 
+			String laminarBucketSemiExtensionProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/laminar_bucket_semi_extension");
+			if (laminarBucketSemiExtensionProperty!= null)
+				laminarBucketSemiExtension = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/laminar_bucket_semi_extension"));
+			
+			String laminarBucketDepthProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/laminar_bucket_depth");
+			if (laminarBucketDepthProperty!= null)
+				laminarBucketDepth = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/laminar_bucket_depth"));
+			
+		}
+		else if(externalCmCurveFlag == Boolean.FALSE) {
+			
 			String cmAlphaQuarterChordProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_alpha_quarter_chord");
 			if (cmAlphaQuarterChordProperty!= null)
-				cmAlphaQuarterChord = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_alpha_quarter_chord"));
+				cmAlphaQuarterChord = reader.getXMLAmountWithUnitByPath("//airfoil/aerodynamics/Cm_alpha_quarter_chord");
 
 			String cmACProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_ac");
 			if (cmACProperty!= null)
@@ -698,27 +748,32 @@ public class AirfoilCreator implements IAirfoilCreator {
 				cmACAtStall = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_ac_at_stall"));
 
 		}
-		else {
+		else if(externalClCurveFlag == Boolean.TRUE) {
 			
 			List<String> clCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cl_curve");
 			if(!clCurveProperty.isEmpty()) 
 				clCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cl_curve"); 
 			
+			List<String> alphaForClCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/alpha_for_Cl_curve");
+			if(!alphaForClCurveProperty.isEmpty()) 
+				alphaForClCurve = reader.readArrayofAmountFromXML("//aerodynamics/airfoil_curves/alpha_for_Cl_curve");
+			
+		}
+		else if(externalCdCurveFlag == Boolean.TRUE) {
+			
 			List<String> cdCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cd_curve");
 			if(!cdCurveProperty.isEmpty()) 
 				cdCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cd_curve");
 			
+			List<String> clForCdCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cl_for_Cd_curve");
+			if(!clForCdCurveProperty.isEmpty()) 
+				clForCdCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cl_for_Cd_curve");
+		}
+		else if(externalCmCurveFlag == Boolean.TRUE) {
+			
 			List<String> cmCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cm_curve");
 			if(!cmCurveProperty.isEmpty()) 
 				cmCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cm_curve");
-			
-			List<String> alphaForClCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/alpha_for_Cl_curve");
-			if(!alphaForClCurveProperty.isEmpty()) 
-				alphaForClCurve = reader.readArrayofAmountFromXML("//aerodynamics/airfoil_curves/alpha_for_Cl_curve"); 
-			
-			List<String> clForCdCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cl_for_Cd_curve");
-			if(!clForCdCurveProperty.isEmpty()) 
-				clForCdCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cl_for_Cd_curve"); 
 			
 			List<String> alphaForCmCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/alpha_for_Cm_curve");
 			if(!alphaForCmCurveProperty.isEmpty()) 
@@ -761,6 +816,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.clEndLinearTrait(clEndLinearTrait)
 				.clMax(clMax)
 				.kFactorDragPolar(kFactorDragPolar)
+				.laminarBucketSemiExtension(laminarBucketSemiExtension)
+				.laminarBucketDepth(laminarBucketDepth)
 				.cmAlphaQuarterChord(cmAlphaQuarterChord)
 				.xACNormalized(xACNormalized)
 				.cmAC(cmAC)
@@ -891,16 +948,16 @@ public class AirfoilCreator implements IAirfoilCreator {
 		return _laminarBucketSemiExtension;
 	}
 
-	public Double getLaminarBucketDept() {
-		return _laminarBucketDept;
+	public Double getLaminarBucketDepth() {
+		return _laminarBucketDepth;
 	}
 
 	public void setLaminarBucketSemiExtension(Double _laminarBucketSemiExtension) {
 		this._laminarBucketSemiExtension = _laminarBucketSemiExtension;
 	}
 
-	public void setLaminarBucketDept(Double _laminarBucketDept) {
-		this._laminarBucketDept = _laminarBucketDept;
+	public void setLaminarBucketDepth(Double _laminarBucketDepth) {
+		this._laminarBucketDepth = _laminarBucketDepth;
 	}
 
 }

@@ -64,7 +64,6 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	private Double _clAtCdMin;
 	private Double _kFactorDragPolar;
 	private Double _mExponentPolar;
-	private Double _mExponentDragPolar;
 	private Double _machCr0;
 	private static Map<AirfoilEnum, Double> _kWaveDragMap = new HashMap<AirfoilEnum, Double> ();
 	private Double _aerodynamicCenterX;
@@ -97,7 +96,6 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		 _cmAC = airfoilCreator.getCmAC();
 		 _cmACStall = airfoilCreator.getCmACAtStall();
 		 _cmAlphaAC = airfoilCreator.getCmAlphaQuarterChord();
-		 _mExponentPolar = airfoilCreator.getMExponentDragPolar();
 		 
 		 calculateMachCr = new CalculateMachCr();
 		 calculateCdWaveDrag = new CalculateCdWaveDrag();
@@ -148,6 +146,8 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 				initializeAerodynamics(airf, AirfoilEnum.DFVLR_R4);
 				break;
 			}
+		default:
+			break;
 
 		}
 		
@@ -163,9 +163,9 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		 switch (airfoilName) {
 		 
 		 case NACA23_018:
-			 _id = airf.getId() + "1" + idCounter + "99";
+			 _id = airf.getName() + "1" + idCounter + "99";
 				idCounter++;
-			 airf.setName(AirfoilEnum.NACA23_018);	
+			 airf.setName(AirfoilEnum.NACA23_018.toString());	
 			 _theAirfoil = airf;
 			 geometry = airf.getGeometry();
 
@@ -189,8 +189,8 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 
 		 case NACA23_015:
-			 airf.setName(AirfoilEnum.NACA23_015);	
-			 _id = airf.getId() + "1" + idCounter + "99";
+			 airf.setName(AirfoilEnum.NACA23_015.toString());	
+			 _id = airf.getName() + "1" + idCounter + "99";
 				idCounter++;
 				
 			 _theAirfoil = airf;
@@ -215,8 +215,8 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;
 			 
 		 case NACA23_012:
-			 airf.setName(AirfoilEnum.NACA23_012);	
-			 _id = airf.getId() + "1" + idCounter + "99";
+			 airf.setName(AirfoilEnum.NACA23_012.toString());	
+			 _id = airf.getName() + "1" + idCounter + "99";
 				idCounter++;
 				
 			 _theAirfoil = airf;
@@ -243,7 +243,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 
 			 
 		 case NACA65_209: 
-			_id = airf.getId() + "1" + idCounter + "99";
+			_id = airf.getName() + "1" + idCounter + "99";
 			idCounter++;
 			
 			_theAirfoil = airf;
@@ -269,7 +269,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			break;
 			
 		 case NACA65_206:
-			 _id = airf.getId() + "1" + idCounter + "99";
+			 _id = airf.getName() + "1" + idCounter + "99";
 			idCounter++;
 			
 			_theAirfoil = airf;
@@ -295,8 +295,8 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			break;
 			
 		 case NACA0012:
-			 airf.setName(AirfoilEnum.NACA0012);	
-			 _id = airf.getId() + "1" + idCounter + "99";
+			 airf.setName(AirfoilEnum.NACA0012.toString());	
+			 _id = airf.getName() + "1" + idCounter + "99";
 				idCounter++;
 				
 			 _theAirfoil = airf;
@@ -322,8 +322,8 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 			 break;	
 			 
 		 case DFVLR_R4:
-			 airf.setName(AirfoilEnum.DFVLR_R4);	
-			 _id = airf.getId() + "1" + idCounter + "99";
+			 airf.setName(AirfoilEnum.DFVLR_R4.toString());	
+			 _id = airf.getName() + "1" + idCounter + "99";
 				idCounter++;
 				
 			 _theAirfoil = airf;
@@ -782,14 +782,6 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 		this._kFactorDragPolar = _kFactorDragPolar;
 	}
 
-	public Double get_mExponentDragPolar() {
-		return _mExponentDragPolar;
-	}
-
-	public void set_mExponentDragPolar(Double _mExponentDragPolar) {
-		this._mExponentDragPolar = _mExponentDragPolar;
-	}
-
 	public Double get_machCr0() {
 		return _machCr0;
 	}
@@ -864,7 +856,7 @@ public class Aerodynamics extends AuxiliaryComponentCalculator{
 	}
 	
 	public String getIdNew() {
-		String id = _theAirfoil.getId() + "aero" + nAero;
+		String id = _theAirfoil.getName() + "aero" + nAero;
 		nAero++;
 		return id;
 	}
