@@ -38,6 +38,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double _clEndLinearTrait;
 	private Double _clMax;
 	private Double _kFactorDragPolar;
+	private Double _laminarBucketSemiExtension;
+	private Double _laminarBucketDept;
 	private Double _cmAlphaQuarterChord;
 	private Double _xACNormalized;
 	private Double _cmAC;
@@ -883,6 +885,22 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 	public void setAlphaForCmCurve(List<Amount<Angle>> _alphaForCmCurve) {
 		this._alphaForCmCurve = _alphaForCmCurve;
+	}
+
+	public Double getLaminarBucketSemiExtension() {
+		return _laminarBucketSemiExtension;
+	}
+
+	public Double getLaminarBucketDept() {
+		return _laminarBucketDept;
+	}
+
+	public void setLaminarBucketSemiExtension(Double _laminarBucketSemiExtension) {
+		this._laminarBucketSemiExtension = _laminarBucketSemiExtension;
+	}
+
+	public void setLaminarBucketDept(Double _laminarBucketDept) {
+		this._laminarBucketDept = _laminarBucketDept;
 	}
 
 }
