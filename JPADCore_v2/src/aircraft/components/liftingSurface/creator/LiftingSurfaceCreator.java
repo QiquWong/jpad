@@ -30,6 +30,7 @@ import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator.Lif
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator.SymmetricFlapBuilder;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
@@ -215,36 +216,39 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				__wingletHeight = Amount.valueOf(0.0, SI.METER);
 				
 				if (type.equals(ComponentEnum.WING)) {
-				AirfoilCreator airfoil1 = new AirfoilBuilder()
-						.name("ATR72 wing, root airfoil")
-						.type(AirfoilTypeEnum.CONVENTIONAL)
-						.thicknessToChordRatio(0.18)
-						.radiusLeadingEdge(Amount.valueOf(0.03565, SI.METER))
-						.alphaZeroLift(Amount.valueOf(-1.2, NonSI.DEGREE_ANGLE))
-						.alphaEndLinearTrait(Amount.valueOf(9.5, NonSI.DEGREE_ANGLE))
-						.alphaStall(Amount.valueOf(16.0, NonSI.DEGREE_ANGLE))
-						.clAlphaLinearTrait(Amount.valueOf(6.22, SI.RADIAN.inverse()))
-						.cdMin(0.00675)
-						.clAtCdMin(0.3)
-						.clAtAlphaZero(0.13)
-						.clEndLinearTrait(1.3)
-						.clMax(1.7)
-						.kFactorDragPolar(0.075)
-						.cmAlphaQuarterChord(0.043) // Clalpha * (c/4 - xac/c) 
-						.xACNormalized(0.243)
-						.cmAC(-0.083)
-						.cmACAtStall(-0.09)
-						.machCritical(0.656)
-						.xCoords(new Double[] {1.0, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.25, 0.2,
-								0.15,0.1, 0.075, 0.05, 0.025, 0.0125, 0.0, 0.0125, 0.025, 0.05, 0.075, 
-								0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8,	0.9, 0.95,	1.0 })
-						.zCoords(new Double[] { 0.0, 0.0132, 0.0239, 0.044, 0.0618, 0.0775, 0.0905,
-								0.1004, 0.1055, 0.1056,	0.1036,	0.0986,	0.0883,	0.0801,	0.0692,	0.0529,
-								0.0409,	0.0, -0.0183, -0.0271, -0.038, -0.046, -0.0522, -0.0618, -0.0686,
-								-0.0727, -0.0747, -0.0737, -0.0681, -0.0594, -0.0482, -0.0348, -0.0194, 
-								-0.0109, 0.0 })
-						.build();
-
+					AirfoilCreator airfoil1 = new AirfoilBuilder()
+							.name("ATR72 wing, root airfoil")
+							.type(AirfoilTypeEnum.CONVENTIONAL)
+							.family(AirfoilFamilyEnum.NACA_5_Digit)
+							.thicknessToChordRatio(0.18)
+							.radiusLeadingEdge(Amount.valueOf(0.03565, SI.METER))
+							.xCoords(new Double[] {1.0, 0.95, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.25, 0.2,
+									0.15,0.1, 0.075, 0.05, 0.025, 0.0125, 0.0, 0.0125, 0.025, 0.05, 0.075, 
+									0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8,	0.9, 0.95,	1.0 })
+							.zCoords(new Double[] { 0.0, 0.0132, 0.0239, 0.044, 0.0618, 0.0775, 0.0905,
+									0.1004, 0.1055, 0.1056,	0.1036,	0.0986,	0.0883,	0.0801,	0.0692,	0.0529,
+									0.0409,	0.0, -0.0183, -0.0271, -0.038, -0.046, -0.0522, -0.0618, -0.0686,
+									-0.0727, -0.0747, -0.0737, -0.0681, -0.0594, -0.0482, -0.0348, -0.0194, 
+									-0.0109, 0.0 })
+							.alphaZeroLift(Amount.valueOf(-1.2, NonSI.DEGREE_ANGLE))
+							.alphaEndLinearTrait(Amount.valueOf(9.5, NonSI.DEGREE_ANGLE))
+							.alphaStall(Amount.valueOf(16.0, NonSI.DEGREE_ANGLE))
+							.clAlphaLinearTrait(Amount.valueOf(6.22, SI.RADIAN.inverse()))
+							.cdMin(0.00675)
+							.clAtCdMin(0.3)
+							.clAtAlphaZero(0.13)
+							.clEndLinearTrait(1.3)
+							.clMax(1.7)
+							.kFactorDragPolar(0.075)
+							.laminarBucketSemiExtension(0.0)
+							.laminarBucketDepth(0.0)
+							.cmAlphaQuarterChord(Amount.valueOf(0.043, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
+							.xACNormalized(0.243)
+							.cmAC(-0.083)
+							.cmACAtStall(-0.09)
+							.machCritical(0.656)
+							.build();
+					
 				LiftingSurfacePanelCreator panel1 =
 						new LiftingSurfacePanelBuilder(
 								"ATR72 wing, inner panel",
@@ -274,7 +278,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						.clEndLinearTrait(1.2)
 						.clMax(1.72)
 						.kFactorDragPolar(0.075)
-						.cmAlphaQuarterChord(0.04214) // Clalpha * (c/4 - xac/c) 
+						.cmAlphaQuarterChord(Amount.valueOf(0.04214, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
 						.xACNormalized(0.243)
 						.cmAC(-0.0833)
 						.cmACAtStall(-0.07)
@@ -381,7 +385,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.clEndLinearTrait(1.23)
 							.clMax(1.86)
 							.kFactorDragPolar(0.0035)
-							.cmAlphaQuarterChord(0.0) // Clalpha * (c/4 - xac/c) 
+							.cmAlphaQuarterChord(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
 							.xACNormalized(0.25)
 							.cmAC(-0.0)
 							.cmACAtStall(-0.09)
@@ -478,7 +482,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.clEndLinearTrait(1.23)
 							.clMax(1.86)
 							.kFactorDragPolar(0.0035)
-							.cmAlphaQuarterChord(0.0) // Clalpha * (c/4 - xac/c) 
+							.cmAlphaQuarterChord(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
 							.xACNormalized(0.25)
 							.cmAC(-0.0)
 							.cmACAtStall(-0.09)

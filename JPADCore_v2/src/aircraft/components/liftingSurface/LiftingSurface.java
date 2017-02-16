@@ -948,7 +948,7 @@ public class LiftingSurface implements ILiftingSurface {
 			this._clMaxVsY.add(_airfoilList.get(i).getAirfoilCreator().getClMax());
 			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent(true).doubleValue(SI.RADIAN)),2));
 			this._kFactorDragPolarVsY.add(_airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
-			this._cmAlphaQuarteChordVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord());
+			this._cmAlphaQuarteChordVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue());
 			this._xAcAirfoilVsY.add(_airfoilList.get(i).getAirfoilCreator().getXACNormalized());
 			this._cmACVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAC());
 			this._cmACStallVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmACAtStall());
@@ -1053,8 +1053,8 @@ public class LiftingSurface implements ILiftingSurface {
 				clMaxOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getClMax();
 				kFactorDragPolarInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getKFactorDragPolar();
 				kFactorDragPolarOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getKFactorDragPolar();
-				cmAlphaQuarterChordInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmAlphaQuarterChord();
-				cmAlphaQuarterChordOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmAlphaQuarterChord();
+				cmAlphaQuarterChordInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmAlphaQuarterChord().getEstimatedValue();
+				cmAlphaQuarterChordOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getCmAlphaQuarterChord().getEstimatedValue();
 				normalizedXacInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getXACNormalized();
 				normalizedXacOuter = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilTip().getXACNormalized();
 				cmACInner = theWing.getLiftingSurfaceCreator().getPanels().get(i-1).getAirfoilRoot().getCmAC();
@@ -1180,11 +1180,15 @@ public class LiftingSurface implements ILiftingSurface {
 		
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE Cm ALPHA c/4
-		Double intermediateAirfoilCmAlphaQuaterChord = MyMathUtils.getInterpolatedValue1DLinear(
-				new double[] {yInner, yOuter},
-				new double[] {cmAlphaQuarterChordInner, cmAlphaQuarterChordOuter},
-				yLoc
-				);
+		Amount<?> intermediateAirfoilCmAlphaQuaterChord = 
+				Amount.valueOf(
+						MyMathUtils.getInterpolatedValue1DLinear(
+								new double[] {yInner, yOuter},
+								new double[] {cmAlphaQuarterChordInner, cmAlphaQuarterChordOuter},
+								yLoc
+								),
+						NonSI.DEGREE_ANGLE.inverse()
+						);
 		
 		//------------------------------------------------------------------------------------------------
 		// INTERMEDIATE Xac
@@ -1441,7 +1445,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 	for(int i=0; i<influenceCoefficients.size(); i++)
 		cmAlphaQuarteChordMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord();	
+		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue();	
 	
 	//----------------------------------------------------------------------------------------------
 	// x ac:
@@ -1494,7 +1498,7 @@ public class LiftingSurface implements ILiftingSurface {
 			.clEndLinearTrait(clStarMeanAirfoil)
 			.clMax(clMaxMeanAirfoil)
 			.kFactorDragPolar(kFactorDragPolarMeanAirfoil)
-			.cmAlphaQuarterChord(cmAlphaQuarteChordMeanAirfoil)
+			.cmAlphaQuarterChord(Amount.valueOf(cmAlphaQuarteChordMeanAirfoil, NonSI.DEGREE_ANGLE.inverse()))
 			.xACNormalized(xACMeanAirfoil)
 			.cmAC(cmACMeanAirfoil)
 			.cmACAtStall(cmACStallMeanAirfoil)

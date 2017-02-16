@@ -730,7 +730,7 @@ public class InputManagerAircraftFromFileController {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
 							Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(Main.getTheAircraft().getWing().getAirfoilList().get(i).getGeometry().getZCoords()),
+							MyArrayUtils.getMax(Main.getTheAircraft().getWing().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -738,7 +738,7 @@ public class InputManagerAircraftFromFileController {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
 							(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
-									MyArrayUtils.getMin(Main.getTheAircraft().getWing().getAirfoilList().get(nYPointsWingTemp-i-1).getGeometry().getZCoords())),
+									MyArrayUtils.getMin(Main.getTheAircraft().getWing().getAirfoilList().get(nYPointsWingTemp-i-1).getAirfoilCreator().getZCoords())),
 							SI.METER
 							)
 					);
@@ -792,7 +792,7 @@ public class InputManagerAircraftFromFileController {
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(Main.getTheAircraft().getHTail().getAirfoilList().get(i).getGeometry().getZCoords()),
+							MyArrayUtils.getMax(Main.getTheAircraft().getHTail().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -800,7 +800,7 @@ public class InputManagerAircraftFromFileController {
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(Main.getTheAircraft().getHTail().getAirfoilList().get(nYPointsHTailTemp-i-1).getGeometry().getZCoords()),
+							MyArrayUtils.getMin(Main.getTheAircraft().getHTail().getAirfoilList().get(nYPointsHTailTemp-i-1).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -853,7 +853,7 @@ public class InputManagerAircraftFromFileController {
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(Main.getTheAircraft().getVTail().getAirfoilList().get(i).getGeometry().getZCoords()),
+							MyArrayUtils.getMax(Main.getTheAircraft().getVTail().getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -861,7 +861,7 @@ public class InputManagerAircraftFromFileController {
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(Main.getTheAircraft().getVTail().getAirfoilList().get(nYPointsVTailTemp-i-1).getGeometry().getZCoords()),
+							MyArrayUtils.getMin(Main.getTheAircraft().getVTail().getAirfoilList().get(nYPointsVTailTemp-i-1).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);

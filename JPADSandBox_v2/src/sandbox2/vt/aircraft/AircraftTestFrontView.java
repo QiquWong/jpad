@@ -127,7 +127,7 @@ public class AircraftTestFrontView extends Application {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
 							wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(wing.getAirfoilList().get(i).getGeometry().getZCoords()),
+							MyArrayUtils.getMax(wing.getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -135,7 +135,7 @@ public class AircraftTestFrontView extends Application {
 			wingThicknessZCoordinates.add(
 					Amount.valueOf(
 							(wing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsWingTemp-i-1).doubleValue(SI.METER)*
-									MyArrayUtils.getMin(wing.getAirfoilList().get(nYPointsWingTemp-i-1).getGeometry().getZCoords())),
+									MyArrayUtils.getMin(wing.getAirfoilList().get(nYPointsWingTemp-i-1).getAirfoilCreator().getZCoords())),
 							SI.METER
 							)
 					);
@@ -189,7 +189,7 @@ public class AircraftTestFrontView extends Application {
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(hTail.getAirfoilList().get(i).getGeometry().getZCoords()),
+							MyArrayUtils.getMax(hTail.getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -197,7 +197,7 @@ public class AircraftTestFrontView extends Application {
 			hTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							hTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsHTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(hTail.getAirfoilList().get(nYPointsHTailTemp-i-1).getGeometry().getZCoords()),
+							MyArrayUtils.getMin(hTail.getAirfoilList().get(nYPointsHTailTemp-i-1).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -250,7 +250,7 @@ public class AircraftTestFrontView extends Application {
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)*
-							MyArrayUtils.getMax(vTail.getAirfoilList().get(i).getGeometry().getZCoords()),
+							MyArrayUtils.getMax(vTail.getAirfoilList().get(i).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
@@ -258,7 +258,7 @@ public class AircraftTestFrontView extends Application {
 			vTailThicknessZCoordinates.add(
 					Amount.valueOf(
 							vTail.getLiftingSurfaceCreator().getChordsBreakPoints().get(nYPointsVTailTemp-i-1).doubleValue(SI.METER)*
-							MyArrayUtils.getMin(vTail.getAirfoilList().get(nYPointsVTailTemp-i-1).getGeometry().getZCoords()),
+							MyArrayUtils.getMin(vTail.getAirfoilList().get(nYPointsVTailTemp-i-1).getAirfoilCreator().getZCoords()),
 							SI.METER
 							)
 					);
