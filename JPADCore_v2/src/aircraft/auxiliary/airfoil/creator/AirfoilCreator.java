@@ -14,6 +14,7 @@ import org.jscience.physics.amount.Amount;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
+import processing.core.PVector;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
@@ -55,6 +56,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private List<Double> _clForCdCurve;
 	private List<Amount<Angle>> _alphaForCmCurve;
 	
+	private List<PVector> _coordinatesRight = new ArrayList<PVector>();
+	private List<PVector> _coordinatesLeft = new ArrayList<PVector>();
 	
 	/**
 	 * @return the _name
@@ -558,6 +561,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_clForCdCurve = builder.__clForCdCurve;
 		_alphaForCmCurve = builder.__alphaForCmCurve;
 		
+		_coordinatesLeft = new ArrayList<>();
+		_coordinatesRight = new ArrayList<>();
+		
 	}
 
 	public static AirfoilCreator importFromXML(String pathToXML) {
@@ -837,27 +843,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 	}
 
-	/************************************************************************************
-	 * This method calculates the t/c of the airfoil at a given non dimensional station
-	 * using a formula obtained from the comparison of the thickness ratio law (along x) of 
-	 * different type of airfoils families at fixed t/c max. The equation obtained is a 6th
-	 * order polynomial regression curve. 
-	 * 
-	 * The polynomial formula is built using a t/c max of 0.12. The result has to be scaled
-	 * in order to obtain the real t/c.
-	 * 
-	 * @author Vittorio Trifari
-	 * @param x the non-dimensional station at which the user wants to calculate the 
-	 * 	        thickness ratio.
-	 * @return the thickness ratio t/c
-	 */
-	@Override
-	public Double calculateThicknessRatioAtXNormalizedStation (Double x, Double tcMaxActual) {
-			
-		return (tcMaxActual/0.12)*((-5.9315*Math.pow(x, 6)) + (20.137*Math.pow(x, 5)) - (26.552*Math.pow(x, 4))
-				+ (17.414*Math.pow(x, 3)) - (6.3277*Math.pow(x, 2)) + 1.2469*x + 0.0136);
-		
-	}
 	
 	@Override
 	public String toString() {
@@ -960,4 +945,19 @@ public class AirfoilCreator implements IAirfoilCreator {
 		this._laminarBucketDepth = _laminarBucketDepth;
 	}
 
+	public List<PVector> getCoordinatesRight() {
+		return _coordinatesRight;
+	}
+
+	public void setCoordinatesRight(List<PVector> _coordinatesRight) {
+		this._coordinatesRight = _coordinatesRight;
+	}
+
+	public List<PVector> getCoordinatesLeft() {
+		return _coordinatesLeft;
+	}
+
+	public void setCoordinatesLeft(List<PVector> _coordinatesLeft) {
+		this._coordinatesLeft = _coordinatesLeft;
+	}
 }

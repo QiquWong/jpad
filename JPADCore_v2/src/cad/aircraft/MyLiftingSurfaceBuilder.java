@@ -25,6 +25,7 @@ import org.jcae.opencascade.jni.TopoDS_Wire;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.aerodynamics.AirfoilCalc;
 import processing.core.PVector;
 
 /**
@@ -132,15 +133,18 @@ public class MyLiftingSurfaceBuilder {
 
 		int sz = theLiftingSurface.getAirfoilList().size();
 		
-		PVector p = theLiftingSurface.getAirfoilList()
-				.get(theLiftingSurface.getAirfoilList().size()-1).getGeometry()
-				.getCentralPoint();
+		PVector p = AirfoilCalc.getCentralPoint(
+				theLiftingSurface, 
+				(theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().get(
+						theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().size()-1).doubleValue(SI.METER))/
+				theLiftingSurface.getSemiSpan().doubleValue(SI.METER)
+				);
 		
 		PVector pR = null, pL = new PVector();
 
 		if (theLiftingSurface.getLiftingSurfaceCreator().isMirrored() == true) {
 			for(int i=0; i < theLiftingSurface.getAirfoilList().size(); i++) {
-				sections.add(theLiftingSurface.getAirfoilList().get(i).getGeometry().get_coordinatesLeft());
+				sections.add(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCoordinatesLeft());
 			}
 
 			pL.set(p.x, -p.y, p.z);
@@ -153,7 +157,7 @@ public class MyLiftingSurfaceBuilder {
 			sections.clear();
 
 			for (int j = theLiftingSurface.getAirfoilList().size()-1; j >= 0 ; j--) {
-				sections.add(theLiftingSurface.getAirfoilList().get(j).getGeometry().get_coordinatesRight());
+				sections.add(theLiftingSurface.getAirfoilList().get(j).getAirfoilCreator().getCoordinatesRight());
 			}
 			
 			pR = p;
@@ -171,7 +175,7 @@ public class MyLiftingSurfaceBuilder {
 		} else {
 			
 			for (int j = theLiftingSurface.getAirfoilList().size()-1; j >= 0 ; j--) {
-				sections.add(theLiftingSurface.getAirfoilList().get(j).getGeometry().get_coordinatesRight());
+				sections.add(theLiftingSurface.getAirfoilList().get(j).getAirfoilCreator().getCoordinatesRight());
 			}
 
 			pR = p;

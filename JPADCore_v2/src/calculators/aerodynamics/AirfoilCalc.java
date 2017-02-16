@@ -1,15 +1,22 @@
 package calculators.aerodynamics;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import aircraft.components.liftingSurface.LiftingSurface;
+import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.ComponentEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 
@@ -125,7 +132,7 @@ public class AirfoilCalc {
 		double cdMin = theAirfoilCreator.getCdMin();
 		double clAtCdMin = theAirfoilCreator.getClAtCdMin();
 		double kFctorDragPolar = theAirfoilCreator.getKFactorDragPolar();
-		double laminarBucketDept = theAirfoilCreator.getLaminarBucketDept();
+		double laminarBucketDept = theAirfoilCreator.getLaminarBucketDepth();
 		double laminarBucketSemiExtension = theAirfoilCreator.getLaminarBucketSemiExtension();
 		
 		for (int i=0; i<clCurveAirfoil.length; i++){
@@ -160,7 +167,7 @@ public class AirfoilCalc {
 		Double [] cmCurve = null;
 
 		double cmAC = theAirfoilCreator.getCmAC();
-		double cmAlpha = theAirfoilCreator.getCmAlphaQuarterChord();
+		double cmAlpha = theAirfoilCreator.getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 		double cmACStall = theAirfoilCreator.getCmACAtStall();
 		Amount<Angle> alphaStar = theAirfoilCreator.getAlphaEndLinearTrait();
 		Amount<Angle> alphaStall = theAirfoilCreator.getAlphaStall();
@@ -324,6 +331,131 @@ public class AirfoilCalc {
 
 		theAirfoilCreator.setCmAC(cmAC);		
 
+	}
+
+	//GEOMETRY---------------------------------------------------------------------------
+	/************************************************************************************
+	 * This method calculates the t/c of the airfoil at a given non dimensional station
+	 * using a formula obtained from the comparison of the thickness ratio law (along x) of 
+	 * different type of airfoils families at fixed t/c max. The equation obtained is a 6th
+	 * order polynomial regression curve. 
+	 * 
+	 * The polynomial formula is built using a t/c max of 0.12. The result has to be scaled
+	 * in order to obtain the real t/c.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param x the non-dimensional station at which the user wants to calculate the 
+	 * 	        thickness ratio.
+	 * @return the thickness ratio t/c
+	 */
+	
+	public static Double calculateThicknessRatioAtXNormalizedStation (
+			Double x,
+			Double tcMaxActual
+			) {
+			
+		return (tcMaxActual/0.12)*((-5.9315*Math.pow(x, 6)) + (20.137*Math.pow(x, 5)) - (26.552*Math.pow(x, 4))
+				+ (17.414*Math.pow(x, 3)) - (6.3277*Math.pow(x, 2)) + 1.2469*x + 0.0136);
+		
+	}
+	
+	public static Double calculateDeltaYPercent(
+			double tc,
+			AirfoilFamilyEnum family,
+			AerodynamicDatabaseReader reader){
+		
+		return reader.getDeltaYvsThickness(
+				tc,
+				family
+				);
+	}
+	
+	public static PVector getCentralPoint(
+			LiftingSurface liftingSurface,
+			double yAdimensionalAirfoilStation
+			) {
+		float x,y,z;
+
+		int nPan = liftingSurface.getLiftingSurfaceCreator().getPanels().size(); 
+		
+		if (liftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+			x = (float) (liftingSurface.getXApexConstructionAxes().getEstimatedValue()
+					+ liftingSurface.getLiftingSurfaceCreator().getDiscretizedXle().get(liftingSurface.getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
+					+ liftingSurface.getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
+			z = (float) (liftingSurface.getLiftingSurfaceCreator().getSpan().getEstimatedValue())*1.005f 
+					+ (float) liftingSurface.getZApexConstructionAxes().getEstimatedValue();
+			y = 0.0f;
+
+		} else {
+			x = (float) (liftingSurface.getXApexConstructionAxes().getEstimatedValue()
+					+ liftingSurface.getLiftingSurfaceCreator().getDiscretizedXle().get(liftingSurface.getLiftingSurfaceCreator().getDiscretizedXle().size()-1).getEstimatedValue()
+					+ liftingSurface.getLiftingSurfaceCreator().getPanels().get(nPan - 1).getChordTip().getEstimatedValue()/2);
+			y = (float) (liftingSurface.getLiftingSurfaceCreator().getSpan().getEstimatedValue()/2.)*1.005f;
+			z = (float) (liftingSurface.getZApexConstructionAxes().getEstimatedValue()
+					+ yAdimensionalAirfoilStation
+					* Math.tan(liftingSurface.getLiftingSurfaceCreator().getDihedralAtYActual(yAdimensionalAirfoilStation).getEstimatedValue())); //TODO: add dihedral
+		}
+
+		return new PVector(x, y, z);
+	}
+	
+	private static void populateCoordinateList(
+			double yStation,
+			AirfoilCreator theCreator,
+			LiftingSurface theLiftingSurface
+			) {
+
+		float c = (float) theLiftingSurface.getChordAtYActual(yStation);
+		float x, y, z;
+
+		for (int i=0; i<theCreator.getXCoords().length; i++) {
+
+			// Scale to actual dimensions
+			x = theCreator.getXCoords()[i].floatValue()*c;
+			y = (float) 0.0;
+			z = theCreator.getZCoords()[i].floatValue()*c;
+
+			double twistAtY = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedYs()),
+					MyArrayUtils.convertToDoublePrimitive(
+							theLiftingSurface.getLiftingSurfaceCreator().getDiscretizedTwists().stream()
+							.map(t -> t.doubleValue(SI.RADIAN))
+							.collect(Collectors.toList())),							
+					yStation
+					);
+			
+			// Rotation due to twist
+			if (theLiftingSurface.getType().equals(ComponentEnum.WING)) {
+				float r = (float) Math.sqrt(x*x + z*z);
+				x = (float) (x - r*(1-Math.cos(-twistAtY - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN))));
+				z = (float) (z + r*Math.sin(-twistAtY - theLiftingSurface.getRiggingAngle().doubleValue(SI.RADIAN)));
+			}
+
+			// Actual location
+			x = x + (float) theLiftingSurface.getLiftingSurfaceCreator().getXLEAtYActual(yStation).doubleValue(SI.METER)
+					+ (float) theLiftingSurface.getXApexConstructionAxes().doubleValue(SI.METER);
+			y = (float) yStation;
+			z = z + (float) theLiftingSurface.getZApexConstructionAxes().doubleValue(SI.METER)
+					+ (float) (yStation
+							* Math.tan(theLiftingSurface.getLiftingSurfaceCreator().getDihedralAtYActual(yStation).doubleValue(SI.RADIAN)));
+
+			if (theLiftingSurface.getLiftingSurfaceCreator().isMirrored()) {
+				theCreator.getCoordinatesLeft().add(new PVector(x, -y, z));
+			}	
+
+			if (theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				theCreator.getCoordinatesRight().add( 
+						new PVector(
+								x,
+								theCreator.getZCoords()[i].floatValue()*c, 
+								(float) (yStation
+								+ (float) theLiftingSurface.getZApexConstructionAxes().doubleValue(SI.METER))));
+
+			} else {
+				theCreator.getCoordinatesRight().add(new PVector(x, y, z));
+			}
+
+		}
 	}
 
 }
