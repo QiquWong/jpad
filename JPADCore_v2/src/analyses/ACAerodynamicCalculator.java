@@ -60,9 +60,9 @@ public class ACAerodynamicCalculator {
 	private int _wingNumberOfPointSemiSpanWise;
 	private List<Amount<Angle>> _alphaWingForDistribution;
 	private List<Amount<Angle>> _alphaHorizontalTailForDistribution;
-	private boolean _downwashConstant; // se TRUE--> constant, se FALSE--> variable
-	private Double _wingMomentumPole;  // pole adimentionalized on MAC
-	private Double _hTailMomentumPole; // pole adimentionalized on MAC
+	private boolean _downwashConstant; // if TRUE--> constant, if FALSE--> variable
+	private Double _wingMomentumPole;  // pole referred to M.A.C.
+	private Double _hTailMomentumPole; // pole referred to M.A.C.
 	private Double _dynamicPressureRatio;
 	//..............................................................................
 	// DERIVED INPUT
