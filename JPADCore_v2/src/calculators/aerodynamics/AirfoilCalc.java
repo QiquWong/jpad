@@ -14,6 +14,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import processing.core.PVector;
@@ -159,12 +160,13 @@ public class AirfoilCalc {
 	 * @author Manuela Ruocco
 	 */
 
+	@SuppressWarnings("null")
 	public static void calculateCmvsAlphaCurve(
 			List<Amount<Angle>> alphaArray,
 			AirfoilCreator theAirfoilCreator
 			) {
 
-		Double [] cmCurve = null;
+		Double [] cmCurve = new Double[alphaArray.size()];
 
 		double cmAC = theAirfoilCreator.getCmAC();
 		double cmAlpha = theAirfoilCreator.getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
@@ -399,7 +401,7 @@ public class AirfoilCalc {
 		return new PVector(x, y, z);
 	}
 	
-	private static void populateCoordinateList(
+	public static void populateCoordinateList(
 			double yStation,
 			AirfoilCreator theCreator,
 			LiftingSurface theLiftingSurface
@@ -458,4 +460,62 @@ public class AirfoilCalc {
 		}
 	}
 
+	public static void calculateMachCrShevell(
+			AirfoilCreator theAirfoilCreator, 
+			double cl
+			) {
+		// Page 409 Sforza
+		theAirfoilCreator.setMachCritical(
+				(0.9 - theAirfoilCreator.getThicknessToChordRatio())
+				- ((0.17 + 0.016)*cl)
+				); 
+	}
+
+	public static void calculateMachCrKorn(
+			AirfoilCreator theAirfoilCreator,
+			double cl
+			) {
+		
+		double k;
+		if (theAirfoilCreator.getType().equals(AirfoilTypeEnum.CONVENTIONAL)) k = 0.87;
+		else k = 0.95; 
+
+		theAirfoilCreator.setMachCritical((k - 0.108) - theAirfoilCreator.getThicknessToChordRatio() - 0.1*cl);
+	}
+	
+	/** Page 410 Sforza */
+	public static double calculateCdWaveLockShevell(
+			AirfoilCreator theAirfoilCreator,
+			double cl, 
+			double mach
+			) {
+
+		calculateMachCrShevell(theAirfoilCreator, cl);
+		
+		double diff = mach - theAirfoilCreator.getMachCritical();
+
+		double cdWave = 0.0;
+		
+		if (diff > 0)
+			cdWave = 20*Math.pow((diff),4);
+		return cdWave;
+	}
+
+	public double calculateCdWaveLockKorn(
+			AirfoilCreator theAirfoilCreator,
+			double cl, 
+			double mach
+			) {
+
+		calculateMachCrKorn(theAirfoilCreator, cl);
+		
+		double diff = mach - theAirfoilCreator.getMachCritical();
+
+		double cdWave = 0.0;
+		
+		if (diff > 0)
+			cdWave = 20*Math.pow((diff),4);
+		return cdWave;
+	}
+	
 }

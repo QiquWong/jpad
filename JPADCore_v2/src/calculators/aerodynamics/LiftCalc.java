@@ -464,9 +464,7 @@ public class LiftCalc {
 		double [] cLActualArray = new double[nValue];
 		double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
 
-		Airfoil meanAirfoil = new Airfoil(
-				LiftingSurface.calculateMeanAirfoil(theLiftingSurface), 
-				theLiftingSurface.getAerodynamicDatabaseReader());
+		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(theLiftingSurface));
 		double alphaStarClean = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait().getEstimatedValue();
 
 		Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
@@ -483,6 +481,11 @@ public class LiftCalc {
 		Amount<Angle> alphaMax = theLsManager.getAlphaMaxClean();	
 
 		double alphaMaxHighLift;
+		double deltaYPercent = AirfoilCalc.calculateDeltaYPercent(
+				meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+				meanAirfoil.getAirfoilCreator().getFamily(),
+				theLiftingSurface.getAerodynamicDatabaseReader()
+				);
 
 		if(deltaClmaxSlat == 0)
 			alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap/57.3;
@@ -491,7 +494,7 @@ public class LiftCalc {
 			+ theLsManager.getAerodynamicDatabaseReader().getDAlphaVsLambdaLEVsDy(
 					theLiftingSurface
 					.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
-					meanAirfoil.getGeometry().get_deltaYPercent());
+					deltaYPercent);
 
 		alphaMaxHighLift = Amount.valueOf(alphaMaxHighLift, SI.RADIAN).getEstimatedValue();
 
@@ -588,38 +591,37 @@ public class LiftCalc {
 
 
 		for (int j=0 ; j<nPointSemiSpan; j++){
-			airfoilList.add(j, new Airfoil(theLiftingSurface
-						.calculateAirfoilAtY(theLiftingSurface, yArray[j]),
-						theLiftingSurface.getAerodynamicDatabaseReader())
-					);
-			airfoilList.get(j).getAerodynamics().calculateClvsAlpha();}
+			airfoilList.add(j, new Airfoil(theLiftingSurface.calculateAirfoilAtY(theLiftingSurface, yArray[j])));
 
+			// iterations
+			for (int ii=0; ii<alphaArray.size(); ii++){
+				alphaActual = Amount.valueOf(alphaArray.get(ii),SI.RADIAN);
 
-		// iterations
-		for (int ii=0; ii<alphaArray.size(); ii++){
-			alphaActual = Amount.valueOf(alphaArray.get(ii),SI.RADIAN);
+				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
+				clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
+				clNasaBlackwell[clNasaBlackwell.length-1] = 0;
 
-			calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
-			clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
-			clNasaBlackwell[clNasaBlackwell.length-1] = 0;
-
-			for (int i=0 ; i<nPointSemiSpan ;  i++){
-				cLDistributionInviscid[i] = clNasaBlackwell[i];
-				//			System.out.println( " cl local " + cLLocal);
-				qValue = airfoilList.get(i).getAerodynamics().calculateClAtAlphaInterp(0.0);
-				//			System.out.println(" qValue " + qValue );
-				alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAerodynamics().getClAlpha().getEstimatedValue();
-				//			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
-				clDisributionReal[i] = airfoilList.get(i).getAerodynamics().calculateClAtAlpha(
-						//alphaLocal.getEstimatedValue()+
-						alphaLocalAirfoil[i]);
-				//					airfoilList.get(i).getGeometry().get_twist().getEstimatedValue());
+				for (int i=0 ; i<nPointSemiSpan ;  i++){
+					cLDistributionInviscid[i] = clNasaBlackwell[i];
+					//			System.out.println( " cl local " + cLLocal);
+					qValue = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(airfoilList.get(i).getAirfoilCreator().getAlphaForClCurve()),
+							MyArrayUtils.convertToDoublePrimitive(airfoilList.get(i).getAirfoilCreator().getClCurve()),
+							0.0
+							);
+					//			System.out.println(" qValue " + qValue );
+					alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAirfoilCreator().getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+					//			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
+					clDisributionReal[i] = MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(airfoilList.get(i).getAirfoilCreator().getAlphaForClCurve()),
+							MyArrayUtils.convertToDoublePrimitive(airfoilList.get(i).getAirfoilCreator().getClCurve()),
+							alphaLocalAirfoil[i]
+							); 
+				}
+				cLWingActual = MyMathUtils.integrate1DSimpsonSpline(yArrayND, clDisributionReal);
+				cLWingArray[ii] = cLWingActual;
 			}
-			cLWingActual = MyMathUtils.integrate1DSimpsonSpline(yArrayND, clDisributionReal);
-
-			cLWingArray[ii] = cLWingActual;
 		}
-
 		return cLWingArray;
 	}
 

@@ -2,6 +2,7 @@ package calculators.performance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
@@ -10,6 +11,7 @@ import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.exception.DimensionMismatchException;
@@ -30,6 +32,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -481,117 +484,228 @@ public class LandingCalc {
 		System.out.println("\n---------WRITING GROUND ROLL PERFORMANCE CHARTS TO FILE-----------");
 
 		// data setup
-		double[] groundDistance = new double[getLandingDistance().size()];
-		for(int i=0; i<groundDistance.length; i++)
-			groundDistance[i] = getLandingDistance().get(i).getEstimatedValue();
-		
-		double[] groundRollDistance = new double[getLandingDistance().size()-11];
-		for(int i=0; i<groundRollDistance.length; i++)
-			groundRollDistance[i] = groundDistance[i+11];
-
-		double[] verticalDistance = new double[getVerticalDistance().size()];
-		for(int i=0; i<verticalDistance.length; i++)
-			verticalDistance[i] = getVerticalDistance().get(i).getEstimatedValue();
-		
-		double[] thrust = new double[getThrust().size()];
-		for(int i=0; i<thrust.length; i++)
-			thrust[i] = getThrust().get(i).getEstimatedValue();
-
-		double[] lift = new double[getLift().size()];
-		for(int i=0; i<lift.length; i++)
-			lift[i] = getLift().get(i).getEstimatedValue();
-
-		double[] drag = new double[getDrag().size()];
-		for(int i=0; i<drag.length; i++)
-			drag[i] = getDrag().get(i).getEstimatedValue();
-
-		double[] friction = new double[getFriction().size()];
-		for(int i=0; i<friction.length; i++)
-			friction[i] = getFriction().get(i).getEstimatedValue();
-
-		double[] totalForce = new double[getTotalForce().size()];
-		for(int i=0; i<totalForce.length; i++)
-			totalForce[i] = getTotalForce().get(i).getEstimatedValue();
-
-		double[] loadFactor = new double[getLoadFactor().size()];
-		for(int i=0; i<loadFactor.length; i++)
-			loadFactor[i] = getLoadFactor().get(i);
-
-		double[] acceleration = new double[getAcceleration().size()];
-		for(int i=0; i<acceleration.length; i++)
-			acceleration[i] = getAcceleration().get(i).getEstimatedValue();
-
-		double[] speed = new double[getSpeed().size()];
-		for(int i=0; i<speed.length; i++)
-			speed[i] = getSpeed().get(i).getEstimatedValue();
-
-		double[] weight = new double[getTime().size()];
-		for(int i=0; i<weight.length; i++)
-			weight[i] = maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue();
-
+//		double[] groundDistance = new double[getLandingDistance().size()];
+//		for(int i=0; i<groundDistance.length; i++)
+//			groundDistance[i] = getLandingDistance().get(i).getEstimatedValue();
+//		
+//		double[] verticalDistance = new double[getVerticalDistance().size()];
+//		for(int i=0; i<verticalDistance.length; i++)
+//			verticalDistance[i] = getVerticalDistance().get(i).getEstimatedValue();
+//		
+//		double[] thrust = new double[getThrust().size()];
+//		for(int i=0; i<thrust.length; i++)
+//			thrust[i] = getThrust().get(i).getEstimatedValue();
+//
+//		double[] lift = new double[getLift().size()];
+//		for(int i=0; i<lift.length; i++)
+//			lift[i] = getLift().get(i).getEstimatedValue();
+//
+//		double[] drag = new double[getDrag().size()];
+//		for(int i=0; i<drag.length; i++)
+//			drag[i] = getDrag().get(i).getEstimatedValue();
+//
+//		double[] friction = new double[getFriction().size()];
+//		for(int i=0; i<friction.length; i++)
+//			friction[i] = getFriction().get(i).getEstimatedValue();
+//
+//		double[] totalForce = new double[getTotalForce().size()];
+//		for(int i=0; i<totalForce.length; i++)
+//			totalForce[i] = getTotalForce().get(i).getEstimatedValue();
+//
+//		double[] loadFactor = new double[getLoadFactor().size()];
+//		for(int i=0; i<loadFactor.length; i++)
+//			loadFactor[i] = getLoadFactor().get(i);
+//
+//		double[] acceleration = new double[getAcceleration().size()];
+//		for(int i=0; i<acceleration.length; i++)
+//			acceleration[i] = getAcceleration().get(i).getEstimatedValue();
+//
+//		double[] speed = new double[getSpeed().size()];
+//		for(int i=0; i<speed.length; i++)
+//			speed[i] = getSpeed().get(i).getEstimatedValue();
+//
+		//.............................................................................
 		// landing trajectory and speed
-		double[][] xMatrix1 = new double[2][groundDistance.length];
-		for(int i=0; i<xMatrix1.length; i++)
-			xMatrix1[i] = groundDistance;
+		double[][] xMatrix1_SI = new double[2][landingDistance.size()];
+		double[][] xMatrix1_Imperial = new double[2][landingDistance.size()];
+		xMatrix1_SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(landingDistance);
+		xMatrix1_SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(landingDistance);
+		
+		xMatrix1_Imperial[0] = MyArrayUtils.convertToDoublePrimitive( 
+				landingDistance.stream()
+				.map(x -> x.doubleValue(NonSI.FOOT))
+				.collect(Collectors.toList())
+				);
+		xMatrix1_Imperial[1] = MyArrayUtils.convertToDoublePrimitive( 
+				landingDistance.stream()
+				.map(x -> x.doubleValue(NonSI.FOOT))
+				.collect(Collectors.toList())
+				);
 
-		double[][] yMatrix1 = new double[2][groundDistance.length];
-		yMatrix1[0] = verticalDistance;
-		yMatrix1[1] = speed;
+		double[][] yMatrix1_SI = new double[2][landingDistance.size()];
+		double[][] yMatrix1_Imperial = new double[2][landingDistance.size()];
+		yMatrix1_SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance);
+		yMatrix1_SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(speed);
 
+		yMatrix1_Imperial[0] = MyArrayUtils.convertToDoublePrimitive(
+				verticalDistance.stream()
+				.map(x -> x.doubleValue(NonSI.FOOT))
+				.collect(Collectors.toList())
+				);
+		yMatrix1_Imperial[0] = MyArrayUtils.convertToDoublePrimitive(
+				speed.stream()
+				.map(x -> x.doubleValue(NonSI.KNOT))
+				.collect(Collectors.toList())
+				);
+		
 		MyChartToFileUtils.plot(
-				xMatrix1, yMatrix1,
+				xMatrix1_SI, yMatrix1_SI,
 				0.0, null, -1.0, null,
 				"Ground Distance", "", "m", "",
-				new String[] {"Landing Trajectory", "Speed (m/s)"},
-				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance");
+				new String[] {"Altitude (m)", "Speed (m/s)"},
+				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance_SI");
 		
+		MyChartToFileUtils.plot(
+				xMatrix1_Imperial, yMatrix1_Imperial,
+				0.0, null, -1.0, null,
+				"Ground Distance", "", "ft", "",
+				new String[] {"Altitude (ft)", "Speed (kn)"},
+				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance_IMPERIAL");
+		
+		//.............................................................................
 		// acceleration v.s. ground roll distance
+		double[] groundRollDistance_SI = new double[getLandingDistance().size()-11];
+		double[] groundRollDistance_Imperial = new double[getLandingDistance().size()-11];
+		for(int i=0; i<groundRollDistance_SI.length; i++) {
+			groundRollDistance_SI[i] = landingDistance.get(i+11).doubleValue(SI.METER);
+			groundRollDistance_Imperial[i] = landingDistance.get(i+11).doubleValue(NonSI.FOOT);
+		}
+		
 		MyChartToFileUtils.plotNoLegend(
-				groundRollDistance, acceleration,
-				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
+				groundRollDistance_SI, 
+				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
+				sApproach.plus(sFlare).doubleValue(SI.METER), null, null, null,
 				"Ground Roll Distance", "Acceleration", "m", "m/(s^2)",
-				landingFolderPath, "Acceleration_vs_GroundDistance");
+				landingFolderPath, "Acceleration_vs_GroundDistance_SI");
+		
+		MyChartToFileUtils.plotNoLegend(
+				groundRollDistance_Imperial,
+				MyArrayUtils.convertToDoublePrimitive(
+						acceleration.stream()
+						.map(x -> x.doubleValue(MyUnits.FOOT_PER_SQUARE_MINUTE))
+						.collect(Collectors.toList())
+						),
+				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, null, null,
+				"Ground Roll Distance", "Acceleration", "ft", "ft/(min^2)",
+				landingFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL");
 
+		//.............................................................................
 		// load factor v.s. ground roll distance
 		MyChartToFileUtils.plotNoLegend(
-				groundRollDistance, loadFactor,
-				sApproach.plus(sFlare).getEstimatedValue(), null, 0.0, null,
+				groundRollDistance_SI,
+				MyArrayUtils.convertToDoublePrimitive(loadFactor),
+				sApproach.plus(sFlare).doubleValue(SI.METER), null, 0.0, null,
 				"Ground Roll distance", "Load Factor", "m", "",
-				landingFolderPath, "LoadFactor_vs_GroundDistance");
+				landingFolderPath, "LoadFactor_vs_GroundDistance_SI");
 
+		MyChartToFileUtils.plotNoLegend(
+				groundRollDistance_Imperial,
+				MyArrayUtils.convertToDoublePrimitive(loadFactor),
+				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, 0.0, null,
+				"Ground Roll distance", "Load Factor", "ft", "",
+				landingFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL");
+		//.............................................................................
 		// Horizontal Forces v.s. ground roll distance
-		double[][] xMatrix2 = new double[4][totalForce.length];
-		for(int i=0; i<xMatrix2.length; i++)
-			xMatrix2[i] = groundRollDistance;
+		double[][] xMatrix2_SI = new double[4][totalForce.size()];
+		double[][] xMatrix2_Imperial = new double[4][totalForce.size()];
+		for(int i=0; i<xMatrix1_SI.length; i++) {
+			xMatrix2_SI[i] = groundRollDistance_SI;
+			xMatrix2_Imperial[i] = groundRollDistance_Imperial;
+		}
 
-		double[][] yMatrix2 = new double[4][totalForce.length];
-		yMatrix2[0] = totalForce;
-		yMatrix2[1] = thrust;
-		yMatrix2[2] = drag;
-		yMatrix2[3] = friction;
+		double[][] yMatrix2_SI = new double[4][totalForce.size()];
+		double[][] yMatrix2_Imperial = new double[4][totalForce.size()];
+		yMatrix2_SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(totalForce);
+		yMatrix2_SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(thrust);
+		yMatrix2_SI[2] = MyArrayUtils.convertListOfAmountTodoubleArray(drag);
+		yMatrix2_SI[3] = MyArrayUtils.convertListOfAmountTodoubleArray(friction);
 
+		yMatrix2_Imperial[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				totalForce.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix2_Imperial[1] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				thrust.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix2_Imperial[2] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				drag.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix2_Imperial[3] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				friction.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		
 		MyChartToFileUtils.plot(
-				xMatrix2, yMatrix2,
-				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
+				xMatrix2_SI, yMatrix2_SI,
+				sApproach.plus(sFlare).doubleValue(SI.METER), null, null, null,
 				"Ground Roll Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust", "Drag", "Friction"},
-				landingFolderPath, "HorizontalForces_vs_GroundDistance");
-
-		// Vertical Forces v.s. ground roll distance
-		double[][] xMatrix3 = new double[2][totalForce.length];
-		for(int i=0; i<xMatrix3.length; i++)
-			xMatrix3[i] = groundRollDistance;
-
-		double[][] yMatrix3 = new double[2][totalForce.length];
-		yMatrix3[0] = lift;
-		yMatrix3[1] = weight;
-
+				landingFolderPath, "HorizontalForces_vs_GroundDistance_SI");
+		
 		MyChartToFileUtils.plot(
-				xMatrix3, yMatrix3,
-				sApproach.plus(sFlare).getEstimatedValue(), null, null, null,
+				xMatrix2_Imperial, yMatrix2_Imperial,
+				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, null, null,
+				"Ground Roll Distance", "Horizontal Forces", "ft", "lb",
+				new String[] {"Total Force", "Thrust", "Drag", "Friction"},
+				landingFolderPath, "HorizontalForces_vs_GroundDistance_IMPERIAL");
+
+		//.............................................................................
+		// Vertical Forces v.s. ground roll distance
+		double[] weight_SI = new double[getTime().size()];
+		double[] weight_Imperial = new double[getTime().size()];
+		for(int i=0; i<weight_SI.length; i++) {
+			weight_SI[i] = maxLandingMass.times(AtmosphereCalc.g0).getEstimatedValue();
+			weight_Imperial[i] = maxLandingMass.times(AtmosphereCalc.g0).times(0.224809).getEstimatedValue();
+		}
+			
+		double[][] xMatrix3_SI = new double[2][totalForce.size()];
+		double[][] xMatrix3_Imperial = new double[2][totalForce.size()];
+		for(int i=0; i<xMatrix3_SI.length; i++) {
+			xMatrix3_SI[i] = groundRollDistance_SI;
+			xMatrix3_Imperial[i] = groundRollDistance_Imperial;
+		}
+			
+		double[][] yMatrix3_SI = new double[2][totalForce.size()];
+		double[][] yMatrix3_Imperial = new double[2][totalForce.size()];
+		yMatrix3_SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(lift);
+		yMatrix3_SI[1] = weight_SI;
+
+		yMatrix3_Imperial[0] = MyArrayUtils.convertListOfAmountTodoubleArray(
+				lift.stream()
+				.map(x -> x.to(NonSI.POUND_FORCE))
+				.collect(Collectors.toList())
+				);
+		yMatrix3_Imperial[1] = weight_Imperial;
+		
+		MyChartToFileUtils.plot(
+				xMatrix3_SI, yMatrix3_SI,
+				sApproach.plus(sFlare).doubleValue(SI.METER), null, null, null,
 				"Ground Roll distance", "Vertical Forces", "m", "N",
 				new String[] {"Lift", "Weight"},
-				landingFolderPath, "VerticalForces_vs_GroundDistance");
+				landingFolderPath, "VerticalForces_vs_GroundDistance_SI");
+		
+		MyChartToFileUtils.plot(
+				xMatrix3_Imperial, yMatrix3_Imperial,
+				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, null, null,
+				"Ground Roll distance", "Vertical Forces", "ft", "lb",
+				new String[] {"Lift", "Weight"},
+				landingFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL");
 		
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}

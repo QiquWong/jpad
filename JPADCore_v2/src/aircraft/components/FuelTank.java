@@ -16,6 +16,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
+import calculators.aerodynamics.AirfoilCalc;
 import configuration.MyConfiguration;
 import database.databasefunctions.FuelFractionDatabaseReader;
 import standaloneutils.MyArrayUtils;
@@ -166,23 +167,19 @@ public class FuelTank implements IFuelTank {
 		for (int i=0; i<theWing.getAirfoilList().size()-1; i++) {
 			this._thicknessAtMainSpar.add(
 					Amount.valueOf(
-							theWing.getAirfoilList().get(i)
-								.getAirfoilCreator()
-									.calculateThicknessRatioAtXNormalizedStation(
-											_mainSparNormalizedStation,
-											theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
-											)
+							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
+									_mainSparNormalizedStation,
+									theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
 					);
 			this._thicknessAtSecondarySpar.add(
 					Amount.valueOf(
-							theWing.getAirfoilList().get(i)
-								.getAirfoilCreator()
-									.calculateThicknessRatioAtXNormalizedStation(
-											_secondarySparNormalizedStation,
-											theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
-											)
+							AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
+									_secondarySparNormalizedStation,
+									theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio()
+									)
 							* theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER),
 							SI.METER)
 					);
@@ -215,21 +212,19 @@ public class FuelTank implements IFuelTank {
 		
 		this._thicknessAtMainSpar.add(
 				Amount.valueOf(
-						airfoilAt85Percent
-							.calculateThicknessRatioAtXNormalizedStation(
-									_mainSparNormalizedStation,
-									airfoilAt85Percent.getThicknessToChordRatio()
-									)
+						AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
+								_mainSparNormalizedStation,
+								airfoilAt85Percent.getThicknessToChordRatio()
+								)
 						* chordAt85Percent.doubleValue(SI.METER),
 						SI.METER)
 				);
 		this._thicknessAtSecondarySpar.add(
 				Amount.valueOf(
-						airfoilAt85Percent
-							.calculateThicknessRatioAtXNormalizedStation(
-									_secondarySparNormalizedStation,
-									airfoilAt85Percent.getThicknessToChordRatio()
-									)
+						AirfoilCalc.calculateThicknessRatioAtXNormalizedStation(
+								_secondarySparNormalizedStation,
+								airfoilAt85Percent.getThicknessToChordRatio()
+								)
 						* chordAt85Percent.doubleValue(SI.METER),
 						SI.METER)
 				);

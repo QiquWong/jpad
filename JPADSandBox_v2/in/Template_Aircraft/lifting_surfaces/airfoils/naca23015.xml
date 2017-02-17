@@ -37,7 +37,7 @@
             <K_factor_drag_polar>0.075</K_factor_drag_polar>
             <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cm_curve" flag is "FALSE"; 
 				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->			            
-			<Cm_alpha_quarter_chord unit="1/deg">0.04214</Cm_alpha_quarter_chord>
+			<Cm_alpha_quarter_chord unit="1/°">0.04214</Cm_alpha_quarter_chord>
             <Cm_ac>-0.0833</Cm_ac>
             <Cm_ac_at_stall>-0.07</Cm_ac_at_stall>
             <!---->

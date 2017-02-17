@@ -545,11 +545,19 @@ public class MyXMLReaderUtils {
 		if ((valueStr != null) && (!valueStr.equals("")) && (unitStr != null)) {
 			try {
 
-				Double value = Double.parseDouble(valueStr);
-				Amount<?> quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
-
+				Amount<?> quantity = null;
+				
+				if(unitStr.startsWith("1/", 0)) {
+					Double value = Double.parseDouble(valueStr);
+					quantity = Amount.valueOf(value, Unit.valueOf(unitStr.substring(2)).inverse());
+				}
+				else {
+					Double value = Double.parseDouble(valueStr);
+					quantity = Amount.valueOf(value, Unit.valueOf(unitStr));
+				}
+				
 				return quantity;
-
+				
 			} catch (NumberFormatException | AmountException e) {
 				e.printStackTrace();
 				return null;

@@ -188,10 +188,7 @@ public class LSAerodynamicsCalculator {
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating the mean airfoil
 		//......................................................................................................................
-		this._meanAirfoil = new Airfoil(
-				LiftingSurface.calculateMeanAirfoil(_theLiftingSurface),
-				this._theLiftingSurface.getAerodynamicDatabaseReader()
-				);
+		this._meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theLiftingSurface));
 		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating lifting surface Form Factor
@@ -416,7 +413,7 @@ public class LSAerodynamicsCalculator {
 		 */
 		public void kornMason(double cL) {
 
-			AirfoilTypeEnum airfoilType = _theLiftingSurface.getAirfoilList().get(0).getType();
+			AirfoilTypeEnum airfoilType = _theLiftingSurface.getAirfoilList().get(0).getAirfoilCreator().getType();
 			Amount<Angle> sweepHalfChordEq = _theLiftingSurface.getSweepHalfChordEquivalent(false);
 			double maxThicknessMean = _theLiftingSurface.getThicknessMean();
 			
@@ -447,7 +444,7 @@ public class LSAerodynamicsCalculator {
 		 */
 		public void kroo(double cL) {
 
-			AirfoilTypeEnum airfoilType = _theLiftingSurface.getAirfoilList().get(0).getType();
+			AirfoilTypeEnum airfoilType = _theLiftingSurface.getAirfoilList().get(0).getAirfoilCreator().getType();
 			Amount<Angle> sweepHalfChordEq = _theLiftingSurface.getSweepHalfChordEquivalent(false);
 			double maxThicknessMean = _theLiftingSurface.getThicknessMean();
 			
@@ -2033,7 +2030,7 @@ public class LSAerodynamicsCalculator {
 							_currentMachNumber,
 							_theLiftingSurface.getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-							_meanAirfoil.getType()
+							_meanAirfoil.getAirfoilCreator().getType()
 							)
 					);
 		}
@@ -2046,7 +2043,7 @@ public class LSAerodynamicsCalculator {
 							_currentMachNumber,
 							_theLiftingSurface.getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-							_meanAirfoil.getType()
+							_meanAirfoil.getAirfoilCreator().getType()
 							)
 					);
 		}

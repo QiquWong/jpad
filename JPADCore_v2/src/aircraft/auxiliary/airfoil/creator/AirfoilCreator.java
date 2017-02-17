@@ -11,6 +11,7 @@ import javax.measure.unit.NonSI;
 
 import org.jscience.physics.amount.Amount;
 
+import calculators.aerodynamics.AirfoilCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -28,7 +29,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double[] _zCoords;
 	private Double _thicknessToChordRatio;
 	private Amount<Length> _radiusLeadingEdge;
-	private Amount<Angle> _angleAtTrailingEdge;
 	private Amount<Angle> _alphaZeroLift;
 	private Amount<Angle> _alphaEndLinearTrait;
 	private Amount<Angle> _alphaStall;
@@ -133,16 +133,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		this._zCoords = zCoords;
 	}
 	
-	@Override
-	public Amount<Angle> getAngleAtTrailingEdge() {
-		return _angleAtTrailingEdge;
-	}
-
-	@Override
-	public void setAngleAtTrailingEdge(Amount<Angle> phiTE) {
-		_angleAtTrailingEdge = phiTE;
-	}
-
 	@Override
 	public Amount<Angle> getAlphaZeroLift() {
 		return _alphaZeroLift;
@@ -325,7 +315,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private Amount<Length> __radiusLeadingEdge;
 		private Double[] __xCoords;
 		private Double[] __zCoords;
-		private Amount<Angle> __angleAtTrailingEdge;
 
 		private Amount<Angle> __alphaZeroLift;
 		private Amount<Angle> __alphaEndLinearTrait;
@@ -347,12 +336,12 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private Double __xTransitionUpper;
 		private Double __xTransitionLower;
 		
-		private List<Double> __clCurve;
-		private List<Double> __cdCurve;
-		private List<Double> __cmCurve;
-		private List<Amount<Angle>> __alphaForClCurve;
-		private List<Double> __clForCdCurve;
-		private List<Amount<Angle>> __alphaForCmCurve;
+		private List<Double> __clCurve = new ArrayList<>();
+		private List<Double> __cdCurve = new ArrayList<>();
+		private List<Double> __cmCurve = new ArrayList<>();
+		private List<Amount<Angle>> __alphaForClCurve = new ArrayList<>();
+		private List<Double> __clForCdCurve = new ArrayList<>();
+		private List<Amount<Angle>> __alphaForCmCurve = new ArrayList<>();
 		
 
 		public AirfoilBuilder name (String name) {
@@ -390,11 +379,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 		
-		public AirfoilBuilder angleAtTrailingEdge(Amount<Angle> phiTE) {
-			__angleAtTrailingEdge = phiTE;
-			return this;
-		}
-
 		public AirfoilBuilder alphaZeroLift(Amount<Angle> alpha0l) {
 			__alphaZeroLift = alpha0l;
 			return this;
@@ -533,7 +517,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_radiusLeadingEdge = builder.__radiusLeadingEdge;
 		_xCoords = builder.__xCoords;
 		_zCoords = builder.__zCoords;
-		_angleAtTrailingEdge = builder.__angleAtTrailingEdge;
 		_alphaZeroLift = builder.__alphaZeroLift;
 		_alphaEndLinearTrait = builder.__alphaEndLinearTrait;
 		_alphaStall = builder.__alphaStall;
@@ -716,7 +699,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 				clMax = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cl_max"));
 
 		}
-		else if(externalCdCurveFlag == Boolean.FALSE) {
+		if(externalCdCurveFlag == Boolean.FALSE) {
 			
 			String cDminProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cd_min");
 			if (cDminProperty!= null)
@@ -739,7 +722,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 				laminarBucketDepth = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/laminar_bucket_depth"));
 			
 		}
-		else if(externalCmCurveFlag == Boolean.FALSE) {
+		if(externalCmCurveFlag == Boolean.FALSE) {
 			
 			String cmAlphaQuarterChordProperty = reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_alpha_quarter_chord");
 			if (cmAlphaQuarterChordProperty!= null)
@@ -754,7 +737,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 				cmACAtStall = Double.valueOf(reader.getXMLPropertyByPath("//airfoil/aerodynamics/Cm_ac_at_stall"));
 
 		}
-		else if(externalClCurveFlag == Boolean.TRUE) {
+		if(externalClCurveFlag == Boolean.TRUE) {
 			
 			List<String> clCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cl_curve");
 			if(!clCurveProperty.isEmpty()) 
@@ -765,7 +748,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 				alphaForClCurve = reader.readArrayofAmountFromXML("//aerodynamics/airfoil_curves/alpha_for_Cl_curve");
 			
 		}
-		else if(externalCdCurveFlag == Boolean.TRUE) {
+		if(externalCdCurveFlag == Boolean.TRUE) {
 			
 			List<String> cdCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cd_curve");
 			if(!cdCurveProperty.isEmpty()) 
@@ -775,7 +758,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 			if(!clForCdCurveProperty.isEmpty()) 
 				clForCdCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cl_for_Cd_curve");
 		}
-		else if(externalCmCurveFlag == Boolean.TRUE) {
+		if(externalCmCurveFlag == Boolean.TRUE) {
 			
 			List<String> cmCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cm_curve");
 			if(!cmCurveProperty.isEmpty()) 
@@ -859,7 +842,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.append("\tr_le/c = " + _radiusLeadingEdge + "\n")
 				.append("\tx coordinates = " + Arrays.toString(_xCoords) + "\n")
 				.append("\tz coordinates = " + Arrays.toString(_zCoords) + "\n")
-				.append("\tphi_te = " + _angleAtTrailingEdge.to(NonSI.DEGREE_ANGLE) + "\n")
 				.append("\talpha_0l = " + _alphaZeroLift.to(NonSI.DEGREE_ANGLE) + "\n")
 				.append("\talpha_star = " + _alphaEndLinearTrait.to(NonSI.DEGREE_ANGLE) + "\n")
 				.append("\talpha_stall = " + _alphaStall.to(NonSI.DEGREE_ANGLE) + "\n")

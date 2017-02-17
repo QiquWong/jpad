@@ -125,10 +125,7 @@ public class ClimbCalc {
 					SI.METER
 					);
 		
-		Airfoil meanAirfoil = new Airfoil(
-				LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
-				_theAircraft.getWing().getAerodynamicDatabaseReader()
-				);
+		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
 		
 		double[] altitudeArray = MyArrayUtils.linspace(
 				initialClimbAltitude.doubleValue(SI.METER),
@@ -1824,6 +1821,8 @@ public class ClimbCalc {
 			}
 			
 			altitudeListAEO_SI.add(altitudeAEO_SI);
+			altitudeListAEO_SI.add(altitudeAEO_SI);
+			altitudeListAEO_Imperial.add(altitudeAEO_Imperial);
 			altitudeListAEO_Imperial.add(altitudeAEO_Imperial);
 			timeList.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 					_climbTimeListAEO.stream()

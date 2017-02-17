@@ -167,15 +167,12 @@ public class PayloadRangeCalcBreguet{
 		this.cD0 = MyArrayUtils.getMin(this.polarCD);
 		this.etaPropeller = theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller();
 		
-		Airfoil meanAirfoil = new Airfoil(
-				LiftingSurface.calculateMeanAirfoil(theAircraft.getWing()),
-				theAircraft.getWing().getAerodynamicDatabaseReader()
-				);
+		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(theAircraft.getWing()));
 		this.tcMax = meanAirfoil.getAirfoilCreator().getThicknessToChordRatio();
 		
 		this.aircraftType = theAircraft.getTypeVehicle();
 		this.engineType = theAircraft.getPowerPlant().getEngineType();
-		this.airfoilType = theAircraft.getWing().getAirfoilList().get(0).getType();
+		this.airfoilType = theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType();
 		
 		///////////////////////////////////////////////////////////////////////////////////////
 		// Defining the fuel fraction ratio as function of the aircraft type:

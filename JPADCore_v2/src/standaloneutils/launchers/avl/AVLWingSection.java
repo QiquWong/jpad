@@ -3,9 +3,7 @@ package standaloneutils.launchers.avl;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +55,7 @@ public interface AVLWingSection {
 				}
 				try{
 					PrintWriter writer = new PrintWriter(file.getAbsolutePath(), "UTF-8");
-					writer.println("x z ! " + airfoil.getName());
+					writer.println("x z ! " + airfoil.getAirfoilCreator().getName());
 					// writer.println("The second line");
 
 					Double[] xs = airfoil.getAirfoilCreator().getXCoords();

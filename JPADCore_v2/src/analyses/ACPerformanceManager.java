@@ -1408,7 +1408,7 @@ public class ACPerformanceManager {
 									theOperatingConditions.getMachClimb(),
 									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getType()
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
 							);
 					polarCDCruise[i] = DragCalc.calculateCDTotal(
@@ -1422,7 +1422,7 @@ public class ACPerformanceManager {
 									theOperatingConditions.getMachCruise(),
 									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getType()
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
 							);
 					polarCDTakeOff[i] = DragCalc.calculateCDTotal(
@@ -1436,7 +1436,7 @@ public class ACPerformanceManager {
 									theOperatingConditions.getMachCruise(),
 									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getType()
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
 							);
 					polarCDLanding[i] = DragCalc.calculateCDTotal(
@@ -1450,7 +1450,7 @@ public class ACPerformanceManager {
 									theOperatingConditions.getMachCruise(),
 									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getType()
+									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
 							);
 				}
@@ -3861,10 +3861,7 @@ public class ACPerformanceManager {
 			
 			//--------------------------------------------------------------------
 			// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
-			Airfoil meanAirfoil = new Airfoil(
-					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
-					_theAircraft.getWing().getAerodynamicDatabaseReader()
-					);
+			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
 
 			_dragListAltitudeParameterization = new ArrayList<DragMap>();
 			_thrustListAltitudeParameterization = new ArrayList<ThrustMap>();
@@ -4091,10 +4088,7 @@ public class ACPerformanceManager {
 
 		public void calculateFlightEnvelope(Amount<Mass> startCruiseMass) {
 
-			Airfoil meanAirfoil = new Airfoil(
-					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
-					_theAircraft.getWing().getAerodynamicDatabaseReader()
-					);
+			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
 
 			_intersectionList = new ArrayList<>();
 			_cruiseEnvelopeList = new ArrayList<>();
@@ -4449,10 +4443,7 @@ public class ACPerformanceManager {
 		
 		public void calculateCruiseGrid() {
 
-			Airfoil meanAirfoil = new Airfoil(
-					LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
-					_theAircraft.getWing().getAerodynamicDatabaseReader()
-					);
+			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
 			
 			List<DragMap> dragListWeightParameterization = new ArrayList<DragMap>();
 			List<ThrustMap> thrustListWeightParameterization = new ArrayList<ThrustMap>();

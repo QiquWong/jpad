@@ -32,9 +32,6 @@ public interface IAirfoilCreator {
 	Double[] getZCoords();
 	void setZCoords(Double[] zCoords);
 	
-	Amount<Angle> getAngleAtTrailingEdge();
-	void setAngleAtTrailingEdge(Amount<Angle> phiTE);
-	
 	Amount<Angle> getAlphaZeroLift();
 	void setAlphaZeroLift(Amount<Angle> alpha0l);
 	

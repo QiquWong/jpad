@@ -648,10 +648,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 		alphaArrayActual.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
 		LSAerodynamicsManager  theLSAnalysis = _theAircraft.getWing().getAerodynamics();
 		
-		Airfoil meanAirfoil = new Airfoil(
-				LiftingSurface.calculateMeanAirfoil(this._theAircraft.getWing()),
-				this._theAircraft.getWing().getAerodynamicDatabaseReader()
-				);
+		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(this._theAircraft.getWing()));
 
 		alphaActual = Amount.valueOf(alphaArrayActual.get(0), SI.RADIAN); 
 		cLActualArray[0]= calculateCLAtAlphaWingBody(alphaActual, meanAirfoil, true, theCondition);

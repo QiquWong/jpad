@@ -562,10 +562,7 @@ public class MissionProfileCalc {
 						5
 						);
 				
-				Airfoil meanAirfoil = new Airfoil(
-						LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()),
-						_theAircraft.getWing().getAerodynamicDatabaseReader()
-						);
+				Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
 				
 				int nPointSpeed = 1000;
 				double[] speedArray = MyArrayUtils.linspace(
