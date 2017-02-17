@@ -54,7 +54,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private List<Double> _cmCurve;
 	private List<Amount<Angle>> _alphaForClCurve;
 	private List<Double> _clForCdCurve;
-	private List<Amount<Angle>> _alphaForCmCurve;
+	private List<Double> _clForCmCurve;
 	
 	private List<PVector> _coordinatesRight = new ArrayList<PVector>();
 	private List<PVector> _coordinatesLeft = new ArrayList<PVector>();
@@ -341,7 +341,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private List<Double> __cmCurve = new ArrayList<>();
 		private List<Amount<Angle>> __alphaForClCurve = new ArrayList<>();
 		private List<Double> __clForCdCurve = new ArrayList<>();
-		private List<Amount<Angle>> __alphaForCmCurve = new ArrayList<>();
+		private List<Double> __clForCmCurve = new ArrayList<>();
 		
 
 		public AirfoilBuilder name (String name) {
@@ -499,8 +499,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 		
-		public AirfoilBuilder alphaForCmCurve(List<Amount<Angle>> alphaForCmCurve) {
-			__alphaForCmCurve = alphaForCmCurve;
+		public AirfoilBuilder clForCmCurve(List<Double> clForCmCurve) {
+			__clForCmCurve = clForCmCurve;
 			return this;
 		}
 		
@@ -542,7 +542,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_cmCurve = builder.__cmCurve;
 		_alphaForClCurve = builder.__alphaForClCurve;
 		_clForCdCurve = builder.__clForCdCurve;
-		_alphaForCmCurve = builder.__alphaForCmCurve;
+		_clForCmCurve = builder.__clForCmCurve;
 		
 		_coordinatesLeft = new ArrayList<>();
 		_coordinatesRight = new ArrayList<>();
@@ -634,8 +634,8 @@ public class AirfoilCreator implements IAirfoilCreator {
 		List<Double> cdCurve = new ArrayList<>();
 		List<Double> cmCurve = new ArrayList<>();
 		List<Amount<Angle>> alphaForClCurve = new ArrayList<>();
-		List<Amount<Angle>> alphaForCmCurve = new ArrayList<>();
 		List<Double> clForCdCurve = new ArrayList<>();
+		List<Double> clForCmCurve = new ArrayList<>();
 		Double xACNormalized = null;
 		Double machCritical = null;
 		Double xTransitionUpper = null;
@@ -764,9 +764,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 			if(!cmCurveProperty.isEmpty()) 
 				cmCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cm_curve");
 			
-			List<String> alphaForCmCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/alpha_for_Cm_curve");
-			if(!alphaForCmCurveProperty.isEmpty()) 
-				alphaForCmCurve = reader.readArrayofAmountFromXML("//aerodynamics/airfoil_curves/alpha_for_Cm_curve"); 
+			List<String> clForCmCurveProperty = reader.getXMLPropertiesByPath("//aerodynamics/airfoil_curves/Cl_for_Cm_curve");
+			if(!clForCmCurveProperty.isEmpty()) 
+				clForCmCurve = reader.readArrayDoubleFromXML("//aerodynamics/airfoil_curves/Cl_for_Cm_curve"); 
 			
 		}
 		
@@ -819,7 +819,7 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.cmCurve(cmCurve)
 				.alphaForClCurve(alphaForClCurve)
 				.clForCdCurve(clForCdCurve)
-				.alphaForCmCurve(alphaForCmCurve)
+				.clForCmCurve(clForCmCurve)
 				.build();
 
 		return airfoil;
@@ -903,14 +903,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 		this._clForCdCurve = _clForCdCurve;
 	}
 
-	public List<Amount<Angle>> getAlphaForCmCurve() {
-		return _alphaForCmCurve;
-	}
-
-	public void setAlphaForCmCurve(List<Amount<Angle>> _alphaForCmCurve) {
-		this._alphaForCmCurve = _alphaForCmCurve;
-	}
-
 	public Double getLaminarBucketSemiExtension() {
 		return _laminarBucketSemiExtension;
 	}
@@ -941,5 +933,13 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 	public void setCoordinatesLeft(List<PVector> _coordinatesLeft) {
 		this._coordinatesLeft = _coordinatesLeft;
+	}
+
+	public List<Double> getClForCmCurve() {
+		return _clForCmCurve;
+	}
+
+	public void setClForCmCurve(List<Double> _clForCmCurve) {
+		this._clForCmCurve = _clForCmCurve;
 	}
 }

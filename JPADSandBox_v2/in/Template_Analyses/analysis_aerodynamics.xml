@@ -8,19 +8,30 @@
 	-->
     <analysis plot="TRUE">
         <aerodynamics id="JPAD Test analysis - AERODYNAMICS">
-			<global_data>
+			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE">
+				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+				<adimensional_centre_of_gravity_x_position></adimensional_centre_of_gravity_x_position>
+				<adimensional_centre_of_gravity_z_position></adimensional_centre_of_gravity_x_position>
 				<alpha_body_initial unit="deg"></alpha_body_initial>
 				<alpha_body_final unit="deg"></alpha_body_final>
 				<number_of_alpha_body></number_of_alpha_body>
-				<number_of_points_semispawise></number_of_points_semispawise>
+				<number_of_points_semispawise_wing></number_of_points_semispawise_wing>
+				<number_of_points_semispawise_horizontal_tail></number_of_points_semispawise_horizontal_tail>
 				<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
 				<alpha_horizontal_tail_array_for_distributions unit="deg"></alpha_horizontal_tail_array_for_distributions>
+				<delta_elevator_array unit="deg"></delta_elevator_array>
+				<!-- optional values which are read only if the related attribute in "global_data" is "TRUE" --> 
+				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
+				<tau_elevator_function>
+					<tau>0.025</tau>
+					<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_elevator_function>
 			</global_data>
-			<wing>
-				<aerodynamic_centre method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
+			<wing_analyses>
+				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
-					<cL_Alpha method="NASA_BLACKWELL"></cL_Alpha>
-					<cL_vs_alpha method="NASA_BLACKWELL"></cL_vs_alpha> 
+					<cL_Alpha perform="TRUE" method="NASA_BLACKWELL"></cL_Alpha>
+					<cL_vs_alpha perform="TRUE" method="NASA_BLACKWELL"></cL_vs_alpha> 
 				</lift>
 				<high_lift>
 				
@@ -31,24 +42,10 @@
 				<pitching_moment>
 				
 				</pitching_moment>
-			</wing>
-			<horizontal_tail>
-				<aerodynamic_centre method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
-				<dynamic_pressure_ratio method="SEMPIEMPIRICAL"></dynamic_pressure_ratio>
-				<lift>
-				
-				</lift>
-				<high_lift>
-				
-				</high_lift>
-				<drag>
-				
-				</drag>
-				<pitching_moment>
-				
-				</pitching_moment>
-			</horizontal_tail>
-			<vertical_tail>
+			</wing_analyses>
+			<horizontal_tail_analyses>
+				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
+				<dynamic_pressure_ratio perform="TRUE" method="SEMPIEMPIRICAL"></dynamic_pressure_ratio>
 				<lift>
 				
 				</lift>
@@ -61,20 +58,36 @@
 				<pitching_moment>
 				
 				</pitching_moment>
-			</vertical_tail>
-			<fuselage>
+			</horizontal_tail_analyses>
+			<vertical_tail_analyses>
+				<lift>
+				
+				</lift>
+				<high_lift>
+				
+				</high_lift>
+				<drag>
+				
+				</drag>
+				<pitching_moment>
+				
+				</pitching_moment>
+			</vertical_tail_analyses>
+			<fuselage_analyses>
 			
-			</fuselage>
-			<nacelles>
+			</fuselage_analyses>
+			<nacelles_analyses>
 			
-			</nacelles>
-			<aircraft>
-				<longitudinal_static_stability>
-				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-					<adimensional_centre_of_gravity_x_position></adimensional_centre_of_gravity_x_position>
-					<adimensional_centre_of_gravity_z_position></adimensional_centre_of_gravity_x_position>
-				</longitudinal_static_stability>
-			</aircraft>
+			</nacelles_analyses>
+			<aircraft_analyses>
+				<downwash perform="TRUE" downwash_gradient="CONSTANT" method="SLINGERLAND"/>
+				<lift_curve perform="TRUE"/>
+				<drag_polar perform="TRUE"/>
+				<moment_curve perform="TRUE"/>
+				<longitudinal_static_stability perform="TRUE"/>
+				<lateral_static_stability perform="TRUE"/>
+				<directional_static_stability perform="TRUE"/>
+			</aircraft_analyses>
         </aerodynamics>
     </analysis>
 	<plot>

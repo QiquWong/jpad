@@ -1,5 +1,6 @@
 package calculators.aerodynamics;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,11 +125,11 @@ public class AirfoilCalc {
 	 */
 
 	public static void calculateCdvsClCurve(
-			Double [] clCurveAirfoil,
+			List<Double> clCurveAirfoil,
 			AirfoilCreator theAirfoilCreator
 			) {
 
-		Double [] cdCurve = new Double [clCurveAirfoil.length];
+		Double [] cdCurve = new Double [clCurveAirfoil.size()];
 
 		double cdMin = theAirfoilCreator.getCdMin();
 		double clAtCdMin = theAirfoilCreator.getClAtCdMin();
@@ -136,17 +137,17 @@ public class AirfoilCalc {
 		double laminarBucketDept = theAirfoilCreator.getLaminarBucketDepth();
 		double laminarBucketSemiExtension = theAirfoilCreator.getLaminarBucketSemiExtension();
 		
-		for (int i=0; i<clCurveAirfoil.length; i++){
-			if((clCurveAirfoil[i] >= (clAtCdMin + laminarBucketSemiExtension)) || (clCurveAirfoil[i] <= (clAtCdMin - laminarBucketSemiExtension))){
+		for (int i=0; i<clCurveAirfoil.size(); i++){
+			if((clCurveAirfoil.get(i) >= (clAtCdMin + laminarBucketSemiExtension)) || (clCurveAirfoil.get(i) <= (clAtCdMin - laminarBucketSemiExtension))){
 			cdCurve[i] = (
 					cdMin +
-					Math.pow(( clCurveAirfoil[i] - clAtCdMin), 2)*kFctorDragPolar)+
+					Math.pow(( clCurveAirfoil.get(i) - clAtCdMin), 2)*kFctorDragPolar)+
 			        laminarBucketDept;
 			}
 			else{
 				cdCurve[i] = (
 						cdMin +
-						Math.pow(( clCurveAirfoil[i] - clAtCdMin), 2)*kFctorDragPolar);
+						Math.pow(( clCurveAirfoil.get(i) - clAtCdMin), 2)*kFctorDragPolar);
 			}
 			
 		
@@ -160,19 +161,19 @@ public class AirfoilCalc {
 	 * @author Manuela Ruocco
 	 */
 
-	@SuppressWarnings("null")
-	public static void calculateCmvsAlphaCurve(
-			List<Amount<Angle>> alphaArray,
+	public static void calculateCmvsClCurve(
+			List<Double> clArray,
 			AirfoilCreator theAirfoilCreator
 			) {
 
-		Double [] cmCurve = new Double[alphaArray.size()];
+		Double [] cmCurve = new Double[clArray.size()];
 
 		double cmAC = theAirfoilCreator.getCmAC();
-		double cmAlpha = theAirfoilCreator.getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+		double cmCl = theAirfoilCreator.getCmAlphaQuarterChord().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+				/theAirfoilCreator.getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 		double cmACStall = theAirfoilCreator.getCmACAtStall();
-		Amount<Angle> alphaStar = theAirfoilCreator.getAlphaEndLinearTrait();
-		Amount<Angle> alphaStall = theAirfoilCreator.getAlphaStall();
+		double clStar = theAirfoilCreator.getClEndLinearTrait();
+		double clMax = theAirfoilCreator.getClMax();
 
 		// parabolic interpolation for non linear trait
 		double a = 0.0;
@@ -181,29 +182,29 @@ public class AirfoilCalc {
 		double d = 0.0;
 
 		// last linear value
-		double cmMaxLinear = cmAlpha *alphaStar.doubleValue(NonSI.DEGREE_ANGLE) + cmAC;
+		double cmMaxLinear = cmCl *clStar + cmAC;
 
-		for (int i=0; i<alphaArray.size(); i++){
-			if(alphaArray.get(i).doubleValue(NonSI.DEGREE_ANGLE)<= alphaStar.doubleValue(NonSI.DEGREE_ANGLE)){
-				cmCurve[i] = cmAlpha *alphaArray.get(i).doubleValue(NonSI.DEGREE_ANGLE) + cmAC;
+		for (int i=0; i<clArray.size(); i++){
+			if(clArray.get(i) <= clStar){
+				cmCurve[i] = cmCl *clArray.get(i) + cmAC;
 			}
 			else{
 				double[][] matrixData = { 
-						{Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 3),
-							Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
-							alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+						{Math.pow(clStar, 3),
+							Math.pow(clStar, 2),
+							clStar,
 							1.0},
-						{3* Math.pow(alphaStar.doubleValue(NonSI.DEGREE_ANGLE), 2),
-								2*alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+						{3* Math.pow(clStar, 2),
+								2*clStar,
 								1.0,
 								0.0},
-						{6*alphaStar.doubleValue(NonSI.DEGREE_ANGLE),
+						{6*clStar,
 									2.0,
 									0.0,
 									0.0},
-						{Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 3),
-										Math.pow(alphaStall.doubleValue(NonSI.DEGREE_ANGLE), 2),
-										alphaStall.doubleValue(NonSI.DEGREE_ANGLE),
+						{Math.pow(clMax, 3),
+										Math.pow(clMax, 2),
+										clMax,
 										1.0},
 
 
@@ -212,7 +213,7 @@ public class AirfoilCalc {
 				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 				double [] vector = {
 						cmMaxLinear,
-						cmAlpha,
+						cmCl,
 						0,
 						cmACStall,
 
@@ -225,9 +226,9 @@ public class AirfoilCalc {
 				c = solSystem[2];
 				d = solSystem[3];
 
-				cmCurve[i] = a * Math.pow(alphaArray.get(i).doubleValue(NonSI.DEGREE_ANGLE), 3) + 
-						b * Math.pow(alphaArray.get(i).doubleValue(NonSI.DEGREE_ANGLE), 2) + 
-						c * alphaArray.get(i).doubleValue(NonSI.DEGREE_ANGLE) +
+				cmCurve[i] = a * Math.pow(clArray.get(i), 3) + 
+						b * Math.pow(clArray.get(i), 2) + 
+						c * clArray.get(i) +
 						d;
 			}				
 		}		
@@ -317,7 +318,7 @@ public class AirfoilCalc {
 
 	public static void extractMomentCharacteristicsfromCurve(
 			Double[] cmCurve,
-			List<Amount<Angle>> alphaArrayforCmCurve,
+			List<Double> clArrayforCmCurve,
 			AirfoilCreator theAirfoilCreator
 			){
 
@@ -326,7 +327,7 @@ public class AirfoilCalc {
 		// cm0
 		
 		cmAC = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertListOfAmountTodoubleArray(alphaArrayforCmCurve),
+				MyArrayUtils.convertToDoublePrimitive(clArrayforCmCurve),
 				MyArrayUtils.convertToDoublePrimitive(cmCurve),
 				0.0
 				);
@@ -516,6 +517,200 @@ public class AirfoilCalc {
 		if (diff > 0)
 			cdWave = 20*Math.pow((diff),4);
 		return cdWave;
+	}
+	
+	/**
+	 * This method calculates the matrix of cl vs alpha distribution in n points along the semispan.
+	 * It defines a list of list where each list correspond to an airfoil along the semispan with the following structure
+	 * 
+	 * 		// Bidimensional airfoil curves as matrix
+		//
+		//  --------------------------> number of point semi span
+		//  |   || cl || cl
+		//  | a || cl || cl
+		//  | l	|| cl || cl
+		//	| p	|| cl || cl
+		//	| h ||    ||
+		//  | a ||    || 
+		//  |   ||    ||
+		//  \/
+		// number of point 2d curve
+		 * 
+		 * 
+	 * @param referenceAlphaArray. the reference angle in common of all list
+	 * @param this is the list of alpha array as input
+	 * @param this is the list of cl array as input, each one correspond to an alpha array
+	 * @param adimentional break points stations
+	 * @param adimentional distribution stations
+	 * @return
+	 *
+	 *
+	 * The reference alpha array is given as input.
+	 * @author Manuela Ruocco
+
+	 */
+	
+	public static List<List<Double>> calculateCLMatrixAirfoils(List<Amount<Angle>> referenceAlphaArray,
+			List<List<Amount<Angle>>> alphaArrayInput,
+			List<List<Double>> clArrayInput,
+			List<Double> yAdimensionalBreakPoints,
+			List<Double> yAdimensionalDistribution
+			){
+
+		List<List<Double>> clMatrixAirfoils = new ArrayList<>();
+
+		int numberOfAlpha = referenceAlphaArray.size();
+		int numberOfPointSemiSpanWise = yAdimensionalDistribution.size();
+		int numberOfGivenSection = clArrayInput.size();
+
+
+		// interpolation
+		List<List<Double>> clArrayBreakPoints = new ArrayList<>();
+
+		for (int i=0; i<numberOfGivenSection; i++){
+			clArrayBreakPoints.add(i, 
+					MyArrayUtils.convertDoubleArrayToListDouble(MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(alphaArrayInput.get(i)),
+							MyArrayUtils.convertToDoublePrimitive(clArrayInput.get(i)),
+							MyArrayUtils.convertListOfAmountTodoubleArray(referenceAlphaArray)
+							)
+							)
+					);
+		}
+		
+		// initialize cd
+		for (int i=0; i<numberOfPointSemiSpanWise; i++){
+			clMatrixAirfoils.add(clArrayBreakPoints.get(0));
+		}
+		
+		double [] clStar ,clDistribution;
+		double [][] clMatrix = new double [numberOfAlpha][ numberOfPointSemiSpanWise];
+
+		for (int i=0; i<numberOfAlpha; i++){
+			clStar =   new double [numberOfGivenSection];
+			clDistribution = new double [numberOfPointSemiSpanWise];
+			for (int ii=0; ii<numberOfGivenSection; ii++){
+				clStar[ii] = clArrayBreakPoints.get(ii).get(i);
+			}// given station
+
+			for (int iii=0; iii<numberOfPointSemiSpanWise; iii++){
+				clDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(yAdimensionalBreakPoints),
+						clStar, 
+						yAdimensionalDistribution.get(iii)
+						);
+
+				clMatrix[i][iii] = clDistribution[iii];
+			}//semispanwise
+		} // alpha 
+
+		// filling the list of list 
+
+		for (int k=0; k<numberOfPointSemiSpanWise; k++){
+			Double [] clListTemp = new Double [numberOfAlpha];
+			for (int kk=0; kk<numberOfAlpha; kk++){
+				clListTemp [kk] = clMatrix[kk][k];
+			}
+			clMatrixAirfoils.set(k,MyArrayUtils.convertDoubleArrayToListDouble(clListTemp));
+		}
+
+		return clMatrixAirfoils;
+	}
+	
+	/**
+	 * This method calculates the matrix of cd vs alpha distribution in n points along the semispan.
+	 * It defines a list of list where each list correspond to an airfoil along the semispan with the following structure
+	 * 
+	 * 		// Bidimensional airfoil curves as matrix
+		//
+		//  --------------------------> number of point semi span
+		//  |   || cd (or cm)  || cd (or cm) 
+		//  | c || cd (or cm)  || cd (or cm) 
+		//  | l	|| cd (or cm)  || cd (or cm) 
+		//	| 	|| cd (or cm)  || cd (or cm) 
+		//  \/
+		// number of point 2d curve
+		 * 
+		 * 
+	 * @param referenceAlphaArray. the reference angle in common of all list
+	 * @param this is the list of cl array as input
+	 * @param this is the list of cd array as input, each one correspond to an alpha array
+	 * @param adimentional break points stations
+	 * @param adimentional distribution stations
+	 * @return
+	 *
+	 *
+	 * The reference alpha array is given as input.
+	 * @author Manuela Ruocco
+
+	 */
+	
+	public static List<List<Double>> calculateAerodynamicCoefficientsMatrixAirfoils(
+			List<Double> referenceCLArray,
+			List<List<Double>> clArrayInput,
+			List<List<Double>> cdArrayInput,
+			List<Double> yAdimensionalBreakPoints,
+			List<Double> yAdimensionalDistribution
+			){
+
+		List<List<Double>> cdMatrixAirfoils = new ArrayList<>();
+
+		int numberOfCl = referenceCLArray.size();
+		int numberOfPointSemiSpanWise = yAdimensionalDistribution.size();
+		int numberOfGivenSection = clArrayInput.size();
+
+
+		// interpolation
+		List<List<Double>> cdArrayBreakPoints = new ArrayList<>();
+
+		for (int i=0; i<numberOfGivenSection; i++){
+			cdArrayBreakPoints.add(i, 
+					MyArrayUtils.convertDoubleArrayToListDouble(MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(clArrayInput.get(i)),
+							MyArrayUtils.convertToDoublePrimitive(cdArrayInput.get(i)),
+							MyArrayUtils.convertToDoublePrimitive(referenceCLArray)
+							)
+							)
+					);
+		}
+		
+		// initialize cd
+		for (int i=0; i<numberOfPointSemiSpanWise; i++){
+			cdMatrixAirfoils.add(cdArrayBreakPoints.get(0));
+		}
+		
+		double [] cdStar ,cdDistribution;
+		double [][] cdMatrix = new double [numberOfCl][ numberOfPointSemiSpanWise];
+
+		for (int i=0; i<numberOfCl; i++){
+			cdStar =   new double [numberOfGivenSection];
+			cdDistribution = new double [numberOfPointSemiSpanWise];
+			for (int ii=0; ii<numberOfGivenSection; ii++){
+				cdStar[ii] = cdArrayBreakPoints.get(ii).get(i);
+			}// given station
+
+			for (int iii=0; iii<numberOfPointSemiSpanWise; iii++){
+				cdDistribution [iii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(yAdimensionalBreakPoints),
+						cdStar, 
+						yAdimensionalDistribution.get(iii)
+						);
+
+				cdMatrix[i][iii] = cdDistribution[iii];
+			}//semispanwise
+		} // alpha 
+
+		// filling the list of list 
+
+		for (int k=0; k<numberOfPointSemiSpanWise; k++){
+			Double [] cdListTemp = new Double [numberOfCl];
+			for (int kk=0; kk<numberOfCl; kk++){
+				cdListTemp [kk] = cdMatrix[kk][k];
+			}
+			cdMatrixAirfoils.set(k,MyArrayUtils.convertDoubleArrayToListDouble(cdListTemp));
+		}
+
+		return cdMatrixAirfoils;
 	}
 	
 }

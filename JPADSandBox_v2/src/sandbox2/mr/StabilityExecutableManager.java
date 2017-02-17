@@ -30,6 +30,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.ACPerformanceManager.ACPerformanceCalculatorBuilder;
 import analyses.OperatingConditions;
 import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.AirfoilCalc;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -4311,7 +4312,7 @@ public class StabilityExecutableManager {
 			clListDragWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 
-		_wingCdAirfoilDistribution = AerodynamicCalc.calculateCDorCMMatrixAirfoils(
+		_wingCdAirfoilDistribution = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
 				clListDragWing,
 				clPolarAirfoilWingDragPolar, 
 				cDPolarAirfoilsWing,
@@ -4328,7 +4329,7 @@ public class StabilityExecutableManager {
 		//-----------cl curve--------------------------------
 		if(_wingairfoilLiftCoefficientCurve == MethodEnum.INPUT){
 		
-		_wingCLAirfoilsDistributionFinal = AerodynamicCalc.calculateCLMatrixAirfoils(
+		_wingCLAirfoilsDistributionFinal = AirfoilCalc.calculateCLMatrixAirfoils(
 				_alphasWing, 
 				alphaAirfoilsWing,
 				clDistributionAirfoilsWing,
@@ -4358,7 +4359,7 @@ public class StabilityExecutableManager {
 			_wingCLMomentAirfoilOutput = clListMomentWing;
 			
 			// matrix
-			_wingCMMomentAirfoilOutput = AerodynamicCalc.calculateCDorCMMatrixAirfoils(
+			_wingCMMomentAirfoilOutput = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
 					clListMomentWing,
 					_wingCLMomentAirfoilInput, 
 					_wingCMMomentAirfoilInput,
@@ -4398,7 +4399,7 @@ public class StabilityExecutableManager {
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 	
 		
-		_hTailCdAirfoilDistribution = AerodynamicCalc.calculateCDorCMMatrixAirfoils(
+		_hTailCdAirfoilDistribution = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
 				clListDragTail,
 				clPolarAirfoilHTailDragPolar, 
 				cDPolarAirfoilsHTail,
@@ -4415,7 +4416,7 @@ public class StabilityExecutableManager {
 		//-----------cl curve--------------------------------
 		if(_hTailairfoilLiftCoefficientCurve == MethodEnum.INPUT){
 		
-		_hTailCLAirfoilsDistributionFinal = AerodynamicCalc.calculateCLMatrixAirfoils(
+		_hTailCLAirfoilsDistributionFinal = AirfoilCalc.calculateCLMatrixAirfoils(
 				_alphasTail, 
 				alphaAirfoilsHTail,
 				clDistributionAirfoilsHTail,

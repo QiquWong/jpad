@@ -52,29 +52,45 @@ public class Airfoil {
 		//........................................................................
 		if(_theAirfoilCreator.getCmCurve().isEmpty()) {
 
-			_theAirfoilCreator.setAlphaForCmCurve(
-					MyArrayUtils.convertDoubleArrayToListOfAmount(
-							MyArrayUtils.linspace(
-									_theAirfoilCreator.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)-2,
-									_theAirfoilCreator.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE)+2,
+			_theAirfoilCreator.setClForCmCurve(
+					MyArrayUtils.convertDoubleArrayToListDouble(
+							MyArrayUtils.linspaceDouble(
+									-0.2,
+									_theAirfoilCreator.getClMax(),
 									30
-									),
-							NonSI.DEGREE_ANGLE
+									)
 							)
 					);
 
-			AirfoilCalc.calculateCmvsAlphaCurve(
-					_theAirfoilCreator.getAlphaForCmCurve(), 
+			AirfoilCalc.calculateCmvsClCurve(
+					_theAirfoilCreator.getClForCmCurve(), 
 					_theAirfoilCreator
 					);
 		}
 		else
 			AirfoilCalc.extractMomentCharacteristicsfromCurve(
 					MyArrayUtils.convertListOfDoubleToDoubleArray(_theAirfoilCreator.getCmCurve()),
-					_theAirfoilCreator.getAlphaForCmCurve(),
+					_theAirfoilCreator.getClForCmCurve(),
 					_theAirfoilCreator);
 		//........................................................................
+		if(_theAirfoilCreator.getCdCurve().isEmpty()) {
 
+			_theAirfoilCreator.setClForCdCurve(
+					MyArrayUtils.convertDoubleArrayToListDouble(
+							MyArrayUtils.linspaceDouble(
+									-0.2,
+									_theAirfoilCreator.getClMax(),
+									30
+									)
+							)
+					);
+
+			AirfoilCalc.calculateCdvsClCurve(
+					_theAirfoilCreator.getClForCdCurve(), 
+					_theAirfoilCreator
+					);
+		}
+		//........................................................................
 	}
 	
 	public AirfoilCreator getAirfoilCreator() {

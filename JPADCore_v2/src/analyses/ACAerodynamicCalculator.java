@@ -23,6 +23,7 @@ import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import standaloneutils.MyInterpolatingFunction;
 
 /**
  * Evaluate and store aerodynamic parameters relative to the whole aircraft.
@@ -49,7 +50,7 @@ public class ACAerodynamicCalculator {
 	// FROM INPUT (Passed from ACAnalysisManager)
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
-	private List<ConditionEnum> _theCondition;
+	private List<ConditionEnum> _theConditions;
 	//..............................................................................
 	// FROM INPUT (Passed from File)
 	private List<Double> _xCGAircraft;
@@ -58,20 +59,48 @@ public class ACAerodynamicCalculator {
 	private Amount<Angle> _alphaBodyFinal;
 	private int _numberOfAlphasBody;
 	private int _wingNumberOfPointSemiSpanWise;
+	private int _hTailNumberOfPointSemiSpanWise;
 	private List<Amount<Angle>> _alphaWingForDistribution;
 	private List<Amount<Angle>> _alphaHorizontalTailForDistribution;
 	private boolean _downwashConstant; // if TRUE--> constant, if FALSE--> variable
-	private Double _wingMomentumPole;  // pole referred to M.A.C.
-	private Double _hTailMomentumPole; // pole referred to M.A.C.
 	private Double _dynamicPressureRatio;
+	private MyInterpolatingFunction tauElevatorFunction;
+	private List<Amount<Angle>> deltaElevatorList;
 	//..............................................................................
 	// DERIVED INPUT
+	private Double _wingMomentumPole;  // pole referred to M.A.C.
+	private Double _hTailMomentumPole; // pole referred to M.A.C.
+	private Map <Amount<Angle>, Double> _tauElevator = new HashMap<Amount<Angle>, Double>();
+	
+	// for discretized airfoil Cl along sempispan
+	private List<List<Amount<Angle>>> _wingAirfoilsAlphaListBreakPoints = new ArrayList<>();
+	private List<List<Double>> _wingAirfoilsClListBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _discretizedWingAirfoilsCl = new ArrayList<List<Double>>();
+	
+	// for discretized airfoil Cd along sempispan
+	private List<List<Double>> _wingAirfoilsClForCdBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _wingAirfoilsCdListBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _discretizedWingAirfoilsCd = new ArrayList<List<Double>>();
+	
+	// for discretized airfoil Cm along sempispan
+	private List<List<Double>> _wingAirfoilsClForCmAtBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _wingAirfoilCmListBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _discretizedWingAirfoilsCm = new ArrayList<List<Double>>();
+	
+	// for discretized airfoil Cl along sempispan
+	private List<List<Amount<Angle>>> _hTailAirfoilsAlphaListBreakPoints = new ArrayList<>();
+	private List<List<Double>> _hTailAirfoilsClListBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _discretizedHTailAirfoilsCl = new ArrayList<List<Double>>();
+	
+	// for discretized airfoil Cd along sempispan
+	private List<List<Double>> _hTailAirfoilsClForCdBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _hTailAirfoilsCdListBreakPoints = new ArrayList<List<Double>>();
+	private List<List<Double>> _discretizedHTailAirfoilsCd = new ArrayList<List<Double>>();
 	
 	// Global
 	private List<Amount<Angle>> _alphaBodyList;
 	
 	// Wing
-	private Amount<Length> _wingZACRoot;
 	private Double _wingVortexSemiSpanToSemiSpanRatio;
 	private double _wingCLAlphaMachZero;
 	private Airfoil _wingMeanAirfoil;
@@ -79,20 +108,14 @@ public class ACAerodynamicCalculator {
 	
 	//..............................................................................
 	// OUTPUT
+	private List<List<Amount<Angle>>> _wingInducedAngleOfAttackAlongSemispan = new ArrayList<>();
 	
 	
 
 	
-	
-	//airfoil input curve 
-	private MethodEnum _wingairfoilLiftCoefficientCurve;
-	private List<List<Amount<Angle>>> alphaAirfoilsWing = new ArrayList<>();
-	private List<List<Double>> clDistributionAirfoilsWing = new ArrayList<List<Double>>();
-	private List<List<Amount<Angle>>> _wingInducedAngleOfAttack = new ArrayList<>();
-	private List<List<Double>> _wingCLAirfoilsDistribution = new ArrayList<List<Double>>();
-	private List<List<Double>> _wingCLAirfoilsDistributionFinal = new ArrayList<List<Double>>();
-	//input
-	private MethodEnum _wingairfoilMomentCoefficientCurve;
+	////////////////////////////////////////////////////////////////////////////////
+	//							          BACKUP                                  //
+	////////////////////////////////////////////////////////////////////////////////
 	private List<List<Double>> _wingCLMomentAirfoilInput = new ArrayList<List<Double>>();
 	private List<List<Double>> _wingCMMomentAirfoilInput = new ArrayList<List<Double>>();
 	//output
@@ -213,7 +236,6 @@ public class ACAerodynamicCalculator {
 	private Double _hTailTaperRatio;
 	private Amount<Length> _hTailSpan;  //not from input
 	private Amount<Length> _hTailSemiSpan;  // not from input
-	private int _hTailNumberOfPointSemiSpanWise;
 	private Double _hTailadimentionalKinkStation;
 	private int _hTailnumberOfGivenSections;
 	private Amount<Angle> _hTailSweepLE;
@@ -440,7 +462,6 @@ public class ACAerodynamicCalculator {
 
 	//Elevator
 	//these values are maps and the key is the angle of elevatordeflection
-	private Map <Amount<Angle>, Double> _tauElevator = new HashMap<Amount<Angle>, Double>();
 	
 	private Map <Amount<Angle>, Double> _deltaCLMaxElevator = new HashMap<Amount<Angle>, Double>();
 	private Map <Amount<Angle>, Double> _deltaCD0Elevator = new HashMap<Amount<Angle>, Double>();

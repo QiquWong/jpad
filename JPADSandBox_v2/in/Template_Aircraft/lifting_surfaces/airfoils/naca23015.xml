@@ -47,7 +47,7 @@
 				<Cd_curve></Cd_curve>
 				<Cl_for_Cd_curve></Cl_for_Cd_curve>
 				<Cm_curve></Cm_curve>
-				<alpha_for_Cm_curve unit="deg"></alpha_for_Cm_curve>
+				<Cl_for_Cm_curve></Cl_for_Cm_curve>
 			</airfoil_curves>
 			<!---->
 			<!-- these data are always needed -->            
