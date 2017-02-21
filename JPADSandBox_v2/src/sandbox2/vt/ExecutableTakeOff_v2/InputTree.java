@@ -2,6 +2,7 @@ package sandbox2.vt.ExecutableTakeOff_v2;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
+import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -10,20 +11,35 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
+import standaloneutils.MyInterpolatingFunction;
+import standaloneutils.MyUnits;
+
 public class InputTree {
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
 	
-	// ground conditions:
+	// field conditions:
 	private Amount<Velocity> vWind;
 	private Amount<Angle> alphaGround;
 	private Amount<Length> altitude;
+	private MyInterpolatingFunction muFunction;
+	private MyInterpolatingFunction muBrakeFunction; 
+	private MyInterpolatingFunction throttleGroundIdle;
+	
+	// take-off maneuver data:
+	private Amount<Duration> dtRotation;
+	private Amount<Duration> dtHold;
+	private Amount<Length> obstacleTakeOff;
+	private Double kRotation;
+	private Amount<?> alphaDotRotation;
+	private Double kCLmax;
+	private Double dragDueToEnigneFailure;
+	private Amount<?> kAlphaDot;
 	
 	// aircraft, wing and engine data:
 	private Amount<Mass> takeOffMass;
 	private Amount<Area> wingSurface;
-	private Amount<Length> wingSpan;
 	private double aspectRatio;
 	private Amount<Angle> iw;
 	private Amount<Length> wingToGroundDistance;
@@ -33,23 +49,34 @@ public class InputTree {
 	private Amount<?> cLalphaFlap;
 	private Amount<Force> t0;
 	private int nEngine;
-	private double[] netThrust;
-	private double[] machArray;
+	private MyInterpolatingFunction netThrust;
 	
 	// boolean flag concerning charts and engine model:
 	private boolean charts, engineModel, balancedFieldLength;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
+	@SuppressWarnings("unchecked")
 	public InputTree() {
 		
 		vWind = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		altitude = Amount.valueOf(0.0, SI.METER);
+		muFunction = new MyInterpolatingFunction();
+		muBrakeFunction = new MyInterpolatingFunction();
+		throttleGroundIdle = new MyInterpolatingFunction();
+		
+		dtRotation = Amount.valueOf(3, SI.SECOND);
+		dtHold = Amount.valueOf(0.5, SI.SECOND);
+		obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
+		kRotation = 1.05;
+		alphaDotRotation = Amount.valueOf(35, MyUnits.DEG_PER_SECOND);
+		kCLmax = 0.9;
+		dragDueToEnigneFailure = 0.0;
+		kAlphaDot = Amount.valueOf(0.04, NonSI.DEGREE_ANGLE.inverse());		
 		
 		takeOffMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		wingSurface = Amount.valueOf(0.0, SI.SQUARE_METRE);
-		wingSpan = Amount.valueOf(0.0, SI.METER);
 		aspectRatio = 0.0;
 		iw = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		wingToGroundDistance = Amount.valueOf(0.0, SI.METER);
@@ -105,14 +132,6 @@ public class InputTree {
 
 	public void setWingSurface(Amount<Area> wingSurface) {
 		this.wingSurface = wingSurface;
-	}
-
-	public Amount<Length> getWingSpan() {
-		return wingSpan;
-	}
-
-	public void setWingSpan(Amount<Length> wingSpan) {
-		this.wingSpan = wingSpan;
 	}
 
 	public double getAspectRatio() {
@@ -227,27 +246,107 @@ public class InputTree {
 		this.engineModel = engineModel;
 	}
 
-	public double[] getNetThrust() {
-		return netThrust;
-	}
-
-	public double[] getMachArray() {
-		return machArray;
-	}
-
-	public void setNetThrust(double[] netThrust) {
-		this.netThrust = netThrust;
-	}
-
-	public void setMachArray(double[] machArray) {
-		this.machArray = machArray;
-	}
-
 	public boolean isBalancedFieldLength() {
 		return balancedFieldLength;
 	}
 
 	public void setBalancedFieldLength(boolean balancedFieldLength) {
 		this.balancedFieldLength = balancedFieldLength;
+	}
+
+	public MyInterpolatingFunction getMuFunction() {
+		return muFunction;
+	}
+
+	public void setMuFunction(MyInterpolatingFunction muFunction) {
+		this.muFunction = muFunction;
+	}
+
+	public MyInterpolatingFunction getMuBrakeFunction() {
+		return muBrakeFunction;
+	}
+
+	public void setMuBrakeFunction(MyInterpolatingFunction muBrakeFunction) {
+		this.muBrakeFunction = muBrakeFunction;
+	}
+
+	public Amount<Duration> getDtRotation() {
+		return dtRotation;
+	}
+
+	public void setDtRotation(Amount<Duration> dtRotation) {
+		this.dtRotation = dtRotation;
+	}
+
+	public Amount<Duration> getDtHold() {
+		return dtHold;
+	}
+
+	public void setDtHold(Amount<Duration> dtHold) {
+		this.dtHold = dtHold;
+	}
+
+	public Amount<Length> getObstacleTakeOff() {
+		return obstacleTakeOff;
+	}
+
+	public void setObstacleTakeOff(Amount<Length> obstacleTakeOff) {
+		this.obstacleTakeOff = obstacleTakeOff;
+	}
+
+	public Double getkRotation() {
+		return kRotation;
+	}
+
+	public void setkRotation(Double kRotation) {
+		this.kRotation = kRotation;
+	}
+
+	public Amount<?> getAlphaDotRotation() {
+		return alphaDotRotation;
+	}
+
+	public void setAlphaDotRotation(Amount<?> alphaDotRotation) {
+		this.alphaDotRotation = alphaDotRotation;
+	}
+
+	public Double getkCLmax() {
+		return kCLmax;
+	}
+
+	public void setkCLmax(Double kCLmax) {
+		this.kCLmax = kCLmax;
+	}
+
+	public Double getDragDueToEnigneFailure() {
+		return dragDueToEnigneFailure;
+	}
+
+	public void setDragDueToEnigneFailure(Double dragDueToEnigneFailure) {
+		this.dragDueToEnigneFailure = dragDueToEnigneFailure;
+	}
+
+	public Amount<?> getkAlphaDot() {
+		return kAlphaDot;
+	}
+
+	public void setkAlphaDot(Amount<?> kAlphaDot) {
+		this.kAlphaDot = kAlphaDot;
+	}
+
+	public MyInterpolatingFunction getThrottleGroundIdle() {
+		return throttleGroundIdle;
+	}
+
+	public void setThrottleGroundIdle(MyInterpolatingFunction throttleGroundIdle) {
+		this.throttleGroundIdle = throttleGroundIdle;
+	}
+
+	public MyInterpolatingFunction getNetThrust() {
+		return netThrust;
+	}
+
+	public void setNetThrust(MyInterpolatingFunction netThrust) {
+		this.netThrust = netThrust;
 	}
 }

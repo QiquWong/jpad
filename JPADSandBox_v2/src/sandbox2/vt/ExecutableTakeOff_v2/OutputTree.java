@@ -25,6 +25,7 @@ public class OutputTree {
 						   rotation,
 						   airborne;
 	private Amount<Velocity> vsT0, vRot, vLO, v1, v2;
+	private Amount<Duration> takeOffDuration;
 	
 	// physical quantities lists:
 	private List<Double> alphaDot,
@@ -63,6 +64,8 @@ public class OutputTree {
 		groundRoll = Amount.valueOf(0.0, SI.METER);
 		rotation = Amount.valueOf(0.0, SI.METER);
 		airborne = Amount.valueOf(0.0, SI.METER);
+		
+		takeOffDuration = Amount.valueOf(0.0, SI.SECOND);
 		
 		vsT0 = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
 		vRot = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
@@ -375,6 +378,14 @@ public class OutputTree {
 
 	public void setVerticalDistance(List<Amount<Length>> verticalDistance) {
 		this.verticalDistance = verticalDistance;
+	}
+
+	public Amount<Duration> getTakeOffDuration() {
+		return takeOffDuration;
+	}
+
+	public void setTakeOffDuration(Amount<Duration> takeOffDuration) {
+		this.takeOffDuration = takeOffDuration;
 	}
 	
 }

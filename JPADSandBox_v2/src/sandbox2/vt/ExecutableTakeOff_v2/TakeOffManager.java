@@ -142,9 +142,6 @@ public class TakeOffManager {
 		List<String> aspectRatioProperty = reader.getXMLPropertiesByPath("//geometry/aspect_ratio");
 		input.setAspectRatio(Double.valueOf(aspectRatioProperty.get(0)));
 
-		List<String> spanProperty = reader.getXMLPropertiesByPath("//geometry/span");
-		input.setWingSpan(Amount.valueOf(Double.valueOf(spanProperty.get(0)), SI.METER));
-
 		List<String> surfaceProperty = reader.getXMLPropertiesByPath("//geometry/surface");
 		input.setWingSurface(Amount.valueOf(Double.valueOf(surfaceProperty.get(0)), SI.SQUARE_METRE));
 
@@ -228,23 +225,6 @@ public class TakeOffManager {
 				+ File.separator
 				);
 		
-		///////////////////////////////////
-		// TODO: READ FROM INPUT MANAGER //
-		///////////////////////////////////
-		
-		Amount<Duration> dtRot = Amount.valueOf(3, SI.SECOND);
-		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
-		double mu = 0.03;
-		double muBrake = 0.4;
-		double kAlphaDot = 0.04; // [1/deg]
-		double kcLMax = 0.85;
-		double kRot = 1.05;
-		double kFailure = 1.1;
-
-		double phi = 1.0;
-		double alphaReductionRate = -4; // [deg/s]
-		Amount<Length> obstacle = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
-		
 		TakeOffManager theTakeOffManager = new TakeOffManager();
 		
 		output = new OutputTree();
@@ -272,31 +252,30 @@ public class TakeOffManager {
 				
 		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
 		
-		////////////////////////////
-		// TODO: COMPLETE THIS !! //
-		////////////////////////////
-		
 		// Distances:
-//		_groundRollDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT);
-//		_rotationDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(_groundRollDistanceTakeOff).to(NonSI.FOOT);
-//		_airborneDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(_rotationDistanceTakeOff).minus(_groundRollDistanceTakeOff).to(NonSI.FOOT);
-//		_takeOffDistanceAEO = _groundRollDistanceTakeOff.plus(_rotationDistanceTakeOff).plus(_airborneDistanceTakeOff).to(NonSI.FOOT);
-//		_takeOffDistanceFAR25 = _takeOffDistanceAEO.times(1.15).to(NonSI.FOOT);
-//		
-//		// Velocities:
-//		_vStallTakeOff = _theTakeOffCalculator.getvSTakeOff().to(NonSI.KNOT);
-//		_vRotation = _theTakeOffCalculator.getvRot().to(NonSI.KNOT);
-//		_vLiftOff = _theTakeOffCalculator.getvLO().to(NonSI.KNOT);
-//		_v2 = _theTakeOffCalculator.getV2().to(NonSI.KNOT);
-//		
-//		// Duration:
-//		_takeOffDuration = _theTakeOffCalculator.getTakeOffResults().getTime().get(2);
+		output.setGroundRoll(theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT));
+		output.setRotation(theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(output.getGroundRoll()).to(NonSI.FOOT));
+		output.setAirborne(theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(output.getRotation()).minus(output.getGroundRoll()).to(NonSI.FOOT));
+		output.setTakeOffDistanceAOE(output.getGroundRoll().plus(output.getRotation()).plus(output.getAirborne()).to(NonSI.FOOT));
+		output.setTakeOffDistanceFAR25(output.getTakeOffDistanceAOE().times(1.15).to(NonSI.FOOT));
+		
+		// Duration:
+		output.setTakeOffDuration(theTakeOffCalculator.getTakeOffResults().getTime().get(2));
+		
+		// Velocities:
+		output.setVsT0(theTakeOffCalculator.getvSTakeOff().to(NonSI.KNOT));
+		output.setvRot(theTakeOffCalculator.getvRot().to(NonSI.KNOT));
+		output.setvLO(theTakeOffCalculator.getvLO().to(NonSI.KNOT));
+		output.setV2(theTakeOffCalculator.getV2().to(NonSI.KNOT));
 		
 		if(input.isCharts())
 			theTakeOffCalculator.createTakeOffCharts(chartsFolderPath);
 		
-		if(input.isBalancedFieldLength())
+		if(input.isBalancedFieldLength()) {
 			theTakeOffCalculator.calculateBalancedFieldLength();
+			output.setBalancedFieldLength(theTakeOffCalculator.getBalancedFieldLength().to(NonSI.FOOT));
+			output.setV1(theTakeOffCalculator.getV1().to(NonSI.KNOT));
+		}
 		
 		if(input.isCharts())
 			theTakeOffCalculator.createBalancedFieldLengthChart(chartsFolderPath);
@@ -368,7 +347,6 @@ public class TakeOffManager {
 		wingDataElement.appendChild(geometryDataElement);
 		
 		JPADStaticWriteUtils.writeSingleNode("aspect_ratio", input.getAspectRatio(), geometryDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("span", input.getWingSpan(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("surface", input.getWingSurface(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("distance_from_ground", input.getWingToGroundDistance(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("angle_of_incidence", input.getIw(), geometryDataElement, doc);
@@ -391,8 +369,8 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("number_of_engines", input.getnEngine(), engineDataElement, doc);
 	
 		if(!input.isEngineModel()) {
-		JPADStaticWriteUtils.writeSingleNode("net_thrust_array_single_engine", Arrays.toString(input.getNetThrust()), engineDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("mach_array", Arrays.toString(input.getMachArray()), engineDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("net_thrust_array_single_engine", Arrays.toString(input.getNetThrust()), engineDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("mach_array", Arrays.toString(input.getMachArray()), engineDataElement, doc);
 		}
 		
 		//--------------------------------------------------------------------------------------
@@ -868,7 +846,6 @@ public class TakeOffManager {
 		//-------------------------------------------------------------------------------------
 		// VARIABLE DECLARATION
 
-		private Aircraft aircraft;
 		private Amount<Duration> dtRot, dtHold,	
 		dtRec = Amount.valueOf(3, SI.SECOND),
 		tHold = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
@@ -894,7 +871,7 @@ public class TakeOffManager {
 		private Double vFailure;
 		private boolean isAborted;
 		
-		private double cLalphaFlap, mach;
+		private double cLalphaFlap;
 
 		// Statistics to be collected at every phase: (initialization of the lists through the builder
 		private TakeOffResultsMap takeOffResults = new TakeOffResultsMap();
@@ -917,64 +894,39 @@ public class TakeOffManager {
 		 * to perform the take-off distance calculation without doing all flaps analysis.
 		 * This may come in handy when only few data are available.
 		 */
-		public TakeOffCalculator(
-				Aircraft aircraft,
-				Amount<Length> altitude,
-				double mach,
-				Amount<Mass> maxTakeOffMass,
-				Amount<Duration> dtRot,
-				Amount<Duration> dtHold,
-				double kcLMax,
-				double kRot,
-				double alphaDotInitial,
-				double kFailure,
-				MyInterpolatingFunction groundIdlePhi,
-				double phi,
-				double kAlphaDot,
-				MyInterpolatingFunction mu,
-				MyInterpolatingFunction muBrake,
-				Amount<Length> wingToGroundDistance,
-				Amount<Length> obstacle,
-				Amount<Velocity> vWind,
-				Amount<Angle> alphaGround,
-				Amount<Angle> iw,
-				double cLmaxTO,
-				double cLZeroTO,
-				double cLalphaFlap
-				) {
-
+		@SuppressWarnings("unchecked")
+		public TakeOffCalculator() {
+			
 			// Required data
-			this.aircraft = aircraft;
-			this.altitude = altitude;
-			this.mach = mach;
-			this.maxTakeOffMass = maxTakeOffMass;
-			this.dtRot = dtRot;
-			this.dtHold = dtHold;
-			this.kcLMax = kcLMax;
-			this.kRot = kRot;
-			this.alphaDotInitial = alphaDotInitial;
-			this.kFailure = kFailure;
-			this.groundIdlePhi = groundIdlePhi;
-			this.phi = phi;
-			this.kAlphaDot = kAlphaDot;
-			this.mu = mu;
-			this.muBrake = muBrake;
-			this.wingToGroundDistance = wingToGroundDistance;
-			this.obstacle = obstacle;
-			this.vWind = vWind;
-			this.alphaGround = alphaGround;
-			this.iw = iw;
-			this.cLmaxTO = cLmaxTO;
-			this.cLalphaFlap = cLalphaFlap;
-			this.cL0 = cLZeroTO;
-			this.cLground = cLZeroTO + (cLalphaFlap*iw.getEstimatedValue());
+			this.altitude = input.getAltitude();
+			this.maxTakeOffMass = input.getTakeOffMass();
+			this.dtRot = input.getDtRotation();
+			this.dtHold = input.getDtHold();
+			this.kcLMax = input.getkCLmax();
+			this.kRot = input.getkRotation();
+			this.alphaDotInitial = input.getAlphaDotRotation().to(MyUnits.DEG_PER_SECOND).getEstimatedValue();
+			this.kFailure = input.getDragDueToEnigneFailure();
+			this.groundIdlePhi = input.getThrottleGroundIdle();
+			this.phi = 1.0;
+			this.kAlphaDot = input.getkAlphaDot().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			this.mu = input.getMuFunction();
+			this.muBrake = input.getMuBrakeFunction();
+			this.wingToGroundDistance = input.getWingToGroundDistance();
+			this.obstacle = input.getObstacleTakeOff();
+			this.vWind = input.getvWind();
+			this.alphaGround = input.getAlphaGround();
+			this.iw = input.getIw();
+			this.cLmaxTO = input.getcLmaxTO();
+			this.cLalphaFlap = input.getcLalphaFlap().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			this.cL0 = input.getcL0TO();
+			this.cLground = cL0 + (cLalphaFlap*iw.getEstimatedValue());
 			
 			// Reference velocities definition
 			vSTakeOff = Amount.valueOf(
 					SpeedCalc.calculateSpeedStall(
 							getAltitude().doubleValue(SI.METER),
-							maxTakeOffMass.times(AtmosphereCalc.g0).getEstimatedValue(),
-							aircraft.getWing().getSurface().getEstimatedValue(),
+							maxTakeOffMass.to(SI.KILOGRAM).times(AtmosphereCalc.g0).getEstimatedValue(),
+							input.getWingSurface().doubleValue(SI.SQUARE_METRE),
 							cLmaxTO
 							),
 					SI.METERS_PER_SECOND);
@@ -982,14 +934,22 @@ public class TakeOffManager {
 			
 			System.out.println("\n-----------------------------------------------------------");
 			System.out.println("CLmaxTO = " + cLmaxTO);
-			System.out.println("CL0 = " + cLZeroTO);
+			System.out.println("CL0 = " + cL0);
 			System.out.println("CLground = " + cLground);
 			System.out.println("VsTO = " + vSTakeOff);
 			System.out.println("VRot = " + vRot);
 			System.out.println("-----------------------------------------------------------\n");
 
 			// McCormick interpolated function --> See the excel file into JPAD DOCS
-			double hb = wingToGroundDistance.divide(aircraft.getWing().getSpan().times(Math.PI/4)).getEstimatedValue();
+			Amount<Length> wingSpan = Amount.valueOf(
+					Math.sqrt(
+							input.getWingSurface().to(SI.SQUARE_METRE)
+							.times(input.getAspectRatio())
+							.getEstimatedValue()
+							),
+					SI.METER
+					);
+			double hb = wingToGroundDistance.divide(wingSpan.to(SI.METER).times(Math.PI/4)).getEstimatedValue();
 			kGround = - 622.44*(Math.pow(hb, 5)) + 624.46*(Math.pow(hb, 4)) - 255.24*(Math.pow(hb, 3))
 					+ 47.105*(Math.pow(hb, 2)) - 0.6378*hb + 0.0055;
 			
@@ -1489,13 +1449,13 @@ public class TakeOffManager {
 						//----------------------------------------------------------------------------------------
 						// THRUST:
 						TakeOffCalculator.this.getThrust().add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3]),
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
 								SI.NEWTON)
 								);
 						//----------------------------------------------------------------------------------------
 						// THRUST HORIZONTAL:
 						TakeOffCalculator.this.getThrustHorizontal().add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
 												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1505,43 +1465,12 @@ public class TakeOffManager {
 						//----------------------------------------------------------------------------------------
 						// THRUST VERTICAL:
 						TakeOffCalculator.this.getThrustVertical().add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.sin(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
 										Amount.valueOf(
 												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 										),
 								SI.NEWTON)
-								);
-						//--------------------------------------------------------------------------------
-						// SFC:
-						TakeOffCalculator.this.getSfc().add(
-								(TakeOffCalculator.this.getThrust().get(
-										TakeOffCalculator.this.getThrust().size()-1
-										)
-										.doubleValue(SI.NEWTON))
-								*(0.224809)*(0.454/60)
-								*EngineDatabaseManager.getSFC(
-										SpeedCalc.calculateMach(
-												x[3],
-												x[1]
-												),
-										x[3],
-										EngineDatabaseManager.getThrustRatio(
-												SpeedCalc.calculateMach(
-														x[3],
-														x[1]
-														),
-												x[3],
-												TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-												TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineType(),
-												EngineOperatingConditionEnum.TAKE_OFF,
-												TakeOffCalculator.this.getAircraft().getPowerPlant()
-												),
-										TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-										TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineType(),
-										EngineOperatingConditionEnum.TAKE_OFF,
-										TakeOffCalculator.this.getAircraft().getPowerPlant()
-										)
 								);
 
 						//--------------------------------------------------------------------------------
@@ -1609,7 +1538,7 @@ public class TakeOffManager {
 						// TOTAL FORCE:
 						if(!isAborted) {
 							TakeOffCalculator.this.getTotalForce().add(Amount.valueOf(
-									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
+									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 											Amount.valueOf(
 													((DynamicsEquationsTakeOff)ode).alpha,
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1636,7 +1565,7 @@ public class TakeOffManager {
 						else {
 							if(t < tRec.getEstimatedValue())
 								TakeOffCalculator.this.getTotalForce().add(Amount.valueOf(
-										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
+										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 												Amount.valueOf(
 														((DynamicsEquationsTakeOff)ode).alpha,
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1707,7 +1636,7 @@ public class TakeOffManager {
 						if(!isAborted)
 							TakeOffCalculator.this.getAcceleration().add(Amount.valueOf(
 									(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
-									*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
+									*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 											Amount.valueOf(
 													((DynamicsEquationsTakeOff)ode).alpha,
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1734,7 +1663,7 @@ public class TakeOffManager {
 							if(t < tRec.getEstimatedValue())
 								TakeOffCalculator.this.getAcceleration().add(Amount.valueOf(
 										(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
-										*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
+										*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 												Amount.valueOf(
 														((DynamicsEquationsTakeOff)ode).alpha,
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1820,7 +1749,7 @@ public class TakeOffManager {
 													((DynamicsEquationsTakeOff)ode).alpha,
 													x[2],
 													t) 
-											+ (((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.sin(Amount.valueOf(
+											+ (((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(Amount.valueOf(
 													((DynamicsEquationsTakeOff)ode).alpha,
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())
 													)
@@ -2639,45 +2568,47 @@ public class TakeOffManager {
 			MyConfiguration.customizeAmountOutput();
 
 			StringBuilder sb = new StringBuilder();
-//			sb.append("\tTAKE-OFF RESULTS\n")
-//			.append("\t-------------------------------------\n")
-//			.append("\t\tGround roll distance = " + _groundRollDistanceTakeOff.to(SI.METER) + "\n")
-//			.append("\t\tRotation distance = " + _rotationDistanceTakeOff.to(SI.METER) + "\n")
-//			.append("\t\tAirborne distance = " + _airborneDistanceTakeOff.to(SI.METER) + "\n")
-//			.append("\t\tAEO take-off distance = " + _takeOffDistanceAEO.to(SI.METER) + "\n")
-//			.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25.to(SI.METER) + "\n")
-//			.append("\t\tBalanced field length = " + _balancedFieldLength.to(SI.METER) + "\n")
-//			.append("\t\t.....................................\n")
-//			.append("\t\tGround roll distance = " + _groundRollDistanceTakeOff.to(NonSI.FOOT) + "\n")
-//			.append("\t\tRotation distance = " + _rotationDistanceTakeOff.to(NonSI.FOOT) + "\n")
-//			.append("\t\tAirborne distance = " + _airborneDistanceTakeOff.to(NonSI.FOOT) + "\n")
-//			.append("\t\tAEO take-off distance = " + _takeOffDistanceAEO.to(NonSI.FOOT) + "\n")
-//			.append("\t\tFAR-25 take-off field length = " + _takeOffDistanceFAR25.to(NonSI.FOOT) + "\n")
-//			.append("\t\tBalanced field length = " + _balancedFieldLength.to(NonSI.FOOT) + "\n")
-//			.append("\t\t.....................................\n")
-//			.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOff.to(SI.METERS_PER_SECOND) + "\n")
-//			.append("\t\tDecision speed (V1) = " + _v1.to(SI.METERS_PER_SECOND) + "\n")
-//			.append("\t\tRotation speed (V_Rot) = " + _vRotation.to(SI.METERS_PER_SECOND) + "\n")
-//			.append("\t\tMiminum control speed (VMC) = " + _vMC.to(SI.METERS_PER_SECOND) + "\n")
-//			.append("\t\tLift-off speed (V_LO) = " + _vLiftOff.to(SI.METERS_PER_SECOND) + "\n")
-//			.append("\t\tTake-off safety speed (V2) = " + _v2.to(SI.METERS_PER_SECOND) + "\n")
-//			.append("\t\t.....................................\n")
-//			.append("\t\tStall speed take-off (VsTO)= " + _vStallTakeOff.to(NonSI.KNOT) + "\n")
-//			.append("\t\tDecision speed (V1) = " + _v1.to(NonSI.KNOT) + "\n")
-//			.append("\t\tRotation speed (V_Rot) = " + _vRotation.to(NonSI.KNOT) + "\n")
-//			.append("\t\tMiminum control speed (VMC) = " + _vMC.to(NonSI.KNOT) + "\n")
-//			.append("\t\tLift-off speed (V_LO) = " + _vLiftOff.to(NonSI.KNOT) + "\n")
-//			.append("\t\tTake-off safety speed (V2) = " + _v2.to(NonSI.KNOT) + "\n")
-//			.append("\t\t.....................................\n")
-//			.append("\t\tV1/VsTO = " + _v1.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
-//			.append("\t\tV_Rot/VsTO = " + _vRotation.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
-//			.append("\t\tVMC/VsTO = " + _vMC.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
-//			.append("\t\tV_LO/VsTO = " + _vLiftOff.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
-//			.append("\t\tV2/VsTO = " + _v2.to(SI.METERS_PER_SECOND).divide(_vStallTakeOff.to(SI.METERS_PER_SECOND)) + "\n")
-//			.append("\t\t.....................................\n")
-//			.append("\t\tTake-off duration = " + _takeOffDuration + "\n")
-//			.append("\t-------------------------------------\n")
-//			;
+			sb.append("\tTAKE-OFF RESULTS\n")
+			.append("\t-------------------------------------\n")
+			.append("\t\tGround roll distance = " + output.getGroundRoll().to(SI.METER) + "\n")
+			.append("\t\tRotation distance = " + output.getRotation().to(SI.METER) + "\n")
+			.append("\t\tAirborne distance = " + output.getAirborne().to(SI.METER) + "\n")
+			.append("\t\tAEO take-off distance = " + output.getTakeOffDistanceAOE().to(SI.METER) + "\n")
+			.append("\t\tFAR-25 take-off field length = " + output.getTakeOffDistanceFAR25().to(SI.METER) + "\n");
+			if(input.isBalancedFieldLength()) 
+				sb.append("\t\tBalanced field length = " + output.getBalancedFieldLength().to(SI.METER) + "\n");
+			sb.append("\t\t.....................................\n")
+			.append("\t\tGround roll distance = " + output.getGroundRoll().to(NonSI.FOOT) + "\n")
+			.append("\t\tRotation distance = " + output.getRotation().to(NonSI.FOOT) + "\n")
+			.append("\t\tAirborne distance = " + output.getAirborne().to(NonSI.FOOT) + "\n")
+			.append("\t\tAEO take-off distance = " + output.getTakeOffDistanceAOE().to(NonSI.FOOT) + "\n")
+			.append("\t\tFAR-25 take-off field length = " + output.getTakeOffDistanceFAR25().to(NonSI.FOOT) + "\n");
+			if(input.isBalancedFieldLength()) 
+				sb.append("\t\tBalanced field length = " + output.getBalancedFieldLength().to(NonSI.FOOT) + "\n");
+			sb.append("\t\t.....................................\n")
+			.append("\t\tStall speed take-off (VsTO)= " + output.getVsT0().to(SI.METERS_PER_SECOND) + "\n");
+			if(input.isBalancedFieldLength())
+				sb.append("\t\tDecision speed (V1) = " + output.getV1().to(SI.METERS_PER_SECOND) + "\n");
+			sb.append("\t\tRotation speed (V_Rot) = " + output.getvRot().to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tLift-off speed (V_LO) = " + output.getvLO().to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\tTake-off safety speed (V2) = " + output.getV2().to(SI.METERS_PER_SECOND) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tStall speed take-off (VsTO)= " + output.getVsT0().to(NonSI.KNOT) + "\n");
+			if(input.isBalancedFieldLength())
+				sb.append("\t\tDecision speed (V1) = " + output.getV1().to(NonSI.KNOT) + "\n");
+			sb.append("\t\tRotation speed (V_Rot) = " + output.getvRot().to(NonSI.KNOT) + "\n")
+			.append("\t\tLift-off speed (V_LO) = " + output.getvLO().to(NonSI.KNOT) + "\n")
+			.append("\t\tTake-off safety speed (V2) = " + output.getV2().to(NonSI.KNOT) + "\n")
+			.append("\t\t.....................................\n");
+			if(input.isBalancedFieldLength())
+				sb.append("\t\tV1/VsTO = " + output.getV1().to(SI.METERS_PER_SECOND).divide(output.getVsT0().to(SI.METERS_PER_SECOND)) + "\n");
+			sb.append("\t\tV_Rot/VsTO = " + output.getvRot().to(SI.METERS_PER_SECOND).divide(output.getVsT0().to(SI.METERS_PER_SECOND)) + "\n")
+			.append("\t\tV_LO/VsTO = " + output.getvLO().to(SI.METERS_PER_SECOND).divide(output.getVsT0().to(SI.METERS_PER_SECOND)) + "\n")
+			.append("\t\tV2/VsTO = " + output.getV2().to(SI.METERS_PER_SECOND).divide(output.getVsT0().to(SI.METERS_PER_SECOND)) + "\n")
+			.append("\t\t.....................................\n")
+			.append("\t\tTake-off duration = " + output.getTakeOffDuration() + "\n")
+			.append("\t-------------------------------------\n")
+			;
 			
 			return sb.toString();
 		}
@@ -2704,7 +2635,7 @@ public class TakeOffManager {
 				mu = TakeOffCalculator.this.mu;
 				muBrake = TakeOffCalculator.this.muBrake;
 				kAlpha = TakeOffCalculator.this.kAlphaDot;
-				ar = aircraft.getWing().getAspectRatio();
+				ar = input.getAspectRatio();
 				kGround = TakeOffCalculator.this.getkGround();
 				vWind = TakeOffCalculator.this.getvWind().getEstimatedValue();
 				altitude = TakeOffCalculator.this.getAltitude().getEstimatedValue();
@@ -2724,13 +2655,12 @@ public class TakeOffManager {
 
 				alpha = alpha(t);
 				double speed = x[1];
-				double altitude = x[3];
 				gamma = x[2];
 				
 				if(!isAborted) {
 					if( t < tEndRot.getEstimatedValue()) {
 						xDot[0] = speed;
-						xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
+						xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
 								- (mu(speed)*(weight - lift(speed, alpha, gamma, t))));
 						xDot[2] = 0.0;
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
@@ -2738,12 +2668,12 @@ public class TakeOffManager {
 					else {
 						xDot[0] = speed;
 						xDot[1] = (g0/weight)*(
-								thrust(speed, gamma,t, altitude)*Math.cos(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()) 
+								thrust(speed, gamma,t)*Math.cos(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()) 
 								- drag(speed, alpha, gamma, t) 
 								- weight*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
 						xDot[2] = 57.3*(g0/(weight*speed))*(
 								lift(speed, alpha, gamma, t) 
-								+ (thrust(speed, gamma, t, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+								+ (thrust(speed, gamma, t)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 					}
@@ -2751,14 +2681,14 @@ public class TakeOffManager {
 				else {
 					if( t < tRec.getEstimatedValue()) {
 						xDot[0] = speed;
-						xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
+						xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
 								- (mu.value(speed)*(weight - lift(speed, alpha, gamma, t))));
 						xDot[2] = 0.0;
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 					}
 					else {
 						xDot[0] = speed;
-						xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
+						xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
 								- (muBrake.value(speed)*(weight-lift(speed, alpha, gamma, t))));
 						xDot[2] = 0.0;
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
@@ -2766,135 +2696,37 @@ public class TakeOffManager {
 				}
 			}
 
-			public double thrust(double speed, double gamma, double time, double altitude) {
+			public double thrust(double speed, double gamma, double time) {
 
 				double theThrust = 0.0;
-
-				if (time < tFaiulre.getEstimatedValue())
-					theThrust =	ThrustCalc.calculateThrustDatabase(
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineNumber(),
-							TakeOffCalculator.this.getPhi(),
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.TAKE_OFF,
-							TakeOffCalculator.this.getAircraft().getPowerPlant(),
-							altitude,
-							SpeedCalc.calculateMach(
-									altitude,
-									speed + 
-									(TakeOffCalculator.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-											gamma,
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-									)
-							);
-				else {
-					if(!isAborted) {
-					// CHECK ON THE APR SETTING, if present use this ...
-					if ((TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
-							&& (Double.valueOf(
-									TakeOffCalculator.this.getAircraft()
-									.getPowerPlant()
-									.getTurbopropEngineDatabaseReader()
-									.getThrustAPR(
-											TakeOffCalculator.this.getMach(),
-											TakeOffCalculator.this.getAltitude().doubleValue(SI.METER),
-											TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR()
-											)
-									) != 0.0
-								)
-							)
-					theThrust =	ThrustCalc.calculateThrustDatabase(
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
-							TakeOffCalculator.this.getPhi(),
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-							TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineType(),
-							EngineOperatingConditionEnum.APR,
-							TakeOffCalculator.this.getAircraft().getPowerPlant(),
-							altitude,
-							SpeedCalc.calculateMach(
-									altitude,
-									speed + 
-									(TakeOffCalculator.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-											gamma,
-											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-									)
-							);
-					else
-						// ... otherwise use TAKE-OFF
-						theThrust =	ThrustCalc.calculateThrustDatabase(
-								TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
-								TakeOffCalculator.this.getPhi(),
-								TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-								TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineType(),
-								EngineOperatingConditionEnum.TAKE_OFF,
-								TakeOffCalculator.this.getAircraft().getPowerPlant(),
-								altitude,
-								SpeedCalc.calculateMach(
-										altitude,
-										speed + 
-										(TakeOffCalculator.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-												gamma,
-												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-										)
-								);
-					}
-					else {
-						if(time < tRec.doubleValue(SI.SECOND))
-							theThrust =	ThrustCalc.calculateThrustDatabase(
-									TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-									TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineNumber() - 1,
-									TakeOffCalculator.this.getPhi(),
-									TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
-									TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.TAKE_OFF,
-									TakeOffCalculator.this.getAircraft().getPowerPlant(),
-									altitude,
-									SpeedCalc.calculateMach(
-											altitude,
-											speed + 
-											(TakeOffCalculator.this.getvWind().getEstimatedValue()*Math.cos(Amount.valueOf(
-													gamma,
-													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
-											)
-									);
-						else
-							theThrust =	
-									TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON)
-									*throttleGrounIdle(speed)
-									*(TakeOffCalculator.this.getAircraft().getPowerPlant().getEngineNumber() - 1)
-									;
-					}
-				}
 				
+				if (time < tFaiulre.getEstimatedValue()) {
+					if(input.isEngineModel()) {
+						double thrustRatio = 1-(0.00252*speed)+(0.00000434*(Math.pow(speed, 2)));  // simplified thrust model for a turbofan
+						theThrust = input.getnEngine()*input.getT0().getEstimatedValue()*thrustRatio;
+					}
+					else
+						theThrust = input.getNetThrust().value(speed)*input.getnEngine();
+				}
+				else {
+					if(input.isEngineModel()) {
+						double thrustRatio = 1-(0.00252*speed)+(0.00000434*(Math.pow(speed, 2)));  // simplified thrust model for a turbofan
+						theThrust = (input.getnEngine()-1)*input.getT0().getEstimatedValue()*thrustRatio;
+					}
+					else
+						theThrust = input.getNetThrust().value(speed)*(input.getnEngine()-1);
+				}
+
 				return theThrust;
 			}
 
 			public double cD(double cL) {
-
-				double cD = MyMathUtils
-						.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertToDoublePrimitive(
-										aircraft.getTheAnalysisManager().getThePerformance().getPolarCLTakeOff()
-										),
-								MyArrayUtils.convertToDoublePrimitive(
-										aircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff()
-										),
-								cL
-								);
 				
-				double cD0 = MyArrayUtils.getMin(
-						MyArrayUtils.convertToDoublePrimitive(
-								aircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff()
-								)
-						);
-				double cDi = (cD-cD0)*kGround;
-
-				double cDnew = cD0 + cDi;
+				return input.getcD0Clean() 
+						+ input.getDeltaCD0Flap() 
+						+ input.getDeltaCD0LandingGear() 
+						+ ((Math.pow(cL, 2)/(Math.PI*input.getAspectRatio()*input.getOswald()))*kGround);
 				
-				return cDnew;
 			}
 
 			public double drag(double speed, double alpha, double gamma, double time) {
@@ -2904,10 +2736,10 @@ public class TakeOffManager {
 				if (time < tRec.getEstimatedValue())
 					cD = cD(cL(speed, alpha, gamma, time));
 				else
-					cD = kFailure + cD(cL(speed, alpha, gamma, time));
+					cD = input.getDragDueToEnigneFailure() + cD(cL(speed, alpha, gamma, time));
 
 				return 	0.5
-						*aircraft.getWing().getSurface().getEstimatedValue()
+						*input.getWingSurface().doubleValue(SI.SQUARE_METRE)
 						*AtmosphereCalc.getDensity(
 								altitude)
 						*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(
@@ -2928,7 +2760,7 @@ public class TakeOffManager {
 				}
 				else
 					return (2*weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))/
-							(TakeOffCalculator.this.getAircraft().getWing().getSurface().getEstimatedValue()*
+							(input.getWingSurface().doubleValue(SI.SQUARE_METRE)*
 									AtmosphereCalc.getDensity(
 											altitude)*
 									Math.pow(speed, 2));
@@ -2939,7 +2771,7 @@ public class TakeOffManager {
 				double cL = cL(speed, alpha, gamma, time);
 
 				return 	0.5
-						*aircraft.getWing().getSurface().getEstimatedValue()
+						*input.getWingSurface().doubleValue(SI.SQUARE_METRE)
 						*AtmosphereCalc.getDensity(
 								altitude)
 						*(Math.pow(speed + (vWind*Math.cos(Amount.valueOf(
@@ -3001,14 +2833,6 @@ public class TakeOffManager {
 
 		//-------------------------------------------------------------------------------------
 		// GETTERS AND SETTERS:
-
-		public Aircraft getAircraft() {
-			return aircraft;
-		}
-
-		public void setAircraft(Aircraft aircraft) {
-			this.aircraft = aircraft;
-		}
 
 		public Amount<Duration> getDtRot() {
 			return dtRot;
@@ -3532,14 +3356,6 @@ public class TakeOffManager {
 
 		public void setAltitude(Amount<Length> altitude) {
 			this.altitude = altitude;
-		}
-
-		public double getMach() {
-			return mach;
-		}
-
-		public void setMach(double mach) {
-			this.mach = mach;
 		}
 
 		public List<Double> getSfc() {

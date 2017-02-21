@@ -4,7 +4,7 @@
 			<!-- general data -->
 			<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
 			<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
-			<altitude unit="ft"></altitude> <!-- default = 0 ft --> 
+			<altitude unit="ft"></altitude>
 			<!-- here is possible to assign the fricition coefficient function of the speed. If only one value is given, the function is constant -->
 			<wheels_friction_coefficient_function>
 				<friction_coefficient>0.025</friction_coefficient>
@@ -20,15 +20,16 @@
 			<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
 			<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
 			<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
-			<alpha_dot_rotation unit="deg/s">4</alpha_dot_rotation> <!-- rotation angular velocity (default = 3.0 deg/s) -->
+			<alpha_dot_rotation>4</alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
 			<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
 			<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
-			<k_alpha_dot unit="1/°"></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
+			<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
             <aircraft_data>
 			    <take_off_mass unit = "kg">340194.0</take_off_mass>
                     <wing>
 					    <geometry>
                             <aspect_ratio>6.96</aspect_ratio>
+                            <span unit = "m">59.63</span>
                             <surface unit = "m²">511.0</surface>
                             <distance_from_ground unit = "m">6.56</distance_from_ground>
                             <angle_of_incidence unit = "°">3.0</angle_of_incidence>
@@ -47,14 +48,8 @@
 					    <static_thrust unit = "N">204000.0</static_thrust>
 						<number_of_engines>4</number_of_engines>
 					    <!--USE THE FOLLOWING TWO TAGS ONLY IF THE ENGINE MODEL IS KNOWN AND THE ATTRIBUTE "simplified_thrust_model" IS SET TO FALSE-->
-						<net_thrust_function_single_engine>
-							<net_thrust unit="N"></net_thrust>
-							<mach_array>0;0.05;0.1;0.15;0.2;0.25;0.3;0.35;0.4</mach_array>
-						</net_thrust_function_single_engine> 
-						<throttle_ground_idle>
-							<throttle>0.0143;-0.055;-0.19;-0.348</throttle>
-							<speed unit="kn">0;50;100;150</speed>
-						</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
+						<net_thrust_array_single_engine unit = "N">[68512.2, 65392.6, 62587.6, 60069.3, 57812.7, 55796.0, 53716.7, 51772.9, 50045.6]</net_thrust_array_single_engine>
+						<mach_array>[0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]</mach_array>
 					</engine>
             </aircraft_data>
         </INPUT>

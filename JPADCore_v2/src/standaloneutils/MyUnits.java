@@ -43,6 +43,7 @@ public class MyUnits {
 	public static final Unit<Dimensionless> NON_DIMENSIONAL = Unit.ONE;
 	public static final Unit<Acceleration> FOOT_PER_SQUARE_MINUTE = SI.METERS_PER_SQUARE_SECOND.times(0.000084666666666667);
 	public static final Unit<Velocity> FOOT_PER_MINUTE = SI.METERS_PER_SECOND.times(0.00508);
+	public static final Unit DEG_PER_SECOND = NonSI.DEGREE_ANGLE.divide(SI.SECOND);
 	
 	// used in mission simulations
 	
