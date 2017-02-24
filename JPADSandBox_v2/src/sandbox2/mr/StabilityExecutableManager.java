@@ -3626,7 +3626,9 @@ public class StabilityExecutableManager {
 		// Initialize Alpha Array Clean
 		initializeAlphaArrays();
 		// 3D curve	
-		this._wingliftCoefficient3DCurve = LiftCalc.calculateCLvsAlphaArray(
+		this._wingliftCoefficient3DCurve = new Double[this._alphasWing.size()];
+		this._wingliftCoefficient3DCurve = 
+				LiftCalc.calculateCLvsAlphaArray(
 				this._wingcLZero,
 				this._wingcLMax,
 				this._wingalphaStar,
@@ -8364,6 +8366,21 @@ public class StabilityExecutableManager {
 		this._horizontalTailCL = _horizontalWingCL;
 	}
 
-	
+	public Double[] getWingliftCoefficient3DCurve() {
+		return _wingliftCoefficient3DCurve;
+	}
+
+	public void setWingliftCoefficient3DCurve(Double[] _wingliftCoefficient3DCurve) {
+		this._wingliftCoefficient3DCurve = _wingliftCoefficient3DCurve;
+	}
+
+	public double[] getWingliftCoefficientDistributionatCLMax() {
+		return _wingliftCoefficientDistributionatCLMax;
+	}
+
+	public void setWingliftCoefficientDistributionatCLMax(double[] _wingliftCoefficientDistributionatCLMax) {
+		this._wingliftCoefficientDistributionatCLMax = _wingliftCoefficientDistributionatCLMax;
+	}
+
 
 }

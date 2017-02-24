@@ -14,6 +14,8 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -24,7 +26,7 @@ import org.apache.poi.util.SystemOutLogger;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.ui.internal.themes.ThemesExtension;
 import org.jscience.physics.amount.Amount;
-
+import org.w3c.dom.Document;
 
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
@@ -41,9 +43,11 @@ import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import sun.misc.Perf;
+import writers.JPADStaticWriteUtils;
 
 /*************************************************************************************************************************
  * This class uses the method of JPADXmlReader to read and write data         				    						*
@@ -859,7 +863,77 @@ public class ReaderWriter{
 					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.CL_TOTAL);	
 			}
 		}
-
-
 	}
+	
+	//WRITER--------------------------------------
+	public static void writeToXML(String filenameWithPathAndExt, StabilityExecutableManager theStabilityCalculator) {
+		
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		
+		try {
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+			
+			defineXmlTree(doc, docBuilder,theStabilityCalculator);
+			
+			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt );
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder, StabilityExecutableManager theStabilityCalculator) {
+		
+		org.w3c.dom.Element rootElement = doc.createElement("Aircraft_Longitudinal_Static_Stability");
+		doc.appendChild(rootElement);
+		
+		//--------------------------------------------------------------------------------------
+		// MAIN INPUT DATA
+		//--------------------------------------------------------------------------------------
+		
+		org.w3c.dom.Element inputRootElement = doc.createElement("MAIN_INPUT_DATA");
+		rootElement.appendChild(inputRootElement);
+
+		JPADStaticWriteUtils.writeSingleNode("aircraft_name", theStabilityCalculator.getAircraftName(), inputRootElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("X_CG_position", theStabilityCalculator.getXCGAircraft(), inputRootElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("Y_CG_position", theStabilityCalculator.getYCGAircraft(), inputRootElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("Z_CG_position", theStabilityCalculator.getZCGAircraft(), inputRootElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mach_number", theStabilityCalculator.getMachCurrent(), inputRootElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("altitude", theStabilityCalculator.getAltitude(), inputRootElement, doc);	
+		if(theStabilityCalculator.getDownwashConstant() == Boolean.TRUE)
+		JPADStaticWriteUtils.writeSingleNode("downwash gradient", "CONSTANT", inputRootElement, doc);	
+		if(theStabilityCalculator.getDownwashConstant() == Boolean.FALSE)
+		JPADStaticWriteUtils.writeSingleNode("downwash gradient", "VARIABLE", inputRootElement, doc);
+		
+		
+		//--------------------------------------------------------------------------------------
+		// OUTPUT
+		//--------------------------------------------------------------------------------------
+		
+		org.w3c.dom.Element outputRootElement = doc.createElement("OUTPUT");
+		rootElement.appendChild(outputRootElement);
+		
+		org.w3c.dom.Element liftElement = doc.createElement("LIFT");
+		outputRootElement.appendChild(liftElement);
+		
+		org.w3c.dom.Element wingLiftElement = doc.createElement("Wing");
+		outputRootElement.appendChild(wingLiftElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", theStabilityCalculator.getWingAlphaZeroLift(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_zero", theStabilityCalculator.getWingcLZeroCONDITION(), wingLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha", theStabilityCalculator.getWingclAlphaCONDITION(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_star", theStabilityCalculator.getWingcLStarCONDITION(), wingLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("alpha_star", theStabilityCalculator.getWingalphaStarCONDITION(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_max", theStabilityCalculator.getWingcLMaxCONDITION(), wingLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("alpha_Stall", theStabilityCalculator.getWingalphaStallCONDITION(), wingLiftElement, doc);	
+	
+		JPADStaticWriteUtils.writeSingleNode("alphas_wing", theStabilityCalculator.get_alphasWing(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getWingliftCoefficient3DCurve()), wingLiftElement, doc);	
+	
+		JPADStaticWriteUtils.writeSingleNode("wing_eta_stations", theStabilityCalculator.getWingYAdimensionalDistribution(), wingLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("alpha_max_linear", theStabilityCalculator.getWingalphaMaxLinearCONDITION(), wingLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cl_distribution_at_CL_max", MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(theStabilityCalculator.getWingliftCoefficientDistributionatCLMax())), wingLiftElement, doc);	
+	}
+	
 }

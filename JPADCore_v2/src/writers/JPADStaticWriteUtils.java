@@ -43,6 +43,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.customdata.MyArray;
 
@@ -240,6 +241,7 @@ public class JPADStaticWriteUtils {
 	 * @param valueToWrite
 	 * @return
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static String[] prepareSingleVariableToWrite(Object valueToWrite) {
 
 		String value = "", unit = "";
@@ -274,7 +276,9 @@ public class JPADStaticWriteUtils {
 				if (!Double.isNaN(((Amount) valueToWrite).getEstimatedValue())) {
 					
 					if (((Amount<?>) valueToWrite).getUnit().equals(SI.RADIAN)) {
-						value = String.valueOf(BigDecimal.valueOf(((Amount<?>) valueToWrite).to(NonSI.DEGREE_ANGLE).getEstimatedValue()).setScale(4, RoundingMode.HALF_UP));	
+						value = String.valueOf(
+								BigDecimal.valueOf(
+												((Amount<?>) valueToWrite).to(NonSI.DEGREE_ANGLE).getEstimatedValue()).setScale(4, RoundingMode.HALF_UP));	
 						unit = ((Amount<?>) valueToWrite).to(NonSI.DEGREE_ANGLE).getUnit().toString();
 
 					} else {
@@ -309,9 +313,21 @@ public class JPADStaticWriteUtils {
 				valueToWrite = (Enum<?>) valueToWrite;
 				value = ((Enum) valueToWrite).name().toString();
 
-			} else {
+			} else if(valueToWrite instanceof ArrayList<?>){
+				if (((ArrayList) valueToWrite).get(0) instanceof Amount<?>){
+					List<Double> valueList = new ArrayList<>();
+					List<Amount> amountList = new ArrayList<>();
+					amountList = (ArrayList) valueToWrite;
+					unit = amountList.get(0).getUnit().toString();
+					for (int i=0; i<((ArrayList) valueToWrite).size() ; i++){
+					valueList.add(i, amountList.get(i).getEstimatedValue() );
+					}
+					value = valueList.toString();
+				}
+			
+		    else {
 				value = valueToWrite.toString();
-			}
+			}}
 
 		} else {
 			value = MyConfiguration.notInitializedWarning;

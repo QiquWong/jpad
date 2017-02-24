@@ -59,7 +59,7 @@ public class Test_Stability{
 				MyConfiguration.initWorkingDirectoryTree();
 
 				String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
-				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+"Stability_Output"+ "Stability_Output.xml"; 
+				String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+"Stability_Output"+ File.separator +  "Stability_Output.xml"; 
 				
 
 		System.out.println("INPUT FILE ===> " + pathToXML);
@@ -185,7 +185,9 @@ public class Test_Stability{
 		
 		//WingAerodynamicCalc.calculateAll(theReader.getInput());
 		//theReader.writeToXML(filenameWithPathAndExt, input);
-
+		
+		
+		theReader.writeToXML(filenameWithPathAndExt, theCalculator);
 	}
 
 	//------------------------------------------------------------------------------------------
