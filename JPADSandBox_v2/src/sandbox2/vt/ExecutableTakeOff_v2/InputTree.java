@@ -1,5 +1,7 @@
 package sandbox2.vt.ExecutableTakeOff_v2;
 
+import java.util.List;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Duration;
@@ -24,8 +26,11 @@ public class InputTree {
 	private Amount<Angle> alphaGround;
 	private Amount<Length> altitude;
 	private MyInterpolatingFunction muFunction;
-	private MyInterpolatingFunction muBrakeFunction; 
-	private MyInterpolatingFunction throttleGroundIdle;
+	private List<Double> muList;
+	private List<Amount<Velocity>> muListSpeed;	
+	private MyInterpolatingFunction muBrakeFunction;
+	private List<Double> muBrakeList;
+	private List<Amount<Velocity>> muBrakeListSpeed;
 	
 	// take-off maneuver data:
 	private Amount<Duration> dtRotation;
@@ -50,6 +55,12 @@ public class InputTree {
 	private Amount<Force> t0;
 	private int nEngine;
 	private MyInterpolatingFunction netThrust;
+	private List<Amount<Force>> netThrustList;
+	private List<Double> netThrustMachList;
+	private MyInterpolatingFunction throttleGroundIdle;
+	private List<Double> throttleGroundIdleList;
+	private List<Amount<Velocity>> throttleGroundIdleListSpeed;
+	
 	
 	// boolean flag concerning charts and engine model:
 	private boolean charts, engineModel, balancedFieldLength;
@@ -348,5 +359,69 @@ public class InputTree {
 
 	public void setNetThrust(MyInterpolatingFunction netThrust) {
 		this.netThrust = netThrust;
+	}
+
+	public List<Amount<Force>> getNetThrustList() {
+		return netThrustList;
+	}
+
+	public void setNetThrustList(List<Amount<Force>> netThrustList) {
+		this.netThrustList = netThrustList;
+	}
+
+	public List<Double> getNetThrustMachList() {
+		return netThrustMachList;
+	}
+
+	public void setNetThrustMachList(List<Double> netThrustMachList) {
+		this.netThrustMachList = netThrustMachList;
+	}
+
+	public List<Double> getMuList() {
+		return muList;
+	}
+
+	public void setMuList(List<Double> muList) {
+		this.muList = muList;
+	}
+
+	public List<Amount<Velocity>> getMuListSpeed() {
+		return muListSpeed;
+	}
+
+	public void setMuListSpeed(List<Amount<Velocity>> muListSpeed) {
+		this.muListSpeed = muListSpeed;
+	}
+
+	public List<Double> getMuBrakeList() {
+		return muBrakeList;
+	}
+
+	public void setMuBrakeList(List<Double> muBrakeList) {
+		this.muBrakeList = muBrakeList;
+	}
+
+	public List<Amount<Velocity>> getMuBrakeListSpeed() {
+		return muBrakeListSpeed;
+	}
+
+	public void setMuBrakeListSpeed(List<Amount<Velocity>> muBrakeListSpeed) {
+		this.muBrakeListSpeed = muBrakeListSpeed;
+	}
+
+	public List<Double> getThrottleGroundIdleList() {
+		return throttleGroundIdleList;
+	}
+
+	public void setThrottleGroundIdleList(List<Double> throttleGroundIdleList) {
+		this.throttleGroundIdleList = throttleGroundIdleList;
+	}
+
+	public List<Amount<Velocity>> getThrottleGroundIdleListSpeed() {
+		return throttleGroundIdleListSpeed;
+	}
+
+	public void setThrottleGroundIdleListSpeed(List<Amount<Velocity>> throttleGroundIdleListSpeed) {
+		this.throttleGroundIdleListSpeed = throttleGroundIdleListSpeed;
 	}
 }

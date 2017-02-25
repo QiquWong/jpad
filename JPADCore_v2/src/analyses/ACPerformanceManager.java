@@ -1239,38 +1239,17 @@ public class ACPerformanceManager {
 			// CLalpha CLEAN
 			String cLAlphaCleanProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_clean_configuration");
 			if(cLAlphaCleanProperty != null)
-				cLAlphaClean = Amount.valueOf(
-							Double.valueOf(
-									reader.getXMLPropertyByPath(
-											"//performance/aerodynamics/cL_alpha_clean_configuration"
-											)
-									),
-									NonSI.DEGREE_ANGLE.inverse()
-									);
+				cLAlphaClean = reader.getXMLAmountWithUnitByPath("//performance/aerodynamics/cL_alpha_clean_configuration");
 			//...............................................................
 			// CLalpha TAKE-OFF
 			String cLAlphaTakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_take_off");
 			if(cLAlphaTakeOffProperty != null)
-				cLAlphaTakeOff = Amount.valueOf(
-							Double.valueOf(
-									reader.getXMLPropertyByPath(
-											"//performance/aerodynamics/cL_alpha_take_off"
-											)
-									),
-									NonSI.DEGREE_ANGLE.inverse()
-									);
+				cLAlphaTakeOff = reader.getXMLAmountWithUnitByPath("//performance/aerodynamics/cL_alpha_take_off"); 
 			//...............................................................
 			// CLalpha LANDING
 			String cLAlphaLandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_landing");
 			if(cLAlphaLandingProperty != null)
-				cLAlphaLanding = Amount.valueOf(
-							Double.valueOf(
-									reader.getXMLPropertyByPath(
-											"//performance/aerodynamics/cL_alpha_landing"
-											)
-									),
-									NonSI.DEGREE_ANGLE.inverse()
-									);
+				cLAlphaLanding = reader.getXMLAmountWithUnitByPath("//performance/aerodynamics/cL_alpha_landing"); 
 			//...............................................................
 			// DeltaCD0 TAKE-OFF
 			String deltaCD0TakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_take_off");

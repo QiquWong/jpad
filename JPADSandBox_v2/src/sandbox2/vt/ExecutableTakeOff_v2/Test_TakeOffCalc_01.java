@@ -15,6 +15,7 @@ import org.kohsuke.args4j.Option;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import standaloneutils.JPADXmlReader;
+import writers.JPADStaticWriteUtils;
 
 public class Test_TakeOffCalc_01 {
 
@@ -55,8 +56,12 @@ public class Test_TakeOffCalc_01 {
 				MyConfiguration.outputDirectory);
 		
 		String pathToXML = theTestObject.get_inputFile().getAbsolutePath();
-		String filenameWithPathAndExt = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
-				"Take-Off_executable" + File.separator + "TakeOff_Output"; 
+		String performanceFolderPath = JPADStaticWriteUtils.createNewFolder(
+				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) 
+				+ "Take-Off_executable_v2"
+				+ File.separator
+				);
+		String filenameWithPathAndExt = performanceFolderPath + "TakeOff_Output"; 
 		
 		System.out.println("INPUT ===> " + pathToXML);
 

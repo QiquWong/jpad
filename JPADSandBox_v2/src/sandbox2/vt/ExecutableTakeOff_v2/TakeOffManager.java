@@ -3,8 +3,6 @@ package sandbox2.vt.ExecutableTakeOff_v2;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
@@ -22,12 +21,12 @@ import javax.measure.unit.SI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
 import org.apache.commons.math3.ode.FirstOrderIntegrator;
 import org.apache.commons.math3.ode.events.EventHandler;
-import org.apache.commons.math3.ode.events.EventHandler.Action;
 import org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator;
 import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
@@ -42,22 +41,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.components.Aircraft;
-import calculators.performance.TakeOffCalc;
-import calculators.performance.ThrustCalc;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.MyConfiguration;
-import configuration.enumerations.EngineOperatingConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.PerformanceEnum;
-import database.databasefunctions.engine.EngineDatabaseManager;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
-import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -85,17 +74,20 @@ public class TakeOffManager {
 	 * @param pathToXML
 	 * @throws ParserConfigurationException
 	 */
-	public static void importFromXML(String pathToXML) throws ParserConfigurationException {
+	@SuppressWarnings("unchecked")
+	public static void importFromXML(String pathToXML) throws ParserConfigurationException, IOException {
 
+		MyConfiguration.customizeAmountOutput();
+		
 		input = new InputTree();
 
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading input file data ...\n");
-		
-		//---------------------------------------------------------------------------------
+
+		//===========================================================================================
 		// CHARTS AND ENGINE MODEL FLAGS:
-		//---------------------------------------------------------------------------------
+		/********************************************************************************************/
 		NodeList nodelistRoot = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//take_off_executable");
 		Node nodeRoot  = nodelistRoot.item(0); 
@@ -106,9 +98,9 @@ public class TakeOffManager {
 			input.setCharts(true);
 		else
 			input.setCharts(false);
-		
+
 		System.out.println("\tCHARTS CREATION : " + input.isCharts());
-		
+
 		// engine model:
 		if(elementRoot.getAttribute("simplified_thrust_model").equalsIgnoreCase("TRUE"))
 			input.setEngineModel(true);
@@ -116,105 +108,414 @@ public class TakeOffManager {
 			input.setEngineModel(false);
 
 		System.out.println("\tSIMPLIFIED ENGINE MODEL : " + input.isEngineModel() + "\n");
-
-		//---------------------------------------------------------------------------------
-		// GROUND CONDITION:
-		//---------------------------------------------------------------------------------
-		List<String> alphaGroundProperty = reader.getXMLPropertiesByPath("//ground_conditions/alpha");
-		input.setAlphaGround(Amount.valueOf(Double.valueOf(alphaGroundProperty.get(0)), NonSI.DEGREE_ANGLE));
-
-		List<String> vWindProperty = reader.getXMLPropertiesByPath("//ground_conditions/wind_speed");
-		input.setvWind(Amount.valueOf(Double.valueOf(vWindProperty.get(0)), SI.METERS_PER_SECOND));
-
-		List<String> altitudeProperty = reader.getXMLPropertiesByPath("//ground_conditions/altitude");
-		input.setAltitude(Amount.valueOf(Double.valueOf(altitudeProperty.get(0)), SI.METER));
-
-		//---------------------------------------------------------------------------------
+		
+		// balanced field length:
+		if(elementRoot.getAttribute("balanced_field_length").equalsIgnoreCase("TRUE"))
+			input.setBalancedFieldLength(true);
+		else
+			input.setBalancedFieldLength(false);
+		System.out.println("\tBALANCED FIELD LENGTH : " + input.isBalancedFieldLength() + "\n");
+		
+		//===========================================================================================
 		// WEIGHT:	
-		//---------------------------------------------------------------------------------------
-		List<String> takeOffMassProperty = reader.getXMLPropertiesByPath("//aircraft_data/take_off_mass");
-		input.setTakeOffMass(Amount.valueOf(Double.valueOf(takeOffMassProperty.get(0)), SI.KILOGRAM));
+		/********************************************************************************************/
+		// TAKE-OFF MASS
+		String takeOffMassProperty = reader.getXMLPropertyByPath("//aircraft_data/take_off_mass");
+		if(takeOffMassProperty != null)
+			input.setTakeOffMass( (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//aircraft_data/take_off_mass").to(SI.KILOGRAM));
 
-		//---------------------------------------------------------------------------------------
-		// WING:	
-		//---------------------------------------------------------------------------------------
-		// Geometry:
-		List<String> aspectRatioProperty = reader.getXMLPropertiesByPath("//geometry/aspect_ratio");
-		input.setAspectRatio(Double.valueOf(aspectRatioProperty.get(0)));
+		//===========================================================================================
+		// WING GEOMETRY:	
+		/********************************************************************************************/
+		// ASPECT RATIO
+		String aspectRatioProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/geometry/aspect_ratio");
+		if(aspectRatioProperty != null)
+			input.setAspectRatio(Double.valueOf(aspectRatioProperty));
+		//...............................................................
+		// SURFACE
+		String surfaceProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/geometry/surface");
+		if(surfaceProperty != null)
+			input.setWingSurface((Amount<Area>)reader.getXMLAmountWithUnitByPath("//aircraft_data/wing/geometry/surface").to(SI.SQUARE_METRE));
+		//...............................................................
+		// DISTANCE FROM GROUND
+		String wingDistanceFromGroundProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/geometry/distance_from_ground");
+		if(wingDistanceFromGroundProperty != null)
+			input.setWingToGroundDistance(reader.getXMLAmountLengthByPath("//aircraft_data/wing/geometry/distance_from_ground").to(SI.METER));
+		//...............................................................
+		// Iw
+		String iWProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/geometry/angle_of_incidence");
+		if(iWProperty != null)
+			input.setIw(reader.getXMLAmountAngleByPath("//aircraft_data/wing/geometry/angle_of_incidence").to(NonSI.DEGREE_ANGLE));
+		
+		//===========================================================================================
+		// AERODYNAMICS DATA:
+		/********************************************************************************************/
+		//...............................................................
+		// CD0
+		String cD0Property = reader.getXMLPropertyByPath("//aircraft_data/wing/aerodynamic_data/cD0_clean");
+		if(cD0Property != null)
+			input.setcD0Clean(Double.valueOf(cD0Property));
+		//...............................................................
+		// OSWALD TO
+		String oswladTOProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/aerodynamic_data/oswald");
+		if(oswladTOProperty != null)
+			input.setOswald(Double.valueOf(oswladTOProperty));
+		//...............................................................
+		// CLalpha TAKE-OFF
+		String cLAlphaTakeOffProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/aerodynamic_data/cL_alpha_take_off");
+		if(cLAlphaTakeOffProperty != null)
+			input.setcLalphaFlap(reader.getXMLAmountWithUnitByPath("//aircraft_data/wing/aerodynamic_data/cL_alpha_take_off").to(NonSI.DEGREE_ANGLE.inverse())); 
+		//...............................................................
+		// DeltaCD0 FLAP TAKE-OFF
+		String deltaCD0TakeOffProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/aerodynamic_data/delta_cD0_flap");
+		if(deltaCD0TakeOffProperty != null)
+			input.setDeltaCD0Flap(Double.valueOf(deltaCD0TakeOffProperty));
+		//...............................................................
+		// DeltaCD0 LANDING GEARS
+		String deltaCD0LandingGearsProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/aerodynamic_data/delta_cD0_landing_gears");
+		if(deltaCD0LandingGearsProperty != null)
+			input.setDeltaCD0LandingGear(Double.valueOf(deltaCD0LandingGearsProperty));
+		//...............................................................
+		// CLmax TAKE-OFF
+		String cLmaxTakeOffProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/aerodynamic_data/cL_max_take_off");
+		if(cLmaxTakeOffProperty != null)
+			input.setcLmaxTO(Double.valueOf(cLmaxTakeOffProperty));
+		//...............................................................
+		// CL0 TAKE-OFF
+		String cL0TakeOffProperty = reader.getXMLPropertyByPath("//aircraft_data/wing/aerodynamic_data/cL0_take_off");
+		if(cL0TakeOffProperty != null)
+			input.setcL0TO(Double.valueOf(cL0TakeOffProperty));
 
-		List<String> surfaceProperty = reader.getXMLPropertiesByPath("//geometry/surface");
-		input.setWingSurface(Amount.valueOf(Double.valueOf(surfaceProperty.get(0)), SI.SQUARE_METRE));
 
-		List<String> wingDistanceFromGroundProperty = reader.getXMLPropertiesByPath("//geometry/distance_from_ground");
-		input.setWingToGroundDistance(Amount.valueOf(Double.valueOf(wingDistanceFromGroundProperty.get(0)), SI.METER));
-
-		List<String> iWProperty = reader.getXMLPropertiesByPath("//geometry/angle_of_incidence");
-		input.setIw(Amount.valueOf(Double.valueOf(iWProperty.get(0)), NonSI.DEGREE_ANGLE));
-
-		//---------------------------------------------------------------------------------------
-		// Aerodynamic data:
-		List<String> oswaldProperty = reader.getXMLPropertiesByPath("//aerodynamic_data/oswald");
-		input.setOswald(Double.valueOf(oswaldProperty.get(0)));
-
-		List<String> cD0CleanProperty = reader.getXMLPropertiesByPath("//aerodynamic_data/cD0_clean");
-		input.setcD0Clean(Double.valueOf(cD0CleanProperty.get(0)));
-
-		List<String> deltaCD0FlapProperty = reader.getXMLPropertiesByPath("//aerodynamic_data/delta_cD0_flap");
-		input.setDeltaCD0Flap(Double.valueOf(deltaCD0FlapProperty.get(0)));
-
-		List<String> deltaCD0LandingGearProperty = reader.getXMLPropertiesByPath("//aerodynamic_data/delta_cD0_landing_gears");
-		input.setDeltaCD0LandingGear(Double.valueOf(deltaCD0LandingGearProperty.get(0)));
-
-		List<String> cLmaxTOProperty = reader.getXMLPropertiesByPath("//aerodynamic_data/cL_max_take_off");
-		input.setcLmaxTO(Double.valueOf(cLmaxTOProperty.get(0)));
-
-		List<String> cL0TOProperty = reader.getXMLPropertiesByPath("//aerodynamic_data/cL0_take_off");
-		input.setcL0TO(Double.valueOf(cL0TOProperty.get(0)));
-
-		List<String> cLalphaTOProperty = reader.getXMLPropertiesByPath("//aerodynamic_data/cL_alpha_take_off");
-		input.setcLalphaFlap(Amount.valueOf(Double.valueOf(cLalphaTOProperty.get(0)), NonSI.DEGREE_ANGLE.inverse()));
-
-		//---------------------------------------------------------------------------------------
+		//===========================================================================================
 		// ENGINE:	
-		//---------------------------------------------------------------------------------------
-		List<String> t0Property = reader.getXMLPropertiesByPath("//engine/static_thrust");
-		input.setT0(Amount.valueOf(Double.valueOf(t0Property.get(0)), SI.NEWTON));
+		/********************************************************************************************/
+		List<Amount<Force>> netThrustFunction = new ArrayList<>();
+		List<Double> netThrustFunctionMach = new ArrayList<>(); 
+		List<Double> throttleGroundIdleTakeOffFunction = new ArrayList<>();
+		List<Amount<Velocity>> speedThrottleGroundIdleTakeOffFunction = new ArrayList<>();
+		
+		//...............................................................
+		// T0
+		if(input.isEngineModel()) {
+			String t0Property = reader.getXMLPropertyByPath("//aircraft_data/engine/static_thrust");
+			if(t0Property != null)
+				input.setT0((Amount<Force>) reader.getXMLAmountWithUnitByPath("//aircraft_data/engine/static_thrust").to(SI.NEWTON));
+		}
+		//...............................................................
+		// NUMBER OF ENGINES
+		String nEngineProperty = reader.getXMLPropertyByPath("//aircraft_data/engine/number_of_engines");
+		if (nEngineProperty != null)
+			input.setnEngine(Integer.valueOf(nEngineProperty));
 
-		List<String> nEngineProperty = reader.getXMLPropertiesByPath("//engine/number_of_engines");
-		input.setnEngine(Integer.valueOf(nEngineProperty.get(0)));
+		if(!input.isEngineModel()) {
+			//...............................................................
+			// NET THRUST
+			String netThrustFunctionProperty = reader.getXMLPropertyByPath("//aircraft_data/engine/net_thrust_function_single_engine/net_thrust");
+			if(netThrustFunctionProperty != null)
+				netThrustFunction = reader.readArrayofAmountFromXML("//aircraft_data/engine/net_thrust_function_single_engine/net_thrust"); 
+			String netThrustFunctionMachProperty = reader.getXMLPropertyByPath("//aircraft_data/engine/net_thrust_function_single_engine/mach_array");
+			if(netThrustFunctionMachProperty != null)
+				netThrustFunctionMach = reader.readArrayDoubleFromXML("//aircraft_data/engine/net_thrust_function_single_engine/mach_array");
+
+			if(netThrustFunction.size() > 1)
+				if(netThrustFunction.size() != netThrustFunctionMach.size())
+				{
+					System.err.println("NET THRUST ARRAY AND THE RELATED MACH ARRAY MUST HAVE THE SAME LENGTH !");
+					System.exit(1);
+				}
+			if(netThrustFunction.size() == 1) {
+				netThrustFunction.add(netThrustFunction.get(0));
+				netThrustFunctionMach.add(0.0);
+				netThrustFunctionMach.add(1.0);
+			}
+
+			input.setNetThrustList(netThrustFunction.stream().map(x -> x.to(SI.NEWTON)).collect(Collectors.toList()));
+			input.setNetThrustMachList(netThrustFunctionMach);
+
+			MyInterpolatingFunction netThrustInterpolatingFunction = new MyInterpolatingFunction();
+			netThrustInterpolatingFunction.interpolateLinear(
+					MyArrayUtils.convertToDoublePrimitive(netThrustFunctionMach),
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							netThrustFunction.stream()
+							.map(x -> x.to(SI.NEWTON))
+							.collect(Collectors.toList())
+							)
+					);
+			input.setNetThrust(netThrustInterpolatingFunction);
+		}
+		//...............................................................
+		// GROUND IDLE THROTTLE
+		String throttleGroundIdleTakeOffFunctionProperty = reader.getXMLPropertyByPath("//aircraft_data/engine/throttle_ground_idle/throttle");
+		if(throttleGroundIdleTakeOffFunctionProperty != null)
+			throttleGroundIdleTakeOffFunction = reader.readArrayDoubleFromXML("//aircraft_data/engine/throttle_ground_idle/throttle"); 
+		String speedThrottleGroundIdleTakeOffFunctionProperty = reader.getXMLPropertyByPath("//aircraft_data/engine/throttle_ground_idle/speed");
+		if(speedThrottleGroundIdleTakeOffFunctionProperty != null) 
+			speedThrottleGroundIdleTakeOffFunction = reader.readArrayofAmountFromXML("//aircraft_data/engine/throttle_ground_idle/speed");
 		
-		List<String> machArrayProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/mach_array").get(0));
-		input.setMachArray(new double[machArrayProperty.size()]);
-		for(int i=0; i<machArrayProperty.size(); i++)
-			input.getMachArray()[i] = Double.valueOf(machArrayProperty.get(i));
+		List<Amount<Velocity>> speedMeterPerSecondThrottleGroundIdleTakeOffFunction = 
+				speedThrottleGroundIdleTakeOffFunction.stream()
+				.map(s -> s.to(SI.METERS_PER_SECOND))
+				.collect(Collectors.toList());
 		
-		List<String> netThrustProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//engine/net_thrust_array_single_engine").get(0));
-		input.setNetThrust(new double[netThrustProperty.size()]);
-		for(int i=0; i<netThrustProperty.size(); i++)
-			input.getNetThrust()[i] = Double.valueOf(netThrustProperty.get(i));
-			
+		if(throttleGroundIdleTakeOffFunction.size() > 1)
+			if(throttleGroundIdleTakeOffFunction.size() != throttleGroundIdleTakeOffFunction.size())
+			{
+				System.err.println("THROTTLE ARRAY AND THE RELATED SPEED ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(throttleGroundIdleTakeOffFunction.size() == 1) {
+			throttleGroundIdleTakeOffFunction.add(throttleGroundIdleTakeOffFunction.get(0));
+			speedMeterPerSecondThrottleGroundIdleTakeOffFunction.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			speedMeterPerSecondThrottleGroundIdleTakeOffFunction.add(Amount.valueOf(1.0, SI.METERS_PER_SECOND));
+		}
+		
+		input.setThrottleGroundIdleList(throttleGroundIdleTakeOffFunction);
+		input.setThrottleGroundIdleListSpeed(speedThrottleGroundIdleTakeOffFunction.stream().map(x -> x.to(SI.METERS_PER_SECOND)).collect(Collectors.toList()));
+		
+		MyInterpolatingFunction throttleGroundIdleTakeOffInterpolatingFunction = new MyInterpolatingFunction();
+		throttleGroundIdleTakeOffInterpolatingFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(speedMeterPerSecondThrottleGroundIdleTakeOffFunction),
+				MyArrayUtils.convertToDoublePrimitive(throttleGroundIdleTakeOffFunction)
+				);
+		input.setThrottleGroundIdle(throttleGroundIdleTakeOffInterpolatingFunction);
+		
+		//===========================================================================================
+		// READING SIMULATION DATA ...	
+		/********************************************************************************************/
+		
+		// default values
+		Amount<Velocity> windSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		Amount<Angle> alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		Amount<Length> takeOffAltitude = Amount.valueOf(0.0, NonSI.FOOT).to(SI.METER);
+		
+		List<Double> muFunction = new ArrayList<>();
+		List<Amount<Velocity>> muFunctionSpeed = new ArrayList<>();
+		List<Double> muBrakeFunction = new ArrayList<>();
+		List<Amount<Velocity>> muBrakeFunctionSpeed = new ArrayList<>();
+
+		Amount<Duration> dtRotation = Amount.valueOf(3.0, SI.SECOND);
+		Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
+		Amount<Length> obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
+		Double kRotation = 1.05;
+		Amount<?> alphaDotRotation = Amount.valueOf(3.0, MyUnits.DEG_PER_SECOND);
+		Double kCLmax = 0.9;
+		Double dragDueToEngineFailure = 0.0050;
+		Amount<?> kAlphaDot = Amount.valueOf(0.04, NonSI.DEGREE_ANGLE.inverse());
+
+		//...............................................................
+		// WIND SPEED
+		String windSpeedProperty = reader.getXMLPropertyByPath("//simulation_parameters/wind_speed_along_runway");
+		if(windSpeedProperty != null)
+			input.setvWind((Amount<Velocity>) reader.getXMLAmountWithUnitByPath("//simulation_parameters/wind_speed_along_runway").to(SI.METERS_PER_SECOND));
+		else
+			input.setvWind(windSpeed);
+		
+		//...............................................................
+		// ALPHA GROUND
+		String alphaGroundProperty = reader.getXMLPropertyByPath("//simulation_parameters/alpha_ground");
+		if(alphaGroundProperty != null)
+			input.setAlphaGround((Amount<Angle>) reader.getXMLAmountWithUnitByPath("//simulation_parameters/alpha_ground").to(NonSI.DEGREE_ANGLE));
+		else
+			input.setAlphaGround(alphaGround);
+		
+		//...............................................................
+		// TAKE-OFF ALTITUDE
+		String takeOffAltitudeProperty = reader.getXMLPropertyByPath("//simulation_parameters/altitude");
+		if(takeOffAltitudeProperty != null)
+			input.setAltitude(reader.getXMLAmountLengthByPath("//simulation_parameters/altitude").to(SI.METER));
+		else
+			input.setAltitude(takeOffAltitude);
+		
+		//...............................................................
+		// WHEELS FRICTION COEFFICIENT FUNCTION
+		String wheelsFrictionCoefficientFunctionProperty = reader.getXMLPropertyByPath("//simulation_parameters/wheels_friction_coefficient_function/friction_coefficient");
+		if(wheelsFrictionCoefficientFunctionProperty != null)
+			muFunction = reader.readArrayDoubleFromXML("//simulation_parameters/wheels_friction_coefficient_function/friction_coefficient"); 
+		String wheelsFrictionCoefficientFunctionSpeedProperty = reader.getXMLPropertyByPath("//simulation_parameters/wheels_friction_coefficient_function/speed");
+		if(wheelsFrictionCoefficientFunctionSpeedProperty != null)
+			muFunctionSpeed = reader.readArrayofAmountFromXML("//simulation_parameters/wheels_friction_coefficient_function/speed");
+
+		if(muFunction.size() > 1)
+			if(muFunction.size() != muFunctionSpeed.size())
+			{
+				System.err.println("FRICTION COEFFICIENT ARRAY AND THE RELATED SPEED ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(muFunction.size() == 1) {
+			muFunction.add(muFunction.get(0));
+			muFunctionSpeed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			muFunctionSpeed.add(Amount.valueOf(10000.0, SI.METERS_PER_SECOND));
+		}
+		if(muFunction.size() == 0) {
+			muFunction.add(0.025);
+			muFunction.add(0.025);
+			muFunctionSpeed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			muFunctionSpeed.add(Amount.valueOf(10000.0, SI.METERS_PER_SECOND));
+		}
+
+		input.setMuList(muFunction);
+		input.setMuListSpeed(muFunctionSpeed.stream().map(x -> x.to(SI.METERS_PER_SECOND)).collect(Collectors.toList()));
+		
+		MyInterpolatingFunction muInterpolatingFunction = new MyInterpolatingFunction();
+		muInterpolatingFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						muFunctionSpeed.stream()
+						.map(f -> f.to(SI.METERS_PER_SECOND))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertToDoublePrimitive(muFunction)
+				);
+		input.setMuFunction(muInterpolatingFunction);
+
+		//...............................................................
+		// WHEELS FRICTION COEFFICIENT (WITH BRAKES) FUNCTION
+		String wheelsFrictionCoefficientBrakesFunctionProperty = reader.getXMLPropertyByPath("//simulation_parameters/wheels_friction_coefficient_with_brakes_function/friction_coefficient_with_brakes");
+		if(wheelsFrictionCoefficientBrakesFunctionProperty != null)
+			muBrakeFunction = reader.readArrayDoubleFromXML("//simulation_parameters/wheels_friction_coefficient_with_brakes_function/friction_coefficient_with_brakes"); 
+		String wheelsFrictionCoefficientBrakesFunctionSpeedProperty = reader.getXMLPropertyByPath("//simulation_parameters/wheels_friction_coefficient_with_brakes_function/speed");
+		if(wheelsFrictionCoefficientBrakesFunctionSpeedProperty != null)
+			muBrakeFunctionSpeed = reader.readArrayofAmountFromXML("//simulation_parameters/wheels_friction_coefficient_with_brakes_function/speed");
+
+		if(muBrakeFunction.size() > 1)
+			if(muBrakeFunction.size() != muBrakeFunctionSpeed.size())
+			{
+				System.err.println("FRICTION COEFFICIENT (WITH BRAKES) ARRAY AND THE RELATED SPEED ARRAY MUST HAVE THE SAME LENGTH !");
+				System.exit(1);
+			}
+		if(muBrakeFunction.size() == 1) {
+			muBrakeFunction.add(muBrakeFunction.get(0));
+			muBrakeFunctionSpeed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			muBrakeFunctionSpeed.add(Amount.valueOf(10000.0, SI.METERS_PER_SECOND));
+		}
+		if(muBrakeFunction.size() == 0) {
+			muBrakeFunction.add(0.3);
+			muBrakeFunction.add(0.3);
+			muBrakeFunctionSpeed.add(Amount.valueOf(0.0, SI.METERS_PER_SECOND));
+			muBrakeFunctionSpeed.add(Amount.valueOf(10000.0, SI.METERS_PER_SECOND));
+		}
+		
+		input.setMuBrakeList(muBrakeFunction);
+		input.setMuBrakeListSpeed(muBrakeFunctionSpeed.stream().map(x -> x.to(SI.METERS_PER_SECOND)).collect(Collectors.toList()));
+		
+		MyInterpolatingFunction muBrakeInterpolatingFunction = new MyInterpolatingFunction();
+		muBrakeInterpolatingFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						muBrakeFunctionSpeed.stream()
+						.map(f -> f.to(SI.METERS_PER_SECOND))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertToDoublePrimitive(muBrakeFunction)
+				);
+		input.setMuBrakeFunction(muBrakeInterpolatingFunction);
+		
+		//...............................................................
+		// dt ROTATION
+		String dtRotationProperty = reader.getXMLPropertyByPath("//simulation_parameters/dt_rotation");
+		if(dtRotationProperty != null)
+			input.setDtRotation((Amount<Duration>) reader.getXMLAmountWithUnitByPath("//simulation_parameters/dt_rotation").to(SI.SECOND));
+		else
+			input.setDtRotation(dtRotation);
+
+		//...............................................................
+		// dt HOLD
+		String dtHoldProperty = reader.getXMLPropertyByPath("//simulation_parameters/dt_hold");
+		if(dtHoldProperty != null)
+			input.setDtHold((Amount<Duration>) reader.getXMLAmountWithUnitByPath("//simulation_parameters/dt_hold").to(SI.SECOND));
+		else
+			input.setDtHold(dtHold);
+
+		//...............................................................
+		// OBSTACLE TAKE-OFF
+		String obstacleTakeOffProperty = reader.getXMLPropertyByPath("//simulation_parameters/obstacle_take_off");
+		if(obstacleTakeOffProperty != null)
+			input.setObstacleTakeOff(reader.getXMLAmountLengthByPath("//simulation_parameters/obstacle_take_off").to(SI.METER));
+		else
+			input.setObstacleTakeOff(obstacleTakeOff);
+
+		//...............................................................
+		// K ROTATION
+		String kRotationProperty = reader.getXMLPropertyByPath("//simulation_parameters/k_rotation");
+		if(kRotationProperty != null)
+			input.setkRotation(Double.valueOf(reader.getXMLPropertyByPath("//simulation_parameters/k_rotation")));
+		else
+			input.setkRotation(kRotation);
+
+		//...............................................................
+		// ALPHA DOT ROTATION
+		String alphaDotRotationProperty = reader.getXMLPropertyByPath("//simulation_parameters/alpha_dot_rotation");
+		if(alphaDotRotationProperty != null)
+			input.setAlphaDotRotation(reader.getXMLAmountWithUnitByPath("//simulation_parameters/alpha_dot_rotation").to(MyUnits.DEG_PER_SECOND));
+		else
+			input.setAlphaDotRotation(alphaDotRotation);
+
+		//...............................................................
+		// K CLmax
+		String kCLmaxProperty = reader.getXMLPropertyByPath("//simulation_parameters/k_cLmax");
+		if(kCLmaxProperty != null)
+			input.setkCLmax(Double.valueOf(reader.getXMLPropertyByPath("//simulation_parameters/k_cLmax")));
+		else
+			input.setkCLmax(kCLmax);
+
+		//...............................................................
+		// DRAG DUE TO ENGINE FAILURE
+		String dragDueToEngineFailureProperty = reader.getXMLPropertyByPath("//simulation_parameters/drag_due_to_engine_failure");
+		if(dragDueToEngineFailureProperty != null)
+			input.setDragDueToEnigneFailure(Double.valueOf(reader.getXMLPropertyByPath("//simulation_parameters/drag_due_to_engine_failure")));
+		else
+			input.setDragDueToEnigneFailure(dragDueToEngineFailure);
+
+		//...............................................................
+		// K ALPHA DOT
+		String kAlphaDotProperty = reader.getXMLPropertyByPath("//simulation_parameters/k_alpha_dot");
+		if(kAlphaDotProperty != null)
+			input.setkAlphaDot(reader.getXMLAmountWithUnitByPath("//simulation_parameters/k_alpha_dot").to(NonSI.DEGREE_ANGLE.inverse()));
+		else
+			input.setkAlphaDot(kAlphaDot);
+		
 		//---------------------------------------------------------------------------------------
 		// Print data:
-		System.out.println("\tAlpha body at ground = " + input.getAlphaGround().getEstimatedValue() + " " + input.getAlphaGround().getUnit());
-		System.out.println("\tWind speed = " + input.getvWind().getEstimatedValue() + " " + input.getvWind().getUnit());
-		System.out.println("\tField altitude = " + input.getAltitude().getEstimatedValue() + " " + input.getAltitude().getUnit() + "\n");
-		System.out.println("\tTake-off mass = " + input.getTakeOffMass().getEstimatedValue() + " " + input.getTakeOffMass().getUnit() + "\n");
+		System.out.println("\tTake-off mass = " + input.getTakeOffMass().getEstimatedValue() + " " + input.getTakeOffMass().getUnit());
+		System.out.println("...............................................................................................................");
 		System.out.println("\tAspect Ratio = " + input.getAspectRatio());
-		System.out.println("\tSpan = " + input.getWingSpan().getEstimatedValue() + " " + input.getWingSpan().getUnit());
 		System.out.println("\tSurface = " + input.getWingSurface().getEstimatedValue() + " " + input.getWingSurface().getUnit());
-		System.out.println("\tWing distance from ground = " + input.getWingToGroundDistance() + " " + input.getWingToGroundDistance().getUnit());
-		System.out.println("\tWing angle of incidence (iw) = " + input.getIw().getEstimatedValue() + " " + input.getIw().getUnit() + "\n");
+		System.out.println("\tWing distance from ground = " + input.getWingToGroundDistance().getEstimatedValue() + " " + input.getWingToGroundDistance().getUnit());
+		System.out.println("\tWing angle of incidence (iw) = " + input.getIw().getEstimatedValue() + " " + input.getIw().getUnit());
+		System.out.println("...............................................................................................................");
 		System.out.println("\tOswald = " + input.getOswald());
 		System.out.println("\tCD0 clean = " + input.getcD0Clean());
 		System.out.println("\tDelta CD0 flap = " + input.getDeltaCD0Flap());
 		System.out.println("\tDelta CD0 landing gears = " + input.getDeltaCD0LandingGear());
 		System.out.println("\tCLmax take-off = " + input.getcLmaxTO());
 		System.out.println("\tCL0 take-off = " + input.getcL0TO());
-		System.out.println("\tCLalpha take-off = " + input.getcLalphaFlap().getEstimatedValue() + " " + input.getcLalphaFlap().getUnit() + "\n");
-		System.out.println("\tStatic thrust = " + input.getT0().getEstimatedValue() + " " + input.getT0().getUnit());
+		System.out.println("\tCLalpha take-off = " + input.getcLalphaFlap().getEstimatedValue() + " " + input.getcLalphaFlap().getUnit());
+		System.out.println("...............................................................................................................");
+		if(input.isEngineModel())
+			System.out.println("\tStatic thrust = " + input.getT0().getEstimatedValue() + " " + input.getT0().getUnit());
 		System.out.println("\tNumber of engines = " + input.getnEngine());
-		System.out.println("\tMach array = " + Arrays.toString(input.getMachArray()));
-		System.out.println("\tNet thrust array = " + Arrays.toString(input.getNetThrust()));
+		if(!input.isEngineModel()) {
+			System.out.println("\tNet thrust list = " + input.getNetThrustList());
+			System.out.println("\tNet thrust mach list = " + input.getNetThrustMachList());
+		}
+		System.out.println("\tThrottle ground idle list = " + input.getThrottleGroundIdleList());
+		System.out.println("\tThrottle ground idle speed list = " + input.getThrottleGroundIdleListSpeed());
+		System.out.println("...............................................................................................................");
+		System.out.println("\tWind speed = " + input.getvWind().getEstimatedValue() + " " + input.getvWind().getUnit());
+		System.out.println("\tAlpha body at ground = " + input.getAlphaGround().getEstimatedValue() + " " + input.getAlphaGround().getUnit());
+		System.out.println("\tField altitude = " + input.getAltitude().getEstimatedValue() + " " + input.getAltitude().getUnit());
+		System.out.println("\tFriction coefficient list = " + input.getMuList());
+		System.out.println("\tFriction coefficient speed list = " + input.getMuListSpeed());
+		System.out.println("\tFriction coefficient list with brakes = " + input.getMuBrakeList());
+		System.out.println("\tFriction coefficient speed list with brakes = " + input.getMuBrakeListSpeed());
+		System.out.println("\tdt Rotation = " + input.getDtRotation().getEstimatedValue() + " " + input.getDtRotation().getUnit());
+		System.out.println("\tdt Hold = " + input.getDtHold().getEstimatedValue() + " " + input.getDtHold().getUnit());
+		System.out.println("\tObstavle Take-Off = " + input.getObstacleTakeOff().getEstimatedValue() + " " + input.getObstacleTakeOff().getUnit());
+		System.out.println("\tk Rotation = " + input.getkRotation());
+		System.out.println("\talpha dot rotation = " + input.getAlphaDotRotation().getEstimatedValue() + " " + input.getAlphaDotRotation().getUnit());
+		System.out.println("\tk CLmax = " + input.getkCLmax());
+		System.out.println("\tDrag due to engine failure = " + input.getDragDueToEnigneFailure());
+		System.out.println("\tk AlphaDot = " + input.getkAlphaDot().getEstimatedValue() + " " + input.getkAlphaDot().getUnit());
+		
 	}
 
 	public static void executeStandAloneTakeOffCalculator(String outputFolder) throws InstantiationException, IllegalAccessException {
@@ -229,26 +530,7 @@ public class TakeOffManager {
 		
 		output = new OutputTree();
 			
-		///////////////////////////////////////////////////////////////////////////////////////////////////////
-		// DEFINE THE TAKE-OFF MANAGER AS IN THE PREVIOUS VERSION, BUT USING THE NEW TAKE-OFF CALCULATOR ... //
-		///////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		TakeOffCalculator theTakeOffCalculator = theTakeOffManager.new TakeOffCalculator(
-				dtRot,
-				dtHold,
-				kcLMax,
-				kRot,
-				kLO,
-				kFailure,
-				k1,
-				k2,
-				phi,
-				kAlphaDot,
-				alphaRed,
-				mu,
-				muBrake,
-				obstacle
-				);
+		TakeOffCalculator theTakeOffCalculator = theTakeOffManager.new TakeOffCalculator();
 				
 		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
 		
@@ -277,7 +559,7 @@ public class TakeOffManager {
 			output.setV1(theTakeOffCalculator.getV1().to(NonSI.KNOT));
 		}
 		
-		if(input.isCharts())
+		if(input.isCharts() && input.isBalancedFieldLength())
 			theTakeOffCalculator.createBalancedFieldLengthChart(chartsFolderPath);
 		
 		System.out.println(theTakeOffCalculator.toString());
@@ -328,18 +610,10 @@ public class TakeOffManager {
 		org.w3c.dom.Element inputRootElement = doc.createElement("INPUT");
 		rootElement.appendChild(inputRootElement);
 
-		org.w3c.dom.Element groundConditionsElement = doc.createElement("ground_conditions");
-		inputRootElement.appendChild(groundConditionsElement);
-
-		JPADStaticWriteUtils.writeSingleNode("alpha", input.getAlphaGround(), groundConditionsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("wind_speed", input.getvWind(), groundConditionsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("altitude", input.getAltitude(), groundConditionsElement, doc);
-				
 		org.w3c.dom.Element aircraftDataElement = doc.createElement("aircraft_data");
 		inputRootElement.appendChild(aircraftDataElement);
-		
 		JPADStaticWriteUtils.writeSingleNode("take_off_mass", input.getTakeOffMass(), aircraftDataElement, doc);
-		
+
 		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
 		aircraftDataElement.appendChild(wingDataElement);
 		
@@ -365,13 +639,34 @@ public class TakeOffManager {
 		org.w3c.dom.Element engineDataElement = doc.createElement("engine");
 		aircraftDataElement.appendChild(engineDataElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("static_thrust", input.getT0(), engineDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("number_of_engines", input.getnEngine(), engineDataElement, doc);
-	
+		if(input.isEngineModel()) 
+			JPADStaticWriteUtils.writeSingleNode("static_thrust", input.getT0(), engineDataElement, doc);
 		if(!input.isEngineModel()) {
-			JPADStaticWriteUtils.writeSingleNode("net_thrust_array_single_engine", Arrays.toString(input.getNetThrust()), engineDataElement, doc);
-			JPADStaticWriteUtils.writeSingleNode("mach_array", Arrays.toString(input.getMachArray()), engineDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("net_thrust", input.getNetThrustList(), engineDataElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("net_thrust_mach", input.getNetThrustMachList(), engineDataElement, doc);
 		}
+		JPADStaticWriteUtils.writeSingleNode("ground_idle_thottle", input.getThrottleGroundIdleList(), engineDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("ground_idle_thottle_speed", input.getThrottleGroundIdleListSpeed(), engineDataElement, doc);
+				
+		org.w3c.dom.Element simulationParametersElement = doc.createElement("simulation_parameters");
+		inputRootElement.appendChild(simulationParametersElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("wind_speed_along_runway", input.getvWind(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_ground", input.getAlphaGround(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("altitude", input.getAltitude(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mu", input.getMuList(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mu_speed", input.getMuListSpeed(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mu_brake", input.getMuBrakeList(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mu_brake_speed", input.getMuBrakeListSpeed(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("dt_rotation", input.getDtRotation(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("dt_hold", input.getDtHold(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("obstacle_take_off", input.getObstacleTakeOff(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("k_rotation", input.getkRotation(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_dot_rotation", input.getAlphaDotRotation(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("k_cLmax", input.getkCLmax(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("drag_due_to_engine_failure", input.getDragDueToEnigneFailure(), simulationParametersElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("k_alpha_dot", input.getkAlphaDot(), simulationParametersElement, doc);
 		
 		//--------------------------------------------------------------------------------------
 		// OUTPUT
@@ -387,16 +682,33 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne(), distanceElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE(), distanceElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25(), distanceElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength(), distanceElement, doc);
+		if(input.isBalancedFieldLength())
+			JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength(), distanceElement, doc);
 		
 		org.w3c.dom.Element speedElement = doc.createElement("speeds");
 		outputRootElement.appendChild(speedElement);
 		
 		JPADStaticWriteUtils.writeSingleNode("stall_speed_take_off", output.getVsT0(), speedElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("decision_speed", output.getV1(), speedElement, doc);
+		if(input.isBalancedFieldLength())
+			JPADStaticWriteUtils.writeSingleNode("decision_speed", output.getV1(), speedElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("rotation_speed", output.getvRot(), speedElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("lift_off_speed", output.getvLO(), speedElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("take_off_safety_speed", output.getV2(), speedElement, doc);
+		
+		org.w3c.dom.Element speedRatioElement = doc.createElement("speed_ratios");
+		outputRootElement.appendChild(speedRatioElement);
+		
+		if(input.isBalancedFieldLength())
+			JPADStaticWriteUtils.writeSingleNode("V1_VsTO", output.getV1().divide(output.getVsT0()), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("V_Rot_VsTO", output.getvRot().divide(output.getVsT0()), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("V_LO_VsTO", output.getvLO().divide(output.getVsT0()), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("V2_VsTO", output.getV2().divide(output.getVsT0()), speedElement, doc);
+		
+		org.w3c.dom.Element durationElement = doc.createElement("duration");
+		outputRootElement.appendChild(durationElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("take_off_duration", output.getTakeOffDuration(), speedElement, doc);
+		
 		
 	}
 	
