@@ -5,27 +5,88 @@
 		plot=FALSE -> plot nothing.
 		
 		All the variables which have METHOD as attirubte, can be calculated with the deifned method or can be assigned filling the value if the METHOD is equal to "INPUT"
+		
+		Each condition in "global_data" will be read only if the related flag in the analysis file is set to TRUE !!
 	-->
-    <analysis plot="TRUE">
-        <aerodynamics id="JPAD Test analysis - AERODYNAMICS">
+    <analysis>
+        <aerodynamics_and_stability 
+			id="JPAD Test analysis - AERODYNAMICS"
+			balance_from_xls_file="false"
+			file_balance="Balance.xlsx"
+			>
+			<balance>
+			<!-- 
+			These values will be read only if the "balance_from_xls_file" is FALSE. 
+			Otherwise the all the CG positions in every condition will be read from the Balance output file.
+			-->
+				<take_off_condition>
+					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
+					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
+				</take_off_condition>					
+				<climb_condition>
+					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
+					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
+				</climb_condition>					
+				<cruise_condition>
+					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
+					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
+				</cruise_condition>	
+				<landing_condition>
+					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
+					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
+				</landing_condition>
+			</balance>
 			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE">
-				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-				<adimensional_centre_of_gravity_x_position></adimensional_centre_of_gravity_x_position>
-				<adimensional_centre_of_gravity_z_position></adimensional_centre_of_gravity_x_position>
-				<alpha_body_initial unit="deg"></alpha_body_initial>
-				<alpha_body_final unit="deg"></alpha_body_final>
-				<number_of_alpha_body></number_of_alpha_body>
+				<take_off_condition>
+					<alpha_body_initial unit="deg"></alpha_body_initial>
+					<alpha_body_final unit="deg"></alpha_body_final>
+					<number_of_alpha_body></number_of_alpha_body>
+					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
+					<tau_elevator_function>
+						<tau>0.025</tau>
+						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_elevator_function>
+				</take_off_condition>					
+				<climb_condition>
+					<alpha_body_initial unit="deg"></alpha_body_initial>
+					<alpha_body_final unit="deg"></alpha_body_final>
+					<number_of_alpha_body></number_of_alpha_body>
+					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
+					<tau_elevator_function>
+						<tau>0.025</tau>
+						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_elevator_function>
+				</climb_condition>					
+				<cruise_condition>
+					<alpha_body_initial unit="deg"></alpha_body_initial>
+					<alpha_body_final unit="deg"></alpha_body_final>
+					<number_of_alpha_body></number_of_alpha_body>
+					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
+					<tau_elevator_function>
+						<tau>0.025</tau>
+						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_elevator_function>
+				</cruise_condition>	
+				<landing_condition>
+					<alpha_body_initial unit="deg"></alpha_body_initial>
+					<alpha_body_final unit="deg"></alpha_body_final>
+					<number_of_alpha_body></number_of_alpha_body>
+					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
+					<tau_elevator_function>
+						<tau>0.025</tau>
+						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_elevator_function>
+				</landing_condition>					
 				<number_of_points_semispawise_wing></number_of_points_semispawise_wing>
 				<number_of_points_semispawise_horizontal_tail></number_of_points_semispawise_horizontal_tail>
-				<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
 				<alpha_horizontal_tail_array_for_distributions unit="deg"></alpha_horizontal_tail_array_for_distributions>
 				<delta_elevator_array unit="deg"></delta_elevator_array>
 				<!-- optional values which are read only if the related attribute in "global_data" is "TRUE" --> 
 				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
-				<tau_elevator_function>
-					<tau>0.025</tau>
-					<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
-				</tau_elevator_function>
 			</global_data>
 			<wing_analyses>
 				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
@@ -88,7 +149,7 @@
 				<lateral_static_stability perform="TRUE"/>
 				<directional_static_stability perform="TRUE"/>
 			</aircraft_analyses>
-        </aerodynamics>
+        </aerodynamics_and_stability>
     </analysis>
 	<plot>
 		<wing>

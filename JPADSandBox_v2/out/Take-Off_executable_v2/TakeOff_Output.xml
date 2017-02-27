@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TakeOff_Executable>
+   <INPUT>
+      <aircraft_data>
+         <take_off_mass unit="kg">53610.0000</take_off_mass>
+         <wing>
+            <geometry>
+               <aspect_ratio unit="">12.0000</aspect_ratio>
+               <surface unit="m²">105.0000</surface>
+               <distance_from_ground unit="m">3.0000</distance_from_ground>
+               <angle_of_incidence unit="deg">2.0000</angle_of_incidence>
+            </geometry>
+            <aerodynamic_data>
+               <oswald unit="">0.8500</oswald>
+               <cD0_clean unit="">0.0233</cD0_clean>
+               <delta_cD0_flap unit="">0.0150</delta_cD0_flap>
+               <delta_cD0_landing_gears unit="">0.0150</delta_cD0_landing_gears>
+               <cL_max_take_off unit="">2.6100</cL_max_take_off>
+               <cL0_take_off unit="">1.6600</cL0_take_off>
+               <cL_alpha_take_off unit="1/deg">0.1407</cL_alpha_take_off>
+            </aerodynamic_data>
+         </wing>
+         <engine>
+            <number_of_engines unit="">2</number_of_engines>
+            <static_thrust unit="N">108763.4667</static_thrust>
+            <ground_idle_thottle unit="">[0.0143, -0.055, -0.19, -0.348]</ground_idle_thottle>
+            <ground_idle_thottle_speed unit="m/s">[0.0, 25.722222222222218, 51.444444444444436, 77.16666666666666]</ground_idle_thottle_speed>
+         </engine>
+      </aircraft_data>
+      <simulation_parameters>
+         <wind_speed_along_runway unit="m/s">0.0000</wind_speed_along_runway>
+         <alpha_ground unit="deg">0.0000</alpha_ground>
+         <altitude unit="m">0.0000</altitude>
+         <mu unit="">[0.025, 0.025]</mu>
+         <mu_speed unit="m/s">[0.0, 10000.0]</mu_speed>
+         <mu_brake unit="">[0.94, 0.89, 0.85, 0.8, 0.74, 0.68, 0.62, 0.57, 0.52]</mu_brake>
+         <mu_brake_speed unit="m/s">[0.0, 5.144444444444444, 10.288888888888888, 15.433333333333332, 20.577777777777776, 25.722222222222218, 30.866666666666664, 36.011111111111106, 41.15555555555555]</mu_brake_speed>
+         <dt_rotation unit="s">2.0000</dt_rotation>
+         <dt_hold unit="s">0.5000</dt_hold>
+         <obstacle_take_off unit="m">10.6680</obstacle_take_off>
+         <k_rotation unit="">1.0500</k_rotation>
+         <alpha_dot_rotation unit="deg/s">4.0000</alpha_dot_rotation>
+         <k_cLmax unit="">0.9000</k_cLmax>
+         <drag_due_to_engine_failure unit="">0.005000</drag_due_to_engine_failure>
+         <k_alpha_dot unit="1/deg">0.0400</k_alpha_dot>
+      </simulation_parameters>
+   </INPUT>
+   <OUTPUT>
+      <distances>
+         <SI>
+            <ground_roll_distance unit="m">508.9047</ground_roll_distance>
+            <rotation_distance unit="m">45.6786</rotation_distance>
+            <airborne_distance unit="m">211.6357</airborne_distance>
+            <take_off_distance_AOE unit="m">766.2191</take_off_distance_AOE>
+            <take_off_distance_FAR25 unit="m">881.1519</take_off_distance_FAR25>
+         </SI>
+         <imperial>
+            <ground_roll_distance unit="ft">1669.6350</ground_roll_distance>
+            <rotation_distance unit="ft">149.8641</rotation_distance>
+            <airborne_distance unit="ft">694.3430</airborne_distance>
+            <take_off_distance_AOE unit="ft">2513.8420</take_off_distance_AOE>
+            <take_off_distance_FAR25 unit="ft">2890.9183</take_off_distance_FAR25>
+         </imperial>
+      </distances>
+      <speeds>
+         <SI>
+            <stall_speed_take_off unit="m/s">55.9648</stall_speed_take_off>
+            <rotation_speed unit="m/s">58.7631</rotation_speed>
+            <lift_off_speed unit="m/s">61.2320</lift_off_speed>
+            <take_off_safety_speed unit="m/s">69.0127</take_off_safety_speed>
+         </SI>
+         <imperial>
+            <stall_speed_take_off unit="kn">108.7869</stall_speed_take_off>
+            <rotation_speed unit="kn">114.2263</rotation_speed>
+            <lift_off_speed unit="kn">119.0254</lift_off_speed>
+            <take_off_safety_speed unit="kn">134.1500</take_off_safety_speed>
+         </imperial>
+      </speeds>
+      <speed_ratios>
+         <V_Rot_VsTO unit="">1.0500</V_Rot_VsTO>
+         <V_LO_VsTO unit="">1.0941</V_LO_VsTO>
+         <V2_VsTO unit="">1.2331</V2_VsTO>
+      </speed_ratios>
+      <duration>
+         <take_off_duration unit="s">20.8414</take_off_duration>
+      </duration>
+   </OUTPUT>
+</TakeOff_Executable>

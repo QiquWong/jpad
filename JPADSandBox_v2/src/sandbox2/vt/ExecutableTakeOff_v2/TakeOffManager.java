@@ -3,6 +3,8 @@ package sandbox2.vt.ExecutableTakeOff_v2;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -526,10 +528,15 @@ public class TakeOffManager {
 				+ File.separator
 				);
 		
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
+		
 		TakeOffManager theTakeOffManager = new TakeOffManager();
 		
-		output = new OutputTree();
-			
 		TakeOffCalculator theTakeOffCalculator = theTakeOffManager.new TakeOffCalculator();
 				
 		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
@@ -554,7 +561,9 @@ public class TakeOffManager {
 			theTakeOffCalculator.createTakeOffCharts(chartsFolderPath);
 		
 		if(input.isBalancedFieldLength()) {
+//			System.setOut(filterStream);
 			theTakeOffCalculator.calculateBalancedFieldLength();
+			System.setOut(originalOut);
 			output.setBalancedFieldLength(theTakeOffCalculator.getBalancedFieldLength().to(NonSI.FOOT));
 			output.setV1(theTakeOffCalculator.getV1().to(NonSI.KNOT));
 		}
@@ -677,37 +686,64 @@ public class TakeOffManager {
 		org.w3c.dom.Element distanceElement = doc.createElement("distances");
 		outputRootElement.appendChild(distanceElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("ground_roll_distance", output.getGroundRoll(), distanceElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("rotation_distance", output.getRotation(), distanceElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne(), distanceElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE(), distanceElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25(), distanceElement, doc);
+		org.w3c.dom.Element distanceSIElement = doc.createElement("SI");
+		distanceElement.appendChild(distanceSIElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("ground_roll_distance", output.getGroundRoll().to(SI.METER), distanceSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("rotation_distance", output.getRotation().to(SI.METER), distanceSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne().to(SI.METER), distanceSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE().to(SI.METER), distanceSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25().to(SI.METER), distanceSIElement, doc);
 		if(input.isBalancedFieldLength())
-			JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength(), distanceElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength().to(SI.METER), distanceSIElement, doc);
+		
+		org.w3c.dom.Element distanceImperialElement = doc.createElement("imperial");
+		distanceElement.appendChild(distanceImperialElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("ground_roll_distance", output.getGroundRoll().to(NonSI.FOOT), distanceImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("rotation_distance", output.getRotation().to(NonSI.FOOT), distanceImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne().to(NonSI.FOOT), distanceImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE().to(NonSI.FOOT), distanceImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25().to(NonSI.FOOT), distanceImperialElement, doc);
+		if(input.isBalancedFieldLength())
+			JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength().to(NonSI.FOOT), distanceImperialElement, doc);
 		
 		org.w3c.dom.Element speedElement = doc.createElement("speeds");
 		outputRootElement.appendChild(speedElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("stall_speed_take_off", output.getVsT0(), speedElement, doc);
+		org.w3c.dom.Element speedSIElement = doc.createElement("SI");
+		speedElement.appendChild(speedSIElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("stall_speed_take_off", output.getVsT0().to(SI.METERS_PER_SECOND), speedSIElement, doc);
 		if(input.isBalancedFieldLength())
-			JPADStaticWriteUtils.writeSingleNode("decision_speed", output.getV1(), speedElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("rotation_speed", output.getvRot(), speedElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("lift_off_speed", output.getvLO(), speedElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("take_off_safety_speed", output.getV2(), speedElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("decision_speed", output.getV1().to(SI.METERS_PER_SECOND), speedSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("rotation_speed", output.getvRot().to(SI.METERS_PER_SECOND), speedSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("lift_off_speed", output.getvLO().to(SI.METERS_PER_SECOND), speedSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_safety_speed", output.getV2().to(SI.METERS_PER_SECOND), speedSIElement, doc);
+		
+		org.w3c.dom.Element speedImperialElement = doc.createElement("imperial");
+		speedElement.appendChild(speedImperialElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("stall_speed_take_off", output.getVsT0().to(NonSI.KNOT), speedImperialElement, doc);
+		if(input.isBalancedFieldLength())
+			JPADStaticWriteUtils.writeSingleNode("decision_speed", output.getV1().to(NonSI.KNOT), speedImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("rotation_speed", output.getvRot().to(NonSI.KNOT), speedImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("lift_off_speed", output.getvLO().to(NonSI.KNOT), speedImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_safety_speed", output.getV2().to(NonSI.KNOT), speedImperialElement, doc);
 		
 		org.w3c.dom.Element speedRatioElement = doc.createElement("speed_ratios");
 		outputRootElement.appendChild(speedRatioElement);
 		
 		if(input.isBalancedFieldLength())
-			JPADStaticWriteUtils.writeSingleNode("V1_VsTO", output.getV1().divide(output.getVsT0()), speedElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("V_Rot_VsTO", output.getvRot().divide(output.getVsT0()), speedElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("V_LO_VsTO", output.getvLO().divide(output.getVsT0()), speedElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("V2_VsTO", output.getV2().divide(output.getVsT0()), speedElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("V1_VsTO", output.getV1().divide(output.getVsT0()), speedRatioElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("V_Rot_VsTO", output.getvRot().divide(output.getVsT0()), speedRatioElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("V_LO_VsTO", output.getvLO().divide(output.getVsT0()), speedRatioElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("V2_VsTO", output.getV2().divide(output.getVsT0()), speedRatioElement, doc);
 		
 		org.w3c.dom.Element durationElement = doc.createElement("duration");
 		outputRootElement.appendChild(durationElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("take_off_duration", output.getTakeOffDuration(), speedElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_duration", output.getTakeOffDuration(), durationElement, doc);
 		
 		
 	}
@@ -1302,6 +1338,8 @@ public class TakeOffManager {
 		 */
 		public void initialize() {
 
+			output = new OutputTree();
+			
 			// lists cleaning
 			time.clear();
 			speed.clear();
@@ -1361,11 +1399,16 @@ public class TakeOffManager {
 			
 			while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.009) {
 
+				if(i >= 200) {
+					System.err.println("BALANCED FIELD LENGTH CALCULATION FOR THE FAILURE SPEED OF " + vFailure + " DID NOT CONVERGED!");
+					break;
+				}
+				
 				if(i >= 1) {
 					if(newAlphaRed <= 0.0)
 						alphaRed = newAlphaRed;
 					else
-						break;
+						return;
 				}
 				
 				initialize();
@@ -1651,7 +1694,7 @@ public class TakeOffManager {
 				if(!isAborted) {
 					theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 					theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
-					theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
+					theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-9, 100);
 					theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-7, 50);
 				}
 				else {
@@ -1720,8 +1763,8 @@ public class TakeOffManager {
 							}
 							// CHECK IF THE THRESHOLD CL IS REACHED --> FROM THIS POINT ON THE BAR IS LOCKED
 							if((t > tEndRot.getEstimatedValue()) && 
-									(TakeOffCalculator.this.getcL().get(TakeOffCalculator.this.getcL().size()-1) > kcLMax*cLmaxTO) &&
-									((TakeOffCalculator.this.getcL().get(TakeOffCalculator.this.getcL().size()-2) < kcLMax*cLmaxTO))) {
+									(TakeOffCalculator.this.getcL().get(TakeOffCalculator.this.getcL().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
+									((TakeOffCalculator.this.getcL().get(TakeOffCalculator.this.getcL().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
 								System.out.println("\n\t\tBEGIN BAR HOLDING");
 								System.out.println(
 										"\n\tCL = " + ((DynamicsEquationsTakeOff)ode).cL(
@@ -1751,22 +1794,27 @@ public class TakeOffManager {
 							}
 						}
 
+						
+						
 						// PICKING UP ALL DATA AT EVERY STEP (RECOGNIZING IF THE TAKE-OFF IS CONTINUED OR ABORTED)
 						//----------------------------------------------------------------------------------------
 						// TIME:
-						TakeOffCalculator.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+						time.add(Amount.valueOf(t, SI.SECOND));
+						output.getTime().add(time.get(time.size()-1));
 						//----------------------------------------------------------------------------------------
 						// SPEED:
-						TakeOffCalculator.this.getSpeed().add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+						speed.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
+						output.getSpeed().add(speed.get(speed.size()-1));
 						//----------------------------------------------------------------------------------------
 						// THRUST:
-						TakeOffCalculator.this.getThrust().add(Amount.valueOf(
+						thrust.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
 								SI.NEWTON)
 								);
+						output.getThrust().add(thrust.get(thrust.size()-1));
 						//----------------------------------------------------------------------------------------
 						// THRUST HORIZONTAL:
-						TakeOffCalculator.this.getThrustHorizontal().add(Amount.valueOf(
+						thrustHorizontal.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 										Amount.valueOf(
 												((DynamicsEquationsTakeOff)ode).alpha,
@@ -1774,9 +1822,10 @@ public class TakeOffManager {
 										),
 								SI.NEWTON)
 								);
+						output.getThrustHorizontal().add(thrustHorizontal.get(thrustHorizontal.size()-1));
 						//----------------------------------------------------------------------------------------
 						// THRUST VERTICAL:
-						TakeOffCalculator.this.getThrustVertical().add(Amount.valueOf(
+						thrustVertical.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
 										Amount.valueOf(
 												((DynamicsEquationsTakeOff)ode).alpha,
@@ -1784,12 +1833,13 @@ public class TakeOffManager {
 										),
 								SI.NEWTON)
 								);
+						output.getThrustVertical().add(thrustVertical.get(thrustVertical.size()-1));
 
 						//--------------------------------------------------------------------------------
 						// FRICTION:
 						if(!isAborted) {
-							if(t < tEndRot.getEstimatedValue())
-								TakeOffCalculator.this.getFriction().add(Amount.valueOf(
+							if(t < tEndRot.getEstimatedValue()) {
+								friction.add(Amount.valueOf(
 										((DynamicsEquationsTakeOff)ode).mu(x[1])
 										*(((DynamicsEquationsTakeOff)ode).weight
 												- ((DynamicsEquationsTakeOff)ode).lift(
@@ -1799,12 +1849,14 @@ public class TakeOffManager {
 														t)),
 										SI.NEWTON)
 										);
-							else
-								TakeOffCalculator.this.getFriction().add(Amount.valueOf(0.0, SI.NEWTON));
+							}
+							else {
+								friction.add(Amount.valueOf(0.0, SI.NEWTON));
+							}
 						}
 						else {
-							if(t < tRec.getEstimatedValue())
-								TakeOffCalculator.this.getFriction().add(Amount.valueOf(
+							if(t < tRec.getEstimatedValue()) {
+								friction.add(Amount.valueOf(
 										((DynamicsEquationsTakeOff)ode).mu(x[1])
 										*(((DynamicsEquationsTakeOff)ode).weight
 												- ((DynamicsEquationsTakeOff)ode).lift(
@@ -1814,8 +1866,9 @@ public class TakeOffManager {
 														t)),
 										SI.NEWTON)
 										);
-							else
-								TakeOffCalculator.this.getFriction().add(Amount.valueOf(
+							}
+							else {
+								friction.add(Amount.valueOf(
 										((DynamicsEquationsTakeOff)ode).muBrake(x[1])
 										*(((DynamicsEquationsTakeOff)ode).weight
 												- ((DynamicsEquationsTakeOff)ode).lift(
@@ -1825,10 +1878,12 @@ public class TakeOffManager {
 														t)),
 										SI.NEWTON)
 										);
+							}
 						}
+						output.getFriction().add(friction.get(friction.size()-1));
 						//----------------------------------------------------------------------------------------
 						// LIFT:
-						TakeOffCalculator.this.getLift().add(Amount.valueOf(
+						lift.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).lift(
 										x[1],
 										((DynamicsEquationsTakeOff)ode).alpha,
@@ -1836,9 +1891,10 @@ public class TakeOffManager {
 										t),
 								SI.NEWTON)
 								);
+						output.getLift().add(lift.get(lift.size()-1));
 						//----------------------------------------------------------------------------------------
 						// DRAG:
-						TakeOffCalculator.this.getDrag().add(Amount.valueOf(
+						drag.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).drag(
 										x[1],
 										((DynamicsEquationsTakeOff)ode).alpha,
@@ -1846,10 +1902,11 @@ public class TakeOffManager {
 										t),
 								SI.NEWTON)
 								);
+						output.getDrag().add(drag.get(drag.size()-1));
 						//----------------------------------------------------------------------------------------
 						// TOTAL FORCE:
-						if(!isAborted) {
-							TakeOffCalculator.this.getTotalForce().add(Amount.valueOf(
+						if(!isAborted) 
+							totalForce.add(Amount.valueOf(
 									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 											Amount.valueOf(
 													((DynamicsEquationsTakeOff)ode).alpha,
@@ -1873,10 +1930,9 @@ public class TakeOffManager {
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
 									SI.NEWTON)
 									);
-						}
 						else {
-							if(t < tRec.getEstimatedValue())
-								TakeOffCalculator.this.getTotalForce().add(Amount.valueOf(
+							if(t < tRec.getEstimatedValue()) 
+								totalForce.add(Amount.valueOf(
 										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 												Amount.valueOf(
 														((DynamicsEquationsTakeOff)ode).alpha,
@@ -1900,8 +1956,8 @@ public class TakeOffManager {
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
 										SI.NEWTON)
 										);
-							else
-								TakeOffCalculator.this.getTotalForce().add(Amount.valueOf(
+							else 
+								totalForce.add(Amount.valueOf(
 										- ((DynamicsEquationsTakeOff)ode).drag(
 												x[1],
 												((DynamicsEquationsTakeOff)ode).alpha,
@@ -1921,9 +1977,10 @@ public class TakeOffManager {
 										SI.NEWTON)
 										);
 						}
+						output.getTotalForce().add(totalForce.get(totalForce.size()-1));
 						//----------------------------------------------------------------------------------------
 						// LOAD FACTOR:
-						TakeOffCalculator.this.getLoadFactor().add(
+						loadFactor.add(
 								((DynamicsEquationsTakeOff)ode).lift(
 										x[1],
 										((DynamicsEquationsTakeOff)ode).alpha,
@@ -1934,19 +1991,21 @@ public class TakeOffManager {
 												x[2],
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								);
+						output.getLoadFactor().add(loadFactor.get(loadFactor.size()-1));
 						//----------------------------------------------------------------------------------------
 						// RATE OF CLIMB:
-						TakeOffCalculator.this.getRateOfClimb().add(Amount.valueOf(
+						rateOfClimb.add(Amount.valueOf(
 								x[1]*Math.sin(
 										Amount.valueOf(
 												x[2],
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
 								SI.METERS_PER_SECOND)
 								);
+						output.getRateOfClimb().add(rateOfClimb.get(rateOfClimb.size()-1));
 						//----------------------------------------------------------------------------------------
 						// ACCELERATION:
 						if(!isAborted)
-							TakeOffCalculator.this.getAcceleration().add(Amount.valueOf(
+							acceleration.add(Amount.valueOf(
 									(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
 									*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 											Amount.valueOf(
@@ -1973,7 +2032,7 @@ public class TakeOffManager {
 									);
 						else {
 							if(t < tRec.getEstimatedValue())
-								TakeOffCalculator.this.getAcceleration().add(Amount.valueOf(
+								acceleration.add(Amount.valueOf(
 										(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
 										*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
 												Amount.valueOf(
@@ -1999,7 +2058,7 @@ public class TakeOffManager {
 										SI.METERS_PER_SQUARE_SECOND)
 										);
 							else
-								TakeOffCalculator.this.getAcceleration().add(Amount.valueOf(
+								acceleration.add(Amount.valueOf(
 										(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
 										*(- ((DynamicsEquationsTakeOff)ode).drag(
 												x[1],
@@ -2020,41 +2079,47 @@ public class TakeOffManager {
 										SI.METERS_PER_SQUARE_SECOND)
 										);
 						}
+						output.getAcceleration().add(acceleration.get(acceleration.size()-1));
 						//----------------------------------------------------------------------------------------
 						// GROUND DISTANCE:
-						TakeOffCalculator.this.getGroundDistance().add(Amount.valueOf(
+						groundDistance.add(Amount.valueOf(
 								x[0],
 								SI.METER)
 								);
+						output.getGroundDistance().add(groundDistance.get(groundDistance.size()-1));
 						//----------------------------------------------------------------------------------------
 						// VERTICAL DISTANCE:
-						TakeOffCalculator.this.getVerticalDistance().add(Amount.valueOf(
+						verticalDistance.add(Amount.valueOf(
 								x[3],
 								SI.METER)
 								);
+						output.getVerticalDistance().add(verticalDistance.get(verticalDistance.size()-1));
 						//----------------------------------------------------------------------------------------
 						// ALPHA:
-						TakeOffCalculator.this.getAlpha().add(Amount.valueOf(
+						alpha.add(Amount.valueOf(
 								((DynamicsEquationsTakeOff)ode).alpha,
 								NonSI.DEGREE_ANGLE)
 								);
+						output.getAlpha().add(alpha.get(alpha.size()-1));
 						//----------------------------------------------------------------------------------------
 						// GAMMA:
-						TakeOffCalculator.this.getGamma().add(Amount.valueOf(
+						gamma.add(Amount.valueOf(
 								x[2],
 								NonSI.DEGREE_ANGLE)
 								);
+						output.getGamma().add(gamma.get(gamma.size()-1));
 						//----------------------------------------------------------------------------------------
 						// ALPHA DOT:
-						TakeOffCalculator.this.getAlphaDot().add(
+						alphaDot.add(
 								((DynamicsEquationsTakeOff)ode).alphaDot(t)
-								); 
+								);
+						output.getAlphaDot().add(alphaDot.get(alphaDot.size()-1));
 						//----------------------------------------------------------------------------------------
 						// GAMMA DOT:
 						if(t <= tEndRot.getEstimatedValue())
-							TakeOffCalculator.this.getGammaDot().add(0.0);
+							gammaDot.add(0.0);
 						else
-							TakeOffCalculator.this.getGammaDot().add(57.3*(AtmosphereCalc.g0.getEstimatedValue()/
+							gammaDot.add(57.3*(AtmosphereCalc.g0.getEstimatedValue()/
 									(((DynamicsEquationsTakeOff)ode).weight*x[1]))*(
 											((DynamicsEquationsTakeOff)ode).lift(
 													x[1],
@@ -2070,15 +2135,17 @@ public class TakeOffManager {
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 													))
 									);
+						output.getGammaDot().add(gammaDot.get(gammaDot.size()-1));
 						//----------------------------------------------------------------------------------------
 						// THETA:
-						TakeOffCalculator.this.getTheta().add(Amount.valueOf(
+						theta.add(Amount.valueOf(
 								x[2] + ((DynamicsEquationsTakeOff)ode).alpha,
 								NonSI.DEGREE_ANGLE)
 								);
+						output.getTheta().add(theta.get(theta.size()-1));
 						//----------------------------------------------------------------------------------------
 						// CL:				
-						TakeOffCalculator.this.getcL().add(
+						cL.add(
 								((DynamicsEquationsTakeOff)ode).cL(
 										x[1],
 										((DynamicsEquationsTakeOff)ode).alpha,
@@ -2086,14 +2153,16 @@ public class TakeOffManager {
 										t
 										)
 								);
+						output.getcL().add(cL.get(cL.size()-1));
 						//----------------------------------------------------------------------------------------
 						// CD:
-						TakeOffCalculator.this.getcD().add(
+						cD.add(
 								((DynamicsEquationsTakeOff)ode).cD(
 										TakeOffCalculator.this.getcL().get(
 												TakeOffCalculator.this.getcL().size()-1)
 										)
 								);
+						output.getcD().add(cD.get(cD.size()-1));
 						//----------------------------------------------------------------------------------------
 					}
 				};

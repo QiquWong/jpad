@@ -3,7 +3,6 @@ package calculators.performance;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Acceleration;
@@ -639,8 +638,8 @@ public class TakeOffCalc {
 						}
 						// CHECK IF THE THRESHOLD CL IS REACHED --> FROM THIS POINT ON THE BAR IS LOCKED
 						if((t > tEndRot.getEstimatedValue()) && 
-								(TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-1) > kcLMax*cLmaxTO) &&
-								((TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-2) < kcLMax*cLmaxTO))) {
+								(TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-1) - (kcLMax*cLmaxTO) >= 0.0) &&
+								((TakeOffCalc.this.getcL().get(TakeOffCalc.this.getcL().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
 							System.out.println("\n\t\tBEGIN BAR HOLDING");
 							System.out.println(
 									"\n\tCL = " + ((DynamicsEquationsTakeOff)ode).cL(

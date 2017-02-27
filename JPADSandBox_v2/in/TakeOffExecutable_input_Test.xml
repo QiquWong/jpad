@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<take_off_executable charts="TRUE" simplified_thrust_model="TRUE" balanced_field_length="FALSE">
+<take_off_executable charts="TRUE" simplified_thrust_model="FALSE" balanced_field_length="TRUE">
         <INPUT>
 			<aircraft_data>
 			    <take_off_mass unit="kg">53610</take_off_mass>
@@ -21,12 +21,12 @@
 					</aerodynamic_data>
                 </wing>
                 <engine>
-				    <static_thrust unit="lbf">24451</static_thrust>
+				    <static_thrust unit="lbf"></static_thrust>
 					<number_of_engines>2</number_of_engines>
 				    <!--USE THE FOLLOWING TWO TAGS ONLY IF THE ENGINE MODEL IS KNOWN AND THE ATTRIBUTE "simplified_thrust_model" IS SET TO FALSE-->
 					<net_thrust_function_single_engine>
-						<net_thrust unit="N"></net_thrust>
-						<mach_array></mach_array> <!-- if the thrust array contains only 1 value this tag can be left empty -->
+						<net_thrust unit="lbf">24451;21376;19822;18249;16535</net_thrust>
+						<mach_array>0.00;0.10;0.15;0.20;0.25</mach_array> <!-- if the thrust array contains only 1 value this tag can be left empty -->
 					</net_thrust_function_single_engine> 
 					<throttle_ground_idle>
 						<throttle>0.0143;-0.055;-0.19;-0.348</throttle>
