@@ -41,7 +41,7 @@ import standaloneutils.atmosphere.AtmosphereCalc;
  * 
  * @author Lorenzo Attanasio, Vittorio Trifari
  */
-public class ACWeightsManager extends ACCalculatorManager implements IACWeightsManager {
+public class ACWeightsManager implements IACWeightsManager {
 
 	private String _id;
 	private static Aircraft _theAircraft;

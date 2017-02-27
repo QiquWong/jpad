@@ -148,7 +148,14 @@ public class ACAerodynamicCalculator {
 	public void calculateAerodynamicAndStability() {
 		
 		initializeAnalysis();
-		
+	
+		try {
+			toXLSFile("???");
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// TODO : FILL ME !!
 		
 	}

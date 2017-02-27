@@ -101,7 +101,7 @@ public class HighLiftDevices_Test_TF {
 		aircraft.get_VTail().calculateArms(aircraft);
 
 		theAnalysis.doAnalysis(aircraft,
-				AnalysisTypeEnum.AERODYNAMIC);
+				AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 
 		aircraft.get_wing().getAerodynamics().setHighLiftDatabaseReader(highLiftDatabaseReader);
 

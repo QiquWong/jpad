@@ -25,6 +25,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PerformanceEnum;
@@ -48,7 +49,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
-	private ACAerodynamicsManager _theAerodynamics;
+	private Map<ConditionEnum, ACAerodynamicCalculator> _theAerodynamicAndStability;
 	private ACPerformanceManager _thePerformance;
 	private ACCostsManager _theCosts;
 	
@@ -77,17 +78,17 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Map <ComponentEnum, MethodEnum> _methodsMapWeights;
 	private Map <ComponentEnum, MethodEnum> _methodsMapBalance;
 	private List<PerformanceEnum> _taskListPerformance;
+	private List<ConditionEnum> _taskListAerodynamicAndStability;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
-	private List<ACCalculatorManager> _theCalculatorsList;
 	private List<AnalysisTypeEnum> _analysisList;
 	private Boolean _plotBalance;
-	private Boolean _plotAerodynamics;
+	private Boolean _plotAerodynamicAndStability;
 	private Boolean _plotPerformance;
 	private Boolean _plotCosts;
 	
 	private static File _weightsFileComplete;
 	private static File _balanceFileComplete;
-	private static File _aerodynamicsFileComplete;
+	private static File _aerodynamicAndStabilityFileComplete;
 	private static File _performanceFileComplete;
 	private static File _costsFileComplete;
 
@@ -116,12 +117,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		private Map <ComponentEnum, MethodEnum> __methodsMapWeights = new HashMap<ComponentEnum, MethodEnum>();
 		private Map <ComponentEnum, MethodEnum> __methodsMapBalance = new HashMap<ComponentEnum, MethodEnum>();
 		private List<PerformanceEnum> __taskListPerfromance = new ArrayList<PerformanceEnum>();
+		private List<ConditionEnum> __taskListAerodynamicAndStability = new ArrayList<ConditionEnum>();
 		private Map <AnalysisTypeEnum, Boolean> __executedAnalysesMap = new HashMap<AnalysisTypeEnum, Boolean>();
-		private List<ACCalculatorManager> __theCalculatorsList = new ArrayList<ACCalculatorManager>();
 		private List<AnalysisTypeEnum> __analysisList = new ArrayList<AnalysisTypeEnum>();
 		
 		private Boolean __plotBalance = Boolean.FALSE;
-		private Boolean __plotAerodynamics = Boolean.FALSE;
+		private Boolean __plotAerodynamicAndStability = Boolean.FALSE;
 		private Boolean __plotPerformance = Boolean.FALSE;
 		private Boolean __plotCosts = Boolean.FALSE;
 		
@@ -145,8 +146,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
-		public ACAnalysisManagerBuilder plotAerodynamics (Boolean plotAerodynamics){
-			this.__plotAerodynamics = plotAerodynamics;
+		public ACAnalysisManagerBuilder plotAerodynamicAndStability (Boolean plotAerodynamicAndStability){
+			this.__plotAerodynamicAndStability = plotAerodynamicAndStability;
 			return this;
 		}
 		
@@ -222,6 +223,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		public ACAnalysisManagerBuilder taskListPerfromance (List<PerformanceEnum> taskListPerfromance) {
 			this.__taskListPerfromance = taskListPerfromance;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder taskListAerodynamicAndStability (List<ConditionEnum> taskListAerodynamicAndStability) {
+			this.__taskListAerodynamicAndStability = taskListAerodynamicAndStability;
 			return this;
 		}
 		
@@ -305,12 +311,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._methodsMapWeights = builder.__methodsMapWeights;
 		this._methodsMapBalance = builder.__methodsMapBalance;
 		this._taskListPerformance = builder.__taskListPerfromance;
+		this._taskListAerodynamicAndStability = builder.__taskListAerodynamicAndStability;
 		this._executedAnalysesMap = builder.__executedAnalysesMap;
-		this._theCalculatorsList = builder.__theCalculatorsList;
 		this._analysisList = builder.__analysisList;
 		
 		this._plotBalance = builder.__plotBalance;
-		this._plotAerodynamics = builder.__plotAerodynamics;
+		this._plotAerodynamicAndStability = builder.__plotAerodynamicAndStability;
 		this._plotPerformance = builder.__plotPerformance;
 		this._plotCosts = builder.__plotCosts;
 		
@@ -320,7 +326,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// EXECUTED ANALYSIS MAP INITIALIZATION
 		this._executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, false);
 		this._executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, false);
-		this._executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, false);
+		this._executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, false);
 		this._executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, false);
 		this._executedAnalysesMap.put(AnalysisTypeEnum.COSTS, false);
 	}
@@ -745,8 +751,120 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		}
 		//-------------------------------------------------------------------------------------------
 		// AERODYNAMIC ANALYSIS:
+		List<ConditionEnum> taskListAerodynamicAndStability = new ArrayList<ConditionEnum>();
+		Boolean plotAerodynamicAndStability = Boolean.FALSE;
 
-		// TODO: IMPLEMENT THIS!
+		NodeList aerodynamicAndStabilityTag = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//aerodynamic_and_stability");
+		Node aerodynamicAndStabilityNode = aerodynamicAndStabilityTag.item(0);
+
+		if(aerodynamicAndStabilityNode != null) {
+
+			String aerodynamicAndStabilityFile = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aerodynamic_and_stability/@file");
+
+			String plotAerodynamicAndStabilityString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aerodynamic_and_stability/@plot");
+			if(plotAerodynamicAndStabilityString.equalsIgnoreCase("FALSE"))
+				plotAerodynamicAndStability = Boolean.FALSE;
+			else if(plotAerodynamicAndStabilityString.equalsIgnoreCase("TRUE"))
+				plotAerodynamicAndStability = Boolean.TRUE;
+			else
+				System.err.println("ERROR : SPECIFY THE PLOT TAG!!");
+
+			if(aerodynamicAndStabilityFile != null)  {		
+				analysisList.add(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean takeOffConditionFlag = Boolean.FALSE;
+				String takeOffConditionFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aerodynamic_and_stability/@take_off_condition");
+				if (takeOffConditionFlagProperty != null) {
+					if(takeOffConditionFlagProperty.equalsIgnoreCase("TRUE")) {
+						takeOffConditionFlag = Boolean.TRUE;
+					}
+					else if(takeOffConditionFlagProperty.equalsIgnoreCase("FALSE")) {
+						takeOffConditionFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE TAKE-OFF CONDITION ATTRIBUTE!");
+				}
+				if(takeOffConditionFlag == Boolean.TRUE) 
+					taskListAerodynamicAndStability.add(ConditionEnum.TAKE_OFF);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean climbConditionFlag = Boolean.FALSE;
+				String climbConditionFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aerodynamic_and_stability/@climb_condition");
+				if (climbConditionFlagProperty != null) {
+					if(climbConditionFlagProperty.equalsIgnoreCase("TRUE")) {
+						climbConditionFlag = Boolean.TRUE;
+					}
+					else if(climbConditionFlagProperty.equalsIgnoreCase("FALSE")) {
+						climbConditionFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CLIMB CONDITION ATTRIBUTE!");
+				}
+				if(climbConditionFlag == Boolean.TRUE) 
+					taskListAerodynamicAndStability.add(ConditionEnum.CLIMB);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean cruiseConditionFlag = Boolean.FALSE;
+				String cruiseConditionFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aerodynamic_and_stability/@cruise_condition");
+				if (cruiseConditionFlagProperty != null) {
+					if(cruiseConditionFlagProperty.equalsIgnoreCase("TRUE")) {
+						cruiseConditionFlag = Boolean.TRUE;
+					}
+					else if(cruiseConditionFlagProperty.equalsIgnoreCase("FALSE")) {
+						cruiseConditionFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CRUISE CONDITION ATTRIBUTE!");
+				}
+				if(cruiseConditionFlag == Boolean.TRUE) 
+					taskListAerodynamicAndStability.add(ConditionEnum.CRUISE);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean landingConditionFlag = Boolean.FALSE;
+				String landingConditionFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aerodynamic_and_stability/@landing_condition");
+				if (landingConditionFlagProperty != null) {
+					if(landingConditionFlagProperty.equalsIgnoreCase("TRUE")) {
+						landingConditionFlag = Boolean.TRUE;
+					}
+					else if(landingConditionFlagProperty.equalsIgnoreCase("FALSE")) {
+						landingConditionFlag = Boolean.FALSE;
+					}
+					else 
+						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
+				}
+				if(landingConditionFlag == Boolean.TRUE) 
+					taskListAerodynamicAndStability.add(ConditionEnum.LANDING);
+			}
+			
+			_aerodynamicAndStabilityFileComplete = new File(
+					MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+					+ File.separator 
+					+ "Template_Analyses"
+					+ File.separator
+					+ aerodynamicAndStabilityFile
+					);
+
+		}
 
 		//-------------------------------------------------------------------------------------------
 		// PERFORMANCE ANALYSIS:
@@ -966,6 +1084,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.methodsMapBalance(methodsMapBalance)
 				.plotBalance(plotBalance)
 				.taskListPerfromance(taskListPerformance)
+				.taskListAerodynamicAndStability(taskListAerodynamicAndStability)
+				.plotAerodynamicAndStability(plotAerodynamicAndStability)
 				.plotPerformance(plotPerformance)
 				.build();
 	
@@ -1010,11 +1130,20 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			sb.append(_theAircraft.getTheAnalysisManager().getTheWeights().toString());
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.BALANCE) == true)
 			sb.append(_theAircraft.getTheAnalysisManager().getTheBalance().toString());
-
-		// TODO : ADD OTHER ANALYSES toString
-		
+		if(_executedAnalysesMap.get(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY) == true) {
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF))
+				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).toString());
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB))
+				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).toString());
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE))
+				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).toString());
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING))
+				sb.append(_theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).toString());
+		}
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.PERFORMANCE) == true)
 			sb.append(_theAircraft.getTheAnalysisManager().getThePerformance().toString());
+		
+		// TODO : ADD COSTS toString()
 		
 		return sb.toString();
 	}
@@ -1074,14 +1203,47 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			_executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, true);
 		}
 		////////////////////////////////////////////////////////////////
-		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC)) {
-			// TODO : BUILD THE AERODYNAMICS MANAGER WHEN AVAILABLE
-			calculateAerodynamics(
-					theOperatingConditions,
-					aircraft,
-					resultsFolderPath
-					);
-			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, true);
+		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY)) {
+			
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF))
+				_theAerodynamicAndStability.put(
+						ConditionEnum.TAKE_OFF,
+						ACAerodynamicCalculator.importFromXML(
+								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions
+								)
+						);
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB))
+				_theAerodynamicAndStability.put(
+						ConditionEnum.CLIMB,
+						ACAerodynamicCalculator.importFromXML(
+								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions
+								)
+						);
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE))
+				_theAerodynamicAndStability.put(
+						ConditionEnum.CRUISE,
+						ACAerodynamicCalculator.importFromXML(
+								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions
+								)
+						);
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING))
+				_theAerodynamicAndStability.put(
+						ConditionEnum.LANDING,
+						ACAerodynamicCalculator.importFromXML(
+								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								aircraft,
+								theOperatingConditions
+								)
+						);
+			
+			calculateAerodynamicAndStability(aircraft, resultsFolderPath);
+			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, true);
 		}
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.PERFORMANCE)) {
@@ -1124,9 +1286,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			e.printStackTrace();
 		} 
 		
-		// populate _theCalculatorsList
-		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheWeights());
-
 	}
 
 	public void calculateBalance(Aircraft aircraft, String resultsFolderPath) {
@@ -1161,21 +1320,18 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF()
 				);
 
-		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheBalance());
 	}
 	
-	public void calculateAerodynamics(
-			OperatingConditions theOperatingConditions,
-			Aircraft aircraft,
-			String resultsFolderPath) {
+	public void calculateAerodynamicAndStability(Aircraft aircraft, String resultsFolderPath) {
 
-		// aircraft.getTheAnalysisManager().getTheAerodynamics().initialize(theOperatingConditions);
-		// aircraft.getTheAnalysisManager().getTheAerodynamics().calculateAll(theOperatingConditions);
-
-		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
-		
-		// populate _theCalculatorsList
-		_theCalculatorsList.add(aircraft.getTheAnalysisManager().getTheAerodynamics());
+		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
+		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
+		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
+		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
 
 	}
 	
@@ -1183,12 +1339,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		// Execute analysis
 		aircraft.getTheAnalysisManager().getThePerformance().calculatePerformance(resultsFolderPath);
+		
 	}
 	
 	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {
 		aircraft.getTheAnalysisManager().getTheCosts().calculateAll();
 		
-		// TODO : ADD toString AND toXLSFile METHODS WHEN AVAILABLE !
+		// TODO : ADD calculateCosts() METHOD WHEN AVAILABLE !
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -1370,14 +1527,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._executedAnalysesMap = _executedAnalysesMap;
 	}
 
-	public List<ACCalculatorManager> getTheCalculatorsList() {
-		return _theCalculatorsList;
-	}
-
-	public void setTheCalculatorsList(List<ACCalculatorManager> _theCalculatorsList) {
-		this._theCalculatorsList = _theCalculatorsList;
-	}
-	
 	public ACWeightsManager getTheWeights() {
 		return _theWeights;
 	}
@@ -1394,12 +1543,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._theBalance = theBalance;
 	}
 
-	public ACAerodynamicsManager getTheAerodynamics() {
-		return _theAerodynamics;
+	public Map<ConditionEnum, ACAerodynamicCalculator> getTheAerodynamicAndStability() {
+		return _theAerodynamicAndStability;
 	}
 
-	public void setTheAerodynamics(ACAerodynamicsManager theAerodynamics) {
-		this._theAerodynamics = theAerodynamics;
+	public void setTheAerodynamicAndStability(Map<ConditionEnum, ACAerodynamicCalculator> theAerodynamicAndStability) {
+		this._theAerodynamicAndStability = theAerodynamicAndStability;
 	}
 
 	public ACPerformanceManager getThePerformance() {
@@ -1442,12 +1591,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		ACAnalysisManager._balanceFileComplete = _balanceFileComplete;
 	}
 
-	public File getAerodynamicsFileComplete() {
-		return _aerodynamicsFileComplete;
+	public File getAerodynamicAndStabilityFileComplete() {
+		return _aerodynamicAndStabilityFileComplete;
 	}
 
-	public void setAerodynamicsFileComplete(File _aerodynamicsFileComplete) {
-		ACAnalysisManager._aerodynamicsFileComplete = _aerodynamicsFileComplete;
+	public void setAerodynamicAndStabilityFileComplete(File _aerodynamicAndStabilityFileComplete) {
+		ACAnalysisManager._aerodynamicAndStabilityFileComplete = _aerodynamicAndStabilityFileComplete;
 	}
 
 	public File getPerformanceFileComplete() {
@@ -1474,12 +1623,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._plotBalance = _plotBalance;
 	}
 
-	public Boolean getPlotAerodynamics() {
-		return _plotAerodynamics;
+	public Boolean getPlotAerodynamicAndStability() {
+		return _plotAerodynamicAndStability;
 	}
 
-	public void setPlotAerodynamics(Boolean _plotAerodynamics) {
-		this._plotAerodynamics = _plotAerodynamics;
+	public void setPlotAerodynamicAndStability(Boolean _plotAerodynamicAndStability) {
+		this._plotAerodynamicAndStability = _plotAerodynamicAndStability;
 	}
 
 	public Boolean getPlotPerformance() {
@@ -1510,7 +1659,16 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		return _referenceRange;
 	}
 
+	public List<ConditionEnum> getTaskListAerodynamicAndStability() {
+		return _taskListAerodynamicAndStability;
+	}
+
+	public void setTaskListAerodynamicAndStability(List<ConditionEnum> _taskListAerodynamicAndStability) {
+		this._taskListAerodynamicAndStability = _taskListAerodynamicAndStability;
+	}
+
 	public void setReferenceRange(Amount<Length> _referenceRange) {
 		this._referenceRange = _referenceRange;
 	}
+
 }

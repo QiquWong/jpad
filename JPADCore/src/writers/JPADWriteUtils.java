@@ -91,7 +91,7 @@ public class JPADWriteUtils {
 			}
 		}
 
-		if (analysisType == AnalysisTypeEnum.AERODYNAMIC) {
+		if (analysisType == AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY) {
 			if (methodsMap.get(componentType).get(0) == MethodEnum.ALL){
 
 				for(int j=0; j < MethodEnum.values().length; j++){

@@ -33,23 +33,20 @@ public class StabilityCalculators {
 		double aspectratioHorizontalTail = aircraft.getHTail().getAspectRatio();
 		
 		double etaDelta = aircraft
-				.getTheAnalysisManager()
-				.getTheAerodynamics()
-				.get_highLiftDatabaseReader()
+				.getWing()
+				.getHighLiftDatabaseReader()
 				.getEtaDeltaVsDeltaFlapPlain(deflectionAngleDeg, chordRatio);
 		//System.out.println(" eta delta = " + etaDelta );
 		
 		double deltaAlpha2D = aircraft
-				.getTheAnalysisManager()
-				.getTheAerodynamics()
-				.get_aerodynamicDatabaseReader()
+				.getWing()
+				.getAerodynamicDatabaseReader()
 				.getD_Alpha_d_Delta_2d_VS_cf_c(chordRatio);
 		//System.out.println(" delta alfa 2d = " + deltaAlpha2D );
 		
 		double deltaAlpha2D3D = aircraft
-				.getTheAnalysisManager()
-				.getTheAerodynamics()
-				.get_aerodynamicDatabaseReader()
+				.getWing()
+				.getAerodynamicDatabaseReader()
 				.getD_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio(
 						aspectratioHorizontalTail,
 						deltaAlpha2D

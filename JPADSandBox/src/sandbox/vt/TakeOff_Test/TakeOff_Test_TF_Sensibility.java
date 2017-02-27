@@ -131,7 +131,7 @@ public class TakeOff_Test_TF_Sensibility {
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 
-		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);

@@ -193,7 +193,7 @@ public class Test_MR_06_Wing {
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 
-		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 
 		theWing.setAerodynamics(theLSAnalysis);
 

@@ -127,7 +127,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	private boolean subfolderPathCeck = true;
 
 	public ACAerodynamicsManager() {
-		_type = AnalysisTypeEnum.AERODYNAMIC;
+		_type = AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY;
 		_name = "Aerodynamics";
 	}
 

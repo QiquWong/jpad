@@ -345,7 +345,7 @@ public class Test_MR_LongitudinalStability_Turboprop {
 		theAnalysis.doAnalysis(aircraft,
 				AnalysisTypeEnum.WEIGHTS,
 				AnalysisTypeEnum.BALANCE,
-				AnalysisTypeEnum.AERODYNAMIC
+				AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY
 				);
 
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);

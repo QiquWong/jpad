@@ -561,7 +561,7 @@ public class TakeOffManager {
 			theTakeOffCalculator.createTakeOffCharts(chartsFolderPath);
 		
 		if(input.isBalancedFieldLength()) {
-//			System.setOut(filterStream);
+			System.setOut(filterStream);
 			theTakeOffCalculator.calculateBalancedFieldLength();
 			System.setOut(originalOut);
 			output.setBalancedFieldLength(theTakeOffCalculator.getBalancedFieldLength().to(NonSI.FOOT));
@@ -1372,8 +1372,8 @@ public class TakeOffManager {
 			tFaiulre = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 			tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 			
-			vFailure = null;
-			isAborted = false;
+//			vFailure = null;
+//			isAborted = false;
 			
 			takeOffResults.initialize();
 		}
@@ -1399,16 +1399,11 @@ public class TakeOffManager {
 			
 			while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.009) {
 
-				if(i >= 200) {
-					System.err.println("BALANCED FIELD LENGTH CALCULATION FOR THE FAILURE SPEED OF " + vFailure + " DID NOT CONVERGED!");
-					break;
-				}
-				
 				if(i >= 1) {
 					if(newAlphaRed <= 0.0)
 						alphaRed = newAlphaRed;
 					else
-						return;
+						break;
 				}
 				
 				initialize();
@@ -1694,7 +1689,7 @@ public class TakeOffManager {
 				if(!isAborted) {
 					theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 					theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
-					theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-9, 100);
+					theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
 					theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-7, 50);
 				}
 				else {
@@ -1808,14 +1803,14 @@ public class TakeOffManager {
 						//----------------------------------------------------------------------------------------
 						// THRUST:
 						thrust.add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t),
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3]),
 								SI.NEWTON)
 								);
 						output.getThrust().add(thrust.get(thrust.size()-1));
 						//----------------------------------------------------------------------------------------
 						// THRUST HORIZONTAL:
 						thrustHorizontal.add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
 										Amount.valueOf(
 												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1826,7 +1821,7 @@ public class TakeOffManager {
 						//----------------------------------------------------------------------------------------
 						// THRUST VERTICAL:
 						thrustVertical.add(Amount.valueOf(
-								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(
+								((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.sin(
 										Amount.valueOf(
 												((DynamicsEquationsTakeOff)ode).alpha,
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1907,7 +1902,7 @@ public class TakeOffManager {
 						// TOTAL FORCE:
 						if(!isAborted) 
 							totalForce.add(Amount.valueOf(
-									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+									((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
 											Amount.valueOf(
 													((DynamicsEquationsTakeOff)ode).alpha,
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1933,7 +1928,7 @@ public class TakeOffManager {
 						else {
 							if(t < tRec.getEstimatedValue()) 
 								totalForce.add(Amount.valueOf(
-										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+										((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
 												Amount.valueOf(
 														((DynamicsEquationsTakeOff)ode).alpha,
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -2007,7 +2002,7 @@ public class TakeOffManager {
 						if(!isAborted)
 							acceleration.add(Amount.valueOf(
 									(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
-									*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+									*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
 											Amount.valueOf(
 													((DynamicsEquationsTakeOff)ode).alpha,
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -2034,7 +2029,7 @@ public class TakeOffManager {
 							if(t < tRec.getEstimatedValue())
 								acceleration.add(Amount.valueOf(
 										(AtmosphereCalc.g0.getEstimatedValue()/((DynamicsEquationsTakeOff)ode).weight)
-										*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.cos(
+										*(((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.cos(
 												Amount.valueOf(
 														((DynamicsEquationsTakeOff)ode).alpha,
 														NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -2126,7 +2121,7 @@ public class TakeOffManager {
 													((DynamicsEquationsTakeOff)ode).alpha,
 													x[2],
 													t) 
-											+ (((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t)*Math.sin(Amount.valueOf(
+											+ (((DynamicsEquationsTakeOff)ode).thrust(x[1], x[2], t, x[3])*Math.sin(Amount.valueOf(
 													((DynamicsEquationsTakeOff)ode).alpha,
 													NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue())
 													)
@@ -2178,6 +2173,12 @@ public class TakeOffManager {
 						break;
 				}
 				
+				if(i >= 200) {
+					System.err.println("BALANCED FIELD LENGTH CALCULATION FOR THE FAILURE SPEED OF " + vFailure + " DID NOT CONVERGED!");
+					initialize();
+					return;
+				}
+				
 				//--------------------------------------------------------------------------------
 				// NEW ALPHA REDUCTION RATE 
 				if(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2) >= 0.0)
@@ -2217,9 +2218,15 @@ public class TakeOffManager {
 			// iterative take-off distance calculation for both conditions
 			for(int i=0; i<failureSpeedArray.length; i++) {
 				calculateTakeOffDistanceODE(failureSpeedArray[i], false);
-				continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+				if(!getGroundDistance().isEmpty())
+					continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 				calculateTakeOffDistanceODE(failureSpeedArray[i], true);
-				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+				
+				///////////////////////////////////////////////////////////////////////////////////////////
+				//        CHECK THE ABORTED DISTANCE (WHEN HIGH VALUES OF vFailure ARE USED)             //
+				///////////////////////////////////////////////////////////////////////////////////////////
+				if(!getGroundDistance().isEmpty() && groundDistance.get(groundDistance.size()-1).getEstimatedValue() >= 0.0)
+					abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			}
 
 			MyInterpolatingFunction continuedTakeOffFunction = new MyInterpolatingFunction();
@@ -3036,12 +3043,13 @@ public class TakeOffManager {
 
 				alpha = alpha(t);
 				double speed = x[1];
+				double altitude = x[3];
 				gamma = x[2];
 				
 				if(!isAborted) {
 					if( t < tEndRot.getEstimatedValue()) {
 						xDot[0] = speed;
-						xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
+						xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
 								- (mu(speed)*(weight - lift(speed, alpha, gamma, t))));
 						xDot[2] = 0.0;
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
@@ -3049,12 +3057,12 @@ public class TakeOffManager {
 					else {
 						xDot[0] = speed;
 						xDot[1] = (g0/weight)*(
-								thrust(speed, gamma,t)*Math.cos(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()) 
+								thrust(speed, gamma,t, altitude)*Math.cos(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()) 
 								- drag(speed, alpha, gamma, t) 
 								- weight*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
 						xDot[2] = 57.3*(g0/(weight*speed))*(
 								lift(speed, alpha, gamma, t) 
-								+ (thrust(speed, gamma, t)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
+								+ (thrust(speed, gamma, t, altitude)*Math.sin(Amount.valueOf(alpha, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
 								- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 					}
@@ -3062,14 +3070,14 @@ public class TakeOffManager {
 				else {
 					if( t < tRec.getEstimatedValue()) {
 						xDot[0] = speed;
-						xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
+						xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
 								- (mu.value(speed)*(weight - lift(speed, alpha, gamma, t))));
 						xDot[2] = 0.0;
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 					}
 					else {
 						xDot[0] = speed;
-						xDot[1] = (g0/weight)*(thrust(speed, gamma, t) - drag(speed, alpha, gamma, t)
+						xDot[1] = (g0/weight)*(thrust(speed, gamma, t, altitude) - drag(speed, alpha, gamma, t)
 								- (muBrake.value(speed)*(weight-lift(speed, alpha, gamma, t))));
 						xDot[2] = 0.0;
 						xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
@@ -3077,7 +3085,7 @@ public class TakeOffManager {
 				}
 			}
 
-			public double thrust(double speed, double gamma, double time) {
+			public double thrust(double speed, double gamma, double time, double altitude) {
 
 				double theThrust = 0.0;
 				
@@ -3087,7 +3095,7 @@ public class TakeOffManager {
 						theThrust = input.getnEngine()*input.getT0().getEstimatedValue()*thrustRatio;
 					}
 					else
-						theThrust = input.getNetThrust().value(speed)*input.getnEngine();
+						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*input.getnEngine();
 				}
 				else {
 					if(input.isEngineModel()) {
@@ -3095,7 +3103,7 @@ public class TakeOffManager {
 						theThrust = (input.getnEngine()-1)*input.getT0().getEstimatedValue()*thrustRatio;
 					}
 					else
-						theThrust = input.getNetThrust().value(speed)*(input.getnEngine()-1);
+						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*(input.getnEngine()-1);
 				}
 
 				return theThrust;

@@ -55,7 +55,7 @@ public class Text_Aircraft_01 {
 		// Gotta call this method first
 		theAnalysis.updateGeometry(theAircraft);
 		theAnalysis.doAnalysis(theAircraft, 
-				AnalysisTypeEnum.AERODYNAMIC, 
+				AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, 
 				AnalysisTypeEnum.BALANCE,
 				AnalysisTypeEnum.WEIGHTS,
 				AnalysisTypeEnum.PERFORMANCE,

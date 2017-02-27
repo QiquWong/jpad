@@ -258,7 +258,7 @@ public class Landing_Test_agile_DC1 {
 				);
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 
 		theWing.setAerodynamics(theLSAnalysis);

@@ -15,6 +15,7 @@ import aircraft.components.Aircraft;
 import analyses.costs.ACCostsManager;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 
 public interface IACAnalysisManager {
@@ -27,8 +28,7 @@ public interface IACAnalysisManager {
 			) throws IOException;
 	public void calculateWeights(Aircraft aircraft, String resultsFolderPath);
 	public void calculateBalance(Aircraft aircraft, String resultsFolderPath);
-	public void calculateAerodynamics(
-			OperatingConditions theOperatingConditions,
+	public void calculateAerodynamicAndStability(
 			Aircraft aircraft,
 			String resultsFolderPath
 			);
@@ -98,17 +98,14 @@ public interface IACAnalysisManager {
 	public Map<AnalysisTypeEnum, Boolean> getExecutedAnalysesMap();
 	public void setExecutedAnalysesMap(Map<AnalysisTypeEnum, Boolean> _executedAnalysesMap);
 
-	public List<ACCalculatorManager> getTheCalculatorsList();
-	public void setTheCalculatorsList(List<ACCalculatorManager> _theCalculatorsList);
-	
 	public ACWeightsManager getTheWeights();
 	public void setTheWeights(ACWeightsManager theWeights);
 
 	public ACBalanceManager getTheBalance();
 	public void setTheBalance(ACBalanceManager theBalance);
 
-	public ACAerodynamicsManager getTheAerodynamics();
-	public void setTheAerodynamics(ACAerodynamicsManager theAerodynamics);
+	public Map<ConditionEnum, ACAerodynamicCalculator> getTheAerodynamicAndStability();
+	public void setTheAerodynamicAndStability(Map<ConditionEnum, ACAerodynamicCalculator> theAerodynamics);
 
 	public ACPerformanceManager getThePerformance();
 	public void setThePerformance(ACPerformanceManager thePerformance);

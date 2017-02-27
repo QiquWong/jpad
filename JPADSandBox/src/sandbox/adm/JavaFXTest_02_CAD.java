@@ -1216,7 +1216,7 @@ public class JavaFXTest_02_CAD extends Application {
 		ACAnalysisManager _theAnalysis = new ACAnalysisManager(
 				theOperatingConditions,
 				_theAircraft,
-				AnalysisTypeEnum.AERODYNAMIC);
+				AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 
 		_theAnalysis.updateGeometry(_theAircraft);
 

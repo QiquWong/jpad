@@ -63,7 +63,7 @@ public class Test_Aircraft_XML {
 		theAnalysis.updateGeometry(aircraft);
 		
 		theAnalysis.doAnalysis(aircraft, 
-				AnalysisTypeEnum.AERODYNAMIC, 
+				AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, 
 				AnalysisTypeEnum.BALANCE,
 				AnalysisTypeEnum.WEIGHTS,
 				AnalysisTypeEnum.PERFORMANCE, 

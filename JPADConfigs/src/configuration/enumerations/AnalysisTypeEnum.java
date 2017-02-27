@@ -7,7 +7,7 @@ package configuration.enumerations;
  * 
  */
 public enum AnalysisTypeEnum {
-	AERODYNAMIC,
+	AERODYNAMIC_AND_STABILITY,
 	BALANCE,
 	DYNAMICS,
 	GEOMETRY,

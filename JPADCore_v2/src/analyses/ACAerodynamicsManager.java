@@ -51,7 +51,7 @@ import writers.JPADStaticWriteUtils;
  * @author Lorenzo Attanasio
  *
  */
-public class ACAerodynamicsManager extends ACCalculatorManager {
+public class ACAerodynamicsManager {
 
 	private final String id = "24";
 	private AnalysisTypeEnum _type;
@@ -126,7 +126,7 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 	private boolean subfolderPathCeck = true;
 
 	public ACAerodynamicsManager() {
-		_type = AnalysisTypeEnum.AERODYNAMIC;
+		_type = AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY;
 		_name = "Aerodynamics";
 	}
 
@@ -955,26 +955,6 @@ public class ACAerodynamicsManager extends ACCalculatorManager {
 
 	public Double get_cDTotalCurrent() {
 		return _cDTotalCurrent;
-	}
-
-
-	@Override
-	public AnalysisTypeEnum getType() {
-		return _type;
-	}
-
-	public void set_type(AnalysisTypeEnum _type) {
-		this._type = _type;
-	}
-
-
-	@Override
-	public String getName() {
-		return _name;
-	}
-
-	public void set_name(String _name) {
-		this._name = _name;
 	}
 
 

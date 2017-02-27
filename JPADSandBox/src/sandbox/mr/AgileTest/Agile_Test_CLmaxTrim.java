@@ -417,7 +417,7 @@ public class Agile_Test_CLmaxTrim {
 		theAnalysis.doAnalysis(aircraft,
 				AnalysisTypeEnum.WEIGHTS,
 				AnalysisTypeEnum.BALANCE,
-				AnalysisTypeEnum.AERODYNAMIC
+				AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY
 				);
 
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);

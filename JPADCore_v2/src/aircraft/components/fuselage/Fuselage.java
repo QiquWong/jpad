@@ -280,7 +280,7 @@ public class Fuselage implements IFuselage {
 
 
 	public FuselageAerodynamicsManager initializeAerodynamics(OperatingConditions ops, Aircraft aircraft) {
-		_aerodynamicDatabaseReader = aircraft.getTheAnalysisManager().getTheAerodynamics().get_aerodynamicDatabaseReader();
+		_aerodynamicDatabaseReader = aircraft.getWing().getAerodynamicDatabaseReader();
 		aerodynamics = new FuselageAerodynamicsManager(ops, aircraft);
 		return aerodynamics;
 	}

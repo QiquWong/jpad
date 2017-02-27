@@ -71,7 +71,7 @@ public class Test_IRON_01 {
 
 		// Define the analysis
 		theAnalysis.doAnalysis(aircraft, 
-							AnalysisTypeEnum.AERODYNAMIC, 
+							AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, 
 							AnalysisTypeEnum.BALANCE,
 							AnalysisTypeEnum.WEIGHTS
 //							AnalysisTypeEnum.PERFORMANCE, 

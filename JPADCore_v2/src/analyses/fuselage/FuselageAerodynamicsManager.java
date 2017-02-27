@@ -203,7 +203,7 @@ public class FuselageAerodynamicsManager extends analyses.analysismodel.analysis
 		private double k2k1;
 
 		public CalculateCm0() {
-			_aerodynamicDatabaseReader = _theAircraft.getTheAnalysisManager().getTheAerodynamics().get_aerodynamicDatabaseReader();
+			_aerodynamicDatabaseReader = _theAircraft.getWing().getAerodynamicDatabaseReader();
 			k2k1 = _aerodynamicDatabaseReader.get_C_m0_b_k2_minus_k1_vs_FFR(
 					_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
 					_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)); 

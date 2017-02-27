@@ -85,7 +85,7 @@ public class SpecificRange_Test_TF {
 				);
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
-		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 		theWing.setAerodynamics(theLSAnalysis);
 
 		// generating variation of mass of 10% until -40% of maxTakeOffMass

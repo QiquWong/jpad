@@ -62,7 +62,7 @@ public class Test_00 {
 		// Do analysis
 		// --------------------------------------------------------------
 		theAnalysis.doAnalysis(aircraft,
-				AnalysisTypeEnum.AERODYNAMIC);
+				AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 
 
 	}

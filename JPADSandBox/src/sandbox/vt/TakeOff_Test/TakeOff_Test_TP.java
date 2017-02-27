@@ -117,7 +117,7 @@ public class TakeOff_Test_TP {
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 
-		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC);
+		theAnalysis.doAnalysis(aircraft, AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 
 		theLSAnalysis.setHighLiftDatabaseReader(highLiftDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);

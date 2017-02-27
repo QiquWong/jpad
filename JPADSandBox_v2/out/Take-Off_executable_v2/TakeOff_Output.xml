@@ -22,7 +22,8 @@
          </wing>
          <engine>
             <number_of_engines unit="">2</number_of_engines>
-            <static_thrust unit="N">108763.4667</static_thrust>
+            <net_thrust unit="N">[108763.46671473446, 95085.18524780843, 88172.64885769362, 81175.59625688885, 73551.34440833236]</net_thrust>
+            <net_thrust_mach unit="">[0.0, 0.1, 0.15, 0.2, 0.25]</net_thrust_mach>
             <ground_idle_thottle unit="">[0.0143, -0.055, -0.19, -0.348]</ground_idle_thottle>
             <ground_idle_thottle_speed unit="m/s">[0.0, 25.722222222222218, 51.444444444444436, 77.16666666666666]</ground_idle_thottle_speed>
          </engine>
@@ -48,41 +49,41 @@
    <OUTPUT>
       <distances>
          <SI>
-            <ground_roll_distance unit="m">508.9047</ground_roll_distance>
-            <rotation_distance unit="m">45.6786</rotation_distance>
-            <airborne_distance unit="m">211.6357</airborne_distance>
-            <take_off_distance_AOE unit="m">766.2191</take_off_distance_AOE>
-            <take_off_distance_FAR25 unit="m">881.1519</take_off_distance_FAR25>
+            <ground_roll_distance unit="m">547.1271</ground_roll_distance>
+            <rotation_distance unit="m">41.4476</rotation_distance>
+            <airborne_distance unit="m">226.3151</airborne_distance>
+            <take_off_distance_AOE unit="m">814.8898</take_off_distance_AOE>
+            <take_off_distance_FAR25 unit="m">937.1233</take_off_distance_FAR25>
          </SI>
          <imperial>
-            <ground_roll_distance unit="ft">1669.6350</ground_roll_distance>
-            <rotation_distance unit="ft">149.8641</rotation_distance>
-            <airborne_distance unit="ft">694.3430</airborne_distance>
-            <take_off_distance_AOE unit="ft">2513.8420</take_off_distance_AOE>
-            <take_off_distance_FAR25 unit="ft">2890.9183</take_off_distance_FAR25>
+            <ground_roll_distance unit="ft">1795.0366</ground_roll_distance>
+            <rotation_distance unit="ft">135.9829</rotation_distance>
+            <airborne_distance unit="ft">742.5036</airborne_distance>
+            <take_off_distance_AOE unit="ft">2673.5231</take_off_distance_AOE>
+            <take_off_distance_FAR25 unit="ft">3074.5516</take_off_distance_FAR25>
          </imperial>
       </distances>
       <speeds>
          <SI>
             <stall_speed_take_off unit="m/s">55.9648</stall_speed_take_off>
             <rotation_speed unit="m/s">58.7631</rotation_speed>
-            <lift_off_speed unit="m/s">61.2320</lift_off_speed>
-            <take_off_safety_speed unit="m/s">69.0127</take_off_safety_speed>
+            <lift_off_speed unit="m/s">60.7423</lift_off_speed>
+            <take_off_safety_speed unit="m/s">68.0507</take_off_safety_speed>
          </SI>
          <imperial>
             <stall_speed_take_off unit="kn">108.7869</stall_speed_take_off>
             <rotation_speed unit="kn">114.2263</rotation_speed>
-            <lift_off_speed unit="kn">119.0254</lift_off_speed>
-            <take_off_safety_speed unit="kn">134.1500</take_off_safety_speed>
+            <lift_off_speed unit="kn">118.0736</lift_off_speed>
+            <take_off_safety_speed unit="kn">132.2801</take_off_safety_speed>
          </imperial>
       </speeds>
       <speed_ratios>
          <V_Rot_VsTO unit="">1.0500</V_Rot_VsTO>
-         <V_LO_VsTO unit="">1.0941</V_LO_VsTO>
-         <V2_VsTO unit="">1.2331</V2_VsTO>
+         <V_LO_VsTO unit="">1.0854</V_LO_VsTO>
+         <V2_VsTO unit="">1.2160</V2_VsTO>
       </speed_ratios>
       <duration>
-         <take_off_duration unit="s">20.8414</take_off_duration>
+         <take_off_duration unit="s">21.9494</take_off_duration>
       </duration>
    </OUTPUT>
 </TakeOff_Executable>

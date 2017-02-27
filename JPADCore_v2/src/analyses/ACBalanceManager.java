@@ -44,7 +44,7 @@ import standaloneutils.customdata.MyArray;
  * @author Lorenzo Attanasio, Vittorio Trifari
  *
  */
-public class ACBalanceManager extends ACCalculatorManager implements IACBalanceManager {
+public class ACBalanceManager implements IACBalanceManager {
 
 	private String _id;
 	private static Aircraft _theAircraft;

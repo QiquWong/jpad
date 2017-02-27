@@ -105,9 +105,9 @@ public class ACAnalysisManager {
 			_executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, true);
 		}
 
-		if (Arrays.asList(type).contains(AnalysisTypeEnum.AERODYNAMIC)) {
+		if (Arrays.asList(type).contains(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY)) {
 			calculateAerodynamics(aircraft);
-			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC, true);
+			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, true);
 		}
 		
 		if (Arrays.asList(type).contains(AnalysisTypeEnum.PERFORMANCE)) {

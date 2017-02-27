@@ -77,7 +77,7 @@ public class PayloadRange_Test_TF_MTOM{
 
 		theLSAnalysis.set_AerodynamicDatabaseReader(aeroDatabaseReader);
 		theWing.setAerodynamics(theLSAnalysis);
-		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC);
+		theAnalysis.doAnalysis(aircraft,AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
 
 		//------------------------------------------------------------------------------------
 		// Creating the Calculator Object
