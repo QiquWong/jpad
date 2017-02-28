@@ -258,7 +258,7 @@ public class TakeOffManager {
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("			RESULTS				 ");
 		System.out.println("-----------------------------------------------------------");
-		System.out.println("TAKE-OFF DISTANCE = " + output.getTakeOffDistanceAOE().getEstimatedValue() + " " + output.getTakeOffDistanceAOE().getUnit());
+		System.out.println("TAKE-OFF DISTANCE = " + output.getTakeOffDistanceAEO().getEstimatedValue() + " " + output.getTakeOffDistanceAEO().getUnit());
 		System.out.println("FAR-25 TAKE-OFF FIELD LENGTH = " + output.getTakeOffDistanceFAR25().getEstimatedValue() + " " + output.getTakeOffDistanceFAR25().getUnit());
 		System.out.println("BALANCED FIELD LENGTH = " + output.getBalancedFieldLength().getEstimatedValue() + " " + output.getBalancedFieldLength().getUnit());
 		System.out.println("V1 = " + output.getV1().getEstimatedValue() + " " + output.getV1().getUnit());
@@ -369,7 +369,7 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("ground_roll_distance", output.getGroundRoll(), distanceElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("rotation_distance", output.getRotation(), distanceElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne(), distanceElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE(), distanceElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AEO", output.getTakeOffDistanceAEO(), distanceElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25(), distanceElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength(), distanceElement, doc);
 		
@@ -1228,10 +1228,10 @@ public class TakeOffManager {
 
 					if(output.getAirborne().getEstimatedValue() == 0.0)
 						output.setAirborne(groundDistance.get(groundDistance.size()-1).minus(output.getRotation()).minus(output.getGroundRoll()));
-					if(output.getTakeOffDistanceAOE().getEstimatedValue() == 0.0)
-						output.setTakeOffDistanceAOE(groundDistance.get(groundDistance.size()-1));
+					if(output.getTakeOffDistanceAEO().getEstimatedValue() == 0.0)
+						output.setTakeOffDistanceAEO(groundDistance.get(groundDistance.size()-1));
 					if(output.getTakeOffDistanceFAR25().getEstimatedValue() == 0.0)
-						output.setTakeOffDistanceFAR25(output.getTakeOffDistanceAOE().times(1.15));
+						output.setTakeOffDistanceFAR25(output.getTakeOffDistanceAEO().times(1.15));
 					if(output.getV2().getEstimatedValue() == 0.0)
 						output.setV2(speed.get(speed.size()-1));
 					

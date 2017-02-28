@@ -100,11 +100,11 @@ public class OutputTree {
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	
-	public Amount<Length> getTakeOffDistanceAOE() {
+	public Amount<Length> getTakeOffDistanceAEO() {
 		return takeOffDistanceAOE;
 	}
 
-	public void setTakeOffDistanceAOE(Amount<Length> takeOffDistanceAOE) {
+	public void setTakeOffDistanceAEO(Amount<Length> takeOffDistanceAOE) {
 		this.takeOffDistanceAOE = takeOffDistanceAOE;
 	}
 

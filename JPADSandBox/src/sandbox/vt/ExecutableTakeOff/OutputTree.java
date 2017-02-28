@@ -18,7 +18,7 @@ public class OutputTree {
 	// VARIABLE DECLARATION:
 
 	// global results:
-	private Amount<Length> takeOffDistanceAOE,
+	private Amount<Length> takeOffDistanceAEO,
 						   takeOffDistanceFAR25,
 						   balancedFieldLength,
 						   groundRoll,
@@ -57,7 +57,7 @@ public class OutputTree {
 	
 	public OutputTree() {
 		
-		takeOffDistanceAOE = Amount.valueOf(0.0, SI.METER);
+		takeOffDistanceAEO = Amount.valueOf(0.0, SI.METER);
 		takeOffDistanceFAR25 = Amount.valueOf(0.0, SI.METER);
 		balancedFieldLength = Amount.valueOf(0.0, SI.METER);
 		groundRoll = Amount.valueOf(0.0, SI.METER);
@@ -97,12 +97,12 @@ public class OutputTree {
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	
-	public Amount<Length> getTakeOffDistanceAOE() {
-		return takeOffDistanceAOE;
+	public Amount<Length> getTakeOffDistanceAEO() {
+		return takeOffDistanceAEO;
 	}
 
-	public void setTakeOffDistanceAOE(Amount<Length> takeOffDistanceAOE) {
-		this.takeOffDistanceAOE = takeOffDistanceAOE;
+	public void setTakeOffDistanceAEO(Amount<Length> takeOffDistanceAEO) {
+		this.takeOffDistanceAEO = takeOffDistanceAEO;
 	}
 
 	public Amount<Length> getTakeOffDistanceFAR25() {

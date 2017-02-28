@@ -45,6 +45,7 @@ import org.w3c.dom.NodeList;
 
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.MyConfiguration;
+import igeo.IVec2R.Len;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -542,20 +543,20 @@ public class TakeOffManager {
 		theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
 		
 		// Distances:
-		output.setGroundRoll(theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT));
-		output.setRotation(theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(output.getGroundRoll()).to(NonSI.FOOT));
-		output.setAirborne(theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(output.getRotation()).minus(output.getGroundRoll()).to(NonSI.FOOT));
-		output.setTakeOffDistanceAOE(output.getGroundRoll().plus(output.getRotation()).plus(output.getAirborne()).to(NonSI.FOOT));
-		output.setTakeOffDistanceFAR25(output.getTakeOffDistanceAOE().times(1.15).to(NonSI.FOOT));
+		Amount<Length> groundRoll = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT);
+		Amount<Length> rotation = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(1).minus(groundRoll).to(NonSI.FOOT);
+		Amount<Length> airborne = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(2).minus(rotation).minus(groundRoll).to(NonSI.FOOT);
+		Amount<Length> takeOffDistanceAEO = groundRoll.plus(rotation).plus(airborne).to(NonSI.FOOT);
+		Amount<Length> takeOffDistanceFAR25 = takeOffDistanceAEO.times(1.15).to(NonSI.FOOT);
 		
 		// Duration:
-		output.setTakeOffDuration(theTakeOffCalculator.getTakeOffResults().getTime().get(2));
+		Amount<Duration> duration = theTakeOffCalculator.getTakeOffResults().getTime().get(2);
 		
 		// Velocities:
-		output.setVsT0(theTakeOffCalculator.getvSTakeOff().to(NonSI.KNOT));
-		output.setvRot(theTakeOffCalculator.getvRot().to(NonSI.KNOT));
-		output.setvLO(theTakeOffCalculator.getvLO().to(NonSI.KNOT));
-		output.setV2(theTakeOffCalculator.getV2().to(NonSI.KNOT));
+		Amount<Velocity> vStallTakeOff = theTakeOffCalculator.getvSTakeOff().to(NonSI.KNOT);
+		Amount<Velocity> vRot = theTakeOffCalculator.getvRot().to(NonSI.KNOT);
+		Amount<Velocity> vLiftOff = theTakeOffCalculator.getvLO().to(NonSI.KNOT);
+		Amount<Velocity> v2 = theTakeOffCalculator.getV2().to(NonSI.KNOT);
 		
 		if(input.isCharts())
 			theTakeOffCalculator.createTakeOffCharts(chartsFolderPath);
@@ -570,6 +571,22 @@ public class TakeOffManager {
 		
 		if(input.isCharts() && input.isBalancedFieldLength())
 			theTakeOffCalculator.createBalancedFieldLengthChart(chartsFolderPath);
+		
+		// Distances:
+		output.setGroundRoll(groundRoll);
+		output.setRotation(rotation);
+		output.setAirborne(airborne);
+		output.setTakeOffDistanceAEO(takeOffDistanceAEO);
+		output.setTakeOffDistanceFAR25(takeOffDistanceFAR25);
+		
+		// Duration:
+		output.setTakeOffDuration(duration);
+		
+		// Velocities:
+		output.setVsT0(vStallTakeOff);
+		output.setvRot(vRot);
+		output.setvLO(vLiftOff);
+		output.setV2(v2);
 		
 		System.out.println(theTakeOffCalculator.toString());
 	}
@@ -692,7 +709,7 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("ground_roll_distance", output.getGroundRoll().to(SI.METER), distanceSIElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("rotation_distance", output.getRotation().to(SI.METER), distanceSIElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne().to(SI.METER), distanceSIElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE().to(SI.METER), distanceSIElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAEO().to(SI.METER), distanceSIElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25().to(SI.METER), distanceSIElement, doc);
 		if(input.isBalancedFieldLength())
 			JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength().to(SI.METER), distanceSIElement, doc);
@@ -703,7 +720,7 @@ public class TakeOffManager {
 		JPADStaticWriteUtils.writeSingleNode("ground_roll_distance", output.getGroundRoll().to(NonSI.FOOT), distanceImperialElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("rotation_distance", output.getRotation().to(NonSI.FOOT), distanceImperialElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("airborne_distance", output.getAirborne().to(NonSI.FOOT), distanceImperialElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAOE().to(NonSI.FOOT), distanceImperialElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("take_off_distance_AOE", output.getTakeOffDistanceAEO().to(NonSI.FOOT), distanceImperialElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("take_off_distance_FAR25", output.getTakeOffDistanceFAR25().to(NonSI.FOOT), distanceImperialElement, doc);
 		if(input.isBalancedFieldLength())
 			JPADStaticWriteUtils.writeSingleNode("balanced_field_length", output.getBalancedFieldLength().to(NonSI.FOOT), distanceImperialElement, doc);
@@ -1201,7 +1218,7 @@ public class TakeOffManager {
 		tRot = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 		tEndRot = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 		tClimb = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
-		tFaiulre = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
+		tFailure = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 		tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 		private Amount<Mass> maxTakeOffMass; 
 		private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2;
@@ -1369,7 +1386,7 @@ public class TakeOffManager {
 			tRot = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 			tEndRot = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 			tClimb = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
-			tFaiulre = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
+			tFailure = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 			tRec = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 			
 //			vFailure = null;
@@ -1397,7 +1414,7 @@ public class TakeOffManager {
 			
 			v2 = Amount.valueOf(10000.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
 			
-			while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.009) {
+			while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.005) {
 
 				if(i >= 1) {
 					if(newAlphaRed <= 0.0)
@@ -1452,7 +1469,7 @@ public class TakeOffManager {
 						System.out.println("\n\tswitching function changes sign at t = " + t);
 						System.out.println("\n---------------------------DONE!-------------------------------");
 
-						tFaiulre = Amount.valueOf(t, SI.SECOND);
+						tFailure = Amount.valueOf(t, SI.SECOND);
 
 						return  Action.CONTINUE;
 					}
@@ -1637,7 +1654,7 @@ public class TakeOffManager {
 					@Override
 					public double g(double t, double[] x) {
 
-						return t - (tFaiulre.plus(dtRec).getEstimatedValue());
+						return t - (tFailure.plus(dtRec).getEstimatedValue());
 					}
 
 					@Override
@@ -1696,7 +1713,7 @@ public class TakeOffManager {
 					theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 					theIntegrator.addEventHandler(ehCheckFailure, 1.0, 1e-3, 20);
 					theIntegrator.addEventHandler(ehCheckBrakes, 1.0, 1e-3, 20);
-					theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-7, 50);
+					theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-10, 50);
 				}
 
 				// handle detailed info
@@ -2220,19 +2237,26 @@ public class TakeOffManager {
 				calculateTakeOffDistanceODE(failureSpeedArray[i], false);
 				if(!getGroundDistance().isEmpty())
 					continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+				else {
+					failureSpeedArray[i] = 0.0;
+					continuedTakeOffArray[i] = 0.0;
+				}
 				calculateTakeOffDistanceODE(failureSpeedArray[i], true);
-				
-				///////////////////////////////////////////////////////////////////////////////////////////
-				//        CHECK THE ABORTED DISTANCE (WHEN HIGH VALUES OF vFailure ARE USED)             //
-				///////////////////////////////////////////////////////////////////////////////////////////
 				if(!getGroundDistance().isEmpty() && groundDistance.get(groundDistance.size()-1).getEstimatedValue() >= 0.0)
 					abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+				else {
+					failureSpeedArray[i] = 0.0;
+					abortedTakeOffArray[i] = 0.0;
+				}
 			}
 
 			MyInterpolatingFunction continuedTakeOffFunction = new MyInterpolatingFunction();
 			MyInterpolatingFunction abortedTakeOffFunction = new MyInterpolatingFunction();
 			
-			continuedTakeOffFunction.interpolateLinear(failureSpeedArray, continuedTakeOffArray);
+			continuedTakeOffFunction.interpolateLinear(
+					Arrays.stream(failureSpeedArray).filter(x -> x != 0.0).toArray(), 
+					Arrays.stream(continuedTakeOffArray).filter(x -> x != 0.0).toArray()
+					);
 			abortedTakeOffFunction.interpolateLinear(failureSpeedArray, abortedTakeOffArray);
 			
 			failureSpeedArrayFitted = MyArrayUtils.linspace(
@@ -2961,7 +2985,7 @@ public class TakeOffManager {
 			.append("\t\tGround roll distance = " + output.getGroundRoll().to(SI.METER) + "\n")
 			.append("\t\tRotation distance = " + output.getRotation().to(SI.METER) + "\n")
 			.append("\t\tAirborne distance = " + output.getAirborne().to(SI.METER) + "\n")
-			.append("\t\tAEO take-off distance = " + output.getTakeOffDistanceAOE().to(SI.METER) + "\n")
+			.append("\t\tAEO take-off distance = " + output.getTakeOffDistanceAEO().to(SI.METER) + "\n")
 			.append("\t\tFAR-25 take-off field length = " + output.getTakeOffDistanceFAR25().to(SI.METER) + "\n");
 			if(input.isBalancedFieldLength()) 
 				sb.append("\t\tBalanced field length = " + output.getBalancedFieldLength().to(SI.METER) + "\n");
@@ -2969,7 +2993,7 @@ public class TakeOffManager {
 			.append("\t\tGround roll distance = " + output.getGroundRoll().to(NonSI.FOOT) + "\n")
 			.append("\t\tRotation distance = " + output.getRotation().to(NonSI.FOOT) + "\n")
 			.append("\t\tAirborne distance = " + output.getAirborne().to(NonSI.FOOT) + "\n")
-			.append("\t\tAEO take-off distance = " + output.getTakeOffDistanceAOE().to(NonSI.FOOT) + "\n")
+			.append("\t\tAEO take-off distance = " + output.getTakeOffDistanceAEO().to(NonSI.FOOT) + "\n")
 			.append("\t\tFAR-25 take-off field length = " + output.getTakeOffDistanceFAR25().to(NonSI.FOOT) + "\n");
 			if(input.isBalancedFieldLength()) 
 				sb.append("\t\tBalanced field length = " + output.getBalancedFieldLength().to(NonSI.FOOT) + "\n");
@@ -3089,7 +3113,7 @@ public class TakeOffManager {
 
 				double theThrust = 0.0;
 				
-				if (time < tFaiulre.getEstimatedValue()) {
+				if (time < tFailure.getEstimatedValue()) {
 					if(input.isEngineModel()) {
 						double thrustRatio = 1-(0.00252*speed)+(0.00000434*(Math.pow(speed, 2)));  // simplified thrust model for a turbofan
 						theThrust = input.getnEngine()*input.getT0().getEstimatedValue()*thrustRatio;
@@ -3097,7 +3121,7 @@ public class TakeOffManager {
 					else
 						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*input.getnEngine();
 				}
-				else {
+				else if ((!isAborted) && (time >= tFailure.getEstimatedValue())) {
 					if(input.isEngineModel()) {
 						double thrustRatio = 1-(0.00252*speed)+(0.00000434*(Math.pow(speed, 2)));  // simplified thrust model for a turbofan
 						theThrust = (input.getnEngine()-1)*input.getT0().getEstimatedValue()*thrustRatio;
@@ -3105,6 +3129,16 @@ public class TakeOffManager {
 					else
 						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*(input.getnEngine()-1);
 				}
+				else if ((isAborted) && (time >= tFailure.getEstimatedValue()) && (time < tRec.getEstimatedValue())) {
+					if(input.isEngineModel()) {
+						double thrustRatio = 1-(0.00252*speed)+(0.00000434*(Math.pow(speed, 2)));  // simplified thrust model for a turbofan
+						theThrust = (input.getnEngine()-1)*input.getT0().getEstimatedValue()*thrustRatio;
+					}
+					else
+						theThrust = input.getNetThrust().value(SpeedCalc.calculateMach(altitude, speed))*(input.getnEngine()-1);
+				}
+				else
+					theThrust = 0.0;
 
 				return theThrust;
 			}
@@ -3704,7 +3738,7 @@ public class TakeOffManager {
 		}
 
 		public Amount<Duration> gettFaiulre() {
-			return tFaiulre;
+			return tFailure;
 		}
 
 		public void setkRot(double kRot) {
