@@ -917,8 +917,9 @@ public class ReaderWriter{
 		org.w3c.dom.Element liftElement = doc.createElement("LIFT");
 		outputRootElement.appendChild(liftElement);
 		
+		//WING-----------------------------------------------------
 		org.w3c.dom.Element wingLiftElement = doc.createElement("Wing");
-		outputRootElement.appendChild(wingLiftElement);
+		liftElement.appendChild(wingLiftElement);
 		
 		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", theStabilityCalculator.getWingAlphaZeroLift(), wingLiftElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_zero", theStabilityCalculator.getWingcLZeroCONDITION(), wingLiftElement, doc);	
@@ -928,12 +929,31 @@ public class ReaderWriter{
 		JPADStaticWriteUtils.writeSingleNode("cL_max", theStabilityCalculator.getWingcLMaxCONDITION(), wingLiftElement, doc);	
 		JPADStaticWriteUtils.writeSingleNode("alpha_Stall", theStabilityCalculator.getWingalphaStallCONDITION(), wingLiftElement, doc);	
 	
-		JPADStaticWriteUtils.writeSingleNode("alphas_wing", theStabilityCalculator.get_alphasWing(), wingLiftElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getWingliftCoefficient3DCurve()), wingLiftElement, doc);	
 	
 		JPADStaticWriteUtils.writeSingleNode("wing_eta_stations", theStabilityCalculator.getWingYAdimensionalDistribution(), wingLiftElement, doc);	
 		JPADStaticWriteUtils.writeSingleNode("alpha_max_linear", theStabilityCalculator.getWingalphaMaxLinearCONDITION(), wingLiftElement, doc);	
 		JPADStaticWriteUtils.writeSingleNode("cl_distribution_at_CL_max", MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(theStabilityCalculator.getWingliftCoefficientDistributionatCLMax())), wingLiftElement, doc);	
+	
+		JPADStaticWriteUtils.writeSingleNode("alphas_wing", theStabilityCalculator.get_alphasWing(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getWingliftCoefficient3DCurve()), wingLiftElement, doc);	
+		
+		//FUSELAGE--------------------------------------------------
+		org.w3c.dom.Element fuselageLiftElement = doc.createElement("Fuselage");
+		liftElement.appendChild(fuselageLiftElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift_wing_body", theStabilityCalculator.getWingAlphaZeroLift(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cl_alpha_wing_body", theStabilityCalculator.getFuselageWingClAlphaDeg(), wingLiftElement, doc);
+		
+		JPADStaticWriteUtils.writeSingleNode("alphas_body", theStabilityCalculator.getAlphasBody(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_wing_body_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getFuselagewingliftCoefficient3DCurve()), wingLiftElement, doc);	
+		
+		
+		
+		
+		
+		
+		
+	
 	}
 	
 }

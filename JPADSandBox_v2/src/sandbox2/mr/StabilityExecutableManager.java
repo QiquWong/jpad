@@ -1832,8 +1832,8 @@ public class StabilityExecutableManager {
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingTwistDistribution, "Twist Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingDihedralDistribution, "Dihedral Distribution", ",");
 		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingAlphaStarDistribution, "Alpha star Distribution", ",");
-		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingAlphaZeroLiftDistribution, "Alpha zero lift Distribution", ",");
-		System.out.println("Cl alpha distribution (1/deg) " + this._wingClAlphaDistributionDeg);
+		MyArrayUtils.printListOfAmountWithUnitsInEvidence(this._wingAlphaZeroLiftDistribution, "\nAlpha zero lift Distribution", ",");
+		System.out.println("\nCl alpha distribution (1/deg) " + this._wingClAlphaDistributionDeg);
 		System.out.println("\nMax thickness Distribution --> " + this._wingMaxThicknessDistribution);
 		System.out.println("\nCl max Distribution --> " + this._wingClMaxDistribution);
 		if(_wingDragMethod == MethodEnum.AIRFOIL_INPUT || _wingDragMethod == MethodEnum.PARASITE_AIRFOIL_INPUT){
@@ -8381,6 +8381,23 @@ public class StabilityExecutableManager {
 	public void setWingliftCoefficientDistributionatCLMax(double[] _wingliftCoefficientDistributionatCLMax) {
 		this._wingliftCoefficientDistributionatCLMax = _wingliftCoefficientDistributionatCLMax;
 	}
+
+	public Double getFuselageWingClAlphaDeg() {
+		return _fuselageWingClAlphaDeg;
+	}
+
+	public void setFuselageWingClAlphaDeg(Double _fuselageWingClAlphaDeg) {
+		this._fuselageWingClAlphaDeg = _fuselageWingClAlphaDeg;
+	}
+
+	public Double[] getFuselagewingliftCoefficient3DCurve() {
+		return _fuselagewingliftCoefficient3DCurve;
+	}
+
+	public void setFuselagewingliftCoefficient3DCurve(Double[] _fuselagewingliftCoefficient3DCurve) {
+		this._fuselagewingliftCoefficient3DCurve = _fuselagewingliftCoefficient3DCurve;
+	}
+
 
 
 }
