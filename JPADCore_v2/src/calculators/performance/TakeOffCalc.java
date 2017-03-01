@@ -1097,15 +1097,28 @@ public class TakeOffCalc {
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
 			calculateTakeOffDistanceODE(failureSpeedArray[i], false);
-			continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+			if(!getGroundDistance().isEmpty())
+				continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+			else {
+				failureSpeedArray[i] = 0.0;
+				continuedTakeOffArray[i] = 0.0;
+			}
 			calculateTakeOffDistanceODE(failureSpeedArray[i], true);
-			abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+			if(!getGroundDistance().isEmpty() && groundDistance.get(groundDistance.size()-1).getEstimatedValue() >= 0.0)
+				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
+			else {
+				failureSpeedArray[i] = 0.0;
+				abortedTakeOffArray[i] = 0.0;
+			}
 		}
 
 		MyInterpolatingFunction continuedTakeOffFunction = new MyInterpolatingFunction();
 		MyInterpolatingFunction abortedTakeOffFunction = new MyInterpolatingFunction();
 		
-		continuedTakeOffFunction.interpolateLinear(failureSpeedArray, continuedTakeOffArray);
+		continuedTakeOffFunction.interpolateLinear(
+				Arrays.stream(failureSpeedArray).filter(x -> x != 0.0).toArray(), 
+				Arrays.stream(continuedTakeOffArray).filter(x -> x != 0.0).toArray()
+				);
 		abortedTakeOffFunction.interpolateLinear(failureSpeedArray, abortedTakeOffArray);
 		
 		failureSpeedArrayFitted = MyArrayUtils.linspace(

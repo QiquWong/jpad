@@ -21,7 +21,7 @@
 					</aerodynamic_data>
                 </wing>
                 <engine>
-				    <static_thrust unit="lbf"></static_thrust>
+				    <static_thrust unit="lbf">24451</static_thrust>
 					<number_of_engines>2</number_of_engines>
 				    <!--USE THE FOLLOWING TWO TAGS ONLY IF THE ENGINE MODEL IS KNOWN AND THE ATTRIBUTE "simplified_thrust_model" IS SET TO FALSE-->
 					<net_thrust_function_single_engine>
