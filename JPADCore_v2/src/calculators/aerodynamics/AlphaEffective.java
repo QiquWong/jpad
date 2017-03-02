@@ -9,6 +9,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsCalculator;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -27,7 +28,7 @@ public class AlphaEffective {
 
 	int numberOfPoints = 30; //the same of static final  _numberOfPointsChordDistribution
 	OperatingConditions theOperatingConditions;
-	LSAerodynamicsManager theLSManager;
+	LSAerodynamicsCalculator theLSManager;
 	LiftingSurface theWing;
 
 	double vortexSemiSpan, vortexSemiSpanToSemiSpanRatio, surface, semispan, mach, altitude ;
@@ -41,13 +42,13 @@ public class AlphaEffective {
 	//--------------------------------------------------------
 	//builder
 
-	public AlphaEffective(LSAerodynamicsManager theLSManager, LiftingSurface theWing,
+	public AlphaEffective(LSAerodynamicsCalculator theLSManager, LiftingSurface theWing,
 			OperatingConditions theOperatingConditions){
 		this.theLSManager = theLSManager;
 		this.theWing = theWing;
 		this.theOperatingConditions = theOperatingConditions;
 
-		vortexSemiSpanToSemiSpanRatio = theLSManager.get_vortexSemiSpanToSemiSpanRatio();
+//		vortexSemiSpanToSemiSpanRatio = theLSManager.get_vortexSemiSpanToSemiSpanRatio();
 		vortexSemiSpan = vortexSemiSpanToSemiSpanRatio * theWing.getSemiSpan().getEstimatedValue();
 		mach = theOperatingConditions.getMachCruise();
 		semispan = theWing.getSemiSpan().getEstimatedValue();
@@ -81,7 +82,7 @@ public class AlphaEffective {
 		surface = theWing.getSurface().getEstimatedValue();
 		altitude = theOperatingConditions.getAltitudeCruise().getEstimatedValue();
 
-		alpha0l = theLSManager.get_alpha0lDistribution().toArray();
+//		alpha0l = theLSManager.get_alpha0lDistribution().toArray();
 	}
 
 

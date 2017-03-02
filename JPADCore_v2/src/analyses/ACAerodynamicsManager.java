@@ -22,9 +22,6 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
-import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
@@ -179,19 +176,19 @@ public class ACAerodynamicsManager {
 		_machDragPolar.add(mach);
 
 		try {
-			etaHT = aircraft.getHTail().getAerodynamics().get_dynamicPressureRatio();
-			cLAlphaW = aircraft.getWing().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
-			cLAlphaHT = aircraft.getHTail().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
-
-			xacWPercentMAC = aircraft.getWing().getAerodynamics()
-					.getCalculateXAC().get_methodMapMRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
-					/ aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue();
-			xacWBRF = aircraft.getWing().getAerodynamics()
-					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
-					+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue();
-
-			xa = (aircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() - xacWBRF)
-					/macW;
+//			etaHT = aircraft.getHTail().getAerodynamics().get_dynamicPressureRatio();
+//			cLAlphaW = aircraft.getWing().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
+//			cLAlphaHT = aircraft.getHTail().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
+//
+//			xacWPercentMAC = aircraft.getWing().getAerodynamics()
+//					.getCalculateXAC().get_methodMapMRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
+//					/ aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue();
+//			xacWBRF = aircraft.getWing().getAerodynamics()
+//					.getCalculateXAC().get_methodMapLRF().get(MethodEnum.DEYOUNG_HARPER).getEstimatedValue()
+//					+ aircraft.getWing().getXApexConstructionAxes().getEstimatedValue();
+//
+//			xa = (aircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXBRF().getEstimatedValue() - xacWBRF)
+//					/macW;
 
 		} catch (NullPointerException e) { }
 	}
@@ -238,7 +235,8 @@ public class ACAerodynamicsManager {
 	public Double calculateCD(Double cD0, Double cL, Double eWhole, Double mach){
 
 		if (_cD0Total == 0.0) calculateCD0Total();
-		double cDWave = _theAircraft.getWing().getAerodynamics().getCalculateCdWaveDrag().lockKorn(cL,mach);
+//		double cDWave = _theAircraft.getWing().getAerodynamics().getCalculateCdWaveDrag().lockKorn(cL,mach);
+		double cDWave = 0.0; // FIXME !!
 		_cDWaveList.add(cDWave);
 		_kFactorPolar = (Math.PI*arW*eWhole);
 
@@ -258,11 +256,11 @@ public class ACAerodynamicsManager {
 //		d += _theAircraft.get_VTail().getAerodynamics().get_cD0Parasite().doubleValue();
 //		_cD0Parasite = Double.valueOf(d); 
 				
-		_cD0Parasite =  _theAircraft.getFuselage().getAerodynamics().get_cD0Parasite()
-				+ _theAircraft.getWing().getAerodynamics().get_cD0Parasite()
-				+ _theAircraft.getNacelles().getCD0Parasite()
-				+ _theAircraft.getHTail().getAerodynamics().get_cD0Parasite()
-				+ _theAircraft.getVTail().getAerodynamics().get_cD0Parasite();
+//		_cD0Parasite =  _theAircraft.getFuselage().getAerodynamics().get_cD0Parasite()
+//				+ _theAircraft.getWing().getAerodynamics().get_cD0Parasite()
+//				+ _theAircraft.getNacelles().getCD0Parasite()
+//				+ _theAircraft.getHTail().getAerodynamics().get_cD0Parasite()
+//				+ _theAircraft.getVTail().getAerodynamics().get_cD0Parasite();
 		
 		return _cD0Parasite.doubleValue();
 		
@@ -273,11 +271,11 @@ public class ACAerodynamicsManager {
 
 		calculateCD0Parasite();
 
-		_cD0 = _theAircraft.getFuselage().getAerodynamics().get_cD0Total() +
-				_theAircraft.getWing().getAerodynamics().get_cD0Total() +
-				_theAircraft.getNacelles().getCD0Total() +
-				_theAircraft.getHTail().getAerodynamics().get_cD0Total() +
-				_theAircraft.getVTail().getAerodynamics().get_cD0Total();
+//		_cD0 = _theAircraft.getFuselage().getAerodynamics().get_cD0Total() +
+//				_theAircraft.getWing().getAerodynamics().get_cD0Total() +
+//				_theAircraft.getNacelles().getCD0Total() +
+//				_theAircraft.getHTail().getAerodynamics().get_cD0Total() +
+//				_theAircraft.getVTail().getAerodynamics().get_cD0Total();
 
 		_cDRough = AerodynamicCalc.calculateRoughness(_cD0);
 		_cDCool = AerodynamicCalc.calculateCoolings(_cD0Parasite);
@@ -286,12 +284,12 @@ public class ACAerodynamicsManager {
 
 		if (_theOperatingConditions != null 
 				&& mach == _theOperatingConditions.getMachCruise()) {
-			_cD0Map.put(ComponentEnum.FUSELAGE, _theAircraft.getFuselage().getAerodynamics().get_cD0Total());
-			_cD0Map.put(ComponentEnum.WING, _theAircraft.getWing().getAerodynamics().get_cD0Total());
-			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.getNacelles().getCD0Total());
-			_cD0Map.put(ComponentEnum.HORIZONTAL_TAIL, _theAircraft.getHTail().getAerodynamics().get_cD0Total());
-			_cD0Map.put(ComponentEnum.VERTICAL_TAIL, _theAircraft.getVTail().getAerodynamics().get_cD0Total());
-			_cD0Map.put(ComponentEnum.ALL, _cD0Total);
+//			_cD0Map.put(ComponentEnum.FUSELAGE, _theAircraft.getFuselage().getAerodynamics().get_cD0Total());
+//			_cD0Map.put(ComponentEnum.WING, _theAircraft.getWing().getAerodynamics().get_cD0Total());
+//			_cD0Map.put(ComponentEnum.NACELLE, _theAircraft.getNacelles().getCD0Total());
+//			_cD0Map.put(ComponentEnum.HORIZONTAL_TAIL, _theAircraft.getHTail().getAerodynamics().get_cD0Total());
+//			_cD0Map.put(ComponentEnum.VERTICAL_TAIL, _theAircraft.getVTail().getAerodynamics().get_cD0Total());
+//			_cD0Map.put(ComponentEnum.ALL, _cD0Total);
 		}
 
 		return _cD0Total; 
@@ -528,49 +526,49 @@ public class ACAerodynamicsManager {
 		Amount<Angle> alphaMaxWingClean = null, alphaStar, alphaMaxWingBody;
 		
 		if( theCondition == ConditionEnum.CRUISE){
-		alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
-		cLMaxWingClean = _theAircraft.getWing().getAerodynamics().get_cLMaxClean();
-		cLAlphaWing = _theAircraft.getWing().getAerodynamics().getcLLinearSlopeNB();
-		//alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
-		cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
-		LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
-		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+//		alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
+//		cLMaxWingClean = _theAircraft.getWing().getAerodynamics().get_cLMaxClean();
+//		cLAlphaWing = _theAircraft.getWing().getAerodynamics().getcLLinearSlopeNB();
+//		//alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+//		cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
+//		LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
+//		LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
 //		alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
-		alphaZeroLift = _theAircraft.getWing().getAerodynamics().getAlphaZeroLiftWingClean();
-		
-		cLAlphaWingBody = _theAircraft
-				.getFuselage()
-				.getAerodynamics()
-				.calculateCLAlphaFuselage(cLAlphaWing);
-		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
+//		alphaZeroLift = _theAircraft.getWing().getAerodynamics().getAlphaZeroLiftWingClean();
+//		
+//		cLAlphaWingBody = _theAircraft
+//				.getFuselage()
+//				.getAerodynamics()
+//				.calculateCLAlphaFuselage(cLAlphaWing);
+//		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
 		}
 		
 		if (theCondition == ConditionEnum.LANDING || theCondition == ConditionEnum.TAKE_OFF){
 		
-			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
-			double deltaAlphaMax = Math.toRadians(_theAircraft.getWing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
-			alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
-
-			cLMaxWingClean = _theAircraft.getWing().getHigLiftCalculator().getcL_Max_Flap() +
-					_theAircraft.getWing().getHigLiftCalculator().getDeltaCLmax_slat();
-			
-			cLAlphaWing = _theAircraft.getWing().getHigLiftCalculator().getcLalpha_new()*57.3;
-			
-			//alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
-			cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
-			LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
-			LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
-	
-					
-//			alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
-			cLZeroWing = _theAircraft.getWing().getAerodynamics().getcLAlphaZero() +
-			_theAircraft.getWing().getHigLiftCalculator().getDeltaCL0_flap();
-			cLAlphaWingBody = _theAircraft
-					.getFuselage()
-					.getAerodynamics()
-					.calculateCLAlphaFuselage(cLAlphaWing);
-			
-			alphaZeroLift = - cLZeroWing/ cLAlphaWing;
+//			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
+//			double deltaAlphaMax = Math.toRadians(_theAircraft.getWing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
+//			alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
+//
+//			cLMaxWingClean = _theAircraft.getWing().getHigLiftCalculator().getcL_Max_Flap() +
+//					_theAircraft.getWing().getHigLiftCalculator().getDeltaCLmax_slat();
+//			
+//			cLAlphaWing = _theAircraft.getWing().getHigLiftCalculator().getcLalpha_new()*57.3;
+//			
+//			//alphaStar = meanAirfoil.getAerodynamics().get_alphaStar();
+//			cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
+//			LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
+//			LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+//	
+//					
+////			alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+//			cLZeroWing = _theAircraft.getWing().getAerodynamics().getcLAlphaZero() +
+//			_theAircraft.getWing().getHigLiftCalculator().getDeltaCL0_flap();
+//			cLAlphaWingBody = _theAircraft
+//					.getFuselage()
+//					.getAerodynamics()
+//					.calculateCLAlphaFuselage(cLAlphaWing);
+//			
+//			alphaZeroLift = - cLZeroWing/ cLAlphaWing;
 			
 		}
 		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
@@ -646,7 +644,7 @@ public class ACAerodynamicsManager {
 		
 		Amount<Angle> alphaActual ;
 		alphaArrayActual.linspace(alphaMin.getEstimatedValue(), alphaMax.getEstimatedValue(), nValue);
-		LSAerodynamicsManager  theLSAnalysis = _theAircraft.getWing().getAerodynamics();
+//		LSAerodynamicsManager  theLSAnalysis = _theAircraft.getWing().getAerodynamics();
 		
 		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(this._theAircraft.getWing()));
 
@@ -685,50 +683,50 @@ public class ACAerodynamicsManager {
 		Amount<Angle> alphaMaxWingClean = null, alphaStar = null, alphaMaxWingBody;
 
 		if( theCondition == ConditionEnum.CRUISE){
-			alphaFirst = -2.0 ;
-			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
-			cLMaxWingClean = _theAircraft.getWing().getAerodynamics().get_cLMaxClean();
-			cLAlphaWing = _theAircraft.getWing().getAerodynamics().getcLLinearSlopeNB();
-			alphaStar = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait();
-			cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
-			LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
-			LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
-			alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
-//			alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
-			cLZeroWing = _theAircraft.getWing().getAerodynamics().getcLAlphaZero();
-			cLAlphaWingBody = _theAircraft
-					.getFuselage()
-					.getAerodynamics()
-					.calculateCLAlphaFuselage(cLAlphaWing);
+//			alphaFirst = -2.0 ;
+//			alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
+//			cLMaxWingClean = _theAircraft.getWing().getAerodynamics().get_cLMaxClean();
+//			cLAlphaWing = _theAircraft.getWing().getAerodynamics().getcLLinearSlopeNB();
+//			alphaStar = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait();
+//			cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
+//			LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
+//			LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+//			alphaZeroLift = theAlphaZeroLiftCalculator.integralMeanExposedWithTwist().getEstimatedValue();
+////			alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+//			cLZeroWing = _theAircraft.getWing().getAerodynamics().getcLAlphaZero();
+//			cLAlphaWingBody = _theAircraft
+//					.getFuselage()
+//					.getAerodynamics()
+//					.calculateCLAlphaFuselage(cLAlphaWing);
 			}
 			
 			if (theCondition == ConditionEnum.LANDING || theCondition == ConditionEnum.TAKE_OFF){
-				alphaFirst = -10.0 ;
-				alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
-				double deltaAlphaMax = Math.toRadians(_theAircraft.getWing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
-				alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
-
-				cLMaxWingClean = _theAircraft.getWing().getHigLiftCalculator().getcL_Max_Flap() +
-						_theAircraft.getWing().getHigLiftCalculator().getDeltaCLmax_slat();
-				
-				cLAlphaWing = Math.toDegrees(_theAircraft.getWing().getHigLiftCalculator().getcLalpha_new());
-				
-				alphaStar = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait();
-				cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
-				LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
-				LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
-		
-						
-//				alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
-				cLZeroWing = _theAircraft.getWing().getAerodynamics().getcLAlphaZero() +
-				_theAircraft.getWing().getHigLiftCalculator().getDeltaCL0_flap();
-				cLAlphaWingBody = _theAircraft
-						.getFuselage()
-						.getAerodynamics()
-						.calculateCLAlphaFuselage(cLAlphaWing);
-				
-				alphaZeroLift = - cLZeroWing/ cLAlphaWing;
-				
+//				alphaFirst = -10.0 ;
+//				alphaMaxWingClean =  _theAircraft.getWing().getAerodynamics().getAlphaMaxClean();
+//				double deltaAlphaMax = Math.toRadians(_theAircraft.getWing().getHigLiftCalculator().getDeltaAlphaMaxFlap());
+//				alphaMaxWingClean = Amount.valueOf(alphaMaxWingClean.getEstimatedValue() + deltaAlphaMax ,SI.RADIAN);
+//
+//				cLMaxWingClean = _theAircraft.getWing().getHigLiftCalculator().getcL_Max_Flap() +
+//						_theAircraft.getWing().getHigLiftCalculator().getDeltaCLmax_slat();
+//				
+//				cLAlphaWing = Math.toDegrees(_theAircraft.getWing().getHigLiftCalculator().getcLalpha_new());
+//				
+//				alphaStar = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait();
+//				cLStar = _theAircraft.getWing().getAerodynamics().getcLStarWing();
+//				LSAerodynamicsManager theManager = _theAircraft.getWing().getAerodynamics();
+//				LSAerodynamicsManager.CalcAlpha0L theAlphaZeroLiftCalculator = theManager.new CalcAlpha0L();
+//		
+//						
+////				alphaZeroLift = _theAircraft.get_wing().getAerodynamics().getAlphaZeroLiftWingClean();
+//				cLZeroWing = _theAircraft.getWing().getAerodynamics().getcLAlphaZero() +
+//				_theAircraft.getWing().getHigLiftCalculator().getDeltaCL0_flap();
+//				cLAlphaWingBody = _theAircraft
+//						.getFuselage()
+//						.getAerodynamics()
+//						.calculateCLAlphaFuselage(cLAlphaWing);
+//				
+//				alphaZeroLift = - cLZeroWing/ cLAlphaWing;
+//				
 			}
 
 		cLZeroWingBody = -cLAlphaWingBody * alphaZeroLift;
@@ -855,39 +853,39 @@ public class ACAerodynamicsManager {
 	 */
 	public void calculateComponentsParameters(Aircraft aircraft, Amount<Angle> alphaRoot) {
 
-		// Evaluate all fuselage parameters
-		if (aircraft.getFuselage() != null)
-			aircraft.getFuselage().getAerodynamics().calculateAll();
-
-		// Evaluate all wing parameters
-		if (aircraft.getWing() != null) {
-			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(), alphaRoot);
-		} 
-
-		// Evaluate all Htail parameters
-		if (aircraft.getHTail() != null) {
-			// TODO: change Htail CL
-			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
-		}
-
-		// Evaluate all Vtail parameters
-		if (aircraft.getVTail() != null) {
-			aircraft.getVTail().getAerodynamics().set_cLCurrent(0.0);
-			aircraft.getVTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
-		}
-
-		// Evaluate all canard parameters
-		if (aircraft.getCanard() != null) {
-			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
-			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
-		}
-
-		// Evaluate all nacelle parameters
-		if (aircraft.getNacelles() != null) {
-			aircraft.getNacelles().calculateAerodynamics();
-		}
+//		// Evaluate all fuselage parameters
+//		if (aircraft.getFuselage() != null)
+//			aircraft.getFuselage().getAerodynamics().calculateAll();
+//
+//		// Evaluate all wing parameters
+//		if (aircraft.getWing() != null) {
+//			aircraft.getWing().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
+//			aircraft.getWing().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(), alphaRoot);
+//		} 
+//
+//		// Evaluate all Htail parameters
+//		if (aircraft.getHTail() != null) {
+//			// TODO: change Htail CL
+//			aircraft.getHTail().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
+//			aircraft.getHTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
+//		}
+//
+//		// Evaluate all Vtail parameters
+//		if (aircraft.getVTail() != null) {
+//			aircraft.getVTail().getAerodynamics().set_cLCurrent(0.0);
+//			aircraft.getVTail().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
+//		}
+//
+//		// Evaluate all canard parameters
+//		if (aircraft.getCanard() != null) {
+//			aircraft.getCanard().getAerodynamics().set_cLCurrent(aircraft.getTheAnalysisManager().getCruiseCL());
+//			aircraft.getCanard().getAerodynamics().calculateAll(_theOperatingConditions.getMachCruise(),alphaRoot);
+//		}
+//
+//		// Evaluate all nacelle parameters
+//		if (aircraft.getNacelles() != null) {
+//			aircraft.getNacelles().calculateAerodynamics();
+//		}
 	}
 
 	/*

@@ -448,109 +448,109 @@ public class LiftCalc {
 		return cLArray;
 	}
 
-	public static double[] calculateCLvsAlphaHighLiftArrayNasaBlackwell(
-			LiftingSurface theLiftingSurface,
-			MyArray alphaArray, 
-			int nValue,
-			double cLalphaNew,
-			double deltaCL0Flap,
-			double deltaAlphaMaxFlap,
-			double cLMaxFlap,
-			double deltaClmaxSlat
-			)
-	{
-		double alphaActual = 0;
-		LSAerodynamicsManager theLsManager = theLiftingSurface.getAerodynamics();
-		double [] cLActualArray = new double[nValue];
-		double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
+//	public static double[] calculateCLvsAlphaHighLiftArrayNasaBlackwell(
+//			LiftingSurface theLiftingSurface,
+//			MyArray alphaArray, 
+//			int nValue,
+//			double cLalphaNew,
+//			double deltaCL0Flap,
+//			double deltaAlphaMaxFlap,
+//			double cLMaxFlap,
+//			double deltaClmaxSlat
+//			)
+//	{
+//		double alphaActual = 0;
+//		LSAerodynamicsManager theLsManager = theLiftingSurface.getAerodynamics();
+//		double [] cLActualArray = new double[nValue];
+//		double cLAlphaFlap = cLalphaNew*57.3; // need it in 1/rad
+//
+//		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(theLiftingSurface));
+//		double alphaStarClean = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait().getEstimatedValue();
+//
+//		Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
+//
+//		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLvsAlphaCurve = theLsManager.new CalcCLvsAlphaCurve();
+//		LSAerodynamicsManager.CalcCLAtAlpha theCLCleanCalculator = theLsManager.new CalcCLAtAlpha();
+//		double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurveValue(alphaStarCleanAmount);
+//
+//		double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurveValue(Amount.valueOf(0.0, SI.RADIAN));
+//		double cL0HighLift = cL0Clean + deltaCL0Flap;
+//		double qValue = cL0HighLift;
+//		double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
+//		theLsManager.calcAlphaAndCLMax(meanAirfoil);
+//		Amount<Angle> alphaMax = theLsManager.getAlphaMaxClean();	
+//
+//		double alphaMaxHighLift;
+//		double deltaYPercent = AirfoilCalc.calculateDeltaYPercent(
+//				meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+//				meanAirfoil.getAirfoilCreator().getFamily(),
+//				theLiftingSurface.getAerodynamicDatabaseReader()
+//				);
+//
+//		if(deltaClmaxSlat == 0)
+//			alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap/57.3;
+//		else
+//			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
+//			+ theLsManager.getAerodynamicDatabaseReader().getDAlphaVsLambdaLEVsDy(
+//					theLiftingSurface
+//					.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
+//					deltaYPercent);
+//
+//		alphaMaxHighLift = Amount.valueOf(alphaMaxHighLift, SI.RADIAN).getEstimatedValue();
+//
+//		double alphaStarFlap; 
+//
+//		if(deltaClmaxSlat == 0)
+//			alphaStarFlap = (alphaStar + alphaStarClean)/2;
+//		else
+//			alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
+//
+//		double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
+//		for (int i=0; i<nValue; i++ ){
+//			alphaActual = alphaArray.get(i);
+//
+//			if (alphaActual < alphaStarFlap ){ 
+//				cLActualArray[i] = cLAlphaFlap * alphaActual + qValue;	
+//			}
+//			else{
+//				double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
+//					, alphaMaxHighLift,1.0},
+//						{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
+//						{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
+//						{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
+//				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+//
+//
+//				double [] vector = {cLMaxFlap, 0,cLAlphaFlap, cLStarFlap};
+//
+//				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
+//
+//				double a = solSystem[0];
+//				double b = solSystem[1];
+//				double c = solSystem[2];
+//				double d = solSystem[3];
+//
+//				cLActualArray[i] = a * Math.pow(alphaActual, 3) + 
+//						b * Math.pow(alphaActual, 2) + 
+//						c * alphaActual + d;
+//			}
+//
+//		}
+//		return cLActualArray;
+//	}
 
-		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(theLiftingSurface));
-		double alphaStarClean = meanAirfoil.getAirfoilCreator().getAlphaEndLinearTrait().getEstimatedValue();
 
-		Amount<Angle> alphaStarCleanAmount = Amount.valueOf(alphaStarClean, SI.RADIAN);
-
-		LSAerodynamicsManager.CalcCLvsAlphaCurve theCLvsAlphaCurve = theLsManager.new CalcCLvsAlphaCurve();
-		LSAerodynamicsManager.CalcCLAtAlpha theCLCleanCalculator = theLsManager.new CalcCLAtAlpha();
-		double cLStarClean = theCLCleanCalculator.nasaBlackwellCompleteCurveValue(alphaStarCleanAmount);
-
-		double cL0Clean =  theCLCleanCalculator.nasaBlackwellCompleteCurveValue(Amount.valueOf(0.0, SI.RADIAN));
-		double cL0HighLift = cL0Clean + deltaCL0Flap;
-		double qValue = cL0HighLift;
-		double alphaStar = (cLStarClean - qValue)/cLAlphaFlap;
-		theLsManager.calcAlphaAndCLMax(meanAirfoil);
-		Amount<Angle> alphaMax = theLsManager.getAlphaMaxClean();	
-
-		double alphaMaxHighLift;
-		double deltaYPercent = AirfoilCalc.calculateDeltaYPercent(
-				meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
-				meanAirfoil.getAirfoilCreator().getFamily(),
-				theLiftingSurface.getAerodynamicDatabaseReader()
-				);
-
-		if(deltaClmaxSlat == 0)
-			alphaMaxHighLift = alphaMax.getEstimatedValue() + deltaAlphaMaxFlap/57.3;
-		else
-			alphaMaxHighLift = ((cLMaxFlap-cL0HighLift)/cLalphaNew) 
-			+ theLsManager.getAerodynamicDatabaseReader().getDAlphaVsLambdaLEVsDy(
-					theLiftingSurface
-					.getSweepLEEquivalent(false).to(NonSI.DEGREE_ANGLE).getEstimatedValue(),
-					deltaYPercent);
-
-		alphaMaxHighLift = Amount.valueOf(alphaMaxHighLift, SI.RADIAN).getEstimatedValue();
-
-		double alphaStarFlap; 
-
-		if(deltaClmaxSlat == 0)
-			alphaStarFlap = (alphaStar + alphaStarClean)/2;
-		else
-			alphaStarFlap = alphaMaxHighLift-(alphaMax.to(SI.RADIAN).getEstimatedValue()-alphaStarClean);
-
-		double cLStarFlap = cLAlphaFlap * alphaStarFlap + qValue;	
-		for (int i=0; i<nValue; i++ ){
-			alphaActual = alphaArray.get(i);
-
-			if (alphaActual < alphaStarFlap ){ 
-				cLActualArray[i] = cLAlphaFlap * alphaActual + qValue;	
-			}
-			else{
-				double[][] matrixData = { {Math.pow(alphaMaxHighLift, 3), Math.pow(alphaMaxHighLift, 2)
-					, alphaMaxHighLift,1.0},
-						{3* Math.pow(alphaMaxHighLift, 2), 2*alphaMaxHighLift, 1.0, 0.0},
-						{3* Math.pow(alphaStarFlap, 2), 2*alphaStarFlap, 1.0, 0.0},
-						{Math.pow(alphaStarFlap, 3), Math.pow(alphaStarFlap, 2),alphaStarFlap,1.0}};
-				RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
-
-
-				double [] vector = {cLMaxFlap, 0,cLAlphaFlap, cLStarFlap};
-
-				double [] solSystem = MyMathUtils.solveLinearSystem(m, vector);
-
-				double a = solSystem[0];
-				double b = solSystem[1];
-				double c = solSystem[2];
-				double d = solSystem[3];
-
-				cLActualArray[i] = a * Math.pow(alphaActual, 3) + 
-						b * Math.pow(alphaActual, 2) + 
-						c * alphaActual + d;
-			}
-
-		}
-		return cLActualArray;
-	}
-
-
-	// TO DO move here the cl wing body calculator
-	public static double[] calculateCLvsAlphaArrayWingBody(
-			LiftingSurface theLiftingSurface,
-			MyArray alphaArray,
-			int nValue,
-			boolean printResults
-			)
-	{
-		double[] xArray = {0.0, 0.0};
-		return xArray;
-	}
+//	// TO DO move here the cl wing body calculator
+//	public static double[] calculateCLvsAlphaArrayWingBody(
+//			LiftingSurface theLiftingSurface,
+//			MyArray alphaArray,
+//			int nValue,
+//			boolean printResults
+//			)
+//	{
+//		double[] xArray = {0.0, 0.0};
+//		return xArray;
+//	}
 
 	/**
 	 * 
@@ -566,64 +566,64 @@ public class LiftCalc {
 	 *@author Manuela Ruocco
 	 *
 	 */
-	@SuppressWarnings("static-access")
-	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface theLiftingSurface){
-
-
-		// VARIABLE DECLARATION
-		Amount<Angle> alphaActual;
-		double qValue, cLWingActual = 0;
-		double [] clNasaBlackwell = new double [alphaArray.size()];
-
-		List<Airfoil> airfoilList = new ArrayList<Airfoil>();
-
-		LSAerodynamicsManager theLSManager = theLiftingSurface.getAerodynamics();
-		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
-
-		int nPointSemiSpan = theLSManager.get_nPointsSemispanWise();
-		double [] yArray = MyArrayUtils.linspace(0., theLiftingSurface.getSpan().getEstimatedValue()/2, nPointSemiSpan);
-		double [] yArrayND = MyArrayUtils.linspace(0., 1, nPointSemiSpan);
-		double [] cLDistributionInviscid = new double [nPointSemiSpan];
-		double [] alphaLocalAirfoil = new double [nPointSemiSpan];
-		double [] clDisributionReal = new double [nPointSemiSpan];
-
-		double [] cLWingArray = new double [alphaArray.size()];
-
-
-		for (int j=0 ; j<nPointSemiSpan; j++){
-			airfoilList.add(j, new Airfoil(theLiftingSurface.calculateAirfoilAtY(theLiftingSurface, yArray[j])));
-
-			// iterations
-			for (int ii=0; ii<alphaArray.size(); ii++){
-				alphaActual = Amount.valueOf(alphaArray.get(ii),SI.RADIAN);
-
-				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
-				clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
-				clNasaBlackwell[clNasaBlackwell.length-1] = 0;
-
-				for (int i=0 ; i<nPointSemiSpan ;  i++){
-					cLDistributionInviscid[i] = clNasaBlackwell[i];
-					//			System.out.println( " cl local " + cLLocal);
-					qValue = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(airfoilList.get(i).getAirfoilCreator().getAlphaForClCurve()),
-							MyArrayUtils.convertToDoublePrimitive(airfoilList.get(i).getAirfoilCreator().getClCurve()),
-							0.0
-							);
-					//			System.out.println(" qValue " + qValue );
-					alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAirfoilCreator().getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-					//			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
-					clDisributionReal[i] = MyMathUtils.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertListOfAmountTodoubleArray(airfoilList.get(i).getAirfoilCreator().getAlphaForClCurve()),
-							MyArrayUtils.convertToDoublePrimitive(airfoilList.get(i).getAirfoilCreator().getClCurve()),
-							alphaLocalAirfoil[i]
-							); 
-				}
-				cLWingActual = MyMathUtils.integrate1DSimpsonSpline(yArrayND, clDisributionReal);
-				cLWingArray[ii] = cLWingActual;
-			}
-		}
-		return cLWingArray;
-	}
+//	@SuppressWarnings("static-access")
+//	public static double[] calculateCLArraymodifiedStallPath(MyArray alphaArray, LiftingSurface theLiftingSurface){
+//
+//
+//		// VARIABLE DECLARATION
+//		Amount<Angle> alphaActual;
+//		double qValue, cLWingActual = 0;
+//		double [] clNasaBlackwell = new double [alphaArray.size()];
+//
+//		List<Airfoil> airfoilList = new ArrayList<Airfoil>();
+//
+//		LSAerodynamicsManager theLSManager = theLiftingSurface.getAerodynamics();
+//		LSAerodynamicsManager.CalcLiftDistribution calculateLiftDistribution = theLSManager.getCalculateLiftDistribution();
+//
+//		int nPointSemiSpan = theLSManager.get_nPointsSemispanWise();
+//		double [] yArray = MyArrayUtils.linspace(0., theLiftingSurface.getSpan().getEstimatedValue()/2, nPointSemiSpan);
+//		double [] yArrayND = MyArrayUtils.linspace(0., 1, nPointSemiSpan);
+//		double [] cLDistributionInviscid = new double [nPointSemiSpan];
+//		double [] alphaLocalAirfoil = new double [nPointSemiSpan];
+//		double [] clDisributionReal = new double [nPointSemiSpan];
+//
+//		double [] cLWingArray = new double [alphaArray.size()];
+//
+//
+//		for (int j=0 ; j<nPointSemiSpan; j++){
+//			airfoilList.add(j, new Airfoil(theLiftingSurface.calculateAirfoilAtY(theLiftingSurface, yArray[j])));
+//
+//			// iterations
+//			for (int ii=0; ii<alphaArray.size(); ii++){
+//				alphaActual = Amount.valueOf(alphaArray.get(ii),SI.RADIAN);
+//
+//				calculateLiftDistribution.getNasaBlackwell().calculate(alphaActual);
+//				clNasaBlackwell = calculateLiftDistribution.getNasaBlackwell().getClTotalDistribution().toArray();
+//				clNasaBlackwell[clNasaBlackwell.length-1] = 0;
+//
+//				for (int i=0 ; i<nPointSemiSpan ;  i++){
+//					cLDistributionInviscid[i] = clNasaBlackwell[i];
+//					//			System.out.println( " cl local " + cLLocal);
+//					qValue = MyMathUtils.getInterpolatedValue1DLinear(
+//							MyArrayUtils.convertListOfAmountTodoubleArray(airfoilList.get(i).getAirfoilCreator().getAlphaForClCurve()),
+//							MyArrayUtils.convertToDoublePrimitive(airfoilList.get(i).getAirfoilCreator().getClCurve()),
+//							0.0
+//							);
+//					//			System.out.println(" qValue " + qValue );
+//					alphaLocalAirfoil[i] = (cLDistributionInviscid[i]-qValue)/airfoilList.get(i).getAirfoilCreator().getClAlphaLinearTrait().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+//					//			System.out.println(" alpha local airfoil " + alphaLocalAirfoil);
+//					clDisributionReal[i] = MyMathUtils.getInterpolatedValue1DLinear(
+//							MyArrayUtils.convertListOfAmountTodoubleArray(airfoilList.get(i).getAirfoilCreator().getAlphaForClCurve()),
+//							MyArrayUtils.convertToDoublePrimitive(airfoilList.get(i).getAirfoilCreator().getClCurve()),
+//							alphaLocalAirfoil[i]
+//							); 
+//				}
+//				cLWingActual = MyMathUtils.integrate1DSimpsonSpline(yArrayND, clDisributionReal);
+//				cLWingArray[ii] = cLWingActual;
+//			}
+//		}
+//		return cLWingArray;
+//	}
 
 	public static double calculateCLMax(
 			double[] maximumLiftCoefficient, 
