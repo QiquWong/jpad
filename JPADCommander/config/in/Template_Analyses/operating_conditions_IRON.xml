@@ -7,30 +7,34 @@
 			<!-- array of angles of attack to be used for the the aerodynamics distributions (max 7 values) -->
 			<alpha_array unit="deg">2;6;10;14;18;22;24</alpha_array> <!-- default = [2,6,10,14,18,22,24] -->
 		</global_data>
+		<climb>
+			<mach>0.3</mach>
+		</climb>
 		<cruise>
-			<mach>0.62</mach>	
-			<altitude unit="m">9144.0</altitude>
-			<throttle>0.75</throttle>
+			<mach>0.605</mach>	
+			<altitude unit="ft">30000</altitude>
+			<throttle>1.0</throttle>
 		</cruise>
 		<take_off>
-			<mach></mach> <!-- default = 0.2 -->
-			<altitude unit="m">0.0</altitude> <!-- default = 0.0 -->
+			<mach>0.172</mach> <!-- default = 0.2 -->
+			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
 			<throttle></throttle> <!-- default = 1.0 -->
-			<delta_flap unit="deg">20;20</delta_flap>
+			<throttle_ground_idle>
+				<throttle>0.0143;-0.055;-0.19;-0.348</throttle>
+				<speed unit="kn">0;50;100;150</speed>
+			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
+			<delta_flap unit="deg">15;15</delta_flap>
 			<delta_slat unit="deg"></delta_slat>
 		</take_off>
 		<landing>
-			<mach></mach> <!-- default = 0.2 -->
+			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
-			<reverse_throttle></reverse_throttle> <!-- default = 0.0 -->
+			<throttle_ground_idle>
+				<throttle>0.0143;-0.055;-0.19;-0.348</throttle>
+				<speed unit="kn">0;50;100;150</speed>
+			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
 			<delta_flap unit="deg">40;40</delta_flap>
 			<delta_slat unit="deg"></delta_slat>
 		</landing>
 	</operating_conditions>
 </jpad_config>
-
-
-
-
-
-

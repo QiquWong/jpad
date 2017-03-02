@@ -244,6 +244,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.laminarBucketDepth(0.0)
 							.cmAlphaQuarterChord(Amount.valueOf(0.043, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
 							.xACNormalized(0.243)
+							.xTransitionUpper(1.0) // FIXME 
+							.xTransitionLower(1.0) // FIXME
 							.cmAC(-0.083)
 							.cmACAtStall(-0.09)
 							.machCritical(0.656)
@@ -278,8 +280,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						.clEndLinearTrait(1.2)
 						.clMax(1.72)
 						.kFactorDragPolar(0.075)
+						.laminarBucketSemiExtension(0.0)
+						.laminarBucketDepth(0.0)
 						.cmAlphaQuarterChord(Amount.valueOf(0.04214, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
 						.xACNormalized(0.243)
+						.xTransitionUpper(1.0) // FIXME 
+						.xTransitionLower(1.0) // FIXME
 						.cmAC(-0.0833)
 						.cmACAtStall(-0.07)
 						.machCritical(0.695)
@@ -385,8 +391,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.clEndLinearTrait(1.23)
 							.clMax(1.86)
 							.kFactorDragPolar(0.0035)
+							.laminarBucketSemiExtension(0.0)
+							.laminarBucketDepth(0.0)
 							.cmAlphaQuarterChord(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
 							.xACNormalized(0.25)
+							.xTransitionUpper(1.0) // FIXME 
+							.xTransitionLower(1.0) // FIXME
 							.cmAC(-0.0)
 							.cmACAtStall(-0.09)
 							.machCritical(0.734)
@@ -482,8 +492,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.clEndLinearTrait(1.23)
 							.clMax(1.86)
 							.kFactorDragPolar(0.0035)
+							.laminarBucketSemiExtension(0.0)
+							.laminarBucketDepth(0.0)
 							.cmAlphaQuarterChord(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse())) // Clalpha * (c/4 - xac/c) 
 							.xACNormalized(0.25)
+							.xTransitionUpper(1.0) // FIXME 
+							.xTransitionLower(1.0) // FIXME
 							.cmAC(-0.0)
 							.cmACAtStall(-0.09)
 							.machCritical(0.734)

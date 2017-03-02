@@ -9,6 +9,7 @@
 		</global_data>
 		<climb>
 			<mach>0.3</mach>
+			<altitude_to_reach unit="m">6000</altitude_to_reach>
 		</climb>
 		<cruise> 
 			<mach>0.42</mach>	

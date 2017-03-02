@@ -1,4 +1,4 @@
-package sandbox2.vt.ExecutableTakeOff_v2;
+package sandbox2.vt.executableTakeOff_v2;
 
 import java.io.File;
 import java.io.IOException;
