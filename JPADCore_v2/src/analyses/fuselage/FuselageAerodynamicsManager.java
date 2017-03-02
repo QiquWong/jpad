@@ -68,7 +68,7 @@ public class FuselageAerodynamicsManager extends analyses.analysismodel.analysis
 		maxWidth = _theFuselage.getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER);
 
 		try {
-			cLAlphaW = _theAircraft.getWing().getAerodynamics().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
+//			cLAlphaW = _theAircraft.getWing().getTheAerodynamicsCalculator().getCalculateCLAlpha().andersonSweptCompressibleSubsonic();
 		} catch (NullPointerException e) {
 			cLAlphaW = 6.28;	
 		}
@@ -223,9 +223,9 @@ public class FuselageAerodynamicsManager extends analyses.analysismodel.analysis
 				for(int i=1; i<x.length; i++){
 					sum = sum + pow(_theFuselage.getFuselageCreator().getWidthAtX(x[i]),2)
 					*(_theFuselage.getFuselageCreator().getCamberAngleAtX(x[i]) 
-							+ _theAircraft.getWing().getRiggingAngle().getEstimatedValue()
-							+ _theAircraft.getWing().getAerodynamics()
-							.getCalculateAlpha0L().integralMeanWithTwist().getEstimatedValue())
+							+ _theAircraft.getWing().getRiggingAngle().getEstimatedValue())
+//							+ _theAircraft.getWing().getAerodynamics()
+//							.getCalculateAlpha0L().integralMeanWithTwist().getEstimatedValue())
 					* (x[i] - x[i-1]);
 				}
 

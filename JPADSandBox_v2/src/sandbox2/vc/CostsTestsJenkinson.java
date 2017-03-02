@@ -222,7 +222,7 @@ public class CostsTestsJenkinson {
 			theAircraft.setLifeSpan(16);
 //			theAircraft.getTheCosts().setAnnualInterestRate(0.054);
 			theAircraft.getTheAnalysisManager().setReferenceRange(_range);
-			theAircraft.getTheAnalysisManager().getThePerformance().setVDesignCruise(_cruiseSpeed);
+//			theAircraft.getTheAnalysisManager().getThePerformance().setVDesignCruise(_cruiseSpeed);
 			theAircraft.getTheAnalysisManager().getTheCosts().setFlightTime(_flightTime);
 			
 			

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<take_off_executable charts="TRUE" simplified_thrust_model="FALSE" balanced_field_length="TRUE">
+        <INPUT>
+			<aircraft_data>
+			    <take_off_mass unit="kg">53610</take_off_mass>
+                <wing>
+					<geometry>
+                        <aspect_ratio>12.0</aspect_ratio>
+                        <surface unit="m²">105.0</surface>
+                        <distance_from_ground unit="m">3.0</distance_from_ground>
+                        <angle_of_incidence unit="°">2.0</angle_of_incidence>
+					</geometry>
+					<aerodynamic_data>
+						<oswald>0.85</oswald>
+						<cD0_clean>0.0233</cD0_clean>
+						<delta_cD0_flap>0.015</delta_cD0_flap>
+						<delta_cD0_landing_gears>0.015</delta_cD0_landing_gears>
+						<cL_max_take_off>2.61</cL_max_take_off>
+						<cL0_take_off>1.66</cL0_take_off>
+						<cL_alpha_take_off unit="1/°">0.1407</cL_alpha_take_off>
+					</aerodynamic_data>
+                </wing>
+                <engine>
+				    <static_thrust unit="lbf">24451</static_thrust>
+					<number_of_engines>2</number_of_engines>
+				    <!--USE THE FOLLOWING TWO TAGS ONLY IF THE ENGINE MODEL IS KNOWN AND THE ATTRIBUTE "simplified_thrust_model" IS SET TO FALSE-->
+					<net_thrust_function_single_engine>
+						<net_thrust unit="lbf">24451;21376;19822;18249;16535</net_thrust>
+						<mach_array>0.00;0.10;0.15;0.20;0.25</mach_array> <!-- if the thrust array contains only 1 value this tag can be left empty -->
+					</net_thrust_function_single_engine> 
+					<throttle_ground_idle>
+						<throttle>0.0143;-0.055;-0.19;-0.348</throttle>
+						<speed unit="kn">0;50;100;150</speed> <!-- if the throttle array contains only 1 value this tag can be left empty -->
+					</throttle_ground_idle> 
+				</engine>
+            </aircraft_data>
+			<!-- general data -->
+			<simulation_parameters>
+				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
+				<alpha_ground unit="°"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
+				<altitude unit="ft"></altitude> <!-- default = 0 ft --> 
+				<!-- here is possible to assign the fricition coefficient function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_function>
+					<friction_coefficient></friction_coefficient> <!-- default 0.025 -->
+					<speed unit="m/s"></speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_function>
+				<!-- here is possible to assign the fricition coefficient (with brakes) function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_with_brakes_function>
+					<friction_coefficient_with_brakes>0.94;0.89;0.85;0.8;0.74;0.68;0.62;0.57;0.52</friction_coefficient_with_brakes> <!-- default = 0.3 -->
+					<speed unit="kn">0;10;20;30;40;50;60;70;80</speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_with_brakes_function>
+				<!-- take-off maneuver data -->
+				<dt_rotation unit="s">2</dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
+				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
+				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
+				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<alpha_dot_rotation unit="°/s">4</alpha_dot_rotation> <!-- rotation angular velocity (default = 3.0 deg/s) -->
+				<k_cLmax></k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<drag_due_to_engine_failure></drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.005) -->
+				<k_alpha_dot unit="1/°"></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
+			</simulation_parameters>            
+        </INPUT>
+</take_off_executable>

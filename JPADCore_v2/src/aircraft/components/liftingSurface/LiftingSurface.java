@@ -27,7 +27,6 @@ import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsCalculator;
 import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -58,7 +57,6 @@ public class LiftingSurface implements ILiftingSurface {
 	private LSAerodynamicsCalculator _theAerodynamicsCalculator;
 	// THIS HAS TO BE CHANGED IN LSAerodynamicCalculator
 	private LSAerodynamicsManager _theAerodynamics;
-	private CalcHighLiftDevices _highLiftCalculator;
 	
 	private Double _positionRelativeToAttachment;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -176,7 +174,7 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 
 	public void initializeAerodynamics(OperatingConditions conditions, Aircraft aircraft) {
-		_theAerodynamics = new LSAerodynamicsManager(conditions, this, aircraft);
+//		_theAerodynamics = new LSAerodynamicsManager(conditions, this, aircraft);
 	}
 	
 	@Override
@@ -1878,14 +1876,6 @@ public class LiftingSurface implements ILiftingSurface {
 		this._theAerodynamicsCalculator = _theAerodynamicsCalculator;
 	}
 
-	public CalcHighLiftDevices getHigLiftCalculator() {
-		return _highLiftCalculator;
-	}
-
-	public void setHigLiftCalculator(CalcHighLiftDevices higLiftCalculator) {
-		this._highLiftCalculator = higLiftCalculator;
-	}
-
 	public List<Double> getMaxThicknessVsY() {
 		return _maxThicknessVsY;
 	}
@@ -2044,14 +2034,6 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setTheAerodynamics(LSAerodynamicsManager _theAerodynamics) {
 		this._theAerodynamics = _theAerodynamics;
-	}
-
-	public CalcHighLiftDevices getHighLiftCalculator() {
-		return _highLiftCalculator;
-	}
-
-	public void setHighLiftCalculator(CalcHighLiftDevices _highLiftCalculator) {
-		this._highLiftCalculator = _highLiftCalculator;
 	}
 
 	/**

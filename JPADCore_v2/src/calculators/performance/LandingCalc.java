@@ -26,8 +26,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevices;
-import configuration.enumerations.EngineOperatingConditionEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
@@ -62,7 +60,6 @@ public class LandingCalc {
 
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
-	private CalcHighLiftDevices highLiftCalculator;
 	private Amount<Mass> maxLandingMass;
 	private Amount<Duration> nFreeRoll;
 	private Amount<Velocity> vSLanding, vA, vFlare, vTD, vWind;
@@ -853,12 +850,6 @@ public class LandingCalc {
 	}
 	public void setTheConditions(OperatingConditions theConditions) {
 		this.theConditions = theConditions;
-	}
-	public CalcHighLiftDevices getHighLiftCalculator() {
-		return highLiftCalculator;
-	}
-	public void setHighLiftCalculator(CalcHighLiftDevices highLiftCalculator) {
-		this.highLiftCalculator = highLiftCalculator;
 	}
 	public Amount<Velocity> getvSLanding() {
 		return vSLanding;
