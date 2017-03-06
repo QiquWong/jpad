@@ -2,7 +2,7 @@
 <jpad_config>
     <aircraft id="JPAD Test Aircraft DAF - 2016" type="JET" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
+			<cabin_configuration file="cabin_configuration.xml"/>
 		</global_data>
         <lifting_surfaces>
             <wing file="wing_2_panels.xml">
