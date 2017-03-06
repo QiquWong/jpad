@@ -13,5 +13,6 @@ public enum FlapTypeEnum {
 	DOUBLE_SLOTTED,
 	PLAIN,
 	FOWLER,
+	OPTIMIZED_FOWLER,
 	TRIPLE_SLOTTED
 }

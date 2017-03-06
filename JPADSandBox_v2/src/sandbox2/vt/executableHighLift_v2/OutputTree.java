@@ -18,7 +18,6 @@ public class OutputTree {
 						 deltaCLmaxSlatList,
 						 deltaCDList,
 						 deltaCMC4List;
-	private List<Amount<?>> cLalphaNewList;
 	private double deltaCl0Flap,
 				   deltaCL0Flap,
 				   deltaClmaxFlap,
@@ -27,11 +26,12 @@ public class OutputTree {
 				   deltaCLmaxSlat,
 				   deltaCD,
 				   deltaCMC4,
-				   cLmaxFlapSlat,
-				   cLStarFlapSlat;
-	private Amount<Angle> alphaMaxFlapSlat,
-						  alphaStarFlapSlat;
-	private Amount<?> cLalphaNew;
+				   cLmaxHighLift,
+				   cLStarHighLift,
+				   cL0HighLift;
+	private Amount<Angle> alphaMaxHighLift,
+						  alphaStarHighLift;
+	private Amount<?> cLalphaHighLift;
 	private List<Double[]> cLListPlot, alphaListPlot;
 	
 	//------------------------------------------------------------------------------------------
@@ -47,14 +47,12 @@ public class OutputTree {
 		deltaCLmaxFlapList = new ArrayList<Double>();
 		deltaClmaxSlatList = new ArrayList<Double>();
 		deltaCLmaxSlatList = new ArrayList<Double>();
-		cLalphaNewList = new ArrayList<Amount<?>>();
 		deltaCDList = new ArrayList<Double>();
 		deltaCMC4List = new ArrayList<Double>();	
 	}
 
 	//------------------------------------------------------------------------------------------
 	// GETTERS AND SETTERS:
-	
 	public List<Double> getDeltaCl0FlapList() {
 		return deltaCl0FlapList;
 	}
@@ -101,14 +99,6 @@ public class OutputTree {
 
 	public void setDeltaCLmaxSlatList(List<Double> deltaCLmaxSlatList) {
 		this.deltaCLmaxSlatList = deltaCLmaxSlatList;
-	}
-
-	public List<Amount<?>> getcLalphaNewList() {
-		return cLalphaNewList;
-	}
-
-	public void setcLalphaNewList(List<Amount<?>> cLalphaNewList) {
-		this.cLalphaNewList = cLalphaNewList;
 	}
 
 	public List<Double> getDeltaCDList() {
@@ -175,14 +165,6 @@ public class OutputTree {
 		this.deltaCLmaxSlat = deltaCLmaxSlat;
 	}
 
-	public Amount<?> getcLalphaNew() {
-		return cLalphaNew;
-	}
-
-	public void setcLalphaNew(Amount<?> cLalphaNew) {
-		this.cLalphaNew = cLalphaNew;
-	}
-
 	public double getDeltaCD() {
 		return deltaCD;
 	}
@@ -199,36 +181,44 @@ public class OutputTree {
 		this.deltaCMC4 = deltaCMC4;
 	}
 
-	public double getcLmaxFlapSlat() {
-		return cLmaxFlapSlat;
+	public double getcLmaxHighLift() {
+		return cLmaxHighLift;
 	}
 
-	public void setcLmaxFlapSlat(double cLmaxFlapSlat) {
-		this.cLmaxFlapSlat = cLmaxFlapSlat;
+	public void setcLmaxHighLift(double cLmaxHighLift) {
+		this.cLmaxHighLift = cLmaxHighLift;
 	}
 
-	public double getcLStarFlapSlat() {
-		return cLStarFlapSlat;
+	public double getcLStarHighLift() {
+		return cLStarHighLift;
 	}
 
-	public void setcLStarFlapSlat(double cLStarFlapSlat) {
-		this.cLStarFlapSlat = cLStarFlapSlat;
+	public void setcLStarHighLift(double cLStarHighLift) {
+		this.cLStarHighLift = cLStarHighLift;
 	}
 
-	public Amount<Angle> getAlphaMaxFlapSlat() {
-		return alphaMaxFlapSlat;
+	public Amount<Angle> getAlphaMaxHighLift() {
+		return alphaMaxHighLift;
 	}
 
-	public void setAlphaMaxFlapSlat(Amount<Angle> alphaMaxFlapSlat) {
-		this.alphaMaxFlapSlat = alphaMaxFlapSlat;
+	public void setAlphaMaxHighLift(Amount<Angle> alphaMaxHighLift) {
+		this.alphaMaxHighLift = alphaMaxHighLift;
 	}
 
-	public Amount<Angle> getAlphaStarFlapSlat() {
-		return alphaStarFlapSlat;
+	public Amount<Angle> getAlphaStarHighLift() {
+		return alphaStarHighLift;
 	}
 
-	public void setAlphaStarFlapSlat(Amount<Angle> alphaStarFlapSlat) {
-		this.alphaStarFlapSlat = alphaStarFlapSlat;
+	public void setAlphaStarHighLift(Amount<Angle> alphaStarHighLift) {
+		this.alphaStarHighLift = alphaStarHighLift;
+	}
+
+	public Amount<?> getcLalphaHighLift() {
+		return cLalphaHighLift;
+	}
+
+	public void setcLalphaHighLift(Amount<?> cLalphaHighLift) {
+		this.cLalphaHighLift = cLalphaHighLift;
 	}
 
 	public List<Double[]> getcLListPlot() {
@@ -246,4 +236,13 @@ public class OutputTree {
 	public void setAlphaListPlot(List<Double[]> alphaListPlot) {
 		this.alphaListPlot = alphaListPlot;
 	}
+
+	public double getcL0HighLift() {
+		return cL0HighLift;
+	}
+
+	public void setcL0HighLift(double cL0HighLift) {
+		this.cL0HighLift = cL0HighLift;
+	}
+
 }

@@ -16,12 +16,12 @@ public class InputTree {
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
 	
-	private Amount<Angle> alphaCurrent,
-						  sweepQuarteChordEq,
+	private Double currentLiftingCoefficient;
+	private Amount<Angle> sweepQuarteChordEq,
 						  alphaMaxClean,
 						  alphaStarClean;
-	private Amount<?>cLAlphaClean,
-					 clAlphaMeanAirfoil;
+	private Amount<?> cLAlphaClean,
+					  clAlphaMeanAirfoil;
 	private Amount<Length> span,
 						   meanAirfoilChord,
 						   LERadiusMeanAirfoil,
@@ -52,7 +52,7 @@ public class InputTree {
 	
 	public InputTree() {
 
-		alphaCurrent = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		setCurrentLiftingCoefficient(0.0);
 		sweepQuarteChordEq = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		alphaMaxClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		alphaStarClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
@@ -94,14 +94,6 @@ public class InputTree {
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 		
-	public Amount<Angle> getAlphaCurrent() {
-		return alphaCurrent;
-	}
-
-	public void setAlphaCurrent(Amount<Angle> alphaCurrent) {
-		this.alphaCurrent = alphaCurrent;
-	}
-
 	public Amount<Angle> getSweepQuarteChordEq() {
 		return sweepQuarteChordEq;
 	}
@@ -340,5 +332,13 @@ public class InputTree {
 
 	public void setRootChordEquivalentWing(Amount<Length> rootChordEquivalentWing) {
 		this.rootChordEquivalentWing = rootChordEquivalentWing;
+	}
+
+	public Double getCurrentLiftingCoefficient() {
+		return currentLiftingCoefficient;
+	}
+
+	public void setCurrentLiftingCoefficient(Double currentLiftingCoefficient) {
+		this.currentLiftingCoefficient = currentLiftingCoefficient;
 	} 
 }
