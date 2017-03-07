@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_91"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_121"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE/JPADConfigs_v_17052016.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE/JPADCore_v_17052016.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER_TEST_TEMPLATE/jscience.jar"/>
