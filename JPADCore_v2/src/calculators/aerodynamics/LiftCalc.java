@@ -9,6 +9,7 @@ import static java.lang.Math.toRadians;
 import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -871,7 +872,7 @@ public class LiftCalc {
 							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
 							),
 					MyArrayUtils.convertListOfAmountodoubleArray(
-							theLiftingSurface.getClAlphaVsY()
+							theLiftingSurface.getClAlphaVsY().stream().map(x -> x.to(NonSI.DEGREE_ANGLE.inverse())).collect(Collectors.toList())
 							),
 					etaOutFlap.get(i));
 			
@@ -880,7 +881,7 @@ public class LiftCalc {
 							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
 							),
 					MyArrayUtils.convertListOfAmountodoubleArray(
-							theLiftingSurface.getClAlphaVsY()
+							theLiftingSurface.getClAlphaVsY().stream().map(x -> x.to(NonSI.DEGREE_ANGLE.inverse())).collect(Collectors.toList())
 							),
 					etaInFlap.get(i));
 			
@@ -946,7 +947,7 @@ public class LiftCalc {
 								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getRadiusLEVsY()
+								theLiftingSurface.getRadiusLEVsY().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaOutSlat.get(i));
 
@@ -955,7 +956,7 @@ public class LiftCalc {
 								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getRadiusLEVsY()
+								theLiftingSurface.getRadiusLEVsY().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaInSlat.get(i));
 
@@ -964,7 +965,7 @@ public class LiftCalc {
 								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()
+								theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaInSlat.get(i));
 
@@ -973,7 +974,7 @@ public class LiftCalc {
 								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()
+								theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaOutSlat.get(i));
 
@@ -1051,7 +1052,7 @@ public class LiftCalc {
 					alphaDelta.get(i).doubleValue()
 					*etaDeltaFlap.get(i).doubleValue()
 					*flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-					*(clAlphaMeanFlap[i]/57.3)
+					*(clAlphaMeanFlap[i])
 					);
 
 		List<Double> deltaCCfFlap = new ArrayList<Double>();
@@ -1256,15 +1257,15 @@ public class LiftCalc {
 			List<Double> kLambdaSlat = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
 				kLambdaSlat.add(
-						Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().getEstimatedValue()),0.75)
-						*(1-(0.08*Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().getEstimatedValue()), 2)))
+						Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)),0.75)
+						*(1-(0.08*Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)), 2)))
 						);
 
 			List<Double> slatSurface = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
 				slatSurface.add(
-						Math.abs(theLiftingSurface.getSpan().getEstimatedValue()
-								/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().getEstimatedValue()
+						Math.abs(theLiftingSurface.getSpan().doubleValue(SI.METER)
+								/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().doubleValue(SI.METER)
 								*(2-(1-theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())*(etaInSlat.get(i)+etaOutSlat.get(i)))
 								*(etaOutSlat.get(i)-etaInSlat.get(i))
 								)
@@ -1274,7 +1275,7 @@ public class LiftCalc {
 			for(int i=0; i<slatDeflections.size(); i++)
 				deltaCLmaxSlatList.add(
 						deltaClmaxSlatList.get(i)
-						*(slatSurface.get(i)/theLiftingSurface.getSurface().getEstimatedValue())
+						*(slatSurface.get(i)/theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE))
 						*kLambdaSlat.get(i));
 			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().put(
 					MethodEnum.SEMPIEMPIRICAL,
@@ -1352,8 +1353,8 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			flapSurface.add(
 					Math.abs(
-							theLiftingSurface.getSpan().getEstimatedValue()							
-							/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().getEstimatedValue()
+							theLiftingSurface.getSpan().doubleValue(SI.METER)							
+							/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().doubleValue(SI.METER)
 							*(2-((1-theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())*(etaInFlap.get(i)+etaOutFlap.get(i))))
 							*(etaOutFlap.get(i)-etaInFlap.get(i))
 							)
@@ -1370,7 +1371,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlapList.add(
 					deltaClmaxFlapList.get(i)
-					*(flapSurface.get(i)/theLiftingSurface.getSurface().getEstimatedValue())
+					*(flapSurface.get(i)/theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE))
 					*kLambdaFlap.get(i)
 					);
 		theLiftingSurface
@@ -1398,7 +1399,7 @@ public class LiftCalc {
 							deltaCl0FlapList.get(i))
 							*(cFirstCFlap.get(i)*(1-((cfc.get(i))*(1/cFirstCFlap.get(i))
 									*Math.pow(Math.sin(flapDeflections.get(i).doubleValue(SI.RADIAN)), 2)))-1))));
-			swf.add(flapSurface.get(i)/theLiftingSurface.getSurface().getEstimatedValue());
+			swf.add(flapSurface.get(i)/theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE));
 		}
 
 		double swfTot = 0;
@@ -1549,7 +1550,7 @@ public class LiftCalc {
 											(deltaClmaxFlapList.get(i)
 											*(1-(flapSurface.get(i)/theLiftingSurface
 													.getSurface()
-													.getEstimatedValue()))))
+													.doubleValue(SI.SQUARE_METRE)))))
 									*(1/8)))) + (0.7*(theLiftingSurface
 											.getAspectRatio()/(1+(theLiftingSurface
 													.getAspectRatio()/2)))
@@ -1558,7 +1559,7 @@ public class LiftCalc {
 											*Math.tan(theLiftingSurface
 													.getLiftingSurfaceCreator()
 													.getSweepQuarterChordEquivalentWing()
-													.getEstimatedValue()))
+													.doubleValue(SI.RADIAN)))
 					);
 		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCMc4List().put(
 				MethodEnum.SEMPIEMPIRICAL,

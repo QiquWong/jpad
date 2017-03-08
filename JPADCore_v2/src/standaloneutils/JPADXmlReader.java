@@ -462,13 +462,13 @@ public class JPADXmlReader {
 	 */
 
 
-	@SuppressWarnings("null")
+	@SuppressWarnings({ "unchecked" })
 	public <T extends Quantity> List<Amount<T>> readArrayofAmountFromXML(String inputStringInitial){
 
 		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
 
-		String valueStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/text()");
 		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
+		
 		List<Amount<T>> outputList = new ArrayList<Amount<T>>();
 		inputString = inputString.trim();
 
@@ -488,16 +488,68 @@ public class JPADXmlReader {
 		arraysString = inputString.split(",");
 
 		for(int i=0; i<arraysString.length; i++){
-
-			Double value = Double.parseDouble(arraysString[i].trim());
-			Amount<?> tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+			
+			Amount<?> tempAmount = null;
+			
+			if(unitStr.startsWith("1/", 0)) {
+				Double value = Double.parseDouble(arraysString[i].trim());
+				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr).inverse());
+			}
+			else {
+				Double value = Double.parseDouble(arraysString[i].trim());
+				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+			}
+			
 			outputList.add((Amount<T>) tempAmount);
 
 		}
 		return outputList;
 	}
 
+	@SuppressWarnings({ "unchecked" })
+	public List<Amount<?>> readArrayofUnknownAmountFromXML(String inputStringInitial){
 
+		String inputString = this.getXMLPropertiesByPath(inputStringInitial).get(0);
+
+		String unitStr = MyXMLReaderUtils.getXMLPropertyByPath(_xmlDoc, _xpath, inputStringInitial + "/@unit");
+		
+		List<Amount<?>> outputList = new ArrayList<Amount<?>>();
+		inputString = inputString.trim();
+
+		int openParenthesisCheck = inputString.indexOf('[');
+		int closeParenthesisCheck = inputString.indexOf(']');
+		if ( openParenthesisCheck != -1){
+			inputString = inputString.substring(openParenthesisCheck+1, inputString.length());
+		}
+		if ( closeParenthesisCheck != -1){
+			inputString = inputString.substring(0, closeParenthesisCheck-1);
+		}
+
+		inputString = inputString.trim();
+
+		String [] arraysString = null ;
+		inputString = inputString.replaceAll(";", ",");
+		arraysString = inputString.split(",");
+
+		for(int i=0; i<arraysString.length; i++){
+			
+			Amount<?> tempAmount = null;
+			
+			if(unitStr.startsWith("1/", 0)) {
+				Double value = Double.parseDouble(arraysString[i].trim());
+				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr).inverse());
+			}
+			else {
+				Double value = Double.parseDouble(arraysString[i].trim());
+				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr));
+			}
+			
+			outputList.add((Amount<?>) tempAmount);
+
+		}
+		return outputList;
+	}
+	
 	public Document getXmlDoc() {
 		return _xmlDoc;
 	}

@@ -29,7 +29,7 @@ public class OutputTree {
 				   cLmaxHighLift,
 				   cLStarHighLift,
 				   cL0HighLift;
-	private Amount<Angle> alphaMaxHighLift,
+	private Amount<Angle> alphaStallHighLift,
 						  alphaStarHighLift;
 	private Amount<?> cLalphaHighLift;
 	private List<Double[]> cLListPlot, alphaListPlot;
@@ -197,12 +197,12 @@ public class OutputTree {
 		this.cLStarHighLift = cLStarHighLift;
 	}
 
-	public Amount<Angle> getAlphaMaxHighLift() {
-		return alphaMaxHighLift;
+	public Amount<Angle> getAlphaStallHighLift() {
+		return alphaStallHighLift;
 	}
 
-	public void setAlphaMaxHighLift(Amount<Angle> alphaMaxHighLift) {
-		this.alphaMaxHighLift = alphaMaxHighLift;
+	public void setAlphaStallHighLift(Amount<Angle> alphaStallHighLift) {
+		this.alphaStallHighLift = alphaStallHighLift;
 	}
 
 	public Amount<Angle> getAlphaStarHighLift() {

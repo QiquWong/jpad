@@ -17,69 +17,70 @@ public class InputTree {
 	// VARIABLE DECLARATION:
 	
 	private Double currentLiftingCoefficient;
-	private Amount<Angle> sweepQuarteChordEq,
-						  alphaMaxClean,
-						  alphaStarClean;
-	private Amount<?> cLAlphaClean,
-					  clAlphaMeanAirfoil;
-	private Amount<Length> span,
-						   meanAirfoilChord,
-						   LERadiusMeanAirfoil,
-						   rootChordEquivalentWing;
+	
+	private Double aspectRatio;
 	private Amount<Area> surface;
-	private double aspectRatio,
-	               taperRatioEq,
-	               cL0Clean,
-	               cl0MeanAirfoil,
-	               cLmaxClean,
-	               cLstarClean,
-	               maxthicknessMeanAirfoil;
-	private int flapsNumber, slatsNumber;
+	private Double taperRatioEq;
+	private Amount<Angle> sweepQuarteChordEq;
+	private Amount<Length> rootChordEquivalentWing;
+	
+	private Amount<Angle> alphaStallClean;
+	private Amount<Angle> alphaStarClean;
+	private Amount<?> cLAlphaClean;
+	private Double cL0Clean;
+	private Double cLstarClean;
+	private Double cLmaxClean;
+	
+	private List<Amount<Length>> airfoilsChordDistribution;
+	private List<Double> maxThicknessAirfoilsDistribution;
+	private List<Amount<Length>> leadingEdgeRadiusAirfoilsDistribution;
+	private List<Amount<?>> clAlphaAirfoilsDistribution;
+	private List<Double> cl0AirfoilsDistribution;
+	private AirfoilFamilyEnum airfoilsFamily;
+	
+	private Integer flapsNumber;
+	private Integer slatsNumber;
 	private List<FlapTypeEnum> flapType;
-	private AirfoilFamilyEnum meanAirfoilFamily;
-	private List<Double> cfc,
-	                     csc,
-	                     cExtCSlat,
-	                     etaInFlap,
-	                     etaOutFlap,
-	                     etaInSlat,
-	                     etaOutSlat;
-	private List<Amount<Angle>> deltaFlap,
-    							deltaSlat;
+	private List<Double> cfc;
+	private List<Double> csc;
+	private List<Double> cExtCSlat;
+	private List<Double> etaInFlap;
+	private List<Double> etaOutFlap;
+	private List<Double> etaInSlat;
+	private List<Double> etaOutSlat;
+	private List<Amount<Angle>> deltaFlap;
+	private List<Amount<Angle>> deltaSlat;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 	
 	public InputTree() {
 
-		setCurrentLiftingCoefficient(0.0);
-		sweepQuarteChordEq = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		alphaMaxClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		alphaStarClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		
-		cLAlphaClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse());
-		clAlphaMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse());
-		
-		span = Amount.valueOf(0.0, SI.METER);
-		meanAirfoilChord = Amount.valueOf(0.0, SI.METER);
-		LERadiusMeanAirfoil = Amount.valueOf(0.0, SI.METER);
-		rootChordEquivalentWing = Amount.valueOf(0.0, SI.METER);
-		
-		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
+		currentLiftingCoefficient = 0.0;
 		
 		aspectRatio = 0.0;
+		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
+		sweepQuarteChordEq = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		taperRatioEq = 0.0;
+		rootChordEquivalentWing = Amount.valueOf(0.0, SI.METER);
+		
+		alphaStallClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaStarClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		cLAlphaClean = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE.inverse());
 		cL0Clean = 0.0;
-		cl0MeanAirfoil = 0.0;
-		cLmaxClean = 0.0;
 		cLstarClean = 0.0;
-		maxthicknessMeanAirfoil = 0.0;
+		cLmaxClean = 0.0;
+		
+		airfoilsChordDistribution = new ArrayList<>();
+		maxThicknessAirfoilsDistribution = new ArrayList<>();
+		leadingEdgeRadiusAirfoilsDistribution = new ArrayList<>();
+		clAlphaAirfoilsDistribution = new ArrayList<>();
+		cl0AirfoilsDistribution = new ArrayList<>();
+		airfoilsFamily = null;
 		
 		flapsNumber = 0;
 		slatsNumber = 0;
-		
 		flapType = new ArrayList<FlapTypeEnum>();
-				
 		cfc = new ArrayList<Double>();
 		csc = new ArrayList<Double>();
 		cExtCSlat = new ArrayList<Double>();
@@ -93,37 +94,21 @@ public class InputTree {
 
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
-		
-	public Amount<Angle> getSweepQuarteChordEq() {
-		return sweepQuarteChordEq;
+	
+	public Double getCurrentLiftingCoefficient() {
+		return currentLiftingCoefficient;
 	}
 
-	public void setSweepQuarteChordEq(Amount<Angle> sweepQuarteChordEq) {
-		this.sweepQuarteChordEq = sweepQuarteChordEq;
+	public void setCurrentLiftingCoefficient(Double currentLiftingCoefficient) {
+		this.currentLiftingCoefficient = currentLiftingCoefficient;
 	}
 
-	public Amount<Angle> getAlphaMaxClean() {
-		return alphaMaxClean;
+	public Double getAspectRatio() {
+		return aspectRatio;
 	}
 
-	public void setAlphaMaxClean(Amount<Angle> alphaMaxClean) {
-		this.alphaMaxClean = alphaMaxClean;
-	}
-
-	public Amount<Angle> getAlphaStarClean() {
-		return alphaStarClean;
-	}
-
-	public void setAlphaStarClean(Amount<Angle> alphaStarClean) {
-		this.alphaStarClean = alphaStarClean;
-	}
-
-	public Amount<Length> getSpan() {
-		return span;
-	}
-
-	public void setSpan(Amount<Length> span) {
-		this.span = span;
+	public void setAspectRatio(Double aspectRatio) {
+		this.aspectRatio = aspectRatio;
 	}
 
 	public Amount<Area> getSurface() {
@@ -134,44 +119,44 @@ public class InputTree {
 		this.surface = surface;
 	}
 
-	public double getAspectRatio() {
-		return aspectRatio;
-	}
-
-	public void setAspectRatio(double aspectRatio) {
-		this.aspectRatio = aspectRatio;
-	}
-
-	public double getTaperRatioEq() {
+	public Double getTaperRatioEq() {
 		return taperRatioEq;
 	}
 
-	public void setTaperRatioEq(double taperRatioEq) {
+	public void setTaperRatioEq(Double taperRatioEq) {
 		this.taperRatioEq = taperRatioEq;
 	}
 
-	public double getcL0Clean() {
-		return cL0Clean;
+	public Amount<Angle> getSweepQuarteChordEq() {
+		return sweepQuarteChordEq;
 	}
 
-	public void setcL0Clean(double cL0Clean) {
-		this.cL0Clean = cL0Clean;
+	public void setSweepQuarteChordEq(Amount<Angle> sweepQuarteChordEq) {
+		this.sweepQuarteChordEq = sweepQuarteChordEq;
 	}
 
-	public double getcLmaxClean() {
-		return cLmaxClean;
+	public Amount<Length> getRootChordEquivalentWing() {
+		return rootChordEquivalentWing;
 	}
 
-	public void setcLmaxClean(double cLmaxClean) {
-		this.cLmaxClean = cLmaxClean;
+	public void setRootChordEquivalentWing(Amount<Length> rootChordEquivalentWing) {
+		this.rootChordEquivalentWing = rootChordEquivalentWing;
 	}
 
-	public double getcLstarClean() {
-		return cLstarClean;
+	public Amount<Angle> getAlphaStallClean() {
+		return alphaStallClean;
 	}
 
-	public void setcLstarClean(double cLstarClean) {
-		this.cLstarClean = cLstarClean;
+	public void setAlphaStallClean(Amount<Angle> alphaStallClean) {
+		this.alphaStallClean = alphaStallClean;
+	}
+
+	public Amount<Angle> getAlphaStarClean() {
+		return alphaStarClean;
+	}
+
+	public void setAlphaStarClean(Amount<Angle> alphaStarClean) {
+		this.alphaStarClean = alphaStarClean;
 	}
 
 	public Amount<?> getcLAlphaClean() {
@@ -182,28 +167,92 @@ public class InputTree {
 		this.cLAlphaClean = cLAlphaClean;
 	}
 
-	public Amount<?> getClAlphaMeanAirfoil() {
-		return clAlphaMeanAirfoil;
+	public Double getcL0Clean() {
+		return cL0Clean;
 	}
 
-	public void setClAlphaMeanAirfoil(Amount<?> clAlphaMeanAirfoil) {
-		this.clAlphaMeanAirfoil = clAlphaMeanAirfoil;
+	public void setcL0Clean(Double cL0Clean) {
+		this.cL0Clean = cL0Clean;
 	}
 
-	public Amount<Length> getLERadiusMeanAirfoil() {
-		return LERadiusMeanAirfoil;
+	public Double getcLstarClean() {
+		return cLstarClean;
 	}
 
-	public void setLERadiusMeanAirfoil(Amount<Length> lERadiusMeanAirfoil) {
-		LERadiusMeanAirfoil = lERadiusMeanAirfoil;
+	public void setcLstarClean(Double cLstarClean) {
+		this.cLstarClean = cLstarClean;
 	}
 
-	public double getMaxthicknessMeanAirfoil() {
-		return maxthicknessMeanAirfoil;
+	public Double getcLmaxClean() {
+		return cLmaxClean;
 	}
 
-	public void setMaxthicknessMeanAirfoil(double maxthicknessMeanAirfoil) {
-		this.maxthicknessMeanAirfoil = maxthicknessMeanAirfoil;
+	public void setcLmaxClean(Double cLmaxClean) {
+		this.cLmaxClean = cLmaxClean;
+	}
+
+	public List<Amount<Length>> getAirfoilsChordDistribution() {
+		return airfoilsChordDistribution;
+	}
+
+	public void setAirfoilsChordDistribution(List<Amount<Length>> airfoilsChordDistribution) {
+		this.airfoilsChordDistribution = airfoilsChordDistribution;
+	}
+
+	public List<Double> getMaxThicknessAirfoilsDistribution() {
+		return maxThicknessAirfoilsDistribution;
+	}
+
+	public void setMaxThicknessAirfoilsDistribution(List<Double> maxThicknessAirfoilsDistribution) {
+		this.maxThicknessAirfoilsDistribution = maxThicknessAirfoilsDistribution;
+	}
+
+	public List<Amount<Length>> getLeadingEdgeRadiusAirfoilsDistribution() {
+		return leadingEdgeRadiusAirfoilsDistribution;
+	}
+
+	public void setLeadingEdgeRadiusAirfoilsDistribution(List<Amount<Length>> leadingEdgeRadiusAirfoilsDistribution) {
+		this.leadingEdgeRadiusAirfoilsDistribution = leadingEdgeRadiusAirfoilsDistribution;
+	}
+
+	public List<Amount<?>> getClAlphaAirfoilsDistribution() {
+		return clAlphaAirfoilsDistribution;
+	}
+
+	public void setClAlphaAirfoilsDistribution(List<Amount<?>> clAlphaAirfoilsDistribution) {
+		this.clAlphaAirfoilsDistribution = clAlphaAirfoilsDistribution;
+	}
+
+	public List<Double> getCl0AirfoilsDistribution() {
+		return cl0AirfoilsDistribution;
+	}
+
+	public void setCl0AirfoilsDistribution(List<Double> cl0AirfoilsDistribution) {
+		this.cl0AirfoilsDistribution = cl0AirfoilsDistribution;
+	}
+
+	public AirfoilFamilyEnum getAirfoilsFamily() {
+		return airfoilsFamily;
+	}
+
+	public void setAirfoilsFamily(AirfoilFamilyEnum airfoilsFamilyDistribution) {
+		this.airfoilsFamily = airfoilsFamilyDistribution;
+	}
+
+	public Integer getFlapsNumber() {
+		return flapsNumber;
+	}
+
+	public void setFlapsNumber(Integer flapsNumber) {
+		this.flapsNumber = flapsNumber;
+	}
+
+	public Integer getSlatsNumber() {
+		return slatsNumber;
+	}
+
+	public void setSlatsNumber(Integer slatsNumber) {
+		this.slatsNumber = slatsNumber;
 	}
 
 	public List<FlapTypeEnum> getFlapType() {
@@ -238,22 +287,6 @@ public class InputTree {
 		this.cExtCSlat = cExtCSlat;
 	}
 
-	public List<Amount<Angle>> getDeltaFlap() {
-		return deltaFlap;
-	}
-
-	public void setDeltaFlap(List<Amount<Angle>> deltaFlap) {
-		this.deltaFlap = deltaFlap;
-	}
-
-	public List<Amount<Angle>> getDeltaSlat() {
-		return deltaSlat;
-	}
-
-	public void setDeltaSlat(List<Amount<Angle>> deltaSlat) {
-		this.deltaSlat = deltaSlat;
-	}
-
 	public List<Double> getEtaInFlap() {
 		return etaInFlap;
 	}
@@ -286,59 +319,19 @@ public class InputTree {
 		this.etaOutSlat = etaOutSlat;
 	}
 
-	public AirfoilFamilyEnum getMeanAirfoilFamily() {
-		return meanAirfoilFamily;
+	public List<Amount<Angle>> getDeltaFlap() {
+		return deltaFlap;
 	}
 
-	public void setMeanAirfoilFamily(AirfoilFamilyEnum meanAirfoilFamily) {
-		this.meanAirfoilFamily = meanAirfoilFamily;
+	public void setDeltaFlap(List<Amount<Angle>> deltaFlap) {
+		this.deltaFlap = deltaFlap;
 	}
 
-	public int getFlapsNumber() {
-		return flapsNumber;
+	public List<Amount<Angle>> getDeltaSlat() {
+		return deltaSlat;
 	}
 
-	public void setFlapsNumber(int flapsNumber) {
-		this.flapsNumber = flapsNumber;
+	public void setDeltaSlat(List<Amount<Angle>> deltaSlat) {
+		this.deltaSlat = deltaSlat;
 	}
-
-	public int getSlatsNumber() {
-		return slatsNumber;
-	}
-
-	public void setSlatsNumber(int slatsNumber) {
-		this.slatsNumber = slatsNumber;
-	}
-
-	public double getCl0MeanAirfoil() {
-		return cl0MeanAirfoil;
-	}
-
-	public void setCl0MeanAirfoil(double cl0MeanAirfoil) {
-		this.cl0MeanAirfoil = cl0MeanAirfoil;
-	}
-
-	public Amount<Length> getMeanAirfoilChord() {
-		return meanAirfoilChord;
-	}
-
-	public void setMeanAirfoilChord(Amount<Length> meanAirfoilChord) {
-		this.meanAirfoilChord = meanAirfoilChord;
-	}
-
-	public Amount<Length> getRootChordEquivalentWing() {
-		return rootChordEquivalentWing;
-	}
-
-	public void setRootChordEquivalentWing(Amount<Length> rootChordEquivalentWing) {
-		this.rootChordEquivalentWing = rootChordEquivalentWing;
-	}
-
-	public Double getCurrentLiftingCoefficient() {
-		return currentLiftingCoefficient;
-	}
-
-	public void setCurrentLiftingCoefficient(Double currentLiftingCoefficient) {
-		this.currentLiftingCoefficient = currentLiftingCoefficient;
-	} 
 }

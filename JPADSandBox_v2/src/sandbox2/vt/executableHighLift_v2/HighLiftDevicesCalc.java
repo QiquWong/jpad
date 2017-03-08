@@ -4,20 +4,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.unit.NonSI;
-import javax.measure.unit.SI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
@@ -31,52 +30,21 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import groovyjarjarasm.asm.commons.Method;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.MyMathUtils;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
-
-//import static java.lang.Math.toRadians;
-//import java.io.File;
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.List;
-//import javax.measure.quantity.Angle;
-//import javax.measure.unit.NonSI;
-//import javax.measure.unit.SI;
-//import javax.xml.parsers.DocumentBuilder;
-//import javax.xml.parsers.DocumentBuilderFactory;
-//import javax.xml.parsers.ParserConfigurationException;
-//import org.apache.commons.math3.linear.MatrixUtils;
-//import org.apache.commons.math3.linear.RealMatrix;
-//import org.jscience.physics.amount.Amount;
-//import org.w3c.dom.Document;
-//import org.w3c.dom.NodeList;
-//import calculators.geometry.LSGeometryCalc;
-//import configuration.MyConfiguration;
-//import configuration.enumerations.AirfoilFamilyEnum;
-//import configuration.enumerations.FlapTypeEnum;
-//import configuration.enumerations.FoldersEnum;
-//import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-//import database.databasefunctions.aerodynamics.DatabaseManager;
-//import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-//import standaloneutils.JPADXmlReader;
-//import standaloneutils.MyArrayUtils;
-//import standaloneutils.MyChartToFileUtils;
-//import standaloneutils.MyMathUtils;
-//import standaloneutils.MyXMLReaderUtils;
-//import writers.JPADStaticWriteUtils;
 
 public class HighLiftDevicesCalc {
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
 	
-	static InputTree input;
-	static OutputTree output;
+	public static InputTree input;
+	public static OutputTree output;
+	public static LiftingSurface theWing;
+	
 	
 	/**************************************************************************************
 	 * This method is in charge of reading data from a given XML input file and 
@@ -87,6 +55,7 @@ public class HighLiftDevicesCalc {
 	 * @param pathToXML
 	 * @throws ParserConfigurationException
 	 */
+	@SuppressWarnings("unchecked")
 	public static void importFromXML(String pathToXML) throws ParserConfigurationException {
 
 		input = new InputTree();
@@ -98,109 +67,110 @@ public class HighLiftDevicesCalc {
 		//---------------------------------------------------------------------------------
 		// FLIGHT CONDITION:
 		//---------------------------------------------------------------------------------------
-//		List<String> alphaCurrentProperty = reader.getXMLPropertiesByPath("//flight_condition/alpha_current");
-//		input.setAlphaCurrent(Amount.valueOf(Double.valueOf(alphaCurrentProperty.get(0)), NonSI.DEGREE_ANGLE));
+		String currentLiftCoefficientProperty = reader.getXMLPropertyByPath("//flight_condition/current_lifting_coefficient");
+		if(currentLiftCoefficientProperty != null)
+			input.setCurrentLiftingCoefficient(Double.valueOf(currentLiftCoefficientProperty));
 
 		//---------------------------------------------------------------------------------
 		// WING:	
 		//---------------------------------------------------------------------------------------
 		// Geometry:
-		List<String> aspectRatioProperty = reader.getXMLPropertiesByPath("//aspect_ratio");
-		input.setAspectRatio(Double.valueOf(aspectRatioProperty.get(0)));
+		String aspectRatioProperty = reader.getXMLPropertyByPath("//wing/geometry/aspect_ratio");
+		if(aspectRatioProperty != null)
+			input.setAspectRatio(Double.valueOf(aspectRatioProperty));
 		
-		List<String> spanProperty = reader.getXMLPropertiesByPath("//span");
-		input.setSpan(Amount.valueOf(Double.valueOf(spanProperty.get(0)), SI.METER));
+		String surfaceProperty = reader.getXMLPropertyByPath("//wing/geometry/surface");
+		if(surfaceProperty != null)
+			input.setSurface( (Amount<Area>) reader.getXMLAmountWithUnitByPath("//wing/geometry/surface"));
 		
-		List<String> surfaceProperty = reader.getXMLPropertiesByPath("//surface");
-		input.setSurface(Amount.valueOf(Double.valueOf(surfaceProperty.get(0)), SI.SQUARE_METRE));
+		String rootChordEquivalentWingProperty = reader.getXMLPropertyByPath("//wing/geometry/root_chord_equivalent_wing");
+		if(rootChordEquivalentWingProperty != null)
+			input.setRootChordEquivalentWing(reader.getXMLAmountLengthByPath("//wing/geometry/root_chord_equivalent_wing"));
 		
-		List<String> rootChordEquivalentWingProperty = reader.getXMLPropertiesByPath("//root_chord_equivalent_wing");
-		input.setRootChordEquivalentWing(Amount.valueOf(Double.valueOf(rootChordEquivalentWingProperty.get(0)), SI.METER));
+		String sweepQuarterChordEquivalentProperty = reader.getXMLPropertyByPath("//wing/geometry/sweep_quarter_chord_equivalent_wing");
+		if(sweepQuarterChordEquivalentProperty != null)
+			input.setSweepQuarteChordEq(reader.getXMLAmountAngleByPath("//wing/geometry/sweep_quarter_chord_equivalent_wing"));
 		
-		List<String> sweepQuarterChordEquivalentProperty = reader.getXMLPropertiesByPath("//sweep_quarter_chord_equivalent_wing");
-		input.setSweepQuarteChordEq(Amount.valueOf(Double.valueOf(sweepQuarterChordEquivalentProperty.get(0)), NonSI.DEGREE_ANGLE));
-		
-		List<String> taperRatioEquivalentProperty = reader.getXMLPropertiesByPath("//taper_ratio_equivalent_wing");
-		input.setTaperRatioEq(Double.valueOf(taperRatioEquivalentProperty.get(0)));
+		String taperRatioEquivalentProperty = reader.getXMLPropertyByPath("//wing/geometry/taper_ratio_equivalent_wing");
+		if(taperRatioEquivalentProperty != null)
+			input.setTaperRatioEq(Double.valueOf(taperRatioEquivalentProperty));
 		
 		//---------------------------------------------------------------------------------------
 		// Clean wing parameters:
-		List<String> alphaStallCleanProperty = reader.getXMLPropertiesByPath("//alpha_stall_clean");
-		input.setAlphaMaxClean(Amount.valueOf(Double.valueOf(alphaStallCleanProperty.get(0)), NonSI.DEGREE_ANGLE));
+		String alphaStallCleanProperty = reader.getXMLPropertyByPath("//wing/clean_configuration_parameters/alpha_stall_clean");
+		if(alphaStallCleanProperty != null)
+			input.setAlphaStallClean(reader.getXMLAmountAngleByPath("//wing/clean_configuration_parameters/alpha_stall_clean"));
 		
-		List<String> alphaStarCleanProperty = reader.getXMLPropertiesByPath("//alpha_star_clean");
-		input.setAlphaStarClean(Amount.valueOf(Double.valueOf(alphaStarCleanProperty.get(0)), NonSI.DEGREE_ANGLE));
+		String alphaStarCleanProperty = reader.getXMLPropertyByPath("//wing/clean_configuration_parameters/alpha_star_clean");
+		if(alphaStarCleanProperty != null)
+			input.setAlphaStarClean(reader.getXMLAmountAngleByPath("//wing/clean_configuration_parameters/alpha_star_clean"));
 		
-		List<String> cL0CleanProperty = reader.getXMLPropertiesByPath("//cL0_clean");
-		input.setcL0Clean(Double.valueOf(cL0CleanProperty.get(0)));
+		String cLAlphaCleanProperty = reader.getXMLPropertyByPath("//wing/clean_configuration_parameters/cLalpha_clean");
+		if(cLAlphaCleanProperty != null)
+			input.setcLAlphaClean(reader.getXMLAmountWithUnitByPath("//wing/clean_configuration_parameters/cLalpha_clean"));
 		
-		List<String> cLAlphaCleanProperty = reader.getXMLPropertiesByPath("//cLalpha_clean");
-		input.setcLAlphaClean(Amount.valueOf(Double.valueOf(cLAlphaCleanProperty.get(0)), NonSI.DEGREE_ANGLE.inverse()));
+		String cL0CleanProperty = reader.getXMLPropertyByPath("//wing/clean_configuration_parameters/cL0_clean");
+		if(cL0CleanProperty != null)
+			input.setcL0Clean(Double.valueOf(cL0CleanProperty));
 		
-		List<String> cLmaxCleanProperty = reader.getXMLPropertiesByPath("//cLmax_clean");
-		input.setcLmaxClean(Double.valueOf(cLmaxCleanProperty.get(0)));
+		String cLStarCleanProperty = reader.getXMLPropertyByPath("//wing/clean_configuration_parameters/cLStar_clean");
+		if(cLStarCleanProperty != null)
+			input.setcLstarClean(Double.valueOf(cLStarCleanProperty));
 		
-		List<String> cLStarCleanProperty = reader.getXMLPropertiesByPath("//cLStar_clean");
-		input.setcLstarClean(Double.valueOf(cLStarCleanProperty.get(0)));
+		String cLmaxCleanProperty = reader.getXMLPropertyByPath("//wing/clean_configuration_parameters/cLmax_clean");
+		if(cLmaxCleanProperty != null)
+			input.setcLmaxClean(Double.valueOf(cLmaxCleanProperty));
 		
 		//---------------------------------------------------------------------------------------
 		// Mean airfoil:
-		List<String> clAlphaMeanAirfoilProperty = reader.getXMLPropertiesByPath("//cl_alpha_mean_airfoil");
-		input.setClAlphaMeanAirfoil(Amount.valueOf(Double.valueOf(clAlphaMeanAirfoilProperty.get(0)), NonSI.DEGREE_ANGLE.inverse()));
+		String clAlphaAirfoilsDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/cl_alpha_distribution");
+		if(clAlphaAirfoilsDistributionProperty != null)
+			input.setClAlphaAirfoilsDistribution(reader.readArrayofUnknownAmountFromXML("//wing/airfoils_data/cl_alpha_distribution"));
 		
-		List<String> cl0MeanAirfoilProperty = reader.getXMLPropertiesByPath("//cl0_mean_airfoil");
-		input.setCl0MeanAirfoil(Double.valueOf(cl0MeanAirfoilProperty.get(0)));
+		String cl0AirfoilDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/cl0_distribution");
+		if(cl0AirfoilDistributionProperty != null)
+			input.setCl0AirfoilsDistribution(reader.readArrayDoubleFromXML("//wing/airfoils_data/cl0_distribution"));
 		
-		List<String> leadingEdgeRadiusProperty = reader.getXMLPropertiesByPath("//leading_edge_radius_mean_airfoil");
-		input.setLERadiusMeanAirfoil(Amount.valueOf(Double.valueOf(leadingEdgeRadiusProperty.get(0)), SI.METER));
+		String leadingEdgeRadiusDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/leading_edge_radius_distribution");
+		if(leadingEdgeRadiusDistributionProperty != null)
+			input.setLeadingEdgeRadiusAirfoilsDistribution(reader.readArrayofAmountFromXML("//wing/airfoils_data/leading_edge_radius_distribution"));
 		
-		List<String> meanAirfoilChordProperty = reader.getXMLPropertiesByPath("//mean_airfoil_chord");
-		input.setMeanAirfoilChord(Amount.valueOf(Double.valueOf(meanAirfoilChordProperty.get(0)), SI.METER));
+		String airfoilsChordDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/airfoil_chord_distribution");
+		if(airfoilsChordDistributionProperty != null)
+			input.setAirfoilsChordDistribution(reader.readArrayofAmountFromXML("//wing/airfoils_data/airfoil_chord_distribution"));
 		
-		List<String> maxThicknessMeanAirfoilProperty = reader.getXMLPropertiesByPath("//max_thickness_mean_airfoil");
-		input.setMaxthicknessMeanAirfoil(Double.valueOf(maxThicknessMeanAirfoilProperty.get(0)));
+		String maxThicknessAirfoilsDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/max_thickness_distribution");
+		if(maxThicknessAirfoilsDistributionProperty != null)
+			input.setMaxThicknessAirfoilsDistribution(reader.readArrayDoubleFromXML("//wing/airfoils_data/max_thickness_distribution"));
 		
-		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//airfoil_family");
-		if(airfoilFamilyProperty.get(0).equals("NACA_4_DIGIT"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_4_Digit);
-		else if(airfoilFamilyProperty.get(0).equals("NACA_5_DIGIT"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_5_Digit);
-		else if(airfoilFamilyProperty.get(0).equals("NACA_63_SERIES"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_63_Series);
-		else if(airfoilFamilyProperty.get(0).equals("NACA_64_SERIES"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_64_Series);
-		else if(airfoilFamilyProperty.get(0).equals("NACA_65_SERIES"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_65_Series);
-		else if(airfoilFamilyProperty.get(0).equals("NACA_66_SERIES"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.NACA_66_Series);
-		else if(airfoilFamilyProperty.get(0).equals("BICONVEX"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.BICONVEX);
-		else if(airfoilFamilyProperty.get(0).equals("DOUBLE_WEDGE"))
-			input.setMeanAirfoilFamily(AirfoilFamilyEnum.DOUBLE_WEDGE);
-		else {
-			System.err.println("NO VALID FAMILY TYPE!!");
-			return;
-		}
+		String airfoilFamilyDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/airfoil_family_list");
+		if(airfoilFamilyDistributionProperty != null) 
+			input.setAirfoilsFamily( 
+					Arrays.stream(AirfoilFamilyEnum.values())
+					.filter(a -> a.equals(airfoilFamilyDistributionProperty))
+					.findFirst()
+					.orElseThrow(() -> {throw new IllegalStateException(String.format("Unsupported airfoil family", airfoilFamilyDistributionProperty));}));
 		
 		//---------------------------------------------------------------------------------------
 		// Print data:
-//		System.out.println("\tAlpha current = " + input.getAlphaCurrent().getEstimatedValue() + " " + input.getAlphaCurrent().getUnit() + "\n");
+		System.out.println("\tCurrent lifting coefficient = " + input.getCurrentLiftingCoefficient() + "\n");
 		System.out.println("\tAspect Ratio = " + input.getAspectRatio());
-		System.out.println("\tSpan = " + input.getSpan().getEstimatedValue() + " " + input.getSpan().getUnit());
-		System.out.println("\tSurface = " + input.getSurface().getEstimatedValue() + " " + input.getSurface().getUnit());
-		System.out.println("\tSweep quarter chord equivalent wing = " + input.getSweepQuarteChordEq().getEstimatedValue() + " " + input.getSweepQuarteChordEq().getUnit());
+		System.out.println("\tSurface = " + input.getSurface());
+		System.out.println("\tSweep quarter chord equivalent wing = " + input.getSweepQuarteChordEq());
 		System.out.println("\tTaper ratio equivalent wing = " + input.getTaperRatioEq());
-		System.out.println("\n\tAlpha stall clean = " + input.getAlphaMaxClean().getEstimatedValue() + " " + input.getAlphaMaxClean().getUnit());
-		System.out.println("\tAlpha star clean = " + input.getAlphaStarClean().getEstimatedValue() + " " + input.getAlphaStarClean().getUnit());
+		System.out.println("\tRoot chord equivalent wing = " + input.getRootChordEquivalentWing() + "\n");
+		System.out.println("\tAlpha stall clean = " + input.getAlphaStallClean());
+		System.out.println("\tAlpha star clean = " + input.getAlphaStarClean());
+		System.out.println("\tCLalpha clean = " + input.getcLAlphaClean());
 		System.out.println("\tCL0 clean = " + input.getcL0Clean());
-		System.out.println("\tCLalpha clean = " + input.getcLAlphaClean().getEstimatedValue() + " " + input.getcLAlphaClean().getUnit());
-		System.out.println("\tCLmax clean = " + input.getcLmaxClean());
 		System.out.println("\tCLstar clean = " + input.getcLstarClean());
-		System.out.println("\n\tClalpha mean airfoil = " + input.getClAlphaMeanAirfoil().getEstimatedValue() + " " + input.getClAlphaMeanAirfoil().getUnit());
-		System.out.println("\n\tCl0 mean airfoil = " + input.getCl0MeanAirfoil());
-		System.out.println("\tLeading edge radius mean airfoil = " + input.getLERadiusMeanAirfoil().getEstimatedValue() + " " + input.getLERadiusMeanAirfoil().getUnit());
-		System.out.println("\tMax thickness mean airfoil = " + input.getMaxthicknessMeanAirfoil());
-		System.out.println("\tMean airfoil family = " + input.getMeanAirfoilFamily() + "\n");
+		System.out.println("\tCLmax clean = " + input.getcLmaxClean() + "\n");
+		System.out.println("\tAirfoils chord distribution = " + input.getAirfoilsChordDistribution());
+		System.out.println("\tMax thickness airfoils distribution = " + input.getMaxThicknessAirfoilsDistribution());
+		System.out.println("\tLeading edge radius airfoils distribution = " + input.getLeadingEdgeRadiusAirfoilsDistribution());
+		System.out.println("\tClalpha airfoils distribution = " + input.getCl0AirfoilsDistribution());
+		System.out.println("\tCl0 airfoils distribution = " + input.getCl0AirfoilsDistribution());
+		System.out.println("\tAirfoils family distribution = " + input.getAirfoilsFamily() + "\n");
 		
 		//---------------------------------------------------------------------------------
 		// FLAPS:
@@ -390,9 +360,11 @@ public class HighLiftDevicesCalc {
 		System.out.println("\nCalculating high lift devices effects...");
 		System.out.println("\n-----------HIGH LIFT DEVICES EFFECTS-------------- ");
 
-		// TODO: SET THE REQUIRED PARAMETERS INSIDE THE DEFAULT WING
+		///////////////////////////////////////////////////////////////
+		// TODO: SET THE REQUIRED PARAMETERS INSIDE THE DEFAULT WING //
+		///////////////////////////////////////////////////////////////
 		
-		LiftingSurface theWing = new LiftingSurfaceBuilder("Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+		theWing = new LiftingSurfaceBuilder("Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 				.liftingSurfaceCreator(
 						new LiftingSurfaceCreator
 						.LiftingSurfaceCreatorBuilder("Wing", Boolean.TRUE, ComponentEnum.WING)
@@ -402,8 +374,8 @@ public class HighLiftDevicesCalc {
 		
 		LiftCalc.calculateHighLiftDevicesEffects(
 				theWing,
-				input.getDeltaFlap(),
-				input.getDeltaSlat(),
+				input.getDeltaFlap().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
+				input.getDeltaSlat().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
 				input.getCurrentLiftingCoefficient()
 				);
 		
@@ -427,57 +399,57 @@ public class HighLiftDevicesCalc {
 		//---------------------------------------------------------------
 		// PRINT HIGH LIFT DEVICES EFFECTS:
 		//---------------------------------------------------------------
-		System.out.println("\ndeltaCl0_flap_list = ");
+		System.out.println("\t\ndeltaCl0_flap_list = ");
 		for(int i=0; i<output.getDeltaCl0FlapList().size(); i++)
 			System.out.println(output.getDeltaCl0FlapList().get(i));
 	
-		System.out.println("\ndeltaCl0_flap = \n" + output.getDeltaCl0Flap());
+		System.out.println("\t\ndeltaCl0_flap = \n" + output.getDeltaCl0Flap());
 	
-		System.out.println("\ndeltaCL0_flap_list = ");
+		System.out.println("\t\ndeltaCL0_flap_list = ");
 		for(int i=0; i<output.getDeltaCL0FlapList().size(); i++)
 			System.out.println(output.getDeltaCL0FlapList().get(i));
 	
-		System.out.println("\ndeltaCL0_flap = \n" + output.getDeltaCL0Flap());
+		System.out.println("\t\ndeltaCL0_flap = \n" + output.getDeltaCL0Flap());
 	
-		System.out.println("\ndeltaClmax_flap_list = ");
+		System.out.println("\t\ndeltaClmax_flap_list = ");
 		for(int i=0; i<output.getDeltaClmaxFlapList().size(); i++)
 			System.out.println(output.getDeltaClmaxFlapList().get(i));
 	
-		System.out.println("\ndeltaClmax_flap = \n" + output.getDeltaClmaxFlap());
+		System.out.println("\t\ndeltaClmax_flap = \n" + output.getDeltaClmaxFlap());
 	
-		System.out.println("\ndeltaCLmax_flap_list = ");
+		System.out.println("\t\ndeltaCLmax_flap_list = ");
 		for(int i=0; i<output.getDeltaCLmaxFlapList().size(); i++)
 			System.out.println(output.getDeltaCLmaxFlapList().get(i));
 	
-		System.out.println("\ndeltaCLmax_flap = \n" + output.getDeltaCLmaxFlap());
+		System.out.println("\t\ndeltaCLmax_flap = \n" + output.getDeltaCLmaxFlap());
 		
-		System.out.println("\ndeltaClmax_slat_list = ");
+		System.out.println("\t\ndeltaClmax_slat_list = ");
 		for(int i=0; i<output.getDeltaClmaxSlatList().size(); i++)
 			System.out.println(output.getDeltaClmaxSlatList().get(i));
 	
-		System.out.println("\ndeltaClmax_slat = \n" + output.getDeltaClmaxSlat());
+		System.out.println("\t\ndeltaClmax_slat = \n" + output.getDeltaClmaxSlat());
 	
-		System.out.println("\ndeltaCLmax_slat_list = ");
+		System.out.println("\t\ndeltaCLmax_slat_list = ");
 		for(int i=0; i<output.getDeltaCLmaxSlatList().size(); i++)
 			System.out.println(output.getDeltaCLmaxSlatList().get(i));
 	
-		System.out.println("\ndeltaCLmax_slat = \n" + output.getDeltaCLmaxSlat());
+		System.out.println("\t\ndeltaCLmax_slat = \n" + output.getDeltaCLmaxSlat());
 	
-		System.out.println("\ncLalpha_new = \n" + output.getcLalphaHighLift().getEstimatedValue() + " " + output.getcLalphaHighLift().getUnit());
+		System.out.println("\t\ncLalpha_new = \n" + output.getcLalphaHighLift().getEstimatedValue() + " " + output.getcLalphaHighLift().getUnit());
 	
-		System.out.println("\ndeltaCD_list = ");
+		System.out.println("\t\ndeltaCD_list = ");
 		for(int i=0; i<output.getDeltaCDList().size(); i++)
 			System.out.println(output.getDeltaCDList().get(i));
 	
-		System.out.println("\ndeltaCD = \n" + output.getDeltaCD());
+		System.out.println("\t\ndeltaCD = \n" + output.getDeltaCD());
 	
-		System.out.println("\ndeltaCMc_4_list = ");
+		System.out.println("\t\ndeltaCMc_4_list = ");
 		for(int i=0; i<output.getDeltaCMC4List().size(); i++)
 			System.out.println(output.getDeltaCMC4List().get(i));
 	
-		System.out.println("\ndeltaCMc_4 = \n" + output.getDeltaCMC4());
+		System.out.println("\t\ndeltaCMc_4 = \n" + output.getDeltaCMC4());
 		
-		System.out.println("------------------DONE----------------------");
+		System.out.println("\t------------------DONE----------------------");
 		
 		try {
 			plotCurves(aeroDatabaseReader);
@@ -499,7 +471,7 @@ public class HighLiftDevicesCalc {
 		output.getAlphaListPlot().add(
 				MyArrayUtils.linspaceDouble(
 						alphaCleanFirst,
-						input.getAlphaMaxClean().to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 2,
+						input.getAlphaStallClean().to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 2,
 						nPoints
 						)
 				);
@@ -508,9 +480,9 @@ public class HighLiftDevicesCalc {
 				LiftCalc.calculateCLvsAlphaArray(
 						input.getcL0Clean(),
 						input.getcLmaxClean(),
-						input.getAlphaStarClean(), 
-						input.getAlphaMaxClean(), 
-						input.getcLAlphaClean(), 
+						input.getAlphaStarClean().to(NonSI.DEGREE_ANGLE), 
+						input.getAlphaStallClean().to(NonSI.DEGREE_ANGLE), 
+						input.getcLAlphaClean().to(NonSI.DEGREE_ANGLE.inverse()), 
 						output.getAlphaListPlot().get(0)
 						)
 				);
@@ -520,17 +492,19 @@ public class HighLiftDevicesCalc {
 		//--------------------------------------------------------------------------------------
 		double alphaHighLiftFirst = -13.0;
 		
+		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(theWing));
+		
 		output.getAlphaListPlot().add(
 				MyArrayUtils.linspaceDouble(
 						alphaHighLiftFirst,
-						output.getAlphaMaxHighLift().to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 2,
+						output.getAlphaStallHighLift().to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 2,
 						nPoints
 						)
 				);
 		
 		output.setcL0HighLift(input.getcL0Clean() + output.getDeltaCL0Flap());
 		output.setcLmaxHighLift(input.getcLmaxClean() + output.getDeltaCLmaxFlap() + output.getDeltaCLmaxSlat());
-		output.setAlphaMaxHighLift(
+		output.setAlphaStallHighLift(
 				Amount.valueOf(
 						((output.getcLmaxHighLift() - output.getcL0HighLift())
 								/output.getcLalphaHighLift().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()) 
@@ -543,8 +517,8 @@ public class HighLiftDevicesCalc {
 										0.25
 										).getEstimatedValue(),
 								aeroDatabaseReader.getDeltaYvsThickness(
-										input.getMaxthicknessMeanAirfoil(),
-										input.getMeanAirfoilFamily()
+										meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+										input.getAirfoilsFamily()
 										)
 								),
 						NonSI.DEGREE_ANGLE
@@ -561,8 +535,8 @@ public class HighLiftDevicesCalc {
 					);
 		else
 			output.setAlphaStarHighLift(
-					output.getAlphaMaxHighLift().to(NonSI.DEGREE_ANGLE).minus(
-							input.getAlphaMaxClean().to(NonSI.DEGREE_ANGLE)
+					output.getAlphaStallHighLift().to(NonSI.DEGREE_ANGLE).minus(
+							input.getAlphaStallClean().to(NonSI.DEGREE_ANGLE)
 							.minus(input.getAlphaStarClean().to(NonSI.DEGREE_ANGLE)
 									)
 							)
@@ -573,33 +547,33 @@ public class HighLiftDevicesCalc {
 						output.getcL0HighLift(),
 						output.getcLmaxHighLift(),
 						output.getAlphaStarHighLift(), 
-						output.getAlphaMaxHighLift(), 
+						output.getAlphaStallHighLift(), 
 						output.getcLalphaHighLift(), 
 						output.getAlphaListPlot().get(1)
 						)
 				);
 		
-		System.out.println(" \n-----------CLEAN CONFIGURATION-------------- ");
-		System.out.println(" Alpha max = " + input.getAlphaMaxClean().getEstimatedValue() + " " + input.getAlphaMaxClean().getUnit());
-		System.out.println(" Alpha star = " + input.getAlphaStarClean().getEstimatedValue() + " " + input.getAlphaStarClean().getUnit());
-		System.out.println(" CL max = " + input.getcLmaxClean());
-		System.out.println(" CL star = " + input.getcLstarClean());
-		System.out.println(" CL0 = " + input.getcL0Clean());
-		System.out.println(" CL alpha = " + input.getcLAlphaClean().getEstimatedValue() + " " + input.getcLAlphaClean().getUnit());
+		System.out.println("\t\n-----------CLEAN CONFIGURATION-------------- ");
+		System.out.println("\tAlpha max = " + input.getAlphaStallClean());
+		System.out.println("\tAlpha star = " + input.getAlphaStarClean());
+		System.out.println("\tCL max = " + input.getcLmaxClean());
+		System.out.println("\tCL star = " + input.getcLstarClean());
+		System.out.println("\tCL0 = " + input.getcL0Clean());
+		System.out.println("\tCL alpha = " + input.getcLAlphaClean());
 		
-		System.out.println(" \n-----------HIGH LIFT DEVICES ON-------------- ");
-		System.out.println(" Alpha max = " + output.getAlphaMaxHighLift().getEstimatedValue() + " " + output.getAlphaMaxHighLift().getUnit());
-		System.out.println(" Alpha star = " + output.getAlphaStarHighLift().getEstimatedValue() + " " + output.getAlphaStarHighLift().getUnit());
-		System.out.println(" CL max = " + output.getcLmaxHighLift());
-		System.out.println(" CL star = " + output.getcLStarHighLift());
-		System.out.println(" CL0 = " + output.getcL0HighLift());
-		System.out.println(" CL alpha = " + output.getcLalphaHighLift().getEstimatedValue() + " " + output.getcLalphaHighLift().getUnit());
+		System.out.println("\t\n-----------HIGH LIFT DEVICES ON-------------- ");
+		System.out.println("\tAlpha max = " + output.getAlphaStallHighLift());
+		System.out.println("\tAlpha star = " + output.getAlphaStarHighLift());
+		System.out.println("\tCL max = " + output.getcLmaxHighLift());
+		System.out.println("\tCL star = " + output.getcLStarHighLift());
+		System.out.println("\tCL0 = " + output.getcL0HighLift());
+		System.out.println("\tCL alpha = " + output.getcLalphaHighLift());
 
 		List<String> legend  = new ArrayList<>(); 
 		legend.add("clean");
 		legend.add("high lift");
 
-		System.out.println(" \n-----------WRITING CHART TO FILE-------------- ");
+		System.out.println("\t\n-----------WRITING CHART TO FILE-------------- ");
 		
 		MyChartToFileUtils.plot(
 				output.getAlphaListPlot(), 
@@ -615,7 +589,7 @@ public class HighLiftDevicesCalc {
 				JPADStaticWriteUtils.createNewFolder(folderPathHL + "High Lift Charts" + File.separator),
 				"CL curve high lift");
 
-		System.out.println(" \n-------------------DONE----------------------- ");
+		System.out.println("\t\n-------------------DONE----------------------- ");
 	}
 	
 	/*******************************************************************************************
@@ -660,10 +634,10 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element inputRootElement = doc.createElement("INPUT");
 		rootElement.appendChild(inputRootElement);
 
-//		org.w3c.dom.Element flightConditionsElement = doc.createElement("flight_condition");
-//		inputRootElement.appendChild(flightConditionsElement);
-//
-//		JPADStaticWriteUtils.writeSingleNode("alpha_current", input.getAlphaCurrent(), flightConditionsElement, doc);
+		org.w3c.dom.Element flightConditionsElement = doc.createElement("flight_condition");
+		inputRootElement.appendChild(flightConditionsElement);
+
+		JPADStaticWriteUtils.writeSingleNode("current_lifting_coefficient", input.getCurrentLiftingCoefficient(), flightConditionsElement, doc);
 				
 		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
 		inputRootElement.appendChild(wingDataElement);
@@ -672,7 +646,6 @@ public class HighLiftDevicesCalc {
 		wingDataElement.appendChild(geometryDataElement);
 		
 		JPADStaticWriteUtils.writeSingleNode("aspect_ratio", input.getAspectRatio(), geometryDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("span", input.getSpan(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("surface", input.getSurface(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("root_chord_equivalent_wing", input.getRootChordEquivalentWing(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("sweep_quarter_chord_equivalent_wing", input.getSweepQuarteChordEq(), geometryDataElement, doc);
@@ -681,22 +654,22 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element cleanConfigurationDataElement = doc.createElement("clean_configuration_parameters");
 		wingDataElement.appendChild(cleanConfigurationDataElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("alpha_stall_clean", input.getAlphaMaxClean(), cleanConfigurationDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_stall_clean", input.getAlphaStallClean(), cleanConfigurationDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("alpha_star_clean", input.getAlphaStarClean(), cleanConfigurationDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL0_clean", input.getcL0Clean(), cleanConfigurationDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cLalpha_clean", input.getcLAlphaClean(), cleanConfigurationDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cLmax_clean", input.getcLmaxClean(), cleanConfigurationDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cLStar_clean", input.getcLstarClean(), cleanConfigurationDataElement, doc);
 				
-		org.w3c.dom.Element meanAirfoilDataElement = doc.createElement("mean_airfoil");
-		wingDataElement.appendChild(meanAirfoilDataElement);
+		org.w3c.dom.Element airfoilDataDistributionElement = doc.createElement("mean_airfoil");
+		wingDataElement.appendChild(airfoilDataDistributionElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("cl_alpha_mean_airfoil", input.getClAlphaMeanAirfoil(), meanAirfoilDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cl0_mean_airfoil", input.getCl0MeanAirfoil(), meanAirfoilDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_mean_airfoil", input.getLERadiusMeanAirfoil(), meanAirfoilDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("mean_airfoil_chord", input.getMeanAirfoilChord(), meanAirfoilDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", input.getMaxthicknessMeanAirfoil(), meanAirfoilDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("airfoil_family", input.getMeanAirfoilFamily(), meanAirfoilDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("airfoil_chord_distribution", input.getAirfoilsChordDistribution(), airfoilDataDistributionElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("max_thickness_distribution", input.getMaxThicknessAirfoilsDistribution(), airfoilDataDistributionElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_distribution", input.getLeadingEdgeRadiusAirfoilsDistribution(), airfoilDataDistributionElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cl_alpha_distribution", input.getClAlphaAirfoilsDistribution(), airfoilDataDistributionElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cl0_distribution", input.getCl0AirfoilsDistribution(), airfoilDataDistributionElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("airfoils_family", input.getAirfoilsFamily(), airfoilDataDistributionElement, doc);
 
 		org.w3c.dom.Element flapsDataElement = doc.createElement("flaps");
 		inputRootElement.appendChild(flapsDataElement);
@@ -759,11 +732,12 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element highLiftGlobalDataElement = doc.createElement("global_high_lift_devices_effects");
 		outputRootElement.appendChild(highLiftGlobalDataElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("alpha_max_high_lift", output.getAlphaMaxHighLift(), highLiftGlobalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_max_high_lift", output.getAlphaStallHighLift(), highLiftGlobalDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("alpha_star_high_lift", output.getAlphaStarHighLift(), highLiftGlobalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha_high_lift", output.getcLalphaHighLift(), highLiftGlobalDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cLmax_high_lift", output.getcLmaxHighLift(), highLiftGlobalDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_star_high_lift", output.getcLStarHighLift(), highLiftGlobalDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cL_alpha_high_lift", output.getcLalphaHighLift(), highLiftGlobalDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_zero_high_lift", output.getcL0HighLift(), highLiftGlobalDataElement, doc);
 		
 		org.w3c.dom.Element highLiftCurveDataElement = doc.createElement("high_lift_curve_point");
 		outputRootElement.appendChild(highLiftCurveDataElement);
