@@ -8398,6 +8398,3621 @@ public class StabilityExecutableManager {
 		this._fuselagewingliftCoefficient3DCurve = _fuselagewingliftCoefficient3DCurve;
 	}
 
+	public String get_aircraftName() {
+		return _aircraftName;
+	}
+
+	public Amount<Length> get_xCGAircraft() {
+		return _xCGAircraft;
+	}
+
+	public Amount<Length> get_yCGAircraft() {
+		return _yCGAircraft;
+	}
+
+	public Amount<Length> get_zCGAircraft() {
+		return _zCGAircraft;
+	}
+
+	public Amount<Length> get_altitude() {
+		return _altitude;
+	}
+
+	public Double get_machCurrent() {
+		return _machCurrent;
+	}
+
+	public Double get_reynoldsCurrent() {
+		return _reynoldsCurrent;
+	}
+
+	public Amount<Angle> get_alphaBodyInitial() {
+		return _alphaBodyInitial;
+	}
+
+	public Amount<Angle> get_alphaBodyFinal() {
+		return _alphaBodyFinal;
+	}
+
+	public int get_numberOfAlphasBody() {
+		return _numberOfAlphasBody;
+	}
+
+	public List<Amount<Angle>> get_alphasBody() {
+		return _alphasBody;
+	}
+
+	public ConditionEnum get_theCondition() {
+		return _theCondition;
+	}
+
+	public boolean is_downwashConstant() {
+		return _downwashConstant;
+	}
+
+	public List<Double> get_wingMomentumPole() {
+		return _wingMomentumPole;
+	}
+
+	public List<Double> get_hTailMomentumPole() {
+		return _hTailMomentumPole;
+	}
+
+	public List<Amount<Angle>> get_alphaWingForDistribution() {
+		return _alphaWingForDistribution;
+	}
+
+	public List<Amount<Angle>> get_alphaHorizontalTailForDistribution() {
+		return _alphaHorizontalTailForDistribution;
+	}
+
+	public Double get_dynamicPressureRatio() {
+		return _dynamicPressureRatio;
+	}
+
+	public Amount<Length> get_xApexWing() {
+		return _xApexWing;
+	}
+
+	public Amount<Length> get_yApexWing() {
+		return _yApexWing;
+	}
+
+	public Amount<Length> get_zApexWing() {
+		return _zApexWing;
+	}
+
+	public Amount<Length> get_zACRootWing() {
+		return _zACRootWing;
+	}
+
+	public Amount<Area> get_wingSurface() {
+		return _wingSurface;
+	}
+
+	public Double get_wingAspectRatio() {
+		return _wingAspectRatio;
+	}
+
+	public Amount<Length> get_wingSpan() {
+		return _wingSpan;
+	}
+
+	public Amount<Length> get_wingSemiSpan() {
+		return _wingSemiSpan;
+	}
+
+	public int get_wingNumberOfPointSemiSpanWise() {
+		return _wingNumberOfPointSemiSpanWise;
+	}
+
+	public Double get_wingAdimentionalKinkStation() {
+		return _wingAdimentionalKinkStation;
+	}
+
+	public int get_wingNumberOfGivenSections() {
+		return _wingNumberOfGivenSections;
+	}
+
+	public int get_wingNumberOfGivenSectionsCLEAN() {
+		return _wingNumberOfGivenSectionsCLEAN;
+	}
+
+	public Amount<Angle> get_wingAngleOfIncidence() {
+		return _wingAngleOfIncidence;
+	}
+
+	public Double get_wingTaperRatio() {
+		return _wingTaperRatio;
+	}
+
+	public Amount<Angle> get_wingSweepQuarterChord() {
+		return _wingSweepQuarterChord;
+	}
+
+	public Amount<Angle> get_wingSweepLE() {
+		return _wingSweepLE;
+	}
+
+	public Double get_wingVortexSemiSpanToSemiSpanRatio() {
+		return _wingVortexSemiSpanToSemiSpanRatio;
+	}
+
+	public double getcLAlphaMachZero() {
+		return cLAlphaMachZero;
+	}
+
+	public AirfoilFamilyEnum get_wingMeanAirfoilFamily() {
+		return _wingMeanAirfoilFamily;
+	}
+
+	public Double get_wingMaxThicknessMeanAirfoil() {
+		return _wingMaxThicknessMeanAirfoil;
+	}
+
+	public MethodEnum get_wingairfoilLiftCoefficientCurve() {
+		return _wingairfoilLiftCoefficientCurve;
+	}
+
+	public List<List<Amount<Angle>>> get_wingInducedAngleOfAttack() {
+		return _wingInducedAngleOfAttack;
+	}
+
+	public List<List<Double>> get_wingCLAirfoilsDistribution() {
+		return _wingCLAirfoilsDistribution;
+	}
+
+	public List<List<Double>> get_wingCLAirfoilsDistributionFinal() {
+		return _wingCLAirfoilsDistributionFinal;
+	}
+
+	public MethodEnum get_wingairfoilMomentCoefficientCurve() {
+		return _wingairfoilMomentCoefficientCurve;
+	}
+
+	public List<List<Double>> get_wingCLMomentAirfoilInput() {
+		return _wingCLMomentAirfoilInput;
+	}
+
+	public List<List<Double>> get_wingCMMomentAirfoilInput() {
+		return _wingCMMomentAirfoilInput;
+	}
+
+	public List<Double> get_wingCLMomentAirfoilOutput() {
+		return _wingCLMomentAirfoilOutput;
+	}
+
+	public List<List<Double>> get_wingCMMomentAirfoilOutput() {
+		return _wingCMMomentAirfoilOutput;
+	}
+
+	public List<Double> get_wingYAdimensionalBreakPoints() {
+		return _wingYAdimensionalBreakPoints;
+	}
+
+	public List<Amount<Length>> get_wingYBreakPoints() {
+		return _wingYBreakPoints;
+	}
+
+	public List<Double> get_wingYAdimensionalDistribution() {
+		return _wingYAdimensionalDistribution;
+	}
+
+	public List<Amount<Length>> get_wingYDistribution() {
+		return _wingYDistribution;
+	}
+
+	public List<Amount<Length>> get_wingChordsBreakPoints() {
+		return _wingChordsBreakPoints;
+	}
+
+	public List<Amount<Length>> get_wingChordsDistribution() {
+		return _wingChordsDistribution;
+	}
+
+	public List<Amount<Length>> get_wingXleBreakPoints() {
+		return _wingXleBreakPoints;
+	}
+
+	public List<Amount<Length>> get_wingXleDistribution() {
+		return _wingXleDistribution;
+	}
+
+	public List<Amount<Angle>> get_wingTwistBreakPoints() {
+		return _wingTwistBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_wingTwistDistribution() {
+		return _wingTwistDistribution;
+	}
+
+	public List<Amount<Angle>> get_wingDihedralBreakPoints() {
+		return _wingDihedralBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_wingDihedralDistribution() {
+		return _wingDihedralDistribution;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaZeroLiftBreakPoints() {
+		return _wingAlphaZeroLiftBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaZeroLiftDistribution() {
+		return _wingAlphaZeroLiftDistribution;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaStarBreakPoints() {
+		return _wingAlphaStarBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaStarDistribution() {
+		return _wingAlphaStarDistribution;
+	}
+
+	public List<Double> get_wingClMaxBreakPoints() {
+		return _wingClMaxBreakPoints;
+	}
+
+	public List<Double> get_wingClMaxDistribution() {
+		return _wingClMaxDistribution;
+	}
+
+	public List<Double> get_wingCl0BreakPoints() {
+		return _wingCl0BreakPoints;
+	}
+
+	public List<Double> get_wingCl0Distribution() {
+		return _wingCl0Distribution;
+	}
+
+	public List<Double> get_wingXACBreakPoints() {
+		return _wingXACBreakPoints;
+	}
+
+	public List<Double> get_wingXACDistribution() {
+		return _wingXACDistribution;
+	}
+
+	public List<Double> get_wingCmACBreakPoints() {
+		return _wingCmACBreakPoints;
+	}
+
+	public List<Double> get_wingCmC4Distribution() {
+		return _wingCmC4Distribution;
+	}
+
+	public List<Double> get_wingYAdimensionalBreakPointsCLEAN() {
+		return _wingYAdimensionalBreakPointsCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingYBreakPointsCLEAN() {
+		return _wingYBreakPointsCLEAN;
+	}
+
+	public List<Double> get_wingYAdimensionalDistributionCLEAN() {
+		return _wingYAdimensionalDistributionCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingYDistributionCLEAN() {
+		return _wingYDistributionCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingChordsBreakPointsCLEAN() {
+		return _wingChordsBreakPointsCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingChordsDistributionCLEAN() {
+		return _wingChordsDistributionCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingXleBreakPointsCLEAN() {
+		return _wingXleBreakPointsCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingXleDistributionCLEAN() {
+		return _wingXleDistributionCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingTwistBreakPointsCLEAN() {
+		return _wingTwistBreakPointsCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingTwistDistributionCLEAN() {
+		return _wingTwistDistributionCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingDihedralBreakPointsCLEAN() {
+		return _wingDihedralBreakPointsCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingDihedralDistributionCLEAN() {
+		return _wingDihedralDistributionCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaZeroLiftBreakPointsCLEAN() {
+		return _wingAlphaZeroLiftBreakPointsCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaZeroLiftDistributionCLEAN() {
+		return _wingAlphaZeroLiftDistributionCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaStarBreakPointsCLEAN() {
+		return _wingAlphaStarBreakPointsCLEAN;
+	}
+
+	public List<Amount<Angle>> get_wingAlphaStarDistributionCLEAN() {
+		return _wingAlphaStarDistributionCLEAN;
+	}
+
+	public List<Double> get_wingClMaxBreakPointsCLEAN() {
+		return _wingClMaxBreakPointsCLEAN;
+	}
+
+	public List<Double> get_wingClMaxDistributionCLEAN() {
+		return _wingClMaxDistributionCLEAN;
+	}
+
+	public List<Double> get_wingCl0BreakPointsCLEAN() {
+		return _wingCl0BreakPointsCLEAN;
+	}
+
+	public List<Double> get_wingCl0DistributionCLEAN() {
+		return _wingCl0DistributionCLEAN;
+	}
+
+	public List<Double> get_wingClAlphaBreakPointsDegCLEAN() {
+		return _wingClAlphaBreakPointsDegCLEAN;
+	}
+
+	public List<Double> get_wingClAlphaDistributionDegCLEAN() {
+		return _wingClAlphaDistributionDegCLEAN;
+	}
+
+	public List<Double> get_wingMaxThicknessBreakPointsCLEAN() {
+		return _wingMaxThicknessBreakPointsCLEAN;
+	}
+
+	public List<Double> get_wingMaxThicknessDistributionCLEAN() {
+		return _wingMaxThicknessDistributionCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingLERadiusBreakPointsCLEAN() {
+		return _wingLERadiusBreakPointsCLEAN;
+	}
+
+	public List<Amount<Length>> get_wingLERadiusDistributionCLEAN() {
+		return _wingLERadiusDistributionCLEAN;
+	}
+
+	public List<Double> get_wingClAlphaDistributionDeg() {
+		return _wingClAlphaDistributionDeg;
+	}
+
+	public List<Amount<Length>> get_wingLERadiusBreakPoints() {
+		return _wingLERadiusBreakPoints;
+	}
+
+	public List<Amount<Length>> get_wingLERadiusDistribution() {
+		return _wingLERadiusDistribution;
+	}
+
+	public List<Amount<Length>> get_wingYLEBreakPoints() {
+		return _wingYLEBreakPoints;
+	}
+
+	public List<Amount<Length>> get_wingYLEDistribution() {
+		return _wingYLEDistribution;
+	}
+
+	public int get_wingNumberOfFlaps() {
+		return _wingNumberOfFlaps;
+	}
+
+	public int get_wingNumberOfSlats() {
+		return _wingNumberOfSlats;
+	}
+
+	public List<Amount<Angle>> get_wingDeltaFlap() {
+		return _wingDeltaFlap;
+	}
+
+	public List<FlapTypeEnum> get_wingFlapType() {
+		return _wingFlapType;
+	}
+
+	public List<Double> get_wingEtaInFlap() {
+		return _wingEtaInFlap;
+	}
+
+	public List<Double> get_wingEtaOutFlap() {
+		return _wingEtaOutFlap;
+	}
+
+	public List<Double> get_wingFlapCfC() {
+		return _wingFlapCfC;
+	}
+
+	public List<Amount<Angle>> get_wingDeltaSlat() {
+		return _wingDeltaSlat;
+	}
+
+	public List<Double> get_wingEtaInSlat() {
+		return _wingEtaInSlat;
+	}
+
+	public List<Double> get_wingEtaOutSlat() {
+		return _wingEtaOutSlat;
+	}
+
+	public List<Double> get_wingSlatCsC() {
+		return _wingSlatCsC;
+	}
+
+	public List<Double> get_wingCExtCSlat() {
+		return _wingCExtCSlat;
+	}
+
+	public List<Double> get_wingLeRadiusCSLat() {
+		return _wingLeRadiusCSLat;
+	}
+
+	public Map<Double, Map<Double, Double[]>> get_supermappa() {
+		return _supermappa;
+	}
+
+	public Amount<Length> get_fuselageDiameter() {
+		return _fuselageDiameter;
+	}
+
+	public Amount<Length> get_fuselageLength() {
+		return _fuselageLength;
+	}
+
+	public Double get_fuselageNoseFinessRatio() {
+		return _fuselageNoseFinessRatio;
+	}
+
+	public Double get_fuselageFinessRatio() {
+		return _fuselageFinessRatio;
+	}
+
+	public Double get_fuselageTailFinessRatio() {
+		return _fuselageTailFinessRatio;
+	}
+
+	public Amount<Angle> get_fuselageWindshieldAngle() {
+		return _fuselageWindshieldAngle;
+	}
+
+	public Amount<Angle> get_fuselageUpSweepAngle() {
+		return _fuselageUpSweepAngle;
+	}
+
+	public Double get_fuselageXPercentPositionPole() {
+		return _fuselageXPercentPositionPole;
+	}
+
+	public Amount<Area> get_fuselageFrontSurface() {
+		return _fuselageFrontSurface;
+	}
+
+	public double get_cM0fuselage() {
+		return _cM0fuselage;
+	}
+
+	public double get_cMalphafuselage() {
+		return _cMalphafuselage;
+	}
+
+	public List<Double> getCdDistributionFuselageFinal() {
+		return cdDistributionFuselageFinal;
+	}
+
+	public Amount<Length> get_xApexHTail() {
+		return _xApexHTail;
+	}
+
+	public Amount<Length> get_yApexHTail() {
+		return _yApexHTail;
+	}
+
+	public Amount<Length> get_zApexHTail() {
+		return _zApexHTail;
+	}
+
+	public Amount<Length> get_verticalTailSpan() {
+		return _verticalTailSpan;
+	}
+
+	public Amount<Area> get_hTailSurface() {
+		return _hTailSurface;
+	}
+
+	public Double get_hTailAspectRatio() {
+		return _hTailAspectRatio;
+	}
+
+	public Double get_hTailTaperRatio() {
+		return _hTailTaperRatio;
+	}
+
+	public Amount<Length> get_hTailSpan() {
+		return _hTailSpan;
+	}
+
+	public Amount<Length> get_hTailSemiSpan() {
+		return _hTailSemiSpan;
+	}
+
+	public int get_hTailNumberOfPointSemiSpanWise() {
+		return _hTailNumberOfPointSemiSpanWise;
+	}
+
+	public Double get_hTailadimentionalKinkStation() {
+		return _hTailadimentionalKinkStation;
+	}
+
+	public int get_hTailnumberOfGivenSections() {
+		return _hTailnumberOfGivenSections;
+	}
+
+	public Amount<Angle> get_hTailSweepLE() {
+		return _hTailSweepLE;
+	}
+
+	public Amount<Angle> get_hTailSweepQuarterChord() {
+		return _hTailSweepQuarterChord;
+	}
+
+	public AirfoilFamilyEnum get_hTailMeanAirfoilFamily() {
+		return _hTailMeanAirfoilFamily;
+	}
+
+	public Double get_hTailMaxThicknessMeanAirfoil() {
+		return _hTailMaxThicknessMeanAirfoil;
+	}
+
+	public Double get_hTailVortexSemiSpanToSemiSpanRatio() {
+		return _hTailVortexSemiSpanToSemiSpanRatio;
+	}
+
+	public MethodEnum get_hTailairfoilLiftCoefficientCurve() {
+		return _hTailairfoilLiftCoefficientCurve;
+	}
+
+	public List<List<Double>> get_hTailCLAirfoilsDistribution() {
+		return _hTailCLAirfoilsDistribution;
+	}
+
+	public List<List<Amount<Angle>>> get_hTailInducedAngleOfAttack() {
+		return _hTailInducedAngleOfAttack;
+	}
+
+	public List<List<Double>> get_hTailCLAirfoilsDistributionFinal() {
+		return _hTailCLAirfoilsDistributionFinal;
+	}
+
+	public Amount<Length> get_hTailHorizontalDistanceACtoCG() {
+		return _hTailHorizontalDistanceACtoCG;
+	}
+
+	public Amount<Length> get_hTailVerticalDistranceACtoCG() {
+		return _hTailVerticalDistranceACtoCG;
+	}
+
+	public List<Double> get_hTailYAdimensionalBreakPoints() {
+		return _hTailYAdimensionalBreakPoints;
+	}
+
+	public List<Amount<Length>> get_hTailYBreakPoints() {
+		return _hTailYBreakPoints;
+	}
+
+	public List<Double> get_hTailYAdimensionalDistribution() {
+		return _hTailYAdimensionalDistribution;
+	}
+
+	public Amount<Angle> get_hTailAngleOfIncidence() {
+		return _hTailAngleOfIncidence;
+	}
+
+	public List<Amount<Length>> get_hTailYDistribution() {
+		return _hTailYDistribution;
+	}
+
+	public List<Amount<Length>> get_hTailChordsBreakPoints() {
+		return _hTailChordsBreakPoints;
+	}
+
+	public List<Amount<Length>> get_hTailChordsDistribution() {
+		return _hTailChordsDistribution;
+	}
+
+	public List<Amount<Length>> get_hTailXleBreakPoints() {
+		return _hTailXleBreakPoints;
+	}
+
+	public List<Amount<Length>> get_hTailXleDistribution() {
+		return _hTailXleDistribution;
+	}
+
+	public List<Amount<Angle>> get_hTailTwistBreakPoints() {
+		return _hTailTwistBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_hTailTwistDistribution() {
+		return _hTailTwistDistribution;
+	}
+
+	public List<Amount<Angle>> get_hTailDihedralBreakPoints() {
+		return _hTailDihedralBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_hTailDihedralDistribution() {
+		return _hTailDihedralDistribution;
+	}
+
+	public List<Amount<Angle>> get_hTailAlphaZeroLiftBreakPoints() {
+		return _hTailAlphaZeroLiftBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_hTailAlphaZeroLiftDistribution() {
+		return _hTailAlphaZeroLiftDistribution;
+	}
+
+	public List<Amount<Angle>> get_hTailAlphaStarBreakPoints() {
+		return _hTailAlphaStarBreakPoints;
+	}
+
+	public List<Amount<Angle>> get_hTailAlphaStarDistribution() {
+		return _hTailAlphaStarDistribution;
+	}
+
+	public List<Double> get_hTailClMaxBreakPoints() {
+		return _hTailClMaxBreakPoints;
+	}
+
+	public List<Double> get_hTailClMaxDistribution() {
+		return _hTailClMaxDistribution;
+	}
+
+	public List<Double> get_hTailMaxThicknessBreakPoints() {
+		return _hTailMaxThicknessBreakPoints;
+	}
+
+	public List<Double> get_hTailMaxThicknessDistribution() {
+		return _hTailMaxThicknessDistribution;
+	}
+
+	public List<Double> get_hTailClAlphaBreakPointsDeg() {
+		return _hTailClAlphaBreakPointsDeg;
+	}
+
+	public List<Double> get_hTailCl0BreakPoints() {
+		return _hTailCl0BreakPoints;
+	}
+
+	public List<Double> get_hTailCl0Distribution() {
+		return _hTailCl0Distribution;
+	}
+
+	public List<Double> get_hTailClAlphaistributionDeg() {
+		return _hTailClAlphaistributionDeg;
+	}
+
+	public List<Double> get_hTailXACBreakPoints() {
+		return _hTailXACBreakPoints;
+	}
+
+	public List<Double> get_hTailXACDistribution() {
+		return _hTailXACDistribution;
+	}
+
+	public List<Double> get_hTailCmACBreakPoints() {
+		return _hTailCmACBreakPoints;
+	}
+
+	public List<Double> get_hTailCmC4Distribution() {
+		return _hTailCmC4Distribution;
+	}
+
+	public List<Amount<Angle>> get_anglesOfElevatorDeflection() {
+		return _anglesOfElevatorDeflection;
+	}
+
+	public FlapTypeEnum get_elevatorType() {
+		return _elevatorType;
+	}
+
+	public Double get_elevatorEtaIn() {
+		return _elevatorEtaIn;
+	}
+
+	public Double get_elevatorEtaOut() {
+		return _elevatorEtaOut;
+	}
+
+	public Double get_elevatorCfC() {
+		return _elevatorCfC;
+	}
+
+	public Amount<Angle> get_tiltingAngle() {
+		return _tiltingAngle;
+	}
+
+	public MethodEnum get_wingDragMethod() {
+		return _wingDragMethod;
+	}
+
+	public MethodEnum get_hTailDragMethod() {
+		return _hTailDragMethod;
+	}
+
+	public List<AerodynamicAndStabilityPlotEnum> get_plotList() {
+		return _plotList;
+	}
+
+	public boolean is_plotCheck() {
+		return _plotCheck;
+	}
+
+	public StabilityExecutableCalculator getTheStabilityCalculator() {
+		return theStabilityCalculator;
+	}
+
+	public Amount<Length> get_horizontalDistanceQuarterChordWingHTail() {
+		return _horizontalDistanceQuarterChordWingHTail;
+	}
+
+	public Amount<Length> get_verticalDistanceZeroLiftDirectionWingHTail() {
+		return _verticalDistanceZeroLiftDirectionWingHTail;
+	}
+
+	public Amount<Length> get_horizontalDistanceQuarterChordWingHTailNOANGLE() {
+		return _horizontalDistanceQuarterChordWingHTailNOANGLE;
+	}
+
+	public Amount<Length> get_verticalDistanceZeroLiftDirectionWingHTailPARTIAL() {
+		return _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
+	}
+
+	public Amount<Length> get_verticalDistanceZeroLiftDirectionWingHTailCOMPLETE() {
+		return _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
+	}
+
+	public String getDatabaseFolderPath() {
+		return databaseFolderPath;
+	}
+
+	public String getAerodynamicDatabaseFileName() {
+		return aerodynamicDatabaseFileName;
+	}
+
+	public String getHighLiftDatabaseFileName() {
+		return highLiftDatabaseFileName;
+	}
+
+	public String getFusDesDatabaseFileName() {
+		return fusDesDatabaseFileName;
+	}
+
+	public AerodynamicDatabaseReader getAeroDatabaseReader() {
+		return aeroDatabaseReader;
+	}
+
+	public HighLiftDatabaseReader getHighLiftDatabaseReader() {
+		return highLiftDatabaseReader;
+	}
+
+	public FusDesDatabaseReader getFusDesDatabaseReader() {
+		return fusDesDatabaseReader;
+	}
+
+	public double[] getAlphaZeroLiftRad() {
+		return alphaZeroLiftRad;
+	}
+
+	public double[] getTwistDistributionRad() {
+		return twistDistributionRad;
+	}
+
+	public double[] getAlphaZeroLiftRadCLEAN() {
+		return alphaZeroLiftRadCLEAN;
+	}
+
+	public double[] getTwistDistributionRadCLEAN() {
+		return twistDistributionRadCLEAN;
+	}
+
+	public double[] getAlphaZeroLiftRadHTail() {
+		return alphaZeroLiftRadHTail;
+	}
+
+	public double[] getTwistDistributionRadHTail() {
+		return twistDistributionRadHTail;
+	}
+
+	public double get_deltaCD0Miscellaneus() {
+		return _deltaCD0Miscellaneus;
+	}
+
+	public Amount<Length> get_landingGearArm() {
+		return _landingGearArm;
+	}
+
+	public double getDimensionalOverKink() {
+		return dimensionalOverKink;
+	}
+
+	public double getInfluenceAreaRoot() {
+		return influenceAreaRoot;
+	}
+
+	public double getInfluenceAreaKink() {
+		return influenceAreaKink;
+	}
+
+	public double getInfluenceAreaTip() {
+		return influenceAreaTip;
+	}
+
+	public double getkRoot() {
+		return kRoot;
+	}
+
+	public double getkKink() {
+		return kKink;
+	}
+
+	public double getkTip() {
+		return kTip;
+	}
+
+	public double getDimensionalOverKinkHTail() {
+		return dimensionalOverKinkHTail;
+	}
+
+	public double getInfluenceAreaRootHTail() {
+		return influenceAreaRootHTail;
+	}
+
+	public double getInfluenceAreaKinkHTail() {
+		return influenceAreaKinkHTail;
+	}
+
+	public double getInfluenceAreaTipHTail() {
+		return influenceAreaTipHTail;
+	}
+
+	public double getkRootHTail() {
+		return kRootHTail;
+	}
+
+	public double getkKinkHTail() {
+		return kKinkHTail;
+	}
+
+	public double getkTipHTail() {
+		return kTipHTail;
+	}
+
+	public NasaBlackwell getTheNasaBlackwellCalculatorMachActualWingCLEAN() {
+		return theNasaBlackwellCalculatorMachActualWingCLEAN;
+	}
+
+	public NasaBlackwell getTheNasaBlackwellCalculatorMachZeroCLEAN() {
+		return theNasaBlackwellCalculatorMachZeroCLEAN;
+	}
+
+	public NasaBlackwell getTheNasaBlackwellCalculatorMachActualWing() {
+		return theNasaBlackwellCalculatorMachActualWing;
+	}
+
+	public NasaBlackwell getTheNasaBlackwellCalculatorMachZero() {
+		return theNasaBlackwellCalculatorMachZero;
+	}
+
+	public NasaBlackwell getTheNasaBlackwellCalculatorMachActualHTail() {
+		return theNasaBlackwellCalculatorMachActualHTail;
+	}
+
+	public List<Double> get_downwashGradientConstantRoskam() {
+		return _downwashGradientConstantRoskam;
+	}
+
+	public List<Amount<Angle>> get_downwashAngleConstantRoskam() {
+		return _downwashAngleConstantRoskam;
+	}
+
+	public List<Double> get_downwashGradientConstantSlingerland() {
+		return _downwashGradientConstantSlingerland;
+	}
+
+	public List<Amount<Angle>> get_downwashAngleConstantSlingerland() {
+		return _downwashAngleConstantSlingerland;
+	}
+
+	public List<Double> get_downwashGradientVariableSlingerland() {
+		return _downwashGradientVariableSlingerland;
+	}
+
+	public List<Amount<Angle>> get_downwashAngleVariableSlingerland() {
+		return _downwashAngleVariableSlingerland;
+	}
+
+	public List<Amount<Angle>> get_downwashAngleVariableSlingerlandOld() {
+		return _downwashAngleVariableSlingerlandOld;
+	}
+
+	public List<Amount<Length>> get_horizontalDistance() {
+		return _horizontalDistance;
+	}
+
+	public List<Amount<Length>> get_verticalDistance() {
+		return _verticalDistance;
+	}
+
+	public List<Amount<Length>> get_horizontalDistanceConstant() {
+		return _horizontalDistanceConstant;
+	}
+
+	public List<Amount<Length>> get_verticalDistanceConstant() {
+		return _verticalDistanceConstant;
+	}
+
+	public Amount<Angle> get_wingAlphaZeroLift() {
+		return _wingAlphaZeroLift;
+	}
+
+	public Amount<Angle> get_wingalphaStar() {
+		return _wingalphaStar;
+	}
+
+	public Amount<Angle> get_wingalphaMaxLinear() {
+		return _wingalphaMaxLinear;
+	}
+
+	public Amount<Angle> get_wingalphaStall() {
+		return _wingalphaStall;
+	}
+
+	public Double get_wingcLZero() {
+		return _wingcLZero;
+	}
+
+	public Double get_wingcLStar() {
+		return _wingcLStar;
+	}
+
+	public Double get_wingcLMax() {
+		return _wingcLMax;
+	}
+
+	public Amount<?> get_wingclAlpha() {
+		return _wingclAlpha;
+	}
+
+	public Double get_cLAtAlpha() {
+		return _cLAtAlpha;
+	}
+
+	public Double[] get_wingliftCoefficient3DCurve() {
+		return _wingliftCoefficient3DCurve;
+	}
+
+	public double[] get_wingliftCoefficientDistributionatCLMax() {
+		return _wingliftCoefficientDistributionatCLMax;
+	}
+
+	public Double[] get_wingclAlphaArray() {
+		return _wingclAlphaArray;
+	}
+
+	public Double[] get_wingclAlphaArrayHighLift() {
+		return _wingclAlphaArrayHighLift;
+	}
+
+	public Double get_cLAtAlphaHighLift() {
+		return _cLAtAlphaHighLift;
+	}
+
+	public Amount<Angle> get_alphaZeroLiftHighLift() {
+		return _alphaZeroLiftHighLift;
+	}
+
+	public Amount<Angle> get_alphaStarHighLift() {
+		return _alphaStarHighLift;
+	}
+
+	public Amount<Angle> get_alphaStallHighLift() {
+		return _alphaStallHighLift;
+	}
+
+	public Double get_cLZeroHighLift() {
+		return _cLZeroHighLift;
+	}
+
+	public Double get_cLStarHighLift() {
+		return _cLStarHighLift;
+	}
+
+	public Double get_cLMaxHighLift() {
+		return _cLMaxHighLift;
+	}
+
+	public Double get_cLAlphaHighLiftDEG() {
+		return _cLAlphaHighLiftDEG;
+	}
+
+	public Double get_cD0HighLift() {
+		return _cD0HighLift;
+	}
+
+	public List<Double> get_deltaCl0FlapList() {
+		return _deltaCl0FlapList;
+	}
+
+	public Double get_deltaCl0Flap() {
+		return _deltaCl0Flap;
+	}
+
+	public List<Double> get_deltaCL0FlapList() {
+		return _deltaCL0FlapList;
+	}
+
+	public Double get_deltaCL0Flap() {
+		return _deltaCL0Flap;
+	}
+
+	public List<Double> get_deltaClmaxFlapList() {
+		return _deltaClmaxFlapList;
+	}
+
+	public Double get_deltaClmaxFlap() {
+		return _deltaClmaxFlap;
+	}
+
+	public List<Double> get_deltaCLmaxFlapList() {
+		return _deltaCLmaxFlapList;
+	}
+
+	public Double get_deltaCLmaxFlap() {
+		return _deltaCLmaxFlap;
+	}
+
+	public List<Double> get_deltaClmaxSlatList() {
+		return _deltaClmaxSlatList;
+	}
+
+	public Double get_deltaClmaxSlat() {
+		return _deltaClmaxSlat;
+	}
+
+	public List<Double> get_deltaCLmaxSlatList() {
+		return _deltaCLmaxSlatList;
+	}
+
+	public Double get_deltaCLmaxSlat() {
+		return _deltaCLmaxSlat;
+	}
+
+	public List<Double> get_deltaCD0List() {
+		return _deltaCD0List;
+	}
+
+	public Double get_deltaCD0() {
+		return _deltaCD0;
+	}
+
+	public List<Double> get_deltaCMc4List() {
+		return _deltaCMc4List;
+	}
+
+	public Double get_deltaCMc4() {
+		return _deltaCMc4;
+	}
+
+	public Double[] get_alphaArrayPlotHighLift() {
+		return _alphaArrayPlotHighLift;
+	}
+
+	public Double[] get_wingLiftCoefficient3DCurveHighLift() {
+		return _wingLiftCoefficient3DCurveHighLift;
+	}
+
+	public Double[] get_wingLiftCoefficient3DCurveHighLiftWINGARRAY() {
+		return _wingLiftCoefficient3DCurveHighLiftWINGARRAY;
+	}
+
+	public double[] get_wingLiftCoefficientModified() {
+		return _wingLiftCoefficientModified;
+	}
+
+	public Amount<Angle> get_hTailAlphaZeroLift() {
+		return _hTailAlphaZeroLift;
+	}
+
+	public Amount<Angle> get_hTailalphaStar() {
+		return _hTailalphaStar;
+	}
+
+	public Amount<Angle> get_hTailalphaMaxLinear() {
+		return _hTailalphaMaxLinear;
+	}
+
+	public Amount<Angle> get_hTailalphaStall() {
+		return _hTailalphaStall;
+	}
+
+	public Double get_hTailcLZero() {
+		return _hTailcLZero;
+	}
+
+	public Double get_hTailcLStar() {
+		return _hTailcLStar;
+	}
+
+	public Double get_hTailcLMax() {
+		return _hTailcLMax;
+	}
+
+	public Double get_hTailcLAlphaRad() {
+		return _hTailcLAlphaRad;
+	}
+
+	public Double get_hTailcLAlphaDeg() {
+		return _hTailcLAlphaDeg;
+	}
+
+	public Amount<?> get_hTailclAlpha() {
+		return _hTailclAlpha;
+	}
+
+	public Double[] get_hTailliftCoefficient3DCurve() {
+		return _hTailliftCoefficient3DCurve;
+	}
+
+	public double[] get_hTailliftCoefficientDistributionatCLMax() {
+		return _hTailliftCoefficientDistributionatCLMax;
+	}
+
+	public Double[] get_hTailclAlphaArray() {
+		return _hTailclAlphaArray;
+	}
+
+	public Double[] get_hTailclAlphaArrayHighLift() {
+		return _hTailclAlphaArrayHighLift;
+	}
+
+	public Map<Amount<Angle>, Double> get_tauElevator() {
+		return _tauElevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_deltaCLMaxElevator() {
+		return _deltaCLMaxElevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_deltaCD0Elevator() {
+		return _deltaCD0Elevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_cLAlphaElevatorDeg() {
+		return _cLAlphaElevatorDeg;
+	}
+
+	public Map<Amount<Angle>, Double> get_deltacLZeroElevator() {
+		return _deltacLZeroElevator;
+	}
+
+	public Map<Amount<Angle>, Double[]> get_hTailLiftCoefficient3DCurveWithElevator() {
+		return _hTailLiftCoefficient3DCurveWithElevator;
+	}
+
+	public Map<Amount<Angle>, Double[]> get_hTailDragCoefficient3DCurveWithElevator() {
+		return _hTailDragCoefficient3DCurveWithElevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_hTailcLMaxElevator() {
+		return _hTailcLMaxElevator;
+	}
+
+	public Map<Amount<Angle>, Amount<Angle>> get_hTailalphaZeroLiftElevator() {
+		return _hTailalphaZeroLiftElevator;
+	}
+
+	public Map<Amount<Angle>, Amount<Angle>> get_hTailalphaStarElevator() {
+		return _hTailalphaStarElevator;
+	}
+
+	public Map<Amount<Angle>, Amount<Angle>> get_hTailalphaStallLiftElevator() {
+		return _hTailalphaStallLiftElevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_hTailCLZeroElevator() {
+		return _hTailCLZeroElevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_hTailCLStarElevator() {
+		return _hTailCLStarElevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_hTailCLAlphaElevator() {
+		return _hTailCLAlphaElevator;
+	}
+
+	public Map<Amount<Angle>, Double> get_tauElevatorArray() {
+		return _tauElevatorArray;
+	}
+
+	public List<Amount<Angle>> get_deltaEAnglesArray() {
+		return _deltaEAnglesArray;
+	}
+
+	public Amount<Angle> get_wingAlphaZeroLiftCONDITION() {
+		return _wingAlphaZeroLiftCONDITION;
+	}
+
+	public Amount<Angle> get_wingalphaStarCONDITION() {
+		return _wingalphaStarCONDITION;
+	}
+
+	public Amount<Angle> get_wingalphaMaxLinearCONDITION() {
+		return _wingalphaMaxLinearCONDITION;
+	}
+
+	public Amount<Angle> get_wingalphaStallCONDITION() {
+		return _wingalphaStallCONDITION;
+	}
+
+	public Double get_wingcLZeroCONDITION() {
+		return _wingcLZeroCONDITION;
+	}
+
+	public Double get_wingcLStarCONDITION() {
+		return _wingcLStarCONDITION;
+	}
+
+	public Double get_wingcLMaxCONDITION() {
+		return _wingcLMaxCONDITION;
+	}
+
+	public Double get_wingcLAlphaRadCONDITION() {
+		return _wingcLAlphaRadCONDITION;
+	}
+
+	public Double get_wingcLAlphaDegCONDITION() {
+		return _wingcLAlphaDegCONDITION;
+	}
+
+	public Amount<?> get_wingclAlphaCONDITION() {
+		return _wingclAlphaCONDITION;
+	}
+
+	public Double get_cLAtAlphaCONDITION() {
+		return _cLAtAlphaCONDITION;
+	}
+
+	public Double[] get_wingliftCoefficient3DCurveCONDITION() {
+		return _wingliftCoefficient3DCurveCONDITION;
+	}
+
+	public double[] get_wingliftCoefficientDistributionatCLMaxCONDITION() {
+		return _wingliftCoefficientDistributionatCLMaxCONDITION;
+	}
+
+	public Double[] get_wingclAlphaArrayCONDITION() {
+		return _wingclAlphaArrayCONDITION;
+	}
+
+	public Double get_fuselageWingClAlphaDeg() {
+		return _fuselageWingClAlphaDeg;
+	}
+
+	public Double get_fuselageWingClMax() {
+		return _fuselageWingClMax;
+	}
+
+	public Double get_fuselageWingClZero() {
+		return _fuselageWingClZero;
+	}
+
+	public Amount<Angle> get_fuselageWingAlphaStar() {
+		return _fuselageWingAlphaStar;
+	}
+
+	public Amount<Angle> get_fuselageWingAlphaStall() {
+		return _fuselageWingAlphaStall;
+	}
+
+	public Amount<?> get_fuselageWingClAlpha() {
+		return _fuselageWingClAlpha;
+	}
+
+	public Double get_fuselageWingCLStar() {
+		return _fuselageWingCLStar;
+	}
+
+	public Double[] get_fuselagewingliftCoefficient3DCurve() {
+		return _fuselagewingliftCoefficient3DCurve;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_totalLiftCoefficient() {
+		return _totalLiftCoefficient;
+	}
+
+	public Double get_wingCD0() {
+		return _wingCD0;
+	}
+
+	public Double get_wingOswaldFactor() {
+		return _wingOswaldFactor;
+	}
+
+	public Double get_wingCDInduced() {
+		return _wingCDInduced;
+	}
+
+	public Double get_wingCDWave() {
+		return _wingCDWave;
+	}
+
+	public Double[] get_wingPolar3DCurve() {
+		return _wingPolar3DCurve;
+	}
+
+	public List<Double> get_wingParasiteDragCoefficientDistribution() {
+		return _wingParasiteDragCoefficientDistribution;
+	}
+
+	public List<Double> get_wingInducedDragCoefficientDistribution() {
+		return _wingInducedDragCoefficientDistribution;
+	}
+
+	public List<Double> get_wingInducedDragCoefficientDistributionParabolic() {
+		return _wingInducedDragCoefficientDistributionParabolic;
+	}
+
+	public List<Double> get_wingDragCoefficient3DCurve() {
+		return _wingDragCoefficient3DCurve;
+	}
+
+	public List<Double> get_wingDragCoefficient3DCurveTemp() {
+		return _wingDragCoefficient3DCurveTemp;
+	}
+
+	public List<List<Double>> get_wingAirfoilsCoefficientCurve() {
+		return _wingAirfoilsCoefficientCurve;
+	}
+
+	public MethodEnum get_deltaDueToFlapMethod() {
+		return _deltaDueToFlapMethod;
+	}
+
+	public List<Double> getcLWingDragPolar() {
+		return cLWingDragPolar;
+	}
+
+	public List<Double> getClListDragWing() {
+		return clListDragWing;
+	}
+
+	public List<Double> getClListMomentWing() {
+		return clListMomentWing;
+	}
+
+	public List<List<Double>> get_wingCdAirfoilDistributionInputStations() {
+		return _wingCdAirfoilDistributionInputStations;
+	}
+
+	public List<List<Double>> get_wingCdAirfoilDistribution() {
+		return _wingCdAirfoilDistribution;
+	}
+
+	public List<Double> getClListDragTail() {
+		return clListDragTail;
+	}
+
+	public List<List<Double>> get_hTailCdAirfoilDistribution() {
+		return _hTailCdAirfoilDistribution;
+	}
+
+	public List<List<Double>> get_hTailCdAirfoilDistributionInputStations() {
+		return _hTailCdAirfoilDistributionInputStations;
+	}
+
+	public Double get_hTailCD0() {
+		return _hTailCD0;
+	}
+
+	public Double get_hTailOswaldFactor() {
+		return _hTailOswaldFactor;
+	}
+
+	public Double get_hTailCDInduced() {
+		return _hTailCDInduced;
+	}
+
+	public Double get_hTailCDWave() {
+		return _hTailCDWave;
+	}
+
+	public Double[] get_hTailPolar3DCurve() {
+		return _hTailPolar3DCurve;
+	}
+
+	public List<Double> get_hTailParasiteDragCoefficientDistribution() {
+		return _hTailParasiteDragCoefficientDistribution;
+	}
+
+	public List<Double> get_hTailInducedDragCoefficientDistribution() {
+		return _hTailInducedDragCoefficientDistribution;
+	}
+
+	public List<Double> get_hTailDragCoefficientDistribution() {
+		return _hTailDragCoefficientDistribution;
+	}
+
+	public List<Amount<Force>> get_hTailDragDistribution() {
+		return _hTailDragDistribution;
+	}
+
+	public List<Double> get_hTailDragCoefficient3DCurve() {
+		return _hTailDragCoefficient3DCurve;
+	}
+
+	public Double[] get_hTailliftCoefficient3DCurveCONDITION() {
+		return _hTailliftCoefficient3DCurveCONDITION;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_totalDragPolar() {
+		return _totalDragPolar;
+	}
+
+	public Double get_wingFinalMomentumPole() {
+		return _wingFinalMomentumPole;
+	}
+
+	public Double get_hTailFinalMomentumPole() {
+		return _hTailFinalMomentumPole;
+	}
+
+	public Map<MethodEnum, Amount<Length>> get_wingXACLRF() {
+		return _wingXACLRF;
+	}
+
+	public Map<MethodEnum, Amount<Length>> get_wingXACMAC() {
+		return _wingXACMAC;
+	}
+
+	public Map<MethodEnum, Double> get_wingXACMACpercent() {
+		return _wingXACMACpercent;
+	}
+
+	public Map<MethodEnum, Amount<Length>> get_wingXACBRF() {
+		return _wingXACBRF;
+	}
+
+	public Amount<Length> get_wingMAC() {
+		return _wingMAC;
+	}
+
+	public Amount<Length> get_wingMeanAerodynamicChordLeadingEdgeX() {
+		return _wingMeanAerodynamicChordLeadingEdgeX;
+	}
+
+	public Map<MethodEnum, List<Double>> get_wingMomentCoefficientAC() {
+		return _wingMomentCoefficientAC;
+	}
+
+	public List<List<Double>> get_wingMomentCoefficients() {
+		return _wingMomentCoefficients;
+	}
+
+	public List<Double> get_wingMomentCoefficientFinal() {
+		return _wingMomentCoefficientFinal;
+	}
+
+	public List<Double> get_wingMomentCoefficientConstant() {
+		return _wingMomentCoefficientConstant;
+	}
+
+	public List<Double> get_wingMomentCoefficientFinalACVariable() {
+		return _wingMomentCoefficientFinalACVariable;
+	}
+
+	public List<Double> get_hTailMomentCoefficientFinal() {
+		return _hTailMomentCoefficientFinal;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_hTailMomentCoefficientFinalElevator() {
+		return _hTailMomentCoefficientFinalElevator;
+	}
+
+	public Amount<Length> get_wingZACMAC() {
+		return _wingZACMAC;
+	}
+
+	public Amount<Length> get_wingYACMAC() {
+		return _wingYACMAC;
+	}
+
+	public Map<MethodEnum, Amount<Length>> get_hTailXACLRF() {
+		return _hTailXACLRF;
+	}
+
+	public Map<MethodEnum, Amount<Length>> get_hTailXACBRF() {
+		return _hTailXACBRF;
+	}
+
+	public Map<MethodEnum, Amount<Length>> get_hTailXACMAC() {
+		return _hTailXACMAC;
+	}
+
+	public Map<MethodEnum, Double> get_hTailXACMACpercent() {
+		return _hTailXACMACpercent;
+	}
+
+	public Amount<Length> get_hTailMAC() {
+		return _hTailMAC;
+	}
+
+	public Amount<Length> get_hTailMeanAerodynamicChordLeadingEdgeX() {
+		return _hTailMeanAerodynamicChordLeadingEdgeX;
+	}
+
+	public Map<MethodEnum, List<Double>> get_hTailMomentCoefficientAC() {
+		return _hTailMomentCoefficientAC;
+	}
+
+	public List<List<Double>> get_hTailMomentCoefficients() {
+		return _hTailMomentCoefficients;
+	}
+
+	public MethodEnum get_fuselageMomentMethod() {
+		return _fuselageMomentMethod;
+	}
+
+	public Map<MethodEnum, Double> get_fuselageCM0() {
+		return _fuselageCM0;
+	}
+
+	public Map<MethodEnum, Double> get_fuselageCMAlpha() {
+		return _fuselageCMAlpha;
+	}
+
+	public List<Double> get_fuselageMomentCoefficient() {
+		return _fuselageMomentCoefficient;
+	}
+
+	public List<Double> get_fuselageMomentCoefficientdueToDrag() {
+		return _fuselageMomentCoefficientdueToDrag;
+	}
+
+	public Map<MethodEnum, Amount<Length>> get_wingBodyXACBRF() {
+		return _wingBodyXACBRF;
+	}
+
+	public Double get_deltaXACdueToFuselage() {
+		return _deltaXACdueToFuselage;
+	}
+
+	public List<Double> get_landingGearMomentDueToDrag() {
+		return _landingGearMomentDueToDrag;
+	}
+
+	public List<Double> get_wingNormalCoefficient() {
+		return _wingNormalCoefficient;
+	}
+
+	public List<Double> get_hTailNormalCoefficient() {
+		return _hTailNormalCoefficient;
+	}
+
+	public List<Double> get_hTailNormalCoefficientDownwashConstant() {
+		return _hTailNormalCoefficientDownwashConstant;
+	}
+
+	public List<Double> get_wingHorizontalCoefficient() {
+		return _wingHorizontalCoefficient;
+	}
+
+	public List<Double> get_hTailHorizontalCoefficient() {
+		return _hTailHorizontalCoefficient;
+	}
+
+	public List<Double> get_hTailHorizontalCoefficientDownwashConstant() {
+		return _hTailHorizontalCoefficientDownwashConstant;
+	}
+
+	public List<Double> get_wingMomentCoefficientNOPendular() {
+		return _wingMomentCoefficientNOPendular;
+	}
+
+	public List<Double> get_wingMomentCoefficientPendular() {
+		return _wingMomentCoefficientPendular;
+	}
+
+	public List<Double> get_hTailMomentCoefficientPendular() {
+		return _hTailMomentCoefficientPendular;
+	}
+
+	public List<Double> get_totalMomentCoefficientPendular() {
+		return _totalMomentCoefficientPendular;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_hTailNormalCoefficientDeltaE() {
+		return _hTailNormalCoefficientDeltaE;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_hTailHorizontalCoefficientDeltaE() {
+		return _hTailHorizontalCoefficientDeltaE;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_hTailMomentCoefficientPendularDeltaE() {
+		return _hTailMomentCoefficientPendularDeltaE;
+	}
+
+	public Map<Amount<Angle>, List<Double>> get_totalMomentCoefficientPendularDeltaE() {
+		return _totalMomentCoefficientPendularDeltaE;
+	}
+
+	public List<Double> get_hTailEquilibriumLiftCoefficient() {
+		return _hTailEquilibriumLiftCoefficient;
+	}
+
+	public List<Double> get_totalEquilibriumLiftCoefficient() {
+		return _totalEquilibriumLiftCoefficient;
+	}
+
+	public List<Double> get_hTailEquilibriumLiftCoefficientConstant() {
+		return _hTailEquilibriumLiftCoefficientConstant;
+	}
+
+	public List<Double> get_totalEquilibriumLiftCoefficientConstant() {
+		return _totalEquilibriumLiftCoefficientConstant;
+	}
+
+	public List<Double> get_totalTrimDrag() {
+		return _totalTrimDrag;
+	}
+
+	public List<Amount<Angle>> get_deltaEEquilibrium() {
+		return _deltaEEquilibrium;
+	}
+
+	public Map<Amount<Angle>, Double[]> get_clMapForDeltaeElevator() {
+		return _clMapForDeltaeElevator;
+	}
+
+	public int getNumberOfIterationforDeltaE() {
+		return numberOfIterationforDeltaE;
+	}
+
+	public List<List<Double>> get_clWingDistribution() {
+		return _clWingDistribution;
+	}
+
+	public Double[] get_cl3DCurveWingFlapped() {
+		return _cl3DCurveWingFlapped;
+	}
+
+	public List<List<Double>> get_clHtailDistribution() {
+		return _clHtailDistribution;
+	}
+
+	public List<List<Double>> get_centerOfPressureWingDistribution() {
+		return _centerOfPressureWingDistribution;
+	}
+
+	public List<List<Double>> get_centerOfPressurehTailDistribution() {
+		return _centerOfPressurehTailDistribution;
+	}
+
+	public List<List<Double>> get_cMWingDistribution() {
+		return _cMWingDistribution;
+	}
+
+	public List<List<Double>> get_cMHTailDistribution() {
+		return _cMHTailDistribution;
+	}
+
+	public List<List<Amount<Angle>>> get_alphaIWingDistribution() {
+		return _alphaIWingDistribution;
+	}
+
+	public List<List<Amount<Angle>>> get_alphaIHtailDistribution() {
+		return _alphaIHtailDistribution;
+	}
+
+	public List<double[]> get_clNasaBlackwellDistributionModified() {
+		return _clNasaBlackwellDistributionModified;
+	}
+
+	public Double get_clZeroFlapped() {
+		return _clZeroFlapped;
+	}
+
+	public Double get_clAlphaDegFlapped() {
+		return _clAlphaDegFlapped;
+	}
+
+	public Double get_clAlphaRadFlapped() {
+		return _clAlphaRadFlapped;
+	}
+
+	public Amount<?> get_wingclAlphaFlapped() {
+		return _wingclAlphaFlapped;
+	}
+
+	public Double get_clMaxFlapped() {
+		return _clMaxFlapped;
+	}
+
+	public Amount<Angle> get_alphaStarFlapped() {
+		return _alphaStarFlapped;
+	}
+
+	public Amount<Angle> get_alphaStallFlapped() {
+		return _alphaStallFlapped;
+	}
+
+	public Amount<Angle> get_alphaStallLinearFlapped() {
+		return _alphaStallLinearFlapped;
+	}
+
+	public Amount<Angle> get_alphaZeroLiftFlapped() {
+		return _alphaZeroLiftFlapped;
+	}
+
+	public List<Double> get_clMaxDistributionFlapped() {
+		return _clMaxDistributionFlapped;
+	}
+
+	public List<List<Double>> getClDistributions() {
+		return clDistributions;
+	}
+
+	public Double[] getCl3D() {
+		return cl3D;
+	}
+
+	public MethodEnum get_horizontalTailCL() {
+		return _horizontalTailCL;
+	}
+
+	public Amount<Length> get_wingHorizontalDistanceACtoCG() {
+		return _wingHorizontalDistanceACtoCG;
+	}
+
+	public Amount<Length> get_wingVerticalDistranceACtoCG() {
+		return _wingVerticalDistranceACtoCG;
+	}
+
+	public void set_aircraftName(String _aircraftName) {
+		this._aircraftName = _aircraftName;
+	}
+
+	public void set_xCGAircraft(Amount<Length> _xCGAircraft) {
+		this._xCGAircraft = _xCGAircraft;
+	}
+
+	public void set_yCGAircraft(Amount<Length> _yCGAircraft) {
+		this._yCGAircraft = _yCGAircraft;
+	}
+
+	public void set_zCGAircraft(Amount<Length> _zCGAircraft) {
+		this._zCGAircraft = _zCGAircraft;
+	}
+
+	public void set_altitude(Amount<Length> _altitude) {
+		this._altitude = _altitude;
+	}
+
+	public void set_machCurrent(Double _machCurrent) {
+		this._machCurrent = _machCurrent;
+	}
+
+	public void set_reynoldsCurrent(Double _reynoldsCurrent) {
+		this._reynoldsCurrent = _reynoldsCurrent;
+	}
+
+	public void set_alphaBodyInitial(Amount<Angle> _alphaBodyInitial) {
+		this._alphaBodyInitial = _alphaBodyInitial;
+	}
+
+	public void set_alphaBodyFinal(Amount<Angle> _alphaBodyFinal) {
+		this._alphaBodyFinal = _alphaBodyFinal;
+	}
+
+	public void set_numberOfAlphasBody(int _numberOfAlphasBody) {
+		this._numberOfAlphasBody = _numberOfAlphasBody;
+	}
+
+	public void set_alphasBody(List<Amount<Angle>> _alphasBody) {
+		this._alphasBody = _alphasBody;
+	}
+
+	public void set_theCondition(ConditionEnum _theCondition) {
+		this._theCondition = _theCondition;
+	}
+
+	public void set_downwashConstant(boolean _downwashConstant) {
+		this._downwashConstant = _downwashConstant;
+	}
+
+	public void set_wingMomentumPole(List<Double> _wingMomentumPole) {
+		this._wingMomentumPole = _wingMomentumPole;
+	}
+
+	public void set_hTailMomentumPole(List<Double> _hTailMomentumPole) {
+		this._hTailMomentumPole = _hTailMomentumPole;
+	}
+
+	public void set_alphaWingForDistribution(List<Amount<Angle>> _alphaWingForDistribution) {
+		this._alphaWingForDistribution = _alphaWingForDistribution;
+	}
+
+	public void set_alphaHorizontalTailForDistribution(List<Amount<Angle>> _alphaHorizontalTailForDistribution) {
+		this._alphaHorizontalTailForDistribution = _alphaHorizontalTailForDistribution;
+	}
+
+	public void set_dynamicPressureRatio(Double _dynamicPressureRatio) {
+		this._dynamicPressureRatio = _dynamicPressureRatio;
+	}
+
+	public void set_xApexWing(Amount<Length> _xApexWing) {
+		this._xApexWing = _xApexWing;
+	}
+
+	public void set_yApexWing(Amount<Length> _yApexWing) {
+		this._yApexWing = _yApexWing;
+	}
+
+	public void set_zApexWing(Amount<Length> _zApexWing) {
+		this._zApexWing = _zApexWing;
+	}
+
+	public void set_zACRootWing(Amount<Length> _zACRootWing) {
+		this._zACRootWing = _zACRootWing;
+	}
+
+	public void set_wingSurface(Amount<Area> _wingSurface) {
+		this._wingSurface = _wingSurface;
+	}
+
+	public void set_wingAspectRatio(Double _wingAspectRatio) {
+		this._wingAspectRatio = _wingAspectRatio;
+	}
+
+	public void set_wingSpan(Amount<Length> _wingSpan) {
+		this._wingSpan = _wingSpan;
+	}
+
+	public void set_wingSemiSpan(Amount<Length> _wingSemiSpan) {
+		this._wingSemiSpan = _wingSemiSpan;
+	}
+
+	public void set_wingNumberOfPointSemiSpanWise(int _wingNumberOfPointSemiSpanWise) {
+		this._wingNumberOfPointSemiSpanWise = _wingNumberOfPointSemiSpanWise;
+	}
+
+	public void set_wingAdimentionalKinkStation(Double _wingAdimentionalKinkStation) {
+		this._wingAdimentionalKinkStation = _wingAdimentionalKinkStation;
+	}
+
+	public void set_wingNumberOfGivenSections(int _wingNumberOfGivenSections) {
+		this._wingNumberOfGivenSections = _wingNumberOfGivenSections;
+	}
+
+	public void set_wingNumberOfGivenSectionsCLEAN(int _wingNumberOfGivenSectionsCLEAN) {
+		this._wingNumberOfGivenSectionsCLEAN = _wingNumberOfGivenSectionsCLEAN;
+	}
+
+	public void set_wingAngleOfIncidence(Amount<Angle> _wingAngleOfIncidence) {
+		this._wingAngleOfIncidence = _wingAngleOfIncidence;
+	}
+
+	public void set_wingTaperRatio(Double _wingTaperRatio) {
+		this._wingTaperRatio = _wingTaperRatio;
+	}
+
+	public void set_wingSweepQuarterChord(Amount<Angle> _wingSweepQuarterChord) {
+		this._wingSweepQuarterChord = _wingSweepQuarterChord;
+	}
+
+	public void set_wingSweepLE(Amount<Angle> _wingSweepLE) {
+		this._wingSweepLE = _wingSweepLE;
+	}
+
+	public void set_wingVortexSemiSpanToSemiSpanRatio(Double _wingVortexSemiSpanToSemiSpanRatio) {
+		this._wingVortexSemiSpanToSemiSpanRatio = _wingVortexSemiSpanToSemiSpanRatio;
+	}
+
+	public void setcLAlphaMachZero(double cLAlphaMachZero) {
+		this.cLAlphaMachZero = cLAlphaMachZero;
+	}
+
+	public void set_wingMeanAirfoilFamily(AirfoilFamilyEnum _wingMeanAirfoilFamily) {
+		this._wingMeanAirfoilFamily = _wingMeanAirfoilFamily;
+	}
+
+	public void set_wingMaxThicknessMeanAirfoil(Double _wingMaxThicknessMeanAirfoil) {
+		this._wingMaxThicknessMeanAirfoil = _wingMaxThicknessMeanAirfoil;
+	}
+
+	public void set_wingairfoilLiftCoefficientCurve(MethodEnum _wingairfoilLiftCoefficientCurve) {
+		this._wingairfoilLiftCoefficientCurve = _wingairfoilLiftCoefficientCurve;
+	}
+
+	public void set_wingInducedAngleOfAttack(List<List<Amount<Angle>>> _wingInducedAngleOfAttack) {
+		this._wingInducedAngleOfAttack = _wingInducedAngleOfAttack;
+	}
+
+	public void set_wingCLAirfoilsDistribution(List<List<Double>> _wingCLAirfoilsDistribution) {
+		this._wingCLAirfoilsDistribution = _wingCLAirfoilsDistribution;
+	}
+
+	public void set_wingCLAirfoilsDistributionFinal(List<List<Double>> _wingCLAirfoilsDistributionFinal) {
+		this._wingCLAirfoilsDistributionFinal = _wingCLAirfoilsDistributionFinal;
+	}
+
+	public void set_wingairfoilMomentCoefficientCurve(MethodEnum _wingairfoilMomentCoefficientCurve) {
+		this._wingairfoilMomentCoefficientCurve = _wingairfoilMomentCoefficientCurve;
+	}
+
+	public void set_wingCLMomentAirfoilInput(List<List<Double>> _wingCLMomentAirfoilInput) {
+		this._wingCLMomentAirfoilInput = _wingCLMomentAirfoilInput;
+	}
+
+	public void set_wingCMMomentAirfoilInput(List<List<Double>> _wingCMMomentAirfoilInput) {
+		this._wingCMMomentAirfoilInput = _wingCMMomentAirfoilInput;
+	}
+
+	public void set_wingCLMomentAirfoilOutput(List<Double> _wingCLMomentAirfoilOutput) {
+		this._wingCLMomentAirfoilOutput = _wingCLMomentAirfoilOutput;
+	}
+
+	public void set_wingCMMomentAirfoilOutput(List<List<Double>> _wingCMMomentAirfoilOutput) {
+		this._wingCMMomentAirfoilOutput = _wingCMMomentAirfoilOutput;
+	}
+
+	public void set_wingYAdimensionalBreakPoints(List<Double> _wingYAdimensionalBreakPoints) {
+		this._wingYAdimensionalBreakPoints = _wingYAdimensionalBreakPoints;
+	}
+
+	public void set_wingYBreakPoints(List<Amount<Length>> _wingYBreakPoints) {
+		this._wingYBreakPoints = _wingYBreakPoints;
+	}
+
+	public void set_wingYAdimensionalDistribution(List<Double> _wingYAdimensionalDistribution) {
+		this._wingYAdimensionalDistribution = _wingYAdimensionalDistribution;
+	}
+
+	public void set_wingYDistribution(List<Amount<Length>> _wingYDistribution) {
+		this._wingYDistribution = _wingYDistribution;
+	}
+
+	public void set_wingChordsBreakPoints(List<Amount<Length>> _wingChordsBreakPoints) {
+		this._wingChordsBreakPoints = _wingChordsBreakPoints;
+	}
+
+	public void set_wingChordsDistribution(List<Amount<Length>> _wingChordsDistribution) {
+		this._wingChordsDistribution = _wingChordsDistribution;
+	}
+
+	public void set_wingXleBreakPoints(List<Amount<Length>> _wingXleBreakPoints) {
+		this._wingXleBreakPoints = _wingXleBreakPoints;
+	}
+
+	public void set_wingXleDistribution(List<Amount<Length>> _wingXleDistribution) {
+		this._wingXleDistribution = _wingXleDistribution;
+	}
+
+	public void set_wingTwistBreakPoints(List<Amount<Angle>> _wingTwistBreakPoints) {
+		this._wingTwistBreakPoints = _wingTwistBreakPoints;
+	}
+
+	public void set_wingTwistDistribution(List<Amount<Angle>> _wingTwistDistribution) {
+		this._wingTwistDistribution = _wingTwistDistribution;
+	}
+
+	public void set_wingDihedralBreakPoints(List<Amount<Angle>> _wingDihedralBreakPoints) {
+		this._wingDihedralBreakPoints = _wingDihedralBreakPoints;
+	}
+
+	public void set_wingDihedralDistribution(List<Amount<Angle>> _wingDihedralDistribution) {
+		this._wingDihedralDistribution = _wingDihedralDistribution;
+	}
+
+	public void set_wingAlphaZeroLiftBreakPoints(List<Amount<Angle>> _wingAlphaZeroLiftBreakPoints) {
+		this._wingAlphaZeroLiftBreakPoints = _wingAlphaZeroLiftBreakPoints;
+	}
+
+	public void set_wingAlphaZeroLiftDistribution(List<Amount<Angle>> _wingAlphaZeroLiftDistribution) {
+		this._wingAlphaZeroLiftDistribution = _wingAlphaZeroLiftDistribution;
+	}
+
+	public void set_wingAlphaStarBreakPoints(List<Amount<Angle>> _wingAlphaStarBreakPoints) {
+		this._wingAlphaStarBreakPoints = _wingAlphaStarBreakPoints;
+	}
+
+	public void set_wingAlphaStarDistribution(List<Amount<Angle>> _wingAlphaStarDistribution) {
+		this._wingAlphaStarDistribution = _wingAlphaStarDistribution;
+	}
+
+	public void set_wingClMaxBreakPoints(List<Double> _wingClMaxBreakPoints) {
+		this._wingClMaxBreakPoints = _wingClMaxBreakPoints;
+	}
+
+	public void set_wingClMaxDistribution(List<Double> _wingClMaxDistribution) {
+		this._wingClMaxDistribution = _wingClMaxDistribution;
+	}
+
+	public void set_wingCl0BreakPoints(List<Double> _wingCl0BreakPoints) {
+		this._wingCl0BreakPoints = _wingCl0BreakPoints;
+	}
+
+	public void set_wingCl0Distribution(List<Double> _wingCl0Distribution) {
+		this._wingCl0Distribution = _wingCl0Distribution;
+	}
+
+	public void set_wingClAlphaBreakPointsDeg(List<Double> _wingClAlphaBreakPointsDeg) {
+		this._wingClAlphaBreakPointsDeg = _wingClAlphaBreakPointsDeg;
+	}
+
+	public void set_wingXACBreakPoints(List<Double> _wingXACBreakPoints) {
+		this._wingXACBreakPoints = _wingXACBreakPoints;
+	}
+
+	public void set_wingXACDistribution(List<Double> _wingXACDistribution) {
+		this._wingXACDistribution = _wingXACDistribution;
+	}
+
+	public void set_wingCmACBreakPoints(List<Double> _wingCmACBreakPoints) {
+		this._wingCmACBreakPoints = _wingCmACBreakPoints;
+	}
+
+	public void set_wingCmC4Distribution(List<Double> _wingCmC4Distribution) {
+		this._wingCmC4Distribution = _wingCmC4Distribution;
+	}
+
+	public void set_wingYAdimensionalBreakPointsCLEAN(List<Double> _wingYAdimensionalBreakPointsCLEAN) {
+		this._wingYAdimensionalBreakPointsCLEAN = _wingYAdimensionalBreakPointsCLEAN;
+	}
+
+	public void set_wingYBreakPointsCLEAN(List<Amount<Length>> _wingYBreakPointsCLEAN) {
+		this._wingYBreakPointsCLEAN = _wingYBreakPointsCLEAN;
+	}
+
+	public void set_wingYAdimensionalDistributionCLEAN(List<Double> _wingYAdimensionalDistributionCLEAN) {
+		this._wingYAdimensionalDistributionCLEAN = _wingYAdimensionalDistributionCLEAN;
+	}
+
+	public void set_wingYDistributionCLEAN(List<Amount<Length>> _wingYDistributionCLEAN) {
+		this._wingYDistributionCLEAN = _wingYDistributionCLEAN;
+	}
+
+	public void set_wingChordsBreakPointsCLEAN(List<Amount<Length>> _wingChordsBreakPointsCLEAN) {
+		this._wingChordsBreakPointsCLEAN = _wingChordsBreakPointsCLEAN;
+	}
+
+	public void set_wingChordsDistributionCLEAN(List<Amount<Length>> _wingChordsDistributionCLEAN) {
+		this._wingChordsDistributionCLEAN = _wingChordsDistributionCLEAN;
+	}
+
+	public void set_wingXleBreakPointsCLEAN(List<Amount<Length>> _wingXleBreakPointsCLEAN) {
+		this._wingXleBreakPointsCLEAN = _wingXleBreakPointsCLEAN;
+	}
+
+	public void set_wingXleDistributionCLEAN(List<Amount<Length>> _wingXleDistributionCLEAN) {
+		this._wingXleDistributionCLEAN = _wingXleDistributionCLEAN;
+	}
+
+	public void set_wingTwistBreakPointsCLEAN(List<Amount<Angle>> _wingTwistBreakPointsCLEAN) {
+		this._wingTwistBreakPointsCLEAN = _wingTwistBreakPointsCLEAN;
+	}
+
+	public void set_wingTwistDistributionCLEAN(List<Amount<Angle>> _wingTwistDistributionCLEAN) {
+		this._wingTwistDistributionCLEAN = _wingTwistDistributionCLEAN;
+	}
+
+	public void set_wingDihedralBreakPointsCLEAN(List<Amount<Angle>> _wingDihedralBreakPointsCLEAN) {
+		this._wingDihedralBreakPointsCLEAN = _wingDihedralBreakPointsCLEAN;
+	}
+
+	public void set_wingDihedralDistributionCLEAN(List<Amount<Angle>> _wingDihedralDistributionCLEAN) {
+		this._wingDihedralDistributionCLEAN = _wingDihedralDistributionCLEAN;
+	}
+
+	public void set_wingAlphaZeroLiftBreakPointsCLEAN(List<Amount<Angle>> _wingAlphaZeroLiftBreakPointsCLEAN) {
+		this._wingAlphaZeroLiftBreakPointsCLEAN = _wingAlphaZeroLiftBreakPointsCLEAN;
+	}
+
+	public void set_wingAlphaZeroLiftDistributionCLEAN(List<Amount<Angle>> _wingAlphaZeroLiftDistributionCLEAN) {
+		this._wingAlphaZeroLiftDistributionCLEAN = _wingAlphaZeroLiftDistributionCLEAN;
+	}
+
+	public void set_wingAlphaStarBreakPointsCLEAN(List<Amount<Angle>> _wingAlphaStarBreakPointsCLEAN) {
+		this._wingAlphaStarBreakPointsCLEAN = _wingAlphaStarBreakPointsCLEAN;
+	}
+
+	public void set_wingAlphaStarDistributionCLEAN(List<Amount<Angle>> _wingAlphaStarDistributionCLEAN) {
+		this._wingAlphaStarDistributionCLEAN = _wingAlphaStarDistributionCLEAN;
+	}
+
+	public void set_wingClMaxBreakPointsCLEAN(List<Double> _wingClMaxBreakPointsCLEAN) {
+		this._wingClMaxBreakPointsCLEAN = _wingClMaxBreakPointsCLEAN;
+	}
+
+	public void set_wingClMaxDistributionCLEAN(List<Double> _wingClMaxDistributionCLEAN) {
+		this._wingClMaxDistributionCLEAN = _wingClMaxDistributionCLEAN;
+	}
+
+	public void set_wingCl0BreakPointsCLEAN(List<Double> _wingCl0BreakPointsCLEAN) {
+		this._wingCl0BreakPointsCLEAN = _wingCl0BreakPointsCLEAN;
+	}
+
+	public void set_wingCl0DistributionCLEAN(List<Double> _wingCl0DistributionCLEAN) {
+		this._wingCl0DistributionCLEAN = _wingCl0DistributionCLEAN;
+	}
+
+	public void set_wingClAlphaBreakPointsDegCLEAN(List<Double> _wingClAlphaBreakPointsDegCLEAN) {
+		this._wingClAlphaBreakPointsDegCLEAN = _wingClAlphaBreakPointsDegCLEAN;
+	}
+
+	public void set_wingClAlphaDistributionDegCLEAN(List<Double> _wingClAlphaDistributionDegCLEAN) {
+		this._wingClAlphaDistributionDegCLEAN = _wingClAlphaDistributionDegCLEAN;
+	}
+
+	public void set_wingMaxThicknessBreakPointsCLEAN(List<Double> _wingMaxThicknessBreakPointsCLEAN) {
+		this._wingMaxThicknessBreakPointsCLEAN = _wingMaxThicknessBreakPointsCLEAN;
+	}
+
+	public void set_wingMaxThicknessDistributionCLEAN(List<Double> _wingMaxThicknessDistributionCLEAN) {
+		this._wingMaxThicknessDistributionCLEAN = _wingMaxThicknessDistributionCLEAN;
+	}
+
+	public void set_wingLERadiusBreakPointsCLEAN(List<Amount<Length>> _wingLERadiusBreakPointsCLEAN) {
+		this._wingLERadiusBreakPointsCLEAN = _wingLERadiusBreakPointsCLEAN;
+	}
+
+	public void set_wingLERadiusDistributionCLEAN(List<Amount<Length>> _wingLERadiusDistributionCLEAN) {
+		this._wingLERadiusDistributionCLEAN = _wingLERadiusDistributionCLEAN;
+	}
+
+	public void set_wingClAlphaDistributionDeg(List<Double> _wingClAlphaDistributionDeg) {
+		this._wingClAlphaDistributionDeg = _wingClAlphaDistributionDeg;
+	}
+
+	public void set_wingMaxThicknessBreakPoints(List<Double> _wingMaxThicknessBreakPoints) {
+		this._wingMaxThicknessBreakPoints = _wingMaxThicknessBreakPoints;
+	}
+
+	public void set_wingMaxThicknessDistribution(List<Double> _wingMaxThicknessDistribution) {
+		this._wingMaxThicknessDistribution = _wingMaxThicknessDistribution;
+	}
+
+	public void set_wingLERadiusBreakPoints(List<Amount<Length>> _wingLERadiusBreakPoints) {
+		this._wingLERadiusBreakPoints = _wingLERadiusBreakPoints;
+	}
+
+	public void set_wingLERadiusDistribution(List<Amount<Length>> _wingLERadiusDistribution) {
+		this._wingLERadiusDistribution = _wingLERadiusDistribution;
+	}
+
+	public void set_wingYLEBreakPoints(List<Amount<Length>> _wingYLEBreakPoints) {
+		this._wingYLEBreakPoints = _wingYLEBreakPoints;
+	}
+
+	public void set_wingYLEDistribution(List<Amount<Length>> _wingYLEDistribution) {
+		this._wingYLEDistribution = _wingYLEDistribution;
+	}
+
+	public void set_wingNumberOfFlaps(int _wingNumberOfFlaps) {
+		this._wingNumberOfFlaps = _wingNumberOfFlaps;
+	}
+
+	public void set_wingNumberOfSlats(int _wingNumberOfSlats) {
+		this._wingNumberOfSlats = _wingNumberOfSlats;
+	}
+
+	public void set_wingDeltaFlap(List<Amount<Angle>> _wingDeltaFlap) {
+		this._wingDeltaFlap = _wingDeltaFlap;
+	}
+
+	public void set_wingFlapType(List<FlapTypeEnum> _wingFlapType) {
+		this._wingFlapType = _wingFlapType;
+	}
+
+	public void set_wingEtaInFlap(List<Double> _wingEtaInFlap) {
+		this._wingEtaInFlap = _wingEtaInFlap;
+	}
+
+	public void set_wingEtaOutFlap(List<Double> _wingEtaOutFlap) {
+		this._wingEtaOutFlap = _wingEtaOutFlap;
+	}
+
+	public void set_wingFlapCfC(List<Double> _wingFlapCfC) {
+		this._wingFlapCfC = _wingFlapCfC;
+	}
+
+	public void set_wingDeltaSlat(List<Amount<Angle>> _wingDeltaSlat) {
+		this._wingDeltaSlat = _wingDeltaSlat;
+	}
+
+	public void set_wingEtaInSlat(List<Double> _wingEtaInSlat) {
+		this._wingEtaInSlat = _wingEtaInSlat;
+	}
+
+	public void set_wingEtaOutSlat(List<Double> _wingEtaOutSlat) {
+		this._wingEtaOutSlat = _wingEtaOutSlat;
+	}
+
+	public void set_wingSlatCsC(List<Double> _wingSlatCsC) {
+		this._wingSlatCsC = _wingSlatCsC;
+	}
+
+	public void set_wingCExtCSlat(List<Double> _wingCExtCSlat) {
+		this._wingCExtCSlat = _wingCExtCSlat;
+	}
+
+	public void set_wingLeRadiusCSLat(List<Double> _wingLeRadiusCSLat) {
+		this._wingLeRadiusCSLat = _wingLeRadiusCSLat;
+	}
+
+	public void set_supermappa(Map<Double, Map<Double, Double[]>> _supermappa) {
+		this._supermappa = _supermappa;
+	}
+
+	public void set_fuselageDiameter(Amount<Length> _fuselageDiameter) {
+		this._fuselageDiameter = _fuselageDiameter;
+	}
+
+	public void set_fuselageLength(Amount<Length> _fuselageLength) {
+		this._fuselageLength = _fuselageLength;
+	}
+
+	public void set_fuselageNoseFinessRatio(Double _fuselageNoseFinessRatio) {
+		this._fuselageNoseFinessRatio = _fuselageNoseFinessRatio;
+	}
+
+	public void set_fuselageFinessRatio(Double _fuselageFinessRatio) {
+		this._fuselageFinessRatio = _fuselageFinessRatio;
+	}
+
+	public void set_fuselageTailFinessRatio(Double _fuselageTailFinessRatio) {
+		this._fuselageTailFinessRatio = _fuselageTailFinessRatio;
+	}
+
+	public void set_fuselageWindshieldAngle(Amount<Angle> _fuselageWindshieldAngle) {
+		this._fuselageWindshieldAngle = _fuselageWindshieldAngle;
+	}
+
+	public void set_fuselageUpSweepAngle(Amount<Angle> _fuselageUpSweepAngle) {
+		this._fuselageUpSweepAngle = _fuselageUpSweepAngle;
+	}
+
+	public void set_fuselageXPercentPositionPole(Double _fuselageXPercentPositionPole) {
+		this._fuselageXPercentPositionPole = _fuselageXPercentPositionPole;
+	}
+
+	public void set_fuselageFrontSurface(Amount<Area> _fuselageFrontSurface) {
+		this._fuselageFrontSurface = _fuselageFrontSurface;
+	}
+
+	public void set_cM0fuselage(double _cM0fuselage) {
+		this._cM0fuselage = _cM0fuselage;
+	}
+
+	public void set_cMalphafuselage(double _cMalphafuselage) {
+		this._cMalphafuselage = _cMalphafuselage;
+	}
+
+	public void setCdDistributionFuselageFinal(List<Double> cdDistributionFuselageFinal) {
+		this.cdDistributionFuselageFinal = cdDistributionFuselageFinal;
+	}
+
+	public void set_xApexHTail(Amount<Length> _xApexHTail) {
+		this._xApexHTail = _xApexHTail;
+	}
+
+	public void set_yApexHTail(Amount<Length> _yApexHTail) {
+		this._yApexHTail = _yApexHTail;
+	}
+
+	public void set_zApexHTail(Amount<Length> _zApexHTail) {
+		this._zApexHTail = _zApexHTail;
+	}
+
+	public void set_verticalTailSpan(Amount<Length> _verticalTailSpan) {
+		this._verticalTailSpan = _verticalTailSpan;
+	}
+
+	public void set_hTailSurface(Amount<Area> _hTailSurface) {
+		this._hTailSurface = _hTailSurface;
+	}
+
+	public void set_hTailAspectRatio(Double _hTailAspectRatio) {
+		this._hTailAspectRatio = _hTailAspectRatio;
+	}
+
+	public void set_hTailTaperRatio(Double _hTailTaperRatio) {
+		this._hTailTaperRatio = _hTailTaperRatio;
+	}
+
+	public void set_hTailSpan(Amount<Length> _hTailSpan) {
+		this._hTailSpan = _hTailSpan;
+	}
+
+	public void set_hTailSemiSpan(Amount<Length> _hTailSemiSpan) {
+		this._hTailSemiSpan = _hTailSemiSpan;
+	}
+
+	public void set_hTailNumberOfPointSemiSpanWise(int _hTailNumberOfPointSemiSpanWise) {
+		this._hTailNumberOfPointSemiSpanWise = _hTailNumberOfPointSemiSpanWise;
+	}
+
+	public void set_hTailadimentionalKinkStation(Double _hTailadimentionalKinkStation) {
+		this._hTailadimentionalKinkStation = _hTailadimentionalKinkStation;
+	}
+
+	public void set_hTailnumberOfGivenSections(int _hTailnumberOfGivenSections) {
+		this._hTailnumberOfGivenSections = _hTailnumberOfGivenSections;
+	}
+
+	public void set_hTailSweepLE(Amount<Angle> _hTailSweepLE) {
+		this._hTailSweepLE = _hTailSweepLE;
+	}
+
+	public void set_hTailSweepQuarterChord(Amount<Angle> _hTailSweepQuarterChord) {
+		this._hTailSweepQuarterChord = _hTailSweepQuarterChord;
+	}
+
+	public void set_hTailMeanAirfoilFamily(AirfoilFamilyEnum _hTailMeanAirfoilFamily) {
+		this._hTailMeanAirfoilFamily = _hTailMeanAirfoilFamily;
+	}
+
+	public void set_hTailMaxThicknessMeanAirfoil(Double _hTailMaxThicknessMeanAirfoil) {
+		this._hTailMaxThicknessMeanAirfoil = _hTailMaxThicknessMeanAirfoil;
+	}
+
+	public void set_hTailVortexSemiSpanToSemiSpanRatio(Double _hTailVortexSemiSpanToSemiSpanRatio) {
+		this._hTailVortexSemiSpanToSemiSpanRatio = _hTailVortexSemiSpanToSemiSpanRatio;
+	}
+
+	public void set_hTailairfoilLiftCoefficientCurve(MethodEnum _hTailairfoilLiftCoefficientCurve) {
+		this._hTailairfoilLiftCoefficientCurve = _hTailairfoilLiftCoefficientCurve;
+	}
+
+	public void set_hTailCLAirfoilsDistribution(List<List<Double>> _hTailCLAirfoilsDistribution) {
+		this._hTailCLAirfoilsDistribution = _hTailCLAirfoilsDistribution;
+	}
+
+	public void set_hTailInducedAngleOfAttack(List<List<Amount<Angle>>> _hTailInducedAngleOfAttack) {
+		this._hTailInducedAngleOfAttack = _hTailInducedAngleOfAttack;
+	}
+
+	public void set_hTailCLAirfoilsDistributionFinal(List<List<Double>> _hTailCLAirfoilsDistributionFinal) {
+		this._hTailCLAirfoilsDistributionFinal = _hTailCLAirfoilsDistributionFinal;
+	}
+
+	public void set_hTailHorizontalDistanceACtoCG(Amount<Length> _hTailHorizontalDistanceACtoCG) {
+		this._hTailHorizontalDistanceACtoCG = _hTailHorizontalDistanceACtoCG;
+	}
+
+	public void set_hTailVerticalDistranceACtoCG(Amount<Length> _hTailVerticalDistranceACtoCG) {
+		this._hTailVerticalDistranceACtoCG = _hTailVerticalDistranceACtoCG;
+	}
+
+	public void set_hTailYAdimensionalBreakPoints(List<Double> _hTailYAdimensionalBreakPoints) {
+		this._hTailYAdimensionalBreakPoints = _hTailYAdimensionalBreakPoints;
+	}
+
+	public void set_hTailYBreakPoints(List<Amount<Length>> _hTailYBreakPoints) {
+		this._hTailYBreakPoints = _hTailYBreakPoints;
+	}
+
+	public void set_hTailYAdimensionalDistribution(List<Double> _hTailYAdimensionalDistribution) {
+		this._hTailYAdimensionalDistribution = _hTailYAdimensionalDistribution;
+	}
+
+	public void set_hTailAngleOfIncidence(Amount<Angle> _hTailAngleOfIncidence) {
+		this._hTailAngleOfIncidence = _hTailAngleOfIncidence;
+	}
+
+	public void set_hTailYDistribution(List<Amount<Length>> _hTailYDistribution) {
+		this._hTailYDistribution = _hTailYDistribution;
+	}
+
+	public void set_hTailChordsBreakPoints(List<Amount<Length>> _hTailChordsBreakPoints) {
+		this._hTailChordsBreakPoints = _hTailChordsBreakPoints;
+	}
+
+	public void set_hTailChordsDistribution(List<Amount<Length>> _hTailChordsDistribution) {
+		this._hTailChordsDistribution = _hTailChordsDistribution;
+	}
+
+	public void set_hTailXleBreakPoints(List<Amount<Length>> _hTailXleBreakPoints) {
+		this._hTailXleBreakPoints = _hTailXleBreakPoints;
+	}
+
+	public void set_hTailXleDistribution(List<Amount<Length>> _hTailXleDistribution) {
+		this._hTailXleDistribution = _hTailXleDistribution;
+	}
+
+	public void set_hTailTwistBreakPoints(List<Amount<Angle>> _hTailTwistBreakPoints) {
+		this._hTailTwistBreakPoints = _hTailTwistBreakPoints;
+	}
+
+	public void set_hTailTwistDistribution(List<Amount<Angle>> _hTailTwistDistribution) {
+		this._hTailTwistDistribution = _hTailTwistDistribution;
+	}
+
+	public void set_hTailDihedralBreakPoints(List<Amount<Angle>> _hTailDihedralBreakPoints) {
+		this._hTailDihedralBreakPoints = _hTailDihedralBreakPoints;
+	}
+
+	public void set_hTailDihedralDistribution(List<Amount<Angle>> _hTailDihedralDistribution) {
+		this._hTailDihedralDistribution = _hTailDihedralDistribution;
+	}
+
+	public void set_hTailAlphaZeroLiftBreakPoints(List<Amount<Angle>> _hTailAlphaZeroLiftBreakPoints) {
+		this._hTailAlphaZeroLiftBreakPoints = _hTailAlphaZeroLiftBreakPoints;
+	}
+
+	public void set_hTailAlphaZeroLiftDistribution(List<Amount<Angle>> _hTailAlphaZeroLiftDistribution) {
+		this._hTailAlphaZeroLiftDistribution = _hTailAlphaZeroLiftDistribution;
+	}
+
+	public void set_hTailAlphaStarBreakPoints(List<Amount<Angle>> _hTailAlphaStarBreakPoints) {
+		this._hTailAlphaStarBreakPoints = _hTailAlphaStarBreakPoints;
+	}
+
+	public void set_hTailAlphaStarDistribution(List<Amount<Angle>> _hTailAlphaStarDistribution) {
+		this._hTailAlphaStarDistribution = _hTailAlphaStarDistribution;
+	}
+
+	public void set_hTailClMaxBreakPoints(List<Double> _hTailClMaxBreakPoints) {
+		this._hTailClMaxBreakPoints = _hTailClMaxBreakPoints;
+	}
+
+	public void set_hTailClMaxDistribution(List<Double> _hTailClMaxDistribution) {
+		this._hTailClMaxDistribution = _hTailClMaxDistribution;
+	}
+
+	public void set_hTailMaxThicknessBreakPoints(List<Double> _hTailMaxThicknessBreakPoints) {
+		this._hTailMaxThicknessBreakPoints = _hTailMaxThicknessBreakPoints;
+	}
+
+	public void set_hTailMaxThicknessDistribution(List<Double> _hTailMaxThicknessDistribution) {
+		this._hTailMaxThicknessDistribution = _hTailMaxThicknessDistribution;
+	}
+
+	public void set_hTailClAlphaBreakPointsDeg(List<Double> _hTailClAlphaBreakPointsDeg) {
+		this._hTailClAlphaBreakPointsDeg = _hTailClAlphaBreakPointsDeg;
+	}
+
+	public void set_hTailCl0BreakPoints(List<Double> _hTailCl0BreakPoints) {
+		this._hTailCl0BreakPoints = _hTailCl0BreakPoints;
+	}
+
+	public void set_hTailCl0Distribution(List<Double> _hTailCl0Distribution) {
+		this._hTailCl0Distribution = _hTailCl0Distribution;
+	}
+
+	public void set_hTailClAlphaistributionDeg(List<Double> _hTailClAlphaistributionDeg) {
+		this._hTailClAlphaistributionDeg = _hTailClAlphaistributionDeg;
+	}
+
+	public void set_hTailXACBreakPoints(List<Double> _hTailXACBreakPoints) {
+		this._hTailXACBreakPoints = _hTailXACBreakPoints;
+	}
+
+	public void set_hTailXACDistribution(List<Double> _hTailXACDistribution) {
+		this._hTailXACDistribution = _hTailXACDistribution;
+	}
+
+	public void set_hTailCmACBreakPoints(List<Double> _hTailCmACBreakPoints) {
+		this._hTailCmACBreakPoints = _hTailCmACBreakPoints;
+	}
+
+	public void set_hTailCmC4Distribution(List<Double> _hTailCmC4Distribution) {
+		this._hTailCmC4Distribution = _hTailCmC4Distribution;
+	}
+
+	public void set_anglesOfElevatorDeflection(List<Amount<Angle>> _anglesOfElevatorDeflection) {
+		this._anglesOfElevatorDeflection = _anglesOfElevatorDeflection;
+	}
+
+	public void set_elevatorType(FlapTypeEnum _elevatorType) {
+		this._elevatorType = _elevatorType;
+	}
+
+	public void set_elevatorEtaIn(Double _elevatorEtaIn) {
+		this._elevatorEtaIn = _elevatorEtaIn;
+	}
+
+	public void set_elevatorEtaOut(Double _elevatorEtaOut) {
+		this._elevatorEtaOut = _elevatorEtaOut;
+	}
+
+	public void set_elevatorCfC(Double _elevatorCfC) {
+		this._elevatorCfC = _elevatorCfC;
+	}
+
+	public void set_tiltingAngle(Amount<Angle> _tiltingAngle) {
+		this._tiltingAngle = _tiltingAngle;
+	}
+
+	public void set_wingDragMethod(MethodEnum _wingDragMethod) {
+		this._wingDragMethod = _wingDragMethod;
+	}
+
+	public void set_hTailDragMethod(MethodEnum _hTailDragMethod) {
+		this._hTailDragMethod = _hTailDragMethod;
+	}
+
+	public void set_plotList(List<AerodynamicAndStabilityPlotEnum> _plotList) {
+		this._plotList = _plotList;
+	}
+
+	public void set_plotCheck(boolean _plotCheck) {
+		this._plotCheck = _plotCheck;
+	}
+
+	public void setTheStabilityCalculator(StabilityExecutableCalculator theStabilityCalculator) {
+		this.theStabilityCalculator = theStabilityCalculator;
+	}
+
+	public void set_horizontalDistanceQuarterChordWingHTail(Amount<Length> _horizontalDistanceQuarterChordWingHTail) {
+		this._horizontalDistanceQuarterChordWingHTail = _horizontalDistanceQuarterChordWingHTail;
+	}
+
+	public void set_verticalDistanceZeroLiftDirectionWingHTail(Amount<Length> _verticalDistanceZeroLiftDirectionWingHTail) {
+		this._verticalDistanceZeroLiftDirectionWingHTail = _verticalDistanceZeroLiftDirectionWingHTail;
+	}
+
+	public void set_horizontalDistanceQuarterChordWingHTailNOANGLE(
+			Amount<Length> _horizontalDistanceQuarterChordWingHTailNOANGLE) {
+		this._horizontalDistanceQuarterChordWingHTailNOANGLE = _horizontalDistanceQuarterChordWingHTailNOANGLE;
+	}
+
+	public void set_verticalDistanceZeroLiftDirectionWingHTailPARTIAL(
+			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailPARTIAL) {
+		this._verticalDistanceZeroLiftDirectionWingHTailPARTIAL = _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
+	}
+
+	public void set_verticalDistanceZeroLiftDirectionWingHTailCOMPLETE(
+			Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE) {
+		this._verticalDistanceZeroLiftDirectionWingHTailCOMPLETE = _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
+	}
+
+	public void setDatabaseFolderPath(String databaseFolderPath) {
+		this.databaseFolderPath = databaseFolderPath;
+	}
+
+	public void setAerodynamicDatabaseFileName(String aerodynamicDatabaseFileName) {
+		this.aerodynamicDatabaseFileName = aerodynamicDatabaseFileName;
+	}
+
+	public void setHighLiftDatabaseFileName(String highLiftDatabaseFileName) {
+		this.highLiftDatabaseFileName = highLiftDatabaseFileName;
+	}
+
+	public void setFusDesDatabaseFileName(String fusDesDatabaseFileName) {
+		this.fusDesDatabaseFileName = fusDesDatabaseFileName;
+	}
+
+	public void setAeroDatabaseReader(AerodynamicDatabaseReader aeroDatabaseReader) {
+		this.aeroDatabaseReader = aeroDatabaseReader;
+	}
+
+	public void setHighLiftDatabaseReader(HighLiftDatabaseReader highLiftDatabaseReader) {
+		this.highLiftDatabaseReader = highLiftDatabaseReader;
+	}
+
+	public void setFusDesDatabaseReader(FusDesDatabaseReader fusDesDatabaseReader) {
+		this.fusDesDatabaseReader = fusDesDatabaseReader;
+	}
+
+	public void setAlphaZeroLiftRad(double[] alphaZeroLiftRad) {
+		this.alphaZeroLiftRad = alphaZeroLiftRad;
+	}
+
+	public void setTwistDistributionRad(double[] twistDistributionRad) {
+		this.twistDistributionRad = twistDistributionRad;
+	}
+
+	public void setAlphaZeroLiftRadCLEAN(double[] alphaZeroLiftRadCLEAN) {
+		this.alphaZeroLiftRadCLEAN = alphaZeroLiftRadCLEAN;
+	}
+
+	public void setTwistDistributionRadCLEAN(double[] twistDistributionRadCLEAN) {
+		this.twistDistributionRadCLEAN = twistDistributionRadCLEAN;
+	}
+
+	public void setAlphaZeroLiftRadHTail(double[] alphaZeroLiftRadHTail) {
+		this.alphaZeroLiftRadHTail = alphaZeroLiftRadHTail;
+	}
+
+	public void setTwistDistributionRadHTail(double[] twistDistributionRadHTail) {
+		this.twistDistributionRadHTail = twistDistributionRadHTail;
+	}
+
+	public void set_deltaCD0Miscellaneus(double _deltaCD0Miscellaneus) {
+		this._deltaCD0Miscellaneus = _deltaCD0Miscellaneus;
+	}
+
+	public void set_landingGearArm(Amount<Length> _landingGearArm) {
+		this._landingGearArm = _landingGearArm;
+	}
+
+	public void setDimensionalOverKink(double dimensionalOverKink) {
+		this.dimensionalOverKink = dimensionalOverKink;
+	}
+
+	public void setInfluenceAreaRoot(double influenceAreaRoot) {
+		this.influenceAreaRoot = influenceAreaRoot;
+	}
+
+	public void setInfluenceAreaKink(double influenceAreaKink) {
+		this.influenceAreaKink = influenceAreaKink;
+	}
+
+	public void setInfluenceAreaTip(double influenceAreaTip) {
+		this.influenceAreaTip = influenceAreaTip;
+	}
+
+	public void setkRoot(double kRoot) {
+		this.kRoot = kRoot;
+	}
+
+	public void setkKink(double kKink) {
+		this.kKink = kKink;
+	}
+
+	public void setkTip(double kTip) {
+		this.kTip = kTip;
+	}
+
+	public void setDimensionalOverKinkHTail(double dimensionalOverKinkHTail) {
+		this.dimensionalOverKinkHTail = dimensionalOverKinkHTail;
+	}
+
+	public void setInfluenceAreaRootHTail(double influenceAreaRootHTail) {
+		this.influenceAreaRootHTail = influenceAreaRootHTail;
+	}
+
+	public void setInfluenceAreaKinkHTail(double influenceAreaKinkHTail) {
+		this.influenceAreaKinkHTail = influenceAreaKinkHTail;
+	}
+
+	public void setInfluenceAreaTipHTail(double influenceAreaTipHTail) {
+		this.influenceAreaTipHTail = influenceAreaTipHTail;
+	}
+
+	public void setkRootHTail(double kRootHTail) {
+		this.kRootHTail = kRootHTail;
+	}
+
+	public void setkKinkHTail(double kKinkHTail) {
+		this.kKinkHTail = kKinkHTail;
+	}
+
+	public void setkTipHTail(double kTipHTail) {
+		this.kTipHTail = kTipHTail;
+	}
+
+	public void setTheNasaBlackwellCalculatorMachActualWingCLEAN(
+			NasaBlackwell theNasaBlackwellCalculatorMachActualWingCLEAN) {
+		this.theNasaBlackwellCalculatorMachActualWingCLEAN = theNasaBlackwellCalculatorMachActualWingCLEAN;
+	}
+
+	public void setTheNasaBlackwellCalculatorMachZeroCLEAN(NasaBlackwell theNasaBlackwellCalculatorMachZeroCLEAN) {
+		this.theNasaBlackwellCalculatorMachZeroCLEAN = theNasaBlackwellCalculatorMachZeroCLEAN;
+	}
+
+	public void setTheNasaBlackwellCalculatorMachActualWing(NasaBlackwell theNasaBlackwellCalculatorMachActualWing) {
+		this.theNasaBlackwellCalculatorMachActualWing = theNasaBlackwellCalculatorMachActualWing;
+	}
+
+	public void setTheNasaBlackwellCalculatorMachZero(NasaBlackwell theNasaBlackwellCalculatorMachZero) {
+		this.theNasaBlackwellCalculatorMachZero = theNasaBlackwellCalculatorMachZero;
+	}
+
+	public void setTheNasaBlackwellCalculatorMachActualHTail(NasaBlackwell theNasaBlackwellCalculatorMachActualHTail) {
+		this.theNasaBlackwellCalculatorMachActualHTail = theNasaBlackwellCalculatorMachActualHTail;
+	}
+
+	public void set_downwashGradientConstantRoskam(List<Double> _downwashGradientConstantRoskam) {
+		this._downwashGradientConstantRoskam = _downwashGradientConstantRoskam;
+	}
+
+	public void set_downwashAngleConstantRoskam(List<Amount<Angle>> _downwashAngleConstantRoskam) {
+		this._downwashAngleConstantRoskam = _downwashAngleConstantRoskam;
+	}
+
+	public void set_downwashGradientConstantSlingerland(List<Double> _downwashGradientConstantSlingerland) {
+		this._downwashGradientConstantSlingerland = _downwashGradientConstantSlingerland;
+	}
+
+	public void set_downwashAngleConstantSlingerland(List<Amount<Angle>> _downwashAngleConstantSlingerland) {
+		this._downwashAngleConstantSlingerland = _downwashAngleConstantSlingerland;
+	}
+
+	public void set_downwashGradientVariableSlingerland(List<Double> _downwashGradientVariableSlingerland) {
+		this._downwashGradientVariableSlingerland = _downwashGradientVariableSlingerland;
+	}
+
+	public void set_downwashAngleVariableSlingerland(List<Amount<Angle>> _downwashAngleVariableSlingerland) {
+		this._downwashAngleVariableSlingerland = _downwashAngleVariableSlingerland;
+	}
+
+	public void set_downwashAngleVariableSlingerlandOld(List<Amount<Angle>> _downwashAngleVariableSlingerlandOld) {
+		this._downwashAngleVariableSlingerlandOld = _downwashAngleVariableSlingerlandOld;
+	}
+
+	public void set_horizontalDistance(List<Amount<Length>> _horizontalDistance) {
+		this._horizontalDistance = _horizontalDistance;
+	}
+
+	public void set_verticalDistance(List<Amount<Length>> _verticalDistance) {
+		this._verticalDistance = _verticalDistance;
+	}
+
+	public void set_horizontalDistanceConstant(List<Amount<Length>> _horizontalDistanceConstant) {
+		this._horizontalDistanceConstant = _horizontalDistanceConstant;
+	}
+
+	public void set_verticalDistanceConstant(List<Amount<Length>> _verticalDistanceConstant) {
+		this._verticalDistanceConstant = _verticalDistanceConstant;
+	}
+
+	public void set_wingAlphaZeroLift(Amount<Angle> _wingAlphaZeroLift) {
+		this._wingAlphaZeroLift = _wingAlphaZeroLift;
+	}
+
+	public void set_wingalphaStar(Amount<Angle> _wingalphaStar) {
+		this._wingalphaStar = _wingalphaStar;
+	}
+
+	public void set_wingalphaMaxLinear(Amount<Angle> _wingalphaMaxLinear) {
+		this._wingalphaMaxLinear = _wingalphaMaxLinear;
+	}
+
+	public void set_wingalphaStall(Amount<Angle> _wingalphaStall) {
+		this._wingalphaStall = _wingalphaStall;
+	}
+
+	public void set_wingcLZero(Double _wingcLZero) {
+		this._wingcLZero = _wingcLZero;
+	}
+
+	public void set_wingcLStar(Double _wingcLStar) {
+		this._wingcLStar = _wingcLStar;
+	}
+
+	public void set_wingcLMax(Double _wingcLMax) {
+		this._wingcLMax = _wingcLMax;
+	}
+
+	public void set_wingcLAlphaRad(Double _wingcLAlphaRad) {
+		this._wingcLAlphaRad = _wingcLAlphaRad;
+	}
+
+	public void set_wingcLAlphaDeg(Double _wingcLAlphaDeg) {
+		this._wingcLAlphaDeg = _wingcLAlphaDeg;
+	}
+
+	public void set_wingclAlpha(Amount<?> _wingclAlpha) {
+		this._wingclAlpha = _wingclAlpha;
+	}
+
+	public void set_cLAtAlpha(Double _cLAtAlpha) {
+		this._cLAtAlpha = _cLAtAlpha;
+	}
+
+	public void set_wingliftCoefficient3DCurve(Double[] _wingliftCoefficient3DCurve) {
+		this._wingliftCoefficient3DCurve = _wingliftCoefficient3DCurve;
+	}
+
+	public void set_wingliftCoefficientDistributionatCLMax(double[] _wingliftCoefficientDistributionatCLMax) {
+		this._wingliftCoefficientDistributionatCLMax = _wingliftCoefficientDistributionatCLMax;
+	}
+
+	public void set_wingclAlphaArray(Double[] _wingclAlphaArray) {
+		this._wingclAlphaArray = _wingclAlphaArray;
+	}
+
+	public void set_wingclAlphaArrayHighLift(Double[] _wingclAlphaArrayHighLift) {
+		this._wingclAlphaArrayHighLift = _wingclAlphaArrayHighLift;
+	}
+
+	public void set_cLAtAlphaHighLift(Double _cLAtAlphaHighLift) {
+		this._cLAtAlphaHighLift = _cLAtAlphaHighLift;
+	}
+
+	public void set_alphaZeroLiftHighLift(Amount<Angle> _alphaZeroLiftHighLift) {
+		this._alphaZeroLiftHighLift = _alphaZeroLiftHighLift;
+	}
+
+	public void set_alphaStarHighLift(Amount<Angle> _alphaStarHighLift) {
+		this._alphaStarHighLift = _alphaStarHighLift;
+	}
+
+	public void set_alphaStallHighLift(Amount<Angle> _alphaStallHighLift) {
+		this._alphaStallHighLift = _alphaStallHighLift;
+	}
+
+	public void set_cLZeroHighLift(Double _cLZeroHighLift) {
+		this._cLZeroHighLift = _cLZeroHighLift;
+	}
+
+	public void set_cLStarHighLift(Double _cLStarHighLift) {
+		this._cLStarHighLift = _cLStarHighLift;
+	}
+
+	public void set_cLMaxHighLift(Double _cLMaxHighLift) {
+		this._cLMaxHighLift = _cLMaxHighLift;
+	}
+
+	public void set_cLAlphaHighLiftDEG(Double _cLAlphaHighLiftDEG) {
+		this._cLAlphaHighLiftDEG = _cLAlphaHighLiftDEG;
+	}
+
+	public void set_cD0HighLift(Double _cD0HighLift) {
+		this._cD0HighLift = _cD0HighLift;
+	}
+
+	public void set_deltaCl0FlapList(List<Double> _deltaCl0FlapList) {
+		this._deltaCl0FlapList = _deltaCl0FlapList;
+	}
+
+	public void set_deltaCl0Flap(Double _deltaCl0Flap) {
+		this._deltaCl0Flap = _deltaCl0Flap;
+	}
+
+	public void set_deltaCL0FlapList(List<Double> _deltaCL0FlapList) {
+		this._deltaCL0FlapList = _deltaCL0FlapList;
+	}
+
+	public void set_deltaCL0Flap(Double _deltaCL0Flap) {
+		this._deltaCL0Flap = _deltaCL0Flap;
+	}
+
+	public void set_deltaClmaxFlapList(List<Double> _deltaClmaxFlapList) {
+		this._deltaClmaxFlapList = _deltaClmaxFlapList;
+	}
+
+	public void set_deltaClmaxFlap(Double _deltaClmaxFlap) {
+		this._deltaClmaxFlap = _deltaClmaxFlap;
+	}
+
+	public void set_deltaCLmaxFlapList(List<Double> _deltaCLmaxFlapList) {
+		this._deltaCLmaxFlapList = _deltaCLmaxFlapList;
+	}
+
+	public void set_deltaCLmaxFlap(Double _deltaCLmaxFlap) {
+		this._deltaCLmaxFlap = _deltaCLmaxFlap;
+	}
+
+	public void set_deltaClmaxSlatList(List<Double> _deltaClmaxSlatList) {
+		this._deltaClmaxSlatList = _deltaClmaxSlatList;
+	}
+
+	public void set_deltaClmaxSlat(Double _deltaClmaxSlat) {
+		this._deltaClmaxSlat = _deltaClmaxSlat;
+	}
+
+	public void set_deltaCLmaxSlatList(List<Double> _deltaCLmaxSlatList) {
+		this._deltaCLmaxSlatList = _deltaCLmaxSlatList;
+	}
+
+	public void set_deltaCLmaxSlat(Double _deltaCLmaxSlat) {
+		this._deltaCLmaxSlat = _deltaCLmaxSlat;
+	}
+
+	public void set_deltaCD0List(List<Double> _deltaCD0List) {
+		this._deltaCD0List = _deltaCD0List;
+	}
+
+	public void set_deltaCD0(Double _deltaCD0) {
+		this._deltaCD0 = _deltaCD0;
+	}
+
+	public void set_deltaCMc4List(List<Double> _deltaCMc4List) {
+		this._deltaCMc4List = _deltaCMc4List;
+	}
+
+	public void set_deltaCMc4(Double _deltaCMc4) {
+		this._deltaCMc4 = _deltaCMc4;
+	}
+
+	public void set_alphaArrayPlotHighLift(Double[] _alphaArrayPlotHighLift) {
+		this._alphaArrayPlotHighLift = _alphaArrayPlotHighLift;
+	}
+
+	public void set_wingLiftCoefficient3DCurveHighLift(Double[] _wingLiftCoefficient3DCurveHighLift) {
+		this._wingLiftCoefficient3DCurveHighLift = _wingLiftCoefficient3DCurveHighLift;
+	}
+
+	public void set_wingLiftCoefficient3DCurveHighLiftWINGARRAY(Double[] _wingLiftCoefficient3DCurveHighLiftWINGARRAY) {
+		this._wingLiftCoefficient3DCurveHighLiftWINGARRAY = _wingLiftCoefficient3DCurveHighLiftWINGARRAY;
+	}
+
+	public void set_wingLiftCoefficientModified(double[] _wingLiftCoefficientModified) {
+		this._wingLiftCoefficientModified = _wingLiftCoefficientModified;
+	}
+
+	public void set_hTailAlphaZeroLift(Amount<Angle> _hTailAlphaZeroLift) {
+		this._hTailAlphaZeroLift = _hTailAlphaZeroLift;
+	}
+
+	public void set_hTailalphaStar(Amount<Angle> _hTailalphaStar) {
+		this._hTailalphaStar = _hTailalphaStar;
+	}
+
+	public void set_hTailalphaMaxLinear(Amount<Angle> _hTailalphaMaxLinear) {
+		this._hTailalphaMaxLinear = _hTailalphaMaxLinear;
+	}
+
+	public void set_hTailalphaStall(Amount<Angle> _hTailalphaStall) {
+		this._hTailalphaStall = _hTailalphaStall;
+	}
+
+	public void set_hTailcLZero(Double _hTailcLZero) {
+		this._hTailcLZero = _hTailcLZero;
+	}
+
+	public void set_hTailcLStar(Double _hTailcLStar) {
+		this._hTailcLStar = _hTailcLStar;
+	}
+
+	public void set_hTailcLMax(Double _hTailcLMax) {
+		this._hTailcLMax = _hTailcLMax;
+	}
+
+	public void set_hTailcLAlphaRad(Double _hTailcLAlphaRad) {
+		this._hTailcLAlphaRad = _hTailcLAlphaRad;
+	}
+
+	public void set_hTailcLAlphaDeg(Double _hTailcLAlphaDeg) {
+		this._hTailcLAlphaDeg = _hTailcLAlphaDeg;
+	}
+
+	public void set_hTailclAlpha(Amount<?> _hTailclAlpha) {
+		this._hTailclAlpha = _hTailclAlpha;
+	}
+
+	public void set_hTailliftCoefficient3DCurve(Double[] _hTailliftCoefficient3DCurve) {
+		this._hTailliftCoefficient3DCurve = _hTailliftCoefficient3DCurve;
+	}
+
+	public void set_hTailliftCoefficientDistributionatCLMax(double[] _hTailliftCoefficientDistributionatCLMax) {
+		this._hTailliftCoefficientDistributionatCLMax = _hTailliftCoefficientDistributionatCLMax;
+	}
+
+	public void set_hTailclAlphaArray(Double[] _hTailclAlphaArray) {
+		this._hTailclAlphaArray = _hTailclAlphaArray;
+	}
+
+	public void set_hTailclAlphaArrayHighLift(Double[] _hTailclAlphaArrayHighLift) {
+		this._hTailclAlphaArrayHighLift = _hTailclAlphaArrayHighLift;
+	}
+
+	public void set_tauElevator(Map<Amount<Angle>, Double> _tauElevator) {
+		this._tauElevator = _tauElevator;
+	}
+
+	public void set_deltaCLMaxElevator(Map<Amount<Angle>, Double> _deltaCLMaxElevator) {
+		this._deltaCLMaxElevator = _deltaCLMaxElevator;
+	}
+
+	public void set_deltaCD0Elevator(Map<Amount<Angle>, Double> _deltaCD0Elevator) {
+		this._deltaCD0Elevator = _deltaCD0Elevator;
+	}
+
+	public void set_cLAlphaElevatorDeg(Map<Amount<Angle>, Double> _cLAlphaElevatorDeg) {
+		this._cLAlphaElevatorDeg = _cLAlphaElevatorDeg;
+	}
+
+	public void set_deltacLZeroElevator(Map<Amount<Angle>, Double> _deltacLZeroElevator) {
+		this._deltacLZeroElevator = _deltacLZeroElevator;
+	}
+
+	public void set_hTailLiftCoefficient3DCurveWithElevator(
+			Map<Amount<Angle>, Double[]> _hTailLiftCoefficient3DCurveWithElevator) {
+		this._hTailLiftCoefficient3DCurveWithElevator = _hTailLiftCoefficient3DCurveWithElevator;
+	}
+
+	public void set_hTailDragCoefficient3DCurveWithElevator(
+			Map<Amount<Angle>, Double[]> _hTailDragCoefficient3DCurveWithElevator) {
+		this._hTailDragCoefficient3DCurveWithElevator = _hTailDragCoefficient3DCurveWithElevator;
+	}
+
+	public void set_hTailcLMaxElevator(Map<Amount<Angle>, Double> _hTailcLMaxElevator) {
+		this._hTailcLMaxElevator = _hTailcLMaxElevator;
+	}
+
+	public void set_hTailalphaZeroLiftElevator(Map<Amount<Angle>, Amount<Angle>> _hTailalphaZeroLiftElevator) {
+		this._hTailalphaZeroLiftElevator = _hTailalphaZeroLiftElevator;
+	}
+
+	public void set_hTailalphaStarElevator(Map<Amount<Angle>, Amount<Angle>> _hTailalphaStarElevator) {
+		this._hTailalphaStarElevator = _hTailalphaStarElevator;
+	}
+
+	public void set_hTailalphaStallLiftElevator(Map<Amount<Angle>, Amount<Angle>> _hTailalphaStallLiftElevator) {
+		this._hTailalphaStallLiftElevator = _hTailalphaStallLiftElevator;
+	}
+
+	public void set_hTailCLZeroElevator(Map<Amount<Angle>, Double> _hTailCLZeroElevator) {
+		this._hTailCLZeroElevator = _hTailCLZeroElevator;
+	}
+
+	public void set_hTailCLStarElevator(Map<Amount<Angle>, Double> _hTailCLStarElevator) {
+		this._hTailCLStarElevator = _hTailCLStarElevator;
+	}
+
+	public void set_hTailCLAlphaElevator(Map<Amount<Angle>, Double> _hTailCLAlphaElevator) {
+		this._hTailCLAlphaElevator = _hTailCLAlphaElevator;
+	}
+
+	public void set_tauElevatorArray(Map<Amount<Angle>, Double> _tauElevatorArray) {
+		this._tauElevatorArray = _tauElevatorArray;
+	}
+
+	public void set_deltaEAnglesArray(List<Amount<Angle>> _deltaEAnglesArray) {
+		this._deltaEAnglesArray = _deltaEAnglesArray;
+	}
+
+	public void set_wingAlphaZeroLiftCONDITION(Amount<Angle> _wingAlphaZeroLiftCONDITION) {
+		this._wingAlphaZeroLiftCONDITION = _wingAlphaZeroLiftCONDITION;
+	}
+
+	public void set_wingalphaStarCONDITION(Amount<Angle> _wingalphaStarCONDITION) {
+		this._wingalphaStarCONDITION = _wingalphaStarCONDITION;
+	}
+
+	public void set_wingalphaMaxLinearCONDITION(Amount<Angle> _wingalphaMaxLinearCONDITION) {
+		this._wingalphaMaxLinearCONDITION = _wingalphaMaxLinearCONDITION;
+	}
+
+	public void set_wingalphaStallCONDITION(Amount<Angle> _wingalphaStallCONDITION) {
+		this._wingalphaStallCONDITION = _wingalphaStallCONDITION;
+	}
+
+	public void set_wingcLZeroCONDITION(Double _wingcLZeroCONDITION) {
+		this._wingcLZeroCONDITION = _wingcLZeroCONDITION;
+	}
+
+	public void set_wingcLStarCONDITION(Double _wingcLStarCONDITION) {
+		this._wingcLStarCONDITION = _wingcLStarCONDITION;
+	}
+
+	public void set_wingcLMaxCONDITION(Double _wingcLMaxCONDITION) {
+		this._wingcLMaxCONDITION = _wingcLMaxCONDITION;
+	}
+
+	public void set_wingcLAlphaRadCONDITION(Double _wingcLAlphaRadCONDITION) {
+		this._wingcLAlphaRadCONDITION = _wingcLAlphaRadCONDITION;
+	}
+
+	public void set_wingcLAlphaDegCONDITION(Double _wingcLAlphaDegCONDITION) {
+		this._wingcLAlphaDegCONDITION = _wingcLAlphaDegCONDITION;
+	}
+
+	public void set_wingclAlphaCONDITION(Amount<?> _wingclAlphaCONDITION) {
+		this._wingclAlphaCONDITION = _wingclAlphaCONDITION;
+	}
+
+	public void set_cLAtAlphaCONDITION(Double _cLAtAlphaCONDITION) {
+		this._cLAtAlphaCONDITION = _cLAtAlphaCONDITION;
+	}
+
+	public void set_wingliftCoefficient3DCurveCONDITION(Double[] _wingliftCoefficient3DCurveCONDITION) {
+		this._wingliftCoefficient3DCurveCONDITION = _wingliftCoefficient3DCurveCONDITION;
+	}
+
+	public void set_wingliftCoefficientDistributionatCLMaxCONDITION(
+			double[] _wingliftCoefficientDistributionatCLMaxCONDITION) {
+		this._wingliftCoefficientDistributionatCLMaxCONDITION = _wingliftCoefficientDistributionatCLMaxCONDITION;
+	}
+
+	public void set_wingclAlphaArrayCONDITION(Double[] _wingclAlphaArrayCONDITION) {
+		this._wingclAlphaArrayCONDITION = _wingclAlphaArrayCONDITION;
+	}
+
+	public void set_fuselageWingClAlphaDeg(Double _fuselageWingClAlphaDeg) {
+		this._fuselageWingClAlphaDeg = _fuselageWingClAlphaDeg;
+	}
+
+	public void set_fuselageWingClMax(Double _fuselageWingClMax) {
+		this._fuselageWingClMax = _fuselageWingClMax;
+	}
+
+	public void set_fuselageWingClZero(Double _fuselageWingClZero) {
+		this._fuselageWingClZero = _fuselageWingClZero;
+	}
+
+	public void set_fuselageWingAlphaStar(Amount<Angle> _fuselageWingAlphaStar) {
+		this._fuselageWingAlphaStar = _fuselageWingAlphaStar;
+	}
+
+	public void set_fuselageWingAlphaStall(Amount<Angle> _fuselageWingAlphaStall) {
+		this._fuselageWingAlphaStall = _fuselageWingAlphaStall;
+	}
+
+	public void set_fuselageWingClAlpha(Amount<?> _fuselageWingClAlpha) {
+		this._fuselageWingClAlpha = _fuselageWingClAlpha;
+	}
+
+	public void set_fuselageWingCLStar(Double _fuselageWingCLStar) {
+		this._fuselageWingCLStar = _fuselageWingCLStar;
+	}
+
+	public void set_fuselagewingliftCoefficient3DCurve(Double[] _fuselagewingliftCoefficient3DCurve) {
+		this._fuselagewingliftCoefficient3DCurve = _fuselagewingliftCoefficient3DCurve;
+	}
+
+	public void set_totalLiftCoefficient(Map<Amount<Angle>, List<Double>> _totalLiftCoefficient) {
+		this._totalLiftCoefficient = _totalLiftCoefficient;
+	}
+
+	public void set_wingCD0(Double _wingCD0) {
+		this._wingCD0 = _wingCD0;
+	}
+
+	public void set_wingOswaldFactor(Double _wingOswaldFactor) {
+		this._wingOswaldFactor = _wingOswaldFactor;
+	}
+
+	public void set_wingCDInduced(Double _wingCDInduced) {
+		this._wingCDInduced = _wingCDInduced;
+	}
+
+	public void set_wingCDWave(Double _wingCDWave) {
+		this._wingCDWave = _wingCDWave;
+	}
+
+	public void set_wingPolar3DCurve(Double[] _wingPolar3DCurve) {
+		this._wingPolar3DCurve = _wingPolar3DCurve;
+	}
+
+	public void set_wingParasiteDragCoefficientDistribution(List<Double> _wingParasiteDragCoefficientDistribution) {
+		this._wingParasiteDragCoefficientDistribution = _wingParasiteDragCoefficientDistribution;
+	}
+
+	public void set_wingInducedDragCoefficientDistribution(List<Double> _wingInducedDragCoefficientDistribution) {
+		this._wingInducedDragCoefficientDistribution = _wingInducedDragCoefficientDistribution;
+	}
+
+	public void set_wingInducedDragCoefficientDistributionParabolic(
+			List<Double> _wingInducedDragCoefficientDistributionParabolic) {
+		this._wingInducedDragCoefficientDistributionParabolic = _wingInducedDragCoefficientDistributionParabolic;
+	}
+
+	public void set_wingDragCoefficient3DCurve(List<Double> _wingDragCoefficient3DCurve) {
+		this._wingDragCoefficient3DCurve = _wingDragCoefficient3DCurve;
+	}
+
+	public void set_wingDragCoefficient3DCurveTemp(List<Double> _wingDragCoefficient3DCurveTemp) {
+		this._wingDragCoefficient3DCurveTemp = _wingDragCoefficient3DCurveTemp;
+	}
+
+	public void set_wingAirfoilsCoefficientCurve(List<List<Double>> _wingAirfoilsCoefficientCurve) {
+		this._wingAirfoilsCoefficientCurve = _wingAirfoilsCoefficientCurve;
+	}
+
+	public void set_deltaDueToFlapMethod(MethodEnum _deltaDueToFlapMethod) {
+		this._deltaDueToFlapMethod = _deltaDueToFlapMethod;
+	}
+
+	public void setcLWingDragPolar(List<Double> cLWingDragPolar) {
+		this.cLWingDragPolar = cLWingDragPolar;
+	}
+
+	public void setClListDragWing(List<Double> clListDragWing) {
+		this.clListDragWing = clListDragWing;
+	}
+
+	public void setClListMomentWing(List<Double> clListMomentWing) {
+		this.clListMomentWing = clListMomentWing;
+	}
+
+	public void set_wingCdAirfoilDistributionInputStations(List<List<Double>> _wingCdAirfoilDistributionInputStations) {
+		this._wingCdAirfoilDistributionInputStations = _wingCdAirfoilDistributionInputStations;
+	}
+
+	public void set_wingCdAirfoilDistribution(List<List<Double>> _wingCdAirfoilDistribution) {
+		this._wingCdAirfoilDistribution = _wingCdAirfoilDistribution;
+	}
+
+	public void setClListDragTail(List<Double> clListDragTail) {
+		this.clListDragTail = clListDragTail;
+	}
+
+	public void set_hTailCdAirfoilDistribution(List<List<Double>> _hTailCdAirfoilDistribution) {
+		this._hTailCdAirfoilDistribution = _hTailCdAirfoilDistribution;
+	}
+
+	public void set_hTailCdAirfoilDistributionInputStations(List<List<Double>> _hTailCdAirfoilDistributionInputStations) {
+		this._hTailCdAirfoilDistributionInputStations = _hTailCdAirfoilDistributionInputStations;
+	}
+
+	public void set_hTailCD0(Double _hTailCD0) {
+		this._hTailCD0 = _hTailCD0;
+	}
+
+	public void set_hTailOswaldFactor(Double _hTailOswaldFactor) {
+		this._hTailOswaldFactor = _hTailOswaldFactor;
+	}
+
+	public void set_hTailCDInduced(Double _hTailCDInduced) {
+		this._hTailCDInduced = _hTailCDInduced;
+	}
+
+	public void set_hTailCDWave(Double _hTailCDWave) {
+		this._hTailCDWave = _hTailCDWave;
+	}
+
+	public void set_hTailPolar3DCurve(Double[] _hTailPolar3DCurve) {
+		this._hTailPolar3DCurve = _hTailPolar3DCurve;
+	}
+
+	public void set_hTailParasiteDragCoefficientDistribution(List<Double> _hTailParasiteDragCoefficientDistribution) {
+		this._hTailParasiteDragCoefficientDistribution = _hTailParasiteDragCoefficientDistribution;
+	}
+
+	public void set_hTailInducedDragCoefficientDistribution(List<Double> _hTailInducedDragCoefficientDistribution) {
+		this._hTailInducedDragCoefficientDistribution = _hTailInducedDragCoefficientDistribution;
+	}
+
+	public void set_hTailDragCoefficientDistribution(List<Double> _hTailDragCoefficientDistribution) {
+		this._hTailDragCoefficientDistribution = _hTailDragCoefficientDistribution;
+	}
+
+	public void set_hTailDragDistribution(List<Amount<Force>> _hTailDragDistribution) {
+		this._hTailDragDistribution = _hTailDragDistribution;
+	}
+
+	public void set_hTailDragCoefficient3DCurve(List<Double> _hTailDragCoefficient3DCurve) {
+		this._hTailDragCoefficient3DCurve = _hTailDragCoefficient3DCurve;
+	}
+
+	public void set_hTailliftCoefficient3DCurveCONDITION(Double[] _hTailliftCoefficient3DCurveCONDITION) {
+		this._hTailliftCoefficient3DCurveCONDITION = _hTailliftCoefficient3DCurveCONDITION;
+	}
+
+	public void set_totalDragPolar(Map<Amount<Angle>, List<Double>> _totalDragPolar) {
+		this._totalDragPolar = _totalDragPolar;
+	}
+
+	public void set_wingFinalMomentumPole(Double _wingFinalMomentumPole) {
+		this._wingFinalMomentumPole = _wingFinalMomentumPole;
+	}
+
+	public void set_hTailFinalMomentumPole(Double _hTailFinalMomentumPole) {
+		this._hTailFinalMomentumPole = _hTailFinalMomentumPole;
+	}
+
+	public void set_wingXACLRF(Map<MethodEnum, Amount<Length>> _wingXACLRF) {
+		this._wingXACLRF = _wingXACLRF;
+	}
+
+	public void set_wingXACMAC(Map<MethodEnum, Amount<Length>> _wingXACMAC) {
+		this._wingXACMAC = _wingXACMAC;
+	}
+
+	public void set_wingXACMACpercent(Map<MethodEnum, Double> _wingXACMACpercent) {
+		this._wingXACMACpercent = _wingXACMACpercent;
+	}
+
+	public void set_wingXACBRF(Map<MethodEnum, Amount<Length>> _wingXACBRF) {
+		this._wingXACBRF = _wingXACBRF;
+	}
+
+	public void set_wingMAC(Amount<Length> _wingMAC) {
+		this._wingMAC = _wingMAC;
+	}
+
+	public void set_wingMeanAerodynamicChordLeadingEdgeX(Amount<Length> _wingMeanAerodynamicChordLeadingEdgeX) {
+		this._wingMeanAerodynamicChordLeadingEdgeX = _wingMeanAerodynamicChordLeadingEdgeX;
+	}
+
+	public void set_wingMomentCoefficientAC(Map<MethodEnum, List<Double>> _wingMomentCoefficientAC) {
+		this._wingMomentCoefficientAC = _wingMomentCoefficientAC;
+	}
+
+	public void set_wingMomentCoefficients(List<List<Double>> _wingMomentCoefficients) {
+		this._wingMomentCoefficients = _wingMomentCoefficients;
+	}
+
+	public void set_wingMomentCoefficientFinal(List<Double> _wingMomentCoefficientFinal) {
+		this._wingMomentCoefficientFinal = _wingMomentCoefficientFinal;
+	}
+
+	public void set_wingMomentCoefficientConstant(List<Double> _wingMomentCoefficientConstant) {
+		this._wingMomentCoefficientConstant = _wingMomentCoefficientConstant;
+	}
+
+	public void set_wingMomentCoefficientFinalACVariable(List<Double> _wingMomentCoefficientFinalACVariable) {
+		this._wingMomentCoefficientFinalACVariable = _wingMomentCoefficientFinalACVariable;
+	}
+
+	public void set_hTailMomentCoefficientFinal(List<Double> _hTailMomentCoefficientFinal) {
+		this._hTailMomentCoefficientFinal = _hTailMomentCoefficientFinal;
+	}
+
+	public void set_hTailMomentCoefficientFinalElevator(
+			Map<Amount<Angle>, List<Double>> _hTailMomentCoefficientFinalElevator) {
+		this._hTailMomentCoefficientFinalElevator = _hTailMomentCoefficientFinalElevator;
+	}
+
+	public void set_wingZACMAC(Amount<Length> _wingZACMAC) {
+		this._wingZACMAC = _wingZACMAC;
+	}
+
+	public void set_wingYACMAC(Amount<Length> _wingYACMAC) {
+		this._wingYACMAC = _wingYACMAC;
+	}
+
+	public void set_hTailXACLRF(Map<MethodEnum, Amount<Length>> _hTailXACLRF) {
+		this._hTailXACLRF = _hTailXACLRF;
+	}
+
+	public void set_hTailXACBRF(Map<MethodEnum, Amount<Length>> _hTailXACBRF) {
+		this._hTailXACBRF = _hTailXACBRF;
+	}
+
+	public void set_hTailXACMAC(Map<MethodEnum, Amount<Length>> _hTailXACMAC) {
+		this._hTailXACMAC = _hTailXACMAC;
+	}
+
+	public void set_hTailXACMACpercent(Map<MethodEnum, Double> _hTailXACMACpercent) {
+		this._hTailXACMACpercent = _hTailXACMACpercent;
+	}
+
+	public void set_hTailMAC(Amount<Length> _hTailMAC) {
+		this._hTailMAC = _hTailMAC;
+	}
+
+	public void set_hTailMeanAerodynamicChordLeadingEdgeX(Amount<Length> _hTailMeanAerodynamicChordLeadingEdgeX) {
+		this._hTailMeanAerodynamicChordLeadingEdgeX = _hTailMeanAerodynamicChordLeadingEdgeX;
+	}
+
+	public void set_hTailMomentCoefficientAC(Map<MethodEnum, List<Double>> _hTailMomentCoefficientAC) {
+		this._hTailMomentCoefficientAC = _hTailMomentCoefficientAC;
+	}
+
+	public void set_hTailMomentCoefficients(List<List<Double>> _hTailMomentCoefficients) {
+		this._hTailMomentCoefficients = _hTailMomentCoefficients;
+	}
+
+	public void set_fuselageMomentMethod(MethodEnum _fuselageMomentMethod) {
+		this._fuselageMomentMethod = _fuselageMomentMethod;
+	}
+
+	public void set_fuselageCM0(Map<MethodEnum, Double> _fuselageCM0) {
+		this._fuselageCM0 = _fuselageCM0;
+	}
+
+	public void set_fuselageCMAlpha(Map<MethodEnum, Double> _fuselageCMAlpha) {
+		this._fuselageCMAlpha = _fuselageCMAlpha;
+	}
+
+	public void set_fuselageMomentCoefficient(List<Double> _fuselageMomentCoefficient) {
+		this._fuselageMomentCoefficient = _fuselageMomentCoefficient;
+	}
+
+	public void set_fuselageMomentCoefficientdueToDrag(List<Double> _fuselageMomentCoefficientdueToDrag) {
+		this._fuselageMomentCoefficientdueToDrag = _fuselageMomentCoefficientdueToDrag;
+	}
+
+	public void set_wingBodyXACBRF(Map<MethodEnum, Amount<Length>> _wingBodyXACBRF) {
+		this._wingBodyXACBRF = _wingBodyXACBRF;
+	}
+
+	public void set_deltaXACdueToFuselage(Double _deltaXACdueToFuselage) {
+		this._deltaXACdueToFuselage = _deltaXACdueToFuselage;
+	}
+
+	public void set_landingGearMomentDueToDrag(List<Double> _landingGearMomentDueToDrag) {
+		this._landingGearMomentDueToDrag = _landingGearMomentDueToDrag;
+	}
+
+	public void set_wingNormalCoefficient(List<Double> _wingNormalCoefficient) {
+		this._wingNormalCoefficient = _wingNormalCoefficient;
+	}
+
+	public void set_hTailNormalCoefficient(List<Double> _hTailNormalCoefficient) {
+		this._hTailNormalCoefficient = _hTailNormalCoefficient;
+	}
+
+	public void set_hTailNormalCoefficientDownwashConstant(List<Double> _hTailNormalCoefficientDownwashConstant) {
+		this._hTailNormalCoefficientDownwashConstant = _hTailNormalCoefficientDownwashConstant;
+	}
+
+	public void set_wingHorizontalCoefficient(List<Double> _wingHorizontalCoefficient) {
+		this._wingHorizontalCoefficient = _wingHorizontalCoefficient;
+	}
+
+	public void set_hTailHorizontalCoefficient(List<Double> _hTailHorizontalCoefficient) {
+		this._hTailHorizontalCoefficient = _hTailHorizontalCoefficient;
+	}
+
+	public void set_hTailHorizontalCoefficientDownwashConstant(List<Double> _hTailHorizontalCoefficientDownwashConstant) {
+		this._hTailHorizontalCoefficientDownwashConstant = _hTailHorizontalCoefficientDownwashConstant;
+	}
+
+	public void set_wingMomentCoefficientNOPendular(List<Double> _wingMomentCoefficientNOPendular) {
+		this._wingMomentCoefficientNOPendular = _wingMomentCoefficientNOPendular;
+	}
+
+	public void set_wingMomentCoefficientPendular(List<Double> _wingMomentCoefficientPendular) {
+		this._wingMomentCoefficientPendular = _wingMomentCoefficientPendular;
+	}
+
+	public void set_hTailMomentCoefficientPendular(List<Double> _hTailMomentCoefficientPendular) {
+		this._hTailMomentCoefficientPendular = _hTailMomentCoefficientPendular;
+	}
+
+	public void set_totalMomentCoefficientPendular(List<Double> _totalMomentCoefficientPendular) {
+		this._totalMomentCoefficientPendular = _totalMomentCoefficientPendular;
+	}
+
+	public void set_hTailNormalCoefficientDeltaE(Map<Amount<Angle>, List<Double>> _hTailNormalCoefficientDeltaE) {
+		this._hTailNormalCoefficientDeltaE = _hTailNormalCoefficientDeltaE;
+	}
+
+	public void set_hTailHorizontalCoefficientDeltaE(Map<Amount<Angle>, List<Double>> _hTailHorizontalCoefficientDeltaE) {
+		this._hTailHorizontalCoefficientDeltaE = _hTailHorizontalCoefficientDeltaE;
+	}
+
+	public void set_hTailMomentCoefficientPendularDeltaE(
+			Map<Amount<Angle>, List<Double>> _hTailMomentCoefficientPendularDeltaE) {
+		this._hTailMomentCoefficientPendularDeltaE = _hTailMomentCoefficientPendularDeltaE;
+	}
+
+	public void set_totalMomentCoefficientPendularDeltaE(
+			Map<Amount<Angle>, List<Double>> _totalMomentCoefficientPendularDeltaE) {
+		this._totalMomentCoefficientPendularDeltaE = _totalMomentCoefficientPendularDeltaE;
+	}
+
+	public void set_hTailEquilibriumLiftCoefficient(List<Double> _hTailEquilibriumLiftCoefficient) {
+		this._hTailEquilibriumLiftCoefficient = _hTailEquilibriumLiftCoefficient;
+	}
+
+	public void set_totalEquilibriumLiftCoefficient(List<Double> _totalEquilibriumLiftCoefficient) {
+		this._totalEquilibriumLiftCoefficient = _totalEquilibriumLiftCoefficient;
+	}
+
+	public void set_hTailEquilibriumLiftCoefficientConstant(List<Double> _hTailEquilibriumLiftCoefficientConstant) {
+		this._hTailEquilibriumLiftCoefficientConstant = _hTailEquilibriumLiftCoefficientConstant;
+	}
+
+	public void set_totalEquilibriumLiftCoefficientConstant(List<Double> _totalEquilibriumLiftCoefficientConstant) {
+		this._totalEquilibriumLiftCoefficientConstant = _totalEquilibriumLiftCoefficientConstant;
+	}
+
+	public void set_totalTrimDrag(List<Double> _totalTrimDrag) {
+		this._totalTrimDrag = _totalTrimDrag;
+	}
+
+	public void set_deltaEEquilibrium(List<Amount<Angle>> _deltaEEquilibrium) {
+		this._deltaEEquilibrium = _deltaEEquilibrium;
+	}
+
+	public void set_clMapForDeltaeElevator(Map<Amount<Angle>, Double[]> _clMapForDeltaeElevator) {
+		this._clMapForDeltaeElevator = _clMapForDeltaeElevator;
+	}
+
+	public void setNumberOfIterationforDeltaE(int numberOfIterationforDeltaE) {
+		this.numberOfIterationforDeltaE = numberOfIterationforDeltaE;
+	}
+
+	public void set_clWingDistribution(List<List<Double>> _clWingDistribution) {
+		this._clWingDistribution = _clWingDistribution;
+	}
+
+	public void set_cl3DCurveWingFlapped(Double[] _cl3DCurveWingFlapped) {
+		this._cl3DCurveWingFlapped = _cl3DCurveWingFlapped;
+	}
+
+	public void set_clHtailDistribution(List<List<Double>> _clHtailDistribution) {
+		this._clHtailDistribution = _clHtailDistribution;
+	}
+
+	public void set_centerOfPressureWingDistribution(List<List<Double>> _centerOfPressureWingDistribution) {
+		this._centerOfPressureWingDistribution = _centerOfPressureWingDistribution;
+	}
+
+	public void set_centerOfPressurehTailDistribution(List<List<Double>> _centerOfPressurehTailDistribution) {
+		this._centerOfPressurehTailDistribution = _centerOfPressurehTailDistribution;
+	}
+
+	public void set_cMWingDistribution(List<List<Double>> _cMWingDistribution) {
+		this._cMWingDistribution = _cMWingDistribution;
+	}
+
+	public void set_cMHTailDistribution(List<List<Double>> _cMHTailDistribution) {
+		this._cMHTailDistribution = _cMHTailDistribution;
+	}
+
+	public void set_alphaIWingDistribution(List<List<Amount<Angle>>> _alphaIWingDistribution) {
+		this._alphaIWingDistribution = _alphaIWingDistribution;
+	}
+
+	public void set_alphaIHtailDistribution(List<List<Amount<Angle>>> _alphaIHtailDistribution) {
+		this._alphaIHtailDistribution = _alphaIHtailDistribution;
+	}
+
+	public void set_clNasaBlackwellDistributionModified(List<double[]> _clNasaBlackwellDistributionModified) {
+		this._clNasaBlackwellDistributionModified = _clNasaBlackwellDistributionModified;
+	}
+
+	public void set_clZeroFlapped(Double _clZeroFlapped) {
+		this._clZeroFlapped = _clZeroFlapped;
+	}
+
+	public void set_clAlphaDegFlapped(Double _clAlphaDegFlapped) {
+		this._clAlphaDegFlapped = _clAlphaDegFlapped;
+	}
+
+	public void set_clAlphaRadFlapped(Double _clAlphaRadFlapped) {
+		this._clAlphaRadFlapped = _clAlphaRadFlapped;
+	}
+
+	public void set_wingclAlphaFlapped(Amount<?> _wingclAlphaFlapped) {
+		this._wingclAlphaFlapped = _wingclAlphaFlapped;
+	}
+
+	public void set_clMaxFlapped(Double _clMaxFlapped) {
+		this._clMaxFlapped = _clMaxFlapped;
+	}
+
+	public void set_alphaStarFlapped(Amount<Angle> _alphaStarFlapped) {
+		this._alphaStarFlapped = _alphaStarFlapped;
+	}
+
+	public void set_alphaStallFlapped(Amount<Angle> _alphaStallFlapped) {
+		this._alphaStallFlapped = _alphaStallFlapped;
+	}
+
+	public void set_alphaStallLinearFlapped(Amount<Angle> _alphaStallLinearFlapped) {
+		this._alphaStallLinearFlapped = _alphaStallLinearFlapped;
+	}
+
+	public void set_alphaZeroLiftFlapped(Amount<Angle> _alphaZeroLiftFlapped) {
+		this._alphaZeroLiftFlapped = _alphaZeroLiftFlapped;
+	}
+
+	public void set_clMaxDistributionFlapped(List<Double> _clMaxDistributionFlapped) {
+		this._clMaxDistributionFlapped = _clMaxDistributionFlapped;
+	}
+
+	public void setClDistributions(List<List<Double>> clDistributions) {
+		this.clDistributions = clDistributions;
+	}
+
+	public void setCl3D(Double[] cl3d) {
+		cl3D = cl3d;
+	}
+
+	public void set_horizontalTailCL(MethodEnum _horizontalTailCL) {
+		this._horizontalTailCL = _horizontalTailCL;
+	}
+
+	public void set_wingHorizontalDistanceACtoCG(Amount<Length> _wingHorizontalDistanceACtoCG) {
+		this._wingHorizontalDistanceACtoCG = _wingHorizontalDistanceACtoCG;
+	}
+
+	public void set_wingVerticalDistranceACtoCG(Amount<Length> _wingVerticalDistranceACtoCG) {
+		this._wingVerticalDistranceACtoCG = _wingVerticalDistranceACtoCG;
+	}
+
 
 
 }

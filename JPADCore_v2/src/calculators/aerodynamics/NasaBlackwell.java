@@ -66,6 +66,7 @@ public class NasaBlackwell {
 	_clTotalDistribution = new MyArray(),
 	_gammaSignedDistribution = new MyArray(),
 	_alphaDistribution = new MyArray();
+
 	List<MyPoint> controlPoints, vortexPoints;
 
 	private double[] yStations, dihedral, twist, alpha0l, yStationsActual, chordsVsYActual, xLEvsYActual;

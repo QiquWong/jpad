@@ -324,10 +324,13 @@ public class JPADStaticWriteUtils {
 					}
 					value = valueList.toString();
 				}
-			
+				else {
+					value = valueToWrite.toString();
+				}
+			}
 		    else {
 				value = valueToWrite.toString();
-			}}
+			}
 
 		} else {
 			value = MyConfiguration.notInitializedWarning;

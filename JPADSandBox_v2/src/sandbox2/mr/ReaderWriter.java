@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -46,7 +47,6 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
-import sun.misc.Perf;
 import writers.JPADStaticWriteUtils;
 
 /*************************************************************************************************************************
@@ -911,9 +911,15 @@ public class ReaderWriter{
 		// OUTPUT
 		//--------------------------------------------------------------------------------------
 		
-		org.w3c.dom.Element outputRootElement = doc.createElement("OUTPUT");
-		rootElement.appendChild(outputRootElement);
+		org.w3c.dom.Element outputfirstRootElement = doc.createElement("OUTPUT");
+		rootElement.appendChild(outputfirstRootElement);
 		
+		// COMPONENTS 
+		
+		org.w3c.dom.Element outputRootElement = doc.createElement("COMPONENTS");
+		outputfirstRootElement.appendChild(outputRootElement);
+
+//LIFT-------------------------------------------
 		org.w3c.dom.Element liftElement = doc.createElement("LIFT");
 		outputRootElement.appendChild(liftElement);
 		
@@ -941,19 +947,142 @@ public class ReaderWriter{
 		org.w3c.dom.Element fuselageLiftElement = doc.createElement("Fuselage");
 		liftElement.appendChild(fuselageLiftElement);
 		
-		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift_wing_body", theStabilityCalculator.getWingAlphaZeroLift(), wingLiftElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cl_alpha_wing_body", theStabilityCalculator.getFuselageWingClAlphaDeg(), wingLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift_wing_body", theStabilityCalculator.getWingAlphaZeroLift(), fuselageLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cl_alpha_wing_body", theStabilityCalculator.getFuselageWingClAlphaDeg(), fuselageLiftElement, doc);
 		
-		JPADStaticWriteUtils.writeSingleNode("alphas_body", theStabilityCalculator.getAlphasBody(), wingLiftElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("cL_wing_body_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getFuselagewingliftCoefficient3DCurve()), wingLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("alphas_body", theStabilityCalculator.getAlphasBody(), fuselageLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_wing_body_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getFuselagewingliftCoefficient3DCurve()), fuselageLiftElement, doc);	
 		
+		//HORIZONTAL TAIL--------------------------------------------------
+		org.w3c.dom.Element hTailLiftElement = doc.createElement("Horizontal_Tail");
+		liftElement.appendChild(hTailLiftElement);
 		
+		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", theStabilityCalculator.get_hTailAlphaZeroLift(), hTailLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_zero", theStabilityCalculator.get_hTailcLZero(), hTailLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cL_alpha", theStabilityCalculator.get_hTailclAlpha(), hTailLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_star", theStabilityCalculator.get_hTailcLStar(), hTailLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("alpha_star", theStabilityCalculator.get_hTailalphaStar(), hTailLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_max", theStabilityCalculator.get_hTailcLMax(), hTailLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("alpha_Stall", theStabilityCalculator.get_hTailalphaStall(), hTailLiftElement, doc);	
 		
-		
-		
-		
-		
+		JPADStaticWriteUtils.writeSingleNode("horizontal_tail_eta_stations", theStabilityCalculator.getHTailYAdimensionalDistribution(), hTailLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("alpha_max_linear", theStabilityCalculator.get_hTailalphaMaxLinear(), hTailLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cl_distribution_at_CL_max", MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(theStabilityCalculator.get_hTailliftCoefficientDistributionatCLMax())), hTailLiftElement, doc);	
 	
+		JPADStaticWriteUtils.writeSingleNode("alphas_tail", theStabilityCalculator.get_alphasTail(), hTailLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.get_hTailliftCoefficient3DCurve()), hTailLiftElement, doc);	
+		
+		JPADStaticWriteUtils.writeSingleNode("dynamic_pressure_ratio", theStabilityCalculator.get_dynamicPressureRatio(), hTailLiftElement, doc);
+		
+		
+		//ELEVATOR--------------------------------------------------
+		org.w3c.dom.Element elevatorLiftElement = doc.createElement("Elevator");
+		liftElement.appendChild(elevatorLiftElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("alphas_tail", theStabilityCalculator.get_alphasTail(), elevatorLiftElement, doc);
+		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
+			String name;
+			name = "CL_at_delta_e_";
+			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			name = name.concat("_deg");
+		JPADStaticWriteUtils.writeSingleNode(name, MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.get_hTailLiftCoefficient3DCurveWithElevator().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i))), elevatorLiftElement, doc);
+		}
+		
+		JPADStaticWriteUtils.writeSingleNode("delta_e_elevator_for_tau_index", theStabilityCalculator.get_deltaEAnglesArray(), hTailLiftElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("tau_elevator_array", theStabilityCalculator.get_tauElevatorArray(), hTailLiftElement, doc);
+
+
+//DOWNWASH----------------------------------------------	
+		org.w3c.dom.Element downwashElement = doc.createElement("DOWNWASH");
+		outputRootElement.appendChild(downwashElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("alphas_body", theStabilityCalculator.getAlphasBody(), downwashElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("Downwash_gradient_constant_Roskam", theStabilityCalculator.get_downwashGradientConstantRoskam().get(0), downwashElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("Downwash_angle_with_constant_gradient_Roskam", theStabilityCalculator.get_downwashAngleConstantRoskam(), downwashElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("Downwash_gradient_constant_Slingerland", theStabilityCalculator.get_downwashGradientConstantSlingerland().get(0), downwashElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("Downwash_angle_with_constant_gradient_Slingerland", theStabilityCalculator.get_downwashAngleConstantSlingerland(), downwashElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("Downwash_gradient_variable_Slinger", theStabilityCalculator.get_downwashGradientVariableSlingerland(), downwashElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("Downwash_angle_with_variable_gradient_Slingerland", theStabilityCalculator.get_downwashAngleVariableSlingerland(), downwashElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("Horizontal_distance_variable", theStabilityCalculator.get_horizontalDistance(), downwashElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("Vertical_distance_variable", theStabilityCalculator.get_verticalDistance(), downwashElement, doc);	
+		
+		
+//DRAG-------------------------------------------
+		org.w3c.dom.Element dragElement = doc.createElement("DRAG");
+		outputRootElement.appendChild(dragElement);	
+				
+		//WING-----------------------------------------------------
+		org.w3c.dom.Element wingDragElement = doc.createElement("Wing");
+		dragElement.appendChild(wingDragElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("alphas_wing", theStabilityCalculator.get_alphasWing(), wingDragElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getWingliftCoefficient3DCurve()), wingDragElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cD_parasite", theStabilityCalculator.get_wingParasiteDragCoefficientDistribution(), wingDragElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cD_induced", theStabilityCalculator.get_wingInducedDragCoefficientDistribution(), wingDragElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cD_total", theStabilityCalculator.get_wingDragCoefficient3DCurve(), wingDragElement, doc);	
+		
+		//HORIZONTAL TAIL-----------------------------------------------------
+		org.w3c.dom.Element tailDragElement = doc.createElement("Horizontal_Tail");
+		dragElement.appendChild(tailDragElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("alphas_tail", theStabilityCalculator.get_alphasWing(), tailDragElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.get_hTailliftCoefficient3DCurve()), tailDragElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cD_parasite", theStabilityCalculator.get_hTailParasiteDragCoefficientDistribution(), tailDragElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cD_induced", theStabilityCalculator.get_hTailInducedDragCoefficientDistribution(), tailDragElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cD_total", theStabilityCalculator.get_hTailDragCoefficient3DCurve(), tailDragElement, doc);	
+		
+		   //elevator
+		org.w3c.dom.Element elevatorDragElement = doc.createElement("Horizontal_Tail_elevator_effect");
+		tailDragElement.appendChild(elevatorDragElement);
+		
+		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
+			String name;
+			name = "CD_at_delta_e_";
+			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			name = name.concat("_deg");
+		JPADStaticWriteUtils.writeSingleNode(name, MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.get_hTailDragCoefficient3DCurveWithElevator().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i))), elevatorDragElement, doc);
+		}
+		
+		
+//MOMENT-------------------------------------------
+		org.w3c.dom.Element momentElement = doc.createElement("MOMENT");
+		outputRootElement.appendChild(momentElement);
+		
+		//WING-----------------------------------------------------
+		org.w3c.dom.Element wingMomentElement = doc.createElement("Wing");
+		momentElement.appendChild(wingMomentElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("MAC", theStabilityCalculator.get_wingMAC(), wingMomentElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("x MAC", theStabilityCalculator.get_wingMeanAerodynamicChordLeadingEdgeX(), wingMomentElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("y MAC", theStabilityCalculator.get_wingYACMAC(), wingMomentElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("z MAC", theStabilityCalculator.get_wingZACMAC(), wingMomentElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("x_ac_position_MAC_percent_de_young_harper", theStabilityCalculator.get_wingXACMACpercent().get(MethodEnum.DEYOUNG_HARPER), wingMomentElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("x_ac_position_MAC_percent_napolitano_datcom", theStabilityCalculator.get_wingXACMACpercent().get(MethodEnum.NAPOLITANO_DATCOM), wingMomentElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("x_ac_position_MAC_percent_final", theStabilityCalculator.getWingFinalMomentumPole(), wingMomentElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("momentum_coefficient_respect_to_AC", theStabilityCalculator.get_wingMomentCoefficientFinal(), wingMomentElement, doc);	
+	
+		//HORIZONTAL TAIL-----------------------------------------------------
+		org.w3c.dom.Element hTAilMomentElement = doc.createElement("Horizontal_Tail");
+		momentElement.appendChild(hTAilMomentElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("MAC", theStabilityCalculator.get_hTailMAC(), hTAilMomentElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("x MAC", theStabilityCalculator.get_hTailMeanAerodynamicChordLeadingEdgeX(), hTAilMomentElement, doc);	
+		
+		JPADStaticWriteUtils.writeSingleNode("x_ac_position_MAC_percent_final", theStabilityCalculator.getHTailFinalMomentumPole(), hTAilMomentElement, doc);	
+	
+		//FUSELAGE-----------------------------------------------------
+		org.w3c.dom.Element fuselageMomentElement = doc.createElement("Fuselage");
+		momentElement.appendChild(fuselageMomentElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("CM0", theStabilityCalculator.get_fuselageCM0(), fuselageMomentElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("CM_alpha", theStabilityCalculator.get_fuselageCMAlpha(), fuselageMomentElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alphas_body", theStabilityCalculator.getAlphasBody(), fuselageMomentElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("CM", theStabilityCalculator.get_fuselageMomentCoefficient(), fuselageMomentElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("CM_due_to_drag", theStabilityCalculator.get_fuselageMomentCoefficientdueToDrag(), fuselageMomentElement, doc);
+		
+
+		
+		
 	}
 	
 }
