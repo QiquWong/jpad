@@ -914,7 +914,7 @@ public class ReaderWriter{
 		org.w3c.dom.Element outputfirstRootElement = doc.createElement("OUTPUT");
 		rootElement.appendChild(outputfirstRootElement);
 		
-		// COMPONENTS 
+//----------- COMPONENTS ------------------
 		
 		org.w3c.dom.Element outputRootElement = doc.createElement("COMPONENTS");
 		outputfirstRootElement.appendChild(outputRootElement);
@@ -1080,9 +1080,53 @@ public class ReaderWriter{
 		JPADStaticWriteUtils.writeSingleNode("CM", theStabilityCalculator.get_fuselageMomentCoefficient(), fuselageMomentElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("CM_due_to_drag", theStabilityCalculator.get_fuselageMomentCoefficientdueToDrag(), fuselageMomentElement, doc);
 		
+//----------- GLOBAL ------------------
+		
+		org.w3c.dom.Element outputglobalElement = doc.createElement("GLOBAL");
+		outputfirstRootElement.appendChild(outputglobalElement);
 
+		//LIFT-------------------------------------------
+		org.w3c.dom.Element liftGlobalElement = doc.createElement("LIFT");
+		outputglobalElement.appendChild(liftGlobalElement);
+
+		JPADStaticWriteUtils.writeSingleNode("alphas_body", theStabilityCalculator.get_alphasBody(), liftGlobalElement, doc);
+		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
+			String name;
+			name = "CL_total_at_delta_e_";
+			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			name = name.concat("_deg");
+			JPADStaticWriteUtils.writeSingleNode(name, theStabilityCalculator.get_totalLiftCoefficient().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i)), liftGlobalElement, doc);
+		}
+		JPADStaticWriteUtils.writeSingleNode("horizontal_tail_equilibrium_lift_coefficient", theStabilityCalculator.get_hTailEquilibriumLiftCoefficient(), liftGlobalElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("total_equilibrium_lift_coefficient", theStabilityCalculator.get_totalEquilibriumLiftCoefficient(), liftGlobalElement, doc);
 		
 		
+		//MOMENT-------------------------------------------
+		org.w3c.dom.Element momentGlobalElement = doc.createElement("MOMENT_RESPECT_TO_CG");
+		outputRootElement.appendChild(momentGlobalElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("alphas_body", theStabilityCalculator.get_alphasBody(), momentGlobalElement, doc);		
+		JPADStaticWriteUtils.writeSingleNode("wing_moment_coefficient_no_pendular", theStabilityCalculator.get_wingMomentCoefficientNOPendular(), momentGlobalElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("wing_moment_coefficient_pendular", theStabilityCalculator.get_wingMomentCoefficientPendular(), momentGlobalElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("horizontal_tail_moment_coefficient", theStabilityCalculator.get_hTailMomentCoefficientPendular(), momentGlobalElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("fuselage_moment_coefficient", theStabilityCalculator.get_fuselageMomentCoefficient(), momentGlobalElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("fuselage_moment_coefficient_due_to_drag", theStabilityCalculator.get_fuselageMomentCoefficientdueToDrag(), momentGlobalElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("total_moment_coefficient_delta_e_zero", theStabilityCalculator.get_totalMomentCoefficientPendular(), momentGlobalElement, doc);
+		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
+			String name;
+			name = "total_moment_coefficient_at_delta_e_";
+			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			name = name.concat("_deg");
+			JPADStaticWriteUtils.writeSingleNode(name, theStabilityCalculator.get_totalMomentCoefficientPendularDeltaE().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i)), liftGlobalElement, doc);
+		}
+		
+		JPADStaticWriteUtils.writeSingleNode("delta_e_equilibrium", theStabilityCalculator.get_deltaEEquilibrium(), momentGlobalElement, doc);
+	
+		
+		
+		//DRAG-------------------------------------------
+		org.w3c.dom.Element dragGlobalElement = doc.createElement("DRAG_POLAR");
+		outputRootElement.appendChild(dragGlobalElement);
 	}
 	
 }
