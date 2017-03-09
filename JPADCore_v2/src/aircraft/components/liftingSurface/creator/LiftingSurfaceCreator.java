@@ -3005,6 +3005,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		return _equivalentWingRootChord;
 	}
 	
+	public void setRootChordEquivalentWing (Amount<Length> chordRootEquivalentWing) {
+		this._equivalentWingRootChord = chordRootEquivalentWing;
+	}
+	
 	public Amount<Area> getEquivalentWingSurface() {
 		return _equivalentWingSurface;
 	}

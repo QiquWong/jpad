@@ -15,7 +15,7 @@ import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import standaloneutils.JPADXmlReader;
 
-public class Test_HighLiftDevicesCalc_01 {
+public class TestHighLiftDevicesCalc01 {
 
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
@@ -35,7 +35,7 @@ public class Test_HighLiftDevicesCalc_01 {
 	@Argument
 	private List<String> arguments = new ArrayList<String>();
 	
-	public Test_HighLiftDevicesCalc_01 (){
+	public TestHighLiftDevicesCalc01 (){
 		theCmdLineParser = new CmdLineParser(this);
 	}
 
@@ -48,10 +48,10 @@ public class Test_HighLiftDevicesCalc_01 {
 		System.out.println("--------------");
 		
 		
-		Test_HighLiftDevicesCalc_01 theTestObject = new Test_HighLiftDevicesCalc_01();
+		TestHighLiftDevicesCalc01 theTestObject = new TestHighLiftDevicesCalc01();
 		theTestObject.theCmdLineParser.parseArgument(args);
 		
-		String databaseDirectoryAbsolutePath = theTestObject.get_databasePath().getAbsolutePath();
+		String databaseDirectoryAbsolutePath = theTestObject.getDatabasePath().getAbsolutePath();
 		
 		// Set the folders tree
 		MyConfiguration.initWorkingDirectoryTree(MyConfiguration.currentDirectoryString,
@@ -86,7 +86,7 @@ public class Test_HighLiftDevicesCalc_01 {
 		this._inputFile = _inputFile;
 	}
 
-	public File get_databasePath() {
+	public File getDatabasePath() {
 		return _databasePath;
 	}
 

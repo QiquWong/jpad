@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Area;
 import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,6 +24,7 @@ import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import calculators.aerodynamics.LiftCalc;
 import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
@@ -360,18 +362,39 @@ public class HighLiftDevicesCalc {
 		System.out.println("\nCalculating high lift devices effects...");
 		System.out.println("\n-----------HIGH LIFT DEVICES EFFECTS-------------- ");
 
-		///////////////////////////////////////////////////////////////
-		// TODO: SET THE REQUIRED PARAMETERS INSIDE THE DEFAULT WING //
-		///////////////////////////////////////////////////////////////
-		
+		//....................................................................
+		// Initialization with a default wing ...
 		theWing = new LiftingSurfaceBuilder("Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
 				.liftingSurfaceCreator(
 						new LiftingSurfaceCreator
-						.LiftingSurfaceCreatorBuilder("Wing", Boolean.TRUE, ComponentEnum.WING)
+						.LiftingSurfaceCreatorBuilder("Wing", Boolean.TRUE, AircraftEnum.ATR72, ComponentEnum.WING)
 						.build()
 				)
 		.build();
 		
+		//....................................................................
+		// Replacement of the required wing parameters with the input data ...  
+		theWing.getLiftingSurfaceCreator().getPanels().clear();
+		theWing.getAirfoilList().clear();
+		
+		theWing.getLiftingSurfaceCreator().setSurfacePlanform(input.getSurface());
+		theWing.getLiftingSurfaceCreator().setSpan(
+				Amount.valueOf(
+						Math.sqrt(input.getAspectRatio()*input.getSurface().doubleValue(SI.SQUARE_METRE)),
+						SI.METER
+						)
+				);
+		theWing.getLiftingSurfaceCreator().setAspectRatio(input.getAspectRatio());
+		theWing.getLiftingSurfaceCreator().setSweepQuarterChordEquivalentWing(input.getSweepQuarteChordEq());
+		theWing.getLiftingSurfaceCreator().setTaperRatioEquivalentWing(input.getTaperRatioEq());
+		theWing.getLiftingSurfaceCreator().setRootChordEquivalentWing(input.getRootChordEquivalentWing());
+		
+		///////////////////////////////////////////////////////////////
+		// TODO: SET THE REQUIRED PARAMETERS INSIDE THE DEFAULT WING //
+		/////////////////////////////////////////////////////////////// 
+		
+		//....................................................................
+		// Calculation of the high lift effects ...
 		LiftCalc.calculateHighLiftDevicesEffects(
 				theWing,
 				input.getDeltaFlap().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
@@ -451,6 +474,8 @@ public class HighLiftDevicesCalc {
 		
 		System.out.println("\t------------------DONE----------------------");
 		
+		//....................................................................
+		// Plot the lift curve comparison ...
 		try {
 			plotCurves(aeroDatabaseReader);
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -569,6 +594,9 @@ public class HighLiftDevicesCalc {
 		System.out.println("\tCL0 = " + output.getcL0HighLift());
 		System.out.println("\tCL alpha = " + output.getcLalphaHighLift());
 
+		//--------------------------------------------------------------------------------------
+		// PLOTTING CURVES:
+		//--------------------------------------------------------------------------------------
 		List<String> legend  = new ArrayList<>(); 
 		legend.add("clean");
 		legend.add("high lift");

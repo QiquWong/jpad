@@ -119,4 +119,20 @@ public abstract class AbstractLiftingSurface implements ILiftingSurfaceCreator {
 		this.surfacePlanform = surfacePlanform;
 	}
 
+	public Amount<Length> getSpan() {
+		return span;
+	}
+
+	public void setSpan(Amount<Length> span) {
+		this.span = span;
+	}
+	
+	public Double getAspectRatio() {
+		return aspectRatio;
+	}
+
+	public void setAspectRatio(Double ar) {
+		this.aspectRatio = ar;
+	}
+	
 }
