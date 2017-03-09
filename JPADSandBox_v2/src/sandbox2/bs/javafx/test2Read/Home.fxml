@@ -20,26 +20,26 @@
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="10.0" prefWidth="130.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="271.0" minWidth="10.0" prefWidth="271.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="192.0" minWidth="10.0" prefWidth="52.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="113.0" minWidth="10.0" prefWidth="56.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="86.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="73.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="113.0" minWidth="10.0" prefWidth="58.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="65.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="55.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Inserire File XML">
+                  <Label text="File XML" GridPane.halignment="CENTER">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
                   <TextField fx:id="pathField" prefHeight="25.0" prefWidth="139.0" GridPane.columnIndex="1" />
-                  <Button mnemonicParsing="false" onAction="#chooserWindow" text="Apri" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+                  <Button mnemonicParsing="false" onAction="#chooserWindow" prefHeight="25.0" prefWidth="48.0" text="Open" GridPane.columnIndex="2" GridPane.halignment="CENTER">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#load" text="Load" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#load" prefHeight="25.0" prefWidth="48.0" text="Load" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
                   <Button mnemonicParsing="false" onAction="#update" text="Update" GridPane.columnIndex="4" GridPane.halignment="CENTER" />
                   <Button mnemonicParsing="false" onAction="#save" text="Save" GridPane.columnIndex="5" GridPane.halignment="CENTER" />
                </children>
@@ -58,10 +58,10 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField fx:id="nomeField" prefHeight="25.0" prefWidth="489.0" GridPane.columnIndex="1" />
-                  <TextField fx:id="cognomeField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label text="NOME :" />
-                  <Label text="COGNOME :" GridPane.rowIndex="1" />
+                  <TextField fx:id="nameField" prefHeight="25.0" prefWidth="489.0" GridPane.columnIndex="1" />
+                  <TextField fx:id="surnameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="NAME :" />
+                  <Label text="SURNAME :" GridPane.rowIndex="1" />
                </children>
             </GridPane>
          </children>
@@ -81,9 +81,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField fx:id="altezzaField" prefHeight="25.0" prefWidth="270.0" GridPane.columnIndex="1" />
+                  <TextField fx:id="highField" prefHeight="25.0" prefWidth="270.0" GridPane.columnIndex="1" />
                   <TextField fx:id="unitField" prefHeight="25.0" prefWidth="157.0" GridPane.columnIndex="2" />
-                  <Label text="ALTEZZA :" />
+                  <Label text="HIGH :" />
                </children>
                <VBox.margin>
                   <Insets left="10.0" />

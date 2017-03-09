@@ -27,17 +27,17 @@ import javafx.stage.Stage;
 public class Read extends Application{
 	private static Stage primaryStage;
 	private static Pane mainLayout; 
-	private String percorso;
+	private String path;
 	private Document newDocument;
 	
 	@FXML
 	private TextField pathField;
 	@FXML
-	private TextField nomeField;
+	private TextField nameField;
 	@FXML
-	private TextField cognomeField;
+	private TextField surnameField;
 	@FXML
-	private TextField altezzaField;
+	private TextField highField;
 	@FXML
 	private TextField unitField;
 	
@@ -61,41 +61,41 @@ public class Read extends Application{
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("File XML");
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter("XML File","*.xml"));
-		this.percorso = fileChooser.showOpenDialog(primaryStage).getAbsolutePath();
-		pathField.appendText(percorso);
+		this.path = fileChooser.showOpenDialog(primaryStage).getAbsolutePath();
+		pathField.appendText(path);
 	}
 	@FXML
 	public void load() throws ParserConfigurationException, Exception, IOException{
 		DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = documentFactory.newDocumentBuilder();
-		Document document = builder.parse(new File(percorso));
-		NodeList persone = document.getElementsByTagName("persona");
-		String nome = persone.item(0).getChildNodes().item(1).getTextContent();
-		String cognome = persone.item(0).getChildNodes().item(3).getTextContent();
-		String altezza = persone.item(0).getChildNodes().item(5).getTextContent();
-		String unit = persone.item(0).getChildNodes().item(5).getAttributes().getNamedItem("unit").getNodeValue();
-		this.nomeField.appendText(nome);
-		this.cognomeField.appendText(cognome);
-		this.altezzaField.appendText(altezza);
+		Document document = builder.parse(new File(path));
+		NodeList person = document.getElementsByTagName("person");
+		String name = person.item(0).getChildNodes().item(1).getTextContent();
+		String surname = person.item(0).getChildNodes().item(3).getTextContent();
+		String high = person.item(0).getChildNodes().item(5).getTextContent();
+		String unit = person.item(0).getChildNodes().item(5).getAttributes().getNamedItem("unit").getNodeValue();
+		this.nameField.appendText(name);
+		this.surnameField.appendText(surname);
+		this.highField.appendText(high);
 		this.unitField.appendText(unit);
 	}
 	@FXML
 	public void update() throws Exception{
 		
-		String newNome = nomeField.getText();
-		String newCognome = cognomeField.getText();
-		String newAltezza = altezzaField.getText();
+		String newName = nameField.getText();
+		String newSurname = surnameField.getText();
+		String newHigh = highField.getText();
 		String newUnit = unitField.getText();
 		
 		DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = documentFactory.newDocumentBuilder();
-		Document document = builder.parse(new File(percorso));
-		NodeList persone = document.getElementsByTagName("persona");
+		Document document = builder.parse(new File(path));
+		NodeList person = document.getElementsByTagName("person");
 		
-		persone.item(0).getChildNodes().item(1).setTextContent(newNome);
-		persone.item(0).getChildNodes().item(3).setTextContent(newCognome);
-		persone.item(0).getChildNodes().item(5).setTextContent(newAltezza);
-		persone.item(0).getChildNodes().item(5).getAttributes().getNamedItem("unit").setNodeValue(newUnit);
+		person.item(0).getChildNodes().item(1).setTextContent(newName);
+		person.item(0).getChildNodes().item(3).setTextContent(newSurname);
+		person.item(0).getChildNodes().item(5).setTextContent(newHigh);
+		person.item(0).getChildNodes().item(5).getAttributes().getNamedItem("unit").setNodeValue(newUnit);
 		
 		newDocument = document;
 	}
