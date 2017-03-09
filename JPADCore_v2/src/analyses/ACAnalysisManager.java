@@ -1325,13 +1325,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	public void calculateAerodynamicAndStability(Aircraft aircraft, String resultsFolderPath) {
 
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
-		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
-		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
-		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability();
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability(ConditionEnum.TAKE_OFF);
+		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB)) 
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).calculateAerodynamicAndStability(ConditionEnum.CLIMB);
+		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE)) 
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).calculateAerodynamicAndStability(ConditionEnum.CRUISE);
+		if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING)) 
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).calculateAerodynamicAndStability(ConditionEnum.LANDING);
 
 	}
 	

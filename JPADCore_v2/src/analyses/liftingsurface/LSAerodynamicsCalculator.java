@@ -23,6 +23,7 @@ import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -46,6 +47,7 @@ public class LSAerodynamicsCalculator {
 	private OperatingConditions _theOperatingConditions;
 	private Map <String, List<MethodEnum>> _taskMap;
 	private Map <String, List<MethodEnum>> _plotMap;
+	private ConditionEnum _theCondition;
 	private int _numberOfPointSemiSpanWise;
 	private int _numberOfAlphas;
 	private int _numberOfAlphasPlot;
@@ -153,13 +155,17 @@ public class LSAerodynamicsCalculator {
 			LiftingSurface theLiftingSurface,
 			OperatingConditions theOperatingConditions,
 			Map <String, List<MethodEnum>> taskMap,
-			Map <String, List<MethodEnum>> plotMap
+			Map <String, List<MethodEnum>> plotMap,
+			ConditionEnum theCondition,
+			int numberOfPointSemiSpanWise
 			) {
 		
 		this._theLiftingSurface = theLiftingSurface;
 		this._theOperatingConditions = theOperatingConditions;
 		this._taskMap = taskMap;
 		this._plotMap = plotMap;
+		this._theCondition = theCondition;
+		this._numberOfPointSemiSpanWise = numberOfPointSemiSpanWise;
 		
 		initializeVariables();
 		initializeData();
@@ -175,8 +181,8 @@ public class LSAerodynamicsCalculator {
 		this._currentMachNumber = this._theOperatingConditions.getMachCruise();
 		this._numberOfAlphas = this._theOperatingConditions.getAlpha().length;
 		this._numberOfAlphasPlot = 50;
-		this._numberOfPointSemiSpanWise = 50;
-		this._vortexSemiSpanToSemiSpanRatio = 0.01;
+		this._vortexSemiSpanToSemiSpanRatio = 1.0/(2*_numberOfPointSemiSpanWise
+				);
 		this._alphaArrayPlot = new Double[this._numberOfAlphasPlot];
 		this._alphaArrayPlotHighLift = new Double[this._numberOfAlphasPlot];
 		this._alphaArray = new ArrayList<Amount<Angle>>();
@@ -2248,7 +2254,8 @@ public class LSAerodynamicsCalculator {
 					_theLiftingSurface,
 					flapDeflection,
 					slatDeflection,
-					_currentLiftCoefficient
+					_currentLiftCoefficient,
+					_theCondition
 					);	
 			
 			//------------------------------------------------------
@@ -3108,5 +3115,29 @@ public class LSAerodynamicsCalculator {
 
 	public void setCD0HighLift(Map<MethodEnum, Double> _cD0HighLift) {
 		this._cD0HighLift = _cD0HighLift;
+	}
+
+	public ConditionEnum getTheCondition() {
+		return _theCondition;
+	}
+
+	public void setTheCondition(ConditionEnum theCondition) {
+		this._theCondition = theCondition;
+	}
+
+	public List<Amount<Angle>> getTwistDistribution() {
+		return _twistDistribution;
+	}
+
+	public void setTwistDistribution(List<Amount<Angle>> _twistDistribution) {
+		this._twistDistribution = _twistDistribution;
+	}
+
+	public List<Amount<Angle>> getAlphaZeroLiftDistribution() {
+		return _alphaZeroLiftDistribution;
+	}
+
+	public void setAlphaZeroLiftDistribution(List<Amount<Angle>> _alphaZeroLiftDistribution) {
+		this._alphaZeroLiftDistribution = _alphaZeroLiftDistribution;
 	}
 }

@@ -1,6 +1,7 @@
 package standaloneutils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -543,4 +544,59 @@ public final class MyMathUtils {
 		return sum;
 	}
 
+	public static double calculateFirstDerivative2Point (
+			double[] xArray,
+			double[] yArray
+			) {
+		
+		return ((yArray[1]-yArray[0])/(xArray[1]-xArray[0]));
+		
+	}
+	
+	public static double calculateFirstDerivative3Points (
+			double[] xArray,
+			double[] yArray
+			) {
+		
+		return (((yArray[2]-yArray[1])/(xArray[2]-xArray[1])) 
+				+ ((yArray[1]-yArray[0])/(xArray[1]-xArray[0])))
+				/2;
+		
+	};
+	
+	public static double[] calculateArrayFirstDerivative (
+			double[] xArray,
+			double[] yArray
+			) {
+		
+		if(xArray.length != yArray.length) {
+			System.err.println("THE LENGTH OF THE TWO ARRAYS HAS TO BE THE SAME !!!");
+			return null;
+		}
+		
+		double[] derivativeArray = new double[xArray.length];
+		
+		derivativeArray[0] = calculateFirstDerivative2Point(
+				new double[] {xArray[0], xArray[1]},
+				new double[] {yArray[0], yArray[1]}
+				);
+		
+		for(int i=1; i<xArray.length-1; i++) {
+			
+			derivativeArray[i] = calculateFirstDerivative3Points(
+					new double[] {xArray[i-1], xArray[i], xArray[i+1]},
+					new double[] {yArray[i-1], yArray[i], yArray[i+1]}
+					);
+			
+		}
+		
+		derivativeArray[derivativeArray.length-1] = calculateFirstDerivative2Point(
+				new double[] {xArray[xArray.length-2], xArray[xArray.length-1]},
+				new double[] {yArray[yArray.length-2], yArray[yArray.length-1]}
+				);
+			
+		return derivativeArray;
+		
+	}
+	
 }

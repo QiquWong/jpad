@@ -11,6 +11,7 @@ import analyses.liftingsurface.LSAerodynamicsCalculator;
 import analyses.liftingsurface.LSAerodynamicsCalculator.CalcCLmax;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -55,7 +56,9 @@ public class NasaBlackwellTest {
 				theAircraft.getWing(),
 				theOperatingConditions,
 				taskMap,
-				plotMap
+				plotMap,
+				ConditionEnum.CRUISE,
+				50
 				);
 		
 		CalcCLmax calcCLmax = theLSAerodynamicsCalculator.new CalcCLmax();

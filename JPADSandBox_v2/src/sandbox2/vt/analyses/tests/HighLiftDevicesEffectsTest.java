@@ -20,6 +20,7 @@ import analyses.liftingsurface.LSAerodynamicsCalculator.CalcHighLiftCurve;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -247,14 +248,17 @@ public class HighLiftDevicesEffectsTest extends Application {
 					theAircraft.getWing(),
 					theOperatingConditions,
 					taskMap,
-					plotMap
+					plotMap,
+					ConditionEnum.TAKE_OFF,
+					50
 					);
 			CalcCLAlpha theCLAlphaCalculator = theAerodynamicCalculator.new CalcCLAlpha();
 			theCLAlphaCalculator.nasaBlackwell();
 			
-			theAircraft.getWing().setTheAerodynamicsCalculator(theAerodynamicCalculator);
+			Map<ConditionEnum, LSAerodynamicsCalculator> theAerodynamicCalculatorMap = new HashMap<>();
+			theAerodynamicCalculatorMap.put(ConditionEnum.TAKE_OFF, theAerodynamicCalculator);
+			theAircraft.getWing().setTheAerodynamicsCalculatorMap(theAerodynamicCalculatorMap);
 
-			// TAKE-OFF
 			CalcHighLiftCurve calcHighLiftCurve = theAerodynamicCalculator.new CalcHighLiftCurve();
 			calcHighLiftCurve.semiempirical(
 					theOperatingConditions.getFlapDeflectionTakeOff(),
@@ -265,22 +269,6 @@ public class HighLiftDevicesEffectsTest extends Application {
 			
 			System.out.println("\n\t\tAlpha Array: " + theAerodynamicCalculator.getAlphaArrayPlotHighLift());
 			System.out.println("\n\t\tCL Array: " + theAerodynamicCalculator.getLiftCoefficient3DCurveHighLift().get(MethodEnum.EMPIRICAL));			
-			
-//			LiftCalc.calculateHighLiftDevicesEffects(
-//					theAircraft.getWing(),
-//					theOperatingConditions.getFlapDeflectionTakeOff(),
-//					theOperatingConditions.getSlatDeflectionTakeOff(),
-//					theAerodynamicCalculator.getCurrentLiftCoefficient()
-//					);
-			
-			// LANDING
-//			LiftCalc.calculateHighLiftDevicesEffects(
-//					theAircraft.getWing(),
-//					theOperatingConditions.getFlapDeflectionTakeOff(),
-//					theOperatingConditions.getSlatDeflectionTakeOff(),
-//					theAerodynamicCalculator.getCurrentLiftCoefficient()
-//					);
-			
 			//----------------------------------------------------------------------------------
 			// Results print
 			System.out.println("\ndeltaCl0_flap_list = ");

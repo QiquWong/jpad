@@ -32,6 +32,7 @@ import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -54,7 +55,7 @@ public class LiftingSurface implements ILiftingSurface {
 	private Double _kExcr = 0.0; 
 	private int _numberOfEngineOverTheWing = 0; 
 	
-	private LSAerodynamicsCalculator _theAerodynamicsCalculator;
+	private Map<ConditionEnum, LSAerodynamicsCalculator> _theAerodynamicsCalculatorMap;
 	// THIS HAS TO BE CHANGED IN LSAerodynamicCalculator
 	private LSAerodynamicsManager _theAerodynamics;
 	
@@ -1868,12 +1869,12 @@ public class LiftingSurface implements ILiftingSurface {
 		this._theAerodynamics = theAerodynamics;
 	}
 	
-	public LSAerodynamicsCalculator getTheAerodynamicsCalculator() {
-		return _theAerodynamicsCalculator;
+	public Map<ConditionEnum, LSAerodynamicsCalculator> getTheAerodynamicsCalculatorMap() {
+		return _theAerodynamicsCalculatorMap;
 	}
 
-	public void setTheAerodynamicsCalculator(LSAerodynamicsCalculator _theAerodynamicsCalculator) {
-		this._theAerodynamicsCalculator = _theAerodynamicsCalculator;
+	public void setTheAerodynamicsCalculatorMap(Map<ConditionEnum, LSAerodynamicsCalculator> _theAerodynamicsCalculatorMap) {
+		this._theAerodynamicsCalculatorMap = _theAerodynamicsCalculatorMap;
 	}
 
 	public List<Double> getMaxThicknessVsY() {

@@ -89,10 +89,11 @@
 				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
 			</global_data>
 			<wing_analyses>
-				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
+				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
-					<cL_Alpha perform="TRUE" method="NASA_BLACKWELL"></cL_Alpha>
-					<cL_vs_alpha perform="TRUE" method="NASA_BLACKWELL"></cL_vs_alpha> 
+					<cL_Alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
 				</lift>
 				<high_lift>
 				

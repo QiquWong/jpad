@@ -1447,7 +1447,6 @@ public class StabilityExecutableManager {
 						// vertical and horizontal distances from AC
 
 						this._verticalDistanceZeroLiftDirectionWingHTailPARTIAL = this._verticalDistanceZeroLiftDirectionWingHTail ;		
-						this._horizontalDistanceQuarterChordWingHTail =  this._horizontalDistanceQuarterChordWingHTail;
 
 						// the horizontal distance is always the same, the vertical changes in function of the angle of attack.
 

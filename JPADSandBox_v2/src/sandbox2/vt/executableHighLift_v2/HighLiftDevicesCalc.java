@@ -395,29 +395,29 @@ public class HighLiftDevicesCalc {
 		
 		//....................................................................
 		// Calculation of the high lift effects ...
-		LiftCalc.calculateHighLiftDevicesEffects(
-				theWing,
-				input.getDeltaFlap().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
-				input.getDeltaSlat().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
-				input.getCurrentLiftingCoefficient()
-				);
-		
-		output.setDeltaCl0FlapList(theWing.getTheAerodynamicsCalculator().getDeltaCl0FlapList().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCL0FlapList(theWing.getTheAerodynamicsCalculator().getDeltaCL0FlapList().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaClmaxFlapList(theWing.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCLmaxFlapList(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxFlapList().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaClmaxSlatList(theWing.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCLmaxSlatList(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCDList(theWing.getTheAerodynamicsCalculator().getDeltaCDList().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCMC4List(theWing.getTheAerodynamicsCalculator().getDeltaCMc4List().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCl0Flap(theWing.getTheAerodynamicsCalculator().getDeltaCl0Flap().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCL0Flap(theWing.getTheAerodynamicsCalculator().getDeltaCL0Flap().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaClmaxFlap(theWing.getTheAerodynamicsCalculator().getDeltaClmaxFlap().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCLmaxFlap(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxFlap().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaClmaxSlat(theWing.getTheAerodynamicsCalculator().getDeltaClmaxSlat().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCLmaxSlat(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxSlat().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCD(theWing.getTheAerodynamicsCalculator().getDeltaCD().get(MethodEnum.SEMPIEMPIRICAL));
-		output.setDeltaCMC4(theWing.getTheAerodynamicsCalculator().getDeltaCMc4().get(MethodEnum.SEMPIEMPIRICAL));
+//		LiftCalc.calculateHighLiftDevicesEffects(
+//				theWing,
+//				input.getDeltaFlap().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
+//				input.getDeltaSlat().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
+//				input.getCurrentLiftingCoefficient()
+//				);
+//		
+//		output.setDeltaCl0FlapList(theWing.getTheAerodynamicsCalculator().getDeltaCl0FlapList().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCL0FlapList(theWing.getTheAerodynamicsCalculator().getDeltaCL0FlapList().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaClmaxFlapList(theWing.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCLmaxFlapList(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxFlapList().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaClmaxSlatList(theWing.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCLmaxSlatList(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCDList(theWing.getTheAerodynamicsCalculator().getDeltaCDList().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCMC4List(theWing.getTheAerodynamicsCalculator().getDeltaCMc4List().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCl0Flap(theWing.getTheAerodynamicsCalculator().getDeltaCl0Flap().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCL0Flap(theWing.getTheAerodynamicsCalculator().getDeltaCL0Flap().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaClmaxFlap(theWing.getTheAerodynamicsCalculator().getDeltaClmaxFlap().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCLmaxFlap(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxFlap().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaClmaxSlat(theWing.getTheAerodynamicsCalculator().getDeltaClmaxSlat().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCLmaxSlat(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxSlat().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCD(theWing.getTheAerodynamicsCalculator().getDeltaCD().get(MethodEnum.SEMPIEMPIRICAL));
+//		output.setDeltaCMC4(theWing.getTheAerodynamicsCalculator().getDeltaCMc4().get(MethodEnum.SEMPIEMPIRICAL));
 
 		//---------------------------------------------------------------
 		// PRINT HIGH LIFT DEVICES EFFECTS:

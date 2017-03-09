@@ -32,6 +32,7 @@ import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.geometry.LSGeometryCalc;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.MethodEnum;
@@ -147,6 +148,47 @@ public class LiftCalc {
 		return kPolhamus;
 	}
 
+	public static double calculateCLAlphaAtMachNasaBlackwell (
+			Amount<Length> semiSpan,
+			Amount<Area> surface,
+			List<Amount<Length>> yStationDistribution,
+			List<Amount<Length>> chordDistribution,
+			List<Amount<Length>> xLEDistribution,
+			List<Amount<Angle>> dihedralDistribution,
+			List<Amount<Angle>> twistDistribution,
+			List<Amount<Angle>> alphaZeroLiftDistribution,
+			double vortexSemiSpanToSemiSpanRatio,
+			double currentMach,
+			Amount<Length> altitude
+			) {
+		
+		NasaBlackwell theNasaBlackwellCalculator = new NasaBlackwell(
+				semiSpan.doubleValue(SI.METER),
+				surface.doubleValue(SI.SQUARE_METRE),
+				MyArrayUtils.convertListOfAmountTodoubleArray(yStationDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(chordDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(dihedralDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(twistDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(alphaZeroLiftDistribution),
+				vortexSemiSpanToSemiSpanRatio,
+				0.0, // alpha 
+				currentMach,
+				altitude.doubleValue(SI.METER)
+				);
+		
+		Amount<Angle> alphaOne = Amount.valueOf(toRadians(0.), SI.RADIAN);
+		theNasaBlackwellCalculator.calculate(alphaOne);
+		double clOne = theNasaBlackwellCalculator.getCLCurrent();
+
+		Amount<Angle>alphaTwo = Amount.valueOf(toRadians(4.), SI.RADIAN);
+		theNasaBlackwellCalculator.calculate(alphaTwo);
+		double clTwo = theNasaBlackwellCalculator.getCLCurrent();
+
+		return (clTwo-clOne)/alphaTwo.getEstimatedValue();
+		
+	}
+	
 	/**
 	 * @author Lorenzo Attanasio
 	 * 
@@ -774,7 +816,8 @@ public class LiftCalc {
 			LiftingSurface theLiftingSurface,
 			List<Amount<Angle>> flapDeflections,
 			List<Amount<Angle>> slatDeflections,
-			Double currentLiftingCoefficient
+			Double currentLiftingCoefficient,
+			ConditionEnum theCondition			
 			) {
 		
 		List<SymmetricFlapCreator> flapList = theLiftingSurface.getLiftingSurfaceCreator().getSymmetricFlaps();
@@ -1087,7 +1130,7 @@ public class LiftCalc {
 					(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
 					+(clZeroMeanFlap[i]*(cFirstCFlap.get(i).doubleValue()-1))
 					);
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0FlapList().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCl0FlapList().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCl0FlapList
 				);
@@ -1095,7 +1138,7 @@ public class LiftCalc {
 		double deltaCl0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCl0Flap += deltaCl0FlapList.get(i);
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCl0Flap().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCl0Flap().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCl0Flap
 				);
@@ -1188,7 +1231,7 @@ public class LiftCalc {
 					*k3.get(i).doubleValue()
 					*deltaClmaxBase.get(i).doubleValue()
 					);
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaClmaxFlapList().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaClmaxFlapList
 				);
@@ -1196,7 +1239,7 @@ public class LiftCalc {
 		double deltaClmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaClmaxFlap += deltaClmaxFlapList.get(i);
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxFlap().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaClmaxFlap().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaClmaxFlap
 				);
@@ -1239,7 +1282,7 @@ public class LiftCalc {
 						*slatDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 						*cExtcSlat.get(i).doubleValue()
 						);
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().put(
+			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaClmaxSlatList().put(
 					MethodEnum.SEMPIEMPIRICAL,
 					deltaClmaxSlatList
 					);
@@ -1248,9 +1291,10 @@ public class LiftCalc {
 			for(int i=0; i<slatDeflections.size(); i++)
 				deltaClmaxSlat += deltaClmaxSlatList.get(i);
 			theLiftingSurface
-			.getTheAerodynamicsCalculator()
-				.getDeltaClmaxSlat()
-					.put(MethodEnum.SEMPIEMPIRICAL, deltaClmaxSlat);
+			.getTheAerodynamicsCalculatorMap()
+			.get(theCondition)
+			.getDeltaClmaxSlat()
+			.put(MethodEnum.SEMPIEMPIRICAL, deltaClmaxSlat);
 			
 			//---------------------------------------------------------------
 			// deltaCLmax (slat)
@@ -1277,7 +1321,7 @@ public class LiftCalc {
 						deltaClmaxSlatList.get(i)
 						*(slatSurface.get(i)/theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE))
 						*kLambdaSlat.get(i));
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().put(
+			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCLmaxSlatList().put(
 					MethodEnum.SEMPIEMPIRICAL,
 					deltaCLmaxSlatList
 					);
@@ -1285,16 +1329,16 @@ public class LiftCalc {
 			double deltaCLmaxSlat = 0.0;
 			for(int i=0; i<slatDeflections.size(); i++)
 				deltaCLmaxSlat += deltaCLmaxSlatList.get(i);
-			theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxSlat().put(
+			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCLmaxSlat().put(
 					MethodEnum.SEMPIEMPIRICAL,
 					deltaCLmaxSlat
 					);
 		}
 		else {
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxSlatList(null);
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaClmaxSlat(null);
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxSlatList(null);
-			theLiftingSurface.getTheAerodynamicsCalculator().setDeltaCLmaxSlat(null);
+			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaClmaxSlatList(null);
+			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaClmaxSlat(null);
+			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaCLmaxSlatList(null);
+			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaCLmaxSlat(null);
 		}
 			
 		//---------------------------------------------------------------
@@ -1320,11 +1364,12 @@ public class LiftCalc {
 					);
 
 		double cLLinearSlope = theLiftingSurface
-				.getTheAerodynamicsCalculator()
-					.getCLAlpha()
-						.get(MethodEnum.NASA_BLACKWELL)
-							.to(NonSI.DEGREE_ANGLE.inverse())
-								.getEstimatedValue();
+				.getTheAerodynamicsCalculatorMap()
+					.get(theCondition)
+						.getCLAlpha()
+							.get(MethodEnum.NASA_BLACKWELL)
+								.to(NonSI.DEGREE_ANGLE.inverse())
+									.getEstimatedValue();
 
 		List<Double> deltaCL0FlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
@@ -1334,7 +1379,7 @@ public class LiftCalc {
 					*deltaCl0FlapList.get(i)
 					*((cLLinearSlope)/(clAlphaMeanFlap[i]/57.3))
 					);
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCL0FlapList().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCL0FlapList().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCL0FlapList
 				);
@@ -1342,7 +1387,7 @@ public class LiftCalc {
 		double deltaCL0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCL0Flap += deltaCL0FlapList.get(i);
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCL0Flap().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCL0Flap().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCL0Flap
 				);
@@ -1375,14 +1420,15 @@ public class LiftCalc {
 					*kLambdaFlap.get(i)
 					);
 		theLiftingSurface
-			.getTheAerodynamicsCalculator()
-				.getDeltaCLmaxFlapList()	
-					.put(MethodEnum.SEMPIEMPIRICAL, deltaCLmaxFlapList);
+		.getTheAerodynamicsCalculatorMap()
+		.get(theCondition)
+		.getDeltaCLmaxFlapList()	
+		.put(MethodEnum.SEMPIEMPIRICAL, deltaCLmaxFlapList);
 		
 		double deltaCLmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlap += deltaCLmaxFlapList.get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCLmaxFlap().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCLmaxFlap().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCLmaxFlap
 				);
@@ -1411,7 +1457,7 @@ public class LiftCalc {
 			cLAlphaFlap += cLalphaFlapList.get(i)*swf.get(i);
 
 		cLAlphaFlap /= swfTot;
-		theLiftingSurface.getTheAerodynamicsCalculator().getCLAlphaHighLift().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getCLAlphaHighLift().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				Amount.valueOf(
 						cLAlphaFlap,
@@ -1483,7 +1529,7 @@ public class LiftCalc {
 					delta3.get(i)
 					);
 		}
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCDList().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCDList().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCDList
 				);
@@ -1492,7 +1538,7 @@ public class LiftCalc {
 		double deltaCD = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCD += deltaCDList.get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCD().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCD().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCD
 				);
@@ -1561,7 +1607,7 @@ public class LiftCalc {
 													.getSweepQuarterChordEquivalentWing()
 													.doubleValue(SI.RADIAN)))
 					);
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCMc4List().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCMc4List().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCMc4List
 				);
@@ -1569,7 +1615,7 @@ public class LiftCalc {
 		double deltaCMC4 = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCMC4 += deltaCMc4List.get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculator().getDeltaCMc4().put(
+		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCMc4().put(
 				MethodEnum.SEMPIEMPIRICAL,
 				deltaCMC4
 				);

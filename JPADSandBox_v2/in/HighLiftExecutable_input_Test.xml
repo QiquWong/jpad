@@ -20,7 +20,7 @@
 								<cLStar_clean>0.6571</cLStar_clean>
 								<cLmax_clean>1.3210</cLmax_clean>
                         </clean_configuration_parameters>
-                        <airfoils_data>
+                        <airfoils_data> <!-- these data are referred to the break points stations --> 
                                 <airfoil_chord_distribution unit = "m">3.35;3.35;3.35</airfoil_chord_distribution>
 								<max_thickness_distribution>0.15;0.15;0.15</max_thickness_distribution>
 								<leading_edge_radius_distribution unit = "m">0.03754;0.03754;0.03754</leading_edge_radius_distribution>
