@@ -983,7 +983,13 @@ public class ReaderWriter{
 		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
 			String name;
 			name = "CL_at_delta_e_";
+			if(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)<0){
+				name = name.concat("neg_");
+				name = name.concat( Double.toString(Math.abs(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE))));
+			}
+			else{
 			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
 			name = name.concat("_deg");
 		JPADStaticWriteUtils.writeSingleNode(name, MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.get_hTailLiftCoefficient3DCurveWithElevator().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i))), elevatorLiftElement, doc);
 		}
@@ -1038,7 +1044,13 @@ public class ReaderWriter{
 		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
 			String name;
 			name = "CD_at_delta_e_";
+			if(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)<0){
+				name = name.concat("neg_");
+				name = name.concat( Double.toString(Math.abs(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE))));
+			}
+			else{
 			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
 			name = name.concat("_deg");
 		JPADStaticWriteUtils.writeSingleNode(name, MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.get_hTailDragCoefficient3DCurveWithElevator().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i))), elevatorDragElement, doc);
 		}
@@ -1093,7 +1105,13 @@ public class ReaderWriter{
 		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
 			String name;
 			name = "CL_total_at_delta_e_";
+			if(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)<0){
+				name = name.concat("neg_");
+				name = name.concat( Double.toString(Math.abs(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE))));
+			}
+			else{
 			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
 			name = name.concat("_deg");
 			JPADStaticWriteUtils.writeSingleNode(name, theStabilityCalculator.get_totalLiftCoefficient().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i)), liftGlobalElement, doc);
 		}
@@ -1113,7 +1131,13 @@ public class ReaderWriter{
 		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
 			String name;
 			name = "total_drag_coefficient_at_delta_e_";
+			if(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)<0){
+				name = name.concat("neg_");
+				name = name.concat( Double.toString(Math.abs(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE))));
+			}
+			else{
 			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
 			name = name.concat("_deg");
 			JPADStaticWriteUtils.writeSingleNode(name, theStabilityCalculator.get_totalDragPolar().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i)), dragGlobalElement, doc);
 		}
@@ -1133,7 +1157,13 @@ public class ReaderWriter{
 		for (int i=0; i<theStabilityCalculator.getAnglesOfElevatorDeflection().size(); i++){
 			String name;
 			name = "total_moment_coefficient_at_delta_e_";
+			if(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)<0){
+				name = name.concat("neg_");
+				name = name.concat( Double.toString(Math.abs(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE))));
+			}
+			else{
 			name = name.concat( Double.toString(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
 			name = name.concat("_deg");
 			JPADStaticWriteUtils.writeSingleNode(name, theStabilityCalculator.get_totalMomentCoefficientPendularDeltaE().get(theStabilityCalculator.get_anglesOfElevatorDeflection().get(i)), momentGlobalElement, doc);
 		}
