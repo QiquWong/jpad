@@ -8,7 +8,9 @@ import static java.lang.Math.toRadians;
 
 import java.lang.management.MemoryType;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
@@ -30,11 +32,13 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsCalculator;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
+import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -812,26 +816,48 @@ public class LiftCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public static void calculateHighLiftDevicesEffects(
-			LiftingSurface theLiftingSurface,
+	public static Map<HighLiftDeviceEffectEnum, Object> calculateHighLiftDevicesEffects(
+			HighLiftDatabaseReader highLiftDatabaseReader,
+			List<SymmetricFlapCreator> flapList,
+			List<SlatCreator> slatList,
+			List<Double> etaBreakPoints,
+			List<Amount<?>> clAlphaBreakPoints,
+			List<Double> clZeroBreakPoints,
+			List<Double> maxThicknessRatioBreakPoints,
+			List<Amount<Length>> radiusLeadingEdgeBreakPoints,
+			List<Amount<Length>> chordBreakPoints,
 			List<Amount<Angle>> flapDeflections,
 			List<Amount<Angle>> slatDeflections,
 			Double currentLiftingCoefficient,
-			ConditionEnum theCondition			
+			Amount<?> cLAlphaClean,
+			Amount<Angle> sweepQuarterChordEquivalent,
+			Double taperRatioEquivalent,
+			Amount<Length> rootChordEquivalent,
+			Double aspectRatio,
+			Amount<Area> surface
 			) {
+
+		Map<HighLiftDeviceEffectEnum, Object> resultsMap = new HashMap<>();
 		
-		List<SymmetricFlapCreator> flapList = theLiftingSurface.getLiftingSurfaceCreator().getSymmetricFlaps();
-		List<SlatCreator> slatList = theLiftingSurface.getLiftingSurfaceCreator().getSlats();
+		Amount<Length> span = 
+				Amount.valueOf(
+				Math.sqrt(
+						surface.to(SI.SQUARE_METRE)
+						.times(aspectRatio)
+						.getEstimatedValue()
+						),
+				SI.METER
+				);
 		
 		if(flapDeflections.size() != flapList.size()) {
 			System.err.println("ERROR THE FLAP DEFLECTIONS MUST BE EQUAL TO THE NUMBER OF FLAPS!");
-			return;
+			return null;
 		}
 		
-		if(!slatList.isEmpty()) 
+		if(!(slatList.isEmpty() || slatList == null)) 
 				if(slatDeflections.size() != slatList.size()) {
 			System.err.println("ERROR THE SLAT DEFLECTIONS MUST BE EQUAL TO THE NUMBER OF SLATS!");
-			return;
+			return null;
 		}
 		
 		//--------------------------------------------
@@ -912,55 +938,55 @@ public class LiftCalc {
 			
 			clAlphaFlapStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+							etaBreakPoints
 							),
 					MyArrayUtils.convertListOfAmountodoubleArray(
-							theLiftingSurface.getClAlphaVsY().stream().map(x -> x.to(NonSI.DEGREE_ANGLE.inverse())).collect(Collectors.toList())
+							clAlphaBreakPoints.stream().map(x -> x.to(NonSI.DEGREE_ANGLE.inverse())).collect(Collectors.toList())
 							),
 					etaOutFlap.get(i));
 			
 			clAlphaFlapStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+							etaBreakPoints
 							),
 					MyArrayUtils.convertListOfAmountodoubleArray(
-							theLiftingSurface.getClAlphaVsY().stream().map(x -> x.to(NonSI.DEGREE_ANGLE.inverse())).collect(Collectors.toList())
+							clAlphaBreakPoints.stream().map(x -> x.to(NonSI.DEGREE_ANGLE.inverse())).collect(Collectors.toList())
 							),
 					etaInFlap.get(i));
 			
 			clZeroFlapStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+							etaBreakPoints
 							),
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getCl0VsY()
+							clZeroBreakPoints
 							),
 					etaInFlap.get(i));
 			
 			clZeroFlapStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+							etaBreakPoints
 							),
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getCl0VsY()
+							clZeroBreakPoints
 							),
 					etaOutFlap.get(i));
 			
 			maxTicknessFlapStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+							etaBreakPoints
 							),
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getMaxThicknessVsY()
+							maxThicknessRatioBreakPoints
 							),
 					etaInFlap.get(i));
 			
 			maxTicknessFlapStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+							etaBreakPoints
 							),
 					MyArrayUtils.convertToDoublePrimitive(
-							theLiftingSurface.getMaxThicknessVsY()
+							maxThicknessRatioBreakPoints
 							),
 					etaOutFlap.get(i));
 			
@@ -968,7 +994,9 @@ public class LiftCalc {
 				influenceFactor = LiftingSurface.calculateInfluenceFactorsMeanAirfoilFlap(
 						etaInFlap.get(i),
 						etaOutFlap.get(i),
-						theLiftingSurface
+						etaBreakPoints,
+						chordBreakPoints,
+						span.divide(2)
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -987,64 +1015,66 @@ public class LiftCalc {
 
 				leadingEdgeRadiusSlatStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+								etaBreakPoints
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getRadiusLEVsY().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
+								radiusLeadingEdgeBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaOutSlat.get(i));
 
 				leadingEdgeRadiusSlatStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+								etaBreakPoints
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getRadiusLEVsY().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
+								radiusLeadingEdgeBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaInSlat.get(i));
 
 				chordSlatStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+								etaBreakPoints
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
+								chordBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaInSlat.get(i));
 
 				chordSlatStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+								etaBreakPoints
 								),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
+								chordBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 								),
 						etaOutSlat.get(i));
 
 
 				maxTicknessSlatStations[kk] = MyMathUtils.getInterpolatedValue1DLinear( 
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+								etaBreakPoints
 								),
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getMaxThicknessVsY()
+								maxThicknessRatioBreakPoints
 								),
 						etaInSlat.get(i));
 
 				maxTicknessSlatStations[kk+1] = MyMathUtils.getInterpolatedValue1DLinear( 
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+								etaBreakPoints
 								),
 						MyArrayUtils.convertToDoublePrimitive(
-								theLiftingSurface.getMaxThicknessVsY()
+								maxThicknessRatioBreakPoints
 								),
 						etaOutSlat.get(i));
 
 				try {
 					influenceFactor = LiftingSurface.calculateInfluenceFactorsMeanAirfoilFlap(
-							etaInSlat.get(i),
-							etaOutSlat.get(i),
-							theLiftingSurface
+							etaInFlap.get(i),
+							etaOutFlap.get(i),
+							etaBreakPoints,
+							chordBreakPoints,
+							span.divide(2)
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -1072,8 +1102,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
 				etaDeltaFlap.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getEtaDeltaVsDeltaFlapPlain(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								cfc.get(i)
@@ -1081,8 +1110,7 @@ public class LiftCalc {
 						);
 			else
 				etaDeltaFlap.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getEtaDeltaVsDeltaFlap(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								flapTypeIndex.get(i))
@@ -1102,8 +1130,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			if(flapTypeIndex.get(i) != 6.0)
 				deltaCCfFlap.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDeltaCCfVsDeltaFlap(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								flapTypeIndex.get(i)
@@ -1111,8 +1138,7 @@ public class LiftCalc {
 						);
 			else
 				deltaCCfFlap.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDeltaCCfVsDeltaFlap(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								4.0 // Fowler
@@ -1130,16 +1156,16 @@ public class LiftCalc {
 					(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
 					+(clZeroMeanFlap[i]*(cFirstCFlap.get(i).doubleValue()-1))
 					);
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCl0FlapList().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST, 
 				deltaCl0FlapList
 				);
 		
 		double deltaCl0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCl0Flap += deltaCl0FlapList.get(i);
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCl0Flap().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP,
 				deltaCl0Flap
 				);
 		
@@ -1149,8 +1175,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			if(flapTypeIndex.get(i) != 6.0)
 				deltaClmaxBase.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDeltaCLmaxBaseVsTc(
 								maxTicknessMeanFlap[i],
 								flapTypeIndex.get(i)
@@ -1158,8 +1183,7 @@ public class LiftCalc {
 						);
 			else
 				deltaClmaxBase.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDeltaCLmaxBaseVsTc(
 								maxTicknessMeanFlap[i],
 								4.0 // FOWLER
@@ -1170,13 +1194,11 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			if (cfc.get(i) <= 0.30)
 				if(flapTypeIndex.get(i) != 6.0)
-					k1.add(theLiftingSurface
-							.getHighLiftDatabaseReader()
+					k1.add(highLiftDatabaseReader
 							.getK1vsFlapChordRatio(cfc.get(i), flapTypeIndex.get(i))
 							);
 				else
-					k1.add(theLiftingSurface
-							.getHighLiftDatabaseReader()
+					k1.add(highLiftDatabaseReader
 							.getK1vsFlapChordRatio(cfc.get(i), 4)  // FOWLER
 							);
 			else if ((cfc.get(i) > 0.30) && ((flapTypeIndex.get(i) == 2) || (flapTypeIndex.get(i) == 4) || (flapTypeIndex.get(i) == 5) || (flapTypeIndex.get(i) == 6)))
@@ -1193,16 +1215,14 @@ public class LiftCalc {
 		List<Double> k2 = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			if(flapTypeIndex.get(i) != 6.0)
-				k2.add(theLiftingSurface
-						.getHighLiftDatabaseReader()
+				k2.add(highLiftDatabaseReader
 						.getK2VsDeltaFlap(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								flapTypeIndex.get(i)
 								)
 						);
 			else
-				k2.add(theLiftingSurface
-						.getHighLiftDatabaseReader()
+				k2.add(highLiftDatabaseReader
 						.getK2VsDeltaFlap(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								4.0 // FOWLER
@@ -1212,8 +1232,7 @@ public class LiftCalc {
 		List<Double> k3 = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			if(flapTypeIndex.get(i) != 6.0)
-				k3.add(theLiftingSurface
-						.getHighLiftDatabaseReader()
+				k3.add(highLiftDatabaseReader
 						.getK3VsDfDfRef(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								deltaFlapRef.get(i),
@@ -1231,16 +1250,16 @@ public class LiftCalc {
 					*k3.get(i).doubleValue()
 					*deltaClmaxBase.get(i).doubleValue()
 					);
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaClmaxFlapList().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST, 
 				deltaClmaxFlapList
 				);
 		
 		double deltaClmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaClmaxFlap += deltaClmaxFlapList.get(i);
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaClmaxFlap().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP,
 				deltaClmaxFlap
 				);
 		
@@ -1250,15 +1269,13 @@ public class LiftCalc {
 
 			List<Double> dCldDelta = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
-				dCldDelta.add(theLiftingSurface
-						.getHighLiftDatabaseReader()
+				dCldDelta.add(highLiftDatabaseReader
 						.getDCldDeltaVsCsC(csc.get(i))
 						);
 
 			List<Double> etaMaxSlat = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
-				etaMaxSlat.add(theLiftingSurface
-						.getHighLiftDatabaseReader()
+				etaMaxSlat.add(highLiftDatabaseReader
 						.getEtaMaxVsLEradiusTicknessRatio(
 								leRadiusMeanSlat[i]/(chordMeanSlat[i]),
 								maxTicknessMeanSlat[i]
@@ -1267,9 +1284,7 @@ public class LiftCalc {
 
 			List<Double> etaDeltaSlat = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
-				etaDeltaSlat.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+				etaDeltaSlat.add(highLiftDatabaseReader
 						.getEtaDeltaVsDeltaSlat(slatDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE))
 						);
 
@@ -1282,35 +1297,34 @@ public class LiftCalc {
 						*slatDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 						*cExtcSlat.get(i).doubleValue()
 						);
-			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaClmaxSlatList().put(
-					MethodEnum.SEMPIEMPIRICAL,
+			resultsMap.put(
+					HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST,
 					deltaClmaxSlatList
 					);
 			
 			double deltaClmaxSlat = 0.0;
 			for(int i=0; i<slatDeflections.size(); i++)
 				deltaClmaxSlat += deltaClmaxSlatList.get(i);
-			theLiftingSurface
-			.getTheAerodynamicsCalculatorMap()
-			.get(theCondition)
-			.getDeltaClmaxSlat()
-			.put(MethodEnum.SEMPIEMPIRICAL, deltaClmaxSlat);
+			resultsMap.put(
+					HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT, 
+					deltaClmaxSlat
+					);
 			
 			//---------------------------------------------------------------
 			// deltaCLmax (slat)
 			List<Double> kLambdaSlat = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
 				kLambdaSlat.add(
-						Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)),0.75)
-						*(1-(0.08*Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)), 2)))
+						Math.pow(Math.cos(sweepQuarterChordEquivalent.doubleValue(SI.RADIAN)),0.75)
+						*(1-(0.08*Math.pow(Math.cos(sweepQuarterChordEquivalent.doubleValue(SI.RADIAN)), 2)))
 						);
 
 			List<Double> slatSurface = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
 				slatSurface.add(
-						Math.abs(theLiftingSurface.getSpan().doubleValue(SI.METER)
-								/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().doubleValue(SI.METER)
-								*(2-(1-theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())*(etaInSlat.get(i)+etaOutSlat.get(i)))
+						Math.abs(span.doubleValue(SI.METER)
+								/2*rootChordEquivalent.doubleValue(SI.METER)
+								*(2-(1-taperRatioEquivalent)*(etaInSlat.get(i)+etaOutSlat.get(i)))
 								*(etaOutSlat.get(i)-etaInSlat.get(i))
 								)
 						);
@@ -1319,57 +1333,47 @@ public class LiftCalc {
 			for(int i=0; i<slatDeflections.size(); i++)
 				deltaCLmaxSlatList.add(
 						deltaClmaxSlatList.get(i)
-						*(slatSurface.get(i)/theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE))
+						*(slatSurface.get(i)/surface.doubleValue(SI.SQUARE_METRE))
 						*kLambdaSlat.get(i));
-			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCLmaxSlatList().put(
-					MethodEnum.SEMPIEMPIRICAL,
+			resultsMap.put(
+					HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST,
 					deltaCLmaxSlatList
 					);
 
 			double deltaCLmaxSlat = 0.0;
 			for(int i=0; i<slatDeflections.size(); i++)
 				deltaCLmaxSlat += deltaCLmaxSlatList.get(i);
-			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCLmaxSlat().put(
-					MethodEnum.SEMPIEMPIRICAL,
+			resultsMap.put(
+					HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT,
 					deltaCLmaxSlat
 					);
 		}
 		else {
-			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaClmaxSlatList(null);
-			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaClmaxSlat(null);
-			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaCLmaxSlatList(null);
-			theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).setDeltaCLmaxSlat(null);
+			resultsMap.put(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST, null);
+			resultsMap.put(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST, null);
+			resultsMap.put(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT, null);
+			resultsMap.put(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT, null);
 		}
 			
 		//---------------------------------------------------------------
 		// deltaCL0 (flap)
 		List<Double> kc = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			kc.add(theLiftingSurface
-					.getHighLiftDatabaseReader()
+			kc.add(highLiftDatabaseReader
 					.getKcVsAR(
-							theLiftingSurface.getAspectRatio(),
+							aspectRatio,
 							alphaDelta.get(i))	
 					);
 
 		List<Double> kb = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			kb.add(theLiftingSurface
-					.getHighLiftDatabaseReader()
+			kb.add(highLiftDatabaseReader
 					.getKbVsFlapSpanRatio(
 							etaInFlap.get(i),
 							etaOutFlap.get(i),
-							theLiftingSurface.getLiftingSurfaceCreator()
-								.getTaperRatioEquivalentWing())	
+							taperRatioEquivalent
+							)	
 					);
-
-		double cLLinearSlope = theLiftingSurface
-				.getTheAerodynamicsCalculatorMap()
-					.get(theCondition)
-						.getCLAlpha()
-							.get(MethodEnum.NASA_BLACKWELL)
-								.to(NonSI.DEGREE_ANGLE.inverse())
-									.getEstimatedValue();
 
 		List<Double> deltaCL0FlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
@@ -1377,18 +1381,19 @@ public class LiftCalc {
 					kb.get(i).doubleValue()
 					*kc.get(i).doubleValue()
 					*deltaCl0FlapList.get(i)
-					*((cLLinearSlope)/(clAlphaMeanFlap[i]/57.3))
+					*((cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+							/(clAlphaMeanFlap[i]))
 					);
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCL0FlapList().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST,
 				deltaCL0FlapList
 				);
 
 		double deltaCL0Flap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCL0Flap += deltaCL0FlapList.get(i);
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCL0Flap().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL0_FLAP,
 				deltaCL0Flap
 				);
 		
@@ -1398,9 +1403,9 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			flapSurface.add(
 					Math.abs(
-							theLiftingSurface.getSpan().doubleValue(SI.METER)							
-							/2*theLiftingSurface.getLiftingSurfaceCreator().getRootChordEquivalentWing().doubleValue(SI.METER)
-							*(2-((1-theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())*(etaInFlap.get(i)+etaOutFlap.get(i))))
+							span.doubleValue(SI.METER)							
+							/2*rootChordEquivalent.doubleValue(SI.METER)
+							*(2-((1-taperRatioEquivalent)*(etaInFlap.get(i)+etaOutFlap.get(i))))
 							*(etaOutFlap.get(i)-etaInFlap.get(i))
 							)
 					);
@@ -1408,44 +1413,42 @@ public class LiftCalc {
 		List<Double> kLambdaFlap = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			kLambdaFlap.add(
-					Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)),0.75)
-					*(1-(0.08*Math.pow(Math.cos(theLiftingSurface.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)), 2)))
+					Math.pow(Math.cos(sweepQuarterChordEquivalent.doubleValue(SI.RADIAN)),0.75)
+					*(1-(0.08*Math.pow(Math.cos(sweepQuarterChordEquivalent.doubleValue(SI.RADIAN)), 2)))
 					);
 
 		List<Double> deltaCLmaxFlapList = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlapList.add(
 					deltaClmaxFlapList.get(i)
-					*(flapSurface.get(i)/theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE))
+					*(flapSurface.get(i)/surface.doubleValue(SI.SQUARE_METRE))
 					*kLambdaFlap.get(i)
 					);
-		theLiftingSurface
-		.getTheAerodynamicsCalculatorMap()
-		.get(theCondition)
-		.getDeltaCLmaxFlapList()	
-		.put(MethodEnum.SEMPIEMPIRICAL, deltaCLmaxFlapList);
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST, 
+				deltaCLmaxFlapList
+				);
 		
 		double deltaCLmaxFlap = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlap += deltaCLmaxFlapList.get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCLmaxFlap().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP,
 				deltaCLmaxFlap
 				);
 
 		//---------------------------------------------------------------
 		// new CLalpha
-
 		List<Double> cLalphaFlapList = new ArrayList<Double>();
 		List<Double> swf = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			cLalphaFlapList.add(
-					cLLinearSlope
+					cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 					*(1+((deltaCL0FlapList.get(i)/
 							deltaCl0FlapList.get(i))
 							*(cFirstCFlap.get(i)*(1-((cfc.get(i))*(1/cFirstCFlap.get(i))
 									*Math.pow(Math.sin(flapDeflections.get(i).doubleValue(SI.RADIAN)), 2)))-1))));
-			swf.add(flapSurface.get(i)/theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE));
+			swf.add(flapSurface.get(i)/surface.doubleValue(SI.SQUARE_METRE));
 		}
 
 		double swfTot = 0;
@@ -1457,8 +1460,8 @@ public class LiftCalc {
 			cLAlphaFlap += cLalphaFlapList.get(i)*swf.get(i);
 
 		cLAlphaFlap /= swfTot;
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getCLAlphaHighLift().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT,
 				Amount.valueOf(
 						cLAlphaFlap,
 						NonSI.DEGREE_ANGLE.inverse()
@@ -1471,8 +1474,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
 				delta1.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDelta1VsCfCPlain(
 								cfc.get(i),
 								maxTicknessMeanFlap[i]
@@ -1480,8 +1482,7 @@ public class LiftCalc {
 						);
 			else
 				delta1.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDelta1VsCfCSlotted(
 								cfc.get(i),
 								maxTicknessMeanFlap[i]
@@ -1493,14 +1494,12 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
 				delta2.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDelta2VsDeltaFlapPlain(flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE))
 						);
 			else
 				delta2.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getDelta2VsDeltaFlapSlotted(
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE),
 								maxTicknessMeanFlap[i]
@@ -1511,12 +1510,11 @@ public class LiftCalc {
 		List<Double> delta3 = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			delta3.add(
-					theLiftingSurface
-					.getHighLiftDatabaseReader()
+					highLiftDatabaseReader
 					.getDelta3VsBfB(
 							etaInFlap.get(i),
 							etaOutFlap.get(i),
-							theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing()
+							taperRatioEquivalent
 							)
 					);
 		}
@@ -1529,8 +1527,8 @@ public class LiftCalc {
 					delta3.get(i)
 					);
 		}
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCDList().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CD_LIST,
 				deltaCDList
 				);
 		
@@ -1538,8 +1536,8 @@ public class LiftCalc {
 		double deltaCD = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCD += deltaCDList.get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCD().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CD,
 				deltaCD
 				);
 
@@ -1549,38 +1547,37 @@ public class LiftCalc {
 		for (int i=0; i<flapTypeIndex.size(); i++)
 			if(flapTypeIndex.get(i) == 3.0)
 				mu1.add(
-						theLiftingSurface
-						.getHighLiftDatabaseReader()
+						highLiftDatabaseReader
 						.getMu1VsCfCFirstPlain(
 								(cfc.get(i))*(1/cFirstCFlap.get(i)),
 								flapDeflections.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 								)
 						);
 			else
-				mu1.add(theLiftingSurface
-						.getHighLiftDatabaseReader()
+				mu1.add(
+						highLiftDatabaseReader
 						.getMu1VsCfCFirstSlottedFowler((cfc.get(i))*(1/cFirstCFlap.get(i)))
 						);
 
 		List<Double> mu2 = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			mu2.add(theLiftingSurface
-					.getHighLiftDatabaseReader()
+			mu2.add(
+					highLiftDatabaseReader
 					.getMu2VsBfB(
 							etaInFlap.get(i),
 							etaOutFlap.get(i),
-							theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing()
+							taperRatioEquivalent
 							)
 					);
 
 		List<Double> mu3 = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
-			mu3.add(theLiftingSurface
-					.getHighLiftDatabaseReader()
+			mu3.add(
+					highLiftDatabaseReader
 					.getMu3VsBfB(
 							etaInFlap.get(i),
 							etaOutFlap.get(i),
-							theLiftingSurface.getLiftingSurfaceCreator().getTaperRatioEquivalentWing()
+							taperRatioEquivalent
 							)
 					);
 
@@ -1594,31 +1591,28 @@ public class LiftCalc {
 									*((cFirstCFlap.get(i))-1)
 									*(currentLiftingCoefficient + 
 											(deltaClmaxFlapList.get(i)
-											*(1-(flapSurface.get(i)/theLiftingSurface
-													.getSurface()
-													.doubleValue(SI.SQUARE_METRE)))))
-									*(1/8)))) + (0.7*(theLiftingSurface
-											.getAspectRatio()/(1+(theLiftingSurface
-													.getAspectRatio()/2)))
+											*(1-(flapSurface.get(i)
+													/surface.doubleValue(SI.SQUARE_METRE)))))
+									*(1/8)))) + (0.7*(aspectRatio
+											/(1+(aspectRatio/2)))
 											*mu3.get(i)
 											*deltaClmaxFlapList.get(i)
-											*Math.tan(theLiftingSurface
-													.getLiftingSurfaceCreator()
-													.getSweepQuarterChordEquivalentWing()
-													.doubleValue(SI.RADIAN)))
+											*Math.tan(sweepQuarterChordEquivalent.doubleValue(SI.RADIAN)))
 					);
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCMc4List().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CM_c4_LIST,
 				deltaCMc4List
 				);
 
 		double deltaCMC4 = 0.0;
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCMC4 += deltaCMc4List.get(i).doubleValue();
-		theLiftingSurface.getTheAerodynamicsCalculatorMap().get(theCondition).getDeltaCMc4().put(
-				MethodEnum.SEMPIEMPIRICAL,
+		resultsMap.put(
+				HighLiftDeviceEffectEnum.DELTA_CM_c4,
 				deltaCMC4
 				);
+		
+		return resultsMap;
 	}
 	
 	

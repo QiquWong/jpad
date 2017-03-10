@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
@@ -13,6 +14,8 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.liftingSurface.creator.SlatCreator;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import analyses.OperatingConditions;
 import analyses.analysismodel.InnerCalculator;
 import calculators.aerodynamics.AerodynamicCalc;
@@ -24,7 +27,10 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
+import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 
@@ -2206,6 +2212,7 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcHighLiftDevicesEffects {
 		
+		@SuppressWarnings("unchecked")
 		public void semiempirical(
 				List<Amount<Angle>> flapDeflection, 
 				List<Amount<Angle>> slatDeflection,
@@ -2233,6 +2240,11 @@ public class LSAerodynamicsCalculator {
 				calcCLStar.nasaBlackwell();
 			}
 			
+			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+				calcCLAlpha.nasaBlackwell();
+			}
+			
 			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
 				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell();
@@ -2250,13 +2262,96 @@ public class LSAerodynamicsCalculator {
 			
 			//-----------------------------------------------------
 			// EFFECTS:
-			LiftCalc.calculateHighLiftDevicesEffects(
-					_theLiftingSurface,
-					flapDeflection,
-					slatDeflection,
-					_currentLiftCoefficient,
-					_theCondition
-					);	
+			Map<HighLiftDeviceEffectEnum, Object> highLiftDevicesEffectsMap = 
+					LiftCalc.calculateHighLiftDevicesEffects(
+							_theLiftingSurface.getHighLiftDatabaseReader(),
+							_theLiftingSurface.getLiftingSurfaceCreator().getSymmetricFlaps(),
+							_theLiftingSurface.getLiftingSurfaceCreator().getSlats(),
+							_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
+							_theLiftingSurface.getClAlphaVsY(),
+							_theLiftingSurface.getCl0VsY(),
+							_theLiftingSurface.getMaxThicknessVsY(),
+							_theLiftingSurface.getRadiusLEVsY(),
+							_theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints(),
+							flapDeflection,
+							slatDeflection,
+							_currentLiftCoefficient,
+							_cLAlpha.get(MethodEnum.NASA_BLACKWELL),
+							_theLiftingSurface.getSweepQuarterChordEquivalent(false),
+							_theLiftingSurface.getTaperRatioEquivalent(false),
+							_theLiftingSurface.getChordRootEquivalent(false),
+							_theLiftingSurface.getAspectRatio(),
+							_theLiftingSurface.getSurface()
+							);	
+			
+			_deltaCl0FlapList.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST)
+					);
+			_deltaCL0FlapList.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST)
+					);
+			_deltaClmaxFlapList.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST)
+					);
+			_deltaCLmaxFlapList.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST)
+					);
+			_deltaClmaxSlatList.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST)
+					);
+			_deltaCLmaxSlatList.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST)
+					);
+			_deltaCD0List.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD_LIST)
+					);
+			_deltaCMc4List.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4_LIST)
+					);
+			_deltaCl0Flap.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP)
+					);
+			_deltaCL0Flap.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP)
+					);
+			_deltaClmaxFlap.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP)
+					);
+			_deltaCLmaxFlap.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP)
+					);
+			_deltaClmaxSlat.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT)
+					);
+			_deltaCLmaxSlat.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT)
+					);
+			_deltaCD0.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD)
+					);
+			_deltaCMc4.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4)
+					);
+			_cLAlphaHighLift.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					(Amount<?>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT)
+					);
 			
 			//------------------------------------------------------
 			// CL ZERO HIGH LIFT

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -1281,270 +1282,206 @@ public class LiftingSurface implements ILiftingSurface {
 
 	}
 	
-	public static AirfoilCreator calculateMeanAirfoil (LiftingSurface theWing) {
+	public static AirfoilCreator calculateMeanAirfoil (
+			LiftingSurface theWing
+			) {
 		
-		List<Amount<Area>> influenceAreas = new ArrayList<Amount<Area>>();
-		List<Double> influenceCoefficients = new ArrayList<Double>();
-		
-		int nSections = theWing.getAirfoilList().size();
-		
+		List<Double> influenceCoefficients = LSGeometryCalc.calculateInfluenceCoefficients(
+				theWing.getLiftingSurfaceCreator().getChordsBreakPoints(),
+				theWing.getLiftingSurfaceCreator().getYBreakPoints(), 
+				theWing.getSurface()
+				);
+	
 		//----------------------------------------------------------------------------------------------
-		// calculation of the first influence area ...
-		influenceAreas.add(
-				Amount.valueOf(
-						0.5
-						*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(0).doubleValue(SI.METER)
-						*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(1)
-									.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(0))
-										.getEstimatedValue()),
-						SI.SQUARE_METRE)
-				);
-
-		influenceCoefficients.add(
-				influenceAreas.get(0)
-				.times(2)
-				.divide(theWing.getSurface())
-				.getEstimatedValue()
-				);
+		// MEAN AIRFOIL DATA CALCULATION:
 
 		//----------------------------------------------------------------------------------------------
-		// calculation of the inner influence areas ... 
-		for(int i=1; i<theWing.getAirfoilList().size()-1; i++) {
+		// Maximum thickness:
+		double maximumThicknessMeanAirfoil = 0;
 
-			influenceAreas.add(
-					Amount.valueOf(
-							(0.5
-									*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
-									*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i)
-												.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i-1))
-													.getEstimatedValue())
-									)
-							+(0.5
-									*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(i).doubleValue(SI.METER)
-									*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i+1)
-												.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(i))
-													.getEstimatedValue())
-									),
-							SI.SQUARE_METRE)
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			maximumThicknessMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio();
+
+		//----------------------------------------------------------------------------------------------
+		// Leading edge radius:
+		Amount<Length> leadingEdgeRadiusMeanAirfoil = Amount.valueOf(0.0, SI.METER);
+
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			leadingEdgeRadiusMeanAirfoil = leadingEdgeRadiusMeanAirfoil
+			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getRadiusLeadingEdge()
+					.times(influenceCoefficients.get(i)
+							)
 					);
 
-			influenceCoefficients.add(
-					influenceAreas.get(i)
-					.times(2)
-					.divide(theWing.getSurface())
-					.getEstimatedValue()
+		//----------------------------------------------------------------------------------------------
+		// Alpha zero lift:
+		Amount<Angle> alphaZeroLiftMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			alphaZeroLiftMeanAirfoil = alphaZeroLiftMeanAirfoil
+			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaZeroLift()
+					.times(influenceCoefficients.get(i)
+							)
 					);
 
-		}
-	
-	//----------------------------------------------------------------------------------------------
-	// calculation of the last influence area ...
-	influenceAreas.add(
-			Amount.valueOf(
-					0.5
-					*theWing.getLiftingSurfaceCreator().getChordsBreakPoints().get(nSections-1).doubleValue(SI.METER)
-					*(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(nSections-1)
-							.minus(theWing.getLiftingSurfaceCreator().getYBreakPoints().get(nSections-2))
-							.getEstimatedValue()),
-					SI.SQUARE_METRE)
-			);
-	
-	influenceCoefficients.add(
-			influenceAreas.get(nSections-1)
-			.times(2)
-			.divide(theWing.getSurface())
-			.getEstimatedValue()
-			);
-	
-	//----------------------------------------------------------------------------------------------
-	// MEAN AIRFOIL DATA CALCULATION:
-	
-	//----------------------------------------------------------------------------------------------
-	// Maximum thickness:
-	double maximumThicknessMeanAirfoil = 0;
+		//----------------------------------------------------------------------------------------------
+		// Alpha star lift:
+		Amount<Angle> alphaStarMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		maximumThicknessMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio();
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			alphaStarMeanAirfoil = alphaStarMeanAirfoil
+			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaEndLinearTrait()
+					.times(influenceCoefficients.get(i)
+							)
+					);
 
-	//----------------------------------------------------------------------------------------------
-	// Leading edge radius:
-	Amount<Length> leadingEdgeRadiusMeanAirfoil = Amount.valueOf(0.0, SI.METER);
+		//----------------------------------------------------------------------------------------------
+		// Alpha stall lift:
+		Amount<Angle> alphaStallMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		leadingEdgeRadiusMeanAirfoil = leadingEdgeRadiusMeanAirfoil
-									.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getRadiusLeadingEdge()
-											.times(influenceCoefficients.get(i)
-													)
-											);
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			alphaStallMeanAirfoil = alphaStallMeanAirfoil
+			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaStall()
+					.times(influenceCoefficients.get(i)
+							)
+					);
 
-	//----------------------------------------------------------------------------------------------
-	// Alpha zero lift:
-	Amount<Angle> alphaZeroLiftMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		//----------------------------------------------------------------------------------------------
+		// Cl alpha:
+		Amount<?> clAlphaMeanAirfoil = Amount.valueOf(0.0, SI.RADIAN.inverse());
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		alphaZeroLiftMeanAirfoil = alphaZeroLiftMeanAirfoil
-										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaZeroLift()
-												.times(influenceCoefficients.get(i)
-														)
-												);
-	
-	//----------------------------------------------------------------------------------------------
-	// Alpha star lift:
-	Amount<Angle> alphaStarMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			clAlphaMeanAirfoil = clAlphaMeanAirfoil
+			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getClAlphaLinearTrait()
+					.times(influenceCoefficients.get(i)
+							)
+					);
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		alphaStarMeanAirfoil = alphaStarMeanAirfoil
-										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaEndLinearTrait()
-												.times(influenceCoefficients.get(i)
-														)
-												);
-		
-	//----------------------------------------------------------------------------------------------
-	// Alpha stall lift:
-	Amount<Angle> alphaStallMeanAirfoil = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		//----------------------------------------------------------------------------------------------
+		// Cd min:
+		double cdMinMeanAirfoil = 0;
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		alphaStallMeanAirfoil = alphaStallMeanAirfoil
-										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaStall()
-												.times(influenceCoefficients.get(i)
-														)
-												);
-		
-	//----------------------------------------------------------------------------------------------
-	// Cl alpha:
-	Amount<?> clAlphaMeanAirfoil = Amount.valueOf(0.0, SI.RADIAN.inverse());
-	
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		clAlphaMeanAirfoil = clAlphaMeanAirfoil
-										.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getClAlphaLinearTrait()
-												.times(influenceCoefficients.get(i)
-														)
-												);
-		
-	//----------------------------------------------------------------------------------------------
-	// Cd min:
-	double cdMinMeanAirfoil = 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			cdMinMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCdMin();
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		cdMinMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCdMin();
-		
-	//----------------------------------------------------------------------------------------------
-	// Cl at Cd min:
-	double clAtCdMinMeanAirfoil = 0;
+		//----------------------------------------------------------------------------------------------
+		// Cl at Cd min:
+		double clAtCdMinMeanAirfoil = 0;
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		clAtCdMinMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtCdMin();
-		
-	//----------------------------------------------------------------------------------------------
-	// Cl0:
-	double cl0MeanAirfoil = 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			clAtCdMinMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtCdMin();
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		cl0MeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtAlphaZero();	
-	
-	//----------------------------------------------------------------------------------------------
-	// Cl star:
-	double clStarMeanAirfoil = 0;
+		//----------------------------------------------------------------------------------------------
+		// Cl0:
+		double cl0MeanAirfoil = 0;
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		clStarMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClEndLinearTrait();	
-		
-	//----------------------------------------------------------------------------------------------
-	// Cl max:
-	double clMaxMeanAirfoil = 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			cl0MeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtAlphaZero();	
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		clMaxMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getClMax();	
-	
-	//----------------------------------------------------------------------------------------------
-	// K factor drag polar:
-	double kFactorDragPolarMeanAirfoil = 0;
+		//----------------------------------------------------------------------------------------------
+		// Cl star:
+		double clStarMeanAirfoil = 0;
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		kFactorDragPolarMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getKFactorDragPolar();	
-	
-	//----------------------------------------------------------------------------------------------
-	// Cm quarter chord:
-	double cmAlphaQuarteChordMeanAirfoil = 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			clStarMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClEndLinearTrait();	
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		cmAlphaQuarteChordMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue();	
-	
-	//----------------------------------------------------------------------------------------------
-	// x ac:
-	double xACMeanAirfoil= 0;
+		//----------------------------------------------------------------------------------------------
+		// Cl max:
+		double clMaxMeanAirfoil = 0;
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		xACMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getXACNormalized();	
-	
-	//----------------------------------------------------------------------------------------------
-	// cm ac:
-	double cmACMeanAirfoil= 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			clMaxMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClMax();	
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		cmACMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAC();	
-	
-	//----------------------------------------------------------------------------------------------
-	// cm ac stall:
-	double cmACStallMeanAirfoil= 0;
+		//----------------------------------------------------------------------------------------------
+		// K factor drag polar:
+		double kFactorDragPolarMeanAirfoil = 0;
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		cmACStallMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmACAtStall();	
-	
-	//----------------------------------------------------------------------------------------------
-	// critical Mach number:
-	double criticalMachMeanAirfoil= 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			kFactorDragPolarMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getKFactorDragPolar();	
 
-	for(int i=0; i<influenceCoefficients.size(); i++)
-		criticalMachMeanAirfoil += influenceCoefficients.get(i)
-		*theWing.getAirfoilList().get(i).getAirfoilCreator().getMachCritical();	
-	
-	//----------------------------------------------------------------------------------------------
-	// MEAN AIRFOIL CREATION:
-	
-	AirfoilCreator meanAirfoilCreator = new AirfoilCreator.AirfoilBuilder()
-			.name("Mean Airfoil")
-			.type(theWing.getAirfoilList().get(0).getAirfoilCreator().getType())
-			.family(theWing.getAirfoilList().get(0).getAirfoilCreator().getFamily())
-			.thicknessToChordRatio(maximumThicknessMeanAirfoil)
-			.radiusLeadingEdge(leadingEdgeRadiusMeanAirfoil)
-			.alphaZeroLift(alphaZeroLiftMeanAirfoil)
-			.alphaEndLinearTrait(alphaStarMeanAirfoil)
-			.alphaStall(alphaStallMeanAirfoil)
-			.clAlphaLinearTrait(clAlphaMeanAirfoil)
-			.cdMin(cdMinMeanAirfoil)
-			.clAtCdMin(clAtCdMinMeanAirfoil)
-			.clAtAlphaZero(cl0MeanAirfoil)
-			.clEndLinearTrait(clStarMeanAirfoil)
-			.clMax(clMaxMeanAirfoil)
-			.kFactorDragPolar(kFactorDragPolarMeanAirfoil)
-			.cmAlphaQuarterChord(Amount.valueOf(cmAlphaQuarteChordMeanAirfoil, NonSI.DEGREE_ANGLE.inverse()))
-			.xACNormalized(xACMeanAirfoil)
-			.cmAC(cmACMeanAirfoil)
-			.cmACAtStall(cmACStallMeanAirfoil)
-			.machCritical(criticalMachMeanAirfoil)
-			.build();
-	
-	return meanAirfoilCreator;
-	
+		//----------------------------------------------------------------------------------------------
+		// Cm quarter chord:
+		double cmAlphaQuarteChordMeanAirfoil = 0;
+
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			cmAlphaQuarteChordMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue();	
+
+		//----------------------------------------------------------------------------------------------
+		// x ac:
+		double xACMeanAirfoil= 0;
+
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			xACMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getXACNormalized();	
+
+		//----------------------------------------------------------------------------------------------
+		// cm ac:
+		double cmACMeanAirfoil= 0;
+
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			cmACMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAC();	
+
+		//----------------------------------------------------------------------------------------------
+		// cm ac stall:
+		double cmACStallMeanAirfoil= 0;
+
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			cmACStallMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmACAtStall();	
+
+		//----------------------------------------------------------------------------------------------
+		// critical Mach number:
+		double criticalMachMeanAirfoil= 0;
+
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			criticalMachMeanAirfoil += influenceCoefficients.get(i)
+			*theWing.getAirfoilList().get(i).getAirfoilCreator().getMachCritical();	
+
+		//----------------------------------------------------------------------------------------------
+		// MEAN AIRFOIL CREATION:
+
+		AirfoilCreator meanAirfoilCreator = new AirfoilCreator.AirfoilBuilder()
+				.name("Mean Airfoil")
+				.type(theWing.getAirfoilList().get(0).getAirfoilCreator().getType())
+				.family(theWing.getAirfoilList().get(0).getAirfoilCreator().getFamily())
+				.thicknessToChordRatio(maximumThicknessMeanAirfoil)
+				.radiusLeadingEdge(leadingEdgeRadiusMeanAirfoil)
+				.alphaZeroLift(alphaZeroLiftMeanAirfoil)
+				.alphaEndLinearTrait(alphaStarMeanAirfoil)
+				.alphaStall(alphaStallMeanAirfoil)
+				.clAlphaLinearTrait(clAlphaMeanAirfoil)
+				.cdMin(cdMinMeanAirfoil)
+				.clAtCdMin(clAtCdMinMeanAirfoil)
+				.clAtAlphaZero(cl0MeanAirfoil)
+				.clEndLinearTrait(clStarMeanAirfoil)
+				.clMax(clMaxMeanAirfoil)
+				.kFactorDragPolar(kFactorDragPolarMeanAirfoil)
+				.cmAlphaQuarterChord(Amount.valueOf(cmAlphaQuarteChordMeanAirfoil, NonSI.DEGREE_ANGLE.inverse()))
+				.xACNormalized(xACMeanAirfoil)
+				.cmAC(cmACMeanAirfoil)
+				.cmACAtStall(cmACStallMeanAirfoil)
+				.machCritical(criticalMachMeanAirfoil)
+				.build();
+
+		return meanAirfoilCreator;
+
 	}
 	
 	public static double[] calculateInfluenceFactorsMeanAirfoilFlap(
 			double etaIn,
 			double etaOut,
-			LiftingSurface theLiftingSurface
-			
+			List<Double> etaBreakPoints,
+			List<Amount<Length>> chordBreakPoints,
+			Amount<Length> semiSpan
 			) throws InstantiationException, IllegalAccessException{
 
 		double [] influenceAreas = new double [2];
@@ -1552,26 +1489,26 @@ public class LiftingSurface implements ILiftingSurface {
 		
 		double chordIn = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertToDoublePrimitive(
-						theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+						etaBreakPoints
 						),
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-						theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()
+						chordBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 						),
 				etaIn
 				);
 
 		double chordOut = MyMathUtils.getInterpolatedValue1DLinear(
 				MyArrayUtils.convertToDoublePrimitive(
-						theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints()
+						etaBreakPoints
 						),
 				MyArrayUtils.convertListOfAmountTodoubleArray(
-						theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()
+						chordBreakPoints.stream().map(x -> x.to(SI.METER)).collect(Collectors.toList())
 						),
 				etaOut
 				);
 		
-		influenceAreas[0] = (chordIn * ((etaOut - etaIn)*theLiftingSurface.getSemiSpan().getEstimatedValue()))/2;
-		influenceAreas[1] = (chordOut * ((etaOut - etaIn)*theLiftingSurface.getSemiSpan().getEstimatedValue()))/2;
+		influenceAreas[0] = (chordIn * ((etaOut - etaIn)*semiSpan.doubleValue(SI.METER)))/2;
+		influenceAreas[1] = (chordOut * ((etaOut - etaIn)*semiSpan.doubleValue(SI.METER)))/2;
 		
 		// it returns the influence coefficient
 		

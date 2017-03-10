@@ -31,6 +31,7 @@ public class InputTree {
 	private Double cLstarClean;
 	private Double cLmaxClean;
 	
+	private List<Double> etaStations;
 	private List<Amount<Length>> airfoilsChordDistribution;
 	private List<Double> maxThicknessAirfoilsDistribution;
 	private List<Amount<Length>> leadingEdgeRadiusAirfoilsDistribution;
@@ -333,5 +334,13 @@ public class InputTree {
 
 	public void setDeltaSlat(List<Amount<Angle>> deltaSlat) {
 		this.deltaSlat = deltaSlat;
+	}
+
+	public List<Double> getEtaStations() {
+		return etaStations;
+	}
+
+	public void setEtaStations(List<Double> etaStations) {
+		this.etaStations = etaStations;
 	}
 }

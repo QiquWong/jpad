@@ -3,6 +3,7 @@ package calculators.geometry;
 import static java.lang.Math.pow;
 import static java.lang.Math.tan;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -59,6 +60,86 @@ public class LSGeometryCalc {
 				SI.RADIAN);
 	}
 
+	public static List<Double> calculateInfluenceCoefficients (
+			List<Amount<Length>> chordsBreakPoints,
+			List<Amount<Length>> yBreakPoints,
+			Amount<Area> surface
+			) {
+
+		List<Amount<Area>> influenceAreas = new ArrayList<>();
+		List<Double> influenceCoefficients = new ArrayList<>();
+		
+		//----------------------------------------------------------------------------------------------
+		// calculation of the first influence area ...
+		influenceAreas.add(
+				Amount.valueOf(
+						0.5
+						*chordsBreakPoints.get(0).doubleValue(SI.METER)
+						*(yBreakPoints.get(1).to(SI.METER)
+								.minus(yBreakPoints.get(0).to(SI.METER))
+								.doubleValue(SI.METER)),
+						SI.SQUARE_METRE)
+				);
+
+		influenceCoefficients.add(
+				influenceAreas.get(0).to(SI.SQUARE_METRE)
+				.times(2)
+				.divide(surface.to(SI.SQUARE_METRE))
+				.getEstimatedValue()
+				);
+
+		//----------------------------------------------------------------------------------------------
+		// calculation of the inner influence areas ... 
+		for(int i=1; i<yBreakPoints.size()-1; i++) {
+
+			influenceAreas.add(
+					Amount.valueOf(
+							(0.5
+									*chordsBreakPoints.get(i).doubleValue(SI.METER)
+									*(yBreakPoints.get(i).to(SI.METER)
+											.minus(yBreakPoints.get(i-1).to(SI.METER))
+											.doubleValue(SI.METER))
+									)
+							+(0.5
+									*chordsBreakPoints.get(i).doubleValue(SI.METER)
+									*(yBreakPoints.get(i+1).to(SI.METER)
+											.minus(yBreakPoints.get(i).to(SI.METER))
+											.doubleValue(SI.METER))
+									),
+							SI.SQUARE_METRE)
+					);
+
+			influenceCoefficients.add(
+					influenceAreas.get(i).to(SI.SQUARE_METRE)
+					.times(2)
+					.divide(surface.to(SI.SQUARE_METRE))
+					.getEstimatedValue()
+					);
+
+		}
+
+		//----------------------------------------------------------------------------------------------
+		// calculation of the last influence area ...
+		influenceAreas.add(
+				Amount.valueOf(
+						0.5
+						*chordsBreakPoints.get(chordsBreakPoints.size()-1).doubleValue(SI.METER)
+						*(yBreakPoints.get(yBreakPoints.size()-1).to(SI.METER)
+								.minus(yBreakPoints.get(yBreakPoints.size()-2).to(SI.METER))
+								.doubleValue(SI.METER)),
+						SI.SQUARE_METRE)
+				);
+
+		influenceCoefficients.add(
+				influenceAreas.get(yBreakPoints.size()-1).to(SI.SQUARE_METRE)
+				.times(2)
+				.divide(surface.to(SI.SQUARE_METRE))
+				.getEstimatedValue()
+				);
+		
+		return influenceCoefficients;
+	}	
+	
 	/**
 	 * 
 	 * @author Lorenzo Attanasio

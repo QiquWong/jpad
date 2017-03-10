@@ -522,11 +522,13 @@ public class TakeOffManager {
 
 	public static void executeStandAloneTakeOffCalculator(String outputFolder) throws InstantiationException, IllegalAccessException {
 		
-		String chartsFolderPath = JPADStaticWriteUtils.createNewFolder(
-				outputFolder 
-				+ "Charts"
-				+ File.separator
-				);
+		String chartsFolderPath = null;
+		if(input.isCharts())
+			chartsFolderPath = JPADStaticWriteUtils.createNewFolder(
+					outputFolder 
+					+ "Charts"
+					+ File.separator
+					);
 		
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
@@ -609,7 +611,8 @@ public class TakeOffManager {
 			Document doc = docBuilder.newDocument();
 			
 			createXml(doc, docBuilder);
-			createXls(filenameWithPathAndExt);
+			if(input.isCharts())
+				createXls(filenameWithPathAndExt);
 			
 			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt + ".xml");
 

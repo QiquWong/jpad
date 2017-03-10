@@ -4,9 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,20 +19,17 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
-import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
+import aircraft.components.liftingSurface.creator.SlatCreator;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import calculators.aerodynamics.LiftCalc;
 import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AirfoilFamilyEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.MethodEnum;
+import configuration.enumerations.HighLiftDeviceEffectEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
@@ -45,7 +44,6 @@ public class HighLiftDevicesCalc {
 	
 	public static InputTree input;
 	public static OutputTree output;
-	public static LiftingSurface theWing;
 	
 	
 	/**************************************************************************************
@@ -60,6 +58,8 @@ public class HighLiftDevicesCalc {
 	@SuppressWarnings("unchecked")
 	public static void importFromXML(String pathToXML) throws ParserConfigurationException {
 
+		MyConfiguration.customizeAmountOutput();
+		
 		input = new InputTree();
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -124,7 +124,11 @@ public class HighLiftDevicesCalc {
 			input.setcLmaxClean(Double.valueOf(cLmaxCleanProperty));
 		
 		//---------------------------------------------------------------------------------------
-		// Mean airfoil:
+		// Airfoils data:
+		String etaStationsProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/eta_stations");
+		if(etaStationsProperty != null)
+			input.setEtaStations(reader.readArrayDoubleFromXML("//wing/airfoils_data/eta_stations"));
+		
 		String clAlphaAirfoilsDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/cl_alpha_distribution");
 		if(clAlphaAirfoilsDistributionProperty != null)
 			input.setClAlphaAirfoilsDistribution(reader.readArrayofUnknownAmountFromXML("//wing/airfoils_data/cl_alpha_distribution"));
@@ -145,11 +149,11 @@ public class HighLiftDevicesCalc {
 		if(maxThicknessAirfoilsDistributionProperty != null)
 			input.setMaxThicknessAirfoilsDistribution(reader.readArrayDoubleFromXML("//wing/airfoils_data/max_thickness_distribution"));
 		
-		String airfoilFamilyDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/airfoil_family_list");
+		String airfoilFamilyDistributionProperty = reader.getXMLPropertyByPath("//wing/airfoils_data/airfoils_family");
 		if(airfoilFamilyDistributionProperty != null) 
 			input.setAirfoilsFamily( 
 					Arrays.stream(AirfoilFamilyEnum.values())
-					.filter(a -> a.equals(airfoilFamilyDistributionProperty))
+					.filter(a -> a.toString().equals(airfoilFamilyDistributionProperty))
 					.findFirst()
 					.orElseThrow(() -> {throw new IllegalStateException(String.format("Unsupported airfoil family", airfoilFamilyDistributionProperty));}));
 		
@@ -167,6 +171,7 @@ public class HighLiftDevicesCalc {
 		System.out.println("\tCL0 clean = " + input.getcL0Clean());
 		System.out.println("\tCLstar clean = " + input.getcLstarClean());
 		System.out.println("\tCLmax clean = " + input.getcLmaxClean() + "\n");
+		System.out.println("\tAirfoils adimensional stations = " + input.getEtaStations());
 		System.out.println("\tAirfoils chord distribution = " + input.getAirfoilsChordDistribution());
 		System.out.println("\tMax thickness airfoils distribution = " + input.getMaxThicknessAirfoilsDistribution());
 		System.out.println("\tLeading edge radius airfoils distribution = " + input.getLeadingEdgeRadiusAirfoilsDistribution());
@@ -229,27 +234,20 @@ public class HighLiftDevicesCalc {
 	 */
 	private static void importFlapFromXML(InputTree input, JPADXmlReader reader) throws ParserConfigurationException {
 
+		MyConfiguration.customizeAmountOutput();
+		
 		System.out.println("Reading flaps data...");
 		
 		List<String> flapTypeProperty = reader.getXMLPropertiesByPath("//flap_type");
-		// Recognizing flap type
-		for(int i=0; i<flapTypeProperty.size(); i++) {
-			if(flapTypeProperty.get(i).equals("SINGLE_SLOTTED"))
-				input.getFlapType().add(FlapTypeEnum.SINGLE_SLOTTED);
-			else if(flapTypeProperty.get(i).equals("DOUBLE_SLOTTED"))
-				input.getFlapType().add(FlapTypeEnum.DOUBLE_SLOTTED);
-			else if(flapTypeProperty.get(i).equals("PLAIN"))
-				input.getFlapType().add(FlapTypeEnum.PLAIN);
-			else if(flapTypeProperty.get(i).equals("FOWLER"))
-				input.getFlapType().add(FlapTypeEnum.FOWLER);
-			else if(flapTypeProperty.get(i).equals("TRIPLE_SLOTTED"))
-				input.getFlapType().add(FlapTypeEnum.TRIPLE_SLOTTED);
-			else {
-				System.err.println("NO VALID FLAP TYPE!!");
-				return;
-			}
-		}
-		
+		// Recognizing flap type 
+		flapTypeProperty.stream().forEach(
+				x -> input.getFlapType().add( 
+						Arrays.stream(FlapTypeEnum.values())
+						.filter(a -> a.toString().equals(x))
+						.findFirst()
+						.orElseThrow(() -> {throw new IllegalStateException(String.format("Unsupported flap type", flapTypeProperty));}))
+				);
+				
 		List<String> cfcProperty = reader.getXMLPropertiesByPath("//flap_chord_ratio");
 		for(int i=0; i<cfcProperty.size(); i++)
 			input.getCfc().add(Double.valueOf(cfcProperty.get(i)));
@@ -303,11 +301,14 @@ public class HighLiftDevicesCalc {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void executeStandAloneHighLiftDevicesCalc (
 			String databaseFolderPath,
 			String highLiftDatabaseFileName,
 			String aerodynamicDatabaseFileName
 			) {
+		
+		MyConfiguration.customizeAmountOutput();
 		
 		//------------------------------------------------------------------------------------
 		// create an OutputTree object
@@ -315,15 +316,13 @@ public class HighLiftDevicesCalc {
 		
 		//------------------------------------------------------------------------------------
 		// Setup database(s)
-		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(
-				databaseFolderPath,	
-				aerodynamicDatabaseFileName
-				);
+		AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(new AerodynamicDatabaseReader(
+				databaseFolderPath,	aerodynamicDatabaseFileName),
+				databaseFolderPath);
 	
-		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(
-				databaseFolderPath,
-				highLiftDatabaseFileName
-				);
+		HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(new HighLiftDatabaseReader(
+				databaseFolderPath, highLiftDatabaseFileName),
+				databaseFolderPath);
 	
 		//------------------------------------------------------------------------------------
 		// Managing flaps types:
@@ -363,114 +362,147 @@ public class HighLiftDevicesCalc {
 		System.out.println("\n-----------HIGH LIFT DEVICES EFFECTS-------------- ");
 
 		//....................................................................
-		// Initialization with a default wing ...
-		theWing = new LiftingSurfaceBuilder("Wing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
-				.liftingSurfaceCreator(
-						new LiftingSurfaceCreator
-						.LiftingSurfaceCreatorBuilder("Wing", Boolean.TRUE, AircraftEnum.ATR72, ComponentEnum.WING)
-						.build()
-				)
-		.build();
+		// Definition of the flap and slat list ...
+		List<SymmetricFlapCreator> flapList = new ArrayList<>();
+		for(int i=0; i<input.getFlapsNumber(); i++) {
+			
+			flapList.add(new SymmetricFlapCreator
+					.SymmetricFlapBuilder(
+							"Flap #" + i,
+							input.getFlapType().get(i),
+							input.getEtaInFlap().get(i),
+							input.getEtaOutFlap().get(i),
+							input.getCfc().get(i),
+							input.getCfc().get(i),
+							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+							Amount.valueOf(50.0, NonSI.DEGREE_ANGLE)
+							).build()
+					);
+			
+		}
 		
-		//....................................................................
-		// Replacement of the required wing parameters with the input data ...  
-		theWing.getLiftingSurfaceCreator().getPanels().clear();
-		theWing.getAirfoilList().clear();
-		
-		theWing.getLiftingSurfaceCreator().setSurfacePlanform(input.getSurface());
-		theWing.getLiftingSurfaceCreator().setSpan(
-				Amount.valueOf(
-						Math.sqrt(input.getAspectRatio()*input.getSurface().doubleValue(SI.SQUARE_METRE)),
-						SI.METER
-						)
-				);
-		theWing.getLiftingSurfaceCreator().setAspectRatio(input.getAspectRatio());
-		theWing.getLiftingSurfaceCreator().setSweepQuarterChordEquivalentWing(input.getSweepQuarteChordEq());
-		theWing.getLiftingSurfaceCreator().setTaperRatioEquivalentWing(input.getTaperRatioEq());
-		theWing.getLiftingSurfaceCreator().setRootChordEquivalentWing(input.getRootChordEquivalentWing());
-		
-		///////////////////////////////////////////////////////////////
-		// TODO: SET THE REQUIRED PARAMETERS INSIDE THE DEFAULT WING //
-		/////////////////////////////////////////////////////////////// 
+		List<SlatCreator> slatList = new ArrayList<>();
+		for(int i=0; i<input.getSlatsNumber(); i++) {
+			
+			slatList.add(new SlatCreator
+					.SlatBuilder(
+							"Slat #" + i,
+							input.getEtaInSlat().get(i),
+							input.getEtaOutSlat().get(i),
+							input.getCsc().get(i),
+							input.getCsc().get(i),
+							input.getcExtCSlat().get(i),
+							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+							Amount.valueOf(35.0, NonSI.DEGREE_ANGLE)
+							).build()
+					);
+			
+		}
 		
 		//....................................................................
 		// Calculation of the high lift effects ...
-//		LiftCalc.calculateHighLiftDevicesEffects(
-//				theWing,
-//				input.getDeltaFlap().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
-//				input.getDeltaSlat().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
-//				input.getCurrentLiftingCoefficient()
-//				);
-//		
-//		output.setDeltaCl0FlapList(theWing.getTheAerodynamicsCalculator().getDeltaCl0FlapList().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCL0FlapList(theWing.getTheAerodynamicsCalculator().getDeltaCL0FlapList().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaClmaxFlapList(theWing.getTheAerodynamicsCalculator().getDeltaClmaxFlapList().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCLmaxFlapList(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxFlapList().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaClmaxSlatList(theWing.getTheAerodynamicsCalculator().getDeltaClmaxSlatList().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCLmaxSlatList(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxSlatList().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCDList(theWing.getTheAerodynamicsCalculator().getDeltaCDList().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCMC4List(theWing.getTheAerodynamicsCalculator().getDeltaCMc4List().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCl0Flap(theWing.getTheAerodynamicsCalculator().getDeltaCl0Flap().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCL0Flap(theWing.getTheAerodynamicsCalculator().getDeltaCL0Flap().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaClmaxFlap(theWing.getTheAerodynamicsCalculator().getDeltaClmaxFlap().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCLmaxFlap(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxFlap().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaClmaxSlat(theWing.getTheAerodynamicsCalculator().getDeltaClmaxSlat().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCLmaxSlat(theWing.getTheAerodynamicsCalculator().getDeltaCLmaxSlat().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCD(theWing.getTheAerodynamicsCalculator().getDeltaCD().get(MethodEnum.SEMPIEMPIRICAL));
-//		output.setDeltaCMC4(theWing.getTheAerodynamicsCalculator().getDeltaCMc4().get(MethodEnum.SEMPIEMPIRICAL));
+		Map<HighLiftDeviceEffectEnum, Object> resultsMap = 
+				LiftCalc.calculateHighLiftDevicesEffects(
+						highLiftDatabaseReader,
+						flapList,
+						slatList,
+						input.getEtaStations(),
+						input.getClAlphaAirfoilsDistribution(),
+						input.getCl0AirfoilsDistribution(),
+						input.getMaxThicknessAirfoilsDistribution(),
+						input.getLeadingEdgeRadiusAirfoilsDistribution(),
+						input.getAirfoilsChordDistribution(),
+						input.getDeltaFlap().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
+						input.getDeltaSlat().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
+						input.getCurrentLiftingCoefficient(),
+						input.getcLAlphaClean(),
+						input.getSweepQuarteChordEq(),
+						input.getTaperRatioEq(),
+						input.getRootChordEquivalentWing(),
+						input.getAspectRatio(),
+						input.getSurface()
+						);
+
+		output.setDeltaCl0FlapList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST));
+		output.setDeltaCL0FlapList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST));
+		output.setDeltaClmaxFlapList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST));
+		output.setDeltaCLmaxFlapList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST));
+		output.setDeltaCDList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CD_LIST));
+		output.setDeltaCMC4List((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4_LIST));
+		output.setDeltaCl0Flap((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP));
+		output.setDeltaCL0Flap((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP));
+		output.setDeltaClmaxFlap((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP));
+		output.setDeltaCLmaxFlap((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP));
+		output.setDeltaCD((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CD));
+		output.setDeltaCMC4((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4));
+		output.setcLalphaHighLift((Amount<?>) resultsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT));
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST) != null)
+			output.setDeltaClmaxSlatList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST));
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST) != null)
+			output.setDeltaCLmaxSlatList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST));
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT) != null)
+			output.setDeltaClmaxSlat((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT));
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT) != null)
+			output.setDeltaCLmaxSlat((Double) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT));
 
 		//---------------------------------------------------------------
 		// PRINT HIGH LIFT DEVICES EFFECTS:
 		//---------------------------------------------------------------
-		System.out.println("\t\ndeltaCl0_flap_list = ");
+		System.out.println("\t\ndeltaCl0 flap list = ");
 		for(int i=0; i<output.getDeltaCl0FlapList().size(); i++)
 			System.out.println(output.getDeltaCl0FlapList().get(i));
 	
-		System.out.println("\t\ndeltaCl0_flap = \n" + output.getDeltaCl0Flap());
+		System.out.println("\t\ndeltaCl0 flap = \n" + output.getDeltaCl0Flap());
 	
-		System.out.println("\t\ndeltaCL0_flap_list = ");
+		System.out.println("\t\ndeltaCL0 flap list = ");
 		for(int i=0; i<output.getDeltaCL0FlapList().size(); i++)
 			System.out.println(output.getDeltaCL0FlapList().get(i));
 	
-		System.out.println("\t\ndeltaCL0_flap = \n" + output.getDeltaCL0Flap());
+		System.out.println("\t\ndeltaCL0 flap = \n" + output.getDeltaCL0Flap());
 	
-		System.out.println("\t\ndeltaClmax_flap_list = ");
+		System.out.println("\t\ndeltaClmax flap list = ");
 		for(int i=0; i<output.getDeltaClmaxFlapList().size(); i++)
 			System.out.println(output.getDeltaClmaxFlapList().get(i));
 	
-		System.out.println("\t\ndeltaClmax_flap = \n" + output.getDeltaClmaxFlap());
+		System.out.println("\t\ndeltaClmax flap = \n" + output.getDeltaClmaxFlap());
 	
-		System.out.println("\t\ndeltaCLmax_flap_list = ");
+		System.out.println("\t\ndeltaCLmax flap list = ");
 		for(int i=0; i<output.getDeltaCLmaxFlapList().size(); i++)
 			System.out.println(output.getDeltaCLmaxFlapList().get(i));
 	
-		System.out.println("\t\ndeltaCLmax_flap = \n" + output.getDeltaCLmaxFlap());
+		System.out.println("\t\ndeltaCLmax flap = \n" + output.getDeltaCLmaxFlap());
 		
-		System.out.println("\t\ndeltaClmax_slat_list = ");
-		for(int i=0; i<output.getDeltaClmaxSlatList().size(); i++)
-			System.out.println(output.getDeltaClmaxSlatList().get(i));
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST) != null) {
+			System.out.println("\t\ndeltaClmax slat list = ");
+			for(int i=0; i<output.getDeltaClmaxSlatList().size(); i++)
+				System.out.println(output.getDeltaClmaxSlatList().get(i));
+		}
 	
-		System.out.println("\t\ndeltaClmax_slat = \n" + output.getDeltaClmaxSlat());
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT) != null)
+			System.out.println("\t\ndeltaClmax slat = \n" + output.getDeltaClmaxSlat());
 	
-		System.out.println("\t\ndeltaCLmax_slat_list = ");
-		for(int i=0; i<output.getDeltaCLmaxSlatList().size(); i++)
-			System.out.println(output.getDeltaCLmaxSlatList().get(i));
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST) != null) {
+			System.out.println("\t\ndeltaCLmax slat list = ");
+			for(int i=0; i<output.getDeltaCLmaxSlatList().size(); i++)
+				System.out.println(output.getDeltaCLmaxSlatList().get(i));
+		}
 	
-		System.out.println("\t\ndeltaCLmax_slat = \n" + output.getDeltaCLmaxSlat());
+		if(resultsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT) != null)
+			System.out.println("\t\ndeltaCLmax slat = \n" + output.getDeltaCLmaxSlat());
 	
-		System.out.println("\t\ncLalpha_new = \n" + output.getcLalphaHighLift().getEstimatedValue() + " " + output.getcLalphaHighLift().getUnit());
+		System.out.println("\t\nCLalpha high lift = \n" + output.getcLalphaHighLift());
 	
-		System.out.println("\t\ndeltaCD_list = ");
+		System.out.println("\t\ndeltaCD0 list = ");
 		for(int i=0; i<output.getDeltaCDList().size(); i++)
 			System.out.println(output.getDeltaCDList().get(i));
 	
-		System.out.println("\t\ndeltaCD = \n" + output.getDeltaCD());
+		System.out.println("\t\ndeltaCD0 = \n" + output.getDeltaCD());
 	
-		System.out.println("\t\ndeltaCMc_4_list = ");
+		System.out.println("\t\ndeltaCMc4_list = ");
 		for(int i=0; i<output.getDeltaCMC4List().size(); i++)
 			System.out.println(output.getDeltaCMC4List().get(i));
 	
-		System.out.println("\t\ndeltaCMc_4 = \n" + output.getDeltaCMC4());
+		System.out.println("\t\ndeltaCMc4 = \n" + output.getDeltaCMC4());
 		
 		System.out.println("\t------------------DONE----------------------");
 		
@@ -517,16 +549,25 @@ public class HighLiftDevicesCalc {
 		//--------------------------------------------------------------------------------------
 		double alphaHighLiftFirst = -13.0;
 		
-		Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(theWing));
-		
-		output.getAlphaListPlot().add(
-				MyArrayUtils.linspaceDouble(
-						alphaHighLiftFirst,
-						output.getAlphaStallHighLift().to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 2,
-						nPoints
-						)
+		Amount<Length> span = Amount.valueOf(
+				Math.sqrt(input.getAspectRatio()*input.getSurface().doubleValue(SI.SQUARE_METRE)), 
+				SI.METER
 				);
 		
+		List<Double> wingInfluenceCoefficients = LSGeometryCalc.calculateInfluenceCoefficients(
+				input.getAirfoilsChordDistribution(), 
+				input.getEtaStations()
+					.stream()
+						.map(x -> span.divide(2).times(x))
+							.collect(Collectors.toList()), 
+				input.getSurface()
+				);
+		
+		double meanThicknessToChordRatio = 0.0;
+		for(int i=0; i<wingInfluenceCoefficients.size(); i++)
+			meanThicknessToChordRatio += wingInfluenceCoefficients.get(i)
+			*input.getMaxThicknessAirfoilsDistribution().get(i);
+				
 		output.setcL0HighLift(input.getcL0Clean() + output.getDeltaCL0Flap());
 		output.setcLmaxHighLift(input.getcLmaxClean() + output.getDeltaCLmaxFlap() + output.getDeltaCLmaxSlat());
 		output.setAlphaStallHighLift(
@@ -542,7 +583,7 @@ public class HighLiftDevicesCalc {
 										0.25
 										).getEstimatedValue(),
 								aeroDatabaseReader.getDeltaYvsThickness(
-										meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+										meanThicknessToChordRatio,
 										input.getAirfoilsFamily()
 										)
 								),
@@ -566,7 +607,15 @@ public class HighLiftDevicesCalc {
 									)
 							)
 					);
-									
+						
+		output.getAlphaListPlot().add(
+				MyArrayUtils.linspaceDouble(
+						alphaHighLiftFirst,
+						output.getAlphaStallHighLift().to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 1,
+						nPoints
+						)
+				);
+		
 		output.getcLListPlot().add(
 				LiftCalc.calculateCLvsAlphaArray(
 						output.getcL0HighLift(),
@@ -582,17 +631,15 @@ public class HighLiftDevicesCalc {
 		System.out.println("\tAlpha max = " + input.getAlphaStallClean());
 		System.out.println("\tAlpha star = " + input.getAlphaStarClean());
 		System.out.println("\tCL max = " + input.getcLmaxClean());
-		System.out.println("\tCL star = " + input.getcLstarClean());
 		System.out.println("\tCL0 = " + input.getcL0Clean());
-		System.out.println("\tCL alpha = " + input.getcLAlphaClean());
+		System.out.println("\tCLalpha = " + input.getcLAlphaClean());
 		
 		System.out.println("\t\n-----------HIGH LIFT DEVICES ON-------------- ");
 		System.out.println("\tAlpha max = " + output.getAlphaStallHighLift());
 		System.out.println("\tAlpha star = " + output.getAlphaStarHighLift());
 		System.out.println("\tCL max = " + output.getcLmaxHighLift());
-		System.out.println("\tCL star = " + output.getcLStarHighLift());
 		System.out.println("\tCL0 = " + output.getcL0HighLift());
-		System.out.println("\tCL alpha = " + output.getcLalphaHighLift());
+		System.out.println("\tCLalpha = " + output.getcLalphaHighLift());
 
 		//--------------------------------------------------------------------------------------
 		// PLOTTING CURVES:
@@ -744,14 +791,16 @@ public class HighLiftDevicesCalc {
 		JPADStaticWriteUtils.writeSingleNode("delta_Cl0_total_due_to_flaps", output.getDeltaCl0Flap(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_of_each_flap", output.getDeltaClmaxFlapList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_total_due_to_flaps", output.getDeltaClmaxFlap(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_of_each_slat", output.getDeltaClmaxSlatList(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_Clmax_total_due_to_slats", output.getDeltaClmaxSlat(), highLiftDevicesEffectsElement, doc);
+		if(input.getSlatsNumber() > 0.0) {
+			JPADStaticWriteUtils.writeSingleNode("delta_Clmax_of_each_slat", output.getDeltaClmaxSlatList(), highLiftDevicesEffectsElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("delta_Clmax_total_due_to_slats", output.getDeltaClmaxSlat(), highLiftDevicesEffectsElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("delta_CLmax_of_each_slat", output.getDeltaCLmaxSlatList(), highLiftDevicesEffectsElement, doc);
+			JPADStaticWriteUtils.writeSingleNode("delta_CLmax_total_due_to_slats", output.getDeltaCLmaxSlat(), highLiftDevicesEffectsElement, doc);
+		}
 		JPADStaticWriteUtils.writeSingleNode("delta_CL0_of_each_flap", output.getDeltaCL0FlapList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CL0_total_due_to_flaps", output.getDeltaCL0Flap(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_of_each_flap", output.getDeltaCLmaxFlapList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_total_due_to_flaps", output.getDeltaCLmaxFlap(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_of_each_slat", output.getDeltaCLmaxSlatList(), highLiftDevicesEffectsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("delta_CLmax_total_due_to_slats", output.getDeltaCLmaxSlat(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CD0_of_each_flap", output.getDeltaCDList(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CD0_total", output.getDeltaCD(), highLiftDevicesEffectsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("delta_CM_c4_of_each_flap", output.getDeltaCMC4List(), highLiftDevicesEffectsElement, doc);

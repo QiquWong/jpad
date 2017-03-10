@@ -537,7 +537,7 @@ public class JPADXmlReader {
 			
 			if(unitStr.startsWith("1/", 0)) {
 				Double value = Double.parseDouble(arraysString[i].trim());
-				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr).inverse());
+				tempAmount =  Amount.valueOf(value, Unit.valueOf(unitStr.substring(2)).inverse());
 			}
 			else {
 				Double value = Double.parseDouble(arraysString[i].trim());
