@@ -517,7 +517,7 @@ public class AerodynamicCalc {
 				(ka*kL*kH*Math.sqrt(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)))), 
 				1.19); 
 		
-		downwashArray[0] = Math.toDegrees(downwashGradientArray[0]*deltaAlpha); //deg 
+		downwashArray[0] = 0.0;
 		
 		alphaBodyArray[0] = alphaAbsoluteArray[0] 
 				- iw.doubleValue(NonSI.DEGREE_ANGLE)
@@ -532,6 +532,10 @@ public class AerodynamicCalc {
 		for ( int i = 1 ; i<alphaAbsoluteArray.length ; i++){
 			epsilonTemp = downwashArray[i-1];
 			int ii=0;
+			alphaBodyArray[i] = 
+					alphaAbsoluteArray[i] 
+							- iw.doubleValue(NonSI.DEGREE_ANGLE) 
+							+ alphaZeroLiftWing.doubleValue(NonSI.DEGREE_ANGLE);
 			
 			while(ii<3){ // ?
 			//distance
@@ -562,7 +566,7 @@ public class AerodynamicCalc {
 					1.19); 
 			
 			//downwash angle
-			epsilonTemp = Math.toDegrees(downwashGradientTemp*deltaAlpha); //deg 
+			epsilonTemp = downwashArray[i-1] +  Math.toDegrees(downwashGradientTemp*deltaAlpha); //deg 
 			ii++;
 			}
 			//-----
@@ -898,6 +902,66 @@ public class AerodynamicCalc {
 		
 		return downwashAngle;
 		
+	}
+	
+	public static List<Amount<Angle>> calculateDownwashAngleFromDownwashGradient(
+			List<Double> downwashGradientList,
+			List<Amount<Angle>> alphasBodyList,
+			Amount<Angle> iw,
+			Amount<Angle> alphaZeroLiftWing
+			){
+		
+		List<Amount<Angle>> downwashAngleTemp = new ArrayList<>();
+		// Alpha Absolute array 
+		double alphaFirst = 0.0;
+		double alphaLast = 40.0;
+		int nValue = 100;
+		
+
+		double [] alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue); //deg
+		double [] alphaWingArray =  new double [alphaAbsoluteArray.length]; //deg
+		double [] alphaBodyArray =  new double [alphaAbsoluteArray.length]; //deg
+		List<Double> downwashGradientInterp = new ArrayList<>();
+		
+		for(int i=0; i< alphaAbsoluteArray.length; i++){
+			alphaWingArray[i] = alphaAbsoluteArray[i] + alphaZeroLiftWing.doubleValue(NonSI.DEGREE_ANGLE); 
+			alphaBodyArray[i] = 
+					alphaAbsoluteArray[i] 
+							- iw.doubleValue(NonSI.DEGREE_ANGLE) 
+							+ alphaZeroLiftWing.doubleValue(NonSI.DEGREE_ANGLE);
+		}
+		double deltaAlpha = Amount.valueOf(
+				Math.toRadians(alphaAbsoluteArray[1] - alphaAbsoluteArray[0]), SI.RADIAN).getEstimatedValue(); // rad
+
+		downwashGradientInterp = MyArrayUtils.convertDoubleArrayToListDouble(
+				MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(alphasBodyList),
+					MyArrayUtils.convertToDoublePrimitive(downwashGradientList),
+				    alphaBodyArray
+					));
+	
+		
+		// first value
+		downwashAngleTemp.set(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		
+		// other values
+		for (int i=0; i<alphaAbsoluteArray.length; i++){
+		downwashAngleTemp.set(i, Amount.valueOf(
+				downwashAngleTemp.get(i-1).doubleValue(NonSI.DEGREE_ANGLE) + 
+				downwashGradientInterp.get(i)*deltaAlpha, 
+				NonSI.DEGREE_ANGLE));
+		}
+		
+		List<Amount<Angle>> downwashAngle = new ArrayList<>();
+		
+		downwashAngle = MyArrayUtils.convertDoubleArrayToListOfAmount(
+			MyMathUtils.getInterpolatedValue1DLinear(
+				alphaBodyArray,
+				MyArrayUtils.convertListOfAmountTodoubleArray(downwashAngleTemp),
+				MyArrayUtils.convertListOfAmountTodoubleArray(alphasBodyList)
+				), NonSI.DEGREE_ANGLE);
+		
+		return downwashAngle;
 	}
 	
 	public static List<Amount<Length>> calculateVortexPlaneHorizontalTailVerticalDistance (
