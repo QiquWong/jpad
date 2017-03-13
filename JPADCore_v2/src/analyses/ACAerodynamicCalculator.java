@@ -17,6 +17,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.AirfoilCalc;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
@@ -54,7 +55,7 @@ public class ACAerodynamicCalculator {
 	private OperatingConditions _theOperatingConditions;
 	private List<ConditionEnum> _theConditions;
 	//..............................................................................
-	// FROM INPUT (Passed from File)
+	// FROM INPUT (Passed from XML file)
 	private Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> _componentTaskList;
 	private List<Double> _xCGAircraft;
 	private List<Double> _zCGAircraft;
@@ -82,28 +83,18 @@ public class ACAerodynamicCalculator {
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
 	
 	// for discretized airfoil Cl along sempispan
-	private List<List<Amount<Angle>>> _wingAirfoilsAlphaListBreakPoints;
-	private List<List<Double>> _wingAirfoilsClListBreakPoints;
 	private List<List<Double>> _discretizedWingAirfoilsCl;
 	
 	// for discretized airfoil Cd along sempispan
-	private List<List<Double>> _wingAirfoilsClForCdBreakPoints;
-	private List<List<Double>> _wingAirfoilsCdListBreakPoints;
 	private List<List<Double>> _discretizedWingAirfoilsCd;
 	
 	// for discretized airfoil Cm along sempispan
-	private List<List<Double>> _wingAirfoilsClForCmAtBreakPoints;
-	private List<List<Double>> _wingAirfoilCmListBreakPoints;
 	private List<List<Double>> _discretizedWingAirfoilsCm;
 	
 	// for discretized airfoil Cl along sempispan
-	private List<List<Amount<Angle>>> _hTailAirfoilsAlphaListBreakPoints;
-	private List<List<Double>> _hTailAirfoilsClListBreakPoints;
 	private List<List<Double>> _discretizedHTailAirfoilsCl;
 	
 	// for discretized airfoil Cd along sempispan
-	private List<List<Double>> _hTailAirfoilsClForCdBreakPoints;
-	private List<List<Double>> _hTailAirfoilsCdListBreakPoints;
 	private List<List<Double>> _discretizedHTailAirfoilsCd;
 	
 	// Global
@@ -128,27 +119,16 @@ public class ACAerodynamicCalculator {
 		_downwashGradientMap = new HashMap<>();
 		_downwashAngleMap = new HashMap<>();
 		_verticalDistanceZeroLiftDirectionWingHTailVariable = new HashMap<>();
-		_wingAirfoilsAlphaListBreakPoints = new ArrayList<>();
-		_wingAirfoilsClListBreakPoints = new ArrayList<List<Double>>();
 		_discretizedWingAirfoilsCl = new ArrayList<List<Double>>();
-		_wingAirfoilsClForCdBreakPoints = new ArrayList<List<Double>>();
-		_wingAirfoilsCdListBreakPoints = new ArrayList<List<Double>>();
 		_discretizedWingAirfoilsCd = new ArrayList<List<Double>>();
-		_wingAirfoilsClForCmAtBreakPoints = new ArrayList<List<Double>>();
-		_wingAirfoilCmListBreakPoints = new ArrayList<List<Double>>();
 		_discretizedWingAirfoilsCm = new ArrayList<List<Double>>();
-		_hTailAirfoilsAlphaListBreakPoints = new ArrayList<>();
-		_hTailAirfoilsClListBreakPoints = new ArrayList<List<Double>>();
 		_discretizedHTailAirfoilsCl = new ArrayList<List<Double>>();
-		_hTailAirfoilsClForCdBreakPoints = new ArrayList<List<Double>>();
-		_hTailAirfoilsCdListBreakPoints = new ArrayList<List<Double>>();
 		_discretizedHTailAirfoilsCd = new ArrayList<List<Double>>();
 		
-		initializeCalculators(theCondition);
+		calculateComponentsData(theCondition);
+		
 		initializeData(theCondition);
 		initializeArrays(theCondition);
-		
-		// TODO : FILL ME !!
 		
 	}
 	
@@ -276,10 +256,6 @@ public class ACAerodynamicCalculator {
 								.doubleValue(SI.RADIAN)
 								),
 				SI.METER);
-		
-		
-		// TODO : FILL ME !!
-		
 	}
 	
 	private void initializeArrays(ConditionEnum theCondition) {
@@ -345,12 +321,12 @@ public class ACAerodynamicCalculator {
 							cLAlphaMachZero, 
 							_theAircraft.getWing()
 							.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
-							.getCLAlpha().get(
-									_componentTaskList
-									.get(ComponentEnum.WING)
-									.get(AerodynamicAndStabilityEnum.CL_ALPHA)
-									).to(SI.RADIAN.inverse()).getEstimatedValue()
+								.get(theCondition)
+									.getCLAlpha().get(
+											_componentTaskList
+											.get(ComponentEnum.WING)
+											.get(AerodynamicAndStabilityEnum.CL_ALPHA)
+											).to(SI.RADIAN.inverse()).getEstimatedValue()
 							)
 					);
 		
@@ -449,53 +425,6 @@ public class ACAerodynamicCalculator {
 						)
 				);
 
-		/////////////////////////////////////////////////////////////////////////////////////
-		// ALPHA HTAIL ARRAY 
-		if (_downwashConstant == Boolean.TRUE){
-			_alphaHTailList = new ArrayList<>();
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				_alphaHTailList.add(
-						Amount.valueOf(
-								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-								- _downwashAngleMap
-									.get(Boolean.TRUE)
-										.get(
-												_componentTaskList
-												.get(ComponentEnum.AIRCRAFT)
-												.get(AerodynamicAndStabilityEnum.DOWNWASH)
-												)
-											.get(i)
-												.doubleValue(NonSI.DEGREE_ANGLE)
-								+ _theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
-								NonSI.DEGREE_ANGLE
-								)
-						);
-			}
-		}
-
-		if (_downwashConstant == Boolean.FALSE){
-			_alphaHTailList = new ArrayList<>();
-			for (int i=0; i<_numberOfAlphasBody; i++){
-				_alphaHTailList.add(
-						Amount.valueOf(
-								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-								- _downwashAngleMap
-									.get(Boolean.FALSE)
-										.get(
-												_componentTaskList
-												.get(ComponentEnum.AIRCRAFT)
-												.get(AerodynamicAndStabilityEnum.DOWNWASH)
-												)
-											.get(i)
-												.doubleValue(NonSI.DEGREE_ANGLE)
-								+ _theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
-								NonSI.DEGREE_ANGLE
-								)
-						);
-			}
-		}
-		
-		
 		//.....................................................................................
 		// Filling the global maps ...
 		_downwashGradientMap.put(Boolean.TRUE, downwashGradientConstant);
@@ -507,16 +436,81 @@ public class ACAerodynamicCalculator {
 		
 		Map<MethodEnum, List<Double>> downwashGradientNonLinear = new HashMap<>();
 		
-		// TODO : COMPLETE ME !!
+		downwashGradientNonLinear.put(
+				MethodEnum.ROSKAM,
+				AerodynamicCalc.calculateVariableDownwashGradientRoskamWithMachEffect(
+						_theAircraft.getWing().getAspectRatio(),
+						_theAircraft.getWing().getTaperRatioEquivalent(false),
+						_theAircraft.getWing().getZApexConstructionAxes(),
+						_theAircraft.getHTail().getZApexConstructionAxes(),
+						_theAircraft.getWing().getRiggingAngle(),
+						_theAircraft.getWing()
+						.getTheAerodynamicsCalculatorMap()
+							.get(theCondition)
+								.getAlphaZeroLift()
+									.get(
+											_componentTaskList
+											.get(ComponentEnum.WING)
+											.get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+											),
+						_horizontalDistanceQuarterChordWingHTail,
+						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
+						_theAircraft.getWing().getSweepQuarterChordEquivalent(false),
+						cLAlphaMachZero,
+						_theAircraft.getWing()
+						.getTheAerodynamicsCalculatorMap()
+							.get(theCondition)
+								.getCLAlpha()
+									.get(
+											_componentTaskList
+											.get(ComponentEnum.WING)
+											.get(AerodynamicAndStabilityEnum.CL_ALPHA)
+											)
+										.to(SI.RADIAN.inverse())
+											.getEstimatedValue(), 
+						_alphaBodyList
+						)
+				);
 		
 		Map<MethodEnum, List<Amount<Angle>>> downwashAngleNonLinear = new HashMap<>();
 		
-		// TODO : COMPLETE ME !!
+		downwashAngleNonLinear.put(
+				MethodEnum.ROSKAM,
+				AerodynamicCalc.calculateDownwashAngleFromDownwashGradient(
+						downwashGradientNonLinear.get(MethodEnum.ROSKAM),
+						_alphaBodyList,
+						_theAircraft.getWing().getRiggingAngle(),
+						_theAircraft.getWing()
+						.getTheAerodynamicsCalculatorMap()
+							.get(theCondition)
+								.getAlphaZeroLift()
+									.get(
+											_componentTaskList
+											.get(ComponentEnum.WING)
+											.get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+											)
+						)
+				);
 		
-//		_verticalDistanceZeroLiftDirectionWingHTailVariable.put(
-//				MethodEnum.ROSKAM,
-//				??
-//				);
+		_verticalDistanceZeroLiftDirectionWingHTailVariable.put(
+				MethodEnum.ROSKAM,
+				AerodynamicCalc.calculateVortexPlaneHorizontalTailVerticalDistance(
+						_theAircraft.getWing().getRiggingAngle(),
+						_theAircraft.getWing()
+						.getTheAerodynamicsCalculatorMap()
+							.get(theCondition)
+								.getAlphaZeroLift()
+									.get(
+											_componentTaskList
+											.get(ComponentEnum.WING)
+											.get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
+											),
+						_horizontalDistanceQuarterChordWingHTail,
+						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
+						_alphaBodyList, 
+						downwashAngleNonLinear.get(MethodEnum.ROSKAM)
+						)	
+				);
 		
 		//...................................................................................
 		// SLINGERLAND (non linear gradient)
@@ -603,12 +597,228 @@ public class ACAerodynamicCalculator {
 		// Filling the global maps ...
 		_downwashGradientMap.put(Boolean.FALSE, downwashGradientNonLinear);
 		_downwashAngleMap.put(Boolean.FALSE, downwashAngleNonLinear);
-
+		
+		/////////////////////////////////////////////////////////////////////////////////////
+		// ALPHA HTAIL ARRAY 
+		if (_downwashConstant == Boolean.TRUE){
+			_alphaHTailList = new ArrayList<>();
+			for (int i=0; i<_numberOfAlphasBody; i++){
+				_alphaHTailList.add(
+						Amount.valueOf(
+								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+								- _downwashAngleMap
+									.get(Boolean.TRUE)
+										.get(
+												_componentTaskList
+												.get(ComponentEnum.AIRCRAFT)
+												.get(AerodynamicAndStabilityEnum.DOWNWASH)
+												)
+											.get(i)
+												.doubleValue(NonSI.DEGREE_ANGLE)
+								+ _theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
+								NonSI.DEGREE_ANGLE
+								)
+						);
+			}
+		}
+		if (_downwashConstant == Boolean.FALSE){
+			_alphaHTailList = new ArrayList<>();
+			for (int i=0; i<_numberOfAlphasBody; i++){
+				_alphaHTailList.add(
+						Amount.valueOf(
+								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+								- _downwashAngleMap
+									.get(Boolean.FALSE)
+										.get(
+												_componentTaskList
+												.get(ComponentEnum.AIRCRAFT)
+												.get(AerodynamicAndStabilityEnum.DOWNWASH)
+												)
+											.get(i)
+												.doubleValue(NonSI.DEGREE_ANGLE)
+								+ _theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
+								NonSI.DEGREE_ANGLE
+								)
+						);
+			}
+		}
 	}
 	
-	private void initializeCalculators(ConditionEnum theCondition) {
+	private void calculateComponentsData(ConditionEnum theCondition) {
 		
 		// TODO : FILL ME !!
+		/*
+		 * THIS WILL CREATE ALL THE COMPONENTS MANAGERS 
+		 * AND RUN ALL THE COMPONENTS CALCULATIONS
+		 */
+		
+		
+		
+		// TODO : INSERT THIS WHEN REQUIRED
+		initializeAirfoilsData();
+		
+	}
+	
+	private void initializeAirfoilsData() {
+		
+		//////////////////////////////////////////////////////////////////////
+		// WING
+		List<List<Amount<Angle>>> alphaArrayBreakPointsListWing = new ArrayList<>();
+		_theAircraft.getWing().getAirfoilList().stream()
+			.map(x -> alphaArrayBreakPointsListWing.add(x.getAirfoilCreator().getAlphaForClCurve()))
+				.collect(Collectors.toList());
+		
+		List<List<Double>> clArrayBreakPointsListWing = new ArrayList<>();
+		_theAircraft.getWing().getAirfoilList().stream()
+			.map(x -> clArrayBreakPointsListWing.add(x.getAirfoilCreator().getClCurve()))
+				.collect(Collectors.toList());
+				
+		_discretizedWingAirfoilsCl = AirfoilCalc.calculateCLMatrixAirfoils(
+				_alphaWingList, 
+				alphaArrayBreakPointsListWing, 
+				clArrayBreakPointsListWing,
+				_theAircraft.getWing().getLiftingSurfaceCreator().getEtaBreakPoints(),
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertFromDoublePrimitive(
+								_theAircraft.getWing()
+									.getTheAerodynamicsCalculatorMap()
+										.get(ConditionEnum.CRUISE)	
+											.getEtaStationDistribution()
+								)
+						)
+				);
+		
+		List<List<Double>> clForCdArrayBreakPointsListWing = new ArrayList<>();
+		_theAircraft.getWing().getAirfoilList().stream()
+			.map(x -> clForCdArrayBreakPointsListWing.add(x.getAirfoilCreator().getClForCdCurve()))
+				.collect(Collectors.toList());
+		
+		List<List<Double>> cdArrayBreakPointsListWing = new ArrayList<>();
+		_theAircraft.getWing().getAirfoilList().stream()
+			.map(x -> cdArrayBreakPointsListWing.add(x.getAirfoilCreator().getCdCurve()))
+				.collect(Collectors.toList());
+		
+		_discretizedWingAirfoilsCd = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						_theAircraft.getWing()
+							.getTheAerodynamicsCalculatorMap()
+								.get(ConditionEnum.CRUISE)
+									.getLiftCoefficient3DCurve()
+										.get(
+												_componentTaskList
+												.get(ComponentEnum.WING)
+												.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+												)
+						),	
+				clForCdArrayBreakPointsListWing,
+				cdArrayBreakPointsListWing,
+				_theAircraft.getWing().getLiftingSurfaceCreator().getEtaBreakPoints(),
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertFromDoublePrimitive(
+								_theAircraft.getWing()
+									.getTheAerodynamicsCalculatorMap()
+										.get(ConditionEnum.CRUISE)	
+											.getEtaStationDistribution()
+								)
+						)
+				);
+		
+		List<List<Double>> clForCmArrayBreakPointsListWing = new ArrayList<>();
+		_theAircraft.getWing().getAirfoilList().stream()
+			.map(x -> clForCmArrayBreakPointsListWing.add(x.getAirfoilCreator().getClForCmCurve()))
+				.collect(Collectors.toList());
+		
+		List<List<Double>> cmArrayBreakPointsListWing = new ArrayList<>();
+		_theAircraft.getWing().getAirfoilList().stream()
+			.map(x -> clForCmArrayBreakPointsListWing.add(x.getAirfoilCreator().getCmCurve()))
+				.collect(Collectors.toList());
+		
+		_discretizedWingAirfoilsCd = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						_theAircraft.getWing()
+							.getTheAerodynamicsCalculatorMap()
+								.get(ConditionEnum.CRUISE)
+									.getLiftCoefficient3DCurve()
+										.get(
+												_componentTaskList
+												.get(ComponentEnum.WING)
+												.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+												)
+						),	
+				clForCmArrayBreakPointsListWing,
+				cmArrayBreakPointsListWing,
+				_theAircraft.getWing().getLiftingSurfaceCreator().getEtaBreakPoints(),
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertFromDoublePrimitive(
+								_theAircraft.getWing()
+									.getTheAerodynamicsCalculatorMap()
+										.get(ConditionEnum.CRUISE)	
+											.getEtaStationDistribution()
+								)
+						)
+				);
+		
+		//////////////////////////////////////////////////////////////////////
+		// HTAIL
+		List<List<Amount<Angle>>> alphaArrayBreakPointsListHTail = new ArrayList<>();
+		_theAircraft.getHTail().getAirfoilList().stream()
+			.map(x -> alphaArrayBreakPointsListHTail.add(x.getAirfoilCreator().getAlphaForClCurve()))
+				.collect(Collectors.toList());
+		
+		List<List<Double>> clArrayBreakPointsListHTail = new ArrayList<>();
+		_theAircraft.getHTail().getAirfoilList().stream()
+			.map(x -> clArrayBreakPointsListHTail.add(x.getAirfoilCreator().getClCurve()))
+				.collect(Collectors.toList());
+				
+		_discretizedHTailAirfoilsCl = AirfoilCalc.calculateCLMatrixAirfoils(
+				_alphaHTailList, 
+				alphaArrayBreakPointsListHTail, 
+				clArrayBreakPointsListHTail,
+				_theAircraft.getHTail().getLiftingSurfaceCreator().getEtaBreakPoints(),
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertFromDoublePrimitive(
+								_theAircraft.getHTail()
+									.getTheAerodynamicsCalculatorMap()
+										.get(ConditionEnum.CRUISE)	
+											.getEtaStationDistribution()
+								)
+						)
+				);
+		
+		List<List<Double>> clForCdArrayBreakPointsListHTail = new ArrayList<>();
+		_theAircraft.getHTail().getAirfoilList().stream()
+			.map(x -> clForCdArrayBreakPointsListHTail.add(x.getAirfoilCreator().getClForCdCurve()))
+				.collect(Collectors.toList());
+		
+		List<List<Double>> cdArrayBreakPointsListHTail = new ArrayList<>();
+		_theAircraft.getHTail().getAirfoilList().stream()
+			.map(x -> cdArrayBreakPointsListHTail.add(x.getAirfoilCreator().getCdCurve()))
+				.collect(Collectors.toList());
+		
+		_discretizedHTailAirfoilsCd = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						_theAircraft.getHTail()
+							.getTheAerodynamicsCalculatorMap()
+								.get(ConditionEnum.CRUISE)
+									.getLiftCoefficient3DCurve()
+										.get(
+												_componentTaskList
+												.get(ComponentEnum.HORIZONTAL_TAIL)
+												.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+												)
+						),	
+				clForCdArrayBreakPointsListHTail,
+				cdArrayBreakPointsListHTail,
+				_theAircraft.getHTail().getLiftingSurfaceCreator().getEtaBreakPoints(),
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertFromDoublePrimitive(
+								_theAircraft.getHTail()
+									.getTheAerodynamicsCalculatorMap()
+										.get(ConditionEnum.CRUISE)	
+											.getEtaStationDistribution()
+								)
+						)
+				);
 		
 	}
 	
@@ -618,7 +828,10 @@ public class ACAerodynamicCalculator {
 	
 		
 		// TODO : FILL ME !!
-		
+		/*
+		 * CREATE INNER CLASSES FOR EACH "AIRCRAFT" ANALYSIS
+		 * AND CALL THEM HERE IF REQUIRED BY THE TASK MAP 
+		 */
 		
 		try {
 			toXLSFile("???");
@@ -630,11 +843,11 @@ public class ACAerodynamicCalculator {
 		
 	}
 	
-	@SuppressWarnings({ "resource", "unchecked" })
 	public static ACAerodynamicCalculator importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
-			OperatingConditions theOperatingConditions
+			OperatingConditions theOperatingConditions,
+			ConditionEnum theCondition
 			) throws IOException {
 		
 		// TODO : FILL ME !!

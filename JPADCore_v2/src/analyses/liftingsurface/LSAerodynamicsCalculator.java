@@ -1992,7 +1992,7 @@ public class LSAerodynamicsCalculator {
 			}
 			
 			_cDInduced.put(
-					MethodEnum.HOWE,
+					MethodEnum.GROSU,
 					Math.pow(_cLAtAlpha.get(MethodEnum.NASA_BLACKWELL),2)
 					/(Math.PI
 					*_theLiftingSurface.getAspectRatio()

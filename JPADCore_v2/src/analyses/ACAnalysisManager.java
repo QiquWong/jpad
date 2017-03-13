@@ -1211,7 +1211,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						ACAerodynamicCalculator.importFromXML(
 								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
 								aircraft,
-								theOperatingConditions
+								theOperatingConditions,
+								ConditionEnum.TAKE_OFF
 								)
 						);
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB))
@@ -1220,7 +1221,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						ACAerodynamicCalculator.importFromXML(
 								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
 								aircraft,
-								theOperatingConditions
+								theOperatingConditions,
+								ConditionEnum.CLIMB
 								)
 						);
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE))
@@ -1229,7 +1231,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						ACAerodynamicCalculator.importFromXML(
 								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
 								aircraft,
-								theOperatingConditions
+								theOperatingConditions,
+								ConditionEnum.CRUISE
 								)
 						);
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING))
@@ -1238,7 +1241,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						ACAerodynamicCalculator.importFromXML(
 								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
 								aircraft,
-								theOperatingConditions
+								theOperatingConditions,
+								ConditionEnum.LANDING
 								)
 						);
 			

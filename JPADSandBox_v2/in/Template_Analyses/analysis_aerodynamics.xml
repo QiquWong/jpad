@@ -4,7 +4,7 @@
 		plot=TRUE -> enters the plot tag.
 		plot=FALSE -> plot nothing.
 		
-		All the variables which have METHOD as attirubte, can be calculated with the deifned method or can be assigned filling the value if the METHOD is equal to "INPUT"
+		All the variables which have "METHOD" as attirubte, can be calculated with the deifned method or can be assigned filling the value if the METHOD is equal to "INPUT"
 		
 		Each condition in "global_data" will be read only if the related flag in the analysis file is set to TRUE !!
 	-->
@@ -146,6 +146,9 @@
 				<lift_curve perform="TRUE"/>
 				<drag_polar perform="TRUE"/>
 				<moment_curve perform="TRUE"/>
+				<trimmed_lift_curve perform="TRUE"/>
+				<trimmed_drag_polar perform="TRUE"/>
+				<trimmed_moment_curve perform="TRUE"/>
 				<longitudinal_static_stability perform="TRUE"/>
 				<lateral_static_stability perform="TRUE"/>
 				<directional_static_stability perform="TRUE"/>
