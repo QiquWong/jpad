@@ -89,60 +89,146 @@
 				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
 			</global_data>
 			<wing_analyses>
+				<critical_mach perform="TRUE" method="KROO"/>
 				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
-					<cL_Alpha perform="TRUE" method="NASA_BLACKWELL"/>
-					<cL_vs_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
 					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
 				</lift>
 				<high_lift>
-				
+					<high_lift_devices_effects perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cm_at_alpha_current perform="TRUE" method="??"/>
 				</high_lift>
 				<drag>
-				
+					<cD_Zero perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+					<cD_vs_cL perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</drag>
 				<pitching_moment>
-				
+					<cm_ac perform="TRUE" method="??"/>
+					<cm_alpha perform="TRUE" method="??"/>
+					<cm_at_alpha_current perform="TRUE" method="??"/>
+					<moment_distributions perform="TRUE" method="??"/>
 				</pitching_moment>
 			</wing_analyses>
 			<horizontal_tail_analyses>
-				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_centre> <!-- referred to the mean aerodynamic chord --> 
-				<dynamic_pressure_ratio perform="TRUE" method="SEMPIEMPIRICAL"></dynamic_pressure_ratio>
+							<critical_mach perform="TRUE" method="KROO"/>
+				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
-				
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
 				</lift>
-				<high_lift>
-				
-				</high_lift>
+				<elevator>
+					<elevator_effects perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cm_at_alpha_current perform="TRUE" method="??"/>
+				</elevator>
 				<drag>
-				
+					<cD_Zero perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+					<cD_vs_cL perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</drag>
 				<pitching_moment>
-				
+					<cm_ac perform="TRUE" method="??"/>
+					<cm_alpha perform="TRUE" method="??"/>
+					<cm_at_alpha_current perform="TRUE" method="??"/>
+					<moment_distributions perform="TRUE" method="??"/>
 				</pitching_moment>
 			</horizontal_tail_analyses>
 			<vertical_tail_analyses>
+							<critical_mach perform="TRUE" method="KROO"/>
+				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
-				
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL0 perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
+					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="TRUE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_vs_alpha perform="TRUE" method="NASA_BLACKWELL"/>
+					<lift_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
 				</lift>
-				<high_lift>
-				
-				</high_lift>
+				<rudder>
+					<rudder_effects perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<cm_at_alpha_current perform="TRUE" method="??"/>
+				</rudder>
 				<drag>
-				
+					<cD0 perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<oswald_factor perform="TRUE" method="RAYMER"/>
+					<cD_induced perform="TRUE" method="RAYMER"/>
+					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
+					<cD_vs_cL perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
+					<drag_distributions perform="TRUE" method="NASA_BLACKWELL"/>
+					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
 				</drag>
 				<pitching_moment>
-				
+					<cm_ac perform="TRUE" method="??"/>
+					<cm_alpha perform="TRUE" method="??"/>
+					<cm_at_alpha_current perform="TRUE" method="??"/>
+					<moment_distributions perform="TRUE" method="??"/>
 				</pitching_moment>
 			</vertical_tail_analyses>
 			<fuselage_analyses>
-			
+				<lift>
+					<cL_alpha perform="TRUE" method="??"/>
+				</lift>
+				<drag>
+					<cD0_upsweep perform="TRUE" method="??"/>
+					<cD0_windshield perform="TRUE" method="??"/>
+					<cD0_base perform="TRUE" method="??"/>
+					<cD0_parasite perform="TRUE" method="??"/>
+					<cD0_total perform="TRUE" method="??"/>
+				</drag>
+				<pitching_moment>
+					<cm0 perform="TRUE" method="??"/>
+					<cm_alpha perform="TRUE" method="??"/>
+					<cm_cL perform="TRUE" method="??"/> <!-- see if it's necessary -->
+				</pitching_moment>
 			</fuselage_analyses>
 			<nacelles_analyses>
-			
+				<drag>
+					<cD0_base perform="TRUE" method="??"/>
+					<cD0_parasite perform="TRUE" method="??"/>
+					<cD0_total perform="TRUE" method="??"/>
+				</drag>
 			</nacelles_analyses>
 			<aircraft_analyses>
 				<downwash perform="TRUE" downwash_gradient="CONSTANT" method="SLINGERLAND"/>
+				<dynamic_pressure_ratio perform="TRUE" method="SEMPIEMPIRICAL"></dynamic_pressure_ratio>
 				<lift_curve perform="TRUE"/>
 				<drag_polar perform="TRUE"/>
 				<moment_curve perform="TRUE"/>
@@ -155,6 +241,9 @@
 			</aircraft_analyses>
         </aerodynamics_and_stability>
     </analysis>
+	<!-- 
+			TODO : COMPLETE THE PLOT SECTION WITH ALL THE POSSIBLE PLOTS
+	-->
 	<plot>
 		<wing>
 			<lift>
