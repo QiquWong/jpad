@@ -1070,8 +1070,8 @@ public class LiftCalc {
 
 				try {
 					influenceFactor = LiftingSurface.calculateInfluenceFactorsMeanAirfoilFlap(
-							etaInFlap.get(i),
-							etaOutFlap.get(i),
+							etaInSlat.get(i),
+							etaOutSlat.get(i),
 							etaBreakPoints,
 							chordBreakPoints,
 							span.divide(2)

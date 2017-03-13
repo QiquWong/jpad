@@ -9,6 +9,7 @@ package configuration.enumerations;
  */
 public enum ComponentEnum{
 	ALL,
+	AIRCRAFT,
 	UNDEFINED,
 	WING,
 	HORIZONTAL_TAIL, 

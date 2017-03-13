@@ -1,18 +1,13 @@
 package analyses;
 
-import static java.lang.Math.toRadians;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
-import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -20,24 +15,14 @@ import javax.measure.unit.SI;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
-import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.LiftCalc;
-import calculators.aerodynamics.NasaBlackwell;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
-import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
-import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
-import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.MethodEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
@@ -464,6 +449,53 @@ public class ACAerodynamicCalculator {
 						)
 				);
 
+		/////////////////////////////////////////////////////////////////////////////////////
+		// ALPHA HTAIL ARRAY 
+		if (_downwashConstant == Boolean.TRUE){
+			_alphaHTailList = new ArrayList<>();
+			for (int i=0; i<_numberOfAlphasBody; i++){
+				_alphaHTailList.add(
+						Amount.valueOf(
+								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+								- _downwashAngleMap
+									.get(Boolean.TRUE)
+										.get(
+												_componentTaskList
+												.get(ComponentEnum.AIRCRAFT)
+												.get(AerodynamicAndStabilityEnum.DOWNWASH)
+												)
+											.get(i)
+												.doubleValue(NonSI.DEGREE_ANGLE)
+								+ _theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
+								NonSI.DEGREE_ANGLE
+								)
+						);
+			}
+		}
+
+		if (_downwashConstant == Boolean.FALSE){
+			_alphaHTailList = new ArrayList<>();
+			for (int i=0; i<_numberOfAlphasBody; i++){
+				_alphaHTailList.add(
+						Amount.valueOf(
+								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+								- _downwashAngleMap
+									.get(Boolean.FALSE)
+										.get(
+												_componentTaskList
+												.get(ComponentEnum.AIRCRAFT)
+												.get(AerodynamicAndStabilityEnum.DOWNWASH)
+												)
+											.get(i)
+												.doubleValue(NonSI.DEGREE_ANGLE)
+								+ _theAircraft.getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
+								NonSI.DEGREE_ANGLE
+								)
+						);
+			}
+		}
+		
+		
 		//.....................................................................................
 		// Filling the global maps ...
 		_downwashGradientMap.put(Boolean.TRUE, downwashGradientConstant);

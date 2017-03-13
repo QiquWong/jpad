@@ -16,7 +16,7 @@ public enum AerodynamicAndStabilityEnum {
 	CD_INDUCED,
 	CD_WAVE,
 	OSWALD_FACTOR,
-	LIFT_CURVE_3D
+	LIFT_CURVE_3D,
 	
 	// Fuselage
 	
@@ -25,6 +25,6 @@ public enum AerodynamicAndStabilityEnum {
 	
 	
 	// Aircraft
-	
+	DOWNWASH
 	
 }
