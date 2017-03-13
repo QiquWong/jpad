@@ -435,7 +435,7 @@ public class AerodynamicCalc {
 	 * @author Manuela Ruocco
 
 	 */
-	public static List<Amount<Angle>> calculateVariableDownwashRoskam(
+	public static List<Double> calculateVariableDownwashRoskam( // it returns downwash gradient list
 			double aspectRatio,
 			double taperRatio,
 			Amount<Length> zApexWing,
@@ -574,18 +574,18 @@ public class AerodynamicCalc {
 		}
 			
 	// interpolating function
-		List<Amount<Angle>> downwashAngleList = new ArrayList<>();
+		List<Double> downwashGradientList = new ArrayList<>();
 		
 			
-		downwashAngleList = MyArrayUtils.convertDoubleArrayToListOfAmount(
+		downwashGradientList = MyArrayUtils.convertDoubleArrayToListDouble(
 				MyMathUtils.getInterpolatedValue1DLinear(
 					alphaBodyArray,
-					downwashArray,
+					downwashGradientArray,
 					MyArrayUtils.convertListOfAmountTodoubleArray(alphasBody)
-					), NonSI.DEGREE_ANGLE);
+					));
 	
 		
-		return downwashAngleList;
+		return downwashGradientList;
 	}
 
 	/**
@@ -616,7 +616,7 @@ public class AerodynamicCalc {
 	 * @author Manuela Ruocco
 
 	 */
-	public static List<Amount<Angle>> calculateVariableDownwashRoskamWithMachEffect(double aspectRatio, 
+	public static List<Double> calculateVariableDownwashGradientRoskamWithMachEffect(double aspectRatio, 
 			double taperRatio, 
 			Amount<Length> zApexWing,
 			Amount<Length> zApexHTail,
@@ -630,9 +630,9 @@ public class AerodynamicCalc {
 			List<Amount<Angle>> alphasBody) {
 
 		double machCorrection = clAlpha/clAlphaMachZero;
-		List<Amount<Angle>> downwashGradientMach = new ArrayList<>();
+		List<Double> downwashGradientMach = new ArrayList<>();
 		
-		List<Amount<Angle>> downwashGradientMachZero = calculateVariableDownwashRoskam(
+		List<Double> downwashGradientMachZero = calculateVariableDownwashRoskam(
 				aspectRatio,
 				taperRatio, 
 				zApexWing,
@@ -646,9 +646,8 @@ public class AerodynamicCalc {
 				);
 
 		for (int i=0; i<alphasBody.size(); i++){
-		downwashGradientMach.set(i,Amount.valueOf(
-				machCorrection * downwashGradientMachZero.get(i).doubleValue(NonSI.DEGREE_ANGLE),
-				NonSI.DEGREE_ANGLE));
+		downwashGradientMach.set(i,
+				machCorrection * downwashGradientMachZero.get(i));
 		}
 		return downwashGradientMach;
 	}
