@@ -428,6 +428,165 @@ public class AerodynamicCalc {
 				1.19);
 		return downwashGradient;
 	}
+	
+	/**
+	 * This method evaluates the variable downwash gradient using Roskam method
+	 * 
+	 * @author Manuela Ruocco
+
+	 */
+	public static List<Amount<Angle>> calculateVariableDownwashRoskam(
+			double aspectRatio,
+			double taperRatio,
+			Amount<Length> zApexWing,
+			Amount<Length> zApexHTail,
+			Amount<Angle> iw,
+			Amount<Angle> alphaZeroLiftWing,
+			Amount<Length> horizontalDistanceInitial, 
+			Amount<Length> verticalDistanceInitial,
+			Amount<Angle> sweepQuarterChord,
+			List<Amount<Angle>> alphasBody) {
+
+		// constant values (ka, kl)
+		double ka = (1/aspectRatio)-(1/(1+Math.pow(aspectRatio, 1.7)));
+		double kL = (10-3*taperRatio)/7;
+		//---------------------------------
+		// variable value (kh)	
+
+		Amount<Angle> startingAngle = 
+		          iw.to(SI.RADIAN)
+		          	.minus(alphaZeroLiftWing.to(SI.RADIAN));
+
+		// Alpha Absolute array 
+		double alphaFirst = 0.0;
+		double alphaLast = 40.0;
+		int nValue = 100;
+
+		double [] alphaAbsoluteArray =  MyArrayUtils.linspace(alphaFirst, alphaLast, nValue); //deg
+		double [] alphaWingArray =  new double [alphaAbsoluteArray.length]; //deg
+		for(int i=0; i< alphaAbsoluteArray.length; i++){
+			alphaWingArray[i] = alphaAbsoluteArray[i] + alphaZeroLiftWing.doubleValue(NonSI.DEGREE_ANGLE); 
+		}
+		double deltaAlpha = Amount.valueOf(
+				Math.toRadians(alphaAbsoluteArray[1] - alphaAbsoluteArray[0]), SI.RADIAN).getEstimatedValue(); // rad
+
+
+		Amount<Length> zDistanceZero = null;
+		Amount<Length> xDistanceZero = horizontalDistanceInitial;
+		
+		if (zApexWing.doubleValue(SI.METER) < zApexHTail.doubleValue(SI.METER)){
+
+			zDistanceZero = Amount.valueOf(
+					verticalDistanceInitial.doubleValue(SI.METER) + (
+							(horizontalDistanceInitial.doubleValue(SI.METER) *
+									Math.tan(startingAngle.doubleValue(SI.RADIAN)))),
+					SI.METER);
+		}
+
+		if (zApexWing.doubleValue(SI.METER) >= zApexHTail.doubleValue(SI.METER)){
+
+			zDistanceZero = Amount.valueOf(
+					verticalDistanceInitial.doubleValue(SI.METER) - (
+							(horizontalDistanceInitial.doubleValue(SI.METER) *
+									Math.tan(startingAngle.doubleValue(SI.RADIAN)))),
+					SI.METER);
+		}
+
+		zDistanceZero = Amount.valueOf(
+				zDistanceZero.doubleValue(SI.METER) * 
+				Math.cos(startingAngle.doubleValue(SI.RADIAN)), SI.METER);
+
+
+		double kH = (
+				1-zDistanceZero.doubleValue(SI.METER)) /
+				Math.cbrt(
+						2*horizontalDistanceInitial.doubleValue(SI.METER));
+
+		//initializing array
+		double [] downwashArray = new double [nValue]; //deg
+		double [] downwashGradientArray = new double [nValue];
+		double [] alphaBodyArray = new double [nValue];
+		double [] zDistanceArray = new double [nValue];
+		double [] xDistanceArray = new double [nValue];	
+
+		// First step
+
+		zDistanceArray[0] = zDistanceZero.doubleValue(SI.METER);
+		xDistanceArray[0] = xDistanceZero.doubleValue(SI.METER);
+		downwashGradientArray[0] = 4.44* Math.pow(
+				(ka*kL*kH*Math.sqrt(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)))), 
+				1.19); 
+		
+		downwashArray[0] = Math.toDegrees(downwashGradientArray[0]*deltaAlpha); //deg 
+		
+		alphaBodyArray[0] = alphaAbsoluteArray[0] 
+				- iw.doubleValue(NonSI.DEGREE_ANGLE)
+				+ alphaZeroLiftWing.doubleValue(NonSI.DEGREE_ANGLE);
+	
+		
+		// Other steps
+		double epsilonTemp = 0.0; //deg
+		double downwashGradientTemp = 0.0;
+		double zTemp = 0.0; //meter
+		
+		for ( int i = 1 ; i<alphaAbsoluteArray.length ; i++){
+			epsilonTemp = downwashArray[i-1];
+			int ii=0;
+			
+			while(ii<3){ // ?
+			//distance
+			if (zApexWing.doubleValue(SI.METER) < zApexHTail.doubleValue(SI.METER)){
+
+				zTemp = 
+						verticalDistanceInitial.doubleValue(SI.METER) + (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp)));
+			}
+
+			if (zApexWing.doubleValue(SI.METER) >= zApexHTail.doubleValue(SI.METER)){
+
+				zTemp = 
+						verticalDistanceInitial.doubleValue(SI.METER) - (
+								(horizontalDistanceInitial.doubleValue(SI.METER) *
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp)));
+			}
+
+			zTemp = 
+					zTemp * 
+					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp);
+			
+			
+			//downwash gradient
+			downwashGradientTemp = 4.44* Math.pow(
+					(ka*kL*kH*Math.sqrt(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)))), 
+					1.19); 
+			
+			//downwash angle
+			epsilonTemp = Math.toDegrees(downwashGradientTemp*deltaAlpha); //deg 
+			ii++;
+			}
+			//-----
+			
+			downwashGradientArray[i] = downwashGradientTemp;
+			downwashArray[i] = epsilonTemp;
+			zDistanceArray[0] = zTemp;
+			xDistanceArray[0] = xDistanceZero.doubleValue(SI.METER);
+		}
+			
+	// interpolating function
+		List<Amount<Angle>> downwashAngleList = new ArrayList<>();
+		
+			
+		downwashAngleList = MyArrayUtils.convertDoubleArrayToListOfAmount(
+				MyMathUtils.getInterpolatedValue1DLinear(
+					alphaBodyArray,
+					downwashArray,
+					MyArrayUtils.convertListOfAmountTodoubleArray(alphasBody)
+					), NonSI.DEGREE_ANGLE);
+	
+		
+		return downwashAngleList;
+	}
 
 	/**
 	 * This method evaluates the downwash gradient using Roskam method
@@ -448,6 +607,49 @@ public class AerodynamicCalc {
 				);
 
 		Double downwashGradientMach = machCorrection * downwashGradientMachZero;
+		return downwashGradientMach;
+	}
+	
+	/**
+	 * This method evaluates the variable downwash gradient using Roskam method
+	 * 
+	 * @author Manuela Ruocco
+
+	 */
+	public static List<Amount<Angle>> calculateVariableDownwashRoskamWithMachEffect(double aspectRatio, 
+			double taperRatio, 
+			Amount<Length> zApexWing,
+			Amount<Length> zApexHTail,
+			Amount<Angle> iw,
+			Amount<Angle> alphaZeroLiftWing,
+			Amount<Length> horizontalDistanceInitial, 
+			Amount<Length> verticalDistanceInitial, 
+			Amount<Angle> sweepQuarterChord, 
+			double clAlphaMachZero,
+			double clAlpha,
+			List<Amount<Angle>> alphasBody) {
+
+		double machCorrection = clAlpha/clAlphaMachZero;
+		List<Amount<Angle>> downwashGradientMach = new ArrayList<>();
+		
+		List<Amount<Angle>> downwashGradientMachZero = calculateVariableDownwashRoskam(
+				aspectRatio,
+				taperRatio, 
+				zApexWing,
+				zApexHTail,
+				iw,
+				alphaZeroLiftWing,
+				horizontalDistanceInitial,
+				verticalDistanceInitial, 
+				sweepQuarterChord,
+				alphasBody
+				);
+
+		for (int i=0; i<alphasBody.size(); i++){
+		downwashGradientMach.set(i,Amount.valueOf(
+				machCorrection * downwashGradientMachZero.get(i).doubleValue(NonSI.DEGREE_ANGLE),
+				NonSI.DEGREE_ANGLE));
+		}
 		return downwashGradientMach;
 	}
 	
@@ -493,11 +695,9 @@ public class AerodynamicCalc {
 			double [] alphasWing, // deg
 			double [] alphaBody   //deg
 			){
-
-		double startingAngle = 
+		Amount<Angle> startingAngle = 
 				iw.to(SI.RADIAN)
-				.minus(alphaZeroLiftWing.to(SI.RADIAN))
-				.doubleValue(SI.RADIAN);
+				.minus(alphaZeroLiftWing.to(SI.RADIAN));
 
 		// Alpha Absolute array 
 		double alphaFirst = 0.0;
@@ -527,7 +727,7 @@ public class AerodynamicCalc {
 			zDistanceZero = Amount.valueOf(
 					verticalDistanceInitial.doubleValue(SI.METER) + (
 							(horizontalDistanceInitial.doubleValue(SI.METER) *
-									Math.tan(startingAngle))),
+									Math.tan(startingAngle.doubleValue(SI.RADIAN)))),
 					SI.METER);
 		}
 
@@ -536,13 +736,13 @@ public class AerodynamicCalc {
 			zDistanceZero = Amount.valueOf(
 					verticalDistanceInitial.doubleValue(SI.METER) - (
 							(horizontalDistanceInitial.doubleValue(SI.METER) *
-									Math.tan(startingAngle))),
+									Math.tan(startingAngle.doubleValue(SI.RADIAN)))),
 					SI.METER);
 		}
 
 		zDistanceZero = Amount.valueOf(
 				zDistanceZero.doubleValue(SI.METER) * 
-				Math.cos(startingAngle), SI.METER);
+				Math.cos(startingAngle.doubleValue(SI.RADIAN)), SI.METER);
 
 		double epsilonTemp, downwashArrayTemp;
 		double zTemp = 0;
@@ -581,7 +781,7 @@ public class AerodynamicCalc {
 				zTemp = 
 						verticalDistanceInitial.doubleValue(SI.METER) + (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle- i * deltaAlpha + epsilonTemp)));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp)));
 			}
 
 			if (zApexWing.doubleValue(SI.METER) >= zApexHTail.doubleValue(SI.METER)){
@@ -589,12 +789,12 @@ public class AerodynamicCalc {
 				zTemp = 
 						verticalDistanceInitial.doubleValue(SI.METER) - (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle- i * deltaAlpha + epsilonTemp)));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp)));
 			}
 
 			zTemp = 
 					zTemp * 
-					Math.cos(startingAngle- i * deltaAlpha + epsilonTemp);
+					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp);
 
 
 			downwashArrayTemp = calculateDownwashAngleLinearSlingerland( 
@@ -613,7 +813,7 @@ public class AerodynamicCalc {
 				zDistanceArray[i] =
 						verticalDistanceInitial.doubleValue(SI.METER) + (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle- i * deltaAlpha + downwashArray[i])));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
 			}
 
 			if (zApexWing.doubleValue(SI.METER) >= zApexHTail.doubleValue(SI.METER)){
@@ -621,12 +821,12 @@ public class AerodynamicCalc {
 				zDistanceArray[i] =
 						verticalDistanceInitial.doubleValue(SI.METER) - (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle- i * deltaAlpha + downwashArray[i])));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
 			}
 
 			zDistanceArray[i] =
 					zDistanceArray[i] * 
-					Math.cos(startingAngle- i * deltaAlpha + downwashArray[i]);
+					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i]);
 
 			downwashArray[i] = calculateDownwashAngleLinearSlingerland( 
 					xDistanceZero.doubleValue(SI.METER),
@@ -642,7 +842,7 @@ public class AerodynamicCalc {
 				zDistanceArray[i] =
 						verticalDistanceInitial.doubleValue(SI.METER) + (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle- i * deltaAlpha + downwashArray[i])));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
 			}
 
 			if (zApexWing.doubleValue(SI.METER) >= zApexHTail.doubleValue(SI.METER)){
@@ -650,12 +850,12 @@ public class AerodynamicCalc {
 				zDistanceArray[i] =
 						verticalDistanceInitial.doubleValue(SI.METER) - (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle- i * deltaAlpha + downwashArray[i])));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
 			}
 
 			zDistanceArray[i] =
 					zDistanceArray[i] * 
-					Math.cos(startingAngle- i * deltaAlpha + downwashArray[i]);
+					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i]);
 
 			xDistanceArray[i] = xDistanceZero.doubleValue(SI.METER);
 			downwashArray[i] = calculateDownwashAngleLinearSlingerland( 
