@@ -516,22 +516,27 @@ public class ACBalanceManager implements IACBalanceManager {
 				.append("\t-------------------------------------\n")
 				.append("\tXcg structure MAC: " + getCGStructure().getXMAC()*100 + "\n")
 				.append("\tXcg structure BRF: " + getCGStructure().getXBRF() + "\n")
+				.append("\tZcg structure MAC: " + getCGStructure().getZMAC()*100 + "\n")
 				.append("\tZcg structure BRF: " + getCGStructure().getZBRF() + "\n")
 				.append("\t·····································\n")
 				.append("\tXcg structure and engines MAC: " + getCGStructureAndPower().getXMAC()*100 + "\n")
 				.append("\tXcg structure and engines BRF: " + getCGStructureAndPower().getXBRF() + "\n")
+				.append("\tZcg structure and engines MAC: " + getCGStructureAndPower().getZMAC()*100 + "\n")
 				.append("\tZcg structure and engines BRF: " + getCGStructureAndPower().getZBRF() + "\n")
 				.append("\t·····································\n")
 				.append("\tXcg operating empty mass MAC: " + getCGOEM().getXMAC()*100 + "\n")
 				.append("\tXcg operating empty mass BRF: " + getCGOEM().getXBRF() + "\n")
+				.append("\tZcg operating empty mass MAC: " + getCGOEM().getZMAC()*100 + "\n")
 				.append("\tZcg operating empty mass BRF: " + getCGOEM().getZBRF() + "\n")
 				.append("\t·····································\n")
 				.append("\tXcg maximum zero fuel mass MAC: " + getCGMZFM().getXMAC()*100 + "\n")
 				.append("\tXcg maximum zero fuel mass BRF: " + getCGMZFM().getXBRF() + "\n")
+				.append("\tZcg maximum zero fuel mass MAC: " + getCGMZFM().getZMAC()*100 + "\n")
 				.append("\tZcg maximum zero fuel mass BRF: " + getCGMZFM().getZBRF() + "\n")
 				.append("\t·····································\n")
 				.append("\tXcg maximum take-off mass MAC: " + getCGMTOM().getXMAC()*100 + "\n")
 				.append("\tXcg maximum take-off mass BRF: " + getCGMTOM().getXBRF() + "\n")
+				.append("\tZcg maximum take-off mass MAC: " + getCGMTOM().getZMAC()*100 + "\n")
 				.append("\tZcg maximum take-off mass BRF: " + getCGMTOM().getZBRF() + "\n")
 				.append("\t·····································\n")
 				.append("\tMax aft Xcg MAC: " + getMaxAftCG() + "\n")
@@ -568,22 +573,27 @@ public class ACBalanceManager implements IACBalanceManager {
 		dataListGlobal.add(new Object[] {"Description","Unit","Value"});
 		dataListGlobal.add(new Object[] {"Xcg structure MAC","%", _cgStructure.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg structure BRF","m", _cgStructure.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Zcg structure MAC","%", _cgStructure.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg structure BRF","m", _cgStructure.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg structure and engines MAC","%", _cgStructureAndPower.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg structure and engines BRF","m", _cgStructureAndPower.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Zcg structure and engines MAC","%", _cgStructureAndPower.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg structure and engines BRF","m", _cgStructureAndPower.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass MAC","%", _cgOEM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg operating empty mass BRF","m", _cgOEM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Zcg operating empty mass MAC","%", _cgOEM.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg operating empty mass BRF","m", _cgOEM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass MAC","%",_cgMZFM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg maximum zero fuel mass BRF","m",_cgMZFM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Zcg maximum zero fuel mass MAC","%",_cgMZFM.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg maximum zero fuel mass BRF","m", _cgMZFM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass MAC","%",_cgMTOM.getXMAC()*100});
 		dataListGlobal.add(new Object[] {"Xcg maximum take-off mass BRF","m",_cgMTOM.getXBRF().doubleValue(SI.METER)});
+		dataListGlobal.add(new Object[] {"Zcg maximum take-off mass MAC","%",_cgMTOM.getZMAC()*100});
 		dataListGlobal.add(new Object[] {"Zcg maximum take-off mass BRF","m", _cgMTOM.getZBRF().doubleValue(SI.METER)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Max forward Xcg MAC","%",_maxForwardCG});
