@@ -152,187 +152,187 @@ public class HighLiftDevicesEffectsTest extends Application {
 	 */
 	public static void main(String[] args) throws InvalidFormatException {
 
-		// TODO: check out this as an alternative
-		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
-
-		System.out.println("-------------------");
-		System.out.println("Complete Analysis Test");
-		System.out.println("-------------------");
-
-		MyArgumentsHighLiftTest va = new MyArgumentsHighLiftTest();
-		HighLiftDevicesEffectsTest.theCmdLineParser = new CmdLineParser(va);
-
-		// populate the wing static object in the class
-		// before launching the JavaFX application thread (launch --> start ...)
-		try {
-			HighLiftDevicesEffectsTest.theCmdLineParser.parseArgument(args);
-			
-			String pathToXML = va.getInputFile().getAbsolutePath();
-			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
-
-			String pathToOperatingConditionsXML = va.getOperatingConditionsInputFile().getAbsolutePath();
-			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
-			
-			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
-			System.out.println("AIRFOILS ===> " + dirAirfoil);
-
-			String dirFuselages = va.getFuselagesDirectory().getCanonicalPath();
-			System.out.println("FUSELAGES ===> " + dirFuselages);
-			
-			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
-			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
-			
-			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
-			System.out.println("ENGINES ===> " + dirEngines);
-			
-			String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
-			System.out.println("NACELLES ===> " + dirNacelles);
-			
-			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
-			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
-			
-			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
-			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
-			
-			System.out.println("--------------");
-
-			//------------------------------------------------------------------------------------
-			// Setup database(s)
-			MyConfiguration.initWorkingDirectoryTree();
-			
-			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-			
-			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
+//		// TODO: check out this as an alternative
+//		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
+//
+//		System.out.println("-------------------");
+//		System.out.println("Complete Analysis Test");
+//		System.out.println("-------------------");
+//
+//		MyArgumentsHighLiftTest va = new MyArgumentsHighLiftTest();
+//		HighLiftDevicesEffectsTest.theCmdLineParser = new CmdLineParser(va);
+//
+//		// populate the wing static object in the class
+//		// before launching the JavaFX application thread (launch --> start ...)
+//		try {
+//			HighLiftDevicesEffectsTest.theCmdLineParser.parseArgument(args);
+//			
+//			String pathToXML = va.getInputFile().getAbsolutePath();
+//			System.out.println("AIRCRAFT INPUT ===> " + pathToXML);
+//
+//			String pathToOperatingConditionsXML = va.getOperatingConditionsInputFile().getAbsolutePath();
+//			System.out.println("OPERATING CONDITIONS INPUT ===> " + pathToOperatingConditionsXML);
+//			
+//			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
+//			System.out.println("AIRFOILS ===> " + dirAirfoil);
+//
+//			String dirFuselages = va.getFuselagesDirectory().getCanonicalPath();
+//			System.out.println("FUSELAGES ===> " + dirFuselages);
+//			
+//			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
+//			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
+//			
+//			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
+//			System.out.println("ENGINES ===> " + dirEngines);
+//			
+//			String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
+//			System.out.println("NACELLES ===> " + dirNacelles);
+//			
+//			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
+//			System.out.println("LANDING GEARS ===> " + dirLandingGears);
+//			
+//			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
+//			System.out.println("SYSTEMS ===> " + dirSystems);
+//			
+//			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
+//			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
+//			
+//			System.out.println("--------------");
+//
+//			//------------------------------------------------------------------------------------
+//			// Setup database(s)
+//			MyConfiguration.initWorkingDirectoryTree();
+//			
+//			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+//			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+//			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+//			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+//			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+//			
+//			// default Aircraft ATR-72 ...
+////			theAircraft = new Aircraft.AircraftBuilder(
+////					"ATR-72",
+////					AircraftEnum.ATR72,
+////					aeroDatabaseReader,
+////					highLiftDatabaseReader
+////					)
+////					.build();
+//
+//			// reading aircraft from xml ... 
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
 //					aeroDatabaseReader,
-//					highLiftDatabaseReader
-//					)
-//					.build();
-
-			// reading aircraft from xml ... 
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
-					aeroDatabaseReader,
-					highLiftDatabaseReader);
-			
-			// Set the folders tree
-			MyConfiguration.initWorkingDirectoryTree(
-					MyConfiguration.currentDirectoryString,
-					MyConfiguration.inputDirectory, 
-					MyConfiguration.outputDirectory);
-			
-			// Defining the operating conditions ...
-			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
-
-			// Defining the LSAerodynamicsCalculator object
-			Map <String, List<MethodEnum>> taskMap = new HashMap<>();
-			Map <String, List<MethodEnum>> plotMap = new HashMap<>();
-			LSAerodynamicsCalculator theAerodynamicCalculator = new LSAerodynamicsCalculator(
-					theAircraft.getWing(),
-					theOperatingConditions,
-					taskMap,
-					plotMap,
-					ConditionEnum.TAKE_OFF,
-					50
-					);
-			CalcCLAlpha theCLAlphaCalculator = theAerodynamicCalculator.new CalcCLAlpha();
-			theCLAlphaCalculator.nasaBlackwell();
-			
-			Map<ConditionEnum, LSAerodynamicsCalculator> theAerodynamicCalculatorMap = new HashMap<>();
-			theAerodynamicCalculatorMap.put(ConditionEnum.TAKE_OFF, theAerodynamicCalculator);
-			theAircraft.getWing().setTheAerodynamicsCalculatorMap(theAerodynamicCalculatorMap);
-
-			CalcHighLiftCurve calcHighLiftCurve = theAerodynamicCalculator.new CalcHighLiftCurve();
-			calcHighLiftCurve.semiempirical(
-					theOperatingConditions.getFlapDeflectionTakeOff(),
-					theOperatingConditions.getSlatDeflectionTakeOff(),
-					theOperatingConditions.getMachTakeOff(),
-					theOperatingConditions.getAltitudeTakeOff()
-					);
-			
-			System.out.println("\n\t\tAlpha Array: " + theAerodynamicCalculator.getAlphaArrayPlotHighLift());
-			System.out.println("\n\t\tCL Array: " + theAerodynamicCalculator.getLiftCoefficient3DCurveHighLift().get(MethodEnum.EMPIRICAL));			
-			//----------------------------------------------------------------------------------
-			// Results print
-			System.out.println("\ndeltaCl0_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCl0FlapList().get(MethodEnum.EMPIRICAL).size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCl0FlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-			System.out.println("\n\ndeltaCl0_flap = \n" + theAerodynamicCalculator.getDeltaCl0Flap().get(MethodEnum.EMPIRICAL));
-
-			System.out.println("\ndeltaCL0_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCL0FlapList().get(MethodEnum.EMPIRICAL).size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCL0FlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-			System.out.println("\n\ndeltaCL0_flap = \n" + theAerodynamicCalculator.getDeltaCL0Flap().get(MethodEnum.EMPIRICAL));
-			
-			System.out.println("\ndeltaClmax_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxFlapList().get(MethodEnum.EMPIRICAL).size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaClmaxFlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-			System.out.println("\n\ndeltaClmax_flap = \n" + theAerodynamicCalculator.getDeltaClmaxFlap().get(MethodEnum.EMPIRICAL));
-			
-			System.out.println("\ndeltaCLmax_flap_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxFlapList().get(MethodEnum.EMPIRICAL).size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCLmaxFlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-			System.out.println("\n\ndeltaCLmax_flap = \n" + theAerodynamicCalculator.getDeltaCLmaxFlap().get(MethodEnum.EMPIRICAL));
-
-			if(!theAircraft.getWing().getLiftingSurfaceCreator().getSlats().isEmpty()) {
-				System.out.println("\ndeltaClmax_slat_list = ");
-				for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxSlatList().get(MethodEnum.EMPIRICAL).size(); i++)
-					System.out.print(theAerodynamicCalculator.getDeltaClmaxSlatList().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-				System.out.println("\n\ndeltaClmax_slat = \n" + theAerodynamicCalculator.getDeltaClmaxSlat().get(MethodEnum.EMPIRICAL));
-
-				System.out.println("\ndeltaCLmax_slat_list = ");
-				for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxSlatList().get(MethodEnum.EMPIRICAL).size(); i++)
-					System.out.print(theAerodynamicCalculator.getDeltaCLmaxSlatList().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-				System.out.println("\n\ndeltaCLmax_slat = \n" + theAerodynamicCalculator.getDeltaCLmaxSlat().get(MethodEnum.EMPIRICAL));
-			}
-			
-			System.out.println("\ncLalpha_flap = \n" + theAerodynamicCalculator.getCLAlphaHighLift().get(MethodEnum.EMPIRICAL));
-
-			System.out.println("\ndeltaCD_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCDList().get(MethodEnum.EMPIRICAL).size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCDList().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-			System.out.println("\n\ndeltaCD = \n" + theAerodynamicCalculator.getDeltaCD().get(MethodEnum.EMPIRICAL));
-			
-			System.out.println("\ndeltaCM_c4_list = ");
-			for(int i=0; i<theAerodynamicCalculator.getDeltaCMc4List().get(MethodEnum.EMPIRICAL).size(); i++)
-				System.out.print(theAerodynamicCalculator.getDeltaCMc4List().get(MethodEnum.EMPIRICAL).get(i) + " ");
-
-			System.out.println("\n\ndeltaCM_c4 = \n" + theAerodynamicCalculator.getDeltaCMc4().get(MethodEnum.EMPIRICAL));
-			
-		} catch (CmdLineException | IOException e) {
-			System.err.println("Error: " + e.getMessage());
-			HighLiftDevicesEffectsTest.theCmdLineParser.printUsage(System.err);
-			System.err.println();
-			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
-		}	    
-
-		// JavaFX ... (if needed)
-		launch(args);
+//					highLiftDatabaseReader);
+//			
+//			// Set the folders tree
+//			MyConfiguration.initWorkingDirectoryTree(
+//					MyConfiguration.currentDirectoryString,
+//					MyConfiguration.inputDirectory, 
+//					MyConfiguration.outputDirectory);
+//			
+//			// Defining the operating conditions ...
+//			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
+//
+//			// Defining the LSAerodynamicsCalculator object
+//			Map <String, List<MethodEnum>> taskMap = new HashMap<>();
+//			Map <String, List<MethodEnum>> plotMap = new HashMap<>();
+//			LSAerodynamicsCalculator theAerodynamicCalculator = new LSAerodynamicsCalculator(
+//					theAircraft.getWing(),
+//					theOperatingConditions,
+//					taskMap,
+//					plotMap,
+//					ConditionEnum.TAKE_OFF,
+//					50
+//					);
+//			CalcCLAlpha theCLAlphaCalculator = theAerodynamicCalculator.new CalcCLAlpha();
+//			theCLAlphaCalculator.nasaBlackwell();
+//			
+//			Map<ConditionEnum, LSAerodynamicsCalculator> theAerodynamicCalculatorMap = new HashMap<>();
+//			theAerodynamicCalculatorMap.put(ConditionEnum.TAKE_OFF, theAerodynamicCalculator);
+//			theAircraft.getWing().setTheAerodynamicsCalculatorMap(theAerodynamicCalculatorMap);
+//
+//			CalcHighLiftCurve calcHighLiftCurve = theAerodynamicCalculator.new CalcHighLiftCurve();
+//			calcHighLiftCurve.semiempirical(
+//					theOperatingConditions.getFlapDeflectionTakeOff(),
+//					theOperatingConditions.getSlatDeflectionTakeOff(),
+//					theOperatingConditions.getMachTakeOff(),
+//					theOperatingConditions.getAltitudeTakeOff()
+//					);
+//			
+//			System.out.println("\n\t\tAlpha Array: " + theAerodynamicCalculator.getAlphaArrayPlotHighLift());
+//			System.out.println("\n\t\tCL Array: " + theAerodynamicCalculator.getLiftCoefficient3DCurveHighLift().get(MethodEnum.EMPIRICAL));			
+//			//----------------------------------------------------------------------------------
+//			// Results print
+//			System.out.println("\ndeltaCl0_flap_list = ");
+//			for(int i=0; i<theAerodynamicCalculator.getDeltaCl0FlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+//				System.out.print(theAerodynamicCalculator.getDeltaCl0FlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//			System.out.println("\n\ndeltaCl0_flap = \n" + theAerodynamicCalculator.getDeltaCl0Flap().get(MethodEnum.EMPIRICAL));
+//
+//			System.out.println("\ndeltaCL0_flap_list = ");
+//			for(int i=0; i<theAerodynamicCalculator.getDeltaCL0FlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+//				System.out.print(theAerodynamicCalculator.getDeltaCL0FlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//			System.out.println("\n\ndeltaCL0_flap = \n" + theAerodynamicCalculator.getDeltaCL0Flap().get(MethodEnum.EMPIRICAL));
+//			
+//			System.out.println("\ndeltaClmax_flap_list = ");
+//			for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxFlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+//				System.out.print(theAerodynamicCalculator.getDeltaClmaxFlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//			System.out.println("\n\ndeltaClmax_flap = \n" + theAerodynamicCalculator.getDeltaClmaxFlap().get(MethodEnum.EMPIRICAL));
+//			
+//			System.out.println("\ndeltaCLmax_flap_list = ");
+//			for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxFlapList().get(MethodEnum.EMPIRICAL).size(); i++)
+//				System.out.print(theAerodynamicCalculator.getDeltaCLmaxFlapList().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//			System.out.println("\n\ndeltaCLmax_flap = \n" + theAerodynamicCalculator.getDeltaCLmaxFlap().get(MethodEnum.EMPIRICAL));
+//
+//			if(!theAircraft.getWing().getLiftingSurfaceCreator().getSlats().isEmpty()) {
+//				System.out.println("\ndeltaClmax_slat_list = ");
+//				for(int i=0; i<theAerodynamicCalculator.getDeltaClmaxSlatList().get(MethodEnum.EMPIRICAL).size(); i++)
+//					System.out.print(theAerodynamicCalculator.getDeltaClmaxSlatList().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//				System.out.println("\n\ndeltaClmax_slat = \n" + theAerodynamicCalculator.getDeltaClmaxSlat().get(MethodEnum.EMPIRICAL));
+//
+//				System.out.println("\ndeltaCLmax_slat_list = ");
+//				for(int i=0; i<theAerodynamicCalculator.getDeltaCLmaxSlatList().get(MethodEnum.EMPIRICAL).size(); i++)
+//					System.out.print(theAerodynamicCalculator.getDeltaCLmaxSlatList().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//				System.out.println("\n\ndeltaCLmax_slat = \n" + theAerodynamicCalculator.getDeltaCLmaxSlat().get(MethodEnum.EMPIRICAL));
+//			}
+//			
+//			System.out.println("\ncLalpha_flap = \n" + theAerodynamicCalculator.getCLAlphaHighLift().get(MethodEnum.EMPIRICAL));
+//
+//			System.out.println("\ndeltaCD_list = ");
+//			for(int i=0; i<theAerodynamicCalculator.getDeltaCDList().get(MethodEnum.EMPIRICAL).size(); i++)
+//				System.out.print(theAerodynamicCalculator.getDeltaCDList().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//			System.out.println("\n\ndeltaCD = \n" + theAerodynamicCalculator.getDeltaCD().get(MethodEnum.EMPIRICAL));
+//			
+//			System.out.println("\ndeltaCM_c4_list = ");
+//			for(int i=0; i<theAerodynamicCalculator.getDeltaCMc4List().get(MethodEnum.EMPIRICAL).size(); i++)
+//				System.out.print(theAerodynamicCalculator.getDeltaCMc4List().get(MethodEnum.EMPIRICAL).get(i) + " ");
+//
+//			System.out.println("\n\ndeltaCM_c4 = \n" + theAerodynamicCalculator.getDeltaCMc4().get(MethodEnum.EMPIRICAL));
+//			
+//		} catch (CmdLineException | IOException e) {
+//			System.err.println("Error: " + e.getMessage());
+//			HighLiftDevicesEffectsTest.theCmdLineParser.printUsage(System.err);
+//			System.err.println();
+//			System.err.println("  Must launch this app with proper command line arguments.");
+//			return;
+//		}	    
+//
+//		// JavaFX ... (if needed)
+//		launch(args);
 	}
 
 }

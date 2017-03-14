@@ -5258,6 +5258,7 @@ public class ACPerformanceManager {
 			_descentAngles = _theDescentCalculator.getDescentAngles();
 			_totalDescentLength = _theDescentCalculator.getTotalDescentLength();
 			_totalDescentTime = _theDescentCalculator.getTotalDescentTime();
+			_totalDescentFuelUsed = _theDescentCalculator.getTotalDescentFuelUsed();
 		}
 		
 		public void plotDescentPerformance(String descentFolderPath) {
