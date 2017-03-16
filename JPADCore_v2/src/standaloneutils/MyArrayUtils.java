@@ -346,6 +346,20 @@ public final class MyArrayUtils {
 		return vec_d;
 	}
 
+	public static String[] convertListStringToStringArray (List<String> list) {
+		return
+				list.toArray(new String[list.size()]);
+	}
+	
+	public static List<Double[]> convertFromListOfDoublePrimitive(List<double[]> list){
+
+		return 
+				list.stream()
+				.map(x -> convertFromDoublePrimitive(x))
+				.collect(Collectors.toList());
+		
+	}
+	
 	public static Double[] convertFromDoublePrimitive(double[] vec) {
 		
 		Double[] vec_D = new Double[vec.length];

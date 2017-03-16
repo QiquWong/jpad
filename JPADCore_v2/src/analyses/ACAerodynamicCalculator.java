@@ -658,7 +658,7 @@ public class ACAerodynamicCalculator {
 	
 
 	
-	public void calculateAerodynamicAndStability(ConditionEnum theCondition) {
+	public void calculate(ConditionEnum theCondition) {
 		
 		initializeAnalysis(theCondition);
 	

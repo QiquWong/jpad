@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -42,6 +44,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
+import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
@@ -291,7 +295,7 @@ public class MyChartToFileUtils {
 		List<String> xListName = new ArrayList<>();
 		List<String> yListName = new ArrayList<>();
 		for(int i=0; i<legendValue.length; i++) {
-			legend.add(legendName + " " + legendValue[i] + " " + legendUnit);
+			legend.add(legendName + "_" + legendValue[i] + "_" + legendUnit);
 			xListName.add(xLabel);
 			yListName.add(yLabel);
 		}
@@ -300,8 +304,12 @@ public class MyChartToFileUtils {
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
 				legend, 
-				xListName, yListName, 
-				path + fileName
+				xListName, yListName,
+				MyConfiguration.createNewFolder(
+						path
+						+ File.separator 
+						+ fileName 
+						)
 				);
 		
 	}
@@ -332,6 +340,27 @@ public class MyChartToFileUtils {
 		if (yMax != null) chartFactory.setyMax(yMax);
 
 		chartFactory.createMultiTraceChart();
+		
+		List<String> legend = new ArrayList<>();
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<legendValue.length; i++) {
+			legend.add(legendName + "_" + legendValue[i] + "_" + legendUnit);
+			xListName.add(xLabel);
+			yListName.add(yLabel);
+		}
+		
+		JPADStaticWriteUtils.exportToCSV(
+				MyArrayUtils.convertFromListOfDoublePrimitive(xArrays),
+				MyArrayUtils.convertFromListOfDoublePrimitive(yArrays),
+				legend, 
+				xListName, yListName,
+				MyConfiguration.createNewFolder(
+						path
+						+ File.separator 
+						+ fileName 
+						)
+				);
 	}
 	
 	
@@ -418,6 +447,28 @@ public class MyChartToFileUtils {
 		if (yMax != null) chartFactory.setyMax(yMax);
 
 		chartFactory.createMultiTraceChart();
+		
+		List<String> legend = new ArrayList<>();
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<legendValue.length; i++) {
+			legend.add(legendValue[i]);
+			xListName.add(xLabel);
+			yListName.add(yLabel);
+		}
+		
+		JPADStaticWriteUtils.exportToCSV(
+				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
+				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
+				legend, 
+				xListName, yListName,
+				MyConfiguration.createNewFolder(
+						path
+						+ File.separator 
+						+ fileName 
+						)
+				);
+		
 	}
 	
 	public static void plot( //xArrays is 1D
@@ -508,14 +559,24 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit, String path,
 			String fileName) {
 
-		double [] legend = new double [xArrays.length];
-
-		for ( int i=0; i<legend.length; i++){
-			legend[i]=(double) i;
+		List<String> legend = new ArrayList<>();
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<xArrays.length; i++) {
+			legend.add(fileName);
+			xListName.add(xLabel);
+			yListName.add(yLabel);
 		}
-
-		MyChartToFileUtils chartFactory = ChartFactory(xLabel, yLabel, 
-				xUnit, yUnit,legend,path, fileName);
+		
+		MyChartToFileUtils chartFactory = ChartFactory(
+				xLabel, 
+				yLabel, 
+				xUnit,
+				yUnit,
+				MyArrayUtils.convertListStringToStringArray(legend),
+				path, 
+				fileName
+				);
 
 		chartFactory.setXarrays(xArrays);
 		chartFactory.setYarrays(yArrays);
@@ -526,6 +587,19 @@ public class MyChartToFileUtils {
 		if (yMax != null) chartFactory.setyMax(yMax);
 
 		chartFactory.createMultiTraceChartNoLegend();
+		
+		JPADStaticWriteUtils.exportToCSV(
+				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
+				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
+				legend, 
+				xListName, yListName,
+				MyConfiguration.createNewFolder(
+						path
+						+ File.separator 
+						+ fileName 
+						)
+				);
+		
 	}
 
 	public static void plotNoLegend( //xArrays is 1D
@@ -612,6 +686,12 @@ public class MyChartToFileUtils {
 		// Creating XY series from List and adding to a dataset
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		
+		if (legend == null){
+			legend = new ArrayList<String>();
+			for ( int i = 0; i<xList.size() ; i++)
+				legend.add(String.valueOf(i));
+		}
+		
 		for (int i=0; i<xList.size(); i++) {
 			// check if xList[i] and yList[i] have the same length
 			if(xList.get(i).length == yList.get(i).length){
@@ -630,12 +710,6 @@ public class MyChartToFileUtils {
 		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
 		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
 		
-//		if (legend == null){
-//			legend = new ArrayList<String>();
-//			for ( int i = 0; i<xList.size() ; i++)
-//				legend.add("default");
-//		}
-			
 		// minimum and maximum of Lists research
 		if(xMin == null) {
 			xMin = 0.0;
@@ -724,33 +798,54 @@ public class MyChartToFileUtils {
 		}
 		
 		//----------------------------------------------------------------------------------
+		// Generating the .csv file
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<xList.size(); i++) {
+			xListName.add(xLabelName);
+			yListName.add(yLabelName);
+		}
+		
+		JPADStaticWriteUtils.exportToCSV(
+				xList,
+				yList,
+				legend, 
+				xListName, yListName,
+				MyConfiguration.createNewFolder(
+						folderPathName
+						+ File.separator 
+						+ fileName 
+						)
+				);
+		
+		//----------------------------------------------------------------------------------
 		// Generating the .tikz graph
-		MyChartToFileUtils chartFactory = new MyChartToFileUtils();
-		chartFactory.initializeTikz(
-				folderPathName + fileName,
-				xMin, xMax,
-				yMin, yMax,
-				xLabelName, yLabelName,
-				xUnit, yUnit,
-				"west", "black",
-				"white", "left");
-
-		if (xList.size() == 1)
-			for (int i=0; i < yList.size(); i++) {
-				try {
-					chartFactory.addTraceToTikz(xList.get(0), yList.get(i), legend.get(i));
-				} catch (ArrayIndexOutOfBoundsException e) {
-					System.err.println("ARRAY INDEX OUT OF BOUNDS !!!");
-				}
-			}
-		else if(xList.size() != 1 && yList.size() == 1)
-			for (int i=0; i < yList.size(); i++)
-				chartFactory.addTraceToTikz(xList.get(i), yList.get(0), legend.get(i));
-		else
-			for (int i=0; i < yList.size(); i++)
-				chartFactory.addTraceToTikz(xList.get(i), yList.get(i), legend.get(i));
-
-		chartFactory.closeTikz();
+//		MyChartToFileUtils chartFactory = new MyChartToFileUtils();
+//		chartFactory.initializeTikz(
+//				folderPathName + fileName,
+//				xMin, xMax,
+//				yMin, yMax,
+//				xLabelName, yLabelName,
+//				xUnit, yUnit,
+//				"west", "black",
+//				"white", "left");
+//
+//		if (xList.size() == 1)
+//			for (int i=0; i < yList.size(); i++) {
+//				try {
+//					chartFactory.addTraceToTikz(xList.get(0), yList.get(i), legend.get(i));
+//				} catch (ArrayIndexOutOfBoundsException e) {
+//					System.err.println("ARRAY INDEX OUT OF BOUNDS !!!");
+//				}
+//			}
+//		else if(xList.size() != 1 && yList.size() == 1)
+//			for (int i=0; i < yList.size(); i++)
+//				chartFactory.addTraceToTikz(xList.get(i), yList.get(0), legend.get(i));
+//		else
+//			for (int i=0; i < yList.size(); i++)
+//				chartFactory.addTraceToTikz(xList.get(i), yList.get(i), legend.get(i));
+//
+//		chartFactory.closeTikz();
 	}
 	
 	/** 

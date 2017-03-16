@@ -1251,7 +1251,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		System.out.println("Your excel file has been generated!");
 	}
 	
-	public void createBalanceCharts(String balanceOutputFolderPath) {
+	public void createCharts(String balanceOutputFolderPath) {
 
 		int index = _theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size();
 		Amount<Length> meanAerodynamicChordXle = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
@@ -1406,7 +1406,7 @@ public class ACBalanceManager implements IACBalanceManager {
 	 * @param conditions
 	 * @param methodsMap
 	 */
-	public void calculateBalance(Map<ComponentEnum, MethodEnum> _methodsMapBalance){
+	public void calculate(Map<ComponentEnum, MethodEnum> _methodsMapBalance){
 
 		if(_theAircraft.getFuselage() != null) {
 			_theAircraft.getFuselage().setMassEstimated(_fuselageMass);

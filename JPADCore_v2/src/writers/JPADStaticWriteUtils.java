@@ -152,7 +152,7 @@ public class JPADStaticWriteUtils {
 			
 			if (outputFile.exists()) {
 				try {
-					System.out.println("\tDelating the old .csv file ...\n");
+					System.out.println("\tDeleting the old .csv file ...");
 					Files.delete(outputFile.toPath());
 				} 
 				catch (IOException e) {
@@ -162,22 +162,21 @@ public class JPADStaticWriteUtils {
 			
 			try{
 				
-				System.out.println("\tCreating " + fileName.get(i) + ".csv file ... \n");
+				System.out.println("\tCreating " + fileName.get(i) + ".csv file ... ");
 				
 				PrintWriter writer = new PrintWriter(outputFile.getAbsolutePath(), "UTF-8");
-				writer.println(fileName.get(i));
-				writer.println(xListName.get(i) + " " + yListName.get(i));
+				writer.println(xListName.get(i) + ", " + yListName.get(i));
 
 				if(xList.get(i).length != yList.get(i).length) {
 					System.err.println("CORRESPONDING ELEMENTS OF THE TWO LISTS MUST HAVE THE SAME LENGTH");
 					return;
 				}
 
-				for (int j = 0; j < xList.size(); j++) {
+				for (int j = 0; j < xList.get(i).length; j++) {
 					writer.println(
 							String.format(
 									Locale.ROOT,
-									"%1$11.6f %2$11.6f",
+									"%1$11.6f, %2$11.6f",
 									xList.get(i)[j],
 									yList.get(i)[j]
 									)

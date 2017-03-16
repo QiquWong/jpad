@@ -1295,7 +1295,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	public void calculateBalance(Aircraft aircraft, String resultsFolderPath) {
 
 		// Estimate center of gravity location
-		aircraft.getTheAnalysisManager().getTheBalance().calculateBalance(_methodsMapBalance);
+		aircraft.getTheAnalysisManager().getTheBalance().calculate(_methodsMapBalance);
 		
 		// Plot
 		try {
@@ -1307,7 +1307,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					balanceFolderPath
 					+ "Balance");
 			if(_plotBalance == Boolean.TRUE)
-				aircraft.getTheAnalysisManager().getTheBalance().createBalanceCharts(balanceFolderPath);
+				aircraft.getTheAnalysisManager().getTheBalance().createCharts(balanceFolderPath);
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -1329,20 +1329,20 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	public void calculateAerodynamicAndStability(Aircraft aircraft, String resultsFolderPath) {
 
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculateAerodynamicAndStability(ConditionEnum.TAKE_OFF);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculate(ConditionEnum.TAKE_OFF);
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).calculateAerodynamicAndStability(ConditionEnum.CLIMB);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).calculate(ConditionEnum.CLIMB);
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).calculateAerodynamicAndStability(ConditionEnum.CRUISE);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).calculate(ConditionEnum.CRUISE);
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).calculateAerodynamicAndStability(ConditionEnum.LANDING);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).calculate(ConditionEnum.LANDING);
 
 	}
 	
 	public void calculatePerformances(Aircraft aircraft, String resultsFolderPath) {
 
 		// Execute analysis
-		aircraft.getTheAnalysisManager().getThePerformance().calculatePerformance(resultsFolderPath);
+		aircraft.getTheAnalysisManager().getThePerformance().calculate(resultsFolderPath);
 		
 	}
 	

@@ -16,8 +16,8 @@ import standaloneutils.customdata.CenterOfGravity;
 public interface IACBalanceManager {
 
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException;
-	public void createBalanceCharts(String balanceOutputFolderPath);
-	public void calculateBalance(Map<ComponentEnum, MethodEnum> methodsMapBalance);
+	public void createCharts(String balanceOutputFolderPath);
+	public void calculate(Map<ComponentEnum, MethodEnum> methodsMapBalance);
 	public void calculateTotalCG();
 	
 	public List<CenterOfGravity> getCGList();

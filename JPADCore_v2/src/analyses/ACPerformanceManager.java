@@ -2249,7 +2249,7 @@ public class ACPerformanceManager {
 	 * This method reads the task list, initializes the related calculators inner classes and 
 	 * performe the required calculation
 	 */
-	public void calculatePerformance(String resultsFolderPath) {
+	public void calculate(String resultsFolderPath) {
 		
 		String performanceFolderPath = JPADStaticWriteUtils.createNewFolder(
 				resultsFolderPath 

@@ -2562,7 +2562,7 @@ public class TakeOffManager {
 					xMatrix1SI, yMatrix1SI,
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "s", "N",
-					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
+					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
 					takeOffFolderPath, "HorizontalForces_evolution_SI");
 
 			double[][] xMatrix1IMPERIAL = new double[5][totalForce.size()];
@@ -2602,7 +2602,7 @@ public class TakeOffManager {
 					xMatrix1IMPERIAL, yMatrix1IMPERIAL,
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "s", "lb",
-					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
+					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
 					takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
 			
 			//.................................................................................
@@ -2627,7 +2627,7 @@ public class TakeOffManager {
 					xMatrix2SI, yMatrix2SI,
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "m", "N",
-					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
+					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
 					takeOffFolderPath, "HorizontalForces_evolution_SI");
 
 			double[][] xMatrix2IMPERIAL = new double[5][totalForce.size()];
@@ -2667,7 +2667,7 @@ public class TakeOffManager {
 					xMatrix2IMPERIAL, yMatrix2IMPERIAL,
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "ft", "lb",
-					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
+					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
 					takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
 
 			//.................................................................................
@@ -2690,7 +2690,7 @@ public class TakeOffManager {
 					xMatrix3SI, yMatrix3SI,
 					0.0, null, null, null,
 					"Time", "Vertical Forces", "s", "N",
-					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
+					new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
 					takeOffFolderPath, "VerticalForces_evolution");
 
 			double[][] xMatrix3IMPERIAL = new double[3][totalForce.size()];
@@ -2720,7 +2720,7 @@ public class TakeOffManager {
 					xMatrix3IMPERIAL, yMatrix3IMPERIAL,
 					0.0, null, null, null,
 					"Time", "Vertical Forces", "s", "lb",
-					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
+					new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
 					takeOffFolderPath, "VerticalForces_evolution_IMPERIAL");
 			
 			//.................................................................................
@@ -2743,7 +2743,7 @@ public class TakeOffManager {
 					xMatrix4SI, yMatrix4SI,
 					0.0, null, null, null,
 					"Ground distance", "Vertical Forces", "m", "N",
-					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
+					new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
 					takeOffFolderPath, "VerticalForces_vs_GroundDistance_SI");
 
 			double[][] xMatrix4IMPERIAL = new double[3][totalForce.size()];
@@ -2777,7 +2777,7 @@ public class TakeOffManager {
 					xMatrix4IMPERIAL, yMatrix4IMPERIAL,
 					0.0, null, null, null,
 					"Ground distance", "Vertical Forces", "ft", "lb",
-					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
+					new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
 					takeOffFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL");
 			
 			if(!isAborted) {

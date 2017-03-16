@@ -20,14 +20,14 @@
                 <cLmax_clean unit="">1.4487</cLmax_clean>
                 <cLStar_clean unit="">0.8744</cLStar_clean>
             </clean_configuration_parameters>
-            <mean_airfoil>
+            <airfoils_data>
                 <airfoil_chord_distribution unit="m">[6.389999999999999, 2.7199999999999998, 1.0499999999999998]</airfoil_chord_distribution>
                 <max_thickness_distribution unit="">[0.16, 0.11, 0.1]</max_thickness_distribution>
                 <leading_edge_radius_distribution unit="m">[0.039599999999999996, 0.039599999999999996, 0.039599999999999996]</leading_edge_radius_distribution>
                 <cl_alpha_distribution unit="1/rad">[6.245699999999999, 6.245699999999999, 6.245699999999999]</cl_alpha_distribution>
                 <cl0_distribution unit="">[0.2316, 0.2316, 0.2316]</cl0_distribution>
                 <airfoils_family unit="">NACA_65_Series</airfoils_family>
-            </mean_airfoil>
+            </airfoils_data>
         </wing>
         <flaps>
             <flap_1>
@@ -100,7 +100,7 @@
             <alpha_star_high_lift unit="deg">8.0200</alpha_star_high_lift>
             <cL_alpha_high_lift unit="1/deg">0.0815</cL_alpha_high_lift>
             <cLmax_high_lift unit="">2.7185</cLmax_high_lift>
-            <cL_star_high_lift unit="">0.000000</cL_star_high_lift>
+            <cL_star_high_lift unit="">1.9104</cL_star_high_lift>
             <cL_zero_high_lift unit="">1.2566</cL_zero_high_lift>
         </global_high_lift_devices_effects>
         <high_lift_curve_point>
