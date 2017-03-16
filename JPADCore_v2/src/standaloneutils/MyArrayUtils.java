@@ -279,6 +279,32 @@ public final class MyArrayUtils {
 	    return list;
 	}
 
+	public static List<Double[]> convertTwoDimensionArrayToListDoubleArray(double[][] matrix) {
+		
+		List<Double[]> resultList = new ArrayList<>();
+		
+		for(int i=0; i<matrix.length; i++) {
+			
+			resultList.add(MyArrayUtils.convertFromDoublePrimitive(matrix[i]));
+			
+		}
+		
+		return resultList;
+	}
+	
+	public static List<Double[]> convertTwoDimensionArrayToListDoubleArray(Double[][] matrix) {
+		
+		List<Double[]> resultList = new ArrayList<>();
+		
+		for(int i=0; i<matrix.length; i++) {
+			
+			resultList.add(matrix[i]);
+			
+		}
+		
+		return resultList;
+	}
+	
 	public static <T> List<T> extractColumnOf2DArrayToList(T[][] twoDArray, int c) {
 
 		if (twoDArray.length == 0)

@@ -44,6 +44,7 @@ import com.google.common.collect.TreeBasedTable;
 
 import configuration.enumerations.MethodEnum;
 import standaloneutils.customdata.MyArray;
+import writers.JPADStaticWriteUtils;
 
 public class MyChartToFileUtils {
 
@@ -285,6 +286,24 @@ public class MyChartToFileUtils {
 		if (yMax != null) chartFactory.setyMax(yMax);
 
 		chartFactory.createMultiTraceChart();
+		
+		List<String> legend = new ArrayList<>();
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<legendValue.length; i++) {
+			legend.add(legendName + " " + legendValue[i] + " " + legendUnit);
+			xListName.add(xLabel);
+			yListName.add(yLabel);
+		}
+		
+		JPADStaticWriteUtils.exportToCSV(
+				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
+				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
+				legend, 
+				xListName, yListName, 
+				path + fileName
+				);
+		
 	}
 
 	// TODO: document me!
@@ -2445,10 +2464,10 @@ public class MyChartToFileUtils {
 			String legendUnit,
 			boolean swapXY) {
 
-		createMultiTraceTikz(x1, y1, x2, y2, x3, y3,
-				path, fileName, 
-				legendName, legendValue, legendUnit, 
-				xLabel, yLabel, xUnit, yUnit);
+//		createMultiTraceTikz(x1, y1, x2, y2, x3, y3,
+//				path, fileName, 
+//				legendName, legendValue, legendUnit, 
+//				xLabel, yLabel, xUnit, yUnit);
 
 		createMultiTracePng(x1, y1, x2, y2, x3, y3, 
 				path, fileName,
@@ -2481,10 +2500,10 @@ public class MyChartToFileUtils {
 			String legendUnit,
 			boolean stripTrailingZeros) {
 
-		createMultiTraceTikz(
-				path, fileName, 
-				legendName, legendValue, legendUnit, 
-				xLabel, yLabel, xUnit, yUnit);
+//		createMultiTraceTikz(
+//				path, fileName, 
+//				legendName, legendValue, legendUnit, 
+//				xLabel, yLabel, xUnit, yUnit);
 
 		createMultiTracePng(
 				path, fileName,
@@ -2502,10 +2521,10 @@ public class MyChartToFileUtils {
 			String[] legendValue,
 			boolean stripTrailingZeros) {
 
-		createMultiTraceTikz(
-				path, fileName, 
-				legendValue, 
-				xLabel, yLabel, xUnit, yUnit);
+//		createMultiTraceTikz(
+//				path, fileName, 
+//				legendValue, 
+//				xLabel, yLabel, xUnit, yUnit);
 
 		createMultiTracePng(
 				path, fileName,
@@ -2532,9 +2551,9 @@ public class MyChartToFileUtils {
 			boolean stripTrailingZeros) {
 
 
-		createSingleTraceTikz(
-				path, fileName, 
-				xLabel, yLabel, xUnit, yUnit);
+//		createSingleTraceTikz(
+//				path, fileName, 
+//				xLabel, yLabel, xUnit, yUnit);
 
 		createSingleTracePngNoLegend(
 				path, fileName,legend,

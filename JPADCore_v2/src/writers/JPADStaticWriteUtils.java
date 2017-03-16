@@ -3,14 +3,17 @@ package writers;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -126,6 +129,69 @@ public class JPADStaticWriteUtils {
 		} catch (TransformerException tfe) {
 			tfe.printStackTrace();
 		}
+	}
+
+	@SuppressWarnings("resource")
+	public static void exportToCSV (
+			List<Double[]> xList, 
+			List<Double[]> yList,
+			List<String> fileName,
+			List<String> xListName,
+			List<String> yListName,
+			String outFileFolderPath 
+			) {
+		
+		if(xList.size() != yList.size()) {
+			System.err.println("X AND Y LISTS MUST HAVE THE SAME SIZE !!");
+			return;
+		}
+		
+		for (int i = 0; i < xList.size(); i++) {
+		
+			File outputFile = new File(outFileFolderPath + File.separator + fileName.get(i) + ".csv");
+			
+			if (outputFile.exists()) {
+				try {
+					System.out.println("\tDelating the old .csv file ...\n");
+					Files.delete(outputFile.toPath());
+				} 
+				catch (IOException e) {
+					System.err.println(e + " (Unable to delete file)");
+				}
+			}
+			
+			try{
+				
+				System.out.println("\tCreating " + fileName.get(i) + ".csv file ... \n");
+				
+				PrintWriter writer = new PrintWriter(outputFile.getAbsolutePath(), "UTF-8");
+				writer.println(fileName.get(i));
+				writer.println(xListName.get(i) + " " + yListName.get(i));
+
+				if(xList.get(i).length != yList.get(i).length) {
+					System.err.println("CORRESPONDING ELEMENTS OF THE TWO LISTS MUST HAVE THE SAME LENGTH");
+					return;
+				}
+
+				for (int j = 0; j < xList.size(); j++) {
+					writer.println(
+							String.format(
+									Locale.ROOT,
+									"%1$11.6f %2$11.6f",
+									xList.get(i)[j],
+									yList.get(i)[j]
+									)
+							);
+				}
+
+				writer.close();
+
+
+			} catch (Exception e) {
+				System.err.format("Unable to write file %1$s\n", outputFile.getAbsolutePath());
+			}
+		}
+
 	}
 
 	/**

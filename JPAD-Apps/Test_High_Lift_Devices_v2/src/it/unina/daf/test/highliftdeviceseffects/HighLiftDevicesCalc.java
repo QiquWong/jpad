@@ -606,7 +606,8 @@ public class HighLiftDevicesCalc {
 		if(input.getSlatsNumber() == 0.0)
 			output.setAlphaStarHighLift(
 					Amount.valueOf(
-							(input.getAlphaStarClean().doubleValue(NonSI.DEGREE_ANGLE) 
+							(((input.getcLstarClean() - output.getcL0HighLift())
+									/ output.getcLalphaHighLift().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
 									+ input.getAlphaStarClean().doubleValue(NonSI.DEGREE_ANGLE))/2,
 							NonSI.DEGREE_ANGLE
 							)
@@ -619,7 +620,13 @@ public class HighLiftDevicesCalc {
 									)
 							)
 					);
-						
+				
+		output.setcLStarHighLift(
+				output.getcLalphaHighLift().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+				*output.getAlphaStarHighLift().doubleValue(NonSI.DEGREE_ANGLE) 
+				+output.getcL0HighLift()
+				);
+		
 		output.getAlphaListPlot().add(
 				MyArrayUtils.linspaceDouble(
 						alphaHighLiftFirst,
@@ -643,6 +650,7 @@ public class HighLiftDevicesCalc {
 		System.out.println("\tAlpha max = " + input.getAlphaStallClean());
 		System.out.println("\tAlpha star = " + input.getAlphaStarClean());
 		System.out.println("\tCL max = " + input.getcLmaxClean());
+		System.out.println("\tCL star = " + input.getcLstarClean());
 		System.out.println("\tCL0 = " + input.getcL0Clean());
 		System.out.println("\tCLalpha = " + input.getcLAlphaClean());
 		
@@ -650,6 +658,7 @@ public class HighLiftDevicesCalc {
 		System.out.println("\tAlpha max = " + output.getAlphaStallHighLift());
 		System.out.println("\tAlpha star = " + output.getAlphaStarHighLift());
 		System.out.println("\tCL max = " + output.getcLmaxHighLift());
+		System.out.println("\tCL star = " + output.getcLStarHighLift());
 		System.out.println("\tCL0 = " + output.getcL0HighLift());
 		System.out.println("\tCLalpha = " + output.getcLalphaHighLift());
 
@@ -748,7 +757,7 @@ public class HighLiftDevicesCalc {
 		JPADStaticWriteUtils.writeSingleNode("cLmax_clean", input.getcLmaxClean(), cleanConfigurationDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cLStar_clean", input.getcLstarClean(), cleanConfigurationDataElement, doc);
 				
-		org.w3c.dom.Element airfoilDataDistributionElement = doc.createElement("mean_airfoil");
+		org.w3c.dom.Element airfoilDataDistributionElement = doc.createElement("airfoils_data");
 		wingDataElement.appendChild(airfoilDataDistributionElement);
 		
 		JPADStaticWriteUtils.writeSingleNode("airfoil_chord_distribution", input.getAirfoilsChordDistribution(), airfoilDataDistributionElement, doc);
