@@ -1,7 +1,10 @@
 package sandbox2.vt.postprocessor;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +15,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
@@ -33,14 +35,45 @@ public class PostProcessorExcel {
 		this._csvFilenameWithPathAndExtList = csvFilenameWithPathAndExtList;
 		this._holdOnList = holdOnList;
 		
+		_csvFilenameWithPathAndExtList
+			.stream()
+				.forEach(x -> importFromCSV(x));
+		
 	}
 	
 	//------------------------------------------------------------------------------------------
 	// METHODS:
 	private void importFromCSV(String csvFilenameWithPathAndExt) {
 
-		
-		
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+        try {
+
+            br = new BufferedReader(new FileReader(csvFilenameWithPathAndExt));
+            while ((line = br.readLine()) != null) {
+
+                // use comma as separator
+                String[] country = line.split(cvsSplitBy);
+
+                System.out.println("Country [code= " + country[4] + " , name=" + country[5] + "]");
+
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 	}
 	
 	public void createXls(List<String> csvFilenameWithPathAndExtList) throws InvalidFormatException, IOException {		

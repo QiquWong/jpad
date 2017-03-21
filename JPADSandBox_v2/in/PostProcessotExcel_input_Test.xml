@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	HOLD_ON="TRUE" plots the curves on the same chart
+	if the user wants to add nother file, he has to add another tag named <csv_file_path hold_on="TRUE/FALSE" value="..."/>
+-->
+<post_processor_excel_executable>
+    <INPUT>
+		<csv_file_paths>
+			<csv_file_path hold_on="TRUE" value=""/>
+			<csv_file_path hold_on="TRUE" value=""/>
+			<csv_file_path hold_on="FALSE" value=""/>
+		</csv_file_paths>
+    </INPUT>
+</post_processor_excel_executable>
