@@ -2,6 +2,7 @@ package sandbox2.vt.postprocessor;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import configuration.MyConfiguration;
@@ -11,8 +12,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -23,8 +27,8 @@ public class PostProcessorExcelMain extends Application {
 	// VARIABLE DECLARATION:
 	private static File inputFile;
 	
-	private static List<String> csvFileList;
-	private static List<Boolean> csvHoldOnList;
+	private static List<String> csvFileList = new ArrayList<>();
+	private static List<Boolean> csvHoldOnList = new ArrayList<>();
 	
 	private static Stage primaryStage;
 	
@@ -33,8 +37,12 @@ public class PostProcessorExcelMain extends Application {
 	private static ToolBar inputModeToolbar;
 	private static ToolBar runAndStatusToolbar;
 	private static ToolBar coreToolBar;
-	private static ScrollPane coreScrollPane;
+	private static SplitPane coreSplitPane;
+	private static AnchorPane splitPaneUpperAnchorPane;
+	private static AnchorPane splitPaneLowerAnchorPane;
+	private static ScrollPane anchorPaneScrollPane;
 	private static GridPane csvFileGridPane;
+	private static TextArea consoleTextArea;
 	
 	private static Label inputFilePathLabel;
 	private static TextField inputFilePathTextField;
@@ -78,11 +86,23 @@ public class PostProcessorExcelMain extends Application {
 		setCoreToolBar(
 				(ToolBar) getCoreBorderPane().lookup("#coreToolbar")
 				);
-		setCoreScrollPane(
-				(ScrollPane) getCoreBorderPane().lookup("#coreScrollPane")
+		setCoreSplitPane(
+				(SplitPane) getCoreBorderPane().lookup("#coreSplitPane")
+				);
+		setSplitPaneUpperAnchorPane(
+				(AnchorPane) getCoreSplitPane().getItems().get(0)
+				);
+		setAnchorPaneScrollPane(
+				(ScrollPane) getSplitPaneUpperAnchorPane().getChildren().get(0)
+				);
+		setSplitPaneLowerAnchorPane(
+				(AnchorPane) getCoreSplitPane().getItems().get(1)
+				);
+		setConsoleTextArea(
+				(TextArea) getSplitPaneLowerAnchorPane().getChildren().get(0)
 				);
 		setCsvFileGridPane(
-				(GridPane) getCoreScrollPane().getContent().lookup("#csvGridPane")
+				(GridPane) getAnchorPaneScrollPane().getContent().lookup("#csvGridPane")
 				);
 		setInputFilePathLabel(
 				(Label) getCoreToolBar().getItems().get(0)
@@ -211,14 +231,6 @@ public class PostProcessorExcelMain extends Application {
 		PostProcessorExcelMain.coreToolBar = coreToolBar;
 	}
 
-	public static ScrollPane getCoreScrollPane() {
-		return coreScrollPane;
-	}
-
-	public static void setCoreScrollPane(ScrollPane coreScrollPane) {
-		PostProcessorExcelMain.coreScrollPane = coreScrollPane;
-	}
-
 	public static File getInputFile() {
 		return inputFile;
 	}
@@ -241,6 +253,46 @@ public class PostProcessorExcelMain extends Application {
 
 	public static void setCsvHoldOnList(List<Boolean> csvHoldOnList) {
 		PostProcessorExcelMain.csvHoldOnList = csvHoldOnList;
+	}
+
+	public static SplitPane getCoreSplitPane() {
+		return coreSplitPane;
+	}
+
+	public static void setCoreSplitPane(SplitPane coreSplitPane) {
+		PostProcessorExcelMain.coreSplitPane = coreSplitPane;
+	}
+
+	public static AnchorPane getSplitPaneUpperAnchorPane() {
+		return splitPaneUpperAnchorPane;
+	}
+
+	public static void setSplitPaneUpperAnchorPane(AnchorPane splitPaneAnchorPane) {
+		PostProcessorExcelMain.splitPaneUpperAnchorPane = splitPaneAnchorPane;
+	}
+
+	public static ScrollPane getAnchorPaneScrollPane() {
+		return anchorPaneScrollPane;
+	}
+
+	public static void setAnchorPaneScrollPane(ScrollPane anchorPaneScrollPane) {
+		PostProcessorExcelMain.anchorPaneScrollPane = anchorPaneScrollPane;
+	}
+
+	public static TextArea getConsoleTextArea() {
+		return consoleTextArea;
+	}
+
+	public static void setConsoleTextArea(TextArea consoleTextArea) {
+		PostProcessorExcelMain.consoleTextArea = consoleTextArea;
+	}
+
+	public static AnchorPane getSplitPaneLowerAnchorPane() {
+		return splitPaneLowerAnchorPane;
+	}
+
+	public static void setSplitPaneLowerAnchorPane(AnchorPane splitPaneLowerAnchorPane) {
+		PostProcessorExcelMain.splitPaneLowerAnchorPane = splitPaneLowerAnchorPane;
 	}
 
 }

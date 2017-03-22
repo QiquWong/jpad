@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
@@ -23,37 +25,53 @@
                <items>
                   <Label id="inputFileLabel" disable="true" text="Input file path:" />
                   <TextField id="inputFileTextField" disable="true" prefHeight="31.0" prefWidth="246.0" />
-                  <Button id="inputFileChooser" disable="true" mnemonicParsing="false" onAction="#chooserWindow" text="..." />
+                  <Button id="inputFileChooser" disable="true" mnemonicParsing="false" onAction="#chooseXMLInputFile" text="..." />
                   <Button id="inputFileLoadButton" disable="true" mnemonicParsing="false" onAction="#loadInputFile" text="Load" />
                   <Button id="addCSVButton" disable="true" mnemonicParsing="false" onAction="#addInputLine" text="Add CSV" translateX="240.0" />
                </items>
             </ToolBar>
          </top>
          <center>
-            <ScrollPane id="coreScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="2000.0" prefHeight="2000.0" prefWidth="780.0" BorderPane.alignment="CENTER">
-              <content>
-                <AnchorPane maxHeight="2000.0" prefHeight="2000.0" prefWidth="778.0">
+            <SplitPane id="coreSplitPane" dividerPositions="0.8" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" onMouseClicked="#zoomWorkAera" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <GridPane id="csvGridPane" prefHeight="317.0" prefWidth="601.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="0.0" prefWidth="30.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="414.0" minWidth="10.0" prefWidth="409.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" prefWidth="90.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                        </GridPane>
+                        <ScrollPane id="splitPaneScrollPane" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2000.0" prefWidth="782.0">
+                                 <children>
+                                    <GridPane id="csvGridPane" hgap="5.0" maxHeight="2000.0" maxWidth="760.0" prefHeight="2000.0" prefWidth="760.0" vgap="5.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="108.0" prefWidth="108.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="692.0" minWidth="490.0" prefWidth="524.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="636.0" minWidth="60.0" prefWidth="60.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="636.0" minWidth="88.0" prefWidth="88.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
                      </children>
                   </AnchorPane>
-              </content>
-            </ScrollPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" onMouseClicked="#zoomConsole" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <TextArea disable="true" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children></AnchorPane>
+              </items>
+            </SplitPane>
          </center>
       </BorderPane>
    </center>

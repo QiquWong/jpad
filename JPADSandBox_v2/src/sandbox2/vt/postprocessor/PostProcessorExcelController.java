@@ -10,11 +10,15 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.xpath.operations.Bool;
+
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -23,7 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -60,10 +64,10 @@ public class PostProcessorExcelController {
 	}
 	
 	@FXML
-	public void chooserWindow(){
+	public void chooseXMLInputFile(){
 		
 		FileChooser chooser = new FileChooser();
-		chooser.setTitle("Open File");
+		chooser.setTitle("Open XML input file");
 		chooser.setInitialDirectory(new File(MyConfiguration.getDir(FoldersEnum.INPUT_DIR)));
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML File","*.xml"));
 		File file = chooser.showOpenDialog(null);
@@ -104,6 +108,19 @@ public class PostProcessorExcelController {
 		}
 	}
 	
+	private void chooseCSVFile(TextField csvFileTextField){
+		
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Open CSV file");
+		chooser.setInitialDirectory(new File(MyConfiguration.getDir(FoldersEnum.INPUT_DIR)));
+		chooser.getExtensionFilters().addAll(new ExtensionFilter("CSV File","*.csv"));
+		File file = chooser.showOpenDialog(null);
+		if (file != null) {
+			csvFileTextField.setText(file.getAbsolutePath());
+			PostProcessorExcelMain.getCsvFileList().add(file.getAbsolutePath());
+		}
+	}
+	
 	@FXML
 	public void activateImportCSVFromFile(){
 		
@@ -133,9 +150,13 @@ public class PostProcessorExcelController {
 	@FXML
 	public void addInputLine(){
 		
+		PostProcessorExcelMain.getCsvFileGridPane().getRowConstraints().get(0).setMinHeight(0);
+		
 		int currentRowsNumber = PostProcessorExcelMain.getCsvFileGridPane().getChildren().size(); 
 		if(currentRowsNumber != 0)
 			currentRowsNumber = PostProcessorExcelMain.getCsvFileGridPane().getChildren().size()/4;
+		
+		int holdOnlistSize = PostProcessorExcelMain.getCsvHoldOnList().size();
 		
 		Label csvFileLabel = new Label("CSV File");
 		csvFileLabel.setMinWidth(Region.USE_PREF_SIZE);
@@ -145,6 +166,7 @@ public class PostProcessorExcelController {
 				0,
 				currentRowsNumber
 				);
+		GridPane.setHalignment(csvFileLabel, HPos.LEFT);
 		
 		TextField csvFileTextField = new TextField();
 		csvFileTextField.setAlignment(Pos.TOP_LEFT);
@@ -153,6 +175,7 @@ public class PostProcessorExcelController {
 				1,
 				currentRowsNumber
 				);
+		GridPane.setHalignment(csvFileTextField, HPos.LEFT);
 		
 		Button choiceButton = new Button("...");
 		choiceButton.setAlignment(Pos.TOP_LEFT);
@@ -161,6 +184,15 @@ public class PostProcessorExcelController {
 				2,
 				currentRowsNumber
 				);
+		GridPane.setHalignment(choiceButton, HPos.LEFT);
+		
+		choiceButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				chooseCSVFile(csvFileTextField);
+			}
+		});
 		
 		CheckBox holdOnCheckBox = new CheckBox("Hold on");
 		holdOnCheckBox.setAlignment(Pos.TOP_LEFT);
@@ -169,28 +201,42 @@ public class PostProcessorExcelController {
 				3,
 				currentRowsNumber
 				);
+		GridPane.setHalignment(holdOnCheckBox, HPos.LEFT);
+		PostProcessorExcelMain.getCsvHoldOnList().add(holdOnlistSize, Boolean.FALSE);
 		
-		ColumnConstraints constraint1 = new ColumnConstraints();
-		constraint1.setPercentWidth(0);
-		ColumnConstraints constraint2 = new ColumnConstraints();
-		constraint2.setPercentWidth(0);
-		ColumnConstraints constraint3 = new ColumnConstraints();
-		constraint3.setPercentWidth(0);
-		ColumnConstraints constraint4 = new ColumnConstraints();
-		constraint4.setPercentWidth(0);
-		
-		PostProcessorExcelMain.getCsvFileGridPane().getColumnConstraints().addAll(
-				constraint1,
-				constraint2,
-				constraint3,
-				constraint4
-				);
+		holdOnCheckBox.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				
+				Boolean choice = Boolean.FALSE;
+
+				if(holdOnCheckBox.isSelected()){
+					choice = Boolean.TRUE;
+				}
+
+				if(!PostProcessorExcelMain.getCsvHoldOnList().isEmpty()
+						&& PostProcessorExcelMain.getCsvHoldOnList().size() <= holdOnlistSize
+								){
+					PostProcessorExcelMain.getCsvHoldOnList().add(holdOnlistSize, choice);
+				}
+				else if(!PostProcessorExcelMain.getCsvHoldOnList().isEmpty()
+						&& PostProcessorExcelMain.getCsvHoldOnList().size() > holdOnlistSize
+								){
+					PostProcessorExcelMain.getCsvHoldOnList().remove(holdOnlistSize);
+					PostProcessorExcelMain.getCsvHoldOnList().add(holdOnlistSize, choice);
+				}
+			}
+			
+		});
 		
 	}
 	
 	@FXML
 	public void loadInputFile(){
 
+		// TODO : BIND THE RUN BUTTON TO THE CSV FILE TEXTFIELDS !!
+		
 		JPADXmlReader reader = new JPADXmlReader(PostProcessorExcelMain.getInputFile().getAbsolutePath());
 
 		PostProcessorExcelMain.setCsvFileList(MyXMLReaderUtils
@@ -244,5 +290,15 @@ public class PostProcessorExcelController {
 //			}
 //		}
 	}
+	
+	@FXML
+	public void zoomConsole() {
+		PostProcessorExcelMain.getCoreSplitPane().setDividerPositions(0.5);
+	};
+	
+	@FXML
+	public void zoomWorkAera() {
+		PostProcessorExcelMain.getCoreSplitPane().setDividerPositions(0.8);
+	};
 	
 }
