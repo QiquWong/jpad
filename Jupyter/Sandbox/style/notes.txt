@@ -1,0 +1,4 @@
+See this for Jupyter themes:
+https://github.com/dunovank/jupyter-themes
+
+https://media.readthedocs.org/pdf/jupyter-notebook/latest/jupyter-notebook.pdf
