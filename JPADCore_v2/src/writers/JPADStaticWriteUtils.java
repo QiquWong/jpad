@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +45,9 @@ import com.google.common.collect.Multimap;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
@@ -1254,6 +1257,41 @@ public class JPADStaticWriteUtils {
 		}
 
 		writeDocumentToXml(doc, filenameWithPathAndExt);
+	}
+
+	public static void saveAircraftToXML(Aircraft theAircraft, String outputFolderPath, String aircraftDirName) {
+		
+		//=======================================================================
+		// Create subfolder structure
+		
+		// main out folder
+		String aircraftDirPath = 
+				JPADStaticWriteUtils.createNewFolder(outputFolderPath + File.separator 
+						+ aircraftDirName + File.separator);
+		
+		// subfolders
+		List<String> subfolders = new ArrayList<String>(
+			    Arrays.asList(
+			    		"cabin_configurations",
+			    		"engines",
+			    		"fuselages",
+			    		"landing_gears",
+			    		"lifting_surfaces", 
+			    		"nacelles", 
+			    		"systems"
+			    		)
+			    );
+		
+		subfolders.stream()
+			.forEach(sf -> JPADStaticWriteUtils.createNewFolder(aircraftDirPath + File.separator 
+						+ sf + File.separator) 
+			);
+
+		//=======================================================================
+		// create the main aircraft.xml
+		
+		
+		
 	}
 
 	//		System.out.println("-----------" + MyReadUtils.getElementXpath(father) + "/" + description);
