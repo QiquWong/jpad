@@ -19,10 +19,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Quantity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -47,9 +52,10 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
-import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
-import standaloneutils.MyArrayUtils;
+import javaslang.Tuple;
+import javaslang.Tuple4;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.customdata.MyArray;
 
@@ -1289,11 +1295,203 @@ public class JPADStaticWriteUtils {
 
 		//=======================================================================
 		// create the main aircraft.xml
+
+		// tuple: doc, file-name, component-type
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder;
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+
+			List<
+			Tuple4<Document, String, String, ComponentEnum>
+			> listDocNameType = new ArrayList<>();
+
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator,
+							"aircraft.xml", 
+							ComponentEnum.AIRCRAFT
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator,
+							"wing.xml", 
+							ComponentEnum.WING
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator, 
+							"htail.xml", 
+							ComponentEnum.HORIZONTAL_TAIL
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator,
+							"vtail.xml", 
+							ComponentEnum.VERTICAL_TAIL
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator, 
+							"canard.xml", 
+							ComponentEnum.CANARD
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "fuselages" + File.separator, 
+							"fuselage.xml", 
+							ComponentEnum.FUSELAGE
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "nacelles" + File.separator,
+							"nacelle.xml", 
+							ComponentEnum.NACELLE
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "engines" + File.separator, 
+							"engine.xml", 
+							ComponentEnum.ENGINE
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "landing_gears" + File.separator, 
+							"landing_gear.xml", 
+							ComponentEnum.LANDING_GEAR
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "systems" + File.separator, 
+							"system.xml", 
+							ComponentEnum.SYSTEMS
+							)
+					);
+			listDocNameType.add(
+					Tuple.of(
+							docBuilder.newDocument(),
+							aircraftDirPath + File.separator + "cabin_configurations" + File.separator, 
+							"cabin_configuration.xml", 
+							ComponentEnum.CABIN_CONFIGURATION
+							)
+					);
+
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
+		// TODO: manage airfoils
 		
 	}
 
+	/*******************************************************************************************
+	 * This method is in charge of writing all input data collected inside the object of the 
+	 * OutputTree class on a XML file.
+	 * 
+	 * @author Vittorio Trifari
+	 * 
+	 * @param output object of the OutputTree class which holds all output data
+	 */
+	public static void writeToXML(
+			Aircraft aircraft, List<Tuple4<Document, String, String, ComponentEnum>> listDocNameType ) {
+		
+//		listDocNameType.stream()
+//			.forEach(tpl ->  
+//				set tpl._1() = makeXmlTree(tpl._4())
+//				);
+
+		listDocNameType.stream()
+			.forEach(tpl -> 
+				JPADStaticWriteUtils.writeDocumentToXml(
+						tpl._1(), 
+						tpl._2()+tpl._3())
+					);
+		
+	}
+	
+	/*******************************************************************************************
+	 * This method defines the XML tree structure and fill it with results form the OutputTree
+	 * object
+	 * 
+	 * @author Vittorio Trifari
+	 */
+	private static Document makeXmlTree(ComponentEnum fileType) {
+		Document doc = null;
+		
+		switch (fileType) {
+		case AIRCRAFT:
+			doc = makeXmlTreeAircraft();
+			break;
+		case WING:
+			// TODO
+			break;
+		case HORIZONTAL_TAIL:
+			// TODO
+			break;
+		case VERTICAL_TAIL:
+			// TODO
+			break;
+		case CANARD:
+			// TODO
+			break;
+		case FUSELAGE:
+			// TODO
+			break;
+		case NACELLE:
+			// TODO
+			break;
+		case ENGINE:
+			// TODO
+			break;
+		case LANDING_GEAR:
+			// TODO
+			break;
+		case SYSTEMS:
+			// TODO
+			break;
+		default:
+			break;
+		}
+		
+		return doc;		
+	}
+
+	private static Document makeXmlTreeAircraft() {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		Document doc = null;
+		try {
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			doc = docBuilder.newDocument();
+			// TODO: populate the doc (HighLiftDeviceCalc executable)
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		return doc;
+	}
+	
+	
+	
 	//		System.out.println("-----------" + MyReadUtils.getElementXpath(father) + "/" + description);
 
 	//		serializeObject(valueToWrite, "test");
