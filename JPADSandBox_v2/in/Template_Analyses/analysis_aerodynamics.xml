@@ -228,7 +228,7 @@
 			</nacelles_analyses>
 			<aircraft_analyses>
 				<downwash perform="TRUE" downwash_gradient="CONSTANT" method="SLINGERLAND"/>
-				<dynamic_pressure_ratio perform="TRUE" method="SEMPIEMPIRICAL"></dynamic_pressure_ratio>
+				<dynamic_pressure_ratio perform="TRUE" method="SEMPIEMPIRICAL"/>
 				<lift_curve perform="TRUE"/>
 				<drag_polar perform="TRUE"/>
 				<moment_curve perform="TRUE"/>
@@ -238,6 +238,7 @@
 				<longitudinal_static_stability perform="TRUE"/>
 				<lateral_static_stability perform="TRUE"/>
 				<directional_static_stability perform="TRUE"/>
+				<dynamic_stability perform="TRUE"/>
 			</aircraft_analyses>
         </aerodynamics_and_stability>
     </analysis>
