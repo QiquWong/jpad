@@ -1,9 +1,8 @@
 package sandbox2.vt.postprocessor;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -12,7 +11,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import org.apache.xpath.operations.Bool;
+import org.apache.jasper.tagplugins.jstl.core.Out;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
@@ -35,6 +39,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.customdata.MyArray;
+import writers.JPADStaticWriteUtils;
 
 public class PostProcessorExcelController {
 
@@ -136,6 +142,7 @@ public class PostProcessorExcelController {
 		PostProcessorExcelMain.getAddCSVButton().setDisable(true);
 		
 		PostProcessorExcelMain.getCsvFileGridPane().getChildren().clear();
+		PostProcessorExcelMain.getConsoleTextArea().clear();
 	}
 	
 	@FXML
@@ -149,7 +156,7 @@ public class PostProcessorExcelController {
 		PostProcessorExcelMain.getAddCSVButton().setDisable(false);
 		
 		PostProcessorExcelMain.getCsvFileGridPane().getChildren().clear();
-		
+		PostProcessorExcelMain.getConsoleTextArea().clear();
 	}
 	
 	@FXML
@@ -235,6 +242,52 @@ public class PostProcessorExcelController {
 			
 		});
 		
+		//.............................................................................
+		// BINDING THE RUN BUTTON TO THE CSV FILE TEXTFIELDS ...
+		List<TextField> textFields = PostProcessorExcelMain.getCsvFileGridPane().getChildren()
+				.stream()
+				.filter(x -> GridPane.getColumnIndex(x) == 1)
+				.map(x -> (TextField) x)
+				.collect(Collectors.toList());
+		
+		textFields
+			.stream()
+				.forEach(x -> PostProcessorExcelMain.getRunButton().disableProperty().bind(
+							Bindings.isEmpty(x.textProperty())
+							)
+						);
+		
+		//.............................................................................
+		// CHECK IF ALL THE SELECTED FILES ARE .csv ...
+        final Tooltip warning = new Tooltip("WARNING : Some selected file are not a CSV !!");
+        PostProcessorExcelMain.getRunButton().setOnMouseEntered(new EventHandler<MouseEvent>() {
+        	
+        	@Override
+        	public void handle(MouseEvent event) {
+        		Point2D p = PostProcessorExcelMain.getRunButton()
+        				.localToScreen(
+        						-2.5*PostProcessorExcelMain.getRunButton().getLayoutBounds().getMaxX(),
+        						1.2*PostProcessorExcelMain.getRunButton().getLayoutBounds().getMaxY()
+        						);
+        		
+        		if(!PostProcessorExcelMain.getCsvFileGridPane().getChildren()
+        				.stream()
+        					.filter(x -> GridPane.getColumnIndex(x) == 1)
+        						.map(x -> (TextField) x)
+        							.allMatch(x -> x.getText().endsWith(".csv"))
+        				) {
+        			warning.show(PostProcessorExcelMain.getRunButton(), p.getX(), p.getY());
+        		}
+        	}
+        });
+        PostProcessorExcelMain.getRunButton().setOnMouseExited(new EventHandler<MouseEvent>() {
+        	
+        	@Override
+        	public void handle(MouseEvent event) {
+        		warning.hide();
+        	}
+        });
+		
 	}
 	
 	@FXML
@@ -267,27 +320,34 @@ public class PostProcessorExcelController {
 							PostProcessorExcelMain.getCsvFileList().stream().forEach(y -> x.setText(y));
 						});
 		
-		
-		PostProcessorExcelMain.getCsvHoldOnList()
-			.stream()
-				.forEach(y -> {
-					PostProcessorExcelMain.getCsvFileGridPane().getChildren()
-						.stream()
-							.filter(x -> GridPane.getColumnIndex(x) == 3)
-								.map(x -> (CheckBox) x)
-									.forEach(x -> x.setSelected(y));
-					});
-										
+		PostProcessorExcelMain.getCsvFileGridPane();
+		PostProcessorExcelMain.getCsvFileGridPane().getChildren()
+		.stream()
+			.filter(x -> GridPane.getColumnIndex(x) == 3)
+				.map(x -> (CheckBox) x)
+					.forEach(x -> x.setSelected(
+							PostProcessorExcelMain.getCsvHoldOnList().get(
+									GridPane.getRowIndex(x)
+									)
+							));
 		
     }
 
 	@FXML
 	public void run() {
 		
-		// TODO : BIND THE RUN BUTTON TO THE CSV FILE TEXTFIELDS !!
+		/******************************************************
+		 *  TODO:
+		 *  - FOR EACH .CSV READ EVERYTHING BUT THE FIRST LINE
+		 *  - CREATE EXCEL WITH THESE DATA
+		 *  - SEE HOW TO BUILD THE CHART IN THE EXCEL
+		 * 
+		 */
+		
+		PostProcessorExcelMain.getConsoleTextArea().clear();
 		
 		//.............................................................................
-		// Reading the CSV ...
+		// Reading the CSV files ...
 		PostProcessorExcelMain.getCsvFileList().stream().forEach(x -> {
 			Scanner scanner = null;
 			try {
@@ -304,12 +364,12 @@ public class PostProcessorExcelController {
 		
 	}
 	
-    private static List<String> parseLine(String cvsLine) {
+    private List<String> parseLine(String cvsLine) {
         return parseLine(cvsLine, DEFAULT_SEPARATOR, DEFAULT_QUOTE);
     }
 
     @SuppressWarnings("null")
-	private static List<String> parseLine(String cvsLine, char separators, char customQuote) {
+	private List<String> parseLine(String cvsLine, char separators, char customQuote) {
 
         List<String> result = new ArrayList<>();
 
@@ -394,6 +454,62 @@ public class PostProcessorExcelController {
 		
 	}
 	
+	public void createXls(List<String> csvFilenameWithPathAndExtList) throws InvalidFormatException, IOException {		
+		
+		Workbook wb;
+		File outputFile = new File("Output.xlsx");
+		if (outputFile.exists()) { 
+		   outputFile.delete();		
+		   System.out.println("Deleting the old .xls file ...");
+		} 
+		
+		if (outputFile.getName().endsWith(".xls")) {
+			wb = new HSSFWorkbook();
+		}
+		else if (outputFile.getName().endsWith(".xlsx")) {
+			wb = new XSSFWorkbook();
+		}
+		else {
+			throw new IllegalArgumentException("I don't know how to create that kind of new file");
+		}
+		
+		//---------------------------------------------------------------------------------------
+		// DATA SHEETS:
+		Sheet sheetAcceleration = wb.createSheet("Acceleration");
+		
+		List<String> xlsAccelerationDescription = new ArrayList<String>();
+		xlsAccelerationDescription.add("Time");
+		xlsAccelerationDescription.add("Space");
+		xlsAccelerationDescription.add("Acceleration");
+		
+		MyArray accelerationArray = new MyArray();
+//		accelerationArray.setAmountList(output.getAcceleration());
+		
+		List<MyArray> xlsAccelerationList = new ArrayList<MyArray>();
+//		xlsAccelerationList.add(timeArray);
+//		xlsAccelerationList.add(groundDistenceArray);
+		xlsAccelerationList.add(accelerationArray);
+		
+		List<String> xlsAccelerationUnit = new ArrayList<String>();
+		xlsAccelerationUnit.add("s");
+		xlsAccelerationUnit.add("m");
+		xlsAccelerationUnit.add("m/(s^2)");
+		
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheetAcceleration,
+				xlsAccelerationDescription,
+				xlsAccelerationList,
+				xlsAccelerationUnit
+				);
+		
+		//---------------------------------------------------------------------------------------
+		// OUTPUT FILE CREATION:
+		FileOutputStream fileOut = new FileOutputStream("Output.xlsx");
+		wb.write(fileOut);
+		fileOut.close();
+		System.out.println("Your excel file has been generated!");
+		
+	}
 	
 	@FXML
 	public void zoomConsole() {

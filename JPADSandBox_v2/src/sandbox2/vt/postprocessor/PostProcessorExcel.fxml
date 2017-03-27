@@ -68,7 +68,7 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" onMouseClicked="#zoomConsole" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <TextArea disable="true" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TextArea editable="false" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children></AnchorPane>
               </items>
             </SplitPane>
@@ -93,7 +93,7 @@
    <bottom>
       <ToolBar id="runAndStatusToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-          <Button alignment="CENTER" disable="true" mnemonicParsing="false" text="Run!" />
+          <Button id="runButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#run" text="Run!" />
             <ProgressBar prefHeight="23.0" prefWidth="627.0" progress="0.0" />
             <Label />
         </items>

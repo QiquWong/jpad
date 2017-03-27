@@ -2,11 +2,14 @@ package sandbox2.vt.postprocessor;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import configuration.MyConfiguration;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -49,6 +52,7 @@ public class PostProcessorExcelMain extends Application {
 	private static Button inputFilePathChooser;
 	private static Button inputFileLoadButton;
 	private static Button addCSVButton;
+	private static Button runButton;
 	
 	/////////////////////////////////////////////////////////
 	// START:
@@ -68,6 +72,7 @@ public class PostProcessorExcelMain extends Application {
 	/////////////////////////////////////////////////////////
 	// METHODS:
 	private void showHome() throws IOException{
+			
 		FXMLLoader loader = new FXMLLoader();  //Loads an object hierarchy from an XML document
 		loader.setLocation(PostProcessorExcelMain.class.getResource("PostProcessorExcel.fxml"));
 		mainLayout = loader.load();
@@ -82,6 +87,9 @@ public class PostProcessorExcelMain extends Application {
 				);
 		setRunAndStatusToolbar(
 				(ToolBar) getMainLayout().lookup("#runAndStatusToolbar")
+				);
+		setRunButton(
+				(Button) getRunAndStatusToolbar().getItems().get(0)
 				);
 		setCoreToolBar(
 				(ToolBar) getCoreBorderPane().lookup("#coreToolbar")
@@ -121,6 +129,16 @@ public class PostProcessorExcelMain extends Application {
 				);
 		
 		//....................................................
+		// Redirecting console output to TextArea ...
+		OutputStream out = new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				Platform.runLater(() -> getConsoleTextArea().appendText(String.valueOf((char) b)));
+			}
+		};
+		System.setOut(new PrintStream(out, true));
+		System.setErr(new PrintStream(out, true));
+		
 		Scene scene = new Scene(mainLayout);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -293,6 +311,14 @@ public class PostProcessorExcelMain extends Application {
 
 	public static void setSplitPaneLowerAnchorPane(AnchorPane splitPaneLowerAnchorPane) {
 		PostProcessorExcelMain.splitPaneLowerAnchorPane = splitPaneLowerAnchorPane;
+	}
+
+	public static Button getRunButton() {
+		return runButton;
+	}
+
+	public static void setRunButton(Button runButton) {
+		PostProcessorExcelMain.runButton = runButton;
 	}
 
 }
