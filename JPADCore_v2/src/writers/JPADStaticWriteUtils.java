@@ -1265,7 +1265,11 @@ public class JPADStaticWriteUtils {
 		writeDocumentToXml(doc, filenameWithPathAndExt);
 	}
 
-	public static void saveAircraftToXML(Aircraft theAircraft, String outputFolderPath, String aircraftDirName) {
+	public static void saveAircraftToXML(
+			Aircraft theAircraft, 
+			String outputFolderPath, 
+			String aircraftDirName,
+			AircraftSaveDirectives aircraftSaveDirectives) {
 		
 		//=======================================================================
 		// Create subfolder structure
@@ -1275,7 +1279,7 @@ public class JPADStaticWriteUtils {
 				JPADStaticWriteUtils.createNewFolder(outputFolderPath + File.separator 
 						+ aircraftDirName + File.separator);
 		
-		// subfolders
+		// subfolders names
 		List<String> subfolders = new ArrayList<String>(
 			    Arrays.asList(
 			    		"cabin_configurations",
@@ -1287,7 +1291,7 @@ public class JPADStaticWriteUtils {
 			    		"systems"
 			    		)
 			    );
-		
+		// create subfolders (if non existent)
 		subfolders.stream()
 			.forEach(sf -> JPADStaticWriteUtils.createNewFolder(aircraftDirPath + File.separator 
 						+ sf + File.separator) 
@@ -1299,18 +1303,21 @@ public class JPADStaticWriteUtils {
 		// tuple: doc, file-name, component-type
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
+
+		List<
+		Tuple4<Document, String, String, ComponentEnum>
+		> listDocNameType = new ArrayList<>();
+		
+		// populate the tuple
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
 
-			List<
-			Tuple4<Document, String, String, ComponentEnum>
-			> listDocNameType = new ArrayList<>();
 
 			listDocNameType.add(
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator,
-							"aircraft.xml", 
+							aircraftSaveDirectives.getAircraftFileName(), 
 							ComponentEnum.AIRCRAFT
 							)
 					);
@@ -1318,7 +1325,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator,
-							"wing.xml", 
+							aircraftSaveDirectives.getWingFileName(), 
 							ComponentEnum.WING
 							)
 					);
@@ -1326,7 +1333,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator, 
-							"htail.xml", 
+							aircraftSaveDirectives.getHTailFileName(), 
 							ComponentEnum.HORIZONTAL_TAIL
 							)
 					);
@@ -1334,7 +1341,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator,
-							"vtail.xml", 
+							aircraftSaveDirectives.getVTailFileName(), 
 							ComponentEnum.VERTICAL_TAIL
 							)
 					);
@@ -1342,7 +1349,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "lifting_surfaces" + File.separator, 
-							"canard.xml", 
+							aircraftSaveDirectives.getCanardFileName(), 
 							ComponentEnum.CANARD
 							)
 					);
@@ -1350,7 +1357,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "fuselages" + File.separator, 
-							"fuselage.xml", 
+							aircraftSaveDirectives.getFuselageFileName(), 
 							ComponentEnum.FUSELAGE
 							)
 					);
@@ -1358,7 +1365,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "nacelles" + File.separator,
-							"nacelle.xml", 
+							aircraftSaveDirectives.getNacelleFileName(), 
 							ComponentEnum.NACELLE
 							)
 					);
@@ -1366,7 +1373,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "engines" + File.separator, 
-							"engine.xml", 
+							aircraftSaveDirectives.getEngineFileName(), 
 							ComponentEnum.ENGINE
 							)
 					);
@@ -1374,7 +1381,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "landing_gears" + File.separator, 
-							"landing_gear.xml", 
+							aircraftSaveDirectives.getLandingGearFileName(), 
 							ComponentEnum.LANDING_GEAR
 							)
 					);
@@ -1382,7 +1389,7 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "systems" + File.separator, 
-							"system.xml", 
+							aircraftSaveDirectives.getSystemFileName(), 
 							ComponentEnum.SYSTEMS
 							)
 					);
@@ -1390,17 +1397,20 @@ public class JPADStaticWriteUtils {
 					Tuple.of(
 							docBuilder.newDocument(),
 							aircraftDirPath + File.separator + "cabin_configurations" + File.separator, 
-							"cabin_configuration.xml", 
+							aircraftSaveDirectives.getCabinConfigurationFileName(), 
 							ComponentEnum.CABIN_CONFIGURATION
 							)
 					);
 
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		// TODO: manage airfoils
+		
+		// write the aircraft according to the above directives
+		writeToXML(theAircraft, listDocNameType);
+		
 		
 	}
 
@@ -1415,18 +1425,19 @@ public class JPADStaticWriteUtils {
 	public static void writeToXML(
 			Aircraft aircraft, List<Tuple4<Document, String, String, ComponentEnum>> listDocNameType ) {
 		
-//		listDocNameType.stream()
-//			.forEach(tpl ->  
-//				set tpl._1() = makeXmlTree(tpl._4())
-//				);
-
+		// populate all the docs
+		listDocNameType.stream()
+			.forEach(tpl -> makeXmlTree(tpl)
+				);
+		
+		// write all the docs
 		listDocNameType.stream()
 			.forEach(tpl -> 
 				JPADStaticWriteUtils.writeDocumentToXml(
 						tpl._1(), 
 						tpl._2()+tpl._3())
 					);
-		
+
 	}
 	
 	/*******************************************************************************************
@@ -1435,12 +1446,10 @@ public class JPADStaticWriteUtils {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	private static Document makeXmlTree(ComponentEnum fileType) {
-		Document doc = null;
-		
-		switch (fileType) {
+	private static void makeXmlTree(Tuple4<Document, String, String, ComponentEnum> docNameType) {
+		switch (docNameType._4()) {
 		case AIRCRAFT:
-			doc = makeXmlTreeAircraft();
+			makeXmlTreeAircraft(docNameType._1());
 			break;
 		case WING:
 			// TODO
@@ -1472,22 +1481,16 @@ public class JPADStaticWriteUtils {
 		default:
 			break;
 		}
-		
-		return doc;		
 	}
 
-	private static Document makeXmlTreeAircraft() {
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		Document doc = null;
-		try {
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-			doc = docBuilder.newDocument();
-			// TODO: populate the doc (HighLiftDeviceCalc executable)
-			
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-		return doc;
+	private static void makeXmlTreeAircraft(Document doc) {
+		// TODO: populate the content of aircraft
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+		org.w3c.dom.Element aircraftElement = doc.createElement("aircraft");
+		rootElement.appendChild(aircraftElement);
+
+		
 	}
 	
 	

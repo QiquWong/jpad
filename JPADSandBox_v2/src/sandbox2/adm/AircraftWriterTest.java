@@ -26,6 +26,7 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
+import writers.AircraftSaveDirectives;
 import writers.JPADStaticWriteUtils;
 
 class AircraftWriterArguments {
@@ -232,8 +233,17 @@ public class AircraftWriterTest {
 			// TODO
 			// theAircraft.update();
 			
-			// 3. write out the new
-			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, outputFolderPath, "New_Aircraft");
+			// 3. write out the new aircraft
+			
+			// 3a. file name
+			AircraftSaveDirectives asd = new AircraftSaveDirectives
+					.Builder("_1")
+					.setAircraftFileName("aircraft_1a.xml")
+					.build();
+			
+			System.out.println(asd);
+			
+			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, outputFolderPath, "New_Aircraft", asd);
 			
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
