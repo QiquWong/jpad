@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
@@ -23,15 +25,19 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javaslang.Tuple2;
+import writers.JPADStaticWriteUtils;
 
 public class PostProcessorExcelMain extends Application {
 
 	/////////////////////////////////////////////////////////
 	// VARIABLE DECLARATION:
+	private static String outputFileNameWithPathAndExt;
 	private static File inputFile;
 	
 	private static List<String> csvFileList = new ArrayList<>();
 	private static List<Boolean> csvHoldOnList = new ArrayList<>();
+	private static List<Tuple2<Boolean, List<List<String>>>> csvFileInfo = new ArrayList<>();
 	
 	private static Stage primaryStage;
 	
@@ -52,7 +58,10 @@ public class PostProcessorExcelMain extends Application {
 	private static Button inputFilePathChooser;
 	private static Button inputFileLoadButton;
 	private static Button addCSVButton;
+	private static Button removeCSVButton;
 	private static Button runButton;
+	private static Label resultLabel;
+	private static ProgressBar progressBar;
 	
 	/////////////////////////////////////////////////////////
 	// START:
@@ -66,6 +75,13 @@ public class PostProcessorExcelMain extends Application {
 		showHome();
 		
 		MyConfiguration.initWorkingDirectoryTree();
+		
+		String outputFolderPath = JPADStaticWriteUtils.createNewFolder(
+				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) 
+				+ "JPADPostProcessorExcel"
+				+ File.separator
+				);
+		outputFileNameWithPathAndExt = outputFolderPath + "PostProcessorExcel_Output";
 		
 	}
 
@@ -90,6 +106,12 @@ public class PostProcessorExcelMain extends Application {
 				);
 		setRunButton(
 				(Button) getRunAndStatusToolbar().getItems().get(0)
+				);
+		setProgressBar(
+				(ProgressBar) getRunAndStatusToolbar().getItems().get(1)
+				);
+		setResultLabel(
+				(Label) getRunAndStatusToolbar().getItems().get(2)
 				);
 		setCoreToolBar(
 				(ToolBar) getCoreBorderPane().lookup("#coreToolbar")
@@ -126,6 +148,9 @@ public class PostProcessorExcelMain extends Application {
 				);
 		setAddCSVButton(
 				(Button) getCoreToolBar().getItems().get(4)
+				);
+		setRemoveCSVButton(
+				(Button) getCoreToolBar().getItems().get(5)
 				);
 		
 		//....................................................
@@ -319,6 +344,42 @@ public class PostProcessorExcelMain extends Application {
 
 	public static void setRunButton(Button runButton) {
 		PostProcessorExcelMain.runButton = runButton;
+	}
+
+	public static List<Tuple2<Boolean, List<List<String>>>> getCsvFileInfo() {
+		return csvFileInfo;
+	}
+
+	public static void setCsvFileInfo(List<Tuple2<Boolean, List<List<String>>>> csvFileInfo) {
+		PostProcessorExcelMain.csvFileInfo = csvFileInfo;
+	}
+
+	public static String getOutputFileNameWithPathAndExt() {
+		return outputFileNameWithPathAndExt;
+	}
+
+	public static Button getRemoveCSVButton() {
+		return removeCSVButton;
+	}
+
+	public static void setRemoveCSVButton(Button removeCSVButton) {
+		PostProcessorExcelMain.removeCSVButton = removeCSVButton;
+	}
+
+	public static ProgressBar getProgressBar() {
+		return progressBar;
+	}
+
+	public static void setProgressBar(ProgressBar progressBar) {
+		PostProcessorExcelMain.progressBar = progressBar;
+	}
+
+	public static Label getResultLabel() {
+		return resultLabel;
+	}
+
+	public static void setResultLabel(Label resultLabel) {
+		PostProcessorExcelMain.resultLabel = resultLabel;
 	}
 
 }

@@ -1,19 +1,19 @@
 package sandbox2.vt.postprocessor;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import org.apache.jasper.tagplugins.jstl.core.Out;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -37,15 +37,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javaslang.Tuple;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 public class PostProcessorExcelController {
 
-    private static final char DEFAULT_SEPARATOR = ',';
-    private static final char DEFAULT_QUOTE = '"';
+    private static final String DEFAULT_SEPARATOR = ",";
 	
 	private static boolean isPostProcessorInputFile(String pathToAircraftXML) {
 
@@ -140,9 +141,15 @@ public class PostProcessorExcelController {
 		PostProcessorExcelMain.getInputFilePathChooser().setDisable(false);
 		
 		PostProcessorExcelMain.getAddCSVButton().setDisable(true);
+		PostProcessorExcelMain.getRemoveCSVButton().disableProperty().bind(
+				Bindings.isEmpty(PostProcessorExcelMain.getCsvFileGridPane().getChildren())
+				);
 		
 		PostProcessorExcelMain.getCsvFileGridPane().getChildren().clear();
 		PostProcessorExcelMain.getConsoleTextArea().clear();
+		PostProcessorExcelMain.getProgressBar().setProgress(0.0);
+		PostProcessorExcelMain.getResultLabel().setText("");
+		
 	}
 	
 	@FXML
@@ -154,6 +161,9 @@ public class PostProcessorExcelController {
 		PostProcessorExcelMain.getInputFilePathChooser().setDisable(true);
 		
 		PostProcessorExcelMain.getAddCSVButton().setDisable(false);
+		PostProcessorExcelMain.getRemoveCSVButton().disableProperty().bind(
+				Bindings.isEmpty(PostProcessorExcelMain.getCsvFileGridPane().getChildren())
+				);
 		
 		PostProcessorExcelMain.getCsvFileGridPane().getChildren().clear();
 		PostProcessorExcelMain.getConsoleTextArea().clear();
@@ -214,6 +224,7 @@ public class PostProcessorExcelController {
 				currentRowsNumber
 				);
 		GridPane.setHalignment(holdOnCheckBox, HPos.LEFT);
+		
 		PostProcessorExcelMain.getCsvHoldOnList().add(holdOnlistSize, Boolean.FALSE);
 		
 		holdOnCheckBox.setOnAction(new EventHandler<ActionEvent>() {
@@ -291,6 +302,41 @@ public class PostProcessorExcelController {
 	}
 	
 	@FXML
+	public void removeLine() {
+		
+		for(int i=0; i<4; i++) 
+			PostProcessorExcelMain.getCsvFileGridPane().getChildren().remove(
+					PostProcessorExcelMain.getCsvFileGridPane().getChildren().size()-1
+					);
+		
+		if(!PostProcessorExcelMain.getCsvFileList().isEmpty())
+			PostProcessorExcelMain.getCsvFileList().remove(
+					PostProcessorExcelMain.getCsvFileList().size()-1
+					);
+
+		if(!PostProcessorExcelMain.getCsvHoldOnList().isEmpty())
+			PostProcessorExcelMain.getCsvHoldOnList().remove(
+					PostProcessorExcelMain.getCsvHoldOnList().size()-1
+					);
+		
+		//.............................................................................
+		// BINDING THE RUN BUTTON TO THE CSV FILE TEXTFIELDS ...
+		List<TextField> textFields = PostProcessorExcelMain.getCsvFileGridPane().getChildren()
+				.stream()
+				.filter(x -> GridPane.getColumnIndex(x) == 1)
+				.map(x -> (TextField) x)
+				.collect(Collectors.toList());
+		
+		textFields
+			.stream()
+				.forEach(x -> PostProcessorExcelMain.getRunButton().disableProperty().bind(
+							Bindings.isEmpty(x.textProperty())
+							)
+						);
+		
+	}
+	
+	@FXML
 	public void loadInputFile(){
 		
 		JPADXmlReader reader = new JPADXmlReader(PostProcessorExcelMain.getInputFile().getAbsolutePath());
@@ -310,8 +356,13 @@ public class PostProcessorExcelController {
 				.collect(Collectors.toList())
 				); 
 
-		PostProcessorExcelMain.getCsvFileList().stream().forEach( x -> addInputLine());
-
+		PostProcessorExcelMain.getCsvFileList().stream().forEach( x -> {
+			addInputLine();
+			PostProcessorExcelMain.getCsvHoldOnList().remove(
+					PostProcessorExcelMain.getCsvHoldOnList().size()-1
+					);
+			});
+		
 		PostProcessorExcelMain.getCsvFileGridPane().getChildren()
 			.stream()
 				.filter(x -> GridPane.getColumnIndex(x) == 1)
@@ -331,133 +382,56 @@ public class PostProcessorExcelController {
 									)
 							));
 		
+		PostProcessorExcelMain.getAddCSVButton().setDisable(false);
+		PostProcessorExcelMain.getRemoveCSVButton().disableProperty().bind(
+				Bindings.isEmpty(PostProcessorExcelMain.getCsvFileGridPane().getChildren())
+				);
+		
     }
 
 	@FXML
-	public void run() {
+	public void run() throws IOException {
 		
 		/******************************************************
 		 *  TODO:
-		 *  - FOR EACH .CSV READ EVERYTHING BUT THE FIRST LINE
-		 *  - CREATE EXCEL WITH THESE DATA
 		 *  - SEE HOW TO BUILD THE CHART IN THE EXCEL
-		 * 
+		 *  - MANAGE THE PROGRESS BAR HERE
+		 *  - ADD REFRESH BUTTON AND INCREMENT FILE NAME TAG
+		 *  
 		 */
 		
 		PostProcessorExcelMain.getConsoleTextArea().clear();
 		
 		//.............................................................................
 		// Reading the CSV files ...
-		PostProcessorExcelMain.getCsvFileList().stream().forEach(x -> {
-			Scanner scanner = null;
+		PostProcessorExcelMain.getCsvFileList().stream().forEach( x -> { 
+			BufferedReader reader = null;
 			try {
-				scanner = new Scanner(new File(x));
+				reader = new BufferedReader(
+						new FileReader(new File(x))
+						);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-	        while (scanner.hasNext()) {
-	            List<String> line = parseLine(scanner.nextLine());
-	            System.out.println(line.get(0) + ", " + line.get(1));
-	        }
-	        scanner.close();	
+			PostProcessorExcelMain.getCsvFileInfo().add(
+					Tuple.of(
+							PostProcessorExcelMain.getCsvHoldOnList().get(PostProcessorExcelMain.getCsvFileList().indexOf(x)),
+							reader.lines()
+							.map(line -> line.trim())
+							.map(line -> Arrays.asList(line.split(DEFAULT_SEPARATOR)))
+							.collect(Collectors.toList())
+							)
+					);
+
+			System.out.println("File #" + (PostProcessorExcelMain.getCsvFileList().indexOf(x) + 1) + " succesfully read");
 		});
+
+		PostProcessorExcelMain.getProgressBar().setProgress(0.2);
 		
-	}
-	
-    private List<String> parseLine(String cvsLine) {
-        return parseLine(cvsLine, DEFAULT_SEPARATOR, DEFAULT_QUOTE);
-    }
-
-    @SuppressWarnings("null")
-	private List<String> parseLine(String cvsLine, char separators, char customQuote) {
-
-        List<String> result = new ArrayList<>();
-
-        //if empty, return!
-        if (cvsLine == null && cvsLine.isEmpty()) {
-            return result;
-        }
-
-        if (customQuote == ' ') {
-            customQuote = DEFAULT_QUOTE;
-        }
-
-        if (separators == ' ') {
-            separators = DEFAULT_SEPARATOR;
-        }
-
-        StringBuffer curVal = new StringBuffer();
-        boolean inQuotes = false;
-        boolean startCollectChar = false;
-        boolean doubleQuotesInColumn = false;
-
-        char[] chars = cvsLine.toCharArray();
-
-        for (char ch : chars) {
-
-            if (inQuotes) {
-                startCollectChar = true;
-                if (ch == customQuote) {
-                    inQuotes = false;
-                    doubleQuotesInColumn = false;
-                } else {
-
-                    //Fixed : allow "" in custom quote enclosed
-                    if (ch == '\"') {
-                        if (!doubleQuotesInColumn) {
-                            curVal.append(ch);
-                            doubleQuotesInColumn = true;
-                        }
-                    } else {
-                        curVal.append(ch);
-                    }
-
-                }
-            } else {
-                if (ch == customQuote) {
-
-                    inQuotes = true;
-
-                    //Fixed : allow "" in empty quote enclosed
-                    if (chars[0] != '"' && customQuote == '\"') {
-                        curVal.append('"');
-                    }
-
-                    //double quotes in column will hit this!
-                    if (startCollectChar) {
-                        curVal.append('"');
-                    }
-
-                } else if (ch == separators) {
-
-                    result.add(curVal.toString());
-
-                    curVal = new StringBuffer();
-                    startCollectChar = false;
-
-                } else if (ch == '\r') {
-                    //ignore LF characters
-                    continue;
-                } else if (ch == '\n') {
-                    //the end, break!
-                    break;
-                } else {
-                    curVal.append(ch);
-                }
-            }
-
-        }
-
-        result.add(curVal.toString());
-
-        return result;
-		
-	}
-	
-	public void createXls(List<String> csvFilenameWithPathAndExtList) throws InvalidFormatException, IOException {		
-		
+		//.............................................................................
+		// Creating the Excel files structure ...
 		Workbook wb;
-		File outputFile = new File("Output.xlsx");
+		File outputFile = new File(PostProcessorExcelMain.getOutputFileNameWithPathAndExt() + ".xlsx");
 		if (outputFile.exists()) { 
 		   outputFile.delete();		
 		   System.out.println("Deleting the old .xls file ...");
@@ -473,41 +447,115 @@ public class PostProcessorExcelController {
 			throw new IllegalArgumentException("I don't know how to create that kind of new file");
 		}
 		
-		//---------------------------------------------------------------------------------------
-		// DATA SHEETS:
-		Sheet sheetAcceleration = wb.createSheet("Acceleration");
+		PostProcessorExcelMain.getProgressBar().setProgress(0.4);
 		
-		List<String> xlsAccelerationDescription = new ArrayList<String>();
-		xlsAccelerationDescription.add("Time");
-		xlsAccelerationDescription.add("Space");
-		xlsAccelerationDescription.add("Acceleration");
+		//.............................................................................
+		// Managing file to hold on ...
+		List<List<List<String>>> csvHoldOnFileText = new ArrayList<>();
+		PostProcessorExcelMain.getCsvFileInfo()
+		.stream()
+			.filter(x -> x._1 == Boolean.TRUE)
+				.forEach(x -> csvHoldOnFileText.add(x._2));
 		
-		MyArray accelerationArray = new MyArray();
-//		accelerationArray.setAmountList(output.getAcceleration());
+		createXlsHoldOnSheet(wb, csvHoldOnFileText);
 		
-		List<MyArray> xlsAccelerationList = new ArrayList<MyArray>();
-//		xlsAccelerationList.add(timeArray);
-//		xlsAccelerationList.add(groundDistenceArray);
-		xlsAccelerationList.add(accelerationArray);
+		PostProcessorExcelMain.getProgressBar().setProgress(0.6);
 		
-		List<String> xlsAccelerationUnit = new ArrayList<String>();
-		xlsAccelerationUnit.add("s");
-		xlsAccelerationUnit.add("m");
-		xlsAccelerationUnit.add("m/(s^2)");
+		//.............................................................................
+		// Managing the remaining files ...
+		PostProcessorExcelMain.getCsvFileInfo()
+		.stream()
+			.filter(x -> x._1 == Boolean.FALSE)
+				.forEach(x -> createXlsSheet(wb, x._2));
 		
-		JPADStaticWriteUtils.writeAllArraysToXls(
-				sheetAcceleration,
-				xlsAccelerationDescription,
-				xlsAccelerationList,
-				xlsAccelerationUnit
-				);
+		PostProcessorExcelMain.getProgressBar().setProgress(0.8);
 		
-		//---------------------------------------------------------------------------------------
-		// OUTPUT FILE CREATION:
-		FileOutputStream fileOut = new FileOutputStream("Output.xlsx");
+		//.............................................................................
+		// Creating the output file ...
+		FileOutputStream fileOut = new FileOutputStream(PostProcessorExcelMain.getOutputFileNameWithPathAndExt() + ".xlsx");
 		wb.write(fileOut);
 		fileOut.close();
 		System.out.println("Your excel file has been generated!");
+		
+		PostProcessorExcelMain.getProgressBar().setProgress(1.0);
+		PostProcessorExcelMain.getResultLabel().setText("Done!");
+	}
+	
+	private void createXlsSheet(Workbook wb, List<List<String>> csvFileText) {
+		
+		Sheet sheet = wb.createSheet();
+		
+		List<String> xlsColumnDescription = new ArrayList<String>();
+		xlsColumnDescription.add(csvFileText.get(0).get(0));
+		xlsColumnDescription.add(csvFileText.get(0).get(1));
+		
+		List<MyArray> xlsDataList = new ArrayList<MyArray>();
+		xlsDataList.add(
+				new MyArray(
+						MyArrayUtils.convertListOfDoubleToDoubleArray(
+								csvFileText.stream()
+								.filter(x -> csvFileText.indexOf(x) > 0)
+								.map(x -> Double.valueOf(x.get(0)))
+								.collect(Collectors.toList())
+								)
+						)
+				);
+		xlsDataList.add(
+				new MyArray(
+						MyArrayUtils.convertListOfDoubleToDoubleArray(
+								csvFileText.stream()
+								.filter(x -> csvFileText.indexOf(x) > 0)
+								.map(x -> Double.valueOf(x.get(1)))
+								.collect(Collectors.toList())
+								)
+						)
+				);
+		
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheet,
+				xlsColumnDescription,
+				xlsDataList
+				);
+		
+	}
+	
+	private void createXlsHoldOnSheet(Workbook wb, List<List<List<String>>> csvFileTextList) {		
+		
+		Sheet sheet = wb.createSheet();
+		
+		List<String> xlsColumnDescription = new ArrayList<String>();
+		csvFileTextList.stream()
+			.forEach(x -> xlsColumnDescription.addAll(x.get(0)));
+		
+		List<MyArray> xlsDataList = new ArrayList<MyArray>();
+		csvFileTextList.stream().forEach(x -> {
+			xlsDataList.add(
+					new MyArray(
+							MyArrayUtils.convertListOfDoubleToDoubleArray(
+									x.stream()
+									.filter(s -> x.indexOf(s) > 0)
+									.map(s -> Double.valueOf(s.get(0)))
+									.collect(Collectors.toList())
+									)
+							)
+					);
+			xlsDataList.add(
+					new MyArray(
+							MyArrayUtils.convertListOfDoubleToDoubleArray(
+									x.stream()
+									.filter(s -> x.indexOf(s) > 0)
+									.map(s -> Double.valueOf(s.get(1)))
+									.collect(Collectors.toList())
+									)
+							)
+					);
+		});
+		
+		JPADStaticWriteUtils.writeAllArraysToXls(
+				sheet,
+				xlsColumnDescription,
+				xlsDataList
+				);
 		
 	}
 	

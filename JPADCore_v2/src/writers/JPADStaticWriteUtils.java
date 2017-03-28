@@ -1059,6 +1059,52 @@ public class JPADStaticWriteUtils {
 		}
 	}
 
+	/** 
+	 * Write arrays at the end of the xls
+	 * 
+	 * @param sheet 
+	 * @param xlsArraysDescription 
+	 * @param xlsArraysList 
+	 */
+	public static void writeAllArraysToXls(
+			Sheet sheet, 
+			List<String> _xlsArraysDescription, 
+			List<MyArray> xlsArraysList) {
+
+		if (xlsArraysList.size() != 0) {
+
+			int startingRow = sheet.getLastRowNum() + 1;
+			int currentRow = startingRow;
+
+			sheet.createRow(currentRow).createCell(0).setCellValue(" ");
+			currentRow++;
+
+			Cell cellTitle = sheet.createRow(currentRow).createCell(0);
+			cellTitle.setCellValue("Arrays");
+			cellTitle.setCellStyle(MyXLSUtils.styleTitlesFirstCol);
+			currentRow++;
+
+			Row descriptionRow = sheet.createRow(currentRow);
+			currentRow++;
+
+			descriptionRow.createCell(0).setCellValue("Description");
+
+			for (int k = 0; k < xlsArraysList.size(); k++) {
+
+				descriptionRow.createCell(k+1).setCellValue(_xlsArraysDescription.get(k).replace("_", " "));
+
+				for (int i=0; i < xlsArraysList.get(k).size(); i++) {
+
+					if (sheet.getRow(currentRow + i) != null) {
+						sheet.getRow(currentRow + i).createCell(k+1).setCellValue(xlsArraysList.get(k).get(i));
+					} else {
+						sheet.createRow(currentRow + i).createCell(k+1).setCellValue(xlsArraysList.get(k).get(i));
+					}
+				}
+			}
+		}
+	}
+	
 	public static String createNewFolder(String path) {
 		File folder = new File(path);
 		try{

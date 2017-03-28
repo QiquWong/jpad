@@ -27,7 +27,8 @@
                   <TextField id="inputFileTextField" disable="true" prefHeight="31.0" prefWidth="246.0" />
                   <Button id="inputFileChooser" disable="true" mnemonicParsing="false" onAction="#chooseXMLInputFile" text="..." />
                   <Button id="inputFileLoadButton" disable="true" mnemonicParsing="false" onAction="#loadInputFile" text="Load" />
-                  <Button id="addCSVButton" disable="true" mnemonicParsing="false" onAction="#addInputLine" text="Add CSV" translateX="240.0" />
+                  <Button id="addCSVButton" disable="true" mnemonicParsing="false" onAction="#addInputLine" text="Add CSV" translateX="130.0" />
+                  <Button id="removeCSVButton" disable="true" mnemonicParsing="false" onAction="#removeLine" text="Remove CSV" translateX="130.0" />
                </items>
             </ToolBar>
          </top>
@@ -66,9 +67,9 @@
                         </ScrollPane>
                      </children>
                   </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" onMouseClicked="#zoomConsole" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <TextArea editable="false" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TextArea editable="false" onMouseClicked="#zoomConsole" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children></AnchorPane>
               </items>
             </SplitPane>
@@ -94,8 +95,8 @@
       <ToolBar id="runAndStatusToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <Button id="runButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#run" text="Run!" />
-            <ProgressBar prefHeight="23.0" prefWidth="627.0" progress="0.0" />
-            <Label />
+            <ProgressBar id="progressBar" prefHeight="23.0" prefWidth="627.0" progress="0.0" />
+            <Label id="resultLabel" />
         </items>
       </ToolBar>
    </bottom>
