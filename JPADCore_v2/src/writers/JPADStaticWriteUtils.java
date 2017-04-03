@@ -12,13 +12,16 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -76,7 +79,9 @@ import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import javaslang.Tuple;
+import javaslang.Tuple2;
 import javaslang.Tuple4;
+import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.customdata.MyArray;
@@ -1571,7 +1576,7 @@ public class JPADStaticWriteUtils {
 		// TODO: manage airfoils
 		
 		// write the aircraft according to the above directives
-		writeToXML(theAircraft, listDocNameType);
+		writeToXML(theAircraft, listDocNameType, aircraftSaveDirectives);
 		
 		
 	}
@@ -1581,23 +1586,24 @@ public class JPADStaticWriteUtils {
 	 * OutputTree class on a XML file.
 	 * 
 	 * @author Vittorio Trifari
+	 * @param aircraftSaveDirectives 
 	 * 
 	 * @param output object of the OutputTree class which holds all output data
 	 */
 	public static void writeToXML(
-			Aircraft aircraft, List<Tuple4<Document, String, String, ComponentEnum>> listDocNameType ) {
+			Aircraft aircraft, List<Tuple4<Document, String, String, ComponentEnum>> listDocNameType, AircraftSaveDirectives aircraftSaveDirectives ) {
 		
 		// populate all the docs
 		listDocNameType.stream()
-			.forEach(tpl -> makeXmlTree(tpl)
+			.forEach(tpl -> makeXmlTree(aircraft, tpl, aircraftSaveDirectives)
 				);
 		
 		// write all the docs
 		listDocNameType.stream()
 			.forEach(tpl -> 
 				JPADStaticWriteUtils.writeDocumentToXml(
-						tpl._1(), 
-						tpl._2()+tpl._3())
+						tpl._1(), // doc
+						tpl._2()+tpl._3()) // file path
 					);
 
 	}
@@ -1607,11 +1613,12 @@ public class JPADStaticWriteUtils {
 	 * object
 	 * 
 	 * @author Vittorio Trifari
+	 * @param aircraftSaveDirectives 
 	 */
-	private static void makeXmlTree(Tuple4<Document, String, String, ComponentEnum> docNameType) {
+	private static void makeXmlTree(Aircraft aircraft, Tuple4<Document, String, String, ComponentEnum> docNameType, AircraftSaveDirectives aircraftSaveDirectives) {
 		switch (docNameType._4()) {
 		case AIRCRAFT:
-			makeXmlTreeAircraft(docNameType._1());
+			makeXmlTreeAircraft(aircraft, docNameType._1(), aircraftSaveDirectives);
 			break;
 		case WING:
 			// TODO
@@ -1645,32 +1652,117 @@ public class JPADStaticWriteUtils {
 		}
 	}
 
-	private static void makeXmlTreeAircraft(Document doc) {
+	private static void makeXmlTreeAircraft(Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives) {
 		// TODO: populate the content of aircraft
 		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
 		doc.appendChild(rootElement);
-		org.w3c.dom.Element aircraftElement = doc.createElement("aircraft");
-		rootElement.appendChild(aircraftElement);
+		
+		// aircraft
+//		org.w3c.dom.Element aircraftElement = doc.createElement("aircraft");
 
+		org.w3c.dom.Element aircraftElement = createXMLElementWithAttributes(doc, "aircraft", 
+				Tuple.of("id", aircraft.getId()),
+				Tuple.of("type", aircraft.getTypeVehicle().toString()),
+				Tuple.of("regulations", aircraft.getRegulations().toString())
+		);
+		rootElement.appendChild(aircraftElement);
+		
+		// global_data
+		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
+		aircraftElement.appendChild(globalDataElement);
+		// global_data - cabin_configuration
+		globalDataElement.appendChild(
+			createXMLElementWithAttributes(doc, "cabin_configuration", 
+					Tuple.of("file", aircraftSaveDirectives.getCabinConfigurationFileName())
+			)
+		);
+		
+		// lifting_surfaces
+		org.w3c.dom.Element liftingSurfacesElement = doc.createElement("lifting_surfaces");
+		
+		// wing
+		liftingSurfacesElement.appendChild(
+				createLiftingSurfaceElement(doc, 
+						aircraft.getWing().getType(),  
+						aircraftSaveDirectives.getWingFileName(), 
+						aircraft.getWing().getXApexConstructionAxes(),
+						aircraft.getWing().getYApexConstructionAxes(),
+						aircraft.getWing().getZApexConstructionAxes(),
+						aircraft.getWing().getRiggingAngle())
+				);
+		// htail
+		liftingSurfacesElement.appendChild(
+				createLiftingSurfaceElement(doc, 
+						aircraft.getHTail().getType(),  
+						aircraftSaveDirectives.getHTailFileName(), 
+						aircraft.getHTail().getXApexConstructionAxes(),
+						aircraft.getHTail().getYApexConstructionAxes(),
+						aircraft.getHTail().getZApexConstructionAxes(),
+						aircraft.getHTail().getRiggingAngle())
+				);
+		// vtail
+		liftingSurfacesElement.appendChild(
+				createLiftingSurfaceElement(doc, 
+						aircraft.getVTail().getType(),  
+						aircraftSaveDirectives.getVTailFileName(), 
+						aircraft.getVTail().getXApexConstructionAxes(),
+						aircraft.getVTail().getYApexConstructionAxes(),
+						aircraft.getVTail().getZApexConstructionAxes(),
+						aircraft.getVTail().getRiggingAngle())
+				);
+
+		aircraftElement.appendChild(liftingSurfacesElement);
+		org.w3c.dom.Element fuselagesElement = doc.createElement("fuselages");
+		aircraftElement.appendChild(fuselagesElement);
+		org.w3c.dom.Element powerPlantElement = doc.createElement("power_plant");
+		aircraftElement.appendChild(powerPlantElement);
+		org.w3c.dom.Element nacellesElement = doc.createElement("nacelles");
+		aircraftElement.appendChild(nacellesElement);
+		org.w3c.dom.Element landingGearsElement = doc.createElement("landing_gears");
+		aircraftElement.appendChild(landingGearsElement);
+		org.w3c.dom.Element systemsElement = doc.createElement("systems");
+		aircraftElement.appendChild(systemsElement);
+		
 		
 	}
 	
-	
-	
-	//		System.out.println("-----------" + MyReadUtils.getElementXpath(father) + "/" + description);
+	@SafeVarargs
+	public static org.w3c.dom.Element createXMLElementWithAttributes(Document doc, String elementName, 
+			Tuple2<String,String>... attributeValueTuples) {
+		org.w3c.dom.Element element = doc.createElement(elementName);
+		Arrays.stream(attributeValueTuples)
+			.forEach( tpl -> {
+				org.w3c.dom.Attr a = doc.createAttribute(tpl._1());
+				a.setValue(tpl._2());
+				element.setAttributeNode(a);
+			});
+		return element;
+	}
 
-	//		serializeObject(valueToWrite, "test");
-	//		System.out.println(xstream.toXML(_objectToWrite));
+	public static org.w3c.dom.Element createLiftingSurfaceElement(Document doc, 
+			ComponentEnum componentEnum, 
+			String fileName, 
+			Amount<Length> x, Amount<Length> y, Amount<Length> z,
+			Amount<Angle> riggingAngle) {
+		
+		org.w3c.dom.Element element = createXMLElementWithAttributes(
+				doc,
+				Stream.of(ComponentEnum.values())
+					.filter( ce -> ce.equals(componentEnum))
+					.findFirst().get().toString().toLowerCase(),
+				Tuple.of("file", fileName)	
+				);
+		org.w3c.dom.Element pos = doc.createElement("position");
+		element.appendChild(pos);
+		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
+		
+		JPADStaticWriteUtils.writeSingleNode("rigging_angle", riggingAngle, element, doc);
 
-	//		try {
-	//			JAXBContext context = JAXBContext.newInstance(_objectToWrite.getClass());
-	//			Marshaller marshaller;
-	//			marshaller = context.createMarshaller();
-	//	        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-	//	        marshaller.marshal(_objectToWrite, System.out);
-	//		} catch (JAXBException e) {
-	//			e.printStackTrace();
-	//		}
+		return element;
+	}
+	
 
 
 }

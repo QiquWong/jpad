@@ -1,4 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jpad_config>
-   <aircraft/>
+   <aircraft id="IRON" regulations="FAR_25" type="TURBOPROP">
+      <global_data>
+         <cabin_configuration file="cabin_configuration_1.xml"/>
+      </global_data>
+      <lifting_surfaces>
+         <wing file="wing_1.xml">
+            <position>
+               <x unit="m">19.0900</x>
+               <y unit="m">0.0000</y>
+               <z unit="m">-1.3200</z>
+            </position>
+            <rigging_angle unit="deg">2.0000</rigging_angle>
+         </wing>
+         <horizontal_tail file="htail_1.xml">
+            <position>
+               <x unit="m">31.5400</x>
+               <y unit="m">0.0000</y>
+               <z unit="m">1.3400</z>
+            </position>
+            <rigging_angle unit="deg">0.0000</rigging_angle>
+         </horizontal_tail>
+         <vertical_tail file="vtail_1.xml">
+            <position>
+               <x unit="m">29.1200</x>
+               <y unit="m">0.0000</y>
+               <z unit="m">1.5000</z>
+            </position>
+            <rigging_angle unit="deg">0.0000</rigging_angle>
+         </vertical_tail>
+      </lifting_surfaces>
+      <fuselages/>
+      <power_plant/>
+      <nacelles/>
+      <landing_gears/>
+      <systems/>
+   </aircraft>
 </jpad_config>

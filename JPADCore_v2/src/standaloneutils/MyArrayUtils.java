@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import javax.measure.quantity.Quantity;
@@ -25,8 +24,6 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
-
-import com.orsonpdf.Stream;
 
 public final class MyArrayUtils {
 
@@ -839,5 +836,6 @@ public static <T extends Quantity> String ListOfAmountWithUnitsInEvidenceString(
 
 	return st;
 }
+
 }
 
