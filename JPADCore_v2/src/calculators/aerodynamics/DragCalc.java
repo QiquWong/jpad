@@ -769,7 +769,7 @@ public class DragCalc {
 		int numberOfPointSemiSpanWise = chordDistribution.size();
 		
 		double minAlpha = MyArrayUtils.getMin(MyArrayUtils.convertDoubleArrayToListDouble(
-				MyArrayUtils.convertListOfAmountToDoubleArray(alphasArray)));
+				MyArrayUtils.convertListOfAmountToDoubleArray(anglesOfAttackClMatrix)));
 
 		for (int i=0; i<alphasArray.size(); i++){
 			cdInducedDistributionAtAlpha = new double [numberOfPointSemiSpanWise];
@@ -818,7 +818,130 @@ public class DragCalc {
 			
 			
 		}
-		System.out.println(" INDUCED DRAG " + inducedDrag);
 		return inducedDrag;
 			}	
+	
+	public static List<Double> calculateParasiteDragDistributionFromAirfoil (
+			int numberOfPointSemiSpanWise,
+			Amount<Angle> angleOfAttack,
+			NasaBlackwell theNasaBlackwellCalculator,
+			List<List<Double>> airfoilCdMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Double> ClReferenceOfCdMatrix// references Cl of the list of list airfoilCdMatrix
+			){
+		
+		List<Double> parasiteDragDistribution = new ArrayList<Double>();
+		
+		double [] clDistributionfromNasaBlackwell = new double [numberOfPointSemiSpanWise];
+		theNasaBlackwellCalculator.calculate(angleOfAttack);
+		clDistributionfromNasaBlackwell =theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+
+		for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+			parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
+					MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
+					clDistributionfromNasaBlackwell[ii]
+					));		
+		}	
+		
+		
+		return parasiteDragDistribution;
+	}
+	
+	public static List<Double> calculateInducedDragDistribution (
+			int numberOfPointSemiSpanWise,
+			Amount<Angle> angleOfAttack,
+			NasaBlackwell theNasaBlackwellCalculator,
+			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Amount<Angle>> anglesOfAttackClMatrix, // references angle of attack of the list of list airfoilClMatrix
+			List<Double> clZeroDistribution,
+			List<Double> clAlphaDegDistribution,
+			List<Amount<Angle>> inducedAngleOfAttackDistribution // the distribution of induced angle of attack varying on the list alphasArray
+
+			){
+		
+		List<Double> inducedDragDistribution = new ArrayList<Double>();
+		
+		double [] clDistributionfromNasaBlackwell = new double [numberOfPointSemiSpanWise];
+		double [] clInducedDistributionAtAlphaNew = new double [numberOfPointSemiSpanWise];
+		theNasaBlackwellCalculator.calculate(angleOfAttack);
+		
+		clDistributionfromNasaBlackwell =theNasaBlackwellCalculator.getClTotalDistribution().toArray();
+		double [] alphaDistribution  = new double [numberOfPointSemiSpanWise];
+		
+		double minAlpha = MyArrayUtils.getMin(MyArrayUtils.convertDoubleArrayToListDouble(
+				MyArrayUtils.convertListOfAmountToDoubleArray(anglesOfAttackClMatrix)));
+			
+			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				alphaDistribution [ii] = (clDistributionfromNasaBlackwell[ii] - clZeroDistribution.get(ii))/
+						clAlphaDegDistribution.get(ii);
+
+				if(alphaDistribution [ii] < minAlpha){
+					clInducedDistributionAtAlphaNew[ii] = 
+							clAlphaDegDistribution.get(ii)*
+							alphaDistribution [ii] + 
+							clZeroDistribution.get(ii);
+				}
+				
+				else{
+				clInducedDistributionAtAlphaNew[ii] = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttackClMatrix),
+						MyArrayUtils.convertToDoublePrimitive(
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										airfoilClMatrix.get(ii))),
+						alphaDistribution[ii]
+						);
+				}
+				inducedDragDistribution.add(ii, clInducedDistributionAtAlphaNew[ii] * 
+						Math.tan(inducedAngleOfAttackDistribution.get(ii).doubleValue(SI.RADIAN)));
+				
+			}
+
+		
+		return inducedDragDistribution;
+	}
+	
+	public static List<Double> calculateTotalDragDistributionFromAirfoil (
+			int numberOfPointSemiSpanWise,
+			Amount<Angle> angleOfAttack,
+			NasaBlackwell theNasaBlackwellCalculator,
+			List<List<Double>> airfoilClMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Amount<Angle>> anglesOfAttackClMatrix, // references angle of attack of the list of list airfoilClMatrix
+			List<List<Double>> airfoilCdMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
+			List<Double> ClReferenceOfCdMatrix,// references Cl of the list of list airfoilCdMatrix
+			List<Double> clZeroDistribution,
+			List<Double> clAlphaDegDistribution,
+			List<Amount<Angle>> inducedAngleOfAttackDistribution // the distribution of induced angle of attack varying on the list alphasArray
+
+			){
+		List<Double> totalDragDistribution = new ArrayList<Double>();
+		
+		List<Double> parasiteDragDistribution = calculateParasiteDragDistributionFromAirfoil(
+				numberOfPointSemiSpanWise, 
+				angleOfAttack, 
+				theNasaBlackwellCalculator, 
+				airfoilCdMatrix,
+				ClReferenceOfCdMatrix
+				);
+		
+		List<Double> inducedDragDistribution = calculateInducedDragDistribution(
+				numberOfPointSemiSpanWise, 
+				angleOfAttack, 
+				theNasaBlackwellCalculator, 
+				airfoilClMatrix, 
+				anglesOfAttackClMatrix, 
+				clZeroDistribution, 
+				clAlphaDegDistribution, 
+				inducedAngleOfAttackDistribution
+				);
+		
+		for (int i=0; i<numberOfPointSemiSpanWise; i++){
+			totalDragDistribution.add(
+					i,
+					parasiteDragDistribution.get(i)+inducedDragDistribution.get(i));
+		}
+		
+		
+		return totalDragDistribution;
+		
+	}
 }
