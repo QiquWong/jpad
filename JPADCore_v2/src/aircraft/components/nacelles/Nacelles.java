@@ -291,9 +291,9 @@ public class Nacelles implements INacelles {
 
 		for(int i=0; i < _nacellesNumber; i++) {
 			_nacellesList.get(i).getAerodynamics().calculateAll();
-			_cD0Parasite = _cD0Parasite + _nacellesList.get(i).getAerodynamics().getCd0Parasite();
-			_cD0Base = _cD0Base + _nacellesList.get(i).getAerodynamics().getCd0Base();
-			_cD0Total = _cD0Total + _nacellesList.get(i).getAerodynamics().getCd0Total();
+			_cD0Parasite = _cD0Parasite + _nacellesList.get(i).getAerodynamics().getCD0Parasite();
+			_cD0Base = _cD0Base + _nacellesList.get(i).getAerodynamics().getCD0Base();
+			_cD0Total = _cD0Total + _nacellesList.get(i).getAerodynamics().getCD0Total();
 		}
 	}
 

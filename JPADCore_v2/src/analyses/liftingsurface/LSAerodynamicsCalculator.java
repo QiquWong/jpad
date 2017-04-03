@@ -8,19 +8,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
-import javax.measure.quantity.Area;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.analysis.function.Power;
 import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.liftingSurface.creator.SlatCreator;
-import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import analyses.OperatingConditions;
 import analyses.analysismodel.InnerCalculator;
 import calculators.aerodynamics.AerodynamicCalc;
@@ -28,7 +24,6 @@ import calculators.aerodynamics.AirfoilCalc;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
-import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
@@ -37,12 +32,8 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
-import standaloneutils.customdata.CenterOfGravity;
-import standaloneutils.customdata.MyArray;
 
 public class LSAerodynamicsCalculator {
 
@@ -65,6 +56,7 @@ public class LSAerodynamicsCalculator {
 	private Map <String, List<MethodEnum>> _plotMap;
 	private ConditionEnum _theCondition;
 	private int _numberOfPointSemiSpanWise;
+	private List<Amount<Angle>> _alphaForDistribution;
 	private int _numberOfAlphas;
 	private int _numberOfAlphasPlot;
 	private double _vortexSemiSpanToSemiSpanRatio;
@@ -77,6 +69,7 @@ public class LSAerodynamicsCalculator {
 	private double[] _etaStationDistribution; 
 	private List<Amount<Length>> _yStationDistribution;
 	private List<Amount<Angle>> _alphaZeroLiftDistribution;
+	private List<Double> _clZeroDistribution;
 	private List<Amount<Angle>> _twistDistribution;
 	private List<Amount<Length>> _chordDistribution;
 	private List<Amount<Length>> _ellipticalChordDistribution;
@@ -173,7 +166,7 @@ public class LSAerodynamicsCalculator {
 	
 	
 	//------------------------------------------------------------------------------
-	// CONSTRUCTOR
+	// BUILDER
 	//------------------------------------------------------------------------------
 	public LSAerodynamicsCalculator (
 			LiftingSurface theLiftingSurface,
@@ -182,7 +175,8 @@ public class LSAerodynamicsCalculator {
 			Map <String, List<MethodEnum>> plotMap,
 			ConditionEnum theCondition,
 			int numberOfPointSemiSpanWise,
-			List<Amount<Angle>> alphaArray
+			List<Amount<Angle>> alphaArray,
+			List<Amount<Angle>> alphaForDistribution
 			) {
 		
 		this._theLiftingSurface = theLiftingSurface;
@@ -192,6 +186,7 @@ public class LSAerodynamicsCalculator {
 		this._theCondition = theCondition;
 		this._numberOfPointSemiSpanWise = numberOfPointSemiSpanWise;
 		this._alphaArray = alphaArray;
+		this._alphaForDistribution = alphaForDistribution;
 		
 		initializeVariables();
 		initializeData();
@@ -260,6 +255,17 @@ public class LSAerodynamicsCalculator {
 				);
 		for(int i=0; i<alphaZeroLiftDistributionArray.length; i++)
 			_alphaZeroLiftDistribution.add(Amount.valueOf(alphaZeroLiftDistributionArray[i], NonSI.DEGREE_ANGLE));
+		//......................................................................................................................
+		// CL ZERO
+		_clZeroDistribution = new ArrayList<Double>();
+		Double[] clZeroDistributionArray = new Double[this._numberOfPointSemiSpanWise];
+		clZeroDistributionArray = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()),
+				MyArrayUtils.convertToDoublePrimitive(_theLiftingSurface.getCl0VsY()),
+				yStationDistributionArray
+				);
+		for(int i=0; i<clZeroDistributionArray.length; i++)
+			_clZeroDistribution.add(clZeroDistributionArray[i]);
 		//......................................................................................................................
 		// TWIST 
 		this._twistDistribution = new ArrayList<Amount<Angle>>();
@@ -1665,12 +1671,6 @@ public class LSAerodynamicsCalculator {
 	
 		public void nasaBlackwell() {
 			
-			//////////////////////////////////////////////////////////////
-			//															//
-			//		TODO : DISTINGUISH CRUISE, TAKE-OFF AND LANDING		//
-			//														    //
-			//////////////////////////////////////////////////////////////
-			
 			List<List<Amount<Length>>> ccLAdditional = new ArrayList<>();
 			List<List<Amount<Length>>> ccLBasic = new ArrayList<>();
 			List<List<Amount<Length>>> ccLTotal = new ArrayList<>();
@@ -1821,37 +1821,8 @@ public class LSAerodynamicsCalculator {
 					);
 		}
 
-//---------------------------------------------------------------------------------------------
-//		EVENTUALLY LATER!!
-//---------------------------------------------------------------------------------------------		
-		/**
-		 * This function calculates the lift distribution using the cl of 50 airfoil among the semispan.
-		 * This function creates a new airfoil with its own characteristics for each of 50 station and 
-		 * evaluates the local cl both in its linear trait and non linear.
-		 * 
-		 * @author Manuela Ruocco 
-		 * @param Amount<Angle> alpha
-		 * @param LiftingSurfaceCreator theWing
-		 */ 
-//		
-//		public void airfoilLiftDistribution (Amount<Angle> alpha, LiftingSurface theWing){
-//			double [] clLocalAirfoil = new double [_nPointsSemispanWise];
-//			Airfoil intermediateAirfoil;
-//			double alphaDouble = alpha.getEstimatedValue();
-//
-//			for (int i=0 ; i< _nPointsSemispanWise ; i++){
-//				intermediateAirfoil = new Airfoil(
-//						LiftingSurface.calculateAirfoilAtY(theWing, _yStations[i]),
-//						theWing.getAerodynamicDatabaseReader()
-//						);
-//				clLocalAirfoil[i] = intermediateAirfoil.getAerodynamics().calculateClAtAlpha(alphaDouble);
-//				clLocalAirfoil[_nPointsSemispanWise-1] = 0;
-//
-//			}	
-//			System.out.println(" cl distribution " + Arrays.toString(clLocalAirfoil));
-//		}
-//---------------------------------------------------------------------------------------------
-
+		// TODO: ADD THE LIFT DISTRIBUTION CALCULATION IN HIGH LIFT CONDITION WHEN AVAILABLE ...
+		
 		public void allMethods() {
 			schrenk();
 			nasaBlackwell();
@@ -1873,7 +1844,7 @@ public class LSAerodynamicsCalculator {
 			
 			Double kExcr = _theLiftingSurface.getKExcr();
 			
-			Double cD0Parasite = DragCalc.calculateCD0Parasite(
+			Double cD0Parasite = DragCalc.calculateCD0ParasiteLiftingSurface(
 					_theLiftingSurface,
 					_theOperatingConditions.getMachTransonicThreshold(),
 					mach,
@@ -2187,19 +2158,142 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcDragDistributions {
 			
-		public void fromNasaBlackwellLiftDistributions() {
+		public void nasaBlackwell() {
 			
 			// PARASITE DRAG COEFFICIENT DISTRIBUTION:
+			List<List<Double>> parasiteDragCoefficientDistributionAlphas = new ArrayList<>();
+			_alphaForDistribution.stream().forEach( x -> 
+				parasiteDragCoefficientDistributionAlphas.add(
+							DragCalc.calculateParasiteDragDistributionFromAirfoil(
+									_numberOfPointSemiSpanWise,
+									x,
+									theNasaBlackwellCalculator,
+									_discretizedAirfoilsCd,
+									MyArrayUtils.convertDoubleArrayToListDouble(
+											_theLiftingSurface
+												.getTheAerodynamicsCalculatorMap()
+													.get(ConditionEnum.CRUISE)
+														.getLiftCoefficient3DCurve()
+															.get(
+																	_componentTaskList
+																	.get(_theLiftingSurface.getType())
+																	.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+																	)
+											)
+									)
+							)
+					);
 			
+			_parasiteDragCoefficientDistribution.put(
+					MethodEnum.NASA_BLACKWELL, 
+					parasiteDragCoefficientDistributionAlphas
+					);
 			
 			// INDUCED DRAG COEFFICIENT DISTRIBUTION:
+			List<List<Double>> inducedDragCoefficientDistributionAlphas = new ArrayList<>();
+			_alphaForDistribution.stream().forEach( x -> 
+				inducedDragCoefficientDistributionAlphas.add(
+					DragCalc.calculateInducedDragDistribution(
+							_numberOfPointSemiSpanWise,
+							x,
+							theNasaBlackwellCalculator,
+							_discretizedAirfoilsCl, 
+							_alphaArray, 
+							_clZeroDistribution, 
+							MyArrayUtils.convertDoubleArrayToListDouble(
+									MyArrayUtils.convertListOfAmountToDoubleArray(
+											_clAlphaDistribution.stream()
+											.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()))
+											.collect(Collectors.toList())		
+											)
+									), 
+							AerodynamicCalc.calculateInducedAngleOfAttackDistribution(
+									x, 
+									theNasaBlackwellCalculator, 
+									_theOperatingConditions.getAltitudeCruise(), 
+									_theOperatingConditions.getMachCruise(), 
+									_numberOfPointSemiSpanWise)
+							)
+					));
 			
+			_inducedDragCoefficientDistribution.put(
+					MethodEnum.NASA_BLACKWELL, 
+					inducedDragCoefficientDistributionAlphas
+					);
 			
 			// DRAG COEFFICIENT DISTRIBUTION:
+			List<List<Double>> dragCoefficientDistributionAlphas = new ArrayList<>();
+			_alphaForDistribution.stream().forEach( x -> 
+				dragCoefficientDistributionAlphas.add(
+					DragCalc.calculateTotalDragDistributionFromAirfoil(
+							_numberOfPointSemiSpanWise,
+							x,
+							theNasaBlackwellCalculator,
+							_discretizedAirfoilsCl, 
+							_alphaArray, 
+							_discretizedAirfoilsCd,
+							MyArrayUtils.convertDoubleArrayToListDouble(
+									_theLiftingSurface
+										.getTheAerodynamicsCalculatorMap()
+											.get(ConditionEnum.CRUISE)
+												.getLiftCoefficient3DCurve()
+													.get(
+															_componentTaskList
+															.get(_theLiftingSurface.getType())
+															.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+															)
+									), 
+							_clZeroDistribution, 
+							MyArrayUtils.convertDoubleArrayToListDouble(
+									MyArrayUtils.convertListOfAmountToDoubleArray(
+											_clAlphaDistribution.stream()
+											.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()))
+											.collect(Collectors.toList())		
+											)
+									), 
+							AerodynamicCalc.calculateInducedAngleOfAttackDistribution(
+									x, 
+									theNasaBlackwellCalculator, 
+									_theOperatingConditions.getAltitudeCruise(), 
+									_theOperatingConditions.getMachCruise(), 
+									_numberOfPointSemiSpanWise))					
+					));
 			
+			_dragCoefficientDistribution.put(
+					MethodEnum.NASA_BLACKWELL, 
+					dragCoefficientDistributionAlphas
+					);
 			
 			// DRAG DISTRIBUTION:
+			List<List<Amount<Force>>> dragDistributionAlphas = new ArrayList<>();
+			_alphaForDistribution.stream().forEach( x -> 
+				dragDistributionAlphas.add(
+						_dragCoefficientDistribution
+							.get(MethodEnum.NASA_BLACKWELL)	
+								.get(_dragCoefficientDistribution
+										.get(MethodEnum.NASA_BLACKWELL).indexOf(x)
+										).stream()
+								.map(d -> 
+								d
+								*_theOperatingConditions.getDynamicPressureCruise().doubleValue(SI.PASCAL)
+								*_chordDistribution.get(_chordDistribution.indexOf(d)).doubleValue(SI.METER)
+								)
+								.map(d -> Amount.valueOf(d, SI.NEWTON))
+								.collect(Collectors.toList())
+						)
+					);
 			
+			_dragDistribution.put(
+					MethodEnum.NASA_BLACKWELL, 
+					dragDistributionAlphas
+					);
+			
+		}
+		
+		// TODO: ADD THE DRAG DISTRIBUTION CALCULATION IN HIGH LIFT CONDITION WHEN AVAILABLE ...
+		
+		public void allMethods() {
+			nasaBlackwell();
 		}
 		
 	}
@@ -2240,9 +2334,31 @@ public class LSAerodynamicsCalculator {
 			
 		}
 		
-		public void fromCdDistribution() {
+		public void fromCdDistribution(
+				Double mach,
+				Amount<Length> altitude
+				) {
 			
-			// TODO : WAIT UNTIL MANUELA'S METHOD IS READY
+			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
+				calcLiftCurve.nasaBlackwell();
+			}
+			
+			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+			
+			Double[] cDArray = new Double[_numberOfAlphasPlot];
+			for(int i=0; i<_numberOfAlphasPlot; i++) {
+				cDArray[i] = calcCDAtAlpha.fromCdDistribution(
+						Amount.valueOf(
+								_alphaArrayPlot[i],
+								NonSI.DEGREE_ANGLE
+								).to(SI.RADIAN),
+						mach,
+						altitude
+						);
+			}
+			
+			_polar3DCurve.put(MethodEnum.AIRFOIL_DISTRIBUTION, cDArray);
 			
 		}
 
@@ -2251,7 +2367,7 @@ public class LSAerodynamicsCalculator {
 				Amount<Length> altitude
 				) {
 			classic(mach, altitude);
-			fromCdDistribution();
+			fromCdDistribution(mach, altitude);
 		}
 	}
 	//............................................................................
@@ -2296,14 +2412,38 @@ public class LSAerodynamicsCalculator {
 			return cDActual;
 		}
 		
-		public double fromCdDistribution(Amount<Angle> alpha) {
-			
-			 double cDActual = 0.0;
-			 
-			 // TODO : WAIT UNTIL MANUELA'S METHOD IS READY
-			 
-			 return cDActual;
-			
+		public double fromCdDistribution(
+				Amount<Angle> alpha,
+				Double mach,
+				Amount<Length> altitude) {
+
+			double cDActual = 0.0;
+
+			if(_cD0.get(MethodEnum.AIRFOIL_DISTRIBUTION) == null) {
+				CalcCD0 calcCD0 = new CalcCD0(); 
+				calcCD0.fromAirfoilDistribution(mach, altitude);
+			}
+
+			// TODO : CHECK WHICH OSWALD IS BETTER !
+			if(_cDInduced.get(MethodEnum.RAYMER) == null) {
+				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
+				calcCDInduced.raymer(alpha);
+			}
+
+			if(_cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO) == null) {
+				CalcCDWave calcCDWave = new CalcCDWave(); 
+				calcCDWave.lockKornWithKroo();
+			}
+
+			_cDAtAlpha.put(
+					MethodEnum.AIRFOIL_DISTRIBUTION,
+					_cD0.get(MethodEnum.AIRFOIL_DISTRIBUTION).get(0)
+					+ _cDInduced.get(MethodEnum.RAYMER)
+					+ _cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO)
+					);
+
+			return cDActual;
+
 		}
 
 		public void allMethods(
@@ -2312,7 +2452,7 @@ public class LSAerodynamicsCalculator {
 				Amount<Length> altitude
 				) {
 			classic(alpha, mach, altitude);
-			fromCdDistribution(alpha);
+			fromCdDistribution(alpha, mach, altitude);
 		}
 		
 	}
@@ -2770,16 +2910,6 @@ public class LSAerodynamicsCalculator {
 			return cLActual;
 		}
 		
-		public void allMethods(
-				Amount<Angle> alpha,
-				List<Amount<Angle>> flapDeflection,
-				List<Amount<Angle>> slatDeflection,
-				Double mach,
-				Amount<Length> altitude
-				) {
-			semiempirical(alpha, flapDeflection, slatDeflection, mach, altitude);
-		}
-		
 	}
 	//............................................................................
 	// END OF THE CALC CL AT ALPHA HIGH LIFT INNER CLASS
@@ -2790,15 +2920,26 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCDAtAlphaHighLift {
 	
-		public void classic() {
+		public double semiempirical(
+				Amount<Angle> alpha, 
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach,
+				Amount<Length> altitude) {
 			
-			// TODO : COMPLETE ME !
+			double cDActual = 0.0;
 			
-		}
-		
-		public void fromCdDistribution() {
+			if (_deltaCD0.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = new CalcHighLiftDevicesEffects();
+				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection, mach, altitude);
+			}
+
+			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+			double cDActualClean = calcCDAtAlpha.fromCdDistribution(alpha, mach, altitude);
+
+			cDActual = cDActualClean + _deltaCD0.get(MethodEnum.SEMPIEMPIRICAL);
 			
-			// TODO : COMPLETE ME !
+			return cDActual;
 			
 		}
 		
@@ -3477,5 +3618,45 @@ public class LSAerodynamicsCalculator {
 
 	public void setAlphaZeroLiftDistribution(List<Amount<Angle>> _alphaZeroLiftDistribution) {
 		this._alphaZeroLiftDistribution = _alphaZeroLiftDistribution;
+	}
+
+	public List<Amount<Angle>> getAlphaForDistribution() {
+		return _alphaForDistribution;
+	}
+
+	public void setAlphaForDistribution(List<Amount<Angle>> _alphaWingForDistribution) {
+		this._alphaForDistribution = _alphaWingForDistribution;
+	}
+
+	public List<Double> getClZeroDistribution() {
+		return _clZeroDistribution;
+	}
+
+	public void setClZeroDistribution(List<Double> _clZeroDistribution) {
+		this._clZeroDistribution = _clZeroDistribution;
+	}
+
+	public List<List<Double>> getDiscretizedAirfoilsCl() {
+		return _discretizedAirfoilsCl;
+	}
+
+	public void setDiscretizedAirfoilsCl(List<List<Double>> _discretizedAirfoilsCl) {
+		this._discretizedAirfoilsCl = _discretizedAirfoilsCl;
+	}
+
+	public List<List<Double>> getDiscretizedAirfoilsCd() {
+		return _discretizedAirfoilsCd;
+	}
+
+	public void setDiscretizedAirfoilsCd(List<List<Double>> _discretizedAirfoilsCd) {
+		this._discretizedAirfoilsCd = _discretizedAirfoilsCd;
+	}
+
+	public List<List<Double>> getDiscretizedAirfoilsCm() {
+		return _discretizedAirfoilsCm;
+	}
+
+	public void setDiscretizedAirfoilsCm(List<List<Double>> _discretizedAirfoilsCm) {
+		this._discretizedAirfoilsCm = _discretizedAirfoilsCm;
 	}
 }

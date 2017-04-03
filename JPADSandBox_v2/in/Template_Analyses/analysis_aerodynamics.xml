@@ -45,7 +45,7 @@
 					<alpha_body_initial unit="deg"></alpha_body_initial>
 					<alpha_body_final unit="deg"></alpha_body_final>
 					<number_of_alpha_body></number_of_alpha_body>
-					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
+					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
 					<tau_elevator_function>
 						<tau>0.025</tau>
 						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->

@@ -24,7 +24,6 @@ public interface INacelleCreator {
 	public Double calculateFormFactor();
 	
 	public void initializeWeights(Aircraft theAircraft);
-	public void initializeAerodynamics();
 	public void initializeBalance();
 	
 	public Amount<Length> getLength();

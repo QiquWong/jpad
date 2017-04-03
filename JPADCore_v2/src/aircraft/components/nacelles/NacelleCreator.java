@@ -13,7 +13,6 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import aircraft.components.powerplant.Engine;
-import analyses.OperatingConditions;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import analyses.nacelles.NacelleBalanceManager;
 import analyses.nacelles.NacelleWeightsManager;
@@ -84,8 +83,6 @@ public class NacelleCreator implements INacelleCreator {
 	private Amount<Area> _surfaceWetted;
 	private Amount<Mass> _massReference;
 	
-	private Aircraft _theAircraft;
-	private OperatingConditions _theOperatingConditions;
 	private Engine _theEngine;
 	
 	private NacelleWeightsManager _theWeights;
@@ -176,6 +173,7 @@ public class NacelleCreator implements INacelleCreator {
 		 * 
 		 * @author Vittorio Trifari
 		 */
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultVariables (AircraftEnum aircraftName) {
 			
 			switch(aircraftName) {
@@ -469,12 +467,6 @@ public class NacelleCreator implements INacelleCreator {
 	}
 
 	@Override
-	public void initializeAerodynamics() {
-		if (_theAerodynamics == null) 
-			_theAerodynamics = new NacelleAerodynamicsManager(_theAircraft, this, _theOperatingConditions);
-	}
-	
-	@Override
 	public void initializeBalance() {
 		if (_theBalance == null)
 			_theBalance = new NacelleBalanceManager(this);
@@ -622,11 +614,9 @@ public class NacelleCreator implements INacelleCreator {
 	public void calculateAll(Aircraft theAircraft) {
 		initializeWeights(theAircraft);
 		initializeBalance();
-		initializeAerodynamics();
 		
 		_theWeights.calculateAll();
 		_theBalance.calculateAll();
-		_theAerodynamics.calculateAll();
 	}
 
 	@Override

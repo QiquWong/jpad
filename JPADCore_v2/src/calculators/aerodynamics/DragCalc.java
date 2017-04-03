@@ -95,7 +95,6 @@ public class DragCalc {
 				ar, e, sweepHalfChord, tcMax, airfoilType);
 	}
 	
-
 	/**
 	 * @author Lorenzo Attanasio
 	 * @param formFactor
@@ -105,6 +104,15 @@ public class DragCalc {
 	 * @return
 	 */
 	public static Double calculateCD0Parasite(
+			Double formFactor, 
+			Double cf, 
+			Double sWet, 
+			Double referenceSurface
+			){
+		return formFactor*cf*sWet/referenceSurface;
+	}
+
+	public static Double calculateCD0ParasiteLiftingSurface(
 			LiftingSurface theLiftingSurface,
 			Double machTransonicThreshold,
 			Double mach,
