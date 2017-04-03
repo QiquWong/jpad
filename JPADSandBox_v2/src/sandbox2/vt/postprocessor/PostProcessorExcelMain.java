@@ -32,8 +32,10 @@ public class PostProcessorExcelMain extends Application {
 
 	/////////////////////////////////////////////////////////
 	// VARIABLE DECLARATION:
-	private static String outputFileNameWithPathAndExt;
+	private static String outputFileNameWithPath;
 	private static File inputFile;
+	private static File outputFile;
+	private static int runIndex;
 	
 	private static List<String> csvFileList = new ArrayList<>();
 	private static List<Boolean> csvHoldOnList = new ArrayList<>();
@@ -60,6 +62,7 @@ public class PostProcessorExcelMain extends Application {
 	private static Button addCSVButton;
 	private static Button removeCSVButton;
 	private static Button runButton;
+	private static Button refreshButton;
 	private static Label resultLabel;
 	private static ProgressBar progressBar;
 	
@@ -81,7 +84,7 @@ public class PostProcessorExcelMain extends Application {
 				+ "JPADPostProcessorExcel"
 				+ File.separator
 				);
-		outputFileNameWithPathAndExt = outputFolderPath + "PostProcessorExcel_Output";
+		outputFileNameWithPath = outputFolderPath + "PostProcessorExcel_Output";
 		
 	}
 
@@ -151,6 +154,9 @@ public class PostProcessorExcelMain extends Application {
 				);
 		setRemoveCSVButton(
 				(Button) getCoreToolBar().getItems().get(5)
+				);
+		setRefreshButton(
+				(Button) getInputModeToolbar().lookup("#refreshButton")
 				);
 		
 		//....................................................
@@ -354,10 +360,14 @@ public class PostProcessorExcelMain extends Application {
 		PostProcessorExcelMain.csvFileInfo = csvFileInfo;
 	}
 
-	public static String getOutputFileNameWithPathAndExt() {
-		return outputFileNameWithPathAndExt;
+	public static String getOutputFileNameWithPath() {
+		return outputFileNameWithPath;
 	}
 
+	public static void setOutputFileNameWithPath(String outputFileNameWithPath) {
+		PostProcessorExcelMain.outputFileNameWithPath = outputFileNameWithPath;
+	}
+	
 	public static Button getRemoveCSVButton() {
 		return removeCSVButton;
 	}
@@ -380,6 +390,30 @@ public class PostProcessorExcelMain extends Application {
 
 	public static void setResultLabel(Label resultLabel) {
 		PostProcessorExcelMain.resultLabel = resultLabel;
+	}
+
+	public static int getRunIndex() {
+		return runIndex;
+	}
+
+	public static void setRunIndex(int runIndex) {
+		PostProcessorExcelMain.runIndex = runIndex;
+	}
+
+	public static Button getRefreshButton() {
+		return refreshButton;
+	}
+
+	public static void setRefreshButton(Button refreshButton) {
+		PostProcessorExcelMain.refreshButton = refreshButton;
+	}
+
+	public static File getOutputFile() {
+		return outputFile;
+	}
+
+	public static void setOutputFile(File outputFile) {
+		PostProcessorExcelMain.outputFile = outputFile;
 	}
 
 }

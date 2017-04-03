@@ -69,7 +69,7 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <TextArea editable="false" onMouseClicked="#zoomConsole" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TextArea editable="false" onMouseClicked="#zoomConsole" prefHeight="130.0" prefWidth="778.0" text="Welcome to JPADPostProcessorExcel !!" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children></AnchorPane>
               </items>
             </SplitPane>
@@ -88,6 +88,7 @@
                </toggleGroup>
             </RadioButton>
             <RadioButton mnemonicParsing="false" onAction="#activateManualCSV" text="Add CSV files manually" toggleGroup="$inputMode" />
+            <Button id="refreshButton" mnemonicParsing="false" onAction="#refresh" text="Refresh" translateX="310.0" />
          </items>
       </ToolBar>
    </top>

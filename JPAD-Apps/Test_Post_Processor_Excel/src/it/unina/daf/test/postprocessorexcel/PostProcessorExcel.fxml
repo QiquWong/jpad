@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="780.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unina.daf.test.postprocessorexcel.PostProcessorExcelController">
+   <center>
+      <BorderPane id="coreBorderPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <top>
+            <ToolBar id="coreToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <items>
+                  <Label id="inputFileLabel" disable="true" text="Input file path:" />
+                  <TextField id="inputFileTextField" disable="true" prefHeight="31.0" prefWidth="246.0" />
+                  <Button id="inputFileChooser" disable="true" mnemonicParsing="false" onAction="#chooseXMLInputFile" text="..." />
+                  <Button id="inputFileLoadButton" disable="true" mnemonicParsing="false" onAction="#loadInputFile" text="Load" />
+                  <Button id="addCSVButton" disable="true" mnemonicParsing="false" onAction="#addInputLine" text="Add CSV" translateX="130.0" />
+                  <Button id="removeCSVButton" disable="true" mnemonicParsing="false" onAction="#removeLine" text="Remove CSV" translateX="130.0" />
+               </items>
+            </ToolBar>
+         </top>
+         <center>
+            <SplitPane id="coreSplitPane" dividerPositions="0.8" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" onMouseClicked="#zoomWorkAera" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <ScrollPane id="splitPaneScrollPane" prefHeight="130.0" prefWidth="778.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2000.0" prefWidth="782.0">
+                                 <children>
+                                    <GridPane id="csvGridPane" hgap="5.0" maxHeight="2000.0" maxWidth="760.0" prefHeight="2000.0" prefWidth="760.0" vgap="5.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="108.0" prefWidth="108.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="692.0" minWidth="490.0" prefWidth="524.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="636.0" minWidth="60.0" prefWidth="60.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="636.0" minWidth="88.0" prefWidth="88.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <TextArea editable="false" onMouseClicked="#zoomConsole" prefHeight="130.0" prefWidth="778.0" text="Welcome to JPADPostProcessorExcel !!" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children></AnchorPane>
+              </items>
+            </SplitPane>
+         </center>
+      </BorderPane>
+   </center>
+   <top>
+      <ToolBar id="inputModeToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <items>
+            <RadioButton mnemonicParsing="false" onAction="#activateImportCSVFromFile" text="CSV files from file">
+               <padding>
+                  <Insets right="50.0" />
+               </padding>
+               <toggleGroup>
+                  <ToggleGroup fx:id="inputMode" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton mnemonicParsing="false" onAction="#activateManualCSV" text="Add CSV files manually" toggleGroup="$inputMode" />
+            <Button id="refreshButton" mnemonicParsing="false" onAction="#refresh" text="Refresh" translateX="310.0" />
+         </items>
+      </ToolBar>
+   </top>
+   <bottom>
+      <ToolBar id="runAndStatusToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <Button id="runButton" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#run" text="Run!" />
+            <ProgressBar id="progressBar" prefHeight="23.0" prefWidth="627.0" progress="0.0" />
+            <Label id="resultLabel" />
+        </items>
+      </ToolBar>
+   </bottom>
+</BorderPane>

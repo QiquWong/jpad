@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -37,10 +38,30 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.poi.openxml4j.opc.TargetMode;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Chart;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.charts.AxisCrossBetween;
+import org.apache.poi.ss.usermodel.charts.AxisCrosses;
+import org.apache.poi.ss.usermodel.charts.AxisPosition;
+import org.apache.poi.ss.usermodel.charts.AxisTickMark;
+import org.apache.poi.ss.usermodel.charts.ChartAxis;
+import org.apache.poi.ss.usermodel.charts.ChartDataSource;
+import org.apache.poi.ss.usermodel.charts.ChartLegend;
+import org.apache.poi.ss.usermodel.charts.DataSources;
+import org.apache.poi.ss.usermodel.charts.LayoutTarget;
+import org.apache.poi.ss.usermodel.charts.LegendPosition;
+import org.apache.poi.ss.usermodel.charts.LineChartData;
+import org.apache.poi.ss.usermodel.charts.LineChartSerie;
+import org.apache.poi.ss.usermodel.charts.ScatterChartData;
+import org.apache.poi.ss.usermodel.charts.ScatterChartSerie;
+import org.apache.poi.ss.usermodel.charts.ValueAxis;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.azeckoski.reflectutils.ReflectUtils;
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
@@ -56,6 +77,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import javaslang.Tuple;
 import javaslang.Tuple4;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.customdata.MyArray;
 
@@ -1103,6 +1125,100 @@ public class JPADStaticWriteUtils {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * @author Vittorio Trifari
+	 * 
+	 * @param sheet
+	 * @param dataSet
+	 * @param columnDescription must be of the same size of the dataSet
+	 * @param showLegend
+	 */
+	public static void createXLSChart (Sheet sheet, List<MyArray> dataSet, List<String> columnDescription, boolean showLegend) {
+		
+		List<Double> xAxisMaxValueList = dataSet.stream()
+				.filter(x -> dataSet.indexOf(x)%2 == 0)
+				.map(x -> Arrays.stream(x.toArray()).max().getAsDouble())
+				.collect(Collectors.toList());
+		double xAxisMaxValue = xAxisMaxValueList.stream().mapToDouble(x -> x).max().getAsDouble();
+		
+		List<Double> xAxisMinValueList = dataSet.stream()
+				.filter(x -> dataSet.indexOf(x)%2 == 0)
+				.map(x -> Arrays.stream(x.toArray()).min().getAsDouble())
+				.collect(Collectors.toList());
+		double xAxisMinValue = xAxisMinValueList.stream().mapToDouble(x -> x).min().getAsDouble();
+		
+		List<Double> yAxisMaxValueList = dataSet.stream()
+				.filter(y -> dataSet.indexOf(y)%2 != 0)
+				.map(y -> Arrays.stream(y.toArray()).max().getAsDouble())
+				.collect(Collectors.toList());
+		double yAxisMaxValue = yAxisMaxValueList.stream().mapToDouble(y -> y).max().getAsDouble();
+		
+		List<Double> yAxisMinValueList = dataSet.stream()
+				.filter(y -> dataSet.indexOf(y)%2 != 0)
+				.map(y -> Arrays.stream(y.toArray()).min().getAsDouble())
+				.collect(Collectors.toList());
+		double yAxisMinValue = yAxisMinValueList.stream().mapToDouble(y -> y).min().getAsDouble();
+		
+        Drawing drawing = sheet.createDrawingPatriarch();
+        ClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, dataSet.size()+3, 2, dataSet.size()+13, 12);
+
+        Chart chart = drawing.createChart(anchor);
+        
+        chart.getManualLayout().setHeightRatio(0.95);
+        chart.getManualLayout().setWidthRatio(0.90);
+        chart.getManualLayout().setTarget(LayoutTarget.OUTER);
+        
+        ChartLegend legend = null;
+        if(showLegend == true){
+        	legend = chart.getOrCreateLegend();
+        	legend.setPosition(LegendPosition.TOP_RIGHT);
+        }
+
+        ScatterChartData data = chart.getChartDataFactory().createScatterChartData();
+        
+        ValueAxis bottomAxisValues = chart.getChartAxisFactory().createValueAxis(AxisPosition.BOTTOM);
+        ValueAxis leftAxisValues = chart.getChartAxisFactory().createValueAxis(AxisPosition.BOTTOM);
+        
+        leftAxisValues.setMajorTickMark(AxisTickMark.IN);
+        leftAxisValues.setMinorTickMark(AxisTickMark.IN);
+        leftAxisValues.setMaximum(Math.round(1.1*yAxisMaxValue));
+        leftAxisValues.setMinimum(Math.round(0.9*yAxisMinValue));
+        leftAxisValues.setCrosses(AxisCrosses.AUTO_ZERO);
+        
+        bottomAxisValues.setCrosses(AxisCrosses.AUTO_ZERO);
+        bottomAxisValues.setMajorTickMark(AxisTickMark.IN);
+        bottomAxisValues.setMinorTickMark(AxisTickMark.IN);
+        bottomAxisValues.setMaximum(Math.round(1.1*xAxisMaxValue));
+        bottomAxisValues.setMinimum(Math.round(0.9*xAxisMinValue));
+        bottomAxisValues.setCrosses(AxisCrosses.AUTO_ZERO);
+        
+        for(int i=1; i<dataSet.size(); i+=2) {
+        	
+            ChartDataSource<Number> x = DataSources.fromNumericCellRange(
+            		sheet,
+            		new CellRangeAddress(
+            				4,
+            				3+dataSet.get(i-1).size(),
+            				i,
+            				i
+            				)
+            		);
+            ChartDataSource<Number> y = DataSources.fromNumericCellRange(
+            		sheet,
+            		new CellRangeAddress(
+            				4,
+            				3+dataSet.get(i).size(), 
+            				i+1,
+            				i+1
+            				)
+            		);
+            data.addSerie(x, y).setTitle(columnDescription.get(i));
+        }
+
+        chart.plot(data, bottomAxisValues, leftAxisValues);
+		
 	}
 	
 	public static String createNewFolder(String path) {

@@ -124,13 +124,36 @@ public class PostProcessorExcelController {
 		
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open CSV file");
-		chooser.setInitialDirectory(new File(MyConfiguration.getDir(FoldersEnum.INPUT_DIR)));
+		chooser.setInitialDirectory(new File(MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)));
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("CSV File","*.csv"));
 		File file = chooser.showOpenDialog(null);
 		if (file != null) {
 			csvFileTextField.setText(file.getAbsolutePath());
 			PostProcessorExcelMain.getCsvFileList().add(file.getAbsolutePath());
 		}
+	}
+	
+	@FXML
+	public void refresh() {
+		
+		PostProcessorExcelMain.getCsvFileGridPane().getChildren().clear();
+		PostProcessorExcelMain.getCsvFileList().clear();
+		PostProcessorExcelMain.getCsvHoldOnList().clear();
+		
+		PostProcessorExcelMain.getConsoleTextArea().clear();
+		PostProcessorExcelMain.getProgressBar().setProgress(0.0);
+		PostProcessorExcelMain.getResultLabel().setText("");
+		
+		if(PostProcessorExcelMain.getRunIndex() > 0) {
+			PostProcessorExcelMain.setOutputFileNameWithPath(
+					PostProcessorExcelMain.getOutputFileNameWithPath() 
+					+ "_" 
+					+ (PostProcessorExcelMain.getRunIndex()) 
+					);
+			File outputFile = new File(PostProcessorExcelMain.getOutputFileNameWithPath() + ".xlsx");
+			System.out.println("New output file name --> " + outputFile.getName());
+		}
+		
 	}
 	
 	@FXML
@@ -146,6 +169,9 @@ public class PostProcessorExcelController {
 				);
 		
 		PostProcessorExcelMain.getCsvFileGridPane().getChildren().clear();
+		PostProcessorExcelMain.getCsvFileList().clear();
+		PostProcessorExcelMain.getCsvHoldOnList().clear();
+		
 		PostProcessorExcelMain.getConsoleTextArea().clear();
 		PostProcessorExcelMain.getProgressBar().setProgress(0.0);
 		PostProcessorExcelMain.getResultLabel().setText("");
@@ -158,6 +184,8 @@ public class PostProcessorExcelController {
 		PostProcessorExcelMain.getInputFilePathLabel().setDisable(true);
 		PostProcessorExcelMain.getInputFilePathTextField().setDisable(true);
 		PostProcessorExcelMain.getInputFilePathTextField().clear();
+		PostProcessorExcelMain.getCsvFileList().clear();
+		PostProcessorExcelMain.getCsvHoldOnList().clear();
 		PostProcessorExcelMain.getInputFilePathChooser().setDisable(true);
 		
 		PostProcessorExcelMain.getAddCSVButton().setDisable(false);
@@ -167,6 +195,9 @@ public class PostProcessorExcelController {
 		
 		PostProcessorExcelMain.getCsvFileGridPane().getChildren().clear();
 		PostProcessorExcelMain.getConsoleTextArea().clear();
+		
+		PostProcessorExcelMain.getProgressBar().setProgress(0.0);
+		PostProcessorExcelMain.getResultLabel().setText("");
 	}
 	
 	@FXML
@@ -387,20 +418,22 @@ public class PostProcessorExcelController {
 				Bindings.isEmpty(PostProcessorExcelMain.getCsvFileGridPane().getChildren())
 				);
 		
+		PostProcessorExcelMain.getCsvFileGridPane().getChildren()
+		.stream()
+			.filter(x -> GridPane.getColumnIndex(x) == 2)
+				.map(x -> (Button) x)
+					.forEach(x -> x.setDisable(true));
+		
     }
 
 	@FXML
 	public void run() throws IOException {
 		
-		/******************************************************
-		 *  TODO:
-		 *  - SEE HOW TO BUILD THE CHART IN THE EXCEL
-		 *  - MANAGE THE PROGRESS BAR HERE
-		 *  - ADD REFRESH BUTTON AND INCREMENT FILE NAME TAG
-		 *  
-		 */
-		
+		//.............................................................................
+		// Initialize:
 		PostProcessorExcelMain.getConsoleTextArea().clear();
+		PostProcessorExcelMain.setRunIndex(PostProcessorExcelMain.getRunIndex() +1);
+		PostProcessorExcelMain.getCsvFileInfo().clear();
 		
 		//.............................................................................
 		// Reading the CSV files ...
@@ -429,18 +462,23 @@ public class PostProcessorExcelController {
 		PostProcessorExcelMain.getProgressBar().setProgress(0.2);
 		
 		//.............................................................................
-		// Creating the Excel files structure ...
+		// Creating the Excel files structure ...		
 		Workbook wb;
-		File outputFile = new File(PostProcessorExcelMain.getOutputFileNameWithPathAndExt() + ".xlsx");
-		if (outputFile.exists()) { 
-		   outputFile.delete();		
-		   System.out.println("Deleting the old .xls file ...");
+		PostProcessorExcelMain.setOutputFile(
+				new File(
+						PostProcessorExcelMain.getOutputFileNameWithPath() + ".xlsx"
+						)
+				);
+		
+		if (PostProcessorExcelMain.getOutputFile().exists()) { 
+		   PostProcessorExcelMain.getOutputFile().delete();		
+		   System.out.println("Deleting the old .xls file --> " + PostProcessorExcelMain.getOutputFile().getName());
 		} 
 		
-		if (outputFile.getName().endsWith(".xls")) {
+		if (PostProcessorExcelMain.getOutputFile().getName().endsWith(".xls")) {
 			wb = new HSSFWorkbook();
 		}
-		else if (outputFile.getName().endsWith(".xlsx")) {
+		else if (PostProcessorExcelMain.getOutputFile().getName().endsWith(".xlsx")) {
 			wb = new XSSFWorkbook();
 		}
 		else {
@@ -457,7 +495,8 @@ public class PostProcessorExcelController {
 			.filter(x -> x._1 == Boolean.TRUE)
 				.forEach(x -> csvHoldOnFileText.add(x._2));
 		
-		createXlsHoldOnSheet(wb, csvHoldOnFileText);
+		if(!csvHoldOnFileText.isEmpty())
+			createXlsHoldOnSheet(wb, csvHoldOnFileText);
 		
 		PostProcessorExcelMain.getProgressBar().setProgress(0.6);
 		
@@ -472,10 +511,11 @@ public class PostProcessorExcelController {
 		
 		//.............................................................................
 		// Creating the output file ...
-		FileOutputStream fileOut = new FileOutputStream(PostProcessorExcelMain.getOutputFileNameWithPathAndExt() + ".xlsx");
+		FileOutputStream fileOut = new FileOutputStream(PostProcessorExcelMain.getOutputFile());
 		wb.write(fileOut);
 		fileOut.close();
-		System.out.println("Your excel file has been generated!");
+		System.out.println("Your excel file has been generated in " + PostProcessorExcelMain.getOutputFile().getPath());
+		System.out.println("File name --> " + PostProcessorExcelMain.getOutputFile().getName());
 		
 		PostProcessorExcelMain.getProgressBar().setProgress(1.0);
 		PostProcessorExcelMain.getResultLabel().setText("Done!");
@@ -517,6 +557,8 @@ public class PostProcessorExcelController {
 				xlsDataList
 				);
 		
+		JPADStaticWriteUtils.createXLSChart(sheet, xlsDataList, xlsColumnDescription, false);
+		
 	}
 	
 	private void createXlsHoldOnSheet(Workbook wb, List<List<List<String>>> csvFileTextList) {		
@@ -556,6 +598,8 @@ public class PostProcessorExcelController {
 				xlsColumnDescription,
 				xlsDataList
 				);
+		
+		JPADStaticWriteUtils.createXLSChart(sheet, xlsDataList, xlsColumnDescription, true);
 		
 	}
 	

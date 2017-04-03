@@ -300,6 +300,8 @@ public class MyChartToFileUtils {
 			yListName.add(yLabel);
 		}
 		
+		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+		
 		JPADStaticWriteUtils.exportToCSV(
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
@@ -349,6 +351,8 @@ public class MyChartToFileUtils {
 			xListName.add(xLabel);
 			yListName.add(yLabel);
 		}
+		
+		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
 		
 		JPADStaticWriteUtils.exportToCSV(
 				MyArrayUtils.convertFromListOfDoublePrimitive(xArrays),
@@ -456,6 +460,8 @@ public class MyChartToFileUtils {
 			xListName.add(xLabel);
 			yListName.add(yLabel);
 		}
+		
+		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
 		
 		JPADStaticWriteUtils.exportToCSV(
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
@@ -587,6 +593,8 @@ public class MyChartToFileUtils {
 		if (yMax != null) chartFactory.setyMax(yMax);
 
 		chartFactory.createMultiTraceChartNoLegend();
+		
+		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
 		
 		JPADStaticWriteUtils.exportToCSV(
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
@@ -805,6 +813,8 @@ public class MyChartToFileUtils {
 			xListName.add(xLabelName);
 			yListName.add(yLabelName);
 		}
+		
+		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
 		
 		JPADStaticWriteUtils.exportToCSV(
 				xList,
