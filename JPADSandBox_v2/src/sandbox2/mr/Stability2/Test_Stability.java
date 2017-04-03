@@ -104,7 +104,7 @@ public class Test_Stability{
 		String outputPathPartial = JPADStaticWriteUtils.createNewFolder(
 				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + 
 				File.separator +
-				"Longitudinal Static Stability Output"+
+				"Longitudinal_Static_Stability_Output"+
 			    File.separator 
 				);
 		
@@ -118,7 +118,7 @@ public class Test_Stability{
 		String outputChartPath = JPADStaticWriteUtils.createNewFolder(
 				outputPath +
 				File.separator +
-				"Wing Charts"+
+				"Wing_Charts"+
 				File.separator
 				);
 		
