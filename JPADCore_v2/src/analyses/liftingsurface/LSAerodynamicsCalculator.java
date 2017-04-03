@@ -13,8 +13,11 @@ import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
+import org.apache.commons.math3.analysis.function.Power;
 import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
+import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
@@ -25,6 +28,7 @@ import calculators.aerodynamics.AirfoilCalc;
 import calculators.aerodynamics.AnglesCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
+import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
@@ -37,6 +41,8 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.customdata.CenterOfGravity;
+import standaloneutils.customdata.MyArray;
 
 public class LSAerodynamicsCalculator {
 
@@ -2002,6 +2008,7 @@ public class LSAerodynamicsCalculator {
 				Amount<Length> altitude
 				) {
 			classic(mach, altitude);
+			fromAirfoilDistribution(mach, altitude);
 		}
 		
 	}
@@ -2314,6 +2321,102 @@ public class LSAerodynamicsCalculator {
 	//............................................................................
 	
 	//............................................................................
+	// CALC CMac INNER CLASS
+	//............................................................................
+	public class CalcCMac {
+
+		public void additional() {
+			// TODO: See LSAerodynamicManager
+		}
+
+		public void basic() {
+			// TODO: See LSAerodynamicManager
+		}
+
+		public void integralMean() {
+			// TODO: See LSAerodynamicManager
+		}
+
+		public void total() {
+			// TODO: _cMacTotal = additional() + basic();
+		}
+
+		public void allMethods() {
+			total();
+			integralMean();
+		}
+
+	}
+	//............................................................................
+	// END OF THE CALC CMac INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC CM0 INNER CLASS
+	//............................................................................
+	public class CalcCM0 {
+
+		public void andersonSweptCompressibleSubsonic(Aircraft aircraft) {
+			// TODO: See LSAerodynamicManager
+		}
+
+		public void allMethods(Aircraft aircraft) {
+			andersonSweptCompressibleSubsonic(aircraft);
+		}
+
+	}
+	//............................................................................
+	// END OF THE CALC CM0 INNER CLASS
+	//............................................................................
+
+	//............................................................................
+	// CALC CMAlpha INNER CLASS
+	//............................................................................
+	public class CalcCMAlpha {
+
+		public void andersonSweptCompressibleSubsonic() {
+			// TODO: See LSAerodynamicManager
+		}
+
+		public void polhamus() {
+			// TODO: See LSAerodynamicManager
+		}
+
+		public void allMethods(){
+			andersonSweptCompressibleSubsonic();
+			polhamus();
+		}
+		
+	}
+	//............................................................................
+	// END OF THE CALC CMAlpha INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC CMAtAlpha INNER CLASS
+	//............................................................................
+	public class CalcCMAtAlpha {
+		
+		// TODO: See which methods go in this class ...
+		
+	}
+	//............................................................................
+	// END OF THE CALC CMAtAlpha INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC MOMENT DISTRIBUTION INNER CLASS
+	//............................................................................
+	public class CalcMomentDistribution {
+		
+		// TODO: See which methods go in this class ...
+		
+	}
+	//............................................................................
+	// END OF THE CALC MOMENT DISTRIBUTION INNER CLASS
+	//............................................................................
+	
+	//............................................................................
 	// HIGH LIFT DEVICES EFFECTS INNER CLASS
 	//............................................................................
 	public class CalcHighLiftDevicesEffects {
@@ -2462,18 +2565,18 @@ public class LSAerodynamicsCalculator {
 			//------------------------------------------------------
 			// CL ZERO HIGH LIFT
 			_cLZeroHighLift.put(
-					MethodEnum.EMPIRICAL,
+					MethodEnum.SEMPIEMPIRICAL,
 					_cLZero.get(MethodEnum.NASA_BLACKWELL)
-						+ _deltaCL0Flap.get(MethodEnum.EMPIRICAL)
+						+ _deltaCL0Flap.get(MethodEnum.SEMPIEMPIRICAL)
 					);
 			
 			//------------------------------------------------------
 			// ALPHA ZERO LIFT HIGH LIFT
 			_alphaZeroLiftHighLift.put(
-					MethodEnum.EMPIRICAL,
+					MethodEnum.SEMPIEMPIRICAL,
 					Amount.valueOf(
 							-(_cLZero.get(MethodEnum.NASA_BLACKWELL)
-									/_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
+									/_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL)
 									.to(NonSI.DEGREE_ANGLE.inverse())
 									.getEstimatedValue()
 									),
@@ -2482,18 +2585,18 @@ public class LSAerodynamicsCalculator {
 			
 			//------------------------------------------------------
 			// CL MAX HIGH LIFT
-			if(_deltaCLmaxSlat.get(MethodEnum.EMPIRICAL) == null)
+			if(_deltaCLmaxSlat.get(MethodEnum.SEMPIEMPIRICAL) == null)
 				_cLMaxHighLift.put(
-						MethodEnum.EMPIRICAL,
+						MethodEnum.SEMPIEMPIRICAL,
 						_cLMax.get(MethodEnum.NASA_BLACKWELL)
 						+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
 						);
 			else 
 				_cLMaxHighLift.put(
-						MethodEnum.EMPIRICAL,
+						MethodEnum.SEMPIEMPIRICAL,
 						_cLMax.get(MethodEnum.NASA_BLACKWELL)
-						+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
-						+ _deltaCLmaxSlat.get(MethodEnum.EMPIRICAL)
+						+ _deltaCLmaxFlap.get(MethodEnum.SEMPIEMPIRICAL)
+						+ _deltaCLmaxSlat.get(MethodEnum.SEMPIEMPIRICAL)
 						);
 			
 			//------------------------------------------------------
@@ -2513,11 +2616,11 @@ public class LSAerodynamicsCalculator {
 					NonSI.DEGREE_ANGLE);
 			
 			_alphaStallHighLift.put(
-					MethodEnum.EMPIRICAL,
+					MethodEnum.SEMPIEMPIRICAL,
 					Amount.valueOf(
-					((_cLMaxHighLift.get(MethodEnum.EMPIRICAL)
-					- _cLZeroHighLift.get(MethodEnum.EMPIRICAL))
-					/_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
+					((_cLMaxHighLift.get(MethodEnum.SEMPIEMPIRICAL)
+					- _cLZeroHighLift.get(MethodEnum.SEMPIEMPIRICAL))
+					/_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL)
 						.to(NonSI.DEGREE_ANGLE.inverse())
 						.getEstimatedValue()
 								)
@@ -2528,9 +2631,9 @@ public class LSAerodynamicsCalculator {
 			//------------------------------------------------------
 			// ALPHA STAR HIGH LIFT
 			_alphaStarHighLift.put(
-					MethodEnum.EMPIRICAL,
+					MethodEnum.SEMPIEMPIRICAL,
 					Amount.valueOf(
-							_alphaStallHighLift.get(MethodEnum.EMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)
+							_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)
 							-(_alphaStall.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE)
 									- _alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS).doubleValue(NonSI.DEGREE_ANGLE)),
 							NonSI.DEGREE_ANGLE)
@@ -2538,21 +2641,21 @@ public class LSAerodynamicsCalculator {
 			//------------------------------------------------------
 			// ALPHA STAR HIGH LIFT
 			_cLStarHighLift.put(
-					MethodEnum.EMPIRICAL,
-					(_cLAlphaHighLift.get(MethodEnum.EMPIRICAL)
+					MethodEnum.SEMPIEMPIRICAL,
+					(_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL)
 						.to(NonSI.DEGREE_ANGLE.inverse())
 								.getEstimatedValue()
-					* _alphaStarHighLift.get(MethodEnum.EMPIRICAL)
+					* _alphaStarHighLift.get(MethodEnum.SEMPIEMPIRICAL)
 						.doubleValue(NonSI.DEGREE_ANGLE))
-					+ _cLZeroHighLift.get(MethodEnum.EMPIRICAL)
+					+ _cLZeroHighLift.get(MethodEnum.SEMPIEMPIRICAL)
 					);
 			
 			//------------------------------------------------------
 			// CD0 HIGH LIFT
 			_cD0HighLift.put(
-					MethodEnum.EMPIRICAL,
+					MethodEnum.SEMPIEMPIRICAL,
 					_cD0.get(MethodEnum.CLASSIC).get(0)
-					+ _deltaCD0.get(MethodEnum.EMPIRICAL)
+					+ _deltaCD0.get(MethodEnum.SEMPIEMPIRICAL)
 					);
 			
 			//------------------------------------------------------
@@ -2586,9 +2689,9 @@ public class LSAerodynamicsCalculator {
 				Amount<Length> altitude
 				) {
 			
-			if((_deltaCL0Flap.get(MethodEnum.EMPIRICAL) == null) ||
-			   (_deltaCLmaxFlap.get(MethodEnum.EMPIRICAL) == null) ||
-			   (_cLAlphaHighLift.get(MethodEnum.EMPIRICAL) == null)
+			if((_deltaCL0Flap.get(MethodEnum.SEMPIEMPIRICAL) == null) ||
+			   (_deltaCLmaxFlap.get(MethodEnum.SEMPIEMPIRICAL) == null) ||
+			   (_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL) == null)
 					) {
 				
 				CalcHighLiftDevicesEffects theHighLiftEffectsCalculator = new CalcHighLiftDevicesEffects();
@@ -2602,19 +2705,19 @@ public class LSAerodynamicsCalculator {
 			}
 			
 			_alphaArrayPlotHighLift = MyArrayUtils.linspaceDouble(
-					_alphaZeroLiftHighLift.get(MethodEnum.EMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
-					_alphaStallHighLift.get(MethodEnum.EMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+					_alphaZeroLiftHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
+					_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
 					_numberOfAlphasPlot
 					);
 			
 			_liftCoefficient3DCurveHighLift.put(
 					MethodEnum.EMPIRICAL,
 					LiftCalc.calculateCLvsAlphaArray(
-							_cLZeroHighLift.get(MethodEnum.EMPIRICAL),
-							_cLMaxHighLift.get(MethodEnum.EMPIRICAL),
-							_alphaStarHighLift.get(MethodEnum.EMPIRICAL),
-							_alphaStallHighLift.get(MethodEnum.EMPIRICAL),
-							_cLAlphaHighLift.get(MethodEnum.EMPIRICAL),
+							_cLZeroHighLift.get(MethodEnum.SEMPIEMPIRICAL),
+							_cLMaxHighLift.get(MethodEnum.SEMPIEMPIRICAL),
+							_alphaStarHighLift.get(MethodEnum.SEMPIEMPIRICAL),
+							_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL),
+							_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL),
 							_alphaArrayPlotHighLift
 							)
 					);			
@@ -2649,7 +2752,7 @@ public class LSAerodynamicsCalculator {
 			double cLActual = 0.0;
 			
 			if ((_alphaArrayPlotHighLift == null) 
-					&& (_liftCoefficient3DCurveHighLift.get(MethodEnum.EMPIRICAL) == null)) {
+					&& (_liftCoefficient3DCurveHighLift.get(MethodEnum.SEMPIEMPIRICAL) == null)) {
 				
 				CalcHighLiftCurve theHighLiftCurveCalculator = new CalcHighLiftCurve();
 				theHighLiftCurveCalculator.semiempirical(flapDeflection, slatDeflection, mach, altitude);
@@ -2658,11 +2761,11 @@ public class LSAerodynamicsCalculator {
 			cLActual = MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(_alphaArrayPlotHighLift),
 					MyArrayUtils.convertToDoublePrimitive(_liftCoefficient3DCurveHighLift
-							.get(MethodEnum.EMPIRICAL)),
+							.get(MethodEnum.SEMPIEMPIRICAL)),
 					alpha.doubleValue(NonSI.DEGREE_ANGLE)
 					);
 			
-			_cLAtAlphaHighLift.put(MethodEnum.EMPIRICAL, cLActual);
+			_cLAtAlphaHighLift.put(MethodEnum.SEMPIEMPIRICAL, cLActual);
 			
 			return cLActual;
 		}
@@ -2680,6 +2783,40 @@ public class LSAerodynamicsCalculator {
 	}
 	//............................................................................
 	// END OF THE CALC CL AT ALPHA HIGH LIFT INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC CD AT ALPHA HIGH LIFT INNER CLASS
+	//............................................................................
+	public class CalcCDAtAlphaHighLift {
+	
+		public void classic() {
+			
+			// TODO : COMPLETE ME !
+			
+		}
+		
+		public void fromCdDistribution() {
+			
+			// TODO : COMPLETE ME !
+			
+		}
+		
+	}
+	//............................................................................
+	// END OF THE CALC CD AT ALPHA HIGH LIFT INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// CALC CM AT ALPHA HIGH LIFT INNER CLASS
+	//............................................................................
+	public class CalcCMAtAlphaHighLift {
+	
+		// TODO: See which methods go in this class ...
+		
+	}
+	//............................................................................
+	// END OF THE CALC CM AT ALPHA HIGH LIFT INNER CLASS
 	//............................................................................
 	
 	//------------------------------------------------------------------------------
