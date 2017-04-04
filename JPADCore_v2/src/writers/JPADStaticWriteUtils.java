@@ -75,8 +75,14 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import aircraft.components.Aircraft;
+import aircraft.components.LandingGears;
+import aircraft.components.Systems;
+import aircraft.components.fuselage.Fuselage;
+import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.MethodEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
@@ -1659,6 +1665,172 @@ public class JPADStaticWriteUtils {
 		}
 	}
 
+	private static void makeXmlTreeAircraft(Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives) {
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+		
+		// aircraft
+		org.w3c.dom.Element aircraftElement = createXMLElementWithAttributes(doc, "aircraft", 
+				Tuple.of("id", aircraft.getId()),
+				Tuple.of("type", aircraft.getTypeVehicle().toString()),
+				Tuple.of("regulations", aircraft.getRegulations().toString())
+		);
+		rootElement.appendChild(aircraftElement);
+		
+		// global_data
+		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
+		aircraftElement.appendChild(globalDataElement);
+		// global_data - cabin_configuration
+		globalDataElement.appendChild(
+			createXMLElementWithAttributes(doc, "cabin_configuration", 
+					Tuple.of("file", aircraftSaveDirectives.getCabinConfigurationFileName())
+			)
+		);
+		
+		// lifting_surfaceS
+		org.w3c.dom.Element liftingSurfacesElement = doc.createElement("lifting_surfaces");
+		
+		// lifting_surface		
+		List<LiftingSurface> liftingSurfacesList = aircraft.getComponentsList().stream()
+			.filter(comp -> comp.getClass() == LiftingSurface.class)
+				.map(comp -> (LiftingSurface) comp)
+					.collect(Collectors.toList());
+		
+		List<String> liftingSurfacesFileNames = new ArrayList<>();
+		liftingSurfacesList.stream()
+			.forEach(ls -> {
+				if(ls.getType().equals(ComponentEnum.WING))
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getWingFileName());
+				else if(ls.getType().equals(ComponentEnum.HORIZONTAL_TAIL))
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getHTailFileName());
+				else if(ls.getType().equals(ComponentEnum.VERTICAL_TAIL))
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getVTailFileName());
+				else if(ls.getType().equals(ComponentEnum.CANARD))
+					liftingSurfacesFileNames.add(aircraftSaveDirectives.getCanardFileName());
+			});
+		
+		liftingSurfacesList.stream()
+			.forEach(ls -> 
+				liftingSurfacesElement.appendChild(
+						createLiftingSurfaceElement(doc, 
+								ls.getType(),  
+								liftingSurfacesFileNames.get(liftingSurfacesList.indexOf(ls)), 
+								ls.getXApexConstructionAxes(),
+								ls.getYApexConstructionAxes(),
+								ls.getZApexConstructionAxes(),
+								ls.getRiggingAngle())
+						)
+					);
+
+		// append all kinds of lifting surfaces
+		aircraftElement.appendChild(liftingSurfacesElement);
+		
+		// fuselageS
+		org.w3c.dom.Element fuselagesElement = doc.createElement("fuselages");
+		
+		// fuselage
+		aircraft.getComponentsList().stream()
+			.filter(comp -> comp.getClass() == Fuselage.class)
+				.map(comp -> (Fuselage) comp)
+					.forEach(fus ->
+					fuselagesElement.appendChild(
+							createFuselageElement(doc, 
+									aircraftSaveDirectives.getFuselageFileName(), 
+									fus.getXApexConstructionAxes(),
+									fus.getYApexConstructionAxes(),
+									fus.getZApexConstructionAxes())
+							)
+						);
+		
+		
+		// append all kinds of fuselages
+		aircraftElement.appendChild(fuselagesElement);
+		
+		// power plant
+		org.w3c.dom.Element powerPlantElement = doc.createElement("power_plant");
+		
+		// engine
+		aircraft.getPowerPlant().getEngineList().stream()
+		.forEach(e -> {
+			powerPlantElement.appendChild(
+					createEngineElement(doc, 
+							aircraftSaveDirectives.getEngineFileName(), 
+							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getXApexConstructionAxes(),
+							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getYApexConstructionAxes(),
+							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getZApexConstructionAxes(),
+							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getTiltingAngle(),
+							aircraft.getPowerPlant().getEngineList().get(aircraft.getPowerPlant().getEngineList().indexOf(e)).getMountingPosition()
+							)
+					);
+		});
+		
+		// append all kinds of engines
+		aircraftElement.appendChild(powerPlantElement);
+		
+		// nacelleS
+		org.w3c.dom.Element nacellesElement = doc.createElement("nacelles");
+		
+		// engine
+		aircraft.getNacelles().getNacellesList().stream()
+		.forEach(e -> {
+			nacellesElement.appendChild(
+					createNacelleElement(doc, 
+							aircraftSaveDirectives.getEngineFileName(), 
+							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getXApexConstructionAxes(),
+							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getYApexConstructionAxes(),
+							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getZApexConstructionAxes(),
+							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getMountingPosition()
+							)
+					);
+		});
+		
+		// append all kinds of nacelles
+		aircraftElement.appendChild(nacellesElement);
+		
+		// landing gearS
+		org.w3c.dom.Element landingGearsElement = doc.createElement("landing_gears");
+		
+		aircraft.getComponentsList().stream()
+		.filter(comp -> comp.getClass() == LandingGears.class)
+			.map(comp -> (LandingGears) comp)
+				.forEach(lg ->
+				landingGearsElement.appendChild(
+						createLandingGearElement(doc, 
+								aircraftSaveDirectives.getLandingGearFileName(), 
+								lg.getXApexConstructionAxes(),
+								lg.getYApexConstructionAxes(),
+								lg.getZApexConstructionAxes(),
+								lg.getMountingPosition()
+								)
+						)
+					);
+	
+		// append all kinds of landing gears
+		aircraftElement.appendChild(landingGearsElement);
+		
+		// systemS
+		org.w3c.dom.Element systemsElement = doc.createElement("systems");
+		
+		aircraft.getComponentsList().stream()
+		.filter(comp -> comp.getClass() == Systems.class)
+			.map(comp -> (Systems) comp)
+				.forEach(sys ->
+				systemsElement.appendChild(
+						createSystemElement(doc, 
+								aircraftSaveDirectives.getSystemFileName(), 
+								sys.getXApexConstructionAxes(),
+								sys.getYApexConstructionAxes(),
+								sys.getZApexConstructionAxes()
+								)
+						)
+					);
+		
+		// append all kinds of systems
+		aircraftElement.appendChild(systemsElement);
+		
+		
+	}
+	
 	private static void makeXmlTreeCabinConfiguration(Aircraft aircraft, Document doc) {
 		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
 		doc.appendChild(rootElement);
@@ -1716,104 +1888,121 @@ public class JPADStaticWriteUtils {
 		// global_data - missing_seat_row
 		org.w3c.dom.Element missingSeatRowElement = doc.createElement("missing_seat_row");
 		globalDataElement.appendChild(missingSeatRowElement);
-		aircraft.getCabinConfiguration().getTypeList().stream()
+		aircraft.getCabinConfiguration().getMissingSeatsRow().stream()
 			.forEach( t -> 
-				JPADStaticWriteUtils.writeSingleNode("value", 
-					aircraft.getCabinConfiguration().getMissingSeatsRow().get(
-							aircraft.getCabinConfiguration().getTypeList().indexOf(t)
+			JPADStaticWriteUtils.writeSingleNode("value", 
+					Arrays.asList(
+							aircraft.getCabinConfiguration().getMissingSeatsRow().get(
+									aircraft.getCabinConfiguration().getMissingSeatsRow().indexOf(t)
+									)
 							),
 					missingSeatRowElement, doc)
 					);
 		
-	}
-
-	private static void makeXmlTreeAircraft(Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives) {
-		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
-		doc.appendChild(rootElement);
+		// detailed_data
+		org.w3c.dom.Element detailedDataElement = doc.createElement("detailed_data");
+		cabinConfigurationElement.appendChild(detailedDataElement);
 		
-		// aircraft
-		org.w3c.dom.Element aircraftElement = createXMLElementWithAttributes(doc, "aircraft", 
-				Tuple.of("id", aircraft.getId()),
-				Tuple.of("type", aircraft.getTypeVehicle().toString()),
-				Tuple.of("regulations", aircraft.getRegulations().toString())
-		);
-		rootElement.appendChild(aircraftElement);
+		// detailed_data - number_of_breaks_economy_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_breaks_economy_class", 
+				aircraft.getCabinConfiguration().getNumberOfBreaksEconomyClass(), 
+				detailedDataElement, doc);
 		
-		// global_data
-		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
-		aircraftElement.appendChild(globalDataElement);
-		// global_data - cabin_configuration
-		globalDataElement.appendChild(
-			createXMLElementWithAttributes(doc, "cabin_configuration", 
-					Tuple.of("file", aircraftSaveDirectives.getCabinConfigurationFileName())
-			)
-		);
+		// detailed_data - number_of_breaks_business_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_breaks_business_class", 
+				aircraft.getCabinConfiguration().getNumberOfBreaksBusinessClass(), 
+				detailedDataElement, doc);
 		
-		// lifting_surfaces
-		org.w3c.dom.Element liftingSurfacesElement = doc.createElement("lifting_surfaces");
+		// detailed_data - number_of_breaks_first_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_breaks_first_class", 
+				aircraft.getCabinConfiguration().getNumberOfBreaksFirstClass(), 
+				detailedDataElement, doc);
 		
-		// wing
-		liftingSurfacesElement.appendChild(
-				createLiftingSurfaceElement(doc, 
-						aircraft.getWing().getType(),  
-						aircraftSaveDirectives.getWingFileName(), 
-						aircraft.getWing().getXApexConstructionAxes(),
-						aircraft.getWing().getYApexConstructionAxes(),
-						aircraft.getWing().getZApexConstructionAxes(),
-						aircraft.getWing().getRiggingAngle())
-				);
-		// htail
-		liftingSurfacesElement.appendChild(
-				createLiftingSurfaceElement(doc, 
-						aircraft.getHTail().getType(),  
-						aircraftSaveDirectives.getHTailFileName(), 
-						aircraft.getHTail().getXApexConstructionAxes(),
-						aircraft.getHTail().getYApexConstructionAxes(),
-						aircraft.getHTail().getZApexConstructionAxes(),
-						aircraft.getHTail().getRiggingAngle())
-				);
-		// vtail
-		liftingSurfacesElement.appendChild(
-				createLiftingSurfaceElement(doc, 
-						aircraft.getVTail().getType(),  
-						aircraftSaveDirectives.getVTailFileName(), 
-						aircraft.getVTail().getXApexConstructionAxes(),
-						aircraft.getVTail().getYApexConstructionAxes(),
-						aircraft.getVTail().getZApexConstructionAxes(),
-						aircraft.getVTail().getRiggingAngle())
-				);
-
-		// append all kinds of lifting surfaces
-		aircraftElement.appendChild(liftingSurfacesElement);
+		// detailed_data - number_of_rows_economy_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_rows_economy_class", 
+				aircraft.getCabinConfiguration().getNumberOfRowsEconomyClass(), 
+				detailedDataElement, doc);
 		
-		// fuselageS
-		org.w3c.dom.Element fuselagesElement = doc.createElement("fuselages");
+		// detailed_data - number_of_rows_business_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_rows_business_class", 
+				aircraft.getCabinConfiguration().getNumberOfRowsBusinessClass(), 
+				detailedDataElement, doc);
 		
-		// fuselage
-		fuselagesElement.appendChild(
-				createFuselageElement(doc, 
-						aircraftSaveDirectives.getFuselageFileName(), 
-						aircraft.getFuselage().getXApexConstructionAxes(),
-						aircraft.getFuselage().getYApexConstructionAxes(),
-						aircraft.getFuselage().getZApexConstructionAxes())
-				);
+		// detailed_data - number_of_rows_first_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_rows_first_class", 
+				aircraft.getCabinConfiguration().getNumberOfRowsFirstClass(), 
+				detailedDataElement, doc);
 		
+		// detailed_data - number_of_columns_economy_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_columns_economy_class", 
+				Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsEconomyClass()), 
+				detailedDataElement, doc);
 		
-		// append all kinds of fuselages
-		aircraftElement.appendChild(fuselagesElement);
+		// detailed_data - number_of_columns_business_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_columns_business_class", 
+				Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsBusinessClass()), 
+				detailedDataElement, doc);
 		
+		// detailed_data - number_of_columns_first_class
+		JPADStaticWriteUtils.writeSingleNode("number_of_columns_first_class", 
+				Arrays.asList(aircraft.getCabinConfiguration().getNumberOfColumnsFirstClass()), 
+				detailedDataElement, doc);
 		
-		org.w3c.dom.Element powerPlantElement = doc.createElement("power_plant");
-		aircraftElement.appendChild(powerPlantElement);
-		org.w3c.dom.Element nacellesElement = doc.createElement("nacelles");
-		aircraftElement.appendChild(nacellesElement);
-		org.w3c.dom.Element landingGearsElement = doc.createElement("landing_gears");
-		aircraftElement.appendChild(landingGearsElement);
-		org.w3c.dom.Element systemsElement = doc.createElement("systems");
-		aircraftElement.appendChild(systemsElement);
+		// detailed_data - pitch_economy_class
+		JPADStaticWriteUtils.writeSingleNode("pitch_economy_class", 
+				aircraft.getCabinConfiguration().getPitchEconomyClass(), 
+				detailedDataElement, doc);
 		
+		// detailed_data - pitch_business_class
+		JPADStaticWriteUtils.writeSingleNode("pitch_business_class", 
+				aircraft.getCabinConfiguration().getPitchBusinessClass(), 
+				detailedDataElement, doc);
 		
-	}
+		// detailed_data - pitch_first_class
+		JPADStaticWriteUtils.writeSingleNode("pitch_first_class", 
+				aircraft.getCabinConfiguration().getPitchFirstClass(), 
+				detailedDataElement, doc);
+		
+		// detailed_data - width_economy_class
+		JPADStaticWriteUtils.writeSingleNode("width_economy_class", 
+				aircraft.getCabinConfiguration().getWidthEconomyClass(), 
+				detailedDataElement, doc);
+		
+		// detailed_data - width_business_class
+		JPADStaticWriteUtils.writeSingleNode("width_business_class", 
+				aircraft.getCabinConfiguration().getWidthBusinessClass(), 
+				detailedDataElement, doc);
+		
+		// detailed_data - width_first_class
+		JPADStaticWriteUtils.writeSingleNode("width_first_class", 
+				aircraft.getCabinConfiguration().getWidthFirstClass(), 
+				detailedDataElement, doc);
+		
+		// detailed_data - distance_from_wall_economy_class
+		JPADStaticWriteUtils.writeSingleNode("distance_from_wall_economy_class", 
+				aircraft.getCabinConfiguration().getDistanceFromWallEconomyClass(), 
+				detailedDataElement, doc);
+		
+		// detailed_data - distance_from_wall_business_class
+		JPADStaticWriteUtils.writeSingleNode("distance_from_wall_business_class", 
+				aircraft.getCabinConfiguration().getDistanceFromWallBusinessClass(), 
+				detailedDataElement, doc);
+		
+		// detailed_data - distance_from_wall_first_class
+		JPADStaticWriteUtils.writeSingleNode("distance_from_wall_first_class", 
+				aircraft.getCabinConfiguration().getDistanceFromWallFirstClass(), 
+				detailedDataElement, doc);
+		
+		// reference_masses
+		org.w3c.dom.Element referenceMassElement = doc.createElement("reference_masses");
+		cabinConfigurationElement.appendChild(referenceMassElement);
+		
+		// reference_masses - mass_furnishings_and_equipment
+		JPADStaticWriteUtils.writeSingleNode("mass_furnishings_and_equipment", 
+				aircraft.getCabinConfiguration().getMassFurnishingsAndEquipmentReference(), 
+				referenceMassElement, doc);
+		
+	} 
 	
 	@SafeVarargs
 	public static org.w3c.dom.Element createXMLElementWithAttributes(Document doc, String elementName, 
@@ -1870,5 +2059,87 @@ public class JPADStaticWriteUtils {
 		return element;
 	}
 
+	public static org.w3c.dom.Element createEngineElement(Document doc, 
+			String fileName, 
+			Amount<Length> x, Amount<Length> y, Amount<Length> z,
+			Amount<Angle> tiltAngle,
+			EngineMountingPositionEnum mountingPosition) {
+		
+		org.w3c.dom.Element element = createXMLElementWithAttributes(
+				doc,
+				"engine",
+				Tuple.of("file", fileName)	
+				);
+		org.w3c.dom.Element pos = doc.createElement("position");
+		element.appendChild(pos);
+		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
 
+		JPADStaticWriteUtils.writeSingleNode("tilting_angle", tiltAngle, element, doc);
+		JPADStaticWriteUtils.writeSingleNode("mounting_point", mountingPosition, element, doc);
+		
+		return element;
+	}
+	
+	public static org.w3c.dom.Element createNacelleElement(Document doc, 
+			String fileName, 
+			Amount<Length> x, Amount<Length> y, Amount<Length> z,
+			MountingPosition mountingPosition) {
+		
+		org.w3c.dom.Element element = createXMLElementWithAttributes(
+				doc,
+				"nacelle",
+				Tuple.of("file", fileName)	
+				);
+		org.w3c.dom.Element pos = doc.createElement("position");
+		element.appendChild(pos);
+		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
+
+		JPADStaticWriteUtils.writeSingleNode("mounting_point", mountingPosition, element, doc);
+		
+		return element;
+	}
+	
+	public static org.w3c.dom.Element createLandingGearElement(Document doc, 
+			String fileName, 
+			Amount<Length> x, Amount<Length> y, Amount<Length> z,
+			aircraft.components.LandingGears.MountingPosition mountingPosition) {
+		
+		org.w3c.dom.Element element = createXMLElementWithAttributes(
+				doc,
+				"nacelle",
+				Tuple.of("file", fileName)	
+				);
+		org.w3c.dom.Element pos = doc.createElement("position");
+		element.appendChild(pos);
+		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
+
+		JPADStaticWriteUtils.writeSingleNode("mounting_point", mountingPosition, element, doc);
+		
+		return element;
+	}
+	
+	public static org.w3c.dom.Element createSystemElement(Document doc, 
+			String fileName, 
+			Amount<Length> x, Amount<Length> y, Amount<Length> z) {
+		
+		org.w3c.dom.Element element = createXMLElementWithAttributes(
+				doc,
+				"nacelle",
+				Tuple.of("file", fileName)	
+				);
+		org.w3c.dom.Element pos = doc.createElement("position");
+		element.appendChild(pos);
+		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
+
+		return element;
+	}
+	
 }

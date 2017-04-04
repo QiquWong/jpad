@@ -878,8 +878,6 @@ public class Aircraft implements IAircraft {
 		this._theExposedWing.setZApexConstructionAxes(theWing.getZApexConstructionAxes());
 		this._theExposedWing.setRiggingAngle(theWing.getRiggingAngle());
 
-	_componentsList.add(_theExposedWing);
-	
 	}
 
 	public void calculateSWetTotal() {
@@ -1513,27 +1511,27 @@ public class Aircraft implements IAircraft {
 		// COMPONENT LIST:
 		List<Object> componentList = new ArrayList<>();
 		if(theFuselage != null)
-			componentList.add(ComponentEnum.FUSELAGE);
+			componentList.add(theFuselage);
 		if(theCabinConfiguration != null)
-			componentList.add(ComponentEnum.CABIN_CONFIGURATION);
+			componentList.add(theCabinConfiguration);
 		if(theWing != null)
-			componentList.add(ComponentEnum.WING);
+			componentList.add(theWing);
 		if(theFuelTank != null)
-			componentList.add(ComponentEnum.FUEL_TANK);
+			componentList.add(theFuelTank);
 		if(theHorizontalTail != null)
-			componentList.add(ComponentEnum.HORIZONTAL_TAIL);
+			componentList.add(theHorizontalTail);
 		if(theVerticalTail != null)
-			componentList.add(ComponentEnum.VERTICAL_TAIL);
+			componentList.add(theVerticalTail);
 		if(theCanard != null)
-			componentList.add(ComponentEnum.CANARD);
+			componentList.add(theCanard);
 		if(thePowerPlant != null)
-			componentList.add(ComponentEnum.POWER_PLANT);
+			componentList.add(thePowerPlant);
 		if(theNacelles != null)
-			componentList.add(ComponentEnum.NACELLE);
+			componentList.add(theNacelles);
 		if(theLandingGears != null)
-			componentList.add(ComponentEnum.LANDING_GEAR);
+			componentList.add(theLandingGears);
 		if(theSystems != null)
-			componentList.add(ComponentEnum.SYSTEMS);
+			componentList.add(theSystems);
 		
 		
 		//---------------------------------------------------------------------------------

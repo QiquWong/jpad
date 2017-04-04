@@ -39,9 +39,62 @@
             </position>
          </fuselage>
       </fuselages>
-      <power_plant/>
-      <nacelles/>
-      <landing_gears/>
-      <systems/>
+      <power_plant>
+         <engine file="engine_1.xml">
+            <position>
+               <x unit="m">31.2200</x>
+               <y unit="m">4.4375</y>
+               <z unit="m">1.6500</z>
+            </position>
+            <tilting_angle unit="deg">0.0000</tilting_angle>
+            <mounting_point>HTAIL</mounting_point>
+         </engine>
+         <engine file="engine_1.xml">
+            <position>
+               <x unit="m">31.2200</x>
+               <y unit="m">-4.4375</y>
+               <z unit="m">1.6500</z>
+            </position>
+            <tilting_angle unit="deg">0.0000</tilting_angle>
+            <mounting_point>HTAIL</mounting_point>
+         </engine>
+      </power_plant>
+      <nacelles>
+         <nacelle file="engine_1.xml">
+            <position>
+               <x unit="m">31.2200</x>
+               <y unit="m">4.4375</y>
+               <z unit="m">1.6500</z>
+            </position>
+            <mounting_point>HTAIL</mounting_point>
+         </nacelle>
+         <nacelle file="engine_1.xml">
+            <position>
+               <x unit="m">31.2200</x>
+               <y unit="m">-4.4375</y>
+               <z unit="m">1.6500</z>
+            </position>
+            <mounting_point>HTAIL</mounting_point>
+         </nacelle>
+      </nacelles>
+      <landing_gears>
+         <nacelle file="landing_gear_1.xml">
+            <position>
+               <x unit="m">22.3500</x>
+               <y unit="m">0.0000</y>
+               <z unit="m">-1.7820</z>
+            </position>
+            <mounting_point>WING</mounting_point>
+         </nacelle>
+      </landing_gears>
+      <systems>
+         <nacelle file="system_1.xml">
+            <position>
+               <x unit="m">0.0000</x>
+               <y unit="m">0.0000</y>
+               <z unit="m">0.0000</z>
+            </position>
+         </nacelle>
+      </systems>
    </aircraft>
 </jpad_config>

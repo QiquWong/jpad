@@ -1,6 +1,11 @@
 package writers;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.inferred.freebuilder.FreeBuilder;
+
+import configuration.enumerations.ComponentEnum;
 
 @FreeBuilder
 public interface AircraftSaveDirectives {
