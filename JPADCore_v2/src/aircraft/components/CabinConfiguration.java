@@ -1731,4 +1731,20 @@ public class CabinConfiguration implements ICabinConfiguration {
 		this._cabinConfigurationPath = _cabinConfigurationPath;
 	}
 
+	public List<ClassTypeEnum> getTypeList() {
+		return _typeList;
+	}
+
+	public void setTypeList(List<ClassTypeEnum> _typeList) {
+		this._typeList = _typeList;
+	}
+
+	public RelativePositionEnum getPosition() {
+		return _position;
+	}
+
+	public void setPosition(RelativePositionEnum _position) {
+		this._position = _position;
+	}
+
 }

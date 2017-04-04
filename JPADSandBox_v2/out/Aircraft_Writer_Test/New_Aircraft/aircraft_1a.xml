@@ -30,7 +30,15 @@
             <rigging_angle unit="deg">0.0000</rigging_angle>
          </vertical_tail>
       </lifting_surfaces>
-      <fuselages/>
+      <fuselages>
+         <fuselage file="fuselage_1.xml">
+            <position>
+               <x unit="m">0.0000</x>
+               <y unit="m">0.0000</y>
+               <z unit="m">0.0000</z>
+            </position>
+         </fuselage>
+      </fuselages>
       <power_plant/>
       <nacelles/>
       <landing_gears/>

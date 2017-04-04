@@ -441,6 +441,10 @@ public class JPADStaticWriteUtils {
 		str[0] = value;
 		str[1] = unit;
 
+		// April, 4, 2017 - Trifari, De Marco: strip [ and ], replace "," with ";"
+//		str[0].replace("[", "").replace("]", "").replace(",", ";");
+//		str[1].replace("[", "").replace("]", "").replace(",", ";");
+		
 		return str;
 	}
 
@@ -934,8 +938,9 @@ public class JPADStaticWriteUtils {
 		
 		if (unit.length() != 0)
 			element.setAttribute("unit", unit);
-		else
-			element.setAttribute("unit", "");
+//		else
+//			element.setAttribute("unit", "");
+// April, 4, 2017 - modified to handle non-dimensional numbers without --> unit=""
 
 		if (input) element.setAttribute("from", "input");
 
@@ -1443,8 +1448,7 @@ public class JPADStaticWriteUtils {
 		
 		// main out folder
 		String aircraftDirPath = 
-				JPADStaticWriteUtils.createNewFolder(outputFolderPath + File.separator 
-						+ aircraftDirName + File.separator);
+				JPADStaticWriteUtils.createNewFolder(outputFolderPath + aircraftDirName);
 		
 		// subfolders names
 		List<String> subfolders = new ArrayList<String>(
@@ -1620,6 +1624,9 @@ public class JPADStaticWriteUtils {
 		case AIRCRAFT:
 			makeXmlTreeAircraft(aircraft, docNameType._1(), aircraftSaveDirectives);
 			break;
+		case CABIN_CONFIGURATION:
+			makeXmlTreeCabinConfiguration(aircraft, docNameType._1());
+			break;
 		case WING:
 			// TODO
 			break;
@@ -1652,14 +1659,79 @@ public class JPADStaticWriteUtils {
 		}
 	}
 
+	private static void makeXmlTreeCabinConfiguration(Aircraft aircraft, Document doc) {
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+		
+		// configuration
+		org.w3c.dom.Element cabinConfigurationElement = createXMLElementWithAttributes(doc, "configuration", 
+				Tuple.of("id", aircraft.getCabinConfiguration().getId())
+				);
+		rootElement.appendChild(cabinConfigurationElement);
+		
+		// global_data
+		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
+		cabinConfigurationElement.appendChild(globalDataElement);
+
+		// global_data - actual_passengers_number
+		JPADStaticWriteUtils.writeSingleNode("actual_passengers_number", 
+				aircraft.getCabinConfiguration().getNPax(), 
+				globalDataElement, doc);
+		
+		// global_data - maximum_passengers_number
+		JPADStaticWriteUtils.writeSingleNode("maximum_passengers_number", 
+				aircraft.getCabinConfiguration().getMaxPax(), 
+				globalDataElement, doc);
+		
+		// global_data - flight_crew_number
+		JPADStaticWriteUtils.writeSingleNode("flight_crew_number", 
+				aircraft.getCabinConfiguration().getCabinCrewNumber(), 
+				globalDataElement, doc);
+		
+		// global_data - classes_number
+		JPADStaticWriteUtils.writeSingleNode("classes_number", 
+				aircraft.getCabinConfiguration().getClassesNumber(), 
+				globalDataElement, doc);
+		
+		// global_data - classes_type
+		JPADStaticWriteUtils.writeSingleNode("classes_type", 
+				aircraft.getCabinConfiguration().getTypeList(),
+				globalDataElement, doc);
+		
+		// global_data - aisles_number
+		JPADStaticWriteUtils.writeSingleNode("aisles_number", 
+				aircraft.getCabinConfiguration().getAislesNumber(),
+				globalDataElement, doc);
+		
+		// global_data -  x_coordinates_first_row
+		JPADStaticWriteUtils.writeSingleNode("x_coordinates_first_row", 
+				aircraft.getCabinConfiguration().getXCoordinateFirstRow(),
+				globalDataElement, doc);
+		
+		// global_data - seat_block_position 
+		JPADStaticWriteUtils.writeSingleNode("seat_block_position", 
+				aircraft.getCabinConfiguration().getPosition(),
+				globalDataElement, doc);
+		
+		// global_data - missing_seat_row
+		org.w3c.dom.Element missingSeatRowElement = doc.createElement("missing_seat_row");
+		globalDataElement.appendChild(missingSeatRowElement);
+		aircraft.getCabinConfiguration().getTypeList().stream()
+			.forEach( t -> 
+				JPADStaticWriteUtils.writeSingleNode("value", 
+					aircraft.getCabinConfiguration().getMissingSeatsRow().get(
+							aircraft.getCabinConfiguration().getTypeList().indexOf(t)
+							),
+					missingSeatRowElement, doc)
+					);
+		
+	}
+
 	private static void makeXmlTreeAircraft(Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives) {
-		// TODO: populate the content of aircraft
 		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
 		doc.appendChild(rootElement);
 		
 		// aircraft
-//		org.w3c.dom.Element aircraftElement = doc.createElement("aircraft");
-
 		org.w3c.dom.Element aircraftElement = createXMLElementWithAttributes(doc, "aircraft", 
 				Tuple.of("id", aircraft.getId()),
 				Tuple.of("type", aircraft.getTypeVehicle().toString()),
@@ -1711,9 +1783,26 @@ public class JPADStaticWriteUtils {
 						aircraft.getVTail().getRiggingAngle())
 				);
 
+		// append all kinds of lifting surfaces
 		aircraftElement.appendChild(liftingSurfacesElement);
+		
+		// fuselageS
 		org.w3c.dom.Element fuselagesElement = doc.createElement("fuselages");
+		
+		// fuselage
+		fuselagesElement.appendChild(
+				createFuselageElement(doc, 
+						aircraftSaveDirectives.getFuselageFileName(), 
+						aircraft.getFuselage().getXApexConstructionAxes(),
+						aircraft.getFuselage().getYApexConstructionAxes(),
+						aircraft.getFuselage().getZApexConstructionAxes())
+				);
+		
+		
+		// append all kinds of fuselages
 		aircraftElement.appendChild(fuselagesElement);
+		
+		
 		org.w3c.dom.Element powerPlantElement = doc.createElement("power_plant");
 		aircraftElement.appendChild(powerPlantElement);
 		org.w3c.dom.Element nacellesElement = doc.createElement("nacelles");
@@ -1763,6 +1852,23 @@ public class JPADStaticWriteUtils {
 		return element;
 	}
 	
+	public static org.w3c.dom.Element createFuselageElement(Document doc, 
+			String fileName, 
+			Amount<Length> x, Amount<Length> y, Amount<Length> z) {
+		
+		org.w3c.dom.Element element = createXMLElementWithAttributes(
+				doc,
+				"fuselage",
+				Tuple.of("file", fileName)	
+				);
+		org.w3c.dom.Element pos = doc.createElement("position");
+		element.appendChild(pos);
+		JPADStaticWriteUtils.writeSingleNode("x", x, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("y", y, pos, doc);
+		JPADStaticWriteUtils.writeSingleNode("z", z, pos, doc);
+
+		return element;
+	}
 
 
 }

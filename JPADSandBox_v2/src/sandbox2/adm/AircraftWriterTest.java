@@ -177,7 +177,7 @@ public class AircraftWriterTest {
 			// Create output folder under the standard out-tree
 			String outputFolderPath = 
 					JPADStaticWriteUtils.createNewFolder(
-							MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) + File.separator 
+							MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR) 
 							+ "Aircraft_Writer_Test" + File.separator);
 			
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);

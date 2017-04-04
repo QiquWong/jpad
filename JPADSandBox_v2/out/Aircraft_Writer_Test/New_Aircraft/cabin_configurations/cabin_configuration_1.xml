@@ -1,1 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<jpad_config>
+   <configuration id="IRON Cabin Configuration">
+      <global_data>
+         <actual_passengers_number>130</actual_passengers_number>
+         <maximum_passengers_number>150</maximum_passengers_number>
+         <flight_crew_number>3</flight_crew_number>
+         <classes_number>1</classes_number>
+         <classes_type>[ECONOMY]</classes_type>
+         <aisles_number>1</aisles_number>
+         <x_coordinates_first_row unit="m">5.0640</x_coordinates_first_row>
+         <seat_block_position>RIGHT</seat_block_position>
+         <missing_seat_row>
+            <value>not_initialized</value>
+         </missing_seat_row>
+      </global_data>
+   </configuration>
+</jpad_config>
