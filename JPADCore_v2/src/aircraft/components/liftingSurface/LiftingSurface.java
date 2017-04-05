@@ -107,7 +107,6 @@ public class LiftingSurface implements ILiftingSurface {
 	private List<Double> _cmACVsY = new ArrayList<>();
 	private List<Double> _cmACStallVsY = new ArrayList<>();
 	private List<Double> _criticalMachVsY = new ArrayList<>();
-	private MyArray _distanceAirfoilACFromWingAC = new MyArray();
 	
 	//================================================
 	// Builder pattern via a nested public static class
@@ -192,9 +191,9 @@ public class LiftingSurface implements ILiftingSurface {
 		if(this._type == ComponentEnum.WING)
 			// Wing Form Factor (ADAS pag 93 graphic or pag 9 meccanica volo appunti)
 			_formFactor = ((1 + 1.2*getThicknessMean()*
-					Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN))+
+					Math.cos(getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN))+
 					100*Math.pow(compressibilityFactor,3)*
-					(Math.pow(Math.cos(getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN)),2))*
+					(Math.pow(Math.cos(getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)),2))*
 					Math.pow(getThicknessMean(),4)));
 		else if(this._type == ComponentEnum.HORIZONTAL_TAIL)
 			// HTail form factor from Giovanni Nardone thesis pag.86
@@ -293,7 +292,7 @@ public class LiftingSurface implements ILiftingSurface {
 			case ROSKAM : { // Roskam page 85 (pdf) part V
 				methodsList.add(method);
 
-				System.out.println("---" + this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN));
+				System.out.println("---" + this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN));
 				_mass = Amount.valueOf(
 						Amount.valueOf(2*(0.00428*
 								Math.pow(surface, 0.48)*this.getAspectRatio()*
@@ -301,7 +300,7 @@ public class LiftingSurface implements ILiftingSurface {
 								Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight().to(NonSI.POUND_FORCE).
 										times(aircraft.getTheAnalysisManager().getNUltimate()).
 										getEstimatedValue(),0.84)*
-								Math.pow(this._liftingSurfaceCreator.getTaperRatioEquivalentWing(), 0.14))/
+								Math.pow(this._liftingSurfaceCreator.getEquivalentWing().getTaperRatio(), 0.14))/
 								(Math.pow(100*this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(),0.76)*
 										Math.pow(Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()), 1.54)),
 								NonSI.POUND_FORCE).to(NonSI.KILOGRAM_FORCE).getEstimatedValue(),
@@ -320,9 +319,9 @@ public class LiftingSurface implements ILiftingSurface {
 								Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue(),3)*
 								Math.sqrt(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(NonSI.POUND).getEstimatedValue()*
 										aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().to(NonSI.POUND).getEstimatedValue())*
-								(1 + 2*this._liftingSurfaceCreator.getTaperRatioEquivalentWing()))/
-						(thicknessMean*Math.pow(Math.cos(this._liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),2)*
-								surface*(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing()))),
+								(1 + 2*this._liftingSurfaceCreator.getEquivalentWing().getTaperRatio()))/
+						(thicknessMean*Math.pow(Math.cos(this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue()),2)*
+								surface*(1 + this.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio()))),
 						NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 				//				} else {
@@ -365,9 +364,9 @@ public class LiftingSurface implements ILiftingSurface {
 										aircraft.getTheAnalysisManager().getNUltimate(),0.4843)*
 										pow(this.getSurface().getEstimatedValue(),0.7819)*
 										pow(this.getAspectRatio(),0.993)*
-										pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(),0.4)*
+										pow(1 + this.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio(),0.4)*
 										pow(1 - R/aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue(),0.4))/
-								(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue())*
+								(cos(this.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue())*
 										pow(thicknessMean,0.4)), 
 								SI.KILOGRAM);
 					}
@@ -390,8 +389,8 @@ public class LiftingSurface implements ILiftingSurface {
 						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(),0.649)*
 						pow(this.getAspectRatio(), 0.5)*
 						pow(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(), -0.4)*
-						pow(1+this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.1)*
-						pow(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()), -1)*
+						pow(1+this.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio(), 0.1)*
+						pow(cos(this.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue()), -1)*
 						pow(this._liftingSurfaceCreator.getControlSurfaceArea().to(MyUnits.FOOT2).getEstimatedValue(), 0.1), NonSI.POUND).
 						to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
@@ -409,8 +408,8 @@ public class LiftingSurface implements ILiftingSurface {
 						*aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()*
 						_kRho*
 						pow((this.getAspectRatio()*aircraft.getTheAnalysisManager().getNUltimate())/
-								cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()),0.6)*
-						pow(this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.04), SI.KILOGRAM);
+								cos(this.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue()),0.6)*
+						pow(this.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio(), 0.04), SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
 
@@ -446,7 +445,7 @@ public class LiftingSurface implements ILiftingSurface {
 								Math.pow(aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffWeight()
 										.times(aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight()).getEstimatedValue(), 
 										0.5)*
-								0.36*Math.pow(1 + this.getLiftingSurfaceCreator().getTaperRatioEquivalentWing(), 0.5)*
+								0.36*Math.pow(1 + this.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio(), 0.5)*
 								(this.getSpan().getEstimatedValue()/100)*
 								(this.getAspectRatio()/
 										(thicknessMean
@@ -511,7 +510,7 @@ public class LiftingSurface implements ILiftingSurface {
 						pow(this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), -1.) *
 						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 0.75) * 
 						pow(0.3*this.getLiftingSurfaceCreator().getLiftingSurfaceACToWingACdistance().to(NonSI.FOOT).getEstimatedValue(), 0.704) * 
-						pow(cos(this.getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().to(SI.RADIAN).getEstimatedValue()), -1) *
+						pow(cos(this.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue()), -1) *
 						pow(this.getAspectRatio(), 0.166) * 
 						pow(1 + aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().to(NonSI.FOOT).getEstimatedValue()/
 								this.getSpan().to(NonSI.FOOT).getEstimatedValue(), -0.25) * 
@@ -742,7 +741,7 @@ public class LiftingSurface implements ILiftingSurface {
 		_zCG = Amount.valueOf(0., SI.METER);
 
 		@SuppressWarnings("unused")
-		Double lambda = _liftingSurfaceCreator.getTaperRatioEquivalentWing(),
+		Double lambda = _liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
 				span = getSpan().getEstimatedValue(),
 				xRearSpar = _liftingSurfaceCreator.getSecondarySparNonDimensionalPosition(),
 				xFrontSpar = _liftingSurfaceCreator.getMainSparNonDimensionalPosition();
@@ -1566,7 +1565,7 @@ public class LiftingSurface implements ILiftingSurface {
 	public double getTaperRatioEquivalent(Boolean recalculate) {
 		if(recalculate)
 			_liftingSurfaceCreator.getEquivalentWing(recalculate);
-		return _liftingSurfaceCreator.getTaperRatioEquivalentWing();
+		return _liftingSurfaceCreator.getEquivalentWing().getTaperRatio();
 	}
 
 	@Override
@@ -1578,7 +1577,7 @@ public class LiftingSurface implements ILiftingSurface {
 	public Amount<Length> getChordRootEquivalent(Boolean recalculate) {
 		if(recalculate) 
 			_liftingSurfaceCreator.getEquivalentWing(recalculate);
-		return _liftingSurfaceCreator.getRootChordEquivalentWing();
+		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getChordRoot();
 	}
 
 	@Override
@@ -1599,9 +1598,9 @@ public class LiftingSurface implements ILiftingSurface {
 		if(recalculate)
 			_liftingSurfaceCreator.getEquivalentWing(recalculate);
 		return LSGeometryCalc.calculateSweep(
-				_liftingSurfaceCreator.getEquivalentWingAspectRatio(),
-				_liftingSurfaceCreator.getTaperRatioEquivalentWing(),
-				_liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN),
+				_liftingSurfaceCreator.getEquivalentWing().getAspectRatio(),
+				_liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
+				_liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN),
 				0.0,
 				0.25
 				).to(NonSI.DEGREE_ANGLE);
@@ -1613,9 +1612,9 @@ public class LiftingSurface implements ILiftingSurface {
 		if(recalculate) 
 			_liftingSurfaceCreator.getEquivalentWing(recalculate);
 		return LSGeometryCalc.calculateSweep(
-				_liftingSurfaceCreator.getEquivalentWingAspectRatio(),
-				_liftingSurfaceCreator.getTaperRatioEquivalentWing(),
-				_liftingSurfaceCreator.getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN),
+				_liftingSurfaceCreator.getEquivalentWing().getAspectRatio(),
+				_liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
+				_liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN),
 				0.0,
 				0.5
 				).to(NonSI.DEGREE_ANGLE);
@@ -1625,7 +1624,7 @@ public class LiftingSurface implements ILiftingSurface {
 	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate) {
 		if(recalculate)
 			_liftingSurfaceCreator.getEquivalentWing(recalculate);
-		return _liftingSurfaceCreator.getSweepQuarterChordEquivalentWing();
+		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN);
 	}
 
 	@Override
@@ -1892,14 +1891,6 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public List<Double> getCriticalMachVsY() {
 		return _criticalMachVsY;
-	}
-
-	public MyArray getDistanceAirfoilACFromWingAC() {
-		return _distanceAirfoilACFromWingAC;
-	}
-
-	public void setDistanceAirfoilACFromWingAC(MyArray _distanceAirfoilACFromWingAC) {
-		this._distanceAirfoilACFromWingAC = _distanceAirfoilACFromWingAC;
 	}
 
 	public Double getMassCorrectionFactor() {

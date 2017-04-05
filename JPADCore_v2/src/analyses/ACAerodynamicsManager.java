@@ -156,10 +156,10 @@ public class ACAerodynamicsManager {
 		initializeComponentsAerodynamics(_theOperatingConditions, aircraft);
 
 		ne = aircraft.getPowerPlant().getEngineNumber();
-		lambdaW = aircraft.getWing().getLiftingSurfaceCreator().getTaperRatioEquivalentWing().doubleValue();
+		lambdaW = aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio().doubleValue();
 		arW = aircraft.getWing().getAspectRatio();
 		bW = aircraft.getWing().getSpan().getEstimatedValue();
-		phi25 = aircraft.getWing().getLiftingSurfaceCreator().getSweepQuarterChordEquivalentWing().doubleValue(SI.RADIAN);
+		phi25 = aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN);
 		tc = aircraft.getWing().getThicknessMean();
 		dihedral = aircraft.getWing().getLiftingSurfaceCreator().getDihedralMean().getEstimatedValue();
 
@@ -372,7 +372,9 @@ public class ACAerodynamicsManager {
 							Math.E,
 							(_theAircraft.getWing()
 									     .getLiftingSurfaceCreator()
-									     .getSweepQuarterChordEquivalentWing()
+									     .getEquivalentWing()
+									     .getPanels().get(0)
+									     .getSweepQuarterChord()
 									     .times(-0.037)
 									     .getEstimatedValue()
 									     )

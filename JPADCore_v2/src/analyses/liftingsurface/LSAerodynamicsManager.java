@@ -5111,10 +5111,10 @@ public class LSAerodynamicsManager{
 //	public void setcLActualArrayHighLift(double[] cLActualArrayHighLift) {
 //		this.cLActualArrayHighLift = cLActualArrayHighLift;
 //	}
-//
-//
-//	
-//
-//
+
+
+	
+
+
 
 }

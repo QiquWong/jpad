@@ -277,8 +277,8 @@ public class DragCalc {
 		
 			Amount<Area> flapSurface = Amount.valueOf(
 					wing.getSpan().getEstimatedValue()							
-					/2*wing.getLiftingSurfaceCreator().getRootChordEquivalentWing().getEstimatedValue()
-					*(2-((1-wing.getLiftingSurfaceCreator().getTaperRatioEquivalentWing())
+					/2*wing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+					*(2-((1-wing.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio())
 							*(wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()
 									+wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getInnerStationSpanwisePosition())))
 					*(wing.getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getOuterStationSpanwisePosition()

@@ -3,6 +3,7 @@ package calculators.aerodynamics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -14,6 +15,7 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.javafx.geom.transform.BaseTransform.Degree;
 
+import analyses.liftingsurface.LSAerodynamicsCalculator.CalcAlpha0L;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.DatabaseManager;
@@ -21,6 +23,7 @@ import jahuwaldt.tools.units.Degrees;
 //import databasesIO.vedscdatabase.VeDSCDatabaseCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.customdata.MyArray;
 
 /**
  * A group of static functions for evaluating aerodynamic moment/moment coefficients.
@@ -86,6 +89,102 @@ public class MomentCalc {
 		return cLalpha * (aircraftXcg - (xACpercentMAC + xLEMacBRF)) / meanAerodChord;
 	}
 
+	public static double calculateCMACAdditional(
+			Amount<Area> surface,
+			Amount<Length> semiSpan,
+			Amount<Length> meanAerodynamicChord,
+			List<Amount<Length>> yDistribution,
+			List<Amount<Length>> chordDistribution,
+			List<Double> cmACDistribution
+			) {
+		return (2/(surface.doubleValue(SI.SQUARE_METRE)*meanAerodynamicChord.doubleValue(SI.METER)))
+				*MyMathUtils.integrate1DSimpsonSpline(
+						MyArrayUtils.convertListOfAmountTodoubleArray(
+								yDistribution
+								), 
+						MyArrayUtils.convertToDoublePrimitive(
+								cmACDistribution.stream()
+								.map(cm -> cm*Math.pow(chordDistribution.get(chordDistribution.indexOf(cm)).doubleValue(SI.METER),2))
+								.collect(Collectors.toList())
+								),
+						0., 
+						semiSpan.doubleValue(SI.METER)
+						);
+	}
+	
+	public static double calculateCMACBasic(
+			Amount<Area> surface,
+			Amount<Length> semiSpan,
+			Amount<Length> meanAerodynamicChord,
+			List<Amount<Length>> yDistribution,
+			List<Amount<Length>> chordDistribution,
+			List<Amount<Length>> xLEDistribution,
+			List<Amount<Angle>> dihedralDistribution,
+			List<Amount<Angle>> twistDistribution,
+			List<Amount<Angle>> alphaZeroLiftDistribution,
+			List<Amount<Length>> airfoilACToWingACDistribution,
+			Double vortexSemiSpanToSemiSpanRatio,
+			Double mach,
+			Amount<Length> altitude,
+			Amount<Angle> alphaZeroLift
+			) {
+		
+		NasaBlackwell theNasaBlackwellCalculatorAlphaZeroLift = new NasaBlackwell(
+				semiSpan.doubleValue(SI.METER),
+				surface.doubleValue(SI.SQUARE_METRE),
+				MyArrayUtils.convertListOfAmountTodoubleArray(yDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(chordDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(dihedralDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(twistDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(alphaZeroLiftDistribution),
+				vortexSemiSpanToSemiSpanRatio,
+				0.0,
+				mach,
+				altitude.doubleValue(SI.METER)
+				);
+		
+		theNasaBlackwellCalculatorAlphaZeroLift.calculate(alphaZeroLift);
+		
+		return (2/(surface.doubleValue(SI.SQUARE_METRE)*meanAerodynamicChord.doubleValue(SI.METER)))
+				*MyMathUtils.integrate1DSimpsonSpline(
+						MyArrayUtils.convertListOfAmountTodoubleArray(
+								yDistribution
+								),
+						theNasaBlackwellCalculatorAlphaZeroLift.getClTotalDistribution()
+						.times(new MyArray(MyArrayUtils.convertListOfAmountToDoubleArray(chordDistribution)))
+						.times(new MyArray(MyArrayUtils.convertListOfAmountTodoubleArray(airfoilACToWingACDistribution)))
+						.toArray(),
+						0., 
+						semiSpan.doubleValue(SI.METER)
+						);
+	}
+	
+	public static double calculateCMACIntegralMean (
+			Amount<Area> surface,
+			Amount<Length> semiSpan,
+			Amount<Length> meanAerodynamicChord,
+			List<Amount<Length>> yDistribution,
+			List<Amount<Length>> chordDistribution,
+			List<Double> cmACDistribution
+			) {
+		
+		return (2/(surface.doubleValue(SI.SQUARE_METRE)*meanAerodynamicChord.doubleValue(SI.METER)))
+				* MyMathUtils.integrate1DSimpsonSpline(
+						MyArrayUtils.convertListOfAmountTodoubleArray(yDistribution),
+						MyArrayUtils.convertToDoublePrimitive(
+								cmACDistribution.stream()
+								.map(cmac -> cmac
+										*chordDistribution.get(chordDistribution.indexOf(cmac)).doubleValue(SI.METER)
+										*chordDistribution.get(chordDistribution.indexOf(cmac)).doubleValue(SI.METER)
+										)
+								.collect(Collectors.toList())
+								),
+						0.,
+						semiSpan.doubleValue(SI.METER)
+						);
+		
+	}
 	/**
 	 * 
 	 * @param cL_alpha_v
