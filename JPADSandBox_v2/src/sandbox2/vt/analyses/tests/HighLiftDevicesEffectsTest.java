@@ -14,9 +14,9 @@ import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsCalculator;
-import analyses.liftingsurface.LSAerodynamicsCalculator.CalcCLAlpha;
-import analyses.liftingsurface.LSAerodynamicsCalculator.CalcHighLiftCurve;
+import analyses.liftingsurface.LSAerodynamicsManager;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftCurve;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;

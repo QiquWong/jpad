@@ -431,11 +431,11 @@ public class ACAerodynamicsManager {
 		}
 
 		case RAYMER : { // Raymer page 298 (157 pdf)
-			if (_theAircraft.getWing().getSweepLEEquivalent(false).getEstimatedValue()> 5*Math.PI/180.){
+			if (_theAircraft.getWing().getSweepLEEquivalent().getEstimatedValue()> 5*Math.PI/180.){
 				return 4.61*(1 - 0.045
 						*Math.pow(_theAircraft.getWing().getAspectRatio(),0.68))*
 						Math.pow(
-								Math.cos(_theAircraft.getWing().getSweepLEEquivalent(false).getEstimatedValue())
+								Math.cos(_theAircraft.getWing().getSweepLEEquivalent().getEstimatedValue())
 								,0.15) - 3.1;
 			} else {
 				return 1.78*(1 - 0.045

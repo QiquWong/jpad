@@ -314,10 +314,10 @@ public class ACAerodynamicCalculator {
 			downwashGradientConstantList.add(
 					AerodynamicCalc.calculateDownwashRoskamWithMachEffect(
 							_theAircraft.getWing().getAspectRatio(), 
-							_theAircraft.getWing().getTaperRatioEquivalent(false), 
+							_theAircraft.getWing().getTaperRatioEquivalent(), 
 							_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) / _theAircraft.getWing().getSpan().doubleValue(SI.METER), 
 							_verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE.doubleValue(SI.METER) / _theAircraft.getWing().getSpan().doubleValue(SI.METER), 
-							_theAircraft.getWing().getSweepQuarterChordEquivalent(false),
+							_theAircraft.getWing().getSweepQuarterChordEquivalent(),
 							cLAlphaMachZero, 
 							_theAircraft.getWing()
 							.getTheAerodynamicsCalculatorMap()
@@ -397,7 +397,7 @@ public class ACAerodynamicCalculator {
 							_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER), 
 							_verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE.doubleValue(SI.METER), 
 							cl, 
-							_theAircraft.getWing().getSweepQuarterChordEquivalent(false),
+							_theAircraft.getWing().getSweepQuarterChordEquivalent(),
 							_theAircraft.getWing().getAspectRatio(), 
 							_theAircraft.getWing().getSemiSpan()
 							).to(NonSI.DEGREE_ANGLE)
@@ -440,7 +440,7 @@ public class ACAerodynamicCalculator {
 				MethodEnum.ROSKAM,
 				AerodynamicCalc.calculateVariableDownwashGradientRoskamWithMachEffect(
 						_theAircraft.getWing().getAspectRatio(),
-						_theAircraft.getWing().getTaperRatioEquivalent(false),
+						_theAircraft.getWing().getTaperRatioEquivalent(),
 						_theAircraft.getWing().getZApexConstructionAxes(),
 						_theAircraft.getHTail().getZApexConstructionAxes(),
 						_theAircraft.getWing().getRiggingAngle(),
@@ -455,7 +455,7 @@ public class ACAerodynamicCalculator {
 											),
 						_horizontalDistanceQuarterChordWingHTail,
 						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
-						_theAircraft.getWing().getSweepQuarterChordEquivalent(false),
+						_theAircraft.getWing().getSweepQuarterChordEquivalent(),
 						cLAlphaMachZero,
 						_theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
@@ -530,7 +530,7 @@ public class ACAerodynamicCalculator {
 												.get(ComponentEnum.WING)
 												.get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)
 												),
-						_theAircraft.getWing().getSweepQuarterChordEquivalent(false),
+						_theAircraft.getWing().getSweepQuarterChordEquivalent(),
 						_theAircraft.getWing().getAspectRatio(),
 						_theAircraft.getWing().getSemiSpan(), 
 						_horizontalDistanceQuarterChordWingHTail,

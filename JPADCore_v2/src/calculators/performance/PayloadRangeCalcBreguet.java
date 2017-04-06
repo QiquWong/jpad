@@ -161,7 +161,7 @@ public class PayloadRangeCalcBreguet{
 		this.ar = theAircraft.getWing().getAspectRatio();
 		this.cruiseMach = cruiseMach;
 		this.altitude = altitude;
-		this.sweepHalfChordEquivalent = theAircraft.getWing().getSweepHalfChordEquivalent(false);
+		this.sweepHalfChordEquivalent = theAircraft.getWing().getSweepHalfChordEquivalent();
 		this.polarCL = polarCL;
 		this.polarCD = polarCD;
 		this.cD0 = MyArrayUtils.getMin(this.polarCD);

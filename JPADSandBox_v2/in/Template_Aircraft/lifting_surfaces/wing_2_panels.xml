@@ -9,15 +9,16 @@
 			<winglet_height unit="m">0.0</winglet_height>
 		</global_data>
 		<equivalent_wing>
-			<surface unit="m²">36.9</surface>
-			<span unit="m">21.97</span>
-			<taper_ratio>0.556</taper_ratio>
-			<sweep_leading_edge unit="deg">12.56</sweep_leading_edge>
-			<twist_at_tip unit="deg">-2.5</twist_at_tip>
-			<dihedral unit="deg">2.5</dihedral>
-			<non_dimensional_span_station_kink>0.363</non_dimensional_span_station_kink>
+			<surface unit="m²">105</surface>
+			<span unit="m">35</span>
+			<taper_ratio>0.385</taper_ratio> <!-- c_tip/c_root_equivalent -->
+			<sweep_leading_edge unit="deg">10</sweep_leading_edge>
+			<twist_at_tip unit="deg">-2</twist_at_tip>
+			<dihedral unit="deg">5</dihedral>
+			<non_dimensional_span_station_kink>0.3</non_dimensional_span_station_kink>
+			<taper_ratio_real_wing>0.368</taper_ratio_real_wing> <!-- c_tip/c_root_real -->
 			<twist_at_kink_real_wing unit="deg">0.0</twist_at_kink_real_wing>	
-			<sweep_leading_edge_inner_panel unit="deg">18</sweep_leading_edge_inner_panel>
+			<sweep_leading_edge_inner_panel unit="deg">10</sweep_leading_edge_inner_panel>
 			<sweep_leading_edge_outer_panel unit="deg">10</sweep_leading_edge_outer_panel>
 			<airfoils>
 				<airfoil_root file="naca63209.xml"/>

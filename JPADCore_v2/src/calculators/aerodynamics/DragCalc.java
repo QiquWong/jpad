@@ -199,7 +199,7 @@ public class DragCalc {
 
 	public static Double calculateCDGap(LiftingSurface theLiftingSurface) {
 		Double cDGap = 0.0002*(
-				Math.pow(Math.cos(theLiftingSurface.getSweepQuarterChordEquivalent(false).doubleValue(SI.RADIAN)) ,2))
+				Math.pow(Math.cos(theLiftingSurface.getSweepQuarterChordEquivalent().doubleValue(SI.RADIAN)) ,2))
 				* 0.3 
 				* theLiftingSurface.getLiftingSurfaceCreator().getSurfaceWettedExposed().doubleValue(SI.SQUARE_METRE)
 				/ theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE);

@@ -15,7 +15,7 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.javafx.geom.transform.BaseTransform.Degree;
 
-import analyses.liftingsurface.LSAerodynamicsCalculator.CalcAlpha0L;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.DatabaseManager;

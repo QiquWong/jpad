@@ -48,7 +48,6 @@ import writers.JPADStaticWriteUtils;
 public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	private int _numberOfSpanwisePoints = 15;
-	private LiftingSurfaceCreator _equivalentWing;
 
 	private Boolean _mirrored;
 
@@ -81,21 +80,16 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	private Amount<Length> _liftingSurfaceArm = Amount.valueOf(0.0, SI.METER);
 	
 	// equivalent wing fields
+	private LiftingSurfaceCreator _equivalentWing;
 	private Boolean _equivalentWingFlag = Boolean.FALSE;
-//	private Amount<Area> _equivalentWingSurface;
-//	private Double _equivalentWingAspectRatio;
-//	private Amount<Length> _equivalentWingRootChord;
-//	private Double _nonDimensionalSpanStationKink;
-//	private Amount<Angle> _sweepQuarterChordEquivalentWing;
-//	private Amount<Angle> _dihedralEquivalentWing;
-//	private Amount<Angle> _twistAtTipEquivalentWing;
-//	private Double _taperRatioEquivalentWing;
-//	private Amount<Length> _xOffsetEquivalentWingRootLE; // leading edge offset of the equivalent wing root chord ( >0 if inside original root chord)
-//	private Amount<Length> _xOffsetEquivalentWingRootTE; // trailing edge offset of the equivalent wing root chord ( >0 if inside original root chord)
-//	private AirfoilCreator airfoilRootEquivalentWing;
-//	private AirfoilCreator airfoilKinkEquivalentWing;
-//	private AirfoilCreator airfoilTipEquivalentWing;
-
+	private Double _nonDimensionalSpanStationKink;
+	private Amount<Angle> _sweepLeadingEdgeInnerPanel; 
+	private Amount<Angle> _sweepLeadingEdgeOuterPanel;
+	private AirfoilCreator _airfoilKinkEquivalentWing;
+	private Amount<Angle> _twistAtKinkRealWing;
+	private Amount<Length> _xOffsetEquivalentWingRootLE;
+	private Amount<Length> _xOffsetEquivalentWingRootTE;
+	
 	public LiftingSurfaceCreator(String id, Boolean mirrored, ComponentEnum type) {
 		this._id = id;
 		this._mirrored = mirrored;
@@ -147,7 +141,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		private List<AsymmetricFlapCreator> __asymmetricFlaps = new ArrayList<AsymmetricFlapCreator>();
 		private List<SlatCreator> __slats = new ArrayList<SlatCreator>();
 		private List<SpoilerCreator> __spoilers = new ArrayList<SpoilerCreator>();
-
+		
 		private MyArray __eta = new MyArray(Unit.ONE);
 
 		private List<Amount<Length>> __yBreakPoints =  new ArrayList<Amount<Length>>();
@@ -706,6 +700,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				Amount<Angle> dihedral = null;
 				Double spanStationKink = null;
 				Amount<Angle> twistAtKinkRealWing = null;
+				Double taperRatioRealWing = null;
 				Amount<Angle> sweepLeadingEdgeInnerPanel = null;
 				Amount<Angle> sweepLeadingEdgeOuterPanel = null;
 				AirfoilCreator airfoilRoot = null;
@@ -746,6 +741,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				if(twistAtKinkRealWingProperty != null)
 					twistAtKinkRealWing = reader.getXMLAmountAngleByPath("//equivalent_wing/twist_at_kink_real_wing");
 				
+				String taperRatioRealWingProperty = reader.getXMLPropertyByPath("//equivalent_wing/taper_ratio_real_wing");
+				if(taperRatioRealWingProperty != null)
+					taperRatioRealWing = Double.valueOf(taperRatioRealWingProperty);
+				
 				String sweepLEInnerPropery = reader.getXMLPropertyByPath("//equivalent_wing/sweep_leading_edge_inner_panel");
 				if(sweepLEInnerPropery != null)
 					sweepLeadingEdgeInnerPanel = reader.getXMLAmountAngleByPath("//equivalent_wing/sweep_leading_edge_inner_panel");
@@ -784,19 +783,51 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					airfoilTip = AirfoilCreator.importFromXML(airFoilPathTip);
 				}
 
-				// setting these variables to the related fields of the equivalent wing
-//				liftingSurface.setEquivalentWingSurface(surface);
-//				liftingSurface.setEquivalentWingAspectRatio(aspectRatio);
-//				liftingSurface.setNonDimensionalSpanStationKink(spanStationKink);
-//				liftingSurface.setSweepQuarterChordEquivalentWing(sweepLeadingEdge);
-//				liftingSurface.setDihedralEquivalentWing(dihedral);
-//				liftingSurface.setTwistAtTipEquivalentWing(twistAtTip);
-//				liftingSurface.setTaperRatioEquivalentWing(taperRatio);
-//				liftingSurface.setXOffsetEquivalentWingRootLE(xOffsetRootChordLE);
-//				liftingSurface.setXOffsetEquivalentWingRootTE(xOffsetRootChordTE);
-//				liftingSurface.setAirfoilRootEquivalentWing(airfoilRoot);
-//				liftingSurface.setAirfoilKinkEquivalentWing(airfoilKink);
-//				liftingSurface.setAirfoilTipEquivalentWing(airfoilTip);
+				//.................................................................
+				// creating the equivalent wing
+				Amount<Length> chordRootEquivalentWing = 
+						Amount.valueOf(
+								(2*surface.doubleValue(SI.SQUARE_METRE))
+								/(span.doubleValue(SI.METER)*(1+taperRatio)),
+								SI.METER
+								);
+				
+				Amount<Length> chordTipEquivalentWing = 
+						Amount.valueOf(
+								taperRatio*chordRootEquivalentWing.doubleValue(SI.METER),
+								SI.METER
+								);
+				
+				LiftingSurfacePanelCreator equivalentWingPanel = new 
+						LiftingSurfacePanelBuilder(
+								"Equivalent wing",
+								chordRootEquivalentWing.to(SI.METER),
+								chordTipEquivalentWing.to(SI.METER),
+								airfoilRoot,
+								airfoilTip,
+								twistAtTip,
+								span.divide(2).to(SI.METER),
+								sweepLeadingEdge.to(SI.RADIAN),
+								dihedral.to(SI.RADIAN)
+								)
+						.build();
+				
+				LiftingSurfaceCreator equivalentWing = new LiftingSurfaceCreator(
+						"Equivalent Wing", 
+						Boolean.TRUE, 
+						ComponentEnum.WING
+						);
+				
+				equivalentWing.addPanel(equivalentWingPanel);
+				equivalentWing.setNonDimensionalSpanStationKink(spanStationKink);
+				equivalentWing.setTwistAtKinkRealWing(twistAtKinkRealWing);
+				equivalentWing.setAirfoilKinkEquivalentWing(airfoilKink);
+				equivalentWing.setSweepLeadingEdgeInnerPanel(sweepLeadingEdgeInnerPanel);
+				equivalentWing.setSweepLeadingEdgeOuterPanel(sweepLeadingEdgeOuterPanel);
+				equivalentWing.setEquivalentWingFlag(Boolean.TRUE);
+				liftingSurface.setEquivalentWing(equivalentWing);
+				liftingSurface.setTaperRatio(taperRatioRealWing);
+				
 			}
 
 			//---------------------------------------------------------------------------------
@@ -1102,7 +1133,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			//======================================================
 			// Build 2 panels wing from the equivalent wing
 			if(this._equivalentWingFlag)
-				buildPlanform2Panels();
+				buildPlanform2PanelsWithPanelsLeadingEdgeSweepAngles();
 		}
 		
 		// Update inner geometric variables of each panel
@@ -1769,215 +1800,302 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		return this.taperRatio;
 	}
 
+	public void setTaperRatio(Double taperRatio) {
+		this.taperRatio = taperRatio;
+	}
+	
 	@Override
 	public Double getTaperRatio(boolean recalculate) {
 		if (recalculate) this.calculateGeometry(this._type, this._mirrored);
 		return this.taperRatio;
 	}
 
+	@SuppressWarnings({ "unchecked", "unused" })
+	private void buildPlanform2PanelsWithLeadingEdgeAndTrailingEdgeExtensions() {
+		// calculating each panel parameters from the equivalent wing ...
+		Amount<Length> span = Amount.valueOf(
+				Math.sqrt(this._equivalentWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE)
+						*this._equivalentWing.getAspectRatio()),
+				SI.METER
+				);
+		Amount<Length> chordRootEquivalentWing = Amount.valueOf(
+				2*this._equivalentWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE)/
+				(span.doubleValue( SI.METER)*(1 + this._equivalentWing.getTaperRatio())),
+				SI.METER
+				);
+		
+		Amount<Length> semiSpanInnerPanel = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> semiSpanOuterPanel = Amount.valueOf(0.0, SI.METER);
+		
+		if (this._nonDimensionalSpanStationKink != 1.0){
+			semiSpanInnerPanel = Amount.valueOf(
+					this._nonDimensionalSpanStationKink *(span.doubleValue(SI.METER)/2),
+					SI.METER
+					);
+			semiSpanOuterPanel = Amount.valueOf(
+					span.doubleValue(SI.METER)/2 
+					- semiSpanInnerPanel.doubleValue(SI.METER),
+					SI.METER
+					);
+		} else {
+			// if _spanStationKink=1.0 (simply tapered wing) outer panel doesn't exist: there is only the inner panel
+			semiSpanInnerPanel = Amount.valueOf((span.doubleValue(SI.METER))/2,SI.METER);
+			semiSpanOuterPanel = Amount.valueOf(0.,SI.METER);
+		}
+		
+		Amount<Length> chordTip = Amount.valueOf(
+				chordRootEquivalentWing.doubleValue(SI.METER)
+				* this._equivalentWing.getTaperRatio(),
+				SI.METER
+				);
+		
+		// _chordLinPanel = Root chord as if kink chord is extended linearly till wing root.
+		Amount<Length> chordLinPanel = Amount.valueOf(
+				(this._equivalentWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE) - chordTip.doubleValue(SI.METER)
+						*(span.doubleValue(SI.METER)/2))
+				/((this._xOffsetEquivalentWingRootLE.getEstimatedValue() + this._xOffsetEquivalentWingRootTE.getEstimatedValue())
+						*semiSpanInnerPanel.doubleValue(SI.METER) + span.doubleValue(SI.METER)/2),
+				SI.METER
+				);
+
+		Amount<Length> chordRoot = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> chordKink = Amount.valueOf(0.0, SI.METER);
+		// Cranked wing <==> _extensionLE/TERootChordLinPanel !=0 and _spanStationKink!=1.0 (if branch)
+		// Constant chord (inner panel) + simply tapered (outer panel) wing <==> _extensionLE/TERootChordLinPanel = 0 and _spanStationKink!=1.0 (else branch)
+		// Simply tapered wing <==> _extensionLE/TERootChordLinPanel = 0 and _spanStationKink=1.0 (if branch)
+		if (((this._xOffsetEquivalentWingRootLE.getEstimatedValue() != 0.0
+				| this._xOffsetEquivalentWingRootTE.getEstimatedValue() != 0.0)
+				| this._nonDimensionalSpanStationKink == 1.0)){
+			
+			chordRoot = Amount.valueOf(
+					chordLinPanel.doubleValue(SI.METER)
+					*(1 + this._xOffsetEquivalentWingRootLE.getEstimatedValue()
+					+ this._xOffsetEquivalentWingRootTE.getEstimatedValue()),
+					SI.METER
+					);
+			
+			chordKink = Amount.valueOf(
+					chordLinPanel.doubleValue(SI.METER)
+					*(1 - this._nonDimensionalSpanStationKink)
+					+ chordTip.doubleValue(SI.METER) 
+					* this._nonDimensionalSpanStationKink,
+					SI.METER
+					);
+
+		} else {
+			chordRoot = Amount.valueOf(
+					2*(this._equivalentWing.getSurfacePlanform().getEstimatedValue()/2 - 
+					chordTip.getEstimatedValue() * semiSpanOuterPanel.getEstimatedValue()/2)/
+					(span.getEstimatedValue()/2 + semiSpanInnerPanel.getEstimatedValue()),
+					SI.METER
+					);
+		    chordKink = (Amount<Length>) JPADStaticWriteUtils.cloneAmount(chordRoot);
+		}
+
+		Amount<Angle> sweepLeadingEdgeEquivalent = Amount.valueOf(
+				Math.atan(
+						Math.tan(
+								this._equivalentWing.getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN)) 
+						+ (1 - this._equivalentWing.getTaperRatio())
+						/(this._equivalentWing.getAspectRatio() 
+								* (1 + this._equivalentWing.getTaperRatio())
+								)
+						),
+				SI.RADIAN
+				);
+
+		// X coordinates of root, tip and kink chords
+		Amount<Length> xLERoot = Amount.valueOf(0.0 ,SI.METER);
+		
+		Amount<Length> xLETip = Amount.valueOf(
+				Math.tan(sweepLeadingEdgeEquivalent.doubleValue(SI.RADIAN)) * 
+				span.doubleValue(SI.METER)/2 + (chordLinPanel.doubleValue(SI.METER) 
+						* this._xOffsetEquivalentWingRootLE.getEstimatedValue()
+						* (1 - this._nonDimensionalSpanStationKink)
+						),
+				SI.METER
+				);
+		
+		Amount<Length> xLEKink = Amount.valueOf(0.0 ,SI.METER);
+		if ((this._xOffsetEquivalentWingRootLE.getEstimatedValue() != 0.0 
+				| this._xOffsetEquivalentWingRootTE.getEstimatedValue() != 0.0) 
+				| this._nonDimensionalSpanStationKink == 1.0) {
+			xLEKink = Amount.valueOf(chordLinPanel.doubleValue(SI.METER) * 
+					this._xOffsetEquivalentWingRootLE.getEstimatedValue() 
+					+ this._nonDimensionalSpanStationKink
+					* (xLETip.doubleValue(SI.METER) - chordLinPanel.doubleValue(SI.METER) 
+							* this._xOffsetEquivalentWingRootLE.getEstimatedValue()
+							),
+					SI.METER
+					);
+		} else {
+			xLEKink = (Amount<Length>) JPADStaticWriteUtils.cloneAmount(xLERoot);
+		}
+		
+		// Sweep of LE of inner panel
+		Amount<Angle> sweepLeadingEdgeInnerPanel = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		if ((this._xOffsetEquivalentWingRootLE.getEstimatedValue() != 0.0
+				| this._xOffsetEquivalentWingRootTE.getEstimatedValue() != 0.0) 
+				| this._nonDimensionalSpanStationKink == 1.0) {
+			
+			sweepLeadingEdgeInnerPanel = Amount.valueOf(
+					Math.atan(xLEKink.doubleValue(SI.METER)/
+					semiSpanInnerPanel.doubleValue(SI.METER)),
+					SI.RADIAN
+					);
+		} else {
+			sweepLeadingEdgeInnerPanel = Amount.valueOf(0.0, SI.RADIAN);
+		}
+		
+		// Outer panel LE sweep
+		Amount<Angle> sweepLeadingEdgeOuterPanel = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		if(this._nonDimensionalSpanStationKink != 1.0){
+			sweepLeadingEdgeOuterPanel = Amount.valueOf(Math.atan((xLETip.doubleValue(SI.METER) 
+					- xLEKink.doubleValue(SI.METER))
+					/(semiSpanOuterPanel.doubleValue(SI.METER))),
+					SI.RADIAN
+					);
+		} else {
+			sweepLeadingEdgeOuterPanel = (Amount<Angle>) JPADStaticWriteUtils.cloneAmount(sweepLeadingEdgeInnerPanel);
+		}
+		
+		double[] xArray = new double[] {0.0, 1.0};
+		double[] yArray = new double[] {0.0, this._equivalentWing.getPanels().get(0).getTwistGeometricAtTip().doubleValue(NonSI.DEGREE_ANGLE)};
+		Amount<Angle> twistAtKink = Amount.valueOf(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						xArray,
+						yArray,
+						this._nonDimensionalSpanStationKink),
+				NonSI.DEGREE_ANGLE
+				);
+		
+		/*
+		 *  since the mean dihedral is not enough to determine the two dihedral angles
+		 *  of the two panels. The dihedral is considered constant. Regarding the twist,
+		 *  the kink twist is taken as the interpolated value of the linear twist distribution
+		 *  (from root to tip) at the kink station 
+		 */
+		// creating the 2 panels ...
+		LiftingSurfacePanelCreator panel1 = new 
+				LiftingSurfacePanelBuilder(
+						"Inner panel from equivalent wing",
+						chordRoot,
+						chordKink,
+						this._equivalentWing.getPanels().get(0).getAirfoilRoot(),
+						this._airfoilKinkEquivalentWing,
+						twistAtKink,
+						semiSpanInnerPanel,
+						sweepLeadingEdgeInnerPanel.to(NonSI.DEGREE_ANGLE),
+						this._equivalentWing.getPanels().get(0).getDihedral()
+						)
+				.build();
+
+		LiftingSurfacePanelCreator panel2 = new 
+				LiftingSurfacePanelBuilder(
+						"Outer panel from equivalent wing",
+						chordKink,
+						chordTip,
+						this._airfoilKinkEquivalentWing,
+						this._equivalentWing.getPanels().get(0).getAirfoilTip(),
+						this._equivalentWing.getPanels().get(0).getTwistGeometricAtTip(),
+						semiSpanOuterPanel,
+						sweepLeadingEdgeOuterPanel.to(NonSI.DEGREE_ANGLE),
+						this._equivalentWing.getPanels().get(0).getDihedral()
+						)
+				.build();
+
+		// creating the wing ...
+		_panels.add(panel1);
+		_panels.add(panel2);
+	}
+	
 	/*****************************************************************************
 	 * This method builds a 2 panel wing from the related equivalent wing data
 	 */
-	@SuppressWarnings("unchecked")
-	private void buildPlanform2Panels() {
+	private void buildPlanform2PanelsWithPanelsLeadingEdgeSweepAngles() {
 		
-		// FIXME !
+		//=========================================================================
+		// REQUIRED DATA :
+		Amount<Length> semiSpan = this.getEquivalentWing().getPanels().get(0).getSpan();
+		Amount<Length> semiSpanUpToKink = semiSpan.times(this.getEquivalentWing().getNonDimensionalSpanStationKink());
+		Amount<Length> chordRootEquivalentWing = this.getEquivalentWing().getPanels().get(0).getChordRoot();
+		Amount<Length> chordTip = this.getEquivalentWing().getPanels().get(0).getChordTip();
+		Amount<Angle> twistAtTipEquivalentWing = this.getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip();
+		Amount<Angle> sweepLeadingEdgeEquivalentWing = this.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE);
 		
-//		// calculating each panel parameters from the equivalent wing ...
-//		Amount<Length> span = Amount.valueOf(
-//				Math.sqrt(this._equivalentWingSurface.doubleValue(SI.SQUARE_METRE)
-//						*this._equivalentWingAspectRatio),
-//				SI.METER
-//				);
-//		Amount<Length> chordRootEquivalentWing = Amount.valueOf(
-//				2*this._equivalentWingSurface.doubleValue(SI.SQUARE_METRE)/
-//				(span.doubleValue( SI.METER)*(1 + this._taperRatioEquivalentWing)),
-//				SI.METER
-//				);
-//		this._equivalentWingRootChord = chordRootEquivalentWing;
-//		
-//		Amount<Length> semiSpanInnerPanel = Amount.valueOf(0.0, SI.METER);
-//		Amount<Length> semiSpanOuterPanel = Amount.valueOf(0.0, SI.METER);
-//		
-//		if (this._nonDimensionalSpanStationKink != 1.0){
-//			semiSpanInnerPanel = Amount.valueOf(
-//					this._nonDimensionalSpanStationKink *(span.doubleValue(SI.METER)/2),
-//					SI.METER
-//					);
-//			semiSpanOuterPanel = Amount.valueOf(
-//					span.doubleValue(SI.METER)/2 
-//					- semiSpanInnerPanel.doubleValue(SI.METER),
-//					SI.METER
-//					);
-//		} else {
-//			// if _spanStationKink=1.0 (simply tapered wing) outer panel doesn't exist: there is only the inner panel
-//			semiSpanInnerPanel = Amount.valueOf((span.doubleValue(SI.METER))/2,SI.METER);
-//			semiSpanOuterPanel = Amount.valueOf(0.,SI.METER);
-//		}
-//		
-//		Amount<Length> chordTip = Amount.valueOf(
-//				chordRootEquivalentWing.doubleValue(SI.METER)
-//				* this._taperRatioEquivalentWing,
-//				SI.METER
-//				);
-//		
-//		// _chordLinPanel = Root chord as if kink chord is extended linearly till wing root.
-//		Amount<Length> chordLinPanel = Amount.valueOf(
-//				(this._equivalentWingSurface.doubleValue(SI.SQUARE_METRE) - chordTip.doubleValue(SI.METER)
-//						*(span.doubleValue(SI.METER)/2))
-//				/((this._xOffsetEquivalentWingRootLE.getEstimatedValue() + this._xOffsetEquivalentWingRootTE.getEstimatedValue())
-//						*semiSpanInnerPanel.doubleValue(SI.METER) + span.doubleValue(SI.METER)/2),
-//				SI.METER
-//				);
-//
-//		Amount<Length> chordRoot = Amount.valueOf(0.0, SI.METER);
-//		Amount<Length> chordKink = Amount.valueOf(0.0, SI.METER);
-//		// Cranked wing <==> _extensionLE/TERootChordLinPanel !=0 and _spanStationKink!=1.0 (if branch)
-//		// Constant chord (inner panel) + simply tapered (outer panel) wing <==> _extensionLE/TERootChordLinPanel = 0 and _spanStationKink!=1.0 (else branch)
-//		// Simply tapered wing <==> _extensionLE/TERootChordLinPanel = 0 and _spanStationKink=1.0 (if branch)
-//		if (((this._xOffsetEquivalentWingRootLE.getEstimatedValue() != 0.0
-//				| this._xOffsetEquivalentWingRootTE.getEstimatedValue() != 0.0)
-//				| this._nonDimensionalSpanStationKink == 1.0)){
-//			
-//			chordRoot = Amount.valueOf(
-//					chordLinPanel.doubleValue(SI.METER)
-//					*(1 + this._xOffsetEquivalentWingRootLE.getEstimatedValue()
-//					+ this._xOffsetEquivalentWingRootTE.getEstimatedValue()),
-//					SI.METER
-//					);
-//			
-//			chordKink = Amount.valueOf(
-//					chordLinPanel.doubleValue(SI.METER)
-//					*(1 - this._nonDimensionalSpanStationKink)
-//					+ chordTip.doubleValue(SI.METER) 
-//					* this._nonDimensionalSpanStationKink,
-//					SI.METER
-//					);
-//
-//		} else {
-//			chordRoot = Amount.valueOf(
-//					2*(this._equivalentWingSurface.getEstimatedValue()/2 - 
-//					chordTip.getEstimatedValue() * semiSpanOuterPanel.getEstimatedValue()/2)/
-//					(span.getEstimatedValue()/2 + semiSpanInnerPanel.getEstimatedValue()),
-//					SI.METER
-//					);
-//		    chordKink = (Amount<Length>) JPADStaticWriteUtils.cloneAmount(chordRoot);
-//		}
-//
-//		Amount<Angle> sweepLeadingEdgeEquivalent = Amount.valueOf(
-//				Math.atan(
-//						Math.tan(
-//								this._sweepQuarterChordEquivalentWing.doubleValue(SI.RADIAN)) 
-//						+ (1 - this._taperRatioEquivalentWing)
-//						/(this._equivalentWingAspectRatio 
-//								* (1 + this._taperRatioEquivalentWing)
-//								)
-//						),
-//				SI.RADIAN
-//				);
-//
-//		// X coordinates of root, tip and kink chords
-//		Amount<Length> xLERoot = Amount.valueOf(0.0 ,SI.METER);
-//		
-//		Amount<Length> xLETip = Amount.valueOf(
-//				Math.tan(sweepLeadingEdgeEquivalent.doubleValue(SI.RADIAN)) * 
-//				span.doubleValue(SI.METER)/2 + (chordLinPanel.doubleValue(SI.METER) 
-//						* this._xOffsetEquivalentWingRootLE.getEstimatedValue()
-//						* (1 - this._nonDimensionalSpanStationKink)
-//						),
-//				SI.METER
-//				);
-//		
-//		Amount<Length> xLEKink = Amount.valueOf(0.0 ,SI.METER);
-//		if ((this._xOffsetEquivalentWingRootLE.getEstimatedValue() != 0.0 
-//				| this._xOffsetEquivalentWingRootTE.getEstimatedValue() != 0.0) 
-//				| this._nonDimensionalSpanStationKink == 1.0) {
-//			xLEKink = Amount.valueOf(chordLinPanel.doubleValue(SI.METER) * 
-//					this._xOffsetEquivalentWingRootLE.getEstimatedValue() 
-//					+ this._nonDimensionalSpanStationKink
-//					* (xLETip.doubleValue(SI.METER) - chordLinPanel.doubleValue(SI.METER) 
-//							* this._xOffsetEquivalentWingRootLE.getEstimatedValue()
-//							),
-//					SI.METER
-//					);
-//		} else {
-//			xLEKink = (Amount<Length>) JPADStaticWriteUtils.cloneAmount(xLERoot);
-//		}
-//		
-//		// Sweep of LE of inner panel
-//		Amount<Angle> sweepLeadingEdgeInnerPanel = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-//		if ((this._xOffsetEquivalentWingRootLE.getEstimatedValue() != 0.0
-//				| this._xOffsetEquivalentWingRootTE.getEstimatedValue() != 0.0) 
-//				| this._nonDimensionalSpanStationKink == 1.0) {
-//			
-//			sweepLeadingEdgeInnerPanel = Amount.valueOf(
-//					Math.atan(xLEKink.doubleValue(SI.METER)/
-//					semiSpanInnerPanel.doubleValue(SI.METER)),
-//					SI.RADIAN
-//					);
-//		} else {
-//			sweepLeadingEdgeInnerPanel = Amount.valueOf(0.0, SI.RADIAN);
-//		}
-//		
-//		// Outer panel LE sweep
-//		Amount<Angle> sweepLeadingEdgeOuterPanel = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-//		if(this._nonDimensionalSpanStationKink != 1.0){
-//			sweepLeadingEdgeOuterPanel = Amount.valueOf(Math.atan((xLETip.doubleValue(SI.METER) 
-//					- xLEKink.doubleValue(SI.METER))
-//					/(semiSpanOuterPanel.doubleValue(SI.METER))),
-//					SI.RADIAN
-//					);
-//		} else {
-//			sweepLeadingEdgeOuterPanel = (Amount<Angle>) JPADStaticWriteUtils.cloneAmount(sweepLeadingEdgeInnerPanel);
-//		}
-//		
-//		double[] xArray = new double[] {0.0, 1.0};
-//		double[] yArray = new double[] {0.0, this._twistAtTipEquivalentWing.doubleValue(NonSI.DEGREE_ANGLE)};
-//		Amount<Angle> twistAtKink = Amount.valueOf(
-//				MyMathUtils.getInterpolatedValue1DLinear(
-//						xArray,
-//						yArray,
-//						this._nonDimensionalSpanStationKink),
-//				NonSI.DEGREE_ANGLE
-//				);
-//		
-//		/*
-//		 *  since the mean dihedral is not enough to determine the two dihedral angles
-//		 *  of the two panels. The dihedral is considered constant. Regarding the twist,
-//		 *  the kink twist is taken as the interpolated value of the linear twist distribution
-//		 *  (from root to tip) at the kink station 
-//		 */
-//		// creating the 2 panels ...
-//		LiftingSurfacePanelCreator panel1 = new 
-//				LiftingSurfacePanelBuilder(
-//						"Inner panel from equivalent wing",
-//						chordRoot,
-//						chordKink,
-//						this.airfoilRootEquivalentWing,
-//						this.airfoilKinkEquivalentWing,
-//						twistAtKink,
-//						semiSpanInnerPanel,
-//						sweepLeadingEdgeInnerPanel.to(NonSI.DEGREE_ANGLE),
-//						this._dihedralEquivalentWing
-//						)
-//				.build();
-//
-//		LiftingSurfacePanelCreator panel2 = new 
-//				LiftingSurfacePanelBuilder(
-//						"Outer panel from equivalent wing",
-//						chordKink,
-//						chordTip,
-//						this.airfoilKinkEquivalentWing,
-//						this.airfoilTipEquivalentWing,
-//						this._twistAtTipEquivalentWing,
-//						semiSpanOuterPanel,
-//						sweepLeadingEdgeOuterPanel.to(NonSI.DEGREE_ANGLE),
-//						this._dihedralEquivalentWing
-//						)
-//				.build();
-//
-//		// creating the wing ...
-//		_panels.add(panel1);;//		_panels.add(panel2);	
+		//=========================================================================
+		// DERIVED DATA :
+		Amount<Length> chordRoot = 
+				chordTip.to(SI.METER).divide(this.getTaperRatio());
+		
+		Amount<Length> deltaXLEKink = (semiSpan.to(SI.METER)
+				.minus(semiSpanUpToKink.to(SI.METER)))
+				.times(Math.tan(this.getEquivalentWing().getSweepLeadingEdgeOuterPanel().doubleValue(SI.RADIAN)));
+		
+		Amount<Length> deltaXLERoot = deltaXLEKink.to(SI.METER)
+				.plus(semiSpanUpToKink.to(SI.METER).times(Math.tan(this.getEquivalentWing().getSweepLeadingEdgeInnerPanel().doubleValue(SI.RADIAN))))
+				.minus(semiSpan.to(SI.METER).times(Math.tan(sweepLeadingEdgeEquivalentWing.doubleValue(SI.RADIAN))));
+				
+		Amount<Length> deltaXTERoot = chordRoot.to(SI.METER).minus(deltaXLERoot.to(SI.METER)).minus(chordRootEquivalentWing.to(SI.METER)); 
+		
+		Amount<Length> chordKink = 
+				Amount.valueOf(
+						chordTip.to(SI.METER)
+							.times(semiSpanUpToKink.to(SI.METER).divide(semiSpan.to(SI.METER)))
+								.getEstimatedValue()
+						- deltaXTERoot.to(SI.METER)
+							.times(semiSpanUpToKink.to(SI.METER).divide(semiSpan.to(SI.METER)))
+								.getEstimatedValue()
+						- deltaXLERoot.to(SI.METER)
+							.times(semiSpanUpToKink.to(SI.METER).divide(semiSpan.to(SI.METER)))
+								.getEstimatedValue()
+						+ chordRootEquivalentWing.to(SI.METER)
+							.times(1-(semiSpanUpToKink.to(SI.METER).divide(semiSpan.to(SI.METER))).getEstimatedValue())
+								.getEstimatedValue(),
+						SI.METER
+						);
+					
+		Amount<Angle> twistAtTipRealWing = 
+				(twistAtTipEquivalentWing.to(NonSI.DEGREE_ANGLE).minus(this.getEquivalentWing().getTwistAtKinkRealWing().to(NonSI.DEGREE_ANGLE)))
+				.divide(1-this.getEquivalentWing().getNonDimensionalSpanStationKink())
+				;
+		
+		//=========================================================================
+		// CREATING THE 2 PANELS ...
+		LiftingSurfacePanelCreator panel1 = new 
+				LiftingSurfacePanelBuilder(
+						"Inner panel from equivalent wing",
+						chordRoot,
+						chordKink,
+						this.getEquivalentWing().getPanels().get(0).getAirfoilRoot(),
+						this.getEquivalentWing().getAirfoilKinkEquivalentWing(),
+						this.getEquivalentWing().getTwistAtKinkRealWing().to(NonSI.DEGREE_ANGLE),
+						semiSpanUpToKink,
+						this.getEquivalentWing().getSweepLeadingEdgeInnerPanel().to(NonSI.DEGREE_ANGLE),
+						this.getEquivalentWing().getPanels().get(0).getDihedral().to(NonSI.DEGREE_ANGLE)
+						)
+				.build();
+
+		LiftingSurfacePanelCreator panel2 = new 
+				LiftingSurfacePanelBuilder(
+						"Outer panel from equivalent wing",
+						chordKink,
+						chordTip,
+						this.getEquivalentWing().getAirfoilKinkEquivalentWing(),
+						this.getEquivalentWing().getPanels().get(0).getAirfoilTip(),
+						twistAtTipRealWing.to(NonSI.DEGREE_ANGLE),
+						semiSpan.to(SI.METER).minus(semiSpanUpToKink.to(SI.METER)),
+						this.getEquivalentWing().getSweepLeadingEdgeOuterPanel().to(NonSI.DEGREE_ANGLE),
+						this.getEquivalentWing().getPanels().get(0).getDihedral().to(NonSI.DEGREE_ANGLE)
+						)
+				.build();
+
+		// creating the wing ...
+		_panels.add(panel1);
+		_panels.add(panel2);
+		
+		this.getEquivalentWing().setXOffsetEquivalentWingRootLE(deltaXLERoot);
+		this.getEquivalentWing().setXOffsetEquivalentWingRootTE(deltaXTERoot);
 		
 	}
 	
@@ -2082,15 +2200,14 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						)
 				.build();
 		
-		_equivalentWing = new LiftingSurfaceCreator("Equivalent Wing", Boolean.TRUE, ComponentEnum.WING);
+		_equivalentWing = new LiftingSurfaceCreator(
+				"Equivalent Wing",
+				Boolean.TRUE, 
+				ComponentEnum.WING);
 		
 		_equivalentWing.addPanel(equivalentWingPanel);
-		
-//		this._equivalentWingSurface = equivalentWingPanel.getSurfacePlanform();
-//		this._equivalentWingAspectRatio = equivalentWingPanel.getAspectRatio();
-//		this._sweepQuarterChordEquivalentWing = equivalentWingPanel.getSweepQuarterChord();
-//		this._taperRatioEquivalentWing = equivalentWingPanel.getTaperRatio();
-//		this._equivalentWingRootChord = chordRootEquivalentWing;
+		_equivalentWing.setXOffsetEquivalentWingRootLE(xOffsetEquivalentWingRootLE);
+		_equivalentWing.setXOffsetEquivalentWingRootTE(xOffsetEquivalentWingRootTE);
 		
 		return _equivalentWing;
 	}
@@ -2285,6 +2402,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		System.out.println("[LiftingSurfaceCreator] Map _panels to spanwise discretized Ys ...");
 
+		MyConfiguration.customizeAmountOutput();
+		
 		//======================================================
 		// Map _panels with lists of Y's, c, Xle, Yle, Zle, twist
 		// for each panel Y's of inner and outer break-points
@@ -2337,47 +2456,47 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					p -> _panels.get(i_),
 					y -> Tuple.of(
 						y.stream()
-							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.mapToDouble(a -> a.to(SI.METER).getEstimatedValue())
 							.filter(y_ -> (
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
-									&& ( y_ < _yBreakPoints.get(i_+1).getEstimatedValue() )
-								)
-							.mapToObj(y_ -> Amount.valueOf(y_, SI.METRE))
+									(Math.round(y_ * 100000) / 100000 > Math.round(_yBreakPoints.get(i_).doubleValue(SI.METER) * 100000) / 100000 )
+									&& ( Math.round(y_ * 100000) / 100000 <= Math.round(_yBreakPoints.get(i_+1).doubleValue(SI.METER) * 100000) / 100000 )
+									) )
+							.mapToObj(y_ -> Amount.valueOf(y_, SI.METER))
 							.collect(Collectors.toList())
 						,
 						y.stream()
-							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.mapToDouble(a -> a.to(SI.METER).getEstimatedValue())
 							.filter(y_ -> (
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
-								)
-							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
+									(Math.round(y_ * 100000) / 100000 > Math.round(_yBreakPoints.get(i_).doubleValue(SI.METER) * 100000) / 100000 )
+									&& ( Math.round(y_ * 100000) / 100000 <= Math.round(_yBreakPoints.get(i_+1).doubleValue(SI.METER) * 100000) / 100000 )
+									) ) 
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METER))
 							.collect(Collectors.toList()) // initialize Chords
 						,
 						y.stream()
-							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.mapToDouble(a -> a.to(SI.METER).getEstimatedValue())
 							.filter(y_ -> (
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
-								)
-							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
+									(Math.round(y_ * 100000) / 100000 > Math.round(_yBreakPoints.get(i_).doubleValue(SI.METER) * 100000) / 100000 )
+									&& ( Math.round(y_ * 100000) / 100000 <= Math.round(_yBreakPoints.get(i_+1).doubleValue(SI.METER) * 100000) / 100000 )
+									) )
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METER))
 							.collect(Collectors.toList()) // initialize Xle
 						,
 						y.stream()
-							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.mapToDouble(a -> a.to(SI.METER).getEstimatedValue())
 							.filter(y_ -> (
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
-								)
-							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METRE))
+									(Math.round(y_ * 100000) / 100000 > Math.round(_yBreakPoints.get(i_).doubleValue(SI.METER) * 100000) / 100000 )
+									&& ( Math.round(y_ * 100000) / 100000 <= Math.round(_yBreakPoints.get(i_+1).doubleValue(SI.METER) * 100000) / 100000 )
+									) )
+							.mapToObj(y_ -> Amount.valueOf(0.0, SI.METER))
 							.collect(Collectors.toList()) // initialize Zle
 						,
 						y.stream()
-							.mapToDouble(a -> a.to(SI.METRE).getEstimatedValue())
+							.mapToDouble(a -> a.to(SI.METER).getEstimatedValue())
 							.filter(y_ -> (
-									y_ > _yBreakPoints.get(i_).getEstimatedValue() )
-									&& ( y_ <= _yBreakPoints.get(i_+1).getEstimatedValue() )
-								)
+									(Math.round(y_ * 100000) / 100000 > Math.round(_yBreakPoints.get(i_).doubleValue(SI.METER) * 100000) / 100000 )
+									&& ( Math.round(y_ * 100000) / 100000 <= Math.round(_yBreakPoints.get(i_+1).doubleValue(SI.METER) * 100000) / 100000 )
+									) )
 							.mapToObj(y_ -> Amount.valueOf(0.0, SI.RADIAN))
 							.collect(Collectors.toList()) // initialize twists
 						)
@@ -3041,118 +3160,10 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		return _equivalentWingFlag;
 	}
 
-//	public Amount<Length> getRootChordEquivalentWing() {
-//		return _equivalentWingRootChord;
-//	}
-//	
-//	public void setRootChordEquivalentWing (Amount<Length> chordRootEquivalentWing) {
-//		this._equivalentWingRootChord = chordRootEquivalentWing;
-//	}
-//	
-//	public Amount<Area> getEquivalentWingSurface() {
-//		return _equivalentWingSurface;
-//	}
-//
-//	public Double getEquivalentWingAspectRatio() {
-//		return _equivalentWingAspectRatio;
-//	}
-//
-//	public Double getNonDimensionalSpanStationKink() {
-//		return _nonDimensionalSpanStationKink;
-//	}
-//
-//	public Amount<Angle> getSweepQuarterChordEquivalentWing() {
-//		return _sweepQuarterChordEquivalentWing;
-//	}
-//
-//	public Double getTaperRatioEquivalentWing() {
-//		return _taperRatioEquivalentWing;
-//	}
-//	
-//	public Amount<Length> getXOffsetEquivalentWingRootLE() {
-//		return _xOffsetEquivalentWingRootLE;
-//	}
-//
-//	public Amount<Length> getXOffsetEquivalentWingRootTE() {
-//		return _xOffsetEquivalentWingRootTE;
-//	}
-
 	public void setEquivalentWingFlag(Boolean _equivalentWingFlag) {
 		this._equivalentWingFlag = _equivalentWingFlag;
 	}
 	
-//	public void setChordRootEquivalentWing(Amount<Length> _equivalentWingRootChord) {
-//		this._equivalentWingRootChord = _equivalentWingRootChord;
-//	}
-//	
-//	public void setEquivalentWingSurface(Amount<Area> _equivalentWingSurface) {
-//		this._equivalentWingSurface = _equivalentWingSurface;
-//	}
-//
-//	public void setEquivalentWingAspectRatio(Double _equivalentWingAspectRatio) {
-//		this._equivalentWingAspectRatio = _equivalentWingAspectRatio;
-//	}
-//
-//	public void setNonDimensionalSpanStationKink(Double _nonDimensionalSpanStationKink) {
-//		this._nonDimensionalSpanStationKink = _nonDimensionalSpanStationKink;
-//	}
-//
-//	public void setSweepQuarterChordEquivalentWing(Amount<Angle> _sweepQuarterChordEquivalentWing) {
-//		this._sweepQuarterChordEquivalentWing = _sweepQuarterChordEquivalentWing;
-//	}
-//
-//	public void setXOffsetEquivalentWingRootLE(Amount<Length> _xOffsetEquivalentWingRootLE) {
-//		this._xOffsetEquivalentWingRootLE = _xOffsetEquivalentWingRootLE;
-//	}
-//
-//	public void setXOffsetEquivalentWingRootTE(Amount<Length> _xOffsetEquivalentWingRootTE) {
-//		this._xOffsetEquivalentWingRootTE = _xOffsetEquivalentWingRootTE;
-//	}
-//	
-//	public void setTaperRatioEquivalentWing(Double _taperRatioEquivalentWing) {
-//		this._taperRatioEquivalentWing = _taperRatioEquivalentWing;
-//	}
-//
-//	public AirfoilCreator getAirfoilRootEquivalentWing() {
-//		return airfoilRootEquivalentWing;
-//	}
-//
-//	public AirfoilCreator getAirfoilKinkEquivalentWing() {
-//		return airfoilKinkEquivalentWing;
-//	}
-//
-//	public AirfoilCreator getAirfoilTipEquivalentWing() {
-//		return airfoilTipEquivalentWing;
-//	}
-//
-//	public void setAirfoilRootEquivalentWing(AirfoilCreator airfoilRootEquivalentWing) {
-//		this.airfoilRootEquivalentWing = airfoilRootEquivalentWing;
-//	}
-//
-//	public void setAirfoilKinkEquivalentWing(AirfoilCreator airfoilKinkEquivalentWing) {
-//		this.airfoilKinkEquivalentWing = airfoilKinkEquivalentWing;
-//	}
-//
-//	public void setAirfoilTipEquivalentWing(AirfoilCreator airfoilTipEquivalentWing) {
-//		this.airfoilTipEquivalentWing = airfoilTipEquivalentWing;
-//	}
-//
-//	public Amount<Angle> getDihedralEquivalentWing() {
-//		return _dihedralEquivalentWing;
-//	}
-//
-//	public void setDihedralEquivalentWing(Amount<Angle> _dihedralEquivalentWing) {
-//		this._dihedralEquivalentWing = _dihedralEquivalentWing;
-//	}
-//
-//	public Amount<Angle> getTwistAtTipEquivalentWing() {
-//		return _twistAtTipEquivalentWing;
-//	}
-//
-//	public void setTwistAtTipEquivalentWing(Amount<Angle> _twistAtTipEquivalentWing) {
-//		this._twistAtTipEquivalentWing = _twistAtTipEquivalentWing;
-//	}
-
 	public Double getVolumetricRatio() {
 		return _volumetricRatio;
 	}
@@ -3269,5 +3280,61 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	public void setEquivalentWing(LiftingSurfaceCreator _equivalentWing) {
 		this._equivalentWing = _equivalentWing;
+	}
+
+	public Double getNonDimensionalSpanStationKink() {
+		return _nonDimensionalSpanStationKink;
+	}
+
+	public void setNonDimensionalSpanStationKink(Double _nonDimensionalSpanStationKink) {
+		this._nonDimensionalSpanStationKink = _nonDimensionalSpanStationKink;
+	}
+
+	public Amount<Angle> getSweepLeadingEdgeInnerPanel() {
+		return _sweepLeadingEdgeInnerPanel;
+	}
+
+	public void setSweepLeadingEdgeInnerPanel(Amount<Angle> _sweepLeadingEdgeInnerPanel) {
+		this._sweepLeadingEdgeInnerPanel = _sweepLeadingEdgeInnerPanel;
+	}
+
+	public Amount<Angle> getSweepLeadingEdgeOuterPanel() {
+		return _sweepLeadingEdgeOuterPanel;
+	}
+
+	public void setSweepLeadingEdgeOuterPanel(Amount<Angle> _sweepLeadingEdgeOuterPanel) {
+		this._sweepLeadingEdgeOuterPanel = _sweepLeadingEdgeOuterPanel;
+	}
+
+	public AirfoilCreator getAirfoilKinkEquivalentWing() {
+		return _airfoilKinkEquivalentWing;
+	}
+
+	public void setAirfoilKinkEquivalentWing(AirfoilCreator _airfoilKinkEquivalentWing) {
+		this._airfoilKinkEquivalentWing = _airfoilKinkEquivalentWing;
+	}
+
+	public Amount<Angle> getTwistAtKinkRealWing() {
+		return _twistAtKinkRealWing;
+	}
+
+	public void setTwistAtKinkRealWing(Amount<Angle> _twistAtKinkRealWing) {
+		this._twistAtKinkRealWing = _twistAtKinkRealWing;
+	}
+
+	public Amount<Length> getXOffsetEquivalentWingRootTE() {
+		return _xOffsetEquivalentWingRootTE;
+	}
+
+	public void setXOffsetEquivalentWingRootTE(Amount<Length> _xOffsetEquivalentWingRootTE) {
+		this._xOffsetEquivalentWingRootTE = _xOffsetEquivalentWingRootTE;
+	}
+
+	public Amount<Length> getXOffsetEquivalentWingRootLE() {
+		return _xOffsetEquivalentWingRootLE;
+	}
+
+	public void setXOffsetEquivalentWingRootLE(Amount<Length> _xOffsetEquivalentWingRootLE) {
+		this._xOffsetEquivalentWingRootLE = _xOffsetEquivalentWingRootLE;
 	}
 }

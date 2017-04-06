@@ -50,32 +50,32 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	@Override
 	public void calculateGeometry() {
 
-		_taperRatio = _chordTip.divide(_chordRoot).getEstimatedValue();
-		_surfacePlanform = (Amount<Area>) ( _chordRoot.plus(_chordTip) ).times(_span).divide(2);
-		_surfaceWetted = _surfacePlanform.times(2.0);
-		_aspectRatio = _span.times(_span).divide(_surfacePlanform).getEstimatedValue();
+		_taperRatio = _chordTip.to(SI.METER).divide(_chordRoot.to(SI.METER)).getEstimatedValue();
+		_surfacePlanform = (Amount<Area>) (_chordRoot.to(SI.METER).plus(_chordTip.to(SI.METER))).times(_span.to(SI.METER)).divide(2);
+		_surfaceWetted = _surfacePlanform.to(SI.SQUARE_METRE).times(2.0);
+		_aspectRatio = _span.to(SI.METER).times(_span.to(SI.METER)).divide(_surfacePlanform.to(SI.SQUARE_METRE)).getEstimatedValue();
 
 		_sweepQuarterChord = calculateSweep(0.25);
 		_sweepHalfChord = calculateSweep(0.50);
 		_sweepTrailingEdge = calculateSweep(1.00);
 
 		_meanAerodynamicChord =
-			_chordRoot.times(2.0/3.0)
+			_chordRoot.to(SI.METER).times(2.0/3.0)
 				.times(1.0 + _taperRatio + _taperRatio*_taperRatio)
 				.divide(1.0 + _taperRatio)
 			;
 		_meanAerodynamicChordLeadingEdgeY =
-				_span
+				_span.to(SI.METER)
 					.divide(6)
 					.times(1 + 2.0*_taperRatio)
 					.divide(1.0 + _taperRatio);
 
 		_meanAerodynamicChordLeadingEdgeX =
-			_meanAerodynamicChordLeadingEdgeY
+			_meanAerodynamicChordLeadingEdgeY.to(SI.METER)
 				.times(Math.tan(_sweepLeadingEdge.to(SI.RADIAN).getEstimatedValue()));
 
 		_meanAerodynamicChordLeadingEdgeZ =
-			_meanAerodynamicChordLeadingEdgeY
+			_meanAerodynamicChordLeadingEdgeY.to(SI.METER)
 				.times(Math.tan(_dihedral.to(SI.RADIAN).getEstimatedValue()));
 
 	}

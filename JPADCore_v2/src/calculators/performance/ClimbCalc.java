@@ -168,7 +168,7 @@ public class ClimbCalc {
 							_cLmaxClean,
 							MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDClimb),
-							_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+							_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 							meanAirfoil.getAirfoilCreator().getType()
 							)
@@ -321,7 +321,7 @@ public class ClimbCalc {
 								_cLmaxClean,
 								MyArrayUtils.convertToDoublePrimitive(_polarCLClimb),
 								MyArrayUtils.sumNumberToArrayEBE(MyArrayUtils.convertToDoublePrimitive(_polarCDClimb), _dragDueToEnigneFailure),
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)

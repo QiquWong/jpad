@@ -26,7 +26,7 @@ import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsCalculator;
+import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
@@ -44,7 +44,6 @@ import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
-import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 public class LiftingSurface implements ILiftingSurface {
@@ -56,7 +55,7 @@ public class LiftingSurface implements ILiftingSurface {
 	private Double _kExcr = 0.0; 
 	private int _numberOfEngineOverTheWing = 0; 
 	
-	private Map<ConditionEnum, LSAerodynamicsCalculator> _theAerodynamicsCalculatorMap;
+	private Map<ConditionEnum, LSAerodynamicsManager> _theAerodynamicsCalculatorMap;
 	// THIS HAS TO BE CHANGED IN LSAerodynamicCalculator
 	private LSAerodynamicsManager _theAerodynamics;
 	
@@ -263,22 +262,22 @@ public class LiftingSurface implements ILiftingSurface {
 		if(this._type == ComponentEnum.WING)
 			sweepStructuralAxis = Amount.valueOf(
 					Math.atan(
-							Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
+							Math.tan(this.getSweepLEEquivalent().doubleValue(SI.RADIAN))
 							- (4./this.getAspectRatio())*
 							(getLiftingSurfaceCreator().getMainSparNonDimensionalPosition()
-									*(1 - this.getTaperRatioEquivalent(false))
-									/(1 + this.getTaperRatioEquivalent(false)))
+									*(1 - this.getTaperRatioEquivalent())
+									/(1 + this.getTaperRatioEquivalent()))
 							),
 					1e-9, // precision
 					SI.RADIAN);
 		else
 			sweepStructuralAxis = Amount.valueOf(
 					Math.atan(
-							Math.tan(this.getSweepLEEquivalent(false).doubleValue(SI.RADIAN))
+							Math.tan(this.getSweepLEEquivalent().doubleValue(SI.RADIAN))
 							- (4./this.getAspectRatio())*
 							(0.25
-									*(1 - this.getTaperRatioEquivalent(false))
-									/(1 + this.getTaperRatioEquivalent(false)))
+									*(1 - this.getTaperRatioEquivalent())
+									/(1 + this.getTaperRatioEquivalent()))
 							),
 					1e-9, // precision
 					SI.RADIAN);
@@ -302,7 +301,7 @@ public class LiftingSurface implements ILiftingSurface {
 										getEstimatedValue(),0.84)*
 								Math.pow(this._liftingSurfaceCreator.getEquivalentWing().getTaperRatio(), 0.14))/
 								(Math.pow(100*this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio(),0.76)*
-										Math.pow(Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()), 1.54)),
+										Math.pow(Math.cos(this.getSweepHalfChordEquivalent().to(SI.RADIAN).getEstimatedValue()), 1.54)),
 								NonSI.POUND_FORCE).to(NonSI.KILOGRAM_FORCE).getEstimatedValue(),
 						SI.KILOGRAM);
 
@@ -421,8 +420,8 @@ public class LiftingSurface implements ILiftingSurface {
 						0.0017*
 						aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight().to(NonSI.POUND_FORCE).getEstimatedValue()*
 						Math.pow(this.getSpan().to(NonSI.FOOT).getEstimatedValue()/
-								Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()),0.75)*
-						(1 + Math.pow(6.3*Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())/
+								Math.cos(this.getSweepHalfChordEquivalent().to(SI.RADIAN).getEstimatedValue()),0.75)*
+						(1 + Math.pow(6.3*Math.cos(this.getSweepHalfChordEquivalent().to(SI.RADIAN).getEstimatedValue())/
 								this.getSpan().to(NonSI.FOOT).getEstimatedValue(), 0.5))*
 						Math.pow(aircraft.getTheAnalysisManager().getNUltimate(), 0.55)*
 						Math.pow(
@@ -430,7 +429,7 @@ public class LiftingSurface implements ILiftingSurface {
 								(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio()
 										*this.getChordRoot().to(NonSI.FOOT).getEstimatedValue()*
 										aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelWeight().to(NonSI.POUND_FORCE).getEstimatedValue()*
-										Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())), 0.3)
+										Math.cos(this.getSweepHalfChordEquivalent().to(SI.RADIAN).getEstimatedValue())), 0.3)
 						, NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
@@ -450,7 +449,7 @@ public class LiftingSurface implements ILiftingSurface {
 								(this.getAspectRatio()/
 										(thicknessMean
 												*Math.pow(
-														Math.cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue())
+														Math.cos(this.getSweepHalfChordEquivalent().to(SI.RADIAN).getEstimatedValue())
 														, 2))) +
 								210*this.getSurface().getEstimatedValue())/
 						AtmosphereCalc.g0.getEstimatedValue()
@@ -623,7 +622,7 @@ public class LiftingSurface implements ILiftingSurface {
 				_mass = Amount.valueOf(kv*3.81*
 						aircraft.getTheAnalysisManager().getVDiveEAS().to(NonSI.KNOT).getEstimatedValue()*
 						pow(this.getSurface().to(MyUnits.FOOT2).getEstimatedValue(), 1.2)/
-						(1000*sqrt(cos(this.getSweepHalfChordEquivalent(false).to(SI.RADIAN).getEstimatedValue()))) - 0.287,
+						(1000*sqrt(cos(this.getSweepHalfChordEquivalent().to(SI.RADIAN).getEstimatedValue()))) - 0.287,
 						NonSI.POUND).to(SI.KILOGRAM);
 				_massMap.put(method, Amount.valueOf(round(_mass.getEstimatedValue()), SI.KILOGRAM));
 			} break;
@@ -891,13 +890,10 @@ public class LiftingSurface implements ILiftingSurface {
 		}
 
 		else{
-			Airfoil airfoilRoot = new Airfoil(this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot());
+			Airfoil airfoilRoot = new Airfoil(this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getAirfoilRoot());
 			this._airfoilList.add(airfoilRoot);
 
-			Airfoil airfoilKink = new Airfoil(this._liftingSurfaceCreator.getPanels().get(0).getAirfoilTip());
-			this._airfoilList.add(airfoilKink);
-
-			Airfoil airfoilTip = new Airfoil(this._liftingSurfaceCreator.getPanels().get(1).getAirfoilTip());
+			Airfoil airfoilTip = new Airfoil(this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getAirfoilTip());
 			this._airfoilList.add(airfoilTip);
 		}
 
@@ -922,7 +918,7 @@ public class LiftingSurface implements ILiftingSurface {
 			this._cl0VsY.add(_airfoilList.get(i).getAirfoilCreator().getClAtAlphaZero());
 			this._clStarVsY.add(_airfoilList.get(i).getAirfoilCreator().getClEndLinearTrait());
 			this._clMaxVsY.add(_airfoilList.get(i).getAirfoilCreator().getClMax());
-			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent(true).doubleValue(SI.RADIAN)),2));
+			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent().doubleValue(SI.RADIAN)),2));
 			this._kFactorDragPolarVsY.add(_airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
 			this._cmAlphaQuarteChordVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue());
 			this._xAcAirfoilVsY.add(_airfoilList.get(i).getAirfoilCreator().getXACNormalized());
@@ -1562,23 +1558,39 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 
 	@Override
-	public double getTaperRatioEquivalent(Boolean recalculate) {
-		if(recalculate)
-			_liftingSurfaceCreator.getEquivalentWing(recalculate);
+	public double getTaperRatioEquivalent() {
 		return _liftingSurfaceCreator.getEquivalentWing().getTaperRatio();
 	}
+	
+//	public double getTaperRatioEquivalent(Boolean recalculate) {
+//		if(recalculate)
+//			_liftingSurfaceCreator.getEquivalentWing(recalculate);
+//		return _liftingSurfaceCreator.getEquivalentWing().getTaperRatio();
+//	}
 
 	@Override
-	public LiftingSurfaceCreator getEquivalentWing(Boolean recalculate) {
-		return _liftingSurfaceCreator.getEquivalentWing(recalculate);
+	public LiftingSurfaceCreator getEquivalentWing() {
+		return _liftingSurfaceCreator.getEquivalentWing();
 	}
+	
+//	public LiftingSurfaceCreator getEquivalentWing(Boolean recalculate) {
+//		return _liftingSurfaceCreator.getEquivalentWing(recalculate);
+//	}
 
 	@Override
-	public Amount<Length> getChordRootEquivalent(Boolean recalculate) {
-		if(recalculate) 
-			_liftingSurfaceCreator.getEquivalentWing(recalculate);
-		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getChordRoot();
+	public Amount<Length> getChordRootEquivalent() {
+		return _liftingSurfaceCreator
+					.getEquivalentWing()
+						.getPanels()
+							.get(0)
+								.getChordRoot();	
 	}
+	
+//	public Amount<Length> getChordRootEquivalent(Boolean recalculate) {
+//		if(recalculate) 
+//			_liftingSurfaceCreator.getEquivalentWing(recalculate);
+//		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getChordRoot();
+//	}
 
 	@Override
 	public Amount<Length> getChordRoot() {
@@ -1594,38 +1606,64 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 
 	@Override
-	public Amount<Angle> getSweepLEEquivalent(Boolean recalculate) {
-		if(recalculate)
-			_liftingSurfaceCreator.getEquivalentWing(recalculate);
-		return LSGeometryCalc.calculateSweep(
-				_liftingSurfaceCreator.getEquivalentWing().getAspectRatio(),
-				_liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
-				_liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN),
-				0.0,
-				0.25
-				).to(NonSI.DEGREE_ANGLE);
-				
+	public Amount<Angle> getSweepLEEquivalent() {
+		return _liftingSurfaceCreator
+					.getEquivalentWing()
+						.getPanels()
+							.get(0)
+								.getSweepLeadingEdge()
+									.to(NonSI.DEGREE_ANGLE);
 	}
+	
+//	public Amount<Angle> getSweepLEEquivalent(Boolean recalculate) {
+//		if(recalculate)
+//			_liftingSurfaceCreator.getEquivalentWing(recalculate);
+//		return LSGeometryCalc.calculateSweep(
+//				_liftingSurfaceCreator.getEquivalentWing().getAspectRatio(),
+//				_liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
+//				_liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN),
+//				0.0,
+//				0.25
+//				).to(NonSI.DEGREE_ANGLE);
+//				
+//	}
 
 	@Override
-	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate) {
-		if(recalculate) 
-			_liftingSurfaceCreator.getEquivalentWing(recalculate);
-		return LSGeometryCalc.calculateSweep(
-				_liftingSurfaceCreator.getEquivalentWing().getAspectRatio(),
-				_liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
-				_liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN),
-				0.0,
-				0.5
-				).to(NonSI.DEGREE_ANGLE);
+	public Amount<Angle> getSweepHalfChordEquivalent() {
+		return _liftingSurfaceCreator
+				.getEquivalentWing()
+					.getPanels()
+						.get(0)
+							.getSweepHalfChord()
+								.to(NonSI.DEGREE_ANGLE);
 	}
+//	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate) {
+//		if(recalculate) 
+//			_liftingSurfaceCreator.getEquivalentWing(recalculate);
+//		return LSGeometryCalc.calculateSweep(
+//				_liftingSurfaceCreator.getEquivalentWing().getAspectRatio(),
+//				_liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
+//				_liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN),
+//				0.0,
+//				0.5
+//				).to(NonSI.DEGREE_ANGLE);
+//	}
 
 	@Override
-	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate) {
-		if(recalculate)
-			_liftingSurfaceCreator.getEquivalentWing(recalculate);
-		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN);
+	public Amount<Angle> getSweepQuarterChordEquivalent() {
+		return _liftingSurfaceCreator
+				.getEquivalentWing()
+					.getPanels()
+						.get(0)
+							.getSweepQuarterChord()
+								.to(NonSI.DEGREE_ANGLE);
 	}
+	
+//	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate) {
+//		if(recalculate)
+//			_liftingSurfaceCreator.getEquivalentWing(recalculate);
+//		return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN);
+//	}
 
 	@Override
 	public LiftingSurfaceCreator getLiftingSurfaceCreator() {
@@ -1805,11 +1843,11 @@ public class LiftingSurface implements ILiftingSurface {
 		this._theAerodynamics = theAerodynamics;
 	}
 	
-	public Map<ConditionEnum, LSAerodynamicsCalculator> getTheAerodynamicsCalculatorMap() {
+	public Map<ConditionEnum, LSAerodynamicsManager> getTheAerodynamicsCalculatorMap() {
 		return _theAerodynamicsCalculatorMap;
 	}
 
-	public void setTheAerodynamicsCalculatorMap(Map<ConditionEnum, LSAerodynamicsCalculator> _theAerodynamicsCalculatorMap) {
+	public void setTheAerodynamicsCalculatorMap(Map<ConditionEnum, LSAerodynamicsManager> _theAerodynamicsCalculatorMap) {
 		this._theAerodynamicsCalculatorMap = _theAerodynamicsCalculatorMap;
 	}
 

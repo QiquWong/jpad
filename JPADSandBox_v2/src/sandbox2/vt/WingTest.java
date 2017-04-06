@@ -135,23 +135,23 @@ public class WingTest extends Application {
 		int nSec = theWing.getLiftingSurfaceCreator().getDiscretizedXle().size();
 		int nPanels = theWing.getLiftingSurfaceCreator().getPanels().size();
 
-//		Double[][] eqPts = new Double[4][2];
-//		eqPts[0][0] = 0.0;
-//		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootLE().doubleValue(SI.METER);
-//		eqPts[1][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-//		eqPts[1][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
-//		eqPts[2][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
-//		eqPts[2][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1)
-//				.plus(
-//						theWing.getLiftingSurfaceCreator().getPanels().get(nPanels - 1).getChordTip()
-//						)
-//				.doubleValue(SI.METER);
-//		eqPts[3][0] = 0.0;
-//		eqPts[3][1] = theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
-//				.minus(theWing.getLiftingSurfaceCreator().getXOffsetEquivalentWingRootTE())
-//				.doubleValue(SI.METER);
-//
-//		listDataArray.add(eqPts);
+		Double[][] eqPts = new Double[4][2];
+		eqPts[0][0] = 0.0;
+		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE().doubleValue(SI.METER);
+		eqPts[1][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
+		eqPts[1][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
+		eqPts[2][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
+		eqPts[2][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1)
+				.plus(
+						theWing.getLiftingSurfaceCreator().getPanels().get(nPanels - 1).getChordTip()
+						)
+				.doubleValue(SI.METER);
+		eqPts[3][0] = 0.0;
+		eqPts[3][1] = theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
+				.minus(theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE())
+				.doubleValue(SI.METER);
+
+		listDataArray.add(eqPts);
 
 		Double[][] xyMAC = new Double[2][2];
 		xyMAC[0][0] = wing.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE);
@@ -195,7 +195,7 @@ public class WingTest extends Application {
 						"fill:none; stroke:black; stroke-width:2"
 						)
 				.plotAreas(true,true,false,false)
-				.areaStyles("fill:orange;","fill:yellow;","fill:yellow;")
+				.areaStyles("fill:none;","fill:yellow;","fill:yellow;")
 				.areaOpacities(1.0,0.50,0.70)
 				.build();
 
@@ -305,7 +305,10 @@ public class WingTest extends Application {
 					theWing.getType(),
 					theWing.getLiftingSurfaceCreator().isMirrored());
 
-			WingTest.theWing.populateAirfoilList(aeroDatabaseReader, Boolean.FALSE);
+			WingTest.theWing.populateAirfoilList(
+					aeroDatabaseReader, 
+					theWing.getLiftingSurfaceCreator().getEquivalentWing().getEquivalentWingFlag()
+					);
 			
 			System.out.println("The wing ...");
 			System.out.println(WingTest.theWing.getLiftingSurfaceCreator().toString());

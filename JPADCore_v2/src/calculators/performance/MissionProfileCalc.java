@@ -594,7 +594,7 @@ public class MissionProfileCalc {
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -745,7 +745,7 @@ public class MissionProfileCalc {
 									MyArrayUtils.getMax(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-									_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 									meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 									meanAirfoil.getAirfoilCreator().getType()
 									)
@@ -1039,7 +1039,7 @@ public class MissionProfileCalc {
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -1197,7 +1197,7 @@ public class MissionProfileCalc {
 									MyArrayUtils.getMax(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 									MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-									_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 									meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 									meanAirfoil.getAirfoilCreator().getType()
 									)

@@ -1385,7 +1385,7 @@ public class ACPerformanceManager {
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLCruise[i],
 									theOperatingConditions.getMachClimb(),
-									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
@@ -1399,7 +1399,7 @@ public class ACPerformanceManager {
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLCruise[i],
 									theOperatingConditions.getMachCruise(),
-									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
@@ -1413,7 +1413,7 @@ public class ACPerformanceManager {
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLTakeOff[i],
 									theOperatingConditions.getMachCruise(),
-									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
@@ -1427,7 +1427,7 @@ public class ACPerformanceManager {
 							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
 									polarCLLanding[i],
 									theOperatingConditions.getMachCruise(),
-									theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
 									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
 									)
@@ -3589,7 +3589,7 @@ public class ACPerformanceManager {
 					_theAircraft.getWing().getSpan().doubleValue(SI.METER),
 					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 					_theAircraft.getVTail().getSurface().doubleValue(SI.SQUARE_METRE), 
-					_theAircraft.getVTail().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+					_theAircraft.getVTail().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 					_theAircraft.getVTail().getAirfoilList().get(0)
 						.getAirfoilCreator().getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
 					_theOperatingConditions.getMachTakeOff(), 
@@ -3878,7 +3878,7 @@ public class ACPerformanceManager {
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -4031,7 +4031,7 @@ public class ACPerformanceManager {
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -4109,7 +4109,7 @@ public class ACPerformanceManager {
 							MyArrayUtils.getMax(_polarCLCruise),
 							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-							_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+							_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 							meanAirfoil.getAirfoilCreator().getType()
 							)
@@ -4182,7 +4182,7 @@ public class ACPerformanceManager {
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -4453,7 +4453,7 @@ public class ACPerformanceManager {
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent(false).doubleValue(SI.RADIAN),
+								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)

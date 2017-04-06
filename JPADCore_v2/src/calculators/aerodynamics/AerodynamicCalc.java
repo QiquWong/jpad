@@ -317,7 +317,7 @@ public class AerodynamicCalc {
 		lambda_opt = 0.45
 				*Math.pow(
 						Math.E,
-						theWing.getSweepQuarterChordEquivalent(false).doubleValue(SI.RADIAN)
+						theWing.getSweepQuarterChordEquivalent().doubleValue(SI.RADIAN)
 						);
 		delta_lambda = -0.357 + lambda_opt;
 		f = 0.0524*Math.pow(lambda_opt - delta_lambda,4) 
