@@ -33,6 +33,8 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.JPADXmlReader;
 
 
@@ -179,8 +181,12 @@ public class CostsTestsJenkinson {
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+			String fusDesDatabaseFilename = "FusDes_database.h5";
+			String vedscDatabaseFilename = "VeDSC_database.h5";
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
+			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			
 //			// Initialize Aircraft with default parameters
@@ -201,7 +207,9 @@ public class CostsTestsJenkinson {
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,
-					highLiftDatabaseReader);
+					highLiftDatabaseReader,
+					fusDesDatabaseReader,
+					veDSCDatabaseReader);
 					
 			OperatingConditions operatingConditions = new OperatingConditions.OperatingConditionsBuilder("The operating conditions").build();
 			operatingConditions.setAltitude(Amount.valueOf(11000, SI.METER));

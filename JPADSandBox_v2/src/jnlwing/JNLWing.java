@@ -20,6 +20,8 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.JPADXmlReader;
 
 class MyArgumentWing {
@@ -87,11 +89,19 @@ public class JNLWing {
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+			String vedscDatabaseFilename = "VeDSC_database.h5";
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 //			// read LiftingSurface from xml ...
-			theWing = new LiftingSurfaceBuilder("MyWing", ComponentEnum.WING, aeroDatabaseReader, highLiftDatabaseReader)
+			theWing = new LiftingSurfaceBuilder(
+					"MyWing", 
+					ComponentEnum.WING,
+					aeroDatabaseReader,
+					highLiftDatabaseReader,
+					veDSCDatabaseReader
+					)
 					.liftingSurfaceCreator(
 							LiftingSurfaceCreator.importFromXML(ComponentEnum.WING, pathToXML, dirAirfoil)
 							)

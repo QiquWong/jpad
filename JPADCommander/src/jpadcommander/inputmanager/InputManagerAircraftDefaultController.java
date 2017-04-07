@@ -25,6 +25,8 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.RegulationsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import graphics.D3Plotter;
 import graphics.D3PlotterOptions;
 import javafx.collections.FXCollections;
@@ -67,12 +69,15 @@ public class InputManagerAircraftDefaultController {
 		Main.setStatus(State.RUNNING);
 		Main.checkStatus(Main.getStatus());
 
-		String databaseFolderPath = Main.getDatabaseDirectoryPath();
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-		MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, databaseFolderPath);
+		String fusDesDatabaseFilename = "FusDes_database.h5";
+		String vedscDatabaseFilename = "VeDSC_database.h5";
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
+		VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
@@ -96,7 +101,9 @@ public class InputManagerAircraftDefaultController {
 					"ATR-72",
 					AircraftEnum.ATR72,
 					aeroDatabaseReader,
-					highLiftDatabaseReader
+					highLiftDatabaseReader,
+					fusDesDatabaseReader,
+					veDSCDatabaseReader
 					)
 					.build()
 					);

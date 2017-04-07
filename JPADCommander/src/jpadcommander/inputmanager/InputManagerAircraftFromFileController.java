@@ -26,6 +26,8 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.WindshieldType;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import graphics.D3Plotter;
 import graphics.D3PlotterOptions;
 import javafx.collections.FXCollections;
@@ -81,12 +83,15 @@ public class InputManagerAircraftFromFileController {
 		Main.setStatus(State.RUNNING);
 		Main.checkStatus(Main.getStatus());
 		
-		String databaseFolderPath = Main.getDatabaseDirectoryPath();
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+		String fusDesDatabaseFilename = "FusDes_database.h5";
+		String vedscDatabaseFilename = "VeDSC_database.h5";
 		AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-		MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, Main.getDatabaseDirectoryPath());
+		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
+		VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 		
 		String dirLiftingSurfaces = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces";
 		String dirFuselages = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "fuselages";
@@ -118,7 +123,9 @@ public class InputManagerAircraftFromFileController {
 				dirCabinConfiguration,
 				dirAirfoils,
 				aeroDatabaseReader,
-				highLiftDatabaseReader)
+				highLiftDatabaseReader,
+				fusDesDatabaseReader,
+				veDSCDatabaseReader)
 				);
 
 		// COMPONENTS LOG TO INTERFACE

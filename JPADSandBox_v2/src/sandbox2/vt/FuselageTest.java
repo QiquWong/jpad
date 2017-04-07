@@ -20,6 +20,11 @@ import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.FoldersEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -239,6 +244,10 @@ public class FuselageTest extends Application {
 
 			System.out.println("--------------");
 
+			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+			String fusDesDatabaseFilename = "FusDes_database.h5";
+			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
+			
 			// This wing static object is available in the scope of
 			// the Application.start method
 
@@ -250,7 +259,7 @@ public class FuselageTest extends Application {
 			//						.build();
 
 			// default Fuselage ...
-			theFuselage = new Fuselage.FuselageBuilder("MyFuselage")
+			theFuselage = new Fuselage.FuselageBuilder("MyFuselage", fusDesDatabaseReader)
 					.fuselageCreator(
 							new FuselageCreator
 							.FuselageBuilder("Test ATR72 fuselage", AircraftEnum.ATR72)

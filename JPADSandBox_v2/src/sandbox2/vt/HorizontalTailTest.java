@@ -25,6 +25,8 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -251,11 +253,18 @@ public class HorizontalTailTest extends Application {
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+			String vedscDatabaseFilename = "VeDSC_database.h5";
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 			
 			// read LiftingSurface from xml ...
-			theHorizontalTail = new LiftingSurfaceBuilder("MyHorizontalTail", ComponentEnum.HORIZONTAL_TAIL, aeroDatabaseReader, highLiftDatabaseReader)
+			theHorizontalTail = new LiftingSurfaceBuilder(
+					"MyHorizontalTail", 
+					ComponentEnum.HORIZONTAL_TAIL, 
+					aeroDatabaseReader, 
+					highLiftDatabaseReader,
+					veDSCDatabaseReader)
 					.liftingSurfaceCreator(
 							LiftingSurfaceCreator.importFromXML(ComponentEnum.HORIZONTAL_TAIL, pathToXML, dirAirfoil)
 							)
