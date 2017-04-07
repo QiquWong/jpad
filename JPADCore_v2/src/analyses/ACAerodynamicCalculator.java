@@ -844,7 +844,7 @@ public class ACAerodynamicCalculator {
 			);
 
 			//=======================================================================================
-			// Calculating control derivatives for each component ...
+			// Calculating control derivatives ...
 			//=======================================================================================
 			List<Tuple3<MethodEnum, Double, Double>> cNdrListAtCG = new ArrayList<>();
 			
@@ -980,7 +980,7 @@ public class ACAerodynamicCalculator {
 			);
 
 			//=======================================================================================
-			// Calculating control derivatives for each component ...
+			// Calculating control derivatives ...
 			//=======================================================================================
 			List<Tuple3<MethodEnum, Double, Double>> cNdrListAtCG = new ArrayList<>();
 			
