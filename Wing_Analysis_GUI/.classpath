@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Test_Wing_Analysis_noDihedral"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/jscience-4.3/jscience.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.apache.commons.logging_1.1.1.v201101211721.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/com.ibm.icu_54.1.1.v201501272100.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/icu4j-57_1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.core.commands_3.7.0.v20150422-0725.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.core.databinding.beans_1.3.0.v20150422-0725.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.core.databinding.observable_1.5.0.v20150422-0725.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.core.databinding.property_1.5.0.v20150422-0725.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.core.databinding_1.5.0.v20150422-0725.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.core.runtime_3.11.1.v20150903-1804.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.draw2d_3.10.0.201506010206.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.equinox.common_3.7.0.v20150402-1709.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.equinox.registry_3.6.0.v20150318-1503.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.jface.databinding_1.7.0.v20150406-2148.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.jface.text_3.10.0.v20150603-1752.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.jface_3.11.1.v20160128-1644.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.osgi_3.10.102.v20160118-1700.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.104.2.v20160212-1350.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.text_3.5.400.v20150505-1044.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.ui.forms_3.6.200.v20150506-2029.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/eclipse/plugins/org.eclipse.ui.workbench_3.107.1.v20160120-2131.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/commons-math/commons-math3-3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/commons-math/commons-math3-3.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/commons-math/commons-math3-3.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/commons-math/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/args4j/args4j-2.0.21.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

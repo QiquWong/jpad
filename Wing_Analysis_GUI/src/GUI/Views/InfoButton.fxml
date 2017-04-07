@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="400.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <Label text="The Method">
+               <font>
+                  <Font name="AR ESSENCE" size="16.0" />
+               </font>
+            </Label>
+            <TextArea editable="false" prefHeight="177.0" prefWidth="600.0" text="Wing Analysis allows to evaluate the wing lift curve of a lifting surface and the lift coefficient distibution &#10;along the semi-span using the Nasa-Blackwell method coupled with the stall path method.&#10;&#10;The Nasa-Blackwell is a numerical method for calculating the subsonic load distribution for arbitrary lifting &#10;surface arrangements at a fixed angle of attack.  The method has been implemented because its results&#10; were in good agreement with the experimental results. &#10;&#10;The lifting surfaces are divided in several rectangular horse-shoe vortices along the span; one horseshoe&#10; vortex along the chord is used, that is, the midpoints of the vortices are placed only at points along the &#10;quarter-chord lines. An equal number of control points are located along the three-quarter-chord lines. &#10;The velocity from the total vortex system is equated to the component of free-stream velocity normal to&#10; the lifting surface chord at each control point. Application of this tangent-flow boundary condition for a &#10;symmetrical loading provides a set of N simultaneous equations in the N unknown circulation strengths. &#10;Solution of this set of equations provides the loading distributions over the lifting surfaces. &#10;Mach number effect is introduced through a Prandtl-Glauert correction.&#10;&#10;The Nasa-Blackwell method is an inviscid method so in order to evaluate the maximul lift coeffient it has &#10;been coupled with the stall path metod. &#10;&#10;&#10;">
+               <padding>
+                  <Insets left="5.0" right="1.0" />
+               </padding>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </TextArea>
+            <Label text="How to use this tool">
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+               <font>
+                  <Font name="AR ESSENCE" size="16.0" />
+               </font>
+            </Label>
+            <TextArea editable="false" prefHeight="163.0" prefWidth="600.0" text="In orded to star a new analysis, click on &quot;Start new Analysis&quot; button.&#10;&#10;First of all it is necessary to define the input file. To do this, click on &quot;Input&quot;. Anyway, at this stage it is not&#10;possible to click on &quot;Analysis&quot; button. It is possible both to read an external .xml file and to write all data&#10;using this tool. In order to read an external file, click the button &quot;from file&quot; and the text field to define the input &#10;file will be abilited. Search for the input file with the required tags by clicking on the button with dots. All &#10;the data will appear on related field. It is possible to change some data. Please read the instructions in the &#10;xml example flie (&quot;WingAnalysis_inputTemplate.xml&quot;). When all data are right, click on &quot;Confirm Data&quot; button.&#10;Alternatively it is possible to set all data in the related field choosing the units. It is also possible to use&#10;different units in the same input file. When set the number of input sections, click OK button.&#10;">
+               <padding>
+                  <Insets left="5.0" right="1.0" />
+               </padding>
+            </TextArea>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

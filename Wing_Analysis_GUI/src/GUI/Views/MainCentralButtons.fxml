@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Views.VariablesMainCentralButtons">
+   <center>
+      <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="211.0" prefWidth="900.0" spacing="100.0">
+               <children>
+                  <Button fx:id="inputButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#setInputData" prefHeight="182.0" prefWidth="214.0" style="-fx-background-radius: 30;" text="Input">
+                     <font>
+                        <Font name="AR ESSENCE" size="36.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="analysisButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="182.0" prefWidth="214.0" style="-fx-background-radius: 30;" text="Analysis">
+                     <font>
+                        <Font name="AR ESSENCE" size="36.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" spacing="280.0">
+               <children>
+                  <Button fx:id="inputCheck" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" style="-fx-border-radius: 50;" />
+                  <Button fx:id="analysisCheck" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" style="-fx-border-radius: 50;">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
