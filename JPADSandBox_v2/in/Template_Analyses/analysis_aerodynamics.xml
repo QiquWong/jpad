@@ -229,6 +229,7 @@
 			<aircraft_analyses>
 				<downwash perform="TRUE" downwash_gradient="CONSTANT" method="SLINGERLAND"/>
 				<dynamic_pressure_ratio perform="TRUE" method="SEMPIEMPIRICAL"/>
+				<buffet_barrier perform="TRUE"/>
 				<lift_curve perform="TRUE"/>
 				<drag_polar perform="TRUE"/>
 				<moment_curve perform="TRUE"/>

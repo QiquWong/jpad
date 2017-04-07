@@ -24,6 +24,7 @@ import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
+import javaslang.Tuple2;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
@@ -107,6 +108,7 @@ public class ACAerodynamicCalculator {
 	Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
 	private Map<Boolean, Map<MethodEnum, List<Double>>> _downwashGradientMap;
 	private Map<Boolean, Map<MethodEnum, List<Amount<Angle>>>> _downwashAngleMap;
+	private List<Tuple2<List<Double>, List<Double>>> buffetBarrierCurve = new ArrayList<>();
 	
 	// COMPLETE ME !!
 	
@@ -714,5 +716,20 @@ public class ACAerodynamicCalculator {
 		return sb.toString();
 		
 	}
+	
+	//............................................................................
+	// BUFFET BARRIER INNER CLASS
+	//............................................................................
+	public class CalcBuffetBarrier {
+		
+		public void kroo() {
+			
+			
+		}
+		
+	}
+	//............................................................................
+	// BUFFET BARRIER INNER CLASS
+	//............................................................................
 	
 }

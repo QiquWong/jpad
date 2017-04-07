@@ -52,6 +52,86 @@ public class LiftCalc {
 
 	private LiftCalc() {}
 
+	public static List<Double> calculateLiftingCoefficientVsMachPrandtlGlauert(
+			List<Double> machList,
+			double cLAtMachZero
+			) {
+		
+		return machList.stream()
+				.map(m -> AerodynamicCalc.calculatePrandtlGlauertCorrection(m))
+					.map(m -> cLAtMachZero/m)
+						.collect(Collectors.toList());
+		
+	}
+	
+	/**
+	 * @see S. Ciornei. 
+	 * 		Mach number, relative thickness, sweep and lift coefficient of the wing 
+	 * 			- An empirical investigation of parameters and equations. 
+	 * 		Paper. 
+	 * 		31.05.2005.
+	 * 
+	 * @author Vittorio Trifari
+	 * 
+	 * @param machList
+	 * @param tcMeanAirfoil
+	 * @param sweepQuarterChord
+	 * @param deltaCriticalMach depends on the airfoil type (0 = peaky; -0.04 = NACA; 0.04 = SUPERCRITICAL; 0.06 = MODERN SUPERCRITICAL) 
+	 * @return the list of CL
+	 */
+	public static List<Double> calculateLiftingCoefficientFromCriticalMachKroo(
+			List<Double> machList,
+			double tcMeanAirfoil,
+			Amount<Angle> sweepQuarterChord,
+			double deltaCriticalMach
+			) {
+		
+		double x = tcMeanAirfoil/Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN));
+		double k1 = 2.8355*Math.pow(x, 2)-1.9072*x+0.9499;
+		double k2 = 0.2*(1-2.131*x);
+		
+		return machList.stream()
+				.map(m -> ((k1*Math.pow(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)),2))
+						-((m-deltaCriticalMach)*Math.pow(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)),3)))
+						/k2)
+					.collect(Collectors.toList());
+		
+	}
+	
+	/**
+	 * @see S. Ciornei. 
+	 * 		Mach number, relative thickness, sweep and lift coefficient of the wing 
+	 * 			- An empirical investigation of parameters and equations. 
+	 * 		Paper. 
+	 * 		31.05.2005.
+	 * 
+	 * @author Vittorio Trifari
+	 * 
+	 * @param machList
+	 * @param tcMeanAirfoil
+	 * @param sweepQuarterChord
+	 * @param deltaCriticalMach depends on the airfoil type (0 = peaky; -0.04 = NACA; 0.04 = SUPERCRITICAL; 0.06 = MODERN SUPERCRITICAL) 
+	 * @return the list of CL
+	 */
+	public static List<Double> calculateLiftingCoefficientFromDivergenceMachKroo(
+			List<Double> machList,
+			double tcMeanAirfoil,
+			Amount<Angle> sweepQuarterChord,
+			double deltaCriticalMach
+			) {
+		
+		double x = tcMeanAirfoil/Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN));
+		double k1 = 2.8355*Math.pow(x, 2)-1.9072*x+0.9499;
+		double k2 = 0.2*(1-2.131*x);
+		
+		return machList.stream()
+				.map(m -> ((k1*Math.pow(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)),2))
+						-(((m-deltaCriticalMach)/(1.02+0.08*(1-Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)))))*Math.pow(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)),3)))
+						/k2)
+					.collect(Collectors.toList());
+		
+	}
+	
 	/**
 	 * Helmbold-Diederich formula
 	 * 
