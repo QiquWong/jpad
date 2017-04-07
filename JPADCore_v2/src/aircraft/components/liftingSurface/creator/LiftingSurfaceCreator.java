@@ -3185,7 +3185,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 	}
 
 	public void setLiftingSurfaceArm(Amount<Length> _liftingSurfaceArm) {
-		this._liftingSurfaceArm = _liftingSurfaceArm;
+		this._liftingSurfaceArm = ;
 	}
 
 	public Double getMainSparNonDimensionalPosition() {

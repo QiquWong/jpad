@@ -7,6 +7,8 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 
 public class StabilityCalculators {
 
@@ -20,8 +22,11 @@ public class StabilityCalculators {
 	 * @author  Manuela Ruocco
 	 */
 	
-	public double calculateTauIndex(double chordRatio, 
-			Aircraft aircraft, 
+	public static double calculateTauIndex(
+			double chordRatio,
+			double aspectRatioHTail,
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			HighLiftDatabaseReader highLiftDatabaseReader,
 			Amount<Angle> deflection
 			)
 	{
@@ -30,25 +35,20 @@ public class StabilityCalculators {
 		}
 		double deflectionAngleDeg = deflection.getEstimatedValue();
 		
-		double aspectratioHorizontalTail = aircraft.getHTail().getAspectRatio();
-		
-		double etaDelta = aircraft
-				.getWing()
-				.getHighLiftDatabaseReader()
+		double etaDelta = 
+				highLiftDatabaseReader
 				.getEtaDeltaVsDeltaFlapPlain(deflectionAngleDeg, chordRatio);
 		//System.out.println(" eta delta = " + etaDelta );
 		
-		double deltaAlpha2D = aircraft
-				.getWing()
-				.getAerodynamicDatabaseReader()
+		double deltaAlpha2D = 
+				aeroDatabaseReader
 				.getD_Alpha_d_Delta_2d_VS_cf_c(chordRatio);
 		//System.out.println(" delta alfa 2d = " + deltaAlpha2D );
 		
-		double deltaAlpha2D3D = aircraft
-				.getWing()
-				.getAerodynamicDatabaseReader()
+		double deltaAlpha2D3D = 
+				aeroDatabaseReader
 				.getD_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio(
-						aspectratioHorizontalTail,
+						aspectRatioHTail,
 						deltaAlpha2D
 						);
 		//System.out.println(" delta alfa 3d/2d = " + deltaAlpha2D3D );
@@ -71,4 +71,13 @@ public class StabilityCalculators {
 		
 		
 	}
+
+	
+	
+	
+	
+	
+	
+	
+	
 }

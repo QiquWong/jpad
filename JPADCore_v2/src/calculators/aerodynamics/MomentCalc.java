@@ -17,8 +17,12 @@ import com.sun.javafx.geom.transform.BaseTransform.Degree;
 
 import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
 import calculators.geometry.LSGeometryCalc;
+import calculators.stability.StabilityCalculators;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.DatabaseManager;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import jahuwaldt.tools.units.Degrees;
 //import databasesIO.vedscdatabase.VeDSCDatabaseCalc;
 import standaloneutils.MyArrayUtils;
@@ -232,26 +236,6 @@ public class MomentCalc {
 				kFv, kWv, kHv, armVertical, surfaceVertical, surfaceWing, wingSpan);
 	}
 
-	//	public static double calcCNbetaVerticalTail(
-	//			double wingAr, double verticalAr, 
-	//			double armVertical, double wingSpan,
-	//			double wingPosition,
-	//			double surfaceWing, double surfaceVertical, 
-	//			double sweepC2vertical, double clAlphaVertical,
-	//			double tailconeShape, double horizPosOverVertical,
-	//			double fuselageDiameterAtVerticalMAC,
-	//			double mach) {
-	//		
-	//		return calcCNbetaVerticalTail(
-	//				LiftCalc.calculateCLalphaHelmboldDiederich(wingAr, clAlphaVertical, sweepC2vertical,mach), 
-	//				AerodynamicsDatabaseManager.veDSCDatabaseReader.get_KFv_vs_bv_over_dfv(
-	//						LSGeometryCalc.calculateSpan(surfaceVertical, wingAr), fuselageDiameterAtVerticalMAC, tailconeShape), 
-	//				AerodynamicsDatabaseManager.veDSCDatabaseReader.get_KWv_vs_zw_over_rf(wingPosition, wingAr, tailconeShape), 
-	//				AerodynamicsDatabaseManager.veDSCDatabaseReader.get_KHv_vs_zh_over_bv1(horizPosOverVertical, verticalAr, tailconeShape, wingPosition), 
-	//				armVertical, surfaceVertical, surfaceWing, wingSpan);
-	//		
-	//	}
-
 	/**
 	 * @author Vincenzo Cusati
 	 * 
@@ -312,17 +296,73 @@ public class MomentCalc {
 	 * Conference, Aviation Forum 2015, Dallas (Texas, USA)).
 	 */
 
-	public static double calcCNBetaFuselage(double fuselageMainYawingMomentDerivativeCoefficient, 
-			double fuselageNoseYawingMomentDerivativeCoefficient,
-			double fuselageTailYawingMomentDerivativeCoefficient){
+	public static double calcCNBetaFuselage(
+			FusDesDatabaseReader fusDesDatabaseReader,
+			double finenessRatio,
+			double noseFinenessRatio,
+			double tailFinenessRatio,
+			double xPositionPole){
 
-		double cNbetaFR = fuselageMainYawingMomentDerivativeCoefficient;
-		double dCNbetaNose = fuselageNoseYawingMomentDerivativeCoefficient;
-		double dCNbetaTail = fuselageTailYawingMomentDerivativeCoefficient;
+		fusDesDatabaseReader.runAnalysisCNbeta(noseFinenessRatio, finenessRatio, tailFinenessRatio, xPositionPole);
 
-		return cNbetaFR  + dCNbetaNose + dCNbetaTail;
+		return fusDesDatabaseReader.getCNbFR() +
+				fusDesDatabaseReader.getdCNbn() +
+				fusDesDatabaseReader.getdCNbt();
+	}
+	
+	
+	public static List<Double> calcNonLinearCNFuselage(double cNbetaFuselage, List<Amount<Angle>> betaList){
+		
+		return betaList.stream()
+				.map(b -> 0.2362 + 1.0178*b.doubleValue(NonSI.DEGREE_ANGLE) - 0.0135*Math.pow(b.doubleValue(NonSI.DEGREE_ANGLE),2))
+				.map(b-> cNbetaFuselage*b)
+				.collect(Collectors.toList());
+	}
+	
+	public static List<Double>	calcCNWing(double cNbetaWing, List<Amount<Angle>> betaList){
+		
+		return betaList.stream()
+				.map(b-> cNbetaWing*b.doubleValue(NonSI.DEGREE_ANGLE))
+				.collect(Collectors.toList());
+	}
+	
+	public static List<Double>	calcNonLinearCNVTail(double cNbetaVTail, List<Amount<Angle>> betaList){
+		
+		/* TODO discover the non linear corrections*/
+		return betaList.stream()
+//				.map(b -> 0.2362 + 1.0178*b.doubleValue(NonSI.DEGREE_ANGLE) - 0.0135*Math.pow(b.doubleValue(NonSI.DEGREE_ANGLE),2))
+				.map(b-> cNbetaVTail*b.doubleValue(NonSI.DEGREE_ANGLE))
+				.collect(Collectors.toList());
+	}
+	
+	
+	public static List<Double>	calcTotalCN(List<Double> cNFuselageList, List<Double> cNWingList, List<Double> cNVerticalList){
+		
+		return cNVerticalList.stream()
+				.map(cNv-> cNv + cNWingList.get(cNWingList.indexOf(cNv)) + cNFuselageList.get(cNFuselageList.indexOf(cNv)))
+				.collect(Collectors.toList());
+	}
+	
+	public static double calcCNdr(
+			double cNbVTail,
+			Amount<Angle> dr, 
+			double rudderChordRatio,
+			double aspectRatioHTail,
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			HighLiftDatabaseReader highLiftDatabaseReader
+			){
+		
+		return cNbVTail*StabilityCalculators.calculateTauIndex(
+				rudderChordRatio,
+				aspectRatioHTail,
+				aeroDatabaseReader, 
+				highLiftDatabaseReader, 
+				dr
+				);
+		
 	}
 
+		
 	/**
 	 * @author Vincenzo Cusati
 	 * 
@@ -330,12 +370,10 @@ public class MomentCalc {
 	 * @return the yawing moment coefficient derivative (CN_beta) of the wing 
 	 */
 
-	public static double calcCNBetaWing(double sweepAngle){
+	public static double calcCNBetaWing(Amount<Angle> sweepQuarterChord){
 
-		double sA = sweepAngle;
-		double cNbWing = 0.00006*Math.sqrt(sA);
+		return 0.00006*Math.sqrt(sweepQuarterChord.doubleValue(NonSI.DEGREE_ANGLE));
 
-		return cNbWing; 
 	}	
 
 
@@ -353,11 +391,16 @@ public class MomentCalc {
 	 * @author Vincenzo Cusati
 	 */
 
-	public static double calcCNBetaWing(double liftCoeff, double sweepAngle, double aspectRatio,
-														double xACwMACratio,  double xCGMACratio){
+	public static double calcCNBetaWing(
+			double liftCoeff, 
+			Amount<Angle> sweepQuarterChord, 
+			double aspectRatio,
+			double xACwMACratio,  
+			double xCGMACratio
+			){
 
 		double cL = liftCoeff;
-		double sA = sweepAngle;
+		double sA = sweepQuarterChord.doubleValue(SI.RADIAN);
 		double aR = aspectRatio;
 		double xACw = xACwMACratio;
 		double xCG = xCGMACratio;

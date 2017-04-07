@@ -28,6 +28,8 @@ import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
@@ -230,9 +232,13 @@ public class CompleteAnalysisTest extends Application {
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+			String fusDesDatabaseFilename = "FusDes_database.h5";
+			String vedscDatabaseFilename = "VeDSC_database.h5";
 			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-
+			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
+			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
+			
 			////////////////////////////////////////////////////////////////////////
 			// Aircraft creation
 			System.out.println("\n\n\tCreating the Aircraft ... \n\n");
@@ -245,7 +251,9 @@ public class CompleteAnalysisTest extends Application {
 //					"ATR-72",
 //					AircraftEnum.ATR72,
 //					aeroDatabaseReader,
-//					highLiftDatabaseReader
+//					highLiftDatabaseReader,
+//			        fusDesDatabaseReader,
+//					veDSCDatabaseReader,
 //					)
 //					.build();
 
@@ -261,7 +269,9 @@ public class CompleteAnalysisTest extends Application {
 					dirCabinConfiguration,
 					dirAirfoil,
 					aeroDatabaseReader,
-					highLiftDatabaseReader);
+					highLiftDatabaseReader,
+					fusDesDatabaseReader,
+					veDSCDatabaseReader);
 			
 			// activating system.out
 			System.setOut(originalOut);			

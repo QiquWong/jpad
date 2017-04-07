@@ -27,7 +27,6 @@ import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -38,6 +37,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.GeometryCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -69,6 +69,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 	private AerodynamicDatabaseReader _aeroDatabaseReader;
 	private HighLiftDatabaseReader _highLiftDatabaseReader;
+	private VeDSCDatabaseReader _veDSCDatabaseReader;
 	
 	private Double _thicknessMean;
 	private Double _formFactor;
@@ -120,6 +121,7 @@ public class LiftingSurface implements ILiftingSurface {
 		private List<Airfoil> __airfoilList;
 		private AerodynamicDatabaseReader __aeroDatabaseReader;
 		private HighLiftDatabaseReader __highLiftDatabaseReader;
+		private VeDSCDatabaseReader __veDSCDatabaseReader;
 		Map <MethodEnum, Amount<Length>> __xCGMap;
 		Map <MethodEnum, Amount<Length>> __yCGMap;
 		Map <AnalysisTypeEnum, List<MethodEnum>> __methodsMap;
@@ -129,13 +131,15 @@ public class LiftingSurface implements ILiftingSurface {
 				String id,
 				ComponentEnum type,
 				AerodynamicDatabaseReader aeroDatabaseReader,
-				HighLiftDatabaseReader highLiftDatabaseReader
+				HighLiftDatabaseReader highLiftDatabaseReader,
+				VeDSCDatabaseReader veDSCDatabaseReader
 				) {
 			// required parameter
 			this.__id = id;
 			this.__type = type;
 			this.__aeroDatabaseReader = aeroDatabaseReader;
 			this.__highLiftDatabaseReader = highLiftDatabaseReader;
+			this.__veDSCDatabaseReader= veDSCDatabaseReader;
 			
 			// optional parameters ...
 			this.__airfoilList = new ArrayList<Airfoil>(); 
@@ -165,6 +169,7 @@ public class LiftingSurface implements ILiftingSurface {
 		this._liftingSurfaceCreator = builder.__liftingSurfaceCreator;
 		this._aeroDatabaseReader = builder.__aeroDatabaseReader;
 		this._highLiftDatabaseReader = builder.__highLiftDatabaseReader;
+		this._veDSCDatabaseReader = builder.__veDSCDatabaseReader;
 		this._airfoilList = builder.__airfoilList;
 		this._xCGMap = builder.__xCGMap;
 		this._yCGMap = builder.__yCGMap;
@@ -1278,13 +1283,13 @@ public class LiftingSurface implements ILiftingSurface {
 	}
 	
 	public static AirfoilCreator calculateMeanAirfoil (
-			LiftingSurface theWing
+			LiftingSurface theLiftingSurface
 			) {
 		
 		List<Double> influenceCoefficients = LSGeometryCalc.calculateInfluenceCoefficients(
-				theWing.getLiftingSurfaceCreator().getChordsBreakPoints(),
-				theWing.getLiftingSurfaceCreator().getYBreakPoints(), 
-				theWing.getSurface()
+				theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints(),
+				theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints(), 
+				theLiftingSurface.getSurface()
 				);
 	
 		//----------------------------------------------------------------------------------------------
@@ -1296,7 +1301,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			maximumThicknessMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio();
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getThicknessToChordRatio();
 
 		//----------------------------------------------------------------------------------------------
 		// Leading edge radius:
@@ -1304,7 +1309,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			leadingEdgeRadiusMeanAirfoil = leadingEdgeRadiusMeanAirfoil
-			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getRadiusLeadingEdge()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getRadiusLeadingEdge()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -1315,7 +1320,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			alphaZeroLiftMeanAirfoil = alphaZeroLiftMeanAirfoil
-			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaZeroLift()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getAlphaZeroLift()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -1326,7 +1331,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			alphaStarMeanAirfoil = alphaStarMeanAirfoil
-			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaEndLinearTrait()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getAlphaEndLinearTrait()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -1337,7 +1342,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			alphaStallMeanAirfoil = alphaStallMeanAirfoil
-			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getAlphaStall()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getAlphaStall()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -1348,7 +1353,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clAlphaMeanAirfoil = clAlphaMeanAirfoil
-			.plus(theWing.getAirfoilList().get(i).getAirfoilCreator().getClAlphaLinearTrait()
+			.plus(theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClAlphaLinearTrait()
 					.times(influenceCoefficients.get(i)
 							)
 					);
@@ -1359,7 +1364,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cdMinMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCdMin();
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCdMin();
 
 		//----------------------------------------------------------------------------------------------
 		// Cl at Cd min:
@@ -1367,7 +1372,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clAtCdMinMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtCdMin();
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClAtCdMin();
 
 		//----------------------------------------------------------------------------------------------
 		// Cl0:
@@ -1375,7 +1380,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cl0MeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClAtAlphaZero();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClAtAlphaZero();	
 
 		//----------------------------------------------------------------------------------------------
 		// Cl star:
@@ -1383,7 +1388,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clStarMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClEndLinearTrait();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClEndLinearTrait();	
 
 		//----------------------------------------------------------------------------------------------
 		// Cl max:
@@ -1391,7 +1396,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			clMaxMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getClMax();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getClMax();	
 
 		//----------------------------------------------------------------------------------------------
 		// K factor drag polar:
@@ -1399,7 +1404,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			kFactorDragPolarMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getKFactorDragPolar();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getKFactorDragPolar();	
 
 		//----------------------------------------------------------------------------------------------
 		// Cm quarter chord:
@@ -1407,7 +1412,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cmAlphaQuarteChordMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue();	
 
 		//----------------------------------------------------------------------------------------------
 		// x ac:
@@ -1415,7 +1420,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			xACMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getXACNormalized();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getXACNormalized();	
 
 		//----------------------------------------------------------------------------------------------
 		// cm ac:
@@ -1423,7 +1428,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cmACMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmAC();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCmAC();	
 
 		//----------------------------------------------------------------------------------------------
 		// cm ac stall:
@@ -1431,7 +1436,7 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			cmACStallMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getCmACAtStall();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getCmACAtStall();	
 
 		//----------------------------------------------------------------------------------------------
 		// critical Mach number:
@@ -1439,15 +1444,15 @@ public class LiftingSurface implements ILiftingSurface {
 
 		for(int i=0; i<influenceCoefficients.size(); i++)
 			criticalMachMeanAirfoil += influenceCoefficients.get(i)
-			*theWing.getAirfoilList().get(i).getAirfoilCreator().getMachCritical();	
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getMachCritical();	
 
 		//----------------------------------------------------------------------------------------------
 		// MEAN AIRFOIL CREATION:
 
 		AirfoilCreator meanAirfoilCreator = new AirfoilCreator.AirfoilBuilder()
 				.name("Mean Airfoil")
-				.type(theWing.getAirfoilList().get(0).getAirfoilCreator().getType())
-				.family(theWing.getAirfoilList().get(0).getAirfoilCreator().getFamily())
+				.type(theLiftingSurface.getAirfoilList().get(0).getAirfoilCreator().getType())
+				.family(theLiftingSurface.getAirfoilList().get(0).getAirfoilCreator().getFamily())
 				.thicknessToChordRatio(maximumThicknessMeanAirfoil)
 				.radiusLeadingEdge(leadingEdgeRadiusMeanAirfoil)
 				.alphaZeroLift(alphaZeroLiftMeanAirfoil)
@@ -2037,6 +2042,14 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setNumberOfEngineOverTheWing(int _numberOfEngineOverTheWing) {
 		this._numberOfEngineOverTheWing = _numberOfEngineOverTheWing;
+	}
+
+	public VeDSCDatabaseReader getVEDSCDatabaseReader() {
+		return _veDSCDatabaseReader;
+	}
+
+	public void setVEDSCDatabaseReader(VeDSCDatabaseReader _veDSCDatabaseReader) {
+		this._veDSCDatabaseReader = _veDSCDatabaseReader;
 	}
 	
 }

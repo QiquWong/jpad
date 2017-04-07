@@ -35,6 +35,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.WindshieldType;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
@@ -72,6 +73,8 @@ public class Fuselage implements IFuselage {
 	private CenterOfGravity _cg;
 	private FuselageAerodynamicsManager aerodynamics;
 
+	private FusDesDatabaseReader _fusDesDatabaseReader;
+	
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
 	private Amount<Length> _yApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
 	private Amount<Length> _zApexConstructionAxes = Amount.valueOf(0.0, SI.METER);
@@ -87,10 +90,14 @@ public class Fuselage implements IFuselage {
 		private Amount<Length> __yApexConstructionAxes = null; 
 		private Amount<Length> __zApexConstructionAxes = null;
 		private FuselageCreator __fuselageCreator;
+		private FusDesDatabaseReader __fusDesDatabaseReader;
 		
-		public FuselageBuilder(String id) {
+		public FuselageBuilder(
+				String id,
+				FusDesDatabaseReader fusDesDatabaseReader) {
 			// required parameter
 			this.__id = id;
+			this.__fusDesDatabaseReader = fusDesDatabaseReader;
 
 			// optional parameters ...
 
@@ -116,6 +123,7 @@ public class Fuselage implements IFuselage {
 		this._yApexConstructionAxes = builder.__yApexConstructionAxes; 
 		this._zApexConstructionAxes = builder.__zApexConstructionAxes;
 		this._fuselageCreator = builder.__fuselageCreator;
+		this._fusDesDatabaseReader =builder.__fusDesDatabaseReader;
 	}
 	
 	
@@ -767,6 +775,18 @@ public class Fuselage implements IFuselage {
 	 */
 	public void setKExcr(Double _kExcr) {
 		this._kExcr = _kExcr;
+	}
+
+
+
+	public FusDesDatabaseReader getFusDesDatabaseReader() {
+		return _fusDesDatabaseReader;
+	}
+
+
+
+	public void setFusDesDatabaseReader(FusDesDatabaseReader _fusDesDatabaseReader) {
+		this._fusDesDatabaseReader = _fusDesDatabaseReader;
 	}
 
 
