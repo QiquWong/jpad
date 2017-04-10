@@ -201,7 +201,7 @@ public class DragCalc {
 		Double cDGap = 0.0002*(
 				Math.pow(Math.cos(theLiftingSurface.getSweepQuarterChordEquivalent().doubleValue(SI.RADIAN)) ,2))
 				* 0.3 
-				* theLiftingSurface.getLiftingSurfaceCreator().getSurfaceWettedExposed().doubleValue(SI.SQUARE_METRE)
+				* theLiftingSurface.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted().doubleValue(SI.SQUARE_METRE)
 				/ theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE);
 
 		return cDGap; 

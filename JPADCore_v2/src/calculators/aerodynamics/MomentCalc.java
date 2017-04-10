@@ -15,14 +15,18 @@ import org.jscience.physics.amount.Amount;
 
 import com.sun.javafx.geom.transform.BaseTransform.Degree;
 
+import aircraft.components.fuselage.Fuselage;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
+import calculators.geometry.FusGeometryCalc;
 import calculators.geometry.LSGeometryCalc;
 import calculators.stability.StabilityCalculators;
+import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
+import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import jahuwaldt.tools.units.Degrees;
 //import databasesIO.vedscdatabase.VeDSCDatabaseCalc;
 import standaloneutils.MyArrayUtils;
@@ -233,7 +237,7 @@ public class MomentCalc {
 
 		return calcCNbetaVerticalTail(
 				LiftCalc.calculateCLalphaHelmboldDiederich(verticalAr, clAlphaVertical, sweepC2vertical,mach), 
-				kFv, kWv, kHv, armVertical, surfaceVertical, surfaceWing, wingSpan);
+				kFv, kWv, kHv, armVertical, surfaceVertical, surfaceWing, wingSpan)/(180/Math.PI);
 	}
 
 	/**
@@ -298,16 +302,57 @@ public class MomentCalc {
 
 	public static double calcCNBetaFuselage(
 			FusDesDatabaseReader fusDesDatabaseReader,
+			VeDSCDatabaseReader veDSCDatabaseReader,
 			double finenessRatio,
 			double noseFinenessRatio,
 			double tailFinenessRatio,
-			double xPositionPole){
+			double xPositionPole,
+			Amount<Length> fusDiameter,
+			Amount<Area> wingSurface,
+			Amount<Length> wingSpan,
+			Amount<Length> verticalTailSpan,
+			Amount<Length> fuselageDiameterAtVerticalMAC,
+			double tailconeShape,
+			double horizontalTailPositionOverVertical,
+			double verticalTailAr,
+			double wingPosition
+			){
 
-		fusDesDatabaseReader.runAnalysisCNbeta(noseFinenessRatio, finenessRatio, tailFinenessRatio, xPositionPole);
-
-		return fusDesDatabaseReader.getCNbFR() +
+		fusDesDatabaseReader.runAnalysisCNbeta(
+				noseFinenessRatio,
+				finenessRatio,
+				tailFinenessRatio,
+				xPositionPole
+				);
+		
+		double kVf = veDSCDatabaseReader.get_KVf_vs_zw_over_dfv(
+				verticalTailSpan.doubleValue(SI.METER), 
+				fuselageDiameterAtVerticalMAC.doubleValue(SI.METER), 
+				tailconeShape
+				);
+		double kHf = veDSCDatabaseReader.get_KHf_vs_zh_over_bv1(
+				horizontalTailPositionOverVertical, 
+				verticalTailAr, 
+				tailconeShape, 
+				wingPosition
+				);
+		double kWf = veDSCDatabaseReader.get_KWf_vs_zw_over_rf(
+				wingPosition,
+				Math.pow(wingSpan.doubleValue(SI.METER), 2)/wingSurface.doubleValue(SI.SQUARE_METRE),
+				tailconeShape
+				);
+		double surfaceRatio = FusGeometryCalc.calculateSfront(fusDiameter)/wingSurface.doubleValue(SI.SQUARE_METRE);
+		
+		return (fusDesDatabaseReader.getCNbFR() +
 				fusDesDatabaseReader.getdCNbn() +
-				fusDesDatabaseReader.getdCNbt();
+				fusDesDatabaseReader.getdCNbt()
+				)
+				*surfaceRatio
+				*fusDiameter.doubleValue(SI.METER)
+				/wingSpan.doubleValue(SI.METER)
+				*kVf
+				*kHf
+				*kWf;
 	}
 	
 	
@@ -339,7 +384,10 @@ public class MomentCalc {
 	public static List<Double>	calcTotalCN(List<Double> cNFuselageList, List<Double> cNWingList, List<Double> cNVerticalList){
 		
 		return cNVerticalList.stream()
-				.map(cNv-> cNv + cNWingList.get(cNWingList.indexOf(cNv)) + cNFuselageList.get(cNFuselageList.indexOf(cNv)))
+				.map(cNv-> cNv 
+						+ cNWingList.get(cNVerticalList.indexOf(cNv)) 
+						+ cNFuselageList.get(cNVerticalList.indexOf(cNv))
+						)
 				.collect(Collectors.toList());
 	}
 	
@@ -362,7 +410,14 @@ public class MomentCalc {
 		
 	}
 
+	public static List<Double> calcCNDueToDeltaRudder(double cNdr, Amount<Angle> deltaRudder, List<Amount<Angle>> betaList){
+	
+		List<Double> result = new ArrayList<>(); 
+		betaList.stream().forEach(b -> result.add(cNdr*deltaRudder.doubleValue(NonSI.DEGREE_ANGLE)));
 		
+		return result;
+	}
+	
 	/**
 	 * @author Vincenzo Cusati
 	 * 

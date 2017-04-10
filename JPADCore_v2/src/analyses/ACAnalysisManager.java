@@ -1205,7 +1205,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY)) {
 			
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF))
+			_theAerodynamicAndStability.put(ConditionEnum.TAKE_OFF, new ACAerodynamicCalculator());
+			_theAerodynamicAndStability.put(ConditionEnum.CLIMB, new ACAerodynamicCalculator());
+			_theAerodynamicAndStability.put(ConditionEnum.CRUISE, new ACAerodynamicCalculator());
+			_theAerodynamicAndStability.put(ConditionEnum.LANDING, new ACAerodynamicCalculator());
+			
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) {
+				_theAerodynamicAndStability.remove(ConditionEnum.TAKE_OFF);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.TAKE_OFF,
 						ACAerodynamicCalculator.importFromXML(
@@ -1215,7 +1221,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 								ConditionEnum.TAKE_OFF
 								)
 						);
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB))
+			}
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB)) {
+				_theAerodynamicAndStability.remove(ConditionEnum.CLIMB);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CLIMB,
 						ACAerodynamicCalculator.importFromXML(
@@ -1225,7 +1233,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 								ConditionEnum.CLIMB
 								)
 						);
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE))
+			}
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE)) {
+				_theAerodynamicAndStability.remove(ConditionEnum.CRUISE);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CRUISE,
 						ACAerodynamicCalculator.importFromXML(
@@ -1235,7 +1245,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 								ConditionEnum.CRUISE
 								)
 						);
-			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING))
+			}
+			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING)) {
+				_theAerodynamicAndStability.remove(ConditionEnum.LANDING);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.LANDING,
 						ACAerodynamicCalculator.importFromXML(
@@ -1245,6 +1257,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 								ConditionEnum.LANDING
 								)
 						);
+			}
 			
 			calculateAerodynamicAndStability(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, true);

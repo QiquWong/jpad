@@ -3,6 +3,7 @@ package standaloneutils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
@@ -17,6 +18,8 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import standaloneutils.customdata.MyArray;
 
 /** 
@@ -52,6 +55,49 @@ public final class MyMathUtils {
 		}
 		
 		return intersectionValuesList;
+
+	}
+	
+	public static List<Tuple2<Double, Double>> getIntersectionXAndY(double[]x,  double[] y1, double[] y2) {
+
+		if (y1.length != y2.length || x.length != y1.length || x.length != y2.length) {
+			System.out.println("Input arrays must have the same length");
+			return null;
+		}
+
+		List<Tuple2<Double, Double>> results = new ArrayList<>();
+		
+		MyInterpolatingFunction y1Function = new MyInterpolatingFunction();
+		y1Function.interpolateLinear(x, y1);
+		
+		MyInterpolatingFunction y2Function = new MyInterpolatingFunction();
+		y2Function.interpolateLinear(x, y2);
+		
+		double[] xFitted = MyArrayUtils.linspace(x[0], x[x.length-1], 2000);
+		List<Double> y1Fitted = new ArrayList<>();
+		List<Double> y2Fitted = new ArrayList<>();
+		
+		Arrays.stream(xFitted).forEach(xElemet -> {
+			y1Fitted.add(y1Function.value(xElemet));
+			y2Fitted.add(y2Function.value(xElemet));
+		});  
+		
+		List<Double> diff = new ArrayList<>();
+		for(int i=0; i<xFitted.length; i++) 
+			diff.add(y1Fitted.get(i)-y2Fitted.get(i));
+
+		for (int i=1; i < diff.size(); i++){
+			if (Math.signum(diff.get(i)) != Math.signum(diff.get(i-1))) {
+				results.add(
+						Tuple.of(
+								xFitted[i],
+								(y1Fitted.get(i) + y2Fitted.get(i))/4. + (y1Fitted.get(i-1) + y2Fitted.get(i-1))/4.
+								)
+						);
+			}
+		}
+		
+		return results;
 
 	}
 	

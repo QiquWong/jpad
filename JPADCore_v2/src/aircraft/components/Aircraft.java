@@ -9,10 +9,6 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Element;
@@ -70,7 +66,6 @@ public class Aircraft implements IAircraft {
 	
 	private Fuselage _theFuselage;
 	private LiftingSurface _theWing;
-	private LiftingSurface _theExposedWing;
 	private LiftingSurface _theHTail;
 	private LiftingSurface _theVTail;
 	private LiftingSurface _theCanard;
@@ -105,7 +100,6 @@ public class Aircraft implements IAircraft {
 		
 		private Fuselage __theFuselage;
 		private LiftingSurface __theWing;
-		private LiftingSurface __theExposedWing;
 		private LiftingSurface __theHTail;
 		private LiftingSurface __theVTail;
 		private LiftingSurface __theCanard;
@@ -697,7 +691,6 @@ public class Aircraft implements IAircraft {
 		
 		this._theFuselage = builder.__theFuselage;
 		this._theWing = builder.__theWing;
-		this._theExposedWing = builder.__theExposedWing;
 		this._theHTail = builder.__theHTail;
 		this._theVTail = builder.__theVTail;
 		this._theCanard = builder.__theCanard;
@@ -724,11 +717,11 @@ public class Aircraft implements IAircraft {
 		}
 		//-------------------------------------------------------------
 		updateType();
+		
 		if((this._theFuselage != null) && (this._theWing != null)) { 
-			calculateExposedWing(_theWing, _theFuselage);
-			this._theWing.setExposedWing(this._theExposedWing);
+			this._theWing.setExposedWing(calculateExposedWing(this._theWing, this._theFuselage));
 			this._theWing.getLiftingSurfaceCreator().setSurfaceWettedExposed(
-					this._theExposedWing.getLiftingSurfaceCreator().getSurfaceWetted()
+					this._theWing.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted()
 					);
 		}
 		else if(this._theWing != null)
@@ -736,16 +729,18 @@ public class Aircraft implements IAircraft {
 					this._theWing.getLiftingSurfaceCreator().getSurfaceWetted()
 					);
 		
+		if(this._theHTail !=  null)
+			this._theHTail.setExposedWing(_theHTail);
+		if(this._theVTail !=  null)
+			this._theVTail.setExposedWing(_theVTail);
+		if(this._theCanard !=  null)
+			this._theCanard.setExposedWing(_theCanard);
+		
 		// setup the positionRelativeToAttachment variable
 		if(_theWing != null)
 			this._theWing.setPositionRelativeToAttachment(
-					(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2))
-					.plus(_theWing.getZApexConstructionAxes())
-					.divide(_theFuselage
-							.getFuselageCreator()
-							.getSectionCylinderHeight()
-							)
-					.getEstimatedValue()
+					_theWing.getZApexConstructionAxes().doubleValue(SI.METER)
+					/(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
 					);
 		
 		if(_theHTail != null)
@@ -763,13 +758,8 @@ public class Aircraft implements IAircraft {
 		
 		if(_theCanard != null)
 			this._theCanard.setPositionRelativeToAttachment(
-					(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2))
-					.plus(_theCanard.getZApexConstructionAxes())
-					.divide(_theFuselage
-							.getFuselageCreator()
-							.getSectionCylinderHeight()
-							)
-					.getEstimatedValue()
+					_theCanard.getZApexConstructionAxes().doubleValue(SI.METER)
+					/(_theFuselage.getFuselageCreator().getSectionCylinderHeight().divide(2).getEstimatedValue())
 					);
 		
 		//----------------------------------------
@@ -837,7 +827,7 @@ public class Aircraft implements IAircraft {
 		
 	} // end of updateType
 
-	private void calculateExposedWing(LiftingSurface theWing, Fuselage theFuselage) {
+	private LiftingSurface calculateExposedWing(LiftingSurface theWing, Fuselage theFuselage) {
 		
 		Amount<Length> sectionWidthAtZ = Amount.valueOf(
 				0.5 * theFuselage.getFuselageCreator()
@@ -882,7 +872,7 @@ public class Aircraft implements IAircraft {
 		for(int i=1; i<theWing.getLiftingSurfaceCreator().getPanels().size(); i++)
 			exposedWingPanels.add(theWing.getLiftingSurfaceCreator().getPanels().get(i));
 
-		this._theExposedWing = new LiftingSurfaceBuilder(
+		LiftingSurface theExposedWing = new LiftingSurfaceBuilder(
 				"Exposed wing", 
 				ComponentEnum.WING, 
 				theWing.getAerodynamicDatabaseReader(), 
@@ -893,22 +883,23 @@ public class Aircraft implements IAircraft {
 						new LiftingSurfaceCreator("Exposed wing", Boolean.TRUE, ComponentEnum.WING)
 						)
 				.build();
-		this._theExposedWing.getLiftingSurfaceCreator().getPanels().clear();
-		this._theExposedWing.getLiftingSurfaceCreator().setPanels(exposedWingPanels);
-		this._theExposedWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
-		this._theExposedWing.populateAirfoilList(
+		theExposedWing.getLiftingSurfaceCreator().getPanels().clear();
+		theExposedWing.getLiftingSurfaceCreator().setPanels(exposedWingPanels);
+		theExposedWing.getLiftingSurfaceCreator().calculateGeometry(ComponentEnum.WING, Boolean.TRUE);
+		theExposedWing.populateAirfoilList(
 				theWing.getAerodynamicDatabaseReader(),
 				Boolean.FALSE);
 		
-		this._theExposedWing.setXApexConstructionAxes(theWing.getXApexConstructionAxes());
-		this._theExposedWing.setYApexConstructionAxes(Amount.valueOf(
+		theExposedWing.setXApexConstructionAxes(theWing.getXApexConstructionAxes());
+		theExposedWing.setYApexConstructionAxes(Amount.valueOf(
 				0.5 * theFuselage.getFuselageCreator().getSectionWidthAtZ(
 						theWing.getZApexConstructionAxes().doubleValue(SI.METER)),
 				SI.METER)
 				);
-		this._theExposedWing.setZApexConstructionAxes(theWing.getZApexConstructionAxes());
-		this._theExposedWing.setRiggingAngle(theWing.getRiggingAngle());
+		theExposedWing.setZApexConstructionAxes(theWing.getZApexConstructionAxes());
+		theExposedWing.setRiggingAngle(theWing.getRiggingAngle());
 
+		return theExposedWing;
 	}
 
 	public void calculateSWetTotal() {
@@ -916,8 +907,8 @@ public class Aircraft implements IAircraft {
 		if(this._theFuselage != null)
 			this._sWetTotal = this._sWetTotal.plus(this._theFuselage.getsWet());
 		
-		if(this._theExposedWing != null)
-			this._sWetTotal = this._sWetTotal.plus(this._theExposedWing.getLiftingSurfaceCreator().getSurfaceWetted());
+		if(this._theWing != null)
+			this._sWetTotal = this._sWetTotal.plus(this._theWing.getExposedWing().getLiftingSurfaceCreator().getSurfaceWetted());
 			
 		// TODO : FOR HTAIL, VTAIL AND CANARD THE EXPOSED WING IS NOT CALCULATED ... IS THIS ACCEPTABLE?
 		if(this._theHTail != null)
@@ -1653,8 +1644,8 @@ public class Aircraft implements IAircraft {
 		if(_theWing != null)
 			sb.append(_theWing.getLiftingSurfaceCreator().toString());
 		
-		if(_theExposedWing != null)
-			sb.append(_theExposedWing.getLiftingSurfaceCreator().toString());
+		if(_theWing.getExposedWing() != null)
+			sb.append(_theWing.getExposedWing().getLiftingSurfaceCreator().toString());
 		
 		if(_theHTail != null)
 			sb.append(_theHTail.getLiftingSurfaceCreator().toString());
@@ -1703,7 +1694,7 @@ public class Aircraft implements IAircraft {
 	@Override
 	public void deleteExposedWing()
 	{
-		_theExposedWing = null;
+		_theWing.setExposedWing(null);
 		updateType();
 	}
 	
@@ -1865,12 +1856,12 @@ public class Aircraft implements IAircraft {
 	
 	@Override
 	public LiftingSurface getExposedWing() {
-		return _theExposedWing;
+		return _theWing.getExposedWing();
 	}
 	
 	@Override
 	public void setExposedWing(LiftingSurface exposedWing) {
-		this._theExposedWing = exposedWing;
+		this._theWing.setExposedWing(exposedWing);
 	}
 	
 	@Override

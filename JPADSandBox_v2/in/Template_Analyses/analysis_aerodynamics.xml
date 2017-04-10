@@ -45,6 +45,9 @@
 					<alpha_body_initial unit="deg"></alpha_body_initial>
 					<alpha_body_final unit="deg"></alpha_body_final>
 					<number_of_alpha_body></number_of_alpha_body>
+					<beta_initial unit="deg"></beta_initial>
+					<beta_final unit="deg"></beta_final>
+					<number_of_beta></number_of_beta>
 					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
 					<tau_elevator_function>
 						<tau>0.025</tau>
@@ -55,6 +58,9 @@
 					<alpha_body_initial unit="deg"></alpha_body_initial>
 					<alpha_body_final unit="deg"></alpha_body_final>
 					<number_of_alpha_body></number_of_alpha_body>
+					<beta_initial unit="deg"></beta_initial>
+					<beta_final unit="deg"></beta_final>
+					<number_of_beta></number_of_beta>
 					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
 					<tau_elevator_function>
 						<tau>0.025</tau>
@@ -65,6 +71,9 @@
 					<alpha_body_initial unit="deg"></alpha_body_initial>
 					<alpha_body_final unit="deg"></alpha_body_final>
 					<number_of_alpha_body></number_of_alpha_body>
+					<beta_initial unit="deg"></beta_initial>
+					<beta_final unit="deg"></beta_final>
+					<number_of_beta></number_of_beta>
 					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
 					<tau_elevator_function>
 						<tau>0.025</tau>
@@ -75,6 +84,9 @@
 					<alpha_body_initial unit="deg"></alpha_body_initial>
 					<alpha_body_final unit="deg"></alpha_body_final>
 					<number_of_alpha_body></number_of_alpha_body>
+					<beta_initial unit="deg"></beta_initial>
+					<beta_final unit="deg"></beta_final>
+					<number_of_beta></number_of_beta>
 					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
 					<tau_elevator_function>
 						<tau>0.025</tau>
@@ -85,6 +97,7 @@
 				<number_of_points_semispawise_horizontal_tail></number_of_points_semispawise_horizontal_tail>
 				<alpha_horizontal_tail_array_for_distributions unit="deg"></alpha_horizontal_tail_array_for_distributions>
 				<delta_elevator_array unit="deg"></delta_elevator_array>
+				<delta_rudder_array unit="deg"></delta_rudder_array>
 				<!-- optional values which are read only if the related attribute in "global_data" is "TRUE" --> 
 				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
 			</global_data>
@@ -164,8 +177,8 @@
 					<moment_distributions perform="TRUE" method="??"/>
 				</pitching_moment>
 			</horizontal_tail_analyses>
-			<vertical_tail_analyses>
-							<critical_mach perform="TRUE" method="KROO"/>
+			<vertical_tail_analyses> <!-- see which methods are suitable for the VTail ... -->
+				<critical_mach perform="TRUE" method="KROO"/>
 				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
 					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>

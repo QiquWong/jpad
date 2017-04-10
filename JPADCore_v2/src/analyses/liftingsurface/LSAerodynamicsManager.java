@@ -190,6 +190,19 @@ public class LSAerodynamicsManager {
 			Double momentumPole
 			) {
 		
+		this._theLiftingSurface = theLiftingSurface;
+		this._theOperatingConditions = theOperatingConditions;
+		this._componentTaskList = _componentTaskList;
+		this._plotMap = plotMap;
+		this._theCondition = theCondition;
+		this._numberOfPointSemiSpanWise = numberOfPointSemiSpanWise;
+		this._alphaArray = alphaArray;
+		this._alphaForDistribution = alphaForDistribution;
+		
+		initializeVariables();
+		initializeData();
+		// TODO: ADD INITIALIZE CALCULATORS
+		
 		if(momentumPole == null 
 				&& _componentTaskList.get(theLiftingSurface.getType()).
 						get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
@@ -236,19 +249,6 @@ public class LSAerodynamicsManager {
 							*theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
 							SI.METER
 							);
-		
-		this._theLiftingSurface = theLiftingSurface;
-		this._theOperatingConditions = theOperatingConditions;
-		this._componentTaskList = _componentTaskList;
-		this._plotMap = plotMap;
-		this._theCondition = theCondition;
-		this._numberOfPointSemiSpanWise = numberOfPointSemiSpanWise;
-		this._alphaArray = alphaArray;
-		this._alphaForDistribution = alphaForDistribution;
-		
-		initializeVariables();
-		initializeData();
-		// TODO: ADD INITIALIZE CALCULATORS
 		
 	}
 	
@@ -385,10 +385,10 @@ public class LSAerodynamicsManager {
 		List<Double> xACBreakPoints = 
 				_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().stream()
 				.map(y -> _theLiftingSurface.getAirfoilList()
-							.get(_theLiftingSurface.getAirfoilList().indexOf(y))
+							.get(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().indexOf(y))
 								.getAirfoilCreator().getXACNormalized()
 									*_theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()
-										.get(_theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints().indexOf(y))
+										.get(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints().indexOf(y))
 											.doubleValue(SI.METER)
 								)
 				.collect(Collectors.toList());
@@ -448,7 +448,7 @@ public class LSAerodynamicsManager {
 		_airfoilACToWingACDistribution = 
 				_xLEDistribution.stream()
 					.map(xle -> xle.doubleValue(SI.METER) 
-								+ _xACDistribution.get(_xACDistribution.indexOf(xle)).doubleValue(SI.METER)
+								+ _xACDistribution.get(_xLEDistribution.indexOf(xle)).doubleValue(SI.METER)
 								- _xacLRF
 									.get(_componentTaskList
 											.get(_theLiftingSurface.getType())
@@ -458,7 +458,32 @@ public class LSAerodynamicsManager {
 					.map(ac -> Amount.valueOf(ac, SI.METER))
 					.collect(Collectors.toList());
 		
-
+		//----------------------------------------------------------------------------------------------------------------------
+		// NASA BLACKEWLL CALCULATOR
+		//......................................................................................................................
+		twistDistributionRadians = new double[_numberOfPointSemiSpanWise];
+		alphaZeroLiftDistributionRadians = new double[_numberOfPointSemiSpanWise];
+		
+		for (int i=0; i< _numberOfPointSemiSpanWise; i++) {
+			twistDistributionRadians[i] = _twistDistribution.get(i).doubleValue(SI.RADIAN);
+			alphaZeroLiftDistributionRadians[i] = _alphaZeroLiftDistribution.get(i).doubleValue(SI.RADIAN);
+		}
+		
+		theNasaBlackwellCalculator = new NasaBlackwell(
+				_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
+				_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_dihedralDistribution),
+				twistDistributionRadians,
+				alphaZeroLiftDistributionRadians,
+				_vortexSemiSpanToSemiSpanRatio,
+				0.0,
+				_theOperatingConditions.getMachCruise(),
+				_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+				);
+		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating discretized airfoil parameters arrays
 		//......................................................................................................................
@@ -480,22 +505,13 @@ public class LSAerodynamicsManager {
 					clArrayBreakPointsListWing,
 					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoublePrimitive(
-									_theLiftingSurface
-									.getTheAerodynamicsCalculatorMap()
-									.get(ConditionEnum.CRUISE)	
-									.getEtaStationDistribution()
-									)
+							MyArrayUtils.convertFromDoublePrimitive(_etaStationDistribution)
 							)
 					);
 		}
 
 		if (_discretizedAirfoilsCd.isEmpty()){
-			if(_theLiftingSurface
-					.getTheAerodynamicsCalculatorMap()
-					.get(ConditionEnum.CRUISE)
-					.getLiftCoefficient3DCurve()
-					.get(
+			if(_liftCoefficient3DCurve.get(
 							_componentTaskList
 							.get(_theLiftingSurface.getType())
 							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
@@ -517,11 +533,7 @@ public class LSAerodynamicsManager {
 
 			_discretizedAirfoilsCd = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							_theLiftingSurface
-							.getTheAerodynamicsCalculatorMap()
-							.get(ConditionEnum.CRUISE)
-							.getLiftCoefficient3DCurve()
-							.get(
+							_liftCoefficient3DCurve.get(
 									_componentTaskList
 									.get(_theLiftingSurface.getType())
 									.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
@@ -532,10 +544,7 @@ public class LSAerodynamicsManager {
 					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
 					MyArrayUtils.convertDoubleArrayToListDouble(
 							MyArrayUtils.convertFromDoublePrimitive(
-									_theLiftingSurface
-									.getTheAerodynamicsCalculatorMap()
-									.get(ConditionEnum.CRUISE)	
-									.getEtaStationDistribution()
+									_etaStationDistribution
 									)
 							)
 					);
@@ -543,11 +552,7 @@ public class LSAerodynamicsManager {
 		}
 		
 		if (_discretizedAirfoilsCm.isEmpty()){
-			if(_theLiftingSurface
-					.getTheAerodynamicsCalculatorMap()
-					.get(ConditionEnum.CRUISE)
-					.getLiftCoefficient3DCurve()
-					.get(
+			if(_liftCoefficient3DCurve.get(
 							_componentTaskList
 							.get(_theLiftingSurface.getType())
 							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
@@ -569,25 +574,18 @@ public class LSAerodynamicsManager {
 
 			_discretizedAirfoilsCd = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							_theLiftingSurface
-								.getTheAerodynamicsCalculatorMap()
-									.get(ConditionEnum.CRUISE)
-										.getLiftCoefficient3DCurve()
-											.get(
-													_componentTaskList
-														.get(_theLiftingSurface.getType())
-															.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-													)
+							_liftCoefficient3DCurve.get(
+									_componentTaskList
+									.get(_theLiftingSurface.getType())
+									.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									)
 							),	
 					clForCmArrayBreakPointsListWing,
 					cmArrayBreakPointsListWing,
 					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
 					MyArrayUtils.convertDoubleArrayToListDouble(
 							MyArrayUtils.convertFromDoublePrimitive(
-									_theLiftingSurface
-									.getTheAerodynamicsCalculatorMap()
-										.get(ConditionEnum.CRUISE)	
-											.getEtaStationDistribution()
+									_etaStationDistribution
 									)
 							)
 					);
@@ -621,32 +619,6 @@ public class LSAerodynamicsManager {
 		}
 		
 		// TODO : ADD OTHER REQUIRED DATA (if necessary)
-		
-		//----------------------------------------------------------------------------------------------------------------------
-		// NASA BLACKEWLL CALCULATOR
-		//......................................................................................................................
-		twistDistributionRadians = new double[_numberOfPointSemiSpanWise];
-		alphaZeroLiftDistributionRadians = new double[_numberOfPointSemiSpanWise];
-		
-		for (int i=0; i< _numberOfPointSemiSpanWise; i++) {
-			twistDistributionRadians[i] = _twistDistribution.get(i).doubleValue(SI.RADIAN);
-			alphaZeroLiftDistributionRadians[i] = _alphaZeroLiftDistribution.get(i).doubleValue(SI.RADIAN);
-		}
-		
-		theNasaBlackwellCalculator = new NasaBlackwell(
-				_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
-				_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE),
-				MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
-				MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
-				MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
-				MyArrayUtils.convertListOfAmountTodoubleArray(_dihedralDistribution),
-				twistDistributionRadians,
-				alphaZeroLiftDistributionRadians,
-				_vortexSemiSpanToSemiSpanRatio,
-				0.0,
-				_theOperatingConditions.getMachCruise(),
-				_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
-				);
 
 	}
 	
@@ -1177,8 +1149,27 @@ public class LSAerodynamicsManager {
 			else{
 				surface = _theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE);
 				semiSpan = _theLiftingSurface.getSemiSpan().doubleValue(SI.METRE);
-				alphaZeroLiftDistribution = MyArrayUtils.convertListOfAmountToDoubleArray(_alphaZeroLiftDistribution);
-				twistDistribution = MyArrayUtils.convertListOfAmountToDoubleArray(_twistDistribution);
+				yStationDistribution = MyArrayUtils.linspace(
+						0,
+						_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
+						_numberOfPointSemiSpanWise
+						);
+				alphaZeroLiftDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getAlpha0VsY()),
+						yStationDistribution
+						);
+				chordDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints()),
+						yStationDistribution
+						);
+				twistDistribution = MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(_theLiftingSurface.getLiftingSurfaceCreator().getTwistsBreakPoints()),
+						yStationDistribution
+						);
+				
 				System.out.println(" Exposed wing is the wing. There isn't fuselage in the aircraft.");
 			}
 			
@@ -2115,16 +2106,13 @@ public class LSAerodynamicsManager {
 					_alphaArray,
 					theNasaBlackwellCalculator,
 					_discretizedAirfoilsCd,
-					MyArrayUtils.convertDoubleArrayToListDouble(_theLiftingSurface
-							.getTheAerodynamicsCalculatorMap()
-								.get(ConditionEnum.CRUISE)
-									.getLiftCoefficient3DCurve()
-										.get(
-												_componentTaskList
-													.get(_theLiftingSurface.getType())
-														.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-												)
-										),
+					MyArrayUtils.convertDoubleArrayToListDouble(
+							_liftCoefficient3DCurve.get(
+									_componentTaskList
+									.get(_theLiftingSurface.getType())
+									.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+									)
+							),
 					_chordDistribution, 
 					_theLiftingSurface.getSurface(), 
 					_yStationDistribution
@@ -2365,15 +2353,11 @@ public class LSAerodynamicsManager {
 									theNasaBlackwellCalculator,
 									_discretizedAirfoilsCd,
 									MyArrayUtils.convertDoubleArrayToListDouble(
-											_theLiftingSurface
-												.getTheAerodynamicsCalculatorMap()
-													.get(ConditionEnum.CRUISE)
-														.getLiftCoefficient3DCurve()
-															.get(
-																	_componentTaskList
-																	.get(_theLiftingSurface.getType())
-																	.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-																	)
+											_liftCoefficient3DCurve.get(
+													_componentTaskList
+													.get(_theLiftingSurface.getType())
+													.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+													)
 											)
 									)
 							)
@@ -2428,15 +2412,11 @@ public class LSAerodynamicsManager {
 							_alphaArray, 
 							_discretizedAirfoilsCd,
 							MyArrayUtils.convertDoubleArrayToListDouble(
-									_theLiftingSurface
-										.getTheAerodynamicsCalculatorMap()
-											.get(ConditionEnum.CRUISE)
-												.getLiftCoefficient3DCurve()
-													.get(
-															_componentTaskList
-															.get(_theLiftingSurface.getType())
-															.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-															)
+									_liftCoefficient3DCurve.get(
+											_componentTaskList
+											.get(_theLiftingSurface.getType())
+											.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+											)
 									), 
 							_clZeroDistribution, 
 							MyArrayUtils.convertDoubleArrayToListDouble(
@@ -2970,13 +2950,9 @@ public class LSAerodynamicsManager {
 										.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
 											.collect(Collectors.toList()), 
 									MyArrayUtils.convertDoubleArrayToListDouble(
-											_theLiftingSurface
-												.getTheAerodynamicsCalculatorMap()
-													.get(ConditionEnum.CRUISE)
-														.getLiftCoefficient3DCurve()
-															.get(_componentTaskList
-																	.get(_theLiftingSurface.getType())
-																		.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
+											_liftCoefficient3DCurve.get(_componentTaskList
+													.get(_theLiftingSurface.getType())
+													.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
 													)
 											), 
 									_discretizedAirfoilsCm,
@@ -3551,7 +3527,7 @@ public class LSAerodynamicsManager {
 	/**
 	 * @return the _xacLRF
 	 */
-	public Map<MethodEnum, Amount<Length>> get_xacLRF() {
+	public Map<MethodEnum, Amount<Length>> getXacLRF() {
 		return _xacLRF;
 	}
 

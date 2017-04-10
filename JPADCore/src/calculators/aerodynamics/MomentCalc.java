@@ -191,7 +191,8 @@ public class MomentCalc {
 	 * Conference, Aviation Forum 2015, Dallas (Texas, USA)).
 	 */
 
-	public static double calcCNBetaFuselage(double fuselageMainYawingMomentDerivativeCoefficient, 
+	public static double calcCNBetaFuselage(
+			double fuselageMainYawingMomentDerivativeCoefficient, 
 			double fuselageNoseYawingMomentDerivativeCoefficient,
 			double fuselageTailYawingMomentDerivativeCoefficient){
 

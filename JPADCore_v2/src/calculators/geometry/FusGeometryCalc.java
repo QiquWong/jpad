@@ -1,5 +1,10 @@
 package calculators.geometry;
 
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 /**
  * In this class there are some methods which computes fuselage geometry parameters.
  * In the /JPADCore/src/aircraft/components/fuselage/Fuselage.java there are methods 
@@ -119,5 +124,9 @@ public class FusGeometryCalc {
 
 		return fuselageWetSurface;
 
+	}
+	
+	public static double calculateSfront(Amount<Length> fuselageDiameter){
+		return Math.PI*Math.pow(fuselageDiameter.doubleValue(SI.METER), 2)/4;
 	}
 }

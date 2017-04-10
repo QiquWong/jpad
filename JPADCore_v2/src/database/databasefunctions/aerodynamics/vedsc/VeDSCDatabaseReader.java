@@ -49,11 +49,11 @@ public class VeDSCDatabaseReader extends DatabaseReader{
 			double fuselageDiameterAtVerticalMAC, double tailconeShape) {
 
 		kFv = get_KFv_vs_bv_over_dfv(verticalTailSpan, fuselageDiameterAtVerticalMAC, tailconeShape);
-		kVf = get_KVf_vs_zw_over_dfv(verticalTailSpan, fuselageDiameterAtVerticalMAC, tailconeShape);
 		kWv = get_KWv_vs_zw_over_rf(wingPosition, wingAr, tailconeShape);
-		kWf = get_KWf_vs_zw_over_rf(wingPosition, wingAr, tailconeShape);
 		kHv = get_KHv_vs_zh_over_bv1(horizontalTailPositionOverVertical, verticalTailAr, tailconeShape, wingPosition);
+		kVf = get_KVf_vs_zw_over_dfv(verticalTailSpan, fuselageDiameterAtVerticalMAC, tailconeShape);
 		kHf = get_KHf_vs_zh_over_bv1(horizontalTailPositionOverVertical, verticalTailAr, tailconeShape, wingPosition);
+		kWf = get_KWf_vs_zw_over_rf(wingPosition, wingAr, tailconeShape);
 	}
 
 

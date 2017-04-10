@@ -56,8 +56,6 @@ public class LiftingSurface implements ILiftingSurface {
 	private int _numberOfEngineOverTheWing = 0; 
 	
 	private Map<ConditionEnum, LSAerodynamicsManager> _theAerodynamicsCalculatorMap;
-	// THIS HAS TO BE CHANGED IN LSAerodynamicCalculator
-	private LSAerodynamicsManager _theAerodynamics;
 	
 	private Double _positionRelativeToAttachment;
 	private Amount<Length> _xApexConstructionAxes = Amount.valueOf(0.0, SI.METER); 
@@ -923,7 +921,7 @@ public class LiftingSurface implements ILiftingSurface {
 			this._cl0VsY.add(_airfoilList.get(i).getAirfoilCreator().getClAtAlphaZero());
 			this._clStarVsY.add(_airfoilList.get(i).getAirfoilCreator().getClEndLinearTrait());
 			this._clMaxVsY.add(_airfoilList.get(i).getAirfoilCreator().getClMax());
-			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent().doubleValue(SI.RADIAN)),2));
+//			this._clMaxSweepVsY.add(this._clMaxVsY.get(i)*Math.pow(Math.cos(this.getSweepLEEquivalent().doubleValue(SI.RADIAN)),2));
 			this._kFactorDragPolarVsY.add(_airfoilList.get(i).getAirfoilCreator().getKFactorDragPolar());
 			this._cmAlphaQuarteChordVsY.add(_airfoilList.get(i).getAirfoilCreator().getCmAlphaQuarterChord().getEstimatedValue());
 			this._xAcAirfoilVsY.add(_airfoilList.get(i).getAirfoilCreator().getXACNormalized());
@@ -1447,6 +1445,20 @@ public class LiftingSurface implements ILiftingSurface {
 			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getMachCritical();	
 
 		//----------------------------------------------------------------------------------------------
+		// laminar bucket semi-extension:
+		double laminarBucketSemiExtension= 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			laminarBucketSemiExtension += influenceCoefficients.get(i)
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getLaminarBucketSemiExtension();
+		
+		//----------------------------------------------------------------------------------------------
+		// laminar bucket depth:
+		double laminarBucketDepth= 0;
+		for(int i=0; i<influenceCoefficients.size(); i++)
+			laminarBucketDepth += influenceCoefficients.get(i)
+			*theLiftingSurface.getAirfoilList().get(i).getAirfoilCreator().getLaminarBucketDepth();
+		
+		//----------------------------------------------------------------------------------------------
 		// MEAN AIRFOIL CREATION:
 
 		AirfoilCreator meanAirfoilCreator = new AirfoilCreator.AirfoilBuilder()
@@ -1470,6 +1482,8 @@ public class LiftingSurface implements ILiftingSurface {
 				.cmAC(cmACMeanAirfoil)
 				.cmACAtStall(cmACStallMeanAirfoil)
 				.machCritical(criticalMachMeanAirfoil)
+				.laminarBucketSemiExtension(laminarBucketSemiExtension)
+				.laminarBucketDepth(laminarBucketDepth)
 				.build();
 
 		return meanAirfoilCreator;
@@ -1564,7 +1578,10 @@ public class LiftingSurface implements ILiftingSurface {
 
 	@Override
 	public double getTaperRatioEquivalent() {
-		return _liftingSurfaceCreator.getEquivalentWing().getTaperRatio();
+		if(_type == ComponentEnum.WING)
+			return _liftingSurfaceCreator.getEquivalentWing().getTaperRatio();
+		else
+			return _liftingSurfaceCreator.getTaperRatio();
 	}
 	
 //	public double getTaperRatioEquivalent(Boolean recalculate) {
@@ -1584,11 +1601,17 @@ public class LiftingSurface implements ILiftingSurface {
 
 	@Override
 	public Amount<Length> getChordRootEquivalent() {
-		return _liftingSurfaceCreator
+		if(_type == ComponentEnum.WING)
+			return _liftingSurfaceCreator
 					.getEquivalentWing()
-						.getPanels()
-							.get(0)
-								.getChordRoot();	
+					.getPanels()
+					.get(0)
+					.getChordRoot();	
+		else
+			return _liftingSurfaceCreator
+					.getPanels()
+					.get(0)
+					.getChordRoot();
 	}
 	
 //	public Amount<Length> getChordRootEquivalent(Boolean recalculate) {
@@ -1612,12 +1635,19 @@ public class LiftingSurface implements ILiftingSurface {
 
 	@Override
 	public Amount<Angle> getSweepLEEquivalent() {
-		return _liftingSurfaceCreator
+		if(this._type == ComponentEnum.WING)
+			return _liftingSurfaceCreator
 					.getEquivalentWing()
-						.getPanels()
-							.get(0)
-								.getSweepLeadingEdge()
-									.to(NonSI.DEGREE_ANGLE);
+					.getPanels()
+					.get(0)
+					.getSweepLeadingEdge()
+					.to(NonSI.DEGREE_ANGLE);
+		else
+			return _liftingSurfaceCreator
+					.getPanels()
+					.get(0)
+					.getSweepLeadingEdge()
+					.to(NonSI.DEGREE_ANGLE);
 	}
 	
 //	public Amount<Angle> getSweepLEEquivalent(Boolean recalculate) {
@@ -1635,12 +1665,19 @@ public class LiftingSurface implements ILiftingSurface {
 
 	@Override
 	public Amount<Angle> getSweepHalfChordEquivalent() {
-		return _liftingSurfaceCreator
-				.getEquivalentWing()
+		if(this._type == ComponentEnum.WING)
+			return _liftingSurfaceCreator
+					.getEquivalentWing()
 					.getPanels()
-						.get(0)
-							.getSweepHalfChord()
-								.to(NonSI.DEGREE_ANGLE);
+					.get(0)
+					.getSweepHalfChord()
+					.to(NonSI.DEGREE_ANGLE);
+		else
+			return _liftingSurfaceCreator
+					.getPanels()
+					.get(0)
+					.getSweepHalfChord()
+					.to(NonSI.DEGREE_ANGLE);
 	}
 //	public Amount<Angle> getSweepHalfChordEquivalent(Boolean recalculate) {
 //		if(recalculate) 
@@ -1656,12 +1693,19 @@ public class LiftingSurface implements ILiftingSurface {
 
 	@Override
 	public Amount<Angle> getSweepQuarterChordEquivalent() {
-		return _liftingSurfaceCreator
-				.getEquivalentWing()
+		if(this._type == ComponentEnum.WING)
+			return _liftingSurfaceCreator
+					.getEquivalentWing()
 					.getPanels()
-						.get(0)
-							.getSweepQuarterChord()
-								.to(NonSI.DEGREE_ANGLE);
+					.get(0)
+					.getSweepQuarterChord()
+					.to(NonSI.DEGREE_ANGLE);
+		else
+			return _liftingSurfaceCreator
+					.getPanels()
+					.get(0)
+					.getSweepQuarterChord()
+					.to(NonSI.DEGREE_ANGLE);
 	}
 	
 //	public Amount<Angle> getSweepQuarterChordEquivalent(Boolean recalculate) {
@@ -1840,14 +1884,6 @@ public class LiftingSurface implements ILiftingSurface {
 		return _massMap;
 	}
 
-	public LSAerodynamicsManager getAerodynamics() {
-		return _theAerodynamics;
-	}
-
-	public void setAerodynamics(LSAerodynamicsManager theAerodynamics) {
-		this._theAerodynamics = theAerodynamics;
-	}
-	
 	public Map<ConditionEnum, LSAerodynamicsManager> getTheAerodynamicsCalculatorMap() {
 		return _theAerodynamicsCalculatorMap;
 	}
@@ -1998,14 +2034,6 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setPercentDifferenceYCG(Double[] _percentDifferenceYCG) {
 		this._percentDifferenceYCG = _percentDifferenceYCG;
-	}
-
-	public LSAerodynamicsManager getTheAerodynamics() {
-		return _theAerodynamics;
-	}
-
-	public void setTheAerodynamics(LSAerodynamicsManager _theAerodynamics) {
-		this._theAerodynamics = _theAerodynamics;
 	}
 
 	/**
