@@ -25,6 +25,7 @@ import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AirfoilCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
+import calculators.stability.StabilityCalculators;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ComponentEnum;
@@ -83,6 +84,7 @@ public class ACAerodynamicCalculator {
 	private Boolean _downwashConstant; // if TRUE--> constant, if FALSE--> variable
 	private Double _dynamicPressureRatio;
 	private MyInterpolatingFunction _tauElevatorFunction;
+	private MyInterpolatingFunction _tauRudderFunction;
 	private List<Amount<Angle>> _deltaElevatorList;
 	private List<Amount<Angle>> _deltaRudderList;
 	//..............................................................................
@@ -1041,6 +1043,24 @@ public class ACAerodynamicCalculator {
 			
 			Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> cNDueToDeltaRudderMap = new HashMap<>();
 			
+			List<Double> tauRudderList = new ArrayList<>();
+			if(_tauRudderFunction == null)
+				_deltaRudderList.stream()
+					.forEach(dr -> tauRudderList.add(
+							StabilityCalculators.calculateTauIndex(
+									_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+									_theAircraft.getVTail().getAspectRatio(),
+									_theAircraft.getVTail().getAerodynamicDatabaseReader(), 
+									_theAircraft.getVTail().getHighLiftDatabaseReader(), 
+									dr
+									)
+							));
+			else
+				_deltaRudderList.stream()
+					.forEach(dr -> tauRudderList.add(
+							_tauRudderFunction.value(dr.doubleValue(NonSI.DEGREE_ANGLE))
+							));
+				
 			_deltaRudderList.stream().forEach(
 					dr -> cNDueToDeltaRudderMap.put(
 							dr,
@@ -1050,11 +1070,9 @@ public class ACAerodynamicCalculator {
 												MomentCalc.calcCNDueToDeltaRudder(
 														_betaList,
 														_cNVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_xCGAircraft.indexOf(x))._2,
+														_cNbVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_xCGAircraft.indexOf(x))._2,
 														dr, 
-														_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
-														_theAircraft.getVTail().getAspectRatio(),
-														_theAircraft.getVTail().getAerodynamicDatabaseReader(),
-														_theAircraft.getVTail().getHighLiftDatabaseReader()
+														tauRudderList.get(_deltaRudderList.indexOf(dr))
 														)
 												)
 									)
@@ -1083,10 +1101,10 @@ public class ACAerodynamicCalculator {
 																	.get(_xCGAircraft.indexOf(x))
 																	._2()
 																	),
-															MyArrayUtils.convertToDoublePrimitive(
-																	_cNTotal.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
-																	.get(_xCGAircraft.indexOf(x))
-																	._2()
+															MyArrayUtils.linspace(
+																	0.0,
+																	0.0,
+																	_betaList.size()
 																	)
 															).get(0)._1(),
 													NonSI.DEGREE_ANGLE),
@@ -1100,7 +1118,6 @@ public class ACAerodynamicCalculator {
 					MethodEnum.VEDSC_SIMPLIFIED_WING, 
 					betaOfEquilibriumListAtCG
 					);
-			
 		}
 		
 		public void vedscUsafDatcomWing(Double mach) {
@@ -1376,6 +1393,24 @@ public class ACAerodynamicCalculator {
 			
 			Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>> cNDueToDeltaRudderMap = new HashMap<>();
 			
+			List<Double> tauRudderList = new ArrayList<>();
+			if(_tauRudderFunction == null)
+				_deltaRudderList.stream()
+					.forEach(dr -> tauRudderList.add(
+							StabilityCalculators.calculateTauIndex(
+									_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+									_theAircraft.getVTail().getAspectRatio(),
+									_theAircraft.getVTail().getAerodynamicDatabaseReader(), 
+									_theAircraft.getVTail().getHighLiftDatabaseReader(), 
+									dr
+									)
+							));
+			else
+				_deltaRudderList.stream()
+					.forEach(dr -> tauRudderList.add(
+							_tauRudderFunction.value(dr.doubleValue(NonSI.DEGREE_ANGLE))
+							));
+				
 			_deltaRudderList.stream().forEach(
 					dr -> cNDueToDeltaRudderMap.put(
 							dr,
@@ -1384,12 +1419,10 @@ public class ACAerodynamicCalculator {
 												x,
 												MomentCalc.calcCNDueToDeltaRudder(
 														_betaList,
-														_cNVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_xCGAircraft.indexOf(x))._2,
+														_cNVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_xCGAircraft.indexOf(x))._2,
+														_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(_xCGAircraft.indexOf(x))._2,
 														dr, 
-														_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
-														_theAircraft.getVTail().getAspectRatio(),
-														_theAircraft.getVTail().getAerodynamicDatabaseReader(),
-														_theAircraft.getVTail().getHighLiftDatabaseReader()
+														tauRudderList.get(_deltaRudderList.indexOf(dr))
 														)
 												)
 									)
@@ -1418,10 +1451,10 @@ public class ACAerodynamicCalculator {
 																	.get(_xCGAircraft.indexOf(x))
 																	._2()
 																	),
-															MyArrayUtils.convertToDoublePrimitive(
-																	_cNTotal.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-																	.get(_xCGAircraft.indexOf(x))
-																	._2()
+															MyArrayUtils.linspace(
+																	0.0,
+																	0.0,
+																	_betaList.size()
 																	)
 															).get(0)._1(),
 													NonSI.DEGREE_ANGLE),
@@ -1435,7 +1468,6 @@ public class ACAerodynamicCalculator {
 					MethodEnum.VEDSC_USAFDATCOM_WING, 
 					betaOfEquilibriumListAtCG
 					);
-			
 		}
 		
 	}
@@ -1583,6 +1615,14 @@ public class ACAerodynamicCalculator {
 
 	public void setComponentTaskList(Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> _componentTaskList) {
 		this._componentTaskList = _componentTaskList;
+	}
+
+	public MyInterpolatingFunction getTauRudderFunction() {
+		return _tauRudderFunction;
+	}
+
+	public void setTauRudderFunction(MyInterpolatingFunction _tauRudderFunction) {
+		this._tauRudderFunction = _tauRudderFunction;
 	}
 	
 }

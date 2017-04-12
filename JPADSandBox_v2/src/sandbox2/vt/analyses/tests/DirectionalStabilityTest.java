@@ -45,6 +45,7 @@ import sandbox2.vt.analyses.CompleteAnalysisTest;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyInterpolatingFunction;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsDirectionalStability {
@@ -314,7 +315,7 @@ public class DirectionalStabilityTest extends Application {
 					);
 			theAerodynamicCalculator.setDeltaRudderList(
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
-							MyArrayUtils.linspace(0.0, 25, 50),
+							MyArrayUtils.linspace(0.0, 30, 7),
 							NonSI.DEGREE_ANGLE
 							)
 					);
@@ -323,6 +324,13 @@ public class DirectionalStabilityTest extends Application {
 							new Double[] {0.25}
 							)
 					);
+			
+			// tau interpolating function
+//			double[] tau = new double[]{0.0000,0.5359,0.5648,0.5502,0.5261};
+//			double[] deltaRudder = new double[]{0,10,20,25,30};
+//			MyInterpolatingFunction tauFunction = new MyInterpolatingFunction();
+//			tauFunction.interpolateLinear(deltaRudder, tau);
+//			theAerodynamicCalculator.setTauRudderFunction(tauFunction);
 			
 			// Defining VTail analysis of the Xac ...
 			Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> componentTaskList = new HashMap<>();
@@ -438,23 +446,24 @@ public class DirectionalStabilityTest extends Application {
 			);
 			System.out.println("\t\tCN(b) Total @Xcg/c " + theAerodynamicCalculator.getCNTotal().get(directionalStabilityMethod).get(0)._1() + " = " + 
 					theAerodynamicCalculator.getCNTotal().get(directionalStabilityMethod).get(0)._2()
-			);
-			System.out.println("\t\tCNdr @Xcg/c " 
+					);
+			theAerodynamicCalculator.getDeltaRudderList().stream()
+			.forEach(dr -> System.out.println("\t\tCN(dr) @Xcg/c " 
 					+ theAerodynamicCalculator.getCNDueToDeltaRudder()
 						.get(directionalStabilityMethod)
 							.get(theAerodynamicCalculator.getDeltaRudderList()
-								.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
-								).get(0)._1() 
+									.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
+									).get(0)._1() 
 					+ " and dr "
-					+ theAerodynamicCalculator.getDeltaRudderList()
-						.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
+					+ dr
 					+ " = "
 					+ theAerodynamicCalculator.getCNDueToDeltaRudder()
 						.get(directionalStabilityMethod)
 							.get(theAerodynamicCalculator.getDeltaRudderList()
-								.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
-								).get(0)._2()
-			);
+									.get(theAerodynamicCalculator.getDeltaRudderList().indexOf(dr))
+									).get(0)._2()
+							)
+					);
 			System.out.println("\n\tEquilibrium dr-beta ... (deg)\n\n");
 			System.out.println("\t\tdelta_r = " + theAerodynamicCalculator.getBetaOfEquilibrium().get(directionalStabilityMethod).get(0.25).stream().map(tpl -> tpl._1.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()));
 			System.out.println("\t\tbeta = " + theAerodynamicCalculator.getBetaOfEquilibrium().get(directionalStabilityMethod).get(0.25).stream().map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()));

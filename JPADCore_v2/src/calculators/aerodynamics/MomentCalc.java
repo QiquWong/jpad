@@ -461,27 +461,21 @@ public class MomentCalc {
 
 	public static List<Double> calcCNDueToDeltaRudder(
 			List<Amount<Angle>> betaList,
-			List<Double> cNbVTail,
+			List<Double> cNVTail,
+			double cNbVTail,
 			Amount<Angle> dr, 
-			double rudderChordRatio,
-			double aspectRatioHTail,
-			AerodynamicDatabaseReader aeroDatabaseReader,
-			HighLiftDatabaseReader highLiftDatabaseReader
+			double tauRudder
 			){
 	
+		// CN = CNb_v*(beta - tau*dr) 
+		
 		List<Double> result = new ArrayList<>(); 
 		betaList.stream()
 		.forEach(b -> result.add(
-				cNbVTail.get(betaList.indexOf(b))*
-				StabilityCalculators.calculateTauIndex(
-						rudderChordRatio,
-						aspectRatioHTail,
-						aeroDatabaseReader, 
-						highLiftDatabaseReader, 
-						dr
-						)
-				))
-		;
+				cNVTail.get(betaList.indexOf(b))
+				- (tauRudder*dr.doubleValue(NonSI.DEGREE_ANGLE)*cNbVTail)
+				)
+				);
 		
 		return result;
 	}

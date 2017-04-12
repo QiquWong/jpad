@@ -38,7 +38,9 @@ public interface IACAerodynamicCalculator {
 	boolean isDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
 	Double getDynamicPressureRatio();
 	MyInterpolatingFunction getTauElevatorFunction();
+	MyInterpolatingFunction getTauRudderFunction();
 	List<Amount<Angle>> getDeltaElevatorList();
+	List<Amount<Angle>> getDeltaRudderList();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder {
