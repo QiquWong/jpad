@@ -27,6 +27,7 @@ public enum MethodEnum {
 	GROSU,
 	HARRIS,
 	FROMCFD,
+	HELMBOLD_DIEDERICH,
 	HOWE,
 	HOWE_JENKINSON,
 	INPUT,

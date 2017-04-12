@@ -20,6 +20,7 @@ import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
 import calculators.geometry.FusGeometryCalc;
 import calculators.geometry.LSGeometryCalc;
 import calculators.stability.StabilityCalculators;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -345,8 +346,7 @@ public class MomentCalc {
 		
 		return (fusDesDatabaseReader.getCNbFR() +
 				fusDesDatabaseReader.getdCNbn() +
-				fusDesDatabaseReader.getdCNbt()
-				)
+				fusDesDatabaseReader.getdCNbt())
 				*surfaceRatio
 				*fusDiameter.doubleValue(SI.METER)
 				/wingSpan.doubleValue(SI.METER)
@@ -371,13 +371,62 @@ public class MomentCalc {
 				.collect(Collectors.toList());
 	}
 	
-	public static List<Double>	calcNonLinearCNVTail(double cNbetaVTail, List<Amount<Angle>> betaList){
+	public static List<Double>	calcNonLinearCNVTail(
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			Amount<Angle> sweepLEVTail,
+			double tcVTailMeanAirfoil,
+			AirfoilFamilyEnum vTailMeanAirfoilFamily,
+			double cNbetaVTail,
+			double cYMaxVTail,
+			Amount<Area> vTailSurface,
+			Amount<Area> wingSurface,
+			Amount<Length> vTailACToXcgDistance,
+			Amount<Length> wingSpan,
+			Amount<Angle> betaStar,
+			List<Amount<Angle>> betaList){
 		
-		/* TODO discover the non linear corrections*/
-		return betaList.stream()
-//				.map(b -> 0.2362 + 1.0178*b.doubleValue(NonSI.DEGREE_ANGLE) - 0.0135*Math.pow(b.doubleValue(NonSI.DEGREE_ANGLE),2))
-				.map(b-> cNbetaVTail*b.doubleValue(NonSI.DEGREE_ANGLE))
-				.collect(Collectors.toList());
+		double volumetricRatio = 
+				(vTailSurface.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE))
+				*(vTailACToXcgDistance.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER));
+		
+		double cNMax = cYMaxVTail*volumetricRatio;
+		
+		double deltaYPercent = aeroDatabaseReader
+				.getDeltaYvsThickness(
+						tcVTailMeanAirfoil,
+						vTailMeanAirfoilFamily
+						);
+		
+		Amount<Angle> betaMaxLinear = Amount.valueOf(cNMax/cNbetaVTail, NonSI.DEGREE_ANGLE);
+		Amount<Angle> deltaBetaMax = 
+				Amount.valueOf(
+						aeroDatabaseReader.getDAlphaVsLambdaLEVsDy(
+								sweepLEVTail.doubleValue(NonSI.DEGREE_ANGLE),
+								deltaYPercent
+								),
+						NonSI.DEGREE_ANGLE
+						);
+		Amount<Angle> betaStall = betaMaxLinear.plus(deltaBetaMax);
+		
+		List<Double> result = new ArrayList<>();
+		betaList.stream()
+			.filter(b -> b.doubleValue(NonSI.DEGREE_ANGLE) <= betaStar.doubleValue(NonSI.DEGREE_ANGLE))
+				.forEach(b -> result.add(b.doubleValue(NonSI.DEGREE_ANGLE)*cNbetaVTail));
+		
+		betaList.stream()
+			.filter(b -> b.doubleValue(NonSI.DEGREE_ANGLE) > betaStar.doubleValue(NonSI.DEGREE_ANGLE))
+				.forEach(b -> result.add(
+						LiftCalc.calculateCLAtAlphaNonLinearTrait(
+								b, 
+								Amount.valueOf(cNbetaVTail, NonSI.DEGREE_ANGLE.inverse()), 
+								cNbetaVTail*betaStar.doubleValue(NonSI.DEGREE_ANGLE), 
+								betaStar, 
+								cYMaxVTail*volumetricRatio, 
+								betaStall
+								)
+						));
+		
+		return result;
 	}
 	
 	
@@ -410,10 +459,29 @@ public class MomentCalc {
 		
 	}
 
-	public static List<Double> calcCNDueToDeltaRudder(double cNdr, Amount<Angle> deltaRudder, List<Amount<Angle>> betaList){
+	public static List<Double> calcCNDueToDeltaRudder(
+			List<Amount<Angle>> betaList,
+			List<Double> cNbVTail,
+			Amount<Angle> dr, 
+			double rudderChordRatio,
+			double aspectRatioHTail,
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			HighLiftDatabaseReader highLiftDatabaseReader
+			){
 	
 		List<Double> result = new ArrayList<>(); 
-		betaList.stream().forEach(b -> result.add(cNdr*deltaRudder.doubleValue(NonSI.DEGREE_ANGLE)));
+		betaList.stream()
+		.forEach(b -> result.add(
+				cNbVTail.get(betaList.indexOf(b))*
+				StabilityCalculators.calculateTauIndex(
+						rudderChordRatio,
+						aspectRatioHTail,
+						aeroDatabaseReader, 
+						highLiftDatabaseReader, 
+						dr
+						)
+				))
+		;
 		
 		return result;
 	}

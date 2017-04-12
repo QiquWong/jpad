@@ -30,6 +30,8 @@ import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
@@ -972,14 +974,45 @@ public class ACAerodynamicCalculator {
 					);
 			
 			_cNVertical.put(
-					MethodEnum.VEDSC_SIMPLIFIED_WING,
+					MethodEnum.VEDSC_USAFDATCOM_WING,
 					_xCGAircraft.stream().map(
 							x -> Tuple.of(
 									x,
 									MomentCalc.calcNonLinearCNVTail(
-											_cNbVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
+											_theAircraft.getVTail().getAerodynamicDatabaseReader(),
+											_theAircraft.getVTail().getSweepLEEquivalent(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
+												.getMeanAirfoil().getAirfoilCreator().getThicknessToChordRatio(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
+												.getMeanAirfoil().getAirfoilCreator().getFamily(),
+											_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
 												.get(_xCGAircraft.indexOf(x))
-													._2(),
+												._2(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLMax().get(
+													_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CL_MAX)
+													)*Math.cos(
+															_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStall().get(
+																	_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STALL)
+																	).doubleValue(SI.RADIAN)
+															),
+											_theAircraft.getVTail().getSurface(),
+											_theAircraft.getWing().getSurface(),
+											Amount.valueOf(
+													Math.abs(
+													(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
+															.getXacLRF().get(
+																	_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+																	).plus(_theAircraft.getVTail().getXApexConstructionAxes())
+															.doubleValue(SI.METER))
+													- ((x*_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+															+ _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
+															+ _theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER))
+													),
+													SI.METER),
+											_theAircraft.getWing().getSpan(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStar().get(
+													_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STAR)
+													),
 											_betaList
 											)
 							)
@@ -1015,12 +1048,13 @@ public class ACAerodynamicCalculator {
 									x -> Tuple.of(
 												x,
 												MomentCalc.calcCNDueToDeltaRudder(
-														_cNdr.get(MethodEnum.VEDSC_SIMPLIFIED_WING)
-														.get(dr)
-														.get(_xCGAircraft.indexOf(x))
-														._2(),
-														dr,
-														_betaList
+														_betaList,
+														_cNVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_xCGAircraft.indexOf(x))._2,
+														dr, 
+														_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+														_theAircraft.getVTail().getAspectRatio(),
+														_theAircraft.getVTail().getAerodynamicDatabaseReader(),
+														_theAircraft.getVTail().getHighLiftDatabaseReader()
 														)
 												)
 									)
@@ -1082,7 +1116,7 @@ public class ACAerodynamicCalculator {
 									MomentCalc.calcCNBetaFuselage(
 											_theAircraft.getFuselage().getFusDesDatabaseReader(), 
 											_theAircraft.getWing().getVEDSCDatabaseReader(),
-											_theAircraft.getFuselage().getFinesseRatio(), 
+											_theAircraft.getFuselage().getFuselageCreator().getLambdaF(), 
 											_theAircraft.getFuselage().getFuselageCreator().getLambdaN(), 
 											_theAircraft.getFuselage().getFuselageCreator().getLambdaT(), 
 											((x*_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
@@ -1121,7 +1155,19 @@ public class ACAerodynamicCalculator {
 					_xCGAircraft.stream().map(
 							x -> Tuple.of(
 									x,
-									MomentCalc.calcCNBetaWing(_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord())
+									MomentCalc.calcCNBetaWing(
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentLiftCoefficient(),
+											_theAircraft.getWing().getEquivalentWing().getPanels().get(0).getSweepQuarterChord(),
+											_theAircraft.getWing().getAspectRatio(),
+											_liftingSurfaceAerodynamicManagers
+												.get(ComponentEnum.WING)
+													.getXacMRF().get(
+															_componentTaskList
+																.get(ComponentEnum.WING)	
+																	.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+															), 
+											x
+											)
 									)
 							)
 					.collect(Collectors.toList())
@@ -1188,13 +1234,13 @@ public class ACAerodynamicCalculator {
 							x -> Tuple.of(
 									x,
 									_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-										.get(_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+										.get(_xCGAircraft.indexOf(x))
 											._2()
 									+ _cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-										.get(_cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+										.get(_xCGAircraft.indexOf(x))
 											._2()
 									+ _cNbFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-										.get(_cNbFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+										.get(_xCGAircraft.indexOf(x))
 											._2()
 									)
 							).collect(Collectors.toList())
@@ -1213,7 +1259,7 @@ public class ACAerodynamicCalculator {
 											x,
 											MomentCalc.calcCNdr(
 													_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-													.get(_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+													.get(_xCGAircraft.indexOf(x))
 													._2(),
 													dr, 
 													_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
@@ -1227,7 +1273,7 @@ public class ACAerodynamicCalculator {
 							)
 					);	
 			
-			_cNdr.put(MethodEnum.VEDSC_USAFDATCOM_WING, cNdrMap);			
+			_cNdr.put(MethodEnum.VEDSC_USAFDATCOM_WING, cNdrMap);		
 			
 			//=======================================================================================
 			// Calculating yawing coefficient breakdown ...
@@ -1239,7 +1285,7 @@ public class ACAerodynamicCalculator {
 									x,
 									MomentCalc.calcNonLinearCNFuselage(
 											_cNbFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-												.get(_cNbFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+												.get(_xCGAircraft.indexOf(x))
 													._2(),
 											_betaList
 											)
@@ -1254,7 +1300,7 @@ public class ACAerodynamicCalculator {
 									x,
 									MomentCalc.calcCNWing(
 											_cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-												.get(_cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+												.get(_xCGAircraft.indexOf(x))
 													._2(),
 											_betaList
 											)
@@ -1268,9 +1314,40 @@ public class ACAerodynamicCalculator {
 							x -> Tuple.of(
 									x,
 									MomentCalc.calcNonLinearCNVTail(
+											_theAircraft.getVTail().getAerodynamicDatabaseReader(),
+											_theAircraft.getVTail().getSweepLEEquivalent(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
+												.getMeanAirfoil().getAirfoilCreator().getThicknessToChordRatio(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
+												.getMeanAirfoil().getAirfoilCreator().getFamily(),
 											_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-												.get(_cNbVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
-													._2(),
+												.get(_xCGAircraft.indexOf(x))
+												._2(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCLMax().get(
+													_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CL_MAX)
+													)*Math.cos(
+															_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStall().get(
+																	_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STALL)
+																	).doubleValue(SI.RADIAN)
+															),
+											_theAircraft.getVTail().getSurface(),
+											_theAircraft.getWing().getSurface(),
+											Amount.valueOf(
+													Math.abs(
+													(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL)
+															.getXacLRF().get(
+																	_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
+																	).plus(_theAircraft.getVTail().getXApexConstructionAxes())
+															.doubleValue(SI.METER))
+													- ((x*_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+															+ _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
+															+ _theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER))
+													),
+													SI.METER),
+											_theAircraft.getWing().getSpan(),
+											_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaStar().get(
+													_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STAR)
+													),
 											_betaList
 											)
 							)
@@ -1284,13 +1361,13 @@ public class ACAerodynamicCalculator {
 									x,
 									MomentCalc.calcTotalCN(
 											_cNFuselage.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-												.get(_cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+												.get(_xCGAircraft.indexOf(x))
 													._2(),
 											_cNWing.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-												.get(_cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+												.get(_xCGAircraft.indexOf(x))
 													._2(),
 											_cNVertical.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-												.get(_cNbWing.get(MethodEnum.VEDSC_USAFDATCOM_WING).indexOf(x))
+												.get(_xCGAircraft.indexOf(x))
 													._2()
 											)
 							)
@@ -1304,16 +1381,17 @@ public class ACAerodynamicCalculator {
 							dr,
 							_xCGAircraft.stream().map(
 									x -> Tuple.of(
-											x,
-											MomentCalc.calcCNDueToDeltaRudder(
-													_cNdr.get(MethodEnum.VEDSC_USAFDATCOM_WING)
-													.get(dr)
-													.get(_cNdr.get(MethodEnum.VEDSC_USAFDATCOM_WING).get(dr).indexOf(x))
-													._2(),
-													dr,
-													_betaList
-													)
-											)
+												x,
+												MomentCalc.calcCNDueToDeltaRudder(
+														_betaList,
+														_cNVertical.get(MethodEnum.VEDSC_SIMPLIFIED_WING).get(_xCGAircraft.indexOf(x))._2,
+														dr, 
+														_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+														_theAircraft.getVTail().getAspectRatio(),
+														_theAircraft.getVTail().getAerodynamicDatabaseReader(),
+														_theAircraft.getVTail().getHighLiftDatabaseReader()
+														)
+												)
 									)
 							.collect(Collectors.toList())
 							)

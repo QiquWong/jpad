@@ -14,6 +14,9 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
+
+import com.sun.jna.platform.win32.OaIdl.TYPEDESC._TYPEDESC;
+
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
@@ -518,7 +521,7 @@ public class LSAerodynamicsManager {
 							) == null){
 
 				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
-				calcLiftCurve.nasaBlackwell();
+				calcLiftCurve.nasaBlackwell(_currentMachNumber);
 			}
 
 			List<List<Double>> clForCdArrayBreakPointsListWing = new ArrayList<>();
@@ -559,7 +562,7 @@ public class LSAerodynamicsManager {
 							) == null){
 
 				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
-				calcLiftCurve.nasaBlackwell();
+				calcLiftCurve.nasaBlackwell(_currentMachNumber);
 			}
 
 			List<List<Double>> clForCmArrayBreakPointsListWing = new ArrayList<>();
@@ -1365,11 +1368,27 @@ public class LSAerodynamicsManager {
 					);
 		}
 
-		public void allMethods() {
+		public void helmboldDiederich(Double mach) {
+			_cLAlpha.put(
+					MethodEnum.HELMBOLD_DIEDERICH, 
+					Amount.valueOf(
+							LiftCalc.calculateCLalphaHelmboldDiederich(
+									_theLiftingSurface.getAspectRatio(),
+									_meanAirfoil.getAirfoilCreator().getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
+									_theLiftingSurface.getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+									mach
+									),
+							SI.RADIAN.inverse()
+							)
+					);
+		}
+		
+		public void allMethods(Double mach) {
 			polhamus();
 			andersonSweptCompressibleSubsonic();
 			integralMean2D();
 			nasaBlackwell();
+			helmboldDiederich(mach);
 		}
 
 	}
@@ -1532,6 +1551,25 @@ public class LSAerodynamicsManager {
 			}
 		}
 
+		public void roskam() {
+			
+			double deltaYPercent = _theLiftingSurface.getAerodynamicDatabaseReader()
+					.getDeltaYvsThickness(
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_meanAirfoil.getAirfoilCreator().getFamily()
+							);
+			
+			_cLMax.put(
+					MethodEnum.ROSKAM, 
+					_theLiftingSurface.getAerodynamicDatabaseReader().getClmaxCLmaxVsLambdaLEVsDeltaY(
+							_theLiftingSurface.getSweepLEEquivalent().doubleValue(NonSI.DEGREE_ANGLE), 
+							deltaYPercent
+							)
+					*_meanAirfoil.getAirfoilCreator().getClMax()
+					);
+			
+		}
+		
 		public void allMethods() {
 			nasaBlackwell();
 			phillipsAndAlley();
@@ -1598,11 +1636,28 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void fromAlphaMaxLinearNasaBlackwell() {
+		public void fromAlphaMaxLinearNasaBlackwell(double mach) {
 			
 			if(_alphaMaxLinear.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLmax theCLMaxCalculator = new CalcCLmax();
-				theCLMaxCalculator.nasaBlackwell();
+				if(_theLiftingSurface.getType() != ComponentEnum.VERTICAL_TAIL) {
+					CalcCLmax theCLMaxCalculator = new CalcCLmax();
+					theCLMaxCalculator.nasaBlackwell();
+				}
+				else if(_theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL) {
+					CalcCLmax theCLMaxCalculator = new CalcCLmax();
+					theCLMaxCalculator.roskam();
+					CalcCLAlpha theCLAlphaCalculator = new CalcCLAlpha();
+					theCLAlphaCalculator.helmboldDiederich(mach);
+					_alphaMaxLinear.put(
+							MethodEnum.LINEAR, 
+							Amount.valueOf(
+									_cLMax.get(MethodEnum.ROSKAM)
+									/_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									,
+									NonSI.DEGREE_ANGLE
+									)
+							);
+				}
 			}
 			
 			double deltaYPercent = _theLiftingSurface.getAerodynamicDatabaseReader()
@@ -1619,16 +1674,23 @@ public class LSAerodynamicsManager {
 							),
 					NonSI.DEGREE_ANGLE);
 			
-			_alphaStall.put(
-					MethodEnum.NASA_BLACKWELL,
-					_alphaMaxLinear.get(MethodEnum.NASA_BLACKWELL)
-					.plus(deltaAlpha)
-					);
+			if(_theLiftingSurface.getType() != ComponentEnum.VERTICAL_TAIL)
+				_alphaStall.put(
+						MethodEnum.NASA_BLACKWELL,
+						_alphaMaxLinear.get(MethodEnum.NASA_BLACKWELL)
+						.plus(deltaAlpha)
+						);
+			else
+				_alphaStall.put(
+						MethodEnum.NASA_BLACKWELL,
+						_alphaMaxLinear.get(MethodEnum.LINEAR)
+						.plus(deltaAlpha)
+						);
 		}
 		
-		public void allMethods() {
+		public void allMethods(double mach) {
 			fromCLmaxPhillipsAndAlley();
-			fromAlphaMaxLinearNasaBlackwell();
+			fromAlphaMaxLinearNasaBlackwell(mach);
 		}
 	}
 	//............................................................................
@@ -1696,7 +1758,7 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void nasaBlackwell() {
+		public void nasaBlackwell(double mach) {
 			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
 				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
@@ -1725,7 +1787,7 @@ public class LSAerodynamicsManager {
 			
 			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
-				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell();
+				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(mach);
 			}
 			
 			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
@@ -1752,9 +1814,9 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void allMethods() {
+		public void allMethods(double mach) {
 			fromCLmaxPhillipsAndAlley();
-			nasaBlackwell();
+			nasaBlackwell(mach);
 		}
 	}		
 	//............................................................................
@@ -2488,7 +2550,7 @@ public class LSAerodynamicsManager {
 			
 			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
-				calcLiftCurve.nasaBlackwell();
+				calcLiftCurve.nasaBlackwell(mach);
 			}
 			
 			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
@@ -2516,7 +2578,7 @@ public class LSAerodynamicsManager {
 			
 			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
-				calcLiftCurve.nasaBlackwell();
+				calcLiftCurve.nasaBlackwell(mach);
 			}
 			
 			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
@@ -3025,7 +3087,8 @@ public class LSAerodynamicsManager {
 		@SuppressWarnings("unchecked")
 		public void semiempirical(
 				List<Amount<Angle>> flapDeflection, 
-				List<Amount<Angle>> slatDeflection
+				List<Amount<Angle>> slatDeflection,
+				double mach
 				) {
 			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
@@ -3055,7 +3118,7 @@ public class LSAerodynamicsManager {
 			
 			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
-				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell();
+				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(mach);
 			}
 			
 			if(_cLMax.get(MethodEnum.NASA_BLACKWELL) == null) {
@@ -3248,9 +3311,10 @@ public class LSAerodynamicsManager {
 		
 		public void allMethods(
 				List<Amount<Angle>> flapDeflection,
-				List<Amount<Angle>> slatDeflection
+				List<Amount<Angle>> slatDeflection,
+				double mach
 				) {
-			semiempirical(flapDeflection, slatDeflection);
+			semiempirical(flapDeflection, slatDeflection, mach);
 		}
 		
 	}	
@@ -3278,7 +3342,8 @@ public class LSAerodynamicsManager {
 				CalcHighLiftDevicesEffects theHighLiftEffectsCalculator = new CalcHighLiftDevicesEffects();
 				theHighLiftEffectsCalculator.semiempirical(
 						flapDeflection,
-						slatDeflection
+						slatDeflection,
+						mach
 						);
 				
 			}
@@ -3370,7 +3435,7 @@ public class LSAerodynamicsManager {
 			
 			if (_deltaCD0.get(MethodEnum.SEMPIEMPIRICAL) == null) {
 				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = new CalcHighLiftDevicesEffects();
-				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection);
+				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection, mach);
 			}
 
 			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
@@ -3397,14 +3462,15 @@ public class LSAerodynamicsManager {
 		public Double semiempirical(
 				Amount<Angle> alpha, 
 				List<Amount<Angle>> flapDeflection,
-				List<Amount<Angle>> slatDeflection
+				List<Amount<Angle>> slatDeflection,
+				double mach
 				) {
 
 			double cMActual = 0.0;
 			
 			if (_deltaCMc4.get(MethodEnum.SEMPIEMPIRICAL) == null) {
 				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = new CalcHighLiftDevicesEffects();
-				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection);
+				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection, mach);
 			}
 
 			CalcCMAtAlpha calcCMAtAlpha = new CalcCMAtAlpha();
