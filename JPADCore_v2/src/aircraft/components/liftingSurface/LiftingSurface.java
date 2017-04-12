@@ -340,8 +340,8 @@ public class LiftingSurface implements ILiftingSurface {
 
 					double R, kComp;
 
-					if (getLiftingSurfaceCreator().getCompositeCorrectioFactor() != null) {
-						kComp = getLiftingSurfaceCreator().getCompositeCorrectioFactor();
+					if (getLiftingSurfaceCreator().getCompositeCorrectionFactor() != null) {
+						kComp = getLiftingSurfaceCreator().getCompositeCorrectionFactor();
 					} else {
 						kComp = 0.;					
 					}

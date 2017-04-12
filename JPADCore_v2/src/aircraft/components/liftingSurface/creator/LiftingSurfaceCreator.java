@@ -3204,7 +3204,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		this._secondarySparNonDimensionalPosition = _secondarySparNonDimensionalPosition;
 	}
 
-	public Double getCompositeCorrectioFactor() {
+	public Double getCompositeCorrectionFactor() {
 		return _compositeCorrectioFactor;
 	}
 

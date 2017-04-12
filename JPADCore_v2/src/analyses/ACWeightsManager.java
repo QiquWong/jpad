@@ -757,7 +757,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			List<Object[]> dataListWing = new ArrayList<>();
 			dataListWing.add(new Object[] {"Description","Unit","Value","Percent Error"});
 			dataListWing.add(new Object[] {"Reference Mass","kg", _wingReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListWing.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getWing().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListWing.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getWing().getLiftingSurfaceCreator().getCompositeCorrectionFactor()});
 			dataListWing.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getWing().getMassCorrectionFactor()});
 			dataListWing.add(new Object[] {" "});
 			dataListWing.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
@@ -829,7 +829,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			List<Object[]> dataListHTail = new ArrayList<>();
 			dataListHTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
 			dataListHTail.add(new Object[] {"Reference Mass","kg", _horizontalTailReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListHTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getHTail().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListHTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getHTail().getLiftingSurfaceCreator().getCompositeCorrectionFactor()});
 			dataListHTail.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getHTail().getMassCorrectionFactor()});
 			dataListHTail.add(new Object[] {" "});
 			dataListHTail.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
@@ -902,7 +902,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			List<Object[]> dataListVTail = new ArrayList<>();
 			dataListVTail.add(new Object[] {"Description","Unit","Value","Percent Error"});
 			dataListVTail.add(new Object[] {"Reference Mass","kg", _verticalTailReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListVTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getVTail().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListVTail.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getVTail().getLiftingSurfaceCreator().getCompositeCorrectionFactor()});
 			dataListVTail.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getVTail().getMassCorrectionFactor()});
 			dataListVTail.add(new Object[] {" "});
 			dataListVTail.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});
@@ -975,7 +975,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			List<Object[]> dataListCanard = new ArrayList<>();
 			dataListCanard.add(new Object[] {"Description","Unit","Value","Percent Error"});
 			dataListCanard.add(new Object[] {"Reference Mass","kg", _canardReferenceMass.doubleValue(SI.KILOGRAM)});
-			dataListCanard.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getCanard().getLiftingSurfaceCreator().getCompositeCorrectioFactor()});
+			dataListCanard.add(new Object[] {"Composite Correction Factor"," ",_theAircraft.getCanard().getLiftingSurfaceCreator().getCompositeCorrectionFactor()});
 			dataListCanard.add(new Object[] {"Mass Correction Factor"," ",_theAircraft.getCanard().getMassCorrectionFactor()});
 			dataListCanard.add(new Object[] {" "});
 			dataListCanard.add(new Object[] {"WEIGHT ESTIMATION METHODS COMPARISON"});

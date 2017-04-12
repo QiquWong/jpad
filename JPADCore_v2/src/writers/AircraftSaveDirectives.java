@@ -1,11 +1,9 @@
 package writers;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import org.inferred.freebuilder.FreeBuilder;
 
-import configuration.enumerations.ComponentEnum;
 
 @FreeBuilder
 public interface AircraftSaveDirectives {
@@ -20,6 +18,7 @@ public interface AircraftSaveDirectives {
 	String getEngineFileName();
 	String getLandingGearFileName();
 	String getSystemFileName();
+	List<String> getAirfoilFileNames();
 	
 	class Builder extends AircraftSaveDirectives_Builder {
 		// NOTE: pass a string to the Builder object to be appended to all names

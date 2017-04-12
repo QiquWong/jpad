@@ -1,1 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<jpad_config>
+   <vertical_tail id="MyVerticalTail" mirrored="false">
+      <global_data>
+         <composite_correction_factor>0.8300</composite_correction_factor>
+         <roughness unit="m">0.00000405</roughness>
+      </global_data>
+   </vertical_tail>
+</jpad_config>

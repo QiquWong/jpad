@@ -7,7 +7,9 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.unit.SI;
 
@@ -247,7 +249,14 @@ public class AircraftWriterTest {
 			AircraftSaveDirectives asd = new AircraftSaveDirectives
 					.Builder("_1")
 					.setAircraftFileName("aircraft_1a.xml")
+					.addAllAirfoilFileNames(
+						theAircraft.getWing().getAirfoilList().stream()
+								.map(a -> a.getAirfoilCreator().getName() + ".xml")
+								.collect(Collectors.toList())
+					)
 					.build();
+			
+				// TODO: manage all names of airfoil names
 			
 			System.out.println(asd);
 			
