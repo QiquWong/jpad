@@ -112,4 +112,15 @@ public class CostsCalcUtils {
 		return actualCPIFactor/cpi2012factor;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

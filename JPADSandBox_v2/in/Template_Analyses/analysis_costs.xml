@@ -1,9 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
     <analysis>
-        <costs id="JPAD Test analysis - COSTS">
-
-
+        <costs id="JPAD Test analysis - COSTS"
+			weights_from_xls_file="false" 
+			file_weights="Weights.xlsx"
+			performance_from_xls_file="false"
+			file_performance="Performance.xlsx"
+			>
+			<weights>
+				<maximum_take_off_mass unit="kg"></maximum_take_off_mass>
+				<operating_empty_mass unit="kg"></operating_empty_mass>
+				<structural_mass unit="kg"></structural_mass>
+				<payload unit="kg"></payload>
+			</weights>
+			<performance>
+				<range unit="km"></range>
+				<block_fuel unit="kg"></block_fuel>
+				<block_time unit="hr"></block_time>
+				<flight_time unit="hr"></flight_time>
+			</performance>
+			<global_data>
+				<doc>
+					<life_span unit="years" value=""/>
+					<aircraft_price calculate="TRUE" method="SFORZA" value=""/> 
+					<engine_price calculate="TRUE" method="SFORZA" value=""/>
+					<residual_value value="0.1"/> <!-- aircraft value percentage of the initial value at the end of life -->
+					<interest value="5.4"/> <!-- percentage of the total investment -->
+					<insurance value="5.4"/> <!-- percentage of the sum of the airframe and engines prices  -->
+					<utilization calculate="TRUE" method="SFORZA" unit="hr/year" value="" />
+					<fuel_unit_price unit="$/kg" value=""/>
+					<cockpit_crew_labour_rate unit="$/hr" value=""/>
+					<cabin_crew_labour_rate unit="$/hr" value=""/>
+					<doc_landing calculate="TRUE" method="AEA" unit="$/nm" value=""/>
+					<doc_navigation calculate="TRUE" method="AEA" unit="$/nm" value=""/>
+					<doc_ground_handling calculate="TRUE" method="AEA" unit="$/nm" value=""/>
+					<doc_ground_noise calculate="TRUE" method="UE" unit="$/nm" value=""/>
+					<doc_ground_emissions calculate="TRUE" method="ICAO" unit="$/nm" value=""/>
+					<maintenance_airframe_labour_rate unit="$/hr" value=""/>
+					<maintenance_engine_labour_rate unit="$/hr" value=""/>					
+				</doc>
+			<!-- add ioc tags when available-->
+			</global_data>
         </costs>
     </analysis>
 </jpad_config>
