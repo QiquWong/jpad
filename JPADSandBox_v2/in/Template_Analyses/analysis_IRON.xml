@@ -70,8 +70,14 @@
 			V_n_diagram="FALSE"
 			mission_profile="FALSE"
 	/>
-        <!--
-        <costs file="analysis_costs.xml"/>
-		-->
+	<!--
+	<costs 
+			file="analysis_costs_IRON.xml"
+			plot="TRUE"
+			doc="FALSE"
+			ioc="FALSE"
+	/>
+	-->
+	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>
