@@ -31,6 +31,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
@@ -40,6 +41,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -64,6 +66,8 @@ public class VariablesInputData {
 	TextField filePath;
 	@FXML
 	Button searchButton;
+	@FXML
+	Button goToAnalysisButton;
 
 	//input data variables
 	@FXML
@@ -100,6 +104,8 @@ public class VariablesInputData {
 	@FXML
 	TextField adimensionalStations5;
 
+	List<TextField> stationList = new ArrayList<>();
+	
 	@FXML
 	TextField chords1;
 	@FXML
@@ -111,6 +117,8 @@ public class VariablesInputData {
 	@FXML
 	TextField chords5;
 
+	List<TextField> chordList = new ArrayList<>();
+	
 	@FXML
 	TextField xle1;
 	@FXML
@@ -122,6 +130,8 @@ public class VariablesInputData {
 	@FXML
 	TextField xle5;
 
+	List<TextField> xleList = new ArrayList<>();
+	
 	@FXML
 	TextField twist1;
 	@FXML
@@ -133,6 +143,8 @@ public class VariablesInputData {
 	@FXML
 	TextField twist5;
 
+	List<TextField> twistList = new ArrayList<>();
+	
 	@FXML
 	TextField alphaZeroLift1;
 	@FXML
@@ -144,6 +156,8 @@ public class VariablesInputData {
 	@FXML
 	TextField alphaZeroLift5;
 
+	List<TextField> alphaZeroList = new ArrayList<>();
+	
 	@FXML
 	TextField alphaStar1;
 	@FXML
@@ -155,6 +169,8 @@ public class VariablesInputData {
 	@FXML
 	TextField alphaStar5;
 
+	List<TextField> alphaStarList = new ArrayList<>();
+	
 	@FXML
 	TextField clMax1;
 	@FXML
@@ -166,7 +182,8 @@ public class VariablesInputData {
 	@FXML
 	TextField clMax5;
 
-
+	List<TextField> clMaxList = new ArrayList<>();
+	
 	// units
 	@FXML
 	ChoiceBox altitudeUnits;
@@ -188,6 +205,9 @@ public class VariablesInputData {
 	ChoiceBox alphaZeroLiftUnits;
 	@FXML
 	ChoiceBox numberOfGivenSections;
+	
+	@FXML
+	Pane graphPane;
 
 	// Initialize units box
 
@@ -244,7 +264,44 @@ public class VariablesInputData {
 		numberOfGivenSections.setValue("2");
 		numberOfGivenSections.setItems(numberOfGivenSectionsList);
 
-
+		stationList.add(adimensionalStations1);
+		stationList.add(adimensionalStations2);
+		stationList.add(adimensionalStations3);
+		stationList.add(adimensionalStations4);
+		stationList.add(adimensionalStations5);
+		chordList.add(chords1);
+		chordList.add(chords2);
+		chordList.add(chords3);
+		chordList.add(chords4);
+		chordList.add(chords5);
+		xleList.add(xle1);
+		xleList.add(xle2);
+		xleList.add(xle3);
+		xleList.add(xle4);
+		xleList.add(xle5);
+		twistList.add(twist1);
+		twistList.add(twist2);
+		twistList.add(twist3);
+		twistList.add(twist4);
+		twistList.add(twist5);
+		alphaStarList.add(alphaStar1);
+		alphaStarList.add(alphaStar2);
+		alphaStarList.add(alphaStar3);
+		alphaStarList.add(alphaStar4);
+		alphaStarList.add(alphaStar5);
+		alphaZeroList.add(alphaZeroLift1);
+		alphaZeroList.add(alphaZeroLift2);
+		alphaZeroList.add(alphaZeroLift3);
+		alphaZeroList.add(alphaZeroLift4);
+		alphaZeroList.add(alphaZeroLift5);
+		clMaxList.add(clMax1);
+		clMaxList.add(clMax2);
+		clMaxList.add(clMax3);
+		clMaxList.add(clMax4);
+		clMaxList.add(clMax5);
+		
+		
+		
 	}
 
 	@FXML
@@ -498,26 +555,98 @@ public class VariablesInputData {
 		if (!clMax5.getText().trim().isEmpty())
 			inputList.add(Double.parseDouble(clMax5.getText()));	
 		theInputTree.setMaximumliftCoefficientDistribution(inputList);
+		
+		theInputTree.calculateDerivedData();
+		Scene graph = D3PlotterClass.createWingDesign(theInputTree);
+		graphPane.getChildren().add(graph.getRoot());
 
+		goToAnalysisButton.setDisable(false);
 	}
 
+	@FXML
+	public void returnToAnalysis() throws IOException{
+		Main.startAnalysis(theInputTree);
+		VariablesMainCentralButtons theMainClassButtons = new VariablesMainCentralButtons();
+		//theMainClassButtons.enableAnalysisButton();
+		
+	}
+	
+	@FXML
+	public void writeAllData(InputOutputTree theInputTree) throws IOException{
+
+		this.altitude.setText(Double.toString(theInputTree.getAltitude().doubleValue(
+				theInputTree.getAltitude().getUnit())));
+		this.altitudeUnits.setValue(theInputTree.getAltitude().getUnit().toString());
+
+		this.machNumber.setText(Double.toString(theInputTree.getMachNumber()));
+
+		this.alphaInitial.setText(Double.toString(theInputTree.getAlphaInitial().doubleValue(
+				theInputTree.getAlphaInitial().getUnit())));
+		this.alphaInitialUnits.setValue(theInputTree.getAlphaInitial().getUnit().toString());
+
+		this.alphaFinal.setText(Double.toString(theInputTree.getAlphaFinal().doubleValue(
+				theInputTree.getAlphaFinal().getUnit())));
+		this.alphaFinalUnits.setValue(theInputTree.getAlphaFinal().getUnit().toString());
+		
+		this.numberOfAlphas.setText(Double.toString(theInputTree.getNumberOfAlpha()));
+		
+		this.surface.setText(Double.toString(theInputTree.getSurface().doubleValue(
+				theInputTree.getSurface().getUnit())));
+		this.surfaceUnits.setValue(theInputTree.getSurface().getUnit().toString());
+		
+		this.aspectRatio.setText(Double.toString(theInputTree.getAspectRatio()));
+		
+		this.numberOfPoints.setText(Double.toString(theInputTree.getNumberOfSections()));
+		
+		this.adimensionalKinkStation.setText(Double.toString(theInputTree.getAdimensionalKinkStation()));
+		
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_4_Digit)
+			this.airfoilFamily.setValue("NACA_4_DIGIT");	
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_5_Digit)
+			this.airfoilFamily.setValue("NACA_5_DIGIT");	
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_63_Series)
+			this.airfoilFamily.setValue("NACA_63_SERIES");
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_64_Series)
+			this.airfoilFamily.setValue("NACA_64_SERIES");
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_65_Series)
+			this.airfoilFamily.setValue("NACA_65_SERIES");
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_66_Series)
+			this.airfoilFamily.setValue("NACA_66_SERIES");
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.BICONVEX)
+			this.airfoilFamily.setValue("BICONVEX");
+		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
+			this.airfoilFamily.setValue("DOUBLE_WEDGE");
+		
+		this.maxThickness.setText(Double.toString(theInputTree.getMeanThickness()));
+		
+		this.numberOfGivenSections.setValue(theInputTree.getNumberOfSections());
+		setNumberOfGivenSection();
+		
+		this.adimensionalStations1.setText(theInputTree.getyAdimensionalStationInput().get(0).toString());
+		this.adimensionalStations2.setText(theInputTree.getyAdimensionalStationInput().get(1).toString());
+		//if(theInputTree.getNumberOfSections())
+		
+		
+	}
+	
 	public Unit recognizeUnit(ChoiceBox textUnit){
 
 		Unit unit = null;
 
-		if (textUnit.getValue().toString() == "m")
+		
+		if (textUnit.getValue().toString().equalsIgnoreCase("m"))
 			unit = SI.METER;
 
-		if (textUnit.getValue().toString() == "ft")
+		if (textUnit.getValue().toString().equalsIgnoreCase("ft"))
 			unit = NonSI.FOOT;
 
-		if (textUnit.getValue().toString() == "deg")
+		if (textUnit.getValue().toString().equalsIgnoreCase("°"))
 			unit = NonSI.DEGREE_ANGLE;
 
-		if (textUnit.getValue().toString() == "rad")
+		if (textUnit.getValue().toString().equalsIgnoreCase("rad"))
 			unit = SI.RADIAN;
 		
-		if (textUnit.getValue().toString() == "m²")
+		if (textUnit.getValue().toString().equalsIgnoreCase("m²"))
 			unit = SI.SQUARE_METRE;
 		
 		
@@ -1248,5 +1377,61 @@ public class VariablesInputData {
 
 	public void setNumberOfGivenSectionsList(ObservableList<String> numberOfGivenSectionsList) {
 		this.numberOfGivenSectionsList = numberOfGivenSectionsList;
+	}
+
+	public List<TextField> getChordList() {
+		return chordList;
+	}
+
+	public void setChordList(List<TextField> chordList) {
+		this.chordList = chordList;
+	}
+
+	public List<TextField> getStationList() {
+		return stationList;
+	}
+
+	public List<TextField> getXleList() {
+		return xleList;
+	}
+
+	public List<TextField> getTwistList() {
+		return twistList;
+	}
+
+	public List<TextField> getAlphaZeroList() {
+		return alphaZeroList;
+	}
+
+	public List<TextField> getAlphaStarList() {
+		return alphaStarList;
+	}
+
+	public List<TextField> getClMaxList() {
+		return clMaxList;
+	}
+
+	public void setStationList(List<TextField> stationList) {
+		this.stationList = stationList;
+	}
+
+	public void setXleList(List<TextField> xleList) {
+		this.xleList = xleList;
+	}
+
+	public void setTwistList(List<TextField> twistList) {
+		this.twistList = twistList;
+	}
+
+	public void setAlphaZeroList(List<TextField> alphaZeroList) {
+		this.alphaZeroList = alphaZeroList;
+	}
+
+	public void setAlphaStarList(List<TextField> alphaStarList) {
+		this.alphaStarList = alphaStarList;
+	}
+
+	public void setClMaxList(List<TextField> clMaxList) {
+		this.clMaxList = clMaxList;
 	}
 }

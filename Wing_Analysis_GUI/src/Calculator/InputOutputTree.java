@@ -2,6 +2,7 @@ package Calculator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
@@ -12,7 +13,10 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 
 public class InputOutputTree {
 	//------------------------------------------------------------------------------------------
@@ -40,7 +44,7 @@ public class InputOutputTree {
 
 	private AirfoilFamilyEnum meanAirfoilFamily;
 	private List<Amount<Length>> chordDistribution,
-	xLEDistribution;
+	xLEDistribution, yDimensionalDistribution;
 	
 	private List<Amount<Angle>>
 	dihedralDistribution,
@@ -114,6 +118,18 @@ public class InputOutputTree {
 		alphaVector = new double [numberOfAlphaCL];
 	}
 
+	public void calculateDerivedData(){
+		yDimensionalDistribution = new ArrayList<>();
+		span = Amount.valueOf(
+				Math.sqrt(aspectRatio*surface.doubleValue(SI.SQUARE_METRE)),
+				SI.METER);
+		
+		for (int i=0; i<numberOfSections; i++){
+			yDimensionalDistribution.add(i,
+					Amount.valueOf(yAdimensionalStationInput.get(i)*span.divide(2).doubleValue(SI.METER),
+							SI.METER));
+		}
+	}
 
 	public void buildOutput(){
 		
@@ -121,6 +137,22 @@ public class InputOutputTree {
 		clVsEtaVectors = new ArrayList<Double[]>();
 		alphaDistributionArray = new double [numberOfAlpha];
 	}
+	
+	public Double[][] getDiscretizedTopViewAsArray() {
+
+		Double[][] array = new Double[numberOfSections*2][2];
+		for(int i=0; i<numberOfSections; i++){
+			array[i][0] = yDimensionalDistribution.get(i).doubleValue(SI.METER);
+			array[2*numberOfSections-1-i][0]= yDimensionalDistribution.get(i).doubleValue(SI.METER); 
+			array[i][1] = xLEDistribution.get(i).doubleValue(SI.METER);
+			array[2*numberOfSections-1-i][1] = xLEDistribution.get(i).doubleValue(SI.METER)+chordDistribution.get(i).doubleValue(SI.METER);
+		}
+
+		
+		return array;
+	}
+	
+
 
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
@@ -498,6 +530,14 @@ public class InputOutputTree {
 
 	public void setAlphaDistributionArray(double[] alphaDistributionArray) {
 		this.alphaDistributionArray = alphaDistributionArray;
+	}
+
+	public List<Amount<Length>> getyDimensionalDistribution() {
+		return yDimensionalDistribution;
+	}
+
+	public void setyDimensionalDistribution(List<Amount<Length>> yDimensionalDistribution) {
+		this.yDimensionalDistribution = yDimensionalDistribution;
 	}
 
 

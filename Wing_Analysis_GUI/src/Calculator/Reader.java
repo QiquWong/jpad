@@ -11,10 +11,12 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import org.jscience.physics.amount.Amount;
+import org.w3c.dom.Document;
 
 import GUI.Views.VariablesInputData;
 import configuration.enumerations.AirfoilFamilyEnum;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyXMLReaderUtils;
 
 public class Reader {
 	
@@ -77,12 +79,51 @@ public class Reader {
 			theVariables.getNumberOfGivenSections().setValue(intNumberOfSection );
 			
 		theVariables.setNumberOfGivenSection();	
-			
-		Unit unitOfMeas = reader.readArrayofAmountFromXML("//chord_distribution").get(0).getUnit();
+		
+		
+		// DISTRIBUTIONS
+		
+		List<String> stationsDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//y_adimensional_stations").get(0));
+		for(int i=0; i<stationsDistribution.size(); i++)
+			theVariables.getStationList().get(i).setText((stationsDistribution.get(i)));
+		
+		Unit unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//chord_distribution" + "/@unit"));
 		List<String> chordDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
-		//for(int i=0; i<chordDistribution.size(); i++)
-			theVariables.getChords1().setText((chordDistribution.get(0)));
-		theVariables.getChordsUnits().setValue(unitOfMeas.toString());
+		for(int i=0; i<chordDistribution.size(); i++)
+			theVariables.getChordList().get(i).setText((chordDistribution.get(i)));
+		theVariables.getChordsUnits().setValue(unitOfMeas);
+		
+		
+		unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//x_le_distribution" + "/@unit"));
+		List<String> xleDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//x_le_distribution").get(0));
+		for(int i=0; i<xleDistribution.size(); i++)
+			theVariables.getXleList().get(i).setText((xleDistribution.get(i)));
+		theVariables.getXleUnits().setValue(unitOfMeas);
+		
+		unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//twist_distribution" + "/@unit"));
+		List<String> twistDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//twist_distribution").get(0));
+		for(int i=0; i<twistDistribution.size(); i++)
+			theVariables.getTwistList().get(i).setText((twistDistribution.get(i)));
+		theVariables.getTwistUnits().setValue(unitOfMeas);
+		
+		unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//alpha_zero_lift_distribution" + "/@unit"));
+		List<String> alphaZeroLiftDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_zero_lift_distribution").get(0));
+		for(int i=0; i<alphaZeroLiftDistribution.size(); i++)
+			theVariables.getAlphaZeroList().get(i).setText((alphaZeroLiftDistribution.get(i)));
+		theVariables.getAlphaZeroLiftUnits().setValue(unitOfMeas);
+		
+		unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//alpha_star_distribution" + "/@unit"));
+		List<String> alphaStarDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_star_distribution").get(0));
+		for(int i=0; i<alphaStarDistribution.size(); i++)
+			theVariables.getAlphaStarList().get(i).setText((alphaStarDistribution.get(i)));
+		theVariables.getAlphaStarUnits().setValue(unitOfMeas);
+		
+		
+		List<String> clMaxDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution").get(0));
+		for(int i=0; i<clMaxDistribution.size(); i++)
+			theVariables.getClMaxList().get(i).setText((clMaxDistribution.get(i)));
+	
+	
 		
 	
 	

@@ -32,5 +32,9 @@
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/commons-math/commons-math3-3.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/commons-math/commons-math3-3.6.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/args4j/args4j-2.0.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/commons-lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/guava/guava-20.0-rc1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/javafx-d3/org.treez.javafxd3_1.0.0.201602152140.jar"/>
+	<classpathentry kind="lib" path="C:/Users/manue/ADOPT_PROJECT/jpad/libraries/javaslang/javaslang-2.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

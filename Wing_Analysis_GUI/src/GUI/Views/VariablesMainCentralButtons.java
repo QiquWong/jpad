@@ -2,6 +2,7 @@ package GUI.Views;
 
 import java.io.IOException;
 
+import Calculator.InputOutputTree;
 import GUI.Main;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -18,6 +19,7 @@ import javafx.scene.paint.Color;
 public class VariablesMainCentralButtons {
 	
 	private Main main;
+	private InputOutputTree theInputTree;
 	
 	@FXML
 	Button inputButton;
@@ -29,7 +31,7 @@ public class VariablesMainCentralButtons {
 	Button analysisCheck;
 	
 	@FXML
-	private void initialize(){
+	private void initialize() throws IOException{
 		inputCheck.setBackground(
         		new Background(
         				new BackgroundFill(
@@ -48,15 +50,21 @@ public class VariablesMainCentralButtons {
         						)
         				)
         		);
+		
+		//enableAnalysisButton();
 	}
 	
 	@FXML
 	private void setInputData() throws IOException{
+		if(theInputTree == null )
 		main.setInputData();
+		else{
+			main.setInputData(theInputTree);
+		}
 	}
 	
 	@FXML
-	private void enableAnalysisButton() throws IOException{ // dopo modifica e metti abilita se pieno il file di input
+	public void enableAnalysisButton() throws IOException{ // dopo modifica e metti abilita se pieno il file di input
 		inputButton.setBorder(
 				new Border(
 						new BorderStroke(Color.LIGHTGREEN,
@@ -81,5 +89,13 @@ public class VariablesMainCentralButtons {
 
 	public void setAnalysisCheck(Button analysisCheck) {
 		this.analysisCheck = analysisCheck;
+	}
+
+	public InputOutputTree getTheInputTree() {
+		return theInputTree;
+	}
+
+	public void setTheInputTree(InputOutputTree theInputTree) {
+		this.theInputTree = theInputTree;
 	}
 }

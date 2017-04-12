@@ -3,7 +3,10 @@ package GUI;
 import java.io.File;
 import java.io.IOException;
 
+import Calculator.InputOutputTree;
 import GUI.Views.Controllers;
+import GUI.Views.VariablesInputData;
+import GUI.Views.VariablesMainCentralButtons;
 import configuration.MyConfiguration;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -65,6 +68,17 @@ public class Main extends Application {
 		mainLayout.setCenter(centralItems);
 	}
 	
+	public static void startAnalysis(InputOutputTree theInputTree) throws IOException{
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("Views/MainCentralButtons.fxml"));
+		
+		BorderPane centralItems = loader.load();
+		mainLayout.setCenter(centralItems);
+		VariablesMainCentralButtons theMainController = loader.getController();
+		theMainController.enableAnalysisButton();
+		theMainController.setTheInputTree(theInputTree);
+	}
+	
 	
 	public static void showInfo () throws IOException{
 		FXMLLoader loader = new FXMLLoader();
@@ -93,6 +107,17 @@ public class Main extends Application {
 		
 		BorderPane centralItems = loader.load();
 		mainLayout.setCenter(centralItems);
+	}
+	
+	public static void setInputData(InputOutputTree theInputTree) throws IOException{
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("Views/InputData.fxml"));
+		
+		BorderPane centralItems = loader.load();
+		mainLayout.setCenter(centralItems);
+		VariablesInputData theInputDataClass = loader.getController();
+		theInputDataClass.writeAllData(theInputTree);
+		theInputDataClass.ConfirmData();
 	}
 	
 	public static void main(String[] args) {

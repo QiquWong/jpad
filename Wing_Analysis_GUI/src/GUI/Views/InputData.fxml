@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -71,7 +72,18 @@
                         <Insets />
                      </opaqueInsets>
                      <HBox.margin>
-                        <Insets bottom="2.4" left="180.0" />
+                        <Insets bottom="2.4" left="80.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="goToAnalysisButton" disable="true" mnemonicParsing="false" onAction="#returnToAnalysis" text="Go to Analyses">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <HBox.margin>
+                        <Insets bottom="2.4" />
                      </HBox.margin>
                   </Button>
                </children>
@@ -190,7 +202,7 @@
                                     </HBox>
                                  </children>
                               </GridPane>
-                              <GridPane layoutX="9.0" layoutY="27.0" prefHeight="63.0" prefWidth="437.0">
+                              <GridPane layoutX="9.0" layoutY="28.0" prefHeight="63.0" prefWidth="437.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="149.5999755859375" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="287.4000244140625" />
@@ -221,7 +233,7 @@
                                  </font>
                               </Label>
                               <Separator layoutX="14.0" layoutY="524.0" prefWidth="200.0" />
-                              <GridPane layoutX="10.0" layoutY="526.0" prefHeight="241.0" prefWidth="421.0">
+                              <GridPane layoutX="10.0" layoutY="529.0" prefHeight="241.0" prefWidth="421.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.80001831054688" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="272.1999816894531" />
@@ -275,11 +287,11 @@
                                        <children>
                                           <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="290.0">
                                              <children>
-                                                <TextField fx:id="alphaStar1" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                                <TextField fx:id="alphaStar2" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                                <TextField fx:id="alphaStar3" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                                <TextField fx:id="alphaStar4" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                                <TextField fx:id="alphaStar5" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar1" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar2" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar3" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar4" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar5" prefHeight="25.0" prefWidth="219.0" />
                                                 <ChoiceBox fx:id="alphaStarUnits" prefHeight="25.0" prefWidth="55.0" />
                                              </children>
                                           </HBox>
@@ -299,21 +311,21 @@
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                        <children>
-                                          <TextField fx:id="alphaZeroLift1" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="alphaZeroLift2" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="alphaZeroLift3" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="alphaZeroLift4" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="alphaZeroLift5" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift5" prefHeight="25.0" prefWidth="219.0" />
                                           <ChoiceBox fx:id="alphaZeroLiftUnits" prefHeight="25.0" prefWidth="55.0" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                        <children>
-                                          <TextField fx:id="clMax1" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax2" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax3" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax4" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax5" alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax5" prefHeight="25.0" prefWidth="219.0" />
                                        </children>
                                     </HBox>
                                     <Label text="Number of given sections" />
@@ -333,7 +345,15 @@
                         </AnchorPane>
                      </content>
                   </ScrollPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" onMousePressed="#setNumberOfGivenSection" prefHeight="545.0" prefWidth="353.0" />
+                  <ScrollPane>
+                     <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" onMousePressed="#setNumberOfGivenSection" prefHeight="632.0" prefWidth="444.0">
+                           <children>
+                              <Pane fx:id="graphPane" prefHeight="113.0" prefWidth="444.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
               </items>
             </SplitPane>
          </children>
