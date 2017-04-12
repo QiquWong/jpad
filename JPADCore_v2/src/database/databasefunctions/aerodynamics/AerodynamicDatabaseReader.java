@@ -12,9 +12,10 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	 x_bar_ac_w_x_ac_over_root_chord_vs_tan_L_LE_over_beta_AR_times_tan_L_LE_lambda,
 	 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
 	 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
-	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR;
+	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR,
+	 clmaxCLmaxVsLambdaLEVsDeltaY;
 	
-	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness;
+	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness, clmaxCLmaxVsLambdaLE;
  
 	public AerodynamicDatabaseReader(String databaseFolderPath, String databaseFileName) {
 
@@ -39,6 +40,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		
 		kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR = database.interpolate3DFromDatasetFunction("K_Omega_vs_CLalphaOmegaFracClmax_(taperRatio)_(AR)");
 		
+		clmaxCLmaxVsLambdaLEVsDeltaY = database.interpolate2DFromDatasetFunction("Clmax_CLmax_vs_LambdaLE_vs_dy");
 		//TODO Insert other aerodynamic functions (see "Aerodynamic_Database_Ultimate.h5")
 	}
 	
@@ -189,4 +191,12 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 				);
 	}
 
+	public double getClmaxCLmaxVsLambdaLEVsDeltaY(double sweepAngleLE , double sharpnessParameterLE ) {
+		if(sharpnessParameterLE <= 1.4)
+			sharpnessParameterLE = 1.4;
+		else if(sharpnessParameterLE >= 2.5)
+			sharpnessParameterLE = 2.5;
+		return clmaxCLmaxVsLambdaLEVsDeltaY.valueBilinear(sweepAngleLE, sharpnessParameterLE);
+	}
+	
 }

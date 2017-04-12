@@ -40,7 +40,7 @@
 					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
 				</landing_condition>
 			</balance>
-			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE">
+			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE" tau_rudder_from_file="FALSE">
 				<take_off_condition>
 					<alpha_body_initial unit="deg"></alpha_body_initial>
 					<alpha_body_final unit="deg"></alpha_body_final>
@@ -53,6 +53,10 @@
 						<tau>0.025</tau>
 						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
 					</tau_elevator_function>
+					<tau_rudder_function>
+						<tau>0.025</tau>
+						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_rudder_function>
 				</take_off_condition>					
 				<climb_condition>
 					<alpha_body_initial unit="deg"></alpha_body_initial>
@@ -66,6 +70,10 @@
 						<tau>0.025</tau>
 						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
 					</tau_elevator_function>
+					<tau_rudder_function>
+						<tau>0.025</tau>
+						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_rudder_function>
 				</climb_condition>					
 				<cruise_condition>
 					<alpha_body_initial unit="deg"></alpha_body_initial>
@@ -79,6 +87,10 @@
 						<tau>0.025</tau>
 						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
 					</tau_elevator_function>
+					<tau_rudder_function>
+						<tau>0.025</tau>
+						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_rudder_function>
 				</cruise_condition>	
 				<landing_condition>
 					<alpha_body_initial unit="deg"></alpha_body_initial>
@@ -92,6 +104,10 @@
 						<tau>0.025</tau>
 						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
 					</tau_elevator_function>
+					<tau_rudder_function>
+						<tau>0.025</tau>
+						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_rudder_function>
 				</landing_condition>					
 				<number_of_points_semispawise_wing></number_of_points_semispawise_wing>
 				<number_of_points_semispawise_horizontal_tail></number_of_points_semispawise_horizontal_tail>

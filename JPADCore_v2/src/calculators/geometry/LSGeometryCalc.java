@@ -63,9 +63,14 @@ public class LSGeometryCalc {
 	public static List<Double> calculateInfluenceCoefficients (
 			List<Amount<Length>> chordsBreakPoints,
 			List<Amount<Length>> yBreakPoints,
-			Amount<Area> surface
+			Amount<Area> surface,
+			Boolean isMirrored
 			) {
 
+		int multiply = 1;
+		if(isMirrored)
+			multiply = 2;
+		
 		List<Amount<Area>> influenceAreas = new ArrayList<>();
 		List<Double> influenceCoefficients = new ArrayList<>();
 		
@@ -83,7 +88,7 @@ public class LSGeometryCalc {
 
 		influenceCoefficients.add(
 				influenceAreas.get(0).to(SI.SQUARE_METRE)
-				.times(2)
+				.times(multiply)
 				.divide(surface.to(SI.SQUARE_METRE))
 				.getEstimatedValue()
 				);
@@ -111,7 +116,7 @@ public class LSGeometryCalc {
 
 			influenceCoefficients.add(
 					influenceAreas.get(i).to(SI.SQUARE_METRE)
-					.times(2)
+					.times(multiply)
 					.divide(surface.to(SI.SQUARE_METRE))
 					.getEstimatedValue()
 					);
@@ -132,7 +137,7 @@ public class LSGeometryCalc {
 
 		influenceCoefficients.add(
 				influenceAreas.get(yBreakPoints.size()-1).to(SI.SQUARE_METRE)
-				.times(2)
+				.times(multiply)
 				.divide(surface.to(SI.SQUARE_METRE))
 				.getEstimatedValue()
 				);

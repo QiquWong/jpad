@@ -560,7 +560,8 @@ public class HighLiftDevicesCalc {
 					.stream()
 						.map(x -> span.divide(2).times(x))
 							.collect(Collectors.toList()), 
-				input.getSurface()
+				input.getSurface(),
+				Boolean.TRUE
 				);
 		
 		double meanThicknessToChordRatio = 0.0;

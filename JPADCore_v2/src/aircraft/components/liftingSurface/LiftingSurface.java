@@ -1287,7 +1287,8 @@ public class LiftingSurface implements ILiftingSurface {
 		List<Double> influenceCoefficients = LSGeometryCalc.calculateInfluenceCoefficients(
 				theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints(),
 				theLiftingSurface.getLiftingSurfaceCreator().getYBreakPoints(), 
-				theLiftingSurface.getSurface()
+				theLiftingSurface.getSurface(),
+				theLiftingSurface.getLiftingSurfaceCreator().isMirrored()
 				);
 	
 		//----------------------------------------------------------------------------------------------
