@@ -26,7 +26,8 @@ public class Main extends Application {
 	private static BorderPane mainLayout;
 	private static Controllers theController;
 	File inputFile;
-	
+	static Stage newStageWindows;
+	static FXMLLoader loaderInputClass;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
@@ -102,22 +103,49 @@ public class Main extends Application {
 	}
 	
 	public static void setInputData() throws IOException{
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("Views/InputData.fxml"));
+		loaderInputClass = new FXMLLoader();
+		loaderInputClass .setLocation(Main.class.getResource("Views/InputData.fxml"));
 		
-		BorderPane centralItems = loader.load();
+		BorderPane centralItems = loaderInputClass .load();
 		mainLayout.setCenter(centralItems);
 	}
 	
 	public static void setInputData(InputOutputTree theInputTree) throws IOException{
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("Views/InputData.fxml"));
+		loaderInputClass = new FXMLLoader();
+		loaderInputClass.setLocation(Main.class.getResource("Views/InputData.fxml"));
 		
-		BorderPane centralItems = loader.load();
+		BorderPane centralItems = loaderInputClass.load();
 		mainLayout.setCenter(centralItems);
-		VariablesInputData theInputDataClass = loader.getController();
+		VariablesInputData theInputDataClass = loaderInputClass.getController();
 		theInputDataClass.writeAllData(theInputTree);
-		theInputDataClass.ConfirmData();
+	}
+	
+	public static void reStartNewAnalysis() throws IOException{
+		newStageWindows = new Stage();
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("Views/ExitWindows.fxml"));
+	
+		BorderPane newWindowBorder = loader.load();
+		
+		// devo definire una nuova finestra e settarci dentro questo nuovo border pane
+		
+		newStageWindows.setTitle("Wing Analysis");
+		newStageWindows.initModality(Modality.WINDOW_MODAL);
+		newStageWindows.initOwner(primaryStage);
+
+		// Ora devo settare la scena definita
+		
+		Scene scene = new Scene(newWindowBorder);
+		newStageWindows.setScene(scene);
+		newStageWindows.showAndWait();
+			
+	}
+	
+	public static void saveAndExit() throws IOException{
+		VariablesInputData theInputDataClass = loaderInputClass.getController();
+		theInputDataClass.saveInputFile();
+		
 	}
 	
 	public static void main(String[] args) {
@@ -130,5 +158,13 @@ public class Main extends Application {
 
 	public void setInputFile(File inputFile) {
 		this.inputFile = inputFile;
+	}
+
+	public static Stage getNewStageWindows() {
+		return newStageWindows;
+	}
+
+	public static void setNewStageWindows(Stage newStageWindows) {
+		Main.newStageWindows = newStageWindows;
 	}
 }

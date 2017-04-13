@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Following tag names are required -->
 <!-- The following unit of measurement are allowed : LENGTH-> "m" (meter), "ft" (foot) ; ANGLES -> "°" (degree), "rad" (radians) ; SURFACE-> "m2" (squared meter). It is possible to use different units in different fields.-->
+<!-- Arrays could be defined with or without parenthesis and value can be separated both by , and by ; -->
 <wing_executable>
         <operating_conditions>
                 <altitude unit="ft">8000</altitude>

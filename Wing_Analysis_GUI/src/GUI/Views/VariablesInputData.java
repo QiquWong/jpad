@@ -54,6 +54,7 @@ public class VariablesInputData {
 	private Main main;
 
 	File inputFile;
+	File outputFile;
 	InputOutputTree theInputTree = new InputOutputTree();
 
 	@FXML
@@ -68,6 +69,8 @@ public class VariablesInputData {
 	Button searchButton;
 	@FXML
 	Button goToAnalysisButton;
+	@FXML
+	Button saveButton;
 
 	//input data variables
 	@FXML
@@ -212,14 +215,14 @@ public class VariablesInputData {
 	// Initialize units box
 
 	ObservableList<String> altitudeUnitsList = FXCollections.observableArrayList("m","ft" );
-	ObservableList<String> alphaInitialUnitsList = FXCollections.observableArrayList("deg","rad" );
-	ObservableList<String> alphaFinalUnitsList = FXCollections.observableArrayList("deg","rad" );
+	ObservableList<String> alphaInitialUnitsList = FXCollections.observableArrayList("°","rad" );
+	ObservableList<String> alphaFinalUnitsList = FXCollections.observableArrayList("°","rad" );
 	ObservableList<String> surfaceUnitsList = FXCollections.observableArrayList("m²");
 	ObservableList<String> xleUnitsList = FXCollections.observableArrayList("m","ft" );
-	ObservableList<String> twistUnitsList = FXCollections.observableArrayList("deg","rad" );
+	ObservableList<String> twistUnitsList = FXCollections.observableArrayList("°","rad" );
 	ObservableList<String> chordsUnitsList = FXCollections.observableArrayList("m","ft" );
-	ObservableList<String> alphaStarUnitsList = FXCollections.observableArrayList("deg","rad" );
-	ObservableList<String> alphaZeroLiftUnitsList = FXCollections.observableArrayList("deg","rad" );
+	ObservableList<String> alphaStarUnitsList = FXCollections.observableArrayList("°","rad" );
+	ObservableList<String> alphaZeroLiftUnitsList = FXCollections.observableArrayList("°","rad" );
 	ObservableList<String> aifoilList = FXCollections.observableArrayList("NACA_4_DIGIT",
 			"NACA_5_DIGIT",
 			"NACA_63_SERIES",
@@ -235,10 +238,10 @@ public class VariablesInputData {
 		altitudeUnits.setValue("m");
 		altitudeUnits.setItems(altitudeUnitsList);
 
-		alphaInitialUnits.setValue("deg");
+		alphaInitialUnits.setValue("°");
 		alphaInitialUnits.setItems(alphaInitialUnitsList);
 
-		alphaFinalUnits.setValue("deg");
+		alphaFinalUnits.setValue("°");
 		alphaFinalUnits.setItems(alphaFinalUnitsList);
 
 		surfaceUnits.setValue("m²");
@@ -247,16 +250,16 @@ public class VariablesInputData {
 		xleUnits.setValue("m");
 		xleUnits.setItems(xleUnitsList);
 
-		twistUnits.setValue("deg");
+		twistUnits.setValue("°");
 		twistUnits.setItems(twistUnitsList);
 
 		chordsUnits.setValue("m");
 		chordsUnits.setItems(chordsUnitsList);
 
-		alphaStarUnits.setValue("deg");
+		alphaStarUnits.setValue("°");
 		alphaStarUnits.setItems(alphaStarUnitsList);
 
-		alphaZeroLiftUnits.setValue("deg");
+		alphaZeroLiftUnits.setValue("°");
 		alphaZeroLiftUnits.setItems(alphaZeroLiftUnitsList);
 
 		airfoilFamily.setItems(aifoilList);
@@ -390,15 +393,73 @@ public class VariablesInputData {
 
 		}
 	}
+	
+	@FXML
+	private void chooseOutputFile() throws IOException{
 
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Save input file");
+		chooser.setInitialDirectory(new File(MyConfiguration.getDir(FoldersEnum.INPUT_DIR)));
+		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML File","*.xml"));
+		File file = chooser.showSaveDialog(null);
+		if (file != null) {
+			outputFile = file;
+
+			// CHECK IF THE TEXT FIELD IS NOT EMPTY ...
+			load.disableProperty().bind(
+					Bindings.isEmpty(filePath.textProperty())
+					);
+
+			// CHECK IF THE FILE IN TEXTFIELD IS A VALID FILE ...
+			final Tooltip warning = new Tooltip("WARNING : The selected file is not a valid input !!");
+			load.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					Point2D p = load
+							.localToScreen(
+									-2.5*load.getLayoutBounds().getMaxX(),
+									1.2*load.getLayoutBounds().getMaxY()
+									);
+					if(!isInputFile(filePath.getText())
+							) {
+						warning.show(load, p.getX(), p.getY());
+					}
+				}
+			});
+			load.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					warning.hide();
+				}
+			});
+
+		}
+	}
+	@FXML
+	private void goHome() throws IOException{
+		main.showCenterItem();
+	} 
+	
 	@FXML
 	public void loadDataFile() throws IOException{
 		Reader theReader = new Reader();
 		theReader.readInputFromXML(this, inputFile.getAbsolutePath());
-
-
+	}
+	
+	@FXML
+	public void writeInputFile() throws IOException{
+		Reader theReader = new Reader();
+		System.out.println( "estensione file " + outputFile.getAbsolutePath() + File.separator +  outputFile.getName());
+		theReader.writeInputToXML(theInputTree, outputFile.getAbsolutePath() );
 	}
 
+	@FXML
+	public void saveInputFile() throws IOException{
+		chooseOutputFile();
+		writeInputFile();
+	}
 	@SuppressWarnings("unchecked")
 	public void ConfirmData(){
 
@@ -502,14 +563,14 @@ public class VariablesInputData {
 
 		unit = recognizeUnit(twistUnits);
 
-		inputListAmount.add(Amount.valueOf(Double.parseDouble(twist1.getText()), unit));
-		inputListAmount.add(Amount.valueOf(Double.parseDouble(twist2.getText()), unit));
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist1.getText()), unit));
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist2.getText()), unit));
 		if (!twist3.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(twist3.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist3.getText()), unit));
 		if (!twist4.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(twist4.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist4.getText()), unit));
 		if (!twist5.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(twist5.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist5.getText()), unit));
 		theInputTree.setTwistDistribution((inputListAmountAngle));
 
 		//ALPHAZEROLIFT
@@ -517,14 +578,14 @@ public class VariablesInputData {
 
 		unit = recognizeUnit(alphaZeroLiftUnits);
 
-		inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaZeroLift1.getText()), unit));
-		inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaZeroLift2.getText()), unit));
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift1.getText()), unit));
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift2.getText()), unit));
 		if (!alphaZeroLift3.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaZeroLift3.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift3.getText()), unit));
 		if (!alphaZeroLift4.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaZeroLift4.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift4.getText()), unit));
 		if (!alphaZeroLift5.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaZeroLift5.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift5.getText()), unit));
 		theInputTree.setAlphaZeroLiftDistribution((inputListAmountAngle));
 		
 		//ALPHA STAR
@@ -532,14 +593,14 @@ public class VariablesInputData {
 
 		unit = recognizeUnit(alphaStarUnits);
 
-		inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaStar1.getText()), unit));
-		inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaStar2.getText()), unit));
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar1.getText()), unit));
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar2.getText()), unit));
 		if (!alphaStar3.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaStar3.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar3.getText()), unit));
 		if (!alphaStar4.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaStar4.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar4.getText()), unit));
 		if (!alphaStar5.getText().trim().isEmpty())
-			inputListAmount.add(Amount.valueOf(Double.parseDouble(alphaStar5.getText()), unit));
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar5.getText()), unit));
 		theInputTree.setAlphaStarDistribution((inputListAmountAngle));
 		
 		
@@ -561,6 +622,7 @@ public class VariablesInputData {
 		graphPane.getChildren().add(graph.getRoot());
 
 		goToAnalysisButton.setDisable(false);
+		saveButton.setDisable(false);
 	}
 
 	@FXML
@@ -596,7 +658,7 @@ public class VariablesInputData {
 		
 		this.aspectRatio.setText(Double.toString(theInputTree.getAspectRatio()));
 		
-		this.numberOfPoints.setText(Double.toString(theInputTree.getNumberOfSections()));
+		this.numberOfPoints.setText(Double.toString(theInputTree.getNumberOfPointSemispan()));
 		
 		this.adimensionalKinkStation.setText(Double.toString(theInputTree.getAdimensionalKinkStation()));
 		
@@ -621,12 +683,115 @@ public class VariablesInputData {
 		
 		this.numberOfGivenSections.setValue(theInputTree.getNumberOfSections());
 		setNumberOfGivenSection();
-		
+
 		this.adimensionalStations1.setText(theInputTree.getyAdimensionalStationInput().get(0).toString());
 		this.adimensionalStations2.setText(theInputTree.getyAdimensionalStationInput().get(1).toString());
-		//if(theInputTree.getNumberOfSections())
+		if(theInputTree.getNumberOfSections()==3)
+			this.adimensionalStations3.setText(theInputTree.getyAdimensionalStationInput().get(2).toString());
+		if(theInputTree.getNumberOfSections()==4){
+			this.adimensionalStations3.setText(theInputTree.getyAdimensionalStationInput().get(2).toString());	
+			this.adimensionalStations4.setText(theInputTree.getyAdimensionalStationInput().get(3).toString());
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.adimensionalStations3.setText(theInputTree.getyAdimensionalStationInput().get(2).toString());	
+			this.adimensionalStations4.setText(theInputTree.getyAdimensionalStationInput().get(3).toString());	
+			this.adimensionalStations5.setText(theInputTree.getyAdimensionalStationInput().get(4).toString());	
+			}
+			
+		this.chords1.setText(Double.toString(theInputTree.getChordDistribution().get(0).doubleValue(SI.METER)));
+		this.chords2.setText(Double.toString(theInputTree.getChordDistribution().get(1).doubleValue(SI.METER)));
+		if(theInputTree.getNumberOfSections()==3)
+			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(SI.METER)));
+		if(theInputTree.getNumberOfSections()==4){
+			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(SI.METER)));
+			this.chords4.setText(Double.toString(theInputTree.getChordDistribution().get(3).doubleValue(SI.METER)));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(SI.METER)));
+			this.chords4.setText(Double.toString(theInputTree.getChordDistribution().get(3).doubleValue(SI.METER)));
+			this.chords5.setText(Double.toString(theInputTree.getChordDistribution().get(4).doubleValue(SI.METER)));
+			}
+		this.chordsUnits.setValue(theInputTree.getChordDistribution().get(0).getUnit().toString());
+		
+		this.xle1.setText(Double.toString(theInputTree.getxLEDistribution().get(0).doubleValue(SI.METER)));
+		this.xle2.setText(Double.toString(theInputTree.getxLEDistribution().get(1).doubleValue(SI.METER)));
+		if(theInputTree.getNumberOfSections()==3)
+			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(SI.METER)));
+		if(theInputTree.getNumberOfSections()==4){
+			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(SI.METER)));
+			this.xle4.setText(Double.toString(theInputTree.getxLEDistribution().get(3).doubleValue(SI.METER)));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(SI.METER)));
+			this.xle4.setText(Double.toString(theInputTree.getxLEDistribution().get(3).doubleValue(SI.METER)));
+			this.xle5.setText(Double.toString(theInputTree.getxLEDistribution().get(4).doubleValue(SI.METER)));
+			}
+		this.xleUnits.setValue(theInputTree.getxLEDistribution().get(0).getUnit().toString());
+		
+		this.twist1.setText(Double.toString(theInputTree.getTwistDistribution().get(0).doubleValue(NonSI.DEGREE_ANGLE)));
+		this.twist2.setText(Double.toString(theInputTree.getTwistDistribution().get(1).doubleValue(NonSI.DEGREE_ANGLE)));
+		if(theInputTree.getNumberOfSections()==3)
+			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+		if(theInputTree.getNumberOfSections()==4){
+			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.twist4.setText(Double.toString(theInputTree.getTwistDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.twist4.setText(Double.toString(theInputTree.getTwistDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.twist5.setText(Double.toString(theInputTree.getTwistDistribution().get(4).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
+		this.twistUnits.setValue(theInputTree.getTwistDistribution().get(0).getUnit().toString());
 		
 		
+		this.alphaZeroLift1.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(0).doubleValue(NonSI.DEGREE_ANGLE)));
+		this.alphaZeroLift2.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(1).doubleValue(NonSI.DEGREE_ANGLE)));
+		if(theInputTree.getNumberOfSections()==3)
+			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+		if(theInputTree.getNumberOfSections()==4){
+			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaZeroLift4.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaZeroLift4.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaZeroLift5.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(4).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
+		this.alphaZeroLiftUnits.setValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit().toString());
+		
+		this.alphaStar1.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(0).doubleValue(NonSI.DEGREE_ANGLE)));
+		this.alphaStar2.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(1).doubleValue(NonSI.DEGREE_ANGLE)));
+		if(theInputTree.getNumberOfSections()==3)
+			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+		if(theInputTree.getNumberOfSections()==4){
+			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaStar4.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaStar4.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaStar5.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(4).doubleValue(NonSI.DEGREE_ANGLE)));
+			}
+		this.alphaStarUnits.setValue(theInputTree.getAlphaStarDistribution().get(0).getUnit().toString());
+		 
+		this.clMax1.setText(theInputTree.getMaximumliftCoefficientDistribution().get(0).toString());
+		this.clMax2.setText(theInputTree.getMaximumliftCoefficientDistribution().get(1).toString());
+		if(theInputTree.getNumberOfSections()==3)
+			this.clMax3.setText(theInputTree.getMaximumliftCoefficientDistribution().get(2).toString());
+		if(theInputTree.getNumberOfSections()==4){
+			this.clMax3.setText(theInputTree.getMaximumliftCoefficientDistribution().get(2).toString());	
+			this.clMax4.setText(theInputTree.getMaximumliftCoefficientDistribution().get(3).toString());
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.clMax3.setText(theInputTree.getMaximumliftCoefficientDistribution().get(2).toString());	
+			this.clMax4.setText(theInputTree.getMaximumliftCoefficientDistribution().get(3).toString());	
+			this.clMax5.setText(theInputTree.getMaximumliftCoefficientDistribution().get(4).toString());	
+			}
+		
+
+		
+		
+
 	}
 	
 	public Unit recognizeUnit(ChoiceBox textUnit){

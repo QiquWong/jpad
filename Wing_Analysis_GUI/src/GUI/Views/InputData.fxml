@@ -51,7 +51,7 @@
                   </RadioButton>
                   <TextField fx:id="filePath" disable="true" prefHeight="25.0" prefWidth="239.0" promptText="File Path">
                      <HBox.margin>
-                        <Insets left="70.0" />
+                        <Insets left="60.0" />
                      </HBox.margin>
                   </TextField>
                   <Button fx:id="searchButton" disable="true" minHeight="-Infinity" mnemonicParsing="false" onAction="#searchInputFile" prefHeight="20.0" prefWidth="24.0" text="...">
@@ -72,7 +72,7 @@
                         <Insets />
                      </opaqueInsets>
                      <HBox.margin>
-                        <Insets bottom="2.4" left="80.0" />
+                        <Insets bottom="2.4" left="25.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="goToAnalysisButton" disable="true" mnemonicParsing="false" onAction="#returnToAnalysis" text="Go to Analyses">
@@ -84,6 +84,17 @@
                      </opaqueInsets>
                      <HBox.margin>
                         <Insets bottom="2.4" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="saveButton" disable="true" mnemonicParsing="false" onAction="#saveInputFile" text="Save">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <HBox.margin>
+                        <Insets bottom="2.4" right="1.0" />
                      </HBox.margin>
                   </Button>
                </children>

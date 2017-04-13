@@ -9,6 +9,9 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
@@ -16,7 +19,9 @@ import org.w3c.dom.Document;
 import GUI.Views.VariablesInputData;
 import configuration.enumerations.AirfoilFamilyEnum;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
+import writers.JPADStaticWriteUtils;
 
 public class Reader {
 	
@@ -124,9 +129,98 @@ public class Reader {
 			theVariables.getClMaxList().get(i).setText((clMaxDistribution.get(i)));
 	
 	
+	}
+	
+	public static void writeInputToXML(InputOutputTree theInputTree, String filenameWithPathAndExt) {
 		
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		
+		try {
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+			
+			defineXmlTree(doc, docBuilder, theInputTree);
+			
+			JPADStaticWriteUtils.writeDocumentToXml(doc, filenameWithPathAndExt);
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
+	private static void defineXmlTree(Document doc, DocumentBuilder docBuilder, InputOutputTree input) {
+		
+		org.w3c.dom.Element rootElement = doc.createElement("Wing_analysis");
+		doc.appendChild(rootElement);
+		
+		//--------------------------------------------------------------------------------------
+		// INPUT
+		//--------------------------------------------------------------------------------------
+		org.w3c.dom.Element flightConditionsElement = doc.createElement("operating_conditions");
+		rootElement.appendChild(flightConditionsElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("altitude", input.getAltitude(), flightConditionsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("mach_number", input.getMachNumber(), flightConditionsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("number_of_alpha", input.getNumberOfAlpha(), flightConditionsElement, doc);
+		if (input.getNumberOfAlpha()!=0){
+		JPADStaticWriteUtils.writeSingleNode("alpha_initial", input.getAlphaInitial(), flightConditionsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("alpha_final", input.getAlphaFinal(), flightConditionsElement, doc);
+		}
+				
+		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
+		rootElement.appendChild(wingDataElement);
+		org.w3c.dom.Element geometryDataElement = doc.createElement("global");
+		wingDataElement.appendChild(geometryDataElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("surface", input.getSurface(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("aspect_ratio", input.getAspectRatio(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("number_of_point_semispan", input.getNumberOfPointSemispan(), geometryDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("adimensional_kink_station", input.getAdimensionalKinkStation(), geometryDataElement, doc);
+		
+		
+		org.w3c.dom.Element cleanConfigurationDataElement = doc.createElement("distibution");
+		wingDataElement.appendChild(cleanConfigurationDataElement);
+		
+		JPADStaticWriteUtils.writeSingleNode("number_of_given_sections", input.getNumberOfSections(), cleanConfigurationDataElement, doc);
+		
+		String airfoilFamily = null;
+
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_4_Digit)
+			airfoilFamily = "NACA_4_DIGIT";
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_5_Digit)
+			airfoilFamily = "NACA_5_DIGIT";
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_63_Series)
+			airfoilFamily = "NACA_63_SERIES";
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_64_Series)
+			airfoilFamily = "NACA_64_SERIES";
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_65_Series)
+			airfoilFamily = "NACA_65_SERIES";
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.NACA_66_Series)
+			airfoilFamily = "NACA_66_SERIES";
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.BICONVEX)
+			airfoilFamily = "BICONVEX";
+		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
+			airfoilFamily = "DOUBLE_WEDGE";
+		
+		JPADStaticWriteUtils.writeSingleNode("airfoil_family", airfoilFamily, cleanConfigurationDataElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", input.getMeanThickness(), cleanConfigurationDataElement, doc);
+		
+		org.w3c.dom.Element childDistribution = doc.createElement("geometry");
+		cleanConfigurationDataElement.appendChild(childDistribution);
+		
+		JPADStaticWriteUtils.writeSingleNode("y_adimensional_stations", input.getyAdimensionalStationInput(),childDistribution, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("chord_distribution", input.getChordDistribution(), childDistribution, doc, input.getChordDistribution().get(0).getUnit().toString());
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("x_le_distribution", input.getxLEDistribution(), childDistribution, doc, input.getxLEDistribution().get(0).getUnit().toString());
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("twist_distribution", input.getTwistDistribution(), childDistribution, doc, input.getTwistDistribution().get(0).getUnit().toString());
+		
+		org.w3c.dom.Element childDistributionNew = doc.createElement("aerodynamics");
+		cleanConfigurationDataElement.appendChild(childDistributionNew);
+		
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_zero_lift_distribution", input.getAlphaZeroLiftDistribution(), childDistributionNew, doc,  input.getAlphaZeroLiftDistribution().get(0).getUnit().toString());
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_star_distribution", input.getAlphaStarDistribution(), childDistributionNew, doc,  input.getAlphaStarDistribution().get(0).getUnit().toString());
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("maximum_lift_coefficient_distribution", input.getMaximumliftCoefficientDistribution(), childDistributionNew, doc);
+		
 	}
 	
 

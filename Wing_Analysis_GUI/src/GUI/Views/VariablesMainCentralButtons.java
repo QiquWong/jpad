@@ -63,6 +63,7 @@ public class VariablesMainCentralButtons {
 		}
 	}
 	
+
 	@FXML
 	public void enableAnalysisButton() throws IOException{ // dopo modifica e metti abilita se pieno il file di input
 		inputButton.setBorder(
