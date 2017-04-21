@@ -3,6 +3,7 @@ package standaloneutils;
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Duration;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -15,6 +16,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import org.jscience.economics.money.Currency;
 import org.jscience.physics.amount.Amount;
 
 /** 
@@ -68,6 +70,14 @@ public class MyUnits {
 	public static final Unit KILOGRAM_PER_SECOND = SI.KILOGRAM.divide(SI.SECOND);
 	public static final Unit KILOGRAM_PER_SECOND_PER_NEWTON = SI.KILOGRAM.divide(SI.SECOND).divide(SI.NEWTON);
 	public static final Unit SLUG_PER_SECOND_PER_POUND = MyUnits.SLUG.divide(SI.SECOND).divide(NonSI.POUND_FORCE);
+	
+	public static final Unit HOURS_PER_YEAR = NonSI.HOUR.divide(NonSI.YEAR);
+	
+	public static final Unit USD_PER_HOUR = Currency.USD.divide(NonSI.HOUR);
+	public static final Unit USD_PER_TON = Currency.USD.divide(NonSI.METRIC_TON);
+	public static final Unit USD_PER_KM_SQRT_TON = Currency.USD.divide(NonSI.METRIC_TON);
+	
+	
 	
 	/**
 	 * Method that converts a price per kilogram (US$/Kg) to a price per pound (US$/lb)

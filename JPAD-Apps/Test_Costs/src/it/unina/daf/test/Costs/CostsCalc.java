@@ -15,7 +15,7 @@ import standaloneutils.database.io.DatabaseFileReader;
 import standaloneutils.database.io.DatabaseFileWriter;
 import standaloneutils.database.io.DatabaseIOmanager;
 import configuration.MyConfiguration;
-import configuration.enumerations.CostsEnum;
+import configuration.enumerations.CostsEnumOLD;
 import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.FoldersEnum;
 
@@ -26,33 +26,33 @@ public class CostsCalc {
 	 * @return  
 	 */
 	
-	public static DatabaseIOmanager<CostsEnum> initializeInputTree() {
+	public static DatabaseIOmanager<CostsEnumOLD> initializeInputTree() {
 
-		DatabaseIOmanager<CostsEnum> ioManager = new DatabaseIOmanager<CostsEnum>();
+		DatabaseIOmanager<CostsEnumOLD> ioManager = new DatabaseIOmanager<CostsEnumOLD>();
 		
 		// -------------------- Input --------------------
 		// Fixed Charges
-		ioManager.addElement(CostsEnum.Residual_Value, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Total_Investiment, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Depreciation_period, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Interest, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Insurance, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.num_cabin_crew_members, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Residual_Value, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Total_Investiment, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Depreciation_period, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Interest, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Insurance, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.num_cabin_crew_members, Amount.valueOf(0., Unit.ONE), "");
 		// Trip Charges
-		ioManager.addElement(CostsEnum.MTOW, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Block_Time, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Range, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Payload, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Manufacturer_Empty_Weight, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Labor_Manhour_Rate, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Price, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.OAPR, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.T0, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.BPR, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.num_compressor_stages, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.K, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Block_Fuel, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.Fuel_costs, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.MTOW, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Block_Time, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Range, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Payload, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Manufacturer_Empty_Weight, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Labor_Manhour_Rate, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Price, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.OAPR, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.T0, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.BPR, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.num_compressor_stages, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.K, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Block_Fuel, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.Fuel_costs, Amount.valueOf(0., Unit.ONE), "");
 
 		return ioManager;
 	}
@@ -64,15 +64,15 @@ public class CostsCalc {
 	 * @param dOC
 	 * @return
 	 */
-	public static DatabaseIOmanager<CostsEnum> initializeOutputTree(double totTripCharges,
+	public static DatabaseIOmanager<CostsEnumOLD> initializeOutputTree(double totTripCharges,
 			double totFixedCharges, double dOC) {
 
-		DatabaseIOmanager<CostsEnum> ioManager = new DatabaseIOmanager<CostsEnum>();
+		DatabaseIOmanager<CostsEnumOLD> ioManager = new DatabaseIOmanager<CostsEnumOLD>();
 
 		
-		ioManager.addElement(CostsEnum.total_TripCharges, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.total_FixedCharges, Amount.valueOf(0., Unit.ONE), "");
-		ioManager.addElement(CostsEnum.DOC, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.total_TripCharges, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.total_FixedCharges, Amount.valueOf(0., Unit.ONE), "");
+		ioManager.addElement(CostsEnumOLD.DOC, Amount.valueOf(0., Unit.ONE), "");
 
 		return ioManager;  
 	} 
@@ -82,12 +82,12 @@ public class CostsCalc {
 	 * @param filenamewithPathAndExt
 	 * @return
 	 */
-	public static DatabaseIOmanager<CostsEnum> readFromFile(String filenamewithPathAndExt) {
+	public static DatabaseIOmanager<CostsEnumOLD> readFromFile(String filenamewithPathAndExt) {
 
-		DatabaseIOmanager<CostsEnum> inputManager = initializeInputTree();
+		DatabaseIOmanager<CostsEnumOLD> inputManager = initializeInputTree();
 
-		DatabaseFileReader<CostsEnum> _costsEnumFileReader = 
-				new DatabaseFileReader<CostsEnum>(
+		DatabaseFileReader<CostsEnumOLD> _costsEnumFileReader = 
+				new DatabaseFileReader<CostsEnumOLD>(
 						filenamewithPathAndExt, inputManager.getTagList());
 
 		// System.out.println("--> File: " + filenamewithPathAndExt);
@@ -120,7 +120,7 @@ public class CostsCalc {
 	public static void executeStandaloneCosts(String inputFileNameWithPathAndExt, 
 			String outputFileNameWithPathAndExt) {
 
-		DatabaseIOmanager<CostsEnum> inputManager = readFromFile(inputFileNameWithPathAndExt); 
+		DatabaseIOmanager<CostsEnumOLD> inputManager = readFromFile(inputFileNameWithPathAndExt); 
 		
 		Aircraft aircraft = Aircraft.createDefaultAircraft("ATR-72"); 
 		OperatingConditions operatingConditions = new OperatingConditions();
@@ -128,8 +128,8 @@ public class CostsCalc {
 //		operatingConditions.set_altitude(inputManager.getValue(CostsEnum.Altitude));//Amount.valueOf(11000, SI.METER)
 //		operatingConditions.set_tas(inputManager.getValue(CostsEnum.TAS));// Amount.valueOf(473, NonSI.KNOT)
 		
-		Amount<Mass> OEM = inputManager.getValue(CostsEnum.Manufacturer_Empty_Weight);
-		Amount<Mass> MTOM = inputManager.getValue(CostsEnum.MTOW);
+		Amount<Mass> OEM = inputManager.getValue(CostsEnumOLD.Manufacturer_Empty_Weight);
+		Amount<Mass> MTOM = inputManager.getValue(CostsEnumOLD.MTOW);
 		aircraft.get_weights().set_OEM(OEM);
 		aircraft.get_weights().set_MTOM(MTOM);
 		aircraft.get_weights().set_manufacturerEmptyMass(OEM);

@@ -74,7 +74,11 @@
 	<costs 
 			file="analysis_costs_IRON.xml"
 			plot="TRUE"
-			doc="FALSE"
+			doc_capital="FALSE"
+			doc_crew="FALSE"
+			doc_fuel="FALSE"
+			doc_charges="FALSE"
+			doc_maintenance="FALSE"
 			ioc="FALSE"
 	/>
 	-->

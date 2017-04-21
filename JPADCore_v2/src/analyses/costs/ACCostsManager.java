@@ -829,11 +829,12 @@ public class ACCostsManager implements ICosts {
 	@Override
 	public double calcTotalInvestments(){
 
-		return CostsCalcUtils.calcTotalInvestments(_airframeCost,
-				_singleEngineCost,
-				_numberOfEngines,
-				_sparesAirframePerCosts,
-				_sparesEnginesPerCosts);
+		return 0.0; 
+//		return CostsCalcUtils.calcTotalInvestments(_airframeCost,
+//				_singleEngineCost,
+//				_numberOfEngines,
+//				_sparesAirframePerCosts,
+//				_sparesEnginesPerCosts);
 	}
 
 	@Override

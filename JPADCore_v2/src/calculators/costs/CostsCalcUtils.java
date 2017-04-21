@@ -1,12 +1,18 @@
 package calculators.costs;
 
+import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 
 import org.apache.commons.math3.special.Erf;
 import org.apache.commons.math3.util.FastMath;
+import org.jscience.economics.money.Currency;
+import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
+
+import standaloneutils.MyUnits;
 
 public class CostsCalcUtils {
 
@@ -22,14 +28,18 @@ public class CostsCalcUtils {
 	 * @param sparesEnginesPerCosts engines relative spares costs w.r.t. the engines cost (0.3 typical) 
 	 * @return _totalInvestments
 	 */
-	public static double calcTotalInvestments(double airframeCost,
-			double singleEngineCost,
+	public static Amount<Money> calcTotalInvestments(
+			Amount<Money> airframeCost,
+			Amount<Money> singleEngineCost,
 			int numberOfEngines,
 			double sparesAirframePerCosts,
 			double sparesEnginesPerCosts){
 
-		return airframeCost * (1 + sparesAirframePerCosts) + 
-				numberOfEngines * singleEngineCost * (1 + sparesEnginesPerCosts);
+		return Amount.valueOf(
+				airframeCost.doubleValue(Currency.USD) * (1 + sparesAirframePerCosts) + 
+				numberOfEngines * singleEngineCost.doubleValue(Currency.USD) * (1 + sparesEnginesPerCosts),
+				Currency.USD)
+				;
 	}
 	
 	/**
@@ -113,14 +123,101 @@ public class CostsCalcUtils {
 	}
 	
 	
+	/**
+	 * Method that calculates the aircraft depreciation per block hour, according to Jenkinson.
+	 * Actually it is equal to Kundu.
+	 * 
+	 * @param totalInvestments
+	 * @param utilization
+	 * @param lifeSpan
+	 * @param residualValue
+	 * @return depreciation in USD/block hour
+	 * @author AC
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDepreciationJenkinson(
+			Amount<Money> totalInvestments, 
+			Amount<?> utilization,
+			Amount<Duration> lifeSpan, 
+			double residualValue
+			) {
+
+		return Amount.valueOf(
+				(1.0 - residualValue)*totalInvestments.doubleValue(Currency.USD)
+					/(lifeSpan.doubleValue(NonSI.YEAR)*utilization.doubleValue(MyUnits.HOURS_PER_YEAR)),
+				MyUnits.USD_PER_HOUR
+				);
+	}
 	
 	
+	/**
+	 * Method that calculates the depreciation according to the equation suggested by Sforza
+	 * 
+	 * @param totalCost the total cost of the single aircraft calculated through the Sforza statistical
+	 * 			equation.
+	 * @param utilization
+	 * @param residualValue
+	 * @param singleEngineCost cost of a single engine
+	 * @param numberOfEngine
+	 * @return depreciation in USD/hr
+	 * @author AC
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDepreciationSforza(
+			Amount<Money> totalCost,
+			Amount<?> utilization,	
+			double residualValue,
+			Amount<Money> singleEngineCost, 
+			int numberOfEngine,
+			Amount<Duration> lifeSpan
+			) {
+
+		return Amount.valueOf(
+				(totalCost.doubleValue(Currency.USD)*(1-residualValue)-0.3*numberOfEngine*singleEngineCost.doubleValue(Currency.USD))
+				/(utilization.doubleValue(MyUnits.HOURS_PER_YEAR)*lifeSpan.doubleValue(NonSI.YEAR)),
+				MyUnits.USD_PER_HOUR
+				);
+	}
 	
+	/**
+	 * 
+	 * @param range (<= 3000nmi == SHORT / MEDIUM) (>3000 == LONG)
+	 * @return landingChargeConstant (USD/ton)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcLandingChargeConstant(Amount<Length> range){
+		if (range.doubleValue(NonSI.NAUTICAL_MILE)<= 3000) 
+			return Amount.valueOf(7.8, MyUnits.USD_PER_TON);
+		else
+			return Amount.valueOf(6.0, MyUnits.USD_PER_TON);
+	}
+
+	/**
+	 * 
+	 * @param range (<= 3000nmi == SHORT / MEDIUM) (>3000 == LONG)
+	 * @return NavigationChargeConstant (USD/(Km*sqrt(ton)))
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcNavigationChargeConstant(Amount<Length> range){
+		if (range.doubleValue(NonSI.NAUTICAL_MILE)<= 3000) 
+			return Amount.valueOf(0.50, MyUnits.USD_PER_KM_SQRT_TON);
+		else
+			return Amount.valueOf(0.17, MyUnits.USD_PER_KM_SQRT_TON);
+	}
 	
-	
-	
-	
-	
+
+	/**
+	 * 
+	 * @param range (<= 3000nmi == SHORT / MEDIUM) (>3000 == LONG)
+	 * @return groundHandlingChargeConstant (USD/ton)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcGroundHandlingChargeConstant(Amount<Length> range){
+		if (range.doubleValue(NonSI.NAUTICAL_MILE)<= 3000) 
+			return Amount.valueOf(100, MyUnits.USD_PER_TON);
+		else
+			return Amount.valueOf(103, MyUnits.USD_PER_TON);
+	}
 	
 	
 }

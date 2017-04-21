@@ -20,24 +20,38 @@
 				<flight_time unit="hr"></flight_time>
 			</performance>
 			<global_data>
+				<utilization calculate="TRUE" method="SFORZA" unit="hr/year" value="" />
 				<doc>
-					<life_span unit="years" value=""/>
-					<aircraft_price calculate="TRUE" method="SFORZA" value=""/> 
-					<engine_price calculate="TRUE" method="SFORZA" value=""/>
-					<residual_value value="0.1"/> <!-- aircraft value percentage of the initial value at the end of life -->
-					<interest value="5.4"/> <!-- percentage of the total investment -->
-					<insurance value="5.4"/> <!-- percentage of the sum of the airframe and engines prices  -->
-					<utilization calculate="TRUE" method="SFORZA" unit="hr/year" value="" />
-					<fuel_unit_price unit="$/kg" value=""/>
-					<cockpit_crew_labour_rate unit="$/hr" value=""/>
-					<cabin_crew_labour_rate unit="$/hr" value=""/>
-					<doc_landing calculate="TRUE" method="AEA" unit="$/nm" value=""/>
-					<doc_navigation calculate="TRUE" method="AEA" unit="$/nm" value=""/>
-					<doc_ground_handling calculate="TRUE" method="AEA" unit="$/nm" value=""/>
-					<doc_ground_noise calculate="TRUE" method="UE" unit="$/nm" value=""/>
-					<doc_ground_emissions calculate="TRUE" method="ICAO" unit="$/nm" value=""/>
-					<maintenance_airframe_labour_rate unit="$/hr" value=""/>
-					<maintenance_engine_labour_rate unit="$/hr" value=""/>					
+					<capital>
+						<life_span unit="years" value=""/>
+						<residual_value value="0.1"/> <!-- aircraft value percentage of the initial value at the end of life -->
+						<aircraft_price calculate="TRUE" method="SFORZA" unit="$" value=""/> 
+						<airframe_relative_spares_costs value="" /> <!-- default = 0.1 -->
+						<engines_relative_spares_costs value="" />	<!-- default = 0.3 -->
+						<interest value="5.4"/> <!-- percentage of the total investment -->
+						<insurance value="5.4"/> <!-- percentage of the sum of the airframe and engines prices  -->
+					</capital>
+					<crew>
+						<cabin_labour_rate unit="$/hr" value=""/>
+						<cockpit_labour_rate unit="$/hr" value=""/>
+					</crew>
+					<fuel>
+						<unit_price unit="$/kg" value=""/>
+					</fuel>
+					<charges>
+						<landing calculate="TRUE" method="AEA" unit="$/flight" value=""/>
+						<navigation calculate="TRUE" method="AEA" unit="$/flight" value=""/>
+						<ground_handling calculate="TRUE" method="AEA" unit="$/flight" value=""/>
+						<noise calculate="TRUE" method="UE" noise_constant="0" departure_threshold="0" arrival_threshold="0" unit="$/flight" value=""/>
+						<emissions_NOx calculate="TRUE" method="ICAO" emission_constant="0" unit="$/flight" value=""/>
+						<emissions_CO calculate="TRUE" method="ICAO" emission_constant="0" unit="$/flight" value=""/>
+						<emissions_HC calculate="TRUE" method="ICAO" emission_constant="0" unit="$/flight" value=""/>
+					</charges>
+					<maintenance>
+						<airframe_labour_rate unit="$/hr" value=""/>
+						<engine_labour_rate unit="$/hr" value=""/>					
+						<engine_price calculate="TRUE" method="SFORZA" unit="$" value=""/>
+					</maintenance>
 				</doc>
 			<!-- add ioc tags when available-->
 			</global_data>
