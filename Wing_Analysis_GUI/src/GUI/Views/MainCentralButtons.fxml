@@ -18,7 +18,7 @@
                         <Font name="AR ESSENCE" size="36.0" />
                      </font>
                   </Button>
-                  <Button fx:id="analysisButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" prefHeight="182.0" prefWidth="214.0" style="-fx-background-radius: 30;" text="Analysis">
+                  <Button fx:id="analysisButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#goToAnalyses" prefHeight="182.0" prefWidth="214.0" style="-fx-background-radius: 30;" text="Analysis">
                      <font>
                         <Font name="AR ESSENCE" size="36.0" />
                      </font>

@@ -4514,7 +4514,7 @@ public class ACPerformanceManager {
 							_theAircraft.getPowerPlant()
 							);
 
-					efficiency = MyArrayUtils.convertFromDoublePrimitive(
+					efficiency = MyArrayUtils.convertFromDoubleToPrimitive(
 							MyArrayUtils.convertToDoublePrimitive(
 									_efficiencyMapWeight.get(
 											"Weight = " + _dragListWeightParameterization.get(i).getWeight()
@@ -4566,17 +4566,17 @@ public class ACPerformanceManager {
 				List<String> legendAltitudes_Imperial = new ArrayList<String>();
 
 				for (int i=0; i<_altitudeListCruise.size(); i++) {
-					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
+					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
-					dragAndThrustAltitudes_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getDrag()));
+					dragAndThrustAltitudes_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListAltitudeParameterization.get(i).getDrag()));
 					dragAndThrustAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getDrag())
 									.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 									.toArray()
@@ -4586,17 +4586,17 @@ public class ACPerformanceManager {
 					legendAltitudes_Imperial.add("Drag at " + Amount.valueOf(_dragListAltitudeParameterization.get(i).getAltitude(), SI.METER).doubleValue(NonSI.FOOT) + " ft");
 				}
 				for (int i=0; i<_altitudeListCruise.size(); i++) {
-					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
+					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_thrustListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
-					dragAndThrustAltitudes_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getThrust()));
+					dragAndThrustAltitudes_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListAltitudeParameterization.get(i).getThrust()));
 					dragAndThrustAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_thrustListAltitudeParameterization.get(i).getThrust())
 									.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 									.toArray()
@@ -4640,17 +4640,17 @@ public class ACPerformanceManager {
 				List<String> legendWeights = new ArrayList<String>();
 
 				for (int i=0; i<_weightListCruise.size(); i++) {
-					speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getSpeed()));
+					speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListWeightParameterization.get(i).getSpeed()));
 					speedWeightsParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
-					dragAndThrustWeights_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getDrag()));
+					dragAndThrustWeights_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListWeightParameterization.get(i).getDrag()));
 					dragAndThrustWeights_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getDrag())
 									.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 									.toArray()
@@ -4658,17 +4658,17 @@ public class ACPerformanceManager {
 							);
 					legendWeights.add("Drag at " + Math.round(_dragListWeightParameterization.get(i).getWeight()/9.81) + " kg");
 				}
-				speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getSpeed()));
+				speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListWeightParameterization.get(0).getSpeed()));
 				speedWeightsParameterization_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListWeightParameterization.get(0).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
-				dragAndThrustWeights_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getThrust()));
+				dragAndThrustWeights_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListWeightParameterization.get(0).getThrust()));
 				dragAndThrustWeights_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListWeightParameterization.get(0).getThrust())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 								.toArray()
@@ -4715,17 +4715,17 @@ public class ACPerformanceManager {
 				List<String> legendAltitudes_Imperial = new ArrayList<String>();
 
 				for (int i=0; i<_altitudeListCruise.size(); i++) {
-					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
+					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
-					powerNeededAndAvailableAltitudes_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListAltitudeParameterization.get(i).getPower()));
+					powerNeededAndAvailableAltitudes_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListAltitudeParameterization.get(i).getPower()));
 					powerNeededAndAvailableAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getPower())
 									.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 									.toArray()
@@ -4735,17 +4735,17 @@ public class ACPerformanceManager {
 					legendAltitudes_Imperial.add("Power needed at " + Amount.valueOf(_dragListAltitudeParameterization.get(i).getAltitude(), SI.METER).doubleValue(NonSI.FOOT) + " ft");
 				}
 				for (int i=0; i<_altitudeListCruise.size(); i++) {
-					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
+					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_thrustListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
-					powerNeededAndAvailableAltitudes_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListAltitudeParameterization.get(i).getPower()));
+					powerNeededAndAvailableAltitudes_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListAltitudeParameterization.get(i).getPower()));
 					powerNeededAndAvailableAltitudes_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_thrustListAltitudeParameterization.get(i).getPower())
 									.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 									.toArray()
@@ -4790,17 +4790,17 @@ public class ACPerformanceManager {
 				List<String> legendWeights = new ArrayList<String>();
 
 				for (int i=0; i<_weightListCruise.size(); i++) {
-					speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getSpeed()));
+					speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListWeightParameterization.get(i).getSpeed()));
 					speedWeightsParameterization_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
-					powerNeededAndAvailableWeights_SI.add(MyArrayUtils.convertFromDoublePrimitive(_dragListWeightParameterization.get(i).getPower()));
+					powerNeededAndAvailableWeights_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListWeightParameterization.get(i).getPower()));
 					powerNeededAndAvailableWeights_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getPower())
 									.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 									.toArray()
@@ -4808,17 +4808,17 @@ public class ACPerformanceManager {
 							);
 					legendWeights.add("Power needed at " + Math.round(_dragListWeightParameterization.get(i).getWeight()/9.81) + " kg");
 				}
-				speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getSpeed()));
+				speedWeightsParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListWeightParameterization.get(0).getSpeed()));
 				speedWeightsParameterization_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListWeightParameterization.get(0).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
-				powerNeededAndAvailableWeights_SI.add(MyArrayUtils.convertFromDoublePrimitive(_thrustListWeightParameterization.get(0).getPower()));
+				powerNeededAndAvailableWeights_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListWeightParameterization.get(0).getPower()));
 				powerNeededAndAvailableWeights_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListWeightParameterization.get(0).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 								.toArray()
@@ -4971,26 +4971,26 @@ public class ACPerformanceManager {
 							).getSpeedOfSound(); 
 					
 					speedListAltitudeParameterization_TAS_SI.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									_dragListAltitudeParameterization.get(i).getSpeed()
 									)
 							);
 					speedListAltitudeParameterization_TAS_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
 					speedListAltitudeParameterization_CAS_SI.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> x*Math.sqrt(sigma))
 									.toArray()
 									)
 							);
 					speedListAltitudeParameterization_CAS_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> x*Math.sqrt(sigma))
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
@@ -4998,14 +4998,14 @@ public class ACPerformanceManager {
 									)
 							);
 					machListAltitudeParameterization.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListAltitudeParameterization.get(i).getSpeed())
 									.map(x -> x/speedOfSound)
 									.toArray()
 									)
 							);
 					efficiencyListAltitudeParameterization.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									MyArrayUtils.convertToDoublePrimitive(
 											_efficiencyMapAltitude.get(
 													"Altitude = " + _dragListAltitudeParameterization.get(i).getAltitude()
@@ -5098,26 +5098,26 @@ public class ACPerformanceManager {
 							).getSpeedOfSound(); 
 					
 					speedListWeightParameterization_TAS_SI.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									_dragListWeightParameterization.get(i).getSpeed()
 									)
 							);
 					speedListWeightParameterization_TAS_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getSpeed())
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 									.toArray()
 									)
 							);
 					speedListWeightParameterization_CAS_SI.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getSpeed())
 									.map(x -> x*Math.sqrt(sigma))
 									.toArray()
 									)
 							);
 					speedListWeightParameterization_CAS_Imperial.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getSpeed())
 									.map(x -> x*Math.sqrt(sigma))
 									.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
@@ -5125,14 +5125,14 @@ public class ACPerformanceManager {
 									)
 							);
 					machListWeightParameterization.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									Arrays.stream(_dragListWeightParameterization.get(i).getSpeed())
 									.map(x -> x/speedOfSound)
 									.toArray()
 									)
 							);
 					efficiencyListWeightParameterization.add(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									MyArrayUtils.convertToDoublePrimitive(
 											_efficiencyMapWeight.get(
 													"Weight = " + _dragListWeightParameterization.get(i).getWeight()

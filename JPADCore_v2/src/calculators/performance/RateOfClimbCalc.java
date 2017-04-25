@@ -71,7 +71,7 @@ public class RateOfClimbCalc {
 							rc[pa] = (powerAvailable[pa] - powerRequired[pa])/weight[w]; 
 						}
 						
-						rcMax = MyArrayUtils.getMax(MyArrayUtils.convertFromDoublePrimitive(rc));
+						rcMax = MyArrayUtils.getMax(MyArrayUtils.convertFromDoubleToPrimitive(rc));
 						int rcMaxSpeedIndex = MyArrayUtils.getIndexOfMax(rc);
 						rcMaxSpeed = speed[rcMaxSpeedIndex];
 

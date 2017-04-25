@@ -28,7 +28,7 @@ public class D3PlotterClass {
 		//--------------------------------------------------
 		// get data vectors from wing discretization
 		//--------------------------------------------------
-		List<Amount<Length>> vY = theInputTree.getyDimensionalDistribution();
+		List<Amount<Length>> vY = theInputTree.getyDimensionalDistributionInput();
 		int nY = vY.size();
 		List<Amount<Length>> vChords = theInputTree.getChordDistribution();
 		List<Amount<Length>> vXle = theInputTree.getxLEDistribution();

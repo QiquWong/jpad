@@ -786,7 +786,7 @@ public class LiftCalc {
 		boolean found = false;
 
 		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-2.), SI.RADIAN);
-		Amount<Angle> alphaEnd = Amount.valueOf(toRadians(28.), SI.RADIAN);
+		Amount<Angle> alphaEnd = Amount.valueOf(toRadians(32.), SI.RADIAN);
 		int _numberOfAlpha = 15; 
 		MyArray alphaArray = new MyArray();
 		alphaArray.setDouble(MyArrayUtils.linspace(

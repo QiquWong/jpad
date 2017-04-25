@@ -10,13 +10,18 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.eclipse.ui.internal.keys.AlphabeticModifierKeyComparator;
 import org.jscience.physics.amount.Amount;
 
+import GUI.Main;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
+import standaloneutils.customdata.MyArray;
 
 public class InputOutputTree {
 	//------------------------------------------------------------------------------------------
@@ -24,72 +29,64 @@ public class InputOutputTree {
 
 	// INPUT
 
-	private Amount<Angle> alphaCurrent,
-	alphaInitial,
-	alphaFinal,
-	sweepLE;
-
 	private Amount<Length> altitude;
-
-	private Amount<Area> surface;
-
-	private double  meanThickness,
-	machNumber,
-	aspectRatio,
-	adimensionalKinkStation;
-
-	private int numberOfAlpha,
-	numberOfPointSemispan,
-	numberOfSections;
-
-	private AirfoilFamilyEnum meanAirfoilFamily;
-	private List<Amount<Length>> chordDistribution,
-	xLEDistribution, yDimensionalDistribution;
+	private double machNumber;
 	
-	private List<Amount<Angle>>
-	dihedralDistribution,
-	twistDistribution,
-	alphaZeroLiftDistribution,
-	alphaStarDistribution;
+	private Amount<Area> surface;
+	private double aspectRatio;
+	private int numberOfPointSemispan;
+	private double adimensionalKinkStation;
+	private AirfoilFamilyEnum meanAirfoilFamily;
+	private double  meanThickness;
+	
+	private int numberOfSections;
+	private static List<Double> yAdimensionalStationInput;
+	private List<Amount<Length>> chordDistribution;
+	private List<Amount<Length>> xLEDistribution;
+	private List<Amount<Angle>> twistDistribution,
+								alphaZeroLiftDistribution,
+								alphaStarDistribution;
+	private List<Double> maximumliftCoefficientDistribution;
+	
+	
+	//--------------analyses input
+	List<Amount<Angle>> alphaArrayLiftDistribution, alphaArrayLiftCurve;
+	
+	
+	// DERIVED INPUT
+	private List<Amount<Length>> yDimensionalDistributionInput;
+	private List<Amount<Angle>> dihedralDistribution;
+	
+	//-------------distributions
+	private List<Double> yAdimensionalDistributionSemiSpan;
+	private List<Amount<Length>> yDimensionalDistributionSemiSpan, 
+							     chordDistributionSemiSpan,
+							     xLEDistributionSemiSpan;
+	private List<Amount<Angle>> twistDistributionSemiSpan,
+								alphaZeroLiftDistributionSemiSpan,
+								alphaStarDistributionSemiSpan,
+								dihedralDistributionSemiSpan;
+	private List<Double> maximumliftCoefficientDistributionSemiSpan;
 
 
-	private List<Double> maximumliftCoefficientDistribution,
-	yAdimensionalStationInput;
-
-
-	// OUTPUT 
-
-	private Amount<Length> span,
-	semiSpan;
-
-	private Amount<Angle> alphaZeroLift,
-	alphaStar,
-	alphaStall;
-
-	int numberOfAlphaCL = 50;
-
-	private double
-	cLZero,
-	cLAlpha,
-	cLStar,
-	cLMax,
-	deltaAlpha;
-
-	private List<Double[]> clVsEtaVectors; 
-
-	double [] cLVsAlphaVector, alphaVector, yStationsAdimensional;  // number of element = numberOfAlphaCL
-
-	double [] alphaDistributionArray;
+	//------------wing Data
+	private Amount<Length> span;
+	private Amount<Length> semiSpan;
+	
+	// OUTPUT
+	List<List<Double>> clDistributionCurves;
+	
+	Double cLAlphaDeg, cLAlphaRad;
+	Amount<Angle> alphaZeroLift, alphaStar, alphaStall, alphaMaxLinear;
+	Double cLZero, cLMax, cLStall, cLStar;
+	
+	List<Double> liftCoefficientCurve;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 
 	public InputOutputTree() {
 
-		alphaCurrent = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		alphaInitial = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		alphaFinal = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		sweepLE = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 
 		altitude = Amount.valueOf(0.0, SI.METER);
 
@@ -104,46 +101,107 @@ public class InputOutputTree {
 		alphaStarDistribution = new ArrayList<Amount<Angle>>();
 		maximumliftCoefficientDistribution = new ArrayList<Double>();
 		yAdimensionalStationInput = new ArrayList<Double>();
-
+		yDimensionalDistributionInput = new ArrayList<>();
+		
+		yAdimensionalDistributionSemiSpan = new ArrayList<>();
+		yDimensionalDistributionSemiSpan = new ArrayList<>(); 
+	    chordDistributionSemiSpan = new ArrayList<>(); 
+	    xLEDistributionSemiSpan = new ArrayList<>(); 
+	    twistDistributionSemiSpan = new ArrayList<>(); 
+		alphaZeroLiftDistributionSemiSpan = new ArrayList<>(); 
+		alphaStarDistributionSemiSpan = new ArrayList<>(); 
+		dihedralDistributionSemiSpan = new ArrayList<>(); 
+		maximumliftCoefficientDistributionSemiSpan = new ArrayList<>(); 
+		
 		machNumber = 0.0;
 		aspectRatio = 0.0;
 		adimensionalKinkStation = 0.0;
 		meanThickness = 0.0;
 
-		numberOfAlpha = 0;
 		numberOfPointSemispan = 0;
 		numberOfSections = 0;
+		
+		clDistributionCurves = new ArrayList<>();
+		
+		
+		cLAlphaDeg = 0.0;
+		cLAlphaRad = 0.0;
+		alphaZeroLift = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaStar = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaStall = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaMaxLinear = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		
+		cLZero = 0.0;
+		cLStar = 0.0;
+		cLMax = 0.0;
+		cLStall = 0.0;
+		
+		liftCoefficientCurve = new ArrayList<>();
 
-		cLVsAlphaVector = new double [numberOfAlphaCL];
-		alphaVector = new double [numberOfAlphaCL];
 	}
 
 	public void calculateDerivedData(){
-		yDimensionalDistribution = new ArrayList<>();
+		
+		
 		span = Amount.valueOf(
 				Math.sqrt(aspectRatio*surface.doubleValue(SI.SQUARE_METRE)),
 				SI.METER);
 		
+		semiSpan = span.divide(2);
+		
 		for (int i=0; i<numberOfSections; i++){
-			yDimensionalDistribution.add(i,
+			yDimensionalDistributionInput.add(i,
 					Amount.valueOf(yAdimensionalStationInput.get(i)*span.divide(2).doubleValue(SI.METER),
 							SI.METER));
 		}
+			
+			// distributions
+			
+			yAdimensionalDistributionSemiSpan = Main.convertDoubleArrayToListDouble(MyArrayUtils.linspaceDouble(
+					0,
+					1.,
+					numberOfPointSemispan
+					));
+			
+			yDimensionalDistributionSemiSpan = MyArrayUtils.convertDoubleArrayToListOfAmount(
+					MyArrayUtils.linspaceDouble(
+							0.*span.divide(2.).doubleValue(SI.METER),
+							1.*span.divide(2.).doubleValue(SI.METER),
+							numberOfPointSemispan
+							),
+					SI.METER);
+			
+			
+			xLEDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountLength(xLEDistribution);
+			chordDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountLength(chordDistribution);
+			twistDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(twistDistribution);;
+			alphaStarDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(alphaStarDistribution);
+			alphaZeroLiftDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(alphaZeroLiftDistribution);
+			maximumliftCoefficientDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanListDouble(maximumliftCoefficientDistribution);
+			
+			double[] dihedral = new double [numberOfPointSemispan];
+			for(int i=0; i<numberOfPointSemispan; i++)
+			 dihedral[i] = 0.0;
+			
+			dihedralDistributionSemiSpan = MyArrayUtils.convertDoubleArrayToListOfAmount(
+					dihedral,
+					NonSI.DEGREE_ANGLE);
+			
 	}
 
-	public void buildOutput(){
-		
-		yStationsAdimensional =  new double [numberOfPointSemispan];
-		clVsEtaVectors = new ArrayList<Double[]>();
-		alphaDistributionArray = new double [numberOfAlpha];
-	}
-	
+//	public void buildOutput(){
+//		
+//		yStationsAdimensional =  new double [numberOfPointSemispan];
+//		clVsEtaVectors = new ArrayList<Double[]>();
+//		alphaDistributionArray = new double [numberOfAlpha];
+//	}
+//	
 	public Double[][] getDiscretizedTopViewAsArray() {
 
 		Double[][] array = new Double[numberOfSections*2][2];
 		for(int i=0; i<numberOfSections; i++){
-			array[i][0] = yDimensionalDistribution.get(i).doubleValue(SI.METER);
-			array[2*numberOfSections-1-i][0]= yDimensionalDistribution.get(i).doubleValue(SI.METER); 
+			array[i][0] = yDimensionalDistributionInput.get(i).doubleValue(SI.METER);
+			array[2*numberOfSections-1-i][0]= yDimensionalDistributionInput.get(i).doubleValue(SI.METER); 
 			array[i][1] = xLEDistribution.get(i).doubleValue(SI.METER);
 			array[2*numberOfSections-1-i][1] = xLEDistribution.get(i).doubleValue(SI.METER)+chordDistribution.get(i).doubleValue(SI.METER);
 		}
@@ -151,394 +209,421 @@ public class InputOutputTree {
 		
 		return array;
 	}
+
+	public List<Amount<Angle>> calculateDiscretizedListAlongSemiSpanAmountAngle (
+			List<Amount<Angle>> inputList){
+				
+		List<Amount<Angle>> discretizedOutput = new ArrayList<>();
+		
+		MyArray inputArray = new MyArray(MyArrayUtils.convertListOfAmountTodoubleArray(inputList));
+		
+		discretizedOutput = MyArrayUtils.convertDoubleArrayToListOfAmount(
+				MyArray.createArray(
+				inputArray.interpolate(
+						MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistributionInput),
+						MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistributionSemiSpan))).toArray(),
+				inputList.get(0).getUnit());
+		
+		
+		return discretizedOutput;
+	}
 	
-
-
+	public List<Amount<Length>> calculateDiscretizedListAlongSemiSpanAmountLength (
+			List<Amount<Length>> inputList){
+				
+		List<Amount<Length>> discretizedOutput = new ArrayList<>();
+		
+		MyArray inputArray = new MyArray(MyArrayUtils.convertListOfAmountTodoubleArray(inputList));
+		
+		discretizedOutput = MyArrayUtils.convertDoubleArrayToListOfAmount(
+				MyArray.createArray(
+				inputArray.interpolate(
+						MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistributionInput),
+						MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistributionSemiSpan))).toArray(),
+				inputList.get(0).getUnit());
+		
+		return discretizedOutput;
+	}
+	
+	public List<Double> calculateDiscretizedListAlongSemiSpanListDouble (
+			List<Double> inputList){
+				
+		List<Double> discretizedOutput = new ArrayList<>();
+		
+		double [] inputDouble = new double [numberOfSections];
+		double [] outputDouble = new double [numberOfPointSemispan];
+		for ( int i=0; i<numberOfSections; i++){
+			inputDouble [i] = inputList.get(i);
+		}
+		
+	MyArray inputArray = new MyArray(inputDouble);
+		
+		outputDouble = 
+				inputArray.interpolate(
+						MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistributionInput),
+						MyArrayUtils.convertListOfAmountTodoubleArray(yDimensionalDistributionSemiSpan)).toArray();
+			
+		for(int i=0; i<numberOfPointSemispan; i++){
+			discretizedOutput.add(outputDouble[i]);
+		}
+		
+		return discretizedOutput;
+	}
+	
+	public void initializeData(){
+		clDistributionCurves = new ArrayList<>();
+	}
+	
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
-
-	public Amount<Angle> getAlphaCurrent() {
-		return alphaCurrent;
-	}
-
-
-	public void setAlphaCurrent(Amount<Angle> alphaCurrent) {
-		this.alphaCurrent = alphaCurrent;
-	}
-
-
-	public Amount<Angle> getAlphaInitial() {
-		return alphaInitial;
-	}
-
-
-	public void setAlphaInitial(Amount<Angle> alphaInitial) {
-		this.alphaInitial = alphaInitial;
-	}
-
-
-	public Amount<Angle> getAlphaFinal() {
-		return alphaFinal;
-	}
-
-
-	public void setAlphaFinal(Amount<Angle> alphaFinal) {
-		this.alphaFinal = alphaFinal;
-	}
-
-
-	public Amount<Angle> getSweepLE() {
-		return sweepLE;
-	}
-
-
-	public void setSweepLE(Amount<Angle> sweepLE) {
-		this.sweepLE = sweepLE;
-	}
-
-
+	
+	
 	public Amount<Length> getAltitude() {
 		return altitude;
 	}
-
-
-	public void setAltitude(Amount<Length> altitude) {
-		this.altitude = altitude;
-	}
-
-
-	public Amount<Area> getSurface() {
-		return surface;
-	}
-
-
-	public void setSurface(Amount<Area> surface) {
-		this.surface = surface;
-	}
-
 
 	public double getMachNumber() {
 		return machNumber;
 	}
 
-
-	public void setMachNumber(double machNumber) {
-		this.machNumber = machNumber;
+	public Amount<Area> getSurface() {
+		return surface;
 	}
-
 
 	public double getAspectRatio() {
 		return aspectRatio;
 	}
 
-
-	public void setAspectRatio(double aspectRatio) {
-		this.aspectRatio = aspectRatio;
+	public int getNumberOfPointSemispan() {
+		return numberOfPointSemispan;
 	}
-
 
 	public double getAdimensionalKinkStation() {
 		return adimensionalKinkStation;
 	}
 
-
-	public void setAdimensionalKinkStation(double adimensionalKinkStation) {
-		this.adimensionalKinkStation = adimensionalKinkStation;
+	public AirfoilFamilyEnum getMeanAirfoilFamily() {
+		return meanAirfoilFamily;
 	}
 
-
-	public int getNumberOfAlpha() {
-		return numberOfAlpha;
+	public double getMeanThickness() {
+		return meanThickness;
 	}
-
-
-	public void setNumberOfAlpha(int numberOfAlpha) {
-		this.numberOfAlpha = numberOfAlpha;
-	}
-
-
-	public int getNumberOfPointSemispan() {
-		return numberOfPointSemispan;
-	}
-
-
-	public void setNumberOfPointSemispan(int numberOfPointSemispan) {
-		this.numberOfPointSemispan = numberOfPointSemispan;
-	}
-
 
 	public int getNumberOfSections() {
 		return numberOfSections;
 	}
 
-
-	public void setNumberOfSections(int numberOfSections) {
-		this.numberOfSections = numberOfSections;
+	public List<Double> getyAdimensionalStationInput() {
+		return yAdimensionalStationInput;
 	}
-
-
-	public AirfoilFamilyEnum getMeanAirfoilFamily() {
-		return meanAirfoilFamily;
-	}
-
-
-	public void setMeanAirfoilFamily(AirfoilFamilyEnum meanAirfoilFamily) {
-		this.meanAirfoilFamily = meanAirfoilFamily;
-	}
-
 
 	public List<Amount<Length>> getChordDistribution() {
 		return chordDistribution;
 	}
 
-
-	public void setChordDistribution(List<Amount<Length>> chordDistribution) {
-		this.chordDistribution = chordDistribution;
-	}
-
-
 	public List<Amount<Length>> getxLEDistribution() {
 		return xLEDistribution;
 	}
-
-
-	public void setxLEDistribution(List<Amount<Length>> xLEDistribution) {
-		this.xLEDistribution = xLEDistribution;
-	}
-
-
-	public List<Amount<Angle>> getDihedralDistribution() {
-		return dihedralDistribution;
-	}
-
-
-	public void setDihedralDistribution(List<Amount<Angle>> dihedralDistribution) {
-		this.dihedralDistribution = dihedralDistribution;
-	}
-
 
 	public List<Amount<Angle>> getTwistDistribution() {
 		return twistDistribution;
 	}
 
-
-	public void setTwistDistribution(List<Amount<Angle>> twistDistribution) {
-		this.twistDistribution = twistDistribution;
-	}
-
-
 	public List<Amount<Angle>> getAlphaZeroLiftDistribution() {
 		return alphaZeroLiftDistribution;
-	}
-
-	public void setAlphaZeroLiftDistribution(List<Amount<Angle>> alphaZeroLiftDistribution) {
-		this.alphaZeroLiftDistribution = alphaZeroLiftDistribution;
 	}
 
 	public List<Amount<Angle>> getAlphaStarDistribution() {
 		return alphaStarDistribution;
 	}
 
-	public void setAlphaStarDistribution(List<Amount<Angle>> alphaStarDistribution) {
-		this.alphaStarDistribution = alphaStarDistribution;
-	}
-
 	public List<Double> getMaximumliftCoefficientDistribution() {
 		return maximumliftCoefficientDistribution;
 	}
 
-	public void setMaximumliftCoefficientDistribution(List<Double> maximumliftCoefficientDistribution) {
-		this.maximumliftCoefficientDistribution = maximumliftCoefficientDistribution;
+	public List<Amount<Angle>> getAlphaArrayLiftDistribution() {
+		return alphaArrayLiftDistribution;
+	}
+
+	public List<Amount<Angle>> getAlphaArrayLiftCurve() {
+		return alphaArrayLiftCurve;
+	}
+
+	public List<Amount<Length>> getyDimensionalDistributionInput() {
+		return yDimensionalDistributionInput;
+	}
+
+	public List<Amount<Angle>> getDihedralDistribution() {
+		return dihedralDistribution;
+	}
+
+	public List<Amount<Length>> getyDimensionalDistributionSemiSpan() {
+		return yDimensionalDistributionSemiSpan;
+	}
+
+	public List<Amount<Length>> getChordDistributionSemiSpan() {
+		return chordDistributionSemiSpan;
+	}
+
+	public List<Amount<Length>> getxLEDistributionSemiSpan() {
+		return xLEDistributionSemiSpan;
+	}
+
+	public List<Amount<Angle>> getTwistDistributionSemiSpan() {
+		return twistDistributionSemiSpan;
+	}
+
+	public List<Amount<Angle>> getAlphaZeroLiftDistributionSemiSpan() {
+		return alphaZeroLiftDistributionSemiSpan;
+	}
+
+	public List<Amount<Angle>> getAlphaStarDistributionSemiSpan() {
+		return alphaStarDistributionSemiSpan;
+	}
+
+	public List<Amount<Angle>> getDihedralDistributionSemiSpan() {
+		return dihedralDistributionSemiSpan;
+	}
+
+	public List<Double> getMaximumliftCoefficientDistributionSemiSpan() {
+		return maximumliftCoefficientDistributionSemiSpan;
 	}
 
 	public Amount<Length> getSpan() {
 		return span;
 	}
 
-
-	public void setSpan(Amount<Length> span) {
-		this.span = span;
+	public void setAltitude(Amount<Length> altitude) {
+		this.altitude = altitude;
 	}
 
-
-	public Amount<Length> getSemiSpan() {
-		return semiSpan;
+	public void setMachNumber(double machNumber) {
+		this.machNumber = machNumber;
 	}
 
-
-	public void setSemiSpan(Amount<Length> semiSpan) {
-		this.semiSpan = semiSpan;
+	public void setSurface(Amount<Area> surface) {
+		this.surface = surface;
 	}
 
-
-	public Amount<Angle> getAlphaZeroLift() {
-		return alphaZeroLift;
+	public void setAspectRatio(double aspectRatio) {
+		this.aspectRatio = aspectRatio;
 	}
 
-
-	public void setAlphaZeroLift(Amount<Angle> alphaZeroLift) {
-		this.alphaZeroLift = alphaZeroLift;
+	public void setNumberOfPointSemispan(int numberOfPointSemispan) {
+		this.numberOfPointSemispan = numberOfPointSemispan;
 	}
 
-
-	public Amount<Angle> getAlphaStar() {
-		return alphaStar;
+	public void setAdimensionalKinkStation(double adimensionalKinkStation) {
+		this.adimensionalKinkStation = adimensionalKinkStation;
 	}
 
-
-	public void setAlphaStar(Amount<Angle> alphaStar) {
-		this.alphaStar = alphaStar;
+	public void setMeanAirfoilFamily(AirfoilFamilyEnum meanAirfoilFamily) {
+		this.meanAirfoilFamily = meanAirfoilFamily;
 	}
-
-
-	public Amount<Angle> getAlphaStall() {
-		return alphaStall;
-	}
-
-
-	public void setAlphaStall(Amount<Angle> alphaStall) {
-		this.alphaStall = alphaStall;
-	}
-
-
-	public int getNumberOfAlphaCL() {
-		return numberOfAlphaCL;
-	}
-
-
-	public void setNumberOfAlphaCL(int numberOfAlphaCL) {
-		this.numberOfAlphaCL = numberOfAlphaCL;
-	}
-
-
-	public double getClAlpha() {
-		return cLAlpha;
-	}
-
-
-	public void setClAlpha(double clAlpha) {
-		this.cLAlpha = clAlpha;
-	}
-
-
-	public double getClStar() {
-		return cLStar;
-	}
-
-
-	public void setClStar(double clStar) {
-		this.cLStar = clStar;
-	}
-
-
-	public double getClMax() {
-		return cLMax;
-	}
-
-
-	public void setClMax(double clMax) {
-		this.cLMax = clMax;
-	}
-
-
-	public List<Double[]> getClVsEtaVectors() {
-		return clVsEtaVectors;
-	}
-
-
-	public void setClVsEtaVectors(List<Double[]> clVsEtaVectors) {
-		this.clVsEtaVectors = clVsEtaVectors;
-	}
-
-
-	public double[] getcLVsAlphaVector() {
-		return cLVsAlphaVector;
-	}
-
-
-	public List<Double> getyAdimensionalStationInput() {
-		return yAdimensionalStationInput;
-	}
-
-
-	public void setyAdimensionalStationInput(List<Double> yAdimensionalStationInput) {
-		this.yAdimensionalStationInput = yAdimensionalStationInput;
-	}
-
-
-	public void setcLVsAlphaVector(double[] cLVsAlphaVector) {
-		this.cLVsAlphaVector = cLVsAlphaVector;
-	}
-
-
-	public double getMeanThickness() {
-		return meanThickness;
-	}
-
 
 	public void setMeanThickness(double meanThickness) {
 		this.meanThickness = meanThickness;
 	}
 
-
-	public double getDeltaAlpha() {
-		return deltaAlpha;
+	public void setNumberOfSections(int numberOfSections) {
+		this.numberOfSections = numberOfSections;
 	}
 
-
-	public void setDeltaAlpha(double deltaAlpha) {
-		this.deltaAlpha = deltaAlpha;
+	public void setyAdimensionalStationInput(List<Double> yAdimensionalStationInput) {
+		this.yAdimensionalStationInput = yAdimensionalStationInput;
 	}
 
+	public void setChordDistribution(List<Amount<Length>> chordDistribution) {
+		this.chordDistribution = chordDistribution;
+	}
 
-	public double getcLZero() {
+	public void setxLEDistribution(List<Amount<Length>> xLEDistribution) {
+		this.xLEDistribution = xLEDistribution;
+	}
+
+	public void setTwistDistribution(List<Amount<Angle>> twistDistribution) {
+		this.twistDistribution = twistDistribution;
+	}
+
+	public void setAlphaZeroLiftDistribution(List<Amount<Angle>> alphaZeroLiftDistribution) {
+		this.alphaZeroLiftDistribution = alphaZeroLiftDistribution;
+	}
+
+	public void setAlphaStarDistribution(List<Amount<Angle>> alphaStarDistribution) {
+		this.alphaStarDistribution = alphaStarDistribution;
+	}
+
+	public void setMaximumliftCoefficientDistribution(List<Double> maximumliftCoefficientDistribution) {
+		this.maximumliftCoefficientDistribution = maximumliftCoefficientDistribution;
+	}
+
+	public void setAlphaArrayLiftDistribution(List<Amount<Angle>> alphaArrayLiftDistribution) {
+		this.alphaArrayLiftDistribution = alphaArrayLiftDistribution;
+	}
+
+	public void setAlphaArrayLiftCurve(List<Amount<Angle>> alphaArrayLiftCurve) {
+		this.alphaArrayLiftCurve = alphaArrayLiftCurve;
+	}
+
+	public void setyDimensionalDistributionInput(List<Amount<Length>> yDimensionalDistributionInput) {
+		this.yDimensionalDistributionInput = yDimensionalDistributionInput;
+	}
+
+	public void setDihedralDistribution(List<Amount<Angle>> dihedralDistribution) {
+		this.dihedralDistribution = dihedralDistribution;
+	}
+
+	public void setyDimensionalDistributionSemiSpan(List<Amount<Length>> yDimensionalDistributionSemiSpan) {
+		this.yDimensionalDistributionSemiSpan = yDimensionalDistributionSemiSpan;
+	}
+
+	public void setChordDistributionSemiSpan(List<Amount<Length>> chordDistributionSemiSpan) {
+		this.chordDistributionSemiSpan = chordDistributionSemiSpan;
+	}
+
+	public void setxLEDistributionSemiSpan(List<Amount<Length>> xLEDistributionSemiSpan) {
+		this.xLEDistributionSemiSpan = xLEDistributionSemiSpan;
+	}
+
+	public void setTwistDistributionSemiSpan(List<Amount<Angle>> twistDistributionSemiSpan) {
+		this.twistDistributionSemiSpan = twistDistributionSemiSpan;
+	}
+
+	public void setAlphaZeroLiftDistributionSemiSpan(List<Amount<Angle>> alphaZeroLiftDistributionSemiSpan) {
+		this.alphaZeroLiftDistributionSemiSpan = alphaZeroLiftDistributionSemiSpan;
+	}
+
+	public void setAlphaStarDistributionSemiSpan(List<Amount<Angle>> alphaStarDistributionSemiSpan) {
+		this.alphaStarDistributionSemiSpan = alphaStarDistributionSemiSpan;
+	}
+
+	public void setDihedralDistributionSemiSpan(List<Amount<Angle>> dihedralDistributionSemiSpan) {
+		this.dihedralDistributionSemiSpan = dihedralDistributionSemiSpan;
+	}
+
+	public void setMaximumliftCoefficientDistributionSemiSpan(List<Double> maximumliftCoefficientDistributionSemiSpan) {
+		this.maximumliftCoefficientDistributionSemiSpan = maximumliftCoefficientDistributionSemiSpan;
+	}
+
+	public void setSpan(Amount<Length> span) {
+		this.span = span;
+	}
+
+	public Amount<Length> getSemiSpan() {
+		return semiSpan;
+	}
+
+	public void setSemiSpan(Amount<Length> semiSpan) {
+		this.semiSpan = semiSpan;
+	}
+
+	public List<List<Double>> getClDistributionCurves() {
+		return clDistributionCurves;
+	}
+
+	public void setClDistributionCurves(List<List<Double>> clDistributionCurves) {
+		this.clDistributionCurves = clDistributionCurves;
+	}
+
+	public List<Double> getyAdimensionalDistributionSemiSpan() {
+		return yAdimensionalDistributionSemiSpan;
+	}
+
+	public void setyAdimensionalDistributionSemiSpan(List<Double> yAdimensionalDistributionSemiSpan) {
+		this.yAdimensionalDistributionSemiSpan = yAdimensionalDistributionSemiSpan;
+	}
+
+	public Double getcLAlphaDeg() {
+		return cLAlphaDeg;
+	}
+
+	public Double getcLAlphaRad() {
+		return cLAlphaRad;
+	}
+
+	public Amount<Angle> getAlphaZeroLift() {
+		return alphaZeroLift;
+	}
+
+	public Amount<Angle> getAlphaStar() {
+		return alphaStar;
+	}
+
+	public Amount<Angle> getAlphaStall() {
+		return alphaStall;
+	}
+
+	public Amount<Angle> getAlphaMaxLinear() {
+		return alphaMaxLinear;
+	}
+
+	public Double getcLZero() {
 		return cLZero;
 	}
 
+	public Double getcLMax() {
+		return cLMax;
+	}
 
-	public void setcLZero(double cLZero) {
+	public Double getcLStall() {
+		return cLStall;
+	}
+
+	public List<Double> getLiftCoefficientCurve() {
+		return liftCoefficientCurve;
+	}
+
+	public void setcLAlphaDeg(Double cLAlphaDeg) {
+		this.cLAlphaDeg = cLAlphaDeg;
+	}
+
+	public void setcLAlphaRad(Double cLAlphaRad) {
+		this.cLAlphaRad = cLAlphaRad;
+	}
+
+	public void setAlphaZeroLift(Amount<Angle> alphaZeroLift) {
+		this.alphaZeroLift = alphaZeroLift;
+	}
+
+	public void setAlphaStar(Amount<Angle> alphaStar) {
+		this.alphaStar = alphaStar;
+	}
+
+	public void setAlphaStall(Amount<Angle> alphaStall) {
+		this.alphaStall = alphaStall;
+	}
+
+	public void setAlphaMaxLinear(Amount<Angle> alphaMaxLinear) {
+		this.alphaMaxLinear = alphaMaxLinear;
+	}
+
+	public void setcLZero(Double cLZero) {
 		this.cLZero = cLZero;
 	}
 
-
-
-	public double[] getAlphaVector() {
-		return alphaVector;
+	public void setcLMax(Double cLMax) {
+		this.cLMax = cLMax;
 	}
 
-
-
-	public void setAlphaVector(double[] alphaVector) {
-		this.alphaVector = alphaVector;
+	public void setcLStall(Double cLStall) {
+		this.cLStall = cLStall;
 	}
 
-
-	public double[] getyStationsAdimensional() {
-		return yStationsAdimensional;
+	public void setLiftCoefficientCurve(List<Double> liftCoefficientCurve) {
+		this.liftCoefficientCurve = liftCoefficientCurve;
 	}
 
-
-	public void setyStationsAdimensional(double[] yStationsAdimensional) {
-		this.yStationsAdimensional = yStationsAdimensional;
+	public Double getcLStar() {
+		return cLStar;
 	}
 
-
-	public double[] getAlphaDistributionArray() {
-		return alphaDistributionArray;
+	public void setcLStar(Double cLStar) {
+		this.cLStar = cLStar;
 	}
+	
 
 
-	public void setAlphaDistributionArray(double[] alphaDistributionArray) {
-		this.alphaDistributionArray = alphaDistributionArray;
-	}
-
-	public List<Amount<Length>> getyDimensionalDistribution() {
-		return yDimensionalDistribution;
-	}
-
-	public void setyDimensionalDistribution(List<Amount<Length>> yDimensionalDistribution) {
-		this.yDimensionalDistribution = yDimensionalDistribution;
-	}
 
 
 }

@@ -6,9 +6,6 @@
         <operating_conditions>
                 <altitude unit="ft">8000</altitude>
                 <mach_number>0.171</mach_number>
-                <number_of_alpha>8</number_of_alpha>
-                <alpha_initial unit="°">-2.0</alpha_initial>
-                <alpha_final unit="°">5.0</alpha_final>
         </operating_conditions>
        <wing>
             <global>

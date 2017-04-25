@@ -2,9 +2,16 @@ package GUI;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import Calculator.InputOutputTree;
 import GUI.Views.Controllers;
+import GUI.Views.VaraiblesAnalyses;
 import GUI.Views.VariablesInputData;
 import GUI.Views.VariablesMainCentralButtons;
 import configuration.MyConfiguration;
@@ -12,6 +19,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -28,6 +36,7 @@ public class Main extends Application {
 	File inputFile;
 	static Stage newStageWindows;
 	static FXMLLoader loaderInputClass;
+	static InputOutputTree theInputTree;
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
@@ -120,6 +129,17 @@ public class Main extends Application {
 		theInputDataClass.writeAllData(theInputTree);
 	}
 	
+	public static void goToAnalyses() throws IOException{
+		loaderInputClass = new FXMLLoader();
+		loaderInputClass .setLocation(Main.class.getResource("Views/Analyses.fxml"));
+		
+		BorderPane centralItems = loaderInputClass .load();
+		mainLayout.setCenter(centralItems);
+		
+		VaraiblesAnalyses theAnalysesClass = loaderInputClass.getController();
+		theAnalysesClass.setTheInputOutputTree(theInputTree);
+	}
+	
 	public static void reStartNewAnalysis() throws IOException{
 		newStageWindows = new Stage();
 		
@@ -148,6 +168,50 @@ public class Main extends Application {
 		
 	}
 	
+	public static Double[] convertFromDoubleToPrimitive(double[] vec) {
+		
+		Double[] vec_D = new Double[vec.length];
+		
+		for (int i=0; i<vec.length; i++)
+			vec_D[i] = Double.valueOf(vec[i]);
+		
+		return vec_D;
+		
+	}
+	public static List<Double> convertDoubleArrayToListDouble(Double[] vec){ 
+
+		List<Double> list = new ArrayList<Double>();
+
+		for(int i=0; i<vec.length; i++)
+			list.add(vec[i]);
+		
+		return list;
+	}
+	
+	public static Unit recognizeUnit(ChoiceBox textUnit){
+
+		Unit unit = null;
+
+		
+		if (textUnit.getValue().toString().equalsIgnoreCase("m"))
+			unit = SI.METER;
+
+		if (textUnit.getValue().toString().equalsIgnoreCase("ft"))
+			unit = NonSI.FOOT;
+
+		if (textUnit.getValue().toString().equalsIgnoreCase("°"))
+			unit = NonSI.DEGREE_ANGLE;
+
+		if (textUnit.getValue().toString().equalsIgnoreCase("rad"))
+			unit = SI.RADIAN;
+		
+		if (textUnit.getValue().toString().equalsIgnoreCase("m²"))
+			unit = SI.SQUARE_METRE;
+		
+		
+		return unit;
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -166,5 +230,13 @@ public class Main extends Application {
 
 	public static void setNewStageWindows(Stage newStageWindows) {
 		Main.newStageWindows = newStageWindows;
+	}
+
+	public static InputOutputTree getTheInputTree() {
+		return theInputTree;
+	}
+
+	public static void setTheInputTree(InputOutputTree theInputTree) {
+		Main.theInputTree = theInputTree;
 	}
 }

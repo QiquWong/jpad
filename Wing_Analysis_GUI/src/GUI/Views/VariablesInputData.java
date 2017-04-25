@@ -34,6 +34,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -95,6 +96,7 @@ public class VariablesInputData {
 	ChoiceBox airfoilFamily;
 	@FXML
 	TextField maxThickness;
+
 
 	@FXML
 	TextField adimensionalStations1;
@@ -208,6 +210,7 @@ public class VariablesInputData {
 	ChoiceBox alphaZeroLiftUnits;
 	@FXML
 	ChoiceBox numberOfGivenSections;
+
 	
 	@FXML
 	Pane graphPane;
@@ -237,12 +240,6 @@ public class VariablesInputData {
 	private void initialize(){
 		altitudeUnits.setValue("m");
 		altitudeUnits.setItems(altitudeUnitsList);
-
-		alphaInitialUnits.setValue("°");
-		alphaInitialUnits.setItems(alphaInitialUnitsList);
-
-		alphaFinalUnits.setValue("°");
-		alphaFinalUnits.setItems(alphaFinalUnitsList);
 
 		surfaceUnits.setValue("m²");
 		surfaceUnits.setItems(surfaceUnitsList);
@@ -462,22 +459,13 @@ public class VariablesInputData {
 	}
 	@SuppressWarnings("unchecked")
 	public void ConfirmData(){
+		theInputTree = new InputOutputTree();
 
 		//data with units
 		theInputTree.setAltitude(
 				Amount.valueOf(
 						Double.parseDouble(altitude.getText()),
-						recognizeUnit(altitudeUnits))); 
-
-		theInputTree.setAlphaInitial(
-				Amount.valueOf(
-						Double.parseDouble(alphaInitial.getText()),
-						recognizeUnit(alphaInitialUnits))); 
-
-		theInputTree.setAlphaFinal(
-				Amount.valueOf(
-						Double.parseDouble(alphaFinal.getText()),
-						recognizeUnit(alphaFinalUnits))); 
+						main.recognizeUnit(altitudeUnits))); 
 
 
 		theInputTree.setSurface(
@@ -488,7 +476,6 @@ public class VariablesInputData {
 
 		// data without units
 		theInputTree.setMachNumber(Double.parseDouble(machNumber.getText()));
-		theInputTree.setNumberOfAlpha((int)Double.parseDouble(numberOfAlphas.getText()));
 		theInputTree.setAspectRatio(Double.parseDouble(aspectRatio.getText()));
 		theInputTree.setNumberOfPointSemispan((int)Double.parseDouble(numberOfPoints.getText()));
 		theInputTree.setAdimensionalKinkStation(Double.parseDouble(adimensionalKinkStation.getText()));
@@ -531,7 +518,7 @@ public class VariablesInputData {
 		//CHORDS
 		List<Amount<Length>> inputListAmount= new ArrayList<>();
 
-		Unit unit = recognizeUnit(chordsUnits);
+		Unit unit = main.recognizeUnit(chordsUnits);
 
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(chords1.getText()), unit));
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(chords2.getText()), unit));
@@ -546,7 +533,7 @@ public class VariablesInputData {
 		//XLE
 		inputListAmount= new ArrayList<>();
 
-		unit = recognizeUnit(xleUnits);
+		unit = main.recognizeUnit(xleUnits);
 
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(xle1.getText()), unit));
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(xle2.getText()), unit));
@@ -561,7 +548,7 @@ public class VariablesInputData {
 		//TWIST
 		List<Amount<Angle>> inputListAmountAngle = new ArrayList<>();
 
-		unit = recognizeUnit(twistUnits);
+		unit = main.recognizeUnit(twistUnits);
 
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist1.getText()), unit));
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist2.getText()), unit));
@@ -576,7 +563,7 @@ public class VariablesInputData {
 		//ALPHAZEROLIFT
 		inputListAmountAngle = new ArrayList<>();
 
-		unit = recognizeUnit(alphaZeroLiftUnits);
+		unit = main.recognizeUnit(alphaZeroLiftUnits);
 
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift1.getText()), unit));
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift2.getText()), unit));
@@ -591,7 +578,7 @@ public class VariablesInputData {
 		//ALPHA STAR
 		inputListAmountAngle = new ArrayList<>();
 
-		unit = recognizeUnit(alphaStarUnits);
+		unit = main.recognizeUnit(alphaStarUnits);
 
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar1.getText()), unit));
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar2.getText()), unit));
@@ -623,6 +610,8 @@ public class VariablesInputData {
 
 		goToAnalysisButton.setDisable(false);
 		saveButton.setDisable(false);
+		
+		main.setTheInputTree(theInputTree);
 	}
 
 	@FXML
@@ -641,16 +630,6 @@ public class VariablesInputData {
 		this.altitudeUnits.setValue(theInputTree.getAltitude().getUnit().toString());
 
 		this.machNumber.setText(Double.toString(theInputTree.getMachNumber()));
-
-		this.alphaInitial.setText(Double.toString(theInputTree.getAlphaInitial().doubleValue(
-				theInputTree.getAlphaInitial().getUnit())));
-		this.alphaInitialUnits.setValue(theInputTree.getAlphaInitial().getUnit().toString());
-
-		this.alphaFinal.setText(Double.toString(theInputTree.getAlphaFinal().doubleValue(
-				theInputTree.getAlphaFinal().getUnit())));
-		this.alphaFinalUnits.setValue(theInputTree.getAlphaFinal().getUnit().toString());
-		
-		this.numberOfAlphas.setText(Double.toString(theInputTree.getNumberOfAlpha()));
 		
 		this.surface.setText(Double.toString(theInputTree.getSurface().doubleValue(
 				theInputTree.getSurface().getUnit())));
@@ -794,29 +773,6 @@ public class VariablesInputData {
 
 	}
 	
-	public Unit recognizeUnit(ChoiceBox textUnit){
-
-		Unit unit = null;
-
-		
-		if (textUnit.getValue().toString().equalsIgnoreCase("m"))
-			unit = SI.METER;
-
-		if (textUnit.getValue().toString().equalsIgnoreCase("ft"))
-			unit = NonSI.FOOT;
-
-		if (textUnit.getValue().toString().equalsIgnoreCase("°"))
-			unit = NonSI.DEGREE_ANGLE;
-
-		if (textUnit.getValue().toString().equalsIgnoreCase("rad"))
-			unit = SI.RADIAN;
-		
-		if (textUnit.getValue().toString().equalsIgnoreCase("m²"))
-			unit = SI.SQUARE_METRE;
-		
-		
-		return unit;
-	}
 
 
 	@FXML

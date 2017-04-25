@@ -38,26 +38,6 @@ public class Reader {
 		double machNumber =  Double.parseDouble(reader.getXMLPropertiesByPath("//mach_number").get(0));
 		theVariables.getMachNumber().setText(Double.toString(machNumber));
 		
-		Amount<Angle> alphaInitial = (Amount<Angle>) reader.getXMLAmountWithUnitByPath("//alpha_initial");
-		Unit unitOfMeasurementAlphaInitial = alphaInitial.getUnit();
-		theVariables.getAlphaInitial().setText(Double.toString(alphaInitial.doubleValue(unitOfMeasurementAlphaInitial)));
-		if(unitOfMeasurementAlphaInitial.toString() == "°")
-		theVariables.getAlphaInitialUnits().setValue("deg");
-		else
-			theVariables.getAlphaInitialUnits().setValue(unitOfMeasurementAlphaInitial.toString());	
-
-		
-		Amount<Angle> alphaFinal = (Amount<Angle>) reader.getXMLAmountWithUnitByPath("//alpha_final");
-		Unit unitOfMeasurementAlphaFinal = alphaFinal.getUnit();
-		theVariables.getAlphaFinal().setText(Double.toString(alphaFinal.doubleValue(unitOfMeasurementAlphaFinal)));
-		if(unitOfMeasurementAlphaFinal.toString() == "°")
-			theVariables.getAlphaFinalUnits().setValue("deg");
-		else
-		theVariables.getAlphaFinalUnits().setValue(unitOfMeasurementAlphaFinal.toString());
-		
-		int numberOfAlphas =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_alpha").get(0));
-		theVariables.getNumberOfAlphas().setText(Double.toString(numberOfAlphas));
-		
 		Amount<Area> surface = (Amount<Area>) reader.getXMLAmountWithUnitByPath("//surface");
 		Unit unitOfMeasurementSurface = surface.getUnit();
 		theVariables.getSurface().setText(Double.toString( surface.doubleValue(unitOfMeasurementSurface)));
@@ -162,11 +142,6 @@ public class Reader {
 		
 		JPADStaticWriteUtils.writeSingleNode("altitude", input.getAltitude(), flightConditionsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("mach_number", input.getMachNumber(), flightConditionsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("number_of_alpha", input.getNumberOfAlpha(), flightConditionsElement, doc);
-		if (input.getNumberOfAlpha()!=0){
-		JPADStaticWriteUtils.writeSingleNode("alpha_initial", input.getAlphaInitial(), flightConditionsElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("alpha_final", input.getAlphaFinal(), flightConditionsElement, doc);
-		}
 				
 		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
 		rootElement.appendChild(wingDataElement);

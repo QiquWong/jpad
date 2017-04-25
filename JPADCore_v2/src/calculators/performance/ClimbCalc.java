@@ -651,28 +651,28 @@ public class ClimbCalc {
 
 			for (int i=0; i<_dragListAEO.size(); i++) {
 				speed_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(SI.METERS_PER_SECOND))
 								.toArray()
 								)
 						);
 				speed_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				dragAndThrustAEO_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getDrag())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(SI.NEWTON))
 								.toArray()
 								)
 						);
 				dragAndThrustAEO_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getDrag())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 								.toArray()
@@ -683,28 +683,28 @@ public class ClimbCalc {
 			}
 			for (int i=0; i<_thrustListAEO.size(); i++) {
 				speed_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(SI.METERS_PER_SECOND))
 								.toArray()
 								)
 						);
 				speed_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				dragAndThrustAEO_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getThrust())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(SI.NEWTON))
 								.toArray()
 								)
 						);
 				dragAndThrustAEO_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getThrust())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 								.toArray()
@@ -747,14 +747,14 @@ public class ClimbCalc {
 
 			for (int i=0; i<_dragListOEI.size(); i++) {
 				dragAndThrustOEI_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getDrag())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(SI.NEWTON))
 								.toArray()
 								)
 						);
 				dragAndThrustOEI_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getDrag())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 								.toArray()
@@ -763,14 +763,14 @@ public class ClimbCalc {
 			}
 			for (int i=0; i<_thrustListOEI.size(); i++) {
 				dragAndThrustOEI_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListOEI.get(i).getThrust())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(SI.NEWTON))
 								.toArray()
 								)
 						);
 				dragAndThrustOEI_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListOEI.get(i).getThrust())
 								.map(x -> Amount.valueOf(x, SI.NEWTON).doubleValue(NonSI.POUND_FORCE))
 								.toArray()
@@ -818,28 +818,28 @@ public class ClimbCalc {
 
 			for (int i=0; i<_dragListAEO.size(); i++) {
 				speed_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(SI.METERS_PER_SECOND))
 								.toArray()
 								)
 						);
 				speed_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				powerNeededAndAvailableAEO_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(SI.WATT))
 								.toArray()
 								)
 						);
 				powerNeededAndAvailableAEO_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 								.toArray()
@@ -850,28 +850,28 @@ public class ClimbCalc {
 			}
 			for (int i=0; i<_thrustListAEO.size(); i++) {
 				speed_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(SI.METERS_PER_SECOND))
 								.toArray()
 								)
 						);
 				speed_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				powerNeededAndAvailableAEO_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(SI.WATT))
 								.toArray()
 								)
 						);
 				powerNeededAndAvailableAEO_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListAEO.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 								.toArray()
@@ -914,14 +914,14 @@ public class ClimbCalc {
 
 			for (int i=0; i<_dragListOEI.size(); i++) {
 				powerNeededAndAvailableOEI_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(SI.WATT))
 								.toArray()
 								)
 						);
 				powerNeededAndAvailableOEI_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 								.toArray()
@@ -930,14 +930,14 @@ public class ClimbCalc {
 			}
 			for (int i=0; i<_thrustListOEI.size(); i++) {
 				powerNeededAndAvailableOEI_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListOEI.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(SI.WATT))
 								.toArray()
 								)
 						);
 				powerNeededAndAvailableOEI_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_thrustListOEI.get(i).getPower())
 								.map(x -> Amount.valueOf(x, SI.WATT).doubleValue(NonSI.HORSEPOWER))
 								.toArray()
@@ -995,26 +995,26 @@ public class ClimbCalc {
 						).getSpeedOfSound();
 				
 				speedListAltitudeParameterizationAEO_TAS_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								_dragListAEO.get(i).getSpeed()
 								)
 						);
 				speedListAltitudeParameterizationAEO_TAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				speedListAltitudeParameterizationAEO_CAS_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> x*Math.sqrt(sigma))
 								.toArray()
 								)
 						);
 				speedListAltitudeParameterizationAEO_CAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> x*Math.sqrt(sigma))
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
@@ -1022,14 +1022,14 @@ public class ClimbCalc {
 								)
 						);
 				machListAltitudeParameterizationAEO.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListAEO.get(i).getSpeed())
 								.map(x -> x/speedOfSound)
 								.toArray()
 								)
 						);
 				efficiencyListAltitudeParameterizationAEO.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.convertToDoublePrimitive(
 										_efficiencyMapAltitudeAEO.get(
 												"Altitude = " + _dragListAEO.get(i).getAltitude()
@@ -1128,26 +1128,26 @@ public class ClimbCalc {
 						).getSpeedOfSound();
 				
 				speedListAltitudeParameterizationOEI_TAS_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								_dragListOEI.get(i).getSpeed()
 								)
 						);
 				speedListAltitudeParameterizationOEI_TAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				speedListAltitudeParameterizationOEI_CAS_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getSpeed())
 								.map(x -> x*Math.sqrt(sigma))
 								.toArray()
 								)
 						);
 				speedListAltitudeParameterizationOEI_CAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getSpeed())
 								.map(x -> x*Math.sqrt(sigma))
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
@@ -1155,14 +1155,14 @@ public class ClimbCalc {
 								)
 						);
 				machListAltitudeParameterizationOEI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_dragListOEI.get(i).getSpeed())
 								.map(x -> x/speedOfSound)
 								.toArray()
 								)
 						);
 				efficiencyListAltitudeParameterizationOEI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.convertToDoublePrimitive(
 										_efficiencyMapAltitudeOEI.get(
 												"Altitude = " + _dragListOEI.get(i).getAltitude()
@@ -1265,16 +1265,16 @@ public class ClimbCalc {
 						_rcMapAEO.get(i).getAltitude()
 						).getSpeedOfSound();
 				
-				speedTAS_SI.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAEO.get(i).getSpeed()));
+				speedTAS_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapAEO.get(i).getSpeed()));
 				speedTAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_rcMapAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				speedCAS_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										MyArrayUtils.convertToDoublePrimitive(speedTAS_SI.get(i)),
 										Math.sqrt(sigma)
@@ -1282,7 +1282,7 @@ public class ClimbCalc {
 								)
 						);
 				speedCAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										Arrays.stream(MyArrayUtils.convertToDoublePrimitive(speedTAS_SI.get(i)))
 										.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
@@ -1292,16 +1292,16 @@ public class ClimbCalc {
 								)
 						);
 				mach.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										MyArrayUtils.convertToDoublePrimitive(speedTAS_SI.get(i)),
 										1/speedOfSound
 										)
 								)
 						);
-				rateOfClimbAEO_SI.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAEO.get(i).getRC()));
+				rateOfClimbAEO_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapAEO.get(i).getRC()));
 				rateOfClimbAEO_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_rcMapAEO.get(i).getRC())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(MyUnits.FOOT_PER_MINUTE))
 								.toArray()
@@ -1378,9 +1378,9 @@ public class ClimbCalc {
 			List<Double[]> rateOfClimbOEI_Imperial = new ArrayList<Double[]>();
 
 			for (int i=0; i<_rcMapOEI.size(); i++) {
-				rateOfClimbOEI_SI.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapOEI.get(i).getRC()));
+				rateOfClimbOEI_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapOEI.get(i).getRC()));
 				rateOfClimbOEI_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_rcMapOEI.get(i).getRC())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(MyUnits.FOOT_PER_MINUTE))
 								.toArray()
@@ -1470,16 +1470,16 @@ public class ClimbCalc {
 						_rcMapAEO.get(i).getAltitude()
 						).getSpeedOfSound();
 				
-				speedTAS_SI.add(MyArrayUtils.convertFromDoublePrimitive(_rcMapAEO.get(i).getSpeed()));
+				speedTAS_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_rcMapAEO.get(i).getSpeed()));
 				speedTAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								Arrays.stream(_rcMapAEO.get(i).getSpeed())
 								.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
 								.toArray()
 								)
 						);
 				speedCAS_SI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										MyArrayUtils.convertToDoublePrimitive(speedTAS_SI.get(i)),
 										Math.sqrt(sigma)
@@ -1487,7 +1487,7 @@ public class ClimbCalc {
 								)
 						);
 				speedCAS_Imperial.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										Arrays.stream(MyArrayUtils.convertToDoublePrimitive(speedTAS_SI.get(i)))
 										.map(x -> Amount.valueOf(x, SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT))
@@ -1497,7 +1497,7 @@ public class ClimbCalc {
 								)
 						);
 				mach.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										MyArrayUtils.convertToDoublePrimitive(speedTAS_SI.get(i)),
 										1/speedOfSound
@@ -1505,7 +1505,7 @@ public class ClimbCalc {
 								)
 						);
 				climbAngleAEO.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										_rcMapAEO.get(i).getGamma(),
 										57.3)
@@ -1582,7 +1582,7 @@ public class ClimbCalc {
 
 			for (int i=0; i<_rcMapOEI.size(); i++) 
 				climbAngleOEI.add(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyArrayUtils.scaleArray(
 										_rcMapOEI.get(i).getGamma(),
 										57.3)

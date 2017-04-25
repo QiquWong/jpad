@@ -508,7 +508,7 @@ public class LSAerodynamicsManager {
 					clArrayBreakPointsListWing,
 					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoublePrimitive(_etaStationDistribution)
+							MyArrayUtils.convertFromDoubleToPrimitive(_etaStationDistribution)
 							)
 					);
 		}
@@ -546,7 +546,7 @@ public class LSAerodynamicsManager {
 					cdArrayBreakPointsListWing,
 					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									_etaStationDistribution
 									)
 							)
@@ -587,7 +587,7 @@ public class LSAerodynamicsManager {
 					cmArrayBreakPointsListWing,
 					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									_etaStationDistribution
 									)
 							)

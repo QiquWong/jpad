@@ -282,7 +282,7 @@ public final class MyArrayUtils {
 		
 		for(int i=0; i<matrix.length; i++) {
 			
-			resultList.add(MyArrayUtils.convertFromDoublePrimitive(matrix[i]));
+			resultList.add(MyArrayUtils.convertFromDoubleToPrimitive(matrix[i]));
 			
 		}
 		
@@ -352,12 +352,12 @@ public final class MyArrayUtils {
 
 		return 
 				list.stream()
-				.map(x -> convertFromDoublePrimitive(x))
+				.map(x -> convertFromDoubleToPrimitive(x))
 				.collect(Collectors.toList());
 		
 	}
 	
-	public static Double[] convertFromDoublePrimitive(double[] vec) {
+	public static Double[] convertFromDoubleToPrimitive(double[] vec) {
 		
 		Double[] vec_D = new Double[vec.length];
 		
@@ -378,7 +378,7 @@ public final class MyArrayUtils {
 		return vec_d;
 	}
 	
-	public static List<Double> convertDoubleArrayToListDouble(Double[] vec){
+	public static List<Double> convertDoubleArrayToListDouble(Double[] vec){ 
 
 		List<Double> list = new ArrayList<Double>();
 

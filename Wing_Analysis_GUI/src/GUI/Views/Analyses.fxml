@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Views.VaraiblesAnalyses">
+   <center>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Load Distributions">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="310.0" layoutY="98.0" prefHeight="671.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                 <items>
+                                    <RadioButton fx:id="enableLoadAnalysis" mnemonicParsing="false" onAction="#enableLoadAnalysis" selected="true" text="Enable this Analysis">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="Abilita" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="disableLoadAnalysis" mnemonicParsing="false" onAction="#disableLoadAnalysis" text="Disable this Analysis" toggleGroup="$Abilita">
+                                       <padding>
+                                          <Insets left="15.0" />
+                                       </padding>
+                                    </RadioButton>
+                                    <Pane prefHeight="31.0" prefWidth="334.0" />
+                                    <Button mnemonicParsing="false" onAction="#performLoadAnalyses" prefHeight="31.0" prefWidth="225.0" text="Perform Load Distribution Analysis" textOverrun="CLIP">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Button>
+                                 </items>
+                              </ToolBar>
+                              <SplitPane dividerPositions="0.410913140311804" prefHeight="635.0" prefWidth="900.0">
+                                <items>
+                                    <ScrollPane>
+                                       <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="552.0" prefWidth="446.0">
+                                             <children>
+                                                <VBox layoutX="114.0" layoutY="61.0" prefHeight="631.0" prefWidth="358.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <Label text="Input">
+                                                         <font>
+                                                            <Font name="AR ESSENCE" size="18.0" />
+                                                         </font>
+                                                         <VBox.margin>
+                                                            <Insets left="5.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <Separator prefWidth="200.0">
+                                                         <VBox.margin>
+                                                            <Insets top="3.0" />
+                                                         </VBox.margin>
+                                                      </Separator>
+                                                   </children>
+                                                </VBox>
+                                                <GridPane layoutX="8.0" layoutY="91.0" prefHeight="132.0" prefWidth="336.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="115.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="221.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="alphaInitialLabel" disable="true" text="Alpha Initial" GridPane.rowIndex="1" />
+                                                      <Label fx:id="alphaFinalLabel" disable="true" text="Alpha Final" GridPane.rowIndex="2" />
+                                                      <Label fx:id="numberOfAlphasArrayLabel" disable="true" text="Number of alpha" GridPane.rowIndex="3" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <TextField fx:id="alphaInitial" disable="true" prefHeight="25.0" prefWidth="153.0" />
+                                                            <ChoiceBox fx:id="alphaInitialUnits" disable="true" prefHeight="25.0" prefWidth="64.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <TextField fx:id="alphaFinal" disable="true" prefHeight="25.0" prefWidth="153.0" />
+                                                            <ChoiceBox fx:id="alphaFinalUnits" disable="true" prefHeight="25.0" prefWidth="64.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                         <children>
+                                                            <TextField fx:id="numberOfAlphasArray" disable="true" prefHeight="25.0" prefWidth="219.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <VBox>
+                                                         <children>
+                                                            <Label fx:id="arrayLabel" disable="true" text="As Array">
+                                                               <font>
+                                                                  <Font size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Separator prefWidth="200.0" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane layoutX="8.0" layoutY="33.0" prefHeight="33.0" prefWidth="336.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.60000610351562" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="187.39999389648438" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="alphasInputLabel" text="Alphas Input Mode" />
+                                                      <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <RadioButton fx:id="alphasAsArray" mnemonicParsing="false" onAction="#disableInputAsValues" text="Array">
+                                                               <toggleGroup>
+                                                                  <ToggleGroup fx:id="alphaValues" />
+                                                               </toggleGroup>
+                                                            </RadioButton>
+                                                            <RadioButton fx:id="alphasAsInput" mnemonicParsing="false" onAction="#disableInputAsArray" text="Values" toggleGroup="$alphaValues" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane layoutX="9.0" layoutY="241.0" prefHeight="297.0" prefWidth="336.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="115.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="221.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="numberOfAlphasValuesLabel" disable="true" text="Number of Alpha" GridPane.rowIndex="1" />
+                                                      <Label fx:id="alphaAnglesValuesLabel" disable="true" text="Alpha Angles " GridPane.rowIndex="3" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <ChoiceBox fx:id="numberOfAlphasValues" disable="true" prefHeight="25.0" prefWidth="71.0" />
+                                                            <Button fx:id="okButton" disable="true" mnemonicParsing="false" onAction="#setNumberOfGivenSection" prefHeight="25.0" prefWidth="29.0" style="-fx-background-radius: 5;" text="ok">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                         <children>
+                                                            <TextField fx:id="alphaOne" disable="true" prefHeight="25.0" prefWidth="110.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <VBox>
+                                                         <children>
+                                                            <Label fx:id="valuesLabel" disable="true" text="By Input Values">
+                                                               <font>
+                                                                  <Font size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Separator prefWidth="200.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                         <children>
+                                                            <TextField fx:id="alphaTwo" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <TextField fx:id="alphaThree" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="65.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="alphaFour" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                      <TextField fx:id="alphaFive" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                      <TextField fx:id="alphaSix" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                      <Label fx:id="anglesUnitLabel" disable="true" text="Angles unit" GridPane.rowIndex="2" />
+                                                      <ChoiceBox fx:id="anglesUnit" disable="true" prefHeight="25.0" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </ScrollPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="556.0" prefWidth="627.0">
+                                       <children>
+                                          <VBox layoutX="202.0" layoutY="95.0" prefHeight="631.0" prefWidth="332.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Separator prefWidth="200.0" />
+                                                <Label text="Output">
+                                                   <VBox.margin>
+                                                      <Insets left="5.0" />
+                                                   </VBox.margin>
+                                                   <font>
+                                                      <Font name="AR ESSENCE" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator prefWidth="200.0" />
+                                                <SplitPane dividerPositions="0.7030201342281879" orientation="VERTICAL" prefHeight="615.0" prefWidth="534.0">
+                                                  <items>
+                                                    <AnchorPane fx:id="outputPaneLOAD">
+                                                         <children>
+                                                            <Pane fx:id="outputPaneFinalLOAD" prefHeight="295.0" prefWidth="444.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children></AnchorPane>
+                                                    <AnchorPane fx:id="outputPaneDataLOAD" minHeight="0.0" minWidth="0.0" prefHeight="410.0" prefWidth="532.0">
+                                                         <children>
+                                                            <GridPane fx:id="outputPaneTextLOAD" layoutX="69.0" layoutY="58.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1500.0" minWidth="-Infinity" prefWidth="380.0" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints maxHeight="94.5999755859375" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints maxHeight="272.0" minHeight="10.0" prefHeight="272.0" vgrow="SOMETIMES" />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <TextArea fx:id="outputTextLOAD" GridPane.rowIndex="1" />
+                                                               </children>
+                                                            </GridPane>
+                                                         </children></AnchorPane>
+                                                  </items>
+                                                </SplitPane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="Lift Curve &amp; Stall Path">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="310.0" layoutY="98.0" prefHeight="671.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0">
+                                 <items>
+                                    <RadioButton fx:id="enableLiftAnalysis" mnemonicParsing="false" onAction="#enableLoadAnalysisLift" selected="true" text="Enable this Analysis">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="Abilita1" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="disableLiftAnalysis" mnemonicParsing="false" onAction="#disableLoadAnalysisLift" text="Disable this Analysis" toggleGroup="$Abilita1">
+                                       <padding>
+                                          <Insets left="15.0" />
+                                       </padding>
+                                    </RadioButton>
+                                    <Pane prefHeight="31.0" prefWidth="334.0" />
+                                    <Button mnemonicParsing="false" onAction="#performLiftAnalyses" prefHeight="31.0" prefWidth="135.0" text="Perform Lift Analysis" textOverrun="CLIP">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Button>
+                                 </items>
+                              </ToolBar>
+                              <SplitPane dividerPositions="0.3997772828507795" prefHeight="635.0" prefWidth="900.0">
+                                 <items>
+                                    <ScrollPane>
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="343.0">
+                                             <children>
+                                                <VBox prefHeight="631.0" prefWidth="358.0">
+                                                   <children>
+                                                      <Label text="Input">
+                                                         <font>
+                                                            <Font name="AR ESSENCE" size="18.0" />
+                                                         </font>
+                                                         <VBox.margin>
+                                                            <Insets left="5.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <Separator prefWidth="200.0">
+                                                         <VBox.margin>
+                                                            <Insets top="3.0" />
+                                                         </VBox.margin>
+                                                      </Separator>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="410.0" prefWidth="532.0">
+                                                         <children>
+                                                            <VBox layoutX="7.0" layoutY="33.0">
+                                                               <children>
+                                                                  <HBox alignment="CENTER_LEFT" prefHeight="73.0" prefWidth="274.0">
+                                                                     <children>
+                                                                        <Label fx:id="valuesLabel111" prefHeight="20.0" prefWidth="145.0" text="Stall Path">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <RadioButton mnemonicParsing="false" prefHeight="17.0" prefWidth="65.0" text="yes" />
+                                                                        <RadioButton mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" text="no" />
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                            </VBox>
+                                                            <GridPane layoutX="7.0" layoutY="265.0" prefHeight="462.0" prefWidth="336.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="115.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="221.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label fx:id="numberOfAlphasValuesLabelLift" disable="true" text="Number of Alphas" GridPane.rowIndex="1" />
+                                                                  <Label fx:id="alphaAnglesValuesLabelLift" disable="true" text="Alpha Angles " GridPane.rowIndex="3" />
+                                                                  <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                     <children>
+                                                                        <ChoiceBox fx:id="numberOfAlphasValuesLift" disable="true" prefHeight="25.0" prefWidth="71.0" />
+                                                                        <Button fx:id="okButtonLift" disable="true" mnemonicParsing="false" onAction="#setNumberOfGivenSectionLift" prefHeight="25.0" prefWidth="29.0" style="-fx-background-radius: 5;" text="ok">
+                                                                           <HBox.margin>
+                                                                              <Insets left="10.0" />
+                                                                           </HBox.margin>
+                                                                        </Button>
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                                     <children>
+                                                                        <TextField fx:id="alphaOneLift" disable="true" prefHeight="25.0" prefWidth="110.0" />
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <VBox>
+                                                                     <children>
+                                                                        <Label fx:id="valuesLabelLift" disable="true" text="By Input Values">
+                                                                           <font>
+                                                                              <Font size="14.0" />
+                                                                           </font>
+                                                                        </Label>
+                                                                        <Separator prefWidth="200.0" />
+                                                                     </children>
+                                                                  </VBox>
+                                                                  <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                                     <children>
+                                                                        <TextField fx:id="alphaTwoLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" />
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <TextField fx:id="alphaThreeLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="65.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="alphaFourLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <TextField fx:id="alphaFiveLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                  <TextField fx:id="alphaSixLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                                  <VBox alignment="BASELINE_LEFT" GridPane.rowIndex="12" />
+                                                                  <HBox alignment="CENTER_LEFT" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
+                                                                     <padding>
+                                                                        <Insets left="3.0" />
+                                                                     </padding>
+                                                                  </HBox>
+                                                                  <TextField fx:id="alphaSevenLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                                  <TextField fx:id="alphaEightLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                                  <TextField fx:id="alphaNineLift" disable="true" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                                  <TextField fx:id="alphaTenLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                                  <Label fx:id="anglesUnitLabelLift" disable="true" text="Angles Unit" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox fx:id="anglesUnitLift" disable="true" prefHeight="25.0" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                               </children>
+                                                            </GridPane>
+                                                         </children></AnchorPane>
+                                                   </children>
+                                                </VBox>
+                                                <GridPane layoutX="8.0" layoutY="144.0" prefHeight="132.0" prefWidth="336.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="115.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="221.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="alphaInitialLabelLift" disable="true" text="Alpha Initial" GridPane.rowIndex="1" />
+                                                      <Label fx:id="alphaFinalLabelLift" disable="true" text="Alpha Final" GridPane.rowIndex="2" />
+                                                      <Label fx:id="numberOfAlphasArrayLabelLift" disable="true" text="Number of alphas" GridPane.rowIndex="3" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <TextField fx:id="alphaInitiallLift" disable="true" prefHeight="25.0" prefWidth="153.0" />
+                                                            <ChoiceBox fx:id="alphaInitialUnitsLift" disable="true" prefHeight="25.0" prefWidth="64.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                         <children>
+                                                            <TextField fx:id="alphaFinalLift" disable="true" prefHeight="25.0" prefWidth="153.0" />
+                                                            <ChoiceBox fx:id="alphaFinalUnitsLift" disable="true" prefHeight="25.0" prefWidth="64.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                         <children>
+                                                            <TextField fx:id="numberOfAlphasArrayLift" disable="true" prefHeight="25.0" prefWidth="219.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <VBox>
+                                                         <children>
+                                                            <Label fx:id="arrayLabelLift" disable="true" text="As Array">
+                                                               <font>
+                                                                  <Font size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Separator prefWidth="200.0" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane layoutX="1.0" layoutY="33.0" prefHeight="23.0" prefWidth="343.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.60000610351562" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="187.39999389648438" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints maxHeight="30.599990844726562" minHeight="-Infinity" prefHeight="20.600006103515625" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="21.399993896484375" minHeight="-Infinity" prefHeight="5.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="alphasInputLabelLift" text="Alphas Input Mode" />
+                                                      <HBox alignment="CENTER_LEFT" spacing="15.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <RadioButton fx:id="alphasAsArrayLift" mnemonicParsing="false" onAction="#disableInputAsValuesLift" text="Array">
+                                                               <toggleGroup>
+                                                                  <ToggleGroup fx:id="alphaValues1" />
+                                                               </toggleGroup>
+                                                            </RadioButton>
+                                                            <RadioButton fx:id="alphasAsInputLift" mnemonicParsing="false" onAction="#disableInputAsArrayLift" text="Values" toggleGroup="$alphaValues1" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Separator prefHeight="14.0" prefWidth="152.0" GridPane.rowIndex="1" />
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </ScrollPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="628.0" prefWidth="502.0">
+                                       <children>
+                                          <VBox layoutX="-53.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Separator prefWidth="200.0" />
+                                                <Label text="Output">
+                                                   <VBox.margin>
+                                                      <Insets left="5.0" />
+                                                   </VBox.margin>
+                                                   <font>
+                                                      <Font name="AR ESSENCE" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator prefWidth="200.0" />
+                                                <SplitPane dividerPositions="0.7030201342281879" orientation="VERTICAL" prefHeight="612.0" prefWidth="534.0">
+                                                  <items>
+                                                    <AnchorPane fx:id="outputPaneFinalLIFT" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="534.0" />
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                         <children>
+                                                            <GridPane fx:id="outputPaneTextLIFT" prefHeight="265.0" prefWidth="900.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1500.0" minWidth="-Infinity" prefWidth="380.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints maxHeight="94.5999755859375" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="272.0" prefHeight="272.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <TextArea fx:id="outputTextLIFT" GridPane.rowIndex="1" />
+                                                               </children>
+                                                            </GridPane>
+                                                         </children></AnchorPane>
+                                                  </items>
+                                                </SplitPane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
