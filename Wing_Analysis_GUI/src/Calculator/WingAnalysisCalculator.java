@@ -226,7 +226,7 @@ public class WingAnalysisCalculator {
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 
-		//aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+		aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		
 		theController.setRunLift(theController.getRunLift()+1);
 		
@@ -415,19 +415,18 @@ public class WingAnalysisCalculator {
 								)
 						);
 				
-//				double deltaYPercent =  aeroDatabaseReader
-//						.getDeltaYvsThickness(
-//							theInputOutputTree.getMeanThickness(),
-//							theInputOutputTree.getMeanAirfoilFamily()
-//								);
+				double deltaYPercent =  aeroDatabaseReader
+						.getDeltaYvsThickness(
+							theInputOutputTree.getMeanThickness(),
+							theInputOutputTree.getMeanAirfoilFamily()
+								);
 				
 				Amount<Angle> deltaAlpha = Amount.valueOf(
-						2.0,
-//						aeroDatabaseReader
-//						.getDAlphaVsLambdaLEVsDy(
-//								sweepLEDeg,
-//								deltaYPercent
-//								),
+						aeroDatabaseReader
+						.getDAlphaVsLambdaLEVsDy(
+								sweepLEDeg,
+								deltaYPercent
+								),
 						NonSI.DEGREE_ANGLE);
 				
 				theInputOutputTree.setAlphaStall(theInputOutputTree.getAlphaMaxLinear()
@@ -487,7 +486,17 @@ public class WingAnalysisCalculator {
 			textOutput.appendText("Alpha Array --> (deg)  " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutputTree.getAlphaArrayLiftCurve())));
 			textOutput.appendText("\nCL curve --> " + theInputOutputTree.getLiftCoefficientCurve());
 
-			textOutput.appendText("--------End of " + theController.getRunLift() + "st Run------------\n\n");
+			textOutput.appendText("\nAlpha zero Lift (deg) --> " + theInputOutputTree.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE));
+			textOutput.appendText("\nCL zero --> " + theInputOutputTree.getcLZero());
+			textOutput.appendText("\nCL alpha (1/deg) --> " + theInputOutputTree.getcLAlphaDeg());
+			textOutput.appendText("\nCL alpha (1/rad) --> " + theInputOutputTree.getcLAlphaRad());
+			textOutput.appendText("\nAlpha star (deg) --> " + theInputOutputTree.getAlphaStar().doubleValue(NonSI.DEGREE_ANGLE));
+			textOutput.appendText("\nCL star --> " + theInputOutputTree.getcLStar());
+			textOutput.appendText("\nAlpha max Linear (deg) --> " + theInputOutputTree.getAlphaMaxLinear().doubleValue(NonSI.DEGREE_ANGLE));
+			textOutput.appendText("\nCL max --> " + theInputOutputTree.getcLMax());
+			textOutput.appendText("\nAlpha stall (deg) --> " + theInputOutputTree.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE));
+			
+			textOutput.appendText("\n\n--------End of " + theController.getRunLift() + "st Run------------\n\n");
 
 
 	}

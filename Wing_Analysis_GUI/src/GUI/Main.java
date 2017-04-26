@@ -14,6 +14,7 @@ import GUI.Views.Controllers;
 import GUI.Views.VaraiblesAnalyses;
 import GUI.Views.VariablesInputData;
 import GUI.Views.VariablesMainCentralButtons;
+import GUI.Views.WarningController;
 import configuration.MyConfiguration;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,7 @@ public class Main extends Application {
 	private static Controllers theController;
 	File inputFile;
 	static Stage newStageWindows;
+	static Stage newStageWindowsWarning;
 	static FXMLLoader loaderInputClass;
 	static InputOutputTree theInputTree;
 	
@@ -162,6 +164,33 @@ public class Main extends Application {
 			
 	}
 	
+	public static void warningAreaMismatch(VariablesInputData theInputVariables) throws IOException{
+		newStageWindowsWarning = new Stage();
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("Views/AreaMismatch.fxml"));
+	
+		BorderPane newWindowBorder = loader.load();
+		
+		// devo definire una nuova finestra e settarci dentro questo nuovo border pane
+		
+		newStageWindowsWarning.setTitle("Wing Analysis");
+		newStageWindowsWarning.initModality(Modality.WINDOW_MODAL);
+		newStageWindowsWarning.initOwner(primaryStage);
+
+		WarningController theControllerClass = loader.getController();
+		theControllerClass.setTheVariablesInputClass(theInputVariables);
+		
+		// Ora devo settare la scena definita
+		
+		Scene scene = new Scene(newWindowBorder);
+		newStageWindowsWarning.setScene(scene);
+		newStageWindowsWarning.showAndWait();
+		
+	
+			
+	}
+	
 	public static void saveAndExit() throws IOException{
 		VariablesInputData theInputDataClass = loaderInputClass.getController();
 		theInputDataClass.saveInputFile();
@@ -238,5 +267,13 @@ public class Main extends Application {
 
 	public static void setTheInputTree(InputOutputTree theInputTree) {
 		Main.theInputTree = theInputTree;
+	}
+
+	public static Stage getNewStageWindowsWarning() {
+		return newStageWindowsWarning;
+	}
+
+	public static void setNewStageWindowsWarning(Stage newStageWindowsWarning) {
+		Main.newStageWindowsWarning = newStageWindowsWarning;
 	}
 }

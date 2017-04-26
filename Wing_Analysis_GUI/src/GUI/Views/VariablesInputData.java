@@ -57,7 +57,10 @@ public class VariablesInputData {
 	File inputFile;
 	File outputFile;
 	InputOutputTree theInputTree = new InputOutputTree();
-
+	Amount<Area> calculatedArea = Amount.valueOf(0., SI.SQUARE_METRE);
+	List<Amount<Length>> chordListTemp = new ArrayList<>();
+	List<Double> stationListTemp = new ArrayList<>();
+	
 	@FXML
 	RadioButton fromFile;	
 	@FXML
@@ -214,6 +217,7 @@ public class VariablesInputData {
 	
 	@FXML
 	Pane graphPane;
+	
 
 	// Initialize units box
 
@@ -458,7 +462,115 @@ public class VariablesInputData {
 		writeInputFile();
 	}
 	@SuppressWarnings("unchecked")
-	public void ConfirmData(){
+	public void ConfirmData() throws IOException{
+		
+		// check if surface or aspect ratio is changed or chords 
+		
+		if(!theInputTree.getSurface().equals(0.) & (!(theInputTree.getSpan() == null)) & !(theInputTree.getAspectRatio() == 0.) ){ // input tree is filled
+		
+			boolean checkChangingChords = false; // is true if some chord has been changes
+			
+			Unit unit = main.recognizeUnit(chordsUnits); 		
+			
+				if (theInputTree.getChordDistribution().get(0).doubleValue(SI.METER) != Amount.valueOf(Double.parseDouble(chords1.getText()), unit).doubleValue(SI.METER))
+					checkChangingChords = true;
+				if (theInputTree.getChordDistribution().get(1).doubleValue(SI.METER) != Amount.valueOf(Double.parseDouble(chords2.getText()), unit).doubleValue(SI.METER))
+					checkChangingChords = true;
+				if (theInputTree.getNumberOfSections() != (int)Double.parseDouble(numberOfGivenSections.getValue().toString())){
+					checkChangingChords = true;
+				}
+				else{
+				if (!chords3.getText().trim().isEmpty()){
+					if (theInputTree.getChordDistribution().get(2).doubleValue(SI.METER) != Amount.valueOf(Double.parseDouble(chords3.getText()), unit).doubleValue(SI.METER))
+						checkChangingChords = true;	
+				}
+				if (!chords4.getText().trim().isEmpty()){
+					if (theInputTree.getChordDistribution().get(3).doubleValue(SI.METER) != Amount.valueOf(Double.parseDouble(chords4.getText()), unit).doubleValue(SI.METER))
+						checkChangingChords = true;	
+				}
+				if (!chords5.getText().trim().isEmpty()){
+					if (theInputTree.getChordDistribution().get(4).doubleValue(SI.METER) != Amount.valueOf(Double.parseDouble(chords5.getText()), unit).doubleValue(SI.METER))
+						checkChangingChords = true;	
+				}
+				}
+			
+			
+	// if surface, or aspect ratio o one of the chords is changed		
+			if((Double.parseDouble(surface.getText()) != theInputTree.getSurface().doubleValue(SI.SQUARE_METRE)) ||
+				(Double.parseDouble(aspectRatio.getText()) != theInputTree.getAspectRatio()) ||
+				(checkChangingChords == true)
+				){
+				
+				Amount<Length> span = Amount.valueOf(
+						Math.sqrt(Double.parseDouble(aspectRatio.getText())*Double.parseDouble(surface.getText())),
+						SI.METER); // span calcolata con i nuovi dati messi
+				
+				// calcolo l'area con i dati messi delle corde
+				
+				List<Amount<Area>> panelsArea = new ArrayList<>();
+				Amount<Area> semiArea = Amount.valueOf(0., SI.SQUARE_METRE);
+				calculatedArea = Amount.valueOf(0., SI.SQUARE_METRE);
+				
+				int numb = (int)Double.parseDouble(numberOfGivenSections.getValue().toString());
+				
+				//metto le corde in una lista
+				chordListTemp = new ArrayList<>();
+
+				Unit unitChors = main.recognizeUnit(chordsUnits);
+
+				chordListTemp.add(Amount.valueOf(Double.parseDouble(chords1.getText()), unit));
+				chordListTemp.add(Amount.valueOf(Double.parseDouble(chords2.getText()), unit));
+				if (numb == 3 )
+					chordListTemp.add(Amount.valueOf(Double.parseDouble(chords3.getText()), unit));
+				if (numb == 4)
+					chordListTemp.add(Amount.valueOf(Double.parseDouble(chords4.getText()), unit));
+				if (numb == 5)
+					chordListTemp.add(Amount.valueOf(Double.parseDouble(chords5.getText()), unit));
+			
+				// e le stazioni 
+				stationListTemp = new ArrayList<>();
+				
+				stationListTemp.add(Double.parseDouble(adimensionalStations1.getText()));
+				stationListTemp.add(Double.parseDouble(adimensionalStations2.getText()));
+				if (numb == 3)
+					stationListTemp.add(Double.parseDouble(adimensionalStations3.getText()));
+				if (numb == 4)
+					stationListTemp.add(Double.parseDouble(adimensionalStations4.getText()));
+				if (numb == 5)
+					stationListTemp.add(Double.parseDouble(adimensionalStations5.getText()));	
+
+				// calcolo le aree dei pannelli
+				
+				for(int i=0; i<(int)Double.parseDouble(numberOfGivenSections.getValue().toString())-1; i++){
+					
+					panelsArea.add(
+							Amount.valueOf(
+									((chordListTemp.get(i).doubleValue(SI.METER) + chordListTemp.get(i+1).doubleValue(SI.METER)) *
+									((stationListTemp.get(i+1)-stationListTemp.get(i)) * span.divide(2).doubleValue(SI.METER))/2)
+											,
+									SI.SQUARE_METRE)
+							);
+					
+					semiArea = semiArea.plus(panelsArea.get(i));
+				}
+				
+				// l'area totale del ala è
+				calculatedArea = semiArea.times(2);
+				
+				// controllo se è diversa da quella immessa
+				
+				if( Math.abs((calculatedArea.doubleValue(SI.SQUARE_METRE) - (Double.parseDouble(surface.getText())))) > ((Double.parseDouble(surface.getText()))/100)){
+					
+					main.warningAreaMismatch(this);
+				}
+				
+				
+				
+			}
+			
+			
+		}
+			
 		theInputTree = new InputOutputTree();
 
 		//data with units
@@ -502,16 +614,17 @@ public class VariablesInputData {
 
 		// distributions
 
+		int numb = (int)Double.parseDouble(numberOfGivenSections.getValue().toString());
 		//STATIONS
 		List<Double> inputList= new ArrayList<>();
 
 		inputList.add(Double.parseDouble(adimensionalStations1.getText()));
 		inputList.add(Double.parseDouble(adimensionalStations2.getText()));
-		if (!adimensionalStations3.getText().trim().isEmpty())
+		if (numb == 3)
 			inputList.add(Double.parseDouble(adimensionalStations3.getText()));
-		if (!adimensionalStations4.getText().trim().isEmpty())
+		if (numb == 4)
 			inputList.add(Double.parseDouble(adimensionalStations4.getText()));
-		if (!adimensionalStations5.getText().trim().isEmpty())
+		if (numb == 5)
 			inputList.add(Double.parseDouble(adimensionalStations5.getText()));	
 		theInputTree.setyAdimensionalStationInput(inputList);
 
@@ -522,11 +635,11 @@ public class VariablesInputData {
 
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(chords1.getText()), unit));
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(chords2.getText()), unit));
-		if (!chords3.getText().trim().isEmpty())
+		if (numb == 3)
 			inputListAmount.add(Amount.valueOf(Double.parseDouble(chords3.getText()), unit));
-		if (!chords4.getText().trim().isEmpty())
+		if (numb == 4)
 			inputListAmount.add(Amount.valueOf(Double.parseDouble(chords4.getText()), unit));
-		if (!chords5.getText().trim().isEmpty())
+		if (numb == 5)
 			inputListAmount.add(Amount.valueOf(Double.parseDouble(chords5.getText()), unit));
 		theInputTree.setChordDistribution(inputListAmount);
 
@@ -537,11 +650,11 @@ public class VariablesInputData {
 
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(xle1.getText()), unit));
 		inputListAmount.add(Amount.valueOf(Double.parseDouble(xle2.getText()), unit));
-		if (!xle3.getText().trim().isEmpty())
+		if (numb == 3)
 			inputListAmount.add(Amount.valueOf(Double.parseDouble(xle3.getText()), unit));
-		if (!xle4.getText().trim().isEmpty())
+		if (numb == 4)
 			inputListAmount.add(Amount.valueOf(Double.parseDouble(xle4.getText()), unit));
-		if (!xle5.getText().trim().isEmpty())
+		if (numb == 5)
 			inputListAmount.add(Amount.valueOf(Double.parseDouble(xle5.getText()), unit));
 		theInputTree.setxLEDistribution(inputListAmount);
 
@@ -552,11 +665,11 @@ public class VariablesInputData {
 
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist1.getText()), unit));
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist2.getText()), unit));
-		if (!twist3.getText().trim().isEmpty())
+		if (numb == 3)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist3.getText()), unit));
-		if (!twist4.getText().trim().isEmpty())
+		if (numb == 4)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist4.getText()), unit));
-		if (!twist5.getText().trim().isEmpty())
+		if (numb == 5)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(twist5.getText()), unit));
 		theInputTree.setTwistDistribution((inputListAmountAngle));
 
@@ -567,11 +680,11 @@ public class VariablesInputData {
 
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift1.getText()), unit));
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift2.getText()), unit));
-		if (!alphaZeroLift3.getText().trim().isEmpty())
+		if (numb == 3)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift3.getText()), unit));
-		if (!alphaZeroLift4.getText().trim().isEmpty())
+		if (numb == 4)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift4.getText()), unit));
-		if (!alphaZeroLift5.getText().trim().isEmpty())
+		if (numb == 5)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaZeroLift5.getText()), unit));
 		theInputTree.setAlphaZeroLiftDistribution((inputListAmountAngle));
 		
@@ -582,11 +695,11 @@ public class VariablesInputData {
 
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar1.getText()), unit));
 		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar2.getText()), unit));
-		if (!alphaStar3.getText().trim().isEmpty())
+		if (numb == 3)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar3.getText()), unit));
-		if (!alphaStar4.getText().trim().isEmpty())
+		if (numb == 4)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar4.getText()), unit));
-		if (!alphaStar5.getText().trim().isEmpty())
+		if (numb == 5)
 			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(alphaStar5.getText()), unit));
 		theInputTree.setAlphaStarDistribution((inputListAmountAngle));
 		
@@ -596,11 +709,11 @@ public class VariablesInputData {
 
 		inputList.add(Double.parseDouble(clMax1.getText()));
 		inputList.add(Double.parseDouble(clMax2.getText()));
-		if (!clMax3.getText().trim().isEmpty())
+		if (numb == 3)
 			inputList.add(Double.parseDouble(clMax3.getText()));
-		if (!clMax4.getText().trim().isEmpty())
+		if (numb == 4)
 			inputList.add(Double.parseDouble(clMax4.getText()));
-		if (!clMax5.getText().trim().isEmpty())
+		if (numb == 5)
 			inputList.add(Double.parseDouble(clMax5.getText()));	
 		theInputTree.setMaximumliftCoefficientDistribution(inputList);
 		
@@ -1554,5 +1667,29 @@ public class VariablesInputData {
 
 	public void setClMaxList(List<TextField> clMaxList) {
 		this.clMaxList = clMaxList;
+	}
+
+	public Amount<Area> getCalculatedArea() {
+		return calculatedArea;
+	}
+
+	public void setCalculatedArea(Amount<Area> calculatedArea) {
+		this.calculatedArea = calculatedArea;
+	}
+
+	public List<Amount<Length>> getChordListTemp() {
+		return chordListTemp;
+	}
+
+	public void setChordListTemp(List<Amount<Length>> chordListTemp) {
+		this.chordListTemp = chordListTemp;
+	}
+
+	public List<Double> getStationListTemp() {
+		return stationListTemp;
+	}
+
+	public void setStationListTemp(List<Double> stationListTemp) {
+		this.stationListTemp = stationListTemp;
 	}
 }

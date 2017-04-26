@@ -40,7 +40,7 @@ public class InputOutputTree {
 	private double  meanThickness;
 	
 	private int numberOfSections;
-	private static List<Double> yAdimensionalStationInput;
+	private List<Double> yAdimensionalStationInput;
 	private List<Amount<Length>> chordDistribution;
 	private List<Amount<Length>> xLEDistribution;
 	private List<Amount<Angle>> twistDistribution,
