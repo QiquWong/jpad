@@ -45,6 +45,12 @@ public class VaraiblesAnalyses {
 	@FXML
 	RadioButton disableLiftAnalysis;
 	
+	@FXML
+	RadioButton yesStallPath;
+	
+	@FXML
+	RadioButton noStallPath;
+	
 	//LOAD
 	@FXML
 	TextField alphaInitial;
@@ -794,6 +800,8 @@ public class VaraiblesAnalyses {
 		
 		theInputOutputTree.setAlphaArrayLiftCurve(alphaLiftArray);
 		WingAnalysisCalculator.calculateLiftCurve(theInputOutputTree, this);
+	
+		
 	}
 
 
@@ -935,6 +943,38 @@ public class VaraiblesAnalyses {
 
 	public void setRunLift(int runLift) {
 		this.runLift = runLift;
+	}
+
+
+
+
+
+	public RadioButton getYesStallPath() {
+		return yesStallPath;
+	}
+
+
+
+
+
+	public RadioButton getNoStallPath() {
+		return noStallPath;
+	}
+
+
+
+
+
+	public void setYesStallPath(RadioButton yesStallPath) {
+		this.yesStallPath = yesStallPath;
+	}
+
+
+
+
+
+	public void setNoStallPath(RadioButton noStallPath) {
+		this.noStallPath = noStallPath;
 	}
 	
 }

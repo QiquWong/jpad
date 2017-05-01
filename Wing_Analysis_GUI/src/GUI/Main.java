@@ -180,6 +180,7 @@ public class Main extends Application {
 
 		WarningController theControllerClass = loader.getController();
 		theControllerClass.setTheVariablesInputClass(theInputVariables);
+		theControllerClass.initialization();
 		
 		// Ora devo settare la scena definita
 		

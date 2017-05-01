@@ -43,10 +43,13 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -58,6 +61,9 @@ import standaloneutils.customdata.MyArray;
 import writers.JPADStaticWriteUtils;
 
 public class WingAnalysisCalculator {
+	static NasaBlackwell theNasaBlackwellCalculator;
+	static TextArea textOutputLift;
+	
 
 	public static void calculateLoadDistributions(InputOutputTree theInputOutputTree, VaraiblesAnalyses theController){
 		
@@ -250,7 +256,7 @@ public class WingAnalysisCalculator {
 		
 		theInputOutputTree.initializeData();
 		
-		NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
+		theNasaBlackwellCalculator = new  NasaBlackwell(
 				theInputOutputTree.getSemiSpan().doubleValue(SI.METER), 
 				theInputOutputTree.getSurface().doubleValue(SI.SQUARE_METRE),
 				yDistributionMeter,
@@ -462,7 +468,50 @@ public class WingAnalysisCalculator {
 				yList.add(theInputOutputTree.getLiftCoefficientCurve());
 				
 				legend.add("curve");
-				
+			
+				TabPane newOutputCharts = new TabPane();
+				//lift
+				Tab Lift = new Tab();
+				Lift.setText("Lift Curve");
+				Pane LiftPane = new Pane();		
+				Lift.setContent(LiftPane);
+
+
+				//stall path 
+				Tab stallPath = new Tab();
+				stallPath.setText("Stall Path");
+				Pane stallPathPane = new Pane();
+
+				stallPath.setContent(stallPathPane);
+
+				newOutputCharts.getTabs().add(0, Lift);
+				newOutputCharts.getTabs().add(1, stallPath);
+
+
+				if(theController.getYesStallPath().isSelected()){
+					theController.getOutputPaneFinalLIFT().getChildren().clear();
+					
+					theController.getOutputPaneFinalLIFT().getChildren().add(newOutputCharts);
+
+					Node chart = displayChartNode(
+							"Lift Curve",
+							"alpha",
+							"CL", 
+							150, 
+							750,
+							false,
+							Side.RIGHT,
+							legend, 
+							xList, 
+							yList, 
+							newOutputCharts.getTabs().get(0).getContent()
+							);
+
+					LiftPane.getChildren().clear();
+					LiftPane.getChildren().add(chart);
+				}
+
+				if(theController.getNoStallPath().isSelected()){
 			displayChart(
 					"Lift Curve",
 					"alpha",
@@ -476,29 +525,36 @@ public class WingAnalysisCalculator {
 					yList, 
 					theController.getOutputPaneFinalLIFT().getChildren()
 					);
-			
+				}
+				
 			GridPane gridText = theController.getOutputPaneTextLIFT();
 			gridText.add(new Label("Text Output"), 0, 0);
-			TextArea textOutput = theController.getOutputTextLIFT();
 
-			textOutput.appendText("--------ANALYSIS NUMBER " + theController.getRunLift() + "------------\n");
-	
-			textOutput.appendText("Alpha Array --> (deg)  " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutputTree.getAlphaArrayLiftCurve())));
-			textOutput.appendText("\nCL curve --> " + theInputOutputTree.getLiftCoefficientCurve());
-
-			textOutput.appendText("\nAlpha zero Lift (deg) --> " + theInputOutputTree.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE));
-			textOutput.appendText("\nCL zero --> " + theInputOutputTree.getcLZero());
-			textOutput.appendText("\nCL alpha (1/deg) --> " + theInputOutputTree.getcLAlphaDeg());
-			textOutput.appendText("\nCL alpha (1/rad) --> " + theInputOutputTree.getcLAlphaRad());
-			textOutput.appendText("\nAlpha star (deg) --> " + theInputOutputTree.getAlphaStar().doubleValue(NonSI.DEGREE_ANGLE));
-			textOutput.appendText("\nCL star --> " + theInputOutputTree.getcLStar());
-			textOutput.appendText("\nAlpha max Linear (deg) --> " + theInputOutputTree.getAlphaMaxLinear().doubleValue(NonSI.DEGREE_ANGLE));
-			textOutput.appendText("\nCL max --> " + theInputOutputTree.getcLMax());
-			textOutput.appendText("\nAlpha stall (deg) --> " + theInputOutputTree.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE));
+			textOutputLift = theController.getOutputTextLIFT();
 			
-			textOutput.appendText("\n\n--------End of " + theController.getRunLift() + "st Run------------\n\n");
+			textOutputLift.appendText("--------ANALYSIS NUMBER " + theController.getRunLift() + "------------\n");
+	
+			textOutputLift.appendText("Alpha Array --> (deg)  " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutputTree.getAlphaArrayLiftCurve())));
+			textOutputLift.appendText("\nCL curve --> " + theInputOutputTree.getLiftCoefficientCurve());
 
+			textOutputLift.appendText("\nAlpha zero Lift (deg) --> " + theInputOutputTree.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE));
+			textOutputLift.appendText("\nCL zero --> " + theInputOutputTree.getcLZero());
+			textOutputLift.appendText("\nCL alpha (1/deg) --> " + theInputOutputTree.getcLAlphaDeg());
+			textOutputLift.appendText("\nCL alpha (1/rad) --> " + theInputOutputTree.getcLAlphaRad());
+			textOutputLift.appendText("\nAlpha star (deg) --> " + theInputOutputTree.getAlphaStar().doubleValue(NonSI.DEGREE_ANGLE));
+			textOutputLift.appendText("\nCL star --> " + theInputOutputTree.getcLStar());
+			textOutputLift.appendText("\nAlpha max Linear (deg) --> " + theInputOutputTree.getAlphaMaxLinear().doubleValue(NonSI.DEGREE_ANGLE));
+			textOutputLift.appendText("\nCL max --> " + theInputOutputTree.getcLMax());
+			textOutputLift.appendText("\nAlpha stall (deg) --> " + theInputOutputTree.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE));
+			
+			if(theController.getNoStallPath().isSelected()){
+			textOutputLift.appendText("\n\n--------End of " + theController.getRunLift() + "st Run------------\n\n");
 
+			}
+			
+			if ( theController.getYesStallPath().isSelected() ){
+				WingAnalysisCalculator.performStallPath(theInputOutputTree, theController, stallPathPane, newOutputCharts);
+			}
 	}
 	
 public static void displayChart(
@@ -547,6 +603,52 @@ public static void displayChart(
     chartPosition.add(lineChart);
 }
 
+public static Node displayChartNode(
+		String chartTitle, 
+		String xAxisName,
+		String yAxisName,
+		double minHeight,
+		double minWidth,
+		boolean legendVisible,
+		Side legendSide,
+		List<String> legendName,
+		List<List<Double>> xValues,
+		List<List<Double>> yValues,
+		Node chartPosition) {
+	
+    final NumberAxis xAxis = new NumberAxis();
+    final NumberAxis yAxis = new NumberAxis();
+     xAxis.setLabel(xAxisName);
+     yAxis.setLabel(yAxisName);
+     
+    final LineChart<Number,Number> lineChart = 
+            new LineChart<Number,Number>(xAxis,yAxis);
+   
+    lineChart.setTitle(chartTitle);
+             
+    lineChart.setMinHeight(minHeight);
+    lineChart.setMinWidth(minWidth);
+    lineChart.setLegendSide(legendSide);
+    lineChart.setLegendVisible(legendVisible);
+    
+    int numberOfSeries = xValues.size();
+    
+    for (int i=0; i<numberOfSeries; i++){
+    	XYChart.Series series = new XYChart.Series();
+    	series.setName(legendName.get(i));
+    	
+    	int numberOfValues = xValues.get(i).size();
+    	
+    	for (int ii=0; ii<numberOfValues; ii++){
+    		series.getData().add(new XYChart.Data(xValues.get(i).get(ii), yValues.get(i).get(ii)));
+    	}
+    	lineChart.getData().add(series);
+    }
+   
+    chartPosition = lineChart;
+    return chartPosition;
+    
+}
 public static Double[] calculateCLvsAlphaArray(
 		double cL0,
 		double cLmax,
@@ -631,5 +733,61 @@ public static Double[] calculateCLvsAlphaArray(
 	return cLArray;
 }
 
+public static void performStallPath(
+		InputOutputTree theInputOutputTree, 
+		VaraiblesAnalyses theController,
+		Pane stallPathPane,
+		TabPane newOutputCharts){
+
+	theInputOutputTree.setClMaxAirfoils(theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpan());
+	
+	theNasaBlackwellCalculator.calculate(theInputOutputTree.getAlphaMaxLinear());
+	
+	theInputOutputTree.setClMaxStallPath(
+			MyArrayUtils.convertDoubleArrayToListDouble(
+					MyArrayUtils.convertFromDoubleToPrimitive(
+			theNasaBlackwellCalculator.getClTotalDistribution().toArray())));
+	
+
+	
+	List<List<Double>> xList = new ArrayList<>();
+	List<List<Double>> yList = new ArrayList<>();
+	List<String> legend = new ArrayList<>();
+	
+	xList.add(theInputOutputTree.getyAdimensionalDistributionSemiSpan());
+	xList.add(theInputOutputTree.getyAdimensionalDistributionSemiSpan());
+	
+	yList.add(theInputOutputTree.getClMaxAirfoils());
+	yList.add(theInputOutputTree.getClMaxStallPath());
+	
+	legend.add("cl max airfoils");
+	legend.add("cl distribution at max alpha linear = " +  theInputOutputTree.getAlphaMaxLinear().doubleValue(NonSI.DEGREE_ANGLE) + " deg");
+	
+		Node chart = displayChartNode(
+				"Lift Curve",
+				"alpha",
+				"CL", 
+				150, 
+				750,
+				true,
+				Side.BOTTOM,
+				legend, 
+				xList, 
+				yList, 
+				newOutputCharts.getTabs().get(0).getContent()
+				);
+
+		stallPathPane.getChildren().clear();
+		stallPathPane.getChildren().add(chart);
+
+	
+	textOutputLift.appendText("\n\nSTALL PATH");
+	textOutputLift.appendText("\nEta Stations (deg) --> " + theInputOutputTree.getyAdimensionalDistributionSemiSpan().toString());
+	textOutputLift.appendText("\nCl max airfoils (deg) --> " + theInputOutputTree.getClMaxAirfoils().toString());
+	textOutputLift.appendText("\nEta Stations (deg) --> " + theInputOutputTree.getClMaxStallPath().toString());
+	textOutputLift.appendText("\n\n--------End of " + theController.getRunLift() + "st Run------------\n\n");
+
+
+ }
 
 }

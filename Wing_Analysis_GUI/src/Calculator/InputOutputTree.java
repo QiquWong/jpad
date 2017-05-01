@@ -82,6 +82,9 @@ public class InputOutputTree {
 	
 	List<Double> liftCoefficientCurve;
 	
+	List<Double> clMaxAirfoils;
+	List<Double> clMaxStallPath;
+	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -178,6 +181,8 @@ public class InputOutputTree {
 			alphaStarDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(alphaStarDistribution);
 			alphaZeroLiftDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(alphaZeroLiftDistribution);
 			maximumliftCoefficientDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanListDouble(maximumliftCoefficientDistribution);
+			
+			
 			
 			double[] dihedral = new double [numberOfPointSemispan];
 			for(int i=0; i<numberOfPointSemispan; i++)
@@ -620,6 +625,22 @@ public class InputOutputTree {
 
 	public void setcLStar(Double cLStar) {
 		this.cLStar = cLStar;
+	}
+
+	public List<Double> getClMaxAirfoils() {
+		return clMaxAirfoils;
+	}
+
+	public List<Double> getClMaxStallPath() {
+		return clMaxStallPath;
+	}
+
+	public void setClMaxAirfoils(List<Double> clMaxAirfoils) {
+		this.clMaxAirfoils = clMaxAirfoils;
+	}
+
+	public void setClMaxStallPath(List<Double> clMaxStallPath) {
+		this.clMaxStallPath = clMaxStallPath;
 	}
 	
 

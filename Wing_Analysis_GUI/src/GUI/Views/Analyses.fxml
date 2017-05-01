@@ -279,7 +279,7 @@
                                     </Button>
                                  </items>
                               </ToolBar>
-                              <SplitPane dividerPositions="0.3997772828507795" prefHeight="635.0" prefWidth="900.0">
+                              <SplitPane dividerPositions="0.3741648106904232" prefHeight="635.0" prefWidth="900.0">
                                  <items>
                                     <ScrollPane>
                                        <content>
@@ -311,8 +311,11 @@
                                                                               <Font size="14.0" />
                                                                            </font>
                                                                         </Label>
-                                                                        <RadioButton mnemonicParsing="false" prefHeight="17.0" prefWidth="65.0" text="yes" />
-                                                                        <RadioButton mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" text="no" />
+                                                                        <RadioButton fx:id="yesStallPath" mnemonicParsing="false" prefHeight="17.0" prefWidth="65.0" text="yes">
+                                                                           <toggleGroup>
+                                                                              <ToggleGroup fx:id="stallPath" />
+                                                                           </toggleGroup></RadioButton>
+                                                                        <RadioButton fx:id="noStallPath" mnemonicParsing="false" prefHeight="17.0" prefWidth="51.0" text="no" toggleGroup="$stallPath" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -478,7 +481,7 @@
                                                    </font>
                                                 </Label>
                                                 <Separator prefWidth="200.0" />
-                                                <SplitPane dividerPositions="0.7030201342281879" orientation="VERTICAL" prefHeight="612.0" prefWidth="534.0">
+                                                <SplitPane dividerPositions="0.6208053691275168" orientation="VERTICAL" prefHeight="612.0" prefWidth="534.0">
                                                   <items>
                                                     <AnchorPane fx:id="outputPaneFinalLIFT" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="534.0" />
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
