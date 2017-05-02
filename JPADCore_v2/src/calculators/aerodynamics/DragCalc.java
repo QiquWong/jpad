@@ -20,6 +20,7 @@ import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.WindshieldTypeEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -93,6 +94,58 @@ public class DragCalc {
 		return calculateDragAtSpeed(weight, altitude, surface, speed, cd0, 
 				LiftCalc.calculateLiftCoeff(weight, speed, surface, altitude), 
 				ar, e, sweepHalfChord, tcMax, airfoilType);
+	}
+	
+	public static Double calculateCD0Upsweep(  // page 67 Behind ADAS (Stanford)
+			Amount<Area> cylindricalSectionBaseArea,
+			Amount<Area> wingSurface,
+			Amount<Length> lengthTailCone,
+			Amount<Length> zCamber75
+			) {
+		return 0.075 
+				*(cylindricalSectionBaseArea.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE))
+				*(zCamber75.doubleValue(SI.METER)/(0.75*lengthTailCone.doubleValue(SI.METER)));
+	}
+	
+	public static Double calculateCD0Windshield(
+			MethodEnum method,
+			WindshieldTypeEnum windshieldType,
+			Amount<Area> windshieldArea,
+			Amount<Area> cylindricalSectionBaseArea,
+			Amount<Area> wingSurface
+			) {
+		
+		Double cDWindshield = 0.0;
+		Double deltaCd = 0.0;
+
+		switch(method){ // Behind ADAS page 101
+		case EMPIRICAL : {
+			cDWindshield = 0.07*windshieldArea.doubleValue(SI.SQUARE_METRE)/
+					wingSurface.doubleValue(SI.SQUARE_METRE);
+		} break;
+		case NACA : { // NACA report 730, poor results
+			cDWindshield =  0.08*cylindricalSectionBaseArea.doubleValue(SI.SQUARE_METRE)/
+					wingSurface.doubleValue(SI.SQUARE_METRE);
+		} break;
+		case ROSKAM : { // page 134 Roskam, part VI
+			switch(windshieldType){
+			case FLAT_PROTRUDING : {deltaCd = .016;}; break;
+			case FLAT_FLUSH : {deltaCd = .011;}; break;
+			case SINGLE_ROUND : {deltaCd = .002;}; break;
+			case SINGLE_SHARP : {deltaCd = .005;}; break;
+			case DOUBLE : {deltaCd = .002;}; break;
+			default : {deltaCd = 0.0;}; break;
+			}
+			cDWindshield = (deltaCd*cylindricalSectionBaseArea.doubleValue(SI.SQUARE_METRE))/
+					wingSurface.doubleValue(SI.SQUARE_METRE);
+		} break;
+		default : {
+			System.out.println("Inside default branch of calculateWindshield method, class MyFuselage");
+			cDWindshield =  0.0;
+		} break;
+		}
+
+		return cDWindshield;
 	}
 	
 	/**
@@ -187,7 +240,7 @@ public class DragCalc {
 	 * @param d
 	 * @return
 	 */
-	public static Double calculateCd0Base(MethodEnum method, Double cd0Parasite, 
+	public static Double calculateCD0Base(MethodEnum method, Double cd0Parasite, 
 			Double S_ref, Double dbase, Double d) { 
 		// The bigger dbase the lower CdBase
 		switch(method){

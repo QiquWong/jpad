@@ -31,7 +31,7 @@ import aircraft.components.fuselage.MyFuselageCurvesUpperView;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.WindshieldType;
+import configuration.enumerations.WindshieldTypeEnum;
 import processing.core.PVector;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
@@ -68,7 +68,7 @@ public class FuselageCreator implements IFuselageCreator {
 	//cylindrical section base area
 	private Amount<Area> areaC;
 	private Amount<Area> windshieldArea;
-	private WindshieldType windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
+	private WindshieldTypeEnum windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
 
 	//Wetted area estimate
 	private Amount<Area> sWetNose;
@@ -1743,18 +1743,18 @@ public class FuselageCreator implements IFuselageCreator {
 		Double dxNoseCapPercent = Double.valueOf(dxCapPercentNoseProp.get(0));
 		
 		@SuppressWarnings("unused")
-		WindshieldType windshieldType = null;
+		WindshieldTypeEnum windshieldType = null;
 		List<String>  windshieldTypeProp = reader.getXMLPropertiesByPath("//nose_trunk/windshield_type");
 		if(windshieldTypeProp.get(0).equalsIgnoreCase("DOUBLE"))
-			windshieldType = WindshieldType.DOUBLE;
+			windshieldType = WindshieldTypeEnum.DOUBLE;
 		if(windshieldTypeProp.get(0).equalsIgnoreCase("FLAT_FLUSH"))
-			windshieldType = WindshieldType.FLAT_FLUSH;
+			windshieldType = WindshieldTypeEnum.FLAT_FLUSH;
 		if(windshieldTypeProp.get(0).equalsIgnoreCase("FLAT_PROTRUDING"))
-			windshieldType = WindshieldType.FLAT_PROTRUDING;
+			windshieldType = WindshieldTypeEnum.FLAT_PROTRUDING;
 		if(windshieldTypeProp.get(0).equalsIgnoreCase("SINGLE_ROUND"))
-			windshieldType = WindshieldType.SINGLE_ROUND;
+			windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
 		if(windshieldTypeProp.get(0).equalsIgnoreCase("SINGLE_SHARP"))
-			windshieldType = WindshieldType.SINGLE_SHARP;
+			windshieldType = WindshieldTypeEnum.SINGLE_SHARP;
 		
 		Amount<Length> windshieldWidth = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_width");
 		Amount<Length> windshieldHeight = reader.getXMLAmountLengthByPath("//nose_trunk/windshield_height");
@@ -1851,7 +1851,7 @@ public class FuselageCreator implements IFuselageCreator {
 
 		private Amount<Length> _sectionCylinderHeight;
 
-		private WindshieldType _windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
+		private WindshieldTypeEnum _windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
 
 		// Distance of fuselage lowest part from ground
 		private Amount<Length> _heightFromGround;
@@ -1956,7 +1956,7 @@ public class FuselageCreator implements IFuselageCreator {
 				_dxNoseCapPercent = 0.0750;
 				_dxTailCapPercent = 0.020; // TODO: check this! 0.050
 
-				_windshieldType = WindshieldType.SINGLE_ROUND;
+				_windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
 				_windshieldHeight = Amount.valueOf(0.8, SI.METER);
 				_windshieldWidth = Amount.valueOf(2.5, SI.METER);
 
@@ -2004,7 +2004,7 @@ public class FuselageCreator implements IFuselageCreator {
 				_dxNoseCapPercent = 0.075;
 				_dxTailCapPercent = 0.020;
 
-				_windshieldType = WindshieldType.SINGLE_ROUND;
+				_windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
 				_windshieldHeight = Amount.valueOf(0.5, SI.METER);
 				_windshieldWidth = Amount.valueOf(2.6, SI.METER);
 
@@ -2052,7 +2052,7 @@ public class FuselageCreator implements IFuselageCreator {
 				_dxNoseCapPercent = 0.075; // TODO: Have to Check
 				_dxTailCapPercent = 0.020; // TODO: Have to Check
 
-				_windshieldType = WindshieldType.SINGLE_ROUND;
+				_windshieldType = WindshieldTypeEnum.SINGLE_ROUND;
 				_windshieldHeight = Amount.valueOf(0.5, SI.METER);
 				_windshieldWidth = Amount.valueOf(3.0, SI.METER);
 
@@ -2149,7 +2149,7 @@ public class FuselageCreator implements IFuselageCreator {
 			return this;
 		}
 		
-		public FuselageBuilder windshieldType(WindshieldType windshieldType) {
+		public FuselageBuilder windshieldType(WindshieldTypeEnum windshieldType) {
 			_windshieldType = windshieldType;
 			return this;
 		}
@@ -2427,11 +2427,11 @@ public class FuselageCreator implements IFuselageCreator {
 		this.windshieldArea = windshieldArea;
 	}
 
-	public WindshieldType getWindshieldType() {
+	public WindshieldTypeEnum getWindshieldType() {
 		return windshieldType;
 	}
 
-	public void setWindshieldType(WindshieldType windshieldType) {
+	public void setWindshieldType(WindshieldTypeEnum windshieldType) {
 		this.windshieldType = windshieldType;
 	}
 

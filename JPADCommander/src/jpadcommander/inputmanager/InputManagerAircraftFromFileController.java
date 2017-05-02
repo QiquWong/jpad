@@ -23,7 +23,7 @@ import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.WindshieldType;
+import configuration.enumerations.WindshieldTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
@@ -2533,15 +2533,15 @@ public class InputManagerAircraftFromFileController {
 
 		if(Main.getTheAircraft().getFuselage() != null) { 
 			if(Main.getChoiceBoxFuselageNoseWindshieldType() != null) {
-				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.DOUBLE)
+				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldTypeEnum.DOUBLE)
 					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(0);
-				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.FLAT_FLUSH)		
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldTypeEnum.FLAT_FLUSH)		
 					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(1);
-				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.FLAT_PROTRUDING)
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldTypeEnum.FLAT_PROTRUDING)
 					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(2);
-				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.SINGLE_ROUND)
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldTypeEnum.SINGLE_ROUND)
 					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(3);
-				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldType.SINGLE_SHARP)
+				else if(Main.getTheAircraft().getFuselage().getFuselageCreator().getWindshieldType() == WindshieldTypeEnum.SINGLE_SHARP)
 					Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().select(4);
 			}
 		}

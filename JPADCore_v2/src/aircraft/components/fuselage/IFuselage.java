@@ -15,7 +15,7 @@ import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
-import configuration.enumerations.WindshieldType;
+import configuration.enumerations.WindshieldTypeEnum;
 
 public interface IFuselage {
 
@@ -32,7 +32,7 @@ public interface IFuselage {
 	public Double getFinesseRatio();
 	public Amount<Length> getNoseTipHeightOffset();
 	public Double getNoseDxCapPercent();
-	public WindshieldType getWindshieldType();
+	public WindshieldTypeEnum getWindshieldType();
 	public Amount<Length> getWindshieldWidht();
 	public Amount<Length> getWindshieldHeight();
 	public Double getNoseMidSectionLowerToTotalHeightRatio();

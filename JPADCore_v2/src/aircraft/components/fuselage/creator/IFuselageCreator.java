@@ -10,7 +10,7 @@ import javax.measure.quantity.Mass;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
-import configuration.enumerations.WindshieldType;
+import configuration.enumerations.WindshieldTypeEnum;
 
 public interface IFuselageCreator {
 	
@@ -62,7 +62,7 @@ public interface IFuselageCreator {
 	Amount<Area> getsWet();
 	Amount<Area> getsFront();
 	Amount<Length> getSectionCylinderWidth();
-	WindshieldType getWindshieldType();
+	WindshieldTypeEnum getWindshieldType();
 	Amount<Length> getEquivalentDiameterCylinderAM();
 	Amount<Length> getEquivalentDiameterGM();
 	Amount<Length> getEquivalentDiameterCylinderGM();

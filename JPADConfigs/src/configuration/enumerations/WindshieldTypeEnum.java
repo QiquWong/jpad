@@ -1,6 +1,6 @@
 package configuration.enumerations;
 
-public enum WindshieldType {
+public enum WindshieldTypeEnum {
 	FLAT_PROTRUDING,
 	FLAT_FLUSH,
 	SINGLE_ROUND, 

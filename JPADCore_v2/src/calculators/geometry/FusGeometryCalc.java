@@ -1,9 +1,17 @@
 package calculators.geometry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
+import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jscience.physics.amount.Amount;
+
+import processing.core.PVector;
 
 /**
  * In this class there are some methods which computes fuselage geometry parameters.
@@ -129,4 +137,285 @@ public class FusGeometryCalc {
 	public static double calculateSfront(Amount<Length> fuselageDiameter){
 		return Math.PI*Math.pow(fuselageDiameter.doubleValue(SI.METER), 2)/4;
 	}
+	
+	public static List<PVector> getUniqueValuesXZUpperCurve(
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ
+			) {
+		
+		List<PVector> p  = new ArrayList<PVector>();
+		// add the first element
+		if ( outlineXZUpperCurveX.size() != 0 )
+			p.add(
+					new PVector(
+							(float)outlineXZUpperCurveX.get(0).doubleValue(),
+							(float)0.0,
+							(float)outlineXZUpperCurveZ.get(0).doubleValue()
+							)
+					);
+
+		for(int i = 1; i <= outlineXZUpperCurveX.size()-1; i++)
+		{
+			if ( !outlineXZUpperCurveX.get(i-1).equals( outlineXZUpperCurveX.get(i) ) )
+			{
+				p.add(
+						new PVector(
+								(float)outlineXZUpperCurveX.get(i).doubleValue(),
+								(float)0.0,
+								(float)outlineXZUpperCurveZ.get(i).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
+
+
+	public static List<PVector> getUniqueValuesXZLowerCurve(
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ
+			) {
+		List<PVector> p  = new ArrayList<PVector>();
+		// add the first element
+		if ( outlineXZLowerCurveX.size() != 0 )
+			p.add(
+					new PVector(
+							(float)outlineXZLowerCurveX.get(0).doubleValue(),
+							(float)0.0,
+							(float)outlineXZLowerCurveZ.get(0).doubleValue()
+							)
+					);
+		for(int i = 1; i <= outlineXZLowerCurveX.size()-1; i++)
+		{
+			if ( !outlineXZLowerCurveX.get(i-1).equals( outlineXZLowerCurveX.get(i) ) )
+			{
+				p.add(
+						new PVector(
+								(float)outlineXZLowerCurveX.get(i).doubleValue(),
+								(float)0.0,
+								(float)outlineXZLowerCurveZ.get(i).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
+	
+	public static List<PVector> getUniqueValuesXYSideRCurve(
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			)
+	{
+		List<PVector> p  = new ArrayList<PVector>();
+		// add the first element
+		if ( outlineXYSideRCurveX.size() != 0 )
+			p.add(
+					new PVector(
+							(float)outlineXYSideRCurveX.get(0).doubleValue(),
+							(float)outlineXYSideRCurveY.get(0).doubleValue(),
+							(float)0.0 // _outlineXYSideRCurveZ.get(0).doubleValue()
+							)
+					);
+		for(int i = 1; i <= outlineXYSideRCurveX.size()-1; i++)
+		{
+			if ( ! outlineXYSideRCurveX.get(i-1).equals( outlineXYSideRCurveX.get(i) ) )
+			{
+				p.add(
+						new PVector(
+								(float)outlineXYSideRCurveX.get(i).doubleValue(),
+								(float)outlineXYSideRCurveY.get(i).doubleValue(),
+								(float)0.0 // _outlineXYSideRCurveZ.get(i).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
+
+	public static List<PVector> getUniqueValuesXYSideLCurve(
+			List<Double> outlineXYSideLCurveX,
+			List<Double> outlineXYSideLCurveY
+			)
+	{
+		List<PVector> p  = new ArrayList<PVector>();
+		// add the first element
+		if ( outlineXYSideLCurveX.size() != 0 )
+			p.add(
+					new PVector(
+							(float)outlineXYSideLCurveX.get(0).doubleValue(),
+							(float)outlineXYSideLCurveY.get(0).doubleValue(),
+							(float)0.0 // _outlineXYSideLCurveZ.get(0).doubleValue()
+							)
+					);
+		for(int i = 1; i <= outlineXYSideLCurveX.size()-1; i++)
+		{
+			if ( !outlineXYSideLCurveX.get(i-1).equals( outlineXYSideLCurveX.get(i) ) )
+			{
+				p.add(
+						new PVector(
+								(float)outlineXYSideLCurveX.get(i).doubleValue(),
+								(float)outlineXYSideLCurveY.get(i).doubleValue(),
+								(float)0.0 // _outlineXYSideLCurveZ.get(0).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
+	
+	public static Double getZOutlineXZUpperAtX(
+			double x,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ
+			) {
+		// base vectors - upper
+		// unique values
+		double vxu[] = new double[getUniqueValuesXZUpperCurve(outlineXZUpperCurveX, outlineXZUpperCurveZ).size()];
+		double vzu[] = new double[getUniqueValuesXZUpperCurve(outlineXZUpperCurveX, outlineXZUpperCurveZ).size()];
+		for (int i = 0; i < vxu.length; i++)
+		{
+			vxu[i] = getUniqueValuesXZUpperCurve(outlineXZUpperCurveX, outlineXZUpperCurveZ).get(i).x;
+			vzu[i] = getUniqueValuesXZUpperCurve(outlineXZUpperCurveX, outlineXZUpperCurveZ).get(i).z;
+		}
+		// interpolation - lower
+		UnivariateInterpolator interpolatorUpper = new LinearInterpolator(); // SplineInterpolator();
+		UnivariateFunction myInterpolationFunctionUpper =
+				interpolatorUpper.interpolate(vxu, vzu);
+
+		// section z-coordinates at x
+		Double z_F_u = 0.0;
+		if (x < vxu[0]) {
+			z_F_u = vzu[0];
+		}
+		if (x > vxu[vxu.length-1]) {
+			z_F_u = vzu[vzu.length-1];
+		}
+		if ((x >= vxu[0]) && (x <= vxu[vxu.length-1])){
+			z_F_u = myInterpolationFunctionUpper.value(x);
+		}
+		return z_F_u;
+	}
+
+
+	public static Double getZOutlineXZLowerAtX(
+			double x,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ
+			) {
+		// base vectors - lower
+		// unique values
+		double vxl[] = new double[getUniqueValuesXZLowerCurve(outlineXZLowerCurveX, outlineXZLowerCurveZ).size()];
+		double vzl[] = new double[getUniqueValuesXZLowerCurve(outlineXZLowerCurveX, outlineXZLowerCurveZ).size()];
+		for (int i = 0; i < vxl.length; i++)
+		{
+			vxl[i] = getUniqueValuesXZLowerCurve(outlineXZLowerCurveX, outlineXZLowerCurveZ).get(i).x;
+			vzl[i] = getUniqueValuesXZLowerCurve(outlineXZLowerCurveX, outlineXZLowerCurveZ).get(i).z;
+		}
+		// Interpolation - lower
+		UnivariateInterpolator interpolatorLower = new LinearInterpolator(); // SplineInterpolator();
+		UnivariateFunction myInterpolationFunctionLower =
+				interpolatorLower.interpolate(vxl, vzl);
+
+		// section z-coordinates at x
+		Double z_F_l = 0.0;
+		if (x < vxl[0]) {
+			z_F_l = vzl[0];
+		}
+		if (x > vxl[vxl.length-1]) {
+			z_F_l = vzl[vzl.length-1];
+		}
+		if ((x >= vxl[0]) && (x <= vxl[vxl.length-1])){
+			z_F_l = myInterpolationFunctionLower.value(x);
+		}
+		return z_F_l;
+	}
+	
+	/** Return Camber z-coordinate at x-coordinate */
+	public static Double getCamberZAtX(
+			double x,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ
+			) {
+		double zUp = getZOutlineXZUpperAtX(x, outlineXZUpperCurveX, outlineXZUpperCurveZ);
+		double zDown = getZOutlineXZLowerAtX(x, outlineXZLowerCurveX, outlineXZLowerCurveZ);
+		return zUp/2 + zDown/2;
+	}
+	
+	public static Double getCamberAngleAtX(
+			double x,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ,
+			Amount<Length> noseLength,
+			Amount<Length> cabinLength
+			) {
+		if (x<= noseLength.doubleValue(SI.METER)) 
+			return Math.atan(
+					getCamberZAtX(
+							x,
+							outlineXZUpperCurveX,
+							outlineXZUpperCurveZ,
+							outlineXZLowerCurveX,
+							outlineXZLowerCurveZ
+							)
+					/x
+					); 
+		if (x>= cabinLength.doubleValue(SI.METER)) 
+			return Math.atan(
+					-getCamberZAtX(
+							x,
+							outlineXZUpperCurveX,
+							outlineXZUpperCurveZ,
+							outlineXZLowerCurveX,
+							outlineXZLowerCurveZ
+							)
+					/x
+					);
+		return 0.;
+	}
+	
+	public static Double getYOutlineXYSideRAtX(
+			double x,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+		// base vectors - side (right)
+		// unique values
+		double vxs[] = new double[getUniqueValuesXYSideRCurve(outlineXYSideRCurveX, outlineXYSideRCurveY).size()];
+		double vys[] = new double[getUniqueValuesXYSideRCurve(outlineXYSideRCurveX, outlineXYSideRCurveY).size()];
+		for (int i = 0; i < vxs.length; i++)
+		{
+			vxs[i] = getUniqueValuesXYSideRCurve(outlineXYSideRCurveX, outlineXYSideRCurveY).get(i).x;
+			vys[i] = getUniqueValuesXYSideRCurve(outlineXYSideRCurveX, outlineXYSideRCurveY).get(i).y;
+		}
+		// Interpolation - side (right)
+		UnivariateInterpolator interpolatorSide = new LinearInterpolator(); // SplineInterpolator();
+		UnivariateFunction myInterpolationFunctionSide =
+				interpolatorSide.interpolate(vxs, vys);
+
+		Double y_F_r = 0.0;
+		if (x < vxs[0]) {
+			y_F_r = vys[0];
+		}
+		if (x > vxs[vxs.length-1]) {
+			y_F_r = vys[vxs.length-1];
+		}
+		if ((x >= vxs[0]) && (x <= vxs[vxs.length-1])){
+			y_F_r = myInterpolationFunctionSide.value(x);
+		}
+		return y_F_r;
+	}
+	
+	//  Return width at x-coordinate
+	public static Double getWidthAtX(
+			double x,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+		return 2*getYOutlineXYSideRAtX(x, outlineXYSideRCurveX, outlineXYSideRCurveY);
+	}
+	
 }

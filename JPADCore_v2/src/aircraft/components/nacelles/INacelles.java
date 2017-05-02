@@ -21,7 +21,6 @@ public interface INacelles {
 	public void calculateSurfaceWetted();
 	public void calculateMass(Aircraft theAircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights);
 	public CenterOfGravity calculateCG();
-	public void calculateAerodynamics();
 
 	public String getId();
 	public void setId(String _id);

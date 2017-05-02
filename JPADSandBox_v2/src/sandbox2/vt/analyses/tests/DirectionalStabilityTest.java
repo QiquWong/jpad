@@ -31,6 +31,7 @@ import analyses.liftingsurface.LSAerodynamicsManager.CalcCLmax;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
@@ -247,15 +248,15 @@ public class DirectionalStabilityTest extends Application {
 			System.setOut(filterStream);
 
 			// default Aircraft ATR-72 ...
-			//				theAircraft = new Aircraft.AircraftBuilder(
-			//						"ATR-72",
-			//						AircraftEnum.ATR72,
-			//						aeroDatabaseReader,
-			//						highLiftDatabaseReader,
-			//				        fusDesDatabaseReader,
-			//						veDSCDatabaseReader,
-			//						)
-			//						.build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader,
+//					fusDesDatabaseReader,
+//					veDSCDatabaseReader
+//					)
+//					.build();
 
 			// reading aircraft from xml ... 
 			theAircraft = Aircraft.importFromXML(

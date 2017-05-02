@@ -128,7 +128,7 @@ public class FuselageAerodynamicsManager extends analyses.analysismodel.analysis
 //		_cD0Parasite = DragCalc.calculateCd0Parasite(_theFuselage.getFuselageCreator().getFormFactor(), 
 //				_cF, _sWet.getEstimatedValue(), _theAircraft.getWing().getSurface().getEstimatedValue());
 
-		_cD0Base = DragCalc.calculateCd0Base(MethodEnum.MATLAB, 
+		_cD0Base = DragCalc.calculateCD0Base(MethodEnum.MATLAB, 
 				_cD0Parasite, _theAircraft.getWing().getSurface().getEstimatedValue(), 
 				_equivalentDiameterBase, _theFuselage.getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue());
 

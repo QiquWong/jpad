@@ -15,8 +15,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import com.sun.jna.platform.win32.OaIdl.TYPEDESC._TYPEDESC;
-
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
@@ -54,7 +52,7 @@ public class LSAerodynamicsManager {
 	private Airfoil _meanAirfoil;
 	private OperatingConditions _theOperatingConditions;
 	private Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> _componentTaskList;
-	private Map <String, List<MethodEnum>> _plotMap;
+	private Map <String, List<MethodEnum>> _plotList;
 	private ConditionEnum _theCondition;
 	private int _numberOfPointSemiSpanWise;
 	private Amount<Length> _momentumPole;
@@ -65,9 +63,11 @@ public class LSAerodynamicsManager {
 	private List<Amount<Angle>> _alphaArray;
 	private Double[] _alphaArrayPlot; 
 	private Double[] _alphaArrayPlotHighLift;
+	private Amount<Length> _currentAltitude;
 	private Double _currentMachNumber;
 	private Double _currentLiftCoefficient;
 	private Double _currentDragCoefficient;
+	private Double _currentMomentCoefficient;
 	private double[] _etaStationDistribution; 
 	private List<Amount<Length>> _yStationDistribution;
 	private List<Amount<Angle>> _alphaZeroLiftDistribution;
@@ -196,15 +196,17 @@ public class LSAerodynamicsManager {
 		this._theLiftingSurface = theLiftingSurface;
 		this._theOperatingConditions = theOperatingConditions;
 		this._componentTaskList = _componentTaskList;
-		this._plotMap = plotMap;
+		this._plotList = plotMap;
 		this._theCondition = theCondition;
 		this._numberOfPointSemiSpanWise = numberOfPointSemiSpanWise;
 		this._alphaArray = alphaArray;
 		this._alphaForDistribution = alphaForDistribution;
 		
 		initializeVariables();
-		initializeData();
-		// TODO: ADD INITIALIZE CALCULATORS
+		initializeData(_theCondition);
+		
+		// TODO: COMPLETE INITIALIZE CALCULATORS 
+		initializeCalculators();
 		
 		if(momentumPole == null 
 				&& _componentTaskList.get(theLiftingSurface.getType()).
@@ -258,9 +260,29 @@ public class LSAerodynamicsManager {
 	//------------------------------------------------------------------------------
 	// METHODS
 	//------------------------------------------------------------------------------
-	private void initializeData() {
+	private void initializeData(ConditionEnum theCondition) {
 		
-		this._currentMachNumber = this._theOperatingConditions.getMachCruise();
+		switch (theCondition) {
+		case TAKE_OFF:
+			this._currentMachNumber = this._theOperatingConditions.getMachTakeOff();
+			this._currentAltitude = this._theOperatingConditions.getAltitudeTakeOff();
+			break;
+		case CLIMB:
+			this._currentMachNumber = this._theOperatingConditions.getMachClimb();
+			this._currentAltitude = this._theOperatingConditions.getAltitudeClimb();
+			break;
+		case CRUISE:
+			this._currentMachNumber = this._theOperatingConditions.getMachCruise();
+			this._currentAltitude = this._theOperatingConditions.getAltitudeCruise();
+			break;
+		case LANDING:
+			this._currentMachNumber = this._theOperatingConditions.getMachLanding();
+			this._currentAltitude = this._theOperatingConditions.getAltitudeLanding();
+			break;
+		default:
+			break;
+		}
+		
 		this._numberOfAlphas = this._theOperatingConditions.getAlpha().length;
 		this._numberOfAlphasPlot = 50;
 		this._vortexSemiSpanToSemiSpanRatio = 1.0/(2*_numberOfPointSemiSpanWise
@@ -283,7 +305,7 @@ public class LSAerodynamicsManager {
 		//......................................................................................................................
 		double compressibilityFactor = 1.
 				/ Math.sqrt(
-						1 - Math.pow(_theOperatingConditions.getMachCruise(), 2)
+						1 - Math.pow(_currentMachNumber, 2)
 						* (Math.pow(Math.cos(
 								_theLiftingSurface.getSweepQuarterChordEquivalent()
 									.doubleValue(SI.RADIAN)),2)
@@ -483,8 +505,8 @@ public class LSAerodynamicsManager {
 				alphaZeroLiftDistributionRadians,
 				_vortexSemiSpanToSemiSpanRatio,
 				0.0,
-				_theOperatingConditions.getMachCruise(),
-				_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+				_currentMachNumber,
+				_currentAltitude.doubleValue(SI.METER)
 				);
 		
 		//----------------------------------------------------------------------------------------------------------------------
@@ -599,13 +621,6 @@ public class LSAerodynamicsManager {
 		// Calculating the operating lifting coefficient
 		//......................................................................................................................
 		
-		////////////////////////////////////////
-		//									  //
-		//	TODO: WARINING! CRUISE, TAKE-OFF  //
-		//		  AND LANDING CONDITIONS 	  //
-		//		  HAVE TO BE DISTINGUISHED    //
-		// 									  //
-		////////////////////////////////////////
 		if(_currentLiftCoefficient == null) {
 			CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
 			_currentLiftCoefficient = calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
@@ -616,12 +631,16 @@ public class LSAerodynamicsManager {
 			CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
 			_currentDragCoefficient = calcCDAtAlphaCalculator.classic(
 					_theOperatingConditions.getAlphaCurrent(),
-					_theOperatingConditions.getMachCruise(),
-					_theOperatingConditions.getAltitudeCruise()
+					_currentMachNumber,
+					_currentAltitude
 					);
 		}
-		
-		// TODO : ADD OTHER REQUIRED DATA (if necessary)
+		if(_currentMomentCoefficient == null) {
+			CalcCMAtAlpha calcCMAtAlphaCalculator = new CalcCMAtAlpha();
+			_currentMomentCoefficient = calcCMAtAlphaCalculator.fromAirfoilDistribution(
+					_theOperatingConditions.getAlphaCurrent()
+					);
+		}
 
 	}
 	
@@ -699,6 +718,12 @@ public class LSAerodynamicsManager {
 		this._discretizedAirfoilsCm = new ArrayList<>();
 		
 		// TODO : CONTINUE WITH OTHER MAPS WHEN AVAILABLE
+	}
+	
+	private void initializeCalculators() {
+		
+		// TODO !!
+		
 	}
 	
 	//............................................................................
@@ -836,7 +861,7 @@ public class LSAerodynamicsManager {
 									_theLiftingSurface.getTaperRatioEquivalent(),
 									_theLiftingSurface.getSweepLEEquivalent().doubleValue(NonSI.DEGREE_ANGLE),
 									_theLiftingSurface.getAspectRatio(),  
-									_theOperatingConditions.getMachCruise(),
+									_currentMachNumber,
 									_theLiftingSurface.getAerodynamicDatabaseReader()
 									)
 							/_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)
@@ -1316,7 +1341,7 @@ public class LSAerodynamicsManager {
 					Amount.valueOf(
 							LiftCalc.calculateCLalphaPolhamus(
 									_theLiftingSurface.getAspectRatio(),
-									_theOperatingConditions.getMachCruise(), 
+									_currentMachNumber, 
 									_theLiftingSurface.getSweepLEEquivalent(),
 									_theLiftingSurface.getTaperRatioEquivalent()
 									),
@@ -1333,7 +1358,7 @@ public class LSAerodynamicsManager {
 			_cLAlpha.put(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
 					Amount.valueOf(
 							LiftCalc.calcCLalphaAndersonSweptCompressibleSubsonic(
-									_theOperatingConditions.getMachCruise(),
+									_currentMachNumber,
 									_theLiftingSurface.getAspectRatio(),
 									_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
 									_theLiftingSurface.getSweepHalfChordEquivalent().doubleValue(NonSI.DEGREE_ANGLE), 
@@ -2016,8 +2041,8 @@ public class LSAerodynamicsManager {
 					MyArrayUtils.convertListOfAmountTodoubleArray(_alphaZeroLiftDistribution),
 					_vortexSemiSpanToSemiSpanRatio,
 					0.0,
-					_theOperatingConditions.getMachCruise(),
-					_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+					_currentMachNumber,
+					_currentAltitude.doubleValue(SI.METER)
 					);
 			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
@@ -2246,7 +2271,7 @@ public class LSAerodynamicsManager {
 							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 							_theLiftingSurface.getSweepQuarterChordEquivalent().doubleValue(SI.RADIAN),
 							_theLiftingSurface.getNumberOfEngineOverTheWing(),
-							_theOperatingConditions.getMachCruise()
+							_currentMachNumber
 							)
 					);
 		}
@@ -2451,8 +2476,8 @@ public class LSAerodynamicsManager {
 							AerodynamicCalc.calculateInducedAngleOfAttackDistribution(
 									x, 
 									theNasaBlackwellCalculator, 
-									_theOperatingConditions.getAltitudeCruise(), 
-									_theOperatingConditions.getMachCruise(), 
+									_currentAltitude, 
+									_currentMachNumber, 
 									_numberOfPointSemiSpanWise)
 							)
 					));
@@ -2491,8 +2516,8 @@ public class LSAerodynamicsManager {
 							AerodynamicCalc.calculateInducedAngleOfAttackDistribution(
 									x, 
 									theNasaBlackwellCalculator, 
-									_theOperatingConditions.getAltitudeCruise(), 
-									_theOperatingConditions.getMachCruise(), 
+									_currentAltitude, 
+									_currentMachNumber, 
 									_numberOfPointSemiSpanWise))					
 					));
 			
@@ -2741,8 +2766,8 @@ public class LSAerodynamicsManager {
 					_alphaZeroLiftDistribution,
 					_airfoilACToWingACDistribution,
 					_vortexSemiSpanToSemiSpanRatio,
-					_theOperatingConditions.getMachCruise(),
-					_theOperatingConditions.getAltitudeCruise(), 
+					_currentMachNumber,
+					_currentAltitude, 
 					_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST)
 					);
 			
@@ -3515,10 +3540,10 @@ public class LSAerodynamicsManager {
 		this._componentTaskList = _componentTaskList;
 	}
 	public Map <String, List<MethodEnum>> getPlotMap() {
-		return _plotMap;
+		return _plotList;
 	}
 	public void setPlotMap(Map <String, List<MethodEnum>> _plotMap) {
-		this._plotMap = _plotMap;
+		this._plotList = _plotMap;
 	}
 	public int getNumberOfPointSemiSpanWise() {
 		return _numberOfPointSemiSpanWise;
@@ -3550,6 +3575,14 @@ public class LSAerodynamicsManager {
 	public void setAlphaArray(List<Amount<Angle>> _alphaArray) {
 		this._alphaArray = _alphaArray;
 	}
+	public Amount<Length> getCurrentAltitude() {
+		return _currentAltitude;
+	}
+
+	public void setCurrentAltitude(Amount<Length> _currentAltitude) {
+		this._currentAltitude = _currentAltitude;
+	}
+
 	public Double getCurrentMachNumber() {
 		return _currentMachNumber;
 	}
@@ -4281,5 +4314,13 @@ public class LSAerodynamicsManager {
 
 	public void setXACDistribution(List<Amount<Length>> _xACDistribution) {
 		this._xACDistribution = _xACDistribution;
+	}
+
+	public Double getCurrentMomentCoefficient() {
+		return _currentMomentCoefficient;
+	}
+
+	public void setCurrentMomentCoefficient(Double _currentMomentCoefficient) {
+		this._currentMomentCoefficient = _currentMomentCoefficient;
 	}
 }
