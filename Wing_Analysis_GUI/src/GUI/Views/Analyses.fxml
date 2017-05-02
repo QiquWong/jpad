@@ -483,7 +483,7 @@
                                                 <Separator prefWidth="200.0" />
                                                 <SplitPane dividerPositions="0.6208053691275168" orientation="VERTICAL" prefHeight="612.0" prefWidth="534.0">
                                                   <items>
-                                                    <AnchorPane fx:id="outputPaneFinalLIFT" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="534.0" />
+                                                    <AnchorPane fx:id="outputPaneFinalLIFT" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="600.0" />
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                          <children>
                                                             <GridPane fx:id="outputPaneTextLIFT" prefHeight="265.0" prefWidth="900.0">

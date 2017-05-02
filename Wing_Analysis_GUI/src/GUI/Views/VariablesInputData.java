@@ -24,6 +24,7 @@ import GUI.Main;
 import configuration.MyConfiguration;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FoldersEnum;
+import graphics.D3Plotter;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -719,6 +720,7 @@ public class VariablesInputData {
 		
 		theInputTree.calculateDerivedData();
 		Scene graph = D3PlotterClass.createWingDesign(theInputTree);
+		theInputTree.setD3Plotter(D3PlotterClass.d3Plotter);
 		graphPane.getChildren().add(graph.getRoot());
 
 		goToAnalysisButton.setDisable(false);

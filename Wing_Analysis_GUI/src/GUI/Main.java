@@ -9,17 +9,22 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import org.eclipse.ui.Saveable;
+
 import Calculator.InputOutputTree;
 import GUI.Views.Controllers;
+import GUI.Views.SaveOutput;
 import GUI.Views.VaraiblesAnalyses;
 import GUI.Views.VariablesInputData;
 import GUI.Views.VariablesMainCentralButtons;
 import GUI.Views.WarningController;
 import configuration.MyConfiguration;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -37,8 +42,10 @@ public class Main extends Application {
 	File inputFile;
 	static Stage newStageWindows;
 	static Stage newStageWindowsWarning;
+	static Stage newStageWindowsSave;
 	static FXMLLoader loaderInputClass;
 	static InputOutputTree theInputTree;
+	
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
@@ -60,16 +67,20 @@ public class Main extends Application {
 		
 		Scene scene = new Scene(mainLayout);
 		primaryStage.setScene(scene); // setto la screna principale
-		
+		theController = loader.getController();
+		theController.getSaveButton().setDisable(true);
 		primaryStage.show();
 	}
 	
 	public static void showCenterItem () throws IOException{
+		showMainView();
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Views/MainCentral.fxml"));
+		theInputTree = new InputOutputTree();
 		
 		BorderPane centralItems = loader.load();
 		mainLayout.setCenter(centralItems);
+	
 	}
 	
 	public static void startNewAnalysis() throws IOException{
@@ -140,6 +151,8 @@ public class Main extends Application {
 		
 		VaraiblesAnalyses theAnalysesClass = loaderInputClass.getController();
 		theAnalysesClass.setTheInputOutputTree(theInputTree);
+		theAnalysesClass.getTheInputOutputTree().setSaveButton(theController.getSaveButton());
+//		theAnalysesClass.setMain(this);
 	}
 	
 	public static void reStartNewAnalysis() throws IOException{
@@ -196,6 +209,31 @@ public class Main extends Application {
 		VariablesInputData theInputDataClass = loaderInputClass.getController();
 		theInputDataClass.saveInputFile();
 		
+	}
+	
+	public static void saveOutput() throws IOException{
+
+       newStageWindowsSave = new Stage();
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("Views/SaveOutput.fxml"));
+	
+		BorderPane newWindowBorder = loader.load();
+		
+		// devo definire una nuova finestra e settarci dentro questo nuovo border pane
+		
+		 newStageWindowsSave.setTitle("Save Ouputs");
+		 newStageWindowsSave.initModality(Modality.WINDOW_MODAL);
+		 newStageWindowsSave.initOwner(primaryStage);
+
+		SaveOutput theControllerClass = loader.getController();
+		theControllerClass.setTheInputOutputTree(theInputTree);
+		
+		// Ora devo settare la scena definita
+		
+		Scene scene = new Scene(newWindowBorder);
+		 newStageWindowsSave.setScene(scene);
+		 newStageWindowsSave.showAndWait();
 	}
 	
 	public static Double[] convertFromDoubleToPrimitive(double[] vec) {
@@ -277,4 +315,5 @@ public class Main extends Application {
 	public static void setNewStageWindowsWarning(Stage newStageWindowsWarning) {
 		Main.newStageWindowsWarning = newStageWindowsWarning;
 	}
+
 }

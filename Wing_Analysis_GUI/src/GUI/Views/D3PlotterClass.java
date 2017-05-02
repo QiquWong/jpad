@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 
 
 public class D3PlotterClass {
+	static D3Plotter d3Plotter;
 	
 	public static Scene createWingDesign(InputOutputTree theInputTree) {
 		
@@ -130,7 +131,7 @@ public class D3PlotterClass {
 			.build(); 
 	
 
-	D3Plotter d3Plotter = new D3Plotter(
+	d3Plotter = new D3Plotter(
 			optionsTopView,
 			listDataArrayTopView
 			);
@@ -160,5 +161,13 @@ public class D3PlotterClass {
 	JavaFxD3Browser browserTopView = d3Plotter.getBrowser(postLoadingHook, false);
 	Scene sceneTopView = new Scene(browserTopView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
 	return sceneTopView;
+	}
+
+	public D3Plotter getD3Plotter() {
+		return d3Plotter;
+	}
+
+	public void setD3Plotter(D3Plotter d3Plotter) {
+		this.d3Plotter = d3Plotter;
 	}
 }

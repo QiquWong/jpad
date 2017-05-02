@@ -631,6 +631,7 @@ public static Node displayChartNode(
     lineChart.setLegendSide(legendSide);
     lineChart.setLegendVisible(legendVisible);
     
+    
     int numberOfSeries = xValues.size();
     
     for (int i=0; i<numberOfSeries; i++){
@@ -777,6 +778,7 @@ public static void performStallPath(
 				newOutputCharts.getTabs().get(0).getContent()
 				);
 
+		
 		stallPathPane.getChildren().clear();
 		stallPathPane.getChildren().add(chart);
 

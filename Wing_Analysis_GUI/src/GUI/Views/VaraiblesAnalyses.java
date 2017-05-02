@@ -719,6 +719,7 @@ public class VaraiblesAnalyses {
 		
 		theInputOutputTree.setAlphaArrayLiftDistribution(alphaLoadArray);
 		WingAnalysisCalculator.calculateLoadDistributions(theInputOutputTree, this);
+		theInputOutputTree.getSaveButton().setDisable(false);
 	}
 
 
@@ -800,7 +801,7 @@ public class VaraiblesAnalyses {
 		
 		theInputOutputTree.setAlphaArrayLiftCurve(alphaLiftArray);
 		WingAnalysisCalculator.calculateLiftCurve(theInputOutputTree, this);
-	
+		theInputOutputTree.getSaveButton().setDisable(false);
 		
 	}
 
@@ -975,6 +976,22 @@ public class VaraiblesAnalyses {
 
 	public void setNoStallPath(RadioButton noStallPath) {
 		this.noStallPath = noStallPath;
+	}
+
+
+
+
+
+	public Main getMain() {
+		return main;
+	}
+
+
+
+
+
+	public void setMain(Main main) {
+		this.main = main;
 	}
 	
 }

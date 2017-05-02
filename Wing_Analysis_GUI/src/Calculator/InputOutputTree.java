@@ -17,6 +17,9 @@ import GUI.Main;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
+import graphics.D3Plotter;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import standaloneutils.MyArrayUtils;
@@ -29,6 +32,9 @@ public class InputOutputTree {
 
 	// INPUT
 
+	@FXML 
+	Button saveButton;
+	
 	private Amount<Length> altitude;
 	private double machNumber;
 	
@@ -85,6 +91,10 @@ public class InputOutputTree {
 	List<Double> clMaxAirfoils;
 	List<Double> clMaxStallPath;
 	
+	boolean outputTreeIsEmpty;
+	
+	D3Plotter d3Plotter;
+	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -140,6 +150,7 @@ public class InputOutputTree {
 		cLStall = 0.0;
 		
 		liftCoefficientCurve = new ArrayList<>();
+		outputTreeIsEmpty = true;
 
 	}
 
@@ -274,6 +285,13 @@ public class InputOutputTree {
 		
 		return discretizedOutput;
 	}
+	
+	// if true the outputTreeIdEmpty
+	public boolean outputTreeEmpty(){
+		
+		return outputTreeIsEmpty;
+	}
+	
 	
 	public void initializeData(){
 		clDistributionCurves = new ArrayList<>();
@@ -581,42 +599,52 @@ public class InputOutputTree {
 
 	public void setcLAlphaDeg(Double cLAlphaDeg) {
 		this.cLAlphaDeg = cLAlphaDeg;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setcLAlphaRad(Double cLAlphaRad) {
 		this.cLAlphaRad = cLAlphaRad;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setAlphaZeroLift(Amount<Angle> alphaZeroLift) {
 		this.alphaZeroLift = alphaZeroLift;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setAlphaStar(Amount<Angle> alphaStar) {
 		this.alphaStar = alphaStar;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setAlphaStall(Amount<Angle> alphaStall) {
 		this.alphaStall = alphaStall;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setAlphaMaxLinear(Amount<Angle> alphaMaxLinear) {
 		this.alphaMaxLinear = alphaMaxLinear;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setcLZero(Double cLZero) {
 		this.cLZero = cLZero;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setcLMax(Double cLMax) {
 		this.cLMax = cLMax;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setcLStall(Double cLStall) {
 		this.cLStall = cLStall;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setLiftCoefficientCurve(List<Double> liftCoefficientCurve) {
 		this.liftCoefficientCurve = liftCoefficientCurve;
+		outputTreeIsEmpty = false;
 	}
 
 	public Double getcLStar() {
@@ -625,10 +653,12 @@ public class InputOutputTree {
 
 	public void setcLStar(Double cLStar) {
 		this.cLStar = cLStar;
+		outputTreeIsEmpty = false;
 	}
 
 	public List<Double> getClMaxAirfoils() {
 		return clMaxAirfoils;
+		
 	}
 
 	public List<Double> getClMaxStallPath() {
@@ -637,10 +667,36 @@ public class InputOutputTree {
 
 	public void setClMaxAirfoils(List<Double> clMaxAirfoils) {
 		this.clMaxAirfoils = clMaxAirfoils;
+		outputTreeIsEmpty = false;
 	}
 
 	public void setClMaxStallPath(List<Double> clMaxStallPath) {
 		this.clMaxStallPath = clMaxStallPath;
+		outputTreeIsEmpty = false;
+	}
+
+	public boolean isInputTreeIsEmpty() {
+		return outputTreeIsEmpty;
+	}
+
+	public void setInputTreeIsEmpty(boolean inputTreeIsEmpty) {
+		this.outputTreeIsEmpty = inputTreeIsEmpty;
+	}
+
+	public Button getSaveButton() {
+		return saveButton;
+	}
+
+	public void setSaveButton(Button saveButton) {
+		this.saveButton = saveButton;
+	}
+
+	public D3Plotter getD3Plotter() {
+		return d3Plotter;
+	}
+
+	public void setD3Plotter(D3Plotter d3Plotter) {
+		this.d3Plotter = d3Plotter;
 	}
 	
 
