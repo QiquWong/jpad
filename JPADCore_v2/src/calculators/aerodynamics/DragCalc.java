@@ -5,10 +5,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Volume;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
@@ -16,6 +19,7 @@ import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
+import calculators.geometry.FusGeometryCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -1005,4 +1009,72 @@ public class DragCalc {
 		return totalDragDistribution;
 		
 	}
+	
+	/**
+	 * @see NASA TN D-6800 (pag.47 pdf)
+	 * 
+	 * @param xStations in m
+	 * @param alphaBody in deg
+	 * @param wettedSurface in m^2
+	 * @param volume in m^3
+	 * @param k2k1
+	 * @param maxDiameter in m
+	 * @param wingSurface in m2
+	 * @return the CDi of the fuselage or of the nacelle
+	 */
+	public static Double calculateCDInducedFuselageOrNacelle(
+			List<Amount<Length>> xStations,
+			Amount<Angle> alphaBody,
+			Amount<Area> wettedSurface,
+			Amount<Volume> volume,
+			Double k2k1,
+			Amount<Length> maxDiameter,
+			Amount<Length> length,
+			Amount<Area> wingSurface,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+		
+		double eta = 0.0000000081*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),5)
+				- 0.0000010400*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),4) 
+				+ 0.0000549040*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),3) 
+				- 0.0015946361*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),2) 
+				+ 0.0296842457*(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER)) 
+				+ 0.5038353579;
+		
+		List<Amount<Length>> equivalentDiameters = xStations.stream()
+				.map(x -> FusGeometryCalc.calculateEquivalentDiameterAtX(
+						x,
+						outlineXZUpperCurveX, 
+						outlineXZUpperCurveZ,
+						outlineXZLowerCurveX, 
+						outlineXZLowerCurveZ, 
+						outlineXYSideRCurveX, 
+						outlineXYSideRCurveY)
+						)
+				.collect(Collectors.toList()); 
+		
+		Double integral = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertToDoublePrimitive(
+						xStations.stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+						),
+				MyArrayUtils.convertToDoublePrimitive(
+						equivalentDiameters.stream().map(eq -> eq.doubleValue(SI.METER)*eta).collect(Collectors.toList())
+						)
+				);
+		
+		Double cDi = (
+				(2*alphaBody.doubleValue(NonSI.DEGREE_ANGLE)*k2k1*wettedSurface.doubleValue(SI.SQUARE_METRE)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3)))
+				+ (2*Math.pow(alphaBody.doubleValue(NonSI.DEGREE_ANGLE),3)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))*integral)
+				)
+				*(Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))/wingSurface.doubleValue(SI.SQUARE_METRE));
+		
+		return cDi;
+		
+	}
+	
 }

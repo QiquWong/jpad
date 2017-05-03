@@ -72,6 +72,7 @@ public class FuselageAerodynamicsCalculator {
 	private Map<MethodEnum, Double> _cD0Base;
 	private Map<MethodEnum, Double> _cDWindshield;
 	private Map<MethodEnum, Double> _cD0Total;
+	private Map<MethodEnum, Double> _cDInduced;
 	private Map<MethodEnum, Double> _cDAtAlpha;
 	private Map <MethodEnum, Double[]> _polar3DCurve;
 	
@@ -409,8 +410,56 @@ public class FuselageAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCDInduced {
 		
-		//@see NASA TN D-6800
+		//@see NASA TN D-6800 (pag.47 pdf)
 		public void semiempirical(Amount<Angle> alphaBody) {
+			
+			List<Amount<Length>> xStations = 
+					MyArrayUtils.convertDoubleArrayToListOfAmount(
+							MyArrayUtils.linspace(
+									0,
+									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									50
+									),
+							SI.METER
+							);
+			
+			_cDInduced.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					DragCalc.calculateCDInducedFuselageOrNacelle(
+							xStations, 
+							alphaBody, 
+							_theFuselage.getFuselageCreator().getsWet(), 
+							FusGeometryCalc.calculateFuselageVolume(
+									_theFuselage.getFuselageCreator().getLenF(), 
+									MyArrayUtils.convertListOfDoubleToDoubleArray(
+											xStations.stream()
+											.map(x -> FusGeometryCalc.getWidthAtX(
+													x.doubleValue(SI.METER),
+													_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(), 
+													_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX()
+													))
+											.collect(Collectors.toList())
+											)
+									), 
+							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
+									), 
+							FusGeometryCalc.calculateMaxDiameter(
+									xStations,
+									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
+									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
+									), 
+							_theFuselage.getFuselageCreator().getLenF(), 
+							_theWing.getSurface(), 
+							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
+							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
+							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
+							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveZ(),
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(), 
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX()
+							)
+					);
 			
 		}
 		
@@ -425,12 +474,11 @@ public class FuselageAerodynamicsCalculator {
 	public class CalcCDAtAlpha {
 		
 		public void semiempirical(Amount<Angle> alphaBody) {
-			
+			// TODO
 		}
 		
 		public void fusDes(Amount<Angle> alphaBody) {
-			
-			
+			// TODO			
 		}
 		
 	}
@@ -444,11 +492,11 @@ public class FuselageAerodynamicsCalculator {
 	public class CalcPolar {
 		
 		public void semiempirical() {
-			
+			// TODO
 		}
 		
 		public void fusDes() {
-			
+			// TODO
 		}
 		
 	}
@@ -918,5 +966,13 @@ public class FuselageAerodynamicsCalculator {
 
 	public void setCDAtAlpha(Map<MethodEnum, Double> _cDAtAlpha) {
 		this._cDAtAlpha = _cDAtAlpha;
+	}
+
+	public Map<MethodEnum, Double> getCDInduced() {
+		return _cDInduced;
+	}
+
+	public void setCDInduced(Map<MethodEnum, Double> _cDInduced) {
+		this._cDInduced = _cDInduced;
 	}
 }

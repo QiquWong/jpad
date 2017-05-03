@@ -1,9 +1,12 @@
 package calculators.geometry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Volume;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -11,7 +14,12 @@ import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import aircraft.components.fuselage.FuselageCurvesSection;
 import processing.core.PVector;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 
 /**
  * In this class there are some methods which computes fuselage geometry parameters.
@@ -416,6 +424,65 @@ public class FusGeometryCalc {
 			List<Double> outlineXYSideRCurveY
 			) {
 		return 2*getYOutlineXYSideRAtX(x, outlineXYSideRCurveX, outlineXYSideRCurveY);
+	}
+	
+	/**
+	 * @param fuselageLength in m
+	 * @param equivalentDiameters in m
+	 * @return the fuselage volume in m^3
+	 */
+	public static Amount<Volume> calculateFuselageVolume(
+			Amount<Length> fuselageLength,
+			Double[] equivalentDiameters
+			) {
+		
+		return Amount.valueOf(
+				MyMathUtils.integrate1DSimpsonSpline(
+						MyArrayUtils.linspace(0, fuselageLength.doubleValue(SI.METER), equivalentDiameters.length),
+						MyArrayUtils.convertToDoublePrimitive(
+								Arrays.stream(equivalentDiameters).map(diam -> Math.PI*Math.pow(diam, 2)/4).collect(Collectors.toList())
+								)
+						),
+				SI.CUBIC_METRE);
+		
+	}
+	
+	public static Amount<Length> calculateEquivalentDiameterAtX (
+			Amount<Length> x,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+
+		Double zUp = getZOutlineXZUpperAtX(x.doubleValue(SI.METER), outlineXZUpperCurveX, outlineXZUpperCurveZ);
+		Double zDown = getZOutlineXZLowerAtX(x.doubleValue(SI.METER), outlineXZLowerCurveX, outlineXZLowerCurveZ);
+		Double height = zUp - zDown;
+		Double width = 2*getYOutlineXYSideRAtX(x.doubleValue(SI.METER), outlineXYSideRCurveX, outlineXYSideRCurveY);
+		
+		return Amount.valueOf(
+				Math.sqrt(height*width),
+				SI.METER
+				);
+		
+	}
+	
+	public static Amount<Length> calculateMaxDiameter(
+			List<Amount<Length>> xStations,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+		
+		return Amount.valueOf(
+				xStations.stream()
+				.mapToDouble(x -> getWidthAtX(x.doubleValue(SI.METER), outlineXYSideRCurveX, outlineXYSideRCurveY))
+				.max()
+				.getAsDouble(),
+				SI.METER
+				);
+		
 	}
 	
 }
