@@ -353,9 +353,13 @@ public class DirectionalStabilityTest extends Application {
 							null,
 							ConditionEnum.CRUISE,
 							50, 
-							null, 
-							null, 
-							null)
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(-2,20,21), 
+									NonSI.DEGREE_ANGLE), 
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(0,10,3), 
+									NonSI.DEGREE_ANGLE), 
+							0.25)
 					);
 			CalcXAC calcXACVTail = liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcXAC();
 			calcXACVTail.atQuarterMAC();
@@ -381,9 +385,13 @@ public class DirectionalStabilityTest extends Application {
 							null,
 							ConditionEnum.CRUISE,
 							50, 
-							null, 
-							null, 
-							null)
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(-2,20,21), 
+									NonSI.DEGREE_ANGLE), 
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(0,10,3), 
+									NonSI.DEGREE_ANGLE), 
+							0.25)
 					);
 			CalcXAC calcXACWing = liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
 			calcXACWing.atQuarterMAC();
