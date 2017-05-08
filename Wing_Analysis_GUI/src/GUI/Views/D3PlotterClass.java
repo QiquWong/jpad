@@ -145,14 +145,6 @@ public class D3PlotterClass {
 		
 		//--------------------------------------------------
 		// output
-//		String outputFilePathTopView = Main.getOutputDirectoryPath() 
-//				+ File.separator 
-//				+ "AircraftTopView.svg";
-//		File outputFile = new File(outputFilePathTopView);
-//		if(outputFile.exists())
-//			outputFile.delete();
-//			
-//		d3Plotter.saveSVG(outputFilePathTopView);
 
 	}; // end-of-Runnable
 

@@ -1,5 +1,6 @@
 package Calculator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -94,6 +95,13 @@ public class InputOutputTree {
 	boolean outputTreeIsEmpty;
 	
 	D3Plotter d3Plotter;
+	File inputFile;
+	
+	// analyses to perform
+	
+	Boolean performLoadAnalysis;
+	Boolean performLiftAnalysis;
+	Boolean performStallPathAnalysis;
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -151,6 +159,10 @@ public class InputOutputTree {
 		
 		liftCoefficientCurve = new ArrayList<>();
 		outputTreeIsEmpty = true;
+		
+		performLoadAnalysis = false;
+		performLiftAnalysis= false;
+		performStallPathAnalysis = false;
 
 	}
 
@@ -697,6 +709,38 @@ public class InputOutputTree {
 
 	public void setD3Plotter(D3Plotter d3Plotter) {
 		this.d3Plotter = d3Plotter;
+	}
+
+	public File getInputFile() {
+		return inputFile;
+	}
+
+	public void setInputFile(File inputFile) {
+		this.inputFile = inputFile;
+	}
+
+	public Boolean getPerformStallPathAnalysis() {
+		return performStallPathAnalysis;
+	}
+
+	public void setPerformStallPathAnalysis(Boolean performStallPathAnalysis) {
+		this.performStallPathAnalysis = performStallPathAnalysis;
+	}
+
+	public Boolean getPerformLoadAnalysis() {
+		return performLoadAnalysis;
+	}
+
+	public Boolean getPerformLiftAnalysis() {
+		return performLiftAnalysis;
+	}
+
+	public void setPerformLoadAnalysis(Boolean performLoadAnalysis) {
+		this.performLoadAnalysis = performLoadAnalysis;
+	}
+
+	public void setPerformLiftAnalysis(Boolean performLiftAnalysis) {
+		this.performLiftAnalysis = performLiftAnalysis;
 	}
 	
 

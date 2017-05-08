@@ -308,6 +308,7 @@ public class VaraiblesAnalyses {
 		arrayLabel.setDisable(true);
 		valuesLabel.setDisable(true);
 		alphasInputLabel.setDisable(true);
+		theInputOutputTree.setPerformLoadAnalysis(false);
 	}
 	
 	@FXML
@@ -437,7 +438,10 @@ public class VaraiblesAnalyses {
 		arrayLabelLift.setDisable(true);
 		valuesLabelLift.setDisable(true);
 		alphasInputLabelLift.setDisable(true);
+		
+		theInputOutputTree.setPerformLiftAnalysis(false);
 	}
+	
 	
 	@FXML
 	private void enableLoadAnalysisLift(){
@@ -661,6 +665,7 @@ public class VaraiblesAnalyses {
 	
 	@FXML
 	private void performLoadAnalyses(){
+		theInputOutputTree.setPerformLoadAnalysis(true);
 		List<Amount<Angle>> alphaLoadArray = new ArrayList<>();
 		
 		theInputOutputTree.setAlphaArrayLiftDistribution(new ArrayList<>());
@@ -725,6 +730,7 @@ public class VaraiblesAnalyses {
 
 	@FXML
 	private void performLiftAnalyses(){
+		theInputOutputTree.setPerformLiftAnalysis(true);
 		List<Amount<Angle>> alphaLiftArray = new ArrayList<>();
 		
 		theInputOutputTree.setAlphaArrayLiftCurve(new ArrayList<>());

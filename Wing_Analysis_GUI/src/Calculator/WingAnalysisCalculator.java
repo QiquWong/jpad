@@ -254,7 +254,7 @@ public class WingAnalysisCalculator {
 			xleDistributionMeter [i] = theInputOutputTree.getxLEDistributionSemiSpan().get(i).doubleValue(SI.METER);
 		}
 		
-		theInputOutputTree.initializeData();
+//		theInputOutputTree.initializeData();
 		
 		theNasaBlackwellCalculator = new  NasaBlackwell(
 				theInputOutputTree.getSemiSpan().doubleValue(SI.METER), 
@@ -553,7 +553,12 @@ public class WingAnalysisCalculator {
 			}
 			
 			if ( theController.getYesStallPath().isSelected() ){
+				theInputOutputTree.setPerformStallPathAnalysis(true);
 				WingAnalysisCalculator.performStallPath(theInputOutputTree, theController, stallPathPane, newOutputCharts);
+			}
+			
+			if ( theController.getNoStallPath().isSelected() ){
+				theInputOutputTree.setPerformStallPathAnalysis(false);
 			}
 	}
 	

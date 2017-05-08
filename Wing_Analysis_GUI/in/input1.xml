@@ -6,25 +6,25 @@
     </operating_conditions>
     <wing>
         <global>
-            <surface unit="m²">110.7070</surface>
+            <surface unit="m²">33.6200</surface>
             <aspect_ratio>12.0000</aspect_ratio>
             <number_of_point_semispan>100</number_of_point_semispan>
             <adimensional_kink_station>1.0000</adimensional_kink_station>
         </global>
         <distibution>
-            <number_of_given_sections>3</number_of_given_sections>
+            <number_of_given_sections>2</number_of_given_sections>
             <airfoil_family>NACA_4_DIGIT</airfoil_family>
             <max_thickness_mean_airfoil>0.1400</max_thickness_mean_airfoil>
             <geometry>
-                <y_adimensional_stations>[0.0, 0.3, 1.0]</y_adimensional_stations>
-                <chord_distribution unit="m">4.549999999999999;2.84;1.0</chord_distribution>
-                <x_le_distribution unit="m">0.0;1.4;2.0</x_le_distribution>
-                <twist_distribution unit="rad">0.0;0.0;0.0</twist_distribution>
+                <y_adimensional_stations>[0.0, 1.0]</y_adimensional_stations>
+                <chord_distribution unit="m">2.0611290551023984;1.2865069267012772</chord_distribution>
+                <x_le_distribution unit="m">0.0;3.1047293380092054</x_le_distribution>
+                <twist_distribution unit="rad">0.0;0.0</twist_distribution>
             </geometry>
             <aerodynamics>
-                <alpha_zero_lift_distribution unit="°">0.0;0.0;0.0</alpha_zero_lift_distribution>
-                <alpha_star_distribution unit="°">14.0;14.0;13.0</alpha_star_distribution>
-                <maximum_lift_coefficient_distribution>1.5;1.5;1.3</maximum_lift_coefficient_distribution>
+                <alpha_zero_lift_distribution unit="°">0.0;0.0</alpha_zero_lift_distribution>
+                <alpha_star_distribution unit="°">14.0;14.0</alpha_star_distribution>
+                <maximum_lift_coefficient_distribution>1.5;1.5</maximum_lift_coefficient_distribution>
             </aerodynamics>
         </distibution>
     </wing>

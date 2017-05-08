@@ -19,6 +19,7 @@ import GUI.Views.VariablesInputData;
 import GUI.Views.VariablesMainCentralButtons;
 import GUI.Views.WarningController;
 import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,6 +52,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException {
 		
 		MyConfiguration.initWorkingDirectoryTree();
+		File cadfolder = new File(MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+File.separator+"cad");
+			cadfolder.delete();
+			File imagefolder = new File(MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)+File.separator+"images");
+			imagefolder.delete();
 		
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Wing Analysis");
@@ -222,12 +227,13 @@ public class Main extends Application {
 		
 		// devo definire una nuova finestra e settarci dentro questo nuovo border pane
 		
-		 newStageWindowsSave.setTitle("Save Ouputs");
+		 newStageWindowsSave.setTitle("Save Output");
 		 newStageWindowsSave.initModality(Modality.WINDOW_MODAL);
 		 newStageWindowsSave.initOwner(primaryStage);
-
+		 
 		SaveOutput theControllerClass = loader.getController();
 		theControllerClass.setTheInputOutputTree(theInputTree);
+		theControllerClass.setThisStage(newStageWindowsSave);
 		
 		// Ora devo settare la scena definita
 		
@@ -314,6 +320,14 @@ public class Main extends Application {
 
 	public static void setNewStageWindowsWarning(Stage newStageWindowsWarning) {
 		Main.newStageWindowsWarning = newStageWindowsWarning;
+	}
+
+	public static Stage getNewStageWindowsSave() {
+		return newStageWindowsSave;
+	}
+
+	public static void setNewStageWindowsSave(Stage newStageWindowsSave) {
+		Main.newStageWindowsSave = newStageWindowsSave;
 	}
 
 }

@@ -56,7 +56,6 @@ public class VariablesInputData {
 	private Main main;
 
 	File inputFile;
-	File outputFile;
 	InputOutputTree theInputTree = new InputOutputTree();
 	Amount<Area> calculatedArea = Amount.valueOf(0., SI.SQUARE_METRE);
 	List<Amount<Length>> chordListTemp = new ArrayList<>();
@@ -340,6 +339,7 @@ public class VariablesInputData {
 		String pathToXML = filePath.getText();
 		if(pathToAircraftXML.endsWith(".xml")) {
 			File inputFile = new File(pathToAircraftXML);
+			theInputTree.setInputFile(inputFile);
 			if(inputFile.exists()) {
 				JPADXmlReader reader = new JPADXmlReader(pathToXML);
 				isInputFile = true;
@@ -405,7 +405,7 @@ public class VariablesInputData {
 		chooser.getExtensionFilters().addAll(new ExtensionFilter("XML File","*.xml"));
 		File file = chooser.showSaveDialog(null);
 		if (file != null) {
-			outputFile = file;
+			inputFile = file;
 
 			// CHECK IF THE TEXT FIELD IS NOT EMPTY ...
 			load.disableProperty().bind(
@@ -453,8 +453,7 @@ public class VariablesInputData {
 	@FXML
 	public void writeInputFile() throws IOException{
 		Reader theReader = new Reader();
-		System.out.println( "estensione file " + outputFile.getAbsolutePath() + File.separator +  outputFile.getName());
-		theReader.writeInputToXML(theInputTree, outputFile.getAbsolutePath() );
+		theReader.writeInputToXML(theInputTree, inputFile.getAbsolutePath() );
 	}
 
 	@FXML
@@ -718,6 +717,7 @@ public class VariablesInputData {
 			inputList.add(Double.parseDouble(clMax5.getText()));	
 		theInputTree.setMaximumliftCoefficientDistribution(inputList);
 		
+		theInputTree.setInputFile(inputFile);
 		theInputTree.calculateDerivedData();
 		Scene graph = D3PlotterClass.createWingDesign(theInputTree);
 		theInputTree.setD3Plotter(D3PlotterClass.d3Plotter);
@@ -725,6 +725,7 @@ public class VariablesInputData {
 
 		goToAnalysisButton.setDisable(false);
 		saveButton.setDisable(false);
+		
 		
 		main.setTheInputTree(theInputTree);
 	}

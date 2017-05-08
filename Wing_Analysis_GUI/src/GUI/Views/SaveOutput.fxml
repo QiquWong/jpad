@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -26,7 +27,7 @@
                               <Image url="@../../../img/floppy.png" />
                            </image>
                         </ImageView>
-                        <Label text="Please select wich of the below output you want to save:">
+                        <Label text="Please select which of the below output you want to save:">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -45,8 +46,15 @@
             <RadioButton fx:id="png" mnemonicParsing="false" text=".png (Charts)" />
             <HBox>
                <children>
-                  <Region prefHeight="25.0" prefWidth="226.0" />
-                  <Button fx:id="save" mnemonicParsing="false" text="SAVE">
+                  <Region prefHeight="37.0" prefWidth="18.0" />
+                  <TextField fx:id="outputDirText" prefHeight="28.0" prefWidth="284.0" />
+                  <Button mnemonicParsing="false" onAction="#chooseOutputFile" prefHeight="25.0" prefWidth="20.0" text="...">
+                     <HBox.margin>
+                        <Insets left="-28.0" top="1.44" />
+                     </HBox.margin>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="139.0" />
+                  <Button fx:id="save" mnemonicParsing="false" onAction="#saveFiles" text="SAVE">
                      <font>
                         <Font name="AR ESSENCE" size="14.0" />
                      </font>
