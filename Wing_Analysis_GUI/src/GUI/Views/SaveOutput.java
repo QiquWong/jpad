@@ -92,7 +92,7 @@ public class SaveOutput {
 		}
 		
 		if(png.isSelected()){
-			
+			savePNG();
 		}
 		thisStage.close();
 	}
@@ -143,39 +143,33 @@ public class SaveOutput {
 		for (int i = 0; i<theInputOutputTree.getAlphaArrayLiftDistribution().size(); i++){
 			legend.add("alpha = " + theInputOutputTree.getAlphaArrayLiftDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + "(deg)");
 		}
-//		
-//		double[][] xMatrix = new double[theInputOutputTree.getAlphaArrayLiftDistribution().size()][theInputOutputTree.getNumberOfPointSemispan()];
-//		double[][] yMatrix = new double[theInputOutputTree.getAlphaArrayLiftDistribution().size()][theInputOutputTree.getNumberOfPointSemispan()];
-//		yMatrix1_SI[0] = MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance);
-//		yMatrix1_SI[1] = MyArrayUtils.convertListOfAmountTodoubleArray(speed);
-//
-//		yMatrix1_Imperial[0] = MyArrayUtils.convertToDoublePrimitive(
-//				verticalDistance.stream()
-//				.map(x -> x.doubleValue(NonSI.FOOT))
-//				.collect(Collectors.toList())
-//				);
-//		yMatrix1_Imperial[0] = MyArrayUtils.convertToDoublePrimitive(
-//				speed.stream()
-//				.map(x -> x.doubleValue(NonSI.KNOT))
-//				.collect(Collectors.toList())
-//				);
-//		
-//		
-//		MyChartToFileUtils.plot(
-//				xVector,
-//				yVector, 
-//				0., 
-//				1., 
-//				null, 
-//				null,
-//				"$\\eta$", 
-//				"$C_l$",
-//				"", 
-//				"", 
-//				legend, 
-//				outputDirectory + "Charts" + File.separator,
-//				"Lift Coefficient distribution");
-//		
+		
+		double[][] xMatrix = new double[theInputOutputTree.getAlphaArrayLiftDistribution().size()][theInputOutputTree.getNumberOfPointSemispan()];
+		double[][] yMatrix = new double[theInputOutputTree.getAlphaArrayLiftDistribution().size()][theInputOutputTree.getNumberOfPointSemispan()];
+		String [] legendString = new String[theInputOutputTree.getAlphaArrayLiftDistribution().size()];
+		
+		for(int i=0; i<theInputOutputTree.getAlphaArrayLiftDistribution().size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVector.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVector.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		
+		MyChartToFileUtils.plot(
+				xMatrix,
+				yMatrix, 
+				0., 
+				1., 
+				null, 
+				null,
+				"$\\eta$", 
+				"$C_l$",
+				"", 
+				"", 
+				legendString, 
+				outputDirectory + "Charts" + File.separator,
+				"Lift_Coefficient_distribution");
+		
 
 		}
 	}
