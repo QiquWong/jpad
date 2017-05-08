@@ -2,8 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -40,14 +40,14 @@
                   <Separator prefWidth="200.0" />
                </children>
             </VBox>
-            <RadioButton fx:id="svg" mnemonicParsing="false" text=".svg (Wing Top view)" />
-            <RadioButton mnemonicParsing="false" text=".xml (Output Data)" fx:id="xml" />
-            <RadioButton mnemonicParsing="false" text=".xls (Output Data)" fx:id="xls" />
-            <RadioButton fx:id="png" mnemonicParsing="false" text=".png (Charts)" />
+            <CheckBox fx:id="svg" mnemonicParsing="false" text=" .svg (Wing Top View)" />
+            <CheckBox mnemonicParsing="false" text=" .xml (Output Data)" fx:id="xml" />
+            <CheckBox mnemonicParsing="false" text=" .xls (Output Data)" fx:id="xls" />
+            <CheckBox fx:id="png" mnemonicParsing="false" text=" .png (Charts)" />
             <HBox>
                <children>
                   <Region prefHeight="37.0" prefWidth="18.0" />
-                  <TextField fx:id="outputDirText" prefHeight="28.0" prefWidth="284.0" />
+                  <TextField fx:id="outputDirText" prefHeight="28.0" prefWidth="284.0" promptText="Choose output Directory" />
                   <Button mnemonicParsing="false" onAction="#chooseOutputFile" prefHeight="25.0" prefWidth="20.0" text="...">
                      <HBox.margin>
                         <Insets left="-28.0" top="1.44" />

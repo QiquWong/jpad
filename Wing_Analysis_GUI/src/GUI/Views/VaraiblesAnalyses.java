@@ -235,7 +235,7 @@ public class VaraiblesAnalyses {
 		alphaSix.setDisable(true);
 		numberOfAlphasValuesLabel.setDisable(true);
 		alphaAnglesValuesLabel.setDisable(true);
-		arrayLabel.setDisable(true);
+		arrayLabel.setDisable(false);
 		anglesUnit.setDisable(true);
 		anglesUnitLabel.setDisable(true);
 		
@@ -247,7 +247,7 @@ public class VaraiblesAnalyses {
 		alphaInitialLabel.setDisable(false);
 		alphaFinalLabel.setDisable(false);
 		numberOfAlphasArrayLabel.setDisable(false);	
-		valuesLabel.setDisable(false);
+		valuesLabel.setDisable(true);
 	}
 	
 	@FXML
@@ -262,7 +262,7 @@ public class VaraiblesAnalyses {
 		alphaSix.setDisable(false);
 		numberOfAlphasValuesLabel.setDisable(false);
 		alphaAnglesValuesLabel.setDisable(false);
-		arrayLabel.setDisable(false);
+		arrayLabel.setDisable(true);
 		anglesUnit.setDisable(false);
 		anglesUnitLabel.setDisable(false);
 		
@@ -274,7 +274,7 @@ public class VaraiblesAnalyses {
 		alphaInitialLabel.setDisable(true);
 		alphaFinalLabel.setDisable(true);
 		numberOfAlphasArrayLabel.setDisable(true);
-		valuesLabel.setDisable(true);
+		valuesLabel.setDisable(false);
 		
 	}
 	
@@ -357,7 +357,7 @@ public class VaraiblesAnalyses {
 		alphaSixLift.setDisable(true);
 		numberOfAlphasValuesLabelLift.setDisable(true);
 		alphaAnglesValuesLabelLift.setDisable(true);
-		arrayLabelLift.setDisable(true);
+		arrayLabelLift.setDisable(false);
 		anglesUnitLift.setDisable(true);
 		anglesUnitLabelLift.setDisable(true);
 		
@@ -369,7 +369,7 @@ public class VaraiblesAnalyses {
 		alphaInitialLabelLift.setDisable(false);
 		alphaFinalLabelLift.setDisable(false);
 		numberOfAlphasArrayLabelLift.setDisable(false);	
-		valuesLabelLift.setDisable(false);
+		valuesLabelLift.setDisable(true);
 	}
 	
 	@FXML
@@ -388,7 +388,7 @@ public class VaraiblesAnalyses {
 		alphaTenLift.setDisable(false);
 		numberOfAlphasValuesLabelLift.setDisable(false);
 		alphaAnglesValuesLabelLift.setDisable(false);
-		arrayLabelLift.setDisable(false);
+		arrayLabelLift.setDisable(true);
 		anglesUnitLift.setDisable(false);
 		anglesUnitLabelLift.setDisable(false);
 		
@@ -400,7 +400,7 @@ public class VaraiblesAnalyses {
 		alphaInitialLabelLift.setDisable(true);
 		alphaFinalLabelLift.setDisable(true);
 		numberOfAlphasArrayLabelLift.setDisable(true);
-		valuesLabelLift.setDisable(true);
+		valuesLabelLift.setDisable(false);
 		
 	}
 	

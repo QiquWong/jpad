@@ -477,6 +477,39 @@ public class MyChartToFileUtils {
 		
 	}
 	
+	public static void plotNOCSV(
+			double[][] xArrays, double[][] yArrays,
+			Double xMin, Double xMax,
+			Double yMin, Double yMax,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			String[] legendValue, String path,
+			String fileName) {
+
+		MyChartToFileUtils chartFactory = ChartFactory(xLabel, yLabel, 
+				xUnit, yUnit,legendValue,path, fileName);
+
+		chartFactory.setXarrays(xArrays);
+		chartFactory.setYarrays(yArrays);
+
+		if (xMin != null) chartFactory.setxMin(xMin);
+		if (xMax != null) chartFactory.setxMax(xMax);
+		if (yMin != null) chartFactory.setyMin(yMin);
+		if (yMax != null) chartFactory.setyMax(yMax);
+
+		chartFactory.createMultiTraceChart();
+		
+		List<String> legend = new ArrayList<>();
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<legendValue.length; i++) {
+			legend.add(legendValue[i]);
+			xListName.add(xLabel);
+			yListName.add(yLabel);
+		}
+	}
+		
+	
 	public static void plot( //xArrays is 1D
 			double[] xArray, double[][] yArrays,
 			Double xMin, Double xMax,
