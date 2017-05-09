@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -20,13 +22,14 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Views.VaraiblesAnalyses">
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
           <Tab text="Load Distributions">
             <content>
@@ -34,26 +37,42 @@
                      <children>
                         <VBox layoutX="310.0" layoutY="98.0" prefHeight="671.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <ToolBar prefHeight="40.0" prefWidth="200.0">
-                                 <items>
-                                    <RadioButton fx:id="enableLoadAnalysis" mnemonicParsing="false" onAction="#enableLoadAnalysis" selected="true" text="Enable this Analysis">
-                                       <toggleGroup>
-                                          <ToggleGroup fx:id="Abilita" />
-                                       </toggleGroup>
-                                    </RadioButton>
-                                    <RadioButton fx:id="disableLoadAnalysis" mnemonicParsing="false" onAction="#disableLoadAnalysis" text="Disable this Analysis" toggleGroup="$Abilita">
-                                       <padding>
-                                          <Insets left="15.0" />
-                                       </padding>
-                                    </RadioButton>
-                                    <Pane prefHeight="31.0" prefWidth="334.0" />
-                                    <Button mnemonicParsing="false" onAction="#performLoadAnalyses" prefHeight="31.0" prefWidth="225.0" text="Perform Load Distribution Analysis" textOverrun="CLIP">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
-                                 </items>
-                              </ToolBar>
+                              <HBox>
+                                 <children>
+                                    <ToolBar maxHeight="1.7976931348623157E308" maxWidth="320.0" minWidth="320.0" prefHeight="37.0" prefWidth="320.0">
+                                       <items>
+                                          <RadioButton fx:id="enableLoadAnalysis" minWidth="150.0" mnemonicParsing="false" onAction="#enableLoadAnalysis" selected="true" text="Enable this Analysis">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="Abilita" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton fx:id="disableLoadAnalysis" minWidth="150.0" mnemonicParsing="false" onAction="#disableLoadAnalysis" text="Disable this Analysis" toggleGroup="$Abilita">
+                                             <padding>
+                                                <Insets left="15.0" />
+                                             </padding>
+                                          </RadioButton>
+                                       </items>
+                                    </ToolBar>
+                                    <HBox alignment="CENTER_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="37.0" prefWidth="1500.0">
+                                       <children>
+                                          <Button minWidth="225.0" mnemonicParsing="false" onAction="#performLoadAnalyses" prefHeight="31.0" prefWidth="225.0" text="Perform Load Distribution Analysis" textOverrun="CLIP">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Button>
+                                          <Region maxWidth="1000.0" prefHeight="31.0" prefWidth="16.0" />
+                                          <MenuButton minWidth="100.0" mnemonicParsing="false" text="Manage external curves">
+                                            <items>
+                                              <MenuItem fx:id="addExternalCurveLoad" mnemonicParsing="false" onAction="#addExternalCurveLoadFunct" text="Add external curve" />
+                                              <MenuItem fx:id="deleteLastCurveLoad" mnemonicParsing="false" text="Delete last curve" />
+                                                <MenuItem fx:id="deleteAllCurveLoad" mnemonicParsing="false" text="Delete all external curves" />
+                                            </items>
+                                          </MenuButton>
+                                          <Region maxWidth="1000.0" prefHeight="31.0" prefWidth="5.0" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
                               <SplitPane dividerPositions="0.410913140311804" prefHeight="635.0" prefWidth="900.0">
                                 <items>
                                     <ScrollPane>
@@ -121,13 +140,14 @@
                                                       </VBox>
                                                    </children>
                                                 </GridPane>
-                                                <GridPane layoutX="8.0" layoutY="33.0" prefHeight="33.0" prefWidth="336.0">
+                                                <GridPane layoutX="8.0" layoutY="33.0" prefHeight="22.0" prefWidth="336.0">
                                                    <columnConstraints>
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.60000610351562" />
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="187.39999389648438" />
                                                    </columnConstraints>
                                                    <rowConstraints>
-                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="30.199996948242188" minHeight="-Infinity" prefHeight="15.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="27.199996948242188" minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
                                                       <Label fx:id="alphasInputLabel" text="Alphas Input Mode" />
@@ -141,6 +161,7 @@
                                                             <RadioButton fx:id="alphasAsInput" mnemonicParsing="false" onAction="#disableInputAsArray" text="Values" toggleGroup="$alphaValues" />
                                                          </children>
                                                       </HBox>
+                                                      <Separator prefWidth="200.0" GridPane.rowIndex="1" />
                                                    </children>
                                                 </GridPane>
                                                 <GridPane layoutX="9.0" layoutY="241.0" prefHeight="297.0" prefWidth="336.0">
@@ -259,26 +280,42 @@
                      <children>
                         <VBox layoutX="310.0" layoutY="98.0" prefHeight="671.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <ToolBar prefHeight="40.0" prefWidth="200.0">
-                                 <items>
-                                    <RadioButton fx:id="enableLiftAnalysis" mnemonicParsing="false" onAction="#enableLoadAnalysisLift" selected="true" text="Enable this Analysis">
-                                       <toggleGroup>
-                                          <ToggleGroup fx:id="Abilita1" />
-                                       </toggleGroup>
-                                    </RadioButton>
-                                    <RadioButton fx:id="disableLiftAnalysis" mnemonicParsing="false" onAction="#disableLoadAnalysisLift" text="Disable this Analysis" toggleGroup="$Abilita1">
-                                       <padding>
-                                          <Insets left="15.0" />
-                                       </padding>
-                                    </RadioButton>
-                                    <Pane prefHeight="31.0" prefWidth="334.0" />
-                                    <Button mnemonicParsing="false" onAction="#performLiftAnalyses" prefHeight="31.0" prefWidth="135.0" text="Perform Lift Analysis" textOverrun="CLIP">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
-                                 </items>
-                              </ToolBar>
+                              <HBox>
+                                 <children>
+                                    <ToolBar maxWidth="320.0" minWidth="320.0" prefHeight="37.0" prefWidth="320.0">
+                                       <items>
+                                          <RadioButton fx:id="enableLiftAnalysis" mnemonicParsing="false" onAction="#enableLoadAnalysisLift" selected="true" text="Enable this Analysis">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="Abilita1" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton fx:id="disableLiftAnalysis" mnemonicParsing="false" onAction="#disableLoadAnalysisLift" text="Disable this Analysis" toggleGroup="$Abilita1">
+                                             <padding>
+                                                <Insets left="15.0" />
+                                             </padding>
+                                          </RadioButton>
+                                       </items>
+                                    </ToolBar>
+                                    <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="1500.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#performLiftAnalyses" prefHeight="31.0" prefWidth="135.0" text="Perform Lift Analysis" textOverrun="CLIP">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Button>
+                                          <Region prefHeight="200.0" prefWidth="16.0" />
+                                          <Region prefHeight="39.0" prefWidth="5.0" />
+                                          <MenuButton minWidth="100.0" mnemonicParsing="false" text="Manage external curves">
+                                             <items>
+                                                <MenuItem fx:id="addExternalCurveLift" mnemonicParsing="false" text="Add external curve" />
+                                                <MenuItem fx:id="deleteLastCurveLift" mnemonicParsing="false" text="Delete last curve" />
+                                                <MenuItem fx:id="deleteAllCurveLift" mnemonicParsing="false" text="Delete all external curves" />
+                                             </items>
+                                          </MenuButton>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
                               <SplitPane dividerPositions="0.3741648106904232" prefHeight="635.0" prefWidth="900.0">
                                  <items>
                                     <ScrollPane>
@@ -439,7 +476,7 @@
                                                       </VBox>
                                                    </children>
                                                 </GridPane>
-                                                <GridPane layoutX="1.0" layoutY="33.0" prefHeight="23.0" prefWidth="343.0">
+                                                <GridPane layoutX="7.0" layoutY="33.0" prefHeight="26.0" prefWidth="337.0">
                                                    <columnConstraints>
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.60000610351562" />
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="187.39999389648438" />
