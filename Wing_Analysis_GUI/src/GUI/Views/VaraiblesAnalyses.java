@@ -17,9 +17,12 @@ import GUI.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -28,6 +31,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.customdata.MyArray;
 
@@ -163,6 +168,7 @@ public class VaraiblesAnalyses {
 	@FXML
 	ChoiceBox anglesUnitLift;
 	
+	
 	// OUTPUT----------
 	@FXML
 	Pane outputPaneFinalLOAD;
@@ -181,6 +187,16 @@ public class VaraiblesAnalyses {
 	
 	@FXML
 	TextArea outputTextLIFT;
+	
+	// EXTERNAL CURVES
+	
+	MenuItem addExternalCurveLoad;
+	MenuItem deleteLastCurveLoad;
+	MenuItem deleteAllCurveLoad;
+
+	MenuItem addExternalCurveLift;
+	MenuItem deleteLastCurveLift;
+	MenuItem deleteAllCurveLift;
 	
 	int runLoad;
 	int runLift;
@@ -725,6 +741,7 @@ public class VaraiblesAnalyses {
 		theInputOutputTree.setAlphaArrayLiftDistribution(alphaLoadArray);
 		WingAnalysisCalculator.calculateLoadDistributions(theInputOutputTree, this);
 		theInputOutputTree.getSaveButton().setDisable(false);
+		
 	}
 
 
@@ -810,8 +827,12 @@ public class VaraiblesAnalyses {
 		theInputOutputTree.getSaveButton().setDisable(false);
 		
 	}
+	
+	public void addExternalCurveLoadFunct() throws IOException{
+	Main.addNewCurveLoad(this);
 
-
+			
+	}
 
 	public InputOutputTree getTheInputOutputTree() {
 		return theInputOutputTree;
