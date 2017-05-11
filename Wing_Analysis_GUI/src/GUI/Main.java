@@ -12,6 +12,7 @@ import javax.measure.unit.Unit;
 import org.eclipse.ui.Saveable;
 
 import Calculator.InputOutputTree;
+import GUI.Views.AddCurveLoadController;
 import GUI.Views.Controllers;
 import GUI.Views.SaveOutput;
 import GUI.Views.VaraiblesAnalyses;
@@ -208,6 +209,29 @@ public class Main extends Application {
 		
 	
 			
+	}
+	public static void addNewCurveLoad(VaraiblesAnalyses theVarablesAnalysisClass) throws IOException{	
+	Stage newStageAddCurve = new Stage();
+	
+	FXMLLoader loader = new FXMLLoader();
+	loader.setLocation(Main.class.getResource("Views/AddNewCurveLoad.fxml"));
+
+	BorderPane newWindowBorder = loader.load();
+	
+	// devo definire una nuova finestra e settarci dentro questo nuovo border pane
+	
+	newStageAddCurve.setTitle("Add External Curve");
+	newStageAddCurve.initModality(Modality.WINDOW_MODAL);
+	newStageAddCurve.initOwner(primaryStage);
+	
+	Controllers theControllerClass = loader.getController();
+	theControllerClass.setTheVariablesAnalysisClass(theVarablesAnalysisClass);
+	
+	// Ora devo settare la scena definita
+	
+	Scene scene = new Scene(newWindowBorder);
+	newStageAddCurve.setScene(scene);
+	newStageAddCurve.showAndWait();
 	}
 	
 	public static void saveAndExit() throws IOException{

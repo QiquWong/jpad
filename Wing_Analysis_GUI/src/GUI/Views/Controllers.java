@@ -15,6 +15,7 @@ public class Controllers {
 
 	private Main main;
 	private Main theMainClass = new Main();
+	VaraiblesAnalyses theVariablesAnalysisClass;
 
 	@FXML
 	Button saveButton;
@@ -71,6 +72,14 @@ public class Controllers {
 
 	public void setSaveButton(Button saveButton) {
 		this.saveButton = saveButton;
+	}
+
+	public VaraiblesAnalyses getTheVariablesAnalysisClass() {
+		return theVariablesAnalysisClass;
+	}
+
+	public void setTheVariablesAnalysisClass(VaraiblesAnalyses theVariablesAnalysisClass) {
+		this.theVariablesAnalysisClass = theVariablesAnalysisClass;
 	}
 	
 	
