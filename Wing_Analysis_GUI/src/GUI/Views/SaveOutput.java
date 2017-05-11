@@ -24,6 +24,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -55,16 +56,16 @@ public class SaveOutput {
 	TextField outputDirText;
 	
 	@FXML
-	RadioButton svg;
+	CheckBox svg;
 	
 	@FXML
-	RadioButton xml;
+	CheckBox xml;
 	
 	@FXML
-	RadioButton xls;
+	CheckBox xls;
 	
 	@FXML
-	RadioButton png;
+	CheckBox png;
 	
 	@FXML
 	Button save;
@@ -103,7 +104,10 @@ public class SaveOutput {
 		DirectoryChooser chooser = new DirectoryChooser();
 		chooser.setTitle("Choose Output Folder");
 		chooser.setInitialDirectory(new File(MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)));
-		outputDirectory = chooser.showDialog(null).getAbsolutePath();
+		outputDirectory = chooser.showDialog(null).getAbsolutePath()+File.separator+theInputOutputTree.getInputFile().getName().replaceAll(".xml","" );
+		MyConfiguration.createNewFolder(
+				outputDirectory
+				);
 		outputDirText.setText(outputDirectory);
 
 		if (outputDirectory != null) {
@@ -123,6 +127,13 @@ public class SaveOutput {
 	}
 	
 	private void savePNG(){
+		
+		String outputChartPath = 	MyConfiguration.createNewFolder(
+				outputDirectory
+				+ File.separator 
+				+ "charts"
+				+ File.separator
+				);
 		
 		if(theInputOutputTree.getPerformLoadAnalysis() == true){
 			
@@ -155,7 +166,7 @@ public class SaveOutput {
 		}
 
 		
-		MyChartToFileUtils.plot(
+		MyChartToFileUtils.plotNOCSV(
 				xMatrix,
 				yMatrix, 
 				0., 
@@ -167,14 +178,94 @@ public class SaveOutput {
 				"", 
 				"", 
 				legendString, 
-				outputDirectory + "Charts" + File.separator,
+				outputChartPath,
 				"Lift_Coefficient_distribution");
+		
+
+		}
+		
+		
+		if(theInputOutputTree.getPerformLiftAnalysis() == true){
+		
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutputTree.getAlphaArrayLiftCurve()),
+				MyArrayUtils.convertToDoublePrimitive(theInputOutputTree.getLiftCoefficientCurve()),
+				null, 
+				null, 
+				null, 
+				null, 
+				"alpha",
+				"CL",
+				"deg", 
+				"",
+				outputChartPath,
+				"Lift_Coefficient_curve"
+				);
+		
+		}
+		
+		if(theInputOutputTree.getPerformStallPathAnalysis() == true){
+			
+		List<Double[]> xVector = new ArrayList<Double[]>();
+		List<Double[]> yVector = new ArrayList<Double[]>();
+		List<String> legend  = new ArrayList<>(); 
+
+			yVector.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					theInputOutputTree.getClMaxAirfoils()));
+			
+			yVector.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					theInputOutputTree.getClMaxStallPath()));
+		
+		
+		for (int i = 0; i<2; i++){
+			xVector.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					theInputOutputTree.getyAdimensionalDistributionSemiSpan()));
+		}
+		
+		legend.add("cl max airfoils");
+		legend.add("cl at alpha = " + theInputOutputTree.getAlphaMaxLinear().doubleValue(NonSI.DEGREE_ANGLE) + "(deg)");
+
+		
+		double[][] xMatrix = new double[2][theInputOutputTree.getNumberOfPointSemispan()];
+		double[][] yMatrix = new double[2][theInputOutputTree.getNumberOfPointSemispan()];
+		
+		String [] legendString = new String[theInputOutputTree.getAlphaArrayLiftDistribution().size()];
+		
+		for(int i=0; i<2; i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVector.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVector.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				0., 
+				1., 
+				null, 
+				null,
+				"$\\eta$", 
+				"$C_l$",
+				"", 
+				"", 
+				legendString, 
+				outputChartPath,
+				"Stall_Path");
 		
 
 		}
 	}
 	
-
+	private void saveXLS(){
+		
+		String outputChartPath = 	MyConfiguration.createNewFolder(
+				outputDirectory
+				+ File.separator 
+				+ "XlsFiles"
+				+ File.separator
+				);
+	}
 	
 	public InputOutputTree getTheInputOutputTree() {
 		return theInputOutputTree;

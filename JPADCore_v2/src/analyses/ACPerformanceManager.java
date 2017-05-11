@@ -3469,7 +3469,11 @@ public class ACPerformanceManager {
 							);
 			
 			_theTakeOffCalculator = new TakeOffCalc(
-					_theAircraft,
+					_theAircraft.getWing().getAspectRatio(),
+					_theAircraft.getWing().getSurface(),
+					_theAircraft.getPowerPlant(),
+					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCLTakeOff(),
+					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff(),
 					altitude.to(SI.METER),
 					mach,
 					takeOffMass.to(SI.KILOGRAM),

@@ -397,7 +397,11 @@ public class MissionProfileCalc {
 							);
 
 			TakeOffCalc theTakeOffCalculator = new TakeOffCalc(
-					_theAircraft,
+					_theAircraft.getWing().getAspectRatio(),
+					_theAircraft.getWing().getSurface(),
+					_theAircraft.getPowerPlant(),
+					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCLTakeOff(),
+					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff(),
 					_takeOffMissionAltitude.to(SI.METER),
 					_theOperatingConditions.getMachTakeOff(),
 					_initialMissionMass,

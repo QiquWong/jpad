@@ -5,7 +5,9 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
@@ -13,6 +15,7 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
@@ -399,6 +402,37 @@ public class AerodynamicCalc {
 		return 1.78*(1 - 0.045*Math.pow(arW, 0.68)) - 0.64;
 	}
 
+	/**
+	 * Estimates the oswald factor from the real polar curve using least square method to find the slope of 
+	 * CD(CL^2)
+	 * 
+	 * @author Vittorio Trifari
+	 * @param polarCL
+	 * @param polarCD
+	 * @param aspectRatio
+	 * @return the oswald factor
+	 */
+	public static Double estimateOswaldFactorFormAircraftDragPolar(Double[] polarCL, Double[] polarCD, Double aspectRatio) {
+
+		if(polarCL.length != polarCD.length) {
+			System.err.println("POLAR CL AND CD MUST HAVE THE SAME LENGTH !!");
+			return null;
+		}
+
+		Double[] squareCL = MyArrayUtils.convertListOfDoubleToDoubleArray(
+				Arrays.stream(polarCL).map(cL -> Math.pow(cL, 2)).collect(Collectors.toList())
+				);
+
+		SimpleRegression sr = new SimpleRegression(true);
+		for(int i=0; i<squareCL.length; i++) 
+			sr.addData(squareCL[i], polarCD[i]);
+
+		double slope = sr.getSlope();
+
+		return 1/(aspectRatio*Math.PI*slope);
+
+	}
+	
 	public static Double calculateRoughness(double cd0) {
 		return cd0*0.06;
 	}

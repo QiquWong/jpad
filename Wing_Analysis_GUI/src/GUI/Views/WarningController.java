@@ -17,6 +17,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -38,13 +39,13 @@ public class WarningController {
 	RadioButton useCalculatedValues;
 
 	@FXML
-	RadioButton surface;
+	CheckBox surface;
 
 	@FXML
-	RadioButton aspectRatio;
+	CheckBox aspectRatio;
 
 	@FXML
-	RadioButton chords;
+	CheckBox chords;
 
 	@FXML
 	RadioButton aspectRatioChoice;

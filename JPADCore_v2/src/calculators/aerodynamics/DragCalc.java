@@ -13,6 +13,8 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Volume;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.LandingGears;
