@@ -54,6 +54,14 @@ import standaloneutils.atmosphere.SpeedCalc;
  *
  */
 
+	//////////////////////////////////////
+    //								    //
+	// FIXME: NO LOOP ON V2 BUT CHECK   //
+	//		  n=1 AT 35ft               //
+    //        (with V2 = 1.2Vs + 10kts	//
+	//									//
+    //////////////////////////////////////
+
 public class NoiseTrajectoryCalc {
 
 	//-------------------------------------------------------------------------------------
@@ -71,7 +79,8 @@ public class NoiseTrajectoryCalc {
 	tEndRot = Amount.valueOf(10000.0, SI.SECOND), // initialization to an impossible time
 	tClimb = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tLandingGearRetractionStart = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
-	tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+	tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
+	tV2Increment = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, xEndSimulation;
@@ -208,6 +217,9 @@ public class NoiseTrajectoryCalc {
 		tRot = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 		tEndRot = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 		tClimb = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+		tLandingGearRetractionStart = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+		tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+		tV2Increment = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 
 	}
 
@@ -285,6 +297,7 @@ public class NoiseTrajectoryCalc {
 							);
 
 					timeBreakPoints.add(t);
+					timeBreakPoints.add(t+0.01);
 					tRot = Amount.valueOf(t, SI.SECOND);
 
 					System.out.println("\n---------------------------DONE!-------------------------------");
@@ -318,6 +331,7 @@ public class NoiseTrajectoryCalc {
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					
 					timeBreakPoints.add(t);
+					timeBreakPoints.add(t+0.01);
 					tEndHold = Amount.valueOf(t, SI.SECOND);
 
 					return  Action.CONTINUE;
@@ -386,23 +400,21 @@ public class NoiseTrajectoryCalc {
 					System.out.println("\n\tswitching function changes sign at t = " + t);
 					System.out.println(
 							"\n\tx[0] = s = " + x[0] + " m" +
-									"\n\tx[1] = V = " + x[1] + " m/s" + 
-									"\n\tx[2] = gamma = " + x[2] + " °" +
-									"\n\tx[3] = altitude = " + x[3] + " m"
+							"\n\tx[1] = V = " + x[1] + " m/s" + 
+							"\n\tx[2] = gamma = " + x[2] + " °" +
+							"\n\tx[3] = altitude = " + x[3] + " m"
 							);
 
+					
 					timeBreakPoints.add(t);
+					tV2Increment = Amount.valueOf(t, SI.SECOND); 
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					
-					return Action.RESET_STATE;
+					return Action.CONTINUE;
 				}
 
 				@Override
 				public void resetState(double t, double[] x) {
-					x[0] = x[0];
-					x[1] = x[1] + 5.144; // + 10kts
-					x[2] = x[2];
-					x[3] = x[3];
 				}
 
 			};
@@ -467,15 +479,14 @@ public class NoiseTrajectoryCalc {
 					timeBreakPoints.add(t);
 					tLandingGearRetractionStart = Amount.valueOf(t, SI.SECOND);
 					
-					// FIXME : SLOPE !!
-					
 					deltaCD0LandingGearRetractionSlope.interpolateLinear(
 							new double[] {
 									tLandingGearRetractionStart.doubleValue(SI.SECOND), 
 									tLandingGearRetractionStart.plus(dtLandingGearRetraction).doubleValue(SI.SECOND)
 									}, 
-							new double[] {1, 0}
+							new double[] {0, 1}
 							);
+					
 					System.out.println("\n---------------------------DONE!-------------------------------\n");
 					return Action.CONTINUE;
 				}
@@ -645,6 +656,7 @@ public class NoiseTrajectoryCalc {
 						System.out.println("\n---------------------------DONE!-------------------------------");
 
 						tClimb = Amount.valueOf(t, SI.SECOND);
+						timeBreakPoints.add(t-0.01);
 						timeBreakPoints.add(t);
 					}
 
@@ -671,7 +683,7 @@ public class NoiseTrajectoryCalc {
 
 			if(Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) < 0.009)
 				try {
-					createOutputCharts(0.1, outputFolderPath);
+					createOutputCharts(1.0, outputFolderPath);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -717,7 +729,7 @@ public class NoiseTrajectoryCalc {
 		List<Amount<Velocity>> rateOfClimb = new ArrayList<Amount<Velocity>>();
 		List<Amount<Length>> groundDistance = new ArrayList<Amount<Length>>();
 		List<Amount<Length>> verticalDistance = new ArrayList<Amount<Length>>();
-		List<Double> sfc = new ArrayList<Double>();
+		List<Double> fuelUsed = new ArrayList<Double>();
 
 		MyInterpolatingFunction alphaFunction = new MyInterpolatingFunction();
 		alphaFunction.interpolateLinear(
@@ -802,35 +814,36 @@ public class NoiseTrajectoryCalc {
 							);
 					//--------------------------------------------------------------------------------
 					// SFC:
-					sfc.add(
-							(thrust.get(
-									thrust.size()-1
-									)
-									.doubleValue(SI.NEWTON))
-							*(0.224809)*(0.454/60)
-							*EngineDatabaseManager.getSFC(
-									SpeedCalc.calculateMach(
-											x[3],
-											x[1]
-											),
-									x[3],
-									EngineDatabaseManager.getThrustRatio(
-											SpeedCalc.calculateMach(
-													x[3],
-													x[1]
-													),
-											x[3],
-											NoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-											NoiseTrajectoryCalc.this.getThePowerPlant().getEngineType(),
-											EngineOperatingConditionEnum.TAKE_OFF,
-											NoiseTrajectoryCalc.this.getThePowerPlant()
-											),
-									NoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
-									NoiseTrajectoryCalc.this.getThePowerPlant().getEngineType(),
-									EngineOperatingConditionEnum.TAKE_OFF,
-									NoiseTrajectoryCalc.this.getThePowerPlant()
-									)
-							);
+					if(i==0)
+						fuelUsed.add(0.0);
+					else
+						fuelUsed.add(
+								fuelUsed.get(i-1) +
+								(thrust.get(i-1).doubleValue(SI.NEWTON))
+								*(0.224809)*(0.454/3600)
+								*EngineDatabaseManager.getSFC(
+										SpeedCalc.calculateMach(
+												x[3],
+												x[1]
+												),
+										x[3],
+										EngineDatabaseManager.getThrustRatio(
+												SpeedCalc.calculateMach(
+														x[3],
+														x[1]
+														),
+												x[3],
+												NoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
+												NoiseTrajectoryCalc.this.getThePowerPlant().getEngineType(),
+												EngineOperatingConditionEnum.TAKE_OFF,
+												NoiseTrajectoryCalc.this.getThePowerPlant()
+												),
+										NoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(0).getBPR(),
+										NoiseTrajectoryCalc.this.getThePowerPlant().getEngineType(),
+										EngineOperatingConditionEnum.TAKE_OFF,
+										NoiseTrajectoryCalc.this.getThePowerPlant()
+										)
+								);
 
 					//--------------------------------------------------------------------------------
 					// FRICTION:
@@ -1024,7 +1037,17 @@ public class NoiseTrajectoryCalc {
 					//----------------------------------------------------------------------------------------
 					// CD:
 					cD.add(
-							((DynamicsEquationsNoiseTrajectory)ode).cD(cL.get(cL.size()-1)));
+							((DynamicsEquationsNoiseTrajectory)ode).cD(
+									((DynamicsEquationsNoiseTrajectory)ode).cL(
+											x[1],
+											alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
+											x[2],
+											times.get(i).doubleValue(SI.SECOND)
+											),
+									times.get(i).doubleValue(SI.SECOND),
+									x[1]
+									)
+							);
 
 					//----------------------------------------------------------------------------------------
 				}
@@ -1265,6 +1288,35 @@ public class NoiseTrajectoryCalc {
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "ft", "",
 				outputFolderPath, "CL_vs_GroundDistance_IMPERIAL");
+		
+		//.................................................................................
+		// CD v.s. Time
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(times),
+				MyArrayUtils.convertToDoublePrimitive(cD),
+				0.0, null, 0.0, null,
+				"Time", "CL", "s", "",
+				outputFolderPath, "CD_evolution");
+
+		//.................................................................................
+		// CD v.s. Ground distance
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(groundDistance),
+				MyArrayUtils.convertToDoublePrimitive(cD),
+				0.0, null, 0.0, null,
+				"Ground distance", "CD", "m", "",
+				outputFolderPath, "CD_vs_GroundDistance_SI");
+
+		MyChartToFileUtils.plotNoLegend(
+				MyArrayUtils.convertListOfAmountTodoubleArray(
+						groundDistance.stream()
+						.map(x -> x.to(NonSI.FOOT))
+						.collect(Collectors.toList())
+						),
+				MyArrayUtils.convertToDoublePrimitive(cD),
+				0.0, null, 0.0, null,
+				"Ground distance", "CD", "ft", "",
+				outputFolderPath, "CD_vs_GroundDistance_IMPERIAL");
 
 		//.................................................................................
 		// Horizontal Forces v.s. Time
@@ -1352,9 +1404,9 @@ public class NoiseTrajectoryCalc {
 		MyChartToFileUtils.plot(
 				xMatrix2SI, yMatrix2SI,
 				0.0, null, null, null,
-				"Time", "Horizontal Forces", "m", "N",
+				"Ground Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				outputFolderPath, "HorizontalForces_evolution_SI");
+				outputFolderPath, "HorizontalForces_vs_GroundDistance_SI");
 
 		double[][] xMatrix2IMPERIAL = new double[5][totalForce.size()];
 		for(int i=0; i<xMatrix2IMPERIAL.length; i++)
@@ -1392,9 +1444,9 @@ public class NoiseTrajectoryCalc {
 		MyChartToFileUtils.plot(
 				xMatrix2IMPERIAL, yMatrix2IMPERIAL,
 				0.0, null, null, null,
-				"Time", "Horizontal Forces", "ft", "lb",
+				"Ground Distance", "Horizontal Forces", "ft", "lb",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				outputFolderPath, "HorizontalForces_evolution_IMPERIAL");
+				outputFolderPath, "HorizontalForces_vs_GroundDistance_IMPERIAL");
 
 		//.................................................................................
 		// Vertical Forces v.s. Time
@@ -1682,7 +1734,12 @@ public class NoiseTrajectoryCalc {
 				throws MaxCountExceededException, DimensionMismatchException {
 
 			alpha = alpha(t);
+			
+//			if(t >= tV2Increment.doubleValue(SI.SECOND))
+//				x[1] += 5.144; // 10kts
+			
 			double speed = x[1];
+			
 			gamma = x[2];
 			double altitude = x[3];
 
@@ -1736,43 +1793,85 @@ public class NoiseTrajectoryCalc {
 			return theThrust;
 		}
 
-		public double cD(double cL) {
+		public double cD(double cL, double time, double speed) {
 
-			double cD = MyMathUtils
-					.getInterpolatedValue1DLinear(
-							MyArrayUtils.convertToDoublePrimitive(
-									NoiseTrajectoryCalc.this.getPolarCLTakeOff()
-									),
-							MyArrayUtils.convertToDoublePrimitive(
-									NoiseTrajectoryCalc.this.getPolarCDTakeOff()
-									),
-							cL
-							);
-
-			double deltaCDGroundEffect = NoiseTrajectoryCalc.this.getkGround() 
-					*Math.pow(cL, 2)
-					/(Math.PI
-							*NoiseTrajectoryCalc.this.getAspectRatio()
-							*AerodynamicCalc.estimateOswaldFactorFormAircraftDragPolar(
-									NoiseTrajectoryCalc.this.getPolarCLTakeOff(),
-									NoiseTrajectoryCalc.this.getPolarCDTakeOff(),
-									NoiseTrajectoryCalc.this.getAspectRatio())
-							);
+			double cD = 0.0;
+			double deltaCDGroundEffect = 0.0;
+			
+			if(time < tLandingGearRetractionStart.doubleValue(SI.SECOND)) {
+				cD = MyMathUtils
+						.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(
+										NoiseTrajectoryCalc.this.getPolarCLTakeOff()
+										),
+								MyArrayUtils.convertToDoublePrimitive(
+										NoiseTrajectoryCalc.this.getPolarCDTakeOff()
+										),
+								cL
+								);
+				deltaCDGroundEffect = NoiseTrajectoryCalc.this.getkGround() 
+						*Math.pow(cL, 2)
+						/(Math.PI
+								*NoiseTrajectoryCalc.this.getAspectRatio()
+								*AerodynamicCalc.estimateOswaldFactorFormAircraftDragPolar(
+										NoiseTrajectoryCalc.this.getPolarCLTakeOff(),
+										NoiseTrajectoryCalc.this.getPolarCDTakeOff(),
+										NoiseTrajectoryCalc.this.getAspectRatio())
+								);
+			}
+			else if((time >= tLandingGearRetractionStart.doubleValue(SI.SECOND))
+					&& (time < tLandingGearRetractionEnd.doubleValue(SI.SECOND))) {
+				cD = MyMathUtils
+						.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(
+										NoiseTrajectoryCalc.this.getPolarCLTakeOff()
+										),
+								MyArrayUtils.convertToDoublePrimitive(
+										NoiseTrajectoryCalc.this.getPolarCDTakeOff()
+										),
+								cL
+								)
+						- deltaCD0LandingGear*deltaCD0LandingGearRetractionSlope.value(time);
+				
+				deltaCDGroundEffect = NoiseTrajectoryCalc.this.getkGround() 
+						*Math.pow(cL, 2)
+						/(Math.PI
+								*NoiseTrajectoryCalc.this.getAspectRatio()
+								*AerodynamicCalc.estimateOswaldFactorFormAircraftDragPolar(
+										NoiseTrajectoryCalc.this.getPolarCLTakeOff(),
+										NoiseTrajectoryCalc.this.getPolarCDTakeOff(),
+										NoiseTrajectoryCalc.this.getAspectRatio())
+								);
+			}
+			else {
+				cD = MyMathUtils
+						.getInterpolatedValue1DLinear(
+								MyArrayUtils.convertToDoublePrimitive(
+										NoiseTrajectoryCalc.this.getPolarCLTakeOff()
+										),
+								MyArrayUtils.convertToDoublePrimitive(
+										NoiseTrajectoryCalc.this.getPolarCDTakeOff()
+										),
+								cL
+								)
+						- deltaCD0LandingGear;
+				deltaCDGroundEffect = NoiseTrajectoryCalc.this.getkGround() 
+						*Math.pow(cL, 2)
+						/(Math.PI
+								*NoiseTrajectoryCalc.this.getAspectRatio()
+								*AerodynamicCalc.estimateOswaldFactorFormAircraftDragPolar(
+										NoiseTrajectoryCalc.this.getPolarCLTakeOff(),
+										NoiseTrajectoryCalc.this.getPolarCDTakeOff(),
+										NoiseTrajectoryCalc.this.getAspectRatio())
+								);
+			}
 
 			return cD - deltaCDGroundEffect;
 		}
 
 		public double drag(double speed, double alpha, double gamma, double time) {
 
-			double cD = 0.0;
-			
-			if(time < tLandingGearRetractionStart.doubleValue(SI.SECOND))
-				cD = cD(cL(speed, alpha, gamma, time));
-			else {
-				cD = cD(cL(speed, alpha, gamma, time)) - deltaCD0LandingGear*deltaCD0LandingGearRetractionSlope.value(time);
-				System.out.println("Delta_CD_LG RET = " + (deltaCD0LandingGear*deltaCD0LandingGearRetractionSlope.value(time)));
-			}
-
+			double cD = cD(cL(speed, alpha, gamma, time), time, speed);
 			
 			return 	0.5
 					*surface.doubleValue(SI.SQUARE_METRE)
@@ -1832,15 +1931,18 @@ public class NoiseTrajectoryCalc {
 
 			double alphaDot = 0.0;
 
-			if((time > tRot.getEstimatedValue()) && (time < tHold.getEstimatedValue())) {
+			if((time > tRot.doubleValue(SI.SECOND)) && (time < tHold.doubleValue(SI.SECOND))) {
 				alphaDot = NoiseTrajectoryCalc.this.getAlphaDotInitial()
 						*(1-(NoiseTrajectoryCalc.this.getkAlphaDot()*(NoiseTrajectoryCalc.this.getAlpha().get(
 								NoiseTrajectoryCalc.this.getAlpha().size()-1).getEstimatedValue()))
 								);
 			}
-			else if((time > tEndHold.getEstimatedValue()) && (time < tClimb.getEstimatedValue())) {
+			else if((time > tEndHold.doubleValue(SI.SECOND)) && (time < tClimb.doubleValue(SI.SECOND))) {
 				alphaDot = alphaRed;
 			}
+//			else if(time >= tClimb.doubleValue(SI.SECOND)) {
+//				
+//			}
 
 			return alphaDot;
 		}
@@ -2273,5 +2375,13 @@ public class NoiseTrajectoryCalc {
 
 	public void setDeltaCD0LandingGearRetractionSlope(MyInterpolatingFunction deltaCD0LandingGearRetractionSlope) {
 		this.deltaCD0LandingGearRetractionSlope = deltaCD0LandingGearRetractionSlope;
+	}
+
+	public Amount<Duration> gettV2Increment() {
+		return tV2Increment;
+	}
+
+	public void settV2Increment(Amount<Duration> tV2Increment) {
+		this.tV2Increment = tV2Increment;
 	}
 }
