@@ -39,28 +39,36 @@ import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
 /**
- * This class have the purpose of calculating the required take-off field length
- * of a given aircraft by evaluating two main phases:
+ * This class have the purpose of calculating the trajectories for the noise certification
+ * of a given aircraft by evaluating the following cases:
  *
- * - the ground roll distance (rotation included)
- * - the airborne distance (until the aircraft reaches a given obstacle altitude)
+ * - take-off in ISA+10°C with MAX TAKE-OFF, Landing Gear retraction and a V2=1.2VsTO + (10 or 20 kts)
+ * - take-off in ISA+10°C with MAX TAKE-OFF, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) and 
+ *   a reduction of the thrust starting from 984ft assuming the lowest throttle setting between:
+ *   	
+ *   	- the setting which leads to a constant CGR of 4%
+ *   	- the setting which in OEI (considering a DeltaCD0OEI) leads to a leveled flight
+ *   
+ * - take-off in ISA+10°C with MAX TAKE-OFF, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) and 
+ *   a reduction of the thrust starting from 984ft assuming a set of throttle setting between 1.0 and the one 
+ *   found at the previous step
  *
- * for each of them a step by step integration is used in solving the dynamic equation;
- * furthermore the class allows to calculate the balanced field length by evaluating every
- * failure possibility and comparing the required field length in OEI condition with the
- * aborted take-off distance until they are equal.
+ * for each of them a step by step integration is used in solving the dynamic equation.
  *
  * @author Vittorio Trifari
  *
  */
 
-	//////////////////////////////////////
-    //								    //
-	// FIXME: NO LOOP ON V2 BUT CHECK   //
-	//		  n=1 AT 35ft               //
-    //        (with V2 = 1.2Vs + 10kts	//
-	//									//
-    //////////////////////////////////////
+	//////////////////////////////////////////////
+    //								            //
+	// FIXME: NO LOOP ON V2 BUT CHECK           //
+	//		  n=1 AT 35ft                       //
+    //        (with V2 = 1.2Vs + (10 or 20)kts)	//
+	//									        //
+    //		  CHECK ON tClimb == tObstacle      //
+    //        ADJUST alphaRED                   //
+	//								            //
+	//////////////////////////////////////////////
 
 public class NoiseTrajectoryCalc {
 
@@ -80,7 +88,7 @@ public class NoiseTrajectoryCalc {
 	tClimb = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tLandingGearRetractionStart = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
-	tV2Increment = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+	tObstacle = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
 	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2;
 	private Amount<Length> altitude, wingToGroundDistance, obstacle, xEndSimulation;
@@ -219,7 +227,7 @@ public class NoiseTrajectoryCalc {
 		tClimb = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 		tLandingGearRetractionStart = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 		tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
-		tV2Increment = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
+		tObstacle = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 
 	}
 
@@ -242,7 +250,11 @@ public class NoiseTrajectoryCalc {
 
 		v2 = Amount.valueOf(10000.0, SI.METERS_PER_SECOND); // initialization to an impossible speed
 
-		while (Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) >= 0.009) {
+		while (Math.abs(
+				(v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
+				- 1.2 
+				- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+				) >= 0.009) {
 
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
@@ -260,7 +272,6 @@ public class NoiseTrajectoryCalc {
 					1e-16
 					);
 			ode = new DynamicsEquationsNoiseTrajectory();
-
 
 			EventHandler ehCheckVRot = new EventHandler() {
 
@@ -373,50 +384,11 @@ public class NoiseTrajectoryCalc {
 					System.out.println("\n\tV2/VsTO = " + v2.divide(vSTakeOff));
 
 					timeBreakPoints.add(t);
+					tObstacle = Amount.valueOf(t, SI.SECOND);
 					
 					System.out.println("\n---------------------------DONE!-------------------------------");
 					return  Action.CONTINUE;
 				}
-			};
-			EventHandler ehV2Increment = new EventHandler() {
-
-				@Override
-				public void init(double t0, double[] x0, double t) {
-
-				}
-
-				@Override
-				public double g(double t, double[] x) {
-
-					return x[3] - obstacle.doubleValue(SI.METER);
-
-				}
-
-				@Override
-				public Action eventOccurred(double t, double[] x, boolean increasing) {
-					// Handle an event and choose what to do next.
-
-					System.out.println("\n\t\tV2 INCREMENT AFTER OBSTACLE");
-					System.out.println("\n\tswitching function changes sign at t = " + t);
-					System.out.println(
-							"\n\tx[0] = s = " + x[0] + " m" +
-							"\n\tx[1] = V = " + x[1] + " m/s" + 
-							"\n\tx[2] = gamma = " + x[2] + " °" +
-							"\n\tx[3] = altitude = " + x[3] + " m"
-							);
-
-					
-					timeBreakPoints.add(t);
-					tV2Increment = Amount.valueOf(t, SI.SECOND); 
-					System.out.println("\n---------------------------DONE!-------------------------------");
-					
-					return Action.CONTINUE;
-				}
-
-				@Override
-				public void resetState(double t, double[] x) {
-				}
-
 			};
 			EventHandler ehCheckXEndSimulation = new EventHandler() {
 
@@ -533,7 +505,6 @@ public class NoiseTrajectoryCalc {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-7, 50);
-				theIntegrator.addEventHandler(ehV2Increment, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-7, 50);
 				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-7, 50);
 				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1.0, 1e-7, 50);
@@ -542,7 +513,6 @@ public class NoiseTrajectoryCalc {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-7, 50);
-				theIntegrator.addEventHandler(ehV2Increment, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-7, 50);
 				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-7, 50);
 				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1.0, 1e-7, 50);
@@ -551,7 +521,6 @@ public class NoiseTrajectoryCalc {
 				theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-7, 50);
-				theIntegrator.addEventHandler(ehV2Increment, 1.0, 1e-3, 20);
 				theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-7, 50);
 				theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-7, 50);
 				theIntegrator.addEventHandler(ehCheckXEndSimulation, 1.0, 1e-7, 50);
@@ -676,14 +645,21 @@ public class NoiseTrajectoryCalc {
 
 			//--------------------------------------------------------------------------------
 			// NEW ALPHA REDUCTION RATE 
-			if(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2) >= 0.0)
+			if((v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
+					- 1.2 
+					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					>= 0.0)
 				newAlphaRed = alphaRed + 0.1;
 			else
 				newAlphaRed = alphaRed - 0.1;
 
-			if(Math.abs(((v2.divide(vSTakeOff).getEstimatedValue()) - 1.2)) < 0.009)
+			if(Math.abs(
+					(v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
+					- 1.2 
+					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					) < 0.009)
 				try {
-					createOutputCharts(1.0, outputFolderPath);
+					createOutputCharts(0.5, outputFolderPath);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -1734,12 +1710,7 @@ public class NoiseTrajectoryCalc {
 				throws MaxCountExceededException, DimensionMismatchException {
 
 			alpha = alpha(t);
-			
-//			if(t >= tV2Increment.doubleValue(SI.SECOND))
-//				x[1] += 5.144; // 10kts
-			
 			double speed = x[1];
-			
 			gamma = x[2];
 			double altitude = x[3];
 
@@ -1762,12 +1733,12 @@ public class NoiseTrajectoryCalc {
 						- weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()));
 				xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
 			}
-			else if (t >= tClimb.getEstimatedValue()) {
-				xDot[0] = speed;
-				xDot[1] = 0.0;
-				xDot[2] = 0.0;
-				xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
-			}
+//			else if (t >= tObstacle.getEstimatedValue()) {
+//				xDot[0] = speed;
+//				xDot[1] = 0.0;
+//				xDot[2] = 0.0;
+//				xDot[3] = speed*Math.sin(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue());
+//			}
 		}
 
 		public double thrust(double speed, double gamma, double time, double altitude) {
@@ -1940,9 +1911,6 @@ public class NoiseTrajectoryCalc {
 			else if((time > tEndHold.doubleValue(SI.SECOND)) && (time < tClimb.doubleValue(SI.SECOND))) {
 				alphaDot = alphaRed;
 			}
-//			else if(time >= tClimb.doubleValue(SI.SECOND)) {
-//				
-//			}
 
 			return alphaDot;
 		}
@@ -2377,11 +2345,11 @@ public class NoiseTrajectoryCalc {
 		this.deltaCD0LandingGearRetractionSlope = deltaCD0LandingGearRetractionSlope;
 	}
 
-	public Amount<Duration> gettV2Increment() {
-		return tV2Increment;
+	public Amount<Duration> gettObstacle() {
+		return tObstacle;
 	}
 
-	public void settV2Increment(Amount<Duration> tV2Increment) {
-		this.tV2Increment = tV2Increment;
+	public void settObstacle(Amount<Duration> tObstacle) {
+		this.tObstacle = tObstacle;
 	}
 }
