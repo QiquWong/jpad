@@ -324,9 +324,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Double phi = 1.0;
 			Double kcLMax = 0.9;
 			Double kRot = 1.05;
-			Double alphaDotInitial = 4.0; // (deg/s)
+			Double alphaDotInitial = 3.0; // (deg/s)
 			Double kAlphaDot = 0.04; // (1/deg)
-			Double kFailure = 0.0050;
 			Double cLmaxTO = 2.61;
 			Double cLZeroTO = 1.66;
 			Amount<?> cLalphaFlap = Amount.valueOf(0.1407, NonSI.DEGREE_ANGLE.inverse());
