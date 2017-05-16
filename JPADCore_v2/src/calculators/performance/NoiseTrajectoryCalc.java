@@ -1,9 +1,7 @@
 package calculators.performance;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +38,6 @@ import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import writers.JPADStaticWriteUtils;
 
 /**
  * This class have the purpose of calculating the trajectories for the noise certification
@@ -65,8 +62,9 @@ import writers.JPADStaticWriteUtils;
 
 	//////////////////////////////////////////////
     //								            //
-	// FIXME: Adjust DRAG After V2 has          //
-    //        been reached                      //
+	// FIXME: LOOP ON VClimb UNTIL AN           // 
+    //        ACCELERATION OF ZERO IS REACHED   //
+    //        WITH A SPEED = V2+10kst           //
 	//								            //
 	//////////////////////////////////////////////
 
@@ -89,13 +87,15 @@ public class NoiseTrajectoryCalc {
 	tLandingGearRetractionStart = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tObstacle = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
+	tZeroAccelration = Amount.valueOf(10000.0, SI.SECOND),  // initialization to an impossible time
 	tVClimb = Amount.valueOf(10000, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxTakeOffMass; 
-	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2;
+	private Amount<Velocity> vSTakeOff, vRot, vLO, vWind, v1, v2, vClimb;
 	private Amount<Length> wingToGroundDistance, obstacle, xEndSimulation;
 	private Amount<Angle> alphaGround, iw;
 	private List<Amount<Angle>> alpha;
 	private List<Amount<Duration>> time;
+	private List<Amount<Acceleration>> acceleration;
 	private List<Double> loadFactor, cL, timeBreakPoints;
 	private Double kAlphaDot, kcLMax, kRot, phi, cLmaxTO, kGround, alphaDotInitial, deltaCD0LandingGear, deltaCD0OEI, 
 	alphaRed, cL0;
@@ -188,6 +188,7 @@ public class NoiseTrajectoryCalc {
 		// List initialization
 		this.time = new ArrayList<Amount<Duration>>();
 		this.alpha = new ArrayList<Amount<Angle>>();
+		this.acceleration = new ArrayList<Amount<Acceleration>>();
 		this.loadFactor = new ArrayList<Double>();
 		this.cL = new ArrayList<Double>();
 		this.timeBreakPoints = new ArrayList<Double>();
@@ -207,6 +208,7 @@ public class NoiseTrajectoryCalc {
 		// lists cleaning
 		time.clear();
 		alpha.clear();
+		acceleration.clear();
 		loadFactor.clear();
 		cL.clear();
 		timeBreakPoints.clear();
@@ -220,6 +222,7 @@ public class NoiseTrajectoryCalc {
 		tLandingGearRetractionEnd = Amount.valueOf(10000.0, SI.SECOND);  // initialization to an impossible time
 		tVClimb = Amount.valueOf(10000, SI.SECOND);	// initialization to an impossible time
 		tObstacle = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
+		tZeroAccelration = Amount.valueOf(10000.0, SI.SECOND);	// initialization to an impossible time
 	}
 
 	/***************************************************************************************
@@ -239,11 +242,10 @@ public class NoiseTrajectoryCalc {
 		double newAlphaRed = 0.0;
 		alphaRed = 0.0;
 
-		v2 = Amount.valueOf(10000, SI.METERS_PER_SECOND); // initialization to impossible values
+//		double tObstacleCheck = 10000.0; // initialization to impossible values
+//		double tClimbCheck = 1.0; // initialization to impossible values
 		
-		double tObstacleCheck = 10000.0; // initialization to impossible values
-		double tClimbCheck = 1.0; // initialization to impossible values
-		
+//		v2 = Amount.valueOf(10000, SI.METERS_PER_SECOND); // initialization to impossible values
 //		while (Math.abs(
 //				(v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
 //				- 1.2 
@@ -256,8 +258,22 @@ public class NoiseTrajectoryCalc {
 //					- 1.2 
 //					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 //					));
-		while ((Math.abs(tObstacleCheck - tClimbCheck)/tObstacleCheck) >= 0.01) {
+		
+//		while ((Math.abs(tObstacleCheck - tClimbCheck)/tObstacleCheck) >= 0.01) {
 			
+		vClimb = Amount.valueOf(10000, SI.METERS_PER_SECOND); // initialization to impossible values
+		while (Math.abs(
+				(vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
+				- 1.2 
+				- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+				) >= 0.01) {
+
+			double check = (Math.abs(
+					(vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
+					- 1.2 
+					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					));
+		
 			if(i >= 1) {
 				if(newAlphaRed <= 0.0)
 					alphaRed = newAlphaRed;
@@ -498,46 +514,12 @@ public class NoiseTrajectoryCalc {
 				}
 				
 			};
-			EventHandler ehCheckVClimb = new EventHandler() {
-
-				@Override
-				public void init(double t0, double[] x0, double t) {
-					
-				}
-
-				@Override
-				public double g(double t, double[] x) {
-					return x[1] - (vSTakeOff.times(1.2).doubleValue(SI.METERS_PER_SECOND) + 5.144 /* + 10kts */);
-				}
-
-				@Override
-				public Action eventOccurred(double t, double[] x, boolean increasing) {
-					System.out.println("\n\t\t V2 + 10kts REACHED: VClimb FIXED ...");
-					System.out.println("\n\tswitching function changes sign at t = " + t);
-					System.out.println(
-							"\n\tx[0] = s = " + x[0] + " m" +
-							"\n\tx[1] = V = " + x[1] + " m/s" + 
-							"\n\tx[2] = gamma = " + x[2] + " °" +
-							"\n\tx[3] = altitude = " + x[3] + " m"
-							);
-					timeBreakPoints.add(t);
-					tVClimb = Amount.valueOf(t, SI.SECOND);
-					System.out.println("\n---------------------------DONE!-------------------------------\n");
-					return Action.STOP;
-				}
-
-				@Override
-				public void resetState(double t, double[] y) {
-				}
-				
-			};
 
 			theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 50);
 			theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 50);
 			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 50);
-			theIntegrator.addEventHandler(ehCheckVClimb, 1.0, 1e-3, 50);
-			theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-3, 50);
-			theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-7, 50);
+//			theIntegrator.addEventHandler(ehLandingGearRetractionStart, 1.0, 1e-3, 50);
+//			theIntegrator.addEventHandler(ehLandingGearRetractionEnd, 1.0, 1e-3, 50);
 
 			// handle detailed info
 			StepHandler stepHandler = new StepHandler() {
@@ -550,6 +532,7 @@ public class NoiseTrajectoryCalc {
 
 					double   t = interpolator.getCurrentTime();
 					double[] x = interpolator.getInterpolatedState();
+					double[] xDot = interpolator.getInterpolatedDerivatives();
 
 					//----------------------------------------------------------------------------------------
 					// TIME:
@@ -597,7 +580,15 @@ public class NoiseTrajectoryCalc {
 									x[3]
 									)
 							);
-
+					//----------------------------------------------------------------------------------------
+					// ACCELERATION:
+//					double acceleration = xDot[1];
+//					System.out.println(acceleration);
+					
+					NoiseTrajectoryCalc.this.getAcceleration().add(
+							Amount.valueOf(xDot[1], SI.METERS_PER_SQUARE_SECOND)
+							);
+					
 					//========================================================================================
 					// CHECK ON LOAD FACTOR --> END ROTATION WHEN n=1
 					if((t > tRot.getEstimatedValue()) && (tEndRot.getEstimatedValue() == 10000.0) &&
@@ -656,6 +647,32 @@ public class NoiseTrajectoryCalc {
 						timeBreakPoints.add(t);
 					}
 
+					//========================================================================================
+					// CHECK ON ACCELERATION --> DEFINING THE ISTANT AT WHICH THE SPEED MUST BE KEPT CONSTANT 
+					if(t > tRot.doubleValue(SI.SECOND) && tZeroAccelration.doubleValue(SI.SECOND) == 10000 &&
+							(NoiseTrajectoryCalc.this.getAcceleration().get(NoiseTrajectoryCalc.this.getAcceleration().size()-1).doubleValue(SI.METERS_PER_SQUARE_SECOND)< 0.0) &&
+							(NoiseTrajectoryCalc.this.getAcceleration().get(NoiseTrajectoryCalc.this.getAcceleration().size()-2).doubleValue(SI.METERS_PER_SQUARE_SECOND) > 0.0)
+							) {
+						
+						System.out.println("\n\t\tZERO ACCELERATION REACHED ... ");
+						System.out.println( 
+								"\n\tt = " + t + " s"
+								);
+						System.out.println(
+								"\n\tx[0] = s = " + x[0] + " m" +
+								"\n\tx[1] = V = " + x[1] + " m/s" + 
+								"\n\tx[2] = gamma = " + x[2] + " °" +
+								"\n\tx[3] = altitude = " + x[3] + " m"
+								);
+						System.out.println("\n---------------------------DONE!-------------------------------");
+
+						tZeroAccelration = Amount.valueOf(t, SI.SECOND);
+						vClimb = Amount.valueOf(x[1], SI.METERS_PER_SECOND);
+						timeBreakPoints.add(t);
+						
+					}
+						
+					
 				}
 			};
 			theIntegrator.addStepHandler(stepHandler);
@@ -672,29 +689,38 @@ public class NoiseTrajectoryCalc {
 
 			//--------------------------------------------------------------------------------
 			// UPDATING tClimb AND tObstacle
-			tClimbCheck = tClimb.doubleValue(SI.SECOND);
-			tObstacleCheck = tObstacle.doubleValue(SI.SECOND);
+//			tClimbCheck = tClimb.doubleValue(SI.SECOND);
+//			tObstacleCheck = tObstacle.doubleValue(SI.SECOND);
 			
 			//--------------------------------------------------------------------------------
 			// NEW ALPHA REDUCTION RATE 
-			if(Math.abs(tClimb.doubleValue(SI.SECOND) - tObstacle.doubleValue(SI.SECOND)) >= 0.0)
+//			if(Math.abs(tClimb.doubleValue(SI.SECOND) - tObstacle.doubleValue(SI.SECOND)) >= 0.0)
 //			if((v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
 //					- 1.2 
 //					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 //					>= 0.0)
-				newAlphaRed = alphaRed - 0.1;
-//				newAlphaRed = alphaRed + 0.1;
-			else
+			if((vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
+					- 1.2 
+					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					>= 0.0)
+//				newAlphaRed = alphaRed - 0.1;
 				newAlphaRed = alphaRed + 0.1;
-//			    newAlphaRed = alphaRed - 0.1;
+			else
+//				newAlphaRed = alphaRed + 0.1;
+			    newAlphaRed = alphaRed - 0.1;
 
-			if((Math.abs(tObstacle.doubleValue(SI.SECOND) - tClimb.doubleValue(SI.SECOND))
-					/tObstacle.doubleValue(SI.SECOND)) < 0.01)
+//			if((Math.abs(tObstacle.doubleValue(SI.SECOND) - tClimb.doubleValue(SI.SECOND))
+//					/tObstacle.doubleValue(SI.SECOND)) < 0.01)
 //			if(Math.abs(
 //					(v2.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
 //					- 1.2 
 //					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 //					) < 0.01)
+			if(Math.abs(
+					(vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
+					- 1.2 
+					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
+					) < 0.01)
 				try {
 					createOutputCharts(0.25, outputFolderPath);
 					break;
@@ -983,7 +1009,7 @@ public class NoiseTrajectoryCalc {
 								);
 					}
 					else if((times.get(i).doubleValue(SI.SECOND) > tEndHold.getEstimatedValue())
-							&& (times.get(i).doubleValue(SI.SECOND) < tClimb.getEstimatedValue())) {
+							&& (times.get(i).doubleValue(SI.SECOND) < tZeroAccelration.getEstimatedValue())) {
 						alphaDot.add(alphaRed);
 					}
 					else
@@ -1709,10 +1735,10 @@ public class NoiseTrajectoryCalc {
 		public void computeDerivatives(double t, double[] x, double[] xDot)
 				throws MaxCountExceededException, DimensionMismatchException {
 
-			alpha = alpha(t);
-			double speed = x[1];
 			gamma = x[2];
 			double altitude = x[3];
+			double speed = x[1];
+			alpha = alpha(t);
 
 			if( t < tEndRot.getEstimatedValue()) {
 				xDot[0] = speed;
@@ -1845,20 +1871,12 @@ public class NoiseTrajectoryCalc {
 
 		public double cL(double speed, double alpha, double gamma ,double time, double altitude) {
 
-//			if (time <= tClimb.getEstimatedValue()) {
-
 				double cL0 = NoiseTrajectoryCalc.this.cL0;
 				double cLalpha = NoiseTrajectoryCalc.this.getcLalphaFlap().to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 				double alphaWing = alpha + NoiseTrajectoryCalc.this.getIw().getEstimatedValue();
 
 				return cL0 + (cLalpha*alphaWing);
 
-//			}
-//			else
-//				return (2*this.weight*Math.cos(Amount.valueOf(gamma, NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))/
-//						(NoiseTrajectoryCalc.this.getSurface().doubleValue(SI.SQUARE_METRE)*
-//								AtmosphereCalc.getDensity(altitude)*
-//								Math.pow(speed, 2));
 		}
 
 		public double lift(double speed, double alpha, double gamma, double time, double altitude) {
@@ -1894,10 +1912,9 @@ public class NoiseTrajectoryCalc {
 								NoiseTrajectoryCalc.this.getAlpha().size()-1).getEstimatedValue()))
 								);
 			}
-			else if((time > tEndHold.doubleValue(SI.SECOND)) && (time < tClimb.doubleValue(SI.SECOND))) {
+			else if((time > tEndHold.doubleValue(SI.SECOND)) && (time <= tZeroAccelration.doubleValue(SI.SECOND))) 
 				alphaDot = alphaRed;
-			}
-
+			
 			return alphaDot;
 		}
 
@@ -2329,5 +2346,21 @@ public class NoiseTrajectoryCalc {
 
 	public void settObstacle(Amount<Duration> tObstacle) {
 		this.tObstacle = tObstacle;
+	}
+
+	public List<Amount<Acceleration>> getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(List<Amount<Acceleration>> acceleration) {
+		this.acceleration = acceleration;
+	}
+
+	public Amount<Duration> gettZeroAccelration() {
+		return tZeroAccelration;
+	}
+
+	public void settZeroAccelration(Amount<Duration> tZeroAccelration) {
+		this.tZeroAccelration = tZeroAccelration;
 	}
 }
