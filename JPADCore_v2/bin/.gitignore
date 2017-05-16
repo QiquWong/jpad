@@ -1,12 +1,6 @@
-/standaloneutils/
 /aircraft/
 /analyses/
-<<<<<<< HEAD
-/standaloneutils/
-/calculators/
-=======
 /cad/
 /calculators/
 /database/
-/writers/
->>>>>>> 779a398fce8d7959dafa09bbe5531db25b1e536d
+/standaloneutils/

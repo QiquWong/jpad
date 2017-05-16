@@ -322,13 +322,13 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 			Amount<Duration> dtLandingGearRetraction = Amount.valueOf(12, SI.SECOND);
 			Double phi = 1.0;
-			Double kcLMax = 0.9;
+			Double kcLMax = 0.85;
 			Double kRot = 1.05;
-			Double alphaDotInitial = 3.0; // (deg/s)
+			Double alphaDotInitial = 4.0; // (deg/s)
 			Double kAlphaDot = 0.04; // (1/deg)
 			Double cLmaxTO = 2.61;
-			Double cLZeroTO = 1.66;
-			Amount<?> cLalphaFlap = Amount.valueOf(0.1407, NonSI.DEGREE_ANGLE.inverse());
+			Double cLZeroTO = 1.19;
+			Amount<?> cLalphaFlap = Amount.valueOf(0.1082, NonSI.DEGREE_ANGLE.inverse());
 			
 			MyInterpolatingFunction mu = new MyInterpolatingFunction();
 			mu.interpolateLinear(
@@ -355,7 +355,6 @@ public class NoiseTrajectoryCalcTest extends Application {
 			
 			NoiseTrajectoryCalc theNoiseTrajectoryCalculator = new NoiseTrajectoryCalc(
 					xEndSimulation,
-					theOperatingConditions.getAltitudeTakeOff(),
 					maxTakeOffMass,
 					theAircraft.getPowerPlant(),
 					polarCLTakeOff,
@@ -380,7 +379,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 					cLalphaFlap
 					);
 			
-			theNoiseTrajectoryCalculator.calculateTrajectoryODE(false, false, true, outputFolder);
+			theNoiseTrajectoryCalculator.calculateTakeOffTrajectoryAEOUpToObstacle(outputFolder);
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
