@@ -1,7 +1,6 @@
 package calculators.performance;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,9 +49,9 @@ import standaloneutils.atmosphere.SpeedCalc;
  *   	- the setting which leads to a constant CGR of 4%
  *   	- the setting which in OEI (considering a DeltaCD0OEI) leads to a leveled flight
  *   
- * - take-off in ISA+10°C with MAX TAKE-OFF, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) and 
- *   a reduction of the thrust starting from 984ft assuming a set of throttle setting between 1.0 and the one 
- *   found at the previous step
+ * - take-off in ISA+10°C with MAX TAKE-OFF setting, Landing Gear retraction, a V2=1.2VsTO + (10 or 20 kts) 
+ *   and a reduction of the thrust starting from 984ft assuming a set of throttle setting between 1.0 and 
+ *   the one found at the previous step
  *
  * for each of them a step by step integration is used in solving the dynamic equation.
  *
@@ -65,6 +64,10 @@ import standaloneutils.atmosphere.SpeedCalc;
 	// FIXME: LOOP ON VClimb UNTIL AN           // 
     //        ACCELERATION OF ZERO IS REACHED   //
     //        WITH A SPEED = V2+10kst           //
+    //        WHEN n=1 FIND THE CORRECT ALPHA   //
+    //        TO KEEP gamma=cost otherwise      //
+    //        THERE IS A REDUCTION OF ALTITUDE  //
+    //        WITH AN ACCELERATION              //
 	//								            //
 	//////////////////////////////////////////////
 
@@ -514,7 +517,43 @@ public class NoiseTrajectoryCalc {
 				}
 				
 			};
+			EventHandler ehCheckVClimb = new EventHandler() {
 
+				@Override
+				public void init(double t0, double[] x0, double t) {
+				}
+
+				@Override
+				public double g(double t, double[] x) {
+					if(t > tObstacle.doubleValue(SI.SECOND))
+						System.out.println(tZeroAccelration.doubleValue(SI.SECOND) - t);
+					return t - tZeroAccelration.doubleValue(SI.SECOND);
+				}
+
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					
+					System.out.println("\n\t\t Vclimb REACHED");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+							"\n\tx[1] = V = " + x[1] + " m/s" + 
+							"\n\tx[2] = gamma = " + x[2] + " °" +
+							"\n\tx[3] = altitude = " + x[3] + " m"
+							);
+					timeBreakPoints.add(t);
+					tVClimb = Amount.valueOf(t, SI.SECOND);
+					System.out.println("\n---------------------------DONE!-------------------------------\n");
+					
+					return Action.STOP;
+				}
+
+				@Override
+				public void resetState(double t, double[] y) {
+				}
+				
+			};
+			
 			theIntegrator.addEventHandler(ehCheckVRot, 1.0, 1e-3, 50);
 			theIntegrator.addEventHandler(ehEndConstantCL, 1.0, 1e-3, 50);
 			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 50);
@@ -685,7 +724,7 @@ public class NoiseTrajectoryCalc {
 			//##############################################################################################
 
 			double[] xAt0 = new double[] {0.0, 0.0, 0.0, 0.0}; // initial state
-			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
+			theIntegrator.integrate(ode, 0.0, xAt0, 100, xAt0); // now xAt0 contains final state
 
 			//--------------------------------------------------------------------------------
 			// UPDATING tClimb AND tObstacle
