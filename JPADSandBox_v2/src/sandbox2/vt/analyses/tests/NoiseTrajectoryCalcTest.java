@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -313,6 +314,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
+			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT);
 			Amount<Mass> maxTakeOffMass = Amount.valueOf(53610, SI.KILOGRAM);
 			Double[] polarCLTakeOff = new Double[] {-1.024064237,-0.882750413,-0.741378289,-0.599943427,-0.458441424,-0.316867914,-0.175218573,-0.033489115,0.108324705,0.250227087,0.392222187,0.534314117,0.676640473,0.818668509,0.960722621,1.102937968,1.245474454,1.388346414,1.531385114,1.674589688,1.818061748,1.961717376,2.105583653,2.249660071,2.392645609,2.512647424,2.592665502,2.616980286};
 			Double[] polarCDTakeOff = new Double[] {0.103605564,0.096027653,0.08961484,0.084368382,0.080289963,0.077837014,0.076557364,0.076448505,0.077512477,0.079787184,0.083642651,0.088665524,0.094790411,0.101527726,0.109174381,0.118449777,0.129601151,0.142544953,0.156942866,0.172739892,0.190092273,0.208722674,0.228618565,0.249874304,0.272157975,0.291786295,0.306250433,0.314765984};
@@ -321,6 +323,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			Amount<Duration> dtRot = Amount.valueOf(2, SI.SECOND);
 			Amount<Duration> dtHold = Amount.valueOf(0.5, SI.SECOND);
 			Amount<Duration> dtLandingGearRetraction = Amount.valueOf(12, SI.SECOND);
+			Amount<Duration> dtThrustCutback = Amount.valueOf(4, SI.SECOND);
 			Double phi = 1.0;
 			Double kcLMax = 0.85;
 			Double kRot = 1.05;
@@ -355,6 +358,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			
 			NoiseTrajectoryCalc theNoiseTrajectoryCalculator = new NoiseTrajectoryCalc(
 					xEndSimulation,
+					cutbackAltitude,
 					maxTakeOffMass,
 					theAircraft.getPowerPlant(),
 					polarCLTakeOff,
@@ -366,6 +370,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 					dtRot, 
 					dtHold, 
 					dtLandingGearRetraction,
+					dtThrustCutback,
 					phi,
 					kcLMax,
 					kRot, 
@@ -379,7 +384,19 @@ public class NoiseTrajectoryCalcTest extends Application {
 					cLalphaFlap
 					);
 			
-			theNoiseTrajectoryCalculator.calculateTakeOffTrajectoryAEOUpToObstacle(outputFolder);
+			theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null);
+			theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null);
+			
+			double lowestPhiCutback = theNoiseTrajectoryCalculator.getPhiCutback();
+			double[] phiArray = MyArrayUtils.linspace(lowestPhiCutback*1.1, 0.9, 3);
+			
+			Arrays.stream(phiArray).forEach(throttle -> theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, throttle));
+			
+			try {
+				theNoiseTrajectoryCalculator.createOutputCharts(outputFolder);
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
