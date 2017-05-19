@@ -657,6 +657,18 @@ public final class MyArrayUtils {
 		return Arrays.stream(vec).map(i -> i*d).toArray();
 	}
 	
+	/**
+	 * This method accepts an array and multiply each element by the double value 
+	 * given as second input.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param vec
+	 * @return
+	 */
+	public static List<Double> multiplyListEbE(List<Double> list1, List<Double> list2) {
+		return list1.stream().map(l1 -> l1*list2.get(list1.indexOf(l1))).collect(Collectors.toList());
+	}
+	
 	public static double[] abs(double[] d) {
 
 		double[] dd = new double[d.length];

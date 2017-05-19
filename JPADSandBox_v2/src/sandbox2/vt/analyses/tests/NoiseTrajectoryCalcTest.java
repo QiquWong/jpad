@@ -6,10 +6,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
@@ -25,37 +22,20 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.ACAerodynamicCalculator;
-import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
-import analyses.ACAerodynamicCalculator.CalcDirectionalStability;
-import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlphaStall;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlphaStar;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcCLmax;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
-import calculators.aerodynamics.AerodynamicCalc;
-import calculators.aerodynamics.DragCalc;
-import calculators.performance.NoiseTrajectoryCalc;
+import calculators.performance.TakeOffNoiseTrajectoryCalc;
 import configuration.MyConfiguration;
-import configuration.enumerations.AerodynamicAndStabilityEnum;
-import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
-import configuration.enumerations.MethodEnum;
+import configuration.enumerations.UnitFormatEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import groovy.lang.Tuple2;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javaslang.Tuple;
 import sandbox2.vt.analyses.CompleteAnalysisTest;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
-import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import writers.JPADStaticWriteUtils;
 
@@ -312,9 +292,15 @@ public class NoiseTrajectoryCalcTest extends Application {
 			// Analyzing the aircraft
 			
 			//======================================================================
+			// TAKE-OFF NOISE TRAJECTORIES
+			System.out.println("\n\n\tTAKE-OFF NOISE TRAJECTORIES ... \n\n");
+			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
 			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT);
+			int numberOfThrustSettingCutback = 3;
+			boolean timeHistories = true;
+			UnitFormatEnum unitFormat = UnitFormatEnum.IMPERIAL;
 			Amount<Mass> maxTakeOffMass = Amount.valueOf(53610, SI.KILOGRAM);
 			Double[] polarCLTakeOff = new Double[] {-1.024064237,-0.882750413,-0.741378289,-0.599943427,-0.458441424,-0.316867914,-0.175218573,-0.033489115,0.108324705,0.250227087,0.392222187,0.534314117,0.676640473,0.818668509,0.960722621,1.102937968,1.245474454,1.388346414,1.531385114,1.674589688,1.818061748,1.961717376,2.105583653,2.249660071,2.392645609,2.512647424,2.592665502,2.616980286};
 			Double[] polarCDTakeOff = new Double[] {0.103605564,0.096027653,0.08961484,0.084368382,0.080289963,0.077837014,0.076557364,0.076448505,0.077512477,0.079787184,0.083642651,0.088665524,0.094790411,0.101527726,0.109174381,0.118449777,0.129601151,0.142544953,0.156942866,0.172739892,0.190092273,0.208722674,0.228618565,0.249874304,0.272157975,0.291786295,0.306250433,0.314765984};
@@ -356,7 +342,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 									)
 							);
 			
-			NoiseTrajectoryCalc theNoiseTrajectoryCalculator = new NoiseTrajectoryCalc(
+			TakeOffNoiseTrajectoryCalc theNoiseTrajectoryCalculator = new TakeOffNoiseTrajectoryCalc(
 					xEndSimulation,
 					cutbackAltitude,
 					maxTakeOffMass,
@@ -384,20 +370,31 @@ public class NoiseTrajectoryCalcTest extends Application {
 					cLalphaFlap
 					);
 			
-			theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null);
-			theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null);
+			theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories);
+			theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, null, timeHistories);
 			
 			double lowestPhiCutback = theNoiseTrajectoryCalculator.getPhiCutback();
-			double[] phiArray = MyArrayUtils.linspace(lowestPhiCutback*1.1, 0.9, 3);
+			double[] phiArray = MyArrayUtils.linspace(lowestPhiCutback*1.1, 0.9, numberOfThrustSettingCutback);
 			
-			Arrays.stream(phiArray).forEach(throttle -> theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, throttle));
+			Arrays.stream(phiArray).forEach(throttle -> theNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(true, throttle, timeHistories));
 			
 			try {
-				theNoiseTrajectoryCalculator.createOutputCharts(outputFolder);
+				theNoiseTrajectoryCalculator.createOutputCharts(outputFolder, timeHistories, unitFormat);
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
 			
+			
+			//======================================================================
+			// LANDING NOISE TRAJECTORY
+			System.out.println("\n\n\tLANDING NOISE TRAJECTORY ... \n\n");
+			//======================================================================
+			// INPUT DATA TO BE ASSIGNED FROM FILE
+
+			//======================================================================
+			
+			
+			//--------------------------------END-----------------------------------
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
 
