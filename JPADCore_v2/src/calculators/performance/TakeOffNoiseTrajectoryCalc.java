@@ -286,7 +286,7 @@ public class TakeOffNoiseTrajectoryCalc {
 	public void calculateNoiseTakeOffTrajectory(boolean cutback, Double phiCutback, boolean timeHistories) {
 
 		System.out.println("---------------------------------------------------");
-		System.out.println("NoiseTrajectoryCalc :: ODE integration\n\n");
+		System.out.println("NoiseTrajectoryCalc :: TAKE-OFF ODE integration\n\n");
 		System.out.println("\tRUNNING SIMULATION ...\n\n");
 		/*
 		 * DISABLE PRINT OUT
@@ -319,7 +319,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					1e-17,
 					1e-17
 					);
-			ode = new DynamicsEquationsNoiseTrajectory();
+			ode = new DynamicsEquationsTakeOffNoiseTrajectory();
 
 			EventHandler ehCheckVRot = new EventHandler() {
 
@@ -584,10 +584,10 @@ public class TakeOffNoiseTrajectoryCalc {
 						// CGR = 4%
 						double thrustRequiredCGR4Percent = 
 								0.04
-								*((DynamicsEquationsNoiseTrajectory)ode).weight
-								+ ((DynamicsEquationsNoiseTrajectory)ode).drag(
+								*((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight
+								+ ((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
 										x[1],
-										((DynamicsEquationsNoiseTrajectory)ode).alpha,
+										((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha,
 										x[2],
 										t,
 										x[3]
@@ -615,10 +615,10 @@ public class TakeOffNoiseTrajectoryCalc {
 						/////////////////////////////////////////////////////////////////////////////
 						// LEVEL FLIGHT OEI
 						double cDOEI = 
-								((DynamicsEquationsNoiseTrajectory)ode).cD(
-										((DynamicsEquationsNoiseTrajectory)ode).cL(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
+										((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(
 												x[1],
-												((DynamicsEquationsNoiseTrajectory)ode).alpha,
+												((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha,
 												x[2],
 												t,
 												x[3]
@@ -719,31 +719,31 @@ public class TakeOffNoiseTrajectoryCalc {
 					//----------------------------------------------------------------------------------------
 					// ALPHA:
 					TakeOffNoiseTrajectoryCalc.this.getAlpha().add(Amount.valueOf(
-							((DynamicsEquationsNoiseTrajectory)ode).alpha,
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha,
 							NonSI.DEGREE_ANGLE)
 							);
 					//----------------------------------------------------------------------------------------
 					// LOAD FACTOR:
 					TakeOffNoiseTrajectoryCalc.this.getLoadFactor().add(
-							(((DynamicsEquationsNoiseTrajectory)ode).lift(
+							(((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
 									x[1],
-									((DynamicsEquationsNoiseTrajectory)ode).alpha,
+									((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha,
 									x[2],
 									t,
 									x[3])
-									+ (((DynamicsEquationsNoiseTrajectory)ode).thrust(
+									+ (((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(
 											x[1],
 											x[2],
 											t,
 											x[3]
 											)*Math.sin(
 													Amount.valueOf(
-															((DynamicsEquationsNoiseTrajectory)ode).alpha,
+															((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha,
 															NonSI.DEGREE_ANGLE
 															).to(SI.RADIAN).getEstimatedValue())
 											)
 									)
-							/(((DynamicsEquationsNoiseTrajectory)ode).weight*Math.cos(
+							/(((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight*Math.cos(
 									Amount.valueOf(
 											x[2],
 											NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()))
@@ -751,9 +751,9 @@ public class TakeOffNoiseTrajectoryCalc {
 					//----------------------------------------------------------------------------------------
 					// CL:				
 					TakeOffNoiseTrajectoryCalc.this.getcL().add(
-							((DynamicsEquationsNoiseTrajectory)ode).cL(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(
 									x[1],
-									((DynamicsEquationsNoiseTrajectory)ode).alpha,
+									((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha,
 									x[2],
 									t,
 									x[3]
@@ -767,7 +767,7 @@ public class TakeOffNoiseTrajectoryCalc {
 					//----------------------------------------------------------------------------------------
 					// WEIGHT:
 					TakeOffNoiseTrajectoryCalc.this.getWeight().add(
-							Amount.valueOf(((DynamicsEquationsNoiseTrajectory)ode).weight, SI.NEWTON)
+							Amount.valueOf(((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight, SI.NEWTON)
 							);
 					
 					//========================================================================================
@@ -798,14 +798,14 @@ public class TakeOffNoiseTrajectoryCalc {
 							((TakeOffNoiseTrajectoryCalc.this.getcL().get(TakeOffNoiseTrajectoryCalc.this.getcL().size()-2) - (kcLMax*cLmaxTO)) < 0.0)) {
 						System.out.println("\n\t\tBEGIN BAR HOLDING");
 						System.out.println(
-								"\n\tCL = " + ((DynamicsEquationsNoiseTrajectory)ode).cL(
+								"\n\tCL = " + ((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(
 										x[1],
-										((DynamicsEquationsNoiseTrajectory)ode).alpha,
+										((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha,
 										x[2],
 										t,
 										x[3]
 										) + 
-								"\n\tAlpha Body = " + ((DynamicsEquationsNoiseTrajectory)ode).alpha + " °" + 
+								"\n\tAlpha Body = " + ((DynamicsEquationsTakeOffNoiseTrajectory)ode).alpha + " °" + 
 								"\n\tt = " + t + " s"
 								);
 						System.out.println("\n---------------------------DONE!-------------------------------");
@@ -948,12 +948,13 @@ public class TakeOffNoiseTrajectoryCalc {
 		List<Amount<Mass>> fuelUsed = new ArrayList<Amount<Mass>>();
 		List<Amount<Force>> weight = new ArrayList<Amount<Force>>();
 		
+		alphaFunction.interpolateLinear(
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
+				MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
+				);
+		
 		if(timeHistories) {
 			
-			alphaFunction.interpolateLinear(
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
-					MyArrayUtils.convertListOfAmountTodoubleArray(this.alpha)
-					);
 			loadFactorFunction.interpolateLinear(
 					MyArrayUtils.convertListOfAmountTodoubleArray(this.time), 
 					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(this.loadFactor))
@@ -1032,6 +1033,15 @@ public class TakeOffNoiseTrajectoryCalc {
 							SI.METER)
 							);
 					//----------------------------------------------------------------------------------------
+					// THRUST:
+					thrust.add(Amount.valueOf(
+							((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3]),
+							SI.NEWTON)
+							);
+					//--------------------------------------------------------------------------------
+					// FUEL USED (kg/s):
+					fuelUsed.add(Amount.valueOf(x[4], SI.KILOGRAM));
+					//----------------------------------------------------------------------------------------
 					if(timeHistories) {
 						//----------------------------------------------------------------------------------------
 						// WEIGHT:
@@ -1045,15 +1055,9 @@ public class TakeOffNoiseTrajectoryCalc {
 						// SPEED:
 						speed.add(Amount.valueOf(x[1], SI.METERS_PER_SECOND));
 						//----------------------------------------------------------------------------------------
-						// THRUST:
-						thrust.add(Amount.valueOf(
-								((DynamicsEquationsNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3]),
-								SI.NEWTON)
-								);
-						//----------------------------------------------------------------------------------------
 						// THRUST HORIZONTAL:
 						thrustHorizontal.add(Amount.valueOf(
-								((DynamicsEquationsNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
 										Amount.valueOf(
 												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1063,7 +1067,7 @@ public class TakeOffNoiseTrajectoryCalc {
 						//----------------------------------------------------------------------------------------
 						// THRUST VERTICAL:
 						thrustVertical.add(Amount.valueOf(
-								((DynamicsEquationsNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.sin(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.sin(
 										Amount.valueOf(
 												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
@@ -1071,16 +1075,12 @@ public class TakeOffNoiseTrajectoryCalc {
 								SI.NEWTON)
 								);
 						//--------------------------------------------------------------------------------
-						// FUEL USED (kg/s):
-						fuelUsed.add(Amount.valueOf(x[4], SI.KILOGRAM));
-
-						//--------------------------------------------------------------------------------
 						// FRICTION:
 						if(times.get(i).doubleValue(SI.SECOND) < tEndRot.getEstimatedValue())
 							friction.add(Amount.valueOf(
-									((DynamicsEquationsNoiseTrajectory)ode).mu(x[1])
-									*(((DynamicsEquationsNoiseTrajectory)ode).weight
-											- ((DynamicsEquationsNoiseTrajectory)ode).lift(
+									((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(x[1])
+									*(((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight
+											- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
 													x[1],
 													alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 													x[2],
@@ -1093,7 +1093,7 @@ public class TakeOffNoiseTrajectoryCalc {
 						//----------------------------------------------------------------------------------------
 						// LIFT:
 						lift.add(Amount.valueOf(
-								((DynamicsEquationsNoiseTrajectory)ode).lift(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
 										x[1],
 										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 										x[2],
@@ -1104,7 +1104,7 @@ public class TakeOffNoiseTrajectoryCalc {
 						//----------------------------------------------------------------------------------------
 						// DRAG:
 						drag.add(Amount.valueOf(
-								((DynamicsEquationsNoiseTrajectory)ode).drag(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
 										x[1],
 										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 										x[2],
@@ -1115,26 +1115,26 @@ public class TakeOffNoiseTrajectoryCalc {
 						//----------------------------------------------------------------------------------------
 						// TOTAL FORCE:
 						totalForce.add(Amount.valueOf(
-								((DynamicsEquationsNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).thrust(x[1], x[2], times.get(i).doubleValue(SI.SECOND), x[3])*Math.cos(
 										Amount.valueOf(
 												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()
 										)
-								- ((DynamicsEquationsNoiseTrajectory)ode).drag(
+								- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).drag(
 										x[1],
 										alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 										x[2],
 										times.get(i).doubleValue(SI.SECOND),
 										x[3])
-								- ((DynamicsEquationsNoiseTrajectory)ode).mu(x[1])
-								*(((DynamicsEquationsNoiseTrajectory)ode).weight
-										- ((DynamicsEquationsNoiseTrajectory)ode).lift(
+								- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).mu(x[1])
+								*(((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight
+										- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).lift(
 												x[1],
 												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 												x[2],
 												times.get(i).doubleValue(SI.SECOND),
 												x[3]))
-								- ((DynamicsEquationsNoiseTrajectory)ode).weight*Math.sin(
+								- ((DynamicsEquationsTakeOffNoiseTrajectory)ode).weight*Math.sin(
 										Amount.valueOf(
 												x[2],
 												NonSI.DEGREE_ANGLE).to(SI.RADIAN).getEstimatedValue()),
@@ -1209,8 +1209,8 @@ public class TakeOffNoiseTrajectoryCalc {
 						//----------------------------------------------------------------------------------------
 						// CD:
 						cD.add(
-								((DynamicsEquationsNoiseTrajectory)ode).cD(
-										((DynamicsEquationsNoiseTrajectory)ode).cL(
+								((DynamicsEquationsTakeOffNoiseTrajectory)ode).cD(
+										((DynamicsEquationsTakeOffNoiseTrajectory)ode).cL(
 												x[1],
 												alphaFunction.value(times.get(i).doubleValue(SI.SECOND)),
 												x[2],
@@ -1275,44 +1275,9 @@ public class TakeOffNoiseTrajectoryCalc {
 								);
 
 						System.setOut(originalOut);
-						System.out.println("\tPRINT CHARTS FOR PHI="+ String.format( "%.2f", phi ) +" TO FILE");
+						System.out.println("\tPRINTING CHARTS FOR PHI="+ String.format( "%.2f", phi ) +" TO FILE ...");
 						System.setOut(filterStream);
 
-						//.................................................................................
-						// fuelUsed v.s. time
-						MyChartToFileUtils.plotNoLegend(
-								MyArrayUtils.convertListOfAmountTodoubleArray(timeMap.get(phi)),
-								MyArrayUtils.convertListOfAmountTodoubleArray(fuelUsedMap.get(phi)),
-								0.0, null, null, null,
-								"Time", "Fuel Used", "s", "kg",
-								currentOutputFolder, "FuelUsed_evolution");
-
-						//.................................................................................
-						// fuelUsed v.s. ground distance
-						if(unitFormat == UnitFormatEnum.SI)
-							MyChartToFileUtils.plotNoLegend(
-									MyArrayUtils.convertListOfAmountTodoubleArray(groundDistanceMap.get(phi)),
-									MyArrayUtils.convertListOfAmountTodoubleArray(fuelUsedMap.get(phi)),
-									0.0, null, null, null,
-									"Ground Distance", "Fuel Used", "m", "kg",
-									currentOutputFolder, "FuelUsed_vs_GroundDistance_SI");
-
-						if(unitFormat == UnitFormatEnum.IMPERIAL)
-							MyChartToFileUtils.plotNoLegend(
-									MyArrayUtils.convertListOfAmountTodoubleArray(
-											groundDistanceMap.get(phi).stream()
-											.map(x -> x.to(NonSI.FOOT))
-											.collect(Collectors.toList())
-											),
-									MyArrayUtils.convertListOfAmountTodoubleArray(
-											fuelUsedMap.get(phi).stream()
-											.map(x -> x.to(NonSI.POUND))
-											.collect(Collectors.toList())
-											),
-									0.0, null, null, null,
-									"Ground Distance", "FuelUsed", "ft", "lb",
-									currentOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL");
-						
 						//.................................................................................
 						// speed v.s. time
 						if(unitFormat == UnitFormatEnum.SI)
@@ -1994,9 +1959,15 @@ public class TakeOffNoiseTrajectoryCalc {
 		String trajectoryOutputFolder = JPADStaticWriteUtils.createNewFolder(
 				outputFolderPath + "Trajectories" + File.separator
 				);
+		String thrustOutputFolder = JPADStaticWriteUtils.createNewFolder(
+				outputFolderPath + "Thrust" + File.separator
+				);
+		String fuelUsedOutputFolder = JPADStaticWriteUtils.createNewFolder(
+				outputFolderPath + "FuelUsed" + File.separator
+				);
 		
 		System.setOut(originalOut);
-		System.out.println("\tPRINT TRAJECTORIES CHARTS TO FILE");
+		System.out.println("\tPRINTING TRAJECTORIES CHARTS TO FILE ...");
 		System.setOut(filterStream);
 		
 		//.................................................................................
@@ -2054,6 +2025,107 @@ public class TakeOffNoiseTrajectoryCalc {
 					);
 		
 		System.setOut(originalOut);
+		System.out.println("\tPRINTING THRUST CHARTS TO FILE ...");
+		System.setOut(filterStream);
+		
+		//.................................................................................
+		// thrust v.s. time
+		if(unitFormat == UnitFormatEnum.SI)
+			MyChartToFileUtils.plot(
+					timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					"Thrust for each take-off trajectory", "Time", "Thrust",
+					0.0, null, 0.0, null,
+					"s", "N",
+					true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_evolution_SI"
+					);
+		if(unitFormat == UnitFormatEnum.IMPERIAL)
+			MyChartToFileUtils.plot(
+					timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+							y.stream().map(ye -> ye.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
+							)).collect(Collectors.toList()),
+					"Thrust for each take-off trajectory", "Time", "Thrust",
+					0.0, null, 0.0, null,
+					"s", "lbf",
+					true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_evolution_IMPERIAL"
+					);
+
+		//.................................................................................
+		// thrust v.s. ground distance
+		if(unitFormat == UnitFormatEnum.SI)
+			MyChartToFileUtils.plot(
+					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					"Thrust for each take-off trajectory", "Ground distance", "Thrust",
+					0.0, null, 0.0, null,
+					"m", "N",
+					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_vs_GroundDistance_SI"
+					);
+
+		if(unitFormat == UnitFormatEnum.IMPERIAL)
+			MyChartToFileUtils.plot(
+					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
+							x.stream().map(xe -> xe.to(NonSI.FOOT)).collect(Collectors.toList())
+							)).collect(Collectors.toList()),
+					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+							y.stream().map(ye -> ye.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
+							)).collect(Collectors.toList()),
+					"Thrust for each take-off trajectory", "Ground distance", "Thrust",
+					0.0, null, 0.0, null,
+					"ft", "lbf",
+					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL"
+					);
+		
+		System.setOut(originalOut);
+		System.out.println("\tPRINTING FUEL USED CHARTS TO FILE ...");
+		System.setOut(filterStream);
+		
+		//.................................................................................
+		// fuelUsed v.s. time
+		MyChartToFileUtils.plot(
+				timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+				fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+				"Fuel used for each take-off trajectory", "Time", "Fuel used",
+				0.0, null, 0.0, null,
+				"s", "kg",
+				true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+				fuelUsedOutputFolder, "FuelUsed_evolution"
+				);
+
+		//.................................................................................
+		// fuelUsed v.s. ground distance
+		if(unitFormat == UnitFormatEnum.SI)
+			MyChartToFileUtils.plot(
+					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					"Fuel used for each take-off trajectory", "Ground distance", "Fuel used",
+					0.0, null, 0.0, null,
+					"m", "kg",
+					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI"
+					);
+
+		if(unitFormat == UnitFormatEnum.IMPERIAL)
+			MyChartToFileUtils.plot(
+					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
+							x.stream().map(xe -> xe.to(NonSI.FOOT)).collect(Collectors.toList())
+							)).collect(Collectors.toList()),
+					fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+							y.stream().map(ye -> ye.to(NonSI.POUND)).collect(Collectors.toList())
+							)).collect(Collectors.toList()),
+					"Fuel used for each take-off trajectory", "Ground distance", "Fuel used",
+					0.0, null, 0.0, null,
+					"ft", "lb",
+					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL"
+					);
+		
+		System.setOut(originalOut);
 		
 	}
 
@@ -2063,14 +2135,14 @@ public class TakeOffNoiseTrajectoryCalc {
 	// ODE integration
 	// see: https://commons.apache.org/proper/commons-math/userguide/ode.html
 
-	public class DynamicsEquationsNoiseTrajectory implements FirstOrderDifferentialEquations {
+	public class DynamicsEquationsTakeOffNoiseTrajectory implements FirstOrderDifferentialEquations {
 
 		double g0 = AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND);
 
 		// visible variables
 		public double alpha, gamma, weight;
 
-		public DynamicsEquationsNoiseTrajectory() { }
+		public DynamicsEquationsTakeOffNoiseTrajectory() { }
 
 		@Override
 		public int getDimension() {
