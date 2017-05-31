@@ -74,7 +74,7 @@ public class LandingNoiseTrajectoryCalc {
 	tZeroGamma = Amount.valueOf(10000.0, SI.SECOND); // initialization to an impossible time
 	private Amount<Mass> maxLandingMass; 
 	private Amount<Velocity> vSLanding, vApproach, vTouchDown, vWind, vDescent;
-	private Amount<Length> wingToGroundDistance, obstacle, intialAltitude;
+	private Amount<Length> wingToGroundDistance, obstacle, intialAltitude, altitudeAtFlareEnding;
 	private Amount<Angle> gammaDescent, iw, alphaGround;
 	private Amount<Force> thrustAtFlareStart;
 	private List<Amount<Angle>> alpha;
@@ -82,9 +82,9 @@ public class LandingNoiseTrajectoryCalc {
 	private List<Amount<Duration>> time;
 	private List<Amount<Force>> thrust;
 	private List<Double> timeBreakPoints;
-	private Double alphaDotFlare, cL0LND, cLmaxLND, kGround,  thrustFlareSlope;
+	private Double alphaDotFlare, cL0LND, cLmaxLND, kGround;
 	private Amount<?> cLalphaLND;
-	private MyInterpolatingFunction mu, muBrake, phiGroundIdle;
+	private MyInterpolatingFunction mu, muBrake, phiGroundIdle, thrustFlareFunction;
 
 	private FirstOrderIntegrator theIntegrator;
 	private FirstOrderDifferentialEquations ode;
@@ -270,251 +270,291 @@ public class LandingNoiseTrajectoryCalc {
 		System.out.println("NoiseTrajectoryCalc :: LANDING ODE integration\n\n");
 		System.out.println("\tRUNNING SIMULATION ...\n\n");
 
-		
-		/*
-		 * TODO: ITERATIVE LOOP ON THE THRUST FUNCTION SLOPE IN ORDER TO MATCH GAMMA = 0 AT TOUCH-DOWN !! 
-		 */
-		
-		initialize();
 
-		theIntegrator = new HighamHall54Integrator(
-				1e-15,
-				1,
-				1e-17,
-				1e-17
-				);
-		ode = new DynamicsEquationsLandingNoiseTrajectory();
+//		int i=0;
+//		Amount<Duration> newFlareDuration = Amount.valueOf(0.0, SI.SECOND);
+//		dtFlare = Amount.valueOf(3.0, SI.SECOND); // First guess value
+//		
+//		altitudeAtFlareEnding = intialAltitude;  // Initialization at an impossible value
 
-		EventHandler ehCheckStop = new EventHandler() {
+//		while (Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) >= 1e-1) {
+//
+//			if(i >= 1) 
+//				dtFlare = newFlareDuration;
 
-			@Override
-			public void init(double t0, double[] y0, double t) {
+			initialize();
 
-			}
+			theIntegrator = new HighamHall54Integrator(
+					1e-10,
+					1,
+					1e-12,
+					1e-12
+					);
+			ode = new DynamicsEquationsLandingNoiseTrajectory();
 
-			@Override
-			public void resetState(double t, double[] y) {
+			EventHandler ehCheckStop = new EventHandler() {
 
-			}
+				@Override
+				public void init(double t0, double[] y0, double t) {
 
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
-				double speed = x[1];
-				return speed - 0.0;
-			}
+				}
 
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tEND OF GROUND ROLL PHASE");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " °" +
-								"\n\tx[3] = altitude = " + x[3] + " m"
-						);
+				@Override
+				public void resetState(double t, double[] y) {
 
-				timeBreakPoints.add(t);
+				}
 
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.STOP;
-			}
-		};
-		EventHandler ehCheckObstacle = new EventHandler() {
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					double speed = x[1];
+					return speed - 0.0;
+				}
 
-			@Override
-			public void init(double t0, double[] y0, double t) {
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tEND OF GROUND ROLL PHASE");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[3] = altitude = " + x[3] + " m"
+							);
 
-			}
+					timeBreakPoints.add(t);
 
-			@Override
-			public void resetState(double t, double[] y) {
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return  Action.STOP;
+				}
+			};
+			EventHandler ehCheckObstacle = new EventHandler() {
 
-			}
+				@Override
+				public void init(double t0, double[] y0, double t) {
 
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
-				return x[3] - obstacle.doubleValue(SI.METER);
-			}
+				}
 
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tEND OF DESCENT PHASE :: FLARE ROTATION");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " °" +
-								"\n\tx[3] = altitude = " + x[3] + " m" 
-						);
+				@Override
+				public void resetState(double t, double[] y) {
 
-				tObstacle = Amount.valueOf(t, SI.SECOND);
-				timeBreakPoints.add(t);
-				thrustAtFlareStart = 
-						Amount.valueOf( 
-								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-										x[1],
-										((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-										x[2],
-										tObstacle.doubleValue(SI.SECOND),
-										x[3]
-										),
-								SI.NEWTON
-								);
-				alphaDotFlare = - ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha
-						/ dtFlare.doubleValue(SI.SECOND);
-				
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.CONTINUE;
-			}
-		};
-		EventHandler ehCheckTouchDown = new EventHandler() {
+				}
 
-			@Override
-			public void init(double t0, double[] y0, double t) {
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
+					return x[3] - obstacle.doubleValue(SI.METER);
+				}
 
-			}
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tEND OF DESCENT PHASE :: FLARE ROTATION");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[3] = altitude = " + x[3] + " m" 
+							);
 
-			@Override
-			public void resetState(double t, double[] y) {
+					tObstacle = Amount.valueOf(t, SI.SECOND);
+					timeBreakPoints.add(t);
+					thrustAtFlareStart = 
+							Amount.valueOf( 
+									((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+											x[1],
+											((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
+											x[2],
+											tObstacle.doubleValue(SI.SECOND),
+											x[3]
+											),
+									SI.NEWTON
+									);
+					
+					thrustFlareFunction = new MyInterpolatingFunction();
+					thrustFlareFunction.interpolateLinear(
+							new double[] {
+									tObstacle.doubleValue(SI.SECOND),
+									tObstacle.plus(dtFlare).doubleValue(SI.SECOND) 
+									},
+							new double[] {
+									thrustAtFlareStart.doubleValue(SI.NEWTON),
+									thePowerPlant.getEngineList().get(0).getT0().getEstimatedValue()
+									*((DynamicsEquationsLandingNoiseTrajectory)ode).throttleGroundIdle(vTouchDown.doubleValue(SI.METERS_PER_SECOND))
+									*thePowerPlant.getEngineNumber()
+									}
+							);
+					
+					// TODO: REMOVE
+					// alphaDotFlare = - ((DynamicsEquationsLandingNoiseTrajectory)ode).alpha
+					//		/ dtFlare.doubleValue(SI.SECOND);
 
-			}
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return  Action.STOP;
+				}
+			};
+			EventHandler ehCheckTouchDown = new EventHandler() {
 
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
+				@Override
+				public void init(double t0, double[] y0, double t) {
 
-				return x[3] - 0.0;
-			}
+				}
 
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tEND OF FLARE PHASE :: TOUCH-DOWN");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " °" +
-								"\n\tx[3] = altitude = " + x[3] + " m" 
-						);
+				@Override
+				public void resetState(double t, double[] y) {
 
-				tTouchDown = Amount.valueOf(t, SI.SECOND);
-				timeBreakPoints.add(t);
+				}
 
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.CONTINUE;
-			}
-		};
-		EventHandler ehCheckZeroGamma = new EventHandler() {
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
 
-			@Override
-			public void init(double t0, double[] y0, double t) {
+					return x[3] - 0.0;
+				}
 
-			}
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tEND OF FLARE PHASE :: TOUCH-DOWN");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[3] = altitude = " + x[3] + " m" 
+							);
 
-			@Override
-			public void resetState(double t, double[] y) {
+					tTouchDown = Amount.valueOf(t, SI.SECOND);
+					timeBreakPoints.add(t);
 
-			}
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return  Action.CONTINUE;
+				}
+			};
+			EventHandler ehCheckZeroGamma = new EventHandler() {
 
-			// Discrete event, switching function
-			@Override
-			public double g(double t, double[] x) {
+				@Override
+				public void init(double t0, double[] y0, double t) {
 
-				return x[2] - 0.0;
-			}
+				}
 
-			@Override
-			public Action eventOccurred(double t, double[] x, boolean increasing) {
-				// Handle an event and choose what to do next.
-				System.out.println("\n\t\tGAMMA = 0.0");
-				System.out.println("\n\tswitching function changes sign at t = " + t);
-				System.out.println(
-						"\n\tx[0] = s = " + x[0] + " m" +
-								"\n\tx[1] = V = " + x[1] + " m/s" + 
-								"\n\tx[2] = gamma = " + x[2] + " °" +
-								"\n\tx[3] = altitude = " + x[3] + " m" 
-						);
+				@Override
+				public void resetState(double t, double[] y) {
 
-				tZeroGamma = Amount.valueOf(t, SI.SECOND);
-				timeBreakPoints.add(t);
+				}
 
-				System.out.println("\n---------------------------DONE!-------------------------------");
-				return  Action.STOP;
-			}
-		};
-		
-		theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
-		theIntegrator.addEventHandler(ehCheckZeroGamma, 1.0, 1e-3, 20);
-		theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
-		theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-3, 20);
+				// Discrete event, switching function
+				@Override
+				public double g(double t, double[] x) {
 
-		// handle detailed info
-		StepHandler stepHandler = new StepHandler() {
+					return x[2] - 0.0;
+				}
 
-			public void init(double t0, double[] x0, double t) {
-			}
+				@Override
+				public Action eventOccurred(double t, double[] x, boolean increasing) {
+					// Handle an event and choose what to do next.
+					System.out.println("\n\t\tGAMMA = 0.0 DURING FLARE ROTATION");
+					System.out.println("\n\tswitching function changes sign at t = " + t);
+					System.out.println(
+							"\n\tx[0] = s = " + x[0] + " m" +
+									"\n\tx[1] = V = " + x[1] + " m/s" + 
+									"\n\tx[2] = gamma = " + x[2] + " °" +
+									"\n\tx[3] = altitude = " + x[3] + " m" 
+							);
 
-			@Override
-			public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
+					tZeroGamma = Amount.valueOf(t, SI.SECOND);
+					timeBreakPoints.add(t);
+					altitudeAtFlareEnding = Amount.valueOf(x[3], SI.METER);
+					System.out.println("\nAltitude @ Flare Ending = " + altitudeAtFlareEnding);
 
-				double   t = interpolator.getCurrentTime();
-				double[] xDot = interpolator.getInterpolatedDerivatives();
-				double[] x = interpolator.getInterpolatedState();			
-				
-				//----------------------------------------------------------------------------------------
-				// TIME:
-				LandingNoiseTrajectoryCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
-				//----------------------------------------------------------------------------------------
-				// ALPHA:
-				LandingNoiseTrajectoryCalc.this.getAlpha().add(Amount.valueOf(
-						((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-						NonSI.DEGREE_ANGLE)
-						);
-				//----------------------------------------------------------------------------------------
-				// GAMMA_DOT:
-				LandingNoiseTrajectoryCalc.this.getGammaDot().add(xDot[2]);
-				//----------------------------------------------------------------------------------------
-				// THRUST:
-				LandingNoiseTrajectoryCalc.this.getThrust().add(
-						Amount.valueOf(
-								((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
-										x[1],
-										((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
-										x[2],
-										t,
-										x[3]
-										), 
-								SI.NEWTON)
-						);
-			}
-		};
-		theIntegrator.addStepHandler(stepHandler);
+					System.out.println("\n---------------------------DONE!-------------------------------");
+					return  Action.STOP;
+				}
+			};
 
-		//##############################################################################################
-		// Use this handler for post-processing
-		theIntegrator.addStepHandler(new ContinuousOutputModel());
+			theIntegrator.addEventHandler(ehCheckObstacle, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckZeroGamma, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckTouchDown, 1.0, 1e-3, 20);
+			theIntegrator.addEventHandler(ehCheckStop, 1.0, 1e-3, 20);
 
-		//##############################################################################################
+			// handle detailed info
+			StepHandler stepHandler = new StepHandler() {
 
-		double[] xAt0 = new double[] {
-				0.0,
-				vDescent.doubleValue(SI.METERS_PER_SECOND),
-				gammaDescent.doubleValue(NonSI.DEGREE_ANGLE),
-				intialAltitude.doubleValue(SI.METER)
-				}; // initial state
-		
-		theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
+				public void init(double t0, double[] x0, double t) {
+				}
 
-		manageOutputData(1.0, timeHistories);
+				@Override
+				public void handleStep(StepInterpolator interpolator, boolean isLast) throws MaxCountExceededException {
 
-		theIntegrator.clearEventHandlers();
-		theIntegrator.clearStepHandlers();
+					double   t = interpolator.getCurrentTime();
+					double[] xDot = interpolator.getInterpolatedDerivatives();
+					double[] x = interpolator.getInterpolatedState();			
+
+					//----------------------------------------------------------------------------------------
+					// TIME:
+					LandingNoiseTrajectoryCalc.this.getTime().add(Amount.valueOf(t, SI.SECOND));
+					//----------------------------------------------------------------------------------------
+					// ALPHA:
+					LandingNoiseTrajectoryCalc.this.getAlpha().add(Amount.valueOf(
+							((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
+							NonSI.DEGREE_ANGLE)
+							);
+					//----------------------------------------------------------------------------------------
+					// GAMMA_DOT:
+					LandingNoiseTrajectoryCalc.this.getGammaDot().add(xDot[2]);
+					//----------------------------------------------------------------------------------------
+					// THRUST:
+					LandingNoiseTrajectoryCalc.this.getThrust().add(
+							Amount.valueOf(
+									((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
+											x[1],
+											((DynamicsEquationsLandingNoiseTrajectory)ode).alpha,
+											x[2],
+											t,
+											x[3]
+											), 
+									SI.NEWTON)
+							);
+				}
+			};
+			theIntegrator.addStepHandler(stepHandler);
+
+			//##############################################################################################
+			// Use this handler for post-processing
+			theIntegrator.addStepHandler(new ContinuousOutputModel());
+
+			//##############################################################################################
+
+			double[] xAt0 = new double[] {
+					0.0,
+					vDescent.doubleValue(SI.METERS_PER_SECOND),
+					gammaDescent.doubleValue(NonSI.DEGREE_ANGLE),
+					intialAltitude.doubleValue(SI.METER)
+			}; // initial state
+
+			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
+
+//			if(altitudeAtFlareEnding.doubleValue(SI.METER) > 0.0) {
+//				if(altitudeAtFlareEnding.doubleValue(SI.METER) > 2.0)
+//					newFlareDuration = dtFlare.plus(Amount.valueOf(1.0, SI.SECOND));
+//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 2.0
+//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.2)
+//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-1, SI.SECOND));
+//				else if(altitudeAtFlareEnding.doubleValue(SI.METER) <= 0.2
+//						&& altitudeAtFlareEnding.doubleValue(SI.METER) > 0.1)
+//					newFlareDuration = dtFlare.plus(Amount.valueOf(1e-3, SI.SECOND));
+//			}
+//
+//			if(Math.abs(altitudeAtFlareEnding.doubleValue(SI.METER) - 0.0) < 1e-1) 
+				manageOutputData(1.0, timeHistories);
+//				
+//			theIntegrator.clearEventHandlers();
+//			theIntegrator.clearStepHandlers();
+//
+//			i++;
+//		}
 
 		System.out.println("\n---------------------------END!!-------------------------------\n\n");
 	}
@@ -600,7 +640,6 @@ public class LandingNoiseTrajectoryCalc {
 							((DynamicsEquationsLandingNoiseTrajectory)ode).thrust(
 									x[1],
 									alpha,
-//									alphaFunction.value(timeList.get(i).doubleValue(SI.SECOND)),
 									x[2],
 									timeList.get(i).doubleValue(SI.SECOND),
 									x[3]
@@ -789,9 +828,15 @@ public class LandingNoiseTrajectoryCalc {
 								);
 						//----------------------------------------------------------------------------------------
 						// ALPHA DOT:
-						if((timeList.get(i).doubleValue(SI.SECOND) > tObstacle.getEstimatedValue()) 
-								&& (timeList.get(i).doubleValue(SI.SECOND) < tTouchDown.getEstimatedValue()))
-							alphaDotList.add(alphaDotFlare);
+						if(timeList.get(i).doubleValue(SI.SECOND) > tObstacle.doubleValue(SI.SECOND)) {
+							double deltaAlpha = 
+									alphaList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+									- alphaList.get(i-1).doubleValue(NonSI.DEGREE_ANGLE);
+							double deltaTime = 
+									timeList.get(i).doubleValue(SI.SECOND)
+									- timeList.get(i-1).doubleValue(SI.SECOND);
+							alphaDotList.add(deltaAlpha/deltaTime);
+						}
 						else
 							alphaDotList.add(0.0);
 						//----------------------------------------------------------------------------------------
@@ -1717,9 +1762,7 @@ public class LandingNoiseTrajectoryCalc {
 				theThrust = gammaDescent.doubleValue(SI.RADIAN)*weight + drag(speed, alpha, gamma, time, altitude);
 			
 			else if(time > tObstacle.doubleValue(SI.SECOND) && time <= tTouchDown.doubleValue(SI.SECOND)) 
-				theThrust = 
-					LandingNoiseTrajectoryCalc.this.getThrustAtFlareStart().doubleValue(SI.NEWTON)
-					- time*LandingNoiseTrajectoryCalc.this.getThrustFlareSlope();
+				theThrust = thrustFlareFunction.value(time);
 			
 			else if(time > tTouchDown.doubleValue(SI.SECOND))
 				theThrust =	LandingNoiseTrajectoryCalc.this.getThePowerPlant().getEngineList().get(0).getT0().getEstimatedValue()
@@ -1761,6 +1804,9 @@ public class LandingNoiseTrajectoryCalc {
 
 		public double drag(double speed, double alpha, double gamma, double time, double altitude) {
 
+			if(altitude < 0.0)
+				altitude = 0.0;
+			
 			double cD = cD(cL(speed, alpha, gamma, time, altitude), time, speed, altitude);
 			double drag = 0.5
 					*surface.doubleValue(SI.SQUARE_METRE)
@@ -1794,6 +1840,9 @@ public class LandingNoiseTrajectoryCalc {
 
 		public double lift(double speed, double alpha, double gamma, double time, double altitude) {
 
+			if(altitude < 0.0)
+				altitude = 0.0;
+			
 			double cL = cL(speed, alpha, gamma, time, altitude);
 			double lift = 0.5
 					*surface.doubleValue(SI.SQUARE_METRE)
@@ -1824,16 +1873,6 @@ public class LandingNoiseTrajectoryCalc {
 			return phiGIDL;
 		}
 		
-		public double alphaDot(double time) {
-
-			double alphaDot = 0.0;
-
-			if((time > tObstacle.doubleValue(SI.SECOND)) && (time <= tTouchDown.doubleValue(SI.SECOND)))
-				alphaDot = LandingNoiseTrajectoryCalc.this.getAlphaDotFlare();
-			
-			return alphaDot;
-		}
-
 		public double alpha(double time, double speed, double altitude, double gamma) {
 
 			double alpha = 0.0;
@@ -2459,12 +2498,20 @@ public class LandingNoiseTrajectoryCalc {
 		this.thrust = thrust;
 	}
 
-	public Double getThrustFlareSlope() {
-		return thrustFlareSlope;
+	public Amount<Length> getAltitudeAtFlareEnding() {
+		return altitudeAtFlareEnding;
 	}
 
-	public void setThrustFlareSlope(Double thrustFlareSlope) {
-		this.thrustFlareSlope = thrustFlareSlope;
+	public void setAltitudeAtFlareEnding(Amount<Length> altitudeAtFlareEnding) {
+		this.altitudeAtFlareEnding = altitudeAtFlareEnding;
+	}
+
+	public MyInterpolatingFunction getThrustFlareFunction() {
+		return thrustFlareFunction;
+	}
+
+	public void setThrustFlareFunction(MyInterpolatingFunction thrustFlareFunction) {
+		this.thrustFlareFunction = thrustFlareFunction;
 	}
 
 }
