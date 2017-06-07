@@ -301,15 +301,15 @@ public class NoiseTrajectoryCalcTest extends Application {
 			//======================================================================
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			boolean timeHistories = true;
-			UnitFormatEnum unitFormat = UnitFormatEnum.SI;
-			boolean takeOffSimulation = false;
+			UnitFormatEnum unitFormat = UnitFormatEnum.IMPERIAL;
+			boolean takeOffSimulation = true;
 			boolean landingSimulation = true;
 			
 			//......................................................................
 			Amount<Length> xEndSimulation = Amount.valueOf(8000, SI.METER);
 			Amount<Length> cutbackAltitude = Amount.valueOf(984, NonSI.FOOT);
 			int numberOfThrustSettingCutback = 3;
-			Amount<Mass> maxTakeOffMass = Amount.valueOf(53610, SI.KILOGRAM);
+			Amount<Mass> maxTakeOffMass = Amount.valueOf(54500, SI.KILOGRAM);
 			Double[] polarCLTakeOff = new Double[] {-1.024064237,-0.882750413,-0.741378289,-0.599943427,-0.458441424,-0.316867914,-0.175218573,-0.033489115,0.108324705,0.250227087,0.392222187,0.534314117,0.676640473,0.818668509,0.960722621,1.102937968,1.245474454,1.388346414,1.531385114,1.674589688,1.818061748,1.961717376,2.105583653,2.249660071,2.392645609,2.512647424,2.592665502,2.616980286};
 			Double[] polarCDTakeOff = new Double[] {0.103605564,0.096027653,0.08961484,0.084368382,0.080289963,0.077837014,0.076557364,0.076448505,0.077512477,0.079787184,0.083642651,0.088665524,0.094790411,0.101527726,0.109174381,0.118449777,0.129601151,0.142544953,0.156942866,0.172739892,0.190092273,0.208722674,0.228618565,0.249874304,0.272157975,0.291786295,0.306250433,0.314765984};
 			Double deltaCD0LandingGear = 0.015;
@@ -401,7 +401,7 @@ public class NoiseTrajectoryCalcTest extends Application {
 			// INPUT DATA TO BE ASSIGNED FROM FILE
 			Amount<Length> initialAltitude = Amount.valueOf(4000, NonSI.FOOT);
 			Amount<Angle> gammaDescent = Amount.valueOf(-3, NonSI.DEGREE_ANGLE);
-			Amount<Mass> maxLandingMass = Amount.valueOf(52000, SI.KILOGRAM);
+			Amount<Mass> maxLandingMass = Amount.valueOf(52865, SI.KILOGRAM);
 			Double[] polarCLLanding = new Double[] {-0.031750302,0.100923075,0.233596452,0.366269828,0.498943205,0.631616582,0.764289959,0.896963335,1.029636712,1.162310089,1.294983465,1.427656842,1.560330219,1.693003595,1.825676972,1.958350349,2.091023726,2.223697102,2.356370479,2.489043856,2.621717232,2.754390609,2.887063986,3.017145378,3.114191869,3.176564974,3.213398273,3.233825349,3.246979785};
 			Double[] polarCDLanding = new Double[] {0.135400883,0.133582443,0.132848483,0.133199003,0.134634042,0.137153575,0.140757223,0.145445151,0.151217648,0.158074035,0.166014619,0.175038985,0.185146827,0.196198286,0.207603396,0.219873902,0.233549812,0.248933639,0.265937067,0.284287369,0.303883008,0.324826902,0.346694324,0.369645716,0.392268833,0.409403904,0.419468091,0.423103066,0.420313086};
 			Amount<Duration> dtFlare = Amount.valueOf(3, SI.SECOND);

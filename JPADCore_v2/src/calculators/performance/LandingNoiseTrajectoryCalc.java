@@ -168,14 +168,14 @@ public class LandingNoiseTrajectoryCalc {
 						cLmaxLND
 						),
 				SI.METERS_PER_SECOND);
-		vApproach = vSLanding.times(1.3);
+		vApproach = vSLanding.times(1.23);
 		vDescent = vApproach.plus(Amount.valueOf(10, NonSI.KNOT).to(SI.METERS_PER_SECOND)); 
 		vTouchDown = vSLanding.times(1.15);
 
 		System.out.println("\n-----------------------------------------------------------");
 		System.out.println("CLmaxLND = " + cLmaxLND);
 		System.out.println("CL0 = " + cLZeroLND);
-		System.out.println("VsTO = " + vSLanding);
+		System.out.println("VsLND = " + vSLanding);
 		System.out.println("VTouchDown = " + vTouchDown);
 		System.out.println("VApproach = " + vApproach);
 		System.out.println("VDescent = " + vDescent);

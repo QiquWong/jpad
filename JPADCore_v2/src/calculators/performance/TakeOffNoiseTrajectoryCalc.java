@@ -300,7 +300,7 @@ public class TakeOffNoiseTrajectoryCalc {
 		vClimb = Amount.valueOf(10000, SI.METERS_PER_SECOND); // initialization to impossible values
 		while (Math.abs(
 				(vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
-				- 1.2 
+				- 1.13 
 				- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 				) >= 0.01) {
 
@@ -873,7 +873,7 @@ public class TakeOffNoiseTrajectoryCalc {
 			theIntegrator.integrate(ode, 0.0, xAt0, 1000, xAt0); // now xAt0 contains final state
 
 			if((vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
-					- 1.2 
+					- 1.13 
 					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 					>= 0.0)
 				newAlphaRed = alphaRed + 0.2;
@@ -882,7 +882,7 @@ public class TakeOffNoiseTrajectoryCalc {
 
 			if(Math.abs(
 					(vClimb.to(SI.METERS_PER_SECOND).divide(vSTakeOff.to(SI.METERS_PER_SECOND)).getEstimatedValue()) 
-					- 1.2 
+					- 1.13 
 					- (5.144/vSTakeOff.doubleValue(SI.METERS_PER_SECOND))
 					) < 0.01) {
 				
