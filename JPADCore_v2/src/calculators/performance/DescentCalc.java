@@ -283,9 +283,10 @@ public class DescentCalc {
 				> 0.001
 				) {
 			
-			double rateOfDescentRatio = 
+			double rateOfDescentRatio = Math.abs(
 					rateOfDescentList.get(0).doubleValue(SI.METERS_PER_SECOND)/
-					(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND));
+					(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND))
+					);
 			
 			if(rateOfDescentRatio < 1) {
 				double weightCruiseTemp = weightCruise.get(0);
@@ -556,9 +557,10 @@ public class DescentCalc {
 					> 0.001
 					) {
 				
-				double rateOfDescentRatio = 
+				double rateOfDescentRatio = Math.abs(
 						rateOfDescentList.get(i).doubleValue(SI.METERS_PER_SECOND)/
-						(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND));
+						(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND))
+						);
 				
 				if(rateOfDescentRatio < 1) {
 					double weightCruiseTemp = weightCruise.get(i);

@@ -2321,7 +2321,7 @@ public class MissionProfileCalc {
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
 							_fuelUsedList.stream()
-							.map(f -> f.to(SI.KILOGRAM))
+							.map(f -> f.to(NonSI.POUND))
 							.collect(Collectors.toList()
 									)
 							),
@@ -2333,7 +2333,7 @@ public class MissionProfileCalc {
 							),
 					0.0, null, 0.0, null,
 					"Fuel used", "Altitude",
-					"kg", "ft",
+					"lb", "ft",
 					_missionProfilesFolderPath, "Fuel_used_Profile_IMPERIAL"
 					);
 		}
