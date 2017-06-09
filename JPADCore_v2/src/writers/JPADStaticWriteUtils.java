@@ -2213,6 +2213,47 @@ public class JPADStaticWriteUtils {
 		
 	} 
 	
+	private static void makeXmlTreeFuselage(Aircraft aircraft, Document doc) {
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+		
+		// configuration
+		org.w3c.dom.Element fuselageElement = createXMLElementWithAttributes(doc, "fuselage", 
+				Tuple.of("id", aircraft.getFuselage().getId()),
+				Tuple.of("pressurized", aircraft.getFuselage().getFuselageCreator().getPressurized().toString())
+				);
+		rootElement.appendChild(fuselageElement);
+		
+		// global_data
+		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
+		fuselageElement.appendChild(globalDataElement);
+
+		// global_data - deck_number
+		JPADStaticWriteUtils.writeSingleNode("deck_number", 
+				aircraft.getFuselage().getFuselageCreator().getDeckNumber(), 
+				globalDataElement, doc);
+		
+		// global_data - length
+		JPADStaticWriteUtils.writeSingleNode("length", 
+				aircraft.getFuselage().getFuselageCreator().getLenF(), 
+				globalDataElement, doc);
+		
+		// global_data - length
+		JPADStaticWriteUtils.writeSingleNode("roughness", 
+				aircraft.getFuselage().getFuselageCreator().getRoughness(), 
+				globalDataElement, doc);
+
+		// global_data
+		org.w3c.dom.Element noseTrunkElement = doc.createElement("nose_trunk");
+		fuselageElement.appendChild(noseTrunkElement);
+		
+		// global_data - length
+		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
+				aircraft.getFuselage().getFuselageCreator().getLenRatioNF(), 
+				globalDataElement, doc);
+
+	} 
+	
 	@SafeVarargs
 	public static org.w3c.dom.Element createXMLElementWithAttributes(Document doc, String elementName, 
 			Tuple2<String,String>... attributeValueTuples) {

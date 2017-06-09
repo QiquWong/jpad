@@ -14,7 +14,7 @@
 		<cruise>
 			<mach>0.6</mach>	
 			<altitude unit="ft">30000</altitude>
-			<throttle>1.0</throttle> <!-- COMPARISON VALUE CS300 = 1.65 -->
+			<throttle>1.0</throttle> <!-- COMPARISON VALUE CS300 = 1.38 -->
 		</cruise>
 		<take_off>
 			<mach>0.172</mach> <!-- default = 0.2 -->
