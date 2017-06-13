@@ -75,7 +75,7 @@ public class MyUnits {
 	
 	public static final Unit USD_PER_HOUR = Currency.USD.divide(NonSI.HOUR);
 	public static final Unit USD_PER_TON = Currency.USD.divide(NonSI.METRIC_TON);
-	public static final Unit USD_PER_KM_SQRT_TON = Currency.USD.divide(NonSI.METRIC_TON);
+	public static final Unit USD_PER_KM_SQRT_TON = Currency.USD.divide(SI.KILOGRAM.times(NonSI.METRIC_TON.root(2)));
 	
 	
 	
