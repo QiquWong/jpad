@@ -2,6 +2,8 @@ package sandbox2.vc;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +16,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.Argument;
+import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import sandbox.vc.dirstab.Test_VC_DirStab_03;
 import standaloneutils.JPADProperty;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXLSUtils;
@@ -50,7 +52,7 @@ public class TestReadXlsx {
 		theCmdLineParser = new CmdLineParser(this);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws CmdLineException, IOException {
 		
 		// Allocate the main object
 		TestReadXlsx theTestObject = new TestReadXlsx();
@@ -77,13 +79,12 @@ public class TestReadXlsx {
 
 		//---------------------------------------------------------------
 		// Sheet 1
-		Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "Sheet 1");
-		if(sheetGlobalData != null) {
-			Cell test1Cell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "test1").get(0)).getCell(2);
-			if(test1Cell != null)
-				test1 = Amount.valueOf(test1Cell.getNumericCellValue(), SI.KILOGRAM);
+//		Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "Sheet 1");
+//		if(sheetGlobalData != null) {
+//			Cell test1Cell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "test1").get(0)).getCell(2);
+//			if(test1Cell != null)
+//				test1 = Amount.valueOf(test1Cell.getNumericCellValue(), SI.KILOGRAM);
 		}
-	}
 	
 	public File get_inputFile() {
 		return _inputFile;

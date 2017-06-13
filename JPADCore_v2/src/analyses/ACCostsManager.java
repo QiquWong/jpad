@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.quantity.Duration;
 
@@ -22,6 +23,7 @@ import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
+import standaloneutils.MyUnits;
 
 public class ACCostsManager {
 	
@@ -40,7 +42,7 @@ public class ACCostsManager {
 	
 	//..............................................................................
 	// DERIVED INPUT	
-	private Amount<?> _depreciation;
+	
 	private Amount<Money> _totalInvestment;
 	private Amount<Money> _airframeCost;
 	
@@ -61,8 +63,13 @@ public class ACCostsManager {
 	private Amount<Duration>  _engineLabourManHourPerCycle; 
 	//..............................................................................
 	// OUTPUT
+	private Map<MethodEnum, Amount<?>> _depreciation;
+	private Map<MethodEnum, Amount<?>> _interest;
+	private Map<MethodEnum, Amount<?>> _insurance;
 	
-	
+	private Map<MethodEnum, Amount<?>> _capitalDOC;
+	// TODO: all derived data are maps
+	// Only six items of DOC (Capital, etc)
 	
 	
 	//------------------------------------------------------------------------------
@@ -108,12 +115,6 @@ public class ACCostsManager {
 				_theCostsBuilderInterface.getEnginesRelativeSparesCosts()
 				);
 		
-		_depreciation = CostsCalcUtils.calcDepreciationJenkinson(
-				_totalInvestment, 
-				_theCostsBuilderInterface.getUtilization().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.UTILIZATION)),
-				_theCostsBuilderInterface.getLifeSpan(),
-				_theCostsBuilderInterface.getResidualValue()
-				);
 		
 		_landingChargeConstant = CostsCalcUtils.calcLandingChargeConstant(_theCostsBuilderInterface.getRange());
 		
@@ -173,9 +174,44 @@ public class ACCostsManager {
 	//............................................................................
 	public class CalcCapitalDOC {
 
-		public void calculateCapitalDOC() {
-
-
+		public void calculateDOCCapitalAEA() {
+			
+			_insurance.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcInsuranceAEA(
+							_theCostsBuilderInterface.getAircraftPrice().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.AIRCRAFT_PRICE)),
+							_theCostsBuilderInterface.getUtilization().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.UTILIZATION)), 
+							_theCostsBuilderInterface.getInsuranceValue()
+							)
+					);
+			
+			_interest.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcInterestAEA(
+							_totalInvestment,
+							_theCostsBuilderInterface.getUtilization().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.UTILIZATION)), 
+							_theCostsBuilderInterface.getInterestValue()
+							)
+					);
+			
+			_depreciation.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcDepreciationAEA(
+							_totalInvestment,
+							_theCostsBuilderInterface.getUtilization().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.UTILIZATION)), 
+							_theCostsBuilderInterface.getLifeSpan(),
+							_theCostsBuilderInterface.getResidualValue()
+							)
+					);
+			
+			_capitalDOC.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcDOCCapitalAEA(
+							_depreciation.get(_depreciation),
+							_insurance.get(_insurance),
+							_interest.get(_interest)
+							)
+					);
 		}
 		
 	}

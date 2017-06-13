@@ -1,9 +1,12 @@
 package calculators.costs;
 
+import java.util.Map;
+
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 
 import org.apache.commons.math3.special.Erf;
@@ -12,6 +15,8 @@ import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
+import configuration.enumerations.MethodEnum;
+import parser.ExprParser.start_return;
 import standaloneutils.MyUnits;
 
 public class CostsCalcUtils {
@@ -135,7 +140,7 @@ public class CostsCalcUtils {
 	 * @author AC
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcDepreciationJenkinson(
+	public static Amount<?> calcDepreciationAEA(
 			Amount<Money> totalInvestments, 
 			Amount<?> utilization,
 			Amount<Duration> lifeSpan, 
@@ -163,7 +168,7 @@ public class CostsCalcUtils {
 	 * @author AC
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcDepreciationSforza(
+	public static Amount<?> calcDepreciationATA(
 			Amount<Money> totalCost,
 			Amount<?> utilization,	
 			double residualValue,
@@ -217,6 +222,75 @@ public class CostsCalcUtils {
 			return Amount.valueOf(100, MyUnits.USD_PER_TON);
 		else
 			return Amount.valueOf(103, MyUnits.USD_PER_TON);
+	}
+	
+	/**
+	 * Method that calculates the insurance premium per block hour according to AEA. 
+	 * 
+	 * @param aircraftCost aircraft manufacturer cost in USD (airframe + engine)
+	 * @param utilization annual utilization in block hour
+	 * @param annualInsurancePremiumRate (non-dimensional) Default 0.005. Other typical values
+	 * 									range from 0.01 to 0.03
+	 * @return insurance (USD/block hr)
+	 * @author AC
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcInsuranceAEA(Amount<Money> aircraftCost, 
+			Amount<?> utilization, double annualInsurancePremiumRate) {
+
+		return Amount.valueOf(
+				annualInsurancePremiumRate*aircraftCost.doubleValue(Currency.USD)/utilization.doubleValue(MyUnits.HOURS_PER_YEAR),
+				MyUnits.USD_PER_HOUR
+				);
+
+	}
+	
+	/**
+	 * Method that calculates the insurance premium per block hour according to ATA. 
+	 * 
+	 * @param aircraftCost aircraft manufacturer cost in USD (airframe + engine)
+	 * @param utilization annual utilization in block hour
+	 * @param annualInsurancePremiumRate (non-dimensional) Default 0.005. Other typical values
+	 * 									range from 0.01 to 0.03
+	 * @return insurance (USD/statute mile)
+	 * @author AC
+	 */
+	public static double calcInsuranceATA(double aircraftCost, 
+			double utilization, double annualInsurancePremiumRate, Amount<Velocity> blockSpeed) {
+
+		return annualInsurancePremiumRate*aircraftCost/(utilization*blockSpeed.doubleValue(NonSI.MILES_PER_HOUR));
+
+	}
+	
+	/**
+	 * Method that calculate the loan interest repayments per block hour according to AEA (Jenkinson) 
+	 * 
+	 * @param totalInvestments
+	 * @param utilization
+	 * @param annualInterestRate
+	 * @return interest (USD/hr)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcInterestAEA(Amount<Money> totalInvestments, 
+			Amount<?> utilization, double annualInterestRate) {
+
+		return Amount.valueOf(
+				annualInterestRate*totalInvestments.doubleValue(Currency.USD)/utilization.doubleValue(MyUnits.HOURS_PER_YEAR), 
+				MyUnits.USD_PER_HOUR
+				);
+
+	}
+	
+	
+
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCCapitalAEA(Amount<?> _depreciation, Amount<?>_insurance,
+			Amount<?> _interest){
+		
+		return Amount.valueOf(
+				_depreciation.doubleValue(MyUnits.USD_PER_HOUR) + _interest.doubleValue(MyUnits.USD_PER_HOUR) + _insurance.doubleValue(MyUnits.USD_PER_HOUR),
+				MyUnits.USD_PER_HOUR
+				);
 	}
 	
 	
