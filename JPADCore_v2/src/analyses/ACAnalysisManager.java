@@ -1342,13 +1342,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	public void calculateAerodynamicAndStability(Aircraft aircraft, String resultsFolderPath) {
 
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculate(ConditionEnum.TAKE_OFF);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).calculate();
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).calculate(ConditionEnum.CLIMB);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB).calculate();
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).calculate(ConditionEnum.CRUISE);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).calculate();
 		if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING)) 
-			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).calculate(ConditionEnum.LANDING);
+			aircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).calculate();
 
 	}
 	

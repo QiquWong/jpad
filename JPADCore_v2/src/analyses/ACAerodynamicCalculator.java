@@ -18,6 +18,7 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import aircraft.components.fuselage.creator.FuselageCreator;
+import analyses.ACPerformanceManager.ACPerformanceCalculatorBuilder;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.nacelles.NacelleAerodynamicsManager;
@@ -66,6 +67,7 @@ public class ACAerodynamicCalculator {
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
 	private List<ConditionEnum> _theConditions;
+	private ConditionEnum _currentCondition;
 	//..............................................................................
 	// FROM INPUT (Passed from XML file)
 	private Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> _componentTaskList;
@@ -144,13 +146,21 @@ public class ACAerodynamicCalculator {
 	private Map<MethodEnum, Map<Amount<Angle>, List<Tuple2<Double, List<Double>>>>> _cNDueToDeltaRudder = new HashMap<>();
 	private Map<MethodEnum, Map<Double, List<Tuple2<Amount<Angle>, Amount<Angle>>>>> _betaOfEquilibrium = new HashMap<>();
 	
+	//Longitudinal Static Stability Output
+	
+	private Map<List<Double>, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient = new HashMap<>(); //xcg, delta e , CM
+	private Map<Amount<Angle>, List<Double>> _totalLiftCoefficient = new HashMap<>(); //delta e, CL
+	private Map<Amount<Angle>, List<Double>> _totalDragCoefficient = new HashMap<>(); //delta e, CD
+	private Map<List<Double>, List<Double>> _horizontalTailEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CLh
+	private Map<List<Double>, List<Double>> _totalEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CL
+	private Map<List<Double>, List<Double>> _totalEquilibriumDragCoefficient = new HashMap<>(); //xcg, CL
 	
 	// COMPLETE ME !!
 	
 	
 	
 	
-	private void initializeAnalysis(ConditionEnum theCondition) {
+	private void initializeAnalysis() {
 		
 		_componentTaskList = new HashMap<>();
 		_downwashGradientMap = new HashMap<>();
@@ -162,14 +172,16 @@ public class ACAerodynamicCalculator {
 		_discretizedHTailAirfoilsCl = new ArrayList<List<Double>>();
 		_discretizedHTailAirfoilsCd = new ArrayList<List<Double>>();
 		
-		calculateComponentsData(theCondition);
+		calculateComponentsData();
+		// TODO --> Control the aircraft task list and set the components analyses which are necessary to perform the aircraft ones
+		// (e.g. if stability analisys must be performed, it is necesary to set the lift, drag and moment analyses for all components) 
 		
-		initializeData(theCondition);
-		initializeArrays(theCondition);
+		initializeData();
+		initializeArrays();
 		
 	}
 	
-	private void initializeData(ConditionEnum theCondition) {
+	private void initializeData() {
 		
 		//...................................................................................
 		// DISTANCE BETWEEN WING VORTEX PLANE AND THE AERODYNAMIC CENTER OF THE HTAIL
@@ -243,7 +255,7 @@ public class ACAerodynamicCalculator {
 									(_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) *
 											Math.tan(_theAircraft.getWing().getRiggingAngle().doubleValue(SI.RADIAN) -
 													_theAircraft.getWing()
-														.getTheAerodynamicsCalculatorMap().get(theCondition)
+														.getTheAerodynamicsCalculatorMap().get(_currentCondition)
 															.getAlphaZeroLift().get(
 																	_componentTaskList
 																	.get(ComponentEnum.WING)
@@ -266,7 +278,7 @@ public class ACAerodynamicCalculator {
 							(this._horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) *
 									Math.tan(_theAircraft.getWing().getRiggingAngle().doubleValue(SI.RADIAN) -
 											_theAircraft.getWing()
-											.getTheAerodynamicsCalculatorMap().get(theCondition)
+											.getTheAerodynamicsCalculatorMap().get(_currentCondition)
 												.getAlphaZeroLift().get(
 														_componentTaskList
 														.get(ComponentEnum.WING)
@@ -284,7 +296,7 @@ public class ACAerodynamicCalculator {
 				this._verticalDistanceZeroLiftDirectionWingHTailCOMPLETE.doubleValue(SI.METER) * 
 				Math.cos(_theAircraft.getWing().getRiggingAngle().doubleValue(SI.RADIAN) -
 						_theAircraft.getWing()
-						.getTheAerodynamicsCalculatorMap().get(theCondition)
+						.getTheAerodynamicsCalculatorMap().get(_currentCondition)
 							.getAlphaZeroLift().get(
 									_componentTaskList
 									.get(ComponentEnum.WING)
@@ -295,7 +307,7 @@ public class ACAerodynamicCalculator {
 				SI.METER);
 	}
 	
-	private void initializeArrays(ConditionEnum theCondition) {
+	private void initializeArrays() {
 		
 		/////////////////////////////////////////////////////////////////////////////////////
 		// ALPHA BODY ARRAY
@@ -322,25 +334,25 @@ public class ACAerodynamicCalculator {
 		//...................................................................................		
 		// calculate cl alpha at M=0
 		Amount<Length> altitude = Amount.valueOf(0.0, SI.METER);
-		if(theCondition.equals(ConditionEnum.TAKE_OFF))
+		if(_currentCondition.equals(ConditionEnum.TAKE_OFF))
 			altitude = _theOperatingConditions.getAltitudeTakeOff();
-		else if(theCondition.equals(ConditionEnum.CLIMB))
+		else if(_currentCondition.equals(ConditionEnum.CLIMB))
 			altitude = _theOperatingConditions.getAltitudeClimb();
-		else if(theCondition.equals(ConditionEnum.CRUISE))
+		else if(_currentCondition.equals(ConditionEnum.CRUISE))
 			altitude = _theOperatingConditions.getAltitudeCruise();
-		else if(theCondition.equals(ConditionEnum.LANDING))
+		else if(_currentCondition.equals(ConditionEnum.LANDING))
 			altitude = _theOperatingConditions.getAltitudeLanding();
 		
 		double cLAlphaMachZero = LiftCalc.calculateCLAlphaAtMachNasaBlackwell(
 				_theAircraft.getWing().getSemiSpan(),
 				_theAircraft.getWing().getSurface(),
-				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(theCondition).getYStationDistribution(),
-				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(theCondition).getChordDistribution(),
-				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(theCondition).getXLEDistribution(), 
-				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(theCondition).getDihedralDistribution(),
-				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(theCondition).getTwistDistribution(),
-				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(theCondition).getAlphaZeroLiftDistribution(),
-				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(theCondition).getVortexSemiSpanToSemiSpanRatio(),
+				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(_currentCondition).getYStationDistribution(),
+				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(_currentCondition).getChordDistribution(),
+				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(_currentCondition).getXLEDistribution(), 
+				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(_currentCondition).getDihedralDistribution(),
+				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(_currentCondition).getTwistDistribution(),
+				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(_currentCondition).getAlphaZeroLiftDistribution(),
+				_theAircraft.getWing().getTheAerodynamicsCalculatorMap().get(_currentCondition).getVortexSemiSpanToSemiSpanRatio(),
 				0.0,
 				altitude
 				);
@@ -358,7 +370,7 @@ public class ACAerodynamicCalculator {
 							cLAlphaMachZero, 
 							_theAircraft.getWing()
 							.getTheAerodynamicsCalculatorMap()
-								.get(theCondition)
+								.get(_currentCondition)
 									.getCLAlpha().get(
 											_componentTaskList
 											.get(ComponentEnum.WING)
@@ -376,7 +388,7 @@ public class ACAerodynamicCalculator {
 		double epsilonZeroRoskam = - _downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0) 
 				* _theAircraft.getWing()
 					.getTheAerodynamicsCalculatorMap()
-						.get(theCondition)
+						.get(_currentCondition)
 							.getAlphaZeroLift()
 								.get(
 										_componentTaskList
@@ -408,7 +420,7 @@ public class ACAerodynamicCalculator {
 			double cl = 
 					_theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
+							.get(_currentCondition)
 								.getCLAlpha()
 									.get(
 											_componentTaskList
@@ -420,7 +432,7 @@ public class ACAerodynamicCalculator {
 					* _alphaWingList.get(i).doubleValue(NonSI.DEGREE_ANGLE) 
 					+ _theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
+							.get(_currentCondition)
 								.getCLZero()
 									.get(
 											_componentTaskList
@@ -483,7 +495,7 @@ public class ACAerodynamicCalculator {
 						_theAircraft.getWing().getRiggingAngle(),
 						_theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
+							.get(_currentCondition)
 								.getAlphaZeroLift()
 									.get(
 											_componentTaskList
@@ -496,7 +508,7 @@ public class ACAerodynamicCalculator {
 						cLAlphaMachZero,
 						_theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
+							.get(_currentCondition)
 								.getCLAlpha()
 									.get(
 											_componentTaskList
@@ -519,7 +531,7 @@ public class ACAerodynamicCalculator {
 						_theAircraft.getWing().getRiggingAngle(),
 						_theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
+							.get(_currentCondition)
 								.getAlphaZeroLift()
 									.get(
 											_componentTaskList
@@ -535,7 +547,7 @@ public class ACAerodynamicCalculator {
 						_theAircraft.getWing().getRiggingAngle(),
 						_theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
+							.get(_currentCondition)
 								.getAlphaZeroLift()
 									.get(
 											_componentTaskList
@@ -560,7 +572,7 @@ public class ACAerodynamicCalculator {
 						_theAircraft.getHTail().getZApexConstructionAxes(),
 						_theAircraft.getWing()
 							.getTheAerodynamicsCalculatorMap()
-								.get(theCondition)
+								.get(_currentCondition)
 									.getAlphaZeroLift()
 										.get(
 												_componentTaskList
@@ -575,7 +587,7 @@ public class ACAerodynamicCalculator {
 						MyArrayUtils.convertToDoublePrimitive(
 								_theAircraft.getWing()
 								.getTheAerodynamicsCalculatorMap()
-									.get(theCondition)
+									.get(_currentCondition)
 										.getLiftCoefficient3DCurve()
 											.get(
 													_componentTaskList
@@ -617,7 +629,7 @@ public class ACAerodynamicCalculator {
 						_theAircraft.getWing().getRiggingAngle(),
 						_theAircraft.getWing()
 						.getTheAerodynamicsCalculatorMap()
-							.get(theCondition)
+							.get(_currentCondition)
 								.getAlphaZeroLift()
 									.get(
 											_componentTaskList
@@ -691,7 +703,7 @@ public class ACAerodynamicCalculator {
 				);
 	}
 	
-	private void calculateComponentsData(ConditionEnum theCondition) {
+	private void calculateComponentsData() {
 		
 		// TODO : FILL ME !!
 		/*
@@ -705,9 +717,9 @@ public class ACAerodynamicCalculator {
 	
 
 	
-	public void calculate(ConditionEnum theCondition) {
+	public void calculate() {
 		
-		initializeAnalysis(theCondition);
+		initializeAnalysis();
 	
 		
 		// TODO : FILL ME !!
@@ -735,6 +747,12 @@ public class ACAerodynamicCalculator {
 		
 		// TODO : FILL ME !!
 		
+		// NB remember to set the current condition
+		
+//		ACAerodynamicCalculator theAerodynamicAndStabilityManager = new _theAerodynamicBuilderInterface()
+//				.currentCondition(theCondition)
+//				.build();
+	  
 		return null;
 		
 	}
@@ -776,6 +794,68 @@ public class ACAerodynamicCalculator {
 	//............................................................................
 	// END BUFFET BARRIER INNER CLASS
 	//............................................................................
+	
+	//............................................................................
+	// Longitudinal Stability INNER CLASS
+	//............................................................................
+	public class CalcLongitudinalStability {
+		
+		public void fromForceBalanceEquation() {
+			
+		//=======================================================================================
+		// Calculating moment coefficient with delta e deflections... CM
+		//=======================================================================================
+			
+			//CONTINUE HERE ----------
+			
+//		_xCGAircraft.stream().forEach(xcg -> {
+//			
+//			Map<Amount<Angle>, List<Double>> momentMap = new HashMap<>();
+//			_deltaElevatorList.stream().forEach( de -> 
+//			momentMap.put(
+//					de,
+//					MomentCalc.METODO
+//					)
+//					);
+//			_totalMomentCoefficient.put(
+//					xcg,
+//					momentMap
+//					);
+//			
+//		});
+//			
+//		
+		
+		
+		//=======================================================================================
+		// Calculating total lift coefficient with delta e deflections... CL
+		//=======================================================================================
+		
+		//=======================================================================================
+		// Calculating total drag coefficient with delta e deflections... CD
+		//=======================================================================================
+		
+		//=======================================================================================
+		// Calculating horizontal tail equilibrium lift coefficient ... CLh_e
+		//=======================================================================================
+		
+		//=======================================================================================
+		// Calculating total equilibrium lift coefficient ... CLtot_e
+		//=======================================================================================
+		
+		//=======================================================================================
+		// Calculating delta e equilibrium ... deltae_e
+		//=======================================================================================
+		
+		//=======================================================================================
+		// Calculating total equilibrium lift coefficient ... CDtot_e
+		//=======================================================================================
+		}
+	}
+	//............................................................................
+	// END Longitudinal Stability INNER CLASS
+	//............................................................................
+
 	
 	//............................................................................
 	// Directional Stability INNER CLASS
@@ -888,12 +968,12 @@ public class ACAerodynamicCalculator {
 													_theAircraft.getFuselage().getFuselageCreator().getHeightT().doubleValue(SI.METER)
 													/(_theAircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight().doubleValue(SI.METER)/2), 
 													_theAircraft.getWing().getPositionRelativeToAttachment())
-
+		
 											)
 									)
 							).collect(Collectors.toList())
 					);
-
+		
 			
 			_cNbTotal.put(
 					MethodEnum.VEDSC_SIMPLIFIED_WING,
@@ -1119,7 +1199,7 @@ public class ACAerodynamicCalculator {
 					betaOfEquilibriumListAtCG
 					);
 		}
-		
+
 		public void vedscUsafDatcomWing(Double mach) {
 			
 			//=======================================================================================
@@ -1623,6 +1703,14 @@ public class ACAerodynamicCalculator {
 
 	public void setTauRudderFunction(MyInterpolatingFunction _tauRudderFunction) {
 		this._tauRudderFunction = _tauRudderFunction;
+	}
+
+	public ConditionEnum get_currentCondition() {
+		return _currentCondition;
+	}
+
+	public void set_currentCondition(ConditionEnum _currentCondition) {
+		this._currentCondition = _currentCondition;
 	}
 	
 }

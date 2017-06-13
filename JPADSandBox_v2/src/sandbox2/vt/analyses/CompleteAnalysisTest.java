@@ -24,6 +24,7 @@ import analyses.OperatingConditions;
 import calculators.performance.ThrustCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;

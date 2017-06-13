@@ -208,6 +208,14 @@ public class VaraiblesAnalyses {
 	ObservableList<String> numberOfAlphasInput = FXCollections.observableArrayList("1","2","3","4","5","6" );
 	ObservableList<String> numberOfAlphasInputLift = FXCollections.observableArrayList("1","2","3","4","5","6","8","9","10" );
 	
+	
+	//Manage external curves
+	
+	List<List<Double>> externalLiftDistributionCurves = new ArrayList<>();
+	List<List<Double>> xArrayExternalLiftDistributionCurves = new ArrayList<>();
+	List<List<Double>> externalLiftCoefficient = new ArrayList<>();
+	List<List<Double>> xArrayExternalLiftCoefficient = new ArrayList<>();
+	
 	@FXML
 	private void initialize(){
 		alphaInitialUnits.setValue("°");
@@ -830,8 +838,7 @@ public class VaraiblesAnalyses {
 	
 	public void addExternalCurveLoadFunct() throws IOException{
 	Main.addNewCurveLoad(this);
-
-			
+		
 	}
 
 	public InputOutputTree getTheInputOutputTree() {
@@ -1019,6 +1026,70 @@ public class VaraiblesAnalyses {
 
 	public void setMain(Main main) {
 		this.main = main;
+	}
+
+
+
+
+
+	public List<List<Double>> getExternalLiftDistributionCurves() {
+		return externalLiftDistributionCurves;
+	}
+
+
+
+
+
+	public List<List<Double>> getExternalLiftCoefficient() {
+		return externalLiftCoefficient;
+	}
+
+
+
+
+
+	public void setExternalLiftDistributionCurves(List<List<Double>> externalLiftDistributionCurves) {
+		this.externalLiftDistributionCurves = externalLiftDistributionCurves;
+	}
+
+
+
+
+
+	public void setExternalLiftCoefficient(List<List<Double>> externalLiftCoefficient) {
+		this.externalLiftCoefficient = externalLiftCoefficient;
+	}
+
+
+
+
+
+	public List<List<Double>> getxArrayExternalLiftDistributionCurves() {
+		return xArrayExternalLiftDistributionCurves;
+	}
+
+
+
+
+
+	public List<List<Double>> getxArrayExternalLiftCoefficient() {
+		return xArrayExternalLiftCoefficient;
+	}
+
+
+
+
+
+	public void setxArrayExternalLiftDistributionCurves(List<List<Double>> xArrayExternalLiftDistributionCurves) {
+		this.xArrayExternalLiftDistributionCurves = xArrayExternalLiftDistributionCurves;
+	}
+
+
+
+
+
+	public void setxArrayExternalLiftCoefficient(List<List<Double>> xArrayExternalLiftCoefficient) {
+		this.xArrayExternalLiftCoefficient = xArrayExternalLiftCoefficient;
 	}
 	
 }

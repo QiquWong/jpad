@@ -46,20 +46,20 @@
             <CheckBox fx:id="png" mnemonicParsing="false" text=" .png (Charts)" />
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <Region prefHeight="37.0" prefWidth="18.0" />
-                  <Label prefHeight="17.0" prefWidth="192.0" text="Choose output directory">
+                  <Region prefHeight="37.0" prefWidth="4.0" />
+                  <Label prefHeight="17.0" prefWidth="142.0" text="Choose output directory">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="outputDirText" prefHeight="29.0" prefWidth="284.0" promptText="Output Directory" />
+                  <TextField fx:id="outputDirText" prefHeight="29.0" prefWidth="200.0" promptText="Output Directory" />
                   <Button mnemonicParsing="false" onAction="#chooseOutputFile" prefHeight="25.0" prefWidth="20.0" text="...">
                      <HBox.margin>
                         <Insets left="-28.0" />
                      </HBox.margin>
                   </Button>
-                  <Region prefHeight="37.0" prefWidth="139.0" />
-                  <Button fx:id="save" mnemonicParsing="false" onAction="#saveFiles" text="SAVE">
+                  <Region prefHeight="37.0" prefWidth="87.0" />
+                  <Button fx:id="save" mnemonicParsing="false" onAction="#saveFiles" prefHeight="29.0" prefWidth="57.0" text="SAVE">
                      <font>
                         <Font name="AR ESSENCE" size="14.0" />
                      </font>

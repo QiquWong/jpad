@@ -12,7 +12,7 @@ import javax.measure.unit.Unit;
 import org.eclipse.ui.Saveable;
 
 import Calculator.InputOutputTree;
-import GUI.Views.AddCurveLoadController;
+
 import GUI.Views.Controllers;
 import GUI.Views.SaveOutput;
 import GUI.Views.VaraiblesAnalyses;
@@ -226,6 +226,7 @@ public class Main extends Application {
 	
 	Controllers theControllerClass = loader.getController();
 	theControllerClass.setTheVariablesAnalysisClass(theVarablesAnalysisClass);
+	theControllerClass.setTheInputTree(theInputTree);
 	
 	// Ora devo settare la scena definita
 	
