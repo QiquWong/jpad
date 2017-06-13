@@ -85,6 +85,7 @@ import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
@@ -1674,19 +1675,24 @@ public class JPADStaticWriteUtils {
 				makeXmlTreeLiftingSurface(aircraft, docNameType._1(), aircraftSaveDirectives, docNameType._4());
 			break;
 		case FUSELAGE:
-			// TODO
+			if (aircraft.getFuselage() != null)
+				makeXmlTreeFuselage(aircraft, docNameType._1());
 			break;
 		case NACELLE:
-			// TODO
+			if (aircraft.getNacelles() != null)
+				makeXmlTreeNacelle(aircraft, docNameType._1(), aircraftSaveDirectives);
 			break;
 		case ENGINE:
-			// TODO
+			if (aircraft.getPowerPlant() != null)
+				makeXmlTreeEngine(aircraft, docNameType._1());
 			break;
 		case LANDING_GEAR:
-			// TODO
+			if (aircraft.getLandingGears() != null)
+				makeXmlTreeLandingGear(aircraft, docNameType._1());
 			break;
 		case SYSTEMS:
-			// TODO
+			if (aircraft.getSystems() != null)
+				makeXmlTreeSystems(aircraft, docNameType._1());
 			break;
 		default:
 			break;
@@ -2217,7 +2223,7 @@ public class JPADStaticWriteUtils {
 		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
 		doc.appendChild(rootElement);
 		
-		// configuration
+		// fuselage
 		org.w3c.dom.Element fuselageElement = createXMLElementWithAttributes(doc, "fuselage", 
 				Tuple.of("id", aircraft.getFuselage().getId()),
 				Tuple.of("pressurized", aircraft.getFuselage().getFuselageCreator().getPressurized().toString())
@@ -2238,21 +2244,423 @@ public class JPADStaticWriteUtils {
 				aircraft.getFuselage().getFuselageCreator().getLenF(), 
 				globalDataElement, doc);
 		
-		// global_data - length
+		// global_data - roughness
 		JPADStaticWriteUtils.writeSingleNode("roughness", 
 				aircraft.getFuselage().getFuselageCreator().getRoughness(), 
 				globalDataElement, doc);
 
-		// global_data
+		// nose_trunk
 		org.w3c.dom.Element noseTrunkElement = doc.createElement("nose_trunk");
 		fuselageElement.appendChild(noseTrunkElement);
 		
-		// global_data - length
+		// nose_trunk - length_ratio
 		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
 				aircraft.getFuselage().getFuselageCreator().getLenRatioNF(), 
-				globalDataElement, doc);
-
+				noseTrunkElement, doc);
+		
+		// nose_trunk - fineness_ratio
+		JPADStaticWriteUtils.writeSingleNode("fineness_ratio", 
+				aircraft.getFuselage().getFuselageCreator().getLambdaN(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - tip_height_offset
+		JPADStaticWriteUtils.writeSingleNode("tip_height_offset", 
+				aircraft.getFuselage().getFuselageCreator().getHeightN(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - dx_cap_percent
+		JPADStaticWriteUtils.writeSingleNode("dx_cap_percent", 
+				aircraft.getFuselage().getFuselageCreator().getDxNoseCapPercent(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - windshield_type
+		JPADStaticWriteUtils.writeSingleNode("windshield_type", 
+				aircraft.getFuselage().getFuselageCreator().getWindshieldType(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - windshield_width
+		JPADStaticWriteUtils.writeSingleNode("windshield_width", 
+				aircraft.getFuselage().getFuselageCreator().getWindshieldWidth(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - windshield_height
+		JPADStaticWriteUtils.writeSingleNode("windshield_height", 
+				aircraft.getFuselage().getFuselageCreator().getWindshieldHeight(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - mid_section_lower_to_total_height_ratio
+		JPADStaticWriteUtils.writeSingleNode("mid_section_lower_to_total_height_ratio", 
+				aircraft.getFuselage().getFuselageCreator().getSectionNoseMidLowerToTotalHeightRatio(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - mid_section_rho_upper
+		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_upper", 
+				aircraft.getFuselage().getFuselageCreator().getSectionMidNoseRhoUpper(), 
+				noseTrunkElement, doc);
+		
+		// nose_trunk - mid_section_rho_lower
+		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_lower", 
+				aircraft.getFuselage().getFuselageCreator().getSectionMidNoseRhoLower(), 
+				noseTrunkElement, doc);
+		
+		// cylindrical_trunk
+		org.w3c.dom.Element cylindricalTrunkElement = doc.createElement("cylindrical_trunk");
+		fuselageElement.appendChild(cylindricalTrunkElement);
+		
+		// cylindrical_trunk - length_ratio
+		JPADStaticWriteUtils.writeSingleNode("length_ratio", 
+				aircraft.getFuselage().getFuselageCreator().getLenRatioCF(), 
+				cylindricalTrunkElement, doc);
+		
+		// cylindrical_trunk - section_width
+		JPADStaticWriteUtils.writeSingleNode("section_width", 
+				aircraft.getFuselage().getFuselageCreator().getSectionCylinderWidth(), 
+				cylindricalTrunkElement, doc);
+		
+		// cylindrical_trunk - section_height
+		JPADStaticWriteUtils.writeSingleNode("section_height", 
+				aircraft.getFuselage().getFuselageCreator().getSectionCylinderHeight(), 
+				cylindricalTrunkElement, doc);
+		
+		// cylindrical_trunk - height_from_ground
+		JPADStaticWriteUtils.writeSingleNode("height_from_ground", 
+				aircraft.getFuselage().getFuselageCreator().getHeightFromGround(), 
+				cylindricalTrunkElement, doc);
+		
+		// cylindrical_trunk - section_lower_to_total_height_ratio
+		JPADStaticWriteUtils.writeSingleNode("section_lower_to_total_height_ratio", 
+				aircraft.getFuselage().getFuselageCreator().getSectionCylinderLowerToTotalHeightRatio(), 
+				cylindricalTrunkElement, doc);
+		
+		// cylindrical_trunk - section_rho_upper
+		JPADStaticWriteUtils.writeSingleNode("section_rho_upper", 
+				aircraft.getFuselage().getFuselageCreator().getSectionCylinderRhoUpper(), 
+				cylindricalTrunkElement, doc);
+		
+		// cylindrical_trunk - section_rho_lower
+		JPADStaticWriteUtils.writeSingleNode("section_rho_lower", 
+				aircraft.getFuselage().getFuselageCreator().getSectionCylinderRhoLower(), 
+				cylindricalTrunkElement, doc);
+		
+		// tail_trunk
+		org.w3c.dom.Element tailTrunkElement = doc.createElement("tail_trunk");
+		fuselageElement.appendChild(tailTrunkElement);
+		
+		// tail_trunk - tip_height_offset
+		JPADStaticWriteUtils.writeSingleNode("tip_height_offset", 
+				aircraft.getFuselage().getFuselageCreator().getHeightT(), 
+				tailTrunkElement, doc);
+		
+		// tail_trunk - dx_cap_percent
+		JPADStaticWriteUtils.writeSingleNode("dx_cap_percent", 
+				aircraft.getFuselage().getFuselageCreator().getDxTailCapPercent(), 
+				tailTrunkElement, doc);
+		
+		// tail_trunk - mid_section_lower_to_total_height_ratio
+		JPADStaticWriteUtils.writeSingleNode("mid_section_lower_to_total_height_ratio", 
+				aircraft.getFuselage().getFuselageCreator().getSectionTailMidLowerToTotalHeightRatio(), 
+				tailTrunkElement, doc);
+		
+		// tail_trunk - mid_section_rho_upper
+		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_upper", 
+				aircraft.getFuselage().getFuselageCreator().getSectionMidTailRhoUpper(), 
+				tailTrunkElement, doc);
+		
+		// tail_trunk - mid_section_rho_lower
+		JPADStaticWriteUtils.writeSingleNode("mid_section_rho_lower", 
+				aircraft.getFuselage().getFuselageCreator().getSectionMidTailRhoLower(), 
+				tailTrunkElement, doc);
+		
+		if(!aircraft.getFuselage().getFuselageCreator().getSpoilers().isEmpty()) {
+			
+			// spoilers
+			org.w3c.dom.Element spoilersElement = doc.createElement("spoilers");
+			fuselageElement.appendChild(spoilersElement);
+			
+			aircraft.getFuselage().getFuselageCreator().getSpoilers().stream().forEach(
+					sp -> {
+						
+						int spoilerIndex = aircraft.getFuselage().getFuselageCreator().getSpoilers().indexOf(sp);
+						
+						// spoiler
+						org.w3c.dom.Element spoilersInnerElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+								doc,
+								"spoiler",
+								Tuple.of("id", String.valueOf(spoilerIndex))
+								);
+						spoilersElement.appendChild(spoilersInnerElement);
+						
+						// spoiler - inner_station_spanwise_position
+						JPADStaticWriteUtils.writeSingleNode("inner_station_spanwise_position", 
+								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getInnerStationSpanwisePosition(), 
+								spoilersInnerElement, doc);
+						
+						// spoiler - outer_station_spanwise_position
+						JPADStaticWriteUtils.writeSingleNode("outer_station_spanwise_position", 
+								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getOuterStationSpanwisePosition(), 
+								spoilersInnerElement, doc);
+						
+						// spoiler - inner_station_chordwise_position
+						JPADStaticWriteUtils.writeSingleNode("inner_station_chordwise_position", 
+								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getInnerStationChordwisePosition(), 
+								spoilersInnerElement, doc);
+						
+						// spoiler - outer_station_chordwise_position
+						JPADStaticWriteUtils.writeSingleNode("outer_station_chordwise_position", 
+								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getOuterStationChordwisePosition(), 
+								spoilersInnerElement, doc);
+						
+						// spoiler - min_deflection
+						JPADStaticWriteUtils.writeSingleNode("min_deflection", 
+								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getMinimumDeflection(), 
+								spoilersInnerElement, doc);
+						
+						// spoiler - max_deflection
+						JPADStaticWriteUtils.writeSingleNode("max_deflection", 
+								aircraft.getFuselage().getFuselageCreator().getSpoilers().get(spoilerIndex).getMaximumDeflection(), 
+								spoilersInnerElement, doc);
+						
+					});
+		}
 	} 
+	
+	private static void makeXmlTreeNacelle(Aircraft aircraft, Document doc, AircraftSaveDirectives aircraftSaveDirectives) {
+		
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+		
+		// nacelle
+		org.w3c.dom.Element nacelleElement = createXMLElementWithAttributes(doc, "nacelle", 
+				Tuple.of("id", aircraft.getNacelles().getNacellesList().get(0).getId()),
+				Tuple.of("engine", aircraftSaveDirectives.getEngineFileName())
+				);
+		rootElement.appendChild(nacelleElement);
+		
+		// global_data
+		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
+		nacelleElement.appendChild(globalDataElement);
+		
+		// global_data - roughness
+		globalDataElement.appendChild(
+			createXMLElementWithValueAndAttributes(doc, "roughness",
+					aircraft.getNacelles().getNacellesList().get(0).getRoughness(),
+					8, 6  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+			)
+		);
+		
+		// geometry
+		org.w3c.dom.Element geometryElement = doc.createElement("geometry");
+		nacelleElement.appendChild(geometryElement);
+		
+		// geometry - length
+		JPADStaticWriteUtils.writeSingleNode("length", 
+				aircraft.getNacelles().getNacellesList().get(0).getLength(), 
+				globalDataElement, doc);
+		
+		// geometry - maximum_diameter
+		JPADStaticWriteUtils.writeSingleNode("maximum_diameter", 
+				aircraft.getNacelles().getNacellesList().get(0).getDiameterMax(), 
+				globalDataElement, doc);
+		
+		// geometry - k_inlet
+		JPADStaticWriteUtils.writeSingleNode("k_inlet", 
+				aircraft.getNacelles().getNacellesList().get(0).getKInlet(), 
+				globalDataElement, doc);
+		
+		// geometry - k_outlet
+		JPADStaticWriteUtils.writeSingleNode("k_outlet", 
+				aircraft.getNacelles().getNacellesList().get(0).getKOutlet(), 
+				globalDataElement, doc);
+		
+		// geometry - k_outlet
+		JPADStaticWriteUtils.writeSingleNode("k_length", 
+				aircraft.getNacelles().getNacellesList().get(0).getKLength(), 
+				globalDataElement, doc);
+		
+		// geometry - k_diameter_outlet
+		JPADStaticWriteUtils.writeSingleNode("k_diameter_outlet", 
+				aircraft.getNacelles().getNacellesList().get(0).getKDiameterOutlet(), 
+				globalDataElement, doc);
+		
+	}
+	
+	private static void makeXmlTreeEngine(Aircraft aircraft, Document doc) {
+		
+		EngineTypeEnum engineType = aircraft.getPowerPlant().getEngineList().get(0).getEngineType();
+		
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+		
+		// engine
+		org.w3c.dom.Element engineElement = createXMLElementWithAttributes(doc, "engine", 
+				Tuple.of("id", aircraft.getPowerPlant().getEngineList().get(0).getId()),
+				Tuple.of("type", aircraft.getPowerPlant().getEngineList().get(0).getEngineType().toString()),
+				Tuple.of("database", aircraft.getPowerPlant().getEngineList().get(0).getEngineDatabaseName())
+				);
+		rootElement.appendChild(engineElement);
+		
+		// dimensions
+		org.w3c.dom.Element dimensionsElement = doc.createElement("dimensions");
+		engineElement.appendChild(dimensionsElement);
+		
+		// dimensions - length
+		JPADStaticWriteUtils.writeSingleNode("length", 
+				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
+				dimensionsElement, doc);
+		
+		 if(engineType == EngineTypeEnum.TURBOPROP || engineType == EngineTypeEnum.PISTON) {
+
+			 // dimensions - propeller_diameter
+			 JPADStaticWriteUtils.writeSingleNode("propeller_diameter", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getPropellerDiameter(), 
+					 dimensionsElement, doc);
+
+		 }
+		 
+		 // specifications
+		 org.w3c.dom.Element specificationsElement = doc.createElement("specifications");
+		 engineElement.appendChild(specificationsElement); 
+		 
+		 // specifications - dry_mass
+		 JPADStaticWriteUtils.writeSingleNode("dry_mass", 
+				 aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain(), 
+				 specificationsElement, doc);
+		 
+		 if(engineType == EngineTypeEnum.TURBOFAN || engineType == EngineTypeEnum.TURBOJET) {
+			
+			 // specifications - static_thrust
+			 JPADStaticWriteUtils.writeSingleNode("static_thrust", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getT0(), 
+					 specificationsElement, doc);
+			 
+			 // specifications - by_pass_ratio
+			 JPADStaticWriteUtils.writeSingleNode("by_pass_ratio", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
+					 specificationsElement, doc);
+			 
+		 }
+		 
+		 else if(engineType == EngineTypeEnum.TURBOPROP || engineType == EngineTypeEnum.TURBOFAN || engineType == EngineTypeEnum.TURBOJET) { 
+		
+			 // specifications - number_of_compressor_stages
+			 JPADStaticWriteUtils.writeSingleNode("number_of_compressor_stages", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getNumberOfCompressorStages(), 
+					 specificationsElement, doc);
+			 
+			 // specifications - number_of_shafts
+			 JPADStaticWriteUtils.writeSingleNode("number_of_shafts", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getNumberOfShafts(), 
+					 specificationsElement, doc);
+			 
+			 // specifications - number_of_shafts
+			 JPADStaticWriteUtils.writeSingleNode("overall_pressure_ratio", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getOverallPressureRatio(), 
+					 specificationsElement, doc);
+			 
+		 }
+		 
+		 
+		 if(engineType == EngineTypeEnum.TURBOPROP || engineType == EngineTypeEnum.PISTON) {
+			 
+			 // specifications - static_power
+			 JPADStaticWriteUtils.writeSingleNode("static_power", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getP0(), 
+					 specificationsElement, doc);
+			 
+			 // specifications - number_of_propeller_blades
+			 JPADStaticWriteUtils.writeSingleNode("number_of_propeller_blades", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getNumberOfBlades(), 
+					 specificationsElement, doc);
+			 
+			 // specifications - eta_propeller
+			 JPADStaticWriteUtils.writeSingleNode("eta_propeller", 
+					 aircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller(), 
+					 specificationsElement, doc);
+			 
+			 
+		 }
+
+	}
+	
+	private static void makeXmlTreeLandingGear(Aircraft aircraft, Document doc) {
+		
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+
+		// landing gear
+		org.w3c.dom.Element landingGearElement = createXMLElementWithAttributes(doc, "nacelle", 
+				Tuple.of("id", aircraft.getLandingGears().getId())
+				);
+		rootElement.appendChild(landingGearElement);
+
+		// global_data
+		org.w3c.dom.Element globalDataElement = doc.createElement("global_data");
+		landingGearElement.appendChild(globalDataElement);
+		
+		// global_data - main_gear_legs_length
+		JPADStaticWriteUtils.writeSingleNode("main_gear_legs_length", 
+				aircraft.getLandingGears().getMainLegsLenght(), 
+				globalDataElement, doc);
+		
+		// global_data - k_main_gear_legs_length
+		JPADStaticWriteUtils.writeSingleNode("k_main_gear_legs_length", 
+				aircraft.getLandingGears().getKMainLegsLength(), 
+				globalDataElement, doc);
+		
+		// global_data - number_of_frontal_wheels
+		JPADStaticWriteUtils.writeSingleNode("number_of_frontal_wheels", 
+				aircraft.getLandingGears().getNumberOfFrontalWheels(), 
+				globalDataElement, doc);
+		
+		// global_data - number_of_rear_wheels
+		JPADStaticWriteUtils.writeSingleNode("number_of_rear_wheels", 
+				aircraft.getLandingGears().getNumberOfRearWheels(), 
+				globalDataElement, doc);
+		
+		// frontal_wheels_data
+		org.w3c.dom.Element frontalWheelsDataElement = doc.createElement("frontal_wheels_data");
+		landingGearElement.appendChild(frontalWheelsDataElement);
+		
+		// frontal_wheels_data - wheel_heigtt
+		JPADStaticWriteUtils.writeSingleNode("wheel_height", 
+				aircraft.getLandingGears().getFrontalWheelsHeight(), 
+				frontalWheelsDataElement, doc);
+		
+		// frontal_wheels_data - wheel_width
+		JPADStaticWriteUtils.writeSingleNode("wheel_width", 
+				aircraft.getLandingGears().getFrontalWheelsWidth(), 
+				frontalWheelsDataElement, doc);
+		
+		// rear_wheels_data
+		org.w3c.dom.Element rearWheelsDataElement = doc.createElement("rear_wheels_data");
+		landingGearElement.appendChild(rearWheelsDataElement);
+		
+		// frontal_wheels_data - wheel_heigtt
+		JPADStaticWriteUtils.writeSingleNode("wheel_height", 
+				aircraft.getLandingGears().getRearWheelsHeight(), 
+				rearWheelsDataElement, doc);
+		
+		// frontal_wheels_data - wheel_width
+		JPADStaticWriteUtils.writeSingleNode("wheel_width", 
+				aircraft.getLandingGears().getRearWheelsWidth(), 
+				rearWheelsDataElement, doc);
+		
+	}
+	
+	private static void makeXmlTreeSystems(Aircraft aircraft, Document doc) {
+		
+		org.w3c.dom.Element rootElement = doc.createElement("jpad_config");
+		doc.appendChild(rootElement);
+
+		// systems gear
+		org.w3c.dom.Element systemsElement = createXMLElementWithAttributes(doc, "systems", 
+				Tuple.of("id", aircraft.getSystems().getId())
+				);
+		rootElement.appendChild(systemsElement); 
+		
+		// TODO: ADD OTHER TAG WHEN AVAILABLE !!
+		
+	}
 	
 	@SafeVarargs
 	public static org.w3c.dom.Element createXMLElementWithAttributes(Document doc, String elementName, 

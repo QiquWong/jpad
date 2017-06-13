@@ -1810,7 +1810,7 @@ public class FuselageCreator implements IFuselageCreator {
 		List<String>  sectionRhoUpperProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_rho_upper");
 		Double sectionCylinderRhoUpper = Double.valueOf(sectionRhoUpperProp.get(0));
 		List<String>  sectionRhoLowerProp = reader.getXMLPropertiesByPath("//cylindrical_trunk/section_rho_lower");
-		Double sectionCylinderRhoLower = Double.valueOf(sectionRhoUpperProp.get(0));
+		Double sectionCylinderRhoLower = Double.valueOf(sectionRhoLowerProp.get(0));
 		
 		// TAIL TRUNK
 		Amount<Length> heightT = reader.getXMLAmountLengthByPath("//tail_trunk/tip_height_offset");

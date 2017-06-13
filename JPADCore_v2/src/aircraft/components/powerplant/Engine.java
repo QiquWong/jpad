@@ -429,7 +429,8 @@ public class Engine implements IEngine {
 	 *  
 	 * @see: thrustmodelsToFromP0.pdf in JPAD DOCS
 	 */
-	private void calculateT0FromP0 () {
+	@SuppressWarnings("unused")
+	private void calculateT0FromP0Bernoulli () {
 		
 		// this is the maximal static thrust 
 		this._t0 = Amount.valueOf(
@@ -440,6 +441,16 @@ public class Engine implements IEngine {
 				*Math.PI/4,
 				NonSI.POUND_FORCE);
 		this._t0 = this._t0.times(0.95).to(SI.NEWTON);
+		
+	}
+	
+	private void calculateT0FromP0 () {
+		
+		// this is the maximal static thrust 
+		this._t0 = Amount.valueOf(
+				this._p0.doubleValue(NonSI.HORSEPOWER)*2.8,
+				SI.NEWTON
+				);
 		
 	}
 	
