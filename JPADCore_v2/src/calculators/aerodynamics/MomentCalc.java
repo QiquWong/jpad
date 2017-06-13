@@ -1,5 +1,7 @@
 package calculators.aerodynamics;
 
+import static java.lang.Math.pow;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -800,6 +802,107 @@ public class MomentCalc {
 			}
 			cmDistribution.set(numberOfPointSemiSpanWise-1,0.);
 		return cmDistribution;
+	}
+	
+	public static Double calculateCM0FuselageMulthopp(
+			Amount<Length> fuselageLength,
+			Amount<Length> noseLength,
+			Amount<Length> cabinLength,
+			Double k2k1,
+			Amount<Area> wingSurface,
+			Amount<Angle> wingRiggingAngle,
+			Amount<Angle> wingAlphaZeroLift,
+			Amount<Length> wingMeanAerodynamicChord,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+
+		Double cM0 = 0.0;
+		Double sum = 0.0;
+		double[] x = MyArrayUtils.linspace(
+				0.,
+				fuselageLength.doubleValue(SI.METER)*(1-0.0001),
+				100
+				);
+
+		try {
+			for(int i=1; i<x.length; i++){
+				sum = sum 
+						+ pow(FusGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
+						*(FusGeometryCalc.getCamberAngleAtX(
+								x[i],
+								outlineXZUpperCurveX,
+								outlineXZUpperCurveZ,
+								outlineXZLowerCurveX,
+								outlineXZLowerCurveZ,
+								noseLength,
+								cabinLength
+								) 
+								+ wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+								+ Math.abs(wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE))
+								)
+						* (x[i] - x[i-1]);
+			}
+
+			cM0 = k2k1
+					/(36.5
+							*wingSurface.doubleValue(SI.SQUARE_METRE)
+							*wingMeanAerodynamicChord.doubleValue(SI.METER)
+							) 
+					* sum;
+
+		} catch (NullPointerException e) {
+			cM0 = 0.0;
+		}
+
+		return cM0;
+	}
+
+	public static Amount<?> calculateCMAlphaFuselageOrNacelleGilruth(
+			Amount<Length> length,
+			Amount<Length> maxWidth,
+			double[] positionOfC4ToFuselageOrNacelleLength,
+			double[] kF,
+			Amount<Area> wingSurface,
+			Amount<Length> wingMeanAerodynamicChord,
+			Amount<Length> wingXApex,
+			Amount<Length> wingRootChord
+			) {
+
+		Double cMAlpha = 0.0;
+
+		double kf = MyMathUtils
+				.interpolate1DLinear(positionOfC4ToFuselageOrNacelleLength, kF)
+				.value(
+						(wingXApex.doubleValue(SI.METER) 
+								+ 0.25*wingRootChord.doubleValue(SI.METER)
+								)
+						/length.doubleValue(SI.METER)
+						);
+
+		cMAlpha = kf*pow(maxWidth.doubleValue(SI.METER), 2)*length.doubleValue(SI.METER)
+				/(wingSurface.doubleValue(SI.SQUARE_METRE)
+						*wingMeanAerodynamicChord.doubleValue(SI.METER)
+						);
+
+		return Amount.valueOf(cMAlpha, NonSI.DEGREE_ANGLE.inverse());
+		
+	}
+
+	public static Double calculateCMAtAlphaFuselage(
+			Amount<Angle> alphaBody,
+			Amount<?> cMAlpha,
+			Double cM0			
+			) {
+		
+		return alphaBody.doubleValue(NonSI.DEGREE_ANGLE)
+				*cMAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+				+ cM0;				
+		
 	}
 	
 }

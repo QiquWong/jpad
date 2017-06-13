@@ -31,6 +31,7 @@ import analyses.liftingsurface.LSAerodynamicsManager.CalcCLmax;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
@@ -247,15 +248,15 @@ public class DirectionalStabilityTest extends Application {
 			System.setOut(filterStream);
 
 			// default Aircraft ATR-72 ...
-			//				theAircraft = new Aircraft.AircraftBuilder(
-			//						"ATR-72",
-			//						AircraftEnum.ATR72,
-			//						aeroDatabaseReader,
-			//						highLiftDatabaseReader,
-			//				        fusDesDatabaseReader,
-			//						veDSCDatabaseReader,
-			//						)
-			//						.build();
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader,
+//					fusDesDatabaseReader,
+//					veDSCDatabaseReader
+//					)
+//					.build();
 
 			// reading aircraft from xml ... 
 			theAircraft = Aircraft.importFromXML(
@@ -352,9 +353,13 @@ public class DirectionalStabilityTest extends Application {
 							null,
 							ConditionEnum.CRUISE,
 							50, 
-							null, 
-							null, 
-							null)
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(-2,20,21), 
+									NonSI.DEGREE_ANGLE), 
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(0,10,3), 
+									NonSI.DEGREE_ANGLE), 
+							0.25)
 					);
 			CalcXAC calcXACVTail = liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcXAC();
 			calcXACVTail.atQuarterMAC();
@@ -380,9 +385,13 @@ public class DirectionalStabilityTest extends Application {
 							null,
 							ConditionEnum.CRUISE,
 							50, 
-							null, 
-							null, 
-							null)
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(-2,20,21), 
+									NonSI.DEGREE_ANGLE), 
+							MyArrayUtils.convertDoubleArrayToListOfAmount(
+									MyArrayUtils.linspace(0,10,3), 
+									NonSI.DEGREE_ANGLE), 
+							0.25)
 					);
 			CalcXAC calcXACWing = liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
 			calcXACWing.atQuarterMAC();

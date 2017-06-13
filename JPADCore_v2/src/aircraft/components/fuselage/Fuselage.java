@@ -33,7 +33,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
-import configuration.enumerations.WindshieldType;
+import configuration.enumerations.WindshieldTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import standaloneutils.MyUnits;
@@ -169,7 +169,7 @@ public class Fuselage implements IFuselage {
 	}
 
 	@Override
-	public WindshieldType getWindshieldType() {
+	public WindshieldTypeEnum getWindshieldType() {
 		return _fuselageCreator.getWindshieldType();
 	}
 

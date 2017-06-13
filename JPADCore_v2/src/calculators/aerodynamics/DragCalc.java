@@ -5,21 +5,28 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Volume;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
+import calculators.geometry.FusGeometryCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.WindshieldTypeEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -93,6 +100,58 @@ public class DragCalc {
 		return calculateDragAtSpeed(weight, altitude, surface, speed, cd0, 
 				LiftCalc.calculateLiftCoeff(weight, speed, surface, altitude), 
 				ar, e, sweepHalfChord, tcMax, airfoilType);
+	}
+	
+	public static Double calculateCD0Upsweep(  // page 67 Behind ADAS (Stanford)
+			Amount<Area> cylindricalSectionBaseArea,
+			Amount<Area> wingSurface,
+			Amount<Length> lengthTailCone,
+			Amount<Length> zCamber75
+			) {
+		return 0.075 
+				*(cylindricalSectionBaseArea.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE))
+				*(zCamber75.doubleValue(SI.METER)/(0.75*lengthTailCone.doubleValue(SI.METER)));
+	}
+	
+	public static Double calculateCD0Windshield(
+			MethodEnum method,
+			WindshieldTypeEnum windshieldType,
+			Amount<Area> windshieldArea,
+			Amount<Area> cylindricalSectionBaseArea,
+			Amount<Area> wingSurface
+			) {
+		
+		Double cDWindshield = 0.0;
+		Double deltaCd = 0.0;
+
+		switch(method){ // Behind ADAS page 101
+		case EMPIRICAL : {
+			cDWindshield = 0.07*windshieldArea.doubleValue(SI.SQUARE_METRE)/
+					wingSurface.doubleValue(SI.SQUARE_METRE);
+		} break;
+		case NACA : { // NACA report 730, poor results
+			cDWindshield =  0.08*cylindricalSectionBaseArea.doubleValue(SI.SQUARE_METRE)/
+					wingSurface.doubleValue(SI.SQUARE_METRE);
+		} break;
+		case ROSKAM : { // page 134 Roskam, part VI
+			switch(windshieldType){
+			case FLAT_PROTRUDING : {deltaCd = .016;}; break;
+			case FLAT_FLUSH : {deltaCd = .011;}; break;
+			case SINGLE_ROUND : {deltaCd = .002;}; break;
+			case SINGLE_SHARP : {deltaCd = .005;}; break;
+			case DOUBLE : {deltaCd = .002;}; break;
+			default : {deltaCd = 0.0;}; break;
+			}
+			cDWindshield = (deltaCd*cylindricalSectionBaseArea.doubleValue(SI.SQUARE_METRE))/
+					wingSurface.doubleValue(SI.SQUARE_METRE);
+		} break;
+		default : {
+			System.out.println("Inside default branch of calculateWindshield method, class MyFuselage");
+			cDWindshield =  0.0;
+		} break;
+		}
+
+		return cDWindshield;
 	}
 	
 	/**
@@ -187,7 +246,7 @@ public class DragCalc {
 	 * @param d
 	 * @return
 	 */
-	public static Double calculateCd0Base(MethodEnum method, Double cd0Parasite, 
+	public static Double calculateCD0Base(MethodEnum method, Double cd0Parasite, 
 			Double S_ref, Double dbase, Double d) { 
 		// The bigger dbase the lower CdBase
 		switch(method){
@@ -952,4 +1011,72 @@ public class DragCalc {
 		return totalDragDistribution;
 		
 	}
+	
+	/**
+	 * @see NASA TN D-6800 (pag.47 pdf)
+	 * 
+	 * @param xStations in m
+	 * @param alphaBody in deg
+	 * @param wettedSurface in m^2
+	 * @param volume in m^3
+	 * @param k2k1
+	 * @param maxDiameter in m
+	 * @param wingSurface in m2
+	 * @return the CDi of the fuselage or of the nacelle
+	 */
+	public static Double calculateCDInducedFuselageOrNacelle(
+			List<Amount<Length>> xStations,
+			Amount<Angle> alphaBody,
+			Amount<Area> wettedSurface,
+			Amount<Volume> volume,
+			Double k2k1,
+			Amount<Length> maxDiameter,
+			Amount<Length> length,
+			Amount<Area> wingSurface,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+		
+		double eta = 0.0000000081*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),5)
+				- 0.0000010400*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),4) 
+				+ 0.0000549040*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),3) 
+				- 0.0015946361*Math.pow(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER),2) 
+				+ 0.0296842457*(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER)) 
+				+ 0.5038353579;
+		
+		List<Amount<Length>> equivalentDiameters = xStations.stream()
+				.map(x -> FusGeometryCalc.calculateEquivalentDiameterAtX(
+						x,
+						outlineXZUpperCurveX, 
+						outlineXZUpperCurveZ,
+						outlineXZLowerCurveX, 
+						outlineXZLowerCurveZ, 
+						outlineXYSideRCurveX, 
+						outlineXYSideRCurveY)
+						)
+				.collect(Collectors.toList()); 
+		
+		Double integral = MyMathUtils.integrate1DSimpsonSpline(
+				MyArrayUtils.convertToDoublePrimitive(
+						xStations.stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+						),
+				MyArrayUtils.convertToDoublePrimitive(
+						equivalentDiameters.stream().map(eq -> eq.doubleValue(SI.METER)*eta).collect(Collectors.toList())
+						)
+				);
+		
+		Double cDi = (
+				(2*alphaBody.doubleValue(NonSI.DEGREE_ANGLE)*k2k1*wettedSurface.doubleValue(SI.SQUARE_METRE)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3)))
+				+ (2*Math.pow(alphaBody.doubleValue(NonSI.DEGREE_ANGLE),3)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))*integral)
+				)
+				*(Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))/wingSurface.doubleValue(SI.SQUARE_METRE));
+		
+		return cDi;
+		
+	}
+	
 }

@@ -280,23 +280,6 @@ public class Nacelles implements INacelles {
 		return _totalCG;
 	}
 
-	/**
-	 * @author Lorenzo Attanasio
-	 */
-	@Override
-	public void calculateAerodynamics() {
-		_cD0Parasite = 0.;
-		_cD0Base = 0.;
-		_cD0Total = 0.;
-
-		for(int i=0; i < _nacellesNumber; i++) {
-			_nacellesList.get(i).getAerodynamics().calculateAll();
-			_cD0Parasite = _cD0Parasite + _nacellesList.get(i).getAerodynamics().getCD0Parasite();
-			_cD0Base = _cD0Base + _nacellesList.get(i).getAerodynamics().getCD0Base();
-			_cD0Total = _cD0Total + _nacellesList.get(i).getAerodynamics().getCD0Total();
-		}
-	}
-
 	@Override
 	public String getId() {
 		return _id;

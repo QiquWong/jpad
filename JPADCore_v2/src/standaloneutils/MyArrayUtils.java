@@ -282,7 +282,7 @@ public final class MyArrayUtils {
 		
 		for(int i=0; i<matrix.length; i++) {
 			
-			resultList.add(MyArrayUtils.convertFromDoublePrimitive(matrix[i]));
+			resultList.add(MyArrayUtils.convertFromDoubleToPrimitive(matrix[i]));
 			
 		}
 		
@@ -352,12 +352,12 @@ public final class MyArrayUtils {
 
 		return 
 				list.stream()
-				.map(x -> convertFromDoublePrimitive(x))
+				.map(x -> convertFromDoubleToPrimitive(x))
 				.collect(Collectors.toList());
 		
 	}
 	
-	public static Double[] convertFromDoublePrimitive(double[] vec) {
+	public static Double[] convertFromDoubleToPrimitive(double[] vec) {
 		
 		Double[] vec_D = new Double[vec.length];
 		
@@ -378,7 +378,7 @@ public final class MyArrayUtils {
 		return vec_d;
 	}
 	
-	public static List<Double> convertDoubleArrayToListDouble(Double[] vec){
+	public static List<Double> convertDoubleArrayToListDouble(Double[] vec){ 
 
 		List<Double> list = new ArrayList<Double>();
 
@@ -655,6 +655,18 @@ public final class MyArrayUtils {
 	 */
 	public static double[] scaleArray(double[] vec, double d) {
 		return Arrays.stream(vec).map(i -> i*d).toArray();
+	}
+	
+	/**
+	 * This method accepts an array and multiply each element by the double value 
+	 * given as second input.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param vec
+	 * @return
+	 */
+	public static List<Double> multiplyListEbE(List<Double> list1, List<Double> list2) {
+		return list1.stream().map(l1 -> l1*list2.get(list1.indexOf(l1))).collect(Collectors.toList());
 	}
 	
 	public static double[] abs(double[] d) {

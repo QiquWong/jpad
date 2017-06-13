@@ -938,7 +938,7 @@ public class ReaderWriter{
 	
 		JPADStaticWriteUtils.writeSingleNode("wing_eta_stations", theStabilityCalculator.getWingYAdimensionalDistribution(), wingLiftElement, doc);	
 		JPADStaticWriteUtils.writeSingleNode("alpha_max_linear", theStabilityCalculator.getWingalphaMaxLinearCONDITION(), wingLiftElement, doc);	
-		JPADStaticWriteUtils.writeSingleNode("cl_distribution_at_CL_max", MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(theStabilityCalculator.getWingliftCoefficientDistributionatCLMax())), wingLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cl_distribution_at_CL_max", MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(theStabilityCalculator.getWingliftCoefficientDistributionatCLMax())), wingLiftElement, doc);	
 	
 		JPADStaticWriteUtils.writeSingleNode("alphas_wing", theStabilityCalculator.get_alphasWing(), wingLiftElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.getWingliftCoefficient3DCurve()), wingLiftElement, doc);	
@@ -967,7 +967,7 @@ public class ReaderWriter{
 		
 		JPADStaticWriteUtils.writeSingleNode("horizontal_tail_eta_stations", theStabilityCalculator.getHTailYAdimensionalDistribution(), hTailLiftElement, doc);	
 		JPADStaticWriteUtils.writeSingleNode("alpha_max_linear", theStabilityCalculator.get_hTailalphaMaxLinear(), hTailLiftElement, doc);	
-		JPADStaticWriteUtils.writeSingleNode("cl_distribution_at_CL_max", MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(theStabilityCalculator.get_hTailliftCoefficientDistributionatCLMax())), hTailLiftElement, doc);	
+		JPADStaticWriteUtils.writeSingleNode("cl_distribution_at_CL_max", MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(theStabilityCalculator.get_hTailliftCoefficientDistributionatCLMax())), hTailLiftElement, doc);	
 	
 		JPADStaticWriteUtils.writeSingleNode("alphas_tail", theStabilityCalculator.get_alphasTail(), hTailLiftElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_curve", MyArrayUtils.convertDoubleArrayToListDouble(theStabilityCalculator.get_hTailliftCoefficient3DCurve()), hTailLiftElement, doc);	

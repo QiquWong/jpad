@@ -2628,7 +2628,7 @@ public class StabilityExecutableManager {
 			}
 			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
 			xList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailYAdimensionalDistribution));
-			yList.add(MyArrayUtils.convertFromDoublePrimitive(_hTailliftCoefficientDistributionatCLMax));
+			yList.add(MyArrayUtils.convertFromDoubleToPrimitive(_hTailliftCoefficientDistributionatCLMax));
 			yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_hTailClMaxDistribution));
 			legend.add("Cl distribution at CL max");
 			legend.add("Cl max airfoils");
@@ -4200,7 +4200,7 @@ public class StabilityExecutableManager {
 		
 
 		 this._deltaEAnglesArray = MyArrayUtils.convertDoubleArrayToListOfAmount(
-				MyArrayUtils.convertFromDoublePrimitive(
+				MyArrayUtils.convertFromDoubleToPrimitive(
 						MyArrayUtils.linspace(-30, 5, 50)), NonSI.DEGREE_ANGLE);
 		
 		
@@ -4310,7 +4310,7 @@ public class StabilityExecutableManager {
 						maxValue = clPolarAirfoilWingDragPolar.get(i).get(ii);
 				}
 			}
-			clListDragWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+			clListDragWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 
 		_wingCdAirfoilDistribution = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
@@ -4355,7 +4355,7 @@ public class StabilityExecutableManager {
 						maxValue = _wingCLMomentAirfoilInput.get(i).get(ii);
 				}
 			}
-			clListMomentWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+			clListMomentWing = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 			_wingCLMomentAirfoilOutput = clListMomentWing;
 			
@@ -4396,7 +4396,7 @@ public class StabilityExecutableManager {
 						maxValue = clPolarAirfoilHTailDragPolar.get(i).get(ii);
 				}
 			}
-			clListDragTail = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+			clListDragTail = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(
 					MyArrayUtils.linspace(minValue, maxValue, _numberOfAlphasBody)));
 	
 		
@@ -5959,7 +5959,7 @@ public class StabilityExecutableManager {
 			theNasaBlackwellCalculatorMachActualWing.calculate(_alphaWingForDistribution.get(i));
 			_clWingDistribution.add(i, 
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray())));
 		}
 
@@ -5973,7 +5973,7 @@ public class StabilityExecutableManager {
 			else{
 			_clHtailDistribution.add(i, 
 					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoublePrimitive(
+							MyArrayUtils.convertFromDoubleToPrimitive(
 									theNasaBlackwellCalculatorMachActualHTail.getClTotalDistribution().toArray())));
 			}
 		}
@@ -6119,7 +6119,7 @@ public class StabilityExecutableManager {
 		// CL MAX----------------------
 		
 		theNasaBlackwellCalculatorMachActualWing.calculate(_alphaStallLinearFlapped);
-		 _clMaxDistributionFlapped = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoublePrimitive(
+		 _clMaxDistributionFlapped = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(
 				 theNasaBlackwellCalculatorMachActualWing.getClTotalDistribution().toArray()));
 		_clMaxFlapped = theNasaBlackwellCalculatorMachActualWing.getCLCurrent();
 		

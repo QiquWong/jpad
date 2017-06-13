@@ -15,7 +15,10 @@ public class Controllers {
 
 	private Main main;
 	private Main theMainClass = new Main();
+	VaraiblesAnalyses theVariablesAnalysisClass;
 
+	@FXML
+	Button saveButton;
 	
 	@FXML
 	private void reStartNewAnalysis() throws IOException{
@@ -49,12 +52,34 @@ public class Controllers {
 	private void infoButton() throws IOException{
 		main.showInfo();
 	}
+	
+	@FXML
+	private void saveOutput() throws IOException{
+		main.saveOutput();
+	}
+	 
 
 	public Main getTheMainClass() {
 		return theMainClass;
 	}
 	public void setTheMainClass(Main theMainClass) {
 		this.theMainClass = theMainClass;
+	}
+
+	public Button getSaveButton() {
+		return saveButton;
+	}
+
+	public void setSaveButton(Button saveButton) {
+		this.saveButton = saveButton;
+	}
+
+	public VaraiblesAnalyses getTheVariablesAnalysisClass() {
+		return theVariablesAnalysisClass;
+	}
+
+	public void setTheVariablesAnalysisClass(VaraiblesAnalyses theVariablesAnalysisClass) {
+		this.theVariablesAnalysisClass = theVariablesAnalysisClass;
 	}
 	
 	

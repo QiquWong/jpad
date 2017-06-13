@@ -450,7 +450,7 @@ public class ACAerodynamicCalculator {
 		downwashGradientConstant.put(
 				MethodEnum.SLINGERLAND,
 				MyArrayUtils.convertDoubleArrayToListDouble(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyMathUtils.calculateArrayFirstDerivative(
 										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
 										MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -599,7 +599,7 @@ public class ACAerodynamicCalculator {
 		downwashGradientNonLinear.put(
 				MethodEnum.SLINGERLAND,
 				MyArrayUtils.convertDoubleArrayToListDouble(
-						MyArrayUtils.convertFromDoublePrimitive(
+						MyArrayUtils.convertFromDoubleToPrimitive(
 								MyMathUtils.calculateArrayFirstDerivative(
 										MyArrayUtils.convertListOfAmountTodoubleArray(_alphaBodyList),
 										MyArrayUtils.convertListOfAmountTodoubleArray(
