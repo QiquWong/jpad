@@ -905,6 +905,58 @@ public class MomentCalc {
 		
 	}
 	
+	/**
+	 * This method allows to calculate the total moment coefficient of an aircraft with respect to the center of gravity
+	 * which is an input, using the balance equation.
+	 * NB. All List<Double> of components aerodynamic coefficients MUST BE referred to the same vector of alpha body.
+	 *
+	 * @param  the dimensional position along the X axis of the center of gravity in BRF
+	 * @param  the dimensional position along the Z axis of the center of gravity (pendular stability) in BRF
+	 * @param  the dimensional position along the X axis of the wing aerodynamic center in BRF
+	 * @param  the dimensional position along the Z axis of the wing aerodynamic center in BRF
+	 * @param  the dimensional position along the Z axis of the application point of the drag in the fuselage in BRF
+	 * @param  the dimensional position along the X axis of the horizontal tail aerodynamic center in BRF
+	 * @param  the dimensional position along the Z axis of the horizontal tail aerodynamic center in BRF
+	 * @param  the dimensional position along the Z axis of the landing gear FROM GROUND.
+	 * @param  the dimensional value of the Wing MAC (used to the nondimensionalization)
+	 * @param  the wing surface
+	 * @param  the horizontal tail surface
+	 * @param  the dynamic pressure ratio between horizontal tail and wing
+	 * @param  the wing lift coefficient list NB. REFERRED TO A CERTAIN ALPHA BODY VECTOR THAT MUST BE THE SAME FOR EVERY LIST
+	 * @param  the wing drag coefficient list NB. REFERRED TO A CERTAIN ALPHA BODY VECTOR THAT MUST BE THE SAME FOR EVERY LIST
+	 * @param  the wing moment 
+	 * @return     
+	 */
+	
+	public static List<Double> calculateCMTotalCurveWithBalanceEquation(
+			Amount<Length> xCGPosition,
+			Amount<Length> zCGPosition,
+			Amount<Length> xACWing,
+			Amount<Length> zACWing,
+			Amount<Length> zFuselage,
+			Amount<Length> xACHorizontalTail,
+			Amount<Length> zACHorizontalTail,
+			Amount<Length> zLandingGear,
+			Amount<Length> wingMeanAerodynamicChord,
+			Amount<Area> wingSurface,
+			Amount<Area> horizontalTailSurface,
+			Double dynamicPressureRatio,
+			List<Double> wingLiftCoefficient,
+			List<Double> wingDragCoefficient,
+			List<Double> wingMomentCoefficient,
+			List<Double> fuselageMomentCoefficient,
+			List<Double> fuselageDragCoefficient,
+			List<Double> horizontalTailLiftCoefficient,
+			List<Double> horizontalTailDragCoefficient,
+			List<Double> horizontalTailMomentCoefficient,
+			List<Double> landingGearDragCoefficient
+			) {
+		List<Double> totalMomentCoefficient = new ArrayList<>();
+		
+
+
+		return totalMomentCoefficient;
+	}
 }
 
 

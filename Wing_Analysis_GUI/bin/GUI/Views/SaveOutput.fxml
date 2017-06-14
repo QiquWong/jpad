@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="250.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Views.SaveOutput">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox>
+               <children>
+                  <HBox>
+                     <children>
+                        <ImageView fitHeight="42.0" fitWidth="59.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../img/floppy.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Please select which of the below output you want to save:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" top="15.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+               </children>
+            </VBox>
+            <CheckBox fx:id="svg" mnemonicParsing="false" text=" .svg (Wing Top View)" />
+            <CheckBox mnemonicParsing="false" text=" .xml (Output Data)" fx:id="xml" />
+            <CheckBox mnemonicParsing="false" text=" .xls (Output Data)" fx:id="xls" />
+            <CheckBox fx:id="png" mnemonicParsing="false" text=" .png (Charts)" />
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Region prefHeight="37.0" prefWidth="4.0" />
+                  <Label prefHeight="17.0" prefWidth="142.0" text="Choose output directory">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="outputDirText" prefHeight="29.0" prefWidth="200.0" promptText="Output Directory" />
+                  <Button mnemonicParsing="false" onAction="#chooseOutputFile" prefHeight="25.0" prefWidth="20.0" text="...">
+                     <HBox.margin>
+                        <Insets left="-28.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="87.0" />
+                  <Button fx:id="save" mnemonicParsing="false" onAction="#saveFiles" prefHeight="29.0" prefWidth="57.0" text="SAVE">
+                     <font>
+                        <Font name="AR ESSENCE" size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <BorderPane.margin>
+            <Insets left="5.0" />
+         </BorderPane.margin>
+      </VBox>
+   </center>
+</BorderPane>
