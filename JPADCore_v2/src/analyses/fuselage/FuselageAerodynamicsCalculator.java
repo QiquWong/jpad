@@ -70,7 +70,6 @@ public class FuselageAerodynamicsCalculator {
 	private Map<MethodEnum, Double> _cD0Upsweep;
 	private Map<MethodEnum, Double> _cD0Windshield;
 	private Map<MethodEnum, Double> _cD0Base;
-	private Map<MethodEnum, Double> _cDWindshield;
 	private Map<MethodEnum, Double> _cD0Total;
 	private Map<MethodEnum, Double> _cDInduced;
 	private Map<MethodEnum, Double> _cDAtAlpha;
@@ -153,7 +152,9 @@ public class FuselageAerodynamicsCalculator {
 		_cD0Parasite = new HashMap<MethodEnum, Double>();
 		_cD0Upsweep = new HashMap<MethodEnum, Double>();
 		_cD0Base = new HashMap<MethodEnum, Double>();
-		_cDWindshield = new HashMap<MethodEnum, Double>();
+		_cD0Windshield = new HashMap<MethodEnum, Double>();
+		_cDInduced = new HashMap<MethodEnum, Double>();
+		_cDAtAlpha = new HashMap<MethodEnum, Double>();
 		_cD0Total = new HashMap<MethodEnum, Double>();
 		_polar3DCurve = new HashMap<MethodEnum, Double[]>();
 		
@@ -347,7 +348,7 @@ public class FuselageAerodynamicsCalculator {
 					) 
 					+ _cD0Upsweep.get(MethodEnum.SEMPIEMPIRICAL) 
 					+ _cD0Base.get(MethodEnum.SEMPIEMPIRICAL)
-					+ _cDWindshield.get(MethodEnum.SEMPIEMPIRICAL)
+					+ _cD0Windshield.get(MethodEnum.SEMPIEMPIRICAL)
 					);
 		}
 		
@@ -457,7 +458,7 @@ public class FuselageAerodynamicsCalculator {
 							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveZ(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(), 
-							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX()
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							)
 					);
 			
@@ -473,12 +474,50 @@ public class FuselageAerodynamicsCalculator {
 	//............................................................................
 	public class CalcCDAtAlpha {
 		
-		public void semiempirical(Amount<Angle> alphaBody) {
-			// TODO
+		public double semiempirical(Amount<Angle> alphaBody) {
+			
+			double cDActual = 0.0;
+			
+			if(_cD0Total.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+				CalcCD0Total calcCD0Total = new CalcCD0Total(); 
+				calcCD0Total.semiempirical();
+			}
+			
+			if(_cDInduced.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
+				calcCDInduced.semiempirical(alphaBody);
+			}
+			
+			_cDAtAlpha.put(
+					MethodEnum.SEMPIEMPIRICAL,
+					_cD0Total.get(MethodEnum.SEMPIEMPIRICAL)
+					+ _cDInduced.get(MethodEnum.SEMPIEMPIRICAL)
+					);
+			
+			return cDActual;
 		}
 		
-		public void fusDes(Amount<Angle> alphaBody) {
-			// TODO			
+		public double fusDes(Amount<Angle> alphaBody) {
+			
+			double cDActual = 0.0;
+			
+			if(_cD0Total.get(MethodEnum.FUSDES) == null) {
+				CalcCD0Total calcCD0Total = new CalcCD0Total(); 
+				calcCD0Total.fusDes();
+			}
+			
+			if(_cDInduced.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
+				calcCDInduced.semiempirical(alphaBody);
+			}
+			
+			_cDAtAlpha.put(
+					MethodEnum.FUSDES,
+					_cD0Total.get(MethodEnum.FUSDES)
+					+ _cDInduced.get(MethodEnum.SEMPIEMPIRICAL)
+					);
+			
+			return cDActual;			
 		}
 		
 	}
@@ -492,11 +531,29 @@ public class FuselageAerodynamicsCalculator {
 	public class CalcPolar {
 		
 		public void semiempirical() {
-			// TODO
+			
+			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+			
+			Double[] cDArray = new Double[_alphaArray.size()];
+			for(int i=0; i<_alphaArray.size(); i++) {
+				cDArray[i] = calcCDAtAlpha.semiempirical(_alphaArray.get(i));
+			}
+			
+			_polar3DCurve.put(MethodEnum.SEMPIEMPIRICAL, cDArray);
+			
 		}
 		
 		public void fusDes() {
-			// TODO
+
+			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+			
+			Double[] cDArray = new Double[_alphaArray.size()];
+			for(int i=0; i<_alphaArray.size(); i++) {
+				cDArray[i] = calcCDAtAlpha.fusDes(_alphaArray.get(i));
+			}
+			
+			_polar3DCurve.put(MethodEnum.FUSDES, cDArray);
+			
 		}
 		
 	}
@@ -808,10 +865,6 @@ public class FuselageAerodynamicsCalculator {
 		return _cD0Base;
 	}
 
-	public Map<MethodEnum, Double> getCDWindshield() {
-		return _cDWindshield;
-	}
-
 	public Map<MethodEnum, Double> getCD0Total() {
 		return _cD0Total;
 	}
@@ -906,10 +959,6 @@ public class FuselageAerodynamicsCalculator {
 
 	public void setCD0Base(Map<MethodEnum, Double> _cD0Base) {
 		this._cD0Base = _cD0Base;
-	}
-
-	public void setCDWindshield(Map<MethodEnum, Double> _cDWindshield) {
-		this._cDWindshield = _cDWindshield;
 	}
 
 	public void setCD0Total(Map<MethodEnum, Double> _cD0Total) {
