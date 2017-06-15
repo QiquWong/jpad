@@ -85,8 +85,6 @@ public class NacelleAerodynamicsManager {
 		
 		initializeData();
 		
-		// TODO: COMPLETE INITIALIZE CALCULATORS 
-		initializeCalculators();
 	}
 	
 	//------------------------------------------------------------------------------
@@ -137,12 +135,6 @@ public class NacelleAerodynamicsManager {
 		
 	}
 
-	private void initializeCalculators() {
-		
-		// TODO !!
-		
-	}
-	
 	//............................................................................
 	// Calc CD0 PARASITE INNER CLASS
 	//............................................................................

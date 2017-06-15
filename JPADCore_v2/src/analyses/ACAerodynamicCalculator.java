@@ -66,7 +66,6 @@ public class ACAerodynamicCalculator {
 	// FROM INPUT (Passed from ACAnalysisManager)
 	private Aircraft _theAircraft;
 	private OperatingConditions _theOperatingConditions;
-	private List<ConditionEnum> _theConditions;
 	private ConditionEnum _currentCondition;
 	//..............................................................................
 	// FROM INPUT (Passed from XML file)
@@ -711,7 +710,71 @@ public class ACAerodynamicCalculator {
 		 * AND RUN ALL THE COMPONENTS CALCULATIONS
 		 */
 		
-
+		//============================================================================
+		// WING
+//		if(_theAircraft.getWing() != null)
+//			_liftingSurfaceAerodynamicManagers.put(
+//					ComponentEnum.WING,
+//					new LSAerodynamicsManager(
+//							_theAircraft.getWing(),
+//							_theOperatingConditions, 
+//							plotMap, 
+//							theCondition,
+//							numberOfPointSemiSpanWise,
+//							alphaArray, 
+//							alphaForDistribution,
+//							momentumPole
+//							)
+//					);
+//			
+//		if(_componentTaskList.get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH))
+			
+		
+		
+//		CRITICAL_MACH,
+//		AERODYNAMIC_CENTER,
+//		CL_AT_ALPHA,
+//		CL_ALPHA,
+//		CL_ZERO,
+//		CL_STAR,
+//		CL_MAX,
+//		ALPHA_ZERO_LIFT,
+//		ALPHA_STAR,
+//		ALPHA_STALL,
+//		LIFT_CURVE_3D,
+//		LIFT_DISTRIBUTION,
+//		CD0,
+//		CD_INDUCED_LIFTING_SURFACE,
+//		CD_WAVE,
+//		OSWALD_FACTOR,
+//		POLAR_CURVE_3D_LIFTING_SURFACE,
+//		DRAG_DISTRIBUTION,
+//		CD_AT_ALPHA_LIFTING_SURFACE,
+//		HIGH_LIFT_DEVICES_EFFECTS,
+//		HIGH_LIFT_CURVE_3D,
+//		CL_AT_ALPHA_HIGH_LIFT,
+//		CD_AT_ALPHA_HIGH_LIFT,
+//		CM_AT_ALPHA_HIGH_LIFT,
+//		CM_AC_LIFTING_SURFACE,
+//		CM_ALPHA_LIFTING_SURFACE,
+//		CM_AT_ALPHA_LIFTING_SURFACE,
+//		MOMENT_DISTRIBUTION_LIFTING_SURFACE,
+		
+		
+		//============================================================================
+		// HTAIL
+		
+		//============================================================================
+		// VTAIL
+		
+		//============================================================================
+		// FUSELAGE
+		
+		//============================================================================
+		// NACELLE
+		
+		//============================================================================
+		// AIRCRAFT
 		
 	}
 	
@@ -793,6 +856,45 @@ public class ACAerodynamicCalculator {
 	}
 	//............................................................................
 	// END BUFFET BARRIER INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Total Lift Coefficient INNER CLASS
+	//............................................................................
+	public class CalcTotalLiftCoefficient {
+		
+		public void fromAircraftComponents() {
+			// TODO
+		}
+	}
+	//............................................................................
+	// END Total Lift Coefficient INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Total Drag Coefficient INNER CLASS
+	//............................................................................
+	public class CalcTotalDragCoefficient {
+
+		public void fromAircraftComponents() {
+			// TODO
+		}
+	}
+	//............................................................................
+	// END Total Drag Coefficient INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Total Moment Coefficient INNER CLASS
+	//............................................................................
+	public class CalcTotalMomentCoefficient {
+
+		public void fromAircraftComponents() {
+			// TODO
+		}
+	}
+	//............................................................................
+	// END Total Moment Coefficient INNER CLASS
 	//............................................................................
 	
 	//............................................................................

@@ -119,8 +119,6 @@ public class FuselageAerodynamicsManager {
 		initializeVariables(_theCondition);
 		initializeData();
 		
-		// TODO: COMPLETE INITIALIZE CALCULATORS 
-		initializeCalculators();
 	}
 	
 	//------------------------------------------------------------------------------
@@ -205,12 +203,6 @@ public class FuselageAerodynamicsManager {
 		
 	}
 	
-	private void initializeCalculators() {
-		
-		// TODO !!
-		
-	}
-
 	//............................................................................
 	// Calc CD0 PARASITE INNER CLASS
 	//............................................................................
