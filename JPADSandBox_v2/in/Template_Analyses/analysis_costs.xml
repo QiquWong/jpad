@@ -36,7 +36,7 @@
 						<cockpit_labour_rate unit="$/hr" value=""/>
 					</crew>
 					<fuel>
-						<unit_price unit="$/kg" value=""/>
+						<unit_price unit="$/barrel" value=""/>
 					</fuel>
 					<charges>
 						<landing calculate="TRUE" method="AEA" unit="$/flight" value=""/>

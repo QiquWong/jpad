@@ -7,7 +7,10 @@ import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
+import javax.measure.quantity.Volume;
 import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 import org.apache.commons.math3.special.Erf;
 import org.apache.commons.math3.util.FastMath;
@@ -15,6 +18,8 @@ import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
+import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import parser.ExprParser.start_return;
 import standaloneutils.MyUnits;
@@ -291,6 +296,125 @@ public class CostsCalcUtils {
 				_depreciation.doubleValue(MyUnits.USD_PER_HOUR) + _interest.doubleValue(MyUnits.USD_PER_HOUR) + _insurance.doubleValue(MyUnits.USD_PER_HOUR),
 				MyUnits.USD_PER_HOUR
 				);
+	}
+	
+	/**
+	 * Method that calculate the total crew hour cost according to AEA
+	 * 
+	 *@param cockpitCrewNumber
+	 *@param cockpitLabourRate (USD/hr)
+	 * 
+	 * @return cockpitCrewCost (USD/hr)
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcCockpitCrewCostAEA(int cockpitCrewNumber, Amount<?> cockpitLabourRate) {
+
+		return  Amount.valueOf(
+				cockpitLabourRate.doubleValue(MyUnits.USD_PER_HOUR)*cockpitCrewNumber,
+				MyUnits.USD_PER_HOUR
+				);
+
+	}
+	
+	
+	/**
+	 * Method that calculate the total crew hour cost according to AEA
+	 * 
+	 *@param cabinCrewNumber
+	 *@param cabinLabourRate (USD/hr)
+	 * 
+	 * @return cabinCrewCost (USD/hr)
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcCabinCrewCostAEA(int cabinCrewNumber, Amount<?> cabinLabourRate) {
+
+		return  Amount.valueOf(
+				cabinLabourRate.doubleValue(MyUnits.USD_PER_HOUR)*cabinCrewNumber,
+				MyUnits.USD_PER_HOUR
+				);
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCCrew(Amount<?> _cabinCrewCost, Amount<?>_cockpitCrewCost){
+		
+		return Amount.valueOf(
+				_cabinCrewCost.doubleValue(MyUnits.USD_PER_HOUR) + _cockpitCrewCost.doubleValue(MyUnits.USD_PER_HOUR),
+				MyUnits.USD_PER_HOUR
+				);
+	}
+	
+	
+	/**
+	 * Method that calculate the cockpit crew hour cost according to Sforza. It varies with the crew 
+	 * element number (2 or 3) and the type of engines, through the use of a constant (aircraftTypeConst),
+	 * as it is indicated below:
+	 * 			1: Turbofan 2-man crew 		---> aircraftTypeConst = 697					
+	 * 			2: Turboprop 2-man crew;	---> aircraftTypeConst = 439
+	 * 			3: Turbofan 3-man crew;		---> aircraftTypeConst = 836.4
+	 * 
+	 * @param cabinCrewNumber
+	 * @param MTOM
+	 * @param _theAircraft
+	 * @return crewCost (USD/hr)
+ 
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcCockpitCrewCostATA(int cabinCrewNumber, Amount<Mass> MTOM, Aircraft _theAircraft) {
+
+		double aircraftTypeConst = 0.0;
+
+		if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 2){
+			aircraftTypeConst = 697.0;
+		}
+		else if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP) && cabinCrewNumber == 2){
+			aircraftTypeConst = 439.0;
+		}
+		else if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 3){
+			aircraftTypeConst = 836.4;
+		}
+
+		return Amount.valueOf(
+					(0.349*MTOM.doubleValue(NonSI.POUND)/1000.0) + aircraftTypeConst,
+					MyUnits.USD_PER_HOUR);
+
+	}
+	
+	/**
+	 * Method that calculate the total crew hour cost according to ATA method (see "DOC+I method")
+	 * 
+	 * @param numberOfSeats
+	 * @return crewCost (USD/hr)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcCabinCrewCostATA(int numberOfSeats){
+
+		return Amount.valueOf(
+				60*numberOfSeats/35,
+				MyUnits.USD_PER_HOUR);
+
+	}
+	
+	/**
+	 * 
+	 * @param fuelPrice   ($/barrel) 
+	 * @param fuelMass    (Kg)  
+	 * @return Fuel Cost ($/flight)
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCFuel(Amount<?> fuelPrice, Amount<Mass> fuelMass) {
+
+		// Jet fuel density = 0.810 kg/l
+		Amount<Volume> fuelVolume = fuelMass.divide(0.810).to(MyUnits.BARREL);
+		
+		return  Amount.valueOf(
+				fuelPrice.doubleValue(MyUnits.USD_PER_BARREL)*fuelVolume.doubleValue(MyUnits.BARREL),
+				MyUnits.USD_PER_FLIGHT
+				);
+
 	}
 	
 	

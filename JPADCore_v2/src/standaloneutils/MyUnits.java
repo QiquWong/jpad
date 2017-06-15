@@ -74,9 +74,13 @@ public class MyUnits {
 	public static final Unit HOURS_PER_YEAR = NonSI.HOUR.divide(NonSI.YEAR);
 	
 	public static final Unit USD_PER_HOUR = Currency.USD.divide(NonSI.HOUR);
+	public static final Unit USD_PER_NAUTICAL_MILE = Currency.USD.divide(NonSI.NAUTICAL_MILE);
+	public static final Unit USD_PER_FLIGHT = Currency.USD;
 	public static final Unit USD_PER_TON = Currency.USD.divide(NonSI.METRIC_TON);
 	public static final Unit USD_PER_KM_SQRT_TON = Currency.USD.divide(SI.KILOGRAM.times(NonSI.METRIC_TON.root(2)));
-	
+	public static final Unit USD_PER_GALLON = Currency.USD.divide(NonSI.GALLON_LIQUID_US);
+	public static final Unit BARREL = NonSI.LITER.times(158.98); 
+	public static final Unit USD_PER_BARREL = Currency.USD.divide(MyUnits.BARREL);
 	
 	
 	/**

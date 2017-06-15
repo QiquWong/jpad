@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.measure.quantity.Duration;
+import javax.measure.quantity.Mass;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.economics.money.Currency;
@@ -31,7 +32,7 @@ public class ACCostsManager {
 	 *******************************************************************************
 	 * THIS CLASS IS A PROTOTYPE OF THE NEW ACCostsManager (WORK IN PROGRESS)
 	 * 
-	 * @author Vincenzo Cusati & Vittorio Trifari, Agostino De Marco
+	 * @author Vincenzo Cusati & Vittorio Trifari
 	 *******************************************************************************
 	 */
 	
@@ -66,10 +67,15 @@ public class ACCostsManager {
 	private Map<MethodEnum, Amount<?>> _depreciation;
 	private Map<MethodEnum, Amount<?>> _interest;
 	private Map<MethodEnum, Amount<?>> _insurance;
-	
 	private Map<MethodEnum, Amount<?>> _capitalDOC;
+	private Map<MethodEnum, Amount<?>> _cockpitCrewCost;
+	private Map<MethodEnum, Amount<?>> _cabinCrewCost;
+	private Map<MethodEnum, Amount<?>> _crewDOC;
+	private Map<MethodEnum, Amount<?>> _fuelDOC;
+	
 	// TODO: all derived data are maps
 	// Only six items of DOC (Capital, etc)
+
 	
 	
 	//------------------------------------------------------------------------------
@@ -224,9 +230,56 @@ public class ACCostsManager {
 	//............................................................................
 	public class CalcCrewDOC {
 
-		public void calculateCrewDOC() {
+		public void calculateDOCCrewAEA() {
+
+			_cockpitCrewCost.put(MethodEnum.AEA,
+					CostsCalcUtils.calcCockpitCrewCostAEA(
+							_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getFlightCrewNumber(), 
+							_theCostsBuilderInterface.getCockpitLabourRate()
+							)
+					);
 
 
+			_cabinCrewCost.put(MethodEnum.AEA,
+					CostsCalcUtils.calcCabinCrewCostAEA(
+							_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getCabinCrewNumber(), 
+							_theCostsBuilderInterface.getCabinLabourRate()
+							)
+					);
+			
+			_crewDOC.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcDOCCrew(
+							_cabinCrewCost.get(_cabinCrewCost),
+							_cockpitCrewCost.get(_cockpitCrewCost)
+							)
+					);
+		}
+		
+		
+		public void calculateDOCCrewATA() {
+
+			_cockpitCrewCost.put(MethodEnum.ATA,
+					CostsCalcUtils.calcCockpitCrewCostATA(
+							_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getFlightCrewNumber(),
+							_theCostsBuilderInterface.getMaximumTakeOffMass(), 
+							_theCostsBuilderInterface.getAircraft()
+							)
+					);
+
+			_cabinCrewCost.put(MethodEnum.ATA,
+					CostsCalcUtils.calcCabinCrewCostATA(
+							_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getNPax()
+							)
+					);
+			
+			_crewDOC.put(
+					MethodEnum.ATA, 
+					CostsCalcUtils.calcDOCCrew(
+							_cabinCrewCost.get(_cabinCrewCost),
+							_cockpitCrewCost.get(_cockpitCrewCost)
+							)
+					);
 		}
 		
 	}
@@ -240,7 +293,14 @@ public class ACCostsManager {
 	public class CalcFuelDOC {
 
 		public void calculateFuelDOC() {
-
+			
+			_fuelDOC.put(
+					MethodEnum.AEA,
+					CostsCalcUtils.calcDOCFuel(
+							_theCostsBuilderInterface.getFuelUnitPrice(),
+							_theCostsBuilderInterface.getBlockFuelMass()
+							)
+					);
 
 		}
 		
