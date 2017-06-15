@@ -19,10 +19,6 @@ import standaloneutils.MyInterpolatingFunction;
 @FreeBuilder
 public interface IACAerodynamicCalculator {
 
-	// FROM INPUT (Passed from ACAnalysisManager)
-	Aircraft getTheAircraft();
-	OperatingConditions getTheOperatingConditions();
-	List<ConditionEnum> getTheConditions();
 	//..............................................................................
 	// FROM INPUT (Passed from File)
 	Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList();
@@ -63,12 +59,12 @@ public interface IACAerodynamicCalculator {
 						put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.NASA_BLACKWELL);
 						put(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION, MethodEnum.NASA_BLACKWELL);
 						put(AerodynamicAndStabilityEnum.CD0, MethodEnum.AIRFOIL_DISTRIBUTION);
-						put(AerodynamicAndStabilityEnum.CD_INDUCED, MethodEnum.RAYMER); // which is the best method?
+						put(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE, MethodEnum.RAYMER); // which is the best method?
 						put(AerodynamicAndStabilityEnum.CD_WAVE, MethodEnum.LOCK_KORN_WITH_KROO);
 						put(AerodynamicAndStabilityEnum.OSWALD_FACTOR, MethodEnum.RAYMER); // which is the best method?
-						put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D, MethodEnum.AIRFOIL_DISTRIBUTION);
+						put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
 						put(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION, MethodEnum.NASA_BLACKWELL);
-						put(AerodynamicAndStabilityEnum.CD_AT_ALPHA, MethodEnum.AIRFOIL_DISTRIBUTION);
+						put(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE, MethodEnum.AIRFOIL_DISTRIBUTION);
 						put(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, MethodEnum.SEMPIEMPIRICAL);
 						put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, MethodEnum.SEMPIEMPIRICAL);
 						put(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT, MethodEnum.SEMPIEMPIRICAL);

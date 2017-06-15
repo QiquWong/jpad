@@ -1,6 +1,7 @@
 package analyses.liftingsurface;
 
 import static java.lang.Math.toRadians;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,6 @@ import org.jscience.physics.amount.Amount;
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
-import analyses.analysismodel.InnerCalculator;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AirfoilCalc;
 import calculators.aerodynamics.AnglesCalc;
@@ -27,7 +27,6 @@ import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
 import calculators.geometry.LSGeometryCalc;
-import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
@@ -51,8 +50,6 @@ public class LSAerodynamicsManager {
 	private LiftingSurface _theLiftingSurface;
 	private Airfoil _meanAirfoil;
 	private OperatingConditions _theOperatingConditions;
-	private Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> _componentTaskList;
-	private Map <String, List<MethodEnum>> _plotList;
 	private ConditionEnum _theCondition;
 	private int _numberOfPointSemiSpanWise;
 	private Amount<Length> _momentumPole;
@@ -186,8 +183,6 @@ public class LSAerodynamicsManager {
 	public LSAerodynamicsManager (
 			LiftingSurface theLiftingSurface,
 			OperatingConditions theOperatingConditions,
-			Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> _componentTaskList,
-			Map <String, List<MethodEnum>> plotMap,
 			ConditionEnum theCondition,
 			int numberOfPointSemiSpanWise,
 			List<Amount<Angle>> alphaArray,
@@ -197,65 +192,13 @@ public class LSAerodynamicsManager {
 		
 		this._theLiftingSurface = theLiftingSurface;
 		this._theOperatingConditions = theOperatingConditions;
-		this._componentTaskList = _componentTaskList;
-		this._plotList = plotMap;
 		this._theCondition = theCondition;
 		this._numberOfPointSemiSpanWise = numberOfPointSemiSpanWise;
 		this._alphaArray = alphaArray;
 		this._alphaForDistribution = alphaForDistribution;
 		
-		if(momentumPole == null 
-				&& _componentTaskList.get(theLiftingSurface.getType()).
-						get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-							== MethodEnum.DEYOUNG_HARPER) {
-			CalcXAC calcXAC = new CalcXAC();
-			calcXAC.deYoungHarper();
-			_momentumPole = 
-					Amount.valueOf(
-							_xacMRF.get(MethodEnum.DEYOUNG_HARPER)
-							*theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
-							SI.METER
-							);
-		}
-		else if(momentumPole == null 
-				&& _componentTaskList.get(theLiftingSurface.getType()).
-				get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-					== MethodEnum.NAPOLITANO_DATCOM) {
-			CalcXAC calcXAC = new CalcXAC();
-			calcXAC.datcomNapolitano();
-			_momentumPole = 
-					Amount.valueOf(
-							_xacMRF.get(MethodEnum.NAPOLITANO_DATCOM)
-							*theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
-							SI.METER
-							);
-		}
-		else if(momentumPole == null 
-				&& _componentTaskList.get(theLiftingSurface.getType()).
-				get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-					== MethodEnum.QUARTER) {
-			CalcXAC calcXAC = new CalcXAC();
-			calcXAC.atQuarterMAC();
-			_momentumPole = 
-					Amount.valueOf(
-							_xacMRF.get(MethodEnum.QUARTER)
-							*theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
-							SI.METER
-							);
-		}
-		else if(momentumPole != null)
-			_momentumPole = 
-					Amount.valueOf(
-							momentumPole
-							*theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER),
-							SI.METER
-							);
-		
 		initializeVariables();
 		initializeData(_theCondition);
-		
-		// TODO: COMPLETE INITIALIZE CALCULATORS 
-		initializeCalculators();
 		
 	}
 	
@@ -297,6 +240,20 @@ public class LSAerodynamicsManager {
 					this._theOperatingConditions.getAlpha()[i],
 					NonSI.DEGREE_ANGLE)
 					);
+		
+		//----------------------------------------------------------------------------------------------------------------------
+		// Initialize XAC
+		if(_xacLRF.get(MethodEnum.DEYOUNG_HARPER) == null) {
+			CalcXAC calcXAC = new CalcXAC();
+			calcXAC.deYoungHarper();
+		}
+		//----------------------------------------------------------------------------------------------------------------------
+		// Initialize LIFTING COEFFICIENT 3D CURVE
+		if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null){
+			CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
+			calcLiftCurve.nasaBlackwell(_currentMachNumber);
+		}
+		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating the mean airfoil
 		//......................................................................................................................
@@ -452,35 +409,12 @@ public class LSAerodynamicsManager {
 			_cmACDistribution.add(cmACDistributionArray[i]);
 		//......................................................................................................................
 		// AIRFOIL AC TO WING AC DISTRIBUTION
-		if(_componentTaskList.get(_theLiftingSurface.getType()).
-						get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-							== MethodEnum.DEYOUNG_HARPER) {
-			CalcXAC calcXAC = new CalcXAC();
-			calcXAC.deYoungHarper();
-		}
-		else if(_componentTaskList.get(_theLiftingSurface.getType()).
-				get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-					== MethodEnum.NAPOLITANO_DATCOM) {
-			CalcXAC calcXAC = new CalcXAC();
-			calcXAC.datcomNapolitano();
-		}
-		else if(_componentTaskList.get(_theLiftingSurface.getType()).
-				get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-					== MethodEnum.QUARTER) {
-			CalcXAC calcXAC = new CalcXAC();
-			calcXAC.atQuarterMAC();
-		}
-		
 		this._airfoilACToWingACDistribution = new ArrayList<Amount<Length>>();
 		_airfoilACToWingACDistribution = 
 				_xLEDistribution.stream()
 					.map(xle -> xle.doubleValue(SI.METER) 
 								+ _xACDistribution.get(_xLEDistribution.indexOf(xle)).doubleValue(SI.METER)
-								- _xacLRF
-									.get(_componentTaskList
-											.get(_theLiftingSurface.getType())
-												.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)
-												).doubleValue(SI.METER)
+								- _xacLRF.get(MethodEnum.DEYOUNG_HARPER).doubleValue(SI.METER)
 							)
 					.map(ac -> Amount.valueOf(ac, SI.METER))
 					.collect(Collectors.toList());
@@ -538,33 +472,15 @@ public class LSAerodynamicsManager {
 		}
 
 		if (_discretizedAirfoilsCd.isEmpty()){
-			if(_liftCoefficient3DCurve.get(
-							_componentTaskList
-							.get(_theLiftingSurface.getType())
-							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-							) == null){
-
-				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
-				calcLiftCurve.nasaBlackwell(_currentMachNumber);
-			}
 
 			for(int i=0; 
-					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(
-					_componentTaskList
-					.get(_theLiftingSurface.getType())
-					.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-					));
+					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
 					i++
 					) {
 				
 				_clForCdMatrix.add(
-						_liftCoefficient3DCurve.get(
-								_componentTaskList
-								.get(_theLiftingSurface.getType())
-								.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-								)[i]
+						_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
 						);
-				
 			}
 			
 			List<List<Double>> clForCdArrayBreakPointsListWing = new ArrayList<>();
@@ -592,31 +508,18 @@ public class LSAerodynamicsManager {
 		}
 		
 		if (_discretizedAirfoilsCm.isEmpty()){
-			if(_liftCoefficient3DCurve.get(
-							_componentTaskList
-							.get(_theLiftingSurface.getType())
-							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-							) == null){
-
+			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null){
 				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
 				calcLiftCurve.nasaBlackwell(_currentMachNumber);
 			}
 
 			for(int i=0; 
-					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(
-					_componentTaskList
-					.get(_theLiftingSurface.getType())
-					.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-					));
+					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
 					i++
 					) {
 				
 				_clForCmMatrix.add(
-						_liftCoefficient3DCurve.get(
-								_componentTaskList
-								.get(_theLiftingSurface.getType())
-								.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-								)[i]
+						_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
 						);
 				
 			}
@@ -755,13 +658,6 @@ public class LSAerodynamicsManager {
 		this._moment3DCurve = new HashMap<MethodEnum, Double[]>();
 		this._momentCoefficientDistribution = new HashMap<MethodEnum, List<List<Double>>>();
 		
-		// TODO : CONTINUE WITH OTHER MAPS WHEN AVAILABLE
-	}
-	
-	private void initializeCalculators() {
-		
-		// TODO !!
-		
 	}
 	
 	//............................................................................
@@ -826,10 +722,6 @@ public class LSAerodynamicsManager {
 			_criticalMachNumber.put(MethodEnum.KROO, machCr);
 		}
 
-		public void allMethods(double cL) {
-			kornMason(cL);
-			kroo(cL);
-		}
 	}
 	//............................................................................
 	// END OF THE CRITICAL MACH INNER CLASS
@@ -841,7 +733,7 @@ public class LSAerodynamicsManager {
 	/** 
 	 * Evaluate the AC x coordinate relative to MAC
 	 */
-	public class CalcXAC extends InnerCalculator {
+	public class CalcXAC {
 
 		public void atQuarterMAC() {
 			_xacMRF.put(
@@ -917,11 +809,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 
-		public void allMethods() {
-			atQuarterMAC();
-			deYoungHarper(); // Report NACA
-			datcomNapolitano();
-		}
 	}
 	//............................................................................
 	// END OF THE CALC XacCL INNER CLASS
@@ -1042,21 +929,6 @@ public class LSAerodynamicsManager {
 			return cLActual;
 		}
 
-		public void allMethods(Amount<Angle> alpha) {
-			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
-				CalcAlphaStar theAlphaStarCalculator = new CalcAlphaStar();
-				theAlphaStarCalculator.meanAirfoilWithInfluenceAreas();
-			}
-			
-			if(alpha.doubleValue(NonSI.DEGREE_ANGLE) 
-					<= _alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS).doubleValue(NonSI.DEGREE_ANGLE)) {
-				linearDLR(alpha);
-				linearAndersonCompressibleSubsonic(alpha);
-				nasaBlackwellLinear(alpha);
-			}
-			else
-				nasaBlackwellCompleteCurve(alpha);
-		}
 	}
 	//............................................................................
 	// END OF THE CRITICAL MACH INNER CLASS
@@ -1108,11 +980,6 @@ public class LSAerodynamicsManager {
 			
 		}
 			
-		public void allMethods() {
-			andersonSweptCompressibleSubsonic();
-			nasaBlackwell();
-		}
-
 	}
 	//............................................................................
 	// END OF THE CL0 INNER CLASS
@@ -1254,10 +1121,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 
-		public void allMethods() {
-			integralMeanNoTwist();
-			integralMeanWithTwist();
-		}
 	}
 	//............................................................................
 	// END OF THE ALPHA ZERO LIFT INNER CLASS
@@ -1300,12 +1163,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 
-		
-		public void allMethod() {
-			andersonSweptCompressibleSubsonic();
-			nasaBlackwell();
-		}
-		
 	}
 	//............................................................................
 	// END OF THE CL STAR INNER CLASS
@@ -1324,9 +1181,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 
-		public void allMethods() {
-			meanAirfoilWithInfluenceAreas();
-		}
 	}
 	
 	//............................................................................
@@ -1446,14 +1300,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void allMethods(Double mach) {
-			polhamus();
-			andersonSweptCompressibleSubsonic();
-			integralMean2D();
-			nasaBlackwell();
-			helmboldDiederich(mach);
-		}
-
 	}
 	//............................................................................
 	// END OF THE CLalpha INNER CLASS
@@ -1633,10 +1479,6 @@ public class LSAerodynamicsManager {
 			
 		}
 		
-		public void allMethods() {
-			nasaBlackwell();
-			phillipsAndAlley();
-		}
 	}
 	//............................................................................
 	// END OF THE CL MAX INNER CLASS
@@ -1751,10 +1593,6 @@ public class LSAerodynamicsManager {
 						);
 		}
 		
-		public void allMethods(double mach) {
-			fromCLmaxPhillipsAndAlley();
-			fromAlphaMaxLinearNasaBlackwell(mach);
-		}
 	}
 	//............................................................................
 	// END OF THE ALPHA STALL INNER CLASS
@@ -1877,10 +1715,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void allMethods(double mach) {
-			fromCLmaxPhillipsAndAlley();
-			nasaBlackwell(mach);
-		}
 	}		
 	//............................................................................
 	// END OF THE LIFT CURVE INNER CLASS
@@ -2204,12 +2038,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 
-		// TODO: ADD THE LIFT DISTRIBUTION CALCULATION IN HIGH LIFT CONDITION WHEN AVAILABLE ...
-		
-		public void allMethods() {
-			schrenk();
-			nasaBlackwell();
-		}
 	}
 	//............................................................................
 	// END OF THE CALC LIFT DISTRIBUTIONS INNER CLASS
@@ -2225,19 +2053,18 @@ public class LSAerodynamicsManager {
 				Amount<Length> altitude
 				) {
 
+			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
+				calcLiftCurve.nasaBlackwell(mach);
+			}
+			
 			List<Double> cDParasite = new ArrayList<>();
 
 			cDParasite = DragCalc.calculateParasiteDragLiftingSurfaceFromAirfoil(
 					_alphaArray,
 					theNasaBlackwellCalculator,
 					_discretizedAirfoilsCd,
-					MyArrayUtils.convertDoubleArrayToListDouble(
-							_liftCoefficient3DCurve.get(
-									_componentTaskList
-									.get(_theLiftingSurface.getType())
-									.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-									)
-							),
+					MyArrayUtils.convertDoubleArrayToListDouble(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)),
 					_chordDistribution, 
 					_theLiftingSurface.getSurface(), 
 					_yStationDistribution
@@ -2248,9 +2075,6 @@ public class LSAerodynamicsManager {
 					cDParasite);
 		}
 		
-		public void allMethods(Double mach, Amount<Length> altitude) {
-			fromAirfoilDistribution(mach, altitude);
-		}
 	}
 	//............................................................................
 	// END OF THE CALC CDParasite INNER CLASS
@@ -2277,17 +2101,10 @@ public class LSAerodynamicsManager {
 			Double cD0Gap = DragCalc.calculateCDGap(_theLiftingSurface);
 			
 			_cD0.put(
-					MethodEnum.CLASSIC,
+					MethodEnum.SEMPIEMPIRICAL,
 					cD0Parasite*(1+kExcr)
 					+ cD0Gap
 					);
-		}
-		
-		public void allMethods(
-				Double mach,
-				Amount<Length> altitude
-				) {
-			classic(mach, altitude);
 		}
 		
 	}
@@ -2339,11 +2156,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void allMethods(Amount<Angle> alpha) {
-			howe();
-			grosu(alpha);
-			raymer();
-		}
 	}
 	//............................................................................
 	// END OF THE CALC OSWALD FACTOR INNER CLASS
@@ -2411,11 +2223,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void allMethods(Amount<Angle> alpha) {
-			howe(alpha);
-			grosu(alpha);
-			raymer(alpha);
-		}
 	}
 	//............................................................................
 	// END OF THE CALC CDi INNER CLASS
@@ -2452,10 +2259,6 @@ public class LSAerodynamicsManager {
 					);
 		}
 		
-		public void allMethods() {
-			lockKornWithKornMason();
-			lockKornWithKroo();
-		}
 	}
 	//............................................................................
 	// END OF THE CALC CDwave INNER CLASS
@@ -2466,7 +2269,12 @@ public class LSAerodynamicsManager {
 	//............................................................................
 	public class CalcDragDistributions {
 			
-		public void nasaBlackwell() {
+		public void nasaBlackwell(double mach) {
+			
+			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
+				calcLiftCurve.nasaBlackwell(mach);
+			}
 			
 			// PARASITE DRAG COEFFICIENT DISTRIBUTION:
 			List<List<Double>> parasiteDragCoefficientDistributionAlphas = new ArrayList<>();
@@ -2477,13 +2285,7 @@ public class LSAerodynamicsManager {
 									x,
 									theNasaBlackwellCalculator,
 									_discretizedAirfoilsCd,
-									MyArrayUtils.convertDoubleArrayToListDouble(
-											_liftCoefficient3DCurve.get(
-													_componentTaskList
-													.get(_theLiftingSurface.getType())
-													.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-													)
-											)
+									MyArrayUtils.convertDoubleArrayToListDouble(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL))
 									)
 							)
 					);
@@ -2536,13 +2338,7 @@ public class LSAerodynamicsManager {
 							_discretizedAirfoilsCl, 
 							_alphaArray, 
 							_discretizedAirfoilsCd,
-							MyArrayUtils.convertDoubleArrayToListDouble(
-									_liftCoefficient3DCurve.get(
-											_componentTaskList
-											.get(_theLiftingSurface.getType())
-											.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
-											)
-									), 
+							MyArrayUtils.convertDoubleArrayToListDouble(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)),
 							_clZeroDistribution, 
 							MyArrayUtils.convertDoubleArrayToListDouble(
 									MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -2590,12 +2386,6 @@ public class LSAerodynamicsManager {
 			
 		}
 		
-		// TODO: ADD THE DRAG DISTRIBUTION CALCULATION IN HIGH LIFT CONDITION WHEN AVAILABLE ...
-		
-		public void allMethods() {
-			nasaBlackwell();
-		}
-		
 	}
 	//............................................................................
 	// END OF THE CALC Cd DISTRIBUTION INNER CLASS
@@ -2630,7 +2420,7 @@ public class LSAerodynamicsManager {
 						);
 			}
 			
-			_polar3DCurve.put(MethodEnum.CLASSIC, cDArray);
+			_polar3DCurve.put(MethodEnum.SEMPIEMPIRICAL, cDArray);
 			
 		}
 		
@@ -2662,13 +2452,6 @@ public class LSAerodynamicsManager {
 			
 		}
 
-		public void allMethods(
-				Double mach,
-				Amount<Length> altitude
-				) {
-			classic(mach, altitude);
-			fromCdDistribution(mach, altitude);
-		}
 	}
 	//............................................................................
 	// END OF THE CALC POLAR INNER CLASS
@@ -2686,7 +2469,7 @@ public class LSAerodynamicsManager {
 			
 			double cDActual = 0.0;
 			
-			if(_cD0.get(MethodEnum.CLASSIC) == null) {
+			if(_cD0.get(MethodEnum.SEMPIEMPIRICAL) == null) {
 				CalcCD0 calcCD0 = new CalcCD0(); 
 				calcCD0.classic(mach, altitude);
 			}
@@ -2703,8 +2486,8 @@ public class LSAerodynamicsManager {
 			}
 			
 			_cDAtAlpha.put(
-					MethodEnum.CLASSIC,
-					_cD0.get(MethodEnum.CLASSIC)
+					MethodEnum.SEMPIEMPIRICAL,
+					_cD0.get(MethodEnum.SEMPIEMPIRICAL)
 					+ _cDInduced.get(MethodEnum.RAYMER)
 					+ _cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO)
 					);
@@ -2753,15 +2536,6 @@ public class LSAerodynamicsManager {
 
 		}
 
-		public void allMethods(
-				Amount<Angle> alpha,
-				Double mach,
-				Amount<Length> altitude
-				) {
-			classic(alpha, mach, altitude);
-			fromCdDistribution(alpha, mach, altitude);
-		}
-		
 	}
 	//............................................................................
 	// END OF THE CALC CD AT ALPHA INNER CLASS
@@ -2867,12 +2641,6 @@ public class LSAerodynamicsManager {
 			
 		}
 		
-		public void allMethods() {
-			basicAndAdditionalContribution();
-			integralMean();
-			fromAirfoilDistribution();
-		}
-
 	}
 	//............................................................................
 	// END OF THE CALC CMac INNER CLASS
@@ -2890,63 +2658,26 @@ public class LSAerodynamicsManager {
 				calcCLAlpha.andersonSweptCompressibleSubsonic();
 			}
 			
-			if(_componentTaskList.get(_theLiftingSurface.getType()).
-							get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-								== MethodEnum.DEYOUNG_HARPER) {
+			if(_xacMRF.get(MethodEnum.DEYOUNG_HARPER) == null) {
 				CalcXAC calcXAC = new CalcXAC();
 				calcXAC.deYoungHarper();
-				_cMAlpha.put(
-						MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
-						Amount.valueOf(
-								MomentCalc.calcCMalphaLS(
-										_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-										_momentumPole.doubleValue(SI.METER), 
-										_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
-										),
-								NonSI.DEGREE_ANGLE.inverse()
-								)
-						);
 			}
-			else if(_componentTaskList.get(_theLiftingSurface.getType()).
-					get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-						== MethodEnum.NAPOLITANO_DATCOM) {
-				CalcXAC calcXAC = new CalcXAC();
-				calcXAC.datcomNapolitano();
-				_cMAlpha.put(
-						MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
-						Amount.valueOf(
-								MomentCalc.calcCMalphaLS(
-										_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-										_momentumPole.doubleValue(SI.METER), 
-										_xacMRF.get(MethodEnum.NAPOLITANO_DATCOM), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
-										),
-								NonSI.DEGREE_ANGLE.inverse()
-								)
-						);
-			}
-			else if(_componentTaskList.get(_theLiftingSurface.getType()).
-					get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-						== MethodEnum.QUARTER) {
-				CalcXAC calcXAC = new CalcXAC();
-				calcXAC.atQuarterMAC();
-				_cMAlpha.put(
-						MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
-						Amount.valueOf(
-								MomentCalc.calcCMalphaLS(
-										_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-										_momentumPole.doubleValue(SI.METER), 
-										_xacMRF.get(MethodEnum.QUARTER), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
-										),
-								NonSI.DEGREE_ANGLE.inverse()
-								)
-						);
-			}
+
+			CalcXAC calcXAC = new CalcXAC();
+			calcXAC.deYoungHarper();
+			_cMAlpha.put(
+					MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
+					Amount.valueOf(
+							MomentCalc.calcCMalphaLS(
+									_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+									_momentumPole.doubleValue(SI.METER), 
+									_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
+									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
+									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
+									),
+							NonSI.DEGREE_ANGLE.inverse()
+							)
+					);
 		}
 
 		public void polhamus() {
@@ -2956,71 +2687,29 @@ public class LSAerodynamicsManager {
 				calcCLAlpha.polhamus();
 			}
 			
-			if(_componentTaskList.get(_theLiftingSurface.getType()).
-							get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-								== MethodEnum.DEYOUNG_HARPER) {
+			if(_xacMRF.get(MethodEnum.DEYOUNG_HARPER) == null) {
 				CalcXAC calcXAC = new CalcXAC();
 				calcXAC.deYoungHarper();
-				_cMAlpha.put(
-						MethodEnum.POLHAMUS,
-						Amount.valueOf(
-								MomentCalc.calcCMalphaLS(
-										_cLAlpha.get(MethodEnum.POLHAMUS).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-										_momentumPole.doubleValue(SI.METER), 
-										_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
-										),
-								NonSI.DEGREE_ANGLE.inverse()
-								)
-						);
-			}
-			else if(_componentTaskList.get(_theLiftingSurface.getType()).
-					get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-						== MethodEnum.NAPOLITANO_DATCOM) {
-				CalcXAC calcXAC = new CalcXAC();
-				calcXAC.datcomNapolitano();
-				_cMAlpha.put(
-						MethodEnum.POLHAMUS,
-						Amount.valueOf(
-								MomentCalc.calcCMalphaLS(
-										_cLAlpha.get(MethodEnum.POLHAMUS).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-										_momentumPole.doubleValue(SI.METER), 
-										_xacMRF.get(MethodEnum.NAPOLITANO_DATCOM), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
-										),
-								NonSI.DEGREE_ANGLE.inverse()
-								)
-						);
-			}
-			else if(_componentTaskList.get(_theLiftingSurface.getType()).
-					get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER) 
-						== MethodEnum.QUARTER) {
-				CalcXAC calcXAC = new CalcXAC();
-				calcXAC.atQuarterMAC();
-				_cMAlpha.put(
-						MethodEnum.POLHAMUS,
-						Amount.valueOf(
-								MomentCalc.calcCMalphaLS(
-										_cLAlpha.get(MethodEnum.POLHAMUS).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-										_momentumPole.doubleValue(SI.METER), 
-										_xacMRF.get(MethodEnum.QUARTER), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
-										_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
-										),
-								NonSI.DEGREE_ANGLE.inverse()
-								)
-						);
 			}
 			
+			CalcXAC calcXAC = new CalcXAC();
+			calcXAC.deYoungHarper();
+			_cMAlpha.put(
+					MethodEnum.POLHAMUS,
+					Amount.valueOf(
+							MomentCalc.calcCMalphaLS(
+									_cLAlpha.get(MethodEnum.POLHAMUS).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+									_momentumPole.doubleValue(SI.METER), 
+									_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
+									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
+									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()
+									),
+							NonSI.DEGREE_ANGLE.inverse()
+							)
+					);
+
 		}
 
-		public void allMethods(){
-			andersonSweptCompressibleSubsonic();
-			polhamus();
-		}
-		
 	}
 	//............................................................................
 	// END OF THE CALC CMAlpha INNER CLASS
@@ -3085,10 +2774,6 @@ public class LSAerodynamicsManager {
 									)
 							)
 					);
-		}
-		
-		public void allMethod(){
-			fromAirfoilDistribution();
 		}
 		
 	}
@@ -3367,14 +3052,6 @@ public class LSAerodynamicsManager {
 			
 		}
 		
-		public void allMethods(
-				List<Amount<Angle>> flapDeflection,
-				List<Amount<Angle>> slatDeflection,
-				double mach
-				) {
-			semiempirical(flapDeflection, slatDeflection, mach);
-		}
-		
 	}	
 	//............................................................................
 	// END OF THE HIGH LIFT DEVICES EFFECTS INNER CLASS
@@ -3425,14 +3102,6 @@ public class LSAerodynamicsManager {
 					);			
 		}
 		
-		public void allMethods(
-				List<Amount<Angle>> flapDeflection,
-				List<Amount<Angle>> slatDeflection,
-				Double mach,
-				Amount<Length> altitude
-				) {
-			semiempirical(flapDeflection, slatDeflection, mach, altitude);
-		}
 	}	
 	//............................................................................
 	// END OF THE HIGH LIFT CURVE INNER CLASS
@@ -3565,18 +3234,6 @@ public class LSAerodynamicsManager {
 	}
 	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
 		this._theOperatingConditions = _theOperatingConditions;
-	}
-	public Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getTaskMap() {
-		return _componentTaskList;
-	}
-	public void setTaskMap(Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> _componentTaskList) {
-		this._componentTaskList = _componentTaskList;
-	}
-	public Map <String, List<MethodEnum>> getPlotMap() {
-		return _plotList;
-	}
-	public void setPlotMap(Map <String, List<MethodEnum>> _plotMap) {
-		this._plotList = _plotMap;
 	}
 	public int getNumberOfPointSemiSpanWise() {
 		return _numberOfPointSemiSpanWise;

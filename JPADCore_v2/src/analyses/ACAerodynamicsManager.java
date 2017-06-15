@@ -840,7 +840,7 @@ public class ACAerodynamicsManager {
 			Aircraft aircraft) {
 
 		try {
-			aircraft.getFuselage().initializeAerodynamics(conditions,aircraft);
+//			aircraft.getFuselage().initializeAerodynamics(conditions,aircraft);
 			aircraft.getWing().initializeAerodynamics(conditions, aircraft);
 			aircraft.getHTail().initializeAerodynamics(conditions, aircraft);
 			aircraft.getVTail().initializeAerodynamics(conditions, aircraft);

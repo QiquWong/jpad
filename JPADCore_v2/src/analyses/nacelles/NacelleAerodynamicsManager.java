@@ -1,22 +1,29 @@
 package analyses.nacelles;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.nacelles.Nacelles;
 import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
+import calculators.geometry.FusNacGeometryCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.MyArrayUtils;
 
 public class NacelleAerodynamicsManager {
 
@@ -27,8 +34,10 @@ public class NacelleAerodynamicsManager {
 	private Nacelles _theNacelles;
 	private LiftingSurface _theWing;
 	private OperatingConditions _theOperatingConditions;
+	private LSAerodynamicsManager _theWingAerodynamicManager;
 	private Map<AerodynamicAndStabilityEnum, MethodEnum> _taskList;
 	private Map<String, List<MethodEnum>> _plotList;
+	private List<Amount<Angle>> _alphaArray;
 	private ConditionEnum _theCondition;
 	private Double _reynolds;
 	private Double _xTransition;
@@ -42,7 +51,14 @@ public class NacelleAerodynamicsManager {
 	private Map<MethodEnum, Double> _cD0Parasite;
 	private Map<MethodEnum, Double> _cD0Base;
 	private Map<MethodEnum, Double> _cD0Total;
+	private Map<MethodEnum, Double> _cDInduced;
+	private Map<MethodEnum, Double> _cDAtAlpha;
+	private Map <MethodEnum, Double[]> _polar3DCurve;
+	
+	private Map<MethodEnum, Double> _cM0;
 	private Map<MethodEnum, Amount<?>> _cMAlpha;
+	private Map<MethodEnum, Double> _cMAtAlpha;
+	private Map<MethodEnum, Double[]> _moment3DCurve;
 
 	//------------------------------------------------------------------------------
 	// BUILDER
@@ -50,23 +66,25 @@ public class NacelleAerodynamicsManager {
 	public NacelleAerodynamicsManager(
 			Nacelles nacelles,
 			LiftingSurface theWing,
+			LSAerodynamicsManager theWingAerodynamicManager,
 			OperatingConditions operationConditions,
 			ConditionEnum theCondition,
 			Map<AerodynamicAndStabilityEnum, MethodEnum> taskList,
-			Map<String, List<MethodEnum>> plotList
+			Map<String, List<MethodEnum>> plotList,
+			List<Amount<Angle>> alphaArray
 			) {
 		
 		_theNacelles = nacelles;
 		_theWing = theWing;
+		_theWingAerodynamicManager = theWingAerodynamicManager;
 		_theOperatingConditions = operationConditions;
 		_theCondition = theCondition;
 		_taskList = taskList;
 		_plotList = plotList;
-
+		_alphaArray = alphaArray;
+		
 		initializeData();
 		
-		// TODO: COMPLETE INITIALIZE CALCULATORS 
-		initializeCalculators();
 	}
 	
 	//------------------------------------------------------------------------------
@@ -103,14 +121,20 @@ public class NacelleAerodynamicsManager {
 		_xTransition = 0.0; // TODO : Why ???
 		_cF = AerodynamicCalc.calculateCf(_reynolds, _currentMach, _xTransition);
 		
+		_cD0Parasite = new HashMap<MethodEnum, Double>();
+		_cD0Base = new HashMap<MethodEnum, Double>();
+		_cDInduced = new HashMap<MethodEnum, Double>();
+		_cDAtAlpha = new HashMap<MethodEnum, Double>();
+		_cD0Total = new HashMap<MethodEnum, Double>();
+		_polar3DCurve = new HashMap<MethodEnum, Double[]>();
+		
+		_cM0 = new HashMap<MethodEnum, Double>();
+		_cMAlpha = new HashMap<MethodEnum, Amount<?>>();
+		_cMAtAlpha = new HashMap<MethodEnum, Double>();
+		_moment3DCurve = new HashMap<MethodEnum, Double[]>();
+		
 	}
 
-	private void initializeCalculators() {
-		
-		// TODO !!
-		
-	}
-	
 	//............................................................................
 	// Calc CD0 PARASITE INNER CLASS
 	//............................................................................
@@ -190,6 +214,180 @@ public class NacelleAerodynamicsManager {
 	//............................................................................
 
 	//............................................................................
+	// Calc CDInduced INNER CLASS
+	//............................................................................
+	public class CalcCDInduced {
+		
+		//@see NASA TN D-6800 (pag.47 pdf)
+		public void semiempirical(Amount<Angle> alphaBody) {
+			
+			List<Amount<Length>> xStations = 
+					MyArrayUtils.convertDoubleArrayToListOfAmount(
+							MyArrayUtils.linspace(
+									0,
+									_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+									50
+									),
+							SI.METER
+							);
+			
+			_cDInduced.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					DragCalc.calculateCDInducedFuselageOrNacelle(
+							xStations, 
+							alphaBody, 
+							_theNacelles.getNacellesList().get(0).getSurfaceWetted(), 
+							FusNacGeometryCalc.calculateFuselageVolume(
+									_theNacelles.getNacellesList().get(0).getLength(), 
+									MyArrayUtils.convertListOfDoubleToDoubleArray(
+											xStations.stream()
+											.map(x -> FusNacGeometryCalc.getWidthAtX(
+													x.doubleValue(SI.METER),
+													_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
+													_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList())
+													))
+											.collect(Collectors.toList())
+											)
+									), 
+							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+									_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+									_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
+									), 
+							_theNacelles.getNacellesList().get(0).getDiameterMax(), 
+							_theNacelles.getNacellesList().get(0).getLength(), 
+							_theWing.getSurface(), 
+							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
+							_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+							_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+							_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList())
+							)
+					);
+			
+		}
+		
+	}
+	//............................................................................
+	// END Calc CDInduced INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Calc CD@Alpha INNER CLASS
+	//............................................................................
+	public class CalcCDAtAlpha {
+		
+		public double semiempirical(Amount<Angle> alphaBody) {
+			
+			double cDActual = 0.0;
+			
+			if(_cD0Total.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+				CalcCD0Total calcCD0Total = new CalcCD0Total(); 
+				calcCD0Total.semiempirical();
+			}
+			
+			if(_cDInduced.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
+				calcCDInduced.semiempirical(alphaBody);
+			}
+			
+			getCDAtAlpha().put(
+					MethodEnum.SEMPIEMPIRICAL,
+					_cD0Total.get(MethodEnum.SEMPIEMPIRICAL)
+					+ _cDInduced.get(MethodEnum.SEMPIEMPIRICAL)
+					);
+			
+			return cDActual;
+		}
+		
+	}
+	//............................................................................
+	// END Calc CD@Alpha INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Calc Polar Curve INNER CLASS
+	//............................................................................
+	public class CalcPolar {
+		
+		public void semiempirical() {
+			
+			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+			
+			Double[] cDArray = new Double[getAlphaArray().size()];
+			for(int i=0; i<getAlphaArray().size(); i++) {
+				cDArray[i] = calcCDAtAlpha.semiempirical(getAlphaArray().get(i));
+			}
+			
+			getPolar3DCurve().put(MethodEnum.SEMPIEMPIRICAL, cDArray);
+			
+		}
+		
+	}
+	//............................................................................
+	// END Calc Polar Curve INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Calc CM0 INNER CLASS
+	//............................................................................
+	public class CalcCM0 {
+		
+		public void multhopp() {
+			
+			switch (_theNacelles.getMountingPositionNacelles()) {
+			case WING:
+				getCM0().put(
+						MethodEnum.MULTHOPP, 
+						MomentCalc.calculateCM0NacelleMulthopp(
+								_theNacelles.getNacellesList().get(0).getLength(),
+								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
+										),
+								_theWing.getSurface(), 
+								_theWing.getRiggingAngle(),
+								getTheWingAerodynamicManager().getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
+								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+								)
+						);
+				break;
+			case FUSELAGE:
+				// TODO : FIND OUT HOW TO CALCULATE
+				getCM0().put(
+						MethodEnum.MULTHOPP,
+						0.0
+						);
+			case HTAIL:
+				// TODO : FIND OUT HOW TO CALCULATE
+				getCM0().put(
+						MethodEnum.MULTHOPP,
+						0.0
+						);
+			case UNDERCARRIAGE_HOUSING:
+				// TODO : FIND OUT HOW TO CALCULATE
+				getCM0().put(
+						MethodEnum.MULTHOPP,
+						0.0
+						);
+			default:
+				break;
+			}
+			
+		}
+		
+	}
+	//............................................................................
+	// END Calc CM0 INNER CLASS
+	//............................................................................
+	
+	//............................................................................
 	// Calc CM_Alpha INNER CLASS
 	//............................................................................
 	public class CalcCMAlpha {
@@ -215,6 +413,74 @@ public class NacelleAerodynamicsManager {
 	}
 	//............................................................................
 	// END Calc CM_Alpha INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Calc CM@Alpha INNER CLASS
+	//............................................................................
+	public class CalcCMAtAlpha {
+		
+		public void semiempirical(Amount<Angle> alphaBody) {
+			
+			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
+				CalcCM0 calcCM0 = new CalcCM0();
+				calcCM0.multhopp();
+			}
+			
+			if(_cMAlpha.get(MethodEnum.GILRUTH) == null) {
+				CalcCMAlpha calcCMAlpha = new CalcCMAlpha();
+				calcCMAlpha.gilruth();
+			}
+			
+			_cMAtAlpha.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					MomentCalc.calculateCMAtAlphaFuselage(
+							alphaBody, 
+							_cMAlpha.get(MethodEnum.GILRUTH), 
+							_cM0.get(MethodEnum.MULTHOPP)
+							)
+					);
+		}
+		
+	}
+	//............................................................................
+	// END Calc CM@Alpha INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// Calc Moment Curve INNER CLASS
+	//............................................................................
+	public class CalcMomentCurve {
+		
+		public void semiempirical() {
+			
+			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
+				CalcCM0 calcCM0 = new CalcCM0();
+				calcCM0.multhopp();
+			}
+			
+			if(_cMAlpha.get(MethodEnum.GILRUTH) == null) {
+				CalcCMAlpha calcCMAlpha = new CalcCMAlpha();
+				calcCMAlpha.gilruth();
+			}
+			
+			_moment3DCurve.put(
+					MethodEnum.SEMPIEMPIRICAL, 
+					MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_alphaArray.stream()
+							.map(a -> MomentCalc.calculateCMAtAlphaFuselage(
+									a, 
+									_cMAlpha.get(MethodEnum.GILRUTH), 
+									_cM0.get(MethodEnum.MULTHOPP))
+									)
+							.collect(Collectors.toList())
+							)
+					);
+		}
+		
+	}
+	//............................................................................
+	// END Calc CM@Alpha TOTAL INNER CLASS
 	//............................................................................
 	
 	//------------------------------------------------------------------------------
@@ -349,4 +615,69 @@ public class NacelleAerodynamicsManager {
 		this._plotList = _plotList;
 	}
 
+	public Map<MethodEnum, Double> getCDInduced() {
+		return _cDInduced;
+	}
+
+	public void setCDInduced(Map<MethodEnum, Double> _cDInduced) {
+		this._cDInduced = _cDInduced;
+	}
+
+	public Map<MethodEnum, Double> getCDAtAlpha() {
+		return _cDAtAlpha;
+	}
+
+	public void setCDAtAlpha(Map<MethodEnum, Double> _cDAtAlpha) {
+		this._cDAtAlpha = _cDAtAlpha;
+	}
+
+	public Map <MethodEnum, Double[]> getPolar3DCurve() {
+		return _polar3DCurve;
+	}
+
+	public void setPolar3DCurve(Map <MethodEnum, Double[]> _polar3DCurve) {
+		this._polar3DCurve = _polar3DCurve;
+	}
+
+	public List<Amount<Angle>> getAlphaArray() {
+		return _alphaArray;
+	}
+
+	public void setAlphaArray(List<Amount<Angle>> _alphaArray) {
+		this._alphaArray = _alphaArray;
+	}
+
+	public Map<MethodEnum, Double> getCM0() {
+		return _cM0;
+	}
+
+	public void setCM0(Map<MethodEnum, Double> _cM0) {
+		this._cM0 = _cM0;
+	}
+
+	public Map<MethodEnum, Double> getCMAtAlpha() {
+		return _cMAtAlpha;
+	}
+
+	public void setCMAtAlpha(Map<MethodEnum, Double> _cMAtAlpha) {
+		this._cMAtAlpha = _cMAtAlpha;
+	}
+
+	public Map<MethodEnum, Double[]> getMoment3DCurve() {
+		return _moment3DCurve;
+	}
+
+	public void setMoment3DCurve(Map<MethodEnum, Double[]> _moment3DCurve) {
+		this._moment3DCurve = _moment3DCurve;
+	}
+
+	public LSAerodynamicsManager getTheWingAerodynamicManager() {
+		return _theWingAerodynamicManager;
+	}
+
+	public void setTheWingAerodynamicManager(LSAerodynamicsManager _theWingAerodynamicManager) {
+		this._theWingAerodynamicManager = _theWingAerodynamicManager;
+	}
+
+	
 }

@@ -83,6 +83,7 @@ public class InputManagerAircraftFromFileController {
 		Main.setStatus(State.RUNNING);
 		Main.checkStatus(Main.getStatus());
 		
+		MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, Main.getDatabaseDirectoryPath());
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";

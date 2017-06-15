@@ -287,11 +287,11 @@ public class Fuselage implements IFuselage {
 	//=========================================================================================================================================
 
 
-	public FuselageAerodynamicsManager initializeAerodynamics(OperatingConditions ops, Aircraft aircraft) {
-		_aerodynamicDatabaseReader = aircraft.getWing().getAerodynamicDatabaseReader();
-		aerodynamics = new FuselageAerodynamicsManager(ops, aircraft);
-		return aerodynamics;
-	}
+//	public FuselageAerodynamicsManager initializeAerodynamics(OperatingConditions ops, Aircraft aircraft) {
+//		_aerodynamicDatabaseReader = aircraft.getWing().getAerodynamicDatabaseReader();
+//		aerodynamics = new FuselageAerodynamicsManager(ops, aircraft);
+//		return aerodynamics;
+//	}
 	
 	public void calculateMass(Aircraft aircraft, Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 		calculateMass(aircraft, MethodEnum.RAYMER);
