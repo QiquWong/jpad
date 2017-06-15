@@ -12,12 +12,14 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
+import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.nacelles.Nacelles;
 import analyses.OperatingConditions;
+import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
-import calculators.geometry.FusGeometryCalc;
+import calculators.geometry.FusNacGeometryCalc;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
@@ -32,6 +34,7 @@ public class NacelleAerodynamicsManager {
 	private Nacelles _theNacelles;
 	private LiftingSurface _theWing;
 	private OperatingConditions _theOperatingConditions;
+	private LSAerodynamicsManager _theWingAerodynamicManager;
 	private Map<AerodynamicAndStabilityEnum, MethodEnum> _taskList;
 	private Map<String, List<MethodEnum>> _plotList;
 	private List<Amount<Angle>> _alphaArray;
@@ -63,6 +66,7 @@ public class NacelleAerodynamicsManager {
 	public NacelleAerodynamicsManager(
 			Nacelles nacelles,
 			LiftingSurface theWing,
+			LSAerodynamicsManager theWingAerodynamicManager,
 			OperatingConditions operationConditions,
 			ConditionEnum theCondition,
 			Map<AerodynamicAndStabilityEnum, MethodEnum> taskList,
@@ -72,6 +76,7 @@ public class NacelleAerodynamicsManager {
 		
 		_theNacelles = nacelles;
 		_theWing = theWing;
+		_theWingAerodynamicManager = theWingAerodynamicManager;
 		_theOperatingConditions = operationConditions;
 		_theCondition = theCondition;
 		_taskList = taskList;
@@ -240,11 +245,11 @@ public class NacelleAerodynamicsManager {
 							xStations, 
 							alphaBody, 
 							_theNacelles.getNacellesList().get(0).getSurfaceWetted(), 
-							FusGeometryCalc.calculateFuselageVolume(
+							FusNacGeometryCalc.calculateFuselageVolume(
 									_theNacelles.getNacellesList().get(0).getLength(), 
 									MyArrayUtils.convertListOfDoubleToDoubleArray(
 											xStations.stream()
-											.map(x -> FusGeometryCalc.getWidthAtX(
+											.map(x -> FusNacGeometryCalc.getWidthAtX(
 													x.doubleValue(SI.METER),
 													_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
 													_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList())
@@ -338,29 +343,50 @@ public class NacelleAerodynamicsManager {
 		
 		public void multhopp() {
 			
-			// FIXME
-//			getCM0().put(
-//					MethodEnum.MULTHOPP, 
-//					MomentCalc.calculateCM0FuselageMulthopp(
-//							_theNacelles.getNacellesList().get(0).getLength(),
-//							_theFuselage.getFuselageCreator().getLenN(), 
-//							_theFuselage.getFuselageCreator().getLenC(), 
-//							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
-//									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
-//									_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
-//									),
-//							_theWing.getSurface(), 
-//							_theWing.getRiggingAngle(),
-//							_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
-//							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
-//							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
-//							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
-//							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
-//							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveZ(),
-//							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
-//							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
-//							)
-//					);
+			switch (_theNacelles.getMountingPositionNacelles()) {
+			case WING:
+				getCM0().put(
+						MethodEnum.MULTHOPP, 
+						MomentCalc.calculateCM0NacelleMulthopp(
+								_theNacelles.getNacellesList().get(0).getLength(),
+								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
+										),
+								_theWing.getSurface(), 
+								_theWing.getRiggingAngle(),
+								getTheWingAerodynamicManager().getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
+								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+								)
+						);
+				break;
+			case FUSELAGE:
+				// TODO : FIND OUT HOW TO CALCULATE
+				getCM0().put(
+						MethodEnum.MULTHOPP,
+						0.0
+						);
+			case HTAIL:
+				// TODO : FIND OUT HOW TO CALCULATE
+				getCM0().put(
+						MethodEnum.MULTHOPP,
+						0.0
+						);
+			case UNDERCARRIAGE_HOUSING:
+				// TODO : FIND OUT HOW TO CALCULATE
+				getCM0().put(
+						MethodEnum.MULTHOPP,
+						0.0
+						);
+			default:
+				break;
+			}
 			
 		}
 		
@@ -651,6 +677,14 @@ public class NacelleAerodynamicsManager {
 
 	public void setMoment3DCurve(Map<MethodEnum, Double[]> _moment3DCurve) {
 		this._moment3DCurve = _moment3DCurve;
+	}
+
+	public LSAerodynamicsManager getTheWingAerodynamicManager() {
+		return _theWingAerodynamicManager;
+	}
+
+	public void setTheWingAerodynamicManager(LSAerodynamicsManager _theWingAerodynamicManager) {
+		this._theWingAerodynamicManager = _theWingAerodynamicManager;
 	}
 
 	

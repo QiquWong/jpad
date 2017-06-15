@@ -21,7 +21,7 @@ import com.sun.javafx.geom.transform.BaseTransform.Degree;
 
 import aircraft.components.fuselage.Fuselage;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
-import calculators.geometry.FusGeometryCalc;
+import calculators.geometry.FusNacGeometryCalc;
 import calculators.geometry.LSGeometryCalc;
 import calculators.stability.StabilityCalculators;
 import configuration.enumerations.AirfoilFamilyEnum;
@@ -346,7 +346,7 @@ public class MomentCalc {
 				Math.pow(wingSpan.doubleValue(SI.METER), 2)/wingSurface.doubleValue(SI.SQUARE_METRE),
 				tailconeShape
 				);
-		double surfaceRatio = FusGeometryCalc.calculateSfront(fusDiameter)/wingSurface.doubleValue(SI.SQUARE_METRE);
+		double surfaceRatio = FusNacGeometryCalc.calculateSfront(fusDiameter)/wingSurface.doubleValue(SI.SQUARE_METRE);
 		
 		return (fusDesDatabaseReader.getCNbFR() +
 				fusDesDatabaseReader.getdCNbn() +
@@ -834,8 +834,8 @@ public class MomentCalc {
 		try {
 			for(int i=1; i<x.length; i++){
 				sum = sum 
-						+ pow(FusGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
-						*(FusGeometryCalc.getCamberAngleAtX(
+						+ pow(FusNacGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
+						*(FusNacGeometryCalc.getCamberAngleAtXFuselage(
 								x[i],
 								outlineXZUpperCurveX,
 								outlineXZUpperCurveZ,
@@ -864,6 +864,60 @@ public class MomentCalc {
 		return cM0;
 	}
 
+	public static Double calculateCM0NacelleMulthopp(
+			Amount<Length> nacelleLength,
+			Double k2k1,
+			Amount<Area> wingSurface,
+			Amount<Angle> wingRiggingAngle,
+			Amount<Angle> wingAlphaZeroLift,
+			Amount<Length> wingMeanAerodynamicChord,
+			List<Double> outlineXZUpperCurveX,
+			List<Double> outlineXZUpperCurveZ,
+			List<Double> outlineXZLowerCurveX,
+			List<Double> outlineXZLowerCurveZ,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+
+		Double cM0 = 0.0;
+		Double sum = 0.0;
+		double[] x = MyArrayUtils.linspace(
+				0.,
+				nacelleLength.doubleValue(SI.METER)*(1-0.0001),
+				100
+				);
+
+		try {
+			for(int i=1; i<x.length; i++){
+				sum = sum 
+						+ pow(FusNacGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
+						*(FusNacGeometryCalc.getCamberAngleAtXNacelle(
+								x[i],
+								outlineXZUpperCurveX,
+								outlineXZUpperCurveZ,
+								outlineXZLowerCurveX,
+								outlineXZLowerCurveZ
+								) 
+								+ wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+								+ Math.abs(wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE))
+								)
+						* (x[i] - x[i-1]);
+			}
+
+			cM0 = k2k1
+					/(36.5
+							*wingSurface.doubleValue(SI.SQUARE_METRE)
+							*wingMeanAerodynamicChord.doubleValue(SI.METER)
+							) 
+					* sum;
+
+		} catch (NullPointerException e) {
+			cM0 = 0.0;
+		}
+
+		return cM0;
+	}
+	
 	public static Amount<?> calculateCMAlphaFuselageOrNacelleGilruth(
 			Amount<Length> length,
 			Amount<Length> maxWidth,

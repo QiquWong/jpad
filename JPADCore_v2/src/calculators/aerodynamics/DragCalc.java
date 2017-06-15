@@ -21,7 +21,7 @@ import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
-import calculators.geometry.FusGeometryCalc;
+import calculators.geometry.FusNacGeometryCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -1049,7 +1049,7 @@ public class DragCalc {
 				+ 0.5038353579;
 		
 		List<Amount<Length>> equivalentDiameters = xStations.stream()
-				.map(x -> FusGeometryCalc.calculateEquivalentDiameterAtX(
+				.map(x -> FusNacGeometryCalc.calculateEquivalentDiameterAtX(
 						x,
 						outlineXZUpperCurveX, 
 						outlineXZUpperCurveZ,
