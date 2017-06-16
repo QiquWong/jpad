@@ -21,6 +21,10 @@ import aircraft.components.fuselage.creator.FuselageCreator;
 import analyses.ACPerformanceManager.ACPerformanceCalculatorBuilder;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcMachCr;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.AirfoilCalc;
@@ -710,71 +714,507 @@ public class ACAerodynamicCalculator {
 		 * AND RUN ALL THE COMPONENTS CALCULATIONS
 		 */
 		
-		//============================================================================
+		//========================================================================================================================
 		// WING
-//		if(_theAircraft.getWing() != null)
-//			_liftingSurfaceAerodynamicManagers.put(
-//					ComponentEnum.WING,
-//					new LSAerodynamicsManager(
-//							_theAircraft.getWing(),
-//							_theOperatingConditions, 
-//							plotMap, 
-//							theCondition,
-//							numberOfPointSemiSpanWise,
-//							alphaArray, 
-//							alphaForDistribution,
-//							momentumPole
-//							)
-//					);
-//			
-//		if(_componentTaskList.get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH))
+		if(_theAircraft.getWing() != null)
+			_liftingSurfaceAerodynamicManagers.put(
+					ComponentEnum.WING,
+					new LSAerodynamicsManager(
+							_theAircraft.getWing(),
+							_theOperatingConditions, 
+							_currentCondition,
+							_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(),
+							_alphaWingList, 
+							_alphaWingForDistribution,
+							_wingMomentumPole // WHERE IS IT DEFINE??
+							)
+					);
+		
+		//.........................................................................................................................
+		//	CRITICAL_MACH
+		if(_componentTaskList.get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
 			
+			CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMachCr();
+			switch (_componentTaskList.get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+			case KORN_MASON:
+				calcMachCr.kornMason(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentLiftCoefficient());
+				break;
+			case KROO:
+				calcMachCr.kroo(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCurrentLiftCoefficient());
+				break;
+			default:
+				break;
+			}
+		}
+			
+		//.........................................................................................................................
+		//	AERODYNAMIC_CENTER
+		if(_componentTaskList.get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+			
+			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
+			switch (_componentTaskList.get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+			case QUARTER:
+				calcXAC.atQuarterMAC();
+				break;
+			case DEYOUNG_HARPER:
+				calcXAC.deYoungHarper();
+				break;
+			case NAPOLITANO_DATCOM:
+				calcXAC.datcomNapolitano();
+				break;
+			default:
+				break;
+			}
+		}
 		
+		//.........................................................................................................................
+		//	CL_AT_ALPHA (NECESSARY ??)
 		
-//		CRITICAL_MACH,
-//		AERODYNAMIC_CENTER,
-//		CL_AT_ALPHA,
-//		CL_ALPHA,
-//		CL_ZERO,
-//		CL_STAR,
-//		CL_MAX,
-//		ALPHA_ZERO_LIFT,
-//		ALPHA_STAR,
-//		ALPHA_STALL,
-//		LIFT_CURVE_3D,
-//		LIFT_DISTRIBUTION,
-//		CD0,
-//		CD_INDUCED_LIFTING_SURFACE,
-//		CD_WAVE,
-//		OSWALD_FACTOR,
-//		POLAR_CURVE_3D_LIFTING_SURFACE,
-//		DRAG_DISTRIBUTION,
-//		CD_AT_ALPHA_LIFTING_SURFACE,
-//		HIGH_LIFT_DEVICES_EFFECTS,
-//		HIGH_LIFT_CURVE_3D,
-//		CL_AT_ALPHA_HIGH_LIFT,
-//		CD_AT_ALPHA_HIGH_LIFT,
-//		CM_AT_ALPHA_HIGH_LIFT,
-//		CM_AC_LIFTING_SURFACE,
-//		CM_ALPHA_LIFTING_SURFACE,
-//		CM_AT_ALPHA_LIFTING_SURFACE,
-//		MOMENT_DISTRIBUTION_LIFTING_SURFACE,
+		//.........................................................................................................................
+		//	CL_ALPHA
+		
+		//.........................................................................................................................
+		//	CL_ZERO
+		
+		//.........................................................................................................................
+		//	CL_STAR
+		
+		//.........................................................................................................................
+		//	CL_MAX
+		
+		//.........................................................................................................................
+		//	ALPHA_ZERO_LIFT
+		
+		//.........................................................................................................................
+		//	ALPHA_STAR
+		
+		//.........................................................................................................................
+		//	ALPHA_STALL
+		
+		//.........................................................................................................................
+		//	LIFT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	LIFT_DISTRIBUTION
+		
+		//.........................................................................................................................
+		//	CD0
+		
+		//.........................................................................................................................
+		//	CD_INDUCED
+		
+		//.........................................................................................................................
+		//	CD_WAVE
+		
+		//.........................................................................................................................
+		//	OSWALD_FACTOR
+		
+		//.........................................................................................................................
+		//	POLAR_CURVE_3D
+		
+		//.........................................................................................................................
+		//	DRAG_DISTRIBUTION
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	HIGH_LIFT_DEVICES_EFFECTS
+		
+		//.........................................................................................................................
+		//	HIGH_LIFT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	CL_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM_AC
+		
+		//.........................................................................................................................
+		//	CM_ALPHA
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	MOMENT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	MOMENT_DISTRIBUTION
 		
 		
 		//============================================================================
 		// HTAIL
+		if(_theAircraft.getHTail() != null)
+			_liftingSurfaceAerodynamicManagers.put(
+					ComponentEnum.HORIZONTAL_TAIL,
+					new LSAerodynamicsManager(
+							_theAircraft.getHTail(),
+							_theOperatingConditions, 
+							_currentCondition,
+							_theAerodynamicBuilderInterface.getHTailNumberOfPointSemiSpanWise(),
+							_alphaHTailList, 
+							_alphaHorizontalTailForDistribution,
+							_hTailMomentumPole  // WHERE IS IT DEFINE??
+							)
+					);
+		
+		//.........................................................................................................................
+		//	CRITICAL_MACH
+		if(_componentTaskList.get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+			
+			CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMachCr();
+			switch (_componentTaskList.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+			case KORN_MASON:
+				calcMachCr.kornMason(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCurrentLiftCoefficient());
+				break;
+			case KROO:
+				calcMachCr.kroo(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCurrentLiftCoefficient());
+				break;
+			default:
+				break;
+			}
+		}
+			
+		//.........................................................................................................................
+		//	AERODYNAMIC_CENTER
+		if(_componentTaskList.get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+			
+			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcXAC();
+			switch (_componentTaskList.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+			case QUARTER:
+				calcXAC.atQuarterMAC();
+				break;
+			case DEYOUNG_HARPER:
+				calcXAC.deYoungHarper();
+				break;
+			case NAPOLITANO_DATCOM:
+				calcXAC.datcomNapolitano();
+				break;
+			default:
+				break;
+			}
+		}
+		
+		//.........................................................................................................................
+		//	CL_AT_ALPHA (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CL_ALPHA
+		
+		//.........................................................................................................................
+		//	CL_ZERO
+		
+		//.........................................................................................................................
+		//	CL_STAR
+		
+		//.........................................................................................................................
+		//	CL_MAX
+		
+		//.........................................................................................................................
+		//	ALPHA_ZERO_LIFT
+		
+		//.........................................................................................................................
+		//	ALPHA_STAR
+		
+		//.........................................................................................................................
+		//	ALPHA_STALL
+		
+		//.........................................................................................................................
+		//	LIFT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	LIFT_DISTRIBUTION
+		
+		//.........................................................................................................................
+		//	CD0
+		
+		//.........................................................................................................................
+		//	CD_INDUCED
+		
+		//.........................................................................................................................
+		//	CD_WAVE
+		
+		//.........................................................................................................................
+		//	OSWALD_FACTOR
+		
+		//.........................................................................................................................
+		//	POLAR_CURVE_3D
+		
+		//.........................................................................................................................
+		//	DRAG_DISTRIBUTION
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	HIGH_LIFT_DEVICES_EFFECTS
+		
+		//.........................................................................................................................
+		//	HIGH_LIFT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	CL_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM_AC
+		
+		//.........................................................................................................................
+		//	CM_ALPHA
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	MOMENT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	MOMENT_DISTRIBUTION
+		
 		
 		//============================================================================
 		// VTAIL
+		if(_theAircraft.getVTail() != null)
+			_liftingSurfaceAerodynamicManagers.put(
+					ComponentEnum.VERTICAL_TAIL,
+					new LSAerodynamicsManager(
+							_theAircraft.getVTail(),
+							_theOperatingConditions, 
+							_currentCondition,
+							_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(), // FIXME : points also for VTail ??
+							_alphaWingList, // FIXME : alpha also for VTail ??
+							_alphaWingForDistribution, // FIXME : alpha distribution also for VTail ??
+							null // vTailMomentumPole ?? FIXME
+							)
+					);
+		
+		//.........................................................................................................................
+		//	CRITICAL_MACH
+		if(_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+			
+			CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcMachCr();
+			switch (_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+			case KORN_MASON:
+				calcMachCr.kornMason(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCurrentLiftCoefficient());
+				break;
+			case KROO:
+				calcMachCr.kroo(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCurrentLiftCoefficient());
+				break;
+			default:
+				break;
+			}
+		}
+			
+		//.........................................................................................................................
+		//	AERODYNAMIC_CENTER
+		if(_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+			
+			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcXAC();
+			switch (_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+			case QUARTER:
+				calcXAC.atQuarterMAC();
+				break;
+			case DEYOUNG_HARPER:
+				calcXAC.deYoungHarper();
+				break;
+			case NAPOLITANO_DATCOM:
+				calcXAC.datcomNapolitano();
+				break;
+			default:
+				break;
+			}
+		}
+		
+		//.........................................................................................................................
+		//	CL_AT_ALPHA (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CL_ALPHA
+		
+		//.........................................................................................................................
+		//	CL_ZERO
+		
+		//.........................................................................................................................
+		//	CL_STAR
+		
+		//.........................................................................................................................
+		//	CL_MAX
+		
+		//.........................................................................................................................
+		//	ALPHA_ZERO_LIFT
+		
+		//.........................................................................................................................
+		//	ALPHA_STAR
+		
+		//.........................................................................................................................
+		//	ALPHA_STALL
+		
+		//.........................................................................................................................
+		//	LIFT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	LIFT_DISTRIBUTION
+		
+		//.........................................................................................................................
+		//	CD0
+		
+		//.........................................................................................................................
+		//	CD_INDUCED
+		
+		//.........................................................................................................................
+		//	CD_WAVE
+		
+		//.........................................................................................................................
+		//	OSWALD_FACTOR
+		
+		//.........................................................................................................................
+		//	POLAR_CURVE_3D
+		
+		//.........................................................................................................................
+		//	DRAG_DISTRIBUTION
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	HIGH_LIFT_DEVICES_EFFECTS
+		
+		//.........................................................................................................................
+		//	HIGH_LIFT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	CL_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA_HIGH_LIFT  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM_AC
+		
+		//.........................................................................................................................
+		//	CM_ALPHA
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	MOMENT_CURVE_3D
+		
+		//.........................................................................................................................
+		//	MOMENT_DISTRIBUTION
+		
 		
 		//============================================================================
 		// FUSELAGE
+		if(_theAircraft.getFuselage() != null)
+			_fuselageAerodynamicManagers.put(
+					ComponentEnum.FUSELAGE,
+					new FuselageAerodynamicsManager(
+							_theAircraft.getFuselage(), 
+							_theAircraft.getWing(), 
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
+							_theOperatingConditions, 
+							_alphaBodyList, 
+							_currentCondition, 
+							null  //fuselageXPercentPositionPole?? FIXME
+							)
+					);
+		//.........................................................................................................................
+		//	CD0_PARASITE
+		
+		//.........................................................................................................................
+		//	CD0_BASE
+		
+		//.........................................................................................................................
+		//	CD0_UPSWEEP
+		
+		//.........................................................................................................................
+		//	CD0_WINDSHIELD
+		
+		//.........................................................................................................................
+		//	CD0_TOTAL
+		
+		//.........................................................................................................................
+		//	CD_INDUCED
+		
+		//.........................................................................................................................
+		//	POLAR_CURVE_3D
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM0
+		
+		//.........................................................................................................................
+		//	CM_ALPHA
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	MOMENT_CURVE_3D
+		
 		
 		//============================================================================
 		// NACELLE
+		if(_theAircraft.getNacelles() != null)
+			_nacelleAerodynamicManagers.put(
+					ComponentEnum.NACELLE,
+					new NacelleAerodynamicsManager(
+							_theAircraft.getNacelles(),
+							_theAircraft.getWing(), 
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
+							_theOperatingConditions, 
+							_currentCondition, 
+							_alphaBodyList // FIXME is it right ?? 
+							)
+					);
 		
-		//============================================================================
-		// AIRCRAFT
+		//.........................................................................................................................
+		//	CD0_PARASITE
+		
+		//.........................................................................................................................
+		//	CD0_BASE
+		
+		//.........................................................................................................................
+		//	CD0_TOTAL
+		
+		//.........................................................................................................................
+		//	CD_INDUCED
+		
+		//.........................................................................................................................
+		//	POLAR_CURVE_3D
+		
+		//.........................................................................................................................
+		//	CD_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	CM0
+		
+		//.........................................................................................................................
+		//	CM_ALPHA
+		
+		//.........................................................................................................................
+		//	CM_AT_ALPHA  (NECESSARY ??)
+		
+		//.........................................................................................................................
+		//	MOMENT_CURVE_3D
 		
 	}
 	
@@ -783,13 +1223,43 @@ public class ACAerodynamicCalculator {
 	public void calculate() {
 		
 		initializeAnalysis();
-	
 		
 		// TODO : FILL ME !!
 		/*
 		 * CREATE INNER CLASSES FOR EACH "AIRCRAFT" ANALYSIS
 		 * AND CALL THEM HERE IF REQUIRED BY THE TASK MAP 
 		 */
+		
+		//------------------------------------------------------------------------------------------------------------------------------------
+		if(_componentTaskList.get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+			
+			CalcLongitudinalStability calcLongitudinalStability = new CalcLongitudinalStability();
+			switch (_componentTaskList.get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+			case FROM_BALANCE_EQUATION:
+				calcLongitudinalStability.fromForceBalanceEquation();
+				break;
+			default:
+				break;
+			}
+		}
+		//------------------------------------------------------------------------------------------------------------------------------------
+		if(_componentTaskList.get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+			
+			CalcDirectionalStability calcDirectionalStability = new CalcDirectionalStability();
+			switch (_componentTaskList.get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+			case VEDSC_SIMPLIFIED_WING:
+				calcDirectionalStability.vedscSimplifiedWing(_theOperatingConditions.getMachCruise()); // DEFINE MACH FOR EACH CONDITION !!
+				break;
+			case VEDSC_USAFDATCOM_WING:
+				calcDirectionalStability.vedscUsafDatcomWing(_theOperatingConditions.getMachCruise()); // DEFINE MACH FOR EACH CONDITION !!
+				break;
+			default:
+				break;
+			}
+		}
+		//------------------------------------------------------------------------------------------------------------------------------------
+		// TODO: CONTINUE
+		//------------------------------------------------------------------------------------------------------------------------------------
 		
 		try {
 			toXLSFile("???");

@@ -349,8 +349,6 @@ public class DirectionalStabilityTest extends Application {
 					new LSAerodynamicsManager(
 							theAircraft.getVTail(),
 							theOperatingConditions,
-							componentTaskList,
-							null,
 							ConditionEnum.CRUISE,
 							50, 
 							MyArrayUtils.convertDoubleArrayToListOfAmount(
@@ -381,8 +379,6 @@ public class DirectionalStabilityTest extends Application {
 					new LSAerodynamicsManager(
 							theAircraft.getWing(),
 							theOperatingConditions,
-							componentTaskList,
-							null,
 							ConditionEnum.CRUISE,
 							50, 
 							MyArrayUtils.convertDoubleArrayToListOfAmount(

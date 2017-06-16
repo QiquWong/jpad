@@ -22,7 +22,6 @@ import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.geometry.FusNacGeometryCalc;
-import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.MyArrayUtils;
@@ -45,8 +44,6 @@ public class FuselageAerodynamicsManager {
 	private LiftingSurface _theWing;
 	private LSAerodynamicsManager _theWingAerodynamicManager;
 	private OperatingConditions _theOperatingConditions;
-	private Map<AerodynamicAndStabilityEnum, MethodEnum> _taskList;
-	private Map<String, List<MethodEnum>> _plotList;
 	private List<Amount<Angle>> _alphaArray;
 	private ConditionEnum _theCondition;
 	private Double _fuselageXPercentPositionPole;
@@ -89,8 +86,6 @@ public class FuselageAerodynamicsManager {
 			LiftingSurface theWing,
 			LSAerodynamicsManager theWingAerodynamicManager,
 			OperatingConditions theOperatingConditions,
-			Map<AerodynamicAndStabilityEnum, MethodEnum> taskList,
-			Map<String, List<MethodEnum>> plotMap,
 			List<Amount<Angle>> alphaArray,
 			ConditionEnum theCondition,
 			Double fuselageXPercentPositionPole
@@ -100,8 +95,6 @@ public class FuselageAerodynamicsManager {
 		this._theWing = theWing;
 		this._theWingAerodynamicManager = theWingAerodynamicManager;
 		this._theOperatingConditions = theOperatingConditions;
-		this._taskList = taskList;
-		this._plotList = plotMap;
 		this._alphaArray = alphaArray;
 		this._theCondition = theCondition;
 		this._fuselageXPercentPositionPole = fuselageXPercentPositionPole;
@@ -805,14 +798,6 @@ public class FuselageAerodynamicsManager {
 		return _theOperatingConditions;
 	}
 
-	public Map<AerodynamicAndStabilityEnum, MethodEnum> getTaskList() {
-		return _taskList;
-	}
-
-	public Map<String, List<MethodEnum>> getPlotList() {
-		return _plotList;
-	}
-
 	public List<Amount<Angle>> getAlphaArray() {
 		return _alphaArray;
 	}
@@ -891,14 +876,6 @@ public class FuselageAerodynamicsManager {
 
 	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
 		this._theOperatingConditions = _theOperatingConditions;
-	}
-
-	public void setTaskList(Map<AerodynamicAndStabilityEnum, MethodEnum> _taskList) {
-		this._taskList = _taskList;
-	}
-
-	public void setPlotList(Map<String, List<MethodEnum>> _plotList) {
-		this._plotList = _plotList;
 	}
 
 	public void setAlphaArray(List<Amount<Angle>> _alphaArray) {

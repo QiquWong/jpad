@@ -3912,7 +3912,7 @@ public class StabilityExecutableManager {
 		this._hTailclAlpha = Amount.valueOf( this._hTailcLAlphaRad , SI.RADIAN.inverse());
 
 		
-		if(_horizontalTailCL==MethodEnum.FROMCFD) {
+		if(_horizontalTailCL==MethodEnum.FROM_CFD) {
 			this._hTailclAlpha = this._hTailclAlpha.times(1.459);
 		}
 		
@@ -4004,7 +4004,7 @@ public class StabilityExecutableManager {
 					this,
 					_anglesOfElevatorDeflection.get(i));
 
-			if( _horizontalTailCL==MethodEnum.FROMCFD){
+			if( _horizontalTailCL==MethodEnum.FROM_CFD){
 			_tauElevator.put(_anglesOfElevatorDeflection.get(i),
 					LiftCalc.calculateTauIndexElevator(
 							_elevatorCfC, 
@@ -4039,7 +4039,7 @@ public class StabilityExecutableManager {
 							NonSI.DEGREE_ANGLE));
 
 			
-			if( _horizontalTailCL==MethodEnum.FROMCFD){
+			if( _horizontalTailCL==MethodEnum.FROM_CFD){
 			// CL ALPHA ---- NANDO CORRECTION--------------
 			
 			if( Math.abs(_anglesOfElevatorDeflection.get(i).doubleValue(NonSI.DEGREE_ANGLE)) <=15){
@@ -4210,7 +4210,7 @@ public class StabilityExecutableManager {
 					this,
 					_deltaEAnglesArray.get(i));
 
-			if(_horizontalTailCL == MethodEnum.FROMCFD){
+			if(_horizontalTailCL == MethodEnum.FROM_CFD){
 			_tauElevatorArray.put(_deltaEAnglesArray.get(i),
 					LiftCalc.calculateTauIndexElevator(
 							_elevatorCfC, 
