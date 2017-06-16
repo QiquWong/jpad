@@ -186,8 +186,7 @@ public class LSAerodynamicsManager {
 			ConditionEnum theCondition,
 			int numberOfPointSemiSpanWise,
 			List<Amount<Angle>> alphaArray,
-			List<Amount<Angle>> alphaForDistribution,
-			Double momentumPole
+			List<Amount<Angle>> alphaForDistribution
 			) {
 		
 		this._theLiftingSurface = theLiftingSurface;
@@ -508,10 +507,6 @@ public class LSAerodynamicsManager {
 		}
 		
 		if (_discretizedAirfoilsCm.isEmpty()){
-			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null){
-				CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
-				calcLiftCurve.nasaBlackwell(_currentMachNumber);
-			}
 
 			for(int i=0; 
 					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
@@ -566,14 +561,12 @@ public class LSAerodynamicsManager {
 					_currentAltitude
 					);
 		}
-		
-		// TODO : DEBUG !!!
-//		if(_currentMomentCoefficient == null) {
-//			CalcCMAtAlpha calcCMAtAlphaCalculator = new CalcCMAtAlpha();
-//			_currentMomentCoefficient = calcCMAtAlphaCalculator.fromAirfoilDistribution(
-//					_theOperatingConditions.getAlphaCurrent()
-//					);
-//		}
+		if(_currentMomentCoefficient == null) {
+			CalcCMAtAlpha calcCMAtAlphaCalculator = new CalcCMAtAlpha();
+			_currentMomentCoefficient = calcCMAtAlphaCalculator.fromAirfoilDistribution(
+					_theOperatingConditions.getAlphaCurrent()
+					);
+		}
 
 	}
 	

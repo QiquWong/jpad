@@ -356,8 +356,7 @@ public class DirectionalStabilityTest extends Application {
 									NonSI.DEGREE_ANGLE), 
 							MyArrayUtils.convertDoubleArrayToListOfAmount(
 									MyArrayUtils.linspace(0,10,3), 
-									NonSI.DEGREE_ANGLE), 
-							0.25)
+									NonSI.DEGREE_ANGLE))
 					);
 			CalcXAC calcXACVTail = liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcXAC();
 			calcXACVTail.atQuarterMAC();
@@ -386,8 +385,7 @@ public class DirectionalStabilityTest extends Application {
 									NonSI.DEGREE_ANGLE), 
 							MyArrayUtils.convertDoubleArrayToListOfAmount(
 									MyArrayUtils.linspace(0,10,3), 
-									NonSI.DEGREE_ANGLE), 
-							0.25)
+									NonSI.DEGREE_ANGLE))
 					);
 			CalcXAC calcXACWing = liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
 			calcXACWing.atQuarterMAC();

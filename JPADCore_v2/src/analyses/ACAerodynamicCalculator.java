@@ -725,8 +725,7 @@ public class ACAerodynamicCalculator {
 							_currentCondition,
 							_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(),
 							_alphaWingList, 
-							_alphaWingForDistribution,
-							_wingMomentumPole // WHERE IS IT DEFINE??
+							_alphaWingForDistribution
 							)
 					);
 		
@@ -750,23 +749,40 @@ public class ACAerodynamicCalculator {
 		//.........................................................................................................................
 		//	AERODYNAMIC_CENTER
 		if(_componentTaskList.get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-			
+
 			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
 			switch (_componentTaskList.get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
 			case QUARTER:
 				calcXAC.atQuarterMAC();
+				if(_wingMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.QUARTER)
+							);
 				break;
 			case DEYOUNG_HARPER:
 				calcXAC.deYoungHarper();
+				if(_wingMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
+							);
 				break;
 			case NAPOLITANO_DATCOM:
 				calcXAC.datcomNapolitano();
+				if(_wingMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM)
+							);
 				break;
 			default:
+				if(_wingMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
+							);
 				break;
 			}
+			
 		}
-		
+
 		//.........................................................................................................................
 		//	CL_AT_ALPHA (NECESSARY ??)
 		
@@ -860,8 +876,7 @@ public class ACAerodynamicCalculator {
 							_currentCondition,
 							_theAerodynamicBuilderInterface.getHTailNumberOfPointSemiSpanWise(),
 							_alphaHTailList, 
-							_alphaHorizontalTailForDistribution,
-							_hTailMomentumPole  // WHERE IS IT DEFINE??
+							_alphaHorizontalTailForDistribution
 							)
 					);
 		
@@ -885,21 +900,38 @@ public class ACAerodynamicCalculator {
 		//.........................................................................................................................
 		//	AERODYNAMIC_CENTER
 		if(_componentTaskList.get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-			
+
 			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcXAC();
 			switch (_componentTaskList.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
 			case QUARTER:
 				calcXAC.atQuarterMAC();
+				if(_hTailMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.QUARTER)
+							);
 				break;
 			case DEYOUNG_HARPER:
 				calcXAC.deYoungHarper();
+				if(_hTailMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
+							);
 				break;
 			case NAPOLITANO_DATCOM:
 				calcXAC.datcomNapolitano();
+				if(_hTailMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM)
+							);
 				break;
 			default:
+				if(_hTailMomentumPole == null)
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
+							);
 				break;
 			}
+			
 		}
 		
 		//.........................................................................................................................
@@ -995,8 +1027,7 @@ public class ACAerodynamicCalculator {
 							_currentCondition,
 							_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(), // FIXME : points also for VTail ??
 							_alphaWingList, // FIXME : alpha also for VTail ??
-							_alphaWingForDistribution, // FIXME : alpha distribution also for VTail ??
-							null // vTailMomentumPole ?? FIXME
+							_alphaWingForDistribution // FIXME : alpha distribution also for VTail ??
 							)
 					);
 		
@@ -1019,23 +1050,6 @@ public class ACAerodynamicCalculator {
 			
 		//.........................................................................................................................
 		//	AERODYNAMIC_CENTER
-		if(_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-			
-			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcXAC();
-			switch (_componentTaskList.get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-			case QUARTER:
-				calcXAC.atQuarterMAC();
-				break;
-			case DEYOUNG_HARPER:
-				calcXAC.deYoungHarper();
-				break;
-			case NAPOLITANO_DATCOM:
-				calcXAC.datcomNapolitano();
-				break;
-			default:
-				break;
-			}
-		}
 		
 		//.........................................................................................................................
 		//	CL_AT_ALPHA (NECESSARY ??)
