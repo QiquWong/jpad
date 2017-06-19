@@ -72,6 +72,12 @@ public class ACCostsManager {
 	private Map<MethodEnum, Amount<?>> _cabinCrewCost;
 	private Map<MethodEnum, Amount<?>> _crewDOC;
 	private Map<MethodEnum, Amount<?>> _fuelDOC;
+	private Map<MethodEnum, Amount<?>> _landingDOC;
+	private Map<MethodEnum, Amount<?>> _landingCharges;
+	private Map<MethodEnum, Amount<?>> _navigationCharges;
+	private Map<MethodEnum, Amount<?>> _groundHandilingCharges;
+	private Map<MethodEnum, Amount<?>> _noiseCharges;
+	private Map<MethodEnum, Amount<?>>_emissionsCharges;
 	
 	// TODO: all derived data are maps
 	// Only six items of DOC (Capital, etc)
@@ -263,7 +269,7 @@ public class ACCostsManager {
 					CostsCalcUtils.calcCockpitCrewCostATA(
 							_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getFlightCrewNumber(),
 							_theCostsBuilderInterface.getMaximumTakeOffMass(), 
-							_theCostsBuilderInterface.getAircraft()
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType()
 							)
 					);
 
@@ -298,6 +304,7 @@ public class ACCostsManager {
 					MethodEnum.AEA,
 					CostsCalcUtils.calcDOCFuel(
 							_theCostsBuilderInterface.getFuelUnitPrice(),
+							_theCostsBuilderInterface.getAircraft().getFuelTank().getFuelDensity(),
 							_theCostsBuilderInterface.getBlockFuelMass()
 							)
 					);
@@ -316,6 +323,33 @@ public class ACCostsManager {
 
 		public void calculateChargesDOC() {
 
+			
+			_landingCharges.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcDOCLandingCharges(
+							_landingChargeConstant,
+							_theCostsBuilderInterface.getMaximumTakeOffMass())
+					);
+			
+			_navigationCharges.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcDOCNavigationCharges(
+							_navigationChargeConstant,
+							_theCostsBuilderInterface.getRange(),
+							_theCostsBuilderInterface.getMaximumTakeOffMass())
+					);
+			
+			
+			_landingDOC.put(
+					MethodEnum.AEA,
+					CostsCalcUtils.calcDOCCharges(
+							_landingCharges.get(_landingCharges),
+							_navigationCharges.get(_navigationCharges),
+							_groundHandilingCharges.get(_groundHandilingCharges),
+							_noiseCharges.get(_noiseCharges),
+							_emissionsCharges.get(_emissionsCharges)
+							)
+					);
 
 		}
 		

@@ -8,6 +8,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
+import javax.measure.quantity.VolumetricDensity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -18,7 +19,6 @@ import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import parser.ExprParser.start_return;
@@ -362,17 +362,17 @@ public class CostsCalcUtils {
  
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcCockpitCrewCostATA(int cabinCrewNumber, Amount<Mass> MTOM, Aircraft _theAircraft) {
+	public static Amount<?> calcCockpitCrewCostATA(int cabinCrewNumber, Amount<Mass> MTOM, EngineTypeEnum _engineType) {
 
 		double aircraftTypeConst = 0.0;
 
-		if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 2){
+		if (_engineType.equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 2){
 			aircraftTypeConst = 697.0;
 		}
-		else if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP) && cabinCrewNumber == 2){
+		else if (_engineType.equals(EngineTypeEnum.TURBOPROP) && cabinCrewNumber == 2){
 			aircraftTypeConst = 439.0;
 		}
-		else if (_theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 3){
+		else if (_engineType.equals(EngineTypeEnum.TURBOFAN) && cabinCrewNumber == 3){
 			aircraftTypeConst = 836.4;
 		}
 
@@ -401,14 +401,13 @@ public class CostsCalcUtils {
 	 * 
 	 * @param fuelPrice   ($/barrel) 
 	 * @param fuelMass    (Kg)  
-	 * @return Fuel Cost ($/flight)
+	 * @return Fuel Cost  ($/flight)
 	 */
 	
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcDOCFuel(Amount<?> fuelPrice, Amount<Mass> fuelMass) {
+	public static Amount<?> calcDOCFuel(Amount<?> fuelPrice, Amount<VolumetricDensity> fuelDensity, Amount<Mass> fuelMass) {
 
-		// Jet fuel density = 0.810 kg/l
-		Amount<Volume> fuelVolume = fuelMass.divide(0.810).to(MyUnits.BARREL);
+		Amount<Volume> fuelVolume = fuelMass.divide(fuelDensity).to(MyUnits.BARREL);
 		
 		return  Amount.valueOf(
 				fuelPrice.doubleValue(MyUnits.USD_PER_BARREL)*fuelVolume.doubleValue(MyUnits.BARREL),
@@ -416,6 +415,68 @@ public class CostsCalcUtils {
 				);
 
 	}
+	
+	
+	/**
+	 * 
+	 * @param landingChargeConstant  ($/ton)
+	 * @param maximumTakeOffMass	 (ton)
+	 * 
+	 * @return DOC landing Charges 	  ($/flight)
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCLandingCharges(Amount<?> landingChargeConstant, Amount<Mass> maximumTakeOffMass) {
+		
+		return Amount.valueOf(
+					landingChargeConstant.doubleValue(MyUnits.USD_PER_TON)*maximumTakeOffMass.doubleValue(NonSI.METRIC_TON), 
+					MyUnits.USD_PER_FLIGHT);
+	}
+	
+	
+	/**
+	 * 
+	 * @param navigationChargeConstant ($/(KM*sqrt(ton)))
+	 * @param range					   (KM)
+	 * @param maximumTakeOffMass	   (ton)
+	 * 
+	 * @return		DOC Navigation charges ($/flight)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCNavigationCharges(Amount<?> navigationChargeConstant, Amount<Length> range, Amount<Mass> maximumTakeOffMass){
+		
+		return Amount.valueOf(
+					navigationChargeConstant.doubleValue(MyUnits.USD_PER_KM_SQRT_TON)	
+									*range.doubleValue(SI.KILOMETER)
+										*maximumTakeOffMass.doubleValue(NonSI.METRIC_TON), 
+					MyUnits.USD_PER_FLIGHT);
+	}
+	
+	
+	/**
+	 * 
+	 * @param landingCharges
+	 * @param navigationCharges
+	 * @param groundHandilingCharges
+	 * @param noiseCharges
+	 * @param emissionsCharges
+	 * 
+	 * @return DOC charges
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCCharges( Amount<?> landingCharges, Amount<?> navigationCharges, Amount<?> groundHandilingCharges,
+			Amount<?> noiseCharges, Amount<?> emissionsCharges) {
+
+		return  Amount.valueOf(landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+									navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+										groundHandilingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)+
+											noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+												emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+								MyUnits.USD_PER_HOUR					
+									);
+
+	}
+
 	
 	
 }
