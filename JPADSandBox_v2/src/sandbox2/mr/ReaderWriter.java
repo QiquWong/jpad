@@ -619,7 +619,7 @@ public class ReaderWriter{
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@horizontalTailLift");
 		if(horizontalTailLiftMethod.equalsIgnoreCase("CFD_CORRECTION"))
-			theStabilityCalculator.set_horizontalWingCL(MethodEnum.FROMCFD);
+			theStabilityCalculator.set_horizontalWingCL(MethodEnum.FROM_CFD);
 		if(horizontalTailLiftMethod.equalsIgnoreCase("SEMIEMPIRICAL"))
 			theStabilityCalculator.set_horizontalWingCL(MethodEnum.SEMPIEMPIRICAL);
 		

@@ -12,7 +12,6 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.liftingSurface.LiftingSurface;
-import aircraft.components.nacelles.NacelleCreator.MountingPosition;
 import aircraft.components.nacelles.Nacelles;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
@@ -20,7 +19,6 @@ import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.geometry.FusNacGeometryCalc;
-import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.MyArrayUtils;
@@ -35,8 +33,6 @@ public class NacelleAerodynamicsManager {
 	private LiftingSurface _theWing;
 	private OperatingConditions _theOperatingConditions;
 	private LSAerodynamicsManager _theWingAerodynamicManager;
-	private Map<AerodynamicAndStabilityEnum, MethodEnum> _taskList;
-	private Map<String, List<MethodEnum>> _plotList;
 	private List<Amount<Angle>> _alphaArray;
 	private ConditionEnum _theCondition;
 	private Double _reynolds;
@@ -69,8 +65,6 @@ public class NacelleAerodynamicsManager {
 			LSAerodynamicsManager theWingAerodynamicManager,
 			OperatingConditions operationConditions,
 			ConditionEnum theCondition,
-			Map<AerodynamicAndStabilityEnum, MethodEnum> taskList,
-			Map<String, List<MethodEnum>> plotList,
 			List<Amount<Angle>> alphaArray
 			) {
 		
@@ -79,8 +73,6 @@ public class NacelleAerodynamicsManager {
 		_theWingAerodynamicManager = theWingAerodynamicManager;
 		_theOperatingConditions = operationConditions;
 		_theCondition = theCondition;
-		_taskList = taskList;
-		_plotList = plotList;
 		_alphaArray = alphaArray;
 		
 		initializeData();
@@ -597,22 +589,6 @@ public class NacelleAerodynamicsManager {
 
 	public double[] getKF() {
 		return _kF;
-	}
-
-	public Map<AerodynamicAndStabilityEnum, MethodEnum> getTaskList() {
-		return _taskList;
-	}
-
-	public void setTaskList(Map<AerodynamicAndStabilityEnum, MethodEnum> _taskList) {
-		this._taskList = _taskList;
-	}
-
-	public Map<String, List<MethodEnum>> getPlotList() {
-		return _plotList;
-	}
-
-	public void setPlotList(Map<String, List<MethodEnum>> _plotList) {
-		this._plotList = _plotList;
 	}
 
 	public Map<MethodEnum, Double> getCDInduced() {

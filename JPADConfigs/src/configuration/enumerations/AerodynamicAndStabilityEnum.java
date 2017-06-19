@@ -32,6 +32,7 @@ public enum AerodynamicAndStabilityEnum {
 	CM_ALPHA_LIFTING_SURFACE,
 	CM_AT_ALPHA_LIFTING_SURFACE,
 	MOMENT_DISTRIBUTION_LIFTING_SURFACE,
+	MOMENT_CURVE_3D,
 	
 	////////////////////////////////////////////////
 	// Fuselage
@@ -46,7 +47,7 @@ public enum AerodynamicAndStabilityEnum {
 	CM0_FUSELAGE,
 	CM_ALPHA_FUSELAGE,
 	CM_AT_ALPHA_FUSELAGE,
-	MOMENT_DISTRIBUTION_FUSELAGE,
+	MOMENT_CURVE_3D_FUSELAGE,
 	
 	////////////////////////////////////////////////
 	// Nacelle
@@ -59,7 +60,7 @@ public enum AerodynamicAndStabilityEnum {
 	CM0_NACELLE,
 	CM_ALPHA_NACELLE,
 	CM_AT_ALPHA_NACELLE,
-	MOMENT_DISTRIBUTION_NACELLE,
+	MOMENT_CURVE_3D_NACELLE,
 	
 	////////////////////////////////////////////////
 	// Aircraft
