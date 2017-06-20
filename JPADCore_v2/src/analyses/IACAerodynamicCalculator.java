@@ -37,6 +37,7 @@ public interface IACAerodynamicCalculator {
 	MyInterpolatingFunction getTauRudderFunction();
 	List<Amount<Angle>> getDeltaElevatorList();
 	List<Amount<Angle>> getDeltaRudderList();
+	boolean getFuselageEffectOnWingLiftCurve();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder {

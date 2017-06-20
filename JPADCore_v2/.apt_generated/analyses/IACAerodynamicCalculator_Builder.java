@@ -51,6 +51,7 @@ abstract class IACAerodynamicCalculator_Builder {
     DYNAMIC_PRESSURE_RATIO("dynamicPressureRatio"),
     TAU_ELEVATOR_FUNCTION("tauElevatorFunction"),
     TAU_RUDDER_FUNCTION("tauRudderFunction"),
+    FUSELAGE_EFFECT_ON_WING_LIFT_CURVE("fuselageEffectOnWingLiftCurve"),
     ;
 
     private final String name;
@@ -82,6 +83,7 @@ abstract class IACAerodynamicCalculator_Builder {
   private MyInterpolatingFunction tauRudderFunction;
   private final ArrayList<Amount<Angle>> deltaElevatorList = new ArrayList<>();
   private final ArrayList<Amount<Angle>> deltaRudderList = new ArrayList<>();
+  private boolean fuselageEffectOnWingLiftCurve;
   private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties =
       EnumSet.allOf(IACAerodynamicCalculator_Builder.Property.class);
 
@@ -1003,6 +1005,46 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getFuselageEffectOnWingLiftCurve()}.
+   *
+   * @return this {@code Builder} object
+   */
+  public IACAerodynamicCalculator.Builder setFuselageEffectOnWingLiftCurve(
+      boolean fuselageEffectOnWingLiftCurve) {
+    this.fuselageEffectOnWingLiftCurve = fuselageEffectOnWingLiftCurve;
+    _unsetProperties.remove(
+        IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getFuselageEffectOnWingLiftCurve()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapFuselageEffectOnWingLiftCurve(
+      UnaryOperator<Boolean> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setFuselageEffectOnWingLiftCurve(mapper.apply(getFuselageEffectOnWingLiftCurve()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getFuselageEffectOnWingLiftCurve()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public boolean getFuselageEffectOnWingLiftCurve() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE),
+        "fuselageEffectOnWingLiftCurve not set");
+    return fuselageEffectOnWingLiftCurve;
+  }
+
+  /**
    * Sets all property values using the given {@code IACAerodynamicCalculator} as a template.
    */
   public IACAerodynamicCalculator.Builder mergeFrom(IACAerodynamicCalculator value) {
@@ -1061,6 +1103,12 @@ abstract class IACAerodynamicCalculator_Builder {
     }
     addAllDeltaElevatorList(value.getDeltaElevatorList());
     addAllDeltaRudderList(value.getDeltaRudderList());
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
+        || value.getFuselageEffectOnWingLiftCurve()
+            != _defaults.getFuselageEffectOnWingLiftCurve()) {
+      setFuselageEffectOnWingLiftCurve(value.getFuselageEffectOnWingLiftCurve());
+    }
     return (IACAerodynamicCalculator.Builder) this;
   }
 
@@ -1144,6 +1192,14 @@ abstract class IACAerodynamicCalculator_Builder {
     }
     addAllDeltaElevatorList(((IACAerodynamicCalculator_Builder) template).deltaElevatorList);
     addAllDeltaRudderList(((IACAerodynamicCalculator_Builder) template).deltaRudderList);
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
+            || template.getFuselageEffectOnWingLiftCurve()
+                != _defaults.getFuselageEffectOnWingLiftCurve())) {
+      setFuselageEffectOnWingLiftCurve(template.getFuselageEffectOnWingLiftCurve());
+    }
     return (IACAerodynamicCalculator.Builder) this;
   }
 
@@ -1168,6 +1224,7 @@ abstract class IACAerodynamicCalculator_Builder {
     tauRudderFunction = _defaults.tauRudderFunction;
     deltaElevatorList.clear();
     deltaRudderList.clear();
+    fuselageEffectOnWingLiftCurve = _defaults.fuselageEffectOnWingLiftCurve;
     _unsetProperties.clear();
     _unsetProperties.addAll(_defaults._unsetProperties);
     return (IACAerodynamicCalculator.Builder) this;
@@ -1215,6 +1272,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final MyInterpolatingFunction tauRudderFunction;
     private final List<Amount<Angle>> deltaElevatorList;
     private final List<Amount<Angle>> deltaRudderList;
+    private final boolean fuselageEffectOnWingLiftCurve;
 
     private Value(IACAerodynamicCalculator_Builder builder) {
       this.componentTaskList = ImmutableMap.copyOf(builder.componentTaskList);
@@ -1234,6 +1292,7 @@ abstract class IACAerodynamicCalculator_Builder {
       this.tauRudderFunction = builder.tauRudderFunction;
       this.deltaElevatorList = ImmutableList.copyOf(builder.deltaElevatorList);
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
+      this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
     }
 
     @Override
@@ -1317,6 +1376,11 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public boolean getFuselageEffectOnWingLiftCurve() {
+      return fuselageEffectOnWingLiftCurve;
+    }
+
+    @Override
     public boolean equals(Object obj) {
       if (!(obj instanceof IACAerodynamicCalculator_Builder.Value)) {
         return false;
@@ -1338,7 +1402,8 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(tauElevatorFunction, other.tauElevatorFunction)
           && Objects.equals(tauRudderFunction, other.tauRudderFunction)
           && Objects.equals(deltaElevatorList, other.deltaElevatorList)
-          && Objects.equals(deltaRudderList, other.deltaRudderList);
+          && Objects.equals(deltaRudderList, other.deltaRudderList)
+          && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve);
     }
 
     @Override
@@ -1359,7 +1424,8 @@ abstract class IACAerodynamicCalculator_Builder {
           tauElevatorFunction,
           tauRudderFunction,
           deltaElevatorList,
-          deltaRudderList);
+          deltaRudderList,
+          fuselageEffectOnWingLiftCurve);
     }
 
     @Override
@@ -1412,6 +1478,9 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "deltaRudderList="
           + deltaRudderList
+          + ", "
+          + "fuselageEffectOnWingLiftCurve="
+          + fuselageEffectOnWingLiftCurve
           + "}";
     }
   }
@@ -1434,6 +1503,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final MyInterpolatingFunction tauRudderFunction;
     private final List<Amount<Angle>> deltaElevatorList;
     private final List<Amount<Angle>> deltaRudderList;
+    private final boolean fuselageEffectOnWingLiftCurve;
     private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties;
 
     Partial(IACAerodynamicCalculator_Builder builder) {
@@ -1454,6 +1524,7 @@ abstract class IACAerodynamicCalculator_Builder {
       this.tauRudderFunction = builder.tauRudderFunction;
       this.deltaElevatorList = ImmutableList.copyOf(builder.deltaElevatorList);
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
+      this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
       this._unsetProperties = builder._unsetProperties.clone();
     }
 
@@ -1571,6 +1642,15 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public boolean getFuselageEffectOnWingLiftCurve() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)) {
+        throw new UnsupportedOperationException("fuselageEffectOnWingLiftCurve not set");
+      }
+      return fuselageEffectOnWingLiftCurve;
+    }
+
+    @Override
     public boolean equals(Object obj) {
       if (!(obj instanceof IACAerodynamicCalculator_Builder.Partial)) {
         return false;
@@ -1594,6 +1674,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(tauRudderFunction, other.tauRudderFunction)
           && Objects.equals(deltaElevatorList, other.deltaElevatorList)
           && Objects.equals(deltaRudderList, other.deltaRudderList)
+          && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
           && Objects.equals(_unsetProperties, other._unsetProperties);
     }
 
@@ -1616,6 +1697,7 @@ abstract class IACAerodynamicCalculator_Builder {
           tauRudderFunction,
           deltaElevatorList,
           deltaRudderList,
+          fuselageEffectOnWingLiftCurve,
           _unsetProperties);
     }
 
@@ -1666,7 +1748,11 @@ abstract class IACAerodynamicCalculator_Builder {
                   ? "tauRudderFunction=" + tauRudderFunction
                   : null),
               "deltaElevatorList=" + deltaElevatorList,
-              "deltaRudderList=" + deltaRudderList)
+              "deltaRudderList=" + deltaRudderList,
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
+                  ? "fuselageEffectOnWingLiftCurve=" + fuselageEffectOnWingLiftCurve
+                  : null))
           + "}";
     }
   }
