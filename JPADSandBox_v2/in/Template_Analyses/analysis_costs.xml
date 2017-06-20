@@ -42,10 +42,11 @@
 						<landing calculate="TRUE" method="AEA" unit="$/flight" value=""/>
 						<navigation calculate="TRUE" method="AEA" unit="$/flight" value=""/>
 						<ground_handling calculate="TRUE" method="AEA" unit="$/flight" value=""/>
-						<noise calculate="TRUE" method="UE" noise_constant="0" departure_threshold="0" arrival_threshold="0" unit="$/flight" value=""/>
-						<emissions_NOx calculate="TRUE" method="ICAO" emission_constant="0" unit="$/flight" value=""/>
-						<emissions_CO calculate="TRUE" method="ICAO" emission_constant="0" unit="$/flight" value=""/>
-						<emissions_HC calculate="TRUE" method="ICAO" emission_constant="0" unit="$/flight" value=""/>
+						<noise calculate="TRUE" method="TNAC" noise_constant="0" flyover_Certified_Noise_Level="0" lateral_Certified_Noise_Level="0" approach_Certified_Noise_Level="0" departure_threshold="0" arrival_threshold="0" unit="$/flight" value=""/>
+						<emissions_NOx calculate="TRUE" method="ICAO" emission_constant="0" massNOx="0" DpHC_Foo="0" unit="$/flight" value=""/>
+						<emissions_CO calculate="TRUE" method="ICAO" emission_constant="0" massCO="0" DpHC_Foo="0" unit="$/flight" value=""/>
+						<emissions_CO2 calculate="TRUE" method="ICAO" emission_constant="0" massCO2="0" DpHC_Foo="0" unit="$/flight" value=""/>
+						<emissions_HC calculate="TRUE" method="ICAO" emission_constant="0" massHC="0" DpHC_Foo="0" unit="$/flight" value=""/>
 					</charges>
 					<maintenance>
 						<airframe_labour_rate unit="$/hr" value=""/>

@@ -81,6 +81,7 @@ public class MyUnits {
 	public static final Unit USD_PER_GALLON = Currency.USD.divide(NonSI.GALLON_LIQUID_US);
 	public static final Unit BARREL = NonSI.LITER.times(158.98); 
 	public static final Unit USD_PER_BARREL = Currency.USD.divide(MyUnits.BARREL);
+	public static final Unit G_PER_KN = SI.GRAM.divide(SI.NEWTON.divide(1000.0));
 	
 	
 	/**

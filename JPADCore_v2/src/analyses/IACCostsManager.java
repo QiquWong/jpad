@@ -3,6 +3,7 @@ package analyses;
 import java.util.List;
 import java.util.Map;
 
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -53,14 +54,31 @@ public interface IACCostsManager {
 	Map<MethodEnum, Amount<?>> getGroundHandlingCharges();
 	Map<MethodEnum, Amount<?>> getNoiseCharges();
 	Amount<Money> getNoiseConstant();
-	Double getNoiseDepartureThreshold();
-	Double getNoiseArrivalThreshold();
+	Amount<Dimensionless> getNoiseDepartureThreshold();
+	Amount<Dimensionless> getNoiseArrivalThreshold();
+	Amount<Dimensionless> getApproachCertifiedNoiseLevel();
+	Amount<Dimensionless> getLateralCertifiedNoiseLevel();
+	Amount<Dimensionless> getFlyoverCertifiedNoiseLevel();
+	
 	Map<MethodEnum, Amount<?>> getEmissionsChargesNOx();
 	Amount<Money> getEmissionsConstantNOx();
+	Amount<Mass> getMassNOx();
+	Amount<?> getDpHCFooNOx();
+	
 	Map<MethodEnum, Amount<?>> getEmissionsChargesCO();
 	Amount<Money> getEmissionsConstantCO();
+	Amount<Mass> getMassCO();
+	Amount<?> getDpHCFooCO();
+	
+	Map<MethodEnum, Amount<?>> getEmissionsChargesCO2();
+	Amount<Money> getEmissionsConstantCO2();
+	Amount<Mass> getMassCO2();
+	Amount<?> getDpHCFooCO2();
+	
 	Map<MethodEnum, Amount<?>> getEmissionsChargesHC();
 	Amount<Money> getEmissionsConstantHC();
+	Amount<Mass> getMassHC();
+	Amount<?> getDpHCFooHC();
 	
 	Amount<?> getAirframeLabourRate();
 	Amount<?> getEngineLabourRate();

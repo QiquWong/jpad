@@ -2,10 +2,12 @@ package calculators.costs;
 
 import java.util.Map;
 
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Power;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
 import javax.measure.quantity.VolumetricDensity;
@@ -15,6 +17,7 @@ import javax.measure.unit.Unit;
 
 import org.apache.commons.math3.special.Erf;
 import org.apache.commons.math3.util.FastMath;
+import org.inferred.freebuilder.shaded.org.eclipse.core.resources.IFilterMatcherDescriptor;
 import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
@@ -440,7 +443,7 @@ public class CostsCalcUtils {
 	 * @param range					   (KM)
 	 * @param maximumTakeOffMass	   (ton)
 	 * 
-	 * @return		DOC Navigation charges ($/flight)
+	 * @return		DOC Navigation charges AEA method ($/flight)
 	 */
 	@SuppressWarnings("unchecked")
 	public static Amount<?> calcDOCNavigationCharges(Amount<?> navigationChargeConstant, Amount<Length> range, Amount<Mass> maximumTakeOffMass){
@@ -449,6 +452,194 @@ public class CostsCalcUtils {
 					navigationChargeConstant.doubleValue(MyUnits.USD_PER_KM_SQRT_TON)	
 									*range.doubleValue(SI.KILOMETER)
 										*maximumTakeOffMass.doubleValue(NonSI.METRIC_TON), 
+					MyUnits.USD_PER_FLIGHT);
+	}
+	
+	/**
+	 * 
+	 * @param groundHandlingChargeConstant ($/ton)
+	 * @param payload					   (ton)
+	 * @return DOC ground-handling charges, AEA method ($/flight)
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCGroundHandlingCharges(Amount<?> groundHandlingChargeConstant, Amount<Mass> payload){
+		
+		return Amount.valueOf(
+					groundHandlingChargeConstant.doubleValue(MyUnits.USD_PER_TON)	
+										*payload.doubleValue(NonSI.METRIC_TON), 
+					MyUnits.USD_PER_FLIGHT);
+	}
+	
+	/**
+	 * 
+	 * @param approachCertifiedNoiseLevel (EPNdB)
+	 * @param lateralCertifiedNoiseLevel  (EPNdB)
+	 * @param flyoverCertifiedNoiseLevel  (EPNdB)
+	 * @param unitNoiseRate				  ($)
+	 * @param departureAirportThresholdNoise (EPNdB)
+	 * @param arrivalAirportThresholdNoise   (EPNdB)
+	 * 
+	 * @return DOC ground-handling charges, TNAC method ($/flight)
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCNoiseCharges(Amount<Dimensionless> approachCertifiedNoiseLevel, Amount<Dimensionless> lateralCertifiedNoiseLevel, 
+			Amount<Dimensionless> flyoverCertifiedNoiseLevel, Amount<Money> unitNoiseRate, Amount<Dimensionless> departureAirportThresholdNoise, Amount<Dimensionless> arrivalAirportThresholdNoise){
+		
+		double exp1 = (approachCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL) - arrivalAirportThresholdNoise.doubleValue(NonSI.DECIBEL))/2;
+		double exp2 = ((flyoverCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL) + flyoverCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL))/2  - departureAirportThresholdNoise.doubleValue(NonSI.DECIBEL))/10;
+		
+		return Amount.valueOf(
+					unitNoiseRate.doubleValue(Currency.USD)*(Math.pow(10, exp1) + Math.pow(10, exp2)),
+					MyUnits.USD_PER_FLIGHT);
+	}
+	
+	
+	/**
+	 * 
+	 * @param emissionConstant 		($)
+	 * @param massEmission per LTO cycle	(kg)
+	 * @param dpHCFoo is the ratio between the mass of NOx (g) and Thrust (kN)  (g/kN)
+	 * @param engineType 
+	 * @param power (it can be null if engine type is TURBOFAN or JET)	(shp/hp)
+	 * @param numberOfEngines
+	 * 
+	 * @return DOC due to any gaseous pollutant ($/flight)
+	 */
+	
+	@SuppressWarnings({ "incomplete-switch", "unchecked" })
+	public static Amount<?> calcDOCEmissionsCharges(Amount<Money> emissionConstant, Amount<Mass> massEmission, Amount<?> dpHCFoo, 
+			EngineTypeEnum engineType, Amount<Power> power, int numberOfEngines){
+		
+		
+		double a = 0;
+		
+		switch (engineType){
+		
+		case TURBOFAN:
+			
+			if(dpHCFoo.doubleValue(MyUnits.G_PER_KN) <= 19.6){
+				a = 1;
+			} 
+			else if(dpHCFoo.doubleValue(MyUnits.G_PER_KN) > 19.6 && dpHCFoo.doubleValue(MyUnits.G_PER_KN) <= 78.4){
+				a = dpHCFoo.doubleValue(MyUnits.G_PER_KN)/19.6;
+			}
+			else{
+				a = 4;
+			}
+			
+			break;
+			
+		case TURBOJET:
+			
+			if(dpHCFoo.doubleValue(MyUnits.G_PER_KN) <= 19.6){
+				a = 1;
+			} 
+			else if(dpHCFoo.doubleValue(MyUnits.G_PER_KN) > 19.6 && dpHCFoo.doubleValue(MyUnits.G_PER_KN) <= 78.4){
+				a = dpHCFoo.doubleValue(MyUnits.G_PER_KN)/19.6;
+			}
+			else{
+				a = 4;
+			}
+			
+			break;
+		
+			
+		case TURBOPROP:
+			if(power.doubleValue(NonSI.HORSEPOWER) <= 2000){
+				if(numberOfEngines == 1){
+					a = 0.4;
+				}
+				else if(numberOfEngines == 2){
+					a = 0.8;
+				}
+				else if(numberOfEngines == 3){
+					a = 1.2;
+				}
+				else if(numberOfEngines == 4){
+					a = 1.6;
+				}
+			}
+			else{
+				if(numberOfEngines == 1){
+					a = 0.8;
+				}
+				else if(numberOfEngines == 2){
+					a = 1.6;
+				}
+				else if(numberOfEngines == 3){
+					a = 2.4;
+				}
+				else if(numberOfEngines == 4){
+					a = 3.2;
+				}
+			}
+				
+			break;
+		
+		
+		case PISTON:
+			if(power.doubleValue(NonSI.HORSEPOWER) <= 200){
+				if(numberOfEngines == 1){
+					a = 0.2;
+				}
+				else if(numberOfEngines == 2){
+					a = 0.4;
+				}
+				else if(numberOfEngines == 3){
+					a = 0.6;
+				}
+				else if(numberOfEngines == 4){
+					a = 0.8;
+				}
+			}
+			
+			if(power.doubleValue(NonSI.HORSEPOWER) > 200 && power.doubleValue(NonSI.HORSEPOWER) <= 400){
+				if(numberOfEngines == 1){
+					a = 0.4;
+				}
+				else if(numberOfEngines == 2){
+					a = 0.8;
+				}
+				else if(numberOfEngines == 3){
+					a = 1.2;
+				}
+				else if(numberOfEngines == 4){
+					a = 1.6;
+				}
+			}
+			
+			else{
+				if(numberOfEngines == 1){
+					a = 0.5;
+				}
+				else if(numberOfEngines == 2){
+					a = 1.0;
+				}
+				else if(numberOfEngines == 3){
+					a = 1.5;
+				}
+				else if(numberOfEngines == 4){
+					a = 2.0;
+				}
+			}
+			
+		}				
+			
+		
+		return Amount.valueOf(
+					emissionConstant.doubleValue(Currency.USD)*massEmission.doubleValue(NonSI.METRIC_TON)*a, 
+					MyUnits.USD_PER_FLIGHT);
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCEmissionsCharges(Amount<?> groundHandlingChargeConstant, Amount<Mass> payload){
+		
+		return Amount.valueOf(
+										payload.doubleValue(NonSI.METRIC_TON), 
 					MyUnits.USD_PER_FLIGHT);
 	}
 	

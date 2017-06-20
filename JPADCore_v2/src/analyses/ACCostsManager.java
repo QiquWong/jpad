@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Mass;
+import javax.measure.unit.SI;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.economics.money.Currency;
@@ -72,12 +73,19 @@ public class ACCostsManager {
 	private Map<MethodEnum, Amount<?>> _cabinCrewCost;
 	private Map<MethodEnum, Amount<?>> _crewDOC;
 	private Map<MethodEnum, Amount<?>> _fuelDOC;
-	private Map<MethodEnum, Amount<?>> _landingDOC;
 	private Map<MethodEnum, Amount<?>> _landingCharges;
 	private Map<MethodEnum, Amount<?>> _navigationCharges;
 	private Map<MethodEnum, Amount<?>> _groundHandilingCharges;
 	private Map<MethodEnum, Amount<?>> _noiseCharges;
-	private Map<MethodEnum, Amount<?>>_emissionsCharges;
+	private Map<MethodEnum, Amount<?>> _emissionsCharges;
+
+	public Map<MethodEnum, Amount<?>> _chargesDOC;
+
+	public Map<MethodEnum, Amount<?>> _groundHandlingCharges;
+
+	public Map<MethodEnum, Amount<?>> _emissionsChargesNOx;
+
+	public Map<MethodEnum, Amount<?>> _emissionsChargesCO;
 	
 	// TODO: all derived data are maps
 	// Only six items of DOC (Capital, etc)
@@ -339,8 +347,41 @@ public class ACCostsManager {
 							_theCostsBuilderInterface.getMaximumTakeOffMass())
 					);
 			
+			_groundHandlingCharges.put(
+					MethodEnum.AEA, 
+					CostsCalcUtils.calcDOCGroundHandlingCharges(
+							_groundHandlingChargeConstant,
+							_theCostsBuilderInterface.getPayload())
+					);
 			
-			_landingDOC.put(
+			_noiseCharges.put(
+					MethodEnum.TNAC, 
+					CostsCalcUtils.calcDOCNoiseCharges(
+							_theCostsBuilderInterface.getApproachCertifiedNoiseLevel(),
+							_theCostsBuilderInterface.getLateralCertifiedNoiseLevel(),
+							_theCostsBuilderInterface.getFlyoverCertifiedNoiseLevel(),
+							_theCostsBuilderInterface.getNoiseConstant(),
+							_theCostsBuilderInterface.getNoiseDepartureThreshold(),
+							_theCostsBuilderInterface.getNoiseArrivalThreshold())
+					);
+			
+			_emissionsChargesNOx.put(
+					MethodEnum.TNAC, 
+					CostsCalcUtils.calcDOCEmissionsCharges(
+							_theCostsBuilderInterface.getEmissionsConstantNOx(),
+							_theCostsBuilderInterface.getMassNOx(),
+							_theCostsBuilderInterface.getDpHCFooNOx(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
+			);
+			
+//			_emissionsChargesCO.put(
+//					MethodEnum.TNAC, 
+//					CostsCalcUtils.calcDOCEmissionsCharges();
+			
+			
+			_chargesDOC.put(
 					MethodEnum.AEA,
 					CostsCalcUtils.calcDOCCharges(
 							_landingCharges.get(_landingCharges),
