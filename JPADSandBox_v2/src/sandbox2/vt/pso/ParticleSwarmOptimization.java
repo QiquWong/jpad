@@ -1,5 +1,12 @@
 package sandbox2.vt.pso;
 
+import java.io.File;
+
+import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
+import optimization.ParticleSwarmOptimizer;
+import writers.JPADStaticWriteUtils;
+
 /**
  * Example from http://yarpiz.com/440/ytea101-particle-swarm-optimization-pso-in-matlab-video-tutorial
  * Cost function ==> Shpere ==> sum(x_i^2)
@@ -11,8 +18,15 @@ public class ParticleSwarmOptimization {
 	public static void main(String[] args) {
 
 		System.out.println("\t------------------------------------");
-		System.out.println("\tParticle Swarm Optimization :: Test ");
+		System.out.println("\tParticle Swarm Optimization :: START ");
 		System.out.println("\t------------------------------------\n");
+		
+		long startTime = System.currentTimeMillis();     
+		
+		// SETUP OUTPUT FOLDER
+		MyConfiguration.initWorkingDirectoryTree();
+		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR); 
+		String subfolderPath = JPADStaticWriteUtils.createNewFolder(folderPath + "Particle_Swarm_Optimization" + File.separator);
 		
 		// DATA TO BE PROVIDED
 		int numberOfDesignVariables = 10;
@@ -40,16 +54,25 @@ public class ParticleSwarmOptimization {
 		// CALLING THE PSO OPTIMIZER ...
 		ParticleSwarmOptimizer pso = new ParticleSwarmOptimizer(
 				numberOfDesignVariables,
-				designVariablesLowerBound,
 				designVariablesUpperBound,
+				designVariablesLowerBound,
 				maximumNumberOfIteration, 
 				particlesNumber, 
 				kappa, 
 				phi1, 
-				phi2
+				phi2,
+				subfolderPath
 				);
 		
 		pso.optimize();
+		
+		System.out.println("\n\n\t------------------------------------");
+		System.out.println("\tParticle Swarm Optimization :: END ");
+		System.out.println("\t------------------------------------\n");
+		
+		long estimatedTime = System.currentTimeMillis() - startTime;
+		System.out.println("\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
+		
 	}
 
 }

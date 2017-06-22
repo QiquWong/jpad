@@ -1,6 +1,6 @@
-package sandbox2.vt.pso;
+package optimization;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import standaloneutils.MyArrayUtils;
@@ -8,13 +8,13 @@ import standaloneutils.MyMathUtils;
 
 public class CostFunctions {
 
-	public static double sphere(List<Double> x) {
+	public static double sphere(Double[] x) {
 		
 		return MyMathUtils.summation(
 				0,
-				x.size(),
+				x.length,
 				MyArrayUtils.convertToDoublePrimitive(
-						x.stream()
+						Arrays.stream(x)
 						.map(xe -> Math.pow(xe, 2))
 						.collect(Collectors.toList())
 						)
