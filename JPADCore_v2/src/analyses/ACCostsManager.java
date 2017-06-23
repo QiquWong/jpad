@@ -78,15 +78,20 @@ public class ACCostsManager {
 	private Map<MethodEnum, Amount<?>> _groundHandilingCharges;
 	private Map<MethodEnum, Amount<?>> _noiseCharges;
 	private Map<MethodEnum, Amount<?>> _emissionsCharges;
+	private Map<MethodEnum, Amount<?>> _chargesDOC;
+	private Map<MethodEnum, Amount<?>> _groundHandlingCharges;
+	private Map<MethodEnum, Amount<?>> _emissionsChargesNOx;
+	private Map<MethodEnum, Amount<?>> _emissionsChargesCO;
+	private Map<MethodEnum, Amount<?>> _emissionsChargesCO2;
+	private Map<MethodEnum, Amount<?>> _emissionsChargesHC;
+	private Map<MethodEnum, Amount<?>> _maintenanceCharges;
+	private Map<MethodEnum, Amount<?>> _labourAirframeMaintenanceCharges;
+	private Map<MethodEnum, Amount<?>> _materialAirframeMaintenanceCharges;
+	private Map<MethodEnum, Amount<?>> _labourEngineMaintenanceCharges;
+	private Map<MethodEnum, Amount<?>> _materialEngineMaintenanceCharges;
+	private Map<MethodEnum, Amount<?>> _labourAirframeManHoursPerFlightCycle;
+	private Map<MethodEnum, Amount<?>> _labourAirframeManHoursPerFlightHour;
 
-	public Map<MethodEnum, Amount<?>> _chargesDOC;
-
-	public Map<MethodEnum, Amount<?>> _groundHandlingCharges;
-
-	public Map<MethodEnum, Amount<?>> _emissionsChargesNOx;
-
-	public Map<MethodEnum, Amount<?>> _emissionsChargesCO;
-	
 	// TODO: all derived data are maps
 	// Only six items of DOC (Capital, etc)
 
@@ -365,6 +370,7 @@ public class ACCostsManager {
 							_theCostsBuilderInterface.getNoiseArrivalThreshold())
 					);
 			
+			// - start EMISSIONS
 			_emissionsChargesNOx.put(
 					MethodEnum.TNAC, 
 					CostsCalcUtils.calcDOCEmissionsCharges(
@@ -376,9 +382,48 @@ public class ACCostsManager {
 							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
 			);
 			
-//			_emissionsChargesCO.put(
-//					MethodEnum.TNAC, 
-//					CostsCalcUtils.calcDOCEmissionsCharges();
+			_emissionsChargesCO.put(
+					MethodEnum.TNAC, 
+					CostsCalcUtils.calcDOCEmissionsCharges(
+							_theCostsBuilderInterface.getEmissionsConstantCO(),
+							_theCostsBuilderInterface.getMassCO(),
+							_theCostsBuilderInterface.getDpHCFooCO(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
+			);
+			
+			_emissionsChargesCO2.put(
+					MethodEnum.TNAC, 
+					CostsCalcUtils.calcDOCEmissionsCharges(
+							_theCostsBuilderInterface.getEmissionsConstantCO2(),
+							_theCostsBuilderInterface.getMassCO2(),
+							_theCostsBuilderInterface.getDpHCFooCO2(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
+			);
+			
+			_emissionsChargesHC.put(
+					MethodEnum.TNAC, 
+					CostsCalcUtils.calcDOCEmissionsCharges(
+							_theCostsBuilderInterface.getEmissionsConstantHC(),
+							_theCostsBuilderInterface.getMassHC(),
+							_theCostsBuilderInterface.getDpHCFooHC(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
+			);
+			
+			_emissionsCharges.put(
+					MethodEnum.TNAC,
+					_emissionsChargesHC.get(_emissionsChargesHC).plus(
+							_emissionsChargesCO2.get(_emissionsChargesCO)).plus(
+									_emissionsChargesCO.get(_emissionsChargesCO)).plus(
+												_emissionsChargesNOx.get(_emissionsChargesNOx))
+					);
+			// -end EMISSIONS 
+			
 			
 			
 			_chargesDOC.put(
@@ -406,6 +451,24 @@ public class ACCostsManager {
 
 		public void calculateMaintenanceDOC() {
 
+			
+//			_labourAirframeMaintenanceCharges.put(MethodEnum.ATA, 
+//					CostsCalcUtils.calclLabourAirframe(
+//							_labourAirframeManHoursPerFlightCycle,
+//							_labourAirframeManHoursPerFlightHour,
+//							_theCostsBuilderInterface.getAirframeLabourRate(),
+//							_theCostsBuilderInterface.getBlockTime(),
+//							_theCostsBuilderInterface.getRange()
+//							);
+			
+			_maintenanceCharges.put(
+					MethodEnum.ATA, 
+					CostsCalcUtils.calcDOCMaintenanceCharges(
+							_labourAirframeMaintenanceCharges.get(_labourAirframeMaintenanceCharges),
+							_materialAirframeMaintenanceCharges.get(_materialAirframeMaintenanceCharges),
+							_labourEngineMaintenanceCharges.get(_labourEngineMaintenanceCharges),
+							_materialEngineMaintenanceCharges.get(_materialEngineMaintenanceCharges))
+					);
 
 		}
 		
