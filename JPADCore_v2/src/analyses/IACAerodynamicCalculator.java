@@ -20,24 +20,34 @@ import standaloneutils.MyInterpolatingFunction;
 public interface IACAerodynamicCalculator {
 
 	//..............................................................................
-	// FROM INPUT (Passed from File)
+	// FROM INPUT (Passed from ACAnalysisManager)
+	Aircraft getTheAircraft();
+	OperatingConditions getTheOperatingConditions();
+	ConditionEnum getCurrentCondition();
+	//..............................................................................
+	// FROM INPUT (Passed from XML file)
 	Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList();
 	List<Double> getXCGAircraft();
 	List<Double> getZCGAircraft();
 	Amount<Angle> getAlphaBodyInitial();
 	Amount<Angle> getAlphaBodyFinal();
 	int getNumberOfAlphasBody();
+	Amount<Angle> getBetaInitial();
+	Amount<Angle> getBetaFinal();
+	int getNumberOfBeta();
 	int getWingNumberOfPointSemiSpanWise();
 	int getHTailNumberOfPointSemiSpanWise();
+	int getVTailNumberOfPointSemiSpanWise();
 	List<Amount<Angle>> getAlphaWingForDistribution();
 	List<Amount<Angle>> getAlphaHorizontalTailForDistribution();
-	boolean isDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
+	List<Amount<Angle>> getAlphaVerticalTailForDistribution();
+	Boolean getDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
 	Double getDynamicPressureRatio();
 	MyInterpolatingFunction getTauElevatorFunction();
 	MyInterpolatingFunction getTauRudderFunction();
 	List<Amount<Angle>> getDeltaElevatorList();
 	List<Amount<Angle>> getDeltaRudderList();
-	boolean getFuselageEffectOnWingLiftCurve();
+	Boolean getFuselageEffectOnWingLiftCurve();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder {

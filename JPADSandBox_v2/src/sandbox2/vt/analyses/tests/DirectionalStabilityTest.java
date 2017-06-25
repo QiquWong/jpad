@@ -22,6 +22,7 @@ import org.kohsuke.args4j.Option;
 import aircraft.components.Aircraft;
 import analyses.ACAerodynamicCalculator;
 import analyses.ACAnalysisManager;
+import analyses.IACAerodynamicCalculator;
 import analyses.OperatingConditions;
 import analyses.ACAerodynamicCalculator.CalcDirectionalStability;
 import analyses.liftingsurface.LSAerodynamicsManager;
@@ -307,22 +308,10 @@ public class DirectionalStabilityTest extends Application {
 			MethodEnum directionalStabilityMethod = MethodEnum.VEDSC_USAFDATCOM_WING;
 			
 			ACAerodynamicCalculator theAerodynamicCalculator = new ACAerodynamicCalculator();
-			theAerodynamicCalculator.setTheAircraft(theAircraft);
 			theAerodynamicCalculator.setBetaList(
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(0.0, 30, 50),
 							NonSI.DEGREE_ANGLE
-							)
-					);
-			theAerodynamicCalculator.setDeltaRudderList(
-					MyArrayUtils.convertDoubleArrayToListOfAmount(
-							MyArrayUtils.linspace(0.0, 30, 7),
-							NonSI.DEGREE_ANGLE
-							)
-					);
-			theAerodynamicCalculator.setXCGAircraft(
-					MyArrayUtils.convertDoubleArrayToListDouble(
-							new Double[] {0.25}
 							)
 					);
 			
@@ -333,16 +322,31 @@ public class DirectionalStabilityTest extends Application {
 //			tauFunction.interpolateLinear(deltaRudder, tau);
 //			theAerodynamicCalculator.setTauRudderFunction(tauFunction);
 			
-			// Defining VTail analysis of the Xac ...
-			Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> componentTaskList = new HashMap<>();
+			// Defining ComponentTaskList ...
 			Map<AerodynamicAndStabilityEnum, MethodEnum> vTailAnalysisList = new HashMap<>();
 			vTailAnalysisList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, MethodEnum.QUARTER);
 			vTailAnalysisList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.NASA_BLACKWELL);
 			vTailAnalysisList.put(AerodynamicAndStabilityEnum.CL_MAX, MethodEnum.ROSKAM);
 			vTailAnalysisList.put(AerodynamicAndStabilityEnum.ALPHA_STAR, MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS);
 			vTailAnalysisList.put(AerodynamicAndStabilityEnum.ALPHA_STALL, MethodEnum.NASA_BLACKWELL);
-			componentTaskList.put(ComponentEnum.VERTICAL_TAIL, vTailAnalysisList);
 			
+			Map<AerodynamicAndStabilityEnum, MethodEnum> wingAnalysisList = new HashMap<>();
+			wingAnalysisList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, MethodEnum.QUARTER);
+			wingAnalysisList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.NASA_BLACKWELL);
+			
+			IACAerodynamicCalculator theAerodynamicBuilderInterface = new IACAerodynamicCalculator.Builder()
+					.setTheAircraft(theAircraft)
+					.addXCGAircraft(0.25)
+					.addAllDeltaRudderList(MyArrayUtils.convertDoubleArrayToListOfAmount(
+							MyArrayUtils.linspace(0.0, 30, 7),
+							NonSI.DEGREE_ANGLE
+							))
+					.putComponentTaskList(ComponentEnum.VERTICAL_TAIL, vTailAnalysisList)
+					.putComponentTaskList(ComponentEnum.WING, wingAnalysisList)
+					.buildPartial();
+			theAerodynamicCalculator.setTheAerodynamicBuilderInterface(theAerodynamicBuilderInterface);
+			
+			// Defining VTail analysis of the Xac ...
 			Map<ComponentEnum, LSAerodynamicsManager> liftingSurfaceAerodynamicManagers = new HashMap<>();
 			liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.VERTICAL_TAIL, 
@@ -368,11 +372,6 @@ public class DirectionalStabilityTest extends Application {
 			calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(theOperatingConditions.getMachTakeOff());
 			
 			// Defining Wing analysis of the Xac ...
-			Map<AerodynamicAndStabilityEnum, MethodEnum> wingAnalysisList = new HashMap<>();
-			wingAnalysisList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, MethodEnum.QUARTER);
-			wingAnalysisList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.NASA_BLACKWELL);
-			componentTaskList.put(ComponentEnum.WING, wingAnalysisList);
-			
 			liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.WING, 
 					new LSAerodynamicsManager(
@@ -391,7 +390,6 @@ public class DirectionalStabilityTest extends Application {
 			calcXACWing.atQuarterMAC();
 			
 			theAerodynamicCalculator.setLiftingSurfaceAerodynamicManagers(liftingSurfaceAerodynamicManagers);
-			theAerodynamicCalculator.setComponentTaskList(componentTaskList);
 			
 			CalcDirectionalStability calcDirectionalStability = theAerodynamicCalculator.new CalcDirectionalStability();
 			if(directionalStabilityMethod == MethodEnum.VEDSC_SIMPLIFIED_WING)
@@ -424,17 +422,17 @@ public class DirectionalStabilityTest extends Application {
 			System.out.println("\t\tCNdr @Xcg/c " 
 					+ theAerodynamicCalculator.getCNdr()
 						.get(directionalStabilityMethod)
-							.get(theAerodynamicCalculator.getDeltaRudderList()
-								.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
+							.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
+								.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().size()-1)
 								).get(0)._1() 
 					+ " and dr "
-					+ theAerodynamicCalculator.getDeltaRudderList()
-						.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
+					+ theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
+						.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().size()-1)
 					+ " = "
 					+ theAerodynamicCalculator.getCNdr()
 						.get(directionalStabilityMethod)
-							.get(theAerodynamicCalculator.getDeltaRudderList()
-								.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
+							.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
+								.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().size()-1)
 								).get(0)._2()
 			);
 			System.out.println("\n\tYawing moment curves ... \n\n");
@@ -450,20 +448,20 @@ public class DirectionalStabilityTest extends Application {
 			System.out.println("\t\tCN(b) Total @Xcg/c " + theAerodynamicCalculator.getCNTotal().get(directionalStabilityMethod).get(0)._1() + " = " + 
 					theAerodynamicCalculator.getCNTotal().get(directionalStabilityMethod).get(0)._2()
 					);
-			theAerodynamicCalculator.getDeltaRudderList().stream()
+			theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().stream()
 			.forEach(dr -> System.out.println("\t\tCN(dr) @Xcg/c " 
 					+ theAerodynamicCalculator.getCNDueToDeltaRudder()
 						.get(directionalStabilityMethod)
-							.get(theAerodynamicCalculator.getDeltaRudderList()
-									.get(theAerodynamicCalculator.getDeltaRudderList().size()-1)
+							.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
+									.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().size()-1)
 									).get(0)._1() 
 					+ " and dr "
 					+ dr
 					+ " = "
 					+ theAerodynamicCalculator.getCNDueToDeltaRudder()
 						.get(directionalStabilityMethod)
-							.get(theAerodynamicCalculator.getDeltaRudderList()
-									.get(theAerodynamicCalculator.getDeltaRudderList().indexOf(dr))
+							.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList()
+									.get(theAerodynamicCalculator.getTheAerodynamicBuilderInterface().getDeltaRudderList().indexOf(dr))
 									).get(0)._2()
 							)
 					);

@@ -548,24 +548,88 @@ public class LSAerodynamicsManager {
 		//......................................................................................................................
 		
 		if(_currentLiftCoefficient == null) {
-			CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
-			_currentLiftCoefficient = calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
-					_theOperatingConditions.getAlphaCurrent()
-					);
+			if(theCondition.equals(ConditionEnum.CLIMB) || theCondition.equals(ConditionEnum.CRUISE)) {
+				CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
+				_currentLiftCoefficient = calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
+						_theOperatingConditions.getAlphaCurrent()
+						);
+			}
+			else if (theCondition.equals(ConditionEnum.TAKE_OFF)) {
+				CalcCLAtAlphaHighLift calcCLAtAlphaHighLiftCalculator = new CalcCLAtAlphaHighLift();
+				_currentLiftCoefficient = calcCLAtAlphaHighLiftCalculator.semiempirical(
+						_theOperatingConditions.getAlphaCurrent(),
+						_theOperatingConditions.getFlapDeflectionTakeOff(),
+						_theOperatingConditions.getSlatDeflectionTakeOff(),
+						_theOperatingConditions.getMachTakeOff(),
+						_theOperatingConditions.getAltitudeTakeOff()
+						);
+			}
+			else if (theCondition.equals(ConditionEnum.LANDING)) {
+				CalcCLAtAlphaHighLift calcCLAtAlphaHighLiftCalculator = new CalcCLAtAlphaHighLift();
+				_currentLiftCoefficient = calcCLAtAlphaHighLiftCalculator.semiempirical(
+						_theOperatingConditions.getAlphaCurrent(),
+						_theOperatingConditions.getFlapDeflectionLanding(),
+						_theOperatingConditions.getSlatDeflectionLanding(),
+						_theOperatingConditions.getMachLanding(),
+						_theOperatingConditions.getAltitudeLanding()
+						);
+			}
 		}
 		if(_currentDragCoefficient == null) {
-			CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
-			_currentDragCoefficient = calcCDAtAlphaCalculator.classic(
-					_theOperatingConditions.getAlphaCurrent(),
-					_currentMachNumber,
-					_currentAltitude
-					);
+			if(theCondition.equals(ConditionEnum.CLIMB) || theCondition.equals(ConditionEnum.CRUISE)) {
+				CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
+				_currentDragCoefficient = calcCDAtAlphaCalculator.semiempirical(
+						_theOperatingConditions.getAlphaCurrent(),
+						_currentMachNumber,
+						_currentAltitude
+						);
+			}
+			else if (theCondition.equals(ConditionEnum.TAKE_OFF)) {
+				CalcCDAtAlphaHighLift calcCDAtAlphaHighLiftCalculator = new CalcCDAtAlphaHighLift();
+				_currentDragCoefficient = calcCDAtAlphaHighLiftCalculator.semiempirical(
+						_theOperatingConditions.getAlphaCurrent(),
+						_theOperatingConditions.getFlapDeflectionTakeOff(),
+						_theOperatingConditions.getSlatDeflectionTakeOff(),
+						_theOperatingConditions.getMachTakeOff(),
+						_theOperatingConditions.getAltitudeTakeOff()
+						);
+			}
+			else if (theCondition.equals(ConditionEnum.LANDING)) {
+				CalcCDAtAlphaHighLift calcCDAtAlphaHighLiftCalculator = new CalcCDAtAlphaHighLift();
+				_currentDragCoefficient = calcCDAtAlphaHighLiftCalculator.semiempirical(
+						_theOperatingConditions.getAlphaCurrent(),
+						_theOperatingConditions.getFlapDeflectionLanding(),
+						_theOperatingConditions.getSlatDeflectionLanding(),
+						_theOperatingConditions.getMachLanding(),
+						_theOperatingConditions.getAltitudeLanding()
+						);
+			}
 		}
 		if(_currentMomentCoefficient == null) {
-			CalcCMAtAlpha calcCMAtAlphaCalculator = new CalcCMAtAlpha();
-			_currentMomentCoefficient = calcCMAtAlphaCalculator.fromAirfoilDistribution(
-					_theOperatingConditions.getAlphaCurrent()
-					);
+			if(theCondition.equals(ConditionEnum.CLIMB) || theCondition.equals(ConditionEnum.CRUISE)) {
+				CalcCMAtAlpha calcCMAtAlphaCalculator = new CalcCMAtAlpha();
+				_currentMomentCoefficient = calcCMAtAlphaCalculator.fromAirfoilDistribution(
+						_theOperatingConditions.getAlphaCurrent()
+						);
+			}
+			else if (theCondition.equals(ConditionEnum.TAKE_OFF)) {
+				CalcCMAtAlphaHighLift calcCMAtAlphaHighLiftCalculator = new CalcCMAtAlphaHighLift();
+				_currentMomentCoefficient = calcCMAtAlphaHighLiftCalculator.semiempirical(
+						_theOperatingConditions.getAlphaCurrent(),
+						_theOperatingConditions.getFlapDeflectionTakeOff(),
+						_theOperatingConditions.getSlatDeflectionTakeOff(),
+						_theOperatingConditions.getMachTakeOff()
+						);
+			}
+			else if (theCondition.equals(ConditionEnum.LANDING)) {
+				CalcCMAtAlphaHighLift calcCMAtAlphaHighLiftCalculator = new CalcCMAtAlphaHighLift();
+				_currentMomentCoefficient = calcCMAtAlphaHighLiftCalculator.semiempirical(
+						_theOperatingConditions.getAlphaCurrent(),
+						_theOperatingConditions.getFlapDeflectionLanding(),
+						_theOperatingConditions.getSlatDeflectionLanding(),
+						_theOperatingConditions.getMachLanding()
+						);
+			}
 		}
 
 	}
@@ -2403,7 +2467,7 @@ public class LSAerodynamicsManager {
 			
 			Double[] cDArray = new Double[_numberOfAlphasPlot];
 			for(int i=0; i<_numberOfAlphasPlot; i++) {
-				cDArray[i] = calcCDAtAlpha.classic(
+				cDArray[i] = calcCDAtAlpha.semiempirical(
 						Amount.valueOf(
 								_alphaArrayPlot[i],
 								NonSI.DEGREE_ANGLE
@@ -2455,7 +2519,7 @@ public class LSAerodynamicsManager {
 	//............................................................................
 	public class CalcCDAtAlpha {
 		
-		public double classic(
+		public double semiempirical(
 				Amount<Angle> alpha,
 				Double mach,
 				Amount<Length> altitude) {
