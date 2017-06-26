@@ -15,6 +15,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import org.apache.commons.math3.analysis.function.Sqrt;
 import org.apache.commons.math3.special.Erf;
 import org.apache.commons.math3.util.FastMath;
 import org.inferred.freebuilder.shaded.org.eclipse.core.resources.IFilterMatcherDescriptor;
@@ -22,6 +23,7 @@ import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import parser.ExprParser.start_return;
@@ -635,12 +637,19 @@ public class CostsCalcUtils {
 	
 	
 	
+	/**
+	 * 
+	 * @param groundHandlingChargeConstant	($/ton)
+	 * @param payload 						(ton)
+	 * 
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static Amount<?> calcDOCEmissionsCharges(Amount<?> groundHandlingChargeConstant, Amount<Mass> payload){
-		
+
 		return Amount.valueOf(
-										payload.doubleValue(NonSI.METRIC_TON), 
-					MyUnits.USD_PER_FLIGHT);
+				groundHandlingChargeConstant.doubleValue(MyUnits.USD_PER_TON)*payload.doubleValue(NonSI.METRIC_TON), 
+				MyUnits.USD_PER_FLIGHT);
 	}
 	
 	
@@ -655,7 +664,7 @@ public class CostsCalcUtils {
 	 * @return DOC charges
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcDOCCharges( Amount<?> landingCharges, Amount<?> navigationCharges, Amount<?> groundHandilingCharges,
+	public static Amount<?> calcDOCCharges(Amount<?> landingCharges, Amount<?> navigationCharges, Amount<?> groundHandilingCharges,
 			Amount<?> noiseCharges, Amount<?> emissionsCharges) {
 
 		return  Amount.valueOf(landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
@@ -667,7 +676,154 @@ public class CostsCalcUtils {
 									);
 
 	}
+	
+	/**
+	 * 
+	 * @param airframeLabourRate     ($/hr)
+	 * @param airframeMass           (lbs)
+	 * @param flightTime			 (hr)
+	 * @param blockTime				 (hr)
+	 * @param range					 (nm)
+	 * 
+	 * @return DOC labour airframe, ATA method
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCLabourAirframeMaintenanceATA(Amount<?> airframeLabourRate, Amount<Mass> airframeMass,
+			Amount<Duration> flightTime, Amount<Duration> blockTime, Amount<Length> range) {
 
+		//Material cost per flight cycle
+		Double KFCA = 0.05*(airframeMass.doubleValue(NonSI.POUND)/1000) + 6 - 630/((airframeMass.doubleValue(NonSI.POUND)/1000) + 120);
+
+		//Material cost per flight hour
+		Double KFHA = 0.59*KFCA;	
+
+
+		Amount<Velocity> blockSpeed = Amount.valueOf( 
+				range.doubleValue(NonSI.NAUTICAL_MILE)/blockTime.doubleValue(NonSI.HOUR),
+				NonSI.KNOT
+				);
+
+
+		double machNumberRef = 1; // subsonic airplane
+
+		return  Amount.valueOf((KFHA*flightTime.doubleValue(NonSI.HOUR) + KFCA)*
+				airframeLabourRate.doubleValue(MyUnits.USD_PER_HOUR)*Math.pow(machNumberRef,0.5)
+				/(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)),
+				MyUnits.USD_PER_NAUTICAL_MILE					
+				);
+	}
+	
+	
+	/**
+	 * 
+	 * @param airplaneCostLessEngine		($)
+	 * @param flightTime				    (hr)
+	 * @param blockTime						(hr)
+	 * @param range							(nm)
+	 * 
+	 * @return DOC material airframe, ATA method
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCMaterialAirframeMaintenanceATA(Amount<Money> airplaneCostLessEngine,	Amount<Duration> flightTime, 
+			Amount<Duration> blockTime, Amount<Length> range) {
+
+		//Material cost per flight hour
+		Amount<?> CFHA = Amount.valueOf(3.08*airplaneCostLessEngine.doubleValue(Currency.USD)/Math.pow(10, 6), 
+				MyUnits.USD_PER_HOUR
+				);
+
+		//Material cost per flight cycle
+		Amount<?> CFCA = Amount.valueOf(6.24*airplaneCostLessEngine.doubleValue(Currency.USD)/Math.pow(10, 6), 
+				MyUnits.USD_PER_FLIGHT
+				);
+
+		Amount<Velocity> blockSpeed = Amount.valueOf( 
+				range.doubleValue(NonSI.NAUTICAL_MILE)/blockTime.doubleValue(NonSI.HOUR),
+				NonSI.KNOT
+				);
+
+
+		return  Amount.valueOf((CFHA.doubleValue(MyUnits.USD_PER_HOUR)*flightTime.doubleValue(NonSI.HOUR) + CFCA.doubleValue(MyUnits.USD_PER_FLIGHT))
+				/(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)),
+				MyUnits.USD_PER_NAUTICAL_MILE					
+				);
+	}
+
+	
+	/**
+	 * 
+	 * @param engineLabourRate   ($/hr)
+	 * @param thrust (or power)  (lbs or shp)	
+	 * @param engineType
+	 * @param numberOfEngines
+	 * @param flightTime         (hr)
+	 * @param blockTime			 (hr)
+	 * @param range				 (nm)
+	 * 		     
+	 * @return DOC labour engine, ATA method 
+	 */
+	@SuppressWarnings({ "unchecked", "incomplete-switch" })
+	public static Amount<?> calcDOCLabourEngineMaintenanceATA(Amount<?> engineLabourRate, Double thrust, EngineTypeEnum engineType, int numberOfEngines,
+			Amount<Duration> flightTime, Amount<Duration> blockTime, Amount<Length> range) {
+
+		//Material cost per flight cycle
+		Double KFCE = (0.3 + 0.03*thrust/1000)*numberOfEngines;
+
+		//Material cost per flight hour
+		double KFHE = 0;
+		
+		switch (engineType) {
+			
+			case TURBOFAN:
+				KFHE = (0.6 + 0.027*thrust/1000)*numberOfEngines;
+			break;
+			
+			case TURBOJET:
+				KFHE = (0.6 + 0.027*thrust/1000)*numberOfEngines;
+			break;
+			
+			case TURBOPROP:
+				KFHE = (0.65 + 0.03*thrust/1000)*numberOfEngines;
+			break;
+			
+			case PISTON:
+				KFHE = (0.65 + 0.03*thrust/1000)*numberOfEngines;
+			break;
+		}
+
+
+		Amount<Velocity> blockSpeed = Amount.valueOf( 
+				range.doubleValue(NonSI.NAUTICAL_MILE)/blockTime.doubleValue(NonSI.HOUR),
+				NonSI.KNOT
+				);
+
+
+		return  Amount.valueOf((KFHE*flightTime.doubleValue(NonSI.HOUR) + KFCE)*
+				engineLabourRate.doubleValue(MyUnits.USD_PER_HOUR)/(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)),
+				MyUnits.USD_PER_NAUTICAL_MILE					
+				);
+	}
+	
+	/**
+	 * 
+	 * @param labourAirframeMaintenanceCharges			($/nm)
+	 * @param materialAirframeMaintenanceCharges		($/nm)
+	 * @param labourEngineMaintenanceCharges			($/nm)
+	 * @param materialEngineMaintenanceCharges			($/nm)
+	 * 
+	 * @return DOC maintenance ($/nm)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCMaintenanceCharges(Amount<?> labourAirframeMaintenanceCharges, Amount<?> materialAirframeMaintenanceCharges,
+			Amount<?> labourEngineMaintenanceCharges, Amount<?> materialEngineMaintenanceCharges) {
+
+		return  Amount.valueOf(labourAirframeMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+									materialAirframeMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+										labourAirframeMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT)+
+											materialEngineMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+								MyUnits.USD_PER_HOUR					
+									);
+	}
 	
 	
 }
