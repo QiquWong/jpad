@@ -29,6 +29,7 @@ import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
@@ -693,6 +694,176 @@ public class MyChartToFileUtils {
 		plotNoLegend(xArray, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
 				 path, fileName);
 	}
+	
+	/**
+	 * This static method allows user to create charts with a smart usage of the JFreeChart
+	 * library. Giving in input, in fact, two List of double arrays (of any length) the
+	 * method recognize, at first, if the corresponding elements have the same length and
+	 * then creates an XYSeries object adding every element of the generic xList and yList
+	 * component to it. Every series created this way is then added to an XYSeriesCollection
+	 * that stores them before plotting.
+	 * Finally the chart is created using JFreeChart chartFactory.
+	 * 
+	 * @author Vittorio Trifari
+	 * @param xList a List of double[] which elements represent abscissas of the single curve 
+	 * @param yList a List of double[] which elements represent ordinates of the single curve
+	 * @param chartName a String containing the name that the user wants to display on top
+	 * @param xLabelName 
+	 * @param yLabelName
+	 * @param legend a List of String which elements are the name of each plotted line
+	 * @param folderPathName
+	 * @param fileName
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 */
+	public static void plotLogAxisY(
+			List<Double[]> xList, List<Double[]> yList,
+			String chartName, String xLabelName, String yLabelName,
+			Double xMin, Double xMax, Double yMin, Double yMax,
+			String xUnit, String yUnit,
+			boolean showLegend, List<String> legend,
+			String folderPathName, String fileName) throws InstantiationException, IllegalAccessException {
+				
+		//----------------------------------------------------------------------------------
+		// Creating XY series from List and adding to a dataset
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		
+		if (legend == null){
+			legend = new ArrayList<String>();
+			for ( int i = 0; i<xList.size() ; i++)
+				legend.add(String.valueOf(i));
+		}
+		
+		for (int i=0; i<xList.size(); i++) {
+			// check if xList[i] and yList[i] have the same length
+			if(xList.get(i).length == yList.get(i).length){
+				XYSeries series = new XYSeries(legend.get(i), false);
+				for (int j=0; j<xList.get(i).length; j++) {
+					series.add(xList.get(i)[j], yList.get(i)[j]);
+				}
+				dataset.addSeries(series);					
+			}
+			else
+				System.err.println("X AND Y LISTS CORRESPONGING ELEMENTS MUST HAVE SAME LENGTH");
+		}
+		
+		//----------------------------------------------------------------------------------
+		// Generating the .png graph
+		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
+		
+		// minimum and maximum of Lists research
+		if(xMin == null) {
+			xMin = 0.0;
+			Double[] xMinArray = new Double[xList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				xMinArray[i] = MyArrayUtils.getMin(xList.get(i));
+			xMin = MyArrayUtils.getMin(xMinArray);
+		}
+		
+		if(xMax == null) {
+			xMax = 0.0;
+			Double[] xMaxArray = new Double[xList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				xMaxArray[i] = MyArrayUtils.getMax(xList.get(i));			
+			xMax = MyArrayUtils.getMax(xMaxArray);
+		}
+		
+		if(yMin == null) {
+			yMin = 0.0;
+			Double[] yMinArray = new Double[yList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				yMinArray[i] = MyArrayUtils.getMin(yList.get(i));			
+			yMin = MyArrayUtils.getMin(yMinArray);
+		}
+		
+		if(yMax == null) {
+			yMax = 0.0;
+			Double[] yMaxArray = new Double[yList.size()];
+			for(int i=0; i<xList.size(); i++) 
+				yMaxArray[i] = MyArrayUtils.getMax(yList.get(i));			
+			yMax = MyArrayUtils.getMax(yMaxArray);
+		}
+				
+		JFreeChart chart = ChartFactory.createXYLineChart(
+				chartName,	 					// Title
+				xLabelName + " " + xUnit,		// x-axis Label
+				yLabelName + " " + yUnit,		// y-axis Label
+				dataset, 						// Dataset
+				PlotOrientation.VERTICAL, 		// Plot Orientation
+				showLegend, 					// Show Legend
+				true, 							// Use tooltips
+				false						 	// Configure chart to generate URLs?
+				);
+		chart.setBackgroundPaint(Color.WHITE);
+		chart.setBackgroundImageAlpha(0.0f);
+		chart.setAntiAlias(true);
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
+		chart.getPlot().setBackgroundAlpha(0.0f);
+		chart.getXYPlot().setDomainGridlinesVisible(true);
+		chart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
+		chart.getXYPlot().setRangeGridlinesVisible(true);
+		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+		chart.getXYPlot().getDomainAxis().setRange(xMin - Math.abs(0.1*xMin), xMax + Math.abs(0.1*xMax));
+		LogAxis logY = new LogAxis(yLabelName);
+		chart.getXYPlot().setRangeAxis(logY);
+		
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
+		
+		XYPlot plot = (XYPlot) chart.getPlot(); 
+		plot.setDrawingSupplier(new DefaultDrawingSupplier(
+                paintArray,
+                DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+                DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+		
+		// creation of the file .png
+		File xyChart = new File(folderPathName + fileName + ".png"); 
+
+		try {
+			ChartUtilities.saveChartAsPNG(xyChart, chart, 1920, 1080);
+		} catch (IOException e) {
+			System.err.println("Problem occurred creating chart.");
+		}
+		
+		//----------------------------------------------------------------------------------
+		// Generating the .csv file
+		List<String> xListName = new ArrayList<>();
+		List<String> yListName = new ArrayList<>();
+		for(int i=0; i<xList.size(); i++) {
+			xListName.add(xLabelName);
+			yListName.add(yLabelName);
+		}
+		
+		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+		
+		JPADStaticWriteUtils.exportToCSV(
+				xList,
+				yList,
+				legend, 
+				xListName, yListName,
+				MyConfiguration.createNewFolder(
+						folderPathName
+						+ File.separator 
+						+ fileName 
+						)
+				);
+	}
+	
 	
 	/**
 	 * This static method allows user to create charts with a smart usage of the JFreeChart

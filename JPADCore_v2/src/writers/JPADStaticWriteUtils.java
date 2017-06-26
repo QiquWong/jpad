@@ -197,7 +197,7 @@ public class JPADStaticWriteUtils {
 			
 			if (outputFile.exists()) {
 				try {
-					System.out.println("\tDeleting the old .csv file ...");
+					System.out.println("\n\tDeleting the old .csv file ...");
 					Files.delete(outputFile.toPath());
 				} 
 				catch (IOException e) {
@@ -207,7 +207,7 @@ public class JPADStaticWriteUtils {
 			
 			try{
 				
-				System.out.println("\tCreating " + fileName.get(i) + ".csv file ... ");
+				System.out.println("\n\tCreating " + fileName.get(i) + ".csv file ... ");
 				
 				PrintWriter writer = new PrintWriter(outputFile.getAbsolutePath(), "UTF-8");
 				writer.println(xListName.get(i) + ", " + yListName.get(i));

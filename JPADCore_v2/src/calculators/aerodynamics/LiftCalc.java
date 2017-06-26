@@ -1736,8 +1736,8 @@ public class LiftCalc {
 	
 	// returns the cl alpha in the same unit of cl alpha wing
 	
-	public static double calculateCLAlphaFuselage(
-			double cLAlphaWing, 
+	public static Amount<?> calculateCLAlphaFuselage(
+			Amount<?> cLAlphaWing, 
 			Amount<Length> wingSpan,
 			Amount<Length> equivalentDiameterAtWingStation
 			){
@@ -1745,7 +1745,10 @@ public class LiftCalc {
 		//Sforza p64
 		double d = equivalentDiameterAtWingStation.doubleValue(SI.METER);
 		double b = wingSpan.doubleValue(SI.METER);
-		double cLAlphaFuselage = (1.0+((1/4.0)*(d/b))-((1/40.0)*Math.pow((d/b), 2)))*cLAlphaWing;
+		Amount<?> cLAlphaFuselage = Amount.valueOf(
+				(1.0+((1/4.0)*(d/b))-((1/40.0)*Math.pow((d/b), 2)))
+				*cLAlphaWing.to(SI.RADIAN.inverse()).getEstimatedValue(),
+				SI.RADIAN.inverse());
 	
 		return cLAlphaFuselage;
 	}

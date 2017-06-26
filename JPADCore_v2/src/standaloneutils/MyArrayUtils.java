@@ -458,8 +458,8 @@ public final class MyArrayUtils {
 		return d;
 	}
 
-	public static double[] zeros(int dim) {
-		double[] d = new double[dim];
+	public static Double[] zeros(int dim) {
+		Double[] d = new Double[dim];
 		for (int i=0; i<dim; i++) {
 			d[i] = 0.;
 		}
@@ -591,6 +591,22 @@ public final class MyArrayUtils {
 		return c;
 	}
 
+	public static Double[] subtractArrayEbE(Double[] a, Double[] b) {
+		
+		
+		if(a.length < b.length) {
+			System.err.println("A and B must have the same length");
+			System.exit(1);
+		}
+
+		Double[] result = new Double[a.length];
+		for(int i=0; i<a.length; i++)
+			result[i] = a[i] - b[i];
+		
+		return result;
+		
+	}
+	
 	/**
 	 * Compute product of the elements of an array
 	 *
@@ -668,6 +684,7 @@ public final class MyArrayUtils {
 	public static List<Double> multiplyListEbE(List<Double> list1, List<Double> list2) {
 		return list1.stream().map(l1 -> l1*list2.get(list1.indexOf(l1))).collect(Collectors.toList());
 	}
+	
 	
 	public static double[] abs(double[] d) {
 
