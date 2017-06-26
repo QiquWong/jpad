@@ -1,6 +1,7 @@
 package sandbox2.vt.pso;
 
 import java.io.File;
+import java.util.Arrays;
 
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
@@ -30,9 +31,9 @@ public class ParticleSwarmOptimization {
 		
 		// DATA TO BE PROVIDED
 		int numberOfDesignVariables = 10;
-		Double designVariablesLowerBound = 10.0;
-		Double designVariablesUpperBound = -10.0;
-		int maximumNumberOfIteration = 1000;
+		Double[] designVariablesLowerBound = new Double[] {10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0};
+		Double[] designVariablesUpperBound = new Double[] {-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0};
+		Double convergenceThreshold = 1e-50;
 		int particlesNumber = 50;
 		Double kappa = 1.0;
 		Double phi1 = 2.05;
@@ -41,9 +42,9 @@ public class ParticleSwarmOptimization {
 		System.out.println("\t------------------------------------");
 		System.out.println("\tINPUT: ");
 		System.out.println("\tNumber of Design Variable : " + numberOfDesignVariables);
-		System.out.println("\tDesign Variable Lower Bound : " + designVariablesLowerBound);
-		System.out.println("\tDesign Variable Upper Bound : " + designVariablesUpperBound);
-		System.out.println("\tMaximum Number of Iterations : " + maximumNumberOfIteration);
+		System.out.println("\tDesign Variable Lower Bound : " + Arrays.toString(designVariablesLowerBound));
+		System.out.println("\tDesign Variable Upper Bound : " + Arrays.toString(designVariablesUpperBound));
+		System.out.println("\tConvergence Threshold : " + convergenceThreshold);
 		System.out.println("\tParticles Number : " + particlesNumber);
 		System.out.println("\n\tConstriction Coefficient");
 		System.out.println("\t\tKappa : " + kappa);
@@ -56,7 +57,7 @@ public class ParticleSwarmOptimization {
 				numberOfDesignVariables,
 				designVariablesUpperBound,
 				designVariablesLowerBound,
-				maximumNumberOfIteration, 
+				convergenceThreshold,
 				particlesNumber, 
 				kappa, 
 				phi1, 
