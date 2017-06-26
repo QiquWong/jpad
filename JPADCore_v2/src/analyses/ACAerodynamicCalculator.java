@@ -1397,7 +1397,51 @@ public class ACAerodynamicCalculator {
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D).equals(MethodEnum.NASA_BLACKWELL))
 						) {
 					
-					//CONTINUE HERE FILL VARIABLES WITH NB VALUES
+					//CL ALPHA
+				_clAlphaWingFuselage =
+						LiftCalc.calculateCLAlphaFuselage(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLAlpha().get(
+								MethodEnum.NASA_BLACKWELL),
+						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(), 
+						Amount.valueOf(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getFuselageCreator().getEquivalentDiameterAtX(
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
+								SI.METER)
+								);
+				
+			
+				//CL ZERO
+				_clZeroWingFuselage =
+							-_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()*
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLZero()
+							.get(MethodEnum.NASA_BLACKWELL);
+				
+				//CL MAX
+				_clMaxWingFuselage = _liftingSurfaceAerodynamicManagers
+						.get(ComponentEnum.WING).getCLMax().get(MethodEnum.NASA_BLACKWELL);
+
+				//CL STAR
+				_clStarWingFuselage = _liftingSurfaceAerodynamicManagers
+						.get(ComponentEnum.WING).getCLStar()
+						.get(MethodEnum.NASA_BLACKWELL);
+
+				//ALPHA STAR
+				_alphaStarWingFuselage = Amount.valueOf(
+						(_clStarWingFuselage - _clZeroWingFuselage)/
+						_clAlphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(), 
+						NonSI.DEGREE_ANGLE);
+
+				//ALPHA stall
+				double deltaAlphaStarDeg = 	_alphaStarWingFuselage.doubleValue(NonSI.DEGREE_ANGLE) - 
+						_liftingSurfaceAerodynamicManagers.get(
+								ComponentEnum.WING).getAlphaStar()
+						.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS)
+						.doubleValue(NonSI.DEGREE_ANGLE);
+
+				_alphaStallWingFuselage = Amount.valueOf(
+						_liftingSurfaceAerodynamicManagers
+						.get(ComponentEnum.WING).getAlphaStall()
+						.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE) - deltaAlphaStarDeg, 
+						NonSI.DEGREE_ANGLE);
 					
 					
 				}
