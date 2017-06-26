@@ -3595,11 +3595,11 @@ public class StabilityExecutableManager {
 
 	public void calculateWingFuselageLiftCharacterstics(){
 
-		// cl alpha	
-		_fuselageWingClAlphaDeg = LiftCalc.calculateCLAlphaFuselage(
-				_wingcLAlphaDegCONDITION, 
-				_wingSpan, 
-				_fuselageDiameter);
+//		// cl alpha	
+//		_fuselageWingClAlphaDeg = LiftCalc.calculateCLAlphaFuselage(
+//				_wingcLAlphaDegCONDITION, 
+//				_wingSpan, 
+//				_fuselageDiameter);
 
 		_fuselageWingClAlpha = Amount.valueOf(this._fuselageWingClAlphaDeg, NonSI.DEGREE_ANGLE.inverse());
 
