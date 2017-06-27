@@ -27,12 +27,10 @@ public interface IACCostsManager {
 	
 	Amount<Mass> getMaximumTakeOffMass();
 	Amount<Mass> getOperatingEmptyMass();
-	Amount<Mass> getStructuralMass();
 	Amount<Mass> getPayload();
 	
 	Amount<Length> getRange();
 	Amount<Mass> getBlockFuelMass();
-	Amount<Duration> getBlockTime();
 	Amount<Duration> getFlightTime();
 	
 	Map<MethodEnum, Amount<?>> getUtilization();

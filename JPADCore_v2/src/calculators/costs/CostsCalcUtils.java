@@ -15,6 +15,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import org.apache.commons.math3.analysis.function.Pow;
 import org.apache.commons.math3.analysis.function.Sqrt;
 import org.apache.commons.math3.special.Erf;
 import org.apache.commons.math3.util.FastMath;
@@ -22,8 +23,10 @@ import org.inferred.freebuilder.shaded.org.eclipse.core.resources.IFilterMatcher
 import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
+import org.omg.PortableInterceptor.NON_EXISTENT;
 
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import parser.ExprParser.start_return;
@@ -136,6 +139,29 @@ public class CostsCalcUtils {
 		double cpi2012factor = 117.6;
 		return actualCPIFactor/cpi2012factor;
 	}
+	
+	public static Amount<Duration> calcBlockTime(Amount<Duration> flightTime, Amount<Length> range){
+
+		Amount<Duration> blockTime = null;
+		
+		if(range.doubleValue(NonSI.NAUTICAL_MILE) <= 2200){
+			
+			blockTime = Amount.valueOf(
+					flightTime.doubleValue(NonSI.HOUR) + 0.25,
+					NonSI.HOUR
+					);
+		}
+		else {
+			
+			blockTime = Amount.valueOf(
+					flightTime.doubleValue(NonSI.HOUR) + 0.42,
+					NonSI.HOUR
+					);
+		}
+		
+		return blockTime;
+	}
+	
 	
 	
 	/**
@@ -689,13 +715,18 @@ public class CostsCalcUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Amount<?> calcDOCLabourAirframeMaintenanceATA(Amount<?> airframeLabourRate, Amount<Mass> airframeMass,
-			Amount<Duration> flightTime, Amount<Duration> blockTime, Amount<Length> range) {
+			int numberOfEngines, Amount<Duration> flightTime, Amount<Duration> blockTime, Amount<Length> range) {
 
+		
 		//Material cost per flight cycle
-		Double KFCA = 0.05*(airframeMass.doubleValue(NonSI.POUND)/1000) + 6 - 630/((airframeMass.doubleValue(NonSI.POUND)/1000) + 120);
+		Amount<?> KFCA = Amount.valueOf(
+				0.05*(airframeMass.doubleValue(NonSI.POUND)/1000) + 6 - 630/((airframeMass.doubleValue(NonSI.POUND)/1000) + 120),
+				MyUnits.USD_PER_FLIGHT);
 
 		//Material cost per flight hour
-		Double KFHA = 0.59*KFCA;	
+		Amount<?> KFHA = Amount.valueOf(
+				.59*KFCA.doubleValue(MyUnits.USD_PER_FLIGHT),
+				MyUnits.USD_PER_HOUR);	
 
 
 		Amount<Velocity> blockSpeed = Amount.valueOf( 
@@ -706,8 +737,8 @@ public class CostsCalcUtils {
 
 		double machNumberRef = 1; // subsonic airplane
 
-		return  Amount.valueOf((KFHA*flightTime.doubleValue(NonSI.HOUR) + KFCA)*
-				airframeLabourRate.doubleValue(MyUnits.USD_PER_HOUR)*Math.pow(machNumberRef,0.5)
+		return  Amount.valueOf((KFHA.doubleValue(MyUnits.USD_PER_HOUR)*flightTime.doubleValue(NonSI.HOUR) + 
+				KFCA.doubleValue(MyUnits.USD_PER_FLIGHT))*airframeLabourRate.doubleValue(MyUnits.USD_PER_HOUR)*Math.pow(machNumberRef,0.5)
 				/(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)),
 				MyUnits.USD_PER_NAUTICAL_MILE					
 				);
@@ -724,9 +755,15 @@ public class CostsCalcUtils {
 	 * @return DOC material airframe, ATA method
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcDOCMaterialAirframeMaintenanceATA(Amount<Money> airplaneCostLessEngine,	Amount<Duration> flightTime, 
+	public static Amount<?> calcDOCMaterialAirframeMaintenanceATA(Amount<Money> airplaneCost, Amount<Money> engineCost,	int numberOfEngines, Amount<Duration> flightTime, 
 			Amount<Duration> blockTime, Amount<Length> range) {
 
+		
+		Amount<Money> airplaneCostLessEngine = Amount.valueOf(
+				airplaneCost.doubleValue(Currency.USD) - numberOfEngines*engineCost.doubleValue(Currency.USD),
+				Currency.USD
+				);
+				
 		//Material cost per flight hour
 		Amount<?> CFHA = Amount.valueOf(3.08*airplaneCostLessEngine.doubleValue(Currency.USD)/Math.pow(10, 6), 
 				MyUnits.USD_PER_HOUR
@@ -762,44 +799,125 @@ public class CostsCalcUtils {
 	 * 		     
 	 * @return DOC labour engine, ATA method 
 	 */
-	@SuppressWarnings({ "unchecked", "incomplete-switch" })
-	public static Amount<?> calcDOCLabourEngineMaintenanceATA(Amount<?> engineLabourRate, Double thrust, EngineTypeEnum engineType, int numberOfEngines,
+	@SuppressWarnings({"unchecked", "incomplete-switch"})
+	public static Amount<?> calcDOCLabourEngineMaintenanceATA(Amount<?> engineLabourRate, double thrust, EngineTypeEnum engineType, int numberOfEngines,
 			Amount<Duration> flightTime, Amount<Duration> blockTime, Amount<Length> range) {
 
-		//Material cost per flight cycle
-		Double KFCE = (0.3 + 0.03*thrust/1000)*numberOfEngines;
-
-		//Material cost per flight hour
-		double KFHE = 0;
+		Amount<?> KFHE = null;
+		Amount<?> KFCE = null;
 		
+		//Labour cost per flight cycle (jets and turboprops)
+		if(engineType == EngineTypeEnum.TURBOFAN){
+			KFCE = Amount.valueOf(
+					(0.3 + 0.03*thrust/1000)*numberOfEngines,
+					MyUnits.USD_PER_FLIGHT);
+		}
+		else if(engineType == EngineTypeEnum.TURBOJET){
+			KFCE = Amount.valueOf(
+					(0.3 + 0.03*thrust/1000)*numberOfEngines,
+					MyUnits.USD_PER_FLIGHT);
+		}
+		else if(engineType == EngineTypeEnum.TURBOPROP){
+			KFCE = Amount.valueOf(
+					(0.3 + 0.03*thrust/1000)*numberOfEngines,
+					MyUnits.USD_PER_FLIGHT);
+		}
+
+		//Labour cost per flight hour
 		switch (engineType) {
 			
 			case TURBOFAN:
-				KFHE = (0.6 + 0.027*thrust/1000)*numberOfEngines;
+				KFHE = Amount.valueOf(
+						(0.6 + 0.027*thrust/1000)*numberOfEngines,
+						MyUnits.USD_PER_HOUR);
 			break;
 			
 			case TURBOJET:
-				KFHE = (0.6 + 0.027*thrust/1000)*numberOfEngines;
+				KFHE= Amount.valueOf(
+						(0.6 + 0.027*thrust/1000)*numberOfEngines,
+						MyUnits.USD_PER_HOUR);
 			break;
 			
 			case TURBOPROP:
-				KFHE = (0.65 + 0.03*thrust/1000)*numberOfEngines;
+				KFHE= Amount.valueOf(
+						(0.65 + 0.03*thrust/1000)*numberOfEngines,
+						MyUnits.USD_PER_HOUR);
 			break;
 			
 			case PISTON:
-				KFHE = (0.65 + 0.03*thrust/1000)*numberOfEngines;
+				KFHE= Amount.valueOf(
+						(0.65 + 0.03*thrust/1000)*numberOfEngines,
+						MyUnits.USD_PER_HOUR);
 			break;
 		}
-
 
 		Amount<Velocity> blockSpeed = Amount.valueOf( 
 				range.doubleValue(NonSI.NAUTICAL_MILE)/blockTime.doubleValue(NonSI.HOUR),
 				NonSI.KNOT
 				);
 
-
-		return  Amount.valueOf((KFHE*flightTime.doubleValue(NonSI.HOUR) + KFCE)*
+		return  Amount.valueOf((KFHE.doubleValue(MyUnits.USD_PER_HOUR)*flightTime.doubleValue(NonSI.HOUR) + KFCE.doubleValue(MyUnits.USD_PER_FLIGHT))*
 				engineLabourRate.doubleValue(MyUnits.USD_PER_HOUR)/(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)),
+				MyUnits.USD_PER_NAUTICAL_MILE					
+				);
+	}
+	
+	/**
+	 * 
+	 * @param engineCost	($)
+	 * @param flightTime	(hr)
+	 * @param blockTime     (hr)
+	 * @param range			(nm)
+	 * @param mach
+	 * @param numberOfEngines
+	 * 
+	 * @return DOC material engine, ATA method
+	 */
+	@SuppressWarnings({ "unchecked"})
+	public static Amount<?> calcDOCMaterialEngineMaintenanceATA(Amount<Money> engineCost, Amount<Duration> flightTime, Amount<Duration> blockTime, 
+			Amount<Length> range, Double mach, int numberOfEngines) {
+		
+		
+		Amount<?> CFHE = null;
+		Amount<?> CFCE = null;
+		
+		//Material engine cost per flight hour
+		if(mach<1){
+			
+			CFCE = Amount.valueOf(
+					2.0*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					MyUnits.USD_PER_HOUR);
+			
+		}
+		else{
+			CFCE= Amount.valueOf(
+					2.9*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					MyUnits.USD_PER_HOUR);
+		}
+		
+		//Material engine cost per flight cycle
+		if(mach<1){
+			
+			CFHE= Amount.valueOf(
+					2.5*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					MyUnits.USD_PER_FLIGHT);
+			
+		}
+		else{
+			CFHE= Amount.valueOf(
+					4.2*numberOfEngines*engineCost.doubleValue(Currency.USD)/Math.pow(10, 5),
+					MyUnits.USD_PER_FLIGHT);
+		}
+		
+
+		Amount<Velocity> blockSpeed = Amount.valueOf( 
+				range.doubleValue(NonSI.NAUTICAL_MILE)/blockTime.doubleValue(NonSI.HOUR),
+				NonSI.KNOT
+				);
+
+		
+		return  Amount.valueOf((CFHE.doubleValue(MyUnits.USD_PER_HOUR)*flightTime.doubleValue(NonSI.HOUR) + CFCE.doubleValue(MyUnits.USD_PER_FLIGHT))
+				/(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)),
 				MyUnits.USD_PER_NAUTICAL_MILE					
 				);
 	}

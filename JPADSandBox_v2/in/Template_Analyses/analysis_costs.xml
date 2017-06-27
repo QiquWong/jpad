@@ -10,13 +10,11 @@
 			<weights>
 				<maximum_take_off_mass unit="kg"></maximum_take_off_mass>
 				<operating_empty_mass unit="kg"></operating_empty_mass>
-				<structural_mass unit="kg"></structural_mass>
 				<payload unit="kg"></payload>
 			</weights>
 			<performance>
-				<range unit="km"></range>
+				<range unit="nmi"></range>
 				<block_fuel unit="kg"></block_fuel>
-				<block_time unit="hr"></block_time>
 				<flight_time unit="hr"></flight_time>
 			</performance>
 			<global_data>
