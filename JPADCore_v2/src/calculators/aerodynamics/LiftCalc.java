@@ -1842,4 +1842,33 @@ public class LiftCalc {
 		
 		return nasaBlackwellModifiedCLCurve;
 			}
+	
+	
+	public static List<Double> calculateCLTotalCurveWithEquation(
+			Amount<Area> wingSurface,
+			Amount<Area> horizontalTailSurface,
+			List<Double> wingFuselageLiftCoefficient,
+			List<Double> horizontalTailLiftCoefficient,
+			Double horizontalTailDynamicPressureRatio,
+			List<Amount<Angle>> alphaBodyList
+			) {
+		
+		List<Double>  totalLiftCoefficient = new ArrayList<>();
+		
+		//TOTAL LIFT CALCULATION
+				alphaBodyList.stream().forEach( ab-> {
+
+					int i = alphaBodyList.indexOf(ab);
+					
+					totalLiftCoefficient.add(
+							wingFuselageLiftCoefficient.get(i)+
+							horizontalTailLiftCoefficient.get(i)*(
+							(wingSurface.doubleValue(SI.SQUARE_METRE)*horizontalTailSurface.doubleValue(SI.SQUARE_METRE))*
+							horizontalTailDynamicPressureRatio)
+							);
+				}
+				);
+		
+		return totalLiftCoefficient;
+	}
 }

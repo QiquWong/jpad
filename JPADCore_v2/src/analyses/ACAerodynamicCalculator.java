@@ -22,6 +22,7 @@ import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcLiftCurve;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcMachCr;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcMomentCurve;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcPolar;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
@@ -68,6 +69,7 @@ public class ACAerodynamicCalculator {
 	private Double _hTailMomentumPole; // pole referred to M.A.C.
 	private Double _currentMachNumber;
 	private Amount<Length> _currentAltitude;
+	private List<Double> _wingFinalLiftCurve = new ArrayList<>();
 	
 	// for downwash estimation
 	private Amount<Length> _zACRootWing;
@@ -134,12 +136,12 @@ public class ACAerodynamicCalculator {
 	
 	//Longitudinal Static Stability Output
 	
-	private Map<List<Double>, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient = new HashMap<>(); //xcg, delta e , CM
+	private Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient = new HashMap<>(); //xcg, delta e , CM
 	private Map<Amount<Angle>, List<Double>> _totalLiftCoefficient = new HashMap<>(); //delta e, CL
 	private Map<Amount<Angle>, List<Double>> _totalDragCoefficient = new HashMap<>(); //delta e, CD
-	private Map<List<Double>, List<Double>> _horizontalTailEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CLh
-	private Map<List<Double>, List<Double>> _totalEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CL
-	private Map<List<Double>, List<Double>> _totalEquilibriumDragCoefficient = new HashMap<>(); //xcg, CL
+	private Map<Double, List<Double>> _horizontalTailEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CLh
+	private Map<Double, List<Double>> _totalEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CL
+	private Map<Double, List<Double>> _totalEquilibriumDragCoefficient = new HashMap<>(); //xcg, CL
 	
 	// COMPLETE ME !!
 	
@@ -1294,9 +1296,10 @@ public class ACAerodynamicCalculator {
 	
 		
 		//.........................................................................................................................
-		//------USEFUL DATA FOR STABILITY------
+		//------USEFUL DATA FOR TOTAL MOMENT COEFFICIENT ------
+		// if component task list doesn't contains the task, it will be set the default one
 		
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
 			
 			//.........................................................................................................................
 			//	WING AERODYNAMIC_CENTER
@@ -1309,6 +1312,8 @@ public class ACAerodynamicCalculator {
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
 								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
 								);
+					
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER,MethodEnum.DEYOUNG_HARPER);
 			}
 			
 			//.........................................................................................................................
@@ -1322,6 +1327,8 @@ public class ACAerodynamicCalculator {
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
 								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
 								);
+					
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER,MethodEnum.DEYOUNG_HARPER);
 			}
 			
 			//.........................................................................................................................
@@ -1333,6 +1340,8 @@ public class ACAerodynamicCalculator {
 					CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcLiftCurve();
 
 					calcLiftCurve.nasaBlackwell(_currentMachNumber);
+					
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D,MethodEnum.NASA_BLACKWELL);
 				}
 			
 			//.........................................................................................................................
@@ -1465,28 +1474,81 @@ public class ACAerodynamicCalculator {
 				CalcPolar calcPolarCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcPolar();
 
 				calcPolarCurve.fromCdDistribution(_currentMachNumber, _currentAltitude);
+				
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE,MethodEnum.AIRFOIL_DISTRIBUTION);
 			}
 			
 			//.........................................................................................................................
 			//	WING MOMENT_CURVE_3D
 			
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D)) {
+
+				CalcMomentCurve calcWingMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMomentCurve();
+
+				calcWingMomentCurve.fromAirfoilDistribution();
+				
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D,MethodEnum.AIRFOIL_DISTRIBUTION);
+			}
+			
 			//.........................................................................................................................
 			//	HORIZONTAL TAIL LIFT_CURVE_3D
 			
-			//.........................................................................................................................
-			//	HORIZONTAL TAIL LIFT_CURVE_3D WITH FUSELAGE EFFECT
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+
+				CalcLiftCurve calcHTailLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcLiftCurve();
+
+				calcHTailLiftCurve.nasaBlackwell(_currentMachNumber);
+				
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D,MethodEnum.NASA_BLACKWELL);
+			}
 			
 			//.........................................................................................................................
 			//	HORIZONTAL TAIL POLAR_CURVE_3D
 			
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+
+				CalcPolar calcHTailPolarCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcPolar();
+
+				calcHTailPolarCurve.fromCdDistribution(_currentMachNumber, _currentAltitude);
+				
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE,MethodEnum.AIRFOIL_DISTRIBUTION);
+			}
+			
 			//.........................................................................................................................
 			//	HORIZONTAL TAIL MOMENT_CURVE_3D
+			
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D)) {
+
+				CalcMomentCurve calcHorizontalTailMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentCurve();
+
+				calcHorizontalTailMomentCurve.fromAirfoilDistribution();
+				
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D,MethodEnum.AIRFOIL_DISTRIBUTION);
+			}
 			
 			//.........................................................................................................................
 			//	FUSELAGE POLAR_CURVE_3D
 			
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
+				
+				analyses.fuselage.FuselageAerodynamicsManager.CalcPolar calcFuselagePolarCurve = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcPolar();
+				
+				calcFuselagePolarCurve.fusDes();
+				
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE,MethodEnum.FUSDES);
+			}
+			
 			//.........................................................................................................................
 			//	FUSELAGE MOMENT_CURVE_3D
+			
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D)) {
+				
+				analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve calcFuselageMomentCurve = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcMomentCurve();
+				
+				calcFuselageMomentCurve.fusDes();
+				
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D,MethodEnum.FUSDES);
+			}
 		}
 		
 	}
@@ -1637,69 +1699,111 @@ public class ACAerodynamicCalculator {
 			//---------------------------------
 			//Necessary values
 			//---------------------------------
+		
 			
+			if(_theAerodynamicBuilderInterface.getFuselageEffectOnWingLiftCurve()){
+				_wingFinalLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(_liftCoefficient3DCurveWithFuselageEffect);
+			}
 			
-//			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
-//				
-//				int i = _theAerodynamicBuilderInterface.getXCGAircraft().indexOf(xcg);
-//				Map<Amount<Angle>, List<Double>> momentMap = new HashMap<>();
-//				_deltaElevatorList.stream().forEach( de -> 
-//				momentMap.put(
-//						de,
-//						MomentCalc.calculateCMTotalCurveWithBalanceEquation(
-//								xcg,
-//								_zCGAircraft.get(i),
-//								_liftingSurfaceAerodynamicManagers
-//								.get(ComponentEnum.WING)
-//								.getXacLRF()
-//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-//										.get(ComponentEnum.WING)
-//										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()), 
-//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(), 
-//								_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getCG().getz, 
-//								_liftingSurfaceAerodynamicManagers
-//								.get(ComponentEnum.HORIZONTAL_TAIL)
-//								.getXacLRF()
-//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-//										.get(ComponentEnum.HORIZONTAL_TAIL)
-//										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()), 
-//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
-//								_theAerodynamicBuilderInterface.getTheAircraft().getLandingGears().getCG().get_x0(), //EDIT
-//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
-//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
-//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
-//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
-//								dynamicPressureRatio, 
-//								_liftingSurfaceAerodynamicManagers
-//								.get(ComponentEnum.WING)
-//								.getLiftCoefficient3DCurve()
-//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-//										.get(ComponentEnum.WING)
-//										.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)), 
-//								_liftingSurfaceAerodynamicManagers
-//								.get(ComponentEnum.WING)
-//								.getDpol
-//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-//										.get(ComponentEnum.WING)
-//										.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)),
-//								wingMomentCoefficient, 
-//								fuselageMomentCoefficient, 
-//								fuselageDragCoefficient, 
-//								horizontalTailLiftCoefficient, 
-//								horizontalTailDragCoefficient, 
-//								horizontalTailMomentCoefficient, 
-//								landingGearDragCoefficient, 
-//								horizontalTailDynamicPressureRatio, 
-//								alphaBodyList, 
-//								pendularStability)						
-//						)
-//						);
-//				_totalMomentCoefficient.put(
-//						xcg,
-//						momentMap
-//						);
-//				
-//			});
+			if(!_theAerodynamicBuilderInterface.getFuselageEffectOnWingLiftCurve()){
+				_wingFinalLiftCurve = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+						.get(ComponentEnum.WING)
+						.getLiftCoefficient3DCurve()
+						.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.WING)
+								.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+			}
+			
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
+				
+				int i = _theAerodynamicBuilderInterface.getXCGAircraft().indexOf(xcg);
+				Map<Amount<Angle>, List<Double>> momentMap = new HashMap<>();
+				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
+				momentMap.put(
+						de,
+						MomentCalc.calculateCMTotalCurveWithBalanceEquation(
+								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getX0().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getZ0().doubleValue(SI.METER), SI.METER),
+								_liftingSurfaceAerodynamicManagers
+								.get(ComponentEnum.WING)
+								.getXacLRF()
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.WING)
+										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getCG().getZBRF(), 
+								_liftingSurfaceAerodynamicManagers
+								.get(ComponentEnum.HORIZONTAL_TAIL)
+								.getXacLRF()
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.HORIZONTAL_TAIL)
+										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
+								_theAerodynamicBuilderInterface.getZCGLandingGear(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
+								_wingFinalLiftCurve, // isolated wing of wing fuselage if required
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.WING)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.WING)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.WING)
+										.getMoment3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.WING)
+												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.FUSELAGE)
+										.getMoment3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.FUSELAGE)
+												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.FUSELAGE)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.FUSELAGE)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.HORIZONTAL_TAIL)
+										.getLiftCoefficient3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.HORIZONTAL_TAIL)
+												.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.HORIZONTAL_TAIL)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.HORIZONTAL_TAIL)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.HORIZONTAL_TAIL)
+										.getMoment3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.HORIZONTAL_TAIL)
+												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D))),
+								MyArrayUtils.convertDoubleArrayToListDouble(
+										_theAerodynamicBuilderInterface.getLandingGearDragCoefficient()), 
+								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+								_alphaBodyList, 
+								_theAerodynamicBuilderInterface.getWingPendularStability())						
+						)
+						);
+				_totalMomentCoefficient.put(
+						xcg,
+						momentMap
+						);
+				
+			});
 		}
 	}
 	//............................................................................
@@ -2817,11 +2921,11 @@ public class ACAerodynamicCalculator {
 		this._betaOfEquilibrium = _betaOfEquilibrium;
 	}
 
-	public Map<List<Double>, Map<Amount<Angle>, List<Double>>> getTotalMomentCoefficient() {
+	public Map<Double, Map<Amount<Angle>, List<Double>>> getTotalMomentCoefficient() {
 		return _totalMomentCoefficient;
 	}
 
-	public void setTotalMomentCoefficient(Map<List<Double>, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient) {
+	public void setTotalMomentCoefficient(Map<Double, Map<Amount<Angle>, List<Double>>> _totalMomentCoefficient) {
 		this._totalMomentCoefficient = _totalMomentCoefficient;
 	}
 
@@ -2841,28 +2945,28 @@ public class ACAerodynamicCalculator {
 		this._totalDragCoefficient = _totalDragCoefficient;
 	}
 
-	public Map<List<Double>, List<Double>> getHorizontalTailEquilibriumLiftCoefficient() {
+	public Map<Double, List<Double>> getHorizontalTailEquilibriumLiftCoefficient() {
 		return _horizontalTailEquilibriumLiftCoefficient;
 	}
 
 	public void setHorizontalTailEquilibriumLiftCoefficient(
-			Map<List<Double>, List<Double>> _horizontalTailEquilibriumLiftCoefficient) {
+			Map<Double, List<Double>> _horizontalTailEquilibriumLiftCoefficient) {
 		this._horizontalTailEquilibriumLiftCoefficient = _horizontalTailEquilibriumLiftCoefficient;
 	}
 
-	public Map<List<Double>, List<Double>> getTotalEquilibriumLiftCoefficient() {
+	public Map<Double, List<Double>> getTotalEquilibriumLiftCoefficient() {
 		return _totalEquilibriumLiftCoefficient;
 	}
 
-	public void setTotalEquilibriumLiftCoefficient(Map<List<Double>, List<Double>> _totalEquilibriumLiftCoefficient) {
+	public void setTotalEquilibriumLiftCoefficient(Map<Double, List<Double>> _totalEquilibriumLiftCoefficient) {
 		this._totalEquilibriumLiftCoefficient = _totalEquilibriumLiftCoefficient;
 	}
 
-	public Map<List<Double>, List<Double>> getTotalEquilibriumDragCoefficient() {
+	public Map<Double, List<Double>> getTotalEquilibriumDragCoefficient() {
 		return _totalEquilibriumDragCoefficient;
 	}
 
-	public void setTotalEquilibriumDragCoefficient(Map<List<Double>, List<Double>> _totalEquilibriumDragCoefficient) {
+	public void setTotalEquilibriumDragCoefficient(Map<Double, List<Double>> _totalEquilibriumDragCoefficient) {
 		this._totalEquilibriumDragCoefficient = _totalEquilibriumDragCoefficient;
 	}
 }
