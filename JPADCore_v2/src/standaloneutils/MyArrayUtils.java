@@ -44,6 +44,15 @@ public final class MyArrayUtils {
 	}
 	
 
+	public static Double average(Double[] x) {
+		
+		int numberOfElements = x.length;
+		double arraySum = sumArrayElements(x);
+		
+		return arraySum/(double) numberOfElements;
+		
+	}
+	
 	/**
 	 * Concatenate two matrices a,b to get a new matrix:
 	 * |a|

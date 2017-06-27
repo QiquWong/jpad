@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -130,10 +131,10 @@ public class ParticleSwarmOptimizer {
 		
 		System.out.println("\n\t------------------------------------");
 		System.out.println("\tRUNNING PSO ... ");
-		System.out.println("\t\tINITIALIZING RANDOM POPULATION ... ");
+		System.out.println("\t\tINITIALIZING RANDOM POPULATION ... \n\n");
 		populationInitialization();
 		
-		System.out.println("\t\tCHECKING THE INITIAL GLOBAL BEST ... ");
+		System.out.println("\n\n\t\tCHECKING THE INITIAL GLOBAL BEST ... ");
 			
 		_globalBestCostsFunctionValue = Double.POSITIVE_INFINITY;
 		_bestPosition = new Double[_numberOfDesignVariables];
@@ -145,9 +146,21 @@ public class ParticleSwarmOptimizer {
 			}
 		
 		int iterationIndex = 0;
+		List<Double> averageSwarmPositionList = _population
+				.stream()
+				.map(p -> MyArrayUtils.average(p.getPosition()).doubleValue())
+				.collect(Collectors.toList());
+		Double averageSwarmPosition = MyArrayUtils.average(MyArrayUtils.convertListOfDoubleToDoubleArray(averageSwarmPositionList));
 		
-		System.out.println("\t\tBEGINNING PSO ITERATIONS ... ");
-		while(_globalBestCostsFunctionValue >= _convergenceThreshold) {  //FIXME: THIS WORKS ONLY IF THE COST FUNCTION HAVE TO BE MINIMIZED TO ZERO... 
+		Double averageSwarmPositionLastIteration = 0.0; // initialization for the first loop
+		
+		System.out.println("\n\n\t\tBEGINNING PSO ITERATIONS ... \n");
+		while(Math.abs((averageSwarmPosition - averageSwarmPositionLastIteration)/averageSwarmPositionLastIteration) >= _convergenceThreshold) {  
+			
+			@SuppressWarnings("unused")
+			double check = Math.abs(averageSwarmPosition - averageSwarmPositionLastIteration)/averageSwarmPositionLastIteration;
+			
+			averageSwarmPositionLastIteration = averageSwarmPosition; // initialization for the first loop
 			
 			// generator used to create random array needed for the velocity update
 			Random randomGenerator = new Random();
@@ -219,8 +232,21 @@ public class ParticleSwarmOptimizer {
 			_bestCostsFunctionValueOverIterations.add(_globalBestCostsFunctionValue);
 			System.out.println("\t\tIteration " + (iterationIndex+1) + " --> Best Cost:  " + _bestCostsFunctionValueOverIterations.get(iterationIndex));
 			
+			averageSwarmPositionList = _population
+					.stream()
+					.map(p -> MyArrayUtils.average(p.getPosition()).doubleValue())
+					.collect(Collectors.toList());
+			averageSwarmPosition = MyArrayUtils.average(MyArrayUtils.convertListOfDoubleToDoubleArray(averageSwarmPositionList));
+			
 			iterationIndex++;
 		}
+		
+		// Best Position
+		System.out.println("\n\n\t------------------------------------");
+		System.out.println("\tBEST PARTICLE POSITION: ");
+		System.out.println("\t------------------------------------");
+		Arrays.stream(_bestPosition).forEach(bp -> System.out.println("\t" + bp));
+		System.out.println("\t------------------------------------");
 		
 		// Cost Minimization chart
 		List<Double[]> xList = new ArrayList<>();
@@ -253,9 +279,9 @@ public class ParticleSwarmOptimizer {
 		System.out.println("\t------------------------------------");
 		System.out.println("\tRunning Paticle Swarm Optimization ... ");
 		System.out.println("\t------------------------------------\n");
-		System.out.println("\tINTIALIZING PARTICLES POPULATION ... \n\n");
+		System.out.println("\tINTIALIZING PARTICLES POPULATION ... \n");
 		
-		for(int i=1; i<_particlesNumber; i++) {
+		for(int i=0; i<_particlesNumber; i++) {
 			
 			Double[] initialPosition = createRandomPositions(_numberOfDesignVariables);
 			
@@ -268,6 +294,8 @@ public class ParticleSwarmOptimizer {
 							CostFunctions.sphere(initialPosition)
 							)
 					);
+			
+			System.out.println("\t\tParticle " + (i+1) + " initial position = " + Arrays.toString(_population.get(i).getPosition()));
 			
 		}
 		

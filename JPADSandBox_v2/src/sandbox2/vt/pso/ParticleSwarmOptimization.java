@@ -33,8 +33,9 @@ public class ParticleSwarmOptimization {
 		int numberOfDesignVariables = 10;
 		Double[] designVariablesLowerBound = new Double[] {10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0};
 		Double[] designVariablesUpperBound = new Double[] {-10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0};
-		Double convergenceThreshold = 1e-50;
-		int particlesNumber = 50;
+//		Double[] designVariablesUpperBound = new Double[] {5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0};
+		Double convergenceThreshold = 1e-3; // threshold used to compare particles position during each iteration
+		int particlesNumber = 10;
 		Double kappa = 1.0;
 		Double phi1 = 2.05;
 		Double phi2 = 2.05;
