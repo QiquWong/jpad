@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 
 import org.inferred.freebuilder.FreeBuilder;
 import org.jscience.physics.amount.Amount;
@@ -27,8 +28,10 @@ public interface IACAerodynamicCalculator {
 	//..............................................................................
 	// FROM INPUT (Passed from XML file)
 	Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList();
-	List<Double> getXCGAircraft();
+	List<Double> getXCGAircraft(); //in MAC perc.
 	List<Double> getZCGAircraft();
+	Amount<Length> getZCGLandingGear();
+	Double[] getLandingGearDragCoefficient();
 	Amount<Angle> getAlphaBodyInitial();
 	Amount<Angle> getAlphaBodyFinal();
 	int getNumberOfAlphasBody();
@@ -48,6 +51,7 @@ public interface IACAerodynamicCalculator {
 	List<Amount<Angle>> getDeltaElevatorList();
 	List<Amount<Angle>> getDeltaRudderList();
 	Boolean getFuselageEffectOnWingLiftCurve();
+	Boolean getWingPendularStability();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder {

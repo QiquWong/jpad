@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Length;
 import org.jscience.physics.amount.Amount;
 import standaloneutils.MyInterpolatingFunction;
 
@@ -48,6 +49,8 @@ abstract class IACAerodynamicCalculator_Builder {
     THE_AIRCRAFT("theAircraft"),
     THE_OPERATING_CONDITIONS("theOperatingConditions"),
     CURRENT_CONDITION("currentCondition"),
+    ZCG_LANDING_GEAR("ZCGLandingGear"),
+    LANDING_GEAR_DRAG_COEFFICIENT("landingGearDragCoefficient"),
     ALPHA_BODY_INITIAL("alphaBodyInitial"),
     ALPHA_BODY_FINAL("alphaBodyFinal"),
     NUMBER_OF_ALPHAS_BODY("numberOfAlphasBody"),
@@ -62,6 +65,7 @@ abstract class IACAerodynamicCalculator_Builder {
     TAU_ELEVATOR_FUNCTION("tauElevatorFunction"),
     TAU_RUDDER_FUNCTION("tauRudderFunction"),
     FUSELAGE_EFFECT_ON_WING_LIFT_CURVE("fuselageEffectOnWingLiftCurve"),
+    WING_PENDULAR_STABILITY("wingPendularStability"),
     ;
 
     private final String name;
@@ -83,6 +87,8 @@ abstract class IACAerodynamicCalculator_Builder {
       componentTaskList = new LinkedHashMap<>();
   private final ArrayList<Double> XCGAircraft = new ArrayList<>();
   private final ArrayList<Double> ZCGAircraft = new ArrayList<>();
+  private Amount<Length> ZCGLandingGear;
+  private java.lang.Double[] landingGearDragCoefficient;
   private Amount<Angle> alphaBodyInitial;
   private Amount<Angle> alphaBodyFinal;
   private int numberOfAlphasBody;
@@ -102,6 +108,7 @@ abstract class IACAerodynamicCalculator_Builder {
   private final ArrayList<Amount<Angle>> deltaElevatorList = new ArrayList<>();
   private final ArrayList<Amount<Angle>> deltaRudderList = new ArrayList<>();
   private Boolean fuselageEffectOnWingLiftCurve;
+  private Boolean wingPendularStability;
   private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties =
       EnumSet.allOf(IACAerodynamicCalculator_Builder.Property.class);
 
@@ -458,6 +465,84 @@ abstract class IACAerodynamicCalculator_Builder {
    */
   public List<Double> getZCGAircraft() {
     return Collections.unmodifiableList(ZCGAircraft);
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getZCGLandingGear()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code ZCGLandingGear} is null
+   */
+  public IACAerodynamicCalculator.Builder setZCGLandingGear(Amount<Length> ZCGLandingGear) {
+    this.ZCGLandingGear = Preconditions.checkNotNull(ZCGLandingGear);
+    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getZCGLandingGear()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapZCGLandingGear(UnaryOperator<Amount<Length>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setZCGLandingGear(mapper.apply(getZCGLandingGear()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getZCGLandingGear()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<Length> getZCGLandingGear() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR),
+        "ZCGLandingGear not set");
+    return ZCGLandingGear;
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getLandingGearDragCoefficient()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code landingGearDragCoefficient} is null
+   */
+  public IACAerodynamicCalculator.Builder setLandingGearDragCoefficient(
+      java.lang.Double[] landingGearDragCoefficient) {
+    this.landingGearDragCoefficient = Preconditions.checkNotNull(landingGearDragCoefficient);
+    _unsetProperties.remove(
+        IACAerodynamicCalculator_Builder.Property.LANDING_GEAR_DRAG_COEFFICIENT);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getLandingGearDragCoefficient()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapLandingGearDragCoefficient(
+      UnaryOperator<java.lang.Double[]> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setLandingGearDragCoefficient(mapper.apply(getLandingGearDragCoefficient()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getLandingGearDragCoefficient()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public java.lang.Double[] getLandingGearDragCoefficient() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.LANDING_GEAR_DRAG_COEFFICIENT),
+        "landingGearDragCoefficient not set");
+    return landingGearDragCoefficient;
   }
 
   /**
@@ -1415,6 +1500,44 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getWingPendularStability()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code wingPendularStability} is null
+   */
+  public IACAerodynamicCalculator.Builder setWingPendularStability(Boolean wingPendularStability) {
+    this.wingPendularStability = Preconditions.checkNotNull(wingPendularStability);
+    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.WING_PENDULAR_STABILITY);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getWingPendularStability()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapWingPendularStability(UnaryOperator<Boolean> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setWingPendularStability(mapper.apply(getWingPendularStability()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getWingPendularStability()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Boolean getWingPendularStability() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.WING_PENDULAR_STABILITY),
+        "wingPendularStability not set");
+    return wingPendularStability;
+  }
+
+  /**
    * Sets all property values using the given {@code IACAerodynamicCalculator} as a template.
    */
   public IACAerodynamicCalculator.Builder mergeFrom(IACAerodynamicCalculator value) {
@@ -1436,6 +1559,18 @@ abstract class IACAerodynamicCalculator_Builder {
     putAllComponentTaskList(value.getComponentTaskList());
     addAllXCGAircraft(value.getXCGAircraft());
     addAllZCGAircraft(value.getZCGAircraft());
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR)
+        || !value.getZCGLandingGear().equals(_defaults.getZCGLandingGear())) {
+      setZCGLandingGear(value.getZCGLandingGear());
+    }
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.LANDING_GEAR_DRAG_COEFFICIENT)
+        || !value
+            .getLandingGearDragCoefficient()
+            .equals(_defaults.getLandingGearDragCoefficient())) {
+      setLandingGearDragCoefficient(value.getLandingGearDragCoefficient());
+    }
     if (_defaults._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.ALPHA_BODY_INITIAL)
         || !value.getAlphaBodyInitial().equals(_defaults.getAlphaBodyInitial())) {
@@ -1514,6 +1649,11 @@ abstract class IACAerodynamicCalculator_Builder {
             .equals(_defaults.getFuselageEffectOnWingLiftCurve())) {
       setFuselageEffectOnWingLiftCurve(value.getFuselageEffectOnWingLiftCurve());
     }
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.WING_PENDULAR_STABILITY)
+        || !value.getWingPendularStability().equals(_defaults.getWingPendularStability())) {
+      setWingPendularStability(value.getWingPendularStability());
+    }
     return (IACAerodynamicCalculator.Builder) this;
   }
 
@@ -1549,6 +1689,21 @@ abstract class IACAerodynamicCalculator_Builder {
     putAllComponentTaskList(((IACAerodynamicCalculator_Builder) template).componentTaskList);
     addAllXCGAircraft(((IACAerodynamicCalculator_Builder) template).XCGAircraft);
     addAllZCGAircraft(((IACAerodynamicCalculator_Builder) template).ZCGAircraft);
+    if (!base._unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR)
+            || !template.getZCGLandingGear().equals(_defaults.getZCGLandingGear()))) {
+      setZCGLandingGear(template.getZCGLandingGear());
+    }
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.LANDING_GEAR_DRAG_COEFFICIENT)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.LANDING_GEAR_DRAG_COEFFICIENT)
+            || !template
+                .getLandingGearDragCoefficient()
+                .equals(_defaults.getLandingGearDragCoefficient()))) {
+      setLandingGearDragCoefficient(template.getLandingGearDragCoefficient());
+    }
     if (!base._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.ALPHA_BODY_INITIAL)
         && (_defaults._unsetProperties.contains(
@@ -1655,6 +1810,13 @@ abstract class IACAerodynamicCalculator_Builder {
                 .equals(_defaults.getFuselageEffectOnWingLiftCurve()))) {
       setFuselageEffectOnWingLiftCurve(template.getFuselageEffectOnWingLiftCurve());
     }
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.WING_PENDULAR_STABILITY)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.WING_PENDULAR_STABILITY)
+            || !template.getWingPendularStability().equals(_defaults.getWingPendularStability()))) {
+      setWingPendularStability(template.getWingPendularStability());
+    }
     return (IACAerodynamicCalculator.Builder) this;
   }
 
@@ -1669,6 +1831,8 @@ abstract class IACAerodynamicCalculator_Builder {
     componentTaskList.clear();
     XCGAircraft.clear();
     ZCGAircraft.clear();
+    ZCGLandingGear = _defaults.ZCGLandingGear;
+    landingGearDragCoefficient = _defaults.landingGearDragCoefficient;
     alphaBodyInitial = _defaults.alphaBodyInitial;
     alphaBodyFinal = _defaults.alphaBodyFinal;
     numberOfAlphasBody = _defaults.numberOfAlphasBody;
@@ -1688,6 +1852,7 @@ abstract class IACAerodynamicCalculator_Builder {
     deltaElevatorList.clear();
     deltaRudderList.clear();
     fuselageEffectOnWingLiftCurve = _defaults.fuselageEffectOnWingLiftCurve;
+    wingPendularStability = _defaults.wingPendularStability;
     _unsetProperties.clear();
     _unsetProperties.addAll(_defaults._unsetProperties);
     return (IACAerodynamicCalculator.Builder) this;
@@ -1725,6 +1890,8 @@ abstract class IACAerodynamicCalculator_Builder {
         componentTaskList;
     private final List<Double> XCGAircraft;
     private final List<Double> ZCGAircraft;
+    private final Amount<Length> ZCGLandingGear;
+    private final java.lang.Double[] landingGearDragCoefficient;
     private final Amount<Angle> alphaBodyInitial;
     private final Amount<Angle> alphaBodyFinal;
     private final int numberOfAlphasBody;
@@ -1744,6 +1911,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final List<Amount<Angle>> deltaElevatorList;
     private final List<Amount<Angle>> deltaRudderList;
     private final Boolean fuselageEffectOnWingLiftCurve;
+    private final Boolean wingPendularStability;
 
     private Value(IACAerodynamicCalculator_Builder builder) {
       this.theAircraft = builder.theAircraft;
@@ -1752,6 +1920,8 @@ abstract class IACAerodynamicCalculator_Builder {
       this.componentTaskList = ImmutableMap.copyOf(builder.componentTaskList);
       this.XCGAircraft = ImmutableList.copyOf(builder.XCGAircraft);
       this.ZCGAircraft = ImmutableList.copyOf(builder.ZCGAircraft);
+      this.ZCGLandingGear = builder.ZCGLandingGear;
+      this.landingGearDragCoefficient = builder.landingGearDragCoefficient;
       this.alphaBodyInitial = builder.alphaBodyInitial;
       this.alphaBodyFinal = builder.alphaBodyFinal;
       this.numberOfAlphasBody = builder.numberOfAlphasBody;
@@ -1773,6 +1943,7 @@ abstract class IACAerodynamicCalculator_Builder {
       this.deltaElevatorList = ImmutableList.copyOf(builder.deltaElevatorList);
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
+      this.wingPendularStability = builder.wingPendularStability;
     }
 
     @Override
@@ -1803,6 +1974,16 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public List<Double> getZCGAircraft() {
       return ZCGAircraft;
+    }
+
+    @Override
+    public Amount<Length> getZCGLandingGear() {
+      return ZCGLandingGear;
+    }
+
+    @Override
+    public java.lang.Double[] getLandingGearDragCoefficient() {
+      return landingGearDragCoefficient;
     }
 
     @Override
@@ -1901,6 +2082,11 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public Boolean getWingPendularStability() {
+      return wingPendularStability;
+    }
+
+    @Override
     public boolean equals(Object obj) {
       if (!(obj instanceof IACAerodynamicCalculator_Builder.Value)) {
         return false;
@@ -1912,6 +2098,8 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(componentTaskList, other.componentTaskList)
           && Objects.equals(XCGAircraft, other.XCGAircraft)
           && Objects.equals(ZCGAircraft, other.ZCGAircraft)
+          && Objects.equals(ZCGLandingGear, other.ZCGLandingGear)
+          && Objects.equals(landingGearDragCoefficient, other.landingGearDragCoefficient)
           && Objects.equals(alphaBodyInitial, other.alphaBodyInitial)
           && Objects.equals(alphaBodyFinal, other.alphaBodyFinal)
           && Objects.equals(numberOfAlphasBody, other.numberOfAlphasBody)
@@ -1932,7 +2120,8 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(tauRudderFunction, other.tauRudderFunction)
           && Objects.equals(deltaElevatorList, other.deltaElevatorList)
           && Objects.equals(deltaRudderList, other.deltaRudderList)
-          && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve);
+          && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
+          && Objects.equals(wingPendularStability, other.wingPendularStability);
     }
 
     @Override
@@ -1944,6 +2133,8 @@ abstract class IACAerodynamicCalculator_Builder {
           componentTaskList,
           XCGAircraft,
           ZCGAircraft,
+          ZCGLandingGear,
+          landingGearDragCoefficient,
           alphaBodyInitial,
           alphaBodyFinal,
           numberOfAlphasBody,
@@ -1962,7 +2153,8 @@ abstract class IACAerodynamicCalculator_Builder {
           tauRudderFunction,
           deltaElevatorList,
           deltaRudderList,
-          fuselageEffectOnWingLiftCurve);
+          fuselageEffectOnWingLiftCurve,
+          wingPendularStability);
     }
 
     @Override
@@ -1985,6 +2177,12 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "ZCGAircraft="
           + ZCGAircraft
+          + ", "
+          + "ZCGLandingGear="
+          + ZCGLandingGear
+          + ", "
+          + "landingGearDragCoefficient="
+          + landingGearDragCoefficient
           + ", "
           + "alphaBodyInitial="
           + alphaBodyInitial
@@ -2042,6 +2240,9 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "fuselageEffectOnWingLiftCurve="
           + fuselageEffectOnWingLiftCurve
+          + ", "
+          + "wingPendularStability="
+          + wingPendularStability
           + "}";
     }
   }
@@ -2054,6 +2255,8 @@ abstract class IACAerodynamicCalculator_Builder {
         componentTaskList;
     private final List<Double> XCGAircraft;
     private final List<Double> ZCGAircraft;
+    private final Amount<Length> ZCGLandingGear;
+    private final java.lang.Double[] landingGearDragCoefficient;
     private final Amount<Angle> alphaBodyInitial;
     private final Amount<Angle> alphaBodyFinal;
     private final int numberOfAlphasBody;
@@ -2073,6 +2276,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final List<Amount<Angle>> deltaElevatorList;
     private final List<Amount<Angle>> deltaRudderList;
     private final Boolean fuselageEffectOnWingLiftCurve;
+    private final Boolean wingPendularStability;
     private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties;
 
     Partial(IACAerodynamicCalculator_Builder builder) {
@@ -2082,6 +2286,8 @@ abstract class IACAerodynamicCalculator_Builder {
       this.componentTaskList = ImmutableMap.copyOf(builder.componentTaskList);
       this.XCGAircraft = ImmutableList.copyOf(builder.XCGAircraft);
       this.ZCGAircraft = ImmutableList.copyOf(builder.ZCGAircraft);
+      this.ZCGLandingGear = builder.ZCGLandingGear;
+      this.landingGearDragCoefficient = builder.landingGearDragCoefficient;
       this.alphaBodyInitial = builder.alphaBodyInitial;
       this.alphaBodyFinal = builder.alphaBodyFinal;
       this.numberOfAlphasBody = builder.numberOfAlphasBody;
@@ -2103,6 +2309,7 @@ abstract class IACAerodynamicCalculator_Builder {
       this.deltaElevatorList = ImmutableList.copyOf(builder.deltaElevatorList);
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
+      this.wingPendularStability = builder.wingPendularStability;
       this._unsetProperties = builder._unsetProperties.clone();
     }
 
@@ -2144,6 +2351,23 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public List<Double> getZCGAircraft() {
       return ZCGAircraft;
+    }
+
+    @Override
+    public Amount<Length> getZCGLandingGear() {
+      if (_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR)) {
+        throw new UnsupportedOperationException("ZCGLandingGear not set");
+      }
+      return ZCGLandingGear;
+    }
+
+    @Override
+    public java.lang.Double[] getLandingGearDragCoefficient() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.LANDING_GEAR_DRAG_COEFFICIENT)) {
+        throw new UnsupportedOperationException("landingGearDragCoefficient not set");
+      }
+      return landingGearDragCoefficient;
     }
 
     @Override
@@ -2292,6 +2516,15 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public Boolean getWingPendularStability() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.WING_PENDULAR_STABILITY)) {
+        throw new UnsupportedOperationException("wingPendularStability not set");
+      }
+      return wingPendularStability;
+    }
+
+    @Override
     public boolean equals(Object obj) {
       if (!(obj instanceof IACAerodynamicCalculator_Builder.Partial)) {
         return false;
@@ -2304,6 +2537,8 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(componentTaskList, other.componentTaskList)
           && Objects.equals(XCGAircraft, other.XCGAircraft)
           && Objects.equals(ZCGAircraft, other.ZCGAircraft)
+          && Objects.equals(ZCGLandingGear, other.ZCGLandingGear)
+          && Objects.equals(landingGearDragCoefficient, other.landingGearDragCoefficient)
           && Objects.equals(alphaBodyInitial, other.alphaBodyInitial)
           && Objects.equals(alphaBodyFinal, other.alphaBodyFinal)
           && Objects.equals(numberOfAlphasBody, other.numberOfAlphasBody)
@@ -2325,6 +2560,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(deltaElevatorList, other.deltaElevatorList)
           && Objects.equals(deltaRudderList, other.deltaRudderList)
           && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
+          && Objects.equals(wingPendularStability, other.wingPendularStability)
           && Objects.equals(_unsetProperties, other._unsetProperties);
     }
 
@@ -2337,6 +2573,8 @@ abstract class IACAerodynamicCalculator_Builder {
           componentTaskList,
           XCGAircraft,
           ZCGAircraft,
+          ZCGLandingGear,
+          landingGearDragCoefficient,
           alphaBodyInitial,
           alphaBodyFinal,
           numberOfAlphasBody,
@@ -2356,6 +2594,7 @@ abstract class IACAerodynamicCalculator_Builder {
           deltaElevatorList,
           deltaRudderList,
           fuselageEffectOnWingLiftCurve,
+          wingPendularStability,
           _unsetProperties);
     }
 
@@ -2377,6 +2616,14 @@ abstract class IACAerodynamicCalculator_Builder {
               "componentTaskList=" + componentTaskList,
               "XCGAircraft=" + XCGAircraft,
               "ZCGAircraft=" + ZCGAircraft,
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR)
+                  ? "ZCGLandingGear=" + ZCGLandingGear
+                  : null),
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.LANDING_GEAR_DRAG_COEFFICIENT)
+                  ? "landingGearDragCoefficient=" + landingGearDragCoefficient
+                  : null),
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.ALPHA_BODY_INITIAL)
                   ? "alphaBodyInitial=" + alphaBodyInitial
@@ -2436,6 +2683,10 @@ abstract class IACAerodynamicCalculator_Builder {
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
                   ? "fuselageEffectOnWingLiftCurve=" + fuselageEffectOnWingLiftCurve
+                  : null),
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.WING_PENDULAR_STABILITY)
+                  ? "wingPendularStability=" + wingPendularStability
                   : null))
           + "}";
     }

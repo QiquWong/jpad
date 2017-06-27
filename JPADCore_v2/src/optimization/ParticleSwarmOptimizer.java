@@ -1,8 +1,10 @@
 package optimization;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -22,9 +24,9 @@ public class ParticleSwarmOptimizer {
 	//------------------------------------------------------------------------------
 	// INPUT DATA 
 	private int _numberOfDesignVariables;
-	private Double _designVariablesLowerBound;
-	private Double _designVariablesUpperBound;
-	private int _maximumNumberOfIteration;
+	private Double[] _designVariablesLowerBound;
+	private Double[] _designVariablesUpperBound;
+	private Double _convergenceThreshold;
 	private int _particlesNumber;
 	private Double _kappa;   // = 1;
 	private Double _phi1;    // = 2.05;
@@ -37,8 +39,8 @@ public class ParticleSwarmOptimizer {
 	private Double _inertiaCoefficient;
 	private Double _individualAccelerationCoefficient;
 	private Double _socialAccelerationCoefficient;
-    private Double _velocityLowerBound; 
-    private Double _velocityUpperBound; 
+    private Double[] _velocityLowerBound; 
+    private Double[] _velocityUpperBound; 
 	
 	//..............................................................................
 	// OUTPUT	
@@ -53,9 +55,9 @@ public class ParticleSwarmOptimizer {
 	//------------------------------------------------------------------------------	
 	public ParticleSwarmOptimizer(
 			int numberOfDesignVariables,
-			Double designVariablesLowerBound,
-			Double designVariablesUpperBound,
-			int maximumNumberOfIteration,
+			Double[] designVariablesLowerBound,
+			Double[] designVariablesUpperBound,
+			Double convergenceThreshold,
 			int particlesNumber,
 			Double kappa,
 			Double phi1,
@@ -63,16 +65,32 @@ public class ParticleSwarmOptimizer {
 			String outputFolder
 			) {
 		
+		// Preliminary checks ...
+		if(designVariablesLowerBound.length != designVariablesUpperBound.length) {
+			System.err.println("DESIGN VARABLES UPPER AND LOWER BOUNDS MUST BE OF THE SAME LENGHT");
+			System.exit(1);
+			
+			if(designVariablesLowerBound.length != numberOfDesignVariables) {
+				System.err.println("DESIGN VARABLES UPPER AND LOWER BOUNDS MUST HAVE A NUMBER OF ELEMENTS EQUAL TO THE NUMBER OF DESIGN VARIABLES");
+				System.exit(1);
+			}
+			
+		}
+		
 		// Input assignment ...
 		this._numberOfDesignVariables = numberOfDesignVariables;
 		this._designVariablesLowerBound = designVariablesLowerBound;
 		this._designVariablesUpperBound = designVariablesUpperBound;
-		this._maximumNumberOfIteration = maximumNumberOfIteration;
+		this._convergenceThreshold = convergenceThreshold;
 		this._particlesNumber = particlesNumber;
 		this._kappa = kappa;
 		this._phi1 = phi1;
 		this._phi2 =  phi2;
 		this._outputFolder = outputFolder;
+		
+		// Arrays initialization ...
+		this._velocityLowerBound = new Double[numberOfDesignVariables];
+		this._velocityUpperBound = new Double[numberOfDesignVariables];
 		
 		//	Constriction Coefficient Function (Clerk & Kennedy, 2002)
 		Double phi = phi1 + phi2;
@@ -82,8 +100,11 @@ public class ParticleSwarmOptimizer {
 		this._inertiaCoefficient = chi;
 		this._individualAccelerationCoefficient = chi*phi1;
 		this._socialAccelerationCoefficient = chi*phi2;
-		this._velocityUpperBound = 0.2*(designVariablesUpperBound-designVariablesLowerBound);
-		this._velocityLowerBound = - this._velocityUpperBound;
+			
+		for(int i=0; i<_designVariablesLowerBound.length; i++) {
+			this._velocityUpperBound[i] = 0.5*(designVariablesUpperBound[i]-designVariablesLowerBound[i]);
+			this._velocityLowerBound[i] = - this._velocityUpperBound[i];
+		}
 		
 		System.out.println("\n\t------------------------------------");
 		System.out.println("\tDERIVED INPUT: ");
@@ -94,8 +115,8 @@ public class ParticleSwarmOptimizer {
 		System.out.println("\tIndividual Acceleration Coefficient (c1) : " + _individualAccelerationCoefficient);
 		System.out.println("\tSocial Acceleration Coefficient (c2) : " + _socialAccelerationCoefficient);
 		
-		System.out.println("\n\tVelocity Lower Bound : " + _velocityLowerBound);
-		System.out.println("\tVelocity Upper Bound : " + _velocityUpperBound);
+		System.out.println("\n\tVelocity Lower Bound : " + Arrays.toString(_velocityLowerBound));
+		System.out.println("\tVelocity Upper Bound : " + Arrays.toString(_velocityUpperBound));
 		System.out.println("\t------------------------------------\n");
 		
 		// Output Lists initialization ...
@@ -110,10 +131,10 @@ public class ParticleSwarmOptimizer {
 		
 		System.out.println("\n\t------------------------------------");
 		System.out.println("\tRUNNING PSO ... ");
-		System.out.println("\t\tINITIALIZING RANDOM POPULATION ... ");
+		System.out.println("\t\tINITIALIZING RANDOM POPULATION ... \n\n");
 		populationInitialization();
 		
-		System.out.println("\t\tCHECKING THE INITIAL GLOBAL BEST ... ");
+		System.out.println("\n\n\t\tCHECKING THE INITIAL GLOBAL BEST ... ");
 			
 		_globalBestCostsFunctionValue = Double.POSITIVE_INFINITY;
 		_bestPosition = new Double[_numberOfDesignVariables];
@@ -124,8 +145,22 @@ public class ParticleSwarmOptimizer {
 				_bestPosition = _population.get(i).getPosition();
 			}
 		
-		System.out.println("\t\tBEGINNING PSO ITERATIONS ... ");
-		for(int i=0; i<_maximumNumberOfIteration; i++) {
+		int iterationIndex = 0;
+		List<Double> averageSwarmPositionList = _population
+				.stream()
+				.map(p -> MyArrayUtils.average(p.getPosition()).doubleValue())
+				.collect(Collectors.toList());
+		Double averageSwarmPosition = MyArrayUtils.average(MyArrayUtils.convertListOfDoubleToDoubleArray(averageSwarmPositionList));
+		
+		Double averageSwarmPositionLastIteration = 0.0; // initialization for the first loop
+		
+		System.out.println("\n\n\t\tBEGINNING PSO ITERATIONS ... \n");
+		while(Math.abs((averageSwarmPosition - averageSwarmPositionLastIteration)/averageSwarmPositionLastIteration) >= _convergenceThreshold) {  
+			
+			@SuppressWarnings("unused")
+			double check = Math.abs(averageSwarmPosition - averageSwarmPositionLastIteration)/averageSwarmPositionLastIteration;
+			
+			averageSwarmPositionLastIteration = averageSwarmPosition; // initialization for the first loop
 			
 			// generator used to create random array needed for the velocity update
 			Random randomGenerator = new Random();
@@ -148,10 +183,10 @@ public class ParticleSwarmOptimizer {
 							+ (_socialAccelerationCoefficient*rand2*(_bestPosition[j]-p.getPosition()[j]));
 				
 					 // Apply Velocity Limits
-					if(newVelocity[j] > _velocityUpperBound)
-						newVelocity[j] = _velocityUpperBound;
-					if(newVelocity[j] < _velocityLowerBound)
-						newVelocity[j] = _velocityLowerBound;
+					if(newVelocity[j] > _velocityUpperBound[j])
+						newVelocity[j] = _velocityUpperBound[j];
+					if(newVelocity[j] < _velocityLowerBound[j])
+						newVelocity[j] = _velocityLowerBound[j];
 					
 					//==================================================================
 					// Update Position
@@ -159,10 +194,10 @@ public class ParticleSwarmOptimizer {
 					newPosition[j] = p.getPosition()[j] + newVelocity[j];
 
 					// Apply Lower and Upper Bound Limits
-					if(newPosition[j] > _designVariablesUpperBound)
-						newPosition[j] = _designVariablesUpperBound;
-					if(newPosition[j] < _designVariablesLowerBound)
-						newPosition[j] = _designVariablesLowerBound;
+					if(newPosition[j] > _designVariablesUpperBound[j])
+						newPosition[j] = _designVariablesUpperBound[j];
+					if(newPosition[j] < _designVariablesLowerBound[j])
+						newPosition[j] = _designVariablesLowerBound[j];
 					
 				}
 				
@@ -195,12 +230,27 @@ public class ParticleSwarmOptimizer {
 			//==================================================================
 			// Store the Best Cost Value
 			_bestCostsFunctionValueOverIterations.add(_globalBestCostsFunctionValue);
-			System.out.println("\t\tIteration " + (i+1) + " --> Best Cost:  " + _bestCostsFunctionValueOverIterations.get(i));
+			System.out.println("\t\tIteration " + (iterationIndex+1) + " --> Best Cost:  " + _bestCostsFunctionValueOverIterations.get(iterationIndex));
+			
+			averageSwarmPositionList = _population
+					.stream()
+					.map(p -> MyArrayUtils.average(p.getPosition()).doubleValue())
+					.collect(Collectors.toList());
+			averageSwarmPosition = MyArrayUtils.average(MyArrayUtils.convertListOfDoubleToDoubleArray(averageSwarmPositionList));
+			
+			iterationIndex++;
 		}
+		
+		// Best Position
+		System.out.println("\n\n\t------------------------------------");
+		System.out.println("\tBEST PARTICLE POSITION: ");
+		System.out.println("\t------------------------------------");
+		Arrays.stream(_bestPosition).forEach(bp -> System.out.println("\t" + bp));
+		System.out.println("\t------------------------------------");
 		
 		// Cost Minimization chart
 		List<Double[]> xList = new ArrayList<>();
-		xList.add(MyArrayUtils.linspaceDouble(0.0, _maximumNumberOfIteration, _maximumNumberOfIteration));
+		xList.add(MyArrayUtils.linspaceDouble(0.0, iterationIndex, iterationIndex));
 		
 		List<Double[]> yList = new ArrayList<>();
 		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_bestCostsFunctionValueOverIterations));
@@ -213,7 +263,7 @@ public class ParticleSwarmOptimizer {
 					xList, 
 					yList, 
 					"Best cost value over iterations", "Iterations", "Best Cost", 
-					0.0, (double) _maximumNumberOfIteration, null, null, 
+					0.0, (double) iterationIndex, null, null, 
 					"", "", 
 					false, legend, 
 					_outputFolder, "PSO_Best_Cost_Value_Over_Iterations"
@@ -229,9 +279,9 @@ public class ParticleSwarmOptimizer {
 		System.out.println("\t------------------------------------");
 		System.out.println("\tRunning Paticle Swarm Optimization ... ");
 		System.out.println("\t------------------------------------\n");
-		System.out.println("\tINTIALIZING PARTICLES POPULATION ... \n\n");
+		System.out.println("\tINTIALIZING PARTICLES POPULATION ... \n");
 		
-		for(int i=1; i<_particlesNumber; i++) {
+		for(int i=0; i<_particlesNumber; i++) {
 			
 			Double[] initialPosition = createRandomPositions(_numberOfDesignVariables);
 			
@@ -245,6 +295,8 @@ public class ParticleSwarmOptimizer {
 							)
 					);
 			
+			System.out.println("\t\tParticle " + (i+1) + " initial position = " + Arrays.toString(_population.get(i).getPosition()));
+			
 		}
 		
 	}
@@ -254,8 +306,8 @@ public class ParticleSwarmOptimizer {
 		Random randomGenerator = new Random();
 		Double[] positions = new Double[numberOfDesignVariables];
 		for(int i=0; i<numberOfDesignVariables; i++)
-			positions[i] = _designVariablesLowerBound 
-						   + (_designVariablesUpperBound - _designVariablesLowerBound) 
+			positions[i] = _designVariablesLowerBound[i]
+						   + (_designVariablesUpperBound[i] - _designVariablesLowerBound[i]) 
 						   * randomGenerator.nextDouble();
 		
 		return positions;
@@ -275,28 +327,20 @@ public class ParticleSwarmOptimizer {
 		this._numberOfDesignVariables = _numberOfDesignVariables;
 	}
 
-	public Double getDesignVariablesLowerBound() {
+	public Double[] getDesignVariablesLowerBound() {
 		return _designVariablesLowerBound;
 	}
 
-	public void setDesignVariablesLowerBound(Double _designVariablesLowerBound) {
+	public void setDesignVariablesLowerBound(Double[] _designVariablesLowerBound) {
 		this._designVariablesLowerBound = _designVariablesLowerBound;
 	}
 
-	public Double getDesignVariablesUpperBound() {
+	public Double[] getDesignVariablesUpperBound() {
 		return _designVariablesUpperBound;
 	}
 
-	public void setDesignVariablesUpperBound(Double _designVariablesUpperBound) {
+	public void setDesignVariablesUpperBound(Double[] _designVariablesUpperBound) {
 		this._designVariablesUpperBound = _designVariablesUpperBound;
-	}
-
-	public int getMaximumNumberOfIteration() {
-		return _maximumNumberOfIteration;
-	}
-
-	public void setMaximumNumberOfIteration(int _maximumNumberOfIteration) {
-		this._maximumNumberOfIteration = _maximumNumberOfIteration;
 	}
 
 	public int getParticlesNumber() {
@@ -403,19 +447,19 @@ public class ParticleSwarmOptimizer {
 		this._globalBestCostsFunctionValue = _globalBestCostsFunctionValue;
 	}
 
-	public Double getVelocityLowerBound() {
+	public Double[] getVelocityLowerBound() {
 		return _velocityLowerBound;
 	}
 
-	public void setVelocityLowerBound(Double _velocityLowerBound) {
+	public void setVelocityLowerBound(Double[] _velocityLowerBound) {
 		this._velocityLowerBound = _velocityLowerBound;
 	}
 
-	public Double getVelocityUpperBound() {
+	public Double[] getVelocityUpperBound() {
 		return _velocityUpperBound;
 	}
 
-	public void setVelocityUpperBound(Double _velocityUpperBound) {
+	public void setVelocityUpperBound(Double[] _velocityUpperBound) {
 		this._velocityUpperBound = _velocityUpperBound;
 	}
 
@@ -425,6 +469,14 @@ public class ParticleSwarmOptimizer {
 
 	public void setOutputFolder(String _outputFolder) {
 		this._outputFolder = _outputFolder;
+	}
+
+	public Double getConvergenceThreshold() {
+		return _convergenceThreshold;
+	}
+
+	public void setConvergenceThreshold(Double _convergenceThreshold) {
+		this._convergenceThreshold = _convergenceThreshold;
 	}
 	
 }

@@ -978,7 +978,6 @@ public class MomentCalc {
 	 * @param  the dimensional value of the horizontal tail MAC 
 	 * @param  the wing surface
 	 * @param  the horizontal tail surface
-	 * @param  the dynamic pressure ratio between horizontal tail and wing
 	 * @param  the wing lift coefficient list with fuselage effect if required NB. REFERRED TO A CERTAIN ALPHA BODY VECTOR THAT MUST BE THE SAME FOR EVERY LIST
 	 * @param  the wing drag coefficient list NB. REFERRED TO A CERTAIN ALPHA BODY VECTOR THAT MUST BE THE SAME FOR EVERY LIST
 	 * @param  the wing moment coefficient with respect to aerodynamic center list NB. REFERRED TO A CERTAIN ALPHA BODY VECTOR THAT MUST BE THE SAME FOR EVERY LIST
@@ -1007,7 +1006,6 @@ public class MomentCalc {
 			Amount<Length> horizontalTailMeanAerodynamicChord,
 			Amount<Area> wingSurface,
 			Amount<Area> horizontalTailSurface,
-			Double dynamicPressureRatio,
 			List<Double> wingFuselageLiftCoefficient,
 			List<Double> wingDragCoefficient,
 			List<Double> wingMomentCoefficient,
