@@ -10,20 +10,19 @@
 		</global_data>
 		<equivalent_wing>
 			<surface unit="m²">105</surface>
-			<span unit="m">35</span>
-			<taper_ratio>0.385</taper_ratio> <!-- c_tip/c_root_equivalent -->
-			<sweep_leading_edge unit="deg">10</sweep_leading_edge>
-			<twist_at_tip unit="deg">-2</twist_at_tip>
-			<dihedral unit="deg">5</dihedral>
+			<aspect_ratio>12</aspect_ratio>
+			<taper_ratio>0.4</taper_ratio>
+			<sweep_leading_edge unit="deg">8.0</sweep_leading_edge>
+			<dihedral unit="deg">5.0</dihedral>
 			<non_dimensional_span_station_kink>0.3</non_dimensional_span_station_kink>
-			<taper_ratio_real_wing>0.368</taper_ratio_real_wing> <!-- c_tip/c_root_real -->
+			<twist_at_tip unit="deg">-2.0</twist_at_tip>
 			<twist_at_kink_real_wing unit="deg">0.0</twist_at_kink_real_wing>	
-			<sweep_leading_edge_inner_panel unit="deg">10</sweep_leading_edge_inner_panel>
-			<sweep_leading_edge_outer_panel unit="deg">10</sweep_leading_edge_outer_panel>
+			<x_offset_root_chord_leading_edge></x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
+			<x_offset_root_chord_trailing_edge></x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
 			<airfoils>
-				<airfoil_root file="naca63209.xml"/>
-				<airfoil_kink file="naca63209.xml"/>
-				<airfoil_tip file="naca63209.xml"/>
+				<airfoil_root file=""/>
+				<airfoil_kink file=""/>
+				<airfoil_tip file=""/>
 			</airfoils>
 		</equivalent_wing>
 		<panels>

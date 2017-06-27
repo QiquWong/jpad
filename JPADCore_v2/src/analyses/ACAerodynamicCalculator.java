@@ -15,6 +15,8 @@ import javax.measure.unit.SI;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jscience.physics.amount.Amount;
 
+import com.ibm.icu.util.VTimeZone;
+
 import aircraft.components.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager;
@@ -66,8 +68,8 @@ public class ACAerodynamicCalculator {
 
 	//..............................................................................
 	// DERIVED INPUT	
-	private Double _wingMomentumPole;  // pole referred to M.A.C.
-	private Double _hTailMomentumPole; // pole referred to M.A.C.
+	private Amount<Length> _wingMomentumPole;  // pole referred to M.A.C.
+	private Amount<Length> _hTailMomentumPole; // pole referred to M.A.C.
 	private Double _currentMachNumber;
 	private Amount<Length> _currentAltitude;
 	private List<Double> _wingFinalLiftCurve = new ArrayList<>();
@@ -734,7 +736,8 @@ public class ACAerodynamicCalculator {
 							_theAerodynamicBuilderInterface.getCurrentCondition(),
 							_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(),
 							_alphaWingList, 
-							_theAerodynamicBuilderInterface.getAlphaWingForDistribution()
+							_theAerodynamicBuilderInterface.getAlphaWingForDistribution(),
+							_wingMomentumPole
 							)
 					);
 		
@@ -940,7 +943,8 @@ public class ACAerodynamicCalculator {
 							_theAerodynamicBuilderInterface.getCurrentCondition(),
 							_theAerodynamicBuilderInterface.getHTailNumberOfPointSemiSpanWise(),
 							_alphaHTailList, 
-							_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution()
+							_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution(),
+							_hTailMomentumPole
 							)
 					);
 		
@@ -1091,7 +1095,8 @@ public class ACAerodynamicCalculator {
 							_theAerodynamicBuilderInterface.getCurrentCondition(),
 							_theAerodynamicBuilderInterface.getVTailNumberOfPointSemiSpanWise(), 
 							_betaList, // Alpha for VTail is Beta
-							_theAerodynamicBuilderInterface.getAlphaVerticalTailForDistribution() 
+							_theAerodynamicBuilderInterface.getAlphaVerticalTailForDistribution(),
+							null
 							)
 					);
 		
@@ -2647,19 +2652,19 @@ public class ACAerodynamicCalculator {
 		this._theAerodynamicBuilderInterface = _theAerodynamicBuilderInterface;
 	}
 
-	public Double getWingMomentumPole() {
+	public Amount<Length> getWingMomentumPole() {
 		return _wingMomentumPole;
 	}
 
-	public void setWingMomentumPole(Double _wingMomentumPole) {
+	public void setWingMomentumPole(Amount<Length> _wingMomentumPole) {
 		this._wingMomentumPole = _wingMomentumPole;
 	}
 
-	public Double getHTailMomentumPole() {
+	public Amount<Length> getHTailMomentumPole() {
 		return _hTailMomentumPole;
 	}
 
-	public void setHTailMomentumPole(Double _hTailMomentumPole) {
+	public void setHTailMomentumPole(Amount<Length> _hTailMomentumPole) {
 		this._hTailMomentumPole = _hTailMomentumPole;
 	}
 

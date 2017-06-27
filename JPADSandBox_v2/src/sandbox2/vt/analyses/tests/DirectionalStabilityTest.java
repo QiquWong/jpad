@@ -316,11 +316,10 @@ public class DirectionalStabilityTest extends Application {
 					);
 			
 			// tau interpolating function
-//			double[] tau = new double[]{0.0000,0.5359,0.5648,0.5502,0.5261};
-//			double[] deltaRudder = new double[]{0,10,20,25,30};
-//			MyInterpolatingFunction tauFunction = new MyInterpolatingFunction();
-//			tauFunction.interpolateLinear(deltaRudder, tau);
-//			theAerodynamicCalculator.setTauRudderFunction(tauFunction);
+			double[] tau = new double[]{0.0000,0.5359,0.5648,0.5502,0.5261};
+			double[] deltaRudder = new double[]{0,10,20,25,30};
+			MyInterpolatingFunction tauFunction = new MyInterpolatingFunction();
+			tauFunction.interpolateLinear(deltaRudder, tau);
 			
 			// Defining ComponentTaskList ...
 			Map<AerodynamicAndStabilityEnum, MethodEnum> vTailAnalysisList = new HashMap<>();
@@ -343,6 +342,7 @@ public class DirectionalStabilityTest extends Application {
 							))
 					.putComponentTaskList(ComponentEnum.VERTICAL_TAIL, vTailAnalysisList)
 					.putComponentTaskList(ComponentEnum.WING, wingAnalysisList)
+					.setTauRudderFunction(tauFunction)
 					.buildPartial();
 			theAerodynamicCalculator.setTheAerodynamicBuilderInterface(theAerodynamicBuilderInterface);
 			
@@ -360,7 +360,8 @@ public class DirectionalStabilityTest extends Application {
 									NonSI.DEGREE_ANGLE), 
 							MyArrayUtils.convertDoubleArrayToListOfAmount(
 									MyArrayUtils.linspace(0,10,3), 
-									NonSI.DEGREE_ANGLE))
+									NonSI.DEGREE_ANGLE),
+							null)
 					);
 			CalcXAC calcXACVTail = liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcXAC();
 			calcXACVTail.atQuarterMAC();
@@ -384,7 +385,8 @@ public class DirectionalStabilityTest extends Application {
 									NonSI.DEGREE_ANGLE), 
 							MyArrayUtils.convertDoubleArrayToListOfAmount(
 									MyArrayUtils.linspace(0,10,3), 
-									NonSI.DEGREE_ANGLE))
+									NonSI.DEGREE_ANGLE),
+							null)
 					);
 			CalcXAC calcXACWing = liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
 			calcXACWing.atQuarterMAC();

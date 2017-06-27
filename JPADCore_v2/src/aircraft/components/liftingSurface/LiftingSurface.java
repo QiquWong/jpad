@@ -1580,9 +1580,9 @@ public class LiftingSurface implements ILiftingSurface {
 	@Override
 	public double getTaperRatioEquivalent() {
 		if(_type == ComponentEnum.WING)
-			return _liftingSurfaceCreator.getEquivalentWing().getTaperRatio();
+			return _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getTaperRatio();
 		else
-			return _liftingSurfaceCreator.getTaperRatio();
+			return _liftingSurfaceCreator.getPanels().get(0).getTaperRatio();
 	}
 	
 //	public double getTaperRatioEquivalent(Boolean recalculate) {

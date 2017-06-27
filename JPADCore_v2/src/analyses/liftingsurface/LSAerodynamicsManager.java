@@ -186,7 +186,8 @@ public class LSAerodynamicsManager {
 			ConditionEnum theCondition,
 			int numberOfPointSemiSpanWise,
 			List<Amount<Angle>> alphaArray,
-			List<Amount<Angle>> alphaForDistribution
+			List<Amount<Angle>> alphaForDistribution,
+			Amount<Length> momentumPole
 			) {
 		
 		this._theLiftingSurface = theLiftingSurface;
@@ -195,6 +196,7 @@ public class LSAerodynamicsManager {
 		this._numberOfPointSemiSpanWise = numberOfPointSemiSpanWise;
 		this._alphaArray = alphaArray;
 		this._alphaForDistribution = alphaForDistribution;
+		this._momentumPole = momentumPole;
 		
 		initializeVariables();
 		initializeData(_theCondition);
@@ -239,19 +241,16 @@ public class LSAerodynamicsManager {
 					this._theOperatingConditions.getAlpha()[i],
 					NonSI.DEGREE_ANGLE)
 					);
-		
+
 		//----------------------------------------------------------------------------------------------------------------------
 		// Initialize XAC
 		if(_xacLRF.get(MethodEnum.DEYOUNG_HARPER) == null) {
 			CalcXAC calcXAC = new CalcXAC();
 			calcXAC.deYoungHarper();
 		}
-		//----------------------------------------------------------------------------------------------------------------------
-		// Initialize LIFTING COEFFICIENT 3D CURVE
-		if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null){
-			CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
-			calcLiftCurve.nasaBlackwell(_currentMachNumber);
-		}
+		
+		if(_momentumPole == null)
+			_momentumPole = _xacLRF.get(MethodEnum.DEYOUNG_HARPER);
 		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating the mean airfoil
@@ -443,6 +442,13 @@ public class LSAerodynamicsManager {
 				_currentMachNumber,
 				_currentAltitude.doubleValue(SI.METER)
 				);
+		
+		//----------------------------------------------------------------------------------------------------------------------
+		// Initialize LIFTING COEFFICIENT 3D CURVE
+		if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null){
+			CalcLiftCurve calcLiftCurve = new CalcLiftCurve();
+			calcLiftCurve.nasaBlackwell(_currentMachNumber);
+		}
 		
 		//----------------------------------------------------------------------------------------------------------------------
 		// Calculating discretized airfoil parameters arrays

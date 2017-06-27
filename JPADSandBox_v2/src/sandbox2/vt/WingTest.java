@@ -21,12 +21,10 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.LiftingSurface.LiftingSurfaceBuilder;
 import aircraft.components.liftingSurface.creator.LiftingSurfaceCreator;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
-import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -139,7 +137,7 @@ public class WingTest extends Application {
 
 		Double[][] eqPts = new Double[4][2];
 		eqPts[0][0] = 0.0;
-		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE().doubleValue(SI.METER);
+		eqPts[0][1] = theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE();
 		eqPts[1][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
 		eqPts[1][1] = theWing.getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER);
 		eqPts[2][0] = theWing.getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER);
@@ -149,9 +147,8 @@ public class WingTest extends Application {
 						)
 				.doubleValue(SI.METER);
 		eqPts[3][0] = 0.0;
-		eqPts[3][1] = theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
-				.minus(theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE())
-				.doubleValue(SI.METER);
+		eqPts[3][1] = theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+				- theWing.getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE();
 
 		listDataArray.add(eqPts);
 
