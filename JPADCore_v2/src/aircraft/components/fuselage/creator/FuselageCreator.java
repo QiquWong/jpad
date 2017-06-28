@@ -32,6 +32,7 @@ import aircraft.components.fuselage.FuselageCurvesUpperView;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
+import configuration.enumerations.FuselageAdjustCriteriaEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import processing.core.PVector;
 import standaloneutils.JPADXmlReader;
@@ -1379,6 +1380,301 @@ public class FuselageCreator implements IFuselageCreator {
 		return section.getSectionUpperLeftPoints().get(iLast).y;
 	}
 
+	
+	/**
+	 * This method updates the all the fuselage parameters when one of its dimensions changes.
+	 * To do this it uses several criteria described below. In particular, for each dimension,
+	 * all the available criteria will be enumerated.
+	 * 
+	 * Fuselage Length (lenF):
+	 * ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS
+	 * ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS
+	 * 
+	 * Cabin (Cylinder) Length (lenC):
+	 * ADJ_CYL_LENGTH
+	 * 
+	 * Nose Length (lenN):
+	 * ADJ_NOSE_LENGTH_CONST_TOT_LENGTH_DIAMETERS
+	 * ADJ_NOSE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS
+	 * ADJ_NOSE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS
+	 * 
+	 * Tail Length (lenT):
+	 * ADJ_TAILCONE_LENGTH_CONST_TOT_LENGTH_DIAMETERS
+	 * ADJ_TAILCONE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS
+	 * ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS
+	 * 
+	 * Section Cylider Height:
+	 * ADJ_FUS_LENGTH_CONST_FINENESS_RATIOS_VAR_DIAMETERS
+	 * 
+	 * @param len
+	 * @param criterion
+	 */
+	public void adjustDimensions(Amount<Length> len, FuselageAdjustCriteriaEnum criterion) {
+
+		/*
+		 *  TODO : DEFINE ALL THE VARIABLES NEEDED TO CREATE A NEW FUSELAGE
+		 *  	   SETUP THESE VARIABLES FOR EACH CASE
+		 *  	   BUILD A NEW FUSELAGE AT THE END OF THE SWITCH MAKING CALCULATE GEOMETRY
+		 */
+		
+		switch (criterion) {
+
+		case ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
+			lenF = len;
+			lenN = Amount.valueOf(
+					lenRatioNF * lenF.doubleValue(SI.METRE), 
+					SI.METRE); // _lenRatio_NF*_len_F;
+			lenC = Amount.valueOf( 
+					lenRatioCF * lenF.doubleValue(SI.METRE), 
+					SI.METRE); // _lenRatio_CF*_len_F;
+			lenT = Amount.valueOf(
+					lenF.doubleValue(SI.METRE)
+					-lenN.doubleValue(SI.METRE)
+					-lenC.doubleValue(SI.METRE), 
+					SI.METRE); // _len_F - _len_N - _len_C;
+			lambdaN =   
+					lenN.doubleValue(SI.METRE)
+					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
+			lambdaC =
+					lenC.doubleValue(SI.METRE)
+					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
+			lambdaT =
+					lenT.doubleValue(SI.METRE)
+					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C;
+			lambdaF =  
+					lenF.doubleValue(SI.METRE)
+					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
+			break;
+
+		case ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS:
+			lenF = len;
+			sectionCylinderHeight = Amount.valueOf(
+					lenF.doubleValue(SI.METRE)
+					/lambdaF, 
+					SI.METRE);
+			lenN = Amount.valueOf(
+					lambdaN * sectionCylinderHeight.doubleValue(SI.METRE), 
+					SI.METRE);
+			lenC = Amount.valueOf(
+					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE), 
+					SI.METRE);;
+					lenT = Amount.valueOf(
+							lambdaT * sectionCylinderHeight.doubleValue(SI.METRE), 
+							SI.METRE);
+					lenRatioNF =
+							lenN.doubleValue(SI.METRE)
+							/ lenF.doubleValue(SI.METRE);
+					lenRatioCF =   
+							lenC.doubleValue(SI.METRE)
+							/ lenF.doubleValue(SI.METRE);
+					lenRatioTF =  
+							lenT.doubleValue(SI.METRE)
+							/ lenF.doubleValue(SI.METRE);
+					break;
+
+		case ADJ_CYL_LENGTH:
+			lenC = len;
+			lenF = Amount.valueOf( 
+					lenN.doubleValue(SI.METRE)
+					+ lenC.doubleValue(SI.METRE) 
+					+ lenT.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lambdaC = 
+					lenC.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
+			lambdaF =  
+					lenF.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
+			lenRatioNF =   
+					lenN.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioCF =  
+					lenC.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioTF = 
+					lenT.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			break;
+
+		case ADJ_NOSE_LENGTH_CONST_TOT_LENGTH_DIAMETERS:
+			lenN = len;
+			lenC = Amount.valueOf(  
+					lenF.doubleValue(SI.METRE)
+					- lenN.doubleValue(SI.METRE) 
+					- lenT.doubleValue(SI.METRE), 
+					SI.METRE);
+			lambdaN =  
+					lenN.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
+			lambdaC = 
+					lenC.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
+			lenRatioNF =  
+					lenN.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioCF =  
+					lenC.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			break;
+
+		case ADJ_NOSE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
+			lenN = len;	
+			lenF = Amount.valueOf( 
+					lenN.doubleValue(SI.METRE)/lenRatioNF, 
+					SI.METRE); // _len_N/_lenRatio_NF;
+			lenC = Amount.valueOf(
+					lenRatioCF * lenF.doubleValue(SI.METRE), 
+					SI.METRE); // _lenRatio_CF*_len_F;
+			lenT = Amount.valueOf(
+					lenRatioTF * lenF.doubleValue(SI.METRE) ,
+					SI.METRE); // _lenRatio_CF*_len_F;
+			lambdaN = 
+					lenN.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
+			lambdaC =  
+					lenC.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
+			lambdaT =  
+					lenT.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C;
+			lambdaF =  
+					lenF.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_F / _diam_C;
+			break;
+
+		case  ADJ_NOSE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS:
+			lenN = len;	
+			sectionCylinderHeight = Amount.valueOf(
+					lenN.doubleValue(SI.METRE)
+					/ lambdaN, 
+					SI.METRE);
+			lenC = Amount.valueOf(
+					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE), 
+					SI.METRE);
+			lenT = Amount.valueOf(
+					lambdaT * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenF = Amount.valueOf(
+					lenN.doubleValue(SI.METRE)
+					+ lenC.doubleValue(SI.METRE) 
+					+ lenT.doubleValue(SI.METRE), 
+					SI.METRE);
+			lenRatioNF =   
+					lenN.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE) ;
+			lenRatioCF =  
+					lenC.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE) ;
+			lenRatioTF = 
+					lenT.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lambdaF = 
+					lenF.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
+			break;
+
+		case ADJ_TAILCONE_LENGTH_CONST_TOT_LENGTH_DIAMETERS:
+			lenT = len;
+			lambdaT = 
+					lenT.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_T / _diam_C;
+			lenC = Amount.valueOf( 
+					lenF.doubleValue(SI.METRE)
+					- lenN.doubleValue(SI.METRE) 
+					- lenT.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lambdaC = 
+					lenC.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
+			lenRatioCF = 
+					lenC.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioTF =  
+					lenT.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE) ;
+			break;
+
+		case ADJ_TAILCONE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
+			lenT = len;
+			lenF = Amount.valueOf( 
+					lenT.doubleValue(SI.METRE)/ lenRatioTF, 
+					SI.METRE); // _len_N/_lenRatio_NF;
+			lenN = Amount.valueOf( 
+					lenRatioNF * lenF.doubleValue(SI.METRE) , 
+					SI.METRE); // _lenRatio_NF*_len_F;
+			lenC = Amount.valueOf( 
+					lenRatioCF * lenF.doubleValue(SI.METRE) , 
+					SI.METRE); // _lenRatio_CF*_len_F;
+			lambdaN =  
+					lenN.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_N / _diam_C;
+			lambdaC =  
+					lenC.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
+			lambdaT =   
+					lenT.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C;
+			lambdaF = 
+					lenF.doubleValue(SI.METRE)
+					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
+			break;
+
+		case ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS:
+			lenT = len;
+			sectionCylinderHeight = Amount.valueOf(
+					lenT.doubleValue(SI.METRE)
+					/ lambdaT , 
+					SI.METRE);
+			lenN = Amount.valueOf( 
+					lambdaN * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenC = Amount.valueOf( 
+					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenF = Amount.valueOf( 
+					lambdaF * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenRatioNF = 
+					lenN.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioCF =  
+					lenC.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioTF = 
+					lenT.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE) ;
+			break;
+
+		case ADJ_FUS_LENGTH_CONST_FINENESS_RATIOS_VAR_DIAMETERS:
+			sectionCylinderHeight= len;
+			lenN  =Amount.valueOf(
+					lambdaN * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenC = Amount.valueOf(  
+					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenT = Amount.valueOf(  
+					lambdaT * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenF = Amount.valueOf( 
+					lambdaF * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					SI.METRE);
+			lenRatioNF =
+					lenN.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioCF =  
+					lenC.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioTF = 
+					lenT.doubleValue(SI.METRE)
+					/ lenF.doubleValue(SI.METRE);
+			break;
+		default:
+			break;
+		}
+
+	}  // End  Event adjustLength
+	
 	public void adjustSectionShapeParameters(int idx, Double a, Double rhoUpper, Double rhoLower) {
 
 		//		getSectionUpperCurveY().clear();

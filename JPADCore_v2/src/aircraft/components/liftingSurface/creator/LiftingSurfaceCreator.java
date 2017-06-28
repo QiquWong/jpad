@@ -34,6 +34,7 @@ import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FlapTypeEnum;
+import configuration.enumerations.WingAdjustCriteriaEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple5;
@@ -1634,6 +1635,394 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	}
 
+	public void adjustDimensions(
+			double v1, double v2, double v3, 
+			Amount<Angle> equivalentSweepLE,
+			Amount<Angle> equivalentDihedral,
+			Amount<Angle> equivalentTwistAtTip,
+			WingAdjustCriteriaEnum criterion
+			) {
+		
+		LiftingSurfacePanelCreator liftingSurfacePanel = null;
+		
+		// independent variables initialization
+		Double ar = null;
+		Double surface = null;
+		Double span = null;
+		Double rootChord = null;
+		Double tipChord = null;
+		Double taperRatio = null;
+		
+		switch (criterion) {
+		case AR_SPAN_ROOTCHORD:
+	
+			ar = v1;
+			span = v2;
+			rootChord = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			surface = Math.pow(span, 2)/ar;
+			tipChord = (2.0*surface/span) - rootChord;
+			
+			break;
+			
+		case AR_SPAN_TIPCHORD:
+			
+			ar = v1;
+			span = v2;
+			tipChord = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			
+			surface = Math.pow(span, 2)/ar;
+			rootChord = (2.0*surface/span) - tipChord;
+			
+			break;
+			
+		case AR_SPAN_TAPER:
+
+			ar = v1;
+			span = v2;
+			taperRatio = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			
+			surface = Math.pow(span, 2)/ar;
+			rootChord = 2*surface/(span*(1+taperRatio));
+			tipChord = rootChord*taperRatio;
+			
+			break;
+			
+		case AR_AREA_ROOTCHORD:
+
+			ar = v1;
+			surface = v2;
+			rootChord = v3;
+			
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			span = Math.sqrt(surface*ar);
+			tipChord = (2*surface/span) - rootChord;
+			
+			break;
+			
+		case AR_AREA_TIPCHORD:
+
+			ar = v1;
+			surface = v2;
+			tipChord = v3;
+			
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			
+			span = Math.sqrt(surface*ar);
+			rootChord = (2*surface/span) - tipChord;
+			
+			break;
+			
+		case AR_AREA_TAPER:
+			
+			ar = v1;
+			surface = v2;
+			taperRatio = v3;
+			
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			
+			span = Math.sqrt(ar*surface);
+			rootChord = 2*surface/(span*(1+taperRatio));
+			tipChord = rootChord*taperRatio;
+			
+			break;
+			
+		case AR_ROOTCHORD_TIPCHORD:
+
+			ar = v1;
+			rootChord = v2;
+			tipChord = v3;
+			
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			surface = (rootChord + tipChord)*ar*0.5;
+			span = Math.sqrt(surface*ar);
+			
+			break;
+			
+		case AR_ROOTCHORD_TAPER:
+
+			ar = v1;
+			rootChord = v2;
+			taperRatio = v3;
+			
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			surface = rootChord*(1 + taperRatio)*ar*0.5;
+			span = Math.sqrt(surface*ar);
+			tipChord = rootChord*taperRatio;
+			
+			break;
+			
+		case AR_TIPCHORD_TAPER:
+
+			ar = v1;
+			tipChord = v2;
+			taperRatio = v3;
+			
+			if (0.0 == ar) {
+				throw new IllegalArgumentException("ASPECT_RATIO CAN'T BE ZERO !!");
+			}
+			
+			surface = (tipChord + (taperRatio/tipChord))*ar*0.5;
+			span = Math.sqrt(surface*ar);
+			rootChord = tipChord/taperRatio;
+			
+			break;
+			
+		case SPAN_AREA_ROOTCHORD:
+			
+			span = v1;
+			surface = v2;
+			rootChord = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			taperRatio = (2.0*surface/(span*rootChord)) - 1.0;
+			tipChord = rootChord*taperRatio;
+			
+			break;
+			
+		case SPAN_AREA_TIPCHORD:
+
+			span = v1;
+			surface = v2;
+			tipChord = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			
+			taperRatio = tipChord/((2*surface/span) - tipChord);
+			rootChord = tipChord/taperRatio;
+			
+			break;
+			
+		case SPAN_AREA_TAPER:
+
+			span = v1;
+			surface = v2;
+			taperRatio = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			
+			rootChord = 2*surface/(span*(1+taperRatio));
+			tipChord = taperRatio*rootChord;
+			
+			break;
+			
+		case SPAN_ROOTCHORD_TIPCHORD:
+
+			span = v1;
+			rootChord = v2;
+			tipChord = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			break;
+		case SPAN_ROOTCHORD_TAPER:
+
+			span = v1;
+			rootChord = v2;
+			taperRatio = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			tipChord = taperRatio*rootChord;
+			
+			break;
+		case SPAN_TIPCHORD_TAPER:
+
+			span = v1;
+			tipChord = v2;
+			taperRatio = v3;
+			
+			if (0.0 == span) {
+				throw new IllegalArgumentException("SPAN CAN'T BE ZERO !!");
+			}
+			
+			rootChord = tipChord/taperRatio;
+			
+			break;
+		case AREA_ROOTCHORD_TIPCHORD:
+
+			surface = v1;
+			rootChord = v2;
+			tipChord = v3;
+			
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			span = 2*surface/(rootChord + tipChord);
+			
+			break;
+			
+		case AREA_ROOTCHORD_TAPER:
+
+			surface = v1;
+			rootChord = v2;
+			taperRatio = v3;
+			
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			if (0.0 == rootChord) {
+				throw new IllegalArgumentException("ROOT_CHORD CAN'T BE ZERO !!");
+			}
+			
+			span = 2*surface/(rootChord*(1+ taperRatio));
+			tipChord = rootChord*taperRatio;
+			
+			break;
+		case AREA_TIPCHORD_TAPER:
+
+			surface = v1;
+			tipChord = v2;
+			taperRatio = v3;
+			
+			if (0.0 == surface) {
+				throw new IllegalArgumentException("SURFACE CAN'T BE ZERO !!");
+			}
+			
+			rootChord = tipChord/taperRatio;
+			span = 2*surface/(rootChord*(1+ taperRatio));
+			
+			break;
+		default:
+			break;
+		}
+		
+		if(_type.equals(ComponentEnum.WING)) {
+			
+			_equivalentWingFlag = Boolean.TRUE;
+			liftingSurfacePanel = new LiftingSurfacePanelBuilder(
+					"Equivalent Wing",
+					Amount.valueOf(rootChord, SI.METER),
+					Amount.valueOf(tipChord, SI.METER),
+					_equivalentWing.getPanels().get(0).getAirfoilRoot(),
+					_equivalentWing.getPanels().get(0).getAirfoilTip(),
+					equivalentTwistAtTip,
+					Amount.valueOf(0.5*span, SI.METER),
+					equivalentSweepLE,
+					equivalentDihedral
+					)
+					.build(); // build calculates all the derived panel parameters
+
+			_equivalentWing.getPanels().clear();
+			_panels.clear();
+			_equivalentWing.addPanel(liftingSurfacePanel);
+			
+		}
+		else if(_type.equals(ComponentEnum.VERTICAL_TAIL) 
+				|| _type.equals(ComponentEnum.HORIZONTAL_TAIL) 
+				|| _type.equals(ComponentEnum.CANARD)) {
+			
+			liftingSurfacePanel = new LiftingSurfacePanelBuilder(
+					"Lifting Surface Panel",
+					Amount.valueOf(rootChord, SI.METER),
+					Amount.valueOf(tipChord, SI.METER),
+					_equivalentWing.getPanels().get(0).getAirfoilRoot(),
+					_equivalentWing.getPanels().get(0).getAirfoilTip(),
+					equivalentTwistAtTip,
+					Amount.valueOf(0.5*span, SI.METER),
+					equivalentSweepLE,
+					equivalentDihedral
+					)
+					.build(); // build calculates all the derived panel parameters
+
+			_panels.clear();
+			_panels.add(liftingSurfacePanel);
+			
+		}
+		
+		calculateGeometry(_type, _mirrored);
+		
+	}
+	
 	@Override
 	public Boolean isMirrored() {
 		return this._mirrored;
@@ -1835,8 +2224,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		Amount<Length> chordTip = _equivalentWing.getPanels().get(0).getChordTip();
 		Amount<Area> surfacePlanformEquivalentWing = _equivalentWing.getPanels().get(0).getSurfacePlanform().times(2);
 		Amount<Angle> sweepLeadingEdgeEquivalentWing = _equivalentWing.getPanels().get(0).getSweepLeadingEdge();
-		Double taperRatioEquivalentWing = _equivalentWing.getPanels().get(0).getTaperRatio();
-		Double aspectRatio = Math.pow(span.doubleValue(SI.METER), 2)/surfacePlanformEquivalentWing.doubleValue(SI.SQUARE_METRE);
 		
 		Double nonDimensionalSpanStationKink = _equivalentWing.getNonDimensionalSpanStationKink();
 		Double xOffsetLE = _equivalentWing.getXOffsetEquivalentWingRootLE();
@@ -1904,21 +2291,11 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		    chordKink = (Amount<Length>) JPADStaticWriteUtils.cloneAmount(chordRoot);
 		}
 
-		Amount<Angle> sweepLeadingEdgeEquivalent = Amount.valueOf(
-				Math.atan(
-						Math.tan(
-								sweepLeadingEdgeEquivalentWing.doubleValue(SI.RADIAN)) 
-						+ (1 - taperRatioEquivalentWing)
-						/(aspectRatio * (1 + taperRatioEquivalentWing))
-						),
-				SI.RADIAN
-				);
-
 		// X coordinates of root, tip and kink chords
 		Amount<Length> xLERoot = Amount.valueOf(0.0 ,SI.METER);
 		
 		Amount<Length> xLETip = Amount.valueOf(
-				Math.tan(sweepLeadingEdgeEquivalent.doubleValue(SI.RADIAN)) * 
+				Math.tan(sweepLeadingEdgeEquivalentWing.doubleValue(SI.RADIAN)) * 
 				span.doubleValue(SI.METER)/2 + (chordLinPanel.doubleValue(SI.METER) 
 						* xOffsetLE
 						* (1 - nonDimensionalSpanStationKink)

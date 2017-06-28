@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="FALSE">
+    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="TRUE">
         <global_data>
 			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
 			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
@@ -12,13 +12,13 @@
 			<surface unit="m²">105</surface>
 			<aspect_ratio>12</aspect_ratio>
 			<taper_ratio>0.387</taper_ratio>
-			<sweep_leading_edge unit="deg">8.0</sweep_leading_edge>
+			<sweep_leading_edge unit="deg">10.0</sweep_leading_edge>
 			<dihedral unit="deg">5.0</dihedral>
 			<non_dimensional_span_station_kink>0.3</non_dimensional_span_station_kink>
 			<twist_at_tip unit="deg">-2.0</twist_at_tip>
 			<twist_at_kink_real_wing unit="deg">0.0</twist_at_kink_real_wing>	
 			<x_offset_root_chord_leading_edge>0.0</x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
-			<x_offset_root_chord_trailing_edge>-0.1</x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
+			<x_offset_root_chord_trailing_edge>0.05</x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
 			<airfoils>
 				<airfoil_root file="IRON_ROOT.xml"/>
 				<airfoil_kink file="IRON_ROOT.xml"/>

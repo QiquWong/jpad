@@ -52,11 +52,9 @@ abstract class IACCostsManager_Builder {
     OPERATING_CONDITIONS("operatingConditions"),
     MAXIMUM_TAKE_OFF_MASS("maximumTakeOffMass"),
     OPERATING_EMPTY_MASS("operatingEmptyMass"),
-    STRUCTURAL_MASS("structuralMass"),
     PAYLOAD("payload"),
     RANGE("range"),
     BLOCK_FUEL_MASS("blockFuelMass"),
-    BLOCK_TIME("blockTime"),
     FLIGHT_TIME("flightTime"),
     LIFE_SPAN("lifeSpan"),
     RESIDUAL_VALUE("residualValue"),
@@ -105,11 +103,9 @@ abstract class IACCostsManager_Builder {
   private OperatingConditions operatingConditions;
   private Amount<Mass> maximumTakeOffMass;
   private Amount<Mass> operatingEmptyMass;
-  private Amount<Mass> structuralMass;
   private Amount<Mass> payload;
   private Amount<Length> range;
   private Amount<Mass> blockFuelMass;
-  private Amount<Duration> blockTime;
   private Amount<Duration> flightTime;
   private final LinkedHashMap<MethodEnum, Amount<?>> utilization = new LinkedHashMap<>();
   private Amount<Duration> lifeSpan;
@@ -306,43 +302,6 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link IACCostsManager#getStructuralMass()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code structuralMass} is null
-   */
-  public IACCostsManager.Builder setStructuralMass(Amount<Mass> structuralMass) {
-    this.structuralMass = Preconditions.checkNotNull(structuralMass);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.STRUCTURAL_MASS);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getStructuralMass()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapStructuralMass(UnaryOperator<Amount<Mass>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setStructuralMass(mapper.apply(getStructuralMass()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getStructuralMass()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Mass> getStructuralMass() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.STRUCTURAL_MASS),
-        "structuralMass not set");
-    return structuralMass;
-  }
-
-  /**
    * Sets the value to be returned by {@link IACCostsManager#getPayload()}.
    *
    * @return this {@code Builder} object
@@ -449,43 +408,6 @@ abstract class IACCostsManager_Builder {
         !_unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_FUEL_MASS),
         "blockFuelMass not set");
     return blockFuelMass;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getBlockTime()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code blockTime} is null
-   */
-  public IACCostsManager.Builder setBlockTime(Amount<Duration> blockTime) {
-    this.blockTime = Preconditions.checkNotNull(blockTime);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.BLOCK_TIME);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getBlockTime()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapBlockTime(UnaryOperator<Amount<Duration>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setBlockTime(mapper.apply(getBlockTime()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getBlockTime()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Duration> getBlockTime() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_TIME),
-        "blockTime not set");
-    return blockTime;
   }
 
   /**
@@ -2782,10 +2704,6 @@ abstract class IACCostsManager_Builder {
         || !value.getOperatingEmptyMass().equals(_defaults.getOperatingEmptyMass())) {
       setOperatingEmptyMass(value.getOperatingEmptyMass());
     }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.STRUCTURAL_MASS)
-        || !value.getStructuralMass().equals(_defaults.getStructuralMass())) {
-      setStructuralMass(value.getStructuralMass());
-    }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.PAYLOAD)
         || !value.getPayload().equals(_defaults.getPayload())) {
       setPayload(value.getPayload());
@@ -2797,10 +2715,6 @@ abstract class IACCostsManager_Builder {
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_FUEL_MASS)
         || !value.getBlockFuelMass().equals(_defaults.getBlockFuelMass())) {
       setBlockFuelMass(value.getBlockFuelMass());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_TIME)
-        || !value.getBlockTime().equals(_defaults.getBlockTime())) {
-      setBlockTime(value.getBlockTime());
     }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.FLIGHT_TIME)
         || !value.getFlightTime().equals(_defaults.getFlightTime())) {
@@ -2989,11 +2903,6 @@ abstract class IACCostsManager_Builder {
             || !template.getOperatingEmptyMass().equals(_defaults.getOperatingEmptyMass()))) {
       setOperatingEmptyMass(template.getOperatingEmptyMass());
     }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.STRUCTURAL_MASS)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.STRUCTURAL_MASS)
-            || !template.getStructuralMass().equals(_defaults.getStructuralMass()))) {
-      setStructuralMass(template.getStructuralMass());
-    }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.PAYLOAD)
         && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.PAYLOAD)
             || !template.getPayload().equals(_defaults.getPayload()))) {
@@ -3008,11 +2917,6 @@ abstract class IACCostsManager_Builder {
         && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_FUEL_MASS)
             || !template.getBlockFuelMass().equals(_defaults.getBlockFuelMass()))) {
       setBlockFuelMass(template.getBlockFuelMass());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_TIME)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_TIME)
-            || !template.getBlockTime().equals(_defaults.getBlockTime()))) {
-      setBlockTime(template.getBlockTime());
     }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.FLIGHT_TIME)
         && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.FLIGHT_TIME)
@@ -3220,11 +3124,9 @@ abstract class IACCostsManager_Builder {
     operatingConditions = _defaults.operatingConditions;
     maximumTakeOffMass = _defaults.maximumTakeOffMass;
     operatingEmptyMass = _defaults.operatingEmptyMass;
-    structuralMass = _defaults.structuralMass;
     payload = _defaults.payload;
     range = _defaults.range;
     blockFuelMass = _defaults.blockFuelMass;
-    blockTime = _defaults.blockTime;
     flightTime = _defaults.flightTime;
     utilization.clear();
     lifeSpan = _defaults.lifeSpan;
@@ -3303,11 +3205,9 @@ abstract class IACCostsManager_Builder {
     private final OperatingConditions operatingConditions;
     private final Amount<Mass> maximumTakeOffMass;
     private final Amount<Mass> operatingEmptyMass;
-    private final Amount<Mass> structuralMass;
     private final Amount<Mass> payload;
     private final Amount<Length> range;
     private final Amount<Mass> blockFuelMass;
-    private final Amount<Duration> blockTime;
     private final Amount<Duration> flightTime;
     private final Map<MethodEnum, Amount<?>> utilization;
     private final Amount<Duration> lifeSpan;
@@ -3358,11 +3258,9 @@ abstract class IACCostsManager_Builder {
       this.operatingConditions = builder.operatingConditions;
       this.maximumTakeOffMass = builder.maximumTakeOffMass;
       this.operatingEmptyMass = builder.operatingEmptyMass;
-      this.structuralMass = builder.structuralMass;
       this.payload = builder.payload;
       this.range = builder.range;
       this.blockFuelMass = builder.blockFuelMass;
-      this.blockTime = builder.blockTime;
       this.flightTime = builder.flightTime;
       this.utilization = ImmutableMap.copyOf(builder.utilization);
       this.lifeSpan = builder.lifeSpan;
@@ -3430,11 +3328,6 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Amount<Mass> getStructuralMass() {
-      return structuralMass;
-    }
-
-    @Override
     public Amount<Mass> getPayload() {
       return payload;
     }
@@ -3447,11 +3340,6 @@ abstract class IACCostsManager_Builder {
     @Override
     public Amount<Mass> getBlockFuelMass() {
       return blockFuelMass;
-    }
-
-    @Override
-    public Amount<Duration> getBlockTime() {
-      return blockTime;
     }
 
     @Override
@@ -3684,11 +3572,9 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(operatingConditions, other.operatingConditions)
           && Objects.equals(maximumTakeOffMass, other.maximumTakeOffMass)
           && Objects.equals(operatingEmptyMass, other.operatingEmptyMass)
-          && Objects.equals(structuralMass, other.structuralMass)
           && Objects.equals(payload, other.payload)
           && Objects.equals(range, other.range)
           && Objects.equals(blockFuelMass, other.blockFuelMass)
-          && Objects.equals(blockTime, other.blockTime)
           && Objects.equals(flightTime, other.flightTime)
           && Objects.equals(utilization, other.utilization)
           && Objects.equals(lifeSpan, other.lifeSpan)
@@ -3742,11 +3628,9 @@ abstract class IACCostsManager_Builder {
           operatingConditions,
           maximumTakeOffMass,
           operatingEmptyMass,
-          structuralMass,
           payload,
           range,
           blockFuelMass,
-          blockTime,
           flightTime,
           utilization,
           lifeSpan,
@@ -3808,9 +3692,6 @@ abstract class IACCostsManager_Builder {
           + "operatingEmptyMass="
           + operatingEmptyMass
           + ", "
-          + "structuralMass="
-          + structuralMass
-          + ", "
           + "payload="
           + payload
           + ", "
@@ -3819,9 +3700,6 @@ abstract class IACCostsManager_Builder {
           + ", "
           + "blockFuelMass="
           + blockFuelMass
-          + ", "
-          + "blockTime="
-          + blockTime
           + ", "
           + "flightTime="
           + flightTime
@@ -3963,11 +3841,9 @@ abstract class IACCostsManager_Builder {
     private final OperatingConditions operatingConditions;
     private final Amount<Mass> maximumTakeOffMass;
     private final Amount<Mass> operatingEmptyMass;
-    private final Amount<Mass> structuralMass;
     private final Amount<Mass> payload;
     private final Amount<Length> range;
     private final Amount<Mass> blockFuelMass;
-    private final Amount<Duration> blockTime;
     private final Amount<Duration> flightTime;
     private final Map<MethodEnum, Amount<?>> utilization;
     private final Amount<Duration> lifeSpan;
@@ -4019,11 +3895,9 @@ abstract class IACCostsManager_Builder {
       this.operatingConditions = builder.operatingConditions;
       this.maximumTakeOffMass = builder.maximumTakeOffMass;
       this.operatingEmptyMass = builder.operatingEmptyMass;
-      this.structuralMass = builder.structuralMass;
       this.payload = builder.payload;
       this.range = builder.range;
       this.blockFuelMass = builder.blockFuelMass;
-      this.blockTime = builder.blockTime;
       this.flightTime = builder.flightTime;
       this.utilization = ImmutableMap.copyOf(builder.utilization);
       this.lifeSpan = builder.lifeSpan;
@@ -4104,14 +3978,6 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Amount<Mass> getStructuralMass() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.STRUCTURAL_MASS)) {
-        throw new UnsupportedOperationException("structuralMass not set");
-      }
-      return structuralMass;
-    }
-
-    @Override
     public Amount<Mass> getPayload() {
       if (_unsetProperties.contains(IACCostsManager_Builder.Property.PAYLOAD)) {
         throw new UnsupportedOperationException("payload not set");
@@ -4133,14 +3999,6 @@ abstract class IACCostsManager_Builder {
         throw new UnsupportedOperationException("blockFuelMass not set");
       }
       return blockFuelMass;
-    }
-
-    @Override
-    public Amount<Duration> getBlockTime() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_TIME)) {
-        throw new UnsupportedOperationException("blockTime not set");
-      }
-      return blockTime;
     }
 
     @Override
@@ -4468,11 +4326,9 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(operatingConditions, other.operatingConditions)
           && Objects.equals(maximumTakeOffMass, other.maximumTakeOffMass)
           && Objects.equals(operatingEmptyMass, other.operatingEmptyMass)
-          && Objects.equals(structuralMass, other.structuralMass)
           && Objects.equals(payload, other.payload)
           && Objects.equals(range, other.range)
           && Objects.equals(blockFuelMass, other.blockFuelMass)
-          && Objects.equals(blockTime, other.blockTime)
           && Objects.equals(flightTime, other.flightTime)
           && Objects.equals(utilization, other.utilization)
           && Objects.equals(lifeSpan, other.lifeSpan)
@@ -4527,11 +4383,9 @@ abstract class IACCostsManager_Builder {
           operatingConditions,
           maximumTakeOffMass,
           operatingEmptyMass,
-          structuralMass,
           payload,
           range,
           blockFuelMass,
-          blockTime,
           flightTime,
           utilization,
           lifeSpan,
@@ -4595,9 +4449,6 @@ abstract class IACCostsManager_Builder {
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.OPERATING_EMPTY_MASS)
                   ? "operatingEmptyMass=" + operatingEmptyMass
                   : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.STRUCTURAL_MASS)
-                  ? "structuralMass=" + structuralMass
-                  : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.PAYLOAD)
                   ? "payload=" + payload
                   : null),
@@ -4606,9 +4457,6 @@ abstract class IACCostsManager_Builder {
                   : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_FUEL_MASS)
                   ? "blockFuelMass=" + blockFuelMass
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.BLOCK_TIME)
-                  ? "blockTime=" + blockTime
                   : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.FLIGHT_TIME)
                   ? "flightTime=" + flightTime

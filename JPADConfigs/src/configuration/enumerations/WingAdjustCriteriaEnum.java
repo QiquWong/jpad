@@ -1,0 +1,45 @@
+package configuration.enumerations;
+
+/**
+ * @author Agostino De Marco, Vittorio Trifari, Manuela Ruocco
+ * 
+ * These criteria indicate all the possible combinations of 
+ * planform parameters that can be assigned to modify the wing
+ * (see: OpenVSP wing creation window, "plan" tab)
+ */
+public enum WingAdjustCriteriaEnum {
+
+	AR_SPAN_ROOTCHORD,
+	AR_SPAN_TIPCHORD,
+	AR_SPAN_TAPER,
+	AR_AREA_ROOTCHORD,
+	AR_AREA_TIPCHORD,
+	AR_AREA_TAPER, 
+//	AR_MEANCHORD_ROOTCHORD,
+//	AR_MEANCHORD_TIPCHORD,
+//	AR_MEANCHORD_TAPER,
+	AR_ROOTCHORD_TIPCHORD,
+	AR_ROOTCHORD_TAPER,
+	AR_TIPCHORD_TAPER,
+	
+	SPAN_AREA_ROOTCHORD,
+	SPAN_AREA_TIPCHORD,
+	SPAN_AREA_TAPER,
+//	SPAN_MEANCHORD_ROOTCHORD,
+//	SPAN_MEANCHORD_TIPCHORD,
+//	SPAN_MEANCHORD_TAPER,
+	SPAN_ROOTCHORD_TIPCHORD, // + SWEEP + DIHEDRAL + TWIST = NATURAL GEOMETRY ASSIGNMENT 
+	SPAN_ROOTCHORD_TAPER,
+	SPAN_TIPCHORD_TAPER,
+	
+//	AREA_MEANCHORD_ROOTCHORD,
+//	AREA_MEANCHORD_TIPCHORD,
+//	AREA_MEANCHORD_TAPER,
+	AREA_ROOTCHORD_TIPCHORD,
+//	AREA_ROOTCHORD_MEANCHORD,
+	AREA_ROOTCHORD_TAPER,
+	AREA_TIPCHORD_TAPER
+	
+	// TODO: add other criteria if needed ...
+	
+}
