@@ -21,10 +21,7 @@ import aircraft.components.fuselage.creator.FuselageCreator;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
-import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -244,20 +241,11 @@ public class FuselageTest extends Application {
 
 			System.out.println("--------------");
 
+			MyConfiguration.initWorkingDirectoryTree();
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String fusDesDatabaseFilename = "FusDes_database.h5";
 			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
 			
-			// This wing static object is available in the scope of
-			// the Application.start method
-
-			//				// Read fuselage from xml ...
-			//				theFuselage = new FuselageBuilder("MyFuselage", ComponentEnum.FUSELAGE)
-			//						.fuselageCreator(
-			//								FuselageCreator.importFromXML(pathToXML)
-			//								)
-			//						.build();
-
 			// default Fuselage ...
 			theFuselage = new Fuselage.FuselageBuilder("MyFuselage", fusDesDatabaseReader)
 					.fuselageCreator(
@@ -266,13 +254,6 @@ public class FuselageTest extends Application {
 							.build()
 							)
 					.build();
-
-			//				FuselageTest.theFuselage.getFuselageCreator().calculateGeometry(
-			//						20,    // No. points in nose trunk
-			//						5,     // No. points in cylindrical trunk
-			//						15,    // No. points in tail trunk
-			//						10, 10 // No. points in upper/lower cyl. trunk section
-			//						);
 
 			System.out.println("The fuselage ...");
 			System.out.println(FuselageTest.theFuselage.getFuselageCreator().toString());

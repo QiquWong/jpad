@@ -2472,24 +2472,6 @@ public class InputManagerAircraftFromFileController {
 					);
 		
 		//---------------------------------------------------------------------------------
-		// FINENESS RATIO:
-		Main.setTextFieldFuselageNoseFinenessRatio(
-				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseFinenessRatio")
-				);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageNoseFinenessRatio().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getLambdaN()
-					.toString()
-					);
-		else
-			Main.getTextFieldFuselageNoseFinenessRatio().setText(
-					"NOT INITIALIZED"
-					);
-		
-		//---------------------------------------------------------------------------------
 		// NOSE TIP OFFSET RATIO:
 		Main.setTextFieldFuselageNoseTipOffset(
 				(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseTipOffset")

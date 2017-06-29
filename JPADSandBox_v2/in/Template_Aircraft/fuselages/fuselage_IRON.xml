@@ -8,7 +8,6 @@
 		</global_data>
 		<nose_trunk>
             <length_ratio>0.1109</length_ratio>
-			<fineness_ratio>1.192</fineness_ratio>
 			<tip_height_offset unit="m">-0.841</tip_height_offset>
             <dx_cap_percent>0.075</dx_cap_percent>
             <windshield_type>FLAT_FLUSH</windshield_type>

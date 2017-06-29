@@ -208,7 +208,6 @@ public class FuselageCreator implements IFuselageCreator {
 		npN           = np_N;
 		npC           = np_C;
 		npT           = np_T;
-		Double l_F = lenF.doubleValue(SI.METRE);
 		Double l_N = lenN.doubleValue(SI.METRE);
 		Double l_C = lenC.doubleValue(SI.METRE);
 		Double l_T = lenT.doubleValue(SI.METRE);
@@ -232,9 +231,23 @@ public class FuselageCreator implements IFuselageCreator {
 		lenN         = Amount.valueOf( lenRatioNF * lenF.doubleValue(SI.METRE), SI.METRE);
 		lenC         = Amount.valueOf( lenRatioCF * lenF.doubleValue(SI.METRE), SI.METRE);
 		lenT         = Amount.valueOf( lenRatioTF * lenF.doubleValue(SI.METRE), SI.METRE);
-		lambdaC      = lenC.doubleValue(SI.METRE)/sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
-		lambdaT      = lenT.doubleValue(SI.METRE)/sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C; // (_len_F - _len_N - _len_C) / _diam_C
+		
+		// Equivalent diameters
+		equivalentDiameterCylinderGM = Amount.valueOf(
+				Math.sqrt(sectionCylinderWidth.getEstimatedValue()*sectionCylinderHeight.getEstimatedValue())
+				,SI.METRE);
 
+		equivalentDiameterCylinderAM = Amount.valueOf(
+				MyMathUtils.arithmeticMean(
+						sectionCylinderWidth.getEstimatedValue(),sectionCylinderHeight.getEstimatedValue())
+						,SI.METRE);
+		
+		// Fineness ratios
+		lambdaN      = lenN.doubleValue(SI.METER)/equivalentDiameterCylinderGM.doubleValue(SI.METER);
+		lambdaC      = lenC.doubleValue(SI.METRE)/equivalentDiameterCylinderGM.doubleValue(SI.METRE); // _len_C / _diam_C;
+		lambdaT      = lenT.doubleValue(SI.METRE)/equivalentDiameterCylinderGM.doubleValue(SI.METRE); // _len_T / _diam_C; // (_len_F - _len_N - _len_C) / _diam_C
+		lambdaF      = lenF.doubleValue(SI.METER)/equivalentDiameterCylinderGM.doubleValue(SI.METER); // _len_F/_diam_C;
+		
 		dxNoseCap = Amount.valueOf(lenN.times(dxNoseCapPercent).doubleValue(SI.METRE), SI.METRE);
 		dxTailCap = Amount.valueOf(lenT.times(dxTailCapPercent).doubleValue(SI.METRE), SI.METRE);
 
@@ -263,21 +276,8 @@ public class FuselageCreator implements IFuselageCreator {
 				npSecLow  // num. points Lower section
 				);
 
-		// Equivalent diameters
-		equivalentDiameterCylinderGM = Amount.valueOf(
-				Math.sqrt(sectionCylinderWidth.getEstimatedValue()*sectionCylinderHeight.getEstimatedValue())
-				,SI.METRE);
-
 		equivalentDiameterGM = Amount.valueOf(calculateEquivalentDiameter(), SI.METRE);
-
-		equivalentDiameterCylinderAM = Amount.valueOf(
-				MyMathUtils.arithmeticMean(
-						sectionCylinderWidth.getEstimatedValue(),sectionCylinderHeight.getEstimatedValue())
-						,SI.METRE);
-
-		// Whole FuselageCreator fineness ratio
-		lambdaF = lenF.getEstimatedValue()/equivalentDiameterCylinderGM.getEstimatedValue(); // _len_F/_diam_C;
-
+		
 		// cylindrical section base area
 		areaC = Amount.valueOf(Math.PI *(sectionCylinderHeight.getEstimatedValue()*sectionCylinderWidth.getEstimatedValue())/4, Area.UNIT);
 
@@ -1412,103 +1412,131 @@ public class FuselageCreator implements IFuselageCreator {
 	public void adjustDimensions(Amount<Length> len, FuselageAdjustCriteriaEnum criterion) {
 
 		/*
-		 *  TODO : DEFINE ALL THE VARIABLES NEEDED TO CREATE A NEW FUSELAGE
-		 *  	   SETUP THESE VARIABLES FOR EACH CASE
-		 *  	   BUILD A NEW FUSELAGE AT THE END OF THE SWITCH MAKING CALCULATE GEOMETRY
+		 * ALL THE VARIABLES USED IN CALCULATE GEOMETRY ARE FILLED FOR EACH CASE. IF SOME OF 
+		 * THEM ARE CONSTANTS, THEIR VALUE IS SET AS THE CURRENT VALUE FROM THE FUSELAGE CREATOR.
+		 * 
+		 * AT THE END ALL THE REQUIRED VARIABLES ARE SET IN THEIR RELATED FIELDS AND USED IN 
+		 * CALCULATE GEOMETRY.
 		 */
+
+		// VARIABLE USED IN CALCULATE GEOMETRY:
+		Amount<Length> lenF = null;
+		Double lenRatioCF = null;
+		Double lenRatioNF = null;
+		Amount<Length> sectionCylinderHeight = null;
+		Amount<Length> sectionCylinderWidth = null;
+		
+		// DATA NOT TO BE SET AS FIELDS BUT NEEDED FOR THE CALCULATION:
+		Double sectionHeightWidthRatio = null;
+		Amount<Length> equivalentDiameterCylinderGM = null;
+		Double lenRatioTF = null;
+		Amount<Length> lenN = null;
+		Amount<Length> lenC = null;
+		Amount<Length> lenT = null;
+		Double lambdaF = null;
+		Double lambdaN = null;
+		Double lambdaC = null;
+		Double lambdaT = null;
 		
 		switch (criterion) {
 
 		case ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
+			
+			// new variable
 			lenF = len;
-			lenN = Amount.valueOf(
-					lenRatioNF * lenF.doubleValue(SI.METRE), 
-					SI.METRE); // _lenRatio_NF*_len_F;
-			lenC = Amount.valueOf( 
-					lenRatioCF * lenF.doubleValue(SI.METRE), 
-					SI.METRE); // _lenRatio_CF*_len_F;
-			lenT = Amount.valueOf(
-					lenF.doubleValue(SI.METRE)
-					-lenN.doubleValue(SI.METRE)
-					-lenC.doubleValue(SI.METRE), 
-					SI.METRE); // _len_F - _len_N - _len_C;
-			lambdaN =   
-					lenN.doubleValue(SI.METRE)
-					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
-			lambdaC =
-					lenC.doubleValue(SI.METRE)
-					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
-			lambdaT =
-					lenT.doubleValue(SI.METRE)
-					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C;
-			lambdaF =  
-					lenF.doubleValue(SI.METRE)
-					/sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
+			
+			// constant values
+			lenRatioCF = this.lenRatioCF;
+			lenRatioNF = this.lenRatioNF;
+			sectionCylinderHeight = this.sectionCylinderHeight;
+			sectionCylinderWidth = this.sectionCylinderWidth;
 			break;
 
 		case ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS:
+			
+			// new variable
 			lenF = len;
-			sectionCylinderHeight = Amount.valueOf(
-					lenF.doubleValue(SI.METRE)
-					/lambdaF, 
-					SI.METRE);
-			lenN = Amount.valueOf(
-					lambdaN * sectionCylinderHeight.doubleValue(SI.METRE), 
-					SI.METRE);
-			lenC = Amount.valueOf(
-					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE), 
-					SI.METRE);;
-					lenT = Amount.valueOf(
-							lambdaT * sectionCylinderHeight.doubleValue(SI.METRE), 
-							SI.METRE);
-					lenRatioNF =
-							lenN.doubleValue(SI.METRE)
-							/ lenF.doubleValue(SI.METRE);
-					lenRatioCF =   
-							lenC.doubleValue(SI.METRE)
-							/ lenF.doubleValue(SI.METRE);
-					lenRatioTF =  
-							lenT.doubleValue(SI.METRE)
-							/ lenF.doubleValue(SI.METRE);
-					break;
+			
+			// constant values
+			lambdaF = this.lambdaF;
+			lambdaC = this.lambdaC;
+			lambdaN = this.lambdaN;
+			
+			// values to be calculated
+			sectionHeightWidthRatio = 
+					this.sectionCylinderHeight.doubleValue(SI.METER)
+					/this.sectionCylinderWidth.doubleValue(SI.METER);
+			
+			equivalentDiameterCylinderGM = Amount.valueOf(
+					lenF.doubleValue(SI.METRE)/lambdaF,
+					SI.METER
+					); 
+			
+			sectionCylinderHeight = Amount.valueOf( 
+					Math.sqrt(
+							sectionHeightWidthRatio
+							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							),
+					SI.METER
+					);
+			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
+			
+			lenN = equivalentDiameterCylinderGM.times(lambdaN);
+			
+			lenC = equivalentDiameterCylinderGM.times(lambdaC);
+			
+			lenRatioNF =
+					lenN.doubleValue(SI.METER)
+					/ lenF.doubleValue(SI.METRE);
+			lenRatioCF =   
+					lenC.doubleValue(SI.METER)
+					/ lenF.doubleValue(SI.METRE);
+			break;
 
 		case ADJ_CYL_LENGTH:
+			
+			// new variable
 			lenC = len;
+			
+			// constant values
+			lenN = this.lenN;
+			lenT = this.lenT;
+			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM; 
+			sectionCylinderHeight = this.sectionCylinderHeight;
+			sectionCylinderWidth = this.sectionCylinderWidth;
+			
+			// values to be calculated
 			lenF = Amount.valueOf( 
 					lenN.doubleValue(SI.METRE)
 					+ lenC.doubleValue(SI.METRE) 
 					+ lenT.doubleValue(SI.METRE) , 
 					SI.METRE);
-			lambdaC = 
-					lenC.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
-			lambdaF =  
-					lenF.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
 			lenRatioNF =   
 					lenN.doubleValue(SI.METRE)
 					/ lenF.doubleValue(SI.METRE);
 			lenRatioCF =  
 					lenC.doubleValue(SI.METRE)
 					/ lenF.doubleValue(SI.METRE);
-			lenRatioTF = 
-					lenT.doubleValue(SI.METRE)
-					/ lenF.doubleValue(SI.METRE);
 			break;
 
 		case ADJ_NOSE_LENGTH_CONST_TOT_LENGTH_DIAMETERS:
+			
+			// new variable
 			lenN = len;
+			
+			// constant values
+			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
+			sectionCylinderHeight = this.sectionCylinderHeight;
+			sectionCylinderWidth = this.sectionCylinderWidth;
+			lenF = this.lenF;
+			lenT = this.lenT;
+			
+			// values to be calculated
 			lenC = Amount.valueOf(  
 					lenF.doubleValue(SI.METRE)
 					- lenN.doubleValue(SI.METRE) 
 					- lenT.doubleValue(SI.METRE), 
 					SI.METRE);
-			lambdaN =  
-					lenN.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
-			lambdaC = 
-					lenC.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
 			lenRatioNF =  
 					lenN.doubleValue(SI.METRE)
 					/ lenF.doubleValue(SI.METRE);
@@ -1518,41 +1546,57 @@ public class FuselageCreator implements IFuselageCreator {
 			break;
 
 		case ADJ_NOSE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
+			
+			// new variable
 			lenN = len;	
+			
+			// constant values
+			lenRatioCF = this.lenRatioCF;
+			lenRatioNF = this.lenRatioTF;
+			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
+			sectionCylinderHeight = this.sectionCylinderHeight;
+			sectionCylinderWidth = this.sectionCylinderWidth;
+			
+			// values to be calculated
 			lenF = Amount.valueOf( 
 					lenN.doubleValue(SI.METRE)/lenRatioNF, 
 					SI.METRE); // _len_N/_lenRatio_NF;
-			lenC = Amount.valueOf(
-					lenRatioCF * lenF.doubleValue(SI.METRE), 
-					SI.METRE); // _lenRatio_CF*_len_F;
-			lenT = Amount.valueOf(
-					lenRatioTF * lenF.doubleValue(SI.METRE) ,
-					SI.METRE); // _lenRatio_CF*_len_F;
-			lambdaN = 
-					lenN.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_N / _diam_C;
-			lambdaC =  
-					lenC.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_C / _diam_C;
-			lambdaT =  
-					lenT.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C;
-			lambdaF =  
-					lenF.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_F / _diam_C;
 			break;
 
 		case  ADJ_NOSE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS:
+			
+			// new variable
 			lenN = len;	
-			sectionCylinderHeight = Amount.valueOf(
-					lenN.doubleValue(SI.METRE)
-					/ lambdaN, 
-					SI.METRE);
+			
+			// constant values
+			lambdaN = this.lambdaN;
+			lambdaC = this.lambdaC;
+			lambdaT = this.lambdaT;
+			
+			// values to be calculated
+			sectionHeightWidthRatio = 
+					this.sectionCylinderHeight.doubleValue(SI.METER)
+					/this.sectionCylinderWidth.doubleValue(SI.METER);
+			
+			equivalentDiameterCylinderGM = Amount.valueOf(
+					lenN.doubleValue(SI.METRE)/lambdaN,
+					SI.METER
+					); 
+			
+			sectionCylinderHeight = Amount.valueOf( 
+					Math.sqrt(
+							sectionHeightWidthRatio
+							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							),
+					SI.METER
+					);
+			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
+			
 			lenC = Amount.valueOf(
-					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE), 
+					lambdaC * equivalentDiameterCylinderGM.doubleValue(SI.METRE), 
 					SI.METRE);
 			lenT = Amount.valueOf(
-					lambdaT * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					lambdaT * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenF = Amount.valueOf(
 					lenN.doubleValue(SI.METRE)
@@ -1565,74 +1609,89 @@ public class FuselageCreator implements IFuselageCreator {
 			lenRatioCF =  
 					lenC.doubleValue(SI.METRE)
 					/ lenF.doubleValue(SI.METRE) ;
-			lenRatioTF = 
-					lenT.doubleValue(SI.METRE)
-					/ lenF.doubleValue(SI.METRE);
-			lambdaF = 
-					lenF.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
 			break;
 
 		case ADJ_TAILCONE_LENGTH_CONST_TOT_LENGTH_DIAMETERS:
+			
+			// new variable
 			lenT = len;
-			lambdaT = 
-					lenT.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_T / _diam_C;
+			
+			// constant values
+			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
+			sectionCylinderHeight = this.sectionCylinderHeight;
+			sectionCylinderWidth = this.sectionCylinderWidth;
+			lenF = this.lenF;
+			lenN = this.lenN;
+			lenRatioNF = this.lenRatioNF;
+			
+			// values to be calculated
 			lenC = Amount.valueOf( 
 					lenF.doubleValue(SI.METRE)
 					- lenN.doubleValue(SI.METRE) 
 					- lenT.doubleValue(SI.METRE) , 
 					SI.METRE);
-			lambdaC = 
-					lenC.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
 			lenRatioCF = 
 					lenC.doubleValue(SI.METRE)
 					/ lenF.doubleValue(SI.METRE);
-			lenRatioTF =  
-					lenT.doubleValue(SI.METRE)
-					/ lenF.doubleValue(SI.METRE) ;
 			break;
 
 		case ADJ_TAILCONE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS:
+			
+			// new variable
 			lenT = len;
+			
+			// constant values
+			lenRatioNF = this.lenRatioNF;
+			lenRatioCF = this.lenRatioCF;
+			lenRatioTF = this.lenRatioTF;
+			equivalentDiameterCylinderGM = this.equivalentDiameterCylinderGM;
+			sectionCylinderHeight = this.sectionCylinderHeight;
+			sectionCylinderWidth = this.sectionCylinderWidth;
+			
+			// values to be calculated
 			lenF = Amount.valueOf( 
 					lenT.doubleValue(SI.METRE)/ lenRatioTF, 
 					SI.METRE); // _len_N/_lenRatio_NF;
-			lenN = Amount.valueOf( 
-					lenRatioNF * lenF.doubleValue(SI.METRE) , 
-					SI.METRE); // _lenRatio_NF*_len_F;
-			lenC = Amount.valueOf( 
-					lenRatioCF * lenF.doubleValue(SI.METRE) , 
-					SI.METRE); // _lenRatio_CF*_len_F;
-			lambdaN =  
-					lenN.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_N / _diam_C;
-			lambdaC =  
-					lenC.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE) ; // _len_C / _diam_C;
-			lambdaT =   
-					lenT.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_T / _diam_C;
-			lambdaF = 
-					lenF.doubleValue(SI.METRE)
-					/ sectionCylinderHeight.doubleValue(SI.METRE); // _len_F / _diam_C;
 			break;
 
 		case ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS:
+			
+			// new variable
 			lenT = len;
-			sectionCylinderHeight = Amount.valueOf(
-					lenT.doubleValue(SI.METRE)
-					/ lambdaT , 
-					SI.METRE);
+			
+			// constant values
+			lambdaF = this.lambdaF;
+			lambdaT = this.lambdaT;
+			lambdaN = this.lambdaN;
+			lambdaC = this.lambdaC;
+			
+			// values to be calculated
+			sectionHeightWidthRatio = 
+					this.sectionCylinderHeight.doubleValue(SI.METER)
+					/this.sectionCylinderWidth.doubleValue(SI.METER);
+			
+			equivalentDiameterCylinderGM = Amount.valueOf(
+					lenT.doubleValue(SI.METRE)/lambdaT,
+					SI.METER
+					); 
+			
+			sectionCylinderHeight = Amount.valueOf( 
+					Math.sqrt(
+							sectionHeightWidthRatio
+							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							),
+					SI.METER
+					);
+			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
+			
 			lenN = Amount.valueOf( 
-					lambdaN * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					lambdaN * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenC = Amount.valueOf( 
-					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					lambdaC * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenF = Amount.valueOf( 
-					lambdaF * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					lambdaF * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenRatioNF = 
 					lenN.doubleValue(SI.METRE)
@@ -1640,24 +1699,41 @@ public class FuselageCreator implements IFuselageCreator {
 			lenRatioCF =  
 					lenC.doubleValue(SI.METRE)
 					/ lenF.doubleValue(SI.METRE);
-			lenRatioTF = 
-					lenT.doubleValue(SI.METRE)
-					/ lenF.doubleValue(SI.METRE) ;
 			break;
 
 		case ADJ_FUS_LENGTH_CONST_FINENESS_RATIOS_VAR_DIAMETERS:
-			sectionCylinderHeight= len;
+			
+			// new variable
+			equivalentDiameterCylinderGM= len;
+			
+			// constant values
+			lambdaF = this.lambdaF;
+			lambdaN = this.lambdaN;
+			lambdaC = this.lambdaC;
+			lambdaT = this.lambdaT;
+			
+			// values to be calculated
+			sectionHeightWidthRatio = 
+					this.sectionCylinderHeight.doubleValue(SI.METER)
+					/this.sectionCylinderWidth.doubleValue(SI.METER);
+			
+			sectionCylinderHeight = Amount.valueOf( 
+					Math.sqrt(
+							sectionHeightWidthRatio
+							*Math.pow(equivalentDiameterCylinderGM.doubleValue(SI.METER),2)
+							),
+					SI.METER
+					);
+			sectionCylinderWidth = sectionCylinderHeight.divide(sectionHeightWidthRatio);
+			
 			lenN  =Amount.valueOf(
-					lambdaN * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					lambdaN * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenC = Amount.valueOf(  
-					lambdaC * sectionCylinderHeight.doubleValue(SI.METRE) , 
-					SI.METRE);
-			lenT = Amount.valueOf(  
-					lambdaT * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					lambdaC * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenF = Amount.valueOf( 
-					lambdaF * sectionCylinderHeight.doubleValue(SI.METRE) , 
+					lambdaF * equivalentDiameterCylinderGM.doubleValue(SI.METRE) , 
 					SI.METRE);
 			lenRatioNF =
 					lenN.doubleValue(SI.METRE)
@@ -1665,20 +1741,22 @@ public class FuselageCreator implements IFuselageCreator {
 			lenRatioCF =  
 					lenC.doubleValue(SI.METRE)
 					/ lenF.doubleValue(SI.METRE);
-			lenRatioTF = 
-					lenT.doubleValue(SI.METRE)
-					/ lenF.doubleValue(SI.METRE);
 			break;
 		default:
 			break;
 		}
-
-	}  // End  Event adjustLength
+		
+		this.lenF = lenF;
+		this.lenRatioCF = lenRatioCF;
+		this.lenRatioNF = lenRatioNF;
+		this.sectionCylinderHeight = sectionCylinderHeight;
+		this.sectionCylinderWidth = sectionCylinderWidth;
+		
+		calculateGeometry();
+		
+	}  // End  AdjustLength
 	
 	public void adjustSectionShapeParameters(int idx, Double a, Double rhoUpper, Double rhoLower) {
-
-		//		getSectionUpperCurveY().clear();
-		//		getSectionUpperCurveZ().clear();
 
 		switch (idx) {
 
@@ -1692,6 +1770,11 @@ public class FuselageCreator implements IFuselageCreator {
 					wf, hf, 0.5, 0.0, 0.0,         // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
+			
+			sectionCylinderLowerToTotalHeightRatio = 0.5;
+			sectionCylinderRhoUpper = 0.0;
+			sectionCylinderRhoLower = 0.0;
+			
 			break;
 
 		case IDX_SECTION_YZ_MID_NOSE:
@@ -1709,8 +1792,10 @@ public class FuselageCreator implements IFuselageCreator {
 					npSecUp, npSecLow          // num. points
 					);
 
-			//System.out.println("--+ rhoUpper: "+ _sectionsYZ.get(idx).get_RhoUpper());
-
+			sectionCylinderLowerToTotalHeightRatio = a;
+			sectionCylinderRhoUpper = rhoUpper;
+			sectionCylinderRhoLower = rhoLower;
+			
 			break;
 
 		case IDX_SECTION_YZ_CYLINDER_1:
@@ -1724,6 +1809,11 @@ public class FuselageCreator implements IFuselageCreator {
 					wf, hf, a, rhoUpper, rhoLower, // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
+			
+			sectionCylinderLowerToTotalHeightRatio = a;
+			sectionCylinderRhoUpper = rhoUpper;
+			sectionCylinderRhoLower = rhoLower;
+			
 			break;
 
 		case IDX_SECTION_YZ_CYLINDER_2:
@@ -1736,6 +1826,11 @@ public class FuselageCreator implements IFuselageCreator {
 					wf, hf, a, rhoUpper, rhoLower, // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
+			
+			sectionCylinderLowerToTotalHeightRatio = a;
+			sectionCylinderRhoUpper = rhoUpper;
+			sectionCylinderRhoLower = rhoLower;
+			
 			break;
 
 		case IDX_SECTION_YZ_MID_TAIL:
@@ -1748,6 +1843,11 @@ public class FuselageCreator implements IFuselageCreator {
 					wf, hf, a, rhoUpper, rhoLower, // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
+			
+			sectionCylinderLowerToTotalHeightRatio = a;
+			sectionCylinderRhoUpper = rhoUpper;
+			sectionCylinderRhoLower = rhoLower;
+			
 			break;
 
 		case IDX_SECTION_YZ_TAIL_CAP: // a, rhoUpper, rhoLower NOT USED
@@ -1760,6 +1860,11 @@ public class FuselageCreator implements IFuselageCreator {
 					wf, hf, 0.5, 0.0, 0.0,         // lengths & parameters
 					npSecUp, npSecLow          // num. points
 					);
+			
+			sectionCylinderLowerToTotalHeightRatio = 0.5;
+			sectionCylinderRhoUpper = 0.0;
+			sectionCylinderRhoLower = 0.0;
+			
 			break;
 
 		default:
@@ -1767,28 +1872,8 @@ public class FuselageCreator implements IFuselageCreator {
 			break;
 		}
 
-		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		// adjust Z-coordinates in side curves
-		// Take Z-values from section shape scaled at x
-		outlineXYSideRCurveZ.clear();
-		for (int i = 0; i < outlineXZUpperCurveX.size(); i++){
-			double x = outlineXZUpperCurveX.get(i);
-			double z = this.getZSide(x);
-			outlineXYSideRCurveZ.add(z);
-		}
-
-		// LEFT CURVE (mirror)----------------------------------
-		outlineXYSideLCurveX.clear();
-		outlineXYSideLCurveY.clear();
-		outlineXYSideLCurveZ.clear();
-		for (int i = 0; i < outlineXYSideRCurveX.size(); i++){
-			//
-			outlineXYSideLCurveX.add(  outlineXYSideRCurveX.get(i) ); // <== X
-			outlineXYSideLCurveY.add( -outlineXYSideRCurveY.get(i) ); // <== -Y
-			outlineXYSideLCurveZ.add(  outlineXYSideRCurveZ.get(i) ); // <== Z
-		}
-		//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+		calculateOutlines(npN, npC, npT, npSecUp, npSecLow);
+		
 	}
 
 	public void calculateOutlinesUpperLowerSectionYZ(int idx)
@@ -2065,8 +2150,6 @@ public class FuselageCreator implements IFuselageCreator {
 		// NOSE TRUNK
 		List<String> lenRatioNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/length_ratio");
 		Double lenRatioNF = Double.valueOf(lenRatioNoseProp.get(0));
-		List<String> finenessRatioNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/fineness_ratio");
-		Double lambdaN = Double.valueOf(finenessRatioNoseProp.get(0));
 		Amount<Length> heightN = reader.getXMLAmountLengthByPath("//nose_trunk/tip_height_offset");
 		
 		List<String>  dxCapPercentNoseProp = reader.getXMLPropertiesByPath("//nose_trunk/dx_cap_percent");
@@ -2131,7 +2214,6 @@ public class FuselageCreator implements IFuselageCreator {
 				.dxNoseCapPercent(dxNoseCapPercent)
 				.heightN(heightN)
 				.lenRatioNF(lenRatioNF)
-				.lambdaN(lambdaN)
 				.sectionMidNoseRhoLower(sectionMidNoseRhoLower)
 				.sectionMidNoseRhoUpper(sectionMidNoseRhoUpper)
 				.sectionNoseMidLowerToTotalHeightRatio(sectionNoseMidLowerToTotalHeightRatio)
@@ -2173,10 +2255,6 @@ public class FuselageCreator implements IFuselageCreator {
 		// FuselageCreator overall length
 		private Amount<Length> _lenF;
 
-		private Amount<Length> _lenN;
-		private Amount<Length> _lenC;
-		private Amount<Length> _lenT;
-
 		private Amount<Length> _sectionCylinderHeight;
 
 		private WindshieldTypeEnum _windshieldType; // Possible types (Roskam part VI, page 134): Flat,protruding; Flat,flush; Single,round; Single,sharp; Double
@@ -2189,21 +2267,14 @@ public class FuselageCreator implements IFuselageCreator {
 		private Amount<Length> _roughness;
 
 		// Non-dimensional parameters
-		private Double _lambdaN;
-		private Double _lambdaC;
-		private Double _lambdaT;
 		private Double _lenRatioNF;
 		private Double _lenRatioCF;
-		private Double _lenRatioTF;
-		private Double _formFactor;
 
 		// FuselageCreator section parameters
 
 		// Width and height
 		private Amount<Length> _sectionCylinderWidth;
 		private Amount<Length> _windshieldHeight, _windshieldWidth;
-
-		private Amount<Length> _dxNoseCap, _dxTailCap;
 
 		// Non dimensional section parameters
 
@@ -2224,9 +2295,6 @@ public class FuselageCreator implements IFuselageCreator {
 			_sectionMidTailRhoLower;
 
 		// meshing stuff
-		private int _np_N = 10, _np_C = 4, _np_T = 10, _np_SecUp = 10, _np_SecLow = 10;
-		private double _deltaXNose, _deltaXCylinder, _deltaXTail;
-
 		private double _dxNoseCapPercent;
 		private double _dxTailCapPercent;
 
@@ -2246,6 +2314,7 @@ public class FuselageCreator implements IFuselageCreator {
 		 *
 		 * @author Vittorio Trifari
 		 */
+		@SuppressWarnings("incomplete-switch")
 		public void initializeDefaultVariables(AircraftEnum aircraftName) {
 
 			// init variables - Reference aircraft:
@@ -2263,9 +2332,6 @@ public class FuselageCreator implements IFuselageCreator {
 
 				_sectionCylinderWidth     = Amount.valueOf(2.865,SI.METRE);
 				_sectionCylinderHeight    = Amount.valueOf(2.6514, SI.METRE);
-
-				// Nose fineness ratio, _len_N/_diam_N
-				_lambdaN      = 1.2;
 
 				// Height from ground of lowest part of fuselage
 				_heightFromGround = Amount.valueOf(0.66, SI.METER);
@@ -2311,9 +2377,6 @@ public class FuselageCreator implements IFuselageCreator {
 				_sectionCylinderWidth     = Amount.valueOf(6.5,SI.METRE);
 				_sectionCylinderHeight    = Amount.valueOf(7.1, SI.METRE);
 
-				// Nose fineness ratio, _len_N/_diam_N
-				_lambdaN      = 1.521;
-
 				// Height from ground of lowest part of fuselage
 				_heightFromGround = Amount.valueOf(2.1, SI.METER);
 
@@ -2357,9 +2420,6 @@ public class FuselageCreator implements IFuselageCreator {
 
 				_sectionCylinderWidth     = Amount.valueOf(3.,SI.METRE);
 				_sectionCylinderHeight    = Amount.valueOf(3., SI.METRE);
-
-				// Nose fineness ratio, _len_N/_diam_N
-				_lambdaN      = 1.4;
 
 				// Height from ground of lowest part of fuselage
 				_heightFromGround = Amount.valueOf(4.25, SI.METER);
@@ -2430,11 +2490,6 @@ public class FuselageCreator implements IFuselageCreator {
 		
 		public FuselageBuilder sectionCylinderHeight(Amount<Length> sectionCylinderHeight) {
 			_sectionCylinderHeight = sectionCylinderHeight;
-			return this;
-		}
-		
-		public FuselageBuilder lambdaN(Double lambdaN) {
-			_lambdaN = lambdaN;
 			return this;
 		}
 		
@@ -2560,7 +2615,6 @@ public class FuselageCreator implements IFuselageCreator {
 		this.lenRatioCF = builder._lenRatioCF;
 		this.sectionCylinderWidth = builder._sectionCylinderWidth;
 		this.sectionCylinderHeight = builder._sectionCylinderHeight;
-		this.lambdaN = builder._lambdaN;
 		this.heightFromGround = builder._heightFromGround;
 		this.roughness = builder._roughness;
 		this.heightN = builder._heightN;
