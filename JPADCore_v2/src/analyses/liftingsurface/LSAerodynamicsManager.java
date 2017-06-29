@@ -4076,4 +4076,12 @@ public class LSAerodynamicsManager {
 	public void setCurrentMomentCoefficient(Double _currentMomentCoefficient) {
 		this._currentMomentCoefficient = _currentMomentCoefficient;
 	}
+
+	public Map<MethodEnum, Double> getDeltaCD0() {
+		return _deltaCD0;
+	}
+
+	public void setDeltaCD0(Map<MethodEnum, Double> _deltaCD0) {
+		this._deltaCD0 = _deltaCD0;
+	}
 }
