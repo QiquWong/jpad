@@ -2093,6 +2093,95 @@ public class ACAerodynamicCalculator {
 			}
 		}
 
+		
+		//.........................................................................................................................
+		//	HORIZONTAL TAIL LIFT_CURVES_3D
+		
+		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL) ||
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL) ||
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
+
+				CalcHighLiftCurve calcHTailHighLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftCurve();
+
+				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
+					List<Double> temporaryLiftHorizontalTail = new ArrayList<>();
+					List<Amount<Angle>> temporaryDeList = new ArrayList<>();
+					temporaryDeList.add(de);
+					
+					calcHTailHighLiftCurve.semiempirical(
+							temporaryDeList, 
+							null, 
+							_currentMachNumber, 
+							_currentAltitude
+							);
+					temporaryLiftHorizontalTail = MyArrayUtils.convertDoubleArrayToListDouble(
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(MethodEnum.SEMPIEMPIRICAL));
+
+					_current3DHorizontalTail.put(
+							de, 
+							temporaryLiftHorizontalTail);
+
+				});
+
+			}
+			_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D,MethodEnum.SEMPIEMPIRICAL);
+		}
+		
+		
+		//.........................................................................................................................
+		//	HORIZONTAL TAIL POLAR_CURVES_3D
+
+		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL) ||
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL) ||
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
+
+				CalcPolar calcBaselinePolarCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcPolar();
+
+				calcBaselinePolarCurve.fromCdDistribution(_currentMachNumber, _currentAltitude);
+				List<Double> polarCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION)
+						);
+				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
+
+					_current3DHorizontalTail.put(
+							de, 
+							polarCurve);
+				});
+			}
+			_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE,MethodEnum.AIRFOIL_DISTRIBUTION);
+		}
+
+		//.........................................................................................................................
+		//	HORIZONTAL TAIL MOMENT_CURVES_3D
+		
+
+		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D)) {
+
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL) ||
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
+
+				CalcMomentCurve calcBaselineMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentCurve();
+
+				calcBaselineMomentCurve.fromAirfoilDistribution();
+				List<Double> momentCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION)
+						);
+				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
+
+					_current3DHorizontalTail.put(
+							de, 
+							momentCurve);
+				});
+			}
+			_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D,MethodEnum.AIRFOIL_DISTRIBUTION);
+		}
+		
+		
+		/// FINE
 		//HORIZONTAL TAIL DATA---
 		// fill the map for deflection
 		
@@ -2135,6 +2224,7 @@ public class ACAerodynamicCalculator {
 			//.........................................................................................................................
 			//	HORIZONTAL TAIL MOMENT_CURVE_3D
 
+			
 			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D)) {
 
 				CalcMomentCurve calcHorizontalTailMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentCurve();
