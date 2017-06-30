@@ -34,7 +34,7 @@ public class LandingGears implements ILandingGear {
 	public enum MountingPosition {
 		FUSELAGE,
 		WING,
-		NACELLE,
+		NACELLE
 	}
 	
 	private String _id;

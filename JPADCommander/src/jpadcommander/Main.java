@@ -68,6 +68,11 @@ public class Main extends Application {
 	private static Button statusLight;
 	private static State status;
 	//...........................................................................................
+	// ACTION BUTTONS
+	private static Button setDataButton;
+	private static Button updateAllButton;
+	private static Button saveAircraftButton;
+	//...........................................................................................
 	// AIRCRAFT OBJECT
 	private static Aircraft theAircraft;
 	//...........................................................................................
@@ -108,18 +113,18 @@ public class Main extends Application {
 	private static List<TextField> textFieldAircraftEngineXList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEngineYList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEngineZList = new ArrayList<>();
-	private static List<TextField> textFieldAircraftEnginePositonList = new ArrayList<>();
+	private static List<ChoiceBox<String>> textFieldAircraftEnginePositonList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftEngineTiltList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacelleFileList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacelleXList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacelleYList = new ArrayList<>();
 	private static List<TextField> textFieldAircraftNacelleZList = new ArrayList<>();
-	private static List<TextField> textFieldAircraftNacellePositonList = new ArrayList<>();
+	private static List<ChoiceBox<String>> textFieldAircraftNacellePositonList = new ArrayList<>();
 	private static TextField textFieldAircraftLandingGearsFile;
 	private static TextField textFieldAircraftLandingGearsX;
 	private static TextField textFieldAircraftLandingGearsY;
 	private static TextField textFieldAircraftLandingGearsZ;
-	private static TextField textFieldAircraftLandingGearsPosition;
+	private static ChoiceBox<String> textFieldAircraftLandingGearsPosition;
 	private static TextField textFieldAircraftSystemsFile;
 	private static TextField textFieldAircraftSystemsX;
 	private static TextField textFieldAircraftSystemsY;
@@ -607,11 +612,11 @@ public class Main extends Application {
 		Main.textFieldAircraftEngineZList = textFieldAircraftEngineZList;
 	}
 
-	public static List<TextField> getTextFieldAircraftEnginePositonList() {
+	public static List<ChoiceBox<String>> getTextFieldAircraftEnginePositonList() {
 		return textFieldAircraftEnginePositonList;
 	}
 
-	public static void setTextFieldAircraftEnginePositonList(List<TextField> textFieldAircraftEnginePositonList) {
+	public static void setTextFieldAircraftEnginePositonList(List<ChoiceBox<String>> textFieldAircraftEnginePositonList) {
 		Main.textFieldAircraftEnginePositonList = textFieldAircraftEnginePositonList;
 	}
 
@@ -655,11 +660,11 @@ public class Main extends Application {
 		Main.textFieldAircraftNacelleZList = textFieldAircraftNacelleZList;
 	}
 
-	public static List<TextField> getTextFieldAircraftNacellePositonList() {
+	public static List<ChoiceBox<String>> getTextFieldAircraftNacellePositonList() {
 		return textFieldAircraftNacellePositonList;
 	}
 
-	public static void setTextFieldAircraftNacellePositonList(List<TextField> textFieldAircraftNacellePositonList) {
+	public static void setTextFieldAircraftNacellePositonList(List<ChoiceBox<String>> textFieldAircraftNacellePositonList) {
 		Main.textFieldAircraftNacellePositonList = textFieldAircraftNacellePositonList;
 	}
 
@@ -695,11 +700,11 @@ public class Main extends Application {
 		Main.textFieldAircraftLandingGearsZ = textFieldAircraftLandingGearsZ;
 	}
 
-	public static TextField getTextFieldAircraftLandingGearsPosition() {
+	public static ChoiceBox<String> getTextFieldAircraftLandingGearsPosition() {
 		return textFieldAircraftLandingGearsPosition;
 	}
 
-	public static void setTextFieldAircraftLandingGearsPosition(TextField textFieldAircraftLandingGearsPosition) {
+	public static void setTextFieldAircraftLandingGearsPosition(ChoiceBox<String> textFieldAircraftLandingGearsPosition) {
 		Main.textFieldAircraftLandingGearsPosition = textFieldAircraftLandingGearsPosition;
 	}
 
@@ -1177,6 +1182,30 @@ public class Main extends Application {
 
 	public static void setTextAreaFuselageConsoleOutput(TextArea textAreaFuselageConsoleOutput) {
 		Main.textAreaFuselageConsoleOutput = textAreaFuselageConsoleOutput;
+	}
+
+	public static Button getSetDataButton() {
+		return setDataButton;
+	}
+
+	public static void setSetDataButton(Button setDataButton) {
+		Main.setDataButton = setDataButton;
+	}
+
+	public static Button getUpdateAllButton() {
+		return updateAllButton;
+	}
+
+	public static void setUpdateAllButton(Button updateAllButton) {
+		Main.updateAllButton = updateAllButton;
+	}
+
+	public static Button getSaveAircraftButton() {
+		return saveAircraftButton;
+	}
+
+	public static void setSaveAircraftButton(Button saveAircraftButton) {
+		Main.saveAircraftButton = saveAircraftButton;
 	}
 
 }

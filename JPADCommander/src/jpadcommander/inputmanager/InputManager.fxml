@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
@@ -76,7 +77,8 @@
                                                             <GridPane layoutX="5.0" layoutY="220.0" prefHeight="146.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="273.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="257.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="47.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -93,6 +95,9 @@
                                                                   <TextField id="textFieldAircraftFuselageX" prefHeight="31.0" prefWidth="125.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftFuselageZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftFuselageY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="fuselageXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="fuselageYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="fuselageZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="374.0" prefHeight="0.0" prefWidth="1312.0" />
@@ -104,7 +109,8 @@
                                                             <GridPane layoutX="5.0" layoutY="402.0" prefHeight="174.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="273.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="295.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="69.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -124,6 +130,10 @@
                                                                   <TextField id="textFieldAircraftWingY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftWingRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="wingXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="wingYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="wingZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="wingRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-46.0" layoutY="587.0" prefHeight="0.0" prefWidth="1345.0" />
@@ -135,7 +145,8 @@
                                                             <GridPane layoutX="4.0" layoutY="611.0" prefHeight="174.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="273.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="331.0" minWidth="10.0" prefWidth="295.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="69.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -155,6 +166,10 @@
                                                                   <TextField id="textFieldAircraftHTailY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftHTailRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="hTailXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="hTailYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="hTailZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="hTailRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="4.0" layoutY="792.0" prefHeight="0.0" prefWidth="1346.0" />
@@ -166,7 +181,8 @@
                                                             <GridPane layoutX="4.0" layoutY="820.0" prefHeight="174.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="273.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="317.0" minWidth="10.0" prefWidth="294.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="70.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -186,6 +202,10 @@
                                                                   <TextField id="textFieldAircraftVTailY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftVTailRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="vTailXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="vTailYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="vTailZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="vTailRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="1005.0" prefHeight="0.0" prefWidth="1435.0" />
@@ -197,7 +217,8 @@
                                                             <GridPane layoutX="5.0" layoutY="1036.0" prefHeight="174.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="273.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="292.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="72.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -217,6 +238,10 @@
                                                                   <TextField id="textFieldAircraftCanardY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftCanardRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="canardXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="canardYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="canardZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="canardRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-12.0" layoutY="1224.0" prefHeight="2.0" prefWidth="1431.0" />
@@ -228,7 +253,8 @@
                                                             <GridPane layoutX="25.0" layoutY="1249.0" prefHeight="220.0" prefWidth="474.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="62.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="88.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="64.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
@@ -244,48 +270,52 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <TextField id="textFieldAircraftEngineFile1" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineX1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineZ1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineY1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEnginePosition1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineFile2" GridPane.columnIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineX2" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineY2" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ2" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition2" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineFile3" GridPane.columnIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineY3" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ3" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition3" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineFile4" GridPane.columnIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineX4" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineFile5" GridPane.columnIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineY4" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ4" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEngineX3" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEnginePosition4" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineY5" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineX5" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineZ5" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition5" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineFile1" GridPane.columnIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEnginePosition1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineFile2" GridPane.columnIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEnginePosition2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineFile3" GridPane.columnIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEnginePosition3" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineFile4" GridPane.columnIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineFile5" GridPane.columnIndex="6" />
+                                                                  <TextField id="textFieldAircraftEngineY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEnginePosition4" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEnginePosition5" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                   <Label text="File:" />
                                                                   <Label text="X:" GridPane.rowIndex="1" />
                                                                   <Label text="Y:" GridPane.rowIndex="2" />
                                                                   <Label text="Z:" GridPane.rowIndex="3" />
                                                                   <Label text="Position:" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftEngineFile6" GridPane.columnIndex="6" />
-                                                                  <TextField id="textFieldAircraftEngineX6" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEngineY6" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEngineZ6" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition6" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineFile6" GridPane.columnIndex="7" />
+                                                                  <TextField id="textFieldAircraftEngineX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEnginePosition6" GridPane.columnIndex="7" GridPane.rowIndex="4" />
                                                                   <Label text="Tilting Angle:" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt2" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt3" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt4" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt5" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-                                                                  <TextField id="textFieldAircraftEngineTilt6" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt5" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt6" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox id="powerPlantXUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="powerPlantYUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="powerPlantZUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="powerPlantTiltingAngleUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="1477.0" prefHeight="0.0" prefWidth="1372.0" />
@@ -297,7 +327,8 @@
                                                             <GridPane layoutX="25.0" layoutY="1515.0" prefHeight="181.0" prefWidth="474.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="62.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="88.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="64.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
@@ -312,41 +343,44 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <TextField id="textFieldAircraftNacelleFile1" GridPane.columnIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleX1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleZ1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleY1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacellePosition1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleFile2" GridPane.columnIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleX2" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleY2" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ2" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition2" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleFile3" GridPane.columnIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleY3" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ3" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition3" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleFile4" GridPane.columnIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleX4" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleFile5" GridPane.columnIndex="5" />
-                                                                  <TextField id="textFieldAircraftNacelleY4" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ4" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacelleX3" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacellePosition4" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleY5" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleX5" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleZ5" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition5" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleFile1" GridPane.columnIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacellePosition1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleFile2" GridPane.columnIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacellePosition2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleFile3" GridPane.columnIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacellePosition3" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleFile4" GridPane.columnIndex="5" />
+                                                                  <TextField id="textFieldAircraftNacelleX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleFile5" GridPane.columnIndex="6" />
+                                                                  <TextField id="textFieldAircraftNacelleY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacellePosition4" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacellePosition5" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                   <Label text="File:" />
                                                                   <Label text="X:" GridPane.rowIndex="1" />
                                                                   <Label text="Y:" GridPane.rowIndex="2" />
                                                                   <Label text="Z:" GridPane.rowIndex="3" />
                                                                   <Label text="Position:" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftNacelleFile6" GridPane.columnIndex="6" />
-                                                                  <TextField id="textFieldAircraftNacelleX6" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacelleY6" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacelleZ6" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition6" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleFile6" GridPane.columnIndex="7" />
+                                                                  <TextField id="textFieldAircraftNacelleX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacellePosition6" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="nacellesXUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="nacellesYUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="nacellesZUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="1707.0" prefHeight="0.0" prefWidth="1369.0" />
@@ -358,7 +392,8 @@
                                                             <GridPane layoutX="5.0" layoutY="1753.0" prefHeight="174.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="273.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="238.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="46.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -378,6 +413,9 @@
                                                                   <TextField id="textFieldAircraftLandingGearsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Position:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftLandingGearsPosition" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="landingGearsXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="landingGearsYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="landingGearsZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-40.0" layoutY="1942.0" prefHeight="0.0" prefWidth="1604.0" />
@@ -389,7 +427,8 @@
                                                             <GridPane layoutX="4.0" layoutY="1973.0" prefHeight="148.0" prefWidth="383.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="273.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="293.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="71.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -406,6 +445,9 @@
                                                                   <TextField id="textFieldAircraftSystemsX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftSystemsZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftSystemsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="systemsXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="systemsYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="systemsZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                </children>
                                                             </GridPane>
                                                             <Label layoutX="5.0" layoutY="4.0" text="Aircraft type:">
@@ -913,4 +955,13 @@
         </tabs>
       </TabPane>
    </center>
+   <top>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <Button id="setDataButton" mnemonicParsing="false" text="Set  Data" />
+            <Button id="updateAllButton" mnemonicParsing="false" text="Update All" />
+            <Button id="saveAircraftButton" mnemonicParsing="false" text="Save Aircraft" />
+        </items>
+      </ToolBar>
+   </top>
 </BorderPane>

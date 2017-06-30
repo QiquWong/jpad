@@ -40,6 +40,24 @@ public class InputManagerController {
 			"SINGLE_ROUND",
 			"SINGLE_SHARP"
 			);
+	ObservableList<String> powerPlantMountingPositionTypeList = FXCollections.observableArrayList(
+			"BURIED",
+			"WING",
+			"AFT_FUSELAGE",
+			"HTAIL",
+			"REAR_FUSELAGE"
+			);
+	ObservableList<String> nacelleMountingPositionTypeList = FXCollections.observableArrayList(
+			"WING",
+			"FUSELAGE",
+			"HTAIL",
+			"UNDERCARRIAGE_HOUSING"
+			);
+	ObservableList<String> landingGearsMountingPositionTypeList = FXCollections.observableArrayList(
+			"FUSELAGE",
+			"WING",
+			"NACELLE"
+			);
 	
 	@FXML
 	@SuppressWarnings("rawtypes")
@@ -54,11 +72,26 @@ public class InputManagerController {
 	private ChoiceBox windshieldTypeChoiceBox;
 	
 	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantMountingPositionTypeChoiceBox;
+	
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacellesMountingPositionTypeChoiceBox;
+	
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox landingGearsMountingPositionTypeChoiceBox;
+	
+	@FXML
 	@SuppressWarnings("unchecked")
 	private void initialize() {
 		aircraftTypeChioseBox.setItems(aircraftTypeList);
 		regulationsTypeChioseBox.setItems(regulationsTypeList);
 		windshieldTypeChoiceBox.setItems(windshieldTypeList);
+		powerPlantMountingPositionTypeChoiceBox.setItems(powerPlantMountingPositionTypeList);
+		nacellesMountingPositionTypeChoiceBox.setItems(nacelleMountingPositionTypeList);
+		landingGearsMountingPositionTypeChoiceBox.setItems(landingGearsMountingPositionTypeList);
 	}
 	
 	@FXML

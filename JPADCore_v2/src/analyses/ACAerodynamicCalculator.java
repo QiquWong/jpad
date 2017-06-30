@@ -123,7 +123,7 @@ public class ACAerodynamicCalculator {
 	private List<Double> _current3DWingLiftCurve;
 	private List<Double> _current3DWingPolarCurve;
 	private List<Double> _current3DWingMomentCurve;
-	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTail
+	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTail;
 
 	Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
 	private Map<Boolean, Map<MethodEnum, List<Double>>> _downwashGradientMap;
