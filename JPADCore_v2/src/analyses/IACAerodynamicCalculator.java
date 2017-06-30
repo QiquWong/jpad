@@ -31,7 +31,7 @@ public interface IACAerodynamicCalculator {
 	List<Double> getXCGAircraft(); //in MAC perc.
 	List<Double> getZCGAircraft();
 	Amount<Length> getZCGLandingGear();
-	Double[] getLandingGearDragCoefficient();
+	Double getLandingGearDragCoefficient();
 	Amount<Angle> getAlphaBodyInitial();
 	Amount<Angle> getAlphaBodyFinal();
 	int getNumberOfAlphasBody();
@@ -52,6 +52,7 @@ public interface IACAerodynamicCalculator {
 	List<Amount<Angle>> getDeltaRudderList();
 	Boolean getFuselageEffectOnWingLiftCurve();
 	Boolean getWingPendularStability();
+	Double getCD0Miscellaneous();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder {

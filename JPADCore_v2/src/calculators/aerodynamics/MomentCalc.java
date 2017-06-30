@@ -998,7 +998,6 @@ public class MomentCalc {
 			Amount<Length> zCGPosition,
 			Amount<Length> xACWing,
 			Amount<Length> zACWing,
-			Amount<Length> zFuselage,
 			Amount<Length> xACHorizontalTail,
 			Amount<Length> zACHorizontalTail,
 			Amount<Length> zLandingGear,
@@ -1014,7 +1013,7 @@ public class MomentCalc {
 			List<Double> horizontalTailLiftCoefficient,
 			List<Double> horizontalTailDragCoefficient,
 			List<Double> horizontalTailMomentCoefficient,
-			List<Double> landingGearDragCoefficient,
+			Double landingGearDragCoefficient,
 			Double horizontalTailDynamicPressureRatio,
 			List<Amount<Angle>> alphaBodyList,
 			boolean pendularStability
@@ -1049,7 +1048,7 @@ public class MomentCalc {
 
 		//Fuselage
 		Amount<Length> fuselageVerticalDistanceACtoCG = Amount.valueOf(
-				zFuselage.doubleValue(SI.METER) - zCGPosition.doubleValue(SI.METER),
+				- zCGPosition.doubleValue(SI.METER),
 				SI.METER);
 		Double nondimensionalFuselageVerticalDistance = 
 				fuselageVerticalDistanceACtoCG.doubleValue(SI.METER)/
@@ -1138,7 +1137,7 @@ public class MomentCalc {
 			//LANDING GEAR----------------------------
 			// moment with respect to CG
 			landingGearMomentCoefficientWithRespectToCG.add(
-					landingGearDragCoefficient.get(i)* nonDimensionalLandingGearArm
+					landingGearDragCoefficient* nonDimensionalLandingGearArm
 					);
 
 			//TOTAL MOMENT COEFFICIENT

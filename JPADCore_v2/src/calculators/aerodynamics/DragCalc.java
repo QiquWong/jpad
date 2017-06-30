@@ -25,6 +25,7 @@ import calculators.geometry.FusNacGeometryCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
+import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import standaloneutils.MyArrayUtils;
@@ -264,6 +265,28 @@ public class DragCalc {
 				/ theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE);
 
 		return cDGap; 
+	}
+	
+	public double calculateCD0Total(
+			) {
+		double cD0Total;
+
+		calculateCD0Parasite();
+
+		double cD0 = _theAircraft.get_fuselage().getAerodynamics().get_cD0Total() +
+				_theAircraft.get_wing().getAerodynamics().get_cD0Total() +
+				_theAircraft.get_theNacelles().get_cD0Total() +
+				_theAircraft.get_HTail().getAerodynamics().get_cD0Total() +
+				_theAircraft.get_VTail().getAerodynamics().get_cD0Total();
+
+		double cDRough = AerodynamicCalc.calculateRoughness(_cD0);
+		double cDCool = AerodynamicCalc.calculateCoolings(_cD0Parasite);
+
+		cD0Total = (cD0 + cDRough + cDCool);
+
+
+
+		return cD0Total; 
 	}
 	
 	/**
@@ -1079,4 +1102,35 @@ public class DragCalc {
 		
 	}
 	
+	public static List<Double> calculateTotalPolarFromEquation(
+			List<Double> wingDragCoefficient,
+			List<Double> horizontalTailDragCoefficientCurve,
+			Amount<Area> wingSurface,
+			Amount<Area> horizontalTailSurface,
+			List<Double> fuselageDragCoefficient,
+			Double cD0LandingGear,
+			Double cD0Miscellaneous,
+			Double horizontalTailDynamicPressureRatio,
+			List<Amount<Angle>> alphaBodyList
+			){
+
+		List<Double> cdTotalList = new ArrayList<>();
+		
+		//TOTAL DRAG CALCULATION
+		alphaBodyList.stream().forEach( ab-> {
+
+		int i = alphaBodyList.indexOf(ab);
+					
+		cdTotalList.add(
+					wingDragCoefficient.get(i)+
+					(horizontalTailDragCoefficientCurve.get(i)*horizontalTailDynamicPressureRatio*
+							(horizontalTailSurface.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE)))+
+					fuselageDragCoefficient.get(i)+
+					cD0LandingGear+
+					cD0Miscellaneous);
+				}
+				);
+	
+		return cdTotalList;
+	}
 }

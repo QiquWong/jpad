@@ -31,6 +31,7 @@ import analyses.liftingsurface.LSAerodynamicsManager.CalcPolar;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
 import calculators.aerodynamics.AerodynamicCalc;
+import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.stability.StabilityCalculators;
@@ -74,6 +75,7 @@ public class ACAerodynamicCalculator {
 	private Double _currentMachNumber;
 	private Amount<Length> _currentAltitude;
 	private List<Double> _wingFinalLiftCurve = new ArrayList<>();
+	Double landingGearUsedDrag = null;
 
 	// for downwash estimation
 	private Amount<Length> _zACRootWing;
@@ -123,7 +125,10 @@ public class ACAerodynamicCalculator {
 	private List<Double> _current3DWingLiftCurve;
 	private List<Double> _current3DWingPolarCurve;
 	private List<Double> _current3DWingMomentCurve;
-	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTail;
+	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailLiftCurve;
+	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailPolarCurve;
+	private List<Double> _current3DHorizontalTailMomentCurve;
+	private List<Double> _deltaCDElevatorList;
 
 	Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
 	private Map<Boolean, Map<MethodEnum, List<Double>>> _downwashGradientMap;
@@ -204,6 +209,21 @@ public class ACAerodynamicCalculator {
 		//...................................................................................
 		// DISTANCE BETWEEN WING VORTEX PLANE AND THE AERODYNAMIC CENTER OF THE HTAIL
 		//...................................................................................
+		switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
+		case TAKE_OFF:
+			landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
+			break;
+		case CLIMB:
+			landingGearUsedDrag = 0.0;
+			break;
+		case CRUISE:
+			landingGearUsedDrag = 0.0;
+			break;
+		case LANDING:
+			landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
+			break;
+		}
+		
 		_zACRootWing = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) 
 				- (
@@ -2119,7 +2139,7 @@ public class ACAerodynamicCalculator {
 					temporaryLiftHorizontalTail = MyArrayUtils.convertDoubleArrayToListDouble(
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(MethodEnum.SEMPIEMPIRICAL));
 
-					_current3DHorizontalTail.put(
+					_current3DHorizontalTailLiftCurve.put(
 							de, 
 							temporaryLiftHorizontalTail);
 
@@ -2142,22 +2162,41 @@ public class ACAerodynamicCalculator {
 				CalcPolar calcBaselinePolarCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcPolar();
 
 				calcBaselinePolarCurve.fromCdDistribution(_currentMachNumber, _currentAltitude);
-				List<Double> polarCurve = MyArrayUtils.convertDoubleArrayToListDouble(
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION)
-						);
-				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
 
-					_current3DHorizontalTail.put(
-							de, 
-							polarCurve);
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE,MethodEnum.AIRFOIL_DISTRIBUTION);
+				
+				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
+			
+					int i = _theAerodynamicBuilderInterface.getDeltaElevatorList().indexOf(de);
+				_deltaCDElevatorList.add(0.0000156*
+						Math.pow(de.doubleValue(NonSI.DEGREE_ANGLE),2) + 
+						0.000002 * de.doubleValue(NonSI.DEGREE_ANGLE));
+				
+				List<Double> temporaryDragCurve = new ArrayList<>();
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL)
+						.getPolar3DCurve().get(_theAerodynamicBuilderInterface
+						.getComponentTaskList()
+						.get(ComponentEnum.HORIZONTAL_TAIL)
+						.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)))
+				.stream()
+				.forEach(cd -> {
+					temporaryDragCurve.add(cd + _deltaCDElevatorList.get(i));
+				});
+				
+				_current3DHorizontalTailPolarCurve.put(
+						de, 
+						temporaryDragCurve
+						);
 				});
 			}
-			_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE,MethodEnum.AIRFOIL_DISTRIBUTION);
+			
 		}
+
 
 		//.........................................................................................................................
 		//	HORIZONTAL TAIL MOMENT_CURVES_3D
-		
+
 
 		if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D)) {
 
@@ -2167,79 +2206,14 @@ public class ACAerodynamicCalculator {
 				CalcMomentCurve calcBaselineMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentCurve();
 
 				calcBaselineMomentCurve.fromAirfoilDistribution();
-				List<Double> momentCurve = MyArrayUtils.convertDoubleArrayToListDouble(
+				_current3DHorizontalTailMomentCurve = MyArrayUtils.convertDoubleArrayToListDouble(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION)
 						);
-				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
-
-					_current3DHorizontalTail.put(
-							de, 
-							momentCurve);
-				});
 			}
 			_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D,MethodEnum.AIRFOIL_DISTRIBUTION);
 		}
-		
-		
-		/// FINE
-		//HORIZONTAL TAIL DATA---
-		// fill the map for deflection
-		
-		// TODO --> CONTINYE HERE FOR CDW, CMW, CLH, CDH...
-
-		//.........................................................................................................................
-		//------USEFUL DATA FOR TOTAL MOMENT COEFFICIENT ------
-		// if component task list doesn't contains the task, it will be set the default one
-
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
-
-
-
-
-
-			//.........................................................................................................................
-			//	HORIZONTAL TAIL LIFT_CURVE_3D
-
-			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
-
-				CalcLiftCurve calcHTailLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcLiftCurve();
-
-				calcHTailLiftCurve.nasaBlackwell(_currentMachNumber);
-
-				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D,MethodEnum.NASA_BLACKWELL);
-			}
-
-			//.........................................................................................................................
-			//	HORIZONTAL TAIL POLAR_CURVE_3D
-
-			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
-
-				CalcPolar calcHTailPolarCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcPolar();
-
-				calcHTailPolarCurve.fromCdDistribution(_currentMachNumber, _currentAltitude);
-
-				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE,MethodEnum.AIRFOIL_DISTRIBUTION);
-			}
-
-			//.........................................................................................................................
-			//	HORIZONTAL TAIL MOMENT_CURVE_3D
-
-			
-			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D)) {
-
-				CalcMomentCurve calcHorizontalTailMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentCurve();
-
-				calcHorizontalTailMomentCurve.fromAirfoilDistribution();
-
-				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D,MethodEnum.AIRFOIL_DISTRIBUTION);
-			}
-
-
-		}
-
 	}
-
-
+	
 
 	public void calculate() {
 
@@ -2355,7 +2329,19 @@ public class ACAerodynamicCalculator {
 	public class CalcTotalLiftCoefficient {
 
 		public void fromAircraftComponents() {
-			// TODO
+			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
+			_totalLiftCoefficient.put(
+					de,
+					LiftCalc.calculateCLTotalCurveWithEquation(
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(),  
+							_current3DWingLiftCurve,
+							_current3DHorizontalTailLiftCurve.get(de),
+							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+							_alphaBodyList)
+
+					)
+					);
 		}
 	}
 	//............................................................................
@@ -2368,7 +2354,37 @@ public class ACAerodynamicCalculator {
 	public class CalcTotalDragCoefficient {
 
 		public void fromAircraftComponents() {
-			// TODO
+
+			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
+			_totalDragCoefficient.put(
+					de,
+					DragCalc.calculateTotalPolarFromEquation(
+							_current3DWingPolarCurve, 
+							_current3DHorizontalTailPolarCurve.get(de), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(),
+							MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+									.get(ComponentEnum.FUSELAGE)
+									.getPolar3DCurve()
+									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+											.get(ComponentEnum.FUSELAGE)
+											.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+							landingGearUsedDrag,
+							_theAerodynamicBuilderInterface.getCD0Miscellaneous(),  // FIX THIS
+							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+							_alphaBodyList)
+					)
+					);
+
+		}
+		
+		public void fromRoskam(){
+			if(_totalLiftCoefficient.isEmpty()){
+				CalcTotalLiftCoefficient calculateTotalLiftCoefficient = new CalcTotalLiftCoefficient();
+				calculateTotalLiftCoefficient.fromAircraftComponents();
+			}
+			
+			
 		}
 	}
 	//............................................................................
@@ -2381,8 +2397,7 @@ public class ACAerodynamicCalculator {
 	public class CalcTotalMomentCoefficient {
 
 		public void fromAircraftComponents() {
-
-
+			
 			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
 
 				int i = _theAerodynamicBuilderInterface.getXCGAircraft().indexOf(xcg);
@@ -2404,7 +2419,6 @@ public class ACAerodynamicCalculator {
 										.get(ComponentEnum.WING)
 										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(), 
-								_theAerodynamicBuilderInterface.getTheAircraft().getFuselage().getCG().getZBRF(), 
 								_liftingSurfaceAerodynamicManagers
 								.get(ComponentEnum.HORIZONTAL_TAIL)
 								.getXacLRF()
@@ -2418,18 +2432,8 @@ public class ACAerodynamicCalculator {
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
 								_current3DWingLiftCurve,
-								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
-										.get(ComponentEnum.WING)
-										.getPolar3DCurve()
-										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-												.get(ComponentEnum.WING)
-												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE))),
-								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
-										.get(ComponentEnum.WING)
-										.getMoment3DCurve()
-										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-												.get(ComponentEnum.WING)
-												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D))),
+								_current3DWingPolarCurve,
+								_current3DWingMomentCurve,
 								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
 										.get(ComponentEnum.FUSELAGE)
 										.getMoment3DCurve()
@@ -2442,26 +2446,10 @@ public class ACAerodynamicCalculator {
 										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 												.get(ComponentEnum.FUSELAGE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
-								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
-										.get(ComponentEnum.HORIZONTAL_TAIL)
-										.getLiftCoefficient3DCurve()
-										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-												.get(ComponentEnum.HORIZONTAL_TAIL)
-												.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D))),
-								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
-										.get(ComponentEnum.HORIZONTAL_TAIL)
-										.getPolar3DCurve()
-										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-												.get(ComponentEnum.HORIZONTAL_TAIL)
-												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE))),
-								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
-										.get(ComponentEnum.HORIZONTAL_TAIL)
-										.getMoment3DCurve()
-										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-												.get(ComponentEnum.HORIZONTAL_TAIL)
-												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D))),
-								MyArrayUtils.convertDoubleArrayToListDouble(
-										_theAerodynamicBuilderInterface.getLandingGearDragCoefficient()), 
+								_current3DHorizontalTailLiftCurve.get(de),
+							    _current3DHorizontalTailPolarCurve.get(de),
+								_current3DHorizontalTailMomentCurve,
+								landingGearUsedDrag,
 								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
 								_alphaBodyList, 
 								_theAerodynamicBuilderInterface.getWingPendularStability())						
