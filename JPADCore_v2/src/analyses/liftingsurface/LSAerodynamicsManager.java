@@ -2148,7 +2148,7 @@ public class LSAerodynamicsManager {
 	//............................................................................
 	public class CalcCD0 {
 		
-		public void classic(
+		public void semiempirical(
 				Double mach,
 				Amount<Length> altitude
 				) {
@@ -2534,7 +2534,7 @@ public class LSAerodynamicsManager {
 			
 			if(_cD0.get(MethodEnum.SEMPIEMPIRICAL) == null) {
 				CalcCD0 calcCD0 = new CalcCD0(); 
-				calcCD0.classic(mach, altitude);
+				calcCD0.semiempirical(mach, altitude);
 			}
 			
 			// TODO : CHECK WHICH OSWALD IS BETTER !

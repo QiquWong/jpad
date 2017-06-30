@@ -267,24 +267,35 @@ public class DragCalc {
 		return cDGap; 
 	}
 	
-	public double calculateCD0Total(
+	public static Double calculateCD0Total(
+			Double cD0TotalFuselage,
+			Double cD0ParasiteFuselage,
+			Double cD0TotalWing,
+			Double cD0ParasiteWing,
+			Double cD0TotalNacelles,
+			Double cD0ParasiteNacelles,
+			Double cD0TotalHTail,
+			Double cD0ParasiteHTail,
+			Double cD0TotalVTail,
+			Double cD0ParasiteVTail
 			) {
-		double cD0Total;
+		Double cD0Total;
+		Double cD0Parasite = cD0ParasiteFuselage 
+				+ cD0ParasiteWing 
+				+ cD0ParasiteNacelles 
+				+ cD0ParasiteHTail 
+				+ cD0ParasiteVTail;
+		
+		Double cD0 = cD0TotalFuselage 
+				+ cD0TotalWing 
+				+ cD0TotalNacelles 
+				+ cD0TotalHTail
+				+ cD0TotalVTail;
 
-		calculateCD0Parasite();
-
-		double cD0 = _theAircraft.get_fuselage().getAerodynamics().get_cD0Total() +
-				_theAircraft.get_wing().getAerodynamics().get_cD0Total() +
-				_theAircraft.get_theNacelles().get_cD0Total() +
-				_theAircraft.get_HTail().getAerodynamics().get_cD0Total() +
-				_theAircraft.get_VTail().getAerodynamics().get_cD0Total();
-
-		double cDRough = AerodynamicCalc.calculateRoughness(_cD0);
-		double cDCool = AerodynamicCalc.calculateCoolings(_cD0Parasite);
+		Double cDRough = AerodynamicCalc.calculateRoughness(cD0);
+		Double cDCool = AerodynamicCalc.calculateCoolings(cD0Parasite);
 
 		cD0Total = (cD0 + cDRough + cDCool);
-
-
 
 		return cD0Total; 
 	}
@@ -1105,8 +1116,10 @@ public class DragCalc {
 	public static List<Double> calculateTotalPolarFromEquation(
 			List<Double> wingDragCoefficient,
 			List<Double> horizontalTailDragCoefficientCurve,
+			Double verticalTailDragCoefficient,
 			Amount<Area> wingSurface,
 			Amount<Area> horizontalTailSurface,
+			Amount<Area> verticalTailSurface,
 			List<Double> fuselageDragCoefficient,
 			Double cD0LandingGear,
 			Double cD0Miscellaneous,
@@ -1125,6 +1138,8 @@ public class DragCalc {
 					wingDragCoefficient.get(i)+
 					(horizontalTailDragCoefficientCurve.get(i)*horizontalTailDynamicPressureRatio*
 							(horizontalTailSurface.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE)))+
+					(verticalTailDragCoefficient*horizontalTailDynamicPressureRatio*
+							(verticalTailSurface.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE)))+
 					fuselageDragCoefficient.get(i)+
 					cD0LandingGear+
 					cD0Miscellaneous);

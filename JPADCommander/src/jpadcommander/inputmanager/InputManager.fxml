@@ -76,8 +76,8 @@
                                                             </Label>
                                                             <GridPane layoutX="5.0" layoutY="220.0" prefHeight="146.0" prefWidth="383.0">
                                                                <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="257.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="82.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="264.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="47.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
@@ -95,9 +95,9 @@
                                                                   <TextField id="textFieldAircraftFuselageX" prefHeight="31.0" prefWidth="125.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftFuselageZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftFuselageY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="fuselageXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="fuselageYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="fuselageZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="fuselageXUnitChoiceBox" fx:id="fuselageXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="fuselageYUnitChoiceBox" fx:id="fuselageYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="fuselageZUnitChoiceBox" fx:id="fuselageZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="374.0" prefHeight="0.0" prefWidth="1312.0" />
@@ -130,10 +130,10 @@
                                                                   <TextField id="textFieldAircraftWingY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftWingRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="wingXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="wingYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="wingZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="wingRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="wingXUnitChoiceBox" fx:id="wingXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="wingYUnitChoiceBox" fx:id="wingYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="wingZUnitChoiceBox" fx:id="wingZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="wingRiggingAngleUnitChoiceBox" fx:id="wingRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-46.0" layoutY="587.0" prefHeight="0.0" prefWidth="1345.0" />
@@ -166,10 +166,10 @@
                                                                   <TextField id="textFieldAircraftHTailY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftHTailRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="hTailXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="hTailYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="hTailZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="hTailRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="hTailXUnitChoiceBox" fx:id="hTailXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="hTailYUnitChoiceBox" fx:id="hTailYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="hTailZUnitChoiceBox" fx:id="htailZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="hTailRiggingAngleUnitChoiceBox" fx:id="hTailRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="4.0" layoutY="792.0" prefHeight="0.0" prefWidth="1346.0" />
@@ -202,10 +202,10 @@
                                                                   <TextField id="textFieldAircraftVTailY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftVTailRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="vTailXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="vTailYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="vTailZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="vTailRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="vTailXUnitChoiceBox" fx:id="vTailXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="vTailYUnitChoiceBox" fx:id="vTailYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="vTailZUnitChoiceBox" fx:id="vTailZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="vTailRiggingAngleUnitChoiceBox" fx:id="vTailRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="1005.0" prefHeight="0.0" prefWidth="1435.0" />
@@ -238,10 +238,10 @@
                                                                   <TextField id="textFieldAircraftCanardY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Rigging Angle:" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftCanardRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="canardXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="canardYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="canardZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="canardRiggingAngleUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="canardXUnitChoiceBox" fx:id="canardXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="canardYUnitChoiceBox" fx:id="canardYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="canardZUnitChoiceBox" fx:id="canardZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="canardRiggingAngleUnitChoiceBox" fx:id="canardRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-12.0" layoutY="1224.0" prefHeight="2.0" prefWidth="1431.0" />
@@ -254,8 +254,8 @@
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="88.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="64.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="67.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="67.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="10.0" prefWidth="63.0" />
@@ -274,27 +274,22 @@
                                                                   <TextField id="textFieldAircraftEngineX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftEngineZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftEngineY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftEnginePosition1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftEngineFile2" GridPane.columnIndex="3" />
                                                                   <TextField id="textFieldAircraftEngineX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftEngineY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftEngineZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftEngineFile3" GridPane.columnIndex="4" />
                                                                   <TextField id="textFieldAircraftEngineY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftEngineZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition3" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftEngineFile4" GridPane.columnIndex="5" />
                                                                   <TextField id="textFieldAircraftEngineX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftEngineFile5" GridPane.columnIndex="6" />
                                                                   <TextField id="textFieldAircraftEngineY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftEngineZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftEngineX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftEnginePosition4" GridPane.columnIndex="5" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftEngineY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftEngineX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftEngineZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition5" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                   <Label text="File:" />
                                                                   <Label text="X:" GridPane.rowIndex="1" />
                                                                   <Label text="Y:" GridPane.rowIndex="2" />
@@ -304,7 +299,6 @@
                                                                   <TextField id="textFieldAircraftEngineX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftEngineY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftEngineZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftEnginePosition6" GridPane.columnIndex="7" GridPane.rowIndex="4" />
                                                                   <Label text="Tilting Angle:" GridPane.rowIndex="5" />
                                                                   <TextField id="textFieldAircraftEngineTilt1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                   <TextField id="textFieldAircraftEngineTilt2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
@@ -312,10 +306,16 @@
                                                                   <TextField id="textFieldAircraftEngineTilt4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
                                                                   <TextField id="textFieldAircraftEngineTilt5" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                                   <TextField id="textFieldAircraftEngineTilt6" GridPane.columnIndex="7" GridPane.rowIndex="5" />
-                                                                  <ChoiceBox id="powerPlantXUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="powerPlantYUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="powerPlantZUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <ChoiceBox id="powerPlantTiltingAngleUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition6" fx:id="powerPlantMountingPositionTypeChoiceBox6" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="powerPlantXUnitChoiceBox" fx:id="powerPlantXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="powerPlantYUnitChoiceBox" fx:id="powerPlantYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="powerPlantZUnitChoiceBox" fx:id="powerPlantZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="powerPlantTiltingAngleUnitChoiceBox" fx:id="powerPlantTiltAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition1" fx:id="powerPlantMountingPositionTypeChoiceBox1" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition2" fx:id="powerPlantMountingPositionTypeChoiceBox2" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition3" fx:id="powerPlantMountingPositionTypeChoiceBox3" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition4" fx:id="powerPlantMountingPositionTypeChoiceBox4" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition5" fx:id="powerPlantMountingPositionTypeChoiceBox5" prefWidth="150.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="1477.0" prefHeight="0.0" prefWidth="1372.0" />
@@ -328,8 +328,8 @@
                                                                <columnConstraints>
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="88.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="64.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="62.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="58.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="10.0" prefWidth="63.0" />
@@ -347,27 +347,22 @@
                                                                   <TextField id="textFieldAircraftNacelleX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftNacelleZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftNacelleY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField id="textFieldAircraftNacellePosition1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftNacelleFile2" GridPane.columnIndex="3" />
                                                                   <TextField id="textFieldAircraftNacelleX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftNacelleY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftNacelleZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftNacelleFile3" GridPane.columnIndex="4" />
                                                                   <TextField id="textFieldAircraftNacelleY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftNacelleZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition3" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftNacelleFile4" GridPane.columnIndex="5" />
                                                                   <TextField id="textFieldAircraftNacelleX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftNacelleFile5" GridPane.columnIndex="6" />
                                                                   <TextField id="textFieldAircraftNacelleY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftNacelleZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftNacelleX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                  <TextField id="textFieldAircraftNacellePosition4" GridPane.columnIndex="5" GridPane.rowIndex="4" />
                                                                   <TextField id="textFieldAircraftNacelleY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftNacelleX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftNacelleZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition5" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                   <Label text="File:" />
                                                                   <Label text="X:" GridPane.rowIndex="1" />
                                                                   <Label text="Y:" GridPane.rowIndex="2" />
@@ -377,10 +372,16 @@
                                                                   <TextField id="textFieldAircraftNacelleX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftNacelleY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                   <TextField id="textFieldAircraftNacelleZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-                                                                  <TextField id="textFieldAircraftNacellePosition6" GridPane.columnIndex="7" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="nacellesXUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="nacellesYUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="nacellesXUnitChoiceBox" fx:id="nacelleXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="nacellesYUnitChoiceBox" fx:id="nacelleYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <ChoiceBox id="nacellesZUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="nacelleZUnitChoiceBox" fx:id="nacelleZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition6" fx:id="nacellesMountingPositionTypeChoiceBox6" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition1" fx:id="nacellesMountingPositionTypeChoiceBox1" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition2" fx:id="nacellesMountingPositionTypeChoiceBox2" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition3" fx:id="nacellesMountingPositionTypeChoiceBox3" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition4" fx:id="nacellesMountingPositionTypeChoiceBox4" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition5" fx:id="nacellesMountingPositionTypeChoiceBox5" prefWidth="150.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-4.0" layoutY="1707.0" prefHeight="0.0" prefWidth="1369.0" />
@@ -391,8 +392,8 @@
                                                             </Label>
                                                             <GridPane layoutX="5.0" layoutY="1753.0" prefHeight="174.0" prefWidth="383.0">
                                                                <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="238.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="78.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="262.0" />
                                                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="46.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
@@ -412,10 +413,10 @@
                                                                   <TextField id="textFieldAircraftLandingGearsZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftLandingGearsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                   <Label text="Position:" GridPane.rowIndex="4" />
-                                                                  <TextField id="textFieldAircraftLandingGearsPosition" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                                  <ChoiceBox id="landingGearsXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="landingGearsYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="landingGearsZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="landingGearsXUnitChoiceBox" fx:id="landingGearsXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="landingGearsYUnitChoiceBox" fx:id="landingGearsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="landingGearsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="choiceBoxAircraftLandingGearsPosition" fx:id="landingGearsMountingPositionTypeChoiceBox" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
                                                             <Separator layoutX="-40.0" layoutY="1942.0" prefHeight="0.0" prefWidth="1604.0" />
@@ -445,9 +446,9 @@
                                                                   <TextField id="textFieldAircraftSystemsX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                   <TextField id="textFieldAircraftSystemsZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                   <TextField id="textFieldAircraftSystemsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="systemsXUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <ChoiceBox id="systemsYUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <ChoiceBox id="systemsZUnit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="systemsXUnitChoiceBox" fx:id="systemsXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="systemsYUnitChoiceBox" fx:id="systemsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="systemsZUnitChoiceBox" fx:id="systemsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                </children>
                                                             </GridPane>
                                                             <Label layoutX="5.0" layoutY="4.0" text="Aircraft type:">
@@ -482,7 +483,7 @@
                                                                      <tabs>
                                                                         <Tab id="TopView" text="Top view">
                                                                            <content>
-                                                                              <Pane id="TopViewPane" />
+                                                                              <Pane id="TopViewPane" prefWidth="571.0" />
                                                                            </content></Tab>
                                                                         <Tab id="SideView" text="Side view">
                                                                            <content>
@@ -566,7 +567,7 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageDeckNumber" layoutX="4.0" layoutY="95.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageDeckNumber" layoutX="4.0" layoutY="95.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="5.0" layoutY="126.0" prefHeight="21.0" prefWidth="68.0" text="Length:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
@@ -586,13 +587,13 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageLength" layoutX="4.0" layoutY="146.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageLength" layoutX="4.0" layoutY="146.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="7.0" layoutY="179.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="200.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="200.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="5.0" layoutY="248.0" prefHeight="21.0" prefWidth="156.0" text="NOSE TRUNK DATA" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
@@ -604,19 +605,19 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseLengthRatio" layoutX="5.0" layoutY="303.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" layoutX="5.0" layoutY="303.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="6.0" layoutY="334.0" prefHeight="21.0" prefWidth="389.0" text="Tip z offset from origin (&lt;0 under the reference line)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseTipOffset" layoutX="5.0" layoutY="355.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageNoseTipOffset" layoutX="5.0" layoutY="355.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="8.0" layoutY="390.0" prefHeight="21.0" prefWidth="163.0" text="dx of the nose cap (%)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseDxCap" layoutX="7.0" layoutY="411.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageNoseDxCap" layoutX="7.0" layoutY="411.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="7.0" layoutY="449.0" text="Windshiled type:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
@@ -627,32 +628,32 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" layoutX="6.0" layoutY="523.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" layoutX="6.0" layoutY="523.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="7.0" layoutY="558.0" prefHeight="21.0" prefWidth="164.0" text="Windshield height:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseWindshieldHeight" layoutX="6.0" layoutY="579.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageNoseWindshieldHeight" layoutX="6.0" layoutY="579.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="9.0" layoutY="614.0" prefHeight="21.0" prefWidth="366.0" text="Mid section height to total section height ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseMidSectionHeight" layoutX="8.0" layoutY="635.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageNoseMidSectionHeight" layoutX="8.0" layoutY="635.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="8.0" layoutY="674.0" prefHeight="21.0" prefWidth="209.0" text="Mid section rho upper curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseMidSectionRhoUpper" layoutX="7.0" layoutY="695.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageNoseMidSectionRhoUpper" layoutX="7.0" layoutY="695.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="10.0" layoutY="731.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho lower curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageNoseMidSectionRhoLower" layoutX="9.0" layoutY="752.0" prefHeight="31.0" prefWidth="382.0" />
-                                                      <ChoiceBox id="choiceBoxFuselageNoseWindshieldType" fx:id="windshieldTypeChoiceBox" layoutX="7.0" layoutY="470.0" prefHeight="31.0" prefWidth="381.0" />
+                                                      <TextField id="textFieldFuselageNoseMidSectionRhoLower" layoutX="9.0" layoutY="752.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="choiceBoxFuselageNoseWindshieldType" fx:id="windshieldTypeChoiceBox" layoutX="7.0" layoutY="470.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="-1.0" layoutY="789.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Label layoutX="8.0" layoutY="797.0" prefHeight="21.0" prefWidth="241.0" text="CYLINDRICAL TRUNK DATA" textFill="#0400ff">
                                                          <font>
@@ -665,43 +666,43 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderLengthRatio" layoutX="8.0" layoutY="852.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageCylinderLengthRatio" layoutX="8.0" layoutY="852.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="9.0" layoutY="883.0" prefHeight="21.0" prefWidth="111.0" text="Section width:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionWidth" layoutX="8.0" layoutY="903.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageCylinderSectionWidth" layoutX="8.0" layoutY="903.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="9.0" layoutY="938.0" prefHeight="21.0" prefWidth="389.0" text="Section height:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionHeight" layoutX="8.0" layoutY="959.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageCylinderSectionHeight" layoutX="8.0" layoutY="959.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="11.0" layoutY="994.0" prefHeight="21.0" prefWidth="163.0" text="Height from ground:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderHeightFromGround" layoutX="10.0" layoutY="1015.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageCylinderHeightFromGround" layoutX="10.0" layoutY="1015.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="11.0" layoutY="1053.0" prefHeight="21.0" prefWidth="366.0" text="Section height to total section height ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionHeightRatio" layoutX="10.0" layoutY="1074.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageCylinderSectionHeightRatio" layoutX="10.0" layoutY="1074.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="10.0" layoutY="1113.0" prefHeight="21.0" prefWidth="209.0" text="Section rho upper curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionRhoUpper" layoutX="9.0" layoutY="1134.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageCylinderSectionRhoUpper" layoutX="9.0" layoutY="1134.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="12.0" layoutY="1169.0" prefHeight="21.0" prefWidth="226.0" text="Section rho lower curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageCylinderSectionRhoLower" layoutX="11.0" layoutY="1190.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageCylinderSectionRhoLower" layoutX="11.0" layoutY="1190.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="3.0" layoutY="1223.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Label layoutX="12.0" layoutY="1231.0" prefHeight="21.0" prefWidth="241.0" text="TAIL TRUNK DATA" textFill="#0400ff">
                                                          <font>
@@ -714,31 +715,31 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailTipOffset" layoutX="12.0" layoutY="1286.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageTailTipOffset" layoutX="12.0" layoutY="1286.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="13.0" layoutY="1317.0" prefHeight="21.0" prefWidth="173.0" text="dx of the nose cap (%)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailDxCap" layoutX="12.0" layoutY="1337.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageTailDxCap" layoutX="12.0" layoutY="1337.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="13.0" layoutY="1372.0" prefHeight="21.0" prefWidth="389.0" text="Mid section height to total section height ratio:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailMidSectionHeight" layoutX="12.0" layoutY="1393.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageTailMidSectionHeight" layoutX="12.0" layoutY="1393.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="15.0" layoutY="1428.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho upper curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailMidRhoUpper" layoutX="14.0" layoutY="1449.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageTailMidRhoUpper" layoutX="14.0" layoutY="1449.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Label layoutX="15.0" layoutY="1487.0" prefHeight="21.0" prefWidth="366.0" text="Mid section rho lower curve:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField id="textFieldFuselageTailMidRhoLower" layoutX="14.0" layoutY="1508.0" prefHeight="31.0" prefWidth="382.0" />
+                                                      <TextField id="textFieldFuselageTailMidRhoLower" layoutX="14.0" layoutY="1508.0" prefHeight="31.0" prefWidth="340.0" />
                                                       <Separator layoutX="-1.0" layoutY="1548.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Label layoutX="8.0" layoutY="1553.0" prefHeight="21.0" prefWidth="241.0" text="SPOILERS DATA (eventually)" textFill="#0400ff">
                                                          <font>
@@ -749,10 +750,11 @@
                                                       <GridPane layoutX="4.0" layoutY="1582.0" prefHeight="212.0" prefWidth="383.0">
                                                          <columnConstraints>
                                                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="120.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="67.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="66.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="65.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="66.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="52.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="56.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="54.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="55.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="56.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -783,26 +785,26 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <TextField id="textFieldFuselageSpoilerXin1" GridPane.columnIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerXout1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerYout1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerYin1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerXin2" GridPane.columnIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerXout2" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerYin2" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerYout2" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerXin3" GridPane.columnIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerXout3" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerYin3" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerYout3" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerXout4" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                            <TextField id="textFieldFuselageSpoilerXin4" GridPane.columnIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerYin4" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                            <TextField id="textFieldFuselageSpoilerYout4" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin2" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin3" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMin4" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerXin1" GridPane.columnIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerXout1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerYout1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerYin1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerXin2" GridPane.columnIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerXout2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerYin2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerYout2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerXin3" GridPane.columnIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerXout3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerYin3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerYout3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerXout4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerXin4" GridPane.columnIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerYin4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerYout4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin3" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin4" GridPane.columnIndex="5" GridPane.rowIndex="4" />
                                                             <Label text="Deflection min:" GridPane.rowIndex="4">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -813,13 +815,27 @@
                                                                   <Font name="System Bold" size="15.0" />
                                                                </font>
                                                             </Label>
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax2" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax3" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-                                                            <TextField id="textFieldFuselageSpoilerDeltaMax4" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                            <ChoiceBox fx:id="fuselageSpoilersXinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" />
+                                                            <ChoiceBox fx:id="fuselageSpoilersXoutUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <ChoiceBox fx:id="fuselageSpoilersYinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <ChoiceBox fx:id="fuselageSpoilersYoutUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <ChoiceBox fx:id="fuselageSpoilersDeltaMinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <ChoiceBox fx:id="fuselageSpoilersDeltaMaxUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                          </children>
                                                       </GridPane>
                                                       <Separator layoutX="-15.0" layoutY="1921.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <ChoiceBox fx:id="fuselageLengthUnitChoiceBox" layoutX="345.0" layoutY="146.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox fx:id="fuselageNoseTipOffsetZUnitChoiceBox" layoutX="346.0" layoutY="356.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox fx:id="fuselageWindshieldWidthUnitChoiceBox" layoutX="348.0" layoutY="524.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox fx:id="fuselageWindshieldHeightUnitChoiceBox" layoutX="348.0" layoutY="580.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox fx:id="fuselageCylinderSectionWidthUnitChoiceBox" layoutX="350.0" layoutY="904.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox fx:id="fuselageCylinderSectionHeightUnitChoiceBox" layoutX="350.0" layoutY="960.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox fx:id="fuselageHeightFromGroundUnitChoiceBox" layoutX="352.0" layoutY="1016.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox fx:id="fuselageTailTipOffsetZUnitChoiceBox" layoutX="354.0" layoutY="1287.0" prefHeight="30.0" prefWidth="47.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -956,7 +972,7 @@
       </TabPane>
    </center>
    <top>
-      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <ToolBar id="actionButtonsToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <Button id="setDataButton" mnemonicParsing="false" text="Set  Data" />
             <Button id="updateAllButton" mnemonicParsing="false" text="Update All" />

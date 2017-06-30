@@ -203,7 +203,7 @@ public class FuselageAerodynamicsManager {
 		
 		public void semiempirical() {
 			
-			_cD0Base.put(
+			_cD0Parasite.put(
 					MethodEnum.SEMPIEMPIRICAL, 
 					DragCalc.calculateCD0Parasite(
 							_theFuselage.getFuselageCreator().getFormFactor(), 
@@ -310,7 +310,12 @@ public class FuselageAerodynamicsManager {
 	public class CalcCD0Total {
 		
 		public void semiempirical() {
-						
+			
+			if(_cD0Parasite.get(MethodEnum.SEMPIEMPIRICAL) == null){
+				CalcCD0Parasite calcCD0Parasite = new CalcCD0Parasite();
+				calcCD0Parasite.semiempirical();
+			}
+			
 			if(_cD0Base.get(MethodEnum.SEMPIEMPIRICAL) == null){
 				CalcCD0Base calcCD0Base = new CalcCD0Base();
 				calcCD0Base.semiempirical();

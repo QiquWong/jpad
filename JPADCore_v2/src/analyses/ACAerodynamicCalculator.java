@@ -19,7 +19,13 @@ import com.ibm.icu.util.VTimeZone;
 
 import aircraft.components.Aircraft;
 import analyses.fuselage.FuselageAerodynamicsManager;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Parasite;
+import analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Total;
 import analyses.liftingsurface.LSAerodynamicsManager;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCD0;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCDAtAlpha;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCDParasite;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCDWave;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAtAlpha;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftCurve;
@@ -27,6 +33,7 @@ import analyses.liftingsurface.LSAerodynamicsManager.CalcHighLiftDevicesEffects;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcLiftCurve;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcMachCr;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcMomentCurve;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcOswaldFactor;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcPolar;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcXAC;
 import analyses.nacelles.NacelleAerodynamicsManager;
@@ -128,6 +135,7 @@ public class ACAerodynamicCalculator {
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailLiftCurve;
 	private Map<Amount<Angle>, List<Double>> _current3DHorizontalTailPolarCurve;
 	private List<Double> _current3DHorizontalTailMomentCurve;
+	private Double _current3DVerticalTailDragCoefficient;
 	private List<Double> _deltaCDElevatorList;
 
 	Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
@@ -2212,6 +2220,16 @@ public class ACAerodynamicCalculator {
 			}
 			_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D,MethodEnum.AIRFOIL_DISTRIBUTION);
 		}
+		
+		//.........................................................................................................................
+		//	VERTICAL TAIL POLAR_CURVES_3D
+		CalcCDAtAlpha calcCDAtBetaVerticalTail = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcCDAtAlpha();
+		_current3DVerticalTailDragCoefficient = calcCDAtBetaVerticalTail
+														.fromCdDistribution(
+																Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+																_currentMachNumber,
+																_currentAltitude
+																);
 	}
 	
 
@@ -2354,15 +2372,17 @@ public class ACAerodynamicCalculator {
 	public class CalcTotalDragCoefficient {
 
 		public void fromAircraftComponents() {
-
+			
 			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
 			_totalDragCoefficient.put(
 					de,
 					DragCalc.calculateTotalPolarFromEquation(
 							_current3DWingPolarCurve, 
 							_current3DHorizontalTailPolarCurve.get(de), 
+							_current3DVerticalTailDragCoefficient,
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
 							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(),
+							_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurface(),
 							MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
 									.get(ComponentEnum.FUSELAGE)
 									.getPolar3DCurve()
@@ -2379,12 +2399,90 @@ public class ACAerodynamicCalculator {
 		}
 		
 		public void fromRoskam(){
+			
 			if(_totalLiftCoefficient.isEmpty()){
 				CalcTotalLiftCoefficient calculateTotalLiftCoefficient = new CalcTotalLiftCoefficient();
 				calculateTotalLiftCoefficient.fromAircraftComponents();
 			}
 			
+			CalcCD0Total calcCD0TotalFuselage = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Total();
+			calcCD0TotalFuselage.semiempirical();
 			
+			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0TotalNacelle =
+					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
+			calcCD0TotalNacelle.semiempirical();
+			
+			CalcCD0 calcCD0TotalWing = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCD0();
+			calcCD0TotalWing.semiempirical(_currentMachNumber, _currentAltitude);
+
+			Double cD0ParasiteWing = DragCalc.calculateCD0ParasiteLiftingSurface(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing(),
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTransonicThreshold(),
+					_currentMachNumber,
+					_currentAltitude
+					);
+			
+			CalcCD0 calcCD0TotalHTail = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
+			calcCD0TotalHTail.semiempirical(_currentMachNumber, _currentAltitude);
+
+			Double cD0ParasiteHTail = DragCalc.calculateCD0ParasiteLiftingSurface(
+					_theAerodynamicBuilderInterface.getTheAircraft().getHTail(),
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTransonicThreshold(),
+					_currentMachNumber,
+					_currentAltitude
+					);
+			
+			CalcCD0 calcCD0TotalVTail = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcCD0();
+			calcCD0TotalVTail.semiempirical(_currentMachNumber, _currentAltitude);
+
+			Double cD0ParasiteVTail = DragCalc.calculateCD0ParasiteLiftingSurface(
+					_theAerodynamicBuilderInterface.getTheAircraft().getVTail(),
+					_theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTransonicThreshold(),
+					_currentMachNumber,
+					_currentAltitude
+					);
+			
+			Double cD0TotalAircraft = DragCalc.calculateCD0Total(
+					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(MethodEnum.SEMPIEMPIRICAL), 
+					_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(MethodEnum.SEMPIEMPIRICAL), 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCD0().get(MethodEnum.SEMPIEMPIRICAL), 
+					cD0ParasiteWing,
+					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Total().get(MethodEnum.SEMPIEMPIRICAL), 
+					_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCD0Parasite().get(MethodEnum.SEMPIEMPIRICAL),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCD0().get(MethodEnum.SEMPIEMPIRICAL), 
+					cD0ParasiteHTail, 
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCD0().get(MethodEnum.SEMPIEMPIRICAL), 
+					cD0ParasiteVTail
+					);
+			
+			Double oswaldFactorTotalAircraft = AerodynamicCalc.calculateOswaldHowe(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio(),
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getAspectRatio(),
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMeanAirfoil().getAirfoilCreator().getThicknessToChordRatio(),
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().doubleValue(SI.RADIAN),
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getNumberOfEngineOverTheWing(),
+					_currentMachNumber
+					);
+			
+			Double kDragPolarAircraft = 1/(
+					_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio()
+					*Math.PI
+					*oswaldFactorTotalAircraft			
+					);
+			
+			CalcCDWave calcCDWave = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDWave();
+			calcCDWave.lockKornWithKroo();
+			
+			Double cDWave = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCDWave().get(MethodEnum.LOCK_KORN_WITH_KROO);
+			
+			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
+				_totalDragCoefficient.put(
+						de, 
+						_totalLiftCoefficient.get(de).stream().map(cL -> 
+						cD0TotalAircraft + (Math.pow(cL, 2)*kDragPolarAircraft) + cDWave)
+						.collect(Collectors.toList())
+						);
+			});
 		}
 	}
 	//............................................................................
@@ -3618,5 +3716,13 @@ public class ACAerodynamicCalculator {
 
 	public void setTotalEquilibriumDragCoefficient(Map<Double, List<Double>> _totalEquilibriumDragCoefficient) {
 		this._totalEquilibriumDragCoefficient = _totalEquilibriumDragCoefficient;
+	}
+
+	public Double getCurrent3DVerticalTailDragCoefficient() {
+		return _current3DVerticalTailDragCoefficient;
+	}
+
+	public void setCurrent3DVerticalTailDragCoefficient(Double _current3DVerticalTailDragCoefficient) {
+		this._current3DVerticalTailDragCoefficient = _current3DVerticalTailDragCoefficient;
 	}
 }

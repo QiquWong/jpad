@@ -24,6 +24,7 @@ public class MainItemsController {
 				(ChoiceBox<String>) Main.getMainInputManagerLayout()
 				.lookup("#choiceBoxRegulationsType")
 				);
+		
 	}
 	
 }

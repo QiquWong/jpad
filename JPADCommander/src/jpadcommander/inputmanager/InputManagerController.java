@@ -58,30 +58,195 @@ public class InputManagerController {
 			"WING",
 			"NACELLE"
 			);
+	ObservableList<String> lengthUnitsList = FXCollections.observableArrayList("m","ft" );
+	ObservableList<String> angleUnitsList = FXCollections.observableArrayList("°","rad" );
 	
 	@FXML
 	@SuppressWarnings("rawtypes")
 	private ChoiceBox aircraftTypeChioseBox;
-	
 	@FXML
 	@SuppressWarnings("rawtypes")
 	private ChoiceBox regulationsTypeChioseBox;
-	
 	@FXML
 	@SuppressWarnings("rawtypes")
 	private ChoiceBox windshieldTypeChoiceBox;
-	
 	@FXML
 	@SuppressWarnings("rawtypes")
-	private ChoiceBox powerPlantMountingPositionTypeChoiceBox;
-	
+	private ChoiceBox powerPlantMountingPositionTypeChoiceBox1;
 	@FXML
 	@SuppressWarnings("rawtypes")
-	private ChoiceBox nacellesMountingPositionTypeChoiceBox;
-	
+	private ChoiceBox powerPlantMountingPositionTypeChoiceBox2;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantMountingPositionTypeChoiceBox3;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantMountingPositionTypeChoiceBox4;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantMountingPositionTypeChoiceBox5;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantMountingPositionTypeChoiceBox6;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacellesMountingPositionTypeChoiceBox1;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacellesMountingPositionTypeChoiceBox2;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacellesMountingPositionTypeChoiceBox3;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacellesMountingPositionTypeChoiceBox4;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacellesMountingPositionTypeChoiceBox5;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacellesMountingPositionTypeChoiceBox6;
 	@FXML
 	@SuppressWarnings("rawtypes")
 	private ChoiceBox landingGearsMountingPositionTypeChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox wingXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox wingYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox wingZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox wingRiggingAngleUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox hTailXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox hTailYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox htailZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox hTailRiggingAngleUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox vTailXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox vTailYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox vTailZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox vTailRiggingAngleUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox canardXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox canardYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox canardZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox canardRiggingAngleUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox powerPlantTiltAngleUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacelleXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacelleYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox nacelleZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox landingGearsXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox landingGearsYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox landingGearsZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox systemsXUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox systemsYUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox systemsZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageLengthUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageNoseTipOffsetZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageWindshieldWidthUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageWindshieldHeightUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageCylinderSectionWidthUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageCylinderSectionHeightUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageHeightFromGroundUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageTailTipOffsetZUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageSpoilersXinUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageSpoilersXoutUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageSpoilersYinUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageSpoilersYoutUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageSpoilersDeltaMinUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageSpoilersDeltaMaxUnitChoiceBox;
 	
 	@FXML
 	@SuppressWarnings("unchecked")
@@ -89,13 +254,73 @@ public class InputManagerController {
 		aircraftTypeChioseBox.setItems(aircraftTypeList);
 		regulationsTypeChioseBox.setItems(regulationsTypeList);
 		windshieldTypeChoiceBox.setItems(windshieldTypeList);
-		powerPlantMountingPositionTypeChoiceBox.setItems(powerPlantMountingPositionTypeList);
-		nacellesMountingPositionTypeChoiceBox.setItems(nacelleMountingPositionTypeList);
+		powerPlantMountingPositionTypeChoiceBox1.setItems(powerPlantMountingPositionTypeList);
+		powerPlantMountingPositionTypeChoiceBox2.setItems(powerPlantMountingPositionTypeList);
+		powerPlantMountingPositionTypeChoiceBox3.setItems(powerPlantMountingPositionTypeList);
+		powerPlantMountingPositionTypeChoiceBox4.setItems(powerPlantMountingPositionTypeList);
+		powerPlantMountingPositionTypeChoiceBox5.setItems(powerPlantMountingPositionTypeList);
+		powerPlantMountingPositionTypeChoiceBox6.setItems(powerPlantMountingPositionTypeList);
+		nacellesMountingPositionTypeChoiceBox1.setItems(nacelleMountingPositionTypeList);
+		nacellesMountingPositionTypeChoiceBox2.setItems(nacelleMountingPositionTypeList);
+		nacellesMountingPositionTypeChoiceBox3.setItems(nacelleMountingPositionTypeList);
+		nacellesMountingPositionTypeChoiceBox4.setItems(nacelleMountingPositionTypeList);
+		nacellesMountingPositionTypeChoiceBox5.setItems(nacelleMountingPositionTypeList);
+		nacellesMountingPositionTypeChoiceBox6.setItems(nacelleMountingPositionTypeList);
 		landingGearsMountingPositionTypeChoiceBox.setItems(landingGearsMountingPositionTypeList);
+		
+		// Units 
+		fuselageXUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageYUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageZUnitChoiceBox.setItems(lengthUnitsList);
+		wingXUnitChoiceBox.setItems(lengthUnitsList);
+		wingYUnitChoiceBox.setItems(lengthUnitsList);
+		wingZUnitChoiceBox.setItems(lengthUnitsList);
+		wingRiggingAngleUnitChoiceBox.setItems(angleUnitsList);
+		hTailXUnitChoiceBox.setItems(lengthUnitsList);
+		hTailYUnitChoiceBox.setItems(lengthUnitsList);
+		htailZUnitChoiceBox.setItems(lengthUnitsList);
+		hTailRiggingAngleUnitChoiceBox.setItems(angleUnitsList);
+		vTailXUnitChoiceBox.setItems(lengthUnitsList);
+		vTailYUnitChoiceBox.setItems(lengthUnitsList);
+		vTailZUnitChoiceBox.setItems(lengthUnitsList);
+		vTailRiggingAngleUnitChoiceBox.setItems(angleUnitsList);
+		canardXUnitChoiceBox.setItems(lengthUnitsList);
+		canardYUnitChoiceBox.setItems(lengthUnitsList);
+		canardZUnitChoiceBox.setItems(lengthUnitsList);
+		canardRiggingAngleUnitChoiceBox.setItems(angleUnitsList);
+		powerPlantXUnitChoiceBox.setItems(lengthUnitsList);
+		powerPlantYUnitChoiceBox.setItems(lengthUnitsList);
+		powerPlantZUnitChoiceBox.setItems(lengthUnitsList);
+		powerPlantTiltAngleUnitChoiceBox.setItems(angleUnitsList);
+		nacelleXUnitChoiceBox.setItems(lengthUnitsList);
+		nacelleYUnitChoiceBox.setItems(lengthUnitsList);
+		nacelleZUnitChoiceBox.setItems(lengthUnitsList);
+		landingGearsXUnitChoiceBox.setItems(lengthUnitsList);
+		landingGearsYUnitChoiceBox.setItems(lengthUnitsList);
+		landingGearsZUnitChoiceBox.setItems(lengthUnitsList);
+		systemsXUnitChoiceBox.setItems(lengthUnitsList);
+		systemsYUnitChoiceBox.setItems(lengthUnitsList);
+		systemsZUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageLengthUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageNoseTipOffsetZUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageWindshieldWidthUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageWindshieldHeightUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageCylinderSectionWidthUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageCylinderSectionHeightUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageHeightFromGroundUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageTailTipOffsetZUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageSpoilersXinUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageSpoilersXoutUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageSpoilersYinUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageSpoilersYoutUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageSpoilersDeltaMinUnitChoiceBox.setItems(angleUnitsList);
+		fuselageSpoilersDeltaMaxUnitChoiceBox.setItems(angleUnitsList);
 	}
 	
 	@FXML
 	private void showInputManagerAircraftFromFileContent() throws IOException {
+		
+		Main.setIsAircraftFormFile(Boolean.TRUE);
 		
 		//.......................................................................................
 		// AIRCRAFT TAB FILEDS CAPTURE
@@ -210,6 +435,8 @@ public class InputManagerController {
 	@SuppressWarnings("unchecked")
 	@FXML
 	private void showInputManagerAircraftDefaultContent() throws IOException {
+		
+		Main.setIsAircraftFormFile(Boolean.FALSE);
 		
 		//.......................................................................................
 		// AIRCRAFT TAB

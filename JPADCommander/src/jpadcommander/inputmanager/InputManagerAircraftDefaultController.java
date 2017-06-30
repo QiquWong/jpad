@@ -1,39 +1,23 @@
 package jpadcommander.inputmanager;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.Length;
-import javax.measure.unit.SI;
-
-import org.jscience.physics.amount.Amount;
-import org.treez.javafxd3.d3.svg.SymbolType;
-import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AircraftTypeEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.RegulationsEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import graphics.D3Plotter;
-import graphics.D3PlotterOptions;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -41,9 +25,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import jpadcommander.Main;
-import standaloneutils.MyArrayUtils;
 
 public class InputManagerAircraftDefaultController {
 
@@ -69,6 +51,7 @@ public class InputManagerAircraftDefaultController {
 		Main.setStatus(State.RUNNING);
 		Main.checkStatus(Main.getStatus());
 
+		MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, Main.getDatabaseDirectoryPath());
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
@@ -167,9 +150,10 @@ public class InputManagerAircraftDefaultController {
 	public static void logAircraftDefaultToInterface() {
 
 		// print the toString method of the aircraft inside the text area of the GUI ...
-		Main.setTextAreaAircraftConsoleOutput(
-				(TextArea) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#output")
-				);
+		if(Main.getTextAreaAircraftConsoleOutput() == null)
+			Main.setTextAreaAircraftConsoleOutput(
+					(TextArea) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#output")
+					);
 		Main.getTextAreaAircraftConsoleOutput().setText(
 				Main.getTheAircraft().toString()
 				);
@@ -202,9 +186,10 @@ public class InputManagerAircraftDefaultController {
 		
 		//---------------------------------------------------------------------------------
 		// AIRCRAFT TYPE:
-		Main.setChoiceBoxAircraftType(
-				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxAircraftType")
-				);
+		if(Main.getChoiceBoxAircraftType() == null)
+			Main.setChoiceBoxAircraftType(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxAircraftType")
+					);
 		
 		AircraftTypeEnum aircraftTypeFileName = Main.getTheAircraft().getTypeVehicle();
 		
@@ -229,9 +214,10 @@ public class InputManagerAircraftDefaultController {
 		
 		//---------------------------------------------------------------------------------
 		// REGULATIONS TYPE:
-		Main.setChoiceBoxRegulationsType(
-				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxRegulationsType")
-				);
+		if(Main.getChoiceBoxRegulationsType() == null)
+			Main.setChoiceBoxRegulationsType(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxRegulationsType")
+					);
 		
 		RegulationsEnum regulationsTypeFileName = Main.getTheAircraft().getRegulations();
 		
@@ -246,9 +232,10 @@ public class InputManagerAircraftDefaultController {
 		
 		//---------------------------------------------------------------------------------
 		// FUSELAGE:
-		Main.setTextFieldAircraftFuselageX(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftFuselageX")
-				);
+		if(Main.getTextFieldAircraftFuselageX() == null)
+			Main.setTextFieldAircraftFuselageX(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftFuselageX")
+					);
 		if(Main.getTheAircraft().getFuselage() != null)
 			Main.getTextFieldAircraftFuselageX().setText(
 					Main.getTheAircraft()
@@ -261,9 +248,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftFuselageY(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftFuselageY")
-				);
+		if(Main.getTextFieldAircraftFuselageY() == null)
+			Main.setTextFieldAircraftFuselageY(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftFuselageY")
+					);
 		if(Main.getTheAircraft().getFuselage() != null)
 			Main.getTextFieldAircraftFuselageY().setText(
 					Main.getTheAircraft()
@@ -276,9 +264,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftFuselageZ(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftFuselageZ")
-				);
+		if(Main.getTextFieldAircraftFuselageZ() == null)
+			Main.setTextFieldAircraftFuselageZ(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftFuselageZ")
+					);
 		if(Main.getTheAircraft().getFuselage() != null)
 			Main.getTextFieldAircraftFuselageZ().setText(
 					Main.getTheAircraft()
@@ -292,9 +281,10 @@ public class InputManagerAircraftDefaultController {
 					);
 		//---------------------------------------------------------------------------------
 		// WING:
-		Main.setTextFieldAircraftWingX(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingX")
-				);
+		if(Main.getTextFieldAircraftWingX() == null)
+			Main.setTextFieldAircraftWingX(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingX")
+					);
 		if(Main.getTheAircraft().getWing() != null)
 			Main.getTextFieldAircraftWingX().setText(
 					Main.getTheAircraft()
@@ -307,9 +297,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftWingY(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingY")
-				);
+		if(Main.getTextFieldAircraftWingY() == null)
+			Main.setTextFieldAircraftWingY(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingY")
+					);
 		if(Main.getTheAircraft().getWing() != null)
 			Main.getTextFieldAircraftWingY().setText(
 					Main.getTheAircraft()
@@ -322,9 +313,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftWingZ(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingZ")
-				);
+		if(Main.getTextFieldAircraftWingZ() == null)
+			Main.setTextFieldAircraftWingZ(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingZ")
+					);
 		if(Main.getTheAircraft().getWing() != null)
 			Main.getTextFieldAircraftWingZ().setText(
 					Main.getTheAircraft()
@@ -337,9 +329,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftWingRiggingAngle(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingRiggingAngle")
-				);
+		if(Main.getTextFieldAircraftWingRiggingAngle() == null)
+			Main.setTextFieldAircraftWingRiggingAngle(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftWingRiggingAngle")
+					);
 		if(Main.getTheAircraft().getWing() != null)
 			Main.getTextFieldAircraftWingRiggingAngle().setText(
 					Main.getTheAircraft()
@@ -353,9 +346,10 @@ public class InputManagerAircraftDefaultController {
 					);
 		//---------------------------------------------------------------------------------
 		// HORIZONTAL TAIL:
-		Main.setTextFieldAircraftHorizontalTailX(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailX")
-				);
+		if(Main.getTextFieldAircraftHorizontalTailX() == null)
+			Main.setTextFieldAircraftHorizontalTailX(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailX")
+					);
 		if(Main.getTheAircraft().getHTail() != null)
 			Main.getTextFieldAircraftHorizontalTailX().setText(
 					Main.getTheAircraft()
@@ -368,9 +362,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftHorizontalTailY(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailY")
-				);
+		if(Main.getTextFieldAircraftHorizontalTailY() == null)
+			Main.setTextFieldAircraftHorizontalTailY(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailY")
+					);
 		if(Main.getTheAircraft().getHTail() != null)
 			Main.getTextFieldAircraftHorizontalTailY().setText(
 					Main.getTheAircraft()
@@ -383,9 +378,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftHorizontalTailZ(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailZ")
-				);
+		if(Main.getTextFieldAircraftHorizontalTailZ() == null)
+			Main.setTextFieldAircraftHorizontalTailZ(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailZ")
+					);
 		if(Main.getTheAircraft().getHTail() != null)
 			Main.getTextFieldAircraftHorizontalTailZ().setText(
 					Main.getTheAircraft()
@@ -398,9 +394,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftHorizontalTailRiggingAngle(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailRiggingAngle")
-				);
+		if(Main.getTextFieldAircraftHorizontalTailRiggingAngle() == null)
+			Main.setTextFieldAircraftHorizontalTailRiggingAngle(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftHTailRiggingAngle")
+					);
 		if(Main.getTheAircraft().getHTail() != null)
 			Main.getTextFieldAircraftHorizontalTailRiggingAngle().setText(
 					Main.getTheAircraft()
@@ -414,9 +411,10 @@ public class InputManagerAircraftDefaultController {
 					);
 		//---------------------------------------------------------------------------------
 		// VERTICAL TAIL:
-		Main.setTextFieldAircraftVerticalTailX(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailX")
-				);
+		if(Main.getTextFieldAircraftVerticalTailX() == null)
+			Main.setTextFieldAircraftVerticalTailX(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailX")
+					);
 		if(Main.getTheAircraft().getVTail() != null)
 			Main.getTextFieldAircraftVerticalTailX().setText(
 					Main.getTheAircraft()
@@ -429,9 +427,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftVerticalTailY(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailY")
-				);
+		if(Main.getTextFieldAircraftVerticalTailY() == null)
+			Main.setTextFieldAircraftVerticalTailY(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailY")
+					);
 		if(Main.getTheAircraft().getVTail() != null)
 			Main.getTextFieldAircraftVerticalTailY().setText(
 					Main.getTheAircraft()
@@ -444,9 +443,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftVerticalTailZ(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailZ")
-				);
+		if(Main.getTextFieldAircraftVerticalTailZ() == null)
+			Main.setTextFieldAircraftVerticalTailZ(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailZ")
+					);
 		if(Main.getTheAircraft().getVTail() != null)
 			Main.getTextFieldAircraftVerticalTailZ().setText(
 					Main.getTheAircraft()
@@ -459,9 +459,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftVerticalTailRiggingAngle(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailRiggingAngle")
-				);
+		if(Main.getTextFieldAircraftVerticalTailRiggingAngle() == null)
+			Main.setTextFieldAircraftVerticalTailRiggingAngle(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftVTailRiggingAngle")
+					);
 		if(Main.getTheAircraft().getVTail() != null)
 			Main.getTextFieldAircraftVerticalTailRiggingAngle().setText(
 					Main.getTheAircraft()
@@ -475,10 +476,10 @@ public class InputManagerAircraftDefaultController {
 					);
 		//---------------------------------------------------------------------------------
 		// CANARD:
-		//		if(Main.getTextFieldAircraftCanardX() == null)
-		Main.setTextFieldAircraftCanardX(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardX")
-				);
+		if(Main.getTextFieldAircraftCanardX() == null)
+			Main.setTextFieldAircraftCanardX(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardX")
+					);
 		if(Main.getTheAircraft().getCanard() != null)
 			Main.getTextFieldAircraftCanardX().setText(
 					Main.getTheAircraft()
@@ -491,9 +492,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftCanardY(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardY")
-				);
+		if(Main.getTextFieldAircraftCanardY() == null)
+			Main.setTextFieldAircraftCanardY(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardY")
+					);
 		if(Main.getTheAircraft().getCanard() != null)
 			Main.getTextFieldAircraftCanardY().setText(
 					Main.getTheAircraft()
@@ -506,9 +508,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftCanardZ(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardZ")
-				);
+		if(Main.getTextFieldAircraftCanardZ() == null)
+			Main.setTextFieldAircraftCanardZ(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardZ")
+					);
 		if(Main.getTheAircraft().getCanard() != null)
 			Main.getTextFieldAircraftCanardZ().setText(
 					Main.getTheAircraft()
@@ -521,9 +524,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftCanardRiggingAngle(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardRiggingAngle")
-				);
+		if(Main.getTextFieldAircraftCanardRiggingAngle() == null)
+			Main.setTextFieldAircraftCanardRiggingAngle(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftCanardRiggingAngle")
+					);
 		if(Main.getTheAircraft().getCanard() != null)
 			Main.getTextFieldAircraftCanardRiggingAngle().setText(
 					Main.getTheAircraft()
@@ -537,119 +541,131 @@ public class InputManagerAircraftDefaultController {
 					);
 		//---------------------------------------------------------------------------------
 		// POWER PLANT:
-		Main.getTextFieldAircraftEngineFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile1")
-				);
-		Main.getTextFieldAircraftEngineFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile2")
-				);
-		Main.getTextFieldAircraftEngineFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile3")
-				);
-		Main.getTextFieldAircraftEngineFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile4")
-				);
-		Main.getTextFieldAircraftEngineFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile5")
-				);
-		Main.getTextFieldAircraftEngineFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile6")
-				);
+		if(Main.getTextFieldAircraftEngineFileList().isEmpty()) {
+			Main.getTextFieldAircraftEngineFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile1")
+					);
+			Main.getTextFieldAircraftEngineFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile2")
+					);
+			Main.getTextFieldAircraftEngineFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile3")
+					);
+			Main.getTextFieldAircraftEngineFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile4")
+					);
+			Main.getTextFieldAircraftEngineFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile5")
+					);
+			Main.getTextFieldAircraftEngineFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineFile6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftEngineXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX1")
-				);
-		Main.getTextFieldAircraftEngineXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX2")
-				);
-		Main.getTextFieldAircraftEngineXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX3")
-				);
-		Main.getTextFieldAircraftEngineXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX4")
-				);
-		Main.getTextFieldAircraftEngineXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX5")
-				);
-		Main.getTextFieldAircraftEngineXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX6")
-				);
+		if(Main.getTextFieldAircraftEngineXList().isEmpty()) {
+			Main.getTextFieldAircraftEngineXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX1")
+					);
+			Main.getTextFieldAircraftEngineXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX2")
+					);
+			Main.getTextFieldAircraftEngineXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX3")
+					);
+			Main.getTextFieldAircraftEngineXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX4")
+					);
+			Main.getTextFieldAircraftEngineXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX5")
+					);
+			Main.getTextFieldAircraftEngineXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineX6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftEngineYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY1")
-				);
-		Main.getTextFieldAircraftEngineYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY2")
-				);
-		Main.getTextFieldAircraftEngineYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY3")
-				);
-		Main.getTextFieldAircraftEngineYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY4")
-				);
-		Main.getTextFieldAircraftEngineYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY5")
-				);
-		Main.getTextFieldAircraftEngineYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY6")
-				);
+		if(Main.getTextFieldAircraftEngineYList().isEmpty()) {
+			Main.getTextFieldAircraftEngineYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY1")
+					);
+			Main.getTextFieldAircraftEngineYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY2")
+					);
+			Main.getTextFieldAircraftEngineYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY3")
+					);
+			Main.getTextFieldAircraftEngineYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY4")
+					);
+			Main.getTextFieldAircraftEngineYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY5")
+					);
+			Main.getTextFieldAircraftEngineYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineY6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftEngineZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ1")
-				);
-		Main.getTextFieldAircraftEngineZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ2")
-				);
-		Main.getTextFieldAircraftEngineZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ3")
-				);
-		Main.getTextFieldAircraftEngineZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ4")
-				);
-		Main.getTextFieldAircraftEngineZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ5")
-				);
-		Main.getTextFieldAircraftEngineZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ6")
-				);
+		if(Main.getTextFieldAircraftEngineZList().isEmpty()) {
+			Main.getTextFieldAircraftEngineZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ1")
+					);
+			Main.getTextFieldAircraftEngineZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ2")
+					);
+			Main.getTextFieldAircraftEngineZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ3")
+					);
+			Main.getTextFieldAircraftEngineZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ4")
+					);
+			Main.getTextFieldAircraftEngineZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ5")
+					);
+			Main.getTextFieldAircraftEngineZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineZ6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftEnginePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEnginePosition1")
-				);
-		Main.getTextFieldAircraftEnginePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEnginePosition2")
-				);
-		Main.getTextFieldAircraftEnginePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEnginePosition3")
-				);
-		Main.getTextFieldAircraftEnginePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEnginePosition4")
-				);
-		Main.getTextFieldAircraftEnginePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEnginePosition5")
-				);
-		Main.getTextFieldAircraftEnginePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEnginePosition6")
-				);
+		if(Main.getChoiceBoxesAircraftEnginePositonList().isEmpty()) {
+			Main.getChoiceBoxesAircraftEnginePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftEnginePosition1")
+					);
+			Main.getChoiceBoxesAircraftEnginePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftEnginePosition2")
+					);
+			Main.getChoiceBoxesAircraftEnginePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftEnginePosition3")
+					);
+			Main.getChoiceBoxesAircraftEnginePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftEnginePosition4")
+					);
+			Main.getChoiceBoxesAircraftEnginePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftEnginePosition5")
+					);
+			Main.getChoiceBoxesAircraftEnginePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftEnginePosition6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftEngineTiltList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt1")
-				);
-		Main.getTextFieldAircraftEngineTiltList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt2")
-				);
-		Main.getTextFieldAircraftEngineTiltList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt3")
-				);
-		Main.getTextFieldAircraftEngineTiltList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt4")
-				);
-		Main.getTextFieldAircraftEngineTiltList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt5")
-				);
-		Main.getTextFieldAircraftEngineTiltList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt6")
-				);
+		if(Main.getTextFieldAircraftEngineTiltList().isEmpty()) {
+			Main.getTextFieldAircraftEngineTiltList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt1")
+					);
+			Main.getTextFieldAircraftEngineTiltList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt2")
+					);
+			Main.getTextFieldAircraftEngineTiltList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt3")
+					);
+			Main.getTextFieldAircraftEngineTiltList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt4")
+					);
+			Main.getTextFieldAircraftEngineTiltList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt5")
+					);
+			Main.getTextFieldAircraftEngineTiltList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftEngineTilt6")
+					);
+		}
 		//..........................................................................................................
 		if(Main.getTheAircraft().getPowerPlant() != null) {
 			for (int i = 0; i < Main.getTheAircraft().getPowerPlant().getEngineNumber(); i++) {
@@ -697,18 +713,33 @@ public class InputManagerAircraftDefaultController {
 							);
 				//..........................................................................................................
 				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-					Main.getTextFieldAircraftEnginePositonList().get(i).setText(
-							Main.getTheAircraft()
-							.getPowerPlant()
-							.getEngineList()
-							.get(i)
-							.getMountingPosition()
-							.toString()
-							);
-				else
-					Main.getTextFieldAircraftEnginePositonList().get(i).setText(
-							"NOT INITIALIZED"
-							);
+
+					if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("BURIED")
+							)
+						Main.getChoiceBoxesAircraftEnginePositonList().get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("WING")
+							)
+						Main.getChoiceBoxesAircraftEnginePositonList().get(i).getSelectionModel().select(1);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("AFT_FUSELAGE")
+							)
+						Main.getChoiceBoxesAircraftEnginePositonList().get(i).getSelectionModel().select(2);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("HTAIL")
+							)
+						Main.getChoiceBoxesAircraftEnginePositonList().get(i).getSelectionModel().select(3);
+					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("REAR_FUSELAGE")
+							)
+						Main.getChoiceBoxesAircraftEnginePositonList().get(i).getSelectionModel().select(4);
+
 				//..........................................................................................................
 				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
 					Main.getTextFieldAircraftEngineTiltList().get(i).setText(
@@ -727,100 +758,110 @@ public class InputManagerAircraftDefaultController {
 		}
 		//---------------------------------------------------------------------------------
 		// NACELLES:
-		Main.getTextFieldAircraftNacelleFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile1")
-				);
-		Main.getTextFieldAircraftNacelleFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile2")
-				);
-		Main.getTextFieldAircraftNacelleFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile3")
-				);
-		Main.getTextFieldAircraftNacelleFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile4")
-				);
-		Main.getTextFieldAircraftNacelleFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile5")
-				);
-		Main.getTextFieldAircraftNacelleFileList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile6")
-				);
+		if(Main.getTextFieldAircraftNacelleFileList().isEmpty()) {
+			Main.getTextFieldAircraftNacelleFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile1")
+					);
+			Main.getTextFieldAircraftNacelleFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile2")
+					);
+			Main.getTextFieldAircraftNacelleFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile3")
+					);
+			Main.getTextFieldAircraftNacelleFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile4")
+					);
+			Main.getTextFieldAircraftNacelleFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile5")
+					);
+			Main.getTextFieldAircraftNacelleFileList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleFile6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftNacelleXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX1")
-				);
-		Main.getTextFieldAircraftNacelleXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX2")
-				);
-		Main.getTextFieldAircraftNacelleXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX3")
-				);
-		Main.getTextFieldAircraftNacelleXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX4")
-				);
-		Main.getTextFieldAircraftNacelleXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX5")
-				);
-		Main.getTextFieldAircraftNacelleXList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX6")
-				);
+		if(Main.getTextFieldAircraftNacelleXList().isEmpty()) {
+			Main.getTextFieldAircraftNacelleXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX1")
+					);
+			Main.getTextFieldAircraftNacelleXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX2")
+					);
+			Main.getTextFieldAircraftNacelleXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX3")
+					);
+			Main.getTextFieldAircraftNacelleXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX4")
+					);
+			Main.getTextFieldAircraftNacelleXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX5")
+					);
+			Main.getTextFieldAircraftNacelleXList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleX6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftNacelleYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY1")
-				);
-		Main.getTextFieldAircraftNacelleYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY2")
-				);
-		Main.getTextFieldAircraftNacelleYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY3")
-				);
-		Main.getTextFieldAircraftNacelleYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY4")
-				);
-		Main.getTextFieldAircraftNacelleYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY5")
-				);
-		Main.getTextFieldAircraftNacelleYList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY6")
-				);
+		if(Main.getTextFieldAircraftNacelleYList().isEmpty()) {
+			Main.getTextFieldAircraftNacelleYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY1")
+					);
+			Main.getTextFieldAircraftNacelleYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY2")
+					);
+			Main.getTextFieldAircraftNacelleYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY3")
+					);
+			Main.getTextFieldAircraftNacelleYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY4")
+					);
+			Main.getTextFieldAircraftNacelleYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY5")
+					);
+			Main.getTextFieldAircraftNacelleYList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleY6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftNacelleZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ1")
-				);
-		Main.getTextFieldAircraftNacelleZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ2")
-				);
-		Main.getTextFieldAircraftNacelleZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ3")
-				);
-		Main.getTextFieldAircraftNacelleZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ4")
-				);
-		Main.getTextFieldAircraftNacelleZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ5")
-				);
-		Main.getTextFieldAircraftNacelleZList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ6")
-				);
+		if(Main.getTextFieldAircraftNacelleZList().isEmpty()) {
+			Main.getTextFieldAircraftNacelleZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ1")
+					);
+			Main.getTextFieldAircraftNacelleZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ2")
+					);
+			Main.getTextFieldAircraftNacelleZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ3")
+					);
+			Main.getTextFieldAircraftNacelleZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ4")
+					);
+			Main.getTextFieldAircraftNacelleZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ5")
+					);
+			Main.getTextFieldAircraftNacelleZList().add(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacelleZ6")
+					);
+		}
 		//..........................................................................................................
-		Main.getTextFieldAircraftNacellePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacellePosition1")
-				);
-		Main.getTextFieldAircraftNacellePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacellePosition2")
-				);
-		Main.getTextFieldAircraftNacellePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacellePosition3")
-				);
-		Main.getTextFieldAircraftNacellePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacellePosition4")
-				);
-		Main.getTextFieldAircraftNacellePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacellePosition5")
-				);
-		Main.getTextFieldAircraftNacellePositonList().add(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftNacellePosition6")
-				);
+		if(Main.getChoiceBoxesAircraftNacellePositonList().isEmpty()) {
+			Main.getChoiceBoxesAircraftNacellePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftNacellePosition1")
+					);
+			Main.getChoiceBoxesAircraftNacellePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftNacellePosition2")
+					);
+			Main.getChoiceBoxesAircraftNacellePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftNacellePosition3")
+					);
+			Main.getChoiceBoxesAircraftNacellePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftNacellePosition4")
+					);
+			Main.getChoiceBoxesAircraftNacellePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftNacellePosition5")
+					);
+			Main.getChoiceBoxesAircraftNacellePositonList().add(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftNacellePosition6")
+					);
+		}
 		//..........................................................................................................
 		if(Main.getTheAircraft().getNacelles() != null) {
 			for (int i = 0; i < Main.getTheAircraft().getNacelles().getNacellesNumber(); i++) {
@@ -868,25 +909,36 @@ public class InputManagerAircraftDefaultController {
 							);
 				//..........................................................................................................
 				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-					Main.getTextFieldAircraftNacellePositonList().get(i).setText(
-							Main.getTheAircraft()
-							.getNacelles()
-							.getNacellesList()
-							.get(i)
-							.getMountingPosition()
-							.toString()
-							);
-				else
-					Main.getTextFieldAircraftNacellePositonList().get(i).setText(
-							"NOT INITIALIZED"
-							);
+					
+					if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("WING")
+							)
+						Main.getChoiceBoxesAircraftNacellePositonList().get(i).getSelectionModel().select(0);
+					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("FUSELAGE")
+							)
+						Main.getChoiceBoxesAircraftNacellePositonList().get(i).getSelectionModel().select(1);
+					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("HTAIL")
+							)
+						Main.getChoiceBoxesAircraftNacellePositonList().get(i).getSelectionModel().select(2);
+					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+							.getMountingPosition().toString()
+							.equalsIgnoreCase("UNDERCARRIAGE_HOUSING")
+							)
+						Main.getChoiceBoxesAircraftNacellePositonList().get(i).getSelectionModel().select(3);
+					
 			}
 		}
 		//---------------------------------------------------------------------------------
 		// LANDING GEARS:
-		Main.setTextFieldAircraftLandingGearsX(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsX")
-				);
+		if(Main.getTextFieldAircraftLandingGearsX() == null)
+			Main.setTextFieldAircraftLandingGearsX(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsX")
+					);
 		if(Main.getTheAircraft().getLandingGears() != null)
 			Main.getTextFieldAircraftLandingGearsX().setText(
 					Main.getTheAircraft()
@@ -899,9 +951,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftLandingGearsY(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsY")
-				);
+		if(Main.getTextFieldAircraftLandingGearsY() == null)
+			Main.setTextFieldAircraftLandingGearsY(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsY")
+					);
 		if(Main.getTheAircraft().getLandingGears() != null)
 			Main.getTextFieldAircraftLandingGearsY().setText(
 					Main.getTheAircraft()
@@ -914,9 +967,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftLandingGearsZ(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsZ")
-				);
+		if(Main.getTextFieldAircraftLandingGearsZ() == null)
+			Main.setTextFieldAircraftLandingGearsZ(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsZ")
+					);
 		if(Main.getTheAircraft().getLandingGears() != null)
 			Main.getTextFieldAircraftLandingGearsZ().setText(
 					Main.getTheAircraft()
@@ -929,25 +983,33 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftLandingGearsPosition(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsPosition")
-				);
+		if(Main.getChoiceBoxAircraftLandingGearsPosition() == null)
+			Main.setChoiceBoxAircraftLandingGearsPosition(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#choiceBoxAircraftLandingGearsPosition")
+					);
 		if(Main.getTheAircraft().getLandingGears() != null)
-			Main.getTextFieldAircraftLandingGearsPosition().setText(
-					Main.getTheAircraft()
-					.getLandingGears()
-					.getMountingPosition()
-					.toString()
-					);
-		else
-			Main.getTextFieldAircraftLandingGearsPosition().setText(
-					"NOT INITIALIZED"
-					);
+			
+			if(Main.getTheAircraft().getLandingGears()
+					.getMountingPosition().toString()
+					.equalsIgnoreCase("FUSELAGE")
+					)
+				Main.getChoiceBoxAircraftLandingGearsPosition().getSelectionModel().select(0);
+			else if(Main.getTheAircraft().getLandingGears()
+					.getMountingPosition().toString()
+					.equalsIgnoreCase("WING")
+					)
+				Main.getChoiceBoxAircraftLandingGearsPosition().getSelectionModel().select(1);
+			else if(Main.getTheAircraft().getLandingGears()
+					.getMountingPosition().toString()
+					.equalsIgnoreCase("NACELLE")
+					)
+				Main.getChoiceBoxAircraftLandingGearsPosition().getSelectionModel().select(2);
 		//---------------------------------------------------------------------------------
 		// SYSTEMS:
-		Main.setTextFieldAircraftSystemsX(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsX")
-				);
+		if(Main.getTextFieldAircraftSystemsX() == null)
+			Main.setTextFieldAircraftSystemsX(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsX")
+					);
 		if(Main.getTheAircraft().getSystems() != null)
 			Main.getTextFieldAircraftSystemsX().setText(
 					Main.getTheAircraft()
@@ -960,9 +1022,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftSystemsY(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsY")
-				);
+		if(Main.getTextFieldAircraftSystemsY() == null)
+			Main.setTextFieldAircraftSystemsY(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsY")
+					);
 		if(Main.getTheAircraft().getSystems() != null)
 			Main.getTextFieldAircraftSystemsY().setText(
 					Main.getTheAircraft()
@@ -975,9 +1038,10 @@ public class InputManagerAircraftDefaultController {
 					"NOT INITIALIZED"
 					);
 		//.................................................................................
-		Main.setTextFieldAircraftSystemsZ(
-				(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsZ")
-				);
+		if(Main.getTextFieldAircraftSystemsZ() == null)
+			Main.setTextFieldAircraftSystemsZ(
+					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsZ")
+					);
 		if(Main.getTheAircraft().getSystems() != null)
 			Main.getTextFieldAircraftSystemsZ().setText(
 					Main.getTheAircraft()
