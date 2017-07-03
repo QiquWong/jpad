@@ -63,7 +63,8 @@ public class ParticleSwarmOptimization {
 				kappa, 
 				phi1, 
 				phi2,
-				subfolderPath
+				subfolderPath,
+				null
 				);
 		
 		pso.optimize();

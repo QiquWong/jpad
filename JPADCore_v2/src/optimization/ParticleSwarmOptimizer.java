@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
+import standaloneutils.MyInterpolatingFunction;
 
 
 /**
@@ -23,6 +24,7 @@ public class ParticleSwarmOptimizer {
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	// INPUT DATA 
+	private MyInterpolatingFunction _costFunction;
 	private int _numberOfDesignVariables;
 	private Double[] _designVariablesLowerBound;
 	private Double[] _designVariablesUpperBound;
@@ -62,7 +64,8 @@ public class ParticleSwarmOptimizer {
 			Double kappa,
 			Double phi1,
 			Double phi2,
-			String outputFolder
+			String outputFolder,
+			MyInterpolatingFunction costFunction
 			) {
 		
 		// Preliminary checks ...
@@ -78,6 +81,7 @@ public class ParticleSwarmOptimizer {
 		}
 		
 		// Input assignment ...
+		this._costFunction = costFunction;
 		this._numberOfDesignVariables = numberOfDesignVariables;
 		this._designVariablesLowerBound = designVariablesLowerBound;
 		this._designVariablesUpperBound = designVariablesUpperBound;
@@ -169,6 +173,7 @@ public class ParticleSwarmOptimizer {
 				
 				Double[] newVelocity = new Double[p.getVelocity().length];
 				Double[] newPosition = new Double[p.getPosition().length];
+				Double currentCostValue = null;
 				
 				for(int j=0; j<_numberOfDesignVariables; j++) {
 					
@@ -207,7 +212,13 @@ public class ParticleSwarmOptimizer {
 				//==================================================================
 				// Evaluation 
 				//==================================================================
-				p.setCostFunctionValue(CostFunctions.sphere(p.getPosition()));
+				Double[] currentPositon = p.getPosition();
+				if(_costFunction == null)
+					currentCostValue = CostFunctions.sphere(currentPositon);
+				else
+					currentCostValue = CostFunctions.costFunction3Vars(currentPositon, _costFunction);
+				
+				p.setCostFunctionValue(currentCostValue);
 
 				// Update Personal Best
 				if(p.getCostFunctionValue() < p.getBestCostFunctionValue()) {
@@ -285,13 +296,19 @@ public class ParticleSwarmOptimizer {
 			
 			Double[] initialPosition = createRandomPositions(_numberOfDesignVariables);
 			
+			Double currentCostValue = null;
+			if(_costFunction == null)
+				currentCostValue = CostFunctions.sphere(initialPosition);
+			else
+				currentCostValue = CostFunctions.costFunction3Vars(initialPosition, _costFunction);
+			
 			_population.add(
 					new Particle(
 							initialPosition,
 							MyArrayUtils.zeros(_numberOfDesignVariables),
-							CostFunctions.sphere(initialPosition), 
+							currentCostValue, 
 							initialPosition,
-							CostFunctions.sphere(initialPosition)
+							currentCostValue
 							)
 					);
 			
@@ -477,6 +494,14 @@ public class ParticleSwarmOptimizer {
 
 	public void setConvergenceThreshold(Double _convergenceThreshold) {
 		this._convergenceThreshold = _convergenceThreshold;
+	}
+
+	public MyInterpolatingFunction getCostFunction() {
+		return _costFunction;
+	}
+
+	public void setCostFunction(MyInterpolatingFunction _costFunction) {
+		this._costFunction = _costFunction;
 	}
 	
 }
