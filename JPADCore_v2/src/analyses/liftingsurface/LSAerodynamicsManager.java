@@ -2459,7 +2459,7 @@ public class LSAerodynamicsManager {
 	//............................................................................
 	public class CalcPolar {
 
-		public void classic(
+		public void semiempirical(
 				Double mach,
 				Amount<Length> altitude
 				) {

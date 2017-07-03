@@ -32,7 +32,7 @@ public enum AerodynamicAndStabilityEnum {
 	CM_ALPHA_LIFTING_SURFACE,
 	CM_AT_ALPHA_LIFTING_SURFACE,
 	MOMENT_DISTRIBUTION_LIFTING_SURFACE,
-	MOMENT_CURVE_3D,
+	MOMENT_CURVE_3D_LIFTING_SURFACE,
 	
 	////////////////////////////////////////////////
 	// Fuselage
