@@ -30,6 +30,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -172,6 +174,7 @@ public class Main extends Application {
 	
 	//...........................................................................................
 	// FUSELAGE TAB (INPUT):
+	private static ChoiceBox<String> fuselageAdjustCriterion;
 	private static TextArea textAreaFuselageConsoleOutput;
 	private static CheckBox fuselagePressurizedCheckBox;
 	private static TextField textFieldFuselageDeckNumber;
@@ -626,6 +629,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		
+		
+		
 		Main.primaryStage = primaryStage;
 		Main.primaryStage.setTitle("JPADCommander - UniNa - DAF");
 		showMainView();
@@ -714,22 +719,30 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("view/MainItems.fxml"));
 		HBox mainItems = loader.load();
 		mainLayout.setCenter(mainItems);
+//		Image backgroundImage = new Image("file:images/Logo_DAF_Flat-Elevator.jpg");
+//		ImageView imageView = new ImageView(backgroundImage);
+//		mainItems.getChildren().add(imageView);
 		primaryStage.show();
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void showInputManager() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/InputManager.fxml"));
 		mainInputManagerLayout = loader.load();
 
+		Main.setFuselageAdjustCriterion(
+				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageAdjustCriterionChoiceBox")
+				);
+		
 		// get the action buttons toolbar
 		Main.setActionButtonsToolbar(
 				(ToolBar) Main.getMainInputManagerLayout()
 				.lookup("#actionButtonsToolbar")
 				);
 		mainInputManagerLayout.setTop(actionButtonsToolbar);
-
+		
 		mainLayout.setCenter(mainInputManagerLayout);
 
 		primaryStage.show();
@@ -768,7 +781,6 @@ public class Main extends Application {
 				(ToolBar) Main.getMainInputManagerAircraftFromFileLayout().lookup("#ImportAircraftFromFileToolbar")
 				);
 		mainInputManagerAircraftSubContentFieldsLayout.setTop(mainInputManagerAircraftFromFileToolbarLayout);
-		
 		
 		primaryStage.show();
 	}
@@ -1710,6 +1722,14 @@ public class Main extends Application {
 
 	public static void sethTailRiggingAngleUnitChoiceBox(ChoiceBox<String> hTailTailRiggingAngleUnitChoiceBox) {
 		Main.hTailTailRiggingAngleUnitChoiceBox = hTailTailRiggingAngleUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageAdjustCriterion() {
+		return fuselageAdjustCriterion;
+	}
+
+	public static void setFuselageAdjustCriterion(ChoiceBox<String> fuselageAdjustCriterion) {
+		Main.fuselageAdjustCriterion = fuselageAdjustCriterion;
 	}
 
 }

@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-image: url(&quot;C:\Users\Vittorio\ADOPT_PROJECT\jpad\JPADCommander\src\jpadcommander\graphics\background.jpg&quot;);;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.view.MainItemsController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1590.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.view.MainItemsController">
    <children>
-      <Button blendMode="SRC_ATOP" mnemonicParsing="false" onAction="#goInputManager" prefHeight="250.0" prefWidth="350.0" text="Input Manager">
+      <Button id="inputManagerButton" blendMode="SRC_ATOP" mnemonicParsing="false" onAction="#goInputManager" prefHeight="250.0" prefWidth="350.0" style="-fx-background-color: #BCE7F4;" text="Input Manager">
          <HBox.margin>
             <Insets bottom="325.0" left="91.667" right="91.667" top="325.0" />
          </HBox.margin>
@@ -19,7 +19,7 @@
             <DropShadow blurType="GAUSSIAN" height="60.0" radius="29.5" width="60.0" />
          </effect>
       </Button>
-      <Button blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" text="Analysis Manager">
+      <Button id="analysisManagerButton" blendMode="SRC_ATOP" disable="true" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" style="-fx-background-color: #FF0000;" text="Analysis Manager">
          <HBox.margin>
             <Insets bottom="325.0" left="91.667" right="91.667" top="325.0" />
          </HBox.margin>
@@ -30,7 +30,7 @@
             <DropShadow blurType="GAUSSIAN" height="60.0" radius="29.5" width="60.0" />
          </effect>
       </Button>
-      <Button blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" text="Results Manager">
+      <Button id="resultsManagerButton" blendMode="SRC_ATOP" disable="true" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" style="-fx-background-color: #FF0000;" text="Results Manager">
          <HBox.margin>
             <Insets bottom="325.0" left="91.667" right="91.667" top="325.0" />
          </HBox.margin>

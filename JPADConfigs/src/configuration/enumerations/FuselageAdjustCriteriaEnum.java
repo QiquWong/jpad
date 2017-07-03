@@ -2,7 +2,6 @@ package configuration.enumerations;
 
 public enum FuselageAdjustCriteriaEnum {
 
-	NONE,
 	ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS,
 	ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS,	
 	ADJ_CYL_LENGTH,                                          // stretching

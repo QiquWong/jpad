@@ -77,6 +77,7 @@ public class InputManagerAircraftFromFileController {
 			}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void loadAircraftFileImplementation() throws IOException, InterruptedException {
 		Main.setStatus(State.RUNNING);
 		Main.checkStatus(Main.getStatus());
@@ -2627,6 +2628,48 @@ public class InputManagerAircraftFromFileController {
 					);
 		}
 		//..........................................................................................................
+		if(Main.getNacelleXUnitChoiceBox() == null)
+			Main.setNacelleXUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#nacellesXUnitChoiceBox")
+					);
+		if(Main.getTheAircraft()
+				.getNacelles().getNacellesList().get(0)
+				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+			Main.getNacelleXUnitChoiceBox().getSelectionModel().select(0);
+		else if(Main.getTheAircraft()
+				.getNacelles().getNacellesList().get(0)
+				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+			Main.getNacelleXUnitChoiceBox().getSelectionModel().select(1);
+		
+		
+		if(Main.getNacelleYUnitChoiceBox() == null)
+			Main.setNacelleYUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#nacellesYUnitChoiceBox")
+					);
+		if(Main.getTheAircraft()
+				.getNacelles().getNacellesList().get(0)
+				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+			Main.getNacelleYUnitChoiceBox().getSelectionModel().select(0);
+		else if(Main.getTheAircraft()
+				.getNacelles().getNacellesList().get(0)
+				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+			Main.getNacelleYUnitChoiceBox().getSelectionModel().select(1);
+		
+		
+		if(Main.getNacelleZUnitChoiceBox() == null)
+			Main.setNacelleZUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#nacelleZUnitChoiceBox")
+					);
+		if(Main.getTheAircraft()
+				.getNacelles().getNacellesList().get(0)
+				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+			Main.getNacelleZUnitChoiceBox().getSelectionModel().select(0);
+		else if(Main.getTheAircraft()
+				.getNacelles().getNacellesList().get(0)
+				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+			Main.getNacelleZUnitChoiceBox().getSelectionModel().select(1);
+		
+		//..........................................................................................................
 		NodeList nodelistNacelles = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//nacelles/nacelle");
 		if(nodelistNacelles != null) {
@@ -2647,12 +2690,11 @@ public class InputManagerAircraftFromFileController {
 				//..........................................................................................................
 				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
 					Main.getTextFieldAircraftNacelleXList().get(i).setText(
-							Main.getTheAircraft()
-							.getNacelles()
-							.getNacellesList()
-							.get(i)
-							.getXApexConstructionAxes()
-							.toString()
+							String.valueOf(
+									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+									.getXApexConstructionAxes()
+									.getEstimatedValue()
+									)
 							);
 				else
 					Main.getTextFieldAircraftNacelleXList().get(i).setText(
@@ -2661,12 +2703,11 @@ public class InputManagerAircraftFromFileController {
 				//..........................................................................................................
 				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
 					Main.getTextFieldAircraftNacelleYList().get(i).setText(
-							Main.getTheAircraft()
-							.getNacelles()
-							.getNacellesList()
-							.get(i)
-							.getYApexConstructionAxes()
-							.toString()
+							String.valueOf(
+									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+									.getYApexConstructionAxes()
+									.getEstimatedValue()
+									)
 							);
 				else
 					Main.getTextFieldAircraftNacelleYList().get(i).setText(
@@ -2675,12 +2716,11 @@ public class InputManagerAircraftFromFileController {
 				//..........................................................................................................
 				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
 					Main.getTextFieldAircraftNacelleZList().get(i).setText(
-							Main.getTheAircraft()
-							.getNacelles()
-							.getNacellesList()
-							.get(i)
-							.getZApexConstructionAxes()
-							.toString()
+							String.valueOf(
+									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+									.getZApexConstructionAxes()
+									.getEstimatedValue()
+									)
 							);
 				else
 					Main.getTextFieldAircraftNacelleZList().get(i).setText(
@@ -2739,13 +2779,32 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldAircraftLandingGearsX(
 					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsX")
 					);
-		if(Main.getTheAircraft().getLandingGears() != null)
-			Main.getTextFieldAircraftLandingGearsX().setText(
-					Main.getTheAircraft()
-					.getLandingGears()
-					.getXApexConstructionAxes()
-					.toString()
+		if(Main.getLandingGearsXUnitChoiceBox() == null)
+			Main.setLandingGearsXUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#landingGearsXUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getLandingGears() != null) {
+			
+			Main.getTextFieldAircraftLandingGearsX().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getXApexConstructionAxes()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getLandingGears()
+					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getLandingGearsXUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getLandingGears()
+					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getLandingGearsXUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldAircraftLandingGearsX().setText(
 					"NOT INITIALIZED"
@@ -2755,13 +2814,32 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldAircraftLandingGearsY(
 					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsY")
 					);
-		if(Main.getTheAircraft().getLandingGears() != null)
-			Main.getTextFieldAircraftLandingGearsY().setText(
-					Main.getTheAircraft()
-					.getLandingGears()
-					.getYApexConstructionAxes()
-					.toString()
+		if(Main.getLandingGearsYUnitChoiceBox() == null)
+			Main.setLandingGearsYUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#landingGearsYUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getLandingGears() != null) {
+			
+			Main.getTextFieldAircraftLandingGearsY().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getYApexConstructionAxes()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getLandingGears()
+					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getLandingGearsYUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getLandingGears()
+					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getLandingGearsYUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldAircraftLandingGearsY().setText(
 					"NOT INITIALIZED"
@@ -2771,13 +2849,32 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldAircraftLandingGearsZ(
 					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftLandingGearsZ")
 					);
-		if(Main.getTheAircraft().getLandingGears() != null)
-			Main.getTextFieldAircraftLandingGearsZ().setText(
-					Main.getTheAircraft()
-					.getLandingGears()
-					.getZApexConstructionAxes()
-					.toString()
+		if(Main.getLandingGearsZUnitChoiceBox() == null)
+			Main.setLandingGearsZUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#landingGearsZUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getLandingGears() != null) {
+			
+			Main.getTextFieldAircraftLandingGearsZ().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getLandingGears()
+							.getZApexConstructionAxes()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getLandingGears()
+					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getLandingGearsZUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getLandingGears()
+					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getLandingGearsZUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldAircraftLandingGearsZ().setText(
 					"NOT INITIALIZED"
@@ -2832,13 +2929,32 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldAircraftSystemsX(
 					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsX")
 					);
-		if(Main.getTheAircraft().getSystems() != null)
-			Main.getTextFieldAircraftSystemsX().setText(
-					Main.getTheAircraft()
-					.getSystems()
-					.getXApexConstructionAxes()
-					.toString()
+		if(Main.getSystemsXUnitChoiceBox() == null)
+			Main.setSystemsXUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#systemsXUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getSystems() != null) {
+			
+			Main.getTextFieldAircraftSystemsX().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getSystems()
+							.getXApexConstructionAxes()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getSystems()
+					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getSystemsXUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getSystems()
+					.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getSystemsXUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldAircraftSystemsX().setText(
 					"NOT INITIALIZED"
@@ -2848,13 +2964,32 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldAircraftSystemsY(
 					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsY")
 					);
-		if(Main.getTheAircraft().getSystems() != null)
-			Main.getTextFieldAircraftSystemsY().setText(
-					Main.getTheAircraft()
-					.getSystems()
-					.getYApexConstructionAxes()
-					.toString()
+		if(Main.getSystemsYUnitChoiceBox() == null)
+			Main.setSystemsYUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#systemsYUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getSystems() != null) {
+			
+			Main.getTextFieldAircraftSystemsY().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getSystems()
+							.getYApexConstructionAxes()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getSystems()
+					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getSystemsYUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getSystems()
+					.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getSystemsYUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldAircraftSystemsY().setText(
 					"NOT INITIALIZED"
@@ -2864,13 +2999,32 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldAircraftSystemsZ(
 					(TextField) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#textFieldAircraftSystemsZ")
 					);
-		if(Main.getTheAircraft().getSystems() != null)
-			Main.getTextFieldAircraftSystemsZ().setText(
-					Main.getTheAircraft()
-					.getSystems()
-					.getZApexConstructionAxes()
-					.toString()
+		if(Main.getSystemsZUnitChoiceBox() == null)
+			Main.setSystemsZUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#systemsZUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getSystems() != null) {
+			
+			Main.getTextFieldAircraftSystemsZ().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getSystems()
+							.getZApexConstructionAxes()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getSystems()
+					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getSystemsZUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getSystems()
+					.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getSystemsZUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldAircraftSystemsZ().setText(
 					"NOT INITIALIZED"
@@ -2890,6 +3044,18 @@ public class InputManagerAircraftFromFileController {
 				Main.getTheAircraft().getFuselage().getFuselageCreator().toString()
 				);
 
+		//---------------------------------------------------------------------------------
+		// ADJUST CRITERION CHOICE BOX:
+		if(Main.getFuselageAdjustCriterion() == null) {
+			Main.setFuselageAdjustCriterion(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageAdjustCriterionChoiceBox")
+					);
+			
+			if(Main.getTheAircraft() != null)
+				Main.getFuselageAdjustCriterion().setDisable(false);
+			
+		}
+		
 		//---------------------------------------------------------------------------------
 		// PRESSURIZED FLAG:
 		if(Main.getFuselagePressurizedCheckBox() == null)

@@ -58,6 +58,38 @@ public class InputManagerController {
 			"WING",
 			"NACELLE"
 			);
+	ObservableList<String> fuselageAdjustCriteriaTypeList = FXCollections.observableArrayList(
+			"ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS",
+			"ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS",	
+			"ADJ_CYL_LENGTH",                            
+			"ADJ_NOSE_LENGTH_CONST_TOT_LENGTH_DIAMETERS",
+			"ADJ_NOSE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS",
+			"ADJ_NOSE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS",
+			"ADJ_TAILCONE_LENGTH_CONST_TOT_LENGTH_DIAMETERS",
+			"ADJ_TAILCONE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS",
+			"ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS",
+			"ADJ_FUS_LENGTH_CONST_FINENESS_RATIOS_VAR_DIAMETERS"
+			);
+	ObservableList<String> wingAdjustCriteriaTypeList = FXCollections.observableArrayList(
+			"AR_SPAN_ROOTCHORD",
+			"AR_SPAN_TIPCHORD",
+			"AR_SPAN_TAPER",
+			"AR_AREA_ROOTCHORD",
+			"AR_AREA_TIPCHORD",
+			"AR_AREA_TAPER", 
+			"AR_ROOTCHORD_TIPCHORD",
+			"AR_ROOTCHORD_TAPER",
+			"AR_TIPCHORD_TAPER",
+			"SPAN_AREA_ROOTCHORD",
+			"SPAN_AREA_TIPCHORD",
+			"SPAN_AREA_TAPER",
+			"SPAN_ROOTCHORD_TIPCHORD", 
+			"SPAN_ROOTCHORD_TAPER",
+			"SPAN_TIPCHORD_TAPER",
+			"AREA_ROOTCHORD_TIPCHORD",
+			"AREA_ROOTCHORD_TAPER",
+			"AREA_TIPCHORD_TAPER"
+			);
 	ObservableList<String> lengthUnitsList = FXCollections.observableArrayList("m","ft" );
 	ObservableList<String> angleUnitsList = FXCollections.observableArrayList("°","rad" );
 	
@@ -247,6 +279,12 @@ public class InputManagerController {
 	@FXML
 	@SuppressWarnings("rawtypes")
 	private ChoiceBox fuselageSpoilersDeltaMaxUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageAdjustCriterionChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
+	private ChoiceBox wingAdjustCriterionChoiceBox;
 	
 	@FXML
 	@SuppressWarnings("unchecked")
@@ -267,6 +305,8 @@ public class InputManagerController {
 		nacellesMountingPositionTypeChoiceBox5.setItems(nacelleMountingPositionTypeList);
 		nacellesMountingPositionTypeChoiceBox6.setItems(nacelleMountingPositionTypeList);
 		landingGearsMountingPositionTypeChoiceBox.setItems(landingGearsMountingPositionTypeList);
+		fuselageAdjustCriterionChoiceBox.setItems(fuselageAdjustCriteriaTypeList);
+//		wingAdjustCriterionChoiceBox.setItems(wingAdjustCriteriaTypeList);
 		
 		// Units 
 		fuselageXUnitChoiceBox.setItems(lengthUnitsList);
