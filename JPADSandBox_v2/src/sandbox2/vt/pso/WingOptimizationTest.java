@@ -181,8 +181,8 @@ public class WingOptimizationTest {
 			
 			Double[] designVariablesLowerBound = new Double[] {var1Array[0], var2Array[0], var3Array[0]};
 			Double[] designVariablesUpperBound = new Double[] {var1Array[var1Array.length-1], var2Array[var2Array.length-1], var3Array[var3Array.length-1]};
-			Double convergenceThreshold = 1e-3; // threshold used to compare particles position during each iteration
-			int particlesNumber = 10;
+			Double convergenceThreshold = 1e-10; // threshold used to compare particles position during each iteration
+			int particlesNumber = 1000000;
 			Double kappa = 1.0;
 			Double phi1 = 2.05;
 			Double phi2 = 2.05;
@@ -231,18 +231,6 @@ public class WingOptimizationTest {
 										)
 								.build();
 						
-						currentWing.getLiftingSurfaceCreator().adjustDimensions(
-								var1Array[i],
-								wing0.getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER),
-								var2Array[k],
-								Amount.valueOf(var3Array[k], NonSI.DEGREE_ANGLE),
-								wing0.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getDihedral(),
-								wing0.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(), 
-								wingAdjustCriterion
-								);
-						
-						theWings.add(currentWing);
-						
 						currentWing.calculateGeometry(
 								40,
 								currentWing.getType(),
@@ -251,6 +239,18 @@ public class WingOptimizationTest {
 								aeroDatabaseReader,
 								Boolean.FALSE
 								);
+						
+						currentWing.getLiftingSurfaceCreator().adjustDimensions(
+								var1Array[i],
+								wing0.getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER),
+								var2Array[j],
+								Amount.valueOf(var3Array[k], NonSI.DEGREE_ANGLE),
+								wing0.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getDihedral(),
+								wing0.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTwistGeometricAtTip(), 
+								wingAdjustCriterion
+								);
+						
+						theWings.add(currentWing);
 						
 						// sign (-) for a minimization problem
 						costFunctionValues[i][j][k] = -WingOptimizationTest.calculateCLmaxWing(
@@ -269,7 +269,7 @@ public class WingOptimizationTest {
 			System.out.println("\tEvaluating response surface ... ");
 			System.out.println("\t------------------------------------\n");
 			MyInterpolatingFunction costFunction = new MyInterpolatingFunction();
-			costFunction.interpolateTrilinear(
+			costFunction.interpolate(
 					var1Array,
 					var2Array,
 					var3Array,
@@ -291,7 +291,7 @@ public class WingOptimizationTest {
 					phi1, 
 					phi2,
 					subfolderPath,
-					null
+					costFunction
 					);
 			
 			pso.optimize();
@@ -309,7 +309,6 @@ public class WingOptimizationTest {
 			WingOptimizationTest.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
 		}	    
 
 	}

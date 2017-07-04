@@ -207,6 +207,7 @@ public class Main extends Application {
 	
 	// units
 	private static ChoiceBox<String> fuselageLengthUnitChoiceBox;
+	private static ChoiceBox<String> fuselageRoughnessUnitChoiceBox;
 	private static ChoiceBox<String> fuselageNoseTipOffsetZUnitChoiceBox;
 	private static ChoiceBox<String> fuselageWindshieldWidthUnitChoiceBox;
 	private static ChoiceBox<String> fuselageWindshieldHeightUnitChoiceBox;
@@ -1730,6 +1731,14 @@ public class Main extends Application {
 
 	public static void setFuselageAdjustCriterion(ChoiceBox<String> fuselageAdjustCriterion) {
 		Main.fuselageAdjustCriterion = fuselageAdjustCriterion;
+	}
+
+	public static ChoiceBox<String> getFuselageRoughnessUnitChoiceBox() {
+		return fuselageRoughnessUnitChoiceBox;
+	}
+
+	public static void setFuselageRoughnessUnitChoiceBox(ChoiceBox<String> fuselageRoughnessUnitChoiceBox) {
+		Main.fuselageRoughnessUnitChoiceBox = fuselageRoughnessUnitChoiceBox;
 	}
 
 }

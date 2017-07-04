@@ -242,6 +242,9 @@ public class InputManagerController {
 	private ChoiceBox fuselageLengthUnitChoiceBox;
 	@FXML
 	@SuppressWarnings("rawtypes")
+	private ChoiceBox fuselageRoughnessUnitChoiceBox;
+	@FXML
+	@SuppressWarnings("rawtypes")
 	private ChoiceBox fuselageNoseTipOffsetZUnitChoiceBox;
 	@FXML
 	@SuppressWarnings("rawtypes")
@@ -342,6 +345,7 @@ public class InputManagerController {
 		systemsYUnitChoiceBox.setItems(lengthUnitsList);
 		systemsZUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageLengthUnitChoiceBox.setItems(lengthUnitsList);
+		fuselageRoughnessUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageNoseTipOffsetZUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageWindshieldWidthUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageWindshieldHeightUnitChoiceBox.setItems(lengthUnitsList);
@@ -446,11 +450,6 @@ public class InputManagerController {
         	}
         });
  
-		////////////////////////////////////////////////////////////////////////////
-		// TODO : SET TEXT FIELD INPUT FILE IF AIRCRAFT NOT NULL 				  //
-        //		  CHECK IF AIRCRAFT IS FROM DEFAULT --> THEN CLEAR THE TEXT FIELD //
-		////////////////////////////////////////////////////////////////////////////
-        
 		//.......................................................................................
 		// FUSELAGE TAB
 		//.......................................................................................

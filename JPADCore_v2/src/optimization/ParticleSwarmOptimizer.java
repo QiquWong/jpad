@@ -312,7 +312,7 @@ public class ParticleSwarmOptimizer {
 							)
 					);
 			
-			System.out.println("\t\tParticle " + (i+1) + " initial position = " + Arrays.toString(_population.get(i).getPosition()));
+//			System.out.println("\t\tParticle " + (i+1) + " initial position = " + Arrays.toString(_population.get(i).getPosition()));
 			
 		}
 		

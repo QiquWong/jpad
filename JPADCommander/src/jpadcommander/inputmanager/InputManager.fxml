@@ -843,6 +843,7 @@
                                                          </font>
                                                       </Label>
                                                       <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="fuselageAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <ChoiceBox fx:id="fuselageRoughnessUnitChoiceBox" layoutX="347.0" layoutY="237.0" prefHeight="30.0" prefWidth="47.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
