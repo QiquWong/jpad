@@ -1863,12 +1863,132 @@ public class LiftCalc {
 					totalLiftCoefficient.add(
 							wingFuselageLiftCoefficient.get(i)+
 							horizontalTailLiftCoefficient.get(i)*(
-							(wingSurface.doubleValue(SI.SQUARE_METRE)*horizontalTailSurface.doubleValue(SI.SQUARE_METRE))*
+							(horizontalTailSurface.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE))*
 							horizontalTailDynamicPressureRatio)
 							);
 				}
 				);
 		
 		return totalLiftCoefficient;
+	}
+	
+	public static List<Double> calculateHorizontalTailEquilibriumLiftCoefficient(
+			Amount<Length> xCGPosition,
+			Amount<Length> zCGPosition,
+			Amount<Length> xACWing,
+			Amount<Length> zACWing,
+			Amount<Length> xACHorizontalTail,
+			Amount<Length> zLandingGear,
+			Amount<Length> wingMeanAerodynamicChord,
+			Amount<Area> wingSurface,
+			Amount<Area> horizontalTailSurface,
+			List<Double> wingFuselageLiftCoefficient,
+			List<Double> wingDragCoefficient,
+			List<Double> wingMomentCoefficient,
+			List<Double> fuselageMomentCoefficient,
+			List<Double> fuselageDragCoefficient,
+			Double landingGearDragCoefficient,
+			Double horizontalTailDynamicPressureRatio,
+			List<Amount<Angle>> alphaBodyList,
+			boolean pendularStability
+			) {
+		
+		List<Double>  horizontalTailEquilibriumLiftCoefficient = new ArrayList<>();
+
+		List<Double> wingNormalCoefficient = new ArrayList<>();
+		List<Double> wingHorizontalCoeffient = new ArrayList<>();
+		List<Double> wingMomentCoefficientWithRespectToCG = new ArrayList<>();
+		List<Double> fuselageMomentCoefficientWithRespectToCG = new ArrayList<>();
+		List<Double> landingGearMomentCoefficientWithRespectToCG = new ArrayList<>();
+		
+		//DISTANCES--------
+		//Wing	
+		Amount<Length> wingHorizontalDistanceACtoCG = Amount.valueOf(
+				xCGPosition.doubleValue(SI.METER) - xACWing.doubleValue(SI.METER),
+				SI.METER);
+		Double nondimensionalWingHorizontalDistance = 
+				wingHorizontalDistanceACtoCG.doubleValue(SI.METER)/
+				wingMeanAerodynamicChord.doubleValue(SI.METER);
+
+		Amount<Length> wingVerticalDistanceACtoCG = Amount.valueOf(
+				zACWing.doubleValue(SI.METER) - zCGPosition.doubleValue(SI.METER),
+				SI.METER);
+		Double nondimensionalWingVerticalDistance = 
+				wingVerticalDistanceACtoCG.doubleValue(SI.METER)/
+				wingMeanAerodynamicChord.doubleValue(SI.METER);
+		
+		// landing gear
+		Double nonDimensionalLandingGearArm = (zLandingGear.doubleValue(SI.METER)-zCGPosition.doubleValue(SI.METER))/
+				wingMeanAerodynamicChord.doubleValue(SI.METER);
+		
+		//Fuselage
+		Amount<Length> fuselageVerticalDistanceACtoCG = Amount.valueOf(
+				- zCGPosition.doubleValue(SI.METER),
+				SI.METER);
+		Double nondimensionalFuselageVerticalDistance = 
+				fuselageVerticalDistanceACtoCG.doubleValue(SI.METER)/
+				wingMeanAerodynamicChord.doubleValue(SI.METER);
+		
+		//Horizontal tail
+		Amount<Length> horizontalTailHorizontalDistanceACtoCG = Amount.valueOf(
+				xCGPosition.doubleValue(SI.METER) - xACHorizontalTail.doubleValue(SI.METER),
+				SI.METER);
+
+		
+		alphaBodyList.stream().forEach( ab-> {
+
+		int i = alphaBodyList.indexOf(ab);
+			
+		// WING -----------------------------
+		// forces
+		wingNormalCoefficient.add(
+				wingFuselageLiftCoefficient.get(i)*Math.cos(ab.doubleValue(SI.RADIAN))+
+				wingDragCoefficient.get(i)*Math.sin(ab.doubleValue(SI.RADIAN))
+				);
+
+		wingHorizontalCoeffient.add(
+				wingDragCoefficient.get(i)*Math.cos(ab.doubleValue(SI.RADIAN)) - 
+				wingFuselageLiftCoefficient.get(i)*Math.sin(ab.doubleValue(SI.RADIAN)));		
+
+		// moment with respect to CG
+		if(pendularStability == true){
+			wingMomentCoefficientWithRespectToCG.add(
+					wingNormalCoefficient.get(i)* nondimensionalWingHorizontalDistance+
+					wingHorizontalCoeffient.get(i)* nondimensionalWingVerticalDistance+
+					wingMomentCoefficient.get(i)
+					);
+		}
+		if(pendularStability == false){
+			wingMomentCoefficientWithRespectToCG.add(
+					wingNormalCoefficient.get(i)* nondimensionalWingHorizontalDistance+
+					wingMomentCoefficient.get(i)
+					);
+		}
+		
+		//FUSELAGE----------------------------
+		// moment with respect to CG
+		fuselageMomentCoefficientWithRespectToCG.add(
+				fuselageMomentCoefficient.get(i) + fuselageDragCoefficient.get(i)*nondimensionalFuselageVerticalDistance
+				);
+
+		//LANDING GEAR----------------------------
+		// moment with respect to CG
+		landingGearMomentCoefficientWithRespectToCG.add(
+				landingGearDragCoefficient* nonDimensionalLandingGearArm
+				);
+		
+		
+		horizontalTailEquilibriumLiftCoefficient.add(i,
+				(-wingMomentCoefficientWithRespectToCG.get(i)-
+						fuselageMomentCoefficientWithRespectToCG.get(i) -
+						landingGearMomentCoefficientWithRespectToCG.get(i) *
+				(wingSurface.doubleValue(SI.SQUARE_METRE)/horizontalTailSurface.doubleValue(SI.SQUARE_METRE)) *
+				(wingMeanAerodynamicChord.doubleValue(SI.METER)/horizontalTailHorizontalDistanceACtoCG.doubleValue(SI.METER))*
+				(1/horizontalTailDynamicPressureRatio)
+				));
+		}
+				);
+		
+		return horizontalTailEquilibriumLiftCoefficient;
 	}
 }

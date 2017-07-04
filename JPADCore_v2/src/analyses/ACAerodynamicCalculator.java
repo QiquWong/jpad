@@ -93,7 +93,9 @@ public class ACAerodynamicCalculator {
 	private Amount<Length> _currentAltitude;
 	private List<Double> _wingFinalLiftCurve = new ArrayList<>();
 	Double landingGearUsedDrag = null;
-
+	private List<Amount<Angle>> deltaEForEquilibrium = new ArrayList<>();
+	
+	
 	// for downwash estimation
 	private Amount<Length> _zACRootWing;
 	private Amount<Length> _horizontalDistanceQuarterChordWingHTail;
@@ -172,6 +174,7 @@ public class ACAerodynamicCalculator {
 	private Map<Double, List<Double>> _horizontalTailEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CLh
 	private Map<Double, List<Double>> _totalEquilibriumLiftCoefficient = new HashMap<>(); //xcg, CL
 	private Map<Double, List<Double>> _totalEquilibriumDragCoefficient = new HashMap<>(); //xcg, CL
+	private Map<Double, List<Amount<Angle>>> _deltaEEquilibrium = new HashMap<>(); //xcg
 
 	// COMPLETE ME !!
 
@@ -361,6 +364,8 @@ public class ACAerodynamicCalculator {
 						.doubleValue(SI.RADIAN)
 						),
 				SI.METER);
+		
+		deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-45, 10, 20)), NonSI.DEGREE_ANGLE); 
 	}
 
 	private void initializeArrays() {
@@ -3520,36 +3525,129 @@ public class ACAerodynamicCalculator {
 	//............................................................................
 	public class CalcLongitudinalStability {
 
-		public void fromForceBalanceEquation() {
-
-			//=======================================================================================
-			// Calculating moment coefficient with delta e deflections... CM
-			//=======================================================================================
-
-
-			//=======================================================================================
-			// Calculating total lift coefficient with delta e deflections... CL
-			//=======================================================================================
-
-			//=======================================================================================
-			// Calculating total drag coefficient with delta e deflections... CD
-			//=======================================================================================
+		public void fromForceBalanceEquation() { 
 
 			//=======================================================================================
 			// Calculating horizontal tail equilibrium lift coefficient ... CLh_e
 			//=======================================================================================
 
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
+
+				int i = _theAerodynamicBuilderInterface.getXCGAircraft().indexOf(xcg);
+	
+				_horizontalTailEquilibriumLiftCoefficient.put(
+						xcg,
+						LiftCalc.calculateHorizontalTailEquilibriumLiftCoefficient(
+								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getX0().doubleValue(SI.METER), SI.METER), 
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getZ0().doubleValue(SI.METER), SI.METER),
+								_liftingSurfaceAerodynamicManagers
+								.get(ComponentEnum.WING)
+								.getXacLRF()
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.WING)
+										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()),  
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(),  
+								_liftingSurfaceAerodynamicManagers
+								.get(ComponentEnum.HORIZONTAL_TAIL)
+								.getXacLRF()
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.HORIZONTAL_TAIL)
+										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()), 
+								_theAerodynamicBuilderInterface.getZCGLandingGear(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
+								_current3DWingLiftCurve,
+								_current3DWingPolarCurve,
+								_current3DWingMomentCurve,
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.FUSELAGE)
+										.getMoment3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.FUSELAGE)
+												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+										.get(ComponentEnum.FUSELAGE)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.FUSELAGE)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+								landingGearUsedDrag,
+								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+								_alphaBodyList, 
+								_theAerodynamicBuilderInterface.getWingPendularStability()
+								));
+						
+			});
+
 			//=======================================================================================
 			// Calculating total equilibrium lift coefficient ... CLtot_e
 			//=======================================================================================
 
+			
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
+			_totalEquilibriumLiftCoefficient.put(
+					xcg,
+					LiftCalc.calculateCLTotalCurveWithEquation(
+							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(),  
+							_current3DWingLiftCurve,
+							_horizontalTailEquilibriumLiftCoefficient.get(xcg),
+							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+							_alphaBodyList));
+
+			});
+			
 			//=======================================================================================
 			// Calculating delta e equilibrium ... deltae_e
 			//=======================================================================================
 
+			Map<Amount<Angle>, List<Double>> liftCoefficientHorizontalTailForEquilibrium = new HashMap<>();
+			
+			CalcHighLiftCurve calcHTailHighLiftCurveForDEEquilibrium = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftCurve();
+
+			deltaEForEquilibrium.stream().forEach(de -> {
+				List<Double> temporaryLiftHorizontalTail = new ArrayList<>();
+				List<Amount<Angle>> temporaryDeList = new ArrayList<>();
+				temporaryDeList.add(de);
+				
+				calcHTailHighLiftCurveForDEEquilibrium.semiempirical(
+						temporaryDeList, 
+						null, 
+						_currentMachNumber, 
+						_currentAltitude
+						);
+				
+				temporaryLiftHorizontalTail = MyArrayUtils.convertDoubleArrayToListDouble(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(MethodEnum.SEMPIEMPIRICAL));
+
+				liftCoefficientHorizontalTailForEquilibrium.put(
+						de, 
+						temporaryLiftHorizontalTail);
+				
+
+			});
+			
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
+			_deltaEEquilibrium.put(xcg, 
+					AerodynamicCalc.calculateDeltaEEquilibrium(
+					liftCoefficientHorizontalTailForEquilibrium, 
+					deltaEForEquilibrium, 
+					_horizontalTailEquilibriumLiftCoefficient.get(xcg), 
+					_alphaBodyList
+					));
+			});
+			
 			//=======================================================================================
-			// Calculating total equilibrium lift coefficient ... CDtot_e
+			// Calculating total equilibrium Drag coefficient ... CDtot_e
 			//=======================================================================================
+			
+			
+			
 		}
 	}
 	//............................................................................

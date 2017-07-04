@@ -7,6 +7,7 @@ import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
@@ -1162,6 +1163,45 @@ public class AerodynamicCalc {
 				positionRelativeToAttachment);
 
 		return dynamicPressureRatio;
+	}
+
+	public static List<Amount<Angle>> calculateDeltaEEquilibrium (
+			Map<Amount<Angle>, List<Double>> liftCoefficientHorizontalTailWithRespectToDeltaE,
+			List<Amount<Angle>> deltaEForEquilibrium,
+			List<Double> cLEquilibriumHorizontalTail,
+			List<Amount<Angle>> alphaBodyList
+			)
+	{
+		List<Amount<Angle>> deltaEEquilibrium = new ArrayList<>();
+
+		alphaBodyList.stream().forEach( ab-> {
+
+			int i = alphaBodyList.indexOf(ab);
+			List<Double> temporaryCL = new ArrayList<>();
+			List<Double> temporaryCLFinal = new ArrayList<>();
+			List<Amount<Angle>> temporaryDeltaE = new ArrayList<>();
+			deltaEForEquilibrium.stream().forEach( de-> {
+				temporaryCL.add(liftCoefficientHorizontalTailWithRespectToDeltaE.get(de).get(i));
+				for (int ii=0; ii<temporaryCL.size()-1 ; ii++){
+					if(temporaryCL.get(ii) < temporaryCL.get(ii+1))
+					{
+						temporaryCLFinal.add(temporaryCL.get(ii));
+						temporaryDeltaE.add(deltaEForEquilibrium.get(ii));
+					}
+				}
+			});
+			deltaEEquilibrium.add(
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(temporaryCLFinal),
+									MyArrayUtils.convertListOfAmountTodoubleArray(temporaryDeltaE),
+									cLEquilibriumHorizontalTail.get(i)),
+							NonSI.DEGREE_ANGLE)
+					);
+		});
+
+
+		return deltaEEquilibrium;
 	}
 }
 
