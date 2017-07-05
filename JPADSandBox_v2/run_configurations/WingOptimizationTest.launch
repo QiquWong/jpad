@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/JPADSandBox_v2/src/sandbox2/vt/pso/WingOptimizationTest.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="Path" value="${JPAD_ROOT}/libraries/hdf"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.vt.pso.WingOptimizationTest"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/Template_Aircraft/lifting_surfaces/wing_IRON.xml -da in/Template_Aircraft/lifting_surfaces/airfoils"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
+</launchConfiguration>

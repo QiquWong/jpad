@@ -22,6 +22,7 @@ import configuration.enumerations.MethodEnum;
 public interface IACCostsManager {
 
 	// All input from file
+	String getId();
 	Aircraft getAircraft();
 	OperatingConditions getOperatingConditions();
 	
@@ -50,7 +51,7 @@ public interface IACCostsManager {
 	Map<MethodEnum, Amount<?>> getLandingCharges();
 	Map<MethodEnum, Amount<?>> getNavigationCharges();
 	Map<MethodEnum, Amount<?>> getGroundHandlingCharges();
-	Map<MethodEnum, Amount<?>> getNoiseCharges();
+	Amount<?> getNoiseCharges();
 	Amount<Money> getNoiseConstant();
 	Amount<Dimensionless> getNoiseDepartureThreshold();
 	Amount<Dimensionless> getNoiseArrivalThreshold();
@@ -58,22 +59,22 @@ public interface IACCostsManager {
 	Amount<Dimensionless> getLateralCertifiedNoiseLevel();
 	Amount<Dimensionless> getFlyoverCertifiedNoiseLevel();
 	
-	Map<MethodEnum, Amount<?>> getEmissionsChargesNOx();
+	Amount<?> getEmissionsChargesNOx();
 	Amount<Money> getEmissionsConstantNOx();
 	Amount<Mass> getMassNOx();
 	Amount<?> getDpHCFooNOx();
 	
-	Map<MethodEnum, Amount<?>> getEmissionsChargesCO();
+	Amount<?> getEmissionsChargesCO();
 	Amount<Money> getEmissionsConstantCO();
 	Amount<Mass> getMassCO();
 	Amount<?> getDpHCFooCO();
 	
-	Map<MethodEnum, Amount<?>> getEmissionsChargesCO2();
+	Amount<?> getEmissionsChargesCO2();
 	Amount<Money> getEmissionsConstantCO2();
 	Amount<Mass> getMassCO2();
 	Amount<?> getDpHCFooCO2();
 	
-	Map<MethodEnum, Amount<?>> getEmissionsChargesHC();
+	Amount<?> getEmissionsChargesHC();
 	Amount<Money> getEmissionsConstantHC();
 	Amount<Mass> getMassHC();
 	Amount<?> getDpHCFooHC();
@@ -82,7 +83,7 @@ public interface IACCostsManager {
 	Amount<?> getEngineLabourRate();
 	Map<MethodEnum, Amount<Money>> getEnginePrice();
 	
-	List<CostsEnum> getTaskList();
+	Map<CostsEnum, MethodEnum> getTaskList();
 	Map<CostsDerivedDataEnum, MethodEnum> getDerivedDataMethodMap();
 	List<CostsPlotEnum> getPlotList();
 	
