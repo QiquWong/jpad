@@ -94,6 +94,7 @@ public class ACAerodynamicCalculator {
 	private List<Double> _wingFinalLiftCurve = new ArrayList<>();
 	Double landingGearUsedDrag = null;
 	private List<Amount<Angle>> deltaEForEquilibrium = new ArrayList<>();
+	private List<Double> horizontalTailEquilibriumCoefficient= new ArrayList<>();
 	
 	
 	// for downwash estimation
@@ -149,6 +150,7 @@ public class ACAerodynamicCalculator {
 	private List<Double> _current3DHorizontalTailMomentCurve;
 	private Double _current3DVerticalTailDragCoefficient;
 	private List<Double> _deltaCDElevatorList;
+	private Map<Amount<Angle>, List<Double>> _3DHorizontalTailPolarCurveForElevatorDeflection;
 
 	Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
 	private Map<Boolean, Map<MethodEnum, List<Double>>> _downwashGradientMap;
@@ -3645,6 +3647,64 @@ public class ACAerodynamicCalculator {
 			//=======================================================================================
 			// Calculating total equilibrium Drag coefficient ... CDtot_e
 			//=======================================================================================
+			
+			deltaEForEquilibrium.stream().forEach(de -> {
+		
+				int i = _theAerodynamicBuilderInterface.getDeltaElevatorList().indexOf(de);
+			_deltaCDElevatorList.add(0.0000156*
+					Math.pow(de.doubleValue(NonSI.DEGREE_ANGLE),2) + 
+					0.000002 * de.doubleValue(NonSI.DEGREE_ANGLE));
+			
+			List<Double> temporaryDragCurveForElevatorDeflection = new ArrayList<>();
+			MyArrayUtils.convertDoubleArrayToListDouble(
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL)
+					.getPolar3DCurve().get(_theAerodynamicBuilderInterface
+					.getComponentTaskList()
+					.get(ComponentEnum.HORIZONTAL_TAIL)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)))
+			.stream()
+			.forEach(cd -> {
+				temporaryDragCurveForElevatorDeflection.add(cd + _deltaCDElevatorList.get(i));
+			});
+			_3DHorizontalTailPolarCurveForElevatorDeflection.put(
+					de, 
+					temporaryDragCurveForElevatorDeflection
+					);
+			});
+
+			
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
+				horizontalTailEquilibriumCoefficient = new ArrayList<>();
+				
+				horizontalTailEquilibriumCoefficient = 
+					DragCalc.calculateTrimmedPolar(
+							_3DHorizontalTailPolarCurveForElevatorDeflection,
+							_deltaEEquilibrium.get(xcg), 
+							deltaEForEquilibrium, 
+							_alphaBodyList);
+		
+				_totalEquilibriumDragCoefficient.put(xcg, 
+						DragCalc.calculateTotalPolarFromEquation(
+						_current3DWingPolarCurve, 
+						horizontalTailEquilibriumCoefficient, 
+						_current3DVerticalTailDragCoefficient,
+						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(),
+						_theAerodynamicBuilderInterface.getTheAircraft().getVTail().getSurface(),
+						MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers
+								.get(ComponentEnum.FUSELAGE)
+								.getPolar3DCurve()
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.FUSELAGE)
+										.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+						landingGearUsedDrag,
+						_theAerodynamicBuilderInterface.getCD0Miscellaneous(),  // FIX THIS
+						_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+						_alphaBodyList));
+			});
+			
+			
+			
 			
 			
 			

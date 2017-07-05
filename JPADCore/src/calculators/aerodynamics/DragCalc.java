@@ -2,11 +2,20 @@ package calculators.aerodynamics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.measure.quantity.Angle;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.poi.util.ArrayUtil;
 import org.jscience.physics.amount.Amount;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.MethodEnum;
+import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -347,5 +356,7 @@ public class DragCalc {
 			double sFront, double cDFlatPlate){
 		return (kn*(sWetNose/sWet) + kc*(sWetCabin/sWet) + kt*(sWetTail/sWet))*cDFlatPlate*sWet/sFront; 
 	}
+
+	
 
 }

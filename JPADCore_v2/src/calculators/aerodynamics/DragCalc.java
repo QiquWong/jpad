@@ -14,6 +14,7 @@ import javax.measure.quantity.Volume;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jscience.physics.amount.Amount;
 
@@ -1147,5 +1148,46 @@ public class DragCalc {
 				);
 	
 		return cdTotalList;
+	}
+	
+	public static List<Double> calculateTrimmedPolar(
+			Map<Amount<Angle>, List<Double>> dragCoefficientHorizontalTailWithRespectToDeltaE,
+			List<Amount<Angle>> equilibriumDeltaE,
+			List<Amount<Angle>> deltaEVectorForEquilibrium,
+			List<Amount<Angle>> alphaBodyList
+			)
+	{
+		List<Double> trimmedPolar = new ArrayList<>();
+
+		alphaBodyList.stream().forEach( ab-> {
+
+			int i = alphaBodyList.indexOf(ab);
+			List<Double> temporaryCD = new ArrayList<>();
+			List<Double> temporaryCDFinal = new ArrayList<>();
+			List<Amount<Angle>> temporaryDeltaE = new ArrayList<>();
+			deltaEVectorForEquilibrium.stream().forEach( de-> {
+				temporaryCD.add(dragCoefficientHorizontalTailWithRespectToDeltaE.get(de).get(i));
+				for (int ii=0; ii<temporaryCD.size()-1 ; ii++){
+					if(temporaryCD.get(ii) > temporaryCD.get(ii+1))
+					{
+						temporaryCDFinal.add(temporaryCD.get(ii));
+						temporaryDeltaE.add(deltaEVectorForEquilibrium.get(ii));
+					}
+				}
+			});
+			
+			ArrayUtils.reverse(MyArrayUtils.convertListOfDoubleToDoubleArray(temporaryCDFinal));
+			ArrayUtils.reverse(MyArrayUtils.convertListOfAmountToDoubleArray(temporaryDeltaE));
+			
+			trimmedPolar.add(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(temporaryDeltaE),
+									MyArrayUtils.convertToDoublePrimitive(temporaryCDFinal),
+									equilibriumDeltaE.get(i).doubleValue(NonSI.DEGREE_ANGLE))
+					);
+		});
+
+
+		return trimmedPolar;
 	}
 }
