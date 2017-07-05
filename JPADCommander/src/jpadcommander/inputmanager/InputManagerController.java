@@ -59,36 +59,38 @@ public class InputManagerController {
 			"NACELLE"
 			);
 	ObservableList<String> fuselageAdjustCriteriaTypeList = FXCollections.observableArrayList(
-			"ADJ_TOT_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS",
-			"ADJ_TOT_LENGTH_CONST_FINENESS_RATIOS",	
-			"ADJ_CYL_LENGTH",                            
-			"ADJ_NOSE_LENGTH_CONST_TOT_LENGTH_DIAMETERS",
-			"ADJ_NOSE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS",
-			"ADJ_NOSE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS",
-			"ADJ_TAILCONE_LENGTH_CONST_TOT_LENGTH_DIAMETERS",
-			"ADJ_TAILCONE_LENGTH_CONST_LENGTH_RATIOS_DIAMETERS",
-			"ADJ_TAILCONE_LENGTH_CONST_FINENESS_RATIOS_VAR_LENGTHS",
-			"ADJ_FUS_LENGTH_CONST_FINENESS_RATIOS_VAR_DIAMETERS"
+			"NONE",
+			"ADJUST TOTAL LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
+			"ADJUST TOTAL LENGTH, CONSTANT FINENESS-RATIOS",	
+			"ADJUST CYLINDER LENGTH (streching)",                            
+			"ADJUST NOSE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
+			"ADJUST NOSE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
+			"ADJUST NOSE LENGTH, CONSTANT FINENESS-RATIOS",
+			"ADJUST TAILCONE LENGTH, CONSTANT TOTAL LENGTH AND DIAMETERS",
+			"ADJUST TAILCONE LENGTH, CONSTANT LENGTH-RATIOS AND DIAMETERS",
+			"ADJUST TAILCONE LENGTH, CONSTANT FINENESS-RATIOS",
+			"ADJUST FUSELAGE LENGTH, CONSTANT FINENESS-RATIOS"
 			);
 	ObservableList<String> wingAdjustCriteriaTypeList = FXCollections.observableArrayList(
-			"AR_SPAN_ROOTCHORD",
-			"AR_SPAN_TIPCHORD",
-			"AR_SPAN_TAPER",
-			"AR_AREA_ROOTCHORD",
-			"AR_AREA_TIPCHORD",
-			"AR_AREA_TAPER", 
-			"AR_ROOTCHORD_TIPCHORD",
-			"AR_ROOTCHORD_TAPER",
-			"AR_TIPCHORD_TAPER",
-			"SPAN_AREA_ROOTCHORD",
-			"SPAN_AREA_TIPCHORD",
-			"SPAN_AREA_TAPER",
-			"SPAN_ROOTCHORD_TIPCHORD", 
-			"SPAN_ROOTCHORD_TAPER",
-			"SPAN_TIPCHORD_TAPER",
-			"AREA_ROOTCHORD_TIPCHORD",
-			"AREA_ROOTCHORD_TAPER",
-			"AREA_TIPCHORD_TAPER"
+			"NONE",
+			"FIXED AR, SPAN AND ROOT CHORD",
+			"FIXED AR, SPAN AND TIP CHORD",
+			"FIXED AR, SPAN AND TAPER-RATIO",
+			"FIXED AR, AREA AND ROOT CHORD",
+			"FIXED AR, AREA AND TIP CHORD",
+			"FIXED AR, AREA AND TAPER-RATIO", 
+			"FIXED AR, ROOT CHORD AND TIP CHORD",
+			"FIXED AR, ROOT CHORD AND TAPER-RATIO",
+			"FIXED AR, TIP CHORD AND TAPER-RATIO",
+			"FIXED SPAN, AREA AND ROOT CHORD",
+			"FIXED SPAN, AREA AND TIP CHORD",
+			"FIXED SPAN, AREA AND TAPER-RATIO",
+			"FIXED SPAN, ROOT CHORD AND TIP CHORD", 
+			"FIXED SPAN, ROOT CHORD AND TAPER-RATIO",
+			"FIXED SPAN, TIP CHORD AND TAPER-RATIO",
+			"FIXED AREA, ROOT CHORD AND TIP CHORD",
+			"FIXED AREA, ROOT CHORD AND TAPER-RATIO",
+			"FIXED AREA, TIP CHORD AND TAPER-RATIO"
 			);
 	ObservableList<String> lengthUnitsList = FXCollections.observableArrayList("m","ft" );
 	ObservableList<String> angleUnitsList = FXCollections.observableArrayList("°","rad" );
@@ -266,18 +268,6 @@ public class InputManagerController {
 	private ChoiceBox fuselageTailTipOffsetZUnitChoiceBox;
 	@FXML
 	@SuppressWarnings("rawtypes")
-	private ChoiceBox fuselageSpoilersXinUnitChoiceBox;
-	@FXML
-	@SuppressWarnings("rawtypes")
-	private ChoiceBox fuselageSpoilersXoutUnitChoiceBox;
-	@FXML
-	@SuppressWarnings("rawtypes")
-	private ChoiceBox fuselageSpoilersYinUnitChoiceBox;
-	@FXML
-	@SuppressWarnings("rawtypes")
-	private ChoiceBox fuselageSpoilersYoutUnitChoiceBox;
-	@FXML
-	@SuppressWarnings("rawtypes")
 	private ChoiceBox fuselageSpoilersDeltaMinUnitChoiceBox;
 	@FXML
 	@SuppressWarnings("rawtypes")
@@ -353,10 +343,6 @@ public class InputManagerController {
 		fuselageCylinderSectionHeightUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageHeightFromGroundUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageTailTipOffsetZUnitChoiceBox.setItems(lengthUnitsList);
-		fuselageSpoilersXinUnitChoiceBox.setItems(lengthUnitsList);
-		fuselageSpoilersXoutUnitChoiceBox.setItems(lengthUnitsList);
-		fuselageSpoilersYinUnitChoiceBox.setItems(lengthUnitsList);
-		fuselageSpoilersYoutUnitChoiceBox.setItems(lengthUnitsList);
 		fuselageSpoilersDeltaMinUnitChoiceBox.setItems(angleUnitsList);
 		fuselageSpoilersDeltaMaxUnitChoiceBox.setItems(angleUnitsList);
 	}

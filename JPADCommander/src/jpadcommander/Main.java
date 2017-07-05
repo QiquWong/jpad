@@ -30,8 +30,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -215,10 +213,6 @@ public class Main extends Application {
 	private static ChoiceBox<String> fuselageCylinderSectionHeightUnitChoiceBox;
 	private static ChoiceBox<String> fuselageHeightFromGroundUnitChoiceBox;
 	private static ChoiceBox<String> fuselageTailTipOffsetZUnitChoiceBox;
-	private static ChoiceBox<String> fuselageSpoilersXinUnitChoiceBox;
-	private static ChoiceBox<String> fuselageSpoilersXoutUnitChoiceBox;
-	private static ChoiceBox<String> fuselageSpoilersYinUnitChoiceBox;
-	private static ChoiceBox<String> fuselageSpoilersYoutUnitChoiceBox;
 	private static ChoiceBox<String> fuselageSpoilersDeltaMinUnitChoiceBox;
 	private static ChoiceBox<String> fuselageSpoilersDeltaMaxUnitChoiceBox;
 	
@@ -542,38 +536,6 @@ public class Main extends Application {
 
 	public static void setFuselageTailTipOffsetZUnitChoiceBox(ChoiceBox<String> fuselageTailTipOffsetZUnitChoiceBox) {
 		Main.fuselageTailTipOffsetZUnitChoiceBox = fuselageTailTipOffsetZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageSpoilersXinUnitChoiceBox() {
-		return fuselageSpoilersXinUnitChoiceBox;
-	}
-
-	public static void setFuselageSpoilersXinUnitChoiceBox(ChoiceBox<String> fuselageSpoilersXinUnitChoiceBox) {
-		Main.fuselageSpoilersXinUnitChoiceBox = fuselageSpoilersXinUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageSpoilersXoutUnitChoiceBox() {
-		return fuselageSpoilersXoutUnitChoiceBox;
-	}
-
-	public static void setFuselageSpoilersXoutUnitChoiceBox(ChoiceBox<String> fuselageSpoilersXoutUnitChoiceBox) {
-		Main.fuselageSpoilersXoutUnitChoiceBox = fuselageSpoilersXoutUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageSpoilersYinUnitChoiceBox() {
-		return fuselageSpoilersYinUnitChoiceBox;
-	}
-
-	public static void setFuselageSpoilersYinUnitChoiceBox(ChoiceBox<String> fuselageSpoilersYinUnitChoiceBox) {
-		Main.fuselageSpoilersYinUnitChoiceBox = fuselageSpoilersYinUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageSpoilersYoutUnitChoiceBox() {
-		return fuselageSpoilersYoutUnitChoiceBox;
-	}
-
-	public static void setFuselageSpoilersYoutUnitChoiceBox(ChoiceBox<String> fuselageSpoilersYoutUnitChoiceBox) {
-		Main.fuselageSpoilersYoutUnitChoiceBox = fuselageSpoilersYoutUnitChoiceBox;
 	}
 
 	public static ChoiceBox<String> getFuselageSpoilersDeltaMinUnitChoiceBox() {

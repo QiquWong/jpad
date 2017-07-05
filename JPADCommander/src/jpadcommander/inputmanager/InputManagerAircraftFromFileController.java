@@ -77,7 +77,6 @@ public class InputManagerAircraftFromFileController {
 			}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void loadAircraftFileImplementation() throws IOException, InterruptedException {
 		Main.setStatus(State.RUNNING);
 		Main.checkStatus(Main.getStatus());
@@ -1245,7 +1244,12 @@ public class InputManagerAircraftFromFileController {
 		// create the Browser/D3
 		//create browser
 		JavaFxD3Browser browserSideView = d3Plotter.getBrowser(postLoadingHook, false);
-		Scene sceneSideView = new Scene(browserSideView, WIDTH+10, HEIGHT+10, Color.web("#666970"));
+		Scene sceneSideView = new Scene(
+				browserSideView, 
+				Main.getFuselageSideViewPane().getPrefWidth(), 
+				Main.getFuselageSideViewPane().getPrefHeight(), 
+				Color.web("#666970")
+				);
 		Main.getFuselageSideViewPane().getChildren().add(sceneSideView.getRoot());		
 		
 	}
@@ -3094,14 +3098,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageLength(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageLength")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageLength().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getLenF()
-					.toString()
+		if(Main.getFuselageLengthUnitChoiceBox() == null)
+			Main.setFuselageLengthUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageLengthUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageLength().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getLenF()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getLenF().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageLengthUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getLenF().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageLengthUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageLength().setText(
 					"NOT INITIALIZED"
@@ -3113,14 +3136,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageSurfaceRoughness(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldSurfaceRoughness")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageSurfaceRoughness().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getRoughness()
-					.toString()
+		if(Main.getFuselageRoughnessUnitChoiceBox() == null)
+			Main.setFuselageRoughnessUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageRoughnessUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageSurfaceRoughness().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getRoughness()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getRoughness().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageRoughnessUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getRoughness().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageRoughnessUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageSurfaceRoughness().setText(
 					"NOT INITIALIZED"
@@ -3151,14 +3193,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageNoseTipOffset(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseTipOffset")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageNoseTipOffset().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getHeightN()
-					.toString()
+		if(Main.getFuselageNoseTipOffsetZUnitChoiceBox() == null)
+			Main.setFuselageNoseTipOffsetZUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageNoseTipOffsetZUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageNoseTipOffset().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getHeightN()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getHeightN().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageNoseTipOffsetZUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getHeightN().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageNoseTipOffsetZUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageNoseTipOffset().setText(
 					"NOT INITIALIZED"
@@ -3212,14 +3273,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageNoseWindshieldWidth(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseWindshieldWidth")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageNoseWindshieldWidth().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getWindshieldWidth()
-					.toString()
+		if(Main.getFuselageWindshieldWidthUnitChoiceBox() == null)
+			Main.setFuselageWindshieldWidthUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageWindshieldWidthUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageNoseWindshieldWidth().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getWindshieldWidth()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getWindshieldWidth().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageWindshieldWidthUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getWindshieldWidth().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageWindshieldWidthUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageNoseWindshieldWidth().setText(
 					"NOT INITIALIZED"
@@ -3231,14 +3311,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageNoseWindshieldHeight(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageNoseWindshieldHeight")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageNoseWindshieldHeight().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getWindshieldHeight()
-					.toString()
+		if(Main.getFuselageWindshieldHeightUnitChoiceBox() == null)
+			Main.setFuselageWindshieldHeightUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageWindshieldHeightUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageNoseWindshieldHeight().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getWindshieldHeight()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getWindshieldHeight().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageWindshieldHeightUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getWindshieldHeight().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageWindshieldHeightUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageNoseWindshieldHeight().setText(
 					"NOT INITIALIZED"
@@ -3326,14 +3425,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageCylinderSectionWidth(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderSectionWidth")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageCylinderSectionWidth().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getSectionCylinderWidth()
-					.toString()
+		if(Main.getFuselageCylinderSectionWidthUnitChoiceBox() == null)
+			Main.setFuselageCylinderSectionWidthUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageCylinderSectionWidthUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageCylinderSectionWidth().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getSectionCylinderWidth()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSectionCylinderWidth().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageCylinderSectionWidthUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSectionCylinderWidth().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageCylinderSectionWidthUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageCylinderSectionWidth().setText(
 					"NOT INITIALIZED"
@@ -3345,14 +3463,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageCylinderSectionHeight(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderSectionHeight")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageCylinderSectionHeight().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getSectionCylinderHeight()
-					.toString()
+		if(Main.getFuselageCylinderSectionHeightUnitChoiceBox() == null)
+			Main.setFuselageCylinderSectionHeightUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageCylinderSectionHeightUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageCylinderSectionHeight().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getSectionCylinderHeight()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSectionCylinderHeight().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageCylinderSectionHeightUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSectionCylinderHeight().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageCylinderSectionHeightUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageCylinderSectionHeight().setText(
 					"NOT INITIALIZED"
@@ -3364,14 +3501,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageCylinderHeightFromGround(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageCylinderHeightFromGround")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageCylinderHeightFromGround().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getHeightFromGround()
-					.toString()
+		if(Main.getFuselageHeightFromGroundUnitChoiceBox() == null)
+			Main.setFuselageHeightFromGroundUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageHeightFromGroundUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageCylinderHeightFromGround().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getHeightFromGround()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getHeightFromGround().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageHeightFromGroundUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getHeightFromGround().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageHeightFromGroundUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageCylinderHeightFromGround().setText(
 					"NOT INITIALIZED"
@@ -3440,14 +3596,33 @@ public class InputManagerAircraftFromFileController {
 			Main.setTextFieldFuselageTailTipOffset(
 					(TextField) Main.getMainInputManagerLayout().lookup("#textFieldFuselageTailTipOffset")
 					);
-		if(Main.getTheAircraft().getFuselage() != null)
-			Main.getTextFieldFuselageTailTipOffset().setText(
-					Main.getTheAircraft()
-					.getFuselage()
-					.getFuselageCreator()
-					.getHeightT()
-					.toString()
+		if(Main.getFuselageTailTipOffsetZUnitChoiceBox() == null)
+			Main.setFuselageTailTipOffsetZUnitChoiceBox(
+					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageTailTipOffsetZUnitChoiceBox")
 					);
+		
+		if(Main.getTheAircraft().getFuselage() != null) {
+			
+			Main.getTextFieldFuselageTailTipOffset().setText(
+					String.valueOf(
+							Main.getTheAircraft()
+							.getFuselage()
+							.getFuselageCreator()
+							.getHeightT()
+							.getEstimatedValue()
+							)
+					);
+			
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getHeightT().getUnit().toString().equalsIgnoreCase("m"))
+				Main.getFuselageTailTipOffsetZUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getHeightT().getUnit().toString().equalsIgnoreCase("ft"))
+				Main.getFuselageTailTipOffsetZUnitChoiceBox().getSelectionModel().select(1);
+			
+		}
 		else
 			Main.getTextFieldFuselageTailTipOffset().setText(
 					"NOT INITIALIZED"
@@ -3622,7 +3797,36 @@ public class InputManagerAircraftFromFileController {
 					);
 		}
 		//..........................................................................................................
-		if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers() != null) {
+		if(!Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().isEmpty()) {
+			
+			if(Main.getFuselageSpoilersDeltaMinUnitChoiceBox() == null)
+				Main.setFuselageSpoilersDeltaMinUnitChoiceBox(
+						(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageSpoilersDeltaMinUnitChoiceBox")
+						);
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSpoilers().get(0).getMinimumDeflection().toString().equalsIgnoreCase("°"))
+				Main.getFuselageSpoilersDeltaMinUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSpoilers().get(0).getMinimumDeflection().toString().equalsIgnoreCase("rad"))
+				Main.getFuselageSpoilersDeltaMinUnitChoiceBox().getSelectionModel().select(1);
+
+
+			if(Main.getFuselageSpoilersDeltaMaxUnitChoiceBox() == null)
+				Main.setFuselageSpoilersDeltaMaxUnitChoiceBox(
+						(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageSpoilersDeltaMaxUnitChoiceBox")
+						);
+			if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSpoilers().get(0).getMaximumDeflection().toString().equalsIgnoreCase("°"))
+				Main.getFuselageSpoilersDeltaMaxUnitChoiceBox().getSelectionModel().select(0);
+			else if(Main.getTheAircraft()
+					.getFuselage().getFuselageCreator()
+					.getSpoilers().get(0).getMaximumDeflection().toString().equalsIgnoreCase("rad"))
+				Main.getFuselageSpoilersDeltaMaxUnitChoiceBox().getSelectionModel().select(1);
+
+			//..........................................................................................................
 			for (int i = 0; i < Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().size(); i++) {
 				//..........................................................................................................
 				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getInnerStationChordwisePosition() != null)
@@ -3672,7 +3876,9 @@ public class InputManagerAircraftFromFileController {
 				//..........................................................................................................
 				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMinimumDeflection() != null)
 					Main.getTextFieldSpoilersMinDeflectionList().get(i).setText(
-							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMinimumDeflection().toString()
+							String.valueOf(
+									Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMinimumDeflection().getEstimatedValue()
+									)
 							);
 				else
 					Main.getTextFieldSpoilersMinDeflectionList().get(i).setText(
@@ -3681,7 +3887,9 @@ public class InputManagerAircraftFromFileController {
 				//..........................................................................................................
 				if(Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMaximumDeflection() != null)
 					Main.getTextFieldSpoilersMaxDeflectionList().get(i).setText(
-							Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMaximumDeflection().toString()
+							String.valueOf(
+									Main.getTheAircraft().getFuselage().getFuselageCreator().getSpoilers().get(i).getMaximumDeflection().getEstimatedValue()
+									)
 							);
 				else
 					Main.getTextFieldSpoilersMaxDeflectionList().get(i).setText(

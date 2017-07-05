@@ -483,7 +483,7 @@
                                                                      <tabs>
                                                                         <Tab id="TopView" text="Top view">
                                                                            <content>
-                                                                              <Pane id="TopViewPane" prefWidth="571.0" />
+                                                                              <Pane id="TopViewPane" />
                                                                            </content></Tab>
                                                                         <Tab id="SideView" text="Side view">
                                                                            <content>
@@ -509,19 +509,6 @@
                                                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
                                                                                        <children>
                                                                                           <TextArea id="output" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                                                       </children>
-                                                                                    </AnchorPane>
-                                                                                 </content>
-                                                                              </ScrollPane>
-                                                                           </content>
-                                                                        </Tab>
-                                                                        <Tab text="Messages">
-                                                                           <content>
-                                                                              <ScrollPane prefHeight="977.0" prefWidth="797.0">
-                                                                                 <content>
-                                                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
-                                                                                       <children>
-                                                                                          <TextArea id="messages" onMouseClicked="#zoomDataLogAndMessages" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                                        </children>
                                                                                     </AnchorPane>
                                                                                  </content>
@@ -819,23 +806,19 @@
                                                             <TextField id="textFieldFuselageSpoilerDeltaMax2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                                                             <TextField id="textFieldFuselageSpoilerDeltaMax3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                             <TextField id="textFieldFuselageSpoilerDeltaMax4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-                                                            <ChoiceBox fx:id="fuselageSpoilersXinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" />
-                                                            <ChoiceBox fx:id="fuselageSpoilersXoutUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <ChoiceBox fx:id="fuselageSpoilersYinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                            <ChoiceBox fx:id="fuselageSpoilersYoutUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                            <ChoiceBox fx:id="fuselageSpoilersDeltaMinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                            <ChoiceBox fx:id="fuselageSpoilersDeltaMaxUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                            <ChoiceBox id="fuselageSpoilersDeltaMinUnitChoiceBox" fx:id="fuselageSpoilersDeltaMinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <ChoiceBox id="fuselageSpoilersDeltaMaxUnitChoiceBox" fx:id="fuselageSpoilersDeltaMaxUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                          </children>
                                                       </GridPane>
                                                       <Separator layoutX="-15.0" layoutY="1957.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <ChoiceBox fx:id="fuselageLengthUnitChoiceBox" layoutX="345.0" layoutY="182.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox fx:id="fuselageNoseTipOffsetZUnitChoiceBox" layoutX="346.0" layoutY="392.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox fx:id="fuselageWindshieldWidthUnitChoiceBox" layoutX="348.0" layoutY="560.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox fx:id="fuselageWindshieldHeightUnitChoiceBox" layoutX="348.0" layoutY="616.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox fx:id="fuselageCylinderSectionWidthUnitChoiceBox" layoutX="350.0" layoutY="940.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox fx:id="fuselageCylinderSectionHeightUnitChoiceBox" layoutX="350.0" layoutY="996.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox fx:id="fuselageHeightFromGroundUnitChoiceBox" layoutX="352.0" layoutY="1052.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <ChoiceBox fx:id="fuselageTailTipOffsetZUnitChoiceBox" layoutX="354.0" layoutY="1323.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox" layoutX="345.0" layoutY="182.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox" layoutX="346.0" layoutY="392.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageWindshieldWidthUnitChoiceBox" fx:id="fuselageWindshieldWidthUnitChoiceBox" layoutX="348.0" layoutY="560.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageWindshieldHeightUnitChoiceBox" fx:id="fuselageWindshieldHeightUnitChoiceBox" layoutX="348.0" layoutY="616.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageCylinderSectionWidthUnitChoiceBox" fx:id="fuselageCylinderSectionWidthUnitChoiceBox" layoutX="350.0" layoutY="940.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageCylinderSectionHeightUnitChoiceBox" fx:id="fuselageCylinderSectionHeightUnitChoiceBox" layoutX="350.0" layoutY="996.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageHeightFromGroundUnitChoiceBox" fx:id="fuselageHeightFromGroundUnitChoiceBox" layoutX="352.0" layoutY="1052.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="fuselageTailTipOffsetZUnitChoiceBox" layoutX="354.0" layoutY="1323.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
                                                       <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
                                                          <font>
@@ -843,7 +826,7 @@
                                                          </font>
                                                       </Label>
                                                       <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="fuselageAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
-                                                      <ChoiceBox fx:id="fuselageRoughnessUnitChoiceBox" layoutX="347.0" layoutY="237.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageRoughnessUnitChoiceBox" fx:id="fuselageRoughnessUnitChoiceBox" layoutX="347.0" layoutY="237.0" prefHeight="30.0" prefWidth="47.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
