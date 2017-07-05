@@ -18,29 +18,35 @@
 				<flight_time unit="hr"></flight_time>
 			</performance>
 			<global_data>
-				<utilization calculate="TRUE" method="SFORZA" unit="hr/year" value="" />
+				<utilization calculate="TRUE" method="SFORZA" unit="hr/year" value="" /> <!-- Default values: short-medium range(<2200 nmi)= 3750; long range(>2200 nmi)= 4800  -->
 				<doc>
 					<capital>
-						<life_span unit="years" value=""/>
-						<residual_value value="0.1"/> <!-- aircraft value percentage of the initial value at the end of life -->
+						<life_span unit="years" value=""/> <!-- Default values: 16 -->
+						<residual_value value=""/> <!-- aircraft value percentage of the initial value at the end of life. Default value: 0.1 -->
 						<aircraft_price calculate="TRUE" method="SFORZA" unit="$" value=""/> 
 						<airframe_relative_spares_costs value="" /> <!-- default = 0.1 -->
 						<engines_relative_spares_costs value="" />	<!-- default = 0.3 -->
-						<interest value="5.4"/> <!-- percentage of the total investment -->
-						<insurance value="5.4"/> <!-- percentage of the sum of the airframe and engines prices  -->
+						<interest value=""/> <!-- percentage of the total investment. Default: 0.054 = 5.4% -->
+						<insurance value=""/> <!-- percentage of the sum of the airframe and engines prices. Default: 0.005 = 0.5%  -->
 					</capital>
 					<crew>
-						<cabin_labour_rate unit="$/hr" value=""/>
-						<cockpit_labour_rate unit="$/hr" value=""/>
+						<cabin_labour_rate unit="$/hr" value=""/> <!-- Default values: 360 (each pilot) -->
+						<cockpit_labour_rate unit="$/hr" value=""/> <!-- Default values: 90 (each flight attendant) -->
 					</crew>
 					<fuel>
-						<unit_price unit="$/barrel" value=""/>
+						<unit_price unit="$/barrel" value=""/> <!-- Default values: 59.2 (07/2017) http://www.iata.org/publications/economics/fuel-monitor/Pages/price-analysis.aspx -->
 					</fuel>
 					<charges>
 						<landing calculate="TRUE" method="AEA" unit="$/flight" value=""/>
 						<navigation calculate="TRUE" method="AEA" unit="$/flight" value=""/>
 						<ground_handling calculate="TRUE" method="AEA" unit="$/flight" value=""/>
-						<noise calculate="TRUE" method="TNAC" noise_constant="0" flyover_Certified_Noise_Level="0" lateral_Certified_Noise_Level="0" approach_Certified_Noise_Level="0" departure_threshold="0" arrival_threshold="0" unit="$/flight" value=""/>
+						<!-- NOISE CONSTANTS
+						noise_constant: 4.12$  
+						arrival_threshold: 91 EPNdB (Stockholm-Arlanda Airport) 
+						departure_threshold: 86 EPNdB (Stockholm-Arlanda Airport)	
+						flyover_Certified_Noise_Level (EPNdB), lateral_Certified_Noise_Level (EPNdB), approach_Certified_Noise_Level (EPNdB) see http://noisedb.stac.aviation-civile.gouv.fr/find.php 						
+						-->
+						<noise calculate="TRUE" method="TNAC" noise_constant="0" flyover_Certified_Noise_Level="0" lateral_Certified_Noise_Level="0" approach_Certified_Noise_Level="0" departure_threshold="0" arrival_threshold="0" unit="$/flight" value=""/> 
 						<emissions_NOx calculate="TRUE" method="ICAO" emission_constant="0" massNOx="0" DpHC_Foo="0" unit="$/flight" value=""/>
 						<emissions_CO calculate="TRUE" method="ICAO" emission_constant="0" massCO="0" DpHC_Foo="0" unit="$/flight" value=""/>
 						<emissions_CO2 calculate="TRUE" method="ICAO" emission_constant="0" massCO2="0" DpHC_Foo="0" unit="$/flight" value=""/>

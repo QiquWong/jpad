@@ -680,6 +680,7 @@ public class CostsCalcUtils {
 	
 	
 	/**
+	 * @see Economics of Laminar Aircraft Considering Off-Design Performance (K. Franz et al., ILR and Aachen).
 	 * 
 	 * @param landingCharges
 	 * @param navigationCharges
@@ -690,14 +691,33 @@ public class CostsCalcUtils {
 	 * @return DOC charges
 	 */
 	@SuppressWarnings("unchecked")
-	public static Amount<?> calcDOCCharges(Amount<?> landingCharges, Amount<?> navigationCharges, Amount<?> groundHandilingCharges,
+	public static Amount<?> calcDOCChargesILRAachen(Amount<?> landingCharges, Amount<?> navigationCharges, Amount<?> groundHandilingCharges,
 			Amount<?> noiseCharges, Amount<?> emissionsCharges) {
 
-		return  Amount.valueOf(landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+		return  Amount.valueOf(0.635*landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
 									navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
 										groundHandilingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)+
 											noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
 												emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+								MyUnits.USD_PER_HOUR					
+									);
+
+	}
+	
+	
+	/**
+	 * 
+	 * @param landingCharges
+	 * @param navigationCharges
+	 * @param groundHandilingCharges
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcDOCChargesAEA(Amount<?> landingCharges, Amount<?> navigationCharges, Amount<?> groundHandilingCharges) {
+
+		return  Amount.valueOf(landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+									navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
+										groundHandilingCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
 								MyUnits.USD_PER_HOUR					
 									);
 

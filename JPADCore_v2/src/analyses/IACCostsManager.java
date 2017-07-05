@@ -40,8 +40,8 @@ public interface IACCostsManager {
 	Map<MethodEnum, Amount<Money>> getAircraftPrice();
 	Double getAirframeRelativeSparesCosts();
 	Double getEnginesRelativeSparesCosts();
-	Double getInterestValue();
-	Double getInsuranceValue();
+	Double getInterestRate();
+	Double getInsuranceRate();
 	
 	Amount<?> getCabinLabourRate();
 	Amount<?> getCockpitLabourRate();
