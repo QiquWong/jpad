@@ -60,8 +60,8 @@ abstract class IACCostsManager_Builder {
     RESIDUAL_VALUE("residualValue"),
     AIRFRAME_RELATIVE_SPARES_COSTS("airframeRelativeSparesCosts"),
     ENGINES_RELATIVE_SPARES_COSTS("enginesRelativeSparesCosts"),
-    INTEREST_VALUE("interestValue"),
-    INSURANCE_VALUE("insuranceValue"),
+    INTEREST_RATE("interestRate"),
+    INSURANCE_RATE("insuranceRate"),
     CABIN_LABOUR_RATE("cabinLabourRate"),
     COCKPIT_LABOUR_RATE("cockpitLabourRate"),
     FUEL_UNIT_PRICE("fuelUnitPrice"),
@@ -113,8 +113,8 @@ abstract class IACCostsManager_Builder {
   private final LinkedHashMap<MethodEnum, Amount<Money>> aircraftPrice = new LinkedHashMap<>();
   private Double airframeRelativeSparesCosts;
   private Double enginesRelativeSparesCosts;
-  private Double interestValue;
-  private Double insuranceValue;
+  private Double interestRate;
+  private Double insuranceRate;
   private Amount<?> cabinLabourRate;
   private Amount<?> cockpitLabourRate;
   private Amount<?> fuelUnitPrice;
@@ -762,77 +762,77 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link IACCostsManager#getInterestValue()}.
+   * Sets the value to be returned by {@link IACCostsManager#getInterestRate()}.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code interestValue} is null
+   * @throws NullPointerException if {@code interestRate} is null
    */
-  public IACCostsManager.Builder setInterestValue(Double interestValue) {
-    this.interestValue = Preconditions.checkNotNull(interestValue);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.INTEREST_VALUE);
+  public IACCostsManager.Builder setInterestRate(Double interestRate) {
+    this.interestRate = Preconditions.checkNotNull(interestRate);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.INTEREST_RATE);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Replaces the value to be returned by {@link IACCostsManager#getInterestValue()}
+   * Replaces the value to be returned by {@link IACCostsManager#getInterestRate()}
    * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code mapper} is null or returns null
    * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder mapInterestValue(UnaryOperator<Double> mapper) {
+  public IACCostsManager.Builder mapInterestRate(UnaryOperator<Double> mapper) {
     Preconditions.checkNotNull(mapper);
-    return setInterestValue(mapper.apply(getInterestValue()));
+    return setInterestRate(mapper.apply(getInterestRate()));
   }
 
   /**
-   * Returns the value that will be returned by {@link IACCostsManager#getInterestValue()}.
+   * Returns the value that will be returned by {@link IACCostsManager#getInterestRate()}.
    *
    * @throws IllegalStateException if the field has not been set
    */
-  public Double getInterestValue() {
+  public Double getInterestRate() {
     Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_VALUE),
-        "interestValue not set");
-    return interestValue;
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_RATE),
+        "interestRate not set");
+    return interestRate;
   }
 
   /**
-   * Sets the value to be returned by {@link IACCostsManager#getInsuranceValue()}.
+   * Sets the value to be returned by {@link IACCostsManager#getInsuranceRate()}.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code insuranceValue} is null
+   * @throws NullPointerException if {@code insuranceRate} is null
    */
-  public IACCostsManager.Builder setInsuranceValue(Double insuranceValue) {
-    this.insuranceValue = Preconditions.checkNotNull(insuranceValue);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.INSURANCE_VALUE);
+  public IACCostsManager.Builder setInsuranceRate(Double insuranceRate) {
+    this.insuranceRate = Preconditions.checkNotNull(insuranceRate);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.INSURANCE_RATE);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Replaces the value to be returned by {@link IACCostsManager#getInsuranceValue()}
+   * Replaces the value to be returned by {@link IACCostsManager#getInsuranceRate()}
    * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code mapper} is null or returns null
    * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder mapInsuranceValue(UnaryOperator<Double> mapper) {
+  public IACCostsManager.Builder mapInsuranceRate(UnaryOperator<Double> mapper) {
     Preconditions.checkNotNull(mapper);
-    return setInsuranceValue(mapper.apply(getInsuranceValue()));
+    return setInsuranceRate(mapper.apply(getInsuranceRate()));
   }
 
   /**
-   * Returns the value that will be returned by {@link IACCostsManager#getInsuranceValue()}.
+   * Returns the value that will be returned by {@link IACCostsManager#getInsuranceRate()}.
    *
    * @throws IllegalStateException if the field has not been set
    */
-  public Double getInsuranceValue() {
+  public Double getInsuranceRate() {
     Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_VALUE),
-        "insuranceValue not set");
-    return insuranceValue;
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_RATE),
+        "insuranceRate not set");
+    return insuranceRate;
   }
 
   /**
@@ -2744,13 +2744,13 @@ abstract class IACCostsManager_Builder {
             .equals(_defaults.getEnginesRelativeSparesCosts())) {
       setEnginesRelativeSparesCosts(value.getEnginesRelativeSparesCosts());
     }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_VALUE)
-        || !value.getInterestValue().equals(_defaults.getInterestValue())) {
-      setInterestValue(value.getInterestValue());
+    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_RATE)
+        || !value.getInterestRate().equals(_defaults.getInterestRate())) {
+      setInterestRate(value.getInterestRate());
     }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_VALUE)
-        || !value.getInsuranceValue().equals(_defaults.getInsuranceValue())) {
-      setInsuranceValue(value.getInsuranceValue());
+    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_RATE)
+        || !value.getInsuranceRate().equals(_defaults.getInsuranceRate())) {
+      setInsuranceRate(value.getInsuranceRate());
     }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.CABIN_LABOUR_RATE)
         || !value.getCabinLabourRate().equals(_defaults.getCabinLabourRate())) {
@@ -2953,15 +2953,15 @@ abstract class IACCostsManager_Builder {
                 .equals(_defaults.getEnginesRelativeSparesCosts()))) {
       setEnginesRelativeSparesCosts(template.getEnginesRelativeSparesCosts());
     }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_VALUE)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_VALUE)
-            || !template.getInterestValue().equals(_defaults.getInterestValue()))) {
-      setInterestValue(template.getInterestValue());
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_RATE)
+        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_RATE)
+            || !template.getInterestRate().equals(_defaults.getInterestRate()))) {
+      setInterestRate(template.getInterestRate());
     }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_VALUE)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_VALUE)
-            || !template.getInsuranceValue().equals(_defaults.getInsuranceValue()))) {
-      setInsuranceValue(template.getInsuranceValue());
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_RATE)
+        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_RATE)
+            || !template.getInsuranceRate().equals(_defaults.getInsuranceRate()))) {
+      setInsuranceRate(template.getInsuranceRate());
     }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.CABIN_LABOUR_RATE)
         && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.CABIN_LABOUR_RATE)
@@ -3134,8 +3134,8 @@ abstract class IACCostsManager_Builder {
     aircraftPrice.clear();
     airframeRelativeSparesCosts = _defaults.airframeRelativeSparesCosts;
     enginesRelativeSparesCosts = _defaults.enginesRelativeSparesCosts;
-    interestValue = _defaults.interestValue;
-    insuranceValue = _defaults.insuranceValue;
+    interestRate = _defaults.interestRate;
+    insuranceRate = _defaults.insuranceRate;
     cabinLabourRate = _defaults.cabinLabourRate;
     cockpitLabourRate = _defaults.cockpitLabourRate;
     fuelUnitPrice = _defaults.fuelUnitPrice;
@@ -3215,8 +3215,8 @@ abstract class IACCostsManager_Builder {
     private final Map<MethodEnum, Amount<Money>> aircraftPrice;
     private final Double airframeRelativeSparesCosts;
     private final Double enginesRelativeSparesCosts;
-    private final Double interestValue;
-    private final Double insuranceValue;
+    private final Double interestRate;
+    private final Double insuranceRate;
     private final Amount<?> cabinLabourRate;
     private final Amount<?> cockpitLabourRate;
     private final Amount<?> fuelUnitPrice;
@@ -3268,8 +3268,8 @@ abstract class IACCostsManager_Builder {
       this.aircraftPrice = ImmutableMap.copyOf(builder.aircraftPrice);
       this.airframeRelativeSparesCosts = builder.airframeRelativeSparesCosts;
       this.enginesRelativeSparesCosts = builder.enginesRelativeSparesCosts;
-      this.interestValue = builder.interestValue;
-      this.insuranceValue = builder.insuranceValue;
+      this.interestRate = builder.interestRate;
+      this.insuranceRate = builder.insuranceRate;
       this.cabinLabourRate = builder.cabinLabourRate;
       this.cockpitLabourRate = builder.cockpitLabourRate;
       this.fuelUnitPrice = builder.fuelUnitPrice;
@@ -3378,13 +3378,13 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Double getInterestValue() {
-      return interestValue;
+    public Double getInterestRate() {
+      return interestRate;
     }
 
     @Override
-    public Double getInsuranceValue() {
-      return insuranceValue;
+    public Double getInsuranceRate() {
+      return insuranceRate;
     }
 
     @Override
@@ -3582,8 +3582,8 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(aircraftPrice, other.aircraftPrice)
           && Objects.equals(airframeRelativeSparesCosts, other.airframeRelativeSparesCosts)
           && Objects.equals(enginesRelativeSparesCosts, other.enginesRelativeSparesCosts)
-          && Objects.equals(interestValue, other.interestValue)
-          && Objects.equals(insuranceValue, other.insuranceValue)
+          && Objects.equals(interestRate, other.interestRate)
+          && Objects.equals(insuranceRate, other.insuranceRate)
           && Objects.equals(cabinLabourRate, other.cabinLabourRate)
           && Objects.equals(cockpitLabourRate, other.cockpitLabourRate)
           && Objects.equals(fuelUnitPrice, other.fuelUnitPrice)
@@ -3638,8 +3638,8 @@ abstract class IACCostsManager_Builder {
           aircraftPrice,
           airframeRelativeSparesCosts,
           enginesRelativeSparesCosts,
-          interestValue,
-          insuranceValue,
+          interestRate,
+          insuranceRate,
           cabinLabourRate,
           cockpitLabourRate,
           fuelUnitPrice,
@@ -3722,11 +3722,11 @@ abstract class IACCostsManager_Builder {
           + "enginesRelativeSparesCosts="
           + enginesRelativeSparesCosts
           + ", "
-          + "interestValue="
-          + interestValue
+          + "interestRate="
+          + interestRate
           + ", "
-          + "insuranceValue="
-          + insuranceValue
+          + "insuranceRate="
+          + insuranceRate
           + ", "
           + "cabinLabourRate="
           + cabinLabourRate
@@ -3851,8 +3851,8 @@ abstract class IACCostsManager_Builder {
     private final Map<MethodEnum, Amount<Money>> aircraftPrice;
     private final Double airframeRelativeSparesCosts;
     private final Double enginesRelativeSparesCosts;
-    private final Double interestValue;
-    private final Double insuranceValue;
+    private final Double interestRate;
+    private final Double insuranceRate;
     private final Amount<?> cabinLabourRate;
     private final Amount<?> cockpitLabourRate;
     private final Amount<?> fuelUnitPrice;
@@ -3905,8 +3905,8 @@ abstract class IACCostsManager_Builder {
       this.aircraftPrice = ImmutableMap.copyOf(builder.aircraftPrice);
       this.airframeRelativeSparesCosts = builder.airframeRelativeSparesCosts;
       this.enginesRelativeSparesCosts = builder.enginesRelativeSparesCosts;
-      this.interestValue = builder.interestValue;
-      this.insuranceValue = builder.insuranceValue;
+      this.interestRate = builder.interestRate;
+      this.insuranceRate = builder.insuranceRate;
       this.cabinLabourRate = builder.cabinLabourRate;
       this.cockpitLabourRate = builder.cockpitLabourRate;
       this.fuelUnitPrice = builder.fuelUnitPrice;
@@ -4054,19 +4054,19 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Double getInterestValue() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_VALUE)) {
-        throw new UnsupportedOperationException("interestValue not set");
+    public Double getInterestRate() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_RATE)) {
+        throw new UnsupportedOperationException("interestRate not set");
       }
-      return interestValue;
+      return interestRate;
     }
 
     @Override
-    public Double getInsuranceValue() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_VALUE)) {
-        throw new UnsupportedOperationException("insuranceValue not set");
+    public Double getInsuranceRate() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_RATE)) {
+        throw new UnsupportedOperationException("insuranceRate not set");
       }
-      return insuranceValue;
+      return insuranceRate;
     }
 
     @Override
@@ -4336,8 +4336,8 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(aircraftPrice, other.aircraftPrice)
           && Objects.equals(airframeRelativeSparesCosts, other.airframeRelativeSparesCosts)
           && Objects.equals(enginesRelativeSparesCosts, other.enginesRelativeSparesCosts)
-          && Objects.equals(interestValue, other.interestValue)
-          && Objects.equals(insuranceValue, other.insuranceValue)
+          && Objects.equals(interestRate, other.interestRate)
+          && Objects.equals(insuranceRate, other.insuranceRate)
           && Objects.equals(cabinLabourRate, other.cabinLabourRate)
           && Objects.equals(cockpitLabourRate, other.cockpitLabourRate)
           && Objects.equals(fuelUnitPrice, other.fuelUnitPrice)
@@ -4393,8 +4393,8 @@ abstract class IACCostsManager_Builder {
           aircraftPrice,
           airframeRelativeSparesCosts,
           enginesRelativeSparesCosts,
-          interestValue,
-          insuranceValue,
+          interestRate,
+          insuranceRate,
           cabinLabourRate,
           cockpitLabourRate,
           fuelUnitPrice,
@@ -4477,11 +4477,11 @@ abstract class IACCostsManager_Builder {
                       IACCostsManager_Builder.Property.ENGINES_RELATIVE_SPARES_COSTS)
                   ? "enginesRelativeSparesCosts=" + enginesRelativeSparesCosts
                   : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_VALUE)
-                  ? "interestValue=" + interestValue
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.INTEREST_RATE)
+                  ? "interestRate=" + interestRate
                   : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_VALUE)
-                  ? "insuranceValue=" + insuranceValue
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.INSURANCE_RATE)
+                  ? "insuranceRate=" + insuranceRate
                   : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.CABIN_LABOUR_RATE)
                   ? "cabinLabourRate=" + cabinLabourRate
