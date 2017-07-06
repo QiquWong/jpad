@@ -87,15 +87,12 @@ public class ACAerodynamicCalculator {
 
 	//..............................................................................
 	// DERIVED INPUT	
-	private Amount<Length> _wingMomentumPole;  // pole referred to M.A.C.
-	private Amount<Length> _hTailMomentumPole; // pole referred to M.A.C.
 	private Double _currentMachNumber;
 	private Amount<Length> _currentAltitude;
-	private List<Double> _wingFinalLiftCurve = new ArrayList<>();
+	private Amount<Angle> _alphaCurrent;
 	Double landingGearUsedDrag = null;
 	private List<Amount<Angle>> deltaEForEquilibrium = new ArrayList<>();
 	private List<Double> horizontalTailEquilibriumCoefficient= new ArrayList<>();
-	
 	
 	// for downwash estimation
 	private Amount<Length> _zACRootWing;
@@ -133,6 +130,9 @@ public class ACAerodynamicCalculator {
 
 	//..............................................................................
 	// OUTPUT
+	
+	private Map<Amount<Angle>, List<Double>> _hTail3DLiftCurvesElevator;
+	
 	// Methods are always the same used for the wing Lift curve. If the wing lift curve is not required, the use method is Nasa Blackwell
 	private Amount<?> _clAlphaWingFuselage;
 	private Double _clZeroWingFuselage;
@@ -200,18 +200,22 @@ public class ACAerodynamicCalculator {
 		case TAKE_OFF:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachTakeOff();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeTakeOff();
+			this._alphaCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentTakeOff();
 			break;
 		case CLIMB:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachClimb();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeClimb();
+			this._alphaCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentClimb();
 			break;
 		case CRUISE:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachCruise();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeCruise();
+			this._alphaCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise();
 			break;
 		case LANDING:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachLanding();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeLanding();
+			this._alphaCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentLanding();
 			break;
 		default:
 			break;
@@ -786,7 +790,7 @@ public class ACAerodynamicCalculator {
 							_theAerodynamicBuilderInterface.getWingNumberOfPointSemiSpanWise(),
 							_alphaWingList, 
 							_theAerodynamicBuilderInterface.getAlphaWingForDistribution(),
-							_wingMomentumPole
+							_theAerodynamicBuilderInterface.getWingMomentumPole()
 							)
 					);
 
@@ -815,30 +819,14 @@ public class ACAerodynamicCalculator {
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
 			case QUARTER:
 				calcXAC.atQuarterMAC();
-				if(_wingMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.QUARTER)
-							);
 				break;
 			case DEYOUNG_HARPER:
 				calcXAC.deYoungHarper();
-				if(_wingMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
-							);
 				break;
 			case NAPOLITANO_DATCOM:
 				calcXAC.datcomNapolitano();
-				if(_wingMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM)
-							);
 				break;
 			default:
-				if(_wingMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
-							);
 				break;
 			}
 
@@ -851,16 +839,16 @@ public class ACAerodynamicCalculator {
 			CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
 			case LINEAR_DLR:
-				calcCLAtAlpha.linearDLR(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.linearDLR(getAlphaCurrent());
 				break;
 			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLAtAlpha.linearAndersonCompressibleSubsonic(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.linearAndersonCompressibleSubsonic(getAlphaCurrent());
 				break;
 			case LINEAR_NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellLinear(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.nasaBlackwellLinear(getAlphaCurrent());
 				break;
 			case NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellCompleteCurve(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.nasaBlackwellCompleteCurve(getAlphaCurrent());
 				break;
 			default:
 				break;
@@ -879,9 +867,6 @@ public class ACAerodynamicCalculator {
 				break;
 			case POLHAMUS:
 				calcCLAlpha.polhamus();
-				break;
-			case HELMBOLD_DIEDERICH:
-				calcCLAlpha.helmboldDiederich(_currentMachNumber);
 				break;
 			case NASA_BLACKWELL:
 				calcCLAlpha.nasaBlackwell();
@@ -1059,13 +1044,13 @@ public class ACAerodynamicCalculator {
 			CalcCDInduced calcCDInduced = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDInduced();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
 			case GROSU:
-				calcCDInduced.grosu(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCDInduced.grosu(getAlphaCurrent());
 				break;
 			case HOWE:
-				calcCDInduced.howe(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCDInduced.howe(getAlphaCurrent());
 				break;
 			case RAYMER:
-				calcCDInduced.raymer(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCDInduced.raymer(getAlphaCurrent());
 				break;
 			default:
 				break;
@@ -1096,7 +1081,7 @@ public class ACAerodynamicCalculator {
 			CalcOswaldFactor calcOswaldFactor = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcOswaldFactor();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
 			case GROSU:
-				calcOswaldFactor.grosu(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcOswaldFactor.grosu(getAlphaCurrent());
 				break;
 			case HOWE:
 				calcOswaldFactor.howe();
@@ -1148,14 +1133,14 @@ public class ACAerodynamicCalculator {
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
 			case AIRFOIL_DISTRIBUTION:
 				calcCDAtAlpha.fromCdDistribution(
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
+						getAlphaCurrent(), 
 						_currentMachNumber,
 						_currentAltitude
 						);
 				break;
 			case SEMPIEMPIRICAL:
 				calcCDAtAlpha.semiempirical(
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
+						getAlphaCurrent(), 
 						_currentMachNumber,
 						_currentAltitude
 						);
@@ -1231,7 +1216,7 @@ public class ACAerodynamicCalculator {
 				case SEMPIEMPIRICAL:
 					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
 						calcCLAtAlphaHighLift.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(),
+								getAlphaCurrent(),
 								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
 								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
 								_currentMachNumber, 
@@ -1239,7 +1224,7 @@ public class ACAerodynamicCalculator {
 								);
 					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
 						calcCLAtAlphaHighLift.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(),
+								getAlphaCurrent(),
 								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
 								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
 								_currentMachNumber, 
@@ -1263,14 +1248,14 @@ public class ACAerodynamicCalculator {
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
 				case AIRFOIL_DISTRIBUTION:
 					calcCDAtAlpha.fromCdDistribution(
-							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
+							getAlphaCurrent(), 
 							_currentMachNumber,
 							_currentAltitude
 							);
 					break;
 				case SEMPIEMPIRICAL:
 					calcCDAtAlpha.semiempirical(
-							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
+							getAlphaCurrent(), 
 							_currentMachNumber,
 							_currentAltitude
 							);
@@ -1313,7 +1298,7 @@ public class ACAerodynamicCalculator {
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
 				case AIRFOIL_DISTRIBUTION:
 					calcCMAtAlpha.fromAirfoilDistribution(
-							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent()
+							getAlphaCurrent()
 							);
 					break;
 				default:
@@ -1386,7 +1371,7 @@ public class ACAerodynamicCalculator {
 			CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMAtAlpha();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
 			case AIRFOIL_DISTRIBUTION:
-				calcCMAtAlpha.fromAirfoilDistribution(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCMAtAlpha.fromAirfoilDistribution(getAlphaCurrent());
 				break;
 			default:
 				break;
@@ -1421,7 +1406,6 @@ public class ACAerodynamicCalculator {
 		}
 
 
-
 		//============================================================================
 		// HTAIL
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null)
@@ -1434,12 +1418,12 @@ public class ACAerodynamicCalculator {
 							_theAerodynamicBuilderInterface.getHTailNumberOfPointSemiSpanWise(),
 							_alphaHTailList, 
 							_theAerodynamicBuilderInterface.getAlphaHorizontalTailForDistribution(),
-							_hTailMomentumPole
+							_theAerodynamicBuilderInterface.getHTailMomentumPole()
 							)
 					);
 
 		//.........................................................................................................................
-		//	CRITICAL_MACH
+		//	CRITICAL_MACH (TODO: needed ??)
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
 
 			CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMachCr();
@@ -1463,52 +1447,36 @@ public class ACAerodynamicCalculator {
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
 			case QUARTER:
 				calcXAC.atQuarterMAC();
-				if(_hTailMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.QUARTER)
-							);
 				break;
 			case DEYOUNG_HARPER:
 				calcXAC.deYoungHarper();
-				if(_hTailMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
-							);
 				break;
 			case NAPOLITANO_DATCOM:
 				calcXAC.datcomNapolitano();
-				if(_hTailMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.NAPOLITANO_DATCOM)
-							);
 				break;
 			default:
-				if(_hTailMomentumPole == null)
-					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
-							);
 				break;
 			}
 
 		}
 
 		//.........................................................................................................................
-		//	CL_AT_ALPHA
+		//	CL_AT_ALPHA  (FIXME: ADJUST ALPHA CURRENT ...) 
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
 
 			CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLAtAlpha();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
 			case LINEAR_DLR:
-				calcCLAtAlpha.linearDLR(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.linearDLR(getAlphaCurrent());
 				break;
 			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLAtAlpha.linearAndersonCompressibleSubsonic(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.linearAndersonCompressibleSubsonic(getAlphaCurrent());
 				break;
 			case LINEAR_NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellLinear(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.nasaBlackwellLinear(getAlphaCurrent());
 				break;
 			case NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellCompleteCurve(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCLAtAlpha.nasaBlackwellCompleteCurve(getAlphaCurrent());
 				break;
 			default:
 				break;
@@ -1527,9 +1495,6 @@ public class ACAerodynamicCalculator {
 				break;
 			case POLHAMUS:
 				calcCLAlpha.polhamus();
-				break;
-			case HELMBOLD_DIEDERICH:
-				calcCLAlpha.helmboldDiederich(_currentMachNumber);
 				break;
 			case NASA_BLACKWELL:
 				calcCLAlpha.nasaBlackwell();
@@ -1652,7 +1617,7 @@ public class ACAerodynamicCalculator {
 		}
 		
 		//.........................................................................................................................
-		//	LIFT_CURVE_3D (TODO: ASK MANUELA --> a clean curve is needed for HTail ??)
+		//	LIFT_CURVE_3D 
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
 
 			CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcLiftCurve();
@@ -1707,13 +1672,13 @@ public class ACAerodynamicCalculator {
 			CalcCDInduced calcCDInduced = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDInduced();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
 			case GROSU:
-				calcCDInduced.grosu(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCDInduced.grosu(getAlphaCurrent());
 				break;
 			case HOWE:
-				calcCDInduced.howe(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCDInduced.howe(getAlphaCurrent());
 				break;
 			case RAYMER:
-				calcCDInduced.raymer(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCDInduced.raymer(getAlphaCurrent());
 				break;
 			default:
 				break;
@@ -1738,13 +1703,13 @@ public class ACAerodynamicCalculator {
 		}
 		
 		//.........................................................................................................................
-		//	OSWALD_FACTOR (TODO: is needed ??)
+		//	OSWALD_FACTOR 
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
 
 			CalcOswaldFactor calcOswaldFactor = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcOswaldFactor();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
 			case GROSU:
-				calcOswaldFactor.grosu(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcOswaldFactor.grosu(getAlphaCurrent());
 				break;
 			case HOWE:
 				calcOswaldFactor.howe();
@@ -1789,21 +1754,21 @@ public class ACAerodynamicCalculator {
 		}
 		
 		//.........................................................................................................................
-		//	CD_AT_ALPHA (TODO: ASK MANUELA --> needs a de ??)
+		//	CD_AT_ALPHA (FIXME: ADJUST ALPHA CURRENT ...) 
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
 
 			CalcCDAtAlpha calcCDAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDAtAlpha();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
 			case AIRFOIL_DISTRIBUTION:
 				calcCDAtAlpha.fromCdDistribution(
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
+						getAlphaCurrent(), 
 						_currentMachNumber,
 						_currentAltitude
 						);
 				break;
 			case SEMPIEMPIRICAL:
 				calcCDAtAlpha.semiempirical(
-						_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
+						getAlphaCurrent(), 
 						_currentMachNumber,
 						_currentAltitude
 						);
@@ -1814,184 +1779,39 @@ public class ACAerodynamicCalculator {
 		}
 		
 		//.................................................................................................................................
-		// (TODO: ASK MANUELA -->  how to manage HighLift Devices Effects with HTail, which conditions ??)
-//		if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF) 
-//				|| _theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING)) {
-//			
-//			//.........................................................................................................................
-//			//	HIGH_LIFT_DEVICES_EFFECTS
-//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-//
-//				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-//				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-//				case SEMPIEMPIRICAL:
-//					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-//						calcHighLiftDevicesEffects.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-//								_currentMachNumber
-//								);
-//					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-//						calcHighLiftDevicesEffects.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-//								_currentMachNumber
-//								);
-//					break;
-//				default:
-//					break;
-//				}
-//			}
-//		
-//			//.........................................................................................................................
-//			//	HIGH_LIFT_CURVE_3D
-//			
-//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
-//
-//				CalcHighLiftCurve calcHighLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftCurve();
-//				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
-//				case SEMPIEMPIRICAL:
-//					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-//						calcHighLiftCurve.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-//								_currentMachNumber, 
-//								_currentAltitude
-//								);
-//					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-//						calcHighLiftCurve.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-//								_currentMachNumber, 
-//								_currentAltitude
-//								);
-//					break;
-//				default:
-//					break;
-//				}
-//			}
-//
-//			//.........................................................................................................................
-//			//	CL_AT_ALPHA_HIGH_LIFT 
-//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)) {
-//
-//				CalcCLAtAlphaHighLift calcCLAtAlphaHighLift = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlphaHighLift();
-//				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)) {
-//				case SEMPIEMPIRICAL:
-//					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-//						calcCLAtAlphaHighLift.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(),
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-//								_currentMachNumber, 
-//								_currentAltitude
-//								);
-//					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-//						calcCLAtAlphaHighLift.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(),
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-//								_currentMachNumber, 
-//								_currentAltitude
-//								);
-//					break;
-//				default:
-//					break;
-//				}
-//			}
-//			
-//			//.........................................................................................................................
-//			//	CD_AT_ALPHA_HIGH_LIFT 
-//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_HIGH_LIFT)) {
-//
-//				/*
-//				 * CD@Alpha + Delta CD0 from High Lift Devices Effects
-//				 */
-//				
-//				CalcCDAtAlpha calcCDAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDAtAlpha();
-//				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
-//				case AIRFOIL_DISTRIBUTION:
-//					calcCDAtAlpha.fromCdDistribution(
-//							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
-//							_currentMachNumber,
-//							_currentAltitude
-//							);
-//					break;
-//				case SEMPIEMPIRICAL:
-//					calcCDAtAlpha.semiempirical(
-//							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent(), 
-//							_currentMachNumber,
-//							_currentAltitude
-//							);
-//					break;
-//				default:
-//					break;
-//				}
-//				
-//				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-//				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-//				case SEMPIEMPIRICAL:
-//					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-//						calcHighLiftDevicesEffects.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-//								_currentMachNumber
-//								);
-//					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-//						calcHighLiftDevicesEffects.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-//								_currentMachNumber
-//								);
-//					break;
-//				default:
-//					break;
-//				}
-//				
-//			}
-//			
-//			//.........................................................................................................................
-//			//	CM_AT_ALPHA_HIGH_LIFT 
-//			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_HIGH_LIFT)) {
-//
-//				/*
-//				 * CM@Alpha + Delta CMac from High Lift Devices Effects
-//				 */
-//				
-//				CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMAtAlpha();
-//				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
-//				case AIRFOIL_DISTRIBUTION:
-//					calcCMAtAlpha.fromAirfoilDistribution(
-//							_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent()
-//							);
-//					break;
-//				default:
-//					break;
-//				}
-//				
-//				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-//				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-//				case SEMPIEMPIRICAL:
-//					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-//						calcHighLiftDevicesEffects.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-//								_currentMachNumber
-//								);
-//					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-//						calcHighLiftDevicesEffects.semiempirical(
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-//								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-//								_currentMachNumber
-//								);
-//					break;
-//				default:
-//					break;
-//				}
-//				
-//			}
-//
-//		}
+		/*
+		 * TODO: IN EACH CONDITION, EVALUATE HIGH LIFT CUREVE FOR EACH DELTA_e OF THE INUT ARRAY AND FILL 
+		 *       A NEW FIELD THAT CONTAINS EVERY CURVE (Map<Amount<Angle>, List<Double>> _hTail3DLiftCurvesElevator)
+		 */
+		//.........................................................................................................................
+
+		//.........................................................................................................................
+		//	ELEVATOR_CURVE_3D (FIXME)
+
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+
+			CalcHighLiftCurve calcHighLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftCurve();
+			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+			case SEMPIEMPIRICAL:
+				if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+					calcHighLiftCurve.semiempirical(
+							_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+							_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+							_currentMachNumber, 
+							_currentAltitude
+							);
+				else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+					calcHighLiftCurve.semiempirical(
+							_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+							_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+							_currentMachNumber, 
+							_currentAltitude
+							);
+				break;
+			default:
+				break;
+			}
+		}
 		//.........................................................................................................................
 		//	CM_AC
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
@@ -2029,13 +1849,13 @@ public class ACAerodynamicCalculator {
 		}
 		
 		//.........................................................................................................................
-		//	CM_AT_ALPHA  
+		//	CM_AT_ALPHA (FIXME: ADJUST ALPHA CURRENT ...)  
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
 
 			CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCMAtAlpha();
 			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
 			case AIRFOIL_DISTRIBUTION:
-				calcCMAtAlpha.fromAirfoilDistribution(_theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrent());
+				calcCMAtAlpha.fromAirfoilDistribution(getAlphaCurrent());
 				break;
 			default:
 				break;
@@ -2071,7 +1891,7 @@ public class ACAerodynamicCalculator {
 
 
 		//============================================================================
-		// VTAIL (TODO : SAME DOUBTS AS FOR HTAIL)
+		// VTAIL (TODO: SEE WHAT IS NEEDED ... )
 		if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null)
 			_liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.VERTICAL_TAIL,
@@ -2087,21 +1907,7 @@ public class ACAerodynamicCalculator {
 					);
 
 		//.........................................................................................................................
-		//	CRITICAL_MACH
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
-
-			CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).new CalcMachCr();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
-			case KORN_MASON:
-				calcMachCr.kornMason(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCurrentLiftCoefficient());
-				break;
-			case KROO:
-				calcMachCr.kroo(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCurrentLiftCoefficient());
-				break;
-			default:
-				break;
-			}
-		}
+		//	CRITICAL_MACH (TODO: is needed ??)
 
 		//.........................................................................................................................
 		//	AERODYNAMIC_CENTER
@@ -2140,22 +1946,22 @@ public class ACAerodynamicCalculator {
 		//	CD0
 
 		//.........................................................................................................................
-		//	CD_INDUCED
+		//	CD_INDUCED  (TODO: is needed ??)
 
 		//.........................................................................................................................
-		//	CD_WAVE
+		//	CD_WAVE  (TODO: is needed ??)
 
 		//.........................................................................................................................
-		//	OSWALD_FACTOR
+		//	OSWALD_FACTOR  (TODO: is needed ??)
 
 		//.........................................................................................................................
-		//	POLAR_CURVE_3D
+		//	POLAR_CURVE_3D  (TODO: is needed ??)
 
 		//.........................................................................................................................
-		//	DRAG_DISTRIBUTION
+		//	DRAG_DISTRIBUTION  (TODO: is needed ??)
 
 		//.........................................................................................................................
-		//	CD_AT_ALPHA 
+		//	CD_AT_ALPHA  (TODO: is needed ??)
 
 		//.........................................................................................................................
 		//	HIGH_LIFT_DEVICES_EFFECTS
@@ -2164,28 +1970,19 @@ public class ACAerodynamicCalculator {
 		//	HIGH_LIFT_CURVE_3D
 
 		//.........................................................................................................................
-		//	CL_AT_ALPHA_HIGH_LIFT 
-
-		//.........................................................................................................................
-		//	CD_AT_ALPHA_HIGH_LIFT 
-
-		//.........................................................................................................................
-		//	CM_AT_ALPHA_HIGH_LIFT 
-
-		//.........................................................................................................................
 		//	CM_AC
 
 		//.........................................................................................................................
 		//	CM_ALPHA
 
 		//.........................................................................................................................
-		//	CM_AT_ALPHA 
+		//	CM_AT_ALPHA  (TODO: is needed ??)
 
 		//.........................................................................................................................
-		//	MOMENT_CURVE_3D
+		//	MOMENT_CURVE_3D  (TODO: is needed ??)
 
 		//.........................................................................................................................
-		//	MOMENT_DISTRIBUTION
+		//	MOMENT_DISTRIBUTION  (TODO: is needed ??)
 
 
 		//============================================================================
@@ -2299,7 +2096,7 @@ public class ACAerodynamicCalculator {
 					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
 			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
 			calcXAC.deYoungHarper();
-			if(_wingMomentumPole == null)
+			if(_theAerodynamicBuilderInterface.getWingMomentumPole() == null)
 				_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setMomentumPole(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
 						);
@@ -2317,7 +2114,7 @@ public class ACAerodynamicCalculator {
 					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
 				CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcXAC();
 				calcXAC.deYoungHarper();
-				if(_hTailMomentumPole == null)
+				if(_theAerodynamicBuilderInterface.getHTailMomentumPole() == null)
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).setMomentumPole(
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getXacLRF().get(MethodEnum.DEYOUNG_HARPER)
 							);
@@ -4424,22 +4221,6 @@ public class ACAerodynamicCalculator {
 		this._theAerodynamicBuilderInterface = _theAerodynamicBuilderInterface;
 	}
 
-	public Amount<Length> getWingMomentumPole() {
-		return _wingMomentumPole;
-	}
-
-	public void setWingMomentumPole(Amount<Length> _wingMomentumPole) {
-		this._wingMomentumPole = _wingMomentumPole;
-	}
-
-	public Amount<Length> getHTailMomentumPole() {
-		return _hTailMomentumPole;
-	}
-
-	public void setHTailMomentumPole(Amount<Length> _hTailMomentumPole) {
-		this._hTailMomentumPole = _hTailMomentumPole;
-	}
-
 	public Double getCurrentMachNumber() {
 		return _currentMachNumber;
 	}
@@ -4832,5 +4613,21 @@ public class ACAerodynamicCalculator {
 
 	public void setCurrent3DVerticalTailDragCoefficient(Double _current3DVerticalTailDragCoefficient) {
 		this._current3DVerticalTailDragCoefficient = _current3DVerticalTailDragCoefficient;
+	}
+
+	public Amount<Angle> getAlphaCurrent() {
+		return _alphaCurrent;
+	}
+
+	public void setAlphaCurrent(Amount<Angle> _alphaCurrent) {
+		this._alphaCurrent = _alphaCurrent;
+	}
+
+	public Map<Amount<Angle>, List<Double>> getHTail3DLiftCurvesElevator() {
+		return _hTail3DLiftCurvesElevator;
+	}
+
+	public void setHTail3DLiftCurvesElevator(Map<Amount<Angle>, List<Double>> _hTail3DLiftCurvesElevator) {
+		this._hTail3DLiftCurvesElevator = _hTail3DLiftCurvesElevator;
 	}
 }

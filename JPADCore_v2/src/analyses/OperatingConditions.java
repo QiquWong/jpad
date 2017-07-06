@@ -38,20 +38,21 @@ public class OperatingConditions implements IOperatingConditions {
 	private String _id;
 	
 	// Global data
-	private Double[] _alpha;
-	private Amount<Angle> _alphaCurrent;
 	private Double _machTransonicThreshold = 0.7;
 	
 	// Climb data
+	private Amount<Angle> _alphaCurrentClimb;
 	private Double _machClimb;
 	private Amount<Length> _altitudeClimb;
 	
 	// Cruise data
+	private Amount<Angle> _alphaCurrentCruise;
 	private Amount<Length> _altitudeCruise;
 	private Double _machCruise;
 	private Double _throttleCruise;
 
 	// Take-off data
+	private Amount<Angle> _alphaCurrentTakeOff;
 	private Amount<Length> _altitudeTakeOff;
 	private Double _machTakeOff;
 	private Double _throttleTakeOff;
@@ -60,6 +61,7 @@ public class OperatingConditions implements IOperatingConditions {
 	private List<Amount<Angle>> _slatDeflectionTakeOff;
 
 	// Landing data
+	private Amount<Angle> _alphaCurrentLanding;
 	private Amount<Length> _altitudeLanding;
 	private Double _machLanding;
 	private MyInterpolatingFunction _throttleGroundIdleLanding;
@@ -126,20 +128,20 @@ public class OperatingConditions implements IOperatingConditions {
 
 		// optional parameters ... defaults
 		// ...
-		// Global data
-		private Double[] __alpha;
-		private Amount<Angle> __alphaCurrent;
 		
 		// Climb data
+		private Amount<Angle> __alphaCurrentClimb;
 		private Double __machClimb;
 		private Amount<Length> __altitudeClimb;
 		
 		// Cruise data
+		private Amount<Angle> __alphaCurrentCruise;
 		private Amount<Length> __altitudeCruise;
 		private Double __machCruise;
 		private Double __throttleCruise;
 
 		// Take-off data
+		private Amount<Angle> __alphaCurrentTakeOff;
 		private Amount<Length> __altitudeTakeOff;
 		private Double __machTakeOff;
 		private Double __throttleTakeOff;
@@ -148,6 +150,7 @@ public class OperatingConditions implements IOperatingConditions {
 		private List<Amount<Angle>> __slatDeflectionTakeOff;
 
 		// Landing data
+		private Amount<Angle> __alphaCurrentLanding;
 		private Amount<Length> __altitudeLanding;
 		private Double __machLanding;
 		private MyInterpolatingFunction __throttleGroundIdleLanding;
@@ -159,13 +162,23 @@ public class OperatingConditions implements IOperatingConditions {
 			return this;
 		}
 		
-		public OperatingConditionsBuilder alphaArray(Double[] alpha) {
-			this.__alpha = alpha;
+		public OperatingConditionsBuilder alphaCurrentClimb(Amount<Angle> alphaCurrentClimb) {
+			this.__alphaCurrentClimb = alphaCurrentClimb; 
 			return this;
 		}
 		
-		public OperatingConditionsBuilder alphaCurrent(Amount<Angle> alphaCurrent) {
-			this.__alphaCurrent = alphaCurrent; 
+		public OperatingConditionsBuilder alphaCurrentCruise(Amount<Angle> alphaCurrentCruise) {
+			this.__alphaCurrentCruise = alphaCurrentCruise; 
+			return this;
+		}
+		
+		public OperatingConditionsBuilder alphaCurrentTakeOff(Amount<Angle> alphaCurrentTakeOff) {
+			this.__alphaCurrentTakeOff = alphaCurrentTakeOff; 
+			return this;
+		}
+		
+		public OperatingConditionsBuilder alphaCurrentLanding(Amount<Angle> alphaCurrentLanding) {
+			this.__alphaCurrentLanding = alphaCurrentLanding; 
 			return this;
 		}
 		
@@ -257,22 +270,23 @@ public class OperatingConditions implements IOperatingConditions {
 		private void initializeDefaultVariables() {
 			
 			// DEFAULT DATA ATR-72	
-			this.__alphaCurrent = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE);
-			this.__alpha = new Double[] {2.0,6.0,10.0,14.0,18.0,22.0,24.0};
-			
+			this.__alphaCurrentClimb = Amount.valueOf(15.0, NonSI.DEGREE_ANGLE);
 			this.__machClimb = 0.3;
 			this.__altitudeClimb = Amount.valueOf(6000.0, SI.METER);
 			
+			this.__alphaCurrentCruise = Amount.valueOf(1.0, NonSI.DEGREE_ANGLE);
 			this.__machCruise = 0.6;
 			this.__altitudeCruise = Amount.valueOf(6000.0, SI.METER);
 			this.__throttleCruise = 1.0;
 			
+			this.__alphaCurrentTakeOff = Amount.valueOf(10.0, NonSI.DEGREE_ANGLE);
 			this.__machTakeOff = 0.2;
 			this.__altitudeTakeOff = Amount.valueOf(0.0, SI.METER);
 			this.__throttleGroundIdleTakeOff = null; 
 			this.__flapDeflectionTakeOff = new ArrayList<>();
 			this.__slatDeflectionTakeOff = new ArrayList<>();
 			
+			this.__alphaCurrentLanding = Amount.valueOf(8.0, NonSI.DEGREE_ANGLE);
 			this.__machLanding = 0.2;
 			this.__altitudeLanding = Amount.valueOf(0.0, SI.METER);
 			this.__throttleGroundIdleLanding = null;
@@ -291,8 +305,10 @@ public class OperatingConditions implements IOperatingConditions {
 		
 		this._id = builder.__id;
 		
-		this._alpha = builder.__alpha;
-		this._alphaCurrent = builder.__alphaCurrent;
+		this._alphaCurrentClimb = builder.__alphaCurrentClimb;
+		this._alphaCurrentCruise = builder.__alphaCurrentCruise;
+		this._alphaCurrentTakeOff = builder.__alphaCurrentTakeOff;
+		this._alphaCurrentLanding = builder.__alphaCurrentLanding;
 		
 		this._machClimb = builder.__machClimb;
 		this._altitudeClimb = builder.__altitudeClimb;
@@ -333,48 +349,28 @@ public class OperatingConditions implements IOperatingConditions {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 		
-		///////////////////////////////////////////////////////////////
-		// GLOBAL DATA:
-		Amount<Angle> alphaCurrent = Amount.valueOf(2.0, NonSI.DEGREE_ANGLE).to(SI.RADIAN);
-		Double[] alphaArray = new Double[] {2.0,6.0,10.0,14.0,18.0,22.0,24.0};
-		
-		String alphaCurrentProperty = reader.getXMLPropertyByPath("//global_data/alpha_current");
-		if(alphaCurrentProperty != null)
-			alphaCurrent = Amount.valueOf(
-					Double.valueOf(
-							reader.getXMLPropertyByPath(
-									"//global_data/alpha_current"
-									)
-							),
-					NonSI.DEGREE_ANGLE)
-			.to(SI.RADIAN);
-		
-		List<String> alphaArrayList = JPADXmlReader.readArrayFromXML(
-				reader.getXMLPropertiesByPath(
-						"//global_data/alpha_array"
-						).get(0)
-				);
-		if((!alphaArrayList.isEmpty()) && (alphaArrayList.size() > 7)) {
-			System.err.println("WARNING: ALPHA ARRAY MUST HAVE AT LEAST 7 COMPONENT !!"
-					+ "\n\tONLY THE FIRST SEVEN VALUES WILL BE CONSIDERED.");
-			while (alphaArrayList.size() > 7)
-				alphaArrayList.remove(alphaArrayList.size()-1);
-		}
-		else if((!alphaArrayList.isEmpty()) && (alphaArrayList.size() <= 7)) {
-			alphaArray = new Double[alphaArrayList.size()];
-			for(int i=0; i<alphaArrayList.size(); i++)
-				alphaArray[i] = Double.valueOf(alphaArrayList.get(i));
-		}
 		
 		///////////////////////////////////////////////////////////////
 		// CLIMB DATA:
 		Double machClimb = null;
 		Amount<Length> altitudeClimb = null;
-		
+		Amount<Angle> alphaCurrentClimb = null;
+		//.............................................................
+		String alphaCurrentClimbProperty = reader.getXMLPropertyByPath("//climb/alpha_current");
+		if(alphaCurrentClimbProperty != null)
+			alphaCurrentClimb = Amount.valueOf(
+					Double.valueOf(
+							reader.getXMLPropertyByPath(
+									"//climb/alpha_current"
+									)
+							),
+					NonSI.DEGREE_ANGLE)
+			.to(SI.RADIAN);
+		//.............................................................
 		String machClimbProperty = reader.getXMLPropertyByPath("//climb/mach");
 		if(machClimbProperty != null)
 			machClimb = Double.valueOf(reader.getXMLPropertyByPath("//climb/mach"));
-		
+		//.............................................................
 		String altitudeClimbProperty = reader.getXMLPropertyByPath("//climb/altitude");
 		if(altitudeClimbProperty != null)
 			altitudeClimb = reader.getXMLAmountLengthByPath("//climb/altitude");
@@ -384,6 +380,18 @@ public class OperatingConditions implements IOperatingConditions {
 		Double machCruise = null;
 		Amount<Length> altitudeCruise = null;
 		Double throttleCruise = null;
+		Amount<Angle> alphaCurrentCruise = null;
+		//.............................................................
+		String alphaCurrentCruiseProperty = reader.getXMLPropertyByPath("//cruise/alpha_current");
+		if(alphaCurrentCruiseProperty != null)
+			alphaCurrentCruise = Amount.valueOf(
+					Double.valueOf(
+							reader.getXMLPropertyByPath(
+									"//cruise/alpha_current"
+									)
+							),
+					NonSI.DEGREE_ANGLE)
+			.to(SI.RADIAN);
 		//.............................................................
 		String machCruiseProperty = reader.getXMLPropertyByPath("//cruise/mach");
 		if(machCruiseProperty != null)
@@ -406,6 +414,18 @@ public class OperatingConditions implements IOperatingConditions {
 		List<Amount<Velocity>> speedThrottleGroundIdleTakeOffFunction = new ArrayList<>();
 		List<Amount<Angle>> deltaFlapTakeOff = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatTakeOff = new ArrayList<>();
+		Amount<Angle> alphaCurrentTakeOff = null;
+		//.............................................................
+		String alphaCurrentTakeOffProperty = reader.getXMLPropertyByPath("//take_off/alpha_current");
+		if(alphaCurrentTakeOffProperty != null)
+			alphaCurrentTakeOff = Amount.valueOf(
+					Double.valueOf(
+							reader.getXMLPropertyByPath(
+									"//take_off/alpha_current"
+									)
+							),
+					NonSI.DEGREE_ANGLE)
+			.to(SI.RADIAN);
 		//.............................................................		
 		String machTakeOffProperty = reader.getXMLPropertyByPath("//take_off/mach");
 		if(machTakeOffProperty != null)
@@ -487,6 +507,18 @@ public class OperatingConditions implements IOperatingConditions {
 		List<Amount<Velocity>> speedThrottleGroundIdleLanidngFunction = new ArrayList<>();
 		List<Amount<Angle>> deltaFlapLanding = new ArrayList<>();
 		List<Amount<Angle>> deltaSlatLanding = new ArrayList<>();
+		Amount<Angle> alphaCurrentLanding = null;
+		//.............................................................
+		String alphaCurrentLandingProperty = reader.getXMLPropertyByPath("//landing/alpha_current");
+		if(alphaCurrentLandingProperty != null)
+			alphaCurrentLanding = Amount.valueOf(
+					Double.valueOf(
+							reader.getXMLPropertyByPath(
+									"//landing/alpha_current"
+									)
+							),
+					NonSI.DEGREE_ANGLE)
+			.to(SI.RADIAN);
 		//.............................................................		
 		String machLandingProperty = reader.getXMLPropertyByPath("//landing/mach");
 		if(machLandingProperty != null)
@@ -559,8 +591,10 @@ public class OperatingConditions implements IOperatingConditions {
 
 		///////////////////////////////////////////////////////////////
 		OperatingConditions theConditions = new OperatingConditionsBuilder(id)
-				.alphaCurrent(alphaCurrent)
-				.alphaArray(alphaArray)
+				.alphaCurrentClimb(alphaCurrentClimb)
+				.alphaCurrentCruise(alphaCurrentCruise)
+				.alphaCurrentTakeOff(alphaCurrentTakeOff)
+				.alphaCurrentLanding(alphaCurrentLanding)
 				.machClimb(machClimb)
 				.altitudeClimb(altitudeClimb)
 				.machCruise(machCruise)
@@ -594,16 +628,16 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "' \n")
 				.append("\t.....................................\n")
-				.append("\tAlpha array: " + Arrays.toString(_alpha) + "\n")
-				.append("\tAlpha current: " + _alphaCurrent + "\n")
-				.append("\t.....................................\n")
+				.append("\tAlpha current Climb: " + _alphaCurrentClimb + "\n")
 				.append("\tMach Climb: " + _machClimb + "\n")
 				.append("\tAltitude Cruise: " + _altitudeClimb + "\n")
 				.append("\t.....................................\n")
+				.append("\tAlpha current Cruise: " + _alphaCurrentCruise + "\n")
 				.append("\tMach Cruise: " + _machCruise + "\n")
 				.append("\tAltitude Cruise: " + _altitudeCruise + "\n")
 				.append("\tThrottle Cruise (phi): " + _throttleCruise + "\n")
 				.append("\t.....................................\n")
+				.append("\tAlpha current Take-off: " + _alphaCurrentTakeOff + "\n")
 				.append("\tMach Take-off: " + _machTakeOff + "\n")
 				.append("\tAltitude Take-off: " + _altitudeTakeOff + "\n")
 				.append("\tThrottle Take-off (phi): " + _throttleTakeOff + "\n")
@@ -613,6 +647,7 @@ public class OperatingConditions implements IOperatingConditions {
 		if(!_slatDeflectionTakeOff.isEmpty())
 				sb.append("\tSlat deflections Take-off: " + _slatDeflectionTakeOff + "\n");
 				sb.append("\t.....................................\n")
+				.append("\tAlpha current Landing: " + _alphaCurrentLanding + "\n")
 				.append("\tMach Landing: " + _machLanding + "\n")
 				.append("\tAltitude Landing: " + _altitudeLanding + "\n")
 				.append("\tThrottle Ground Idle Landing (phi): " + _throttleGroundIdleLanding + "\n");
@@ -807,14 +842,6 @@ public class OperatingConditions implements IOperatingConditions {
 		this._machTransonicThreshold = _machTransonicThreshold;
 	}
 
-	public Double[] getAlpha() {
-		return _alpha;
-	}
-
-	public void setAlpha(Double _alpha[]) {
-		this._alpha = _alpha;
-	}
-
 	public Amount<Length> getAltitudeCruise() {
 		return _altitudeCruise;
 	}
@@ -825,14 +852,6 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public static StdAtmos1976 getAtmosphere(double altitude) {
 		return new StdAtmos1976(altitude);
-	}
-
-	public Amount<Angle> getAlphaCurrent() {
-		return _alphaCurrent;
-	}
-
-	public void setAlphaCurrent(Amount<Angle> _alphaCurrent) {
-		this._alphaCurrent = _alphaCurrent;
 	}
 
 	public String getId() {
@@ -1295,6 +1314,38 @@ public class OperatingConditions implements IOperatingConditions {
 
 	public void setAltitudeClimb(Amount<Length> _altitudeClimb) {
 		this._altitudeClimb = _altitudeClimb;
+	}
+
+	public Amount<Angle> getAlphaCurrentClimb() {
+		return _alphaCurrentClimb;
+	}
+
+	public void setAlphaCurrentClimb(Amount<Angle> _alphaCurrentClimb) {
+		this._alphaCurrentClimb = _alphaCurrentClimb;
+	}
+
+	public Amount<Angle> getAlphaCurrentCruise() {
+		return _alphaCurrentCruise;
+	}
+
+	public void setAlphaCurrentCruise(Amount<Angle> _alphaCurrentCruise) {
+		this._alphaCurrentCruise = _alphaCurrentCruise;
+	}
+
+	public Amount<Angle> getAlphaCurrentTakeOff() {
+		return _alphaCurrentTakeOff;
+	}
+
+	public void setAlphaCurrentTakeOff(Amount<Angle> _alphaCurrentTakeOff) {
+		this._alphaCurrentTakeOff = _alphaCurrentTakeOff;
+	}
+
+	public Amount<Angle> getAlphaCurrentLanding() {
+		return _alphaCurrentLanding;
+	}
+
+	public void setAlphaCurrentLanding(Amount<Angle> _alphaCurrentLanding) {
+		this._alphaCurrentLanding = _alphaCurrentLanding;
 	}
 	
 } // end of class

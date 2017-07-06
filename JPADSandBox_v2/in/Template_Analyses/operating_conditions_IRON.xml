@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
 	<operating_conditions id="JPAD Operating Conditions">
-		<global_data>
-			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
-			<alpha_current unit="deg">2</alpha_current> <!-- default = 2.0 deg -->
-			<!-- array of angles of attack to be used for the the aerodynamics distributions (max 7 values) -->
-			<alpha_array unit="deg">2;6;10;14;18;22;24</alpha_array> <!-- default = [2,6,10,14,18,22,24] -->
-		</global_data>
 		<climb>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
 			<mach>0.3</mach>
 			<altitude unit="ft">25000</altitude>
 		</climb>
 		<cruise>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
 			<mach>0.6</mach>	
 			<altitude unit="ft">30000</altitude>
 			<throttle>1.0</throttle> <!-- COMPARISON VALUE CS300 = 1.38 -->
 		</cruise>
 		<take_off>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
 			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
 			<throttle></throttle> <!-- default = 1.0 -->
@@ -28,6 +28,8 @@
 			<delta_slat unit="deg"></delta_slat>
 		</take_off>
 		<landing>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
 			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
 			<throttle_ground_idle>

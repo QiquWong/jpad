@@ -12,6 +12,7 @@ import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
+import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
@@ -28,6 +29,7 @@ public interface IACAerodynamicCalculator {
 	//..............................................................................
 	// FROM INPUT (Passed from XML file)
 	Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList();
+	List<AerodynamicAndStabilityPlotEnum> getPlotList();
 	List<Double> getXCGAircraft(); //in MAC perc.
 	List<Double> getZCGAircraft();
 	Amount<Length> getZCGLandingGear();
@@ -53,6 +55,8 @@ public interface IACAerodynamicCalculator {
 	Boolean getFuselageEffectOnWingLiftCurve();
 	Boolean getWingPendularStability();
 	Double getCD0Miscellaneous();
+	Amount<Length> getWingMomentumPole();
+	Amount<Length> getHTailMomentumPole();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder {

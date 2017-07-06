@@ -120,10 +120,12 @@
 				<delta_rudder_array unit="deg"></delta_rudder_array>
 				<!-- optional values which are read only if the related attribute in "global_data" is "TRUE" --> 
 				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
+				<adimensional_wing_momentum_pole></adimensional_wing_momentum_pole> <!-- adimensional: make it dimensional (LRF) in ImportFromXML -->
+				<adimensional_horizontal_tail_momentum_pole></adimensional_horizontal_tail_momentum_pole> <!-- adimensional: make it dimensional (LRF) in ImportFromXML -->
 			</global_data>
 			<wing_analyses>
 				<critical_mach perform="TRUE" method="KROO"/>
-				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
 					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
 					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
@@ -160,8 +162,7 @@
 				</pitching_moment>
 			</wing_analyses>
 			<horizontal_tail_analyses>
-							<critical_mach perform="TRUE" method="KROO"/>
-				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
 					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
 					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
@@ -175,11 +176,7 @@
 					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
 				</lift>
 				<elevator>
-					<elevator_effects perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
-					<cL_at_alpha_current perform="TRUE" method="NASA_BLACKWELL"/>
-					<cD_at_alpha_current perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
-					<cm_at_alpha_current perform="TRUE" method="??"/>
 				</elevator>
 				<drag>
 					<cD_Zero perform="TRUE" method="AIRFOIL_DISTRIBUTION"/>
@@ -199,7 +196,7 @@
 			</horizontal_tail_analyses>
 			<vertical_tail_analyses> <!-- see which methods are suitable for the VTail ... -->
 				<critical_mach perform="TRUE" method="KROO"/>
-				<aerodynamic_centre perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
+				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
 					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
 					<cL0 perform="TRUE" method="NASA_BLACKWELL"/>

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
 	<operating_conditions id="ATR72 - Operating Conditions">
-		<global_data>
+		<climb>
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
 			<alpha_current unit="deg">2</alpha_current>
-			<!-- array of angles of attack to be used for the the aerodynamics distributions (max 7 values) -->
-			<alpha_array unit="deg">2;6;10;14;18;22;24</alpha_array>
-		</global_data>
-		<climb>
 			<mach>0.3</mach>
 			<altitude_to_reach unit="m">6000</altitude_to_reach>
 		</climb>
 		<cruise> 
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
 			<mach>0.42</mach>	
 			<altitude unit="m">6000.0</altitude>
 			<throttle>1.0</throttle>
 		</cruise>
 		<take_off>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
 			<mach></mach> <!-- default = 0.2 -->
 			<altitude unit="m">0.0</altitude> <!-- default = 0.0 -->
 			<throttle></throttle> <!-- default = 1.0 -->
@@ -24,6 +24,8 @@
 			<delta_slat unit="deg"></delta_slat>
 		</take_off>
 		<landing>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
 			<mach></mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
 			<reverse_throttle></reverse_throttle> <!-- default = 0.0 -->

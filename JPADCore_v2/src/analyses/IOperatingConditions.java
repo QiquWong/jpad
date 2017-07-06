@@ -28,14 +28,20 @@ public interface IOperatingConditions {
 	public Double getMachTransonicThreshold();
 	public void setMachTransonicThreshold(Double _machTransonicThreshold);
 
-	public Double[] getAlpha();
-	public void setAlpha(Double _alpha[]);
-	
 	public Amount<Length> getAltitudeCruise();
 	public void setAltitude(Amount<Length> _altitude);
 
-	public Amount<Angle> getAlphaCurrent();
-	public void setAlphaCurrent(Amount<Angle> _alphaCurrent);
+	public Amount<Angle> getAlphaCurrentClimb();
+	public void setAlphaCurrentClimb(Amount<Angle> _alphaCurrentClimb);
+	
+	public Amount<Angle> getAlphaCurrentCruise();
+	public void setAlphaCurrentCruise(Amount<Angle> _alphaCurrentCruise);
+	
+	public Amount<Angle> getAlphaCurrentTakeOff();
+	public void setAlphaCurrentTakeOff(Amount<Angle> _alphaCurrentTakeOff);
+	
+	public Amount<Angle> getAlphaCurrentLanding();
+	public void setAlphaCurrentLanding(Amount<Angle> _alphaCurrentLanding);
 	
 	public String getId();
 	public void setId(String id);

@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
+import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
@@ -67,6 +68,8 @@ abstract class IACAerodynamicCalculator_Builder {
     FUSELAGE_EFFECT_ON_WING_LIFT_CURVE("fuselageEffectOnWingLiftCurve"),
     WING_PENDULAR_STABILITY("wingPendularStability"),
     C_D0_MISCELLANEOUS("CD0Miscellaneous"),
+    WING_MOMENTUM_POLE("wingMomentumPole"),
+    H_TAIL_MOMENTUM_POLE("HTailMomentumPole"),
     ;
 
     private final String name;
@@ -86,6 +89,7 @@ abstract class IACAerodynamicCalculator_Builder {
   private ConditionEnum currentCondition;
   private final LinkedHashMap<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>>
       componentTaskList = new LinkedHashMap<>();
+  private final ArrayList<AerodynamicAndStabilityPlotEnum> plotList = new ArrayList<>();
   private final ArrayList<Double> XCGAircraft = new ArrayList<>();
   private final ArrayList<Double> ZCGAircraft = new ArrayList<>();
   private Amount<Length> ZCGLandingGear;
@@ -111,6 +115,8 @@ abstract class IACAerodynamicCalculator_Builder {
   private Boolean fuselageEffectOnWingLiftCurve;
   private Boolean wingPendularStability;
   private Double CD0Miscellaneous;
+  private Amount<Length> wingMomentumPole;
+  private Amount<Length> HTailMomentumPole;
   private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties =
       EnumSet.allOf(IACAerodynamicCalculator_Builder.Property.class);
 
@@ -311,6 +317,88 @@ abstract class IACAerodynamicCalculator_Builder {
    */
   public Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList() {
     return Collections.unmodifiableMap(componentTaskList);
+  }
+
+  /**
+   * Adds {@code element} to the list to be returned from {@link IACAerodynamicCalculator#getPlotList()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code element} is null
+   */
+  public IACAerodynamicCalculator.Builder addPlotList(AerodynamicAndStabilityPlotEnum element) {
+    this.plotList.add(Preconditions.checkNotNull(element));
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link IACAerodynamicCalculator#getPlotList()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public IACAerodynamicCalculator.Builder addPlotList(AerodynamicAndStabilityPlotEnum... elements) {
+    plotList.ensureCapacity(plotList.size() + elements.length);
+    for (AerodynamicAndStabilityPlotEnum element : elements) {
+      addPlotList(element);
+    }
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link IACAerodynamicCalculator#getPlotList()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public IACAerodynamicCalculator.Builder addAllPlotList(
+      Iterable<? extends AerodynamicAndStabilityPlotEnum> elements) {
+    if (elements instanceof Collection) {
+      plotList.ensureCapacity(plotList.size() + ((Collection<?>) elements).size());
+    }
+    for (AerodynamicAndStabilityPlotEnum element : elements) {
+      addPlotList(element);
+    }
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Applies {@code mutator} to the list to be returned from {@link IACAerodynamicCalculator#getPlotList()}.
+   *
+   * <p>This method mutates the list in-place. {@code mutator} is a void
+   * consumer, so any value returned from a lambda will be ignored. Take care
+   * not to call pure functions, like {@link Collection#stream()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mutator} is null
+   */
+  public IACAerodynamicCalculator.Builder mutatePlotList(
+      Consumer<? super List<AerodynamicAndStabilityPlotEnum>> mutator) {
+    // If addPlotList is overridden, this method will be updated to delegate to it
+    mutator.accept(plotList);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Clears the list to be returned from {@link IACAerodynamicCalculator#getPlotList()}.
+   *
+   * @return this {@code Builder} object
+   */
+  public IACAerodynamicCalculator.Builder clearPlotList() {
+    this.plotList.clear();
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Returns an unmodifiable view of the list that will be returned by
+   * {@link IACAerodynamicCalculator#getPlotList()}.
+   * Changes to this builder will be reflected in the view.
+   */
+  public List<AerodynamicAndStabilityPlotEnum> getPlotList() {
+    return Collections.unmodifiableList(plotList);
   }
 
   /**
@@ -1577,6 +1665,82 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getWingMomentumPole()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code wingMomentumPole} is null
+   */
+  public IACAerodynamicCalculator.Builder setWingMomentumPole(Amount<Length> wingMomentumPole) {
+    this.wingMomentumPole = Preconditions.checkNotNull(wingMomentumPole);
+    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getWingMomentumPole()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapWingMomentumPole(
+      UnaryOperator<Amount<Length>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setWingMomentumPole(mapper.apply(getWingMomentumPole()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getWingMomentumPole()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<Length> getWingMomentumPole() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE),
+        "wingMomentumPole not set");
+    return wingMomentumPole;
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getHTailMomentumPole()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code HTailMomentumPole} is null
+   */
+  public IACAerodynamicCalculator.Builder setHTailMomentumPole(Amount<Length> HTailMomentumPole) {
+    this.HTailMomentumPole = Preconditions.checkNotNull(HTailMomentumPole);
+    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getHTailMomentumPole()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapHTailMomentumPole(
+      UnaryOperator<Amount<Length>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setHTailMomentumPole(mapper.apply(getHTailMomentumPole()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getHTailMomentumPole()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<Length> getHTailMomentumPole() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE),
+        "HTailMomentumPole not set");
+    return HTailMomentumPole;
+  }
+
+  /**
    * Sets all property values using the given {@code IACAerodynamicCalculator} as a template.
    */
   public IACAerodynamicCalculator.Builder mergeFrom(IACAerodynamicCalculator value) {
@@ -1596,6 +1760,7 @@ abstract class IACAerodynamicCalculator_Builder {
       setCurrentCondition(value.getCurrentCondition());
     }
     putAllComponentTaskList(value.getComponentTaskList());
+    addAllPlotList(value.getPlotList());
     addAllXCGAircraft(value.getXCGAircraft());
     addAllZCGAircraft(value.getZCGAircraft());
     if (_defaults._unsetProperties.contains(
@@ -1698,6 +1863,16 @@ abstract class IACAerodynamicCalculator_Builder {
         || !value.getCD0Miscellaneous().equals(_defaults.getCD0Miscellaneous())) {
       setCD0Miscellaneous(value.getCD0Miscellaneous());
     }
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)
+        || !value.getWingMomentumPole().equals(_defaults.getWingMomentumPole())) {
+      setWingMomentumPole(value.getWingMomentumPole());
+    }
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)
+        || !value.getHTailMomentumPole().equals(_defaults.getHTailMomentumPole())) {
+      setHTailMomentumPole(value.getHTailMomentumPole());
+    }
     return (IACAerodynamicCalculator.Builder) this;
   }
 
@@ -1731,6 +1906,7 @@ abstract class IACAerodynamicCalculator_Builder {
       setCurrentCondition(template.getCurrentCondition());
     }
     putAllComponentTaskList(((IACAerodynamicCalculator_Builder) template).componentTaskList);
+    addAllPlotList(((IACAerodynamicCalculator_Builder) template).plotList);
     addAllXCGAircraft(((IACAerodynamicCalculator_Builder) template).XCGAircraft);
     addAllZCGAircraft(((IACAerodynamicCalculator_Builder) template).ZCGAircraft);
     if (!base._unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR)
@@ -1868,6 +2044,20 @@ abstract class IACAerodynamicCalculator_Builder {
             || !template.getCD0Miscellaneous().equals(_defaults.getCD0Miscellaneous()))) {
       setCD0Miscellaneous(template.getCD0Miscellaneous());
     }
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)
+            || !template.getWingMomentumPole().equals(_defaults.getWingMomentumPole()))) {
+      setWingMomentumPole(template.getWingMomentumPole());
+    }
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)
+            || !template.getHTailMomentumPole().equals(_defaults.getHTailMomentumPole()))) {
+      setHTailMomentumPole(template.getHTailMomentumPole());
+    }
     return (IACAerodynamicCalculator.Builder) this;
   }
 
@@ -1880,6 +2070,7 @@ abstract class IACAerodynamicCalculator_Builder {
     theOperatingConditions = _defaults.theOperatingConditions;
     currentCondition = _defaults.currentCondition;
     componentTaskList.clear();
+    plotList.clear();
     XCGAircraft.clear();
     ZCGAircraft.clear();
     ZCGLandingGear = _defaults.ZCGLandingGear;
@@ -1905,6 +2096,8 @@ abstract class IACAerodynamicCalculator_Builder {
     fuselageEffectOnWingLiftCurve = _defaults.fuselageEffectOnWingLiftCurve;
     wingPendularStability = _defaults.wingPendularStability;
     CD0Miscellaneous = _defaults.CD0Miscellaneous;
+    wingMomentumPole = _defaults.wingMomentumPole;
+    HTailMomentumPole = _defaults.HTailMomentumPole;
     _unsetProperties.clear();
     _unsetProperties.addAll(_defaults._unsetProperties);
     return (IACAerodynamicCalculator.Builder) this;
@@ -1940,6 +2133,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final ConditionEnum currentCondition;
     private final Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>>
         componentTaskList;
+    private final List<AerodynamicAndStabilityPlotEnum> plotList;
     private final List<Double> XCGAircraft;
     private final List<Double> ZCGAircraft;
     private final Amount<Length> ZCGLandingGear;
@@ -1965,12 +2159,15 @@ abstract class IACAerodynamicCalculator_Builder {
     private final Boolean fuselageEffectOnWingLiftCurve;
     private final Boolean wingPendularStability;
     private final Double CD0Miscellaneous;
+    private final Amount<Length> wingMomentumPole;
+    private final Amount<Length> HTailMomentumPole;
 
     private Value(IACAerodynamicCalculator_Builder builder) {
       this.theAircraft = builder.theAircraft;
       this.theOperatingConditions = builder.theOperatingConditions;
       this.currentCondition = builder.currentCondition;
       this.componentTaskList = ImmutableMap.copyOf(builder.componentTaskList);
+      this.plotList = ImmutableList.copyOf(builder.plotList);
       this.XCGAircraft = ImmutableList.copyOf(builder.XCGAircraft);
       this.ZCGAircraft = ImmutableList.copyOf(builder.ZCGAircraft);
       this.ZCGLandingGear = builder.ZCGLandingGear;
@@ -1998,6 +2195,8 @@ abstract class IACAerodynamicCalculator_Builder {
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
       this.wingPendularStability = builder.wingPendularStability;
       this.CD0Miscellaneous = builder.CD0Miscellaneous;
+      this.wingMomentumPole = builder.wingMomentumPole;
+      this.HTailMomentumPole = builder.HTailMomentumPole;
     }
 
     @Override
@@ -2018,6 +2217,11 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList() {
       return componentTaskList;
+    }
+
+    @Override
+    public List<AerodynamicAndStabilityPlotEnum> getPlotList() {
+      return plotList;
     }
 
     @Override
@@ -2146,6 +2350,16 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public Amount<Length> getWingMomentumPole() {
+      return wingMomentumPole;
+    }
+
+    @Override
+    public Amount<Length> getHTailMomentumPole() {
+      return HTailMomentumPole;
+    }
+
+    @Override
     public boolean equals(Object obj) {
       if (!(obj instanceof IACAerodynamicCalculator_Builder.Value)) {
         return false;
@@ -2155,6 +2369,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(theOperatingConditions, other.theOperatingConditions)
           && Objects.equals(currentCondition, other.currentCondition)
           && Objects.equals(componentTaskList, other.componentTaskList)
+          && Objects.equals(plotList, other.plotList)
           && Objects.equals(XCGAircraft, other.XCGAircraft)
           && Objects.equals(ZCGAircraft, other.ZCGAircraft)
           && Objects.equals(ZCGLandingGear, other.ZCGLandingGear)
@@ -2181,7 +2396,9 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(deltaRudderList, other.deltaRudderList)
           && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
           && Objects.equals(wingPendularStability, other.wingPendularStability)
-          && Objects.equals(CD0Miscellaneous, other.CD0Miscellaneous);
+          && Objects.equals(CD0Miscellaneous, other.CD0Miscellaneous)
+          && Objects.equals(wingMomentumPole, other.wingMomentumPole)
+          && Objects.equals(HTailMomentumPole, other.HTailMomentumPole);
     }
 
     @Override
@@ -2191,6 +2408,7 @@ abstract class IACAerodynamicCalculator_Builder {
           theOperatingConditions,
           currentCondition,
           componentTaskList,
+          plotList,
           XCGAircraft,
           ZCGAircraft,
           ZCGLandingGear,
@@ -2215,7 +2433,9 @@ abstract class IACAerodynamicCalculator_Builder {
           deltaRudderList,
           fuselageEffectOnWingLiftCurve,
           wingPendularStability,
-          CD0Miscellaneous);
+          CD0Miscellaneous,
+          wingMomentumPole,
+          HTailMomentumPole);
     }
 
     @Override
@@ -2232,6 +2452,9 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "componentTaskList="
           + componentTaskList
+          + ", "
+          + "plotList="
+          + plotList
           + ", "
           + "XCGAircraft="
           + XCGAircraft
@@ -2307,6 +2530,12 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "CD0Miscellaneous="
           + CD0Miscellaneous
+          + ", "
+          + "wingMomentumPole="
+          + wingMomentumPole
+          + ", "
+          + "HTailMomentumPole="
+          + HTailMomentumPole
           + "}";
     }
   }
@@ -2317,6 +2546,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final ConditionEnum currentCondition;
     private final Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>>
         componentTaskList;
+    private final List<AerodynamicAndStabilityPlotEnum> plotList;
     private final List<Double> XCGAircraft;
     private final List<Double> ZCGAircraft;
     private final Amount<Length> ZCGLandingGear;
@@ -2342,6 +2572,8 @@ abstract class IACAerodynamicCalculator_Builder {
     private final Boolean fuselageEffectOnWingLiftCurve;
     private final Boolean wingPendularStability;
     private final Double CD0Miscellaneous;
+    private final Amount<Length> wingMomentumPole;
+    private final Amount<Length> HTailMomentumPole;
     private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties;
 
     Partial(IACAerodynamicCalculator_Builder builder) {
@@ -2349,6 +2581,7 @@ abstract class IACAerodynamicCalculator_Builder {
       this.theOperatingConditions = builder.theOperatingConditions;
       this.currentCondition = builder.currentCondition;
       this.componentTaskList = ImmutableMap.copyOf(builder.componentTaskList);
+      this.plotList = ImmutableList.copyOf(builder.plotList);
       this.XCGAircraft = ImmutableList.copyOf(builder.XCGAircraft);
       this.ZCGAircraft = ImmutableList.copyOf(builder.ZCGAircraft);
       this.ZCGLandingGear = builder.ZCGLandingGear;
@@ -2376,6 +2609,8 @@ abstract class IACAerodynamicCalculator_Builder {
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
       this.wingPendularStability = builder.wingPendularStability;
       this.CD0Miscellaneous = builder.CD0Miscellaneous;
+      this.wingMomentumPole = builder.wingMomentumPole;
+      this.HTailMomentumPole = builder.HTailMomentumPole;
       this._unsetProperties = builder._unsetProperties.clone();
     }
 
@@ -2407,6 +2642,11 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList() {
       return componentTaskList;
+    }
+
+    @Override
+    public List<AerodynamicAndStabilityPlotEnum> getPlotList() {
+      return plotList;
     }
 
     @Override
@@ -2599,6 +2839,23 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public Amount<Length> getWingMomentumPole() {
+      if (_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)) {
+        throw new UnsupportedOperationException("wingMomentumPole not set");
+      }
+      return wingMomentumPole;
+    }
+
+    @Override
+    public Amount<Length> getHTailMomentumPole() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)) {
+        throw new UnsupportedOperationException("HTailMomentumPole not set");
+      }
+      return HTailMomentumPole;
+    }
+
+    @Override
     public boolean equals(Object obj) {
       if (!(obj instanceof IACAerodynamicCalculator_Builder.Partial)) {
         return false;
@@ -2609,6 +2866,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(theOperatingConditions, other.theOperatingConditions)
           && Objects.equals(currentCondition, other.currentCondition)
           && Objects.equals(componentTaskList, other.componentTaskList)
+          && Objects.equals(plotList, other.plotList)
           && Objects.equals(XCGAircraft, other.XCGAircraft)
           && Objects.equals(ZCGAircraft, other.ZCGAircraft)
           && Objects.equals(ZCGLandingGear, other.ZCGLandingGear)
@@ -2636,6 +2894,8 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
           && Objects.equals(wingPendularStability, other.wingPendularStability)
           && Objects.equals(CD0Miscellaneous, other.CD0Miscellaneous)
+          && Objects.equals(wingMomentumPole, other.wingMomentumPole)
+          && Objects.equals(HTailMomentumPole, other.HTailMomentumPole)
           && Objects.equals(_unsetProperties, other._unsetProperties);
     }
 
@@ -2646,6 +2906,7 @@ abstract class IACAerodynamicCalculator_Builder {
           theOperatingConditions,
           currentCondition,
           componentTaskList,
+          plotList,
           XCGAircraft,
           ZCGAircraft,
           ZCGLandingGear,
@@ -2671,6 +2932,8 @@ abstract class IACAerodynamicCalculator_Builder {
           fuselageEffectOnWingLiftCurve,
           wingPendularStability,
           CD0Miscellaneous,
+          wingMomentumPole,
+          HTailMomentumPole,
           _unsetProperties);
     }
 
@@ -2690,6 +2953,7 @@ abstract class IACAerodynamicCalculator_Builder {
                   ? "currentCondition=" + currentCondition
                   : null),
               "componentTaskList=" + componentTaskList,
+              "plotList=" + plotList,
               "XCGAircraft=" + XCGAircraft,
               "ZCGAircraft=" + ZCGAircraft,
               (!_unsetProperties.contains(
@@ -2767,6 +3031,14 @@ abstract class IACAerodynamicCalculator_Builder {
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS)
                   ? "CD0Miscellaneous=" + CD0Miscellaneous
+                  : null),
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)
+                  ? "wingMomentumPole=" + wingMomentumPole
+                  : null),
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)
+                  ? "HTailMomentumPole=" + HTailMomentumPole
                   : null))
           + "}";
     }

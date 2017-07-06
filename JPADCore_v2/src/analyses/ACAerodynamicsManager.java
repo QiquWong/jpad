@@ -143,10 +143,10 @@ public class ACAerodynamicsManager {
 
 		_theOperatingConditions = operatingConditions;
 
-		_eWhole = new Double[_theOperatingConditions.getAlpha().length];
-		_cD = new Double[_theOperatingConditions.getAlpha().length];
-		_cL = new Double[_theOperatingConditions.getAlpha().length];
-		_cY = new Double[_theOperatingConditions.getAlpha().length];
+//		_eWhole = new Double[_theOperatingConditions.getAlpha().length];
+//		_cD = new Double[_theOperatingConditions.getAlpha().length];
+//		_cL = new Double[_theOperatingConditions.getAlpha().length];
+//		_cY = new Double[_theOperatingConditions.getAlpha().length];
 		
 		updateVariables(_theAircraft);
 	}
@@ -206,15 +206,15 @@ public class ACAerodynamicsManager {
 		// Iterate over mach numbers
 		for (int j=0; j < _machDragPolar.size(); j++) {
 
-			// Iterate over lift coefficients
-			for(int i=0; i < _theOperatingConditions.getAlpha().length; i++) {
-
-				_cL[i] = _theOperatingConditions.getAlpha()[i];
-				_cLcurrent = _cL[i];
-
-				_eWhole[i] = calculateOswald(_machDragPolar.get(j), MethodEnum.HOWE);
-				cD[i] = calculateCD(_cD0Total, _cL[i], _eWhole[i], _machDragPolar.get(j));
-			}
+//			// Iterate over lift coefficients
+//			for(int i=0; i < _theOperatingConditions.getAlpha().length; i++) {
+//
+//				_cL[i] = _theOperatingConditions.getAlpha()[i];
+//				_cLcurrent = _cL[i];
+//
+//				_eWhole[i] = calculateOswald(_machDragPolar.get(j), MethodEnum.HOWE);
+//				cD[i] = calculateCD(_cD0Total, _cL[i], _eWhole[i], _machDragPolar.get(j));
+//			}
 
 			if (_machDragPolar.get(j) == mach) {
 				_cD = cD.clone();
@@ -895,7 +895,7 @@ public class ACAerodynamicsManager {
 	 */
 	public void calculateAll(OperatingConditions conditions) {
 		updateVariables(_theAircraft);
-		calculateComponentsParameters(_theAircraft, conditions.getAlphaCurrent());
+//		calculateComponentsParameters(_theAircraft, conditions.getAlphaCurrent());
 		calculateCD0Total();
 		calculateDragPolar();
 		calculateDragPolarPoints(arW, _eWhole[0], _cD0, 
