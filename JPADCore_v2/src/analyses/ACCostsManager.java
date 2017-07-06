@@ -8,28 +8,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.ml.distance.DistanceMeasure;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import analyses.ACBalanceManager.ACBalanceManagerBuilder;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.CostsDerivedDataEnum;
+import configuration.enumerations.CostsEnum;
+import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
@@ -62,10 +62,6 @@ public class ACCostsManager {
 	private Amount<?> _groundHandlingChargeConstant;
 	private Map<MethodEnum, Amount<?>> _cockpitCrewCost;
 	private Map<MethodEnum, Amount<?>> _cabinCrewCost;
-	private Amount<?> _emissionsChargesNOx;
-	private Amount<?> _emissionsChargesCO;
-	private Amount<?> _emissionsChargesCO2;
-	private Amount<?> _emissionsChargesHC;
 	private Map<MethodEnum, Amount<?>> _labourAirframeMaintenanceCharges;
 	private Map<MethodEnum, Amount<?>> _materialAirframeMaintenanceCharges;
 	private Map<MethodEnum, Amount<?>> _labourEngineMaintenanceCharges;
@@ -86,7 +82,6 @@ public class ACCostsManager {
 	
 	private Amount<?> _landingCharges;
 	private Amount<?> _navigationCharges;
-	private Amount<?> _noiseCharges;
 	private Amount<?> _groundHandlingCharges;
 	private Amount<?> _emissionsCharges;
 	private Map<MethodEnum, Amount<?>> _chargesDOC;
@@ -103,16 +98,17 @@ public class ACCostsManager {
 	//------------------------------------------------------------------------------
 	// METHODS:
 	//------------------------------------------------------------------------------
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "resource" })
 	public static IACCostsManager importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
-			OperatingConditions theOperatingConditions
+			OperatingConditions theOperatingConditions,
+			Map<CostsEnum, MethodEnum> taskList
 			) throws IOException {
 		
-		// TODO : FILL ME !!
-		
-		// Preliminary operation 
+		//---------------------------------------------------------------
+		// PRELIMINARY OPERATIONS
+		//---------------------------------------------------------------
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading costs analysis data ...");
@@ -154,9 +150,10 @@ public class ACCostsManager {
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@file_performance");		
-		// end of preliminary operation
 		
-		// Initializing weights data
+		//---------------------------------------------------------------
+		// INITIALIZING WEIGHTS DATA
+		//---------------------------------------------------------------
 		Amount<Mass> maximumTakeOffMass = null;
 		Amount<Mass> operatingEmptyMass = null;
 		Amount<Mass> payloadMass = null;
@@ -196,22 +193,18 @@ public class ACCostsManager {
 					Cell maximumTakeOffMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Take-Off Mass").get(0)).getCell(2);
 					if(maximumTakeOffMassCell != null)
 						maximumTakeOffMass = Amount.valueOf(maximumTakeOffMassCell.getNumericCellValue(), SI.KILOGRAM);
+					//---------------------------------------------------------------
+					// OPERATING EMPTY MASS
+					Cell operatingEmptyMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Operating Empty Mass").get(0)).getCell(2);
+					if(operatingEmptyMassCell != null)
+						operatingEmptyMass = Amount.valueOf(operatingEmptyMassCell.getNumericCellValue(), SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// PAYLOAD MASS
+					Cell payloadMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Passengers Mass").get(0)).getCell(2);
+					if(payloadMassCell != null)
+						payloadMass = Amount.valueOf(payloadMassCell.getNumericCellValue(), SI.KILOGRAM);
 				}
-
-
-				//---------------------------------------------------------------
-				// OPERATING EMPTY MASS
-				Cell operatingEmptyMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Operating Empty Mass").get(0)).getCell(2);
-				if(operatingEmptyMassCell != null)
-					operatingEmptyMass = Amount.valueOf(operatingEmptyMassCell.getNumericCellValue(), SI.KILOGRAM);
-
-				//---------------------------------------------------------------
-				// Payload
-				Cell payloadMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Passengers Mass").get(0)).getCell(2);
-				if(payloadMassCell != null)
-					payloadMass = Amount.valueOf(payloadMassCell.getNumericCellValue(), SI.KILOGRAM);
-
-				
 			}
 			else {
 				System.err.println("FILE '" + weightsFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
@@ -237,14 +230,11 @@ public class ACCostsManager {
 			String payloadMassProperty = reader.getXMLPropertyByPath("//weights/payload");
 			if(payloadMassProperty != null)
 				payloadMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/payload");
-
-			
 		}
 		
-		// end of Initializing weights data
-		
-		
-		// Initializing weights data
+		//---------------------------------------------------------------
+		// INITIALIZING PERFORMANCE DATA
+		//---------------------------------------------------------------
 		Amount<Length> range= null;
 		Amount<Mass> blockFuel = null;
 		Amount<Duration> flightTime = null;
@@ -284,20 +274,18 @@ public class ACCostsManager {
 					Cell rangeCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total mission distance").get(0)).getCell(2);
 					if(rangeCell != null)
 						range = Amount.valueOf(rangeCell.getNumericCellValue(), NonSI.NAUTICAL_MILE);
+					//---------------------------------------------------------------
+					// BLOCK FUEL
+					Cell blockFuelCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total fuel used").get(0)).getCell(2);
+					if(blockFuelCell != null)
+						blockFuel = Amount.valueOf(blockFuelCell.getNumericCellValue(), SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// FLIGHT TIME
+					Cell flightTimeCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total mission duration").get(0)).getCell(2);
+					if(flightTimeCell != null)
+						flightTime = Amount.valueOf(flightTimeCell.getNumericCellValue(), NonSI.MINUTE);
 				}
-
-
-				//---------------------------------------------------------------
-				// BLOCK FUEL
-				Cell blockFuelCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total fuel used").get(0)).getCell(2);
-				if(blockFuelCell != null)
-					blockFuel = Amount.valueOf(blockFuelCell.getNumericCellValue(), SI.KILOGRAM);
-
-				//---------------------------------------------------------------
-				// FLIGHT TIME
-				Cell flightTimeCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total mission duration").get(0)).getCell(2);
-				if(flightTimeCell != null)
-					flightTime = Amount.valueOf(flightTimeCell.getNumericCellValue(), NonSI.MINUTE);
 			}
 			else {
 				System.err.println("FILE '" + performanceFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
@@ -324,11 +312,10 @@ public class ACCostsManager {
 			if(flightTimeProperty != null)
 				flightTime = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//performance/flight_time");
 
-			
 		}
 		
-		
-		// Initialize costs data
+		//---------------------------------------------------------------
+		// INITIALIZE COSTS DATA
 		//---------------------------------------------------------------
 		Amount<?> utilization = null;
 		if(range.doubleValue(NonSI.NAUTICAL_MILE) <=2200){
@@ -349,15 +336,30 @@ public class ACCostsManager {
 		Amount<?> cabinLabourRate = Amount.valueOf(90, MyUnits.USD_PER_HOUR);
 		Amount<?> fuelUnitPrice = Amount.valueOf(59.2, MyUnits.USD_PER_BARREL);
 
+		// TODO: CONTINUE DATA INITIALIZATION
+		
+ 
+		//---------------------------------------------------------------
+		// UTILIZATION
+		String rangeProperty = reader.getXMLPropertyByPath("//performance/range");
+		if(rangeProperty != null)
+			range = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//performance/range");
+
+		// TODO: CONTINUE READING ALL THE DATA
+		
+		
+		//===================================================================================================
+		// TODO : FOR VINCENZO --> EXAMPLE ON NOISE (DO THE SAME FOR OTHER DATA TO BE CALCULATED OR ASSINGED)
+		//---------------------------------------------------------------
+		// NOISE CHARGES
 		Amount<?> noiseCharges = null;
 		String calculateNoiseChargesString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//charges/noise/@calculate");
-
-		
 		
 		if(calculateNoiseChargesString.equalsIgnoreCase("TRUE")){
+			
 			Double noiseCostant = null;
 			String noiseCostantString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
@@ -366,71 +368,114 @@ public class ACCostsManager {
 			if(noiseCostantString != null)
 				noiseCostant = Double.valueOf(noiseCostantString);
 			
-			
-			String flyoverCertifiedNoiseLevel = MyXMLReaderUtils
+			Double flyoverCertifiedNoiseLevel = null;
+			String flyoverCertifiedNoiseLevelString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@flyover_Certified_Noise_Level");
+			if(flyoverCertifiedNoiseLevelString != null)
+				flyoverCertifiedNoiseLevel = Double.valueOf(flyoverCertifiedNoiseLevelString);
 			
-			String lateralCertifiedNoiseLevel = MyXMLReaderUtils
+			Double lateralCertifiedNoiseLevel = null;
+			String lateralCertifiedNoiseLevelString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@lateral_Certified_Noise_Level");
+			if(lateralCertifiedNoiseLevelString != null)
+				lateralCertifiedNoiseLevel = Double.valueOf(lateralCertifiedNoiseLevelString);
 			
-			String approachCertifiedNoiseLevel = MyXMLReaderUtils
+			Double approachCertifiedNoiseLevel = null;
+			String approachCertifiedNoiseLevelString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@approach_Certified_Noise_Level");
+			if(approachCertifiedNoiseLevelString != null)
+				approachCertifiedNoiseLevel = Double.valueOf(approachCertifiedNoiseLevelString);
 			
-			String departureThreshold = MyXMLReaderUtils
+			Double departureThreshold = null;
+			String departureThresholdString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@departure_threshold");
+			if(departureThresholdString != null)
+				departureThreshold = Double.valueOf(departureThresholdString);
 			
-			String arrivalThreshold = MyXMLReaderUtils
+			Double arrivalThreshold = null;
+			String arrivalThresholdString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@arrival_threshold");
+			if(arrivalThresholdString != null)
+				arrivalThreshold = Double.valueOf(arrivalThresholdString);
 			
+			noiseCharges = CostsCalcUtils.calcDOCNoiseCharges(
+					Amount.valueOf(approachCertifiedNoiseLevel, NonSI.DECIBEL),
+					Amount.valueOf(lateralCertifiedNoiseLevel, NonSI.DECIBEL),
+					Amount.valueOf(flyoverCertifiedNoiseLevel, NonSI.DECIBEL),
+					Amount.valueOf(noiseCostant, Currency.USD),
+					Amount.valueOf(departureThreshold, NonSI.DECIBEL),
+					Amount.valueOf(arrivalThreshold, NonSI.DECIBEL)
+					);
 		}
+		else {
+			String noiseChargesProperty = reader.getXMLPropertyByPath("//charges/noise");
+			if(noiseChargesProperty != null)
+				noiseCharges = (Amount<?>) reader.getXMLAmountWithUnitByPath("//charges/noise");
+		}
+		//===================================================================================================
 		
 		
 		
-		// RANGE
-		String rangeProperty = reader.getXMLPropertyByPath("//performance/range");
-		if(rangeProperty != null)
-			range = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//performance/range");
 		
-		
-		
-		
+		//---------------------------------------------------------------
+		// READING PLOT LIST
+		//---------------------------------------------------------------
+		List<CostsPlotEnum> plotList = new ArrayList<CostsPlotEnum>();
+		if(theAircraft.getTheAnalysisManager().getPlotCosts() == Boolean.TRUE) {
+			
+			/*
+			 * TODO: CHECK WHICH ANALYSES HAVE TO BE PERFORMED TO OBTAIN EACH PLOT ... 
+			 * (in DOC_vs_Range the check is only an example of how to do that)
+			 */
+			
+			//...............................................................
+			// DOC_vs_RANGE
+			if(theAircraft.getTheAnalysisManager().getTaskListCosts().contains(CostsEnum.DOC_CAPITAL)) {
+				String docVsRangeProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//plot/DOC_vs_Range/@perform");
+				if (docVsRangeProperty != null) {
+					if(docVsRangeProperty.equalsIgnoreCase("TRUE")) 
+						plotList.add(CostsPlotEnum.DOC_RANGE);
+				}
+			}			
+		}
 		
 		/********************************************************************************************
 		 * Once the data are ready, it's possible to create the ACBalanceManager object can be created
 		 * using the builder pattern.
 		 */
-		ACBalanceManager theBalance = new ACBalanceManagerBuilder(id, theAircraft)
-				.maximumTakeOffMass(maximumTakeOffMass)
-				.maximumZeroFuelMass(maximumZeroFuelMass)
-				.operatingEmptyMass(operatingEmptyMass)
-				.passengersTotalMass(payloadMass)
-				.passengersSingleMass(passengersSingleMass)
-				.fuselageMass(fuselageMass)
-				.wingMass(wingMass)
-				.horizontalTailMass(horizontalTailMass)
-				.verticalTailMass(verticalTailMass)
-				.canardMass(canardMass)
-				.nacellesMass(nacellesMassList)
-				.enginesMass(enginesMassList)
-				.landingGearsMass(landingGearsMass)
+		IACCostsManager theCostsBuilderInterface = new IACCostsManager.Builder()
+				.setId(id)
+				.setAircraft(theAircraft)
+				.setOperatingConditions(theOperatingConditions)
+				.putAllTaskList(taskList)
+				.addAllPlotList(plotList)
+				.setMaximumTakeOffMass(maximumTakeOffMass)
+				.setOperatingEmptyMass(operatingEmptyMass)
+				.setPayload(payloadMass)
+				.setRange(range)
+				.setBlockFuelMass(blockFuel)
+				.setFlightTime(flightTime)
+				// TODO: continue adding ...
 				.build();
 		
-		return theBalance;
+		return theCostsBuilderInterface;
 		
 	}
 	private void initializeAnalysis() {
 	
-		
 		initializeData();
 		initializeArrays();
 		
@@ -580,9 +625,9 @@ public class ACCostsManager {
 			_capitalDOC.put(
 					MethodEnum.AEA, 
 					CostsCalcUtils.calcDOCCapitalAEA(
-							_depreciation.get(_depreciation),
-							_insurance.get(_insurance),
-							_interest.get(_interest)
+							_depreciation.get(MethodEnum.AEA),
+							_insurance.get(MethodEnum.AEA),
+							_interest.get(MethodEnum.AEA)
 							)
 					);
 		}
@@ -701,58 +746,6 @@ public class ACCostsManager {
 							_groundHandlingChargeConstant,
 							_theCostsBuilderInterface.getPayload());
 			
-			_noiseCharges=
-					CostsCalcUtils.calcDOCNoiseCharges(
-							_theCostsBuilderInterface.getApproachCertifiedNoiseLevel(),
-							_theCostsBuilderInterface.getLateralCertifiedNoiseLevel(),
-							_theCostsBuilderInterface.getFlyoverCertifiedNoiseLevel(),
-							_theCostsBuilderInterface.getNoiseConstant(),
-							_theCostsBuilderInterface.getNoiseDepartureThreshold(),
-							_theCostsBuilderInterface.getNoiseArrivalThreshold());
-			
-			_emissionsChargesNOx=
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantNOx(),
-							_theCostsBuilderInterface.getMassNOx(),
-							_theCostsBuilderInterface.getDpHCFooNOx(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
-			
-			_emissionsChargesCO=
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantCO(),
-							_theCostsBuilderInterface.getMassCO(),
-							_theCostsBuilderInterface.getDpHCFooCO(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
-			
-			_emissionsChargesCO2=
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantCO2(),
-							_theCostsBuilderInterface.getMassCO2(),
-							_theCostsBuilderInterface.getDpHCFooCO2(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
-			
-			_emissionsChargesHC= 
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantHC(),
-							_theCostsBuilderInterface.getMassHC(),
-							_theCostsBuilderInterface.getDpHCFooHC(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
-			
-			_emissionsCharges=
-					_emissionsChargesHC.plus(
-							_emissionsChargesCO2).plus(
-									_emissionsChargesCO).plus(
-												_emissionsChargesNOx);
-			
-			
 			_chargesDOC.put(
 					MethodEnum.AEA,
 					CostsCalcUtils.calcDOCChargesAEA(
@@ -766,7 +759,7 @@ public class ACCostsManager {
 		
 		
 		// CHARGES with noise and emissions
-		public void calculateDOCChargesFRANZ() {
+		public void calculateDOCChargesILRAachen() {
 			_landingCharges = CostsCalcUtils.calcDOCLandingCharges(
 					_landingChargeConstant,
 					_theCostsBuilderInterface.getMaximumTakeOffMass()
@@ -783,56 +776,60 @@ public class ACCostsManager {
 							_groundHandlingChargeConstant,
 							_theCostsBuilderInterface.getPayload());
 
-			_noiseCharges=
-					CostsCalcUtils.calcDOCNoiseCharges(
-							_theCostsBuilderInterface.getApproachCertifiedNoiseLevel(),
-							_theCostsBuilderInterface.getLateralCertifiedNoiseLevel(),
-							_theCostsBuilderInterface.getFlyoverCertifiedNoiseLevel(),
-							_theCostsBuilderInterface.getNoiseConstant(),
-							_theCostsBuilderInterface.getNoiseDepartureThreshold(),
-							_theCostsBuilderInterface.getNoiseArrivalThreshold());
-
-			_emissionsChargesNOx= 
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantNOx(),
-							_theCostsBuilderInterface.getMassNOx(),
-							_theCostsBuilderInterface.getDpHCFooNOx(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
-
-			_emissionsChargesCO=
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantCO(),
-							_theCostsBuilderInterface.getMassCO(),
-							_theCostsBuilderInterface.getDpHCFooCO(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
-
-			_emissionsChargesCO2=
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantCO2(),
-							_theCostsBuilderInterface.getMassCO2(),
-							_theCostsBuilderInterface.getDpHCFooCO2(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
-
-			_emissionsChargesHC= 
-					CostsCalcUtils.calcDOCEmissionsCharges(
-							_theCostsBuilderInterface.getEmissionsConstantHC(),
-							_theCostsBuilderInterface.getMassHC(),
-							_theCostsBuilderInterface.getDpHCFooHC(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
-							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
+			/*
+			 * FIXME: ALL THESE DATA MUST COME FROM INPUT (CALCULATED OR ASSIGNED) 
+			 *        (compete ImportFromXML)
+			 */
+//			_noiseCharges=
+//					CostsCalcUtils.calcDOCNoiseCharges(
+//							_theCostsBuilderInterface.getApproachCertifiedNoiseLevel(),
+//							_theCostsBuilderInterface.getLateralCertifiedNoiseLevel(),
+//							_theCostsBuilderInterface.getFlyoverCertifiedNoiseLevel(),
+//							_theCostsBuilderInterface.getNoiseConstant(),
+//							_theCostsBuilderInterface.getNoiseDepartureThreshold(),
+//							_theCostsBuilderInterface.getNoiseArrivalThreshold());
+//
+//			_emissionsChargesNOx= 
+//					CostsCalcUtils.calcDOCEmissionsCharges(
+//							_theCostsBuilderInterface.getEmissionsConstantNOx(),
+//							_theCostsBuilderInterface.getMassNOx(),
+//							_theCostsBuilderInterface.getDpHCFooNOx(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
+//
+//			_emissionsChargesCO=
+//					CostsCalcUtils.calcDOCEmissionsCharges(
+//							_theCostsBuilderInterface.getEmissionsConstantCO(),
+//							_theCostsBuilderInterface.getMassCO(),
+//							_theCostsBuilderInterface.getDpHCFooCO(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
+//
+//			_emissionsChargesCO2=
+//					CostsCalcUtils.calcDOCEmissionsCharges(
+//							_theCostsBuilderInterface.getEmissionsConstantCO2(),
+//							_theCostsBuilderInterface.getMassCO2(),
+//							_theCostsBuilderInterface.getDpHCFooCO2(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
+//
+//			_emissionsChargesHC= 
+//					CostsCalcUtils.calcDOCEmissionsCharges(
+//							_theCostsBuilderInterface.getEmissionsConstantHC(),
+//							_theCostsBuilderInterface.getMassHC(),
+//							_theCostsBuilderInterface.getDpHCFooHC(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineType(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getP0Total(),
+//							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber());
 
 			_emissionsCharges=
-					_emissionsChargesHC.plus(
-							_emissionsChargesCO2).plus(
-									_emissionsChargesCO).plus(
-											_emissionsChargesNOx);
+					_theCostsBuilderInterface.getEmissionsChargesHC().plus(
+							_theCostsBuilderInterface.getEmissionsChargesCO2()).plus(
+									_theCostsBuilderInterface.getEmissionsChargesCO()).plus(
+											_theCostsBuilderInterface.getEmissionsChargesNOx());
 
 
 			_chargesDOC.put(
@@ -841,7 +838,7 @@ public class ACCostsManager {
 							_landingCharges,
 							_navigationCharges,
 							_groundHandlingCharges,
-							_noiseCharges,
+							_theCostsBuilderInterface.getNoiseCharges(),
 							_emissionsCharges
 							)
 					);

@@ -26,6 +26,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
+import configuration.enumerations.CostsEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PerformanceEnum;
@@ -79,6 +80,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Map <ComponentEnum, MethodEnum> _methodsMapBalance;
 	private List<PerformanceEnum> _taskListPerformance;
 	private List<ConditionEnum> _taskListAerodynamicAndStability;
+	private List<CostsEnum> _taskListCosts;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
 	private List<AnalysisTypeEnum> _analysisList;
 	private Boolean _plotBalance;
@@ -1686,6 +1688,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setReferenceRange(Amount<Length> _referenceRange) {
 		this._referenceRange = _referenceRange;
+	}
+
+	public List<CostsEnum> getTaskListCosts() {
+		return _taskListCosts;
+	}
+
+	public void setTaskListCosts(List<CostsEnum> _taskListCosts) {
+		this._taskListCosts = _taskListCosts;
 	}
 
 }
