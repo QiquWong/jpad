@@ -38,6 +38,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import jpadcommander.inputmanager.InputManagerAircraftDefaultController;
+import jpadcommander.inputmanager.InputManagerAircraftFromFileController;
 import standaloneutils.JPADXmlReader;
 
 public class Main extends Application {
@@ -695,10 +697,6 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("inputmanager/InputManager.fxml"));
 		mainInputManagerLayout = loader.load();
 
-		Main.setFuselageAdjustCriterion(
-				(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#fuselageAdjustCriterionChoiceBox")
-				);
-		
 		// get the action buttons toolbar
 		Main.setActionButtonsToolbar(
 				(ToolBar) Main.getMainInputManagerLayout()
@@ -710,28 +708,28 @@ public class Main extends Application {
 
 		primaryStage.show();
 		
-//		if(Main.getTheAircraft() != null) {
-//			
-//			if(Main.isAircraftFormFile()) {
-//				InputManagerAircraftFromFileController.logAircraftFromFileToInterface();
-//			}
-//			else {
-//				InputManagerAircraftDefaultController.logAircraftDefaultToInterface();
-//			}
-//
-//			InputManagerAircraftFromFileController.logFuselageFromFileToInterface();
-//			// TODO: ADD OTHER WHEN AVAILABLE
-//			
+		if(Main.getTheAircraft() != null) {
+			
+			if(Main.isAircraftFormFile()) {
+				InputManagerAircraftFromFileController.logAircraftFromFileToInterface();
+			}
+			else {
+				InputManagerAircraftDefaultController.logAircraftDefaultToInterface();
+			}
+
+			InputManagerAircraftFromFileController.logFuselageFromFileToInterface();
+			// TODO: ADD OTHER WHEN AVAILABLE
+			
 //			InputManagerAircraftFromFileController.createAircraftFrontView();
 //			InputManagerAircraftFromFileController.createAircraftSideView();
 //			InputManagerAircraftFromFileController.createAircraftTopView();
 //			InputManagerAircraftFromFileController.createFuselageFrontView();
 //			InputManagerAircraftFromFileController.createFuselageSideView();
 //			InputManagerAircraftFromFileController.createFuselageTopView();
-//			// TODO: ADD OTHER WHEN AVAILABLE
-//			
-//			
-//		}
+			// TODO: ADD OTHER WHEN AVAILABLE
+			
+			
+		}
 		
 	}
 

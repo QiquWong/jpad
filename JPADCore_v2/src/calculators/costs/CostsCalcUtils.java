@@ -1,7 +1,5 @@
 package calculators.costs;
 
-import java.util.Map;
-
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
@@ -13,27 +11,51 @@ import javax.measure.quantity.Volume;
 import javax.measure.quantity.VolumetricDensity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
 
-import org.apache.commons.math3.analysis.function.Pow;
-import org.apache.commons.math3.analysis.function.Sqrt;
 import org.apache.commons.math3.special.Erf;
 import org.apache.commons.math3.util.FastMath;
-import org.inferred.freebuilder.shaded.org.eclipse.core.resources.IFilterMatcherDescriptor;
 import org.jscience.economics.money.Currency;
 import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
-import org.omg.PortableInterceptor.NON_EXISTENT;
 
-import configuration.enumerations.AircraftEnum;
-import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.MethodEnum;
-import parser.ExprParser.start_return;
 import standaloneutils.MyUnits;
 
 public class CostsCalcUtils {
 
+	/**
+	 * Calculate the aircraft utilization (in hours per year) with the method suggested
+	 * by AEA
+	 * 
+	 * @param blockTime (hours)
+	 * @return utilization (hours per year)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcUtilizationAEA(Amount<Duration> blockTime){
+		return Amount.valueOf(
+				(3750./(blockTime.doubleValue(NonSI.HOUR)+0.5))*blockTime.doubleValue(NonSI.HOUR),
+				MyUnits.HOURS_PER_YEAR
+				);
+	}
+
+	/**
+	 * Calculate the aircraft utilization (in hours per year) with the method suggested
+	 * by Sforza
+	 * 
+	 * @param blockTime (hours)
+	 * @return utilization (hours per year)
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> calcUtilizationSforza(Amount<Duration> blockTime){
+		return Amount.valueOf(
+				(0.007*Math.pow(blockTime.doubleValue(NonSI.HOUR),3)
+				- 0.1389*Math.pow(blockTime.doubleValue(NonSI.HOUR),2)
+				+ 0.946*blockTime.doubleValue(NonSI.HOUR)
+				+ 2.2137)*1000,
+				MyUnits.HOURS_PER_YEAR
+				);
+	}
+	
 	/**
 	 * Calculates the aircraft total investment as the sum of airframe price, engines 
 	 * price and relative spares costs.
@@ -84,8 +106,11 @@ public class CostsCalcUtils {
 	 * @param aircraft is the MyAircraft object that contains the data of the considered aircraft
 	 * @return _aircraftCostSforza aircraft cost according to Sforza statistical law
 	 */
-	public static double calcAircraftCostSforza(double OEM){
-		return 425.0 * Erf.erf((OEM - (10000.)) / (450000.)) * 1000000.;
+	public static Amount<Money> calcAircraftCostSforza(double OEM){
+		return Amount.valueOf(
+				425.0 * Erf.erf((OEM - (10000.)) / (450000.)) * 1000000.,
+				Currency.USD
+				);
 	}
 	
 	/**
@@ -109,7 +134,7 @@ public class CostsCalcUtils {
 	 * @param OEM
 	 * @return
 	 */
-	public static double calcAircraftCostSforza(Amount<Mass> OEM){
+	public static Amount<Money> calcAircraftCostSforza(Amount<Mass> OEM){
 		return CostsCalcUtils.calcAircraftCostSforza(OEM.doubleValue(NonSI.POUND));
 	}
 	
