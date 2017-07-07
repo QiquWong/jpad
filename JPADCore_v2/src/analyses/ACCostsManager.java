@@ -29,6 +29,7 @@ import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.CostsEnum;
 import configuration.enumerations.CostsPlotEnum;
+import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
@@ -456,7 +457,7 @@ public class ACCostsManager {
 		
 		
 		//===================================================================================================
-		// TODO : FOR VINCENZO --> EXAMPLE ON NOISE (DO THE SAME FOR OTHER DATA TO BE CALCULATED OR ASSINGED)
+		// TODO : FOR VINCENZO --> EXAMPLE ON NOISE (DO THE SAME FOR OTHER DATA TO BE CALCULATED OR ASSINGED) --> VINCENZO SAYS OK! ;)
 		//---------------------------------------------------------------
 		// NOISE CHARGES
 		
@@ -529,8 +530,48 @@ public class ACCostsManager {
 			if(noiseChargesProperty != null)
 				noiseCharges = (Amount<?>) reader.getXMLAmountWithUnitByPath("//charges/noise");
 		}
-		//===================================================================================================
 		
+		
+		// MAINTENANCE CHARGES
+		String airframeLabourRateProperty= reader.getXMLPropertyByPath("//global_data/doc/maintenance/airframe_labour_rate");
+		if(airframeLabourRateProperty != null)
+			airframeLabourRate = (Amount<?>) reader.getXMLAmountWithUnitByPath("//global_data/doc/maintenance/airframe_labour_rate");
+		
+		String engineLabourRateProperty= reader.getXMLPropertyByPath("//global_data/doc/maintenance/engine_labour_rate");
+		if(engineLabourRateProperty != null)
+			engineLabourRate = (Amount<?>) reader.getXMLAmountWithUnitByPath("//global_data/doc/maintenance/engine_labour_rate");
+				
+		String calculateEnginePriceString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//maintenance/engine_price/@calculate");
+		
+		if(calculateEnginePriceString.equalsIgnoreCase("TRUE")){
+			enginePrice = Amount.valueOf(
+					CostsCalcUtils.calcSingleEngineCostSforza(
+					theAircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE), 
+					theAircraft.getPowerPlant().getTurbofanEngineDatabaseReader().getSFC(
+							theOperatingConditions.getMachCruise(), 
+							theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER), 
+							theAircraft.getPowerPlant().getTurbofanEngineDatabaseReader().getThrustRatio(
+														theOperatingConditions.getMachCruise(),
+														theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+														theAircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
+														EngineOperatingConditionEnum.CRUISE
+														), 
+							theAircraft.getPowerPlant().getEngineList().get(0).getBPR(), 
+							EngineOperatingConditionEnum.CRUISE)
+							),
+					Currency.USD
+					);
+					
+		}
+		else{
+			String enginePriceProperty = reader.getXMLPropertyByPath("//maintenance/engine_price");
+			if(enginePriceProperty != null)
+				enginePrice = (Amount<Money>) reader.getXMLAmountWithUnitByPath("//maintenance/engine_price");
+		}
+		//===================================================================================================
 		
 		
 		
@@ -560,7 +601,7 @@ public class ACCostsManager {
 		}
 		
 		/********************************************************************************************
-		 * Once the data are ready, it's possible to create the ACBalanceManager object can be created
+		 * Once the data are ready, it's possible to create the ACCostManager object can be created
 		 * using the builder pattern.
 		 */
 		IACCostsManager theCostsBuilderInterface = new IACCostsManager.Builder()

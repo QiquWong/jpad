@@ -117,11 +117,11 @@ public class CostsCalcUtils {
 	 * 
 	 * @author AC
 	 *
-	 * @param cruiseThrust
+	 * @param cruiseThrust (lbf)
 	 * @param cruiseSpecificFuelConsumption
 	 * @return
 	 */
-	public static double singleEngineCostSforza(double cruiseThrust, double cruiseSpecificFuelConsumption){
+	public static double calcSingleEngineCostSforza(double cruiseThrust, double cruiseSpecificFuelConsumption){
 		//TODO: test this equation on some known engine
 		return 1.2* (1 + (FastMath.pow(cruiseThrust, 0.088) /
 				FastMath.pow(cruiseSpecificFuelConsumption, 2.58)));
@@ -148,7 +148,7 @@ public class CostsCalcUtils {
 	 */
 	public static double singleEngineCostSforza(Amount<Force> cruiseThrust,
 			double cruiseSpecificFuelConsumption){
-		return singleEngineCostSforza(cruiseThrust.doubleValue(NonSI.POUND_FORCE),
+		return calcSingleEngineCostSforza(cruiseThrust.doubleValue(NonSI.POUND_FORCE),
 				cruiseSpecificFuelConsumption);
 	}
 	
