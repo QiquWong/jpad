@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Following tag names are required -->
+<!-- The following unit of measurement are allowed : LENGTH-> "m" (meter), "ft" (foot) ; ANGLES -> "°" (degree), "rad" (radians) ; SURFACE-> "m2" (squared meter). It is possible to use different units in different fields.-->
+<!-- Arrays could be defined with or without parenthesis and value can be separated both by , and by ; -->
+<wing_executable>
+        <operating_conditions>
+                <altitude unit="ft">8000</altitude>
+                <mach_number>0.171</mach_number>
+        </operating_conditions>
+       <wing>
+            <global>
+                <surface unit="m²">33.62</surface>
+                <aspect_ratio>2.44</aspect_ratio>
+                <number_of_point_semispan>100</number_of_point_semispan>
+                <adimensional_kink_station>1</adimensional_kink_station>
+             </global>
+             <distribution>
+                <number_of_given_sections>2</number_of_given_sections>
+                <airfoil_family>NACA_4_DIGIT</airfoil_family> 
+				<max_thickness_mean_airfoil>0.14</max_thickness_mean_airfoil>
+                   <geometry>
+						<y_adimensional_stations>[0,1]</y_adimensional_stations>
+						<chord_distribution unit="m">[4.55,2.84]</chord_distribution>
+						<x_le_distribution unit="m">[0,1.40]</x_le_distribution>
+						<twist_distribution unit="rad">[0.0, 0.0]</twist_distribution>
+                    </geometry>
+                    <aerodynamics>
+						<alpha_zero_lift_distribution unit="°">[0.0,0.0]</alpha_zero_lift_distribution>
+						<alpha_star_distribution unit="°">[14,14]</alpha_star_distribution>
+						<maximum_lift_coefficient_distribution>[1.5,1.5]</maximum_lift_coefficient_distribution>
+                    </aerodynamics>
+             </distribution>
+        </wing>
+</wing_executable>

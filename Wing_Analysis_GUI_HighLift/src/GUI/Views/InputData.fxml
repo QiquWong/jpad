@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Views.VariablesInputData">
+   <center>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <Separator prefHeight="0.0" prefWidth="900.0" />
+            <Label text="Input Data">
+               <font>
+                  <Font name="AR ESSENCE" size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </Label>
+            <Separator prefHeight="0.0" prefWidth="900.0" />
+            <HBox alignment="CENTER_LEFT" minHeight="-Infinity" prefHeight="30.0" prefWidth="900.0" spacing="20.0">
+               <children>
+                  <RadioButton fx:id="fromFile" contentDisplay="CENTER" mnemonicParsing="false" onAction="#clickInputButton" text="from file">
+                     <padding>
+                        <Insets left="2.0" />
+                     </padding>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="input" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="userDefined" contentDisplay="CENTER" mnemonicParsing="false" onAction="#clickUserDefinedButton" text="User defined" toggleGroup="$input">
+                     <padding>
+                        <Insets left="2.0" />
+                     </padding>
+                  </RadioButton>
+                  <TextField fx:id="filePath" disable="true" prefHeight="25.0" prefWidth="239.0" promptText="File Path">
+                     <HBox.margin>
+                        <Insets left="60.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="searchButton" disable="true" minHeight="-Infinity" mnemonicParsing="false" onAction="#searchInputFile" prefHeight="20.0" prefWidth="24.0" text="...">
+                     <HBox.margin>
+                        <Insets left="-50.0" top="0.5" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="load" disable="true" mnemonicParsing="false" onAction="#loadDataFile" text="load">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#ConfirmData" text="Confirm Data">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <HBox.margin>
+                        <Insets bottom="2.4" left="25.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="goToAnalysisButton" disable="true" mnemonicParsing="false" onAction="#returnToAnalysis" text="Go to Analyses">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <HBox.margin>
+                        <Insets bottom="2.4" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="saveButton" disable="true" mnemonicParsing="false" onAction="#saveInputFile" text="Save">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <HBox.margin>
+                        <Insets bottom="2.4" right="1.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <SplitPane dividerPositions="0.5" prefHeight="674.0" prefWidth="900.0">
+              <items>
+                  <ScrollPane prefHeight="635.0" prefWidth="466.0" vbarPolicy="ALWAYS">
+                     <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="450.0">
+                           <children>
+                              <VBox layoutY="4.0" />
+                              <Separator layoutX="14.0" layoutY="49.0" prefWidth="200.0" />
+                              <Label layoutY="153.0" text="Lifting surface data">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Separator layoutX="14.0" layoutY="173.0" prefWidth="200.0" />
+                              <GridPane layoutX="10.0" layoutY="178.0" prefHeight="100.0" prefWidth="437.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.79998779296875" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="288.20001220703125" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Surface" />
+                                    <Label text="Aspect ratio" GridPane.rowIndex="1" />
+                                    <Label text="Number of points" GridPane.rowIndex="2" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                       <children>
+                                          <TextField fx:id="surface" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="surfaceUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <TextField fx:id="aspectRatio" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <TextField fx:id="numberOfPoints" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                    <Label text="Adimensional kink station" GridPane.rowIndex="3" />
+                                    <Label text="Airfoils family" GridPane.rowIndex="4" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <children>
+                                          <TextField fx:id="adimensionalKinkStation" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                    <ChoiceBox fx:id="airfoilFamily" prefWidth="219.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <Label text="Max thickness mean airfoil" GridPane.rowIndex="5" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="274.0">
+                                             <children>
+                                                <TextField fx:id="maxThickness" prefHeight="25.0" prefWidth="219.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                              <GridPane layoutX="9.0" layoutY="56.0" prefHeight="63.0" prefWidth="437.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="149.5999755859375" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="287.4000244140625" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Altitude" />
+                                    <Label text="Mach number" GridPane.rowIndex="1" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                       <children>
+                                          <TextField fx:id="altitude" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="altitudeUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <TextField fx:id="machNumber" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                              <Label layoutY="408.0" text="Airfoil distribution input data">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Separator layoutX="14.0" layoutY="427.0" prefWidth="200.0" />
+                              <GridPane layoutX="10.0" layoutY="436.0" prefHeight="241.0" prefWidth="421.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.80001831054688" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="272.1999816894531" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="Adimentional stations" GridPane.rowIndex="1" />
+                                    <Label text="Chords" GridPane.rowIndex="2" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="31.0" prefWidth="234.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <TextField fx:id="adimensionalStations1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="adimensionalStations2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="adimensionalStations3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="adimensionalStations4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="adimensionalStations5" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <children>
+                                          <TextField fx:id="chords1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="chords2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="chords3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="chords4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="chords5" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="chordsUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
+                                    <Label text="Twist angles" GridPane.rowIndex="4" />
+                                    <Label text="Alpha zero lift angles" GridPane.rowIndex="5" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <children>
+                                          <TextField fx:id="twist1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="twist2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="twist3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="twist4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="twist5" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="twistUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
+                                    <Label text="Alpha star distribution" GridPane.rowIndex="6" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="319.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="290.0">
+                                             <children>
+                                                <TextField fx:id="alphaStar1" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar2" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar3" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar4" prefHeight="25.0" prefWidth="219.0" />
+                                                <TextField fx:id="alphaStar5" prefHeight="25.0" prefWidth="219.0" />
+                                                <ChoiceBox fx:id="alphaStarUnits" prefHeight="25.0" prefWidth="55.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <Label text="X leading edge" GridPane.rowIndex="3" />
+                                    <Label text="Maximum lift coefficients" GridPane.rowIndex="7" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <children>
+                                          <TextField prefHeight="25.0" prefWidth="219.0" fx:id="xle1" />
+                                          <TextField prefHeight="25.0" prefWidth="219.0" fx:id="xle2" />
+                                          <TextField prefHeight="25.0" prefWidth="219.0" fx:id="xle3" />
+                                          <TextField prefHeight="25.0" prefWidth="219.0" fx:id="xle4" />
+                                          <TextField prefHeight="25.0" prefWidth="219.0" fx:id="xle5" />
+                                          <ChoiceBox prefHeight="25.0" prefWidth="55.0" fx:id="xleUnits" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                       <children>
+                                          <TextField fx:id="alphaZeroLift1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="alphaZeroLift5" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="alphaZeroLiftUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                       <children>
+                                          <TextField fx:id="clMax1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax5" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                    <Label text="Number of given sections" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                       <children>
+                                          <ChoiceBox fx:id="numberOfGivenSections" prefHeight="25.0" prefWidth="71.0" />
+                                          <Button mnemonicParsing="false" onAction="#setNumberOfGivenSection" prefHeight="25.0" prefWidth="29.0" style="-fx-background-radius: 5;" text="ok">
+                                             <HBox.margin>
+                                                <Insets left="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </GridPane>
+                              <Label layoutY="29.0" text="Operating Conditions">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="inputHighLiftDevices" layoutX="265.0" layoutY="14.0" mnemonicParsing="false" onAction="#addHighLiftData" text="Insert High Lift Devices" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <ScrollPane>
+                     <content>
+                      <AnchorPane fx:id="leftPane" minHeight="0.0" minWidth="0.0" onMousePressed="#setNumberOfGivenSection" prefHeight="632.0" prefWidth="444.0">
+                           <children>
+                              <Pane fx:id="graphPane" prefHeight="113.0" prefWidth="444.0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+              </items>
+            </SplitPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
