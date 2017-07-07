@@ -18,23 +18,23 @@
 				<flight_time unit="hr"></flight_time>
 			</performance>
 			<global_data>
-				<utilization calculate="TRUE" method="SFORZA" unit="hr/year"></utilization> <!-- Default values: short-medium range(<2200 nmi)= 3750; long range(>2200 nmi)= 4800  -->
+				<utilization calculate="TRUE" method="AEA" unit="hr/year"></utilization> <!-- Methods: SFORZA or AEA  -->
 				<doc>
 					<capital>
-						<life_span unit="years"></life_span> <!-- Default values: 16 -->
+						<life_span unit="years"></life_span> <!-- Default values: 16 years-->
 						<residual_value></residual_value> <!-- aircraft value percentage of the initial value at the end of life. Default value: 0.1 -->
-						<aircraft_price calculate="TRUE" method="SFORZA" unit="$"></aircraft_price> 
+						<aircraft_price calculate="TRUE" method="SFORZA" unit="$"></aircraft_price> <!-- Methods: SFORZA -->
 						<airframe_relative_spares_costs></airframe_relative_spares_costs> <!-- default = 0.1 -->
 						<engines_relative_spares_costs></engines_relative_spares_costs>	<!-- default = 0.3 -->
 						<interest></interest> <!-- percentage of the total investment. Default: 0.054 = 5.4% -->
 						<insurance></insurance> <!-- percentage of the sum of the airframe and engines prices. Default: 0.005 = 0.5%  -->
 					</capital>
 					<crew>
-						<cabin_labour_rate unit="$/hr"></cabin_labour_rate> <!-- Default values: 360 (each pilot) -->
-						<cockpit_labour_rate unit="$/hr"></cockpit_labour_rate> <!-- Default values: 90 (each flight attendant) -->
+						<cabin_labour_rate unit="$/hr"></cabin_labour_rate> <!-- Default values: 360 $/hr (each pilot) -->
+						<cockpit_labour_rate unit="$/hr"></cockpit_labour_rate> <!-- Default values: 90 $/hr (each flight attendant) -->
 					</crew>
 					<fuel>
-						<unit_price unit="$/barrel"></unit_price> <!-- Default values: 59.2 (07/2017) http://www.iata.org/publications/economics/fuel-monitor/Pages/price-analysis.aspx -->
+						<unit_price unit="$/barrel"></unit_price> <!-- Default values: 59.2 $/barrel (07/2017) http://www.iata.org/publications/economics/fuel-monitor/Pages/price-analysis.aspx -->
 					</fuel>
 					<charges>
 						<landing calculate="TRUE" method="AEA" unit="$/flight"></landing>
@@ -47,14 +47,18 @@
 						flyover_Certified_Noise_Level (EPNdB), lateral_Certified_Noise_Level (EPNdB), approach_Certified_Noise_Level (EPNdB) see http://noisedb.stac.aviation-civile.gouv.fr/find.php 						
 						-->
 						<noise calculate="TRUE" noise_constant="0" flyover_Certified_Noise_Level="0" lateral_Certified_Noise_Level="0" approach_Certified_Noise_Level="0" departure_threshold="0" arrival_threshold="0" unit="$/flight"></noise> 
+						<!-- EMISSION CONSTANTS
+						emission_constant: 3.7$ (Stockholm-Arlanda airport)  	
+						massNOx (kg), massCO (kg), massCO2 (kg), massHC (kg), DpHC_Foo (gr/kN) see https://www.easa.europa.eu/document-library/icao-aircraft-engine-emissions-databank
+						-->
 						<emissions_NOx calculate="TRUE" emission_constant="0" massNOx="0" DpHC_Foo="0" unit="$/flight"></emissions_NOx>
 						<emissions_CO calculate="TRUE" emission_constant="0" massCO="0" DpHC_Foo="0" unit="$/flight"></emissions_CO>
 						<emissions_CO2 calculate="TRUE" emission_constant="0" massCO2="0" DpHC_Foo="0" unit="$/flight"></emissions_CO2>
 						<emissions_HC calculate="TRUE" emission_constant="0" massHC="0" DpHC_Foo="0" unit="$/flight"></emissions_HC>
 					</charges>
 					<maintenance>
-						<airframe_labour_rate unit="$/hr"></airframe_labour_rate>
-						<engine_labour_rate unit="$/hr"></engine_labour_rate>					
+						<airframe_labour_rate unit="$/hr"></airframe_labour_rate> <!-- Default: 40 $/hr --> 
+						<engine_labour_rate unit="$/hr"></engine_labour_rate> <!-- Default: 40 $/hr -->					
 						<engine_price calculate="TRUE" method="SFORZA" unit="$"></engine_price>
 					</maintenance>
 				</doc>

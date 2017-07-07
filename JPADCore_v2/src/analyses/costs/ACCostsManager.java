@@ -847,7 +847,8 @@ public class ACCostsManager implements ICosts {
 
 	@Override
 	public double calcAircraftCostSforza(){
-		return CostsCalcUtils.calcAircraftCostSforza(_OEM);
+//		return CostsCalcUtils.calcAircraftCostSforza(_OEM);
+		return 0.0;
 	}
 	
 	/**

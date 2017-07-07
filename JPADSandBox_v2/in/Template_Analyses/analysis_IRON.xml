@@ -49,13 +49,13 @@
 	<aerodynamic_and_stability
 			plot="TRUE"
 			take_off_condition="TRUE"
-			file_take_off_condition="analysis_aerodynamic_1.xml"
+			file_take_off_condition="analysis_aerodynamics_TakeOff.xml"
 			climb_condition="TRUE"
-			file_climb_condition="analysis_aerodynamic_2.xml"
+			file_climb_condition="analysis_aerodynamics_Climb.xml"
 			cruise_condition="FALSE"
-			file_cruise_condition="analysis_aerodynamic_3.xml"
+			file_cruise_condition="analysis_aerodynamics_Cruise.xml"
 			landing_condition="FALSE"
-			file_landing_condition="analysis_aerodynamic_4.xml"
+			file_landing_condition="analysis_aerodynamics_Landing.xml"
 	/>
 	-->
 	<performance 

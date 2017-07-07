@@ -13,7 +13,6 @@ import org.jscience.economics.money.Money;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import configuration.enumerations.CostsDerivedDataEnum;
 import configuration.enumerations.CostsEnum;
 import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.MethodEnum;
@@ -34,11 +33,11 @@ public interface IACCostsManager {
 	Amount<Mass> getBlockFuelMass();
 	Amount<Duration> getFlightTime();
 	
-	Map<MethodEnum, Amount<?>> getUtilization();
+	Amount<?> getUtilization();
 	
 	Amount<Duration> getLifeSpan();
 	Double getResidualValue();
-	Map<MethodEnum, Amount<Money>> getAircraftPrice();
+	Amount<Money> getAircraftPrice();
 	Double getAirframeRelativeSparesCosts();
 	Double getEnginesRelativeSparesCosts();
 	Double getInterestRate();
@@ -48,9 +47,9 @@ public interface IACCostsManager {
 	Amount<?> getCockpitLabourRate();
 	Amount<?> getFuelUnitPrice();
 	
-	Map<MethodEnum, Amount<?>> getLandingCharges();
-	Map<MethodEnum, Amount<?>> getNavigationCharges();
-	Map<MethodEnum, Amount<?>> getGroundHandlingCharges();
+	Amount<?> getLandingCharges();
+	Amount<?> getNavigationCharges();
+	Amount<?> getGroundHandlingCharges();
 	Amount<?> getNoiseCharges();
 	Amount<Money> getNoiseConstant();
 	Amount<Dimensionless> getNoiseDepartureThreshold();
@@ -81,10 +80,9 @@ public interface IACCostsManager {
 	
 	Amount<?> getAirframeLabourRate();
 	Amount<?> getEngineLabourRate();
-	Map<MethodEnum, Amount<Money>> getEnginePrice();
+	Amount<Money> getEnginePrice();
 	
 	Map<CostsEnum, MethodEnum> getTaskList();
-	Map<CostsDerivedDataEnum, MethodEnum> getDerivedDataMethodMap();
 	List<CostsPlotEnum> getPlotList();
 	
 	/** Builder of IACCostsManager instances. */

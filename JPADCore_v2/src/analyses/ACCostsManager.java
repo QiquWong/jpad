@@ -27,7 +27,6 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
-import configuration.enumerations.CostsDerivedDataEnum;
 import configuration.enumerations.CostsEnum;
 import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -318,16 +317,9 @@ public class ACCostsManager {
 		// INITIALIZE COSTS DATA
 		//---------------------------------------------------------------
 		Amount<?> utilization = null;
-		if(range.doubleValue(NonSI.NAUTICAL_MILE) <=2200){
-			utilization = Amount.valueOf(3750, MyUnits.HOURS_PER_YEAR);
-		}
-		else{
-			utilization = Amount.valueOf(4800, MyUnits.HOURS_PER_YEAR);
-		}
-		
 		Amount<Duration> lifeSpan = Amount.valueOf(16, NonSI.YEAR);
 		Double residualValue = 0.1; 
-		Amount<Money> aircraft_price = null;
+		Amount<Money> aircraftPrice = null;
 		Double airframeRelativeSparesCosts = 0.1;
 		Double engineRelativeSparesCosts = 0.3;
 		Double interestRate = 0.054;
@@ -335,16 +327,131 @@ public class ACCostsManager {
 		Amount<?> cockpitLabourRate = Amount.valueOf(360, MyUnits.USD_PER_HOUR);
 		Amount<?> cabinLabourRate = Amount.valueOf(90, MyUnits.USD_PER_HOUR);
 		Amount<?> fuelUnitPrice = Amount.valueOf(59.2, MyUnits.USD_PER_BARREL);
-
-		// TODO: CONTINUE DATA INITIALIZATION
+		Amount<?> landingCharges = null;
+		Amount<?> navigationCharges = null;
+		Amount<?> groundHandlingCharges = null;
+		Amount<?> noiseCharges = null;
+		Amount<?> emissionChargesNOx = null;
+		Amount<?> emissionChargesCO = null;
+		Amount<?> emissionChargesCO2 = null;
+		Amount<?> emissionChargesHC = null;
+		Amount<?> airframeLabourRate = Amount.valueOf(40, MyUnits.USD_PER_HOUR);
+		Amount<?> engineLabourRate = Amount.valueOf(40, MyUnits.USD_PER_HOUR);
+		Amount<Money> enginePrice = null;
 		
- 
 		//---------------------------------------------------------------
 		// UTILIZATION
-		String rangeProperty = reader.getXMLPropertyByPath("//performance/range");
-		if(rangeProperty != null)
-			range = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//performance/range");
-
+		String calculateUtilizationString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/utilization/@calculate");
+		
+		if(calculateUtilizationString.equalsIgnoreCase("TRUE")){
+			
+			String calculateUtilizationMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//global_data/utilization/@method");
+			
+			if(calculateUtilizationMethodString != null) {
+				
+				if(calculateUtilizationMethodString.equalsIgnoreCase("AEA")) 
+					utilization = CostsCalcUtils.calcUtilizationAEA(
+									CostsCalcUtils.calcBlockTime(flightTime, range)
+									);
+				
+				if(calculateUtilizationMethodString.equalsIgnoreCase("SFORZA")) 
+					utilization = CostsCalcUtils.calcUtilizationSforza(
+									CostsCalcUtils.calcBlockTime(flightTime, range)
+									);
+			}
+		}
+		else {
+			String utilizationProperty = reader.getXMLPropertyByPath("//global_data/utilization");
+			if(utilizationProperty != null)
+				utilization = (Amount<?>) reader.getXMLAmountWithUnitByPath("//global_data/utilization");
+		}
+		
+		//---------------------------------------------------------------
+		// LIFE SPAN
+		String lifeSpanProperty = reader.getXMLPropertyByPath("//global_data/doc/capital/life_span");
+		if(lifeSpanProperty != null)
+			lifeSpan = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//global_data/doc/capital/life_span");
+		
+		//---------------------------------------------------------------
+		// RESIDUAL VALUE
+		String residualValueProperty = reader.getXMLPropertyByPath("//global_data/doc/capital/residual_value");
+		if(residualValueProperty != null)
+			residualValue = Double.valueOf(residualValueProperty); 
+		
+		//---------------------------------------------------------------
+		// AIRCRAFT PRICE
+		String calculateAircraftPriceString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/doc/aircraft_price/@calculate");
+		
+		if(calculateAircraftPriceString.equalsIgnoreCase("TRUE")){
+			
+			String calculateAircraftPriceMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//global_data/utilization/@method");
+			
+			if(calculateAircraftPriceMethodString != null) {
+				
+				if(calculateAircraftPriceMethodString.equalsIgnoreCase("SFORZA")) 
+					aircraftPrice = CostsCalcUtils.calcAircraftCostSforza(operatingEmptyMass);
+			}
+		}
+		else {
+			String aircraftPriceProperty = reader.getXMLPropertyByPath("//global_data/doc/capital/aircraft_price");
+			if(aircraftPriceProperty != null)
+				aircraftPrice = (Amount<Money>) reader.getXMLAmountWithUnitByPath("//global_data/doc/capital/aircraft_price");
+		}
+		
+		//---------------------------------------------------------------
+		// AIRFRAME RELATIVE SPARES COSTS
+		String airframeRelativeSparesCostsProperty = reader.getXMLPropertyByPath("//global_data/doc/capital/airframe_relative_spares_costs");
+		if(airframeRelativeSparesCostsProperty != null)
+			airframeRelativeSparesCosts = Double.valueOf(airframeRelativeSparesCostsProperty); 
+		
+		//---------------------------------------------------------------
+		// ENGINES RELATIVE SPARES COSTS
+		String engineRelativeSparesCostsProperty = reader.getXMLPropertyByPath("//global_data/doc/capital/engines_relative_spares_costs");
+		if(engineRelativeSparesCostsProperty != null)
+			engineRelativeSparesCosts = Double.valueOf(engineRelativeSparesCostsProperty); 
+			
+		//---------------------------------------------------------------
+		// INTEREST RATE
+		String interestRateProperty = reader.getXMLPropertyByPath("//global_data/doc/capital/interest");
+		if(interestRateProperty != null)
+			interestRate = Double.valueOf(interestRateProperty); 
+		
+		//---------------------------------------------------------------
+		// INSURANCE RATE
+		String insuranceRateProperty = reader.getXMLPropertyByPath("//global_data/doc/capital/insurance");
+		if(insuranceRateProperty != null)
+			insuranceRate = Double.valueOf(insuranceRateProperty); 
+		
+		//---------------------------------------------------------------
+		// CABIN LABOUR RATE
+		String cabinLabourRateProperty = reader.getXMLPropertyByPath("//global_data/doc/crew/cabin_labour_rate");
+		if(cabinLabourRateProperty != null)
+			cabinLabourRate = (Amount<?>) reader.getXMLAmountWithUnitByPath("//global_data/doc/crew/cabin_labour_rate"); 
+		
+		//---------------------------------------------------------------
+		// COCKPIT LABOUR RATE
+		String cockpitLabourRateProperty = reader.getXMLPropertyByPath("//global_data/doc/crew/cockpit_labour_rate");
+		if(cockpitLabourRateProperty != null)
+			cockpitLabourRate = (Amount<?>) reader.getXMLAmountWithUnitByPath("//global_data/doc/crew/cockpit_labour_rate"); 
+		
+		//---------------------------------------------------------------
+		// FUEL UNIT PRICE
+		String fuelUnitPriceProperty = reader.getXMLPropertyByPath("//global_data/doc/fuel/unit_price");
+		if(fuelUnitPriceProperty != null)
+			fuelUnitPrice = (Amount<Money>) reader.getXMLAmountWithUnitByPath("//global_data/doc/fuel/unit_price"); 
+		
 		// TODO: CONTINUE READING ALL THE DATA
 		
 		
@@ -352,7 +459,7 @@ public class ACCostsManager {
 		// TODO : FOR VINCENZO --> EXAMPLE ON NOISE (DO THE SAME FOR OTHER DATA TO BE CALCULATED OR ASSINGED)
 		//---------------------------------------------------------------
 		// NOISE CHARGES
-		Amount<?> noiseCharges = null;
+		
 		String calculateNoiseChargesString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
@@ -468,7 +575,19 @@ public class ACCostsManager {
 				.setRange(range)
 				.setBlockFuelMass(blockFuel)
 				.setFlightTime(flightTime)
+				.setUtilization(utilization)
+				.setLifeSpan(lifeSpan)
+				.setResidualValue(residualValue)
+				.setAircraftPrice(aircraftPrice)
+				.setAirframeRelativeSparesCosts(airframeRelativeSparesCosts)
+				.setEnginesRelativeSparesCosts(engineRelativeSparesCosts)
+				.setInterestRate(interestRate)
+				.setInsuranceRate(insuranceRate)
+				.setCockpitLabourRate(cockpitLabourRate)
+				.setCabinLabourRate(cabinLabourRate)
+				.setFuelUnitPrice(fuelUnitPrice)
 				// TODO: continue adding ...
+				.setNoiseCharges(noiseCharges)
 				.build();
 		
 		return theCostsBuilderInterface;
@@ -515,14 +634,14 @@ public class ACCostsManager {
 				NonSI.POUND);
 				
 		_airframeCost = 
-				_theCostsBuilderInterface.getAircraftPrice().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.AIRCRAFT_PRICE))
-				.minus(_theCostsBuilderInterface.getEnginePrice().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.ENGINE_PRICE))
+				_theCostsBuilderInterface.getAircraftPrice()
+				.minus(_theCostsBuilderInterface.getEnginePrice()
 						.times(_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber())
 						);
 		
 		_totalInvestment = CostsCalcUtils.calcTotalInvestments(
 				_airframeCost,
-				_theCostsBuilderInterface.getEnginePrice().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.ENGINE_PRICE)),
+				_theCostsBuilderInterface.getEnginePrice(),
 				_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
 				_theCostsBuilderInterface.getAirframeRelativeSparesCosts(),
 				_theCostsBuilderInterface.getEnginesRelativeSparesCosts()
@@ -597,8 +716,8 @@ public class ACCostsManager {
 			_insurance.put(
 					MethodEnum.AEA, 
 					CostsCalcUtils.calcInsuranceAEA(
-							_theCostsBuilderInterface.getAircraftPrice().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.AIRCRAFT_PRICE)),
-							_theCostsBuilderInterface.getUtilization().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.UTILIZATION)), 
+							_theCostsBuilderInterface.getAircraftPrice(),
+							_theCostsBuilderInterface.getUtilization(), 
 							_theCostsBuilderInterface.getInsuranceRate()
 							)
 					);
@@ -607,7 +726,7 @@ public class ACCostsManager {
 					MethodEnum.AEA, 
 					CostsCalcUtils.calcInterestAEA(
 							_totalInvestment,
-							_theCostsBuilderInterface.getUtilization().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.UTILIZATION)), 
+							_theCostsBuilderInterface.getUtilization(), 
 							_theCostsBuilderInterface.getInterestRate()
 							)
 					);
@@ -616,7 +735,7 @@ public class ACCostsManager {
 					MethodEnum.AEA, 
 					CostsCalcUtils.calcDepreciationAEA(
 							_totalInvestment,
-							_theCostsBuilderInterface.getUtilization().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.UTILIZATION)), 
+							_theCostsBuilderInterface.getUtilization(), 
 							_theCostsBuilderInterface.getLifeSpan(),
 							_theCostsBuilderInterface.getResidualValue()
 							)
@@ -871,8 +990,8 @@ public class ACCostsManager {
 			// AIRFRAME: Material cost
 			_materialAirframeMaintenanceCharges.put(MethodEnum.ATA, 
 					CostsCalcUtils.calcDOCMaterialAirframeMaintenanceATA(
-							_theCostsBuilderInterface.getAircraftPrice().get(MethodEnum.SFORZA),
-							_theCostsBuilderInterface.getEnginePrice().get(MethodEnum.SFORZA),
+							_theCostsBuilderInterface.getAircraftPrice(),
+							_theCostsBuilderInterface.getEnginePrice(),
 							_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
 							_theCostsBuilderInterface.getFlightTime(),
 							_blockTime,
@@ -917,7 +1036,7 @@ public class ACCostsManager {
 			// ENGINE: Material cost
 			_materialEngineMaintenanceCharges.put(MethodEnum.ATA, 
 					CostsCalcUtils.calcDOCMaterialEngineMaintenanceATA(
-							_theCostsBuilderInterface.getEnginePrice().get(_theCostsBuilderInterface.getDerivedDataMethodMap().get(CostsDerivedDataEnum.ENGINE_PRICE)),
+							_theCostsBuilderInterface.getEnginePrice(),
 							_theCostsBuilderInterface.getFlightTime(),
 							_blockTime,
 							_theCostsBuilderInterface.getRange(),

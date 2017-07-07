@@ -4,17 +4,15 @@
 		plot=TRUE -> enters the plot tag.
 		plot=FALSE -> plot nothing.
 		
-		All the variables which have "METHOD" as attirubte, can be calculated with the deifned method or can be assigned filling the value if the METHOD is equal to "INPUT"
+		All the variables which have "METHOD" as attirubte, can be calculated with the deifned method or can be assigned filling the value if the "METHOD" is equal to "INPUT"
 		
-		Each condition in "global_data" will be read only if the related flag in the analysis file is set to TRUE !!
-		
-		IF THE MOMENTIUM POLE IS NOT ASSIGNED, IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD SPECIFIED HERE 
-		(IF THE CALCULATION IS NOT REQUIRED A DEFAULT METHOD IS ASSUMED EQUALT TO DE_YOUNG_HARPER
+		IF THE MOMENTIUM POLE IS NOT ASSIGNED (wing/HTail), IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD SPECIFIED HERE 
+		(IF THE CALCULATION IS NOT REQUIRED A DEFAULT METHOD IS ASSUMED EQUAL TO DE_YOUNG_HARPER)
 		
 	-->
     <analysis>
         <aerodynamics_and_stability 
-			id="JPAD Test analysis - AERODYNAMICS"
+			id="JPAD Test analysis - AERODYNAMICS CLIMB"
 			balance_from_xls_file="false"
 			file_balance="Balance.xlsx"
 			>
@@ -23,105 +21,37 @@
 			These values will be read only if the "balance_from_xls_file" is FALSE. 
 			Otherwise the all the CG positions in every condition will be read from the Balance output file.
 			-->
-				<take_off_condition>
-					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
-					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
-				</take_off_condition>					
-				<climb_condition>
-					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
-					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
-				</climb_condition>					
-				<cruise_condition>
-					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
-					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
-				</cruise_condition>	
-				<landing_condition>
-					<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-					<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
-					<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
-				</landing_condition>
+				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
+				<adimensional_centre_of_gravity_x_position_list></adimensional_centre_of_gravity_x_position_list>
+				<adimensional_centre_of_gravity_z_position_list></adimensional_centre_of_gravity_z_position_list>
 			</balance>
 			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE" tau_rudder_from_file="FALSE">
-				<take_off_condition>
-					<alpha_body_initial unit="deg"></alpha_body_initial>
-					<alpha_body_final unit="deg"></alpha_body_final>
-					<number_of_alpha_body></number_of_alpha_body>
-					<beta_initial unit="deg"></beta_initial>
-					<beta_final unit="deg"></beta_final>
-					<number_of_beta></number_of_beta>
-					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
-					<tau_elevator_function>
-						<tau>0.025</tau>
-						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_elevator_function>
-					<tau_rudder_function>
-						<tau>0.025</tau>
-						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_rudder_function>
-				</take_off_condition>					
-				<climb_condition>
-					<alpha_body_initial unit="deg"></alpha_body_initial>
-					<alpha_body_final unit="deg"></alpha_body_final>
-					<number_of_alpha_body></number_of_alpha_body>
-					<beta_initial unit="deg"></beta_initial>
-					<beta_final unit="deg"></beta_final>
-					<number_of_beta></number_of_beta>
-					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
-					<tau_elevator_function>
-						<tau>0.025</tau>
-						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_elevator_function>
-					<tau_rudder_function>
-						<tau>0.025</tau>
-						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_rudder_function>
-				</climb_condition>					
-				<cruise_condition>
-					<alpha_body_initial unit="deg"></alpha_body_initial>
-					<alpha_body_final unit="deg"></alpha_body_final>
-					<number_of_alpha_body></number_of_alpha_body>
-					<beta_initial unit="deg"></beta_initial>
-					<beta_final unit="deg"></beta_final>
-					<number_of_beta></number_of_beta>
-					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
-					<tau_elevator_function>
-						<tau>0.025</tau>
-						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_elevator_function>
-					<tau_rudder_function>
-						<tau>0.025</tau>
-						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_rudder_function>
-				</cruise_condition>	
-				<landing_condition>
-					<alpha_body_initial unit="deg"></alpha_body_initial>
-					<alpha_body_final unit="deg"></alpha_body_final>
-					<number_of_alpha_body></number_of_alpha_body>
-					<beta_initial unit="deg"></beta_initial>
-					<beta_final unit="deg"></beta_final>
-					<number_of_beta></number_of_beta>
-					<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions>
-					<tau_elevator_function>
-						<tau>0.025</tau>
-						<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_elevator_function>
-					<tau_rudder_function>
-						<tau>0.025</tau>
-						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
-					</tau_rudder_function>
-				</landing_condition>					
+				<alpha_body_initial unit="deg"></alpha_body_initial>
+				<alpha_body_final unit="deg"></alpha_body_final>
+				<number_of_alpha_body></number_of_alpha_body>
+				<beta_initial unit="deg"></beta_initial>
+				<beta_final unit="deg"></beta_final>
+				<number_of_beta></number_of_beta>
+				<alpha_wing_array_for_distributions unit="deg"></alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
+				<alpha_horizontal_tail_array_for_distributions unit="deg"></alpha_horizontal_tail_array_for_distributions>
 				<number_of_points_semispawise_wing></number_of_points_semispawise_wing>
 				<number_of_points_semispawise_horizontal_tail></number_of_points_semispawise_horizontal_tail>
-				<alpha_horizontal_tail_array_for_distributions unit="deg"></alpha_horizontal_tail_array_for_distributions>
 				<delta_elevator_array unit="deg"></delta_elevator_array>
 				<delta_rudder_array unit="deg"></delta_rudder_array>
-				<!-- optional values which are read only if the related attribute in "global_data" is "TRUE" --> 
-				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
 				<adimensional_wing_momentum_pole></adimensional_wing_momentum_pole> <!-- adimensional: make it dimensional (LRF) in ImportFromXML -->
 				<adimensional_horizontal_tail_momentum_pole></adimensional_horizontal_tail_momentum_pole> <!-- adimensional: make it dimensional (LRF) in ImportFromXML -->
+				<adimensional_fuselage_momentum_pole></adimensional_fuselage_momentum_pole> <!-- adimensional: referred to fuselage length -->
+				<!-- optional values which are read only if the related attribute in "global_data" is "TRUE" --> 
+				<horizontal_tail_dynamic_pressure_ratio></horizontal_tail_dynamic_pressure_ratio>
+				<tau_elevator_function>
+					<tau>0.025</tau>
+					<delta_elevator unit="deg"></delta_elevator> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_elevator_function>
+				<tau_rudder_function>
+					<tau>0.025</tau>
+					<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+				</tau_rudder_function>	
+				<!---->
 			</global_data>
 			<wing_analyses>
 				<critical_mach perform="TRUE" method="KROO"/>

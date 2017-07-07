@@ -6,7 +6,6 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 import static java.lang.Math.toRadians;
 
-import java.lang.management.MemoryType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,22 +23,12 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.util.MathArrays;
 import org.jscience.physics.amount.Amount;
 
-import com.ibm.icu.util.EthiopicCalendar;
-
-import aircraft.auxiliary.airfoil.Airfoil;
-import aircraft.components.Aircraft;
 import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
-import analyses.OperatingConditions;
-import analyses.liftingsurface.LSAerodynamicsManager;
-import analyses.liftingsurface.LSAerodynamicsManager;
 import calculators.geometry.LSGeometryCalc;
-import configuration.enumerations.ConditionEnum;
-import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
-import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.MyArrayUtils;
@@ -752,6 +741,7 @@ public class LiftCalc {
 //		return cLWingArray;
 //	}
 
+	@SuppressWarnings("unused")
 	public static double calculateCLMax(
 			double[] maximumLiftCoefficient, 
 			double semispan, 
@@ -908,13 +898,18 @@ public class LiftCalc {
 			List<Amount<Length>> chordBreakPoints,
 			List<Amount<Angle>> flapDeflections,
 			List<Amount<Angle>> slatDeflections,
-			Double currentLiftingCoefficient,
+			Amount<Angle> currentAlpha,
 			Amount<?> cLAlphaClean,
 			Amount<Angle> sweepQuarterChordEquivalent,
 			Double taperRatioEquivalent,
 			Amount<Length> rootChordEquivalent,
 			Double aspectRatio,
-			Amount<Area> surface
+			Amount<Area> surface,
+			Double[] alphaArrayHighLift,
+			Double cLZeroClean,
+			Double cLMaxClean,
+			Amount<Angle> alphaStarClean,
+			Amount<Angle> alphaStallClean
 			) {
 
 		Map<HighLiftDeviceEffectEnum, Object> resultsMap = new HashMap<>();
@@ -1660,7 +1655,21 @@ public class LiftCalc {
 							taperRatioEquivalent
 							)
 					);
-
+		
+		// evaluating CL of the high lift 3D curve ...
+		Double[] liftCurve = LiftCalc.calculateCLvsAlphaArray(
+				cLZeroClean,
+				cLMaxClean,
+				alphaStarClean,
+				alphaStarClean,
+				cLAlphaClean,
+				alphaArrayHighLift
+				);
+		double currentLiftCoefficient = MyMathUtils.getInterpolatedValue1DLinear(
+				MyArrayUtils.convertToDoublePrimitive(alphaArrayHighLift),
+				MyArrayUtils.convertToDoublePrimitive(liftCurve),
+				currentAlpha.doubleValue(NonSI.DEGREE_ANGLE)
+				);
 		
 		List<Double> deltaCMc4List = new ArrayList<>();
 		for(int i=0; i<flapTypeIndex.size(); i++)
@@ -1669,7 +1678,7 @@ public class LiftCalc {
 							*deltaClmaxFlapList.get(i)
 							*cFirstCFlap.get(i))-(cFirstCFlap.get(i)
 									*((cFirstCFlap.get(i))-1)
-									*(currentLiftingCoefficient + 
+									*(currentLiftCoefficient + 
 											(deltaClmaxFlapList.get(i)
 											*(1-(flapSurface.get(i)
 													/surface.doubleValue(SI.SQUARE_METRE)))))

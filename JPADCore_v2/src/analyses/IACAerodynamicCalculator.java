@@ -45,7 +45,6 @@ public interface IACAerodynamicCalculator {
 	int getVTailNumberOfPointSemiSpanWise();
 	List<Amount<Angle>> getAlphaWingForDistribution();
 	List<Amount<Angle>> getAlphaHorizontalTailForDistribution();
-	List<Amount<Angle>> getAlphaVerticalTailForDistribution();
 	Boolean getDownwashConstant(); // if TRUE--> constant, if FALSE--> variable
 	Double getDynamicPressureRatio();
 	MyInterpolatingFunction getTauElevatorFunction();
@@ -57,6 +56,7 @@ public interface IACAerodynamicCalculator {
 	Double getCD0Miscellaneous();
 	Amount<Length> getWingMomentumPole();
 	Amount<Length> getHTailMomentumPole();
+	Double getAdimensionalFuselageMomentumPole();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder {

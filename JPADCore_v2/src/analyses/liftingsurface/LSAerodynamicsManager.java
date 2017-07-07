@@ -62,9 +62,10 @@ public class LSAerodynamicsManager {
 	private Double[] _alphaArrayPlotHighLift;
 	private Amount<Length> _currentAltitude;
 	private Double _currentMachNumber;
-	private Double _currentLiftCoefficient;
-	private Double _currentDragCoefficient;
-	private Double _currentMomentCoefficient;
+	private Amount<Angle> _currentAlpha;
+//	private Double _currentLiftCoefficient;
+//	private Double _currentDragCoefficient;
+//	private Double _currentMomentCoefficient;
 	private double[] _etaStationDistribution; 
 	private List<Amount<Length>> _yStationDistribution;
 	private List<Amount<Angle>> _alphaZeroLiftDistribution;
@@ -198,8 +199,8 @@ public class LSAerodynamicsManager {
 		this._alphaForDistribution = alphaForDistribution;
 		this._momentumPole = momentumPole;
 		
-		initializeVariables();
 		initializeData(_theCondition);
+		initializeVariables();
 		
 	}
 	
@@ -212,18 +213,22 @@ public class LSAerodynamicsManager {
 		case TAKE_OFF:
 			this._currentMachNumber = this._theOperatingConditions.getMachTakeOff();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeTakeOff();
+			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentTakeOff();
 			break;
 		case CLIMB:
 			this._currentMachNumber = this._theOperatingConditions.getMachClimb();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeClimb();
+			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentClimb();
 			break;
 		case CRUISE:
 			this._currentMachNumber = this._theOperatingConditions.getMachCruise();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeCruise();
+			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentCruise();
 			break;
 		case LANDING:
 			this._currentMachNumber = this._theOperatingConditions.getMachLanding();
 			this._currentAltitude = this._theOperatingConditions.getAltitudeLanding();
+			this._currentAlpha = this._theOperatingConditions.getAlphaCurrentLanding();
 			break;
 		default:
 			break;
@@ -445,213 +450,104 @@ public class LSAerodynamicsManager {
 		}
 		
 		//----------------------------------------------------------------------------------------------------------------------
-		// Calculating discretized airfoil parameters arrays
+		// Calculating discretized airfoil parameters arrays (needed only for Wing and HTail)
 		//......................................................................................................................
-		
-		if (_discretizedAirfoilsCl.isEmpty()){
-			List<List<Amount<Angle>>> alphaArrayBreakPointsListWing = new ArrayList<>();
-			_theLiftingSurface.getAirfoilList().stream()
-			.map(x -> alphaArrayBreakPointsListWing.add(x.getAirfoilCreator().getAlphaForClCurve()))
-			.collect(Collectors.toList());
-
-			List<List<Double>> clArrayBreakPointsListWing = new ArrayList<>();
-			_theLiftingSurface.getAirfoilList().stream()
-			.map(x -> clArrayBreakPointsListWing.add(x.getAirfoilCreator().getClCurve()))
-			.collect(Collectors.toList());
-
-			_discretizedAirfoilsCl = AirfoilCalc.calculateCLMatrixAirfoils(
-					_alphaArray, 
-					alphaArrayBreakPointsListWing, 
-					clArrayBreakPointsListWing,
-					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
-					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoubleToPrimitive(_etaStationDistribution)
-							)
-					);
-		}
-
-		if (_discretizedAirfoilsCd.isEmpty()){
-
-			for(int i=0; 
-					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
-					i++
-					) {
-				
-				_clForCdMatrix.add(
-						_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
-						);
-			}
+		if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 			
-			List<List<Double>> clForCdArrayBreakPointsListWing = new ArrayList<>();
-			_theLiftingSurface.getAirfoilList().stream()
-			.map(x -> clForCdArrayBreakPointsListWing.add(x.getAirfoilCreator().getClForCdCurve()))
-			.collect(Collectors.toList());
+			if (_discretizedAirfoilsCl.isEmpty()){
+				List<List<Amount<Angle>>> alphaArrayBreakPointsListWing = new ArrayList<>();
+				_theLiftingSurface.getAirfoilList().stream()
+				.map(x -> alphaArrayBreakPointsListWing.add(x.getAirfoilCreator().getAlphaForClCurve()))
+				.collect(Collectors.toList());
 
-			List<List<Double>> cdArrayBreakPointsListWing = new ArrayList<>();
-			_theLiftingSurface.getAirfoilList().stream()
-			.map(x -> cdArrayBreakPointsListWing.add(x.getAirfoilCreator().getCdCurve()))
-			.collect(Collectors.toList());
+				List<List<Double>> clArrayBreakPointsListWing = new ArrayList<>();
+				_theLiftingSurface.getAirfoilList().stream()
+				.map(x -> clArrayBreakPointsListWing.add(x.getAirfoilCreator().getClCurve()))
+				.collect(Collectors.toList());
 
-			_discretizedAirfoilsCd = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
-					_clForCdMatrix,	
-					clForCdArrayBreakPointsListWing,
-					cdArrayBreakPointsListWing,
-					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
-					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_etaStationDistribution
-									)
-							)
-					);
-
-		}
-		
-		if (_discretizedAirfoilsCm.isEmpty()){
-
-			for(int i=0; 
-					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
-					i++
-					) {
-				
-				_clForCmMatrix.add(
-						_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
-						);
-				
-			}
-			
-			List<List<Double>> clForCmArrayBreakPointsListWing = new ArrayList<>();
-			_theLiftingSurface.getAirfoilList().stream()
-			.map(x -> clForCmArrayBreakPointsListWing.add(x.getAirfoilCreator().getClForCmCurve()))
-			.collect(Collectors.toList());
-
-			List<List<Double>> cmArrayBreakPointsListWing = new ArrayList<>();
-			_theLiftingSurface.getAirfoilList().stream()
-			.map(x -> cmArrayBreakPointsListWing.add(x.getAirfoilCreator().getCmCurve()))
-			.collect(Collectors.toList());
-
-			_discretizedAirfoilsCm = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
-					_clForCmMatrix,	
-					clForCmArrayBreakPointsListWing,
-					cmArrayBreakPointsListWing,
-					_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
-					MyArrayUtils.convertDoubleArrayToListDouble(
-							MyArrayUtils.convertFromDoubleToPrimitive(
-									_etaStationDistribution
-									)
-							)
-					);
-
-		}
-		
-		//----------------------------------------------------------------------------------------------------------------------
-		// Calculating the operating lifting coefficient
-		//......................................................................................................................
-		
-		if(_currentLiftCoefficient == null) {
-			if(theCondition.equals(ConditionEnum.CLIMB)) {
-				CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
-				_currentLiftCoefficient = calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
-						_theOperatingConditions.getAlphaCurrentClimb()
+				_discretizedAirfoilsCl = AirfoilCalc.calculateCLMatrixAirfoils(
+						_alphaArray, 
+						alphaArrayBreakPointsListWing, 
+						clArrayBreakPointsListWing,
+						_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(_etaStationDistribution)
+								)
 						);
 			}
-			else if(theCondition.equals(ConditionEnum.CRUISE)) {
-				CalcCLAtAlpha calcCLAtAlphaCalculator = new CalcCLAtAlpha();
-				_currentLiftCoefficient = calcCLAtAlphaCalculator.nasaBlackwellCompleteCurve(
-						_theOperatingConditions.getAlphaCurrentCruise()
+
+			if (_discretizedAirfoilsCd.isEmpty()){
+
+				for(int i=0; 
+						i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
+						i++
+						) {
+
+					_clForCdMatrix.add(
+							_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
+							);
+				}
+
+				List<List<Double>> clForCdArrayBreakPointsListWing = new ArrayList<>();
+				_theLiftingSurface.getAirfoilList().stream()
+				.map(x -> clForCdArrayBreakPointsListWing.add(x.getAirfoilCreator().getClForCdCurve()))
+				.collect(Collectors.toList());
+
+				List<List<Double>> cdArrayBreakPointsListWing = new ArrayList<>();
+				_theLiftingSurface.getAirfoilList().stream()
+				.map(x -> cdArrayBreakPointsListWing.add(x.getAirfoilCreator().getCdCurve()))
+				.collect(Collectors.toList());
+
+				_discretizedAirfoilsCd = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
+						_clForCdMatrix,	
+						clForCdArrayBreakPointsListWing,
+						cdArrayBreakPointsListWing,
+						_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_etaStationDistribution
+										)
+								)
 						);
+
 			}
-			else if (theCondition.equals(ConditionEnum.TAKE_OFF)) {
-				CalcCLAtAlphaHighLift calcCLAtAlphaHighLiftCalculator = new CalcCLAtAlphaHighLift();
-				_currentLiftCoefficient = calcCLAtAlphaHighLiftCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentTakeOff(),
-						_theOperatingConditions.getFlapDeflectionTakeOff(),
-						_theOperatingConditions.getSlatDeflectionTakeOff(),
-						_theOperatingConditions.getMachTakeOff(),
-						_theOperatingConditions.getAltitudeTakeOff()
-						);
-			}
-			else if (theCondition.equals(ConditionEnum.LANDING)) {
-				CalcCLAtAlphaHighLift calcCLAtAlphaHighLiftCalculator = new CalcCLAtAlphaHighLift();
-				_currentLiftCoefficient = calcCLAtAlphaHighLiftCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentLanding(),
-						_theOperatingConditions.getFlapDeflectionLanding(),
-						_theOperatingConditions.getSlatDeflectionLanding(),
-						_theOperatingConditions.getMachLanding(),
-						_theOperatingConditions.getAltitudeLanding()
+
+			if (_discretizedAirfoilsCm.isEmpty()){
+
+				for(int i=0; 
+						i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
+						i++
+						) {
+
+					_clForCmMatrix.add(
+							_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
+							);
+
+				}
+
+				List<List<Double>> clForCmArrayBreakPointsListWing = new ArrayList<>();
+				_theLiftingSurface.getAirfoilList().stream()
+				.map(x -> clForCmArrayBreakPointsListWing.add(x.getAirfoilCreator().getClForCmCurve()))
+				.collect(Collectors.toList());
+
+				List<List<Double>> cmArrayBreakPointsListWing = new ArrayList<>();
+				_theLiftingSurface.getAirfoilList().stream()
+				.map(x -> cmArrayBreakPointsListWing.add(x.getAirfoilCreator().getCmCurve()))
+				.collect(Collectors.toList());
+
+				_discretizedAirfoilsCm = AirfoilCalc.calculateAerodynamicCoefficientsMatrixAirfoils(
+						_clForCmMatrix,	
+						clForCmArrayBreakPointsListWing,
+						cmArrayBreakPointsListWing,
+						_theLiftingSurface.getLiftingSurfaceCreator().getEtaBreakPoints(),
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										_etaStationDistribution
+										)
+								)
 						);
 			}
 		}
-		if(_currentDragCoefficient == null) {
-			if(theCondition.equals(ConditionEnum.CLIMB)) {
-				CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
-				_currentDragCoefficient = calcCDAtAlphaCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentClimb(),
-						_currentMachNumber,
-						_currentAltitude
-						);
-			}
-			else if(theCondition.equals(ConditionEnum.CRUISE)) {
-				CalcCDAtAlpha calcCDAtAlphaCalculator = new CalcCDAtAlpha();
-				_currentDragCoefficient = calcCDAtAlphaCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentCruise(),
-						_currentMachNumber,
-						_currentAltitude
-						);
-			}
-			else if (theCondition.equals(ConditionEnum.TAKE_OFF)) {
-				CalcCDAtAlphaHighLift calcCDAtAlphaHighLiftCalculator = new CalcCDAtAlphaHighLift();
-				_currentDragCoefficient = calcCDAtAlphaHighLiftCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentTakeOff(),
-						_theOperatingConditions.getFlapDeflectionTakeOff(),
-						_theOperatingConditions.getSlatDeflectionTakeOff(),
-						_theOperatingConditions.getMachTakeOff(),
-						_theOperatingConditions.getAltitudeTakeOff()
-						);
-			}
-			else if (theCondition.equals(ConditionEnum.LANDING)) {
-				CalcCDAtAlphaHighLift calcCDAtAlphaHighLiftCalculator = new CalcCDAtAlphaHighLift();
-				_currentDragCoefficient = calcCDAtAlphaHighLiftCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentLanding(),
-						_theOperatingConditions.getFlapDeflectionLanding(),
-						_theOperatingConditions.getSlatDeflectionLanding(),
-						_theOperatingConditions.getMachLanding(),
-						_theOperatingConditions.getAltitudeLanding()
-						);
-			}
-		}
-		if(_currentMomentCoefficient == null) {
-			if(theCondition.equals(ConditionEnum.CLIMB)) {
-				CalcCMAtAlpha calcCMAtAlphaCalculator = new CalcCMAtAlpha();
-				_currentMomentCoefficient = calcCMAtAlphaCalculator.fromAirfoilDistribution(
-						_theOperatingConditions.getAlphaCurrentClimb()
-						);
-			}
-			else if(theCondition.equals(ConditionEnum.CRUISE)) {
-				CalcCMAtAlpha calcCMAtAlphaCalculator = new CalcCMAtAlpha();
-				_currentMomentCoefficient = calcCMAtAlphaCalculator.fromAirfoilDistribution(
-						_theOperatingConditions.getAlphaCurrentCruise()
-						);
-			}
-			else if (theCondition.equals(ConditionEnum.TAKE_OFF)) {
-				CalcCMAtAlphaHighLift calcCMAtAlphaHighLiftCalculator = new CalcCMAtAlphaHighLift();
-				_currentMomentCoefficient = calcCMAtAlphaHighLiftCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentTakeOff(),
-						_theOperatingConditions.getFlapDeflectionTakeOff(),
-						_theOperatingConditions.getSlatDeflectionTakeOff(),
-						_theOperatingConditions.getMachTakeOff()
-						);
-			}
-			else if (theCondition.equals(ConditionEnum.LANDING)) {
-				CalcCMAtAlphaHighLift calcCMAtAlphaHighLiftCalculator = new CalcCMAtAlphaHighLift();
-				_currentMomentCoefficient = calcCMAtAlphaHighLiftCalculator.semiempirical(
-						_theOperatingConditions.getAlphaCurrentLanding(),
-						_theOperatingConditions.getFlapDeflectionLanding(),
-						_theOperatingConditions.getSlatDeflectionLanding(),
-						_theOperatingConditions.getMachLanding()
-						);
-			}
-		}
-
 	}
 	
 	private void initializeVariables() {
@@ -2310,11 +2206,13 @@ public class LSAerodynamicsManager {
 	//............................................................................
 	public class CalcCDWave {
 		
+		CalcCLAtAlpha calcCLAtAlpha = new CalcCLAtAlpha();
+		
 		public void lockKornWithKornMason() {
 			_cDWave.put(
 					MethodEnum.LOCK_KORN_WITH_KORN_MASON,
 					DragCalc.calculateCDWaveLockKorn(
-							_currentLiftCoefficient,
+							calcCLAtAlpha.nasaBlackwellCompleteCurve(_currentAlpha),
 							_currentMachNumber,
 							_theLiftingSurface.getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
@@ -2327,7 +2225,7 @@ public class LSAerodynamicsManager {
 			_cDWave.put(
 					MethodEnum.LOCK_KORN_WITH_KROO,
 					DragCalc.calculateCDWaveLockKornCriticalMachKroo(
-							_currentLiftCoefficient,
+							calcCLAtAlpha.nasaBlackwellCompleteCurve(_currentAlpha),
 							_currentMachNumber,
 							_theLiftingSurface.getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
@@ -2346,6 +2244,7 @@ public class LSAerodynamicsManager {
 	//............................................................................
 	public class CalcDragDistributions {
 			
+		@SuppressWarnings("unlikely-arg-type")
 		public void nasaBlackwell(double mach) {
 			
 			if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null) {
@@ -2961,13 +2860,18 @@ public class LSAerodynamicsManager {
 							_theLiftingSurface.getLiftingSurfaceCreator().getChordsBreakPoints(),
 							flapDeflection,
 							slatDeflection,
-							_currentLiftCoefficient,
+							_currentAlpha,
 							_cLAlpha.get(MethodEnum.NASA_BLACKWELL),
 							_theLiftingSurface.getSweepQuarterChordEquivalent(),
 							_theLiftingSurface.getTaperRatioEquivalent(),
 							_theLiftingSurface.getChordRootEquivalent(),
 							_theLiftingSurface.getAspectRatio(),
-							_theLiftingSurface.getSurface()
+							_theLiftingSurface.getSurface(),
+							_alphaArrayPlotHighLift,
+							_cLZero.get(MethodEnum.NASA_BLACKWELL),
+							_cLMax.get(MethodEnum.NASA_BLACKWELL),
+							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
+							_alphaStall.get(MethodEnum.NASA_BLACKWELL)
 							);	
 			
 			_deltaCl0FlapList.put(
@@ -3151,6 +3055,12 @@ public class LSAerodynamicsManager {
 			   (_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL) == null)
 					) {
 				
+				_alphaArrayPlotHighLift = MyArrayUtils.linspaceDouble(
+						_alphaZeroLiftHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
+						_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+						_numberOfAlphasPlot
+						);
+				
 				CalcHighLiftDevicesEffects theHighLiftEffectsCalculator = new CalcHighLiftDevicesEffects();
 				theHighLiftEffectsCalculator.semiempirical(
 						flapDeflection,
@@ -3159,12 +3069,6 @@ public class LSAerodynamicsManager {
 						);
 				
 			}
-			
-			_alphaArrayPlotHighLift = MyArrayUtils.linspaceDouble(
-					_alphaZeroLiftHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
-					_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
-					_numberOfAlphasPlot
-					);
 			
 			_liftCoefficient3DCurveHighLift.put(
 					MethodEnum.EMPIRICAL,
@@ -3356,20 +3260,6 @@ public class LSAerodynamicsManager {
 	public void setCurrentMachNumber(Double _currentMachNumber) {
 		this._currentMachNumber = _currentMachNumber;
 	}
-	public Double getCurrentLiftCoefficient() {
-		return _currentLiftCoefficient;
-	}
-	public void setCurrentLiftCoefficient(Double _currentLiftCoefficient) {
-		this._currentLiftCoefficient = _currentLiftCoefficient;
-	}
-	public Double getCurrentDragCoefficient() {
-		return _currentDragCoefficient;
-	}
-
-	public void setCurrentDragCoefficient(Double _currentDragCoefficient) {
-		this._currentDragCoefficient = _currentDragCoefficient;
-	}
-
 	public Map<MethodEnum, Double> getCriticalMachNumber() {
 		return _criticalMachNumber;
 	}
@@ -4083,19 +3973,19 @@ public class LSAerodynamicsManager {
 		this._xACDistribution = _xACDistribution;
 	}
 
-	public Double getCurrentMomentCoefficient() {
-		return _currentMomentCoefficient;
-	}
-
-	public void setCurrentMomentCoefficient(Double _currentMomentCoefficient) {
-		this._currentMomentCoefficient = _currentMomentCoefficient;
-	}
-
 	public Map<MethodEnum, Double> getDeltaCD0() {
 		return _deltaCD0;
 	}
 
 	public void setDeltaCD0(Map<MethodEnum, Double> _deltaCD0) {
 		this._deltaCD0 = _deltaCD0;
+	}
+
+	public Amount<Angle> getCurrentAlpha() {
+		return _currentAlpha;
+	}
+
+	public void setCurrentAlpha(Amount<Angle> _currentAlpha) {
+		this._currentAlpha = _currentAlpha;
 	}
 }

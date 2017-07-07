@@ -9,7 +9,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import configuration.enumerations.CostsDerivedDataEnum;
 import configuration.enumerations.CostsEnum;
 import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.MethodEnum;
@@ -57,8 +56,10 @@ abstract class IACCostsManager_Builder {
     RANGE("range"),
     BLOCK_FUEL_MASS("blockFuelMass"),
     FLIGHT_TIME("flightTime"),
+    UTILIZATION("utilization"),
     LIFE_SPAN("lifeSpan"),
     RESIDUAL_VALUE("residualValue"),
+    AIRCRAFT_PRICE("aircraftPrice"),
     AIRFRAME_RELATIVE_SPARES_COSTS("airframeRelativeSparesCosts"),
     ENGINES_RELATIVE_SPARES_COSTS("enginesRelativeSparesCosts"),
     INTEREST_RATE("interestRate"),
@@ -66,6 +67,9 @@ abstract class IACCostsManager_Builder {
     CABIN_LABOUR_RATE("cabinLabourRate"),
     COCKPIT_LABOUR_RATE("cockpitLabourRate"),
     FUEL_UNIT_PRICE("fuelUnitPrice"),
+    LANDING_CHARGES("landingCharges"),
+    NAVIGATION_CHARGES("navigationCharges"),
+    GROUND_HANDLING_CHARGES("groundHandlingCharges"),
     NOISE_CHARGES("noiseCharges"),
     NOISE_CONSTANT("noiseConstant"),
     NOISE_DEPARTURE_THRESHOLD("noiseDepartureThreshold"),
@@ -91,6 +95,7 @@ abstract class IACCostsManager_Builder {
     DP_HC_FOO_HC("dpHCFooHC"),
     AIRFRAME_LABOUR_RATE("airframeLabourRate"),
     ENGINE_LABOUR_RATE("engineLabourRate"),
+    ENGINE_PRICE("enginePrice"),
     ;
 
     private final String name;
@@ -114,10 +119,10 @@ abstract class IACCostsManager_Builder {
   private Amount<Length> range;
   private Amount<Mass> blockFuelMass;
   private Amount<Duration> flightTime;
-  private final LinkedHashMap<MethodEnum, Amount<?>> utilization = new LinkedHashMap<>();
+  private Amount<?> utilization;
   private Amount<Duration> lifeSpan;
   private Double residualValue;
-  private final LinkedHashMap<MethodEnum, Amount<Money>> aircraftPrice = new LinkedHashMap<>();
+  private Amount<Money> aircraftPrice;
   private Double airframeRelativeSparesCosts;
   private Double enginesRelativeSparesCosts;
   private Double interestRate;
@@ -125,9 +130,9 @@ abstract class IACCostsManager_Builder {
   private Amount<?> cabinLabourRate;
   private Amount<?> cockpitLabourRate;
   private Amount<?> fuelUnitPrice;
-  private final LinkedHashMap<MethodEnum, Amount<?>> landingCharges = new LinkedHashMap<>();
-  private final LinkedHashMap<MethodEnum, Amount<?>> navigationCharges = new LinkedHashMap<>();
-  private final LinkedHashMap<MethodEnum, Amount<?>> groundHandlingCharges = new LinkedHashMap<>();
+  private Amount<?> landingCharges;
+  private Amount<?> navigationCharges;
+  private Amount<?> groundHandlingCharges;
   private Amount<?> noiseCharges;
   private Amount<Money> noiseConstant;
   private Amount<Dimensionless> noiseDepartureThreshold;
@@ -153,10 +158,8 @@ abstract class IACCostsManager_Builder {
   private Amount<?> dpHCFooHC;
   private Amount<?> airframeLabourRate;
   private Amount<?> engineLabourRate;
-  private final LinkedHashMap<MethodEnum, Amount<Money>> enginePrice = new LinkedHashMap<>();
+  private Amount<Money> enginePrice;
   private final LinkedHashMap<CostsEnum, MethodEnum> taskList = new LinkedHashMap<>();
-  private final LinkedHashMap<CostsDerivedDataEnum, MethodEnum> derivedDataMethodMap =
-      new LinkedHashMap<>();
   private final ArrayList<CostsPlotEnum> plotList = new ArrayList<>();
   private final EnumSet<IACCostsManager_Builder.Property> _unsetProperties =
       EnumSet.allOf(IACCostsManager_Builder.Property.class);
@@ -491,86 +494,40 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Associates {@code key} with {@code value} in the map to be returned from
-   * {@link IACCostsManager#getUtilization()}.
-   * If the map previously contained a mapping for the key,
-   * the old value is replaced by the specified value.
+   * Sets the value to be returned by {@link IACCostsManager#getUtilization()}.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if either {@code key} or {@code value} are null
+   * @throws NullPointerException if {@code utilization} is null
    */
-  public IACCostsManager.Builder putUtilization(MethodEnum key, Amount<?> value) {
-    Preconditions.checkNotNull(key);
-    Preconditions.checkNotNull(value);
-    utilization.put(key, value);
+  public IACCostsManager.Builder setUtilization(Amount<?> utilization) {
+    this.utilization = Preconditions.checkNotNull(utilization);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.UTILIZATION);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Copies all of the mappings from {@code map} to the map to be returned from
-   * {@link IACCostsManager#getUtilization()}.
+   * Replaces the value to be returned by {@link IACCostsManager#getUtilization()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code map} is null or contains a
-   *     null key or value
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder putAllUtilization(
-      Map<? extends MethodEnum, ? extends Amount<?>> map) {
-    for (Map.Entry<? extends MethodEnum, ? extends Amount<?>> entry : map.entrySet()) {
-      putUtilization(entry.getKey(), entry.getValue());
-    }
-    return (IACCostsManager.Builder) this;
+  public IACCostsManager.Builder mapUtilization(UnaryOperator<Amount<?>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setUtilization(mapper.apply(getUtilization()));
   }
 
   /**
-   * Removes the mapping for {@code key} from the map to be returned from
-   * {@link IACCostsManager#getUtilization()}, if one is present.
+   * Returns the value that will be returned by {@link IACCostsManager#getUtilization()}.
    *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code key} is null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder removeUtilization(MethodEnum key) {
-    Preconditions.checkNotNull(key);
-    utilization.remove(key);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Invokes {@code mutator} with the map to be returned from
-   * {@link IACCostsManager#getUtilization()}.
-   *
-   * <p>This method mutates the map in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
-   */
-  public IACCostsManager.Builder mutateUtilization(
-      Consumer<? super Map<MethodEnum, Amount<?>>> mutator) {
-    // If putUtilization is overridden, this method will be updated to delegate to it
-    mutator.accept(utilization);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes all of the mappings from the map to be returned from
-   * {@link IACCostsManager#getUtilization()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public IACCostsManager.Builder clearUtilization() {
-    utilization.clear();
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the map that will be returned by
-   * {@link IACCostsManager#getUtilization()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public Map<MethodEnum, Amount<?>> getUtilization() {
-    return Collections.unmodifiableMap(utilization);
+  public Amount<?> getUtilization() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.UTILIZATION),
+        "utilization not set");
+    return utilization;
   }
 
   /**
@@ -647,86 +604,40 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Associates {@code key} with {@code value} in the map to be returned from
-   * {@link IACCostsManager#getAircraftPrice()}.
-   * If the map previously contained a mapping for the key,
-   * the old value is replaced by the specified value.
+   * Sets the value to be returned by {@link IACCostsManager#getAircraftPrice()}.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if either {@code key} or {@code value} are null
+   * @throws NullPointerException if {@code aircraftPrice} is null
    */
-  public IACCostsManager.Builder putAircraftPrice(MethodEnum key, Amount<Money> value) {
-    Preconditions.checkNotNull(key);
-    Preconditions.checkNotNull(value);
-    aircraftPrice.put(key, value);
+  public IACCostsManager.Builder setAircraftPrice(Amount<Money> aircraftPrice) {
+    this.aircraftPrice = Preconditions.checkNotNull(aircraftPrice);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.AIRCRAFT_PRICE);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Copies all of the mappings from {@code map} to the map to be returned from
-   * {@link IACCostsManager#getAircraftPrice()}.
+   * Replaces the value to be returned by {@link IACCostsManager#getAircraftPrice()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code map} is null or contains a
-   *     null key or value
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder putAllAircraftPrice(
-      Map<? extends MethodEnum, ? extends Amount<Money>> map) {
-    for (Map.Entry<? extends MethodEnum, ? extends Amount<Money>> entry : map.entrySet()) {
-      putAircraftPrice(entry.getKey(), entry.getValue());
-    }
-    return (IACCostsManager.Builder) this;
+  public IACCostsManager.Builder mapAircraftPrice(UnaryOperator<Amount<Money>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setAircraftPrice(mapper.apply(getAircraftPrice()));
   }
 
   /**
-   * Removes the mapping for {@code key} from the map to be returned from
-   * {@link IACCostsManager#getAircraftPrice()}, if one is present.
+   * Returns the value that will be returned by {@link IACCostsManager#getAircraftPrice()}.
    *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code key} is null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder removeAircraftPrice(MethodEnum key) {
-    Preconditions.checkNotNull(key);
-    aircraftPrice.remove(key);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Invokes {@code mutator} with the map to be returned from
-   * {@link IACCostsManager#getAircraftPrice()}.
-   *
-   * <p>This method mutates the map in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
-   */
-  public IACCostsManager.Builder mutateAircraftPrice(
-      Consumer<? super Map<MethodEnum, Amount<Money>>> mutator) {
-    // If putAircraftPrice is overridden, this method will be updated to delegate to it
-    mutator.accept(aircraftPrice);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes all of the mappings from the map to be returned from
-   * {@link IACCostsManager#getAircraftPrice()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public IACCostsManager.Builder clearAircraftPrice() {
-    aircraftPrice.clear();
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the map that will be returned by
-   * {@link IACCostsManager#getAircraftPrice()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public Map<MethodEnum, Amount<Money>> getAircraftPrice() {
-    return Collections.unmodifiableMap(aircraftPrice);
+  public Amount<Money> getAircraftPrice() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.AIRCRAFT_PRICE),
+        "aircraftPrice not set");
+    return aircraftPrice;
   }
 
   /**
@@ -990,252 +901,114 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Associates {@code key} with {@code value} in the map to be returned from
-   * {@link IACCostsManager#getLandingCharges()}.
-   * If the map previously contained a mapping for the key,
-   * the old value is replaced by the specified value.
+   * Sets the value to be returned by {@link IACCostsManager#getLandingCharges()}.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if either {@code key} or {@code value} are null
+   * @throws NullPointerException if {@code landingCharges} is null
    */
-  public IACCostsManager.Builder putLandingCharges(MethodEnum key, Amount<?> value) {
-    Preconditions.checkNotNull(key);
-    Preconditions.checkNotNull(value);
-    landingCharges.put(key, value);
+  public IACCostsManager.Builder setLandingCharges(Amount<?> landingCharges) {
+    this.landingCharges = Preconditions.checkNotNull(landingCharges);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.LANDING_CHARGES);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Copies all of the mappings from {@code map} to the map to be returned from
-   * {@link IACCostsManager#getLandingCharges()}.
+   * Replaces the value to be returned by {@link IACCostsManager#getLandingCharges()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code map} is null or contains a
-   *     null key or value
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder putAllLandingCharges(
-      Map<? extends MethodEnum, ? extends Amount<?>> map) {
-    for (Map.Entry<? extends MethodEnum, ? extends Amount<?>> entry : map.entrySet()) {
-      putLandingCharges(entry.getKey(), entry.getValue());
-    }
+  public IACCostsManager.Builder mapLandingCharges(UnaryOperator<Amount<?>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setLandingCharges(mapper.apply(getLandingCharges()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACCostsManager#getLandingCharges()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<?> getLandingCharges() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.LANDING_CHARGES),
+        "landingCharges not set");
+    return landingCharges;
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACCostsManager#getNavigationCharges()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code navigationCharges} is null
+   */
+  public IACCostsManager.Builder setNavigationCharges(Amount<?> navigationCharges) {
+    this.navigationCharges = Preconditions.checkNotNull(navigationCharges);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.NAVIGATION_CHARGES);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Removes the mapping for {@code key} from the map to be returned from
-   * {@link IACCostsManager#getLandingCharges()}, if one is present.
+   * Replaces the value to be returned by {@link IACCostsManager#getNavigationCharges()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code key} is null
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder removeLandingCharges(MethodEnum key) {
-    Preconditions.checkNotNull(key);
-    landingCharges.remove(key);
+  public IACCostsManager.Builder mapNavigationCharges(UnaryOperator<Amount<?>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setNavigationCharges(mapper.apply(getNavigationCharges()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACCostsManager#getNavigationCharges()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<?> getNavigationCharges() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.NAVIGATION_CHARGES),
+        "navigationCharges not set");
+    return navigationCharges;
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACCostsManager#getGroundHandlingCharges()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code groundHandlingCharges} is null
+   */
+  public IACCostsManager.Builder setGroundHandlingCharges(Amount<?> groundHandlingCharges) {
+    this.groundHandlingCharges = Preconditions.checkNotNull(groundHandlingCharges);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.GROUND_HANDLING_CHARGES);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Invokes {@code mutator} with the map to be returned from
-   * {@link IACCostsManager#getLandingCharges()}.
-   *
-   * <p>This method mutates the map in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
+   * Replaces the value to be returned by {@link IACCostsManager#getGroundHandlingCharges()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder mutateLandingCharges(
-      Consumer<? super Map<MethodEnum, Amount<?>>> mutator) {
-    // If putLandingCharges is overridden, this method will be updated to delegate to it
-    mutator.accept(landingCharges);
-    return (IACCostsManager.Builder) this;
+  public IACCostsManager.Builder mapGroundHandlingCharges(UnaryOperator<Amount<?>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setGroundHandlingCharges(mapper.apply(getGroundHandlingCharges()));
   }
 
   /**
-   * Removes all of the mappings from the map to be returned from
-   * {@link IACCostsManager#getLandingCharges()}.
+   * Returns the value that will be returned by {@link IACCostsManager#getGroundHandlingCharges()}.
    *
-   * @return this {@code Builder} object
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder clearLandingCharges() {
-    landingCharges.clear();
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the map that will be returned by
-   * {@link IACCostsManager#getLandingCharges()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public Map<MethodEnum, Amount<?>> getLandingCharges() {
-    return Collections.unmodifiableMap(landingCharges);
-  }
-
-  /**
-   * Associates {@code key} with {@code value} in the map to be returned from
-   * {@link IACCostsManager#getNavigationCharges()}.
-   * If the map previously contained a mapping for the key,
-   * the old value is replaced by the specified value.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if either {@code key} or {@code value} are null
-   */
-  public IACCostsManager.Builder putNavigationCharges(MethodEnum key, Amount<?> value) {
-    Preconditions.checkNotNull(key);
-    Preconditions.checkNotNull(value);
-    navigationCharges.put(key, value);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Copies all of the mappings from {@code map} to the map to be returned from
-   * {@link IACCostsManager#getNavigationCharges()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code map} is null or contains a
-   *     null key or value
-   */
-  public IACCostsManager.Builder putAllNavigationCharges(
-      Map<? extends MethodEnum, ? extends Amount<?>> map) {
-    for (Map.Entry<? extends MethodEnum, ? extends Amount<?>> entry : map.entrySet()) {
-      putNavigationCharges(entry.getKey(), entry.getValue());
-    }
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes the mapping for {@code key} from the map to be returned from
-   * {@link IACCostsManager#getNavigationCharges()}, if one is present.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code key} is null
-   */
-  public IACCostsManager.Builder removeNavigationCharges(MethodEnum key) {
-    Preconditions.checkNotNull(key);
-    navigationCharges.remove(key);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Invokes {@code mutator} with the map to be returned from
-   * {@link IACCostsManager#getNavigationCharges()}.
-   *
-   * <p>This method mutates the map in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
-   */
-  public IACCostsManager.Builder mutateNavigationCharges(
-      Consumer<? super Map<MethodEnum, Amount<?>>> mutator) {
-    // If putNavigationCharges is overridden, this method will be updated to delegate to it
-    mutator.accept(navigationCharges);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes all of the mappings from the map to be returned from
-   * {@link IACCostsManager#getNavigationCharges()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public IACCostsManager.Builder clearNavigationCharges() {
-    navigationCharges.clear();
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the map that will be returned by
-   * {@link IACCostsManager#getNavigationCharges()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public Map<MethodEnum, Amount<?>> getNavigationCharges() {
-    return Collections.unmodifiableMap(navigationCharges);
-  }
-
-  /**
-   * Associates {@code key} with {@code value} in the map to be returned from
-   * {@link IACCostsManager#getGroundHandlingCharges()}.
-   * If the map previously contained a mapping for the key,
-   * the old value is replaced by the specified value.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if either {@code key} or {@code value} are null
-   */
-  public IACCostsManager.Builder putGroundHandlingCharges(MethodEnum key, Amount<?> value) {
-    Preconditions.checkNotNull(key);
-    Preconditions.checkNotNull(value);
-    groundHandlingCharges.put(key, value);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Copies all of the mappings from {@code map} to the map to be returned from
-   * {@link IACCostsManager#getGroundHandlingCharges()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code map} is null or contains a
-   *     null key or value
-   */
-  public IACCostsManager.Builder putAllGroundHandlingCharges(
-      Map<? extends MethodEnum, ? extends Amount<?>> map) {
-    for (Map.Entry<? extends MethodEnum, ? extends Amount<?>> entry : map.entrySet()) {
-      putGroundHandlingCharges(entry.getKey(), entry.getValue());
-    }
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes the mapping for {@code key} from the map to be returned from
-   * {@link IACCostsManager#getGroundHandlingCharges()}, if one is present.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code key} is null
-   */
-  public IACCostsManager.Builder removeGroundHandlingCharges(MethodEnum key) {
-    Preconditions.checkNotNull(key);
-    groundHandlingCharges.remove(key);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Invokes {@code mutator} with the map to be returned from
-   * {@link IACCostsManager#getGroundHandlingCharges()}.
-   *
-   * <p>This method mutates the map in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
-   */
-  public IACCostsManager.Builder mutateGroundHandlingCharges(
-      Consumer<? super Map<MethodEnum, Amount<?>>> mutator) {
-    // If putGroundHandlingCharges is overridden, this method will be updated to delegate to it
-    mutator.accept(groundHandlingCharges);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes all of the mappings from the map to be returned from
-   * {@link IACCostsManager#getGroundHandlingCharges()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public IACCostsManager.Builder clearGroundHandlingCharges() {
-    groundHandlingCharges.clear();
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the map that will be returned by
-   * {@link IACCostsManager#getGroundHandlingCharges()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public Map<MethodEnum, Amount<?>> getGroundHandlingCharges() {
-    return Collections.unmodifiableMap(groundHandlingCharges);
+  public Amount<?> getGroundHandlingCharges() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.GROUND_HANDLING_CHARGES),
+        "groundHandlingCharges not set");
+    return groundHandlingCharges;
   }
 
   /**
@@ -2170,86 +1943,40 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Associates {@code key} with {@code value} in the map to be returned from
-   * {@link IACCostsManager#getEnginePrice()}.
-   * If the map previously contained a mapping for the key,
-   * the old value is replaced by the specified value.
+   * Sets the value to be returned by {@link IACCostsManager#getEnginePrice()}.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if either {@code key} or {@code value} are null
+   * @throws NullPointerException if {@code enginePrice} is null
    */
-  public IACCostsManager.Builder putEnginePrice(MethodEnum key, Amount<Money> value) {
-    Preconditions.checkNotNull(key);
-    Preconditions.checkNotNull(value);
-    enginePrice.put(key, value);
+  public IACCostsManager.Builder setEnginePrice(Amount<Money> enginePrice) {
+    this.enginePrice = Preconditions.checkNotNull(enginePrice);
+    _unsetProperties.remove(IACCostsManager_Builder.Property.ENGINE_PRICE);
     return (IACCostsManager.Builder) this;
   }
 
   /**
-   * Copies all of the mappings from {@code map} to the map to be returned from
-   * {@link IACCostsManager#getEnginePrice()}.
+   * Replaces the value to be returned by {@link IACCostsManager#getEnginePrice()}
+   * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code map} is null or contains a
-   *     null key or value
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder putAllEnginePrice(
-      Map<? extends MethodEnum, ? extends Amount<Money>> map) {
-    for (Map.Entry<? extends MethodEnum, ? extends Amount<Money>> entry : map.entrySet()) {
-      putEnginePrice(entry.getKey(), entry.getValue());
-    }
-    return (IACCostsManager.Builder) this;
+  public IACCostsManager.Builder mapEnginePrice(UnaryOperator<Amount<Money>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setEnginePrice(mapper.apply(getEnginePrice()));
   }
 
   /**
-   * Removes the mapping for {@code key} from the map to be returned from
-   * {@link IACCostsManager#getEnginePrice()}, if one is present.
+   * Returns the value that will be returned by {@link IACCostsManager#getEnginePrice()}.
    *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code key} is null
+   * @throws IllegalStateException if the field has not been set
    */
-  public IACCostsManager.Builder removeEnginePrice(MethodEnum key) {
-    Preconditions.checkNotNull(key);
-    enginePrice.remove(key);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Invokes {@code mutator} with the map to be returned from
-   * {@link IACCostsManager#getEnginePrice()}.
-   *
-   * <p>This method mutates the map in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
-   */
-  public IACCostsManager.Builder mutateEnginePrice(
-      Consumer<? super Map<MethodEnum, Amount<Money>>> mutator) {
-    // If putEnginePrice is overridden, this method will be updated to delegate to it
-    mutator.accept(enginePrice);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes all of the mappings from the map to be returned from
-   * {@link IACCostsManager#getEnginePrice()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public IACCostsManager.Builder clearEnginePrice() {
-    enginePrice.clear();
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the map that will be returned by
-   * {@link IACCostsManager#getEnginePrice()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public Map<MethodEnum, Amount<Money>> getEnginePrice() {
-    return Collections.unmodifiableMap(enginePrice);
+  public Amount<Money> getEnginePrice() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACCostsManager_Builder.Property.ENGINE_PRICE),
+        "enginePrice not set");
+    return enginePrice;
   }
 
   /**
@@ -2333,90 +2060,6 @@ abstract class IACCostsManager_Builder {
    */
   public Map<CostsEnum, MethodEnum> getTaskList() {
     return Collections.unmodifiableMap(taskList);
-  }
-
-  /**
-   * Associates {@code key} with {@code value} in the map to be returned from
-   * {@link IACCostsManager#getDerivedDataMethodMap()}.
-   * If the map previously contained a mapping for the key,
-   * the old value is replaced by the specified value.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if either {@code key} or {@code value} are null
-   */
-  public IACCostsManager.Builder putDerivedDataMethodMap(
-      CostsDerivedDataEnum key, MethodEnum value) {
-    Preconditions.checkNotNull(key);
-    Preconditions.checkNotNull(value);
-    derivedDataMethodMap.put(key, value);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Copies all of the mappings from {@code map} to the map to be returned from
-   * {@link IACCostsManager#getDerivedDataMethodMap()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code map} is null or contains a
-   *     null key or value
-   */
-  public IACCostsManager.Builder putAllDerivedDataMethodMap(
-      Map<? extends CostsDerivedDataEnum, ? extends MethodEnum> map) {
-    for (Map.Entry<? extends CostsDerivedDataEnum, ? extends MethodEnum> entry : map.entrySet()) {
-      putDerivedDataMethodMap(entry.getKey(), entry.getValue());
-    }
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes the mapping for {@code key} from the map to be returned from
-   * {@link IACCostsManager#getDerivedDataMethodMap()}, if one is present.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code key} is null
-   */
-  public IACCostsManager.Builder removeDerivedDataMethodMap(CostsDerivedDataEnum key) {
-    Preconditions.checkNotNull(key);
-    derivedDataMethodMap.remove(key);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Invokes {@code mutator} with the map to be returned from
-   * {@link IACCostsManager#getDerivedDataMethodMap()}.
-   *
-   * <p>This method mutates the map in-place. {@code mutator} is a void
-   * consumer, so any value returned from a lambda will be ignored. Take care
-   * not to call pure functions, like {@link Collection#stream()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mutator} is null
-   */
-  public IACCostsManager.Builder mutateDerivedDataMethodMap(
-      Consumer<? super Map<CostsDerivedDataEnum, MethodEnum>> mutator) {
-    // If putDerivedDataMethodMap is overridden, this method will be updated to delegate to it
-    mutator.accept(derivedDataMethodMap);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Removes all of the mappings from the map to be returned from
-   * {@link IACCostsManager#getDerivedDataMethodMap()}.
-   *
-   * @return this {@code Builder} object
-   */
-  public IACCostsManager.Builder clearDerivedDataMethodMap() {
-    derivedDataMethodMap.clear();
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Returns an unmodifiable view of the map that will be returned by
-   * {@link IACCostsManager#getDerivedDataMethodMap()}.
-   * Changes to this builder will be reflected in the view.
-   */
-  public Map<CostsDerivedDataEnum, MethodEnum> getDerivedDataMethodMap() {
-    return Collections.unmodifiableMap(derivedDataMethodMap);
   }
 
   /**
@@ -2540,7 +2183,10 @@ abstract class IACCostsManager_Builder {
         || !value.getFlightTime().equals(_defaults.getFlightTime())) {
       setFlightTime(value.getFlightTime());
     }
-    putAllUtilization(value.getUtilization());
+    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.UTILIZATION)
+        || !value.getUtilization().equals(_defaults.getUtilization())) {
+      setUtilization(value.getUtilization());
+    }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.LIFE_SPAN)
         || !value.getLifeSpan().equals(_defaults.getLifeSpan())) {
       setLifeSpan(value.getLifeSpan());
@@ -2549,7 +2195,10 @@ abstract class IACCostsManager_Builder {
         || !value.getResidualValue().equals(_defaults.getResidualValue())) {
       setResidualValue(value.getResidualValue());
     }
-    putAllAircraftPrice(value.getAircraftPrice());
+    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.AIRCRAFT_PRICE)
+        || !value.getAircraftPrice().equals(_defaults.getAircraftPrice())) {
+      setAircraftPrice(value.getAircraftPrice());
+    }
     if (_defaults._unsetProperties.contains(
             IACCostsManager_Builder.Property.AIRFRAME_RELATIVE_SPARES_COSTS)
         || !value
@@ -2584,9 +2233,19 @@ abstract class IACCostsManager_Builder {
         || !value.getFuelUnitPrice().equals(_defaults.getFuelUnitPrice())) {
       setFuelUnitPrice(value.getFuelUnitPrice());
     }
-    putAllLandingCharges(value.getLandingCharges());
-    putAllNavigationCharges(value.getNavigationCharges());
-    putAllGroundHandlingCharges(value.getGroundHandlingCharges());
+    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.LANDING_CHARGES)
+        || !value.getLandingCharges().equals(_defaults.getLandingCharges())) {
+      setLandingCharges(value.getLandingCharges());
+    }
+    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.NAVIGATION_CHARGES)
+        || !value.getNavigationCharges().equals(_defaults.getNavigationCharges())) {
+      setNavigationCharges(value.getNavigationCharges());
+    }
+    if (_defaults._unsetProperties.contains(
+            IACCostsManager_Builder.Property.GROUND_HANDLING_CHARGES)
+        || !value.getGroundHandlingCharges().equals(_defaults.getGroundHandlingCharges())) {
+      setGroundHandlingCharges(value.getGroundHandlingCharges());
+    }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CHARGES)
         || !value.getNoiseCharges().equals(_defaults.getNoiseCharges())) {
       setNoiseCharges(value.getNoiseCharges());
@@ -2700,9 +2359,11 @@ abstract class IACCostsManager_Builder {
         || !value.getEngineLabourRate().equals(_defaults.getEngineLabourRate())) {
       setEngineLabourRate(value.getEngineLabourRate());
     }
-    putAllEnginePrice(value.getEnginePrice());
+    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.ENGINE_PRICE)
+        || !value.getEnginePrice().equals(_defaults.getEnginePrice())) {
+      setEnginePrice(value.getEnginePrice());
+    }
     putAllTaskList(value.getTaskList());
-    putAllDerivedDataMethodMap(value.getDerivedDataMethodMap());
     addAllPlotList(value.getPlotList());
     return (IACCostsManager.Builder) this;
   }
@@ -2763,7 +2424,11 @@ abstract class IACCostsManager_Builder {
             || !template.getFlightTime().equals(_defaults.getFlightTime()))) {
       setFlightTime(template.getFlightTime());
     }
-    putAllUtilization(((IACCostsManager_Builder) template).utilization);
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.UTILIZATION)
+        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.UTILIZATION)
+            || !template.getUtilization().equals(_defaults.getUtilization()))) {
+      setUtilization(template.getUtilization());
+    }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.LIFE_SPAN)
         && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.LIFE_SPAN)
             || !template.getLifeSpan().equals(_defaults.getLifeSpan()))) {
@@ -2774,7 +2439,11 @@ abstract class IACCostsManager_Builder {
             || !template.getResidualValue().equals(_defaults.getResidualValue()))) {
       setResidualValue(template.getResidualValue());
     }
-    putAllAircraftPrice(((IACCostsManager_Builder) template).aircraftPrice);
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.AIRCRAFT_PRICE)
+        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.AIRCRAFT_PRICE)
+            || !template.getAircraftPrice().equals(_defaults.getAircraftPrice()))) {
+      setAircraftPrice(template.getAircraftPrice());
+    }
     if (!base._unsetProperties.contains(
             IACCostsManager_Builder.Property.AIRFRAME_RELATIVE_SPARES_COSTS)
         && (_defaults._unsetProperties.contains(
@@ -2819,9 +2488,22 @@ abstract class IACCostsManager_Builder {
             || !template.getFuelUnitPrice().equals(_defaults.getFuelUnitPrice()))) {
       setFuelUnitPrice(template.getFuelUnitPrice());
     }
-    putAllLandingCharges(((IACCostsManager_Builder) template).landingCharges);
-    putAllNavigationCharges(((IACCostsManager_Builder) template).navigationCharges);
-    putAllGroundHandlingCharges(((IACCostsManager_Builder) template).groundHandlingCharges);
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.LANDING_CHARGES)
+        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.LANDING_CHARGES)
+            || !template.getLandingCharges().equals(_defaults.getLandingCharges()))) {
+      setLandingCharges(template.getLandingCharges());
+    }
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.NAVIGATION_CHARGES)
+        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.NAVIGATION_CHARGES)
+            || !template.getNavigationCharges().equals(_defaults.getNavigationCharges()))) {
+      setNavigationCharges(template.getNavigationCharges());
+    }
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.GROUND_HANDLING_CHARGES)
+        && (_defaults._unsetProperties.contains(
+                IACCostsManager_Builder.Property.GROUND_HANDLING_CHARGES)
+            || !template.getGroundHandlingCharges().equals(_defaults.getGroundHandlingCharges()))) {
+      setGroundHandlingCharges(template.getGroundHandlingCharges());
+    }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CHARGES)
         && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CHARGES)
             || !template.getNoiseCharges().equals(_defaults.getNoiseCharges()))) {
@@ -2972,9 +2654,12 @@ abstract class IACCostsManager_Builder {
             || !template.getEngineLabourRate().equals(_defaults.getEngineLabourRate()))) {
       setEngineLabourRate(template.getEngineLabourRate());
     }
-    putAllEnginePrice(((IACCostsManager_Builder) template).enginePrice);
+    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.ENGINE_PRICE)
+        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.ENGINE_PRICE)
+            || !template.getEnginePrice().equals(_defaults.getEnginePrice()))) {
+      setEnginePrice(template.getEnginePrice());
+    }
     putAllTaskList(((IACCostsManager_Builder) template).taskList);
-    putAllDerivedDataMethodMap(((IACCostsManager_Builder) template).derivedDataMethodMap);
     addAllPlotList(((IACCostsManager_Builder) template).plotList);
     return (IACCostsManager.Builder) this;
   }
@@ -2993,10 +2678,10 @@ abstract class IACCostsManager_Builder {
     range = _defaults.range;
     blockFuelMass = _defaults.blockFuelMass;
     flightTime = _defaults.flightTime;
-    utilization.clear();
+    utilization = _defaults.utilization;
     lifeSpan = _defaults.lifeSpan;
     residualValue = _defaults.residualValue;
-    aircraftPrice.clear();
+    aircraftPrice = _defaults.aircraftPrice;
     airframeRelativeSparesCosts = _defaults.airframeRelativeSparesCosts;
     enginesRelativeSparesCosts = _defaults.enginesRelativeSparesCosts;
     interestRate = _defaults.interestRate;
@@ -3004,9 +2689,9 @@ abstract class IACCostsManager_Builder {
     cabinLabourRate = _defaults.cabinLabourRate;
     cockpitLabourRate = _defaults.cockpitLabourRate;
     fuelUnitPrice = _defaults.fuelUnitPrice;
-    landingCharges.clear();
-    navigationCharges.clear();
-    groundHandlingCharges.clear();
+    landingCharges = _defaults.landingCharges;
+    navigationCharges = _defaults.navigationCharges;
+    groundHandlingCharges = _defaults.groundHandlingCharges;
     noiseCharges = _defaults.noiseCharges;
     noiseConstant = _defaults.noiseConstant;
     noiseDepartureThreshold = _defaults.noiseDepartureThreshold;
@@ -3032,9 +2717,8 @@ abstract class IACCostsManager_Builder {
     dpHCFooHC = _defaults.dpHCFooHC;
     airframeLabourRate = _defaults.airframeLabourRate;
     engineLabourRate = _defaults.engineLabourRate;
-    enginePrice.clear();
+    enginePrice = _defaults.enginePrice;
     taskList.clear();
-    derivedDataMethodMap.clear();
     plotList.clear();
     _unsetProperties.clear();
     _unsetProperties.addAll(_defaults._unsetProperties);
@@ -3075,10 +2759,10 @@ abstract class IACCostsManager_Builder {
     private final Amount<Length> range;
     private final Amount<Mass> blockFuelMass;
     private final Amount<Duration> flightTime;
-    private final Map<MethodEnum, Amount<?>> utilization;
+    private final Amount<?> utilization;
     private final Amount<Duration> lifeSpan;
     private final Double residualValue;
-    private final Map<MethodEnum, Amount<Money>> aircraftPrice;
+    private final Amount<Money> aircraftPrice;
     private final Double airframeRelativeSparesCosts;
     private final Double enginesRelativeSparesCosts;
     private final Double interestRate;
@@ -3086,9 +2770,9 @@ abstract class IACCostsManager_Builder {
     private final Amount<?> cabinLabourRate;
     private final Amount<?> cockpitLabourRate;
     private final Amount<?> fuelUnitPrice;
-    private final Map<MethodEnum, Amount<?>> landingCharges;
-    private final Map<MethodEnum, Amount<?>> navigationCharges;
-    private final Map<MethodEnum, Amount<?>> groundHandlingCharges;
+    private final Amount<?> landingCharges;
+    private final Amount<?> navigationCharges;
+    private final Amount<?> groundHandlingCharges;
     private final Amount<?> noiseCharges;
     private final Amount<Money> noiseConstant;
     private final Amount<Dimensionless> noiseDepartureThreshold;
@@ -3114,9 +2798,8 @@ abstract class IACCostsManager_Builder {
     private final Amount<?> dpHCFooHC;
     private final Amount<?> airframeLabourRate;
     private final Amount<?> engineLabourRate;
-    private final Map<MethodEnum, Amount<Money>> enginePrice;
+    private final Amount<Money> enginePrice;
     private final Map<CostsEnum, MethodEnum> taskList;
-    private final Map<CostsDerivedDataEnum, MethodEnum> derivedDataMethodMap;
     private final List<CostsPlotEnum> plotList;
 
     private Value(IACCostsManager_Builder builder) {
@@ -3129,10 +2812,10 @@ abstract class IACCostsManager_Builder {
       this.range = builder.range;
       this.blockFuelMass = builder.blockFuelMass;
       this.flightTime = builder.flightTime;
-      this.utilization = ImmutableMap.copyOf(builder.utilization);
+      this.utilization = builder.utilization;
       this.lifeSpan = builder.lifeSpan;
       this.residualValue = builder.residualValue;
-      this.aircraftPrice = ImmutableMap.copyOf(builder.aircraftPrice);
+      this.aircraftPrice = builder.aircraftPrice;
       this.airframeRelativeSparesCosts = builder.airframeRelativeSparesCosts;
       this.enginesRelativeSparesCosts = builder.enginesRelativeSparesCosts;
       this.interestRate = builder.interestRate;
@@ -3140,9 +2823,9 @@ abstract class IACCostsManager_Builder {
       this.cabinLabourRate = builder.cabinLabourRate;
       this.cockpitLabourRate = builder.cockpitLabourRate;
       this.fuelUnitPrice = builder.fuelUnitPrice;
-      this.landingCharges = ImmutableMap.copyOf(builder.landingCharges);
-      this.navigationCharges = ImmutableMap.copyOf(builder.navigationCharges);
-      this.groundHandlingCharges = ImmutableMap.copyOf(builder.groundHandlingCharges);
+      this.landingCharges = builder.landingCharges;
+      this.navigationCharges = builder.navigationCharges;
+      this.groundHandlingCharges = builder.groundHandlingCharges;
       this.noiseCharges = builder.noiseCharges;
       this.noiseConstant = builder.noiseConstant;
       this.noiseDepartureThreshold = builder.noiseDepartureThreshold;
@@ -3168,9 +2851,8 @@ abstract class IACCostsManager_Builder {
       this.dpHCFooHC = builder.dpHCFooHC;
       this.airframeLabourRate = builder.airframeLabourRate;
       this.engineLabourRate = builder.engineLabourRate;
-      this.enginePrice = ImmutableMap.copyOf(builder.enginePrice);
+      this.enginePrice = builder.enginePrice;
       this.taskList = ImmutableMap.copyOf(builder.taskList);
-      this.derivedDataMethodMap = ImmutableMap.copyOf(builder.derivedDataMethodMap);
       this.plotList = ImmutableList.copyOf(builder.plotList);
     }
 
@@ -3220,7 +2902,7 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getUtilization() {
+    public Amount<?> getUtilization() {
       return utilization;
     }
 
@@ -3235,7 +2917,7 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<Money>> getAircraftPrice() {
+    public Amount<Money> getAircraftPrice() {
       return aircraftPrice;
     }
 
@@ -3275,17 +2957,17 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getLandingCharges() {
+    public Amount<?> getLandingCharges() {
       return landingCharges;
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getNavigationCharges() {
+    public Amount<?> getNavigationCharges() {
       return navigationCharges;
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getGroundHandlingCharges() {
+    public Amount<?> getGroundHandlingCharges() {
       return groundHandlingCharges;
     }
 
@@ -3415,18 +3097,13 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<Money>> getEnginePrice() {
+    public Amount<Money> getEnginePrice() {
       return enginePrice;
     }
 
     @Override
     public Map<CostsEnum, MethodEnum> getTaskList() {
       return taskList;
-    }
-
-    @Override
-    public Map<CostsDerivedDataEnum, MethodEnum> getDerivedDataMethodMap() {
-      return derivedDataMethodMap;
     }
 
     @Override
@@ -3490,7 +3167,6 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(engineLabourRate, other.engineLabourRate)
           && Objects.equals(enginePrice, other.enginePrice)
           && Objects.equals(taskList, other.taskList)
-          && Objects.equals(derivedDataMethodMap, other.derivedDataMethodMap)
           && Objects.equals(plotList, other.plotList);
     }
 
@@ -3547,7 +3223,6 @@ abstract class IACCostsManager_Builder {
           engineLabourRate,
           enginePrice,
           taskList,
-          derivedDataMethodMap,
           plotList);
     }
 
@@ -3704,9 +3379,6 @@ abstract class IACCostsManager_Builder {
           + "taskList="
           + taskList
           + ", "
-          + "derivedDataMethodMap="
-          + derivedDataMethodMap
-          + ", "
           + "plotList="
           + plotList
           + "}";
@@ -3723,10 +3395,10 @@ abstract class IACCostsManager_Builder {
     private final Amount<Length> range;
     private final Amount<Mass> blockFuelMass;
     private final Amount<Duration> flightTime;
-    private final Map<MethodEnum, Amount<?>> utilization;
+    private final Amount<?> utilization;
     private final Amount<Duration> lifeSpan;
     private final Double residualValue;
-    private final Map<MethodEnum, Amount<Money>> aircraftPrice;
+    private final Amount<Money> aircraftPrice;
     private final Double airframeRelativeSparesCosts;
     private final Double enginesRelativeSparesCosts;
     private final Double interestRate;
@@ -3734,9 +3406,9 @@ abstract class IACCostsManager_Builder {
     private final Amount<?> cabinLabourRate;
     private final Amount<?> cockpitLabourRate;
     private final Amount<?> fuelUnitPrice;
-    private final Map<MethodEnum, Amount<?>> landingCharges;
-    private final Map<MethodEnum, Amount<?>> navigationCharges;
-    private final Map<MethodEnum, Amount<?>> groundHandlingCharges;
+    private final Amount<?> landingCharges;
+    private final Amount<?> navigationCharges;
+    private final Amount<?> groundHandlingCharges;
     private final Amount<?> noiseCharges;
     private final Amount<Money> noiseConstant;
     private final Amount<Dimensionless> noiseDepartureThreshold;
@@ -3762,9 +3434,8 @@ abstract class IACCostsManager_Builder {
     private final Amount<?> dpHCFooHC;
     private final Amount<?> airframeLabourRate;
     private final Amount<?> engineLabourRate;
-    private final Map<MethodEnum, Amount<Money>> enginePrice;
+    private final Amount<Money> enginePrice;
     private final Map<CostsEnum, MethodEnum> taskList;
-    private final Map<CostsDerivedDataEnum, MethodEnum> derivedDataMethodMap;
     private final List<CostsPlotEnum> plotList;
     private final EnumSet<IACCostsManager_Builder.Property> _unsetProperties;
 
@@ -3778,10 +3449,10 @@ abstract class IACCostsManager_Builder {
       this.range = builder.range;
       this.blockFuelMass = builder.blockFuelMass;
       this.flightTime = builder.flightTime;
-      this.utilization = ImmutableMap.copyOf(builder.utilization);
+      this.utilization = builder.utilization;
       this.lifeSpan = builder.lifeSpan;
       this.residualValue = builder.residualValue;
-      this.aircraftPrice = ImmutableMap.copyOf(builder.aircraftPrice);
+      this.aircraftPrice = builder.aircraftPrice;
       this.airframeRelativeSparesCosts = builder.airframeRelativeSparesCosts;
       this.enginesRelativeSparesCosts = builder.enginesRelativeSparesCosts;
       this.interestRate = builder.interestRate;
@@ -3789,9 +3460,9 @@ abstract class IACCostsManager_Builder {
       this.cabinLabourRate = builder.cabinLabourRate;
       this.cockpitLabourRate = builder.cockpitLabourRate;
       this.fuelUnitPrice = builder.fuelUnitPrice;
-      this.landingCharges = ImmutableMap.copyOf(builder.landingCharges);
-      this.navigationCharges = ImmutableMap.copyOf(builder.navigationCharges);
-      this.groundHandlingCharges = ImmutableMap.copyOf(builder.groundHandlingCharges);
+      this.landingCharges = builder.landingCharges;
+      this.navigationCharges = builder.navigationCharges;
+      this.groundHandlingCharges = builder.groundHandlingCharges;
       this.noiseCharges = builder.noiseCharges;
       this.noiseConstant = builder.noiseConstant;
       this.noiseDepartureThreshold = builder.noiseDepartureThreshold;
@@ -3817,9 +3488,8 @@ abstract class IACCostsManager_Builder {
       this.dpHCFooHC = builder.dpHCFooHC;
       this.airframeLabourRate = builder.airframeLabourRate;
       this.engineLabourRate = builder.engineLabourRate;
-      this.enginePrice = ImmutableMap.copyOf(builder.enginePrice);
+      this.enginePrice = builder.enginePrice;
       this.taskList = ImmutableMap.copyOf(builder.taskList);
-      this.derivedDataMethodMap = ImmutableMap.copyOf(builder.derivedDataMethodMap);
       this.plotList = ImmutableList.copyOf(builder.plotList);
       this._unsetProperties = builder._unsetProperties.clone();
     }
@@ -3897,7 +3567,10 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getUtilization() {
+    public Amount<?> getUtilization() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.UTILIZATION)) {
+        throw new UnsupportedOperationException("utilization not set");
+      }
       return utilization;
     }
 
@@ -3918,7 +3591,10 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<Money>> getAircraftPrice() {
+    public Amount<Money> getAircraftPrice() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.AIRCRAFT_PRICE)) {
+        throw new UnsupportedOperationException("aircraftPrice not set");
+      }
       return aircraftPrice;
     }
 
@@ -3981,17 +3657,26 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getLandingCharges() {
+    public Amount<?> getLandingCharges() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.LANDING_CHARGES)) {
+        throw new UnsupportedOperationException("landingCharges not set");
+      }
       return landingCharges;
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getNavigationCharges() {
+    public Amount<?> getNavigationCharges() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.NAVIGATION_CHARGES)) {
+        throw new UnsupportedOperationException("navigationCharges not set");
+      }
       return navigationCharges;
     }
 
     @Override
-    public Map<MethodEnum, Amount<?>> getGroundHandlingCharges() {
+    public Amount<?> getGroundHandlingCharges() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.GROUND_HANDLING_CHARGES)) {
+        throw new UnsupportedOperationException("groundHandlingCharges not set");
+      }
       return groundHandlingCharges;
     }
 
@@ -4199,18 +3884,16 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Map<MethodEnum, Amount<Money>> getEnginePrice() {
+    public Amount<Money> getEnginePrice() {
+      if (_unsetProperties.contains(IACCostsManager_Builder.Property.ENGINE_PRICE)) {
+        throw new UnsupportedOperationException("enginePrice not set");
+      }
       return enginePrice;
     }
 
     @Override
     public Map<CostsEnum, MethodEnum> getTaskList() {
       return taskList;
-    }
-
-    @Override
-    public Map<CostsDerivedDataEnum, MethodEnum> getDerivedDataMethodMap() {
-      return derivedDataMethodMap;
     }
 
     @Override
@@ -4274,7 +3957,6 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(engineLabourRate, other.engineLabourRate)
           && Objects.equals(enginePrice, other.enginePrice)
           && Objects.equals(taskList, other.taskList)
-          && Objects.equals(derivedDataMethodMap, other.derivedDataMethodMap)
           && Objects.equals(plotList, other.plotList)
           && Objects.equals(_unsetProperties, other._unsetProperties);
     }
@@ -4332,7 +4014,6 @@ abstract class IACCostsManager_Builder {
           engineLabourRate,
           enginePrice,
           taskList,
-          derivedDataMethodMap,
           plotList,
           _unsetProperties);
     }
@@ -4366,14 +4047,18 @@ abstract class IACCostsManager_Builder {
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.FLIGHT_TIME)
                   ? "flightTime=" + flightTime
                   : null),
-              "utilization=" + utilization,
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.UTILIZATION)
+                  ? "utilization=" + utilization
+                  : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.LIFE_SPAN)
                   ? "lifeSpan=" + lifeSpan
                   : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.RESIDUAL_VALUE)
                   ? "residualValue=" + residualValue
                   : null),
-              "aircraftPrice=" + aircraftPrice,
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.AIRCRAFT_PRICE)
+                  ? "aircraftPrice=" + aircraftPrice
+                  : null),
               (!_unsetProperties.contains(
                       IACCostsManager_Builder.Property.AIRFRAME_RELATIVE_SPARES_COSTS)
                   ? "airframeRelativeSparesCosts=" + airframeRelativeSparesCosts
@@ -4397,9 +4082,15 @@ abstract class IACCostsManager_Builder {
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.FUEL_UNIT_PRICE)
                   ? "fuelUnitPrice=" + fuelUnitPrice
                   : null),
-              "landingCharges=" + landingCharges,
-              "navigationCharges=" + navigationCharges,
-              "groundHandlingCharges=" + groundHandlingCharges,
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.LANDING_CHARGES)
+                  ? "landingCharges=" + landingCharges
+                  : null),
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.NAVIGATION_CHARGES)
+                  ? "navigationCharges=" + navigationCharges
+                  : null),
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.GROUND_HANDLING_CHARGES)
+                  ? "groundHandlingCharges=" + groundHandlingCharges
+                  : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CHARGES)
                   ? "noiseCharges=" + noiseCharges
                   : null),
@@ -4479,9 +4170,10 @@ abstract class IACCostsManager_Builder {
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.ENGINE_LABOUR_RATE)
                   ? "engineLabourRate=" + engineLabourRate
                   : null),
-              "enginePrice=" + enginePrice,
+              (!_unsetProperties.contains(IACCostsManager_Builder.Property.ENGINE_PRICE)
+                  ? "enginePrice=" + enginePrice
+                  : null),
               "taskList=" + taskList,
-              "derivedDataMethodMap=" + derivedDataMethodMap,
               "plotList=" + plotList)
           + "}";
     }
