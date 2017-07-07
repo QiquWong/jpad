@@ -628,29 +628,27 @@ public class OperatingConditions implements IOperatingConditions {
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "' \n")
 				.append("\t.....................................\n")
-				.append("\tAlpha current Climb: " + _alphaCurrentClimb + "\n")
+				.append("\tAlpha current Climb: " + _alphaCurrentClimb.to(NonSI.DEGREE_ANGLE) + "\n")
 				.append("\tMach Climb: " + _machClimb + "\n")
-				.append("\tAltitude Cruise: " + _altitudeClimb + "\n")
+				.append("\tAltitude Climb: " + _altitudeClimb.to(NonSI.FOOT) + "\n")
 				.append("\t.....................................\n")
-				.append("\tAlpha current Cruise: " + _alphaCurrentCruise + "\n")
+				.append("\tAlpha current Cruise: " + _alphaCurrentCruise.to(NonSI.DEGREE_ANGLE) + "\n")
 				.append("\tMach Cruise: " + _machCruise + "\n")
-				.append("\tAltitude Cruise: " + _altitudeCruise + "\n")
+				.append("\tAltitude Cruise: " + _altitudeCruise.to(NonSI.FOOT) + "\n")
 				.append("\tThrottle Cruise (phi): " + _throttleCruise + "\n")
 				.append("\t.....................................\n")
-				.append("\tAlpha current Take-off: " + _alphaCurrentTakeOff + "\n")
+				.append("\tAlpha current Take-off: " + _alphaCurrentTakeOff.to(NonSI.DEGREE_ANGLE) + "\n")
 				.append("\tMach Take-off: " + _machTakeOff + "\n")
-				.append("\tAltitude Take-off: " + _altitudeTakeOff + "\n")
-				.append("\tThrottle Take-off (phi): " + _throttleTakeOff + "\n")
-				.append("\tThrottle Ground Idle Take-off (phi): " + _throttleGroundIdleTakeOff + "\n");
+				.append("\tAltitude Take-off: " + _altitudeTakeOff.to(NonSI.FOOT) + "\n")
+				.append("\tThrottle Take-off (phi): " + _throttleTakeOff + "\n");
 		if(!_flapDeflectionTakeOff.isEmpty())
 				sb.append("\tFlap deflections Take-off: " + _flapDeflectionTakeOff + "\n");
 		if(!_slatDeflectionTakeOff.isEmpty())
 				sb.append("\tSlat deflections Take-off: " + _slatDeflectionTakeOff + "\n");
 				sb.append("\t.....................................\n")
-				.append("\tAlpha current Landing: " + _alphaCurrentLanding + "\n")
+				.append("\tAlpha current Landing: " + _alphaCurrentLanding.to(NonSI.DEGREE_ANGLE) + "\n")
 				.append("\tMach Landing: " + _machLanding + "\n")
-				.append("\tAltitude Landing: " + _altitudeLanding + "\n")
-				.append("\tThrottle Ground Idle Landing (phi): " + _throttleGroundIdleLanding + "\n");
+				.append("\tAltitude Landing: " + _altitudeLanding.to(NonSI.FOOT) + "\n");
 		if(!_flapDeflectionLanding.isEmpty())
 				sb.append("\tFlap deflections Landing: " + _flapDeflectionLanding + "\n");
 		if(!_slatDeflectionLanding.isEmpty())
