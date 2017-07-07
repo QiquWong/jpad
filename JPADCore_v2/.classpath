@@ -73,5 +73,6 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/flanagan/flanagan.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
