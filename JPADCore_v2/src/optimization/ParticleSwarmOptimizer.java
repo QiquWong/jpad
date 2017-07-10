@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import flanagan.interpolation.PolyCubicSpline;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.MyInterpolatingFunction;
 
 
 /**
@@ -24,7 +24,8 @@ public class ParticleSwarmOptimizer {
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	// INPUT DATA 
-	private MyInterpolatingFunction _costFunction;
+	private Object _xArraysResponceSurface;
+	private Object _responceSurfaceValues;
 	private int _numberOfDesignVariables;
 	private Double[] _designVariablesLowerBound;
 	private Double[] _designVariablesUpperBound;
@@ -65,7 +66,8 @@ public class ParticleSwarmOptimizer {
 			Double phi1,
 			Double phi2,
 			String outputFolder,
-			MyInterpolatingFunction costFunction
+			Object xArraysResponceSurface,
+			Object responceSurfaceValues
 			) {
 		
 		// Preliminary checks ...
@@ -81,7 +83,8 @@ public class ParticleSwarmOptimizer {
 		}
 		
 		// Input assignment ...
-		this._costFunction = costFunction;
+		this._xArraysResponceSurface = xArraysResponceSurface;
+		this._responceSurfaceValues = responceSurfaceValues;
 		this._numberOfDesignVariables = numberOfDesignVariables;
 		this._designVariablesLowerBound = designVariablesLowerBound;
 		this._designVariablesUpperBound = designVariablesUpperBound;
@@ -213,10 +216,11 @@ public class ParticleSwarmOptimizer {
 				// Evaluation 
 				//==================================================================
 				Double[] currentPositon = p.getPosition();
-				if(_costFunction == null)
-					currentCostValue = CostFunctions.sphere(currentPositon);
-				else
-					currentCostValue = CostFunctions.costFunction3Vars(currentPositon, _costFunction);
+				currentCostValue = evaluateCostFunction(
+						currentPositon,
+						_xArraysResponceSurface,
+						_responceSurfaceValues
+						);
 				
 				p.setCostFunctionValue(currentCostValue);
 
@@ -285,6 +289,25 @@ public class ParticleSwarmOptimizer {
 		
 	}
 
+	/**
+	 * @see https://www.ee.ucl.ac.uk/~mflanaga/java/PolyCubicSplineExample.java
+	 * 
+	 * @author Vittorio Trifari
+	 * 
+	 * @param interpArray, a List of value at which the user wants the interpolating value 
+	 * @param xArrays, a List of arrays containing all the independent variable (each per element)
+	 * @param y, an Object containing all the array of corresponding y values (is a n-dimensional matrix) 
+	 * @return the n-dimensional interpolating value
+	 */
+	private double evaluateCostFunction(Double[] interpArray, Object xArrays,  Object y) {
+				
+		// Create a PolyCubicSpline instance
+        PolyCubicSpline pcs =new PolyCubicSpline(xArrays, y);
+		
+		return pcs.interpolate(MyArrayUtils.convertToDoublePrimitive(interpArray));
+		
+	}
+	
 	private void populationInitialization() {
 		
 		System.out.println("\t------------------------------------");
@@ -297,10 +320,11 @@ public class ParticleSwarmOptimizer {
 			Double[] initialPosition = createRandomPositions(_numberOfDesignVariables);
 			
 			Double currentCostValue = null;
-			if(_costFunction == null)
-				currentCostValue = CostFunctions.sphere(initialPosition);
-			else
-				currentCostValue = CostFunctions.costFunction3Vars(initialPosition, _costFunction);
+			currentCostValue = evaluateCostFunction(
+					initialPosition,
+					_xArraysResponceSurface,
+					_responceSurfaceValues
+					);
 			
 			_population.add(
 					new Particle(
@@ -496,12 +520,20 @@ public class ParticleSwarmOptimizer {
 		this._convergenceThreshold = _convergenceThreshold;
 	}
 
-	public MyInterpolatingFunction getCostFunction() {
-		return _costFunction;
+	public Object getXArraysResponceSurface() {
+		return _xArraysResponceSurface;
 	}
 
-	public void setCostFunction(MyInterpolatingFunction _costFunction) {
-		this._costFunction = _costFunction;
+	public void setXArraysResponceSurface(Object _xArraysResponceSurface) {
+		this._xArraysResponceSurface = _xArraysResponceSurface;
 	}
-	
+
+	public Object getResponceSurfaceValues() {
+		return _responceSurfaceValues;
+	}
+
+	public void setResponceSurfaceValues(Object _responceSurfaceValues) {
+		this._responceSurfaceValues = _responceSurfaceValues;
+	}
+
 }

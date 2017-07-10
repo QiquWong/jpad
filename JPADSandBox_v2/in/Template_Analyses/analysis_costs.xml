@@ -18,7 +18,7 @@
 				<flight_time unit="hr"></flight_time>
 			</performance>
 			<global_data>
-				<utilization calculate="TRUE" method="AEA" unit="hr/year"></utilization> <!-- Methods: SFORZA or AEA  -->
+				<utilization calculate="TRUE" method="AEA" unit="hr/year"></utilization> <!-- Methods: AEA or SFORZA  -->
 				<doc>
 					<capital>
 						<life_span unit="years"></life_span> <!-- Default values: 16 years-->
