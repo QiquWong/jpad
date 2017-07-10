@@ -19,27 +19,20 @@ import org.controlsfx.control.StatusBar;
 
 import aircraft.components.Aircraft;
 import javafx.application.Application;
-import javafx.concurrent.Worker.State;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import jpadcommander.inputmanager.InputManagerAircraftDefaultController;
-import jpadcommander.inputmanager.InputManagerAircraftFromFileController;
 import standaloneutils.JPADXmlReader;
 
 public class Main extends Application {
@@ -68,13 +61,14 @@ public class Main extends Application {
 	//...........................................................................................
 	// STATUS BAR
 	private static StatusBar statusBar;
-	private static Button statusLight;
-	private static State status;
+	private static ProgressBar progressBar;
 	//...........................................................................................
 	// ACTION BUTTONS
+	// TODO: BIND UPDATE, SAVE AND NEW AIRCRAFT BUTTONS DISABLED PROPERTY TO THE AIRCRAFT OBJECT
 	private static Button setDataButton;
 	private static Button updateAllButton;
 	private static Button saveAircraftButton;
+	private static Button newAircraftButton;
 	//...........................................................................................
 	// AIRCRAFT OBJECT
 	private static Aircraft theAircraft;
@@ -218,368 +212,6 @@ public class Main extends Application {
 	private static ChoiceBox<String> fuselageSpoilersDeltaMinUnitChoiceBox;
 	private static ChoiceBox<String> fuselageSpoilersDeltaMaxUnitChoiceBox;
 	
-	public static BorderPane getMainLayout() {
-		return mainLayout;
-	}
-
-	public static void setMainLayout(BorderPane mainLayout) {
-		Main.mainLayout = mainLayout;
-	}
-
-	public static ChoiceBox<String> getFuselageXUnitChoiceBox() {
-		return fuselageXUnitChoiceBox;
-	}
-
-	public static void setFuselageXUnitChoiceBox(ChoiceBox<String> fuselageXUnitChoiceBox) {
-		Main.fuselageXUnitChoiceBox = fuselageXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageYUnitChoiceBox() {
-		return fuselageYUnitChoiceBox;
-	}
-
-	public static void setFuselageYUnitChoiceBox(ChoiceBox<String> fuselageYUnitChoiceBox) {
-		Main.fuselageYUnitChoiceBox = fuselageYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageZUnitChoiceBox() {
-		return fuselageZUnitChoiceBox;
-	}
-
-	public static void setFuselageZUnitChoiceBox(ChoiceBox<String> fuselageZUnitChoiceBox) {
-		Main.fuselageZUnitChoiceBox = fuselageZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getWingXUnitChoiceBox() {
-		return wingXUnitChoiceBox;
-	}
-
-	public static void setWingXUnitChoiceBox(ChoiceBox<String> wingXUnitChoiceBox) {
-		Main.wingXUnitChoiceBox = wingXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getWingYUnitChoiceBox() {
-		return wingYUnitChoiceBox;
-	}
-
-	public static void setWingYUnitChoiceBox(ChoiceBox<String> wingYUnitChoiceBox) {
-		Main.wingYUnitChoiceBox = wingYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getWingZUnitChoiceBox() {
-		return wingZUnitChoiceBox;
-	}
-
-	public static void setWingZUnitChoiceBox(ChoiceBox<String> wingZUnitChoiceBox) {
-		Main.wingZUnitChoiceBox = wingZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getWingRiggingAngleUnitChoiceBox() {
-		return wingRiggingAngleUnitChoiceBox;
-	}
-
-	public static void setWingRiggingAngleUnitChoiceBox(ChoiceBox<String> wingRiggingAngleUnitChoiceBox) {
-		Main.wingRiggingAngleUnitChoiceBox = wingRiggingAngleUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> gethTailXUnitChoiceBox() {
-		return hTailXUnitChoiceBox;
-	}
-
-	public static void sethTailXUnitChoiceBox(ChoiceBox<String> hTailXUnitChoiceBox) {
-		Main.hTailXUnitChoiceBox = hTailXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> gethTailYUnitChoiceBox() {
-		return hTailYUnitChoiceBox;
-	}
-
-	public static void sethTailYUnitChoiceBox(ChoiceBox<String> hTailYUnitChoiceBox) {
-		Main.hTailYUnitChoiceBox = hTailYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> gethtailZUnitChoiceBox() {
-		return htailZUnitChoiceBox;
-	}
-
-	public static void sethtailZUnitChoiceBox(ChoiceBox<String> htailZUnitChoiceBox) {
-		Main.htailZUnitChoiceBox = htailZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getvTailXUnitChoiceBox() {
-		return vTailXUnitChoiceBox;
-	}
-
-	public static void setvTailXUnitChoiceBox(ChoiceBox<String> vTailXUnitChoiceBox) {
-		Main.vTailXUnitChoiceBox = vTailXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getvTailYUnitChoiceBox() {
-		return vTailYUnitChoiceBox;
-	}
-
-	public static void setvTailYUnitChoiceBox(ChoiceBox<String> vTailYUnitChoiceBox) {
-		Main.vTailYUnitChoiceBox = vTailYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getvTailZUnitChoiceBox() {
-		return vTailZUnitChoiceBox;
-	}
-
-	public static void setvTailZUnitChoiceBox(ChoiceBox<String> vTailZUnitChoiceBox) {
-		Main.vTailZUnitChoiceBox = vTailZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getvTailRiggingAngleUnitChoiceBox() {
-		return vTailRiggingAngleUnitChoiceBox;
-	}
-
-	public static void setvTailRiggingAngleUnitChoiceBox(ChoiceBox<String> vTailRiggingAngleUnitChoiceBox) {
-		Main.vTailRiggingAngleUnitChoiceBox = vTailRiggingAngleUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getCanardXUnitChoiceBox() {
-		return canardXUnitChoiceBox;
-	}
-
-	public static void setCanardXUnitChoiceBox(ChoiceBox<String> canardXUnitChoiceBox) {
-		Main.canardXUnitChoiceBox = canardXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getCanardYUnitChoiceBox() {
-		return canardYUnitChoiceBox;
-	}
-
-	public static void setCanardYUnitChoiceBox(ChoiceBox<String> canardYUnitChoiceBox) {
-		Main.canardYUnitChoiceBox = canardYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getCanardZUnitChoiceBox() {
-		return canardZUnitChoiceBox;
-	}
-
-	public static void setCanardZUnitChoiceBox(ChoiceBox<String> canardZUnitChoiceBox) {
-		Main.canardZUnitChoiceBox = canardZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getCanardRiggingAngleUnitChoiceBox() {
-		return canardRiggingAngleUnitChoiceBox;
-	}
-
-	public static void setCanardRiggingAngleUnitChoiceBox(ChoiceBox<String> canardRiggingAngleUnitChoiceBox) {
-		Main.canardRiggingAngleUnitChoiceBox = canardRiggingAngleUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getPowerPlantXUnitChoiceBox() {
-		return powerPlantXUnitChoiceBox;
-	}
-
-	public static void setPowerPlantXUnitChoiceBox(ChoiceBox<String> powerPlantXUnitChoiceBox) {
-		Main.powerPlantXUnitChoiceBox = powerPlantXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getPowerPlantYUnitChoiceBox() {
-		return powerPlantYUnitChoiceBox;
-	}
-
-	public static void setPowerPlantYUnitChoiceBox(ChoiceBox<String> powerPlantYUnitChoiceBox) {
-		Main.powerPlantYUnitChoiceBox = powerPlantYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getPowerPlantZUnitChoiceBox() {
-		return powerPlantZUnitChoiceBox;
-	}
-
-	public static void setPowerPlantZUnitChoiceBox(ChoiceBox<String> powerPlantZUnitChoiceBox) {
-		Main.powerPlantZUnitChoiceBox = powerPlantZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getPowerPlantTiltAngleUnitChoiceBox() {
-		return powerPlantTiltAngleUnitChoiceBox;
-	}
-
-	public static void setPowerPlantTiltAngleUnitChoiceBox(ChoiceBox<String> powerPlantTiltAngleUnitChoiceBox) {
-		Main.powerPlantTiltAngleUnitChoiceBox = powerPlantTiltAngleUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getNacelleXUnitChoiceBox() {
-		return nacelleXUnitChoiceBox;
-	}
-
-	public static void setNacelleXUnitChoiceBox(ChoiceBox<String> nacelleXUnitChoiceBox) {
-		Main.nacelleXUnitChoiceBox = nacelleXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getNacelleYUnitChoiceBox() {
-		return nacelleYUnitChoiceBox;
-	}
-
-	public static void setNacelleYUnitChoiceBox(ChoiceBox<String> nacelleYUnitChoiceBox) {
-		Main.nacelleYUnitChoiceBox = nacelleYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getNacelleZUnitChoiceBox() {
-		return nacelleZUnitChoiceBox;
-	}
-
-	public static void setNacelleZUnitChoiceBox(ChoiceBox<String> nacelleZUnitChoiceBox) {
-		Main.nacelleZUnitChoiceBox = nacelleZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getLandingGearsXUnitChoiceBox() {
-		return landingGearsXUnitChoiceBox;
-	}
-
-	public static void setLandingGearsXUnitChoiceBox(ChoiceBox<String> landingGearsXUnitChoiceBox) {
-		Main.landingGearsXUnitChoiceBox = landingGearsXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getLandingGearsYUnitChoiceBox() {
-		return landingGearsYUnitChoiceBox;
-	}
-
-	public static void setLandingGearsYUnitChoiceBox(ChoiceBox<String> landingGearsYUnitChoiceBox) {
-		Main.landingGearsYUnitChoiceBox = landingGearsYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getLandingGearsZUnitChoiceBox() {
-		return landingGearsZUnitChoiceBox;
-	}
-
-	public static void setLandingGearsZUnitChoiceBox(ChoiceBox<String> landingGearsZUnitChoiceBox) {
-		Main.landingGearsZUnitChoiceBox = landingGearsZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getSystemsXUnitChoiceBox() {
-		return systemsXUnitChoiceBox;
-	}
-
-	public static void setSystemsXUnitChoiceBox(ChoiceBox<String> systemsXUnitChoiceBox) {
-		Main.systemsXUnitChoiceBox = systemsXUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getSystemsYUnitChoiceBox() {
-		return systemsYUnitChoiceBox;
-	}
-
-	public static void setSystemsYUnitChoiceBox(ChoiceBox<String> systemsYUnitChoiceBox) {
-		Main.systemsYUnitChoiceBox = systemsYUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getSystemsZUnitChoiceBox() {
-		return systemsZUnitChoiceBox;
-	}
-
-	public static void setSystemsZUnitChoiceBox(ChoiceBox<String> systemsZUnitChoiceBox) {
-		Main.systemsZUnitChoiceBox = systemsZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageLengthUnitChoiceBox() {
-		return fuselageLengthUnitChoiceBox;
-	}
-
-	public static void setFuselageLengthUnitChoiceBox(ChoiceBox<String> fuselageLengthUnitChoiceBox) {
-		Main.fuselageLengthUnitChoiceBox = fuselageLengthUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageNoseTipOffsetZUnitChoiceBox() {
-		return fuselageNoseTipOffsetZUnitChoiceBox;
-	}
-
-	public static void setFuselageNoseTipOffsetZUnitChoiceBox(ChoiceBox<String> fuselageNoseTipOffsetZUnitChoiceBox) {
-		Main.fuselageNoseTipOffsetZUnitChoiceBox = fuselageNoseTipOffsetZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageWindshieldWidthUnitChoiceBox() {
-		return fuselageWindshieldWidthUnitChoiceBox;
-	}
-
-	public static void setFuselageWindshieldWidthUnitChoiceBox(ChoiceBox<String> fuselageWindshieldWidthUnitChoiceBox) {
-		Main.fuselageWindshieldWidthUnitChoiceBox = fuselageWindshieldWidthUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageWindshieldHeightUnitChoiceBox() {
-		return fuselageWindshieldHeightUnitChoiceBox;
-	}
-
-	public static void setFuselageWindshieldHeightUnitChoiceBox(ChoiceBox<String> fuselageWindshieldHeightUnitChoiceBox) {
-		Main.fuselageWindshieldHeightUnitChoiceBox = fuselageWindshieldHeightUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageCylinderSectionWidthUnitChoiceBox() {
-		return fuselageCylinderSectionWidthUnitChoiceBox;
-	}
-
-	public static void setFuselageCylinderSectionWidthUnitChoiceBox(
-			ChoiceBox<String> fuselageCylinderSectionWidthUnitChoiceBox) {
-		Main.fuselageCylinderSectionWidthUnitChoiceBox = fuselageCylinderSectionWidthUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageCylinderSectionHeightUnitChoiceBox() {
-		return fuselageCylinderSectionHeightUnitChoiceBox;
-	}
-
-	public static void setFuselageCylinderSectionHeightUnitChoiceBox(
-			ChoiceBox<String> fuselageCylinderSectionHeightUnitChoiceBox) {
-		Main.fuselageCylinderSectionHeightUnitChoiceBox = fuselageCylinderSectionHeightUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageHeightFromGroundUnitChoiceBox() {
-		return fuselageHeightFromGroundUnitChoiceBox;
-	}
-
-	public static void setFuselageHeightFromGroundUnitChoiceBox(ChoiceBox<String> fuselageHeightFromGroundUnitChoiceBox) {
-		Main.fuselageHeightFromGroundUnitChoiceBox = fuselageHeightFromGroundUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageTailTipOffsetZUnitChoiceBox() {
-		return fuselageTailTipOffsetZUnitChoiceBox;
-	}
-
-	public static void setFuselageTailTipOffsetZUnitChoiceBox(ChoiceBox<String> fuselageTailTipOffsetZUnitChoiceBox) {
-		Main.fuselageTailTipOffsetZUnitChoiceBox = fuselageTailTipOffsetZUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageSpoilersDeltaMinUnitChoiceBox() {
-		return fuselageSpoilersDeltaMinUnitChoiceBox;
-	}
-
-	public static void setFuselageSpoilersDeltaMinUnitChoiceBox(ChoiceBox<String> fuselageSpoilersDeltaMinUnitChoiceBox) {
-		Main.fuselageSpoilersDeltaMinUnitChoiceBox = fuselageSpoilersDeltaMinUnitChoiceBox;
-	}
-
-	public static ChoiceBox<String> getFuselageSpoilersDeltaMaxUnitChoiceBox() {
-		return fuselageSpoilersDeltaMaxUnitChoiceBox;
-	}
-
-	public static void setFuselageSpoilersDeltaMaxUnitChoiceBox(ChoiceBox<String> fuselageSpoilersDeltaMaxUnitChoiceBox) {
-		Main.fuselageSpoilersDeltaMaxUnitChoiceBox = fuselageSpoilersDeltaMaxUnitChoiceBox;
-	}
-
-	public static Object getChoiseBoxSelectionDefaultAircraft() {
-		return choiseBoxSelectionDefaultAircraft;
-	}
-
-	public static Boolean getIsAircraftFormFile() {
-		return isAircraftFormFile;
-	}
-
-	public static ChoiceBox<String> getDefaultAircraftChoiseBox() {
-		return defaultAircraftChoiseBox;
-	}
-
-	public static void setPrimaryStage(Stage primaryStage) {
-		Main.primaryStage = primaryStage;
-	}
-
-	public static void setMainInputManagerAircraftFromFileLayout(BorderPane mainInputManagerAircraftFromFileLayout) {
-		Main.mainInputManagerAircraftFromFileLayout = mainInputManagerAircraftFromFileLayout;
-	}
-
-	public static void setMainInputManagerAircraftDefaultLayout(BorderPane mainInputManagerAircraftDefaultLayout) {
-		Main.mainInputManagerAircraftDefaultLayout = mainInputManagerAircraftDefaultLayout;
-	}
-
 	private static List<TextField> textFieldSpoilersYInboradList = new ArrayList<>();
 	private static List<TextField> textFieldSpoilersYOutboradList = new ArrayList<>();
 	private static List<TextField> textFieldSpoilersMinDeflectionList = new ArrayList<>();
@@ -635,44 +267,21 @@ public class Main extends Application {
 		return isAircraftFile;
 	}
 	
-	public static void checkStatus(State status) {
-		if(Main.getStatus().equals(State.RUNNING)) {
-			Main.getStatusBar().setText("Running calculation ... "); 
-			Main.getStatusLight().setBackground(
-		        		new Background(
-		        				new BackgroundFill(
-		        						Color.ORANGE,
-		        						new CornerRadii(2),
-		        						new Insets(4)
-		        						)
-		        				)
-		        		);
-		}
-		else if(Main.getStatus().equals(State.READY)) {
-			Main.getStatusBar().setText("Ready");
-			Main.getStatusLight().setBackground(
-		        		new Background(
-		        				new BackgroundFill(
-		        						Color.LIGHTGREEN,
-		        						new CornerRadii(2),
-		        						new Insets(4)
-		        						)
-		        				)
-		        		);
-		}
-	}
-	
 	private void showMainView() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("view/MainView.fxml"));
 		Main.mainLayout = loader.load();
 		Main.setStatusBar(new StatusBar());
-		Main.setStatusLight(new Button());
-        Main.getStatusLight().setPrefWidth(30.0);
-        Main.getStatusBar().getRightItems().add(Main.getStatusLight());
-        Main.setStatus(State.READY);
-        checkStatus(Main.getStatus());
-		Main.mainLayout.setBottom(Main.getStatusBar());
+		Main.setProgressBar(new ProgressBar());
+		Main.getProgressBar().setProgress(0.0);
+		ToolBar statusToolbar = new ToolBar();
+		statusToolbar.getItems().add(Main.getStatusBar());
+		statusToolbar.getItems().add(Main.getProgressBar());
+		Main.getProgressBar().setPrefHeight(statusToolbar.getPrefHeight());
+		Main.getProgressBar().setPrefWidth(Main.getMainLayout().getPrefWidth()*0.6);
+		Main.getStatusBar().setPrefWidth(Main.getMainLayout().getPrefWidth()*0.2);
+		Main.getStatusBar().setText("Welcome to JPADCommander!");
+		Main.mainLayout.setBottom(statusToolbar);
 		Scene scene = new Scene(mainLayout);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -684,52 +293,46 @@ public class Main extends Application {
 		loader.setLocation(Main.class.getResource("view/MainItems.fxml"));
 		HBox mainItems = loader.load();
 		mainLayout.setCenter(mainItems);
-//		Image backgroundImage = new Image("file:images/Logo_DAF_Flat-Elevator.jpg");
-//		ImageView imageView = new ImageView(backgroundImage);
-//		mainItems.getChildren().add(imageView);
 		primaryStage.show();
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static void showInputManager() throws IOException {
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("inputmanager/InputManager.fxml"));
-		mainInputManagerLayout = loader.load();
-
-		// get the action buttons toolbar
-		Main.setActionButtonsToolbar(
-				(ToolBar) Main.getMainInputManagerLayout()
-				.lookup("#actionButtonsToolbar")
-				);
-		mainInputManagerLayout.setTop(actionButtonsToolbar);
 		
-		mainLayout.setCenter(mainInputManagerLayout);
+		if(Main.getTheAircraft() == null) {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Main.class.getResource("inputmanager/InputManager.fxml"));
+			mainInputManagerLayout = loader.load();
 
-		primaryStage.show();
-		
-		if(Main.getTheAircraft() != null) {
-			
-			if(Main.isAircraftFormFile()) {
-				InputManagerAircraftFromFileController.logAircraftFromFileToInterface();
-			}
-			else {
-				InputManagerAircraftDefaultController.logAircraftDefaultToInterface();
-			}
-
-			InputManagerAircraftFromFileController.logFuselageFromFileToInterface();
-			// TODO: ADD OTHER WHEN AVAILABLE
-			
-//			InputManagerAircraftFromFileController.createAircraftFrontView();
-//			InputManagerAircraftFromFileController.createAircraftSideView();
-//			InputManagerAircraftFromFileController.createAircraftTopView();
-//			InputManagerAircraftFromFileController.createFuselageFrontView();
-//			InputManagerAircraftFromFileController.createFuselageSideView();
-//			InputManagerAircraftFromFileController.createFuselageTopView();
-			// TODO: ADD OTHER WHEN AVAILABLE
-			
-			
+			// get the action buttons toolbar
+			Main.setActionButtonsToolbar(
+					(ToolBar) Main.getMainInputManagerLayout()
+					.lookup("#actionButtonsToolbar")
+					);
+			Main.setSetDataButton(
+					(Button) Main.getMainInputManagerLayout()
+					.lookup("#setDataButton")
+					);
+			Main.setUpdateAllButton(
+					(Button) Main.getMainInputManagerLayout()
+					.lookup("#updateAllButton")
+					);
+			Main.setSaveAircraftButton(
+					(Button) Main.getMainInputManagerLayout()
+					.lookup("#saveAircraftButton")
+					);
+			Main.setNewAircraftButton(
+					(Button) Main.getMainInputManagerLayout()
+					.lookup("#newAircraftButton")
+					);
 		}
+		
+		mainInputManagerLayout.setTop(actionButtonsToolbar);
+		mainLayout.setCenter(mainInputManagerLayout);
+		
+		Main.getStatusBar().setText("Ready!");
+		
+		primaryStage.show();
 		
 	}
 
@@ -1209,22 +812,6 @@ public class Main extends Application {
 		Main.statusBar = statusBar;
 	}
 
-	public static State getStatus() {
-		return status;
-	}
-
-	public static void setStatus(State status) {
-		Main.status = status;
-	}
-
-	public static Button getStatusLight() {
-		return statusLight;
-	}
-
-	public static void setStatusLight(Button statusLight) {
-		Main.statusLight = statusLight;
-	}
-
 	public static BorderPane getMainInputManagerAircraftSubContentFieldsLayout() {
 		return mainInputManagerAircraftSubContentFieldsLayout;
 	}
@@ -1699,6 +1286,384 @@ public class Main extends Application {
 
 	public static void setFuselageRoughnessUnitChoiceBox(ChoiceBox<String> fuselageRoughnessUnitChoiceBox) {
 		Main.fuselageRoughnessUnitChoiceBox = fuselageRoughnessUnitChoiceBox;
+	}
+
+	public static BorderPane getMainLayout() {
+		return mainLayout;
+	}
+
+	public static void setMainLayout(BorderPane mainLayout) {
+		Main.mainLayout = mainLayout;
+	}
+
+	public static ChoiceBox<String> getFuselageXUnitChoiceBox() {
+		return fuselageXUnitChoiceBox;
+	}
+
+	public static void setFuselageXUnitChoiceBox(ChoiceBox<String> fuselageXUnitChoiceBox) {
+		Main.fuselageXUnitChoiceBox = fuselageXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageYUnitChoiceBox() {
+		return fuselageYUnitChoiceBox;
+	}
+
+	public static void setFuselageYUnitChoiceBox(ChoiceBox<String> fuselageYUnitChoiceBox) {
+		Main.fuselageYUnitChoiceBox = fuselageYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageZUnitChoiceBox() {
+		return fuselageZUnitChoiceBox;
+	}
+
+	public static void setFuselageZUnitChoiceBox(ChoiceBox<String> fuselageZUnitChoiceBox) {
+		Main.fuselageZUnitChoiceBox = fuselageZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getWingXUnitChoiceBox() {
+		return wingXUnitChoiceBox;
+	}
+
+	public static void setWingXUnitChoiceBox(ChoiceBox<String> wingXUnitChoiceBox) {
+		Main.wingXUnitChoiceBox = wingXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getWingYUnitChoiceBox() {
+		return wingYUnitChoiceBox;
+	}
+
+	public static void setWingYUnitChoiceBox(ChoiceBox<String> wingYUnitChoiceBox) {
+		Main.wingYUnitChoiceBox = wingYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getWingZUnitChoiceBox() {
+		return wingZUnitChoiceBox;
+	}
+
+	public static void setWingZUnitChoiceBox(ChoiceBox<String> wingZUnitChoiceBox) {
+		Main.wingZUnitChoiceBox = wingZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getWingRiggingAngleUnitChoiceBox() {
+		return wingRiggingAngleUnitChoiceBox;
+	}
+
+	public static void setWingRiggingAngleUnitChoiceBox(ChoiceBox<String> wingRiggingAngleUnitChoiceBox) {
+		Main.wingRiggingAngleUnitChoiceBox = wingRiggingAngleUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> gethTailXUnitChoiceBox() {
+		return hTailXUnitChoiceBox;
+	}
+
+	public static void sethTailXUnitChoiceBox(ChoiceBox<String> hTailXUnitChoiceBox) {
+		Main.hTailXUnitChoiceBox = hTailXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> gethTailYUnitChoiceBox() {
+		return hTailYUnitChoiceBox;
+	}
+
+	public static void sethTailYUnitChoiceBox(ChoiceBox<String> hTailYUnitChoiceBox) {
+		Main.hTailYUnitChoiceBox = hTailYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> gethtailZUnitChoiceBox() {
+		return htailZUnitChoiceBox;
+	}
+
+	public static void sethtailZUnitChoiceBox(ChoiceBox<String> htailZUnitChoiceBox) {
+		Main.htailZUnitChoiceBox = htailZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getvTailXUnitChoiceBox() {
+		return vTailXUnitChoiceBox;
+	}
+
+	public static void setvTailXUnitChoiceBox(ChoiceBox<String> vTailXUnitChoiceBox) {
+		Main.vTailXUnitChoiceBox = vTailXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getvTailYUnitChoiceBox() {
+		return vTailYUnitChoiceBox;
+	}
+
+	public static void setvTailYUnitChoiceBox(ChoiceBox<String> vTailYUnitChoiceBox) {
+		Main.vTailYUnitChoiceBox = vTailYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getvTailZUnitChoiceBox() {
+		return vTailZUnitChoiceBox;
+	}
+
+	public static void setvTailZUnitChoiceBox(ChoiceBox<String> vTailZUnitChoiceBox) {
+		Main.vTailZUnitChoiceBox = vTailZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getvTailRiggingAngleUnitChoiceBox() {
+		return vTailRiggingAngleUnitChoiceBox;
+	}
+
+	public static void setvTailRiggingAngleUnitChoiceBox(ChoiceBox<String> vTailRiggingAngleUnitChoiceBox) {
+		Main.vTailRiggingAngleUnitChoiceBox = vTailRiggingAngleUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getCanardXUnitChoiceBox() {
+		return canardXUnitChoiceBox;
+	}
+
+	public static void setCanardXUnitChoiceBox(ChoiceBox<String> canardXUnitChoiceBox) {
+		Main.canardXUnitChoiceBox = canardXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getCanardYUnitChoiceBox() {
+		return canardYUnitChoiceBox;
+	}
+
+	public static void setCanardYUnitChoiceBox(ChoiceBox<String> canardYUnitChoiceBox) {
+		Main.canardYUnitChoiceBox = canardYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getCanardZUnitChoiceBox() {
+		return canardZUnitChoiceBox;
+	}
+
+	public static void setCanardZUnitChoiceBox(ChoiceBox<String> canardZUnitChoiceBox) {
+		Main.canardZUnitChoiceBox = canardZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getCanardRiggingAngleUnitChoiceBox() {
+		return canardRiggingAngleUnitChoiceBox;
+	}
+
+	public static void setCanardRiggingAngleUnitChoiceBox(ChoiceBox<String> canardRiggingAngleUnitChoiceBox) {
+		Main.canardRiggingAngleUnitChoiceBox = canardRiggingAngleUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getPowerPlantXUnitChoiceBox() {
+		return powerPlantXUnitChoiceBox;
+	}
+
+	public static void setPowerPlantXUnitChoiceBox(ChoiceBox<String> powerPlantXUnitChoiceBox) {
+		Main.powerPlantXUnitChoiceBox = powerPlantXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getPowerPlantYUnitChoiceBox() {
+		return powerPlantYUnitChoiceBox;
+	}
+
+	public static void setPowerPlantYUnitChoiceBox(ChoiceBox<String> powerPlantYUnitChoiceBox) {
+		Main.powerPlantYUnitChoiceBox = powerPlantYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getPowerPlantZUnitChoiceBox() {
+		return powerPlantZUnitChoiceBox;
+	}
+
+	public static void setPowerPlantZUnitChoiceBox(ChoiceBox<String> powerPlantZUnitChoiceBox) {
+		Main.powerPlantZUnitChoiceBox = powerPlantZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getPowerPlantTiltAngleUnitChoiceBox() {
+		return powerPlantTiltAngleUnitChoiceBox;
+	}
+
+	public static void setPowerPlantTiltAngleUnitChoiceBox(ChoiceBox<String> powerPlantTiltAngleUnitChoiceBox) {
+		Main.powerPlantTiltAngleUnitChoiceBox = powerPlantTiltAngleUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getNacelleXUnitChoiceBox() {
+		return nacelleXUnitChoiceBox;
+	}
+
+	public static void setNacelleXUnitChoiceBox(ChoiceBox<String> nacelleXUnitChoiceBox) {
+		Main.nacelleXUnitChoiceBox = nacelleXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getNacelleYUnitChoiceBox() {
+		return nacelleYUnitChoiceBox;
+	}
+
+	public static void setNacelleYUnitChoiceBox(ChoiceBox<String> nacelleYUnitChoiceBox) {
+		Main.nacelleYUnitChoiceBox = nacelleYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getNacelleZUnitChoiceBox() {
+		return nacelleZUnitChoiceBox;
+	}
+
+	public static void setNacelleZUnitChoiceBox(ChoiceBox<String> nacelleZUnitChoiceBox) {
+		Main.nacelleZUnitChoiceBox = nacelleZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getLandingGearsXUnitChoiceBox() {
+		return landingGearsXUnitChoiceBox;
+	}
+
+	public static void setLandingGearsXUnitChoiceBox(ChoiceBox<String> landingGearsXUnitChoiceBox) {
+		Main.landingGearsXUnitChoiceBox = landingGearsXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getLandingGearsYUnitChoiceBox() {
+		return landingGearsYUnitChoiceBox;
+	}
+
+	public static void setLandingGearsYUnitChoiceBox(ChoiceBox<String> landingGearsYUnitChoiceBox) {
+		Main.landingGearsYUnitChoiceBox = landingGearsYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getLandingGearsZUnitChoiceBox() {
+		return landingGearsZUnitChoiceBox;
+	}
+
+	public static void setLandingGearsZUnitChoiceBox(ChoiceBox<String> landingGearsZUnitChoiceBox) {
+		Main.landingGearsZUnitChoiceBox = landingGearsZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getSystemsXUnitChoiceBox() {
+		return systemsXUnitChoiceBox;
+	}
+
+	public static void setSystemsXUnitChoiceBox(ChoiceBox<String> systemsXUnitChoiceBox) {
+		Main.systemsXUnitChoiceBox = systemsXUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getSystemsYUnitChoiceBox() {
+		return systemsYUnitChoiceBox;
+	}
+
+	public static void setSystemsYUnitChoiceBox(ChoiceBox<String> systemsYUnitChoiceBox) {
+		Main.systemsYUnitChoiceBox = systemsYUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getSystemsZUnitChoiceBox() {
+		return systemsZUnitChoiceBox;
+	}
+
+	public static void setSystemsZUnitChoiceBox(ChoiceBox<String> systemsZUnitChoiceBox) {
+		Main.systemsZUnitChoiceBox = systemsZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageLengthUnitChoiceBox() {
+		return fuselageLengthUnitChoiceBox;
+	}
+
+	public static void setFuselageLengthUnitChoiceBox(ChoiceBox<String> fuselageLengthUnitChoiceBox) {
+		Main.fuselageLengthUnitChoiceBox = fuselageLengthUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageNoseTipOffsetZUnitChoiceBox() {
+		return fuselageNoseTipOffsetZUnitChoiceBox;
+	}
+
+	public static void setFuselageNoseTipOffsetZUnitChoiceBox(ChoiceBox<String> fuselageNoseTipOffsetZUnitChoiceBox) {
+		Main.fuselageNoseTipOffsetZUnitChoiceBox = fuselageNoseTipOffsetZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageWindshieldWidthUnitChoiceBox() {
+		return fuselageWindshieldWidthUnitChoiceBox;
+	}
+
+	public static void setFuselageWindshieldWidthUnitChoiceBox(ChoiceBox<String> fuselageWindshieldWidthUnitChoiceBox) {
+		Main.fuselageWindshieldWidthUnitChoiceBox = fuselageWindshieldWidthUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageWindshieldHeightUnitChoiceBox() {
+		return fuselageWindshieldHeightUnitChoiceBox;
+	}
+
+	public static void setFuselageWindshieldHeightUnitChoiceBox(ChoiceBox<String> fuselageWindshieldHeightUnitChoiceBox) {
+		Main.fuselageWindshieldHeightUnitChoiceBox = fuselageWindshieldHeightUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageCylinderSectionWidthUnitChoiceBox() {
+		return fuselageCylinderSectionWidthUnitChoiceBox;
+	}
+
+	public static void setFuselageCylinderSectionWidthUnitChoiceBox(
+			ChoiceBox<String> fuselageCylinderSectionWidthUnitChoiceBox) {
+		Main.fuselageCylinderSectionWidthUnitChoiceBox = fuselageCylinderSectionWidthUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageCylinderSectionHeightUnitChoiceBox() {
+		return fuselageCylinderSectionHeightUnitChoiceBox;
+	}
+
+	public static void setFuselageCylinderSectionHeightUnitChoiceBox(
+			ChoiceBox<String> fuselageCylinderSectionHeightUnitChoiceBox) {
+		Main.fuselageCylinderSectionHeightUnitChoiceBox = fuselageCylinderSectionHeightUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageHeightFromGroundUnitChoiceBox() {
+		return fuselageHeightFromGroundUnitChoiceBox;
+	}
+
+	public static void setFuselageHeightFromGroundUnitChoiceBox(ChoiceBox<String> fuselageHeightFromGroundUnitChoiceBox) {
+		Main.fuselageHeightFromGroundUnitChoiceBox = fuselageHeightFromGroundUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageTailTipOffsetZUnitChoiceBox() {
+		return fuselageTailTipOffsetZUnitChoiceBox;
+	}
+
+	public static void setFuselageTailTipOffsetZUnitChoiceBox(ChoiceBox<String> fuselageTailTipOffsetZUnitChoiceBox) {
+		Main.fuselageTailTipOffsetZUnitChoiceBox = fuselageTailTipOffsetZUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageSpoilersDeltaMinUnitChoiceBox() {
+		return fuselageSpoilersDeltaMinUnitChoiceBox;
+	}
+
+	public static void setFuselageSpoilersDeltaMinUnitChoiceBox(ChoiceBox<String> fuselageSpoilersDeltaMinUnitChoiceBox) {
+		Main.fuselageSpoilersDeltaMinUnitChoiceBox = fuselageSpoilersDeltaMinUnitChoiceBox;
+	}
+
+	public static ChoiceBox<String> getFuselageSpoilersDeltaMaxUnitChoiceBox() {
+		return fuselageSpoilersDeltaMaxUnitChoiceBox;
+	}
+
+	public static void setFuselageSpoilersDeltaMaxUnitChoiceBox(ChoiceBox<String> fuselageSpoilersDeltaMaxUnitChoiceBox) {
+		Main.fuselageSpoilersDeltaMaxUnitChoiceBox = fuselageSpoilersDeltaMaxUnitChoiceBox;
+	}
+
+	public static Object getChoiseBoxSelectionDefaultAircraft() {
+		return choiseBoxSelectionDefaultAircraft;
+	}
+
+	public static Boolean getIsAircraftFormFile() {
+		return isAircraftFormFile;
+	}
+
+	public static ChoiceBox<String> getDefaultAircraftChoiseBox() {
+		return defaultAircraftChoiseBox;
+	}
+
+	public static void setPrimaryStage(Stage primaryStage) {
+		Main.primaryStage = primaryStage;
+	}
+
+	public static void setMainInputManagerAircraftFromFileLayout(BorderPane mainInputManagerAircraftFromFileLayout) {
+		Main.mainInputManagerAircraftFromFileLayout = mainInputManagerAircraftFromFileLayout;
+	}
+
+	public static void setMainInputManagerAircraftDefaultLayout(BorderPane mainInputManagerAircraftDefaultLayout) {
+		Main.mainInputManagerAircraftDefaultLayout = mainInputManagerAircraftDefaultLayout;
+	}
+
+	public static Button getNewAircraftButton() {
+		return newAircraftButton;
+	}
+
+	public static void setNewAircraftButton(Button newAircraftButton) {
+		Main.newAircraftButton = newAircraftButton;
+	}
+
+	public static ProgressBar getProgressBar() {
+		return progressBar;
+	}
+
+	public static void setProgressBar(ProgressBar progressBar) {
+		Main.progressBar = progressBar;
 	}
 
 }

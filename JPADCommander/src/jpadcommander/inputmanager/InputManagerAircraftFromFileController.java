@@ -30,7 +30,6 @@ import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import graphics.D3Plotter;
 import graphics.D3PlotterOptions;
-import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -78,8 +77,6 @@ public class InputManagerAircraftFromFileController {
 	}
 
 	private void loadAircraftFileImplementation() throws IOException, InterruptedException {
-		Main.setStatus(State.RUNNING);
-		Main.checkStatus(Main.getStatus());
 		
 		MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, Main.getDatabaseDirectoryPath());
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
@@ -91,6 +88,7 @@ public class InputManagerAircraftFromFileController {
 		HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
 		VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
+		Main.getProgressBar().setProgress(0.1);
 		
 		String dirLiftingSurfaces = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces";
 		String dirFuselages = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "fuselages";
@@ -126,29 +124,37 @@ public class InputManagerAircraftFromFileController {
 				fusDesDatabaseReader,
 				veDSCDatabaseReader)
 				);
+		Main.getProgressBar().setProgress(0.2);
 
 		// COMPONENTS LOG TO INTERFACE
 		logAircraftFromFileToInterface();
+		Main.getProgressBar().setProgress(0.3);
 		logFuselageFromFileToInterface();
+		Main.getProgressBar().setProgress(0.4);
 		
 		// COMPONENTS 3 VIEW CREATION
 		//............................
 		// aircraft
 		createAircraftTopView();
+		Main.getProgressBar().setProgress(0.5);
 		createAircraftSideView();
+		Main.getProgressBar().setProgress(0.6);
 		createAircraftFrontView();
+		Main.getProgressBar().setProgress(0.7);
 		//............................
 		// aircraft
 		createFuselageTopView();
+		Main.getProgressBar().setProgress(0.8);
 		createFuselageSideView();
+		Main.getProgressBar().setProgress(0.9);
 		createFuselageFrontView();
+		Main.getProgressBar().setProgress(1.0);
 		
 		// write again
 		System.setOut(originalOut);
 		
-		//////////////////////////////////////////////////////////////////////////////////
-		Main.setStatus(State.READY);
-		Main.checkStatus(Main.getStatus());
+		Main.getStatusBar().setText("Aircraft loaded!");
+		
 	}
 
 	public static void createAircraftTopView() {

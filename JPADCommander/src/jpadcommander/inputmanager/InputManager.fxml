@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
@@ -965,6 +966,8 @@
    <top>
       <ToolBar id="actionButtonsToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
+            <Button id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Aircraft" />
+            <Region prefWidth="50.0" />
           <Button id="setDataButton" mnemonicParsing="false" text="Set  Data" />
             <Button id="updateAllButton" mnemonicParsing="false" text="Update All" />
             <Button id="saveAircraftButton" mnemonicParsing="false" text="Save Aircraft" />

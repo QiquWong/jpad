@@ -3407,7 +3407,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				}
 			}
 
-			reportDiscretizedVariables();
+//			reportDiscretizedVariables();
 
 			sb
 			.append("\t=====================================\n")

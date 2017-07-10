@@ -10,8 +10,8 @@ public class MainViewController {
 	@FXML
 	private void goHome() throws IOException {
 		Main.showMainItems();
-		
-		// TODO : IF AIRCRAFT != NULL RE-FILL ALL FIELDS AS THEY WERE BEFORE
+		Main.getProgressBar().setProgress(0.0);
+		Main.getStatusBar().setText("Welcome to JPADCommander!");
 	}
 	
 }

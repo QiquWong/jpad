@@ -26,7 +26,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javaslang.Tuple2;
-import writers.JPADStaticWriteUtils;
 
 public class PostProcessorExcelMain extends Application {
 

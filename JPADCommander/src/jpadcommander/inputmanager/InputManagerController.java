@@ -5,9 +5,12 @@ import java.io.IOException;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.SplitPane;
@@ -16,6 +19,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import jpadcommander.Main;
 
 public class InputManagerController {
@@ -351,6 +356,8 @@ public class InputManagerController {
 	private void showInputManagerAircraftFromFileContent() throws IOException {
 		
 		Main.setIsAircraftFormFile(Boolean.TRUE);
+		Main.getProgressBar().setProgress(0.0);
+		Main.getStatusBar().setText("Ready!");
 		
 		//.......................................................................................
 		// AIRCRAFT TAB FILEDS CAPTURE
@@ -462,6 +469,8 @@ public class InputManagerController {
 	private void showInputManagerAircraftDefaultContent() throws IOException {
 		
 		Main.setIsAircraftFormFile(Boolean.FALSE);
+		Main.getProgressBar().setProgress(0.0);
+		Main.getStatusBar().setText("Ready!");
 		
 		//.......................................................................................
 		// AIRCRAFT TAB
@@ -593,4 +602,251 @@ public class InputManagerController {
 		Main.getFuselageViewsAndDataLogSplitPane().setDividerPositions(0.9);
 		
 	};
+	
+	@FXML
+	private void newAircraft() throws IOException {
+		
+		//..................................................................................
+		// INPUT DATA WARNING
+		Stage inputDataWarning = new Stage();
+		
+		inputDataWarning.setTitle("New Aircraft Warning");
+		inputDataWarning.initModality(Modality.WINDOW_MODAL);
+		inputDataWarning.initOwner(Main.getPrimaryStage());
+
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/InputManagerWarning.fxml"));
+		BorderPane inputDataWarningBorderPane = loader.load();
+		
+		Scene scene = new Scene(inputDataWarningBorderPane);
+        inputDataWarning.setScene(scene);
+        inputDataWarning.sizeToScene();
+        inputDataWarning.show();
+
+        Button yesButton = (Button) inputDataWarningBorderPane.lookup("#warningYesButton");
+        yesButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				newAircraftImplementation();
+				inputDataWarning.close();
+			}
+        	
+		});
+        Button noButton = (Button) inputDataWarningBorderPane.lookup("#warningNoButton");
+        noButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				 inputDataWarning.close();
+			}
+        	
+		});
+        
+	}
+	
+	private void newAircraftImplementation() {
+		
+		//..................................................................................
+		// PRELIMINARY OPERATIONS
+		Main.getStatusBar().setText("Ready!");
+		Main.getProgressBar().setProgress(0.0);
+
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftInputFile().clear();
+		else
+			Main.getDefaultAircraftChoiceBox().getSelectionModel().clearSelection();
+		
+		//..................................................................................
+		// AIRCRAFT
+		Main.getChoiceBoxAircraftType().getSelectionModel().clearSelection();
+		Main.getChoiceBoxRegulationsType().getSelectionModel().clearSelection();
+		
+		// cabin configuration
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftCabinConfiguration().clear();
+		
+		// fuselage
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftFuselageFile().clear();
+		Main.getTextFieldAircraftFuselageX().clear();
+		Main.getFuselageXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftFuselageY().clear();
+		Main.getFuselageYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftFuselageZ().clear();
+		Main.getFuselageZUnitChoiceBox().getSelectionModel().clearSelection();
+		
+		// wing
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftWingFile().clear();
+		Main.getTextFieldAircraftWingX().clear();
+		Main.getWingXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftWingY().clear();
+		Main.getWingYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftWingZ().clear();
+		Main.getWingZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftWingRiggingAngle().clear();
+		Main.getWingRiggingAngleUnitChoiceBox().getSelectionModel().clearSelection();
+		
+		// hTail
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftHorizontalTailFile().clear();
+		Main.getTextFieldAircraftHorizontalTailX().clear();
+		Main.gethTailXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftHorizontalTailY().clear();
+		Main.gethTailYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftHorizontalTailZ().clear();
+		Main.gethtailZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftHorizontalTailRiggingAngle().clear();
+		Main.gethTailRiggingAngleUnitChoiceBox().getSelectionModel().clearSelection();
+		
+		// vTail
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftVerticalTailFile().clear();
+		Main.getTextFieldAircraftVerticalTailX().clear();
+		Main.getvTailXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftVerticalTailY().clear();
+		Main.getvTailYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftVerticalTailZ().clear();
+		Main.getvTailZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftVerticalTailRiggingAngle().clear();
+		Main.getvTailRiggingAngleUnitChoiceBox().getSelectionModel().clearSelection();
+		
+		// canard
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftCanardFile().clear();
+		Main.getTextFieldAircraftCanardX().clear();
+		Main.getCanardXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftCanardY().clear();
+		Main.getCanardYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftCanardZ().clear();
+		Main.getCanardZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftCanardRiggingAngle().clear();
+		Main.getCanardRiggingAngleUnitChoiceBox().getSelectionModel().clearSelection();
+		
+		// Power Plant
+		Main.getPowerPlantXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getPowerPlantYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getPowerPlantZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getPowerPlantTiltAngleUnitChoiceBox().getSelectionModel().clearSelection();
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftEngineFileList().stream().forEach(t -> t.clear());
+		Main.getTextFieldAircraftEngineXList().stream().forEach(t -> t.clear());
+		Main.getTextFieldAircraftEngineYList().stream().forEach(t -> t.clear());
+		Main.getTextFieldAircraftEngineZList().stream().forEach(t -> t.clear());
+		Main.getChoiceBoxesAircraftEnginePositonList().stream().forEach(ep -> ep.getSelectionModel().clearSelection());
+		Main.getTextFieldAircraftEngineTiltList().stream().forEach(t -> t.clear());
+		
+		// Nacelle
+		Main.getNacelleXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getNacelleYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getNacelleZUnitChoiceBox().getSelectionModel().clearSelection();
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftNacelleFileList().stream().forEach(t -> t.clear());
+		Main.getTextFieldAircraftNacelleXList().stream().forEach(t -> t.clear());
+		Main.getTextFieldAircraftNacelleYList().stream().forEach(t -> t.clear());
+		Main.getTextFieldAircraftNacelleZList().stream().forEach(t -> t.clear());
+		Main.getChoiceBoxesAircraftNacellePositonList().stream().forEach(ep -> ep.getSelectionModel().clearSelection());
+		
+		// Landing Gears
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftLandingGearsFile().clear();
+		Main.getTextFieldAircraftLandingGearsX().clear();
+		Main.getLandingGearsXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftLandingGearsY().clear();
+		Main.getLandingGearsYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftLandingGearsZ().clear();
+		Main.getLandingGearsZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getChoiceBoxAircraftLandingGearsPosition().getSelectionModel().clearSelection();
+		
+		// Systems
+		if(Main.getIsAircraftFormFile())
+			Main.getTextFieldAircraftSystemsFile().clear();
+		Main.getTextFieldAircraftSystemsX().clear();
+		Main.getSystemsXUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftSystemsY().clear();
+		Main.getSystemsYUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldAircraftSystemsZ().clear();
+		Main.getSystemsZUnitChoiceBox().getSelectionModel().clearSelection();
+		
+		// 3 View and TextArea
+		Main.getTextAreaAircraftConsoleOutput().clear();
+		Main.getAircraftTopViewPane().getChildren().clear();
+		Main.getAircraftSideViewPane().getChildren().clear();
+		Main.getAircraftFrontViewPane().getChildren().clear();
+		
+		//..................................................................................
+		// FUSELAGE
+		Main.getFuselageAdjustCriterion().getSelectionModel().clearSelection();
+		Main.getFuselageAdjustCriterion().setDisable(true);
+		
+		// Pressurized
+		Main.getFuselagePressurizedCheckBox().setSelected(false);
+		
+		// Global Data
+		Main.getTextFieldFuselageDeckNumber().clear();
+		Main.getTextFieldFuselageLength().clear();
+		Main.getFuselageLengthUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageSurfaceRoughness().clear();
+		Main.getFuselageRoughnessUnitChoiceBox().getSelectionModel().clearSelection();
+		
+		// Nose Trunk
+		Main.getTextFieldFuselageNoseLengthRatio().clear();
+		Main.getTextFieldFuselageNoseTipOffset().clear();
+		Main.getFuselageNoseTipOffsetZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageNoseDxCap().clear();
+		Main.getChoiceBoxFuselageNoseWindshieldType().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageNoseWindshieldHeight().clear();
+		Main.getFuselageWindshieldHeightUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageNoseWindshieldWidth().clear();
+		Main.getFuselageWindshieldWidthUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageNoseMidSectionHeight().clear();
+		Main.getTextFieldFuselageNoseMidSectionRhoUpper().clear();
+		Main.getTextFieldFuselageNoseMidSectionRhoLower().clear();
+
+		// Cylindrical Trunk
+		Main.getTextFieldFuselageCylinderLengthRatio().clear();
+		Main.getTextFieldFuselageCylinderSectionWidth().clear();
+		Main.getFuselageCylinderSectionWidthUnitChoiceBox().getSelectionModel().clearSelection();		
+		Main.getTextFieldFuselageCylinderSectionHeight().clear();
+		Main.getFuselageCylinderSectionHeightUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageCylinderHeightFromGround().clear();
+		Main.getFuselageHeightFromGroundUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageCylinderSectionHeightRatio().clear();
+		Main.getTextFieldFuselageCylinderSectionRhoUpper().clear();
+		Main.getTextFieldFuselageCylinderSectionRhoLower().clear();
+		
+		// Tail Trunk
+		Main.getTextFieldFuselageTailTipOffset().clear();
+		Main.getFuselageTailTipOffsetZUnitChoiceBox().getSelectionModel().clearSelection();
+		Main.getTextFieldFuselageTailDxCap().clear();
+		Main.getTextFieldFuselageTailMidSectionHeight().clear();
+		Main.getTextFieldFuselageTailMidRhoUpper().clear();
+		Main.getTextFieldFuselageTailMidRhoLower().clear();
+		
+		// Spoilers
+		if(!Main.getTheAircraft().getFuselage().getSpoilers().isEmpty()) {
+			Main.getFuselageSpoilersDeltaMaxUnitChoiceBox().getSelectionModel().clearSelection();
+			Main.getFuselageSpoilersDeltaMinUnitChoiceBox().getSelectionModel().clearSelection();	
+			Main.getTextFieldSpoilersXInboradList().stream().forEach(t -> t.clear());
+			Main.getTextFieldSpoilersXOutboradList().stream().forEach(t -> t.clear());
+			Main.getTextFieldSpoilersYInboradList().stream().forEach(t -> t.clear());
+			Main.getTextFieldSpoilersYOutboradList().stream().forEach(t -> t.clear());
+			Main.getTextFieldSpoilersMaxDeflectionList().stream().forEach(t -> t.clear());
+			Main.getTextFieldSpoilersMinDeflectionList().stream().forEach(t -> t.clear());
+		}
+		
+		// 3 View and TextArea
+		Main.getTextAreaFuselageConsoleOutput().clear();
+		Main.getFuselageTopViewPane().getChildren().clear();
+		Main.getFuselageSideViewPane().getChildren().clear();
+		Main.getFuselageFrontViewPane().getChildren().clear();
+		
+		// TODO: CONTINUE WITH WING, etc ...
+		
+		Main.setTheAircraft(null);
+		Main.setIsAircraftFormFile(null);
+		
+	}
+	
 }

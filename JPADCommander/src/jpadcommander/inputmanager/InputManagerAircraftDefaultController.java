@@ -16,7 +16,6 @@ import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -48,9 +47,8 @@ public class InputManagerAircraftDefaultController {
 	@FXML
 	private void loadAircraftFile() throws IOException {
 
-		Main.setStatus(State.RUNNING);
-		Main.checkStatus(Main.getStatus());
-
+		Main.getStatusBar().setText("Loading Aircraft ...");
+		
 		MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, Main.getDatabaseDirectoryPath());
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
@@ -62,6 +60,7 @@ public class InputManagerAircraftDefaultController {
 		FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
 		VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
 
+		Main.getProgressBar().setProgress(0.1);
 		final PrintStream originalOut = System.out;
 		PrintStream filterStream = new PrintStream(new OutputStream() {
 			public void write(int b) {
@@ -90,8 +89,11 @@ public class InputManagerAircraftDefaultController {
 					)
 					.build()
 					);
+			Main.getProgressBar().setProgress(0.2);
 			logAircraftDefaultToInterface();
+			Main.getProgressBar().setProgress(0.3);
 			InputManagerAircraftFromFileController.logFuselageFromFileToInterface();
+			Main.getProgressBar().setProgress(0.4);
 		}
 		else if(defaultAircraftChioseBox
 				.getSelectionModel()
@@ -126,31 +128,35 @@ public class InputManagerAircraftDefaultController {
 			alert.show();
 		}
 
-		// AIRCRAFT 2-VIEW
+		// AIRCRAFT 3-VIEW
 		InputManagerAircraftFromFileController.createAircraftTopView();
+		Main.getProgressBar().setProgress(0.5);
 		InputManagerAircraftFromFileController.createAircraftSideView();
+		Main.getProgressBar().setProgress(0.6);
 		InputManagerAircraftFromFileController.createAircraftFrontView();
+		Main.getProgressBar().setProgress(0.7);
 		
 		// FUSELAGE 3-VIEW
 		InputManagerAircraftFromFileController.createFuselageTopView();
+		Main.getProgressBar().setProgress(0.8);
 		InputManagerAircraftFromFileController.createFuselageSideView();
+		Main.getProgressBar().setProgress(0.9);
 		InputManagerAircraftFromFileController.createFuselageFrontView();
+		Main.getProgressBar().setProgress(1.0);
 		
 		
 		// write again
 		System.setOut(originalOut);
 		
-		//////////////////////////////////////////////////////////////////////////////////
-		Main.setStatus(State.READY);
-		Main.checkStatus(Main.getStatus());
-
+		Main.getStatusBar().setText("Aircraft loaded!");
+		
 	}	
 	
 	@SuppressWarnings("unchecked")
 	public static void logAircraftDefaultToInterface() {
 
 		// print the toString method of the aircraft inside the text area of the GUI ...
-		if(Main.getTextAreaAircraftConsoleOutput() == null)
+//		if(Main.getTextAreaAircraftConsoleOutput() == null)
 			Main.setTextAreaAircraftConsoleOutput(
 					(TextArea) Main.getMainInputManagerAircraftSubContentFieldsLayout().lookup("#output")
 					);
@@ -186,7 +192,7 @@ public class InputManagerAircraftDefaultController {
 		
 		//---------------------------------------------------------------------------------
 		// AIRCRAFT TYPE:
-		if(Main.getChoiceBoxAircraftType() == null)
+//		if(Main.getChoiceBoxAircraftType() == null)
 			Main.setChoiceBoxAircraftType(
 					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxAircraftType")
 					);
@@ -214,7 +220,7 @@ public class InputManagerAircraftDefaultController {
 		
 		//---------------------------------------------------------------------------------
 		// REGULATIONS TYPE:
-		if(Main.getChoiceBoxRegulationsType() == null)
+//		if(Main.getChoiceBoxRegulationsType() == null)
 			Main.setChoiceBoxRegulationsType(
 					(ChoiceBox<String>) Main.getMainInputManagerLayout().lookup("#choiceBoxRegulationsType")
 					);
