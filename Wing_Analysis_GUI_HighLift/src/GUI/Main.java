@@ -15,6 +15,7 @@ import Calculator.InputOutputTree;
 
 import GUI.Views.Controllers;
 import GUI.Views.HighLiftInputController;
+import GUI.Views.HighLiftInputValues;
 import GUI.Views.SaveOutput;
 import GUI.Views.VaraiblesAnalyses;
 import GUI.Views.VariablesInputData;
@@ -29,10 +30,12 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -131,13 +134,31 @@ public class Main extends Application {
 		
 	}
 	
-	public static void showHighLiftInput (VariablesInputData theVariablesInputClass) throws IOException{
+	public static void showHighLiftInput (
+			VariablesInputData theVariablesInputClass,
+			InputOutputTree theInputOutputTree) throws IOException{
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("Views/HighLiftInput.fxml"));
-		theInputTree = new InputOutputTree();	
+		loader.setLocation(Main.class.getResource("Views/HighLiftInput.fxml"));	
 		BorderPane centralItems = loader.load();
 		theVariablesInputClass.getLeftPane().getChildren().add(centralItems);
+		HighLiftInputController theHighLiftController = loader.getController();
+		theHighLiftController.setTheVariableInputClass(theVariablesInputClass);
+		theHighLiftController.setTheInputTree(theInputOutputTree);
 	
+	}
+
+	public static void confirmNumber(
+			VariablesInputData theVariablesInputClass,
+			HighLiftInputController theHighLiftController,
+			InputOutputTree theInputOutputTree) throws IOException{
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("Views/HighLiftInputValues.fxml"));	
+		Pane bottomItem = loader.load();
+		theHighLiftController.getBottomPane().getChildren().add(bottomItem);
+		HighLiftInputValues theHighLiftValues = loader.getController();
+		theHighLiftValues.setTheVariableInputClass(theVariablesInputClass);
+		theHighLiftValues.setTheInputTree(theInputOutputTree);
+		theHighLiftValues.initializeTabAnalyses();
 	}
 	
 	public static void setInputData() throws IOException{

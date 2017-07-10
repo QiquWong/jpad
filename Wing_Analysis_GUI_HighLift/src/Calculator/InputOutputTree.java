@@ -103,6 +103,24 @@ public class InputOutputTree {
 	Boolean performLiftAnalysis;
 	Boolean performStallPathAnalysis;
 	
+	// flap and slat
+	
+	int numberOfFlaps;
+	int numberOfSlats;
+	List<FlapTypeEnum> flapTypes = new ArrayList<>();
+	List<Amount<Angle>> flapDeflection = new ArrayList<>();
+	List<Double> flapChordRatio = new ArrayList<>();
+	List<Double> flapInnerStation = new ArrayList<>();
+	List<Double> flapOuterStation = new ArrayList<>();
+	
+	List<Amount<Angle>> slatDeflection = new ArrayList<>();
+	List<Double> slatChordRatio = new ArrayList<>();
+	List<Double> slatExtensionRatio = new ArrayList<>();
+	List<Double> slatInnerStation = new ArrayList<>();
+	List<Double> slatOuterStation = new ArrayList<>();
+	
+	
+	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 
@@ -741,6 +759,110 @@ public class InputOutputTree {
 
 	public void setPerformLiftAnalysis(Boolean performLiftAnalysis) {
 		this.performLiftAnalysis = performLiftAnalysis;
+	}
+
+	public boolean isOutputTreeIsEmpty() {
+		return outputTreeIsEmpty;
+	}
+
+	public void setOutputTreeIsEmpty(boolean outputTreeIsEmpty) {
+		this.outputTreeIsEmpty = outputTreeIsEmpty;
+	}
+
+	public int getNumberOfFlaps() {
+		return numberOfFlaps;
+	}
+
+	public void setNumberOfFlaps(int numberOfFlaps) {
+		this.numberOfFlaps = numberOfFlaps;
+	}
+
+	public int getNumberOfSlats() {
+		return numberOfSlats;
+	}
+
+	public void setNumberOfSlats(int numberOfSlats) {
+		this.numberOfSlats = numberOfSlats;
+	}
+
+	public List<FlapTypeEnum> getFlapTypes() {
+		return flapTypes;
+	}
+
+	public void setFlapTypes(List<FlapTypeEnum> flapTypes) {
+		this.flapTypes = flapTypes;
+	}
+
+	public List<Amount<Angle>> getFlapDeflection() {
+		return flapDeflection;
+	}
+
+	public void setFlapDeflection(List<Amount<Angle>> flapDeflection) {
+		this.flapDeflection = flapDeflection;
+	}
+
+	public List<Double> getFlapChordRatio() {
+		return flapChordRatio;
+	}
+
+	public void setFlapChordRatio(List<Double> flapChordRatio) {
+		this.flapChordRatio = flapChordRatio;
+	}
+
+	public List<Double> getFlapInnerStation() {
+		return flapInnerStation;
+	}
+
+	public void setFlapInnerStation(List<Double> flapInnerStation) {
+		this.flapInnerStation = flapInnerStation;
+	}
+
+	public List<Double> getFlapOuterStation() {
+		return flapOuterStation;
+	}
+
+	public void setFlapOuterStation(List<Double> flapOuterStation) {
+		this.flapOuterStation = flapOuterStation;
+	}
+
+	public List<Amount<Angle>> getSlatDeflection() {
+		return slatDeflection;
+	}
+
+	public void setSlatDeflection(List<Amount<Angle>> slatDeflection) {
+		this.slatDeflection = slatDeflection;
+	}
+
+	public List<Double> getSlatChordRatio() {
+		return slatChordRatio;
+	}
+
+	public void setSlatChordRatio(List<Double> slatChordRatio) {
+		this.slatChordRatio = slatChordRatio;
+	}
+
+	public List<Double> getSlatExtensionRatio() {
+		return slatExtensionRatio;
+	}
+
+	public void setSlatExtensionRatio(List<Double> slatExtensionRatio) {
+		this.slatExtensionRatio = slatExtensionRatio;
+	}
+
+	public List<Double> getSlatInnerStation() {
+		return slatInnerStation;
+	}
+
+	public void setSlatInnerStation(List<Double> slatInnerStation) {
+		this.slatInnerStation = slatInnerStation;
+	}
+
+	public List<Double> getSlatOuterStation() {
+		return slatOuterStation;
+	}
+
+	public void setSlatOuterStation(List<Double> slatOuterStation) {
+		this.slatOuterStation = slatOuterStation;
 	}
 	
 
