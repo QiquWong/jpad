@@ -751,7 +751,7 @@ public class VariablesInputData {
 	
 	@FXML
 	public void addHighLiftData() throws IOException{
-		Main.showHighLiftInput(this);
+		Main.showHighLiftInput(this, theInputTree);
 	
 		
 	}
