@@ -20,7 +20,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import aircraft.components.Aircraft;
-import analyses.costs.ACCostsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -80,7 +79,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Map <ComponentEnum, MethodEnum> _methodsMapBalance;
 	private List<PerformanceEnum> _taskListPerformance;
 	private List<ConditionEnum> _taskListAerodynamicAndStability;
-	private List<CostsEnum> _taskListCosts;
+	private Map<CostsEnum, MethodEnum> _taskListCosts;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
 	private List<AnalysisTypeEnum> _analysisList;
 	private Boolean _plotBalance;
@@ -90,7 +89,10 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	
 	private static File _weightsFileComplete;
 	private static File _balanceFileComplete;
-	private static File _aerodynamicAndStabilityFileComplete;
+	private static File _aerodynamicAndStabilityTakeOffFileComplete;
+	private static File _aerodynamicAndStabilityClimbFileComplete;
+	private static File _aerodynamicAndStabilityCruiseFileComplete;
+	private static File _aerodynamicAndStabilityLandingFileComplete;
 	private static File _performanceFileComplete;
 	private static File _costsFileComplete;
 
@@ -120,6 +122,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		private Map <ComponentEnum, MethodEnum> __methodsMapBalance = new HashMap<ComponentEnum, MethodEnum>();
 		private List<PerformanceEnum> __taskListPerfromance = new ArrayList<PerformanceEnum>();
 		private List<ConditionEnum> __taskListAerodynamicAndStability = new ArrayList<ConditionEnum>();
+		private Map <CostsEnum, MethodEnum> __taskListCosts = new HashMap<>();
 		private Map <AnalysisTypeEnum, Boolean> __executedAnalysesMap = new HashMap<AnalysisTypeEnum, Boolean>();
 		private List<AnalysisTypeEnum> __analysisList = new ArrayList<AnalysisTypeEnum>();
 		
@@ -233,6 +236,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
+		public ACAnalysisManagerBuilder taskListCosts (Map<CostsEnum, MethodEnum> taskListCosts) {
+			this.__taskListCosts = taskListCosts;
+			return this;
+		}
+		
 		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft) {
 			this.__id = id;
 			this.__theAircraft = theAircraft;
@@ -314,6 +322,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._methodsMapBalance = builder.__methodsMapBalance;
 		this._taskListPerformance = builder.__taskListPerfromance;
 		this._taskListAerodynamicAndStability = builder.__taskListAerodynamicAndStability;
+		this._taskListCosts = builder.__taskListCosts;
 		this._executedAnalysesMap = builder.__executedAnalysesMap;
 		this._analysisList = builder.__analysisList;
 		
@@ -672,12 +681,10 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//balance/@plot");
-			if(plotBalanceString.equalsIgnoreCase("FALSE"))
+			if(plotBalanceString.equalsIgnoreCase("FALSE") || plotBalanceString == null)
 				plotBalance = Boolean.FALSE;
 			else if(plotBalanceString.equalsIgnoreCase("TRUE"))
 				plotBalance = Boolean.TRUE;
-			else
-				System.err.println("ERRORE : SPECIFY THE PLOT TAG!!");
 
 			if(balanceFile != null)  {		
 				analysisList.add(AnalysisTypeEnum.BALANCE);
@@ -762,110 +769,158 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		if(aerodynamicAndStabilityNode != null) {
 
-			String aerodynamicAndStabilityFile = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//aerodynamic_and_stability/@file");
-
+			analysisList.add(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
+			
 			String plotAerodynamicAndStabilityString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//aerodynamic_and_stability/@plot");
-			if(plotAerodynamicAndStabilityString.equalsIgnoreCase("FALSE"))
+			if(plotAerodynamicAndStabilityString.equalsIgnoreCase("FALSE")
+					|| plotAerodynamicAndStabilityString == null)
 				plotAerodynamicAndStability = Boolean.FALSE;
 			else if(plotAerodynamicAndStabilityString.equalsIgnoreCase("TRUE"))
 				plotAerodynamicAndStability = Boolean.TRUE;
-			else
-				System.err.println("ERROR : SPECIFY THE PLOT TAG!!");
 
-			if(aerodynamicAndStabilityFile != null)  {		
-				analysisList.add(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY);
-
-				////////////////////////////////////////////////////////////////////////////////////
-				Boolean takeOffConditionFlag = Boolean.FALSE;
-				String takeOffConditionFlagProperty = MyXMLReaderUtils
-						.getXMLPropertyByPath(
-								reader.getXmlDoc(), reader.getXpath(),
-								"//aerodynamic_and_stability/@take_off_condition");
-				if (takeOffConditionFlagProperty != null) {
-					if(takeOffConditionFlagProperty.equalsIgnoreCase("TRUE")) {
-						takeOffConditionFlag = Boolean.TRUE;
-					}
-					else if(takeOffConditionFlagProperty.equalsIgnoreCase("FALSE")) {
-						takeOffConditionFlag = Boolean.FALSE;
-					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE TAKE-OFF CONDITION ATTRIBUTE!");
+			//---------------------------------------------------------------------------------------------------------
+			// TAKE-OFF CONDITION
+			String aerodynamicAndStabilityTakeOff = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aerodynamic_and_stability/@take_off_condition");
+			
+			if(aerodynamicAndStabilityTakeOff != null)  {		
+				
+				Boolean takeOffConditionFlag = null;
+				if(aerodynamicAndStabilityTakeOff.equalsIgnoreCase("TRUE")) {
+					takeOffConditionFlag = Boolean.TRUE;
 				}
+				else if(aerodynamicAndStabilityTakeOff.equalsIgnoreCase("FALSE") 
+						|| aerodynamicAndStabilityTakeOff == null) {
+					takeOffConditionFlag = Boolean.FALSE;
+				}
+				
 				if(takeOffConditionFlag == Boolean.TRUE) 
 					taskListAerodynamicAndStability.add(ConditionEnum.TAKE_OFF);
 
-				////////////////////////////////////////////////////////////////////////////////////
-				Boolean climbConditionFlag = Boolean.FALSE;
-				String climbConditionFlagProperty = MyXMLReaderUtils
+				String aerodynamicAndStabilityTakeOffFile = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
-								"//aerodynamic_and_stability/@climb_condition");
-				if (climbConditionFlagProperty != null) {
-					if(climbConditionFlagProperty.equalsIgnoreCase("TRUE")) {
-						climbConditionFlag = Boolean.TRUE;
-					}
-					else if(climbConditionFlagProperty.equalsIgnoreCase("FALSE")) {
-						climbConditionFlag = Boolean.FALSE;
-					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CLIMB CONDITION ATTRIBUTE!");
+								"//aerodynamic_and_stability/@file_take_off_condition");
+				
+				_aerodynamicAndStabilityTakeOffFileComplete = new File(
+						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+						+ File.separator 
+						+ "Template_Analyses"
+						+ File.separator
+						+ aerodynamicAndStabilityTakeOffFile
+						);
+			}
+			
+			//---------------------------------------------------------------------------------------------------------
+			// CLIMB CONDITION
+			String aerodynamicAndStabilityClimb = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aerodynamic_and_stability/@climb_condition");
+			
+			if(aerodynamicAndStabilityClimb != null)  {		
+				
+				Boolean climbConditionFlag = null;
+				if(aerodynamicAndStabilityClimb.equalsIgnoreCase("TRUE")) {
+					climbConditionFlag = Boolean.TRUE;
 				}
+				else if(aerodynamicAndStabilityClimb.equalsIgnoreCase("FALSE") 
+						|| aerodynamicAndStabilityClimb == null) {
+					climbConditionFlag = Boolean.FALSE;
+				}
+				
 				if(climbConditionFlag == Boolean.TRUE) 
 					taskListAerodynamicAndStability.add(ConditionEnum.CLIMB);
 
-				////////////////////////////////////////////////////////////////////////////////////
-				Boolean cruiseConditionFlag = Boolean.FALSE;
-				String cruiseConditionFlagProperty = MyXMLReaderUtils
+				String aerodynamicAndStabilityClimbFile = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
-								"//aerodynamic_and_stability/@cruise_condition");
-				if (cruiseConditionFlagProperty != null) {
-					if(cruiseConditionFlagProperty.equalsIgnoreCase("TRUE")) {
-						cruiseConditionFlag = Boolean.TRUE;
-					}
-					else if(cruiseConditionFlagProperty.equalsIgnoreCase("FALSE")) {
-						cruiseConditionFlag = Boolean.FALSE;
-					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CRUISE CONDITION ATTRIBUTE!");
+								"//aerodynamic_and_stability/@file_climb_condition");
+				
+				_aerodynamicAndStabilityClimbFileComplete = new File(
+						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+						+ File.separator 
+						+ "Template_Analyses"
+						+ File.separator
+						+ aerodynamicAndStabilityClimbFile
+						);
+			}
+			
+			//---------------------------------------------------------------------------------------------------------
+			// CRUISE CONDITION
+			String aerodynamicAndStabilityCruise = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aerodynamic_and_stability/@cruise_condition");
+			
+			if(aerodynamicAndStabilityCruise != null)  {		
+				
+				Boolean cruiseConditionFlag = null;
+				if(aerodynamicAndStabilityCruise.equalsIgnoreCase("TRUE")) {
+					cruiseConditionFlag = Boolean.TRUE;
 				}
+				else if(aerodynamicAndStabilityCruise.equalsIgnoreCase("FALSE") 
+						|| aerodynamicAndStabilityCruise == null) {
+					cruiseConditionFlag = Boolean.FALSE;
+				}
+				
 				if(cruiseConditionFlag == Boolean.TRUE) 
 					taskListAerodynamicAndStability.add(ConditionEnum.CRUISE);
 
-				////////////////////////////////////////////////////////////////////////////////////
-				Boolean landingConditionFlag = Boolean.FALSE;
-				String landingConditionFlagProperty = MyXMLReaderUtils
+				String aerodynamicAndStabilityCruiseFile = MyXMLReaderUtils
 						.getXMLPropertyByPath(
 								reader.getXmlDoc(), reader.getXpath(),
-								"//aerodynamic_and_stability/@landing_condition");
-				if (landingConditionFlagProperty != null) {
-					if(landingConditionFlagProperty.equalsIgnoreCase("TRUE")) {
-						landingConditionFlag = Boolean.TRUE;
-					}
-					else if(landingConditionFlagProperty.equalsIgnoreCase("FALSE")) {
-						landingConditionFlag = Boolean.FALSE;
-					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
-				}
-				if(landingConditionFlag == Boolean.TRUE) 
-					taskListAerodynamicAndStability.add(ConditionEnum.LANDING);
+								"//aerodynamic_and_stability/@file_cruise_condition");
+				
+				_aerodynamicAndStabilityCruiseFileComplete = new File(
+						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+						+ File.separator 
+						+ "Template_Analyses"
+						+ File.separator
+						+ aerodynamicAndStabilityCruiseFile
+						);
 			}
 			
-			_aerodynamicAndStabilityFileComplete = new File(
-					MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
-					+ File.separator 
-					+ "Template_Analyses"
-					+ File.separator
-					+ aerodynamicAndStabilityFile
-					);
+			//---------------------------------------------------------------------------------------------------------
+			// LANDING CONDITION
+			String aerodynamicAndStabilityLanding = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aerodynamic_and_stability/@landing_condition");
+			
+			if(aerodynamicAndStabilityLanding != null)  {		
+				
+				Boolean landingConditionFlag = null;
+				if(aerodynamicAndStabilityLanding.equalsIgnoreCase("TRUE")) {
+					landingConditionFlag = Boolean.TRUE;
+				}
+				else if(aerodynamicAndStabilityLanding.equalsIgnoreCase("FALSE") 
+						|| aerodynamicAndStabilityLanding == null) {
+					landingConditionFlag = Boolean.FALSE;
+				}
+				
+				if(landingConditionFlag == Boolean.TRUE) 
+					taskListAerodynamicAndStability.add(ConditionEnum.LANDING);
 
+				String aerodynamicAndStabilityLandingFile = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aerodynamic_and_stability/@file_landing_condition");
+				
+				_aerodynamicAndStabilityLandingFileComplete = new File(
+						MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+						+ File.separator 
+						+ "Template_Analyses"
+						+ File.separator
+						+ aerodynamicAndStabilityLandingFile
+						);
+			}
+			
 		}
 
 		//-------------------------------------------------------------------------------------------
@@ -889,12 +944,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//performance/@plot");
-			if(plotPerfromanceString.equalsIgnoreCase("FALSE"))
+			if(plotPerfromanceString.equalsIgnoreCase("FALSE") 
+					|| plotPerfromanceString == null)
 				plotPerformance = Boolean.FALSE;
 			else if(plotPerfromanceString.equalsIgnoreCase("TRUE"))
 				plotPerformance = Boolean.TRUE;
-			else
-				System.err.println("ERROR : SPECIFY THE PLOT TAG!!");
 
 			if(performanceFile != null)  {		
 				analysisList.add(AnalysisTypeEnum.PERFORMANCE);
@@ -912,8 +966,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					else if(takeOffFlagProperty.equalsIgnoreCase("FALSE")) {
 						takeOffFlag = Boolean.FALSE;
 					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE TAKE-OFF ATTRIBUTE!");
 				}
 				if(takeOffFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.TAKE_OFF);
@@ -931,8 +983,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					else if(climbFlagProperty.equalsIgnoreCase("FALSE")) {
 						climbFlag = Boolean.FALSE;
 					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CLIMB ATTRIBUTE!");
 				}
 				if(climbFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.CLIMB);
@@ -950,8 +1000,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					else if(cruiseFlagProperty.equalsIgnoreCase("FALSE")) {
 						cruiseFlag = Boolean.FALSE;
 					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE CRUISE ATTRIBUTE!");
 				}
 				if(cruiseFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.CRUISE);
@@ -970,8 +1018,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					else if(descentFlagProperty.equalsIgnoreCase("FALSE")) {
 						descentFlag = Boolean.FALSE;
 					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE DESCENT ATTRIBUTE!");
 				}
 				if(descentFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.DESCENT);
@@ -989,8 +1035,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					else if(landingFlagProperty.equalsIgnoreCase("FALSE")) {
 						landingFlag = Boolean.FALSE;
 					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE LANDING ATTRIBUTE!");
 				}
 				if(landingFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.LANDING);
@@ -1008,8 +1052,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					else if(payloadRangeFlagProperty.equalsIgnoreCase("FALSE")) {
 						payloadRangeFlag = Boolean.FALSE;
 					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE PAYLOAD RANGE ATTRIBUTE!");
 				}
 				if(payloadRangeFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.PAYLOAD_RANGE);
@@ -1027,29 +1069,26 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					else if(VnDiagramFlagProperty.equalsIgnoreCase("FALSE")) {
 						VnDiagramFlag = Boolean.FALSE;
 					}
-					else 
-						System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE V-n DIAGRAM ATTRIBUTE!");
 				}
 				if(VnDiagramFlag == Boolean.TRUE) 
 					taskListPerformance.add(PerformanceEnum.V_n_DIAGRAM);
-			////////////////////////////////////////////////////////////////////////////////////
-			Boolean missionProfileFlag = Boolean.FALSE;
-			String missionProfileFlagProperty = MyXMLReaderUtils
-					.getXMLPropertyByPath(
-							reader.getXmlDoc(), reader.getXpath(),
-							"//performance/@mission_profile");
-			if (missionProfileFlagProperty != null) {
-				if(missionProfileFlagProperty.equalsIgnoreCase("TRUE")) {
-					missionProfileFlag = Boolean.TRUE;
+				
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean missionProfileFlag = Boolean.FALSE;
+				String missionProfileFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//performance/@mission_profile");
+				if (missionProfileFlagProperty != null) {
+					if(missionProfileFlagProperty.equalsIgnoreCase("TRUE")) {
+						missionProfileFlag = Boolean.TRUE;
+					}
+					else if(missionProfileFlagProperty.equalsIgnoreCase("FALSE")) {
+						missionProfileFlag = Boolean.FALSE;
+					}
 				}
-				else if(missionProfileFlagProperty.equalsIgnoreCase("FALSE")) {
-					missionProfileFlag = Boolean.FALSE;
-				}
-				else 
-					System.err.println("ERROR: MUST SPECIFY TRUE OR FALSE FOR THE MISSION PROFILE ATTRIBUTE!");
-			}
-			if(missionProfileFlag == Boolean.TRUE) 
-				taskListPerformance.add(PerformanceEnum.MISSION_PROFILE);
+				if(missionProfileFlag == Boolean.TRUE) 
+					taskListPerformance.add(PerformanceEnum.MISSION_PROFILE);
 			}
 		
 			_performanceFileComplete = new File(
@@ -1059,12 +1098,173 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					+ File.separator
 					+ performanceFile
 					);
-
 		}
+		
 		//-------------------------------------------------------------------------------------------
 		// COSTS ANALYSIS:
-		// TODO: IMPLEMENT THIS!
-		
+		Map<CostsEnum, MethodEnum> taskListCosts = new HashMap<>();
+		Boolean plotCosts = Boolean.FALSE;
+
+		NodeList costsTag = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//costs");
+		Node costsNode = costsTag.item(0);
+
+		if(costsNode != null) {
+
+			String costsFile = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//costs/@file");
+
+			String plotCostsString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//costs/@plot");
+			if(plotCostsString.equalsIgnoreCase("FALSE") 
+					|| plotCostsString == null)
+				plotCosts = Boolean.FALSE;
+			else if(plotCostsString.equalsIgnoreCase("TRUE"))
+				plotCosts = Boolean.TRUE;
+
+			if(costsFile != null)  {		
+				analysisList.add(AnalysisTypeEnum.COSTS);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean capitalDOCFlag = Boolean.FALSE;
+				MethodEnum capitalDOCMethod = null;
+				String capitalDOCFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//costs/@doc_capital");
+				if (capitalDOCFlagProperty != null) {
+					if(capitalDOCFlagProperty.equalsIgnoreCase("TRUE")) {
+						capitalDOCFlag = Boolean.TRUE;
+					}
+					else if(capitalDOCFlagProperty.equalsIgnoreCase("FALSE")) {
+						capitalDOCFlag = Boolean.FALSE;
+					}
+
+					String capitalDOCMethodProperty = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//costs/@doc_capital_method");
+					if(capitalDOCMethodProperty != null)
+						capitalDOCMethod = MethodEnum.valueOf(capitalDOCMethodProperty);
+				}
+				if(capitalDOCFlag == Boolean.TRUE) 
+					taskListCosts.put(CostsEnum.DOC_CAPITAL, capitalDOCMethod);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean crewDOCFlag = Boolean.FALSE;
+				MethodEnum crewDOCMethod = null;
+				String crewDOCFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//costs/@doc_crew");
+				if (crewDOCFlagProperty != null) {
+					if(crewDOCFlagProperty.equalsIgnoreCase("TRUE")) {
+						crewDOCFlag = Boolean.TRUE;
+					}
+					else if(crewDOCFlagProperty.equalsIgnoreCase("FALSE")) {
+						crewDOCFlag = Boolean.FALSE;
+					}
+
+					String crewDOCMethodProperty = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//costs/@doc_crew_method");
+					if(crewDOCMethodProperty != null)
+						crewDOCMethod = MethodEnum.valueOf(crewDOCMethodProperty);
+				}
+				if(crewDOCFlag == Boolean.TRUE) 
+					taskListCosts.put(CostsEnum.DOC_CREW, crewDOCMethod);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean fuelDOCFlag = Boolean.FALSE;
+				MethodEnum fuelDOCMethod = null;
+				String fuelDOCFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//costs/@doc_fuel");
+				if (fuelDOCFlagProperty != null) {
+					if(fuelDOCFlagProperty.equalsIgnoreCase("TRUE")) {
+						fuelDOCFlag = Boolean.TRUE;
+					}
+					else if(fuelDOCFlagProperty.equalsIgnoreCase("FALSE")) {
+						fuelDOCFlag = Boolean.FALSE;
+					}
+
+					String fuelDOCMethodProperty = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//costs/@doc_fuel_method");
+					if(fuelDOCMethodProperty != null)
+						fuelDOCMethod = MethodEnum.valueOf(fuelDOCMethodProperty);
+				}
+				if(fuelDOCFlag == Boolean.TRUE) 
+					taskListCosts.put(CostsEnum.DOC_FUEL, fuelDOCMethod);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean chargesDOCFlag = Boolean.FALSE;
+				MethodEnum chargesDOCMethod = null;
+				String chargesDOCFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//costs/@doc_charges");
+				if (chargesDOCFlagProperty != null) {
+					if(chargesDOCFlagProperty.equalsIgnoreCase("TRUE")) {
+						chargesDOCFlag = Boolean.TRUE;
+					}
+					else if(chargesDOCFlagProperty.equalsIgnoreCase("FALSE")) {
+						chargesDOCFlag = Boolean.FALSE;
+					}
+
+					String chargesDOCMethodProperty = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//costs/@doc_charges_method");
+					if(chargesDOCMethodProperty != null)
+						chargesDOCMethod = MethodEnum.valueOf(chargesDOCMethodProperty);
+				}
+				if(chargesDOCFlag == Boolean.TRUE) 
+					taskListCosts.put(CostsEnum.DOC_CHARGES, chargesDOCMethod);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				Boolean maintenanceDOCFlag = Boolean.FALSE;
+				MethodEnum maintenanceDOCMethod = null;
+				String maintenanceDOCFlagProperty = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//costs/@doc_maintenance");
+				if (maintenanceDOCFlagProperty != null) {
+					if(maintenanceDOCFlagProperty.equalsIgnoreCase("TRUE")) {
+						maintenanceDOCFlag = Boolean.TRUE;
+					}
+					else if(maintenanceDOCFlagProperty.equalsIgnoreCase("FALSE")) {
+						maintenanceDOCFlag = Boolean.FALSE;
+					}
+
+					String maintenanceDOCMethodProperty = MyXMLReaderUtils
+							.getXMLPropertyByPath(
+									reader.getXmlDoc(), reader.getXpath(),
+									"//costs/@doc_maintenance_method");
+					if(maintenanceDOCMethodProperty != null)
+						maintenanceDOCMethod = MethodEnum.valueOf(maintenanceDOCMethodProperty);
+				}
+				if(maintenanceDOCFlag == Boolean.TRUE) 
+					taskListCosts.put(CostsEnum.DOC_MAINTENANCE, maintenanceDOCMethod);
+
+			}
+
+			_costsFileComplete = new File(
+					MyConfiguration.getDir(FoldersEnum.INPUT_DIR)
+					+ File.separator 
+					+ "Template_Analyses"
+					+ File.separator
+					+ costsFile
+					);
+		}
+
 		//-------------------------------------------------------------------------------------------
 		ACAnalysisManager theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
 				id,
@@ -1083,11 +1283,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.referenceRange(referenceRange)
 				.methodsMapWeights(methodsMapWeights)
 				.methodsMapBalance(methodsMapBalance)
-				.plotBalance(plotBalance)
 				.taskListPerfromance(taskListPerformance)
 				.taskListAerodynamicAndStability(taskListAerodynamicAndStability)
+				.taskListCosts(taskListCosts)
+				.plotBalance(plotBalance)
 				.plotAerodynamicAndStability(plotAerodynamicAndStability)
 				.plotPerformance(plotPerformance)
+				.plotCosts(plotCosts)
 				.build();
 	
 		return theAnalysisManager;
@@ -1143,8 +1345,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		}
 		if(_executedAnalysesMap.get(AnalysisTypeEnum.PERFORMANCE) == true)
 			sb.append(_theAircraft.getTheAnalysisManager().getThePerformance().toString());
-		
-		// TODO : ADD COSTS toString()
+		if(_executedAnalysesMap.get(AnalysisTypeEnum.COSTS) == true)
+			sb.append(_theAircraft.getTheAnalysisManager().getTheCosts().toString());
 		
 		return sb.toString();
 	}
@@ -1216,7 +1418,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAerodynamicAndStability.put(
 						ConditionEnum.TAKE_OFF,
 						ACAerodynamicCalculator.importFromXML(
-								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								_aerodynamicAndStabilityTakeOffFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
 								ConditionEnum.TAKE_OFF
@@ -1228,7 +1430,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CLIMB,
 						ACAerodynamicCalculator.importFromXML(
-								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								_aerodynamicAndStabilityClimbFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
 								ConditionEnum.CLIMB
@@ -1240,7 +1442,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CRUISE,
 						ACAerodynamicCalculator.importFromXML(
-								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								_aerodynamicAndStabilityCruiseFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
 								ConditionEnum.CRUISE
@@ -1252,7 +1454,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAerodynamicAndStability.put(
 						ConditionEnum.LANDING,
 						ACAerodynamicCalculator.importFromXML(
-								_aerodynamicAndStabilityFileComplete.getAbsolutePath(),
+								_aerodynamicAndStabilityLandingFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
 								ConditionEnum.LANDING
@@ -1275,6 +1477,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		}
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.COSTS)) {
+			_theCosts = ACCostsManager.importFromXML(
+					_costsFileComplete.getAbsolutePath(), 
+					aircraft, 
+					theOperatingConditions, 
+					_taskListCosts
+					);
 			calculateCosts(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, true);
 		}
@@ -1361,9 +1569,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	}
 	
 	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {
-		aircraft.getTheAnalysisManager().getTheCosts().calculateAll();
 		
-		// TODO : ADD calculateCosts() METHOD WHEN AVAILABLE !
+		aircraft.getTheAnalysisManager().getTheCosts().calculate();
+		
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -1609,14 +1817,38 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		ACAnalysisManager._balanceFileComplete = _balanceFileComplete;
 	}
 
-	public File getAerodynamicAndStabilityFileComplete() {
-		return _aerodynamicAndStabilityFileComplete;
+	public File getAerodynamicAndStabilityTakeOffFileComplete() {
+		return _aerodynamicAndStabilityTakeOffFileComplete;
 	}
 
-	public void setAerodynamicAndStabilityFileComplete(File _aerodynamicAndStabilityFileComplete) {
-		ACAnalysisManager._aerodynamicAndStabilityFileComplete = _aerodynamicAndStabilityFileComplete;
+	public void setAerodynamicAndStabilityTakeOffFileComplete(File _aerodynamicAndStabilityTakeOffFileComplete) {
+		ACAnalysisManager._aerodynamicAndStabilityTakeOffFileComplete = _aerodynamicAndStabilityTakeOffFileComplete;
+	}
+	
+	public File getAerodynamicAndStabilityClimbFileComplete() {
+		return _aerodynamicAndStabilityClimbFileComplete;
 	}
 
+	public void setAerodynamicAndStabilityClimbFileComplete(File _aerodynamicAndStabilityClimbFileComplete) {
+		ACAnalysisManager._aerodynamicAndStabilityClimbFileComplete = _aerodynamicAndStabilityClimbFileComplete;
+	}
+
+	public File getAerodynamicAndStabilityCruiseFileComplete() {
+		return _aerodynamicAndStabilityCruiseFileComplete;
+	}
+
+	public void setAerodynamicAndStabilityCruiseFileComplete(File _aerodynamicAndStabilityCruiseFileComplete) {
+		ACAnalysisManager._aerodynamicAndStabilityCruiseFileComplete = _aerodynamicAndStabilityCruiseFileComplete;
+	}
+	
+	public File getAerodynamicAndStabilityLandingFileComplete() {
+		return _aerodynamicAndStabilityLandingFileComplete;
+	}
+
+	public void setAerodynamicAndStabilityLandingFileComplete(File _aerodynamicAndStabilityLandingFileComplete) {
+		ACAnalysisManager._aerodynamicAndStabilityLandingFileComplete = _aerodynamicAndStabilityLandingFileComplete;
+	}
+	
 	public File getPerformanceFileComplete() {
 		return _performanceFileComplete;
 	}
@@ -1689,11 +1921,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._referenceRange = _referenceRange;
 	}
 
-	public List<CostsEnum> getTaskListCosts() {
+	public Map<CostsEnum, MethodEnum> getTaskListCosts() {
 		return _taskListCosts;
 	}
 
-	public void setTaskListCosts(List<CostsEnum> _taskListCosts) {
+	public void setTaskListCosts(Map<CostsEnum, MethodEnum> _taskListCosts) {
 		this._taskListCosts = _taskListCosts;
 	}
 

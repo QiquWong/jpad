@@ -55,7 +55,6 @@ import analyses.ACBalanceManager;
 import analyses.ACPerformanceManager;
 import analyses.ACWeightsManager;
 import analyses.OperatingConditions;
-import analyses.costs.ACCostsManager;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ClassTypeEnum;

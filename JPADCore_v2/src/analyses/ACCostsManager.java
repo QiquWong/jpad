@@ -92,7 +92,7 @@ public class ACCostsManager {
 	// METHODS:
 	//------------------------------------------------------------------------------
 	@SuppressWarnings({ "unchecked", "resource" })
-	public static IACCostsManager importFromXML (
+	public static ACCostsManager importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
@@ -848,11 +848,11 @@ public class ACCostsManager {
 		//---------------------------------------------------------------
 		List<CostsPlotEnum> plotList = new ArrayList<CostsPlotEnum>();
 		if(theAircraft.getTheAnalysisManager().getPlotCosts() == Boolean.TRUE) {
-			if(theAircraft.getTheAnalysisManager().getTaskListCosts().contains(CostsEnum.DOC_CAPITAL)
-					|| theAircraft.getTheAnalysisManager().getTaskListCosts().contains(CostsEnum.DOC_CREW)
-					|| theAircraft.getTheAnalysisManager().getTaskListCosts().contains(CostsEnum.DOC_FUEL)
-					|| theAircraft.getTheAnalysisManager().getTaskListCosts().contains(CostsEnum.DOC_CHARGES)
-					|| theAircraft.getTheAnalysisManager().getTaskListCosts().contains(CostsEnum.DOC_MAINTENANCE)
+			if(theAircraft.getTheAnalysisManager().getTaskListCosts().containsKey(CostsEnum.DOC_CAPITAL)
+					|| theAircraft.getTheAnalysisManager().getTaskListCosts().containsKey(CostsEnum.DOC_CREW)
+					|| theAircraft.getTheAnalysisManager().getTaskListCosts().containsKey(CostsEnum.DOC_FUEL)
+					|| theAircraft.getTheAnalysisManager().getTaskListCosts().containsKey(CostsEnum.DOC_CHARGES)
+					|| theAircraft.getTheAnalysisManager().getTaskListCosts().containsKey(CostsEnum.DOC_MAINTENANCE)
 					) {
 			
 				//...............................................................
@@ -953,7 +953,10 @@ public class ACCostsManager {
 				.setEnginePrice(enginePrice)
 				.build();
 		
-		return theCostsBuilderInterface;
+		ACCostsManager theCostsManager = new ACCostsManager();
+		theCostsManager.setTheCostsBuilderInterface(theCostsBuilderInterface);
+		
+		return theCostsManager;
 		
 	}
 	private void initializeAnalysis() {
@@ -1147,12 +1150,13 @@ public class ACCostsManager {
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
 		
 		// TODO : FILL ME !!
-		//TODO make conversion here
+		// TODO : make conversion here
 	}
 	
 	@Override
 	public String toString() {
-		//TODO make conversion here
+		
+		// TODO : make conversion here
 		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()

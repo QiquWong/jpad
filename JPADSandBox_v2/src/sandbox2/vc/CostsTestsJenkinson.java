@@ -24,7 +24,6 @@ import org.kohsuke.args4j.Option;
 import aircraft.components.Aircraft;
 import aircraft.components.Aircraft.AircraftBuilder;
 import analyses.OperatingConditions;
-import analyses.costs.ACCostsManager;
 import calculators.costs.CostsCalcUtils;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
@@ -126,205 +125,205 @@ class MyArgumentsAircraft {
 
 public class CostsTestsJenkinson {
 	
-		// declaration necessary for Concrete Object usage
-		public static CmdLineParser theCmdLineParser;
-		public static JPADXmlReader reader;
-
-		//-------------------------------------------------------------
-		
-		public static Aircraft theAircraft; 
-	
-
-		public static void main(String[] args) throws CmdLineException {
-			
-			MyArgumentsAircraft va = new MyArgumentsAircraft();
-			CostsTestsJenkinson.theCmdLineParser = new CmdLineParser(va);
-			
-			try{
-			theCmdLineParser.parseArgument(args);
-			String pathToXML = va.getInputFile().getAbsolutePath();
-			System.out.println("INPUT ===> " + pathToXML);
-
-			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
-			System.out.println("AIRFOILS ===> " + dirAirfoil);
-
-			String dirFuselages = va.getFuselagesDirectory().getCanonicalPath();
-			System.out.println("FUSELAGES ===> " + dirFuselages);
-			
-			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
-			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
-			
-			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
-			System.out.println("ENGINES ===> " + dirEngines);
-			
-			String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
-			System.out.println("NACELLES ===> " + dirNacelles);
-			
-			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
-			System.out.println("LANDING GEARS ===> " + dirLandingGears);
-			
-			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
-			System.out.println("SYSTEMS ===> " + dirSystems);
-			
-			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
-			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
-			
-			String dirCosts = va.getCostsDirectory().getCanonicalPath();
-			System.out.println("COSTS ===> " + dirCosts);
-			
-			System.out.println("--------------");
-			
-			
-			// Setup database(s)
-			MyConfiguration.initWorkingDirectoryTree();
-
-			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
-			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
-			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
-			String fusDesDatabaseFilename = "FusDes_database.h5";
-			String vedscDatabaseFilename = "VeDSC_database.h5";
-			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
-			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
-			
-			
-//			// Initialize Aircraft with default parameters
-//			AircraftBuilder theAircraftBuilder = new Aircraft.AircraftBuilder("JPAD Test Aircraft DAF - 2016 - AircraftBuilder call", 
-//														 			AircraftEnum.ATR72, 
-//														 			aeroDatabaseReader,
-//														 			highLiftDatabaseReader); 
-//			theAircraft = new Aircraft(theAircraftBuilder);
-			
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-					fusDesDatabaseReader,
-					veDSCDatabaseReader);
-					
-			OperatingConditions operatingConditions = new OperatingConditions.OperatingConditionsBuilder("The operating conditions").build();
-			operatingConditions.setAltitude(Amount.valueOf(11000, SI.METER));
-//			operatingConditions.set_tas(Amount.valueOf(472, NonSI.KNOT));
-
-			// Variables setting
-			Amount<Mass> _MTOM = Amount.valueOf(243200, NonSI.POUND);
-			Amount<Mass> _OEM = Amount.valueOf(141056, SI.KILOGRAM);
-			Amount<Length> _range = Amount.valueOf(7200, NonSI.NAUTICAL_MILE);
-			Amount<Velocity> _cruiseSpeed = Amount.valueOf(473.0, SI.METERS_PER_SECOND);
-			Amount<Duration> _flightTime = Amount.valueOf(15.22, NonSI.HOUR);
-//			Amount<Velocity> blockSpeed = Amount.valueOf(243.0, SI.METERS_PER_SECOND); // Value according to Sforza
-			
-			
-			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(_OEM);
-			theAircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(_MTOM);
-			theAircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(_OEM);
-			theAircraft.setLifeSpan(16);
-//			theAircraft.getTheCosts().setAnnualInterestRate(0.054);
-			theAircraft.getTheAnalysisManager().setReferenceRange(_range);
-//			theAircraft.getTheAnalysisManager().getThePerformance().setVDesignCruise(_cruiseSpeed);
-			theAircraft.getTheAnalysisManager().getTheCosts().setFlightTime(_flightTime);
-			
-			
-			CostsCalcUtils.calcAircraftCostSforza(_OEM); // Methods that implements Sforza statistical formula that relates the aircraft operative 
-														 // empty weight (in pounds) with the cost in USD2012.
-//			theCost.calcAircraftCostSforza();
-//			theAircraft.getTheCosts().set_manHourLaborRate(40); // Value according to Sforza
-//			theAircraft.getTheCosts().set_blockSpeed(blockSpeed);// Value according to Sforza
-//			theAircraft.getTheCosts().calcUtilizationKundu(theCost.get_blockTime().doubleValue(NonSI.HOUR));
-			theAircraft.getTheAnalysisManager().getTheCosts().setUtilization(4750);
-//			theAircraft.getTheCosts().calcTotalInvestments(98400000.0, 9800000.0, 2, 0.1, 0.3);
-//			theAircraft.getTheCosts().get_theFixedCharges().set_residualValue(0.2);
-			theAircraft.getPowerPlant().setEngineType(EngineTypeEnum.TURBOFAN);
-//			Amount<Duration> tb = theCost.calcBlockTime();
-//			theCost.set_blockTime(Amount.valueOf(15.94, NonSI.HOUR));;
-			
-			theAircraft.getTheAnalysisManager().getTheCosts().calculateAll(theAircraft);
-			
-			Map<MethodEnum, Double> depreciationMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> interestMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> insuranceMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> crewCostsMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> totalFixedChargesMap = 
-					new TreeMap<MethodEnum, Double>();
-
-			Map<MethodEnum, Double> landingFeesMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> navigationalChargesMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> groundHandlingChargesMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> maintenanceMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> fuelAndOilMap = 
-					new TreeMap<MethodEnum, Double>();
-			Map<MethodEnum, Double> totalTripChargesMap = 
-					new TreeMap<MethodEnum, Double>();
-			
-			
-			// Start costs estimation
-			depreciationMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcDepreciation().get_methodsMap();
-			interestMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcInterest().get_methodsMap();
-			insuranceMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcInsurance().get_methodsMap();
-			crewCostsMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcCrewCosts().get_methodsMap();
-			//------------------------------------------------------------------------------------------------------------------------
-			totalFixedChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_totalFixedChargesMap();
-			//------------------------------------------------------------------------------------------------------------------------
-			landingFeesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcLandingFees().get_methodsMap();
-			navigationalChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcNavigationalCharges().get_methodsMap();
-			groundHandlingChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcGroundHandlingCharges().get_methodsMap();
-			maintenanceMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcMaintenanceCosts().get_methodsMap();
-			fuelAndOilMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcFuelAndOilCharges().get_methodsMap();
-			//------------------------------------------------------------------------------------------------------------------------
-			totalTripChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_totalTripChargesMap();
-			//------------------------------------------------------------------------------------------------------------------------
-			// DOC = Fixed + Trip Charge
-			Map<MethodEnum, Double> DOC = new HashMap<>(totalFixedChargesMap);
-			totalTripChargesMap.forEach((k,v) -> DOC.merge(k,v, Double::sum));
-			//------------------------------------------------------------------------------------------------------------------------
-			
-			System.out.println("The aircraft total investment is " +  theAircraft.getTheAnalysisManager().getTheCosts().getTotalInvestments());
-//			System.out.println("The aircraft depreciation per block hour is " + depreciation  );
-//			System.out.println("The residual value rate is " + theFixedCharges.get_residualValue() );
-			System.out.println("The test depreciation methodMap is " + depreciationMap );
-			System.out.println("The test interest methodMap is " + interestMap );
-			System.out.println("The test insurance methodMap is " + insuranceMap );
-			System.out.println("The test crew cost methodMap is " + crewCostsMap );
-			System.out.println("The test total fixed charges methodMap is " + totalFixedChargesMap );
-			System.out.println();
-			
-			System.out.println("The test landing fees methodMap is " + landingFeesMap );
-			System.out.println("The test navigational charges methodMap is " + navigationalChargesMap );
-			System.out.println("The test ground handling charges methodMap is " + groundHandlingChargesMap );
-			System.out.println("The test maintenance methodMap is " + maintenanceMap );
-			System.out.println("The test fuel and oil methodMap is " + fuelAndOilMap );
-			System.out.println("The test total trip charges methodMap is " + totalTripChargesMap );		
-			
-//			aircraft.getCost().calculateAll();
-			System.out.println("\n The test total Fixed Charge methodMap is " + totalFixedChargesMap);
-			System.out.println("\n The test total Trip Charges methodMap is " + totalTripChargesMap);
-			System.out.println("\n The test DOC methodMap is " + DOC);
-			
-			}
-			catch (IOException e) {
-			System.err.println("Error: " + e.getMessage());
-			CostsTestsJenkinson.theCmdLineParser.printUsage(System.err);
-			System.err.println();
-			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
-			}
-		}
+//		// declaration necessary for Concrete Object usage
+//		public static CmdLineParser theCmdLineParser;
+//		public static JPADXmlReader reader;
+//
+//		//-------------------------------------------------------------
+//		
+//		public static Aircraft theAircraft; 
+//	
+//
+//		public static void main(String[] args) throws CmdLineException {
+//			
+//			MyArgumentsAircraft va = new MyArgumentsAircraft();
+//			CostsTestsJenkinson.theCmdLineParser = new CmdLineParser(va);
+//			
+//			try{
+//			theCmdLineParser.parseArgument(args);
+//			String pathToXML = va.getInputFile().getAbsolutePath();
+//			System.out.println("INPUT ===> " + pathToXML);
+//
+//			String dirAirfoil = va.getAirfoilDirectory().getCanonicalPath();
+//			System.out.println("AIRFOILS ===> " + dirAirfoil);
+//
+//			String dirFuselages = va.getFuselagesDirectory().getCanonicalPath();
+//			System.out.println("FUSELAGES ===> " + dirFuselages);
+//			
+//			String dirLiftingSurfaces = va.getLiftingSurfacesDirectory().getCanonicalPath();
+//			System.out.println("LIFTING SURFACES ===> " + dirLiftingSurfaces);
+//			
+//			String dirEngines = va.getEnginesDirectory().getCanonicalPath();
+//			System.out.println("ENGINES ===> " + dirEngines);
+//			
+//			String dirNacelles = va.getNacellesDirectory().getCanonicalPath();
+//			System.out.println("NACELLES ===> " + dirNacelles);
+//			
+//			String dirLandingGears = va.getLandingGearsDirectory().getCanonicalPath();
+//			System.out.println("LANDING GEARS ===> " + dirLandingGears);
+//			
+//			String dirSystems = va.getSystemsDirectory().getCanonicalPath();
+//			System.out.println("SYSTEMS ===> " + dirSystems);
+//			
+//			String dirCabinConfiguration = va.getCabinConfigurationDirectory().getCanonicalPath();
+//			System.out.println("CABIN CONFIGURATIONS ===> " + dirCabinConfiguration);
+//			
+//			String dirCosts = va.getCostsDirectory().getCanonicalPath();
+//			System.out.println("COSTS ===> " + dirCosts);
+//			
+//			System.out.println("--------------");
+//			
+//			
+//			// Setup database(s)
+//			MyConfiguration.initWorkingDirectoryTree();
+//
+//			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+//			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+//			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+//			String fusDesDatabaseFilename = "FusDes_database.h5";
+//			String vedscDatabaseFilename = "VeDSC_database.h5";
+//			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+//			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+//			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
+//			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
+//			
+//			
+////			// Initialize Aircraft with default parameters
+////			AircraftBuilder theAircraftBuilder = new Aircraft.AircraftBuilder("JPAD Test Aircraft DAF - 2016 - AircraftBuilder call", 
+////														 			AircraftEnum.ATR72, 
+////														 			aeroDatabaseReader,
+////														 			highLiftDatabaseReader); 
+////			theAircraft = new Aircraft(theAircraftBuilder);
+//			
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader,
+//					fusDesDatabaseReader,
+//					veDSCDatabaseReader);
+//					
+//			OperatingConditions operatingConditions = new OperatingConditions.OperatingConditionsBuilder("The operating conditions").build();
+//			operatingConditions.setAltitude(Amount.valueOf(11000, SI.METER));
+////			operatingConditions.set_tas(Amount.valueOf(472, NonSI.KNOT));
+//
+//			// Variables setting
+//			Amount<Mass> _MTOM = Amount.valueOf(243200, NonSI.POUND);
+//			Amount<Mass> _OEM = Amount.valueOf(141056, SI.KILOGRAM);
+//			Amount<Length> _range = Amount.valueOf(7200, NonSI.NAUTICAL_MILE);
+//			Amount<Velocity> _cruiseSpeed = Amount.valueOf(473.0, SI.METERS_PER_SECOND);
+//			Amount<Duration> _flightTime = Amount.valueOf(15.22, NonSI.HOUR);
+////			Amount<Velocity> blockSpeed = Amount.valueOf(243.0, SI.METERS_PER_SECOND); // Value according to Sforza
+//			
+//			
+//			theAircraft.getTheAnalysisManager().getTheWeights().setOperatingEmptyMass(_OEM);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(_MTOM);
+//			theAircraft.getTheAnalysisManager().getTheWeights().setManufacturerEmptyMass(_OEM);
+//			theAircraft.setLifeSpan(16);
+////			theAircraft.getTheCosts().setAnnualInterestRate(0.054);
+//			theAircraft.getTheAnalysisManager().setReferenceRange(_range);
+////			theAircraft.getTheAnalysisManager().getThePerformance().setVDesignCruise(_cruiseSpeed);
+//			theAircraft.getTheAnalysisManager().getTheCosts().setFlightTime(_flightTime);
+//			
+//			
+//			CostsCalcUtils.calcAircraftCostSforza(_OEM); // Methods that implements Sforza statistical formula that relates the aircraft operative 
+//														 // empty weight (in pounds) with the cost in USD2012.
+////			theCost.calcAircraftCostSforza();
+////			theAircraft.getTheCosts().set_manHourLaborRate(40); // Value according to Sforza
+////			theAircraft.getTheCosts().set_blockSpeed(blockSpeed);// Value according to Sforza
+////			theAircraft.getTheCosts().calcUtilizationKundu(theCost.get_blockTime().doubleValue(NonSI.HOUR));
+//			theAircraft.getTheAnalysisManager().getTheCosts().setUtilization(4750);
+////			theAircraft.getTheCosts().calcTotalInvestments(98400000.0, 9800000.0, 2, 0.1, 0.3);
+////			theAircraft.getTheCosts().get_theFixedCharges().set_residualValue(0.2);
+//			theAircraft.getPowerPlant().setEngineType(EngineTypeEnum.TURBOFAN);
+////			Amount<Duration> tb = theCost.calcBlockTime();
+////			theCost.set_blockTime(Amount.valueOf(15.94, NonSI.HOUR));;
+//			
+//			theAircraft.getTheAnalysisManager().getTheCosts().calculateAll(theAircraft);
+//			
+//			Map<MethodEnum, Double> depreciationMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> interestMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> insuranceMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> crewCostsMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> totalFixedChargesMap = 
+//					new TreeMap<MethodEnum, Double>();
+//
+//			Map<MethodEnum, Double> landingFeesMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> navigationalChargesMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> groundHandlingChargesMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> maintenanceMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> fuelAndOilMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			Map<MethodEnum, Double> totalTripChargesMap = 
+//					new TreeMap<MethodEnum, Double>();
+//			
+//			
+//			// Start costs estimation
+//			depreciationMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcDepreciation().get_methodsMap();
+//			interestMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcInterest().get_methodsMap();
+//			insuranceMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcInsurance().get_methodsMap();
+//			crewCostsMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_calcCrewCosts().get_methodsMap();
+//			//------------------------------------------------------------------------------------------------------------------------
+//			totalFixedChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheFixedCharges().get_totalFixedChargesMap();
+//			//------------------------------------------------------------------------------------------------------------------------
+//			landingFeesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcLandingFees().get_methodsMap();
+//			navigationalChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcNavigationalCharges().get_methodsMap();
+//			groundHandlingChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcGroundHandlingCharges().get_methodsMap();
+//			maintenanceMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcMaintenanceCosts().get_methodsMap();
+//			fuelAndOilMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_calcFuelAndOilCharges().get_methodsMap();
+//			//------------------------------------------------------------------------------------------------------------------------
+//			totalTripChargesMap = theAircraft.getTheAnalysisManager().getTheCosts().getTheTripCharges().get_totalTripChargesMap();
+//			//------------------------------------------------------------------------------------------------------------------------
+//			// DOC = Fixed + Trip Charge
+//			Map<MethodEnum, Double> DOC = new HashMap<>(totalFixedChargesMap);
+//			totalTripChargesMap.forEach((k,v) -> DOC.merge(k,v, Double::sum));
+//			//------------------------------------------------------------------------------------------------------------------------
+//			
+//			System.out.println("The aircraft total investment is " +  theAircraft.getTheAnalysisManager().getTheCosts().getTotalInvestments());
+////			System.out.println("The aircraft depreciation per block hour is " + depreciation  );
+////			System.out.println("The residual value rate is " + theFixedCharges.get_residualValue() );
+//			System.out.println("The test depreciation methodMap is " + depreciationMap );
+//			System.out.println("The test interest methodMap is " + interestMap );
+//			System.out.println("The test insurance methodMap is " + insuranceMap );
+//			System.out.println("The test crew cost methodMap is " + crewCostsMap );
+//			System.out.println("The test total fixed charges methodMap is " + totalFixedChargesMap );
+//			System.out.println();
+//			
+//			System.out.println("The test landing fees methodMap is " + landingFeesMap );
+//			System.out.println("The test navigational charges methodMap is " + navigationalChargesMap );
+//			System.out.println("The test ground handling charges methodMap is " + groundHandlingChargesMap );
+//			System.out.println("The test maintenance methodMap is " + maintenanceMap );
+//			System.out.println("The test fuel and oil methodMap is " + fuelAndOilMap );
+//			System.out.println("The test total trip charges methodMap is " + totalTripChargesMap );		
+//			
+////			aircraft.getCost().calculateAll();
+//			System.out.println("\n The test total Fixed Charge methodMap is " + totalFixedChargesMap);
+//			System.out.println("\n The test total Trip Charges methodMap is " + totalTripChargesMap);
+//			System.out.println("\n The test DOC methodMap is " + DOC);
+//			
+//			}
+//			catch (IOException e) {
+//			System.err.println("Error: " + e.getMessage());
+//			CostsTestsJenkinson.theCmdLineParser.printUsage(System.err);
+//			System.err.println();
+//			System.err.println("  Must launch this app with proper command line arguments.");
+//			return;
+//			}
+//		}
 
 	}

@@ -8,14 +8,14 @@
 			file_performance="Performance.xlsx"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg"></maximum_take_off_mass>
-				<operating_empty_mass unit="kg"></operating_empty_mass>
-				<payload unit="kg"></payload>
+				<maximum_take_off_mass unit="kg">53610</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">33500</operating_empty_mass>
+				<payload unit="kg">13780</payload>
 			</weights>
 			<performance>
-				<range unit="nmi"></range>
-				<block_fuel unit="kg"></block_fuel>
-				<flight_time unit="hr"></flight_time>
+				<range unit="nmi">400</range>
+				<block_fuel unit="kg">2961</block_fuel>
+				<flight_time unit="min">127</flight_time>
 			</performance>
 			<global_data>
 				<utilization calculate="TRUE" method="AEA" unit="hr/year"></utilization> <!-- Methods: AEA or SFORZA  -->

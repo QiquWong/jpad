@@ -11,7 +11,6 @@ import javax.measure.quantity.Velocity;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
-import analyses.costs.ACCostsManager;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;

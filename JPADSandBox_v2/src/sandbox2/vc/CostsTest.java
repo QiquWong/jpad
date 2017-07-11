@@ -10,7 +10,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.costs.ACCostsManager;
 import standaloneutils.JPADXmlReader;
 
 class MyArgumentSystems {
@@ -30,54 +29,54 @@ class MyArgumentSystems {
 
 public class CostsTest {
 	
-	// declaration necessary for Concrete Object usage
-		public static CmdLineParser theCmdLineParser;
-		public static JPADXmlReader reader;
-
-		//-------------------------------------------------------------
-		public static Aircraft theAircraft;
-		public static ACCostsManager theCosts;
-
-		//-------------------------------------------------------------
-
-	public static void main(String[] args) {
-		
-		System.out.println("--------------");
-		System.out.println("Costs test");
-		System.out.println("--------------");
-
-		MyArgumentSystems va = new MyArgumentSystems();
-		CostsTest.theCmdLineParser = new CmdLineParser(va);
-
-		// populate the configuration static object in the class
-		// before launching the application thread (launch --> start ...)
-		try {
-			CostsTest.theCmdLineParser.parseArgument(args);
-			String pathToXML = va.getInputFile().getAbsolutePath();
-			System.out.println("INPUT ===> " + pathToXML);
-
-			System.out.println("--------------");
-
-			// read data from XML
-			theCosts = ACCostsManager.importFromXML(pathToXML, theAircraft);
-			
-//			// default Configuration ...
-//			theCosts = new CostsBuilder(
-//					"JPAD Test Costs DAF - 2016")
-//					.build();
-			
-			System.out.println("The Costs ...");
-			System.out.println(CostsTest.theCosts.toString());
-
-		} catch (CmdLineException e) {
-			System.err.println("Error: " + e.getMessage());
-			CostsTest.theCmdLineParser.printUsage(System.err);
-			System.err.println();
-			System.err.println("  Must launch this app with proper command line arguments.");
-			return;
-
-		}
-
-	}
+//	// declaration necessary for Concrete Object usage
+//		public static CmdLineParser theCmdLineParser;
+//		public static JPADXmlReader reader;
+//
+//		//-------------------------------------------------------------
+//		public static Aircraft theAircraft;
+//		public static ACCostsManager theCosts;
+//
+//		//-------------------------------------------------------------
+//
+//	public static void main(String[] args) {
+//		
+//		System.out.println("--------------");
+//		System.out.println("Costs test");
+//		System.out.println("--------------");
+//
+//		MyArgumentSystems va = new MyArgumentSystems();
+//		CostsTest.theCmdLineParser = new CmdLineParser(va);
+//
+//		// populate the configuration static object in the class
+//		// before launching the application thread (launch --> start ...)
+//		try {
+//			CostsTest.theCmdLineParser.parseArgument(args);
+//			String pathToXML = va.getInputFile().getAbsolutePath();
+//			System.out.println("INPUT ===> " + pathToXML);
+//
+//			System.out.println("--------------");
+//
+//			// read data from XML
+//			theCosts = ACCostsManager.importFromXML(pathToXML, theAircraft);
+//			
+////			// default Configuration ...
+////			theCosts = new CostsBuilder(
+////					"JPAD Test Costs DAF - 2016")
+////					.build();
+//			
+//			System.out.println("The Costs ...");
+//			System.out.println(CostsTest.theCosts.toString());
+//
+//		} catch (CmdLineException e) {
+//			System.err.println("Error: " + e.getMessage());
+//			CostsTest.theCmdLineParser.printUsage(System.err);
+//			System.err.println();
+//			System.err.println("  Must launch this app with proper command line arguments.");
+//			return;
+//
+//		}
+//
+//	}
 
 }
