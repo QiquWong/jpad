@@ -33,7 +33,7 @@
             />
 		<!-- method_XXX="AVERAGED" if empty string -->
     <!--		
-    <balance
+    <balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
             method_fuselage=""
@@ -44,7 +44,7 @@
 		/>
 	-->
 	<!--
-	<aerodynamic_and_stability
+	<aerodynamic_and_stability 
 			plot="TRUE"
 			take_off_condition="TRUE"
 			file_take_off_condition="analysis_aerodynamics_TakeOff.xml"

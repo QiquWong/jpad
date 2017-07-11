@@ -1023,7 +1023,7 @@ public class ACCostsManager {
 		//=================================================================================================
 		// DOC CALCULATION
 		//=================================================================================================
-		
+		//TODO switch case construct
 		//-------------------------------------------------------------------------------------------------
 		// DOC CAPITAL 
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL)) {
@@ -1147,12 +1147,12 @@ public class ACCostsManager {
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
 		
 		// TODO : FILL ME !!
-		
+		//TODO make conversion here
 	}
 	
 	@Override
 	public String toString() {
-		
+		//TODO make conversion here
 		MyConfiguration.customizeAmountOutput();
 
 		StringBuilder sb = new StringBuilder()

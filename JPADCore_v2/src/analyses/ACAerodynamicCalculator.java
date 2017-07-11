@@ -784,7 +784,8 @@ public class ACAerodynamicCalculator {
 
 		//========================================================================================================================
 		// WING
-		if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null)
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
+
 			_liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.WING,
 					new LSAerodynamicsManager(
@@ -798,405 +799,19 @@ public class ACAerodynamicCalculator {
 							)
 					);
 
-		//.........................................................................................................................
-		//	CRITICAL_MACH
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
-
-			CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
-			
-			CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMachCr();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
-			case KORN_MASON:
-				calcMachCr.kornMason(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaWingCurrent));
-				break;
-			case KROO:
-				calcMachCr.kroo(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaWingCurrent));
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	AERODYNAMIC_CENTER
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-
-			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-			case QUARTER:
-				calcXAC.atQuarterMAC();
-				break;
-			case DEYOUNG_HARPER:
-				calcXAC.deYoungHarper();
-				break;
-			case NAPOLITANO_DATCOM:
-				calcXAC.datcomNapolitano();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CL_AT_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
-
-			CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
-			case LINEAR_DLR:
-				calcCLAtAlpha.linearDLR(getAlphaWingCurrent());
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLAtAlpha.linearAndersonCompressibleSubsonic(getAlphaWingCurrent());
-				break;
-			case LINEAR_NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellLinear(getAlphaWingCurrent());
-				break;
-			case NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellCompleteCurve(getAlphaWingCurrent());
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CL_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_ALPHA)) {
-
-			CalcCLAlpha calcCLAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_ALPHA)) {
-			case INTEGRAL_MEAN:
-				calcCLAlpha.integralMean2D();
-				break;
-			case POLHAMUS:
-				calcCLAlpha.polhamus();
-				break;
-			case NASA_BLACKWELL:
-				calcCLAlpha.nasaBlackwell();
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLAlpha.andersonSweptCompressibleSubsonic();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CL_ZERO
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_ZERO)) {
-
-			CalcCL0 calcCL0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCL0();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_ZERO)) {
-			case NASA_BLACKWELL:
-				calcCL0.nasaBlackwell();
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCL0.andersonSweptCompressibleSubsonic();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CL_STAR
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_STAR)) {
-
-			CalcCLStar calcCLStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLStar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_STAR)) {
-			case NASA_BLACKWELL:
-				calcCLStar.nasaBlackwell();
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLStar.andersonSweptCompressibleSubsonic();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CL_MAX
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
-
-			CalcCLmax calcCLmax = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLmax();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_MAX)) {
-			case NASA_BLACKWELL:
-				calcCLmax.nasaBlackwell();
-				break;
-			case PHILLIPS_ALLEY:
-				calcCLmax.phillipsAndAlley();
-				break;
-			case ROSKAM:
-				calcCLmax.roskam();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	ALPHA_ZERO_LIFT
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
-
-			CalcAlpha0L calcAlpha0L = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcAlpha0L();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
-			case INTEGRAL_MEAN_NO_TWIST:
-				calcAlpha0L.integralMeanNoTwist();
-				break;
-			case INTEGRAL_MEAN_TWIST:
-				calcAlpha0L.integralMeanWithTwist();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	ALPHA_STAR
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
-
-			CalcAlphaStar calcAlphaStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcAlphaStar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
-			case MEAN_AIRFOIL_INFLUENCE_AREAS:
-				calcAlphaStar.meanAirfoilWithInfluenceAreas();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	ALPHA_STALL
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
-
-			CalcAlphaStall calcAlphaStall = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcAlphaStall();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
-			case PHILLIPS_ALLEY:
-				calcAlphaStall.fromCLmaxPhillipsAndAlley();
-				break;
-			case NASA_BLACKWELL:
-				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(_currentMachNumber);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	LIFT_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
-
-			CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcLiftCurve();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
-			case PHILLIPS_ALLEY:
-				calcLiftCurve.fromCLmaxPhillipsAndAlley();
-				break;
-			case NASA_BLACKWELL:
-				calcLiftCurve.nasaBlackwell(_currentMachNumber);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	LIFT_DISTRIBUTION
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
-
-			CalcLiftDistributions calcLiftDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcLiftDistributions();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
-			case SCHRENK:
-				calcLiftDistributions.schrenk();
-				break;
-			case NASA_BLACKWELL:
-				calcLiftDistributions.nasaBlackwell();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD0
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD0)) {
-
-			CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCD0();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD0)) {
-			case SEMPIEMPIRICAL:
-				calcCD0.semiempirical(_currentMachNumber, _currentAltitude);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_INDUCED
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
-
-			CalcCDInduced calcCDInduced = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDInduced();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
-			case GROSU:
-				calcCDInduced.grosu(_alphaWingCurrent);
-				break;
-			case HOWE:
-				calcCDInduced.howe(_alphaWingCurrent);
-				break;
-			case RAYMER:
-				calcCDInduced.raymer(_alphaWingCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_WAVE
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_WAVE)) {
-
-			CalcCDWave calcCDWave = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDWave();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_WAVE)) {
-			case LOCK_KORN_WITH_KORN_MASON:
-				calcCDWave.lockKornWithKornMason();
-				break;
-			case LOCK_KORN_WITH_KROO:
-				calcCDWave.lockKornWithKroo();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	OSWALD_FACTOR
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
-
-			CalcOswaldFactor calcOswaldFactor = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcOswaldFactor();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
-			case GROSU:
-				calcOswaldFactor.grosu(_alphaWingCurrent);
-				break;
-			case HOWE:
-				calcOswaldFactor.howe();
-				break;
-			case RAYMER:
-				calcOswaldFactor.raymer();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	POLAR_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
-
-			analyses.liftingsurface.LSAerodynamicsManager.CalcPolar calcPolar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcPolar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
-			case SEMPIEMPIRICAL:
-				calcPolar.semiempirical(_currentMachNumber, _currentAltitude);
-				break;
-			case AIRFOIL_DISTRIBUTION:
-				calcPolar.fromCdDistribution(_currentMachNumber, _currentAltitude);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	DRAG_DISTRIBUTION
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
-
-			CalcDragDistributions calcDragDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcDragDistributions();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
-			case NASA_BLACKWELL:
-				calcDragDistributions.nasaBlackwell(_currentMachNumber);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_AT_ALPHA 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
-
-			CalcCDAtAlpha calcCDAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcCDAtAlpha.fromCdDistribution(
-						_alphaWingCurrent, 
-						_currentMachNumber,
-						_currentAltitude
-						);
-				break;
-			case SEMPIEMPIRICAL:
-				calcCDAtAlpha.semiempirical(
-						_alphaWingCurrent, 
-						_currentMachNumber,
-						_currentAltitude
-						);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.................................................................................................................................
-		if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF) 
-				|| _theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING)) {
-			
 			//.........................................................................................................................
-			//	HIGH_LIFT_DEVICES_EFFECTS
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+			//	CRITICAL_MACH
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
 
-				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-				case SEMPIEMPIRICAL:
-					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-						calcHighLiftDevicesEffects.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-								_currentMachNumber
-								);
-					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-						calcHighLiftDevicesEffects.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-								_currentMachNumber
-								);
-					break;
-				default:
-					break;
-				}
-			}
-		
-			//.........................................................................................................................
-			//	HIGH_LIFT_CURVE_3D
-			
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+				CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
 
-				CalcHighLiftCurve calcHighLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftCurve();
-				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
-				case SEMPIEMPIRICAL:
-					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-						calcHighLiftCurve.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-								_currentMachNumber, 
-								_currentAltitude
-								);
-					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-						calcHighLiftCurve.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-								_currentMachNumber, 
-								_currentAltitude
-								);
+				CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMachCr();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+				case KORN_MASON:
+					calcMachCr.kornMason(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaWingCurrent));
+					break;
+				case KROO:
+					calcMachCr.kroo(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaWingCurrent));
 					break;
 				default:
 					break;
@@ -1204,42 +819,313 @@ public class ACAerodynamicCalculator {
 			}
 
 			//.........................................................................................................................
-			//	CL_AT_ALPHA_HIGH_LIFT 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)) {
+			//	AERODYNAMIC_CENTER
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
 
-				CalcCLAtAlphaHighLift calcCLAtAlphaHighLift = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlphaHighLift();
-				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)) {
-				case SEMPIEMPIRICAL:
-					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-						calcCLAtAlphaHighLift.semiempirical(
-								_alphaWingCurrent,
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-								_currentMachNumber, 
-								_currentAltitude
-								);
-					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-						calcCLAtAlphaHighLift.semiempirical(
-								_alphaWingCurrent,
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-								_currentMachNumber, 
-								_currentAltitude
-								);
+				CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcXAC();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+				case QUARTER:
+					calcXAC.atQuarterMAC();
+					break;
+				case DEYOUNG_HARPER:
+					calcXAC.deYoungHarper();
+					break;
+				case NAPOLITANO_DATCOM:
+					calcXAC.datcomNapolitano();
 					break;
 				default:
 					break;
 				}
 			}
-			
-			//.........................................................................................................................
-			//	CD_AT_ALPHA_HIGH_LIFT 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_HIGH_LIFT)) {
 
-				/*
-				 * CD@Alpha + Delta CD0 from High Lift Devices Effects
-				 */
-				
+			//.........................................................................................................................
+			//	CL_AT_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
+
+				CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
+				case LINEAR_DLR:
+					calcCLAtAlpha.linearDLR(getAlphaWingCurrent());
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCLAtAlpha.linearAndersonCompressibleSubsonic(getAlphaWingCurrent());
+					break;
+				case LINEAR_NASA_BLACKWELL:
+					calcCLAtAlpha.nasaBlackwellLinear(getAlphaWingCurrent());
+					break;
+				case NASA_BLACKWELL:
+					calcCLAtAlpha.nasaBlackwellCompleteCurve(getAlphaWingCurrent());
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CL_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_ALPHA)) {
+
+				CalcCLAlpha calcCLAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_ALPHA)) {
+				case INTEGRAL_MEAN:
+					calcCLAlpha.integralMean2D();
+					break;
+				case POLHAMUS:
+					calcCLAlpha.polhamus();
+					break;
+				case NASA_BLACKWELL:
+					calcCLAlpha.nasaBlackwell();
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCLAlpha.andersonSweptCompressibleSubsonic();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CL_ZERO
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_ZERO)) {
+
+				CalcCL0 calcCL0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCL0();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_ZERO)) {
+				case NASA_BLACKWELL:
+					calcCL0.nasaBlackwell();
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCL0.andersonSweptCompressibleSubsonic();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CL_STAR
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_STAR)) {
+
+				CalcCLStar calcCLStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLStar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_STAR)) {
+				case NASA_BLACKWELL:
+					calcCLStar.nasaBlackwell();
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCLStar.andersonSweptCompressibleSubsonic();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CL_MAX
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
+
+				CalcCLmax calcCLmax = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLmax();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_MAX)) {
+				case NASA_BLACKWELL:
+					calcCLmax.nasaBlackwell();
+					break;
+				case PHILLIPS_ALLEY:
+					calcCLmax.phillipsAndAlley();
+					break;
+				case ROSKAM:
+					calcCLmax.roskam();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	ALPHA_ZERO_LIFT
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
+
+				CalcAlpha0L calcAlpha0L = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcAlpha0L();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
+				case INTEGRAL_MEAN_NO_TWIST:
+					calcAlpha0L.integralMeanNoTwist();
+					break;
+				case INTEGRAL_MEAN_TWIST:
+					calcAlpha0L.integralMeanWithTwist();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	ALPHA_STAR
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
+
+				CalcAlphaStar calcAlphaStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcAlphaStar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
+				case MEAN_AIRFOIL_INFLUENCE_AREAS:
+					calcAlphaStar.meanAirfoilWithInfluenceAreas();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	ALPHA_STALL
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
+
+				CalcAlphaStall calcAlphaStall = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcAlphaStall();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
+				case PHILLIPS_ALLEY:
+					calcAlphaStall.fromCLmaxPhillipsAndAlley();
+					break;
+				case NASA_BLACKWELL:
+					calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(_currentMachNumber);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	LIFT_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+
+				CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcLiftCurve();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+				case PHILLIPS_ALLEY:
+					calcLiftCurve.fromCLmaxPhillipsAndAlley();
+					break;
+				case NASA_BLACKWELL:
+					calcLiftCurve.nasaBlackwell(_currentMachNumber);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	LIFT_DISTRIBUTION
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
+
+				CalcLiftDistributions calcLiftDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcLiftDistributions();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
+				case SCHRENK:
+					calcLiftDistributions.schrenk();
+					break;
+				case NASA_BLACKWELL:
+					calcLiftDistributions.nasaBlackwell();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD0
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD0)) {
+
+				CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCD0();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD0)) {
+				case SEMPIEMPIRICAL:
+					calcCD0.semiempirical(_currentMachNumber, _currentAltitude);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_INDUCED
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
+
+				CalcCDInduced calcCDInduced = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDInduced();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
+				case GROSU:
+					calcCDInduced.grosu(_alphaWingCurrent);
+					break;
+				case HOWE:
+					calcCDInduced.howe(_alphaWingCurrent);
+					break;
+				case RAYMER:
+					calcCDInduced.raymer(_alphaWingCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_WAVE
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_WAVE)) {
+
+				CalcCDWave calcCDWave = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDWave();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_WAVE)) {
+				case LOCK_KORN_WITH_KORN_MASON:
+					calcCDWave.lockKornWithKornMason();
+					break;
+				case LOCK_KORN_WITH_KROO:
+					calcCDWave.lockKornWithKroo();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	OSWALD_FACTOR
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
+
+				CalcOswaldFactor calcOswaldFactor = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcOswaldFactor();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
+				case GROSU:
+					calcOswaldFactor.grosu(_alphaWingCurrent);
+					break;
+				case HOWE:
+					calcOswaldFactor.howe();
+					break;
+				case RAYMER:
+					calcOswaldFactor.raymer();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	POLAR_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+
+				analyses.liftingsurface.LSAerodynamicsManager.CalcPolar calcPolar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcPolar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+				case SEMPIEMPIRICAL:
+					calcPolar.semiempirical(_currentMachNumber, _currentAltitude);
+					break;
+				case AIRFOIL_DISTRIBUTION:
+					calcPolar.fromCdDistribution(_currentMachNumber, _currentAltitude);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	DRAG_DISTRIBUTION
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
+
+				CalcDragDistributions calcDragDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcDragDistributions();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
+				case NASA_BLACKWELL:
+					calcDragDistributions.nasaBlackwell(_currentMachNumber);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
+
 				CalcCDAtAlpha calcCDAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDAtAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
 				case AIRFOIL_DISTRIBUTION:
@@ -1259,37 +1145,224 @@ public class ACAerodynamicCalculator {
 				default:
 					break;
 				}
-				
-				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-				case SEMPIEMPIRICAL:
-					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-						calcHighLiftDevicesEffects.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-								_currentMachNumber
+			}
+
+			//.................................................................................................................................
+			if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF) 
+					|| _theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING)) {
+
+				//.........................................................................................................................
+				//	HIGH_LIFT_DEVICES_EFFECTS
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+
+					CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+					case SEMPIEMPIRICAL:
+						if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+							calcHighLiftDevicesEffects.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+									_currentMachNumber
+									);
+						else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+							calcHighLiftDevicesEffects.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+									_currentMachNumber
+									);
+						break;
+					default:
+						break;
+					}
+				}
+
+				//.........................................................................................................................
+				//	HIGH_LIFT_CURVE_3D
+
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+
+					CalcHighLiftCurve calcHighLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftCurve();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+					case SEMPIEMPIRICAL:
+						if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+							calcHighLiftCurve.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+									_currentMachNumber, 
+									_currentAltitude
+									);
+						else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+							calcHighLiftCurve.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+									_currentMachNumber, 
+									_currentAltitude
+									);
+						break;
+					default:
+						break;
+					}
+				}
+
+				//.........................................................................................................................
+				//	CL_AT_ALPHA_HIGH_LIFT 
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)) {
+
+					CalcCLAtAlphaHighLift calcCLAtAlphaHighLift = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCLAtAlphaHighLift();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA_HIGH_LIFT)) {
+					case SEMPIEMPIRICAL:
+						if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+							calcCLAtAlphaHighLift.semiempirical(
+									_alphaWingCurrent,
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+									_currentMachNumber, 
+									_currentAltitude
+									);
+						else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+							calcCLAtAlphaHighLift.semiempirical(
+									_alphaWingCurrent,
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+									_currentMachNumber, 
+									_currentAltitude
+									);
+						break;
+					default:
+						break;
+					}
+				}
+
+				//.........................................................................................................................
+				//	CD_AT_ALPHA_HIGH_LIFT 
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_HIGH_LIFT)) {
+
+					/*
+					 * CD@Alpha + Delta CD0 from High Lift Devices Effects
+					 */
+
+					CalcCDAtAlpha calcCDAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCDAtAlpha();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
+					case AIRFOIL_DISTRIBUTION:
+						calcCDAtAlpha.fromCdDistribution(
+								_alphaWingCurrent, 
+								_currentMachNumber,
+								_currentAltitude
 								);
-					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-						calcHighLiftDevicesEffects.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-								_currentMachNumber
+						break;
+					case SEMPIEMPIRICAL:
+						calcCDAtAlpha.semiempirical(
+								_alphaWingCurrent, 
+								_currentMachNumber,
+								_currentAltitude
 								);
+						break;
+					default:
+						break;
+					}
+
+					CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+					case SEMPIEMPIRICAL:
+						if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+							calcHighLiftDevicesEffects.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+									_currentMachNumber
+									);
+						else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+							calcHighLiftDevicesEffects.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+									_currentMachNumber
+									);
+						break;
+					default:
+						break;
+					}
+
+				}
+
+				//.........................................................................................................................
+				//	CM_AT_ALPHA_HIGH_LIFT 
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_HIGH_LIFT)) {
+
+					/*
+					 * CM@Alpha + Delta CMac from High Lift Devices Effects
+					 */
+
+					CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMAtAlpha();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
+					case AIRFOIL_DISTRIBUTION:
+						calcCMAtAlpha.fromAirfoilDistribution(_alphaWingCurrent);
+						break;
+					default:
+						break;
+					}
+
+					CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+					case SEMPIEMPIRICAL:
+						if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+							calcHighLiftDevicesEffects.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+									_currentMachNumber
+									);
+						else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+							calcHighLiftDevicesEffects.semiempirical(
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+									_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+									_currentMachNumber
+									);
+						break;
+					default:
+						break;
+					}
+
+				}
+
+			}
+			//.........................................................................................................................
+			//	CM_AC
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
+
+				CalcCMac calcCMac = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMac();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
+				case BASIC_AND_ADDITIONAL:
+					calcCMac.basicAndAdditionalContribution();
+					break;
+				case AIRFOIL_DISTRIBUTION:
+					calcCMac.fromAirfoilDistribution();
+					break;
+				case INTEGRAL_MEAN:
+					calcCMac.integralMean();
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
+
+				CalcCMAlpha calcCMAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCMAlpha.andersonSweptCompressibleSubsonic();
+					break;
+				case POLHAMUS:
+					calcCMAlpha.polhamus();
 					break;
 				default:
 					break;
 				}
-				
 			}
-			
-			//.........................................................................................................................
-			//	CM_AT_ALPHA_HIGH_LIFT 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_HIGH_LIFT)) {
 
-				/*
-				 * CM@Alpha + Delta CMac from High Lift Devices Effects
-				 */
-				
+			//.........................................................................................................................
+			//	CM_AT_ALPHA  
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
+
 				CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMAtAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
 				case AIRFOIL_DISTRIBUTION:
@@ -1298,111 +1371,39 @@ public class ACAerodynamicCalculator {
 				default:
 					break;
 				}
-				
-				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-				case SEMPIEMPIRICAL:
-					if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-						calcHighLiftDevicesEffects.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-								_currentMachNumber
-								);
-					else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-						calcHighLiftDevicesEffects.semiempirical(
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-								_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-								_currentMachNumber
-								);
+			}
+
+			//.........................................................................................................................
+			//	MOMENT_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
+
+				analyses.liftingsurface.LSAerodynamicsManager.CalcMomentCurve calcMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMomentCurve();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
+				case AIRFOIL_DISTRIBUTION:
+					calcMomentCurve.fromAirfoilDistribution();
 					break;
 				default:
 					break;
 				}
-				
 			}
+			//.........................................................................................................................
+			//	MOMENT_DISTRIBUTION
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
 
-		}
-		//.........................................................................................................................
-		//	CM_AC
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
-
-			CalcCMac calcCMac = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMac();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
-			case BASIC_AND_ADDITIONAL:
-				calcCMac.basicAndAdditionalContribution();
-				break;
-			case AIRFOIL_DISTRIBUTION:
-				calcCMac.fromAirfoilDistribution();
-				break;
-			case INTEGRAL_MEAN:
-				calcCMac.integralMean();
-			default:
-				break;
+				CalcMomentDistribution calcMomentDistribution = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMomentDistribution();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
+				case AIRFOIL_DISTRIBUTION:
+					calcMomentDistribution.fromAirfoilDistribution();
+					break;
+				default:
+					break;
+				}
 			}
 		}
-		
-		//.........................................................................................................................
-		//	CM_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
-
-			CalcCMAlpha calcCMAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCMAlpha.andersonSweptCompressibleSubsonic();
-				break;
-			case POLHAMUS:
-				calcCMAlpha.polhamus();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CM_AT_ALPHA  
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
-
-			CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcCMAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcCMAtAlpha.fromAirfoilDistribution(_alphaWingCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	MOMENT_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
-
-			analyses.liftingsurface.LSAerodynamicsManager.CalcMomentCurve calcMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMomentCurve();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcMomentCurve.fromAirfoilDistribution();
-				break;
-			default:
-				break;
-			}
-		}
-		//.........................................................................................................................
-		//	MOMENT_DISTRIBUTION
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
-
-			CalcMomentDistribution calcMomentDistribution = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcMomentDistribution();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcMomentDistribution.fromAirfoilDistribution();
-				break;
-			default:
-				break;
-			}
-		}
-
 
 		//============================================================================
 		// HTAIL
-		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null)
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
 			_liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.HORIZONTAL_TAIL,
 					new LSAerodynamicsManager(
@@ -1416,469 +1417,469 @@ public class ACAerodynamicCalculator {
 							)
 					);
 
-		//.........................................................................................................................
-		//	CRITICAL_MACH (TODO: needed ??)
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+			//.........................................................................................................................
+			//	CRITICAL_MACH 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
 
-			CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLAtAlpha();
-			
-			CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMachCr();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
-			case KORN_MASON:
-				calcMachCr.kornMason(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaHTailCurrent));
-				break;
-			case KROO:
-				calcMachCr.kroo(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaHTailCurrent));
-				break;
-			default:
-				break;
-			}
-		}
+				CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLAtAlpha();
 
-		//.........................................................................................................................
-		//	AERODYNAMIC_CENTER
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-
-			CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcXAC();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
-			case QUARTER:
-				calcXAC.atQuarterMAC();
-				break;
-			case DEYOUNG_HARPER:
-				calcXAC.deYoungHarper();
-				break;
-			case NAPOLITANO_DATCOM:
-				calcXAC.datcomNapolitano();
-				break;
-			default:
-				break;
+				CalcMachCr calcMachCr = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMachCr();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CRITICAL_MACH)) {
+				case KORN_MASON:
+					calcMachCr.kornMason(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaHTailCurrent));
+					break;
+				case KROO:
+					calcMachCr.kroo(calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaHTailCurrent));
+					break;
+				default:
+					break;
+				}
 			}
 
-		}
+			//.........................................................................................................................
+			//	AERODYNAMIC_CENTER
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
 
-		//.........................................................................................................................
-		//	CL_AT_ALPHA  (FIXME: ADJUST ALPHA CURRENT ...) 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
+				CalcXAC calcXAC = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcXAC();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)) {
+				case QUARTER:
+					calcXAC.atQuarterMAC();
+					break;
+				case DEYOUNG_HARPER:
+					calcXAC.deYoungHarper();
+					break;
+				case NAPOLITANO_DATCOM:
+					calcXAC.datcomNapolitano();
+					break;
+				default:
+					break;
+				}
 
-			CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
-			case LINEAR_DLR:
-				calcCLAtAlpha.linearDLR(_alphaHTailCurrent);
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLAtAlpha.linearAndersonCompressibleSubsonic(_alphaHTailCurrent);
-				break;
-			case LINEAR_NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellLinear(_alphaHTailCurrent);
-				break;
-			case NASA_BLACKWELL:
-				calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaHTailCurrent);
-				break;
-			default:
-				break;
 			}
 
-		}
+			//.........................................................................................................................
+			//	CL_AT_ALPHA  
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
 
-		//.........................................................................................................................
-		//	CL_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ALPHA)) {
+				CalcCLAtAlpha calcCLAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_AT_ALPHA)) {
+				case LINEAR_DLR:
+					calcCLAtAlpha.linearDLR(_alphaHTailCurrent);
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCLAtAlpha.linearAndersonCompressibleSubsonic(_alphaHTailCurrent);
+					break;
+				case LINEAR_NASA_BLACKWELL:
+					calcCLAtAlpha.nasaBlackwellLinear(_alphaHTailCurrent);
+					break;
+				case NASA_BLACKWELL:
+					calcCLAtAlpha.nasaBlackwellCompleteCurve(_alphaHTailCurrent);
+					break;
+				default:
+					break;
+				}
 
-			CalcCLAlpha calcCLAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ALPHA)) {
-			case INTEGRAL_MEAN:
-				calcCLAlpha.integralMean2D();
-				break;
-			case POLHAMUS:
-				calcCLAlpha.polhamus();
-				break;
-			case NASA_BLACKWELL:
-				calcCLAlpha.nasaBlackwell();
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLAlpha.andersonSweptCompressibleSubsonic();
-				break;
-			default:
-				break;
 			}
 
-		}
+			//.........................................................................................................................
+			//	CL_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ALPHA)) {
 
-		//.........................................................................................................................
-		//	CL_ZERO
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ZERO)) {
+				CalcCLAlpha calcCLAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ALPHA)) {
+				case INTEGRAL_MEAN:
+					calcCLAlpha.integralMean2D();
+					break;
+				case POLHAMUS:
+					calcCLAlpha.polhamus();
+					break;
+				case NASA_BLACKWELL:
+					calcCLAlpha.nasaBlackwell();
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCLAlpha.andersonSweptCompressibleSubsonic();
+					break;
+				default:
+					break;
+				}
 
-			CalcCL0 calcCL0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCL0();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ZERO)) {
-			case NASA_BLACKWELL:
-				calcCL0.nasaBlackwell();
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCL0.andersonSweptCompressibleSubsonic();
-				break;
-			default:
-				break;
 			}
 
-		}
-		
-		//.........................................................................................................................
-		//	CL_STAR
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_STAR)) {
+			//.........................................................................................................................
+			//	CL_ZERO
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_ZERO)) {
 
-			CalcCLStar calcCLStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLStar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_STAR)) {
-			case NASA_BLACKWELL:
-				calcCLStar.nasaBlackwell();
-				break;
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCLStar.andersonSweptCompressibleSubsonic();
-				break;
-			default:
-				break;
+				CalcCL0 calcCL0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCL0();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_ZERO)) {
+				case NASA_BLACKWELL:
+					calcCL0.nasaBlackwell();
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCL0.andersonSweptCompressibleSubsonic();
+					break;
+				default:
+					break;
+				}
+
 			}
 
-		}
-		
-		//.........................................................................................................................
-		//	CL_MAX
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
+			//.........................................................................................................................
+			//	CL_STAR
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_STAR)) {
 
-			CalcCLmax calcCLmax = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLmax();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_MAX)) {
-			case NASA_BLACKWELL:
-				calcCLmax.nasaBlackwell();
-				break;
-			case PHILLIPS_ALLEY:
-				calcCLmax.phillipsAndAlley();
-				break;
-			case ROSKAM:
-				calcCLmax.roskam();
-				break;
-			default:
-				break;
+				CalcCLStar calcCLStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLStar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_STAR)) {
+				case NASA_BLACKWELL:
+					calcCLStar.nasaBlackwell();
+					break;
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCLStar.andersonSweptCompressibleSubsonic();
+					break;
+				default:
+					break;
+				}
+
 			}
 
-		}
-		
-		//.........................................................................................................................
-		//	ALPHA_ZERO_LIFT
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
+			//.........................................................................................................................
+			//	CL_MAX
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
 
-			CalcAlpha0L calcAlpha0L = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcAlpha0L();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
-			case INTEGRAL_MEAN_NO_TWIST:
-				calcAlpha0L.integralMeanNoTwist();
-				break;
-			case INTEGRAL_MEAN_TWIST:
-				calcAlpha0L.integralMeanWithTwist();
-				break;
-			default:
-				break;
+				CalcCLmax calcCLmax = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCLmax();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CL_MAX)) {
+				case NASA_BLACKWELL:
+					calcCLmax.nasaBlackwell();
+					break;
+				case PHILLIPS_ALLEY:
+					calcCLmax.phillipsAndAlley();
+					break;
+				case ROSKAM:
+					calcCLmax.roskam();
+					break;
+				default:
+					break;
+				}
+
 			}
 
-		}
-		
-		//.........................................................................................................................
-		//	ALPHA_STAR
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
+			//.........................................................................................................................
+			//	ALPHA_ZERO_LIFT
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
 
-			CalcAlphaStar calcAlphaStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcAlphaStar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
-			case MEAN_AIRFOIL_INFLUENCE_AREAS:
-				calcAlphaStar.meanAirfoilWithInfluenceAreas();
-				break;
-			default:
-				break;
+				CalcAlpha0L calcAlpha0L = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcAlpha0L();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_ZERO_LIFT)) {
+				case INTEGRAL_MEAN_NO_TWIST:
+					calcAlpha0L.integralMeanNoTwist();
+					break;
+				case INTEGRAL_MEAN_TWIST:
+					calcAlpha0L.integralMeanWithTwist();
+					break;
+				default:
+					break;
+				}
+
 			}
 
-		}
-		
-		//.........................................................................................................................
-		//	ALPHA_STALL
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
+			//.........................................................................................................................
+			//	ALPHA_STAR
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
 
-			CalcAlphaStall calcAlphaStall = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcAlphaStall();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
-			case PHILLIPS_ALLEY:
-				calcAlphaStall.fromCLmaxPhillipsAndAlley();
-				break;
-			case NASA_BLACKWELL:
-				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(_currentMachNumber);
-				break;
-			default:
-				break;
+				CalcAlphaStar calcAlphaStar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcAlphaStar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STAR)) {
+				case MEAN_AIRFOIL_INFLUENCE_AREAS:
+					calcAlphaStar.meanAirfoilWithInfluenceAreas();
+					break;
+				default:
+					break;
+				}
+
 			}
 
-		}
-		
-		//.........................................................................................................................
-		//	LIFT_CURVE_3D 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+			//.........................................................................................................................
+			//	ALPHA_STALL
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
 
-			CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcLiftCurve();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
-			case PHILLIPS_ALLEY:
-				calcLiftCurve.fromCLmaxPhillipsAndAlley();
-				break;
-			case NASA_BLACKWELL:
-				calcLiftCurve.nasaBlackwell(_currentMachNumber);
-				break;
-			default:
-				break;
+				CalcAlphaStall calcAlphaStall = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcAlphaStall();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.ALPHA_STALL)) {
+				case PHILLIPS_ALLEY:
+					calcAlphaStall.fromCLmaxPhillipsAndAlley();
+					break;
+				case NASA_BLACKWELL:
+					calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(_currentMachNumber);
+					break;
+				default:
+					break;
+				}
+
+			}
+
+			//.........................................................................................................................
+			//	LIFT_CURVE_3D 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+
+				CalcLiftCurve calcLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcLiftCurve();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
+				case PHILLIPS_ALLEY:
+					calcLiftCurve.fromCLmaxPhillipsAndAlley();
+					break;
+				case NASA_BLACKWELL:
+					calcLiftCurve.nasaBlackwell(_currentMachNumber);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	LIFT_DISTRIBUTION
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
+
+				CalcLiftDistributions calcLiftDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcLiftDistributions();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
+				case SCHRENK:
+					calcLiftDistributions.schrenk();
+					break;
+				case NASA_BLACKWELL:
+					calcLiftDistributions.nasaBlackwell();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD0
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD0)) {
+
+				CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD0)) {
+				case SEMPIEMPIRICAL:
+					calcCD0.semiempirical(_currentMachNumber, _currentAltitude);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_INDUCED
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
+
+				CalcCDInduced calcCDInduced = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDInduced();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
+				case GROSU:
+					calcCDInduced.grosu(_alphaHTailCurrent);
+					break;
+				case HOWE:
+					calcCDInduced.howe(_alphaHTailCurrent);
+					break;
+				case RAYMER:
+					calcCDInduced.raymer(_alphaHTailCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_WAVE (TODO: is needed??)
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_WAVE)) {
+
+				CalcCDWave calcCDWave = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDWave();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_WAVE)) {
+				case LOCK_KORN_WITH_KORN_MASON:
+					calcCDWave.lockKornWithKornMason();
+					break;
+				case LOCK_KORN_WITH_KROO:
+					calcCDWave.lockKornWithKroo();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	OSWALD_FACTOR 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
+
+				CalcOswaldFactor calcOswaldFactor = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcOswaldFactor();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
+				case GROSU:
+					calcOswaldFactor.grosu(_alphaHTailCurrent);
+					break;
+				case HOWE:
+					calcOswaldFactor.howe();
+					break;
+				case RAYMER:
+					calcOswaldFactor.raymer();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	POLAR_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+
+				analyses.liftingsurface.LSAerodynamicsManager.CalcPolar calcPolar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcPolar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
+				case SEMPIEMPIRICAL:
+					calcPolar.semiempirical(_currentMachNumber, _currentAltitude);
+					break;
+				case AIRFOIL_DISTRIBUTION:
+					calcPolar.fromCdDistribution(_currentMachNumber, _currentAltitude);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	DRAG_DISTRIBUTION
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
+
+				CalcDragDistributions calcDragDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcDragDistributions();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
+				case NASA_BLACKWELL:
+					calcDragDistributions.nasaBlackwell(_currentMachNumber);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
+
+				CalcCDAtAlpha calcCDAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
+				case AIRFOIL_DISTRIBUTION:
+					calcCDAtAlpha.fromCdDistribution(
+							_alphaHTailCurrent, 
+							_currentMachNumber,
+							_currentAltitude
+							);
+					break;
+				case SEMPIEMPIRICAL:
+					calcCDAtAlpha.semiempirical(
+							_alphaHTailCurrent, 
+							_currentMachNumber,
+							_currentAltitude
+							);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	ELEVATOR_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
+
+				CalcHighLiftCurve calcHighLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftCurve();
+				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
+
+					List<Amount<Angle>> deltaElevatorList = new ArrayList<>();
+					deltaElevatorList.add(de);
+					calcHighLiftCurve.semiempirical(
+							deltaElevatorList, 
+							null, 
+							_currentMachNumber, 
+							_currentAltitude
+							);
+
+					_hTail3DLiftCurvesElevator.put(
+							de, 
+							MyArrayUtils.convertDoubleArrayToListDouble(
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL)
+									.getLiftCoefficient3DCurveHighLift().get(MethodEnum.SEMPIEMPIRICAL)
+									)
+							);
+				});
+			}
+			//.........................................................................................................................
+			//	CM_AC
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
+
+				CalcCMac calcCMac = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCMac();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
+				case BASIC_AND_ADDITIONAL:
+					calcCMac.basicAndAdditionalContribution();
+					break;
+				case AIRFOIL_DISTRIBUTION:
+					calcCMac.fromAirfoilDistribution();
+					break;
+				case INTEGRAL_MEAN:
+					calcCMac.integralMean();
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
+
+				CalcCMAlpha calcCMAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCMAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
+				case ANDERSON_COMPRESSIBLE_SUBSONIC:
+					calcCMAlpha.andersonSweptCompressibleSubsonic();
+					break;
+				case POLHAMUS:
+					calcCMAlpha.polhamus();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM_AT_ALPHA  
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
+
+				CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCMAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
+				case AIRFOIL_DISTRIBUTION:
+					calcCMAtAlpha.fromAirfoilDistribution(_alphaHTailCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	MOMENT_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
+
+				analyses.liftingsurface.LSAerodynamicsManager.CalcMomentCurve calcMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentCurve();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
+				case AIRFOIL_DISTRIBUTION:
+					calcMomentCurve.fromAirfoilDistribution();
+					break;
+				default:
+					break;
+				}
+			}
+			//.........................................................................................................................
+			//	MOMENT_DISTRIBUTION
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
+
+				CalcMomentDistribution calcMomentDistribution = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentDistribution();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
+				case AIRFOIL_DISTRIBUTION:
+					calcMomentDistribution.fromAirfoilDistribution();
+					break;
+				default:
+					break;
+				}
 			}
 		}
-		
-		//.........................................................................................................................
-		//	LIFT_DISTRIBUTION
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
-
-			CalcLiftDistributions calcLiftDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcLiftDistributions();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
-			case SCHRENK:
-				calcLiftDistributions.schrenk();
-				break;
-			case NASA_BLACKWELL:
-				calcLiftDistributions.nasaBlackwell();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD0
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD0)) {
-
-			CalcCD0 calcCD0 = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCD0();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD0)) {
-			case SEMPIEMPIRICAL:
-				calcCD0.semiempirical(_currentMachNumber, _currentAltitude);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_INDUCED
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
-
-			CalcCDInduced calcCDInduced = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDInduced();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
-			case GROSU:
-				calcCDInduced.grosu(_alphaHTailCurrent);
-				break;
-			case HOWE:
-				calcCDInduced.howe(_alphaHTailCurrent);
-				break;
-			case RAYMER:
-				calcCDInduced.raymer(_alphaHTailCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_WAVE (TODO: is needed??)
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_WAVE)) {
-
-			CalcCDWave calcCDWave = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDWave();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_WAVE)) {
-			case LOCK_KORN_WITH_KORN_MASON:
-				calcCDWave.lockKornWithKornMason();
-				break;
-			case LOCK_KORN_WITH_KROO:
-				calcCDWave.lockKornWithKroo();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	OSWALD_FACTOR 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
-
-			CalcOswaldFactor calcOswaldFactor = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcOswaldFactor();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.OSWALD_FACTOR)) {
-			case GROSU:
-				calcOswaldFactor.grosu(_alphaHTailCurrent);
-				break;
-			case HOWE:
-				calcOswaldFactor.howe();
-				break;
-			case RAYMER:
-				calcOswaldFactor.raymer();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	POLAR_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
-
-			analyses.liftingsurface.LSAerodynamicsManager.CalcPolar calcPolar = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcPolar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)) {
-			case SEMPIEMPIRICAL:
-				calcPolar.semiempirical(_currentMachNumber, _currentAltitude);
-				break;
-			case AIRFOIL_DISTRIBUTION:
-				calcPolar.fromCdDistribution(_currentMachNumber, _currentAltitude);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	DRAG_DISTRIBUTION
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
-
-			CalcDragDistributions calcDragDistributions = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcDragDistributions();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
-			case NASA_BLACKWELL:
-				calcDragDistributions.nasaBlackwell(_currentMachNumber);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_AT_ALPHA (FIXME: ADJUST ALPHA CURRENT ...) 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
-
-			CalcCDAtAlpha calcCDAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCDAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcCDAtAlpha.fromCdDistribution(
-						_alphaHTailCurrent, 
-						_currentMachNumber,
-						_currentAltitude
-						);
-				break;
-			case SEMPIEMPIRICAL:
-				calcCDAtAlpha.semiempirical(
-						_alphaHTailCurrent, 
-						_currentMachNumber,
-						_currentAltitude
-						);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	ELEVATOR_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
-
-			CalcHighLiftCurve calcHighLiftCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftCurve();
-			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de -> {
-				
-				List<Amount<Angle>> deltaElevatorList = new ArrayList<>();
-				deltaElevatorList.add(de);
-				calcHighLiftCurve.semiempirical(
-						deltaElevatorList, 
-						null, 
-						_currentMachNumber, 
-						_currentAltitude
-						);
-				
-				_hTail3DLiftCurvesElevator.put(
-						de, 
-						MyArrayUtils.convertDoubleArrayToListDouble(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL)
-								.getLiftCoefficient3DCurveHighLift().get(MethodEnum.SEMPIEMPIRICAL)
-								)
-						);
-			});
-		}
-		//.........................................................................................................................
-		//	CM_AC
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
-
-			CalcCMac calcCMac = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCMac();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AC_LIFTING_SURFACE)) {
-			case BASIC_AND_ADDITIONAL:
-				calcCMac.basicAndAdditionalContribution();
-				break;
-			case AIRFOIL_DISTRIBUTION:
-				calcCMac.fromAirfoilDistribution();
-				break;
-			case INTEGRAL_MEAN:
-				calcCMac.integralMean();
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CM_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
-
-			CalcCMAlpha calcCMAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCMAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_ALPHA_LIFTING_SURFACE)) {
-			case ANDERSON_COMPRESSIBLE_SUBSONIC:
-				calcCMAlpha.andersonSweptCompressibleSubsonic();
-				break;
-			case POLHAMUS:
-				calcCMAlpha.polhamus();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CM_AT_ALPHA (FIXME: ADJUST ALPHA CURRENT ...)  
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
-
-			CalcCMAtAlpha calcCMAtAlpha = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcCMAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcCMAtAlpha.fromAirfoilDistribution(_alphaHTailCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	MOMENT_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
-
-			analyses.liftingsurface.LSAerodynamicsManager.CalcMomentCurve calcMomentCurve = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentCurve();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcMomentCurve.fromAirfoilDistribution();
-				break;
-			default:
-				break;
-			}
-		}
-		//.........................................................................................................................
-		//	MOMENT_DISTRIBUTION
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
-
-			CalcMomentDistribution calcMomentDistribution = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcMomentDistribution();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
-			case AIRFOIL_DISTRIBUTION:
-				calcMomentDistribution.fromAirfoilDistribution();
-				break;
-			default:
-				break;
-			}
-		}
-
 
 		//============================================================================
 		// VTAIL (TODO: SEE WHAT IS NEEDED ... )
-		if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null)
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getVTail() != null) {
 			_liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.VERTICAL_TAIL,
 					new LSAerodynamicsManager(
@@ -1892,88 +1893,88 @@ public class ACAerodynamicCalculator {
 							)
 					);
 
-		//.........................................................................................................................
-		//	CRITICAL_MACH (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CRITICAL_MACH (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	AERODYNAMIC_CENTER  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	AERODYNAMIC_CENTER  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CL_AT_ALPHA   (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CL_AT_ALPHA   (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CL_ALPHA  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CL_ALPHA  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CL_ZERO  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CL_ZERO  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CL_STAR  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CL_STAR  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CL_MAX  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CL_MAX  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	ALPHA_ZERO_LIFT  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	ALPHA_ZERO_LIFT  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	ALPHA_STAR  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	ALPHA_STAR  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	ALPHA_STALL  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	ALPHA_STALL  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	LIFT_CURVE_3D  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	LIFT_CURVE_3D  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	LIFT_DISTRIBUTION  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	LIFT_DISTRIBUTION  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CD0  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CD0  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CD_INDUCED  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CD_INDUCED  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CD_WAVE  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CD_WAVE  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	OSWALD_FACTOR  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	OSWALD_FACTOR  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	POLAR_CURVE_3D  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	POLAR_CURVE_3D  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	DRAG_DISTRIBUTION  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	DRAG_DISTRIBUTION  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CD_AT_ALPHA  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CD_AT_ALPHA  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	HIGH_LIFT_DEVICES_EFFECTS  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	HIGH_LIFT_DEVICES_EFFECTS  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	HIGH_LIFT_CURVE_3D  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	HIGH_LIFT_CURVE_3D  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CM_AC  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CM_AC  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CM_ALPHA  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CM_ALPHA  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	CM_AT_ALPHA  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	CM_AT_ALPHA  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	MOMENT_CURVE_3D  (TODO: is needed ??)
+			//.........................................................................................................................
+			//	MOMENT_CURVE_3D  (TODO: is needed ??)
 
-		//.........................................................................................................................
-		//	MOMENT_DISTRIBUTION  (TODO: is needed ??)
-
+			//.........................................................................................................................
+			//	MOMENT_DISTRIBUTION  (TODO: is needed ??)
+		}
 
 		//============================================================================
 		// FUSELAGE
-		if(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage() != null)
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getFuselage() != null) {
 			_fuselageAerodynamicManagers.put(
 					ComponentEnum.FUSELAGE,
 					new FuselageAerodynamicsManager(
@@ -1987,363 +1988,364 @@ public class ACAerodynamicCalculator {
 							)
 					);
 
-		//.........................................................................................................................
-		//	CD0_PARASITE
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)) {
+			//.........................................................................................................................
+			//	CD0_PARASITE
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)) {
 
-			CalcCD0Parasite calcCD0Parasite = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Parasite();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Parasite.semiempirical();
+				CalcCD0Parasite calcCD0Parasite = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Parasite();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Parasite.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD0_BASE
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)) {
+
+				CalcCD0Base calcCD0Base = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Base();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Base.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+			//.........................................................................................................................
+			//	CD0_UPSWEEP
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)) {
+
+				CalcCD0Upsweep calcCD0Upsweep = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Upsweep();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Upsweep.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD0_WINDSHIELD
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)) {
+
+				CalcCD0Windshield calcCD0Windshield = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Windshield();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Windshield.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD0_TOTAL
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Total calcCD0Total = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Total();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Total.semiempirical();
+					break;
+				case FUSDES:
+					calcCD0Total.fusDes();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_INDUCED
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcCDInduced calcCDInduced = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCDInduced();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+				case SEMPIEMPIRICAL:  
+					calcCDInduced.semiempirical(_alphaBodyCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+			//.........................................................................................................................
+			//	POLAR_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcPolar calcPolar = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcPolar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcPolar.semiempirical();
+					break;
+				case FUSDES:
+					calcPolar.fusDes();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcCDAtAlpha calcCDAtAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCDAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)) {
+				case SEMPIEMPIRICAL: 
+					calcCDAtAlpha.semiempirical(_alphaBodyCurrent);
+					break;
+				case FUSDES: 
+					calcCDAtAlpha.fusDes(_alphaBodyCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM0
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM0_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcCM0 calcCM0 = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCM0();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM0_FUSELAGE)) {
+				case MULTHOPP:
+					calcCM0.multhopp();
+					break;
+				case FUSDES:
+					calcCM0.fusDes();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcCMAlpha calcCMAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCMAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)) {
+				case GILRUTH:
+					calcCMAlpha.gilruth();
+					break;
+				case FUSDES:
+					calcCMAlpha.fusDes();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCMAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCMAtAlpha.semiempirical(_alphaBodyCurrent);
+					break;
+				case FUSDES:
+					calcCMAtAlpha.fusDes(_alphaBodyCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	MOMENT_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)) {
+
+				analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve calcMomentCurve = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcMomentCurve();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcMomentCurve.semiempirical();
+					break;
+				case FUSDES:
+					calcMomentCurve.fusDes();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//============================================================================
+			// NACELLE
+
+			List<Amount<Angle>> alphaNacelleList = new ArrayList<>();
+			switch (_theAerodynamicBuilderInterface.getTheAircraft().getNacelles().getMountingPositionNacelles()) {
+			case WING:
+				alphaNacelleList = _alphaWingList;
+				break;
+			case FUSELAGE:
+				alphaNacelleList = _alphaHTailList;
+				break;
+			case HTAIL:
+				alphaNacelleList = _alphaHTailList;
 				break;
 			default:
 				break;
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CD0_BASE
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)) {
 
-			CalcCD0Base calcCD0Base = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Base();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Base.semiempirical();
-				break;
-			default:
-				break;
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getNacelles() != null)
+				_nacelleAerodynamicManagers.put(
+						ComponentEnum.NACELLE,
+						new NacelleAerodynamicsManager(
+								_theAerodynamicBuilderInterface.getTheAircraft().getNacelles(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
+								_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
+								_theAerodynamicBuilderInterface.getCurrentCondition(), 
+								alphaNacelleList 
+								)
+						);
+
+			//.........................................................................................................................
+			//	CD0_PARASITE
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Parasite calcCD0Parasite = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Parasite();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Parasite.semiempirical();
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		//.........................................................................................................................
-		//	CD0_UPSWEEP
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)) {
 
-			CalcCD0Upsweep calcCD0Upsweep = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Upsweep();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Upsweep.semiempirical();
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	CD0_BASE
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Base calcCD0Base = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Base();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Base.semiempirical();
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CD0_WINDSHIELD
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)) {
 
-			CalcCD0Windshield calcCD0Windshield = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Windshield();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Windshield.semiempirical();
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	CD0_TOTAL
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0Total = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
+				case SEMPIEMPIRICAL:
+					calcCD0Total.semiempirical();
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CD0_TOTAL
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)) {
 
-			analyses.fuselage.FuselageAerodynamicsManager.CalcCD0Total calcCD0Total = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCD0Total();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Total.semiempirical();
-				break;
-			case FUSDES:
-				calcCD0Total.fusDes();
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	CD_INDUCED
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCDInduced.semiempirical(_alphaNacelleCurrent);
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_INDUCED
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
 
-			analyses.fuselage.FuselageAerodynamicsManager.CalcCDInduced calcCDInduced = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCDInduced();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
-			case SEMPIEMPIRICAL:  
-				calcCDInduced.semiempirical(_alphaBodyCurrent);
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	POLAR_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcPolar calcPolar = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcPolar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
+				case SEMPIEMPIRICAL:
+					calcPolar.semiempirical();
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		//.........................................................................................................................
-		//	POLAR_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
 
-			analyses.fuselage.FuselageAerodynamicsManager.CalcPolar calcPolar = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcPolar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcPolar.semiempirical();
-				break;
-			case FUSDES:
-				calcPolar.fusDes();
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	CD_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+				case SEMPIEMPIRICAL:
+					calcCDInduced.semiempirical(_alphaNacelleCurrent);
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_AT_ALPHA 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)) {
 
-			analyses.fuselage.FuselageAerodynamicsManager.CalcCDAtAlpha calcCDAtAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCDAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)) {
-			case SEMPIEMPIRICAL: 
-				calcCDAtAlpha.semiempirical(_alphaBodyCurrent);
-				break;
-			case FUSDES: 
-				calcCDAtAlpha.fusDes(_alphaBodyCurrent);
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	CM0
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCM0 calcCM0 = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCM0();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
+				case MULTHOPP:
+					calcCM0.multhopp();
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CM0
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM0_FUSELAGE)) {
 
-			analyses.fuselage.FuselageAerodynamicsManager.CalcCM0 calcCM0 = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCM0();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM0_FUSELAGE)) {
-			case MULTHOPP:
-				calcCM0.multhopp();
-				break;
-			case FUSDES:
-				calcCM0.fusDes();
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	CM_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCMAlpha calcCMAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
+				case GILRUTH:
+					calcCMAlpha.gilruth();
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CM_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)) {
+			//.........................................................................................................................
+			//	CM_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
 
-			analyses.fuselage.FuselageAerodynamicsManager.CalcCMAlpha calcCMAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCMAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)) {
-			case GILRUTH:
-				calcCMAlpha.gilruth();
-				break;
-			case FUSDES:
-				calcCMAlpha.fusDes();
-				break;
-			default:
-				break;
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
+				case MULTHOPP:
+					calcCMAtAlpha.semiempirical(_alphaNacelleCurrent);
+					break;
+				default:
+					break;
+				}
 			}
-		}
-		
-		//.........................................................................................................................
-		//	CM_AT_ALPHA 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_FUSELAGE)) {
 
-			analyses.fuselage.FuselageAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCMAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCMAtAlpha.semiempirical(_alphaBodyCurrent);
-				break;
-			case FUSDES:
-				calcCMAtAlpha.fusDes(_alphaBodyCurrent);
-				break;
-			default:
-				break;
+			//.........................................................................................................................
+			//	MOMENT_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcMomentCurve calcMomentCurve = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcMomentCurve();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
+				case SEMPIEMPIRICAL:
+					calcMomentCurve.semiempirical();
+					break;
+				default:
+					break;
+				}
 			}
+
 		}
-		
-		//.........................................................................................................................
-		//	MOMENT_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)) {
-
-			analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve calcMomentCurve = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcMomentCurve();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcMomentCurve.semiempirical();
-				break;
-			case FUSDES:
-				calcMomentCurve.fusDes();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//============================================================================
-		// NACELLE
-		
-		List<Amount<Angle>> alphaNacelleList = new ArrayList<>();
-		switch (_theAerodynamicBuilderInterface.getTheAircraft().getNacelles().getMountingPositionNacelles()) {
-		case WING:
-			alphaNacelleList = _alphaWingList;
-			break;
-		case FUSELAGE:
-			alphaNacelleList = _alphaHTailList;
-			break;
-		case HTAIL:
-			alphaNacelleList = _alphaHTailList;
-			break;
-		default:
-			break;
-		}
-		
-		if(_theAerodynamicBuilderInterface.getTheAircraft().getNacelles() != null)
-			_nacelleAerodynamicManagers.put(
-					ComponentEnum.NACELLE,
-					new NacelleAerodynamicsManager(
-							_theAerodynamicBuilderInterface.getTheAircraft().getNacelles(),
-							_theAerodynamicBuilderInterface.getTheAircraft().getWing(), 
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
-							_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
-							_theAerodynamicBuilderInterface.getCurrentCondition(), 
-							alphaNacelleList 
-							)
-					);
-
-		//.........................................................................................................................
-		//	CD0_PARASITE
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Parasite calcCD0Parasite = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Parasite();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Parasite.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD0_BASE
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Base calcCD0Base = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Base();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Base.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CD0_TOTAL
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0Total = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
-			case SEMPIEMPIRICAL:
-				calcCD0Total.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CD_INDUCED
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCDInduced.semiempirical(_alphaNacelleCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	POLAR_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcPolar calcPolar = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcPolar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
-			case SEMPIEMPIRICAL:
-				calcPolar.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CD_AT_ALPHA 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
-			case SEMPIEMPIRICAL:
-				calcCDInduced.semiempirical(_alphaNacelleCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CM0
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCM0 calcCM0 = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCM0();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
-			case MULTHOPP:
-				calcCM0.multhopp();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	CM_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCMAlpha calcCMAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
-			case GILRUTH:
-				calcCMAlpha.gilruth();
-				break;
-			default:
-				break;
-			}
-		}
-		//.........................................................................................................................
-		//	CM_AT_ALPHA 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
-			case MULTHOPP:
-				calcCMAtAlpha.semiempirical(_alphaNacelleCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-		
-		//.........................................................................................................................
-		//	MOMENT_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcMomentCurve calcMomentCurve = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcMomentCurve();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
-			case SEMPIEMPIRICAL:
-				calcMomentCurve.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-		
 		//--------------------------AIRCRAFT----------------------------------------
 		//.........................................................................................................................
 		//	WING AERODYNAMIC_CENTER
@@ -3299,14 +3301,13 @@ public class ACAerodynamicCalculator {
 		//...................................................................................
 		switch (_theAerodynamicBuilderInterface.getTheAircraft().getNacelles().getMountingPositionNacelles()) {
 		case WING:
-			_alphaNacelleCurrent = _alphaBodyCurrent.to(NonSI.DEGREE_ANGLE);
+			_alphaNacelleCurrent = _alphaWingCurrent.to(NonSI.DEGREE_ANGLE); //TODO calculate upwash nacelles
 			break;
 		case FUSELAGE:
 			_alphaNacelleCurrent = Amount.valueOf(
 					_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
 					- _theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE)
-					- currentDownwashAngle.doubleValue(NonSI.DEGREE_ANGLE)
-					+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
+					- currentDownwashAngle.doubleValue(NonSI.DEGREE_ANGLE),
 					NonSI.DEGREE_ANGLE
 					);
 			break;

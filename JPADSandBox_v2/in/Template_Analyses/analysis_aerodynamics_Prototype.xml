@@ -92,6 +92,7 @@
 				</pitching_moment>
 			</wing_analyses>
 			<horizontal_tail_analyses>
+				<critical_mach perform="TRUE" method="KROO"/>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"/> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
 					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
