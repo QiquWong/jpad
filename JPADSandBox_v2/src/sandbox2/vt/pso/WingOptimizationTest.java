@@ -500,7 +500,7 @@ public class WingOptimizationTest extends Application {
 			Double[] designVariablesLowerBound = new Double[] {var1Array[0], var2Array[0], var3Array[0]};
 			Double[] designVariablesUpperBound = new Double[] {var1Array[var1Array.length-1], var2Array[var2Array.length-1], var3Array[var3Array.length-1]};
 			Double convergenceThreshold = 1e-10; // threshold used to compare particles position during each iteration
-			int particlesNumber = 100000;
+			int particlesNumber = 10000;
 			Double kappa = 1.0;
 			Double phi1 = 2.05;
 			Double phi2 = 2.05;

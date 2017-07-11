@@ -50,6 +50,7 @@ public interface IACCostsManager {
 	Amount<?> getLandingCharges();
 	Amount<?> getNavigationCharges();
 	Amount<?> getGroundHandlingCharges();
+	
 	Amount<?> getNoiseCharges();
 	Amount<Money> getNoiseConstant();
 	Amount<Dimensionless> getNoiseDepartureThreshold();
