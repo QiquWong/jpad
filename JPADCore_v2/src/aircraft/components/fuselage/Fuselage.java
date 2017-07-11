@@ -468,8 +468,8 @@ public class Fuselage implements IFuselage {
 		double Kdoor = 1.0;
 		double Klg = 1.12;
 		double Kws = 0.75*
-				((1+2*aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio())/
-						(1+aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio()))*
+				((1+2*aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio())/
+						(1+aircraft.getWing().getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio()))*
 						aircraft.getWing().getSpan().to(NonSI.FOOT).getEstimatedValue()*
 						tan(aircraft.getWing().getLiftingSurfaceCreator().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue())/
 						_fuselageCreator.getLenF().to(NonSI.FOOT).getEstimatedValue();
