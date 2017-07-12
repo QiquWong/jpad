@@ -119,6 +119,8 @@ public class InputOutputTree {
 	List<Double> slatInnerStation = new ArrayList<>();
 	List<Double> slatOuterStation = new ArrayList<>();
 	
+	boolean highLiftInputTreeIsFilled = false;
+	
 	
 	
 	//------------------------------------------------------------------------------------------
@@ -863,6 +865,14 @@ public class InputOutputTree {
 
 	public void setSlatOuterStation(List<Double> slatOuterStation) {
 		this.slatOuterStation = slatOuterStation;
+	}
+
+	public boolean isHighLiftInputTreeIsFilled() {
+		return highLiftInputTreeIsFilled;
+	}
+
+	public void setHighLiftInputTreeIsFilled(boolean highLiftInputTreeIsFilled) {
+		this.highLiftInputTreeIsFilled = highLiftInputTreeIsFilled;
 	}
 	
 

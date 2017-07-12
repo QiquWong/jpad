@@ -144,6 +144,9 @@ public class Main extends Application {
 		HighLiftInputController theHighLiftController = loader.getController();
 		theHighLiftController.setTheVariableInputClass(theVariablesInputClass);
 		theHighLiftController.setTheInputTree(theInputOutputTree);
+		if(theInputOutputTree.isHighLiftInputTreeIsFilled()) {
+			theHighLiftController.writeData();
+		}
 	
 	}
 
@@ -154,11 +157,16 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Views/HighLiftInputValues.fxml"));	
 		Pane bottomItem = loader.load();
+		theHighLiftController.getBottomPane().getChildren().clear();
 		theHighLiftController.getBottomPane().getChildren().add(bottomItem);
 		HighLiftInputValues theHighLiftValues = loader.getController();
 		theHighLiftValues.setTheVariableInputClass(theVariablesInputClass);
 		theHighLiftValues.setTheInputTree(theInputOutputTree);
+		theHighLiftValues.setTheHighLiftController(theHighLiftController);
 		theHighLiftValues.initializeTabAnalyses();
+		if(theInputOutputTree.isHighLiftInputTreeIsFilled()) {
+		theHighLiftValues.writeFlapData();
+		}
 	}
 	
 	public static void setInputData() throws IOException{

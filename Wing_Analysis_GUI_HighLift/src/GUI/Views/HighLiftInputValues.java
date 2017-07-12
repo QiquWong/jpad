@@ -23,6 +23,7 @@ public class HighLiftInputValues {
 
 	InputOutputTree theInputTree;
 	VariablesInputData theVariableInputClass;
+	HighLiftInputController theHighLiftController;
 	
 	//flap input values
 	@FXML
@@ -104,29 +105,97 @@ public class HighLiftInputValues {
 	
 	//slat input values
 	@FXML
-	List<TextField> slatChordRatioFXMLList;	
+	List<TextField> slatChordRatioFXMLList = new ArrayList<>();	
 	@FXML
-	List<TextField> slatExtensionRatioFXMLList;	
+	List<TextField> slatExtensionRatioFXMLList = new ArrayList<>();	
 	@FXML
-	List<TextField> slatAngleFXMLList;
+	List<TextField> slatAngleFXMLList = new ArrayList<>();	
 	@FXML
-	List<ChoiceBox> slatAngleUnitFXMLList;
+	List<ChoiceBox> slatAngleUnitFXMLList = new ArrayList<>();	
 	@FXML
-	List<TextField> slatNonDimensionalInnerFXMLList;
+	List<TextField> slatNonDimensionalInnerFXMLList = new ArrayList<>();	
 	@FXML
-	List<TextField> slatNonDimensionalOuterFXMLList;
+	List<TextField> slatNonDimensionalOuterFXMLList = new ArrayList<>();	
+	
+	//slat values
+	@FXML
+	ChoiceBox slatUnit1;
+	@FXML
+	ChoiceBox slatUnit2;
+	@FXML
+	ChoiceBox slatUnit3;
+	@FXML
+	ChoiceBox slatUnit4;
+	@FXML
+	ChoiceBox slatUnit5;
+	@FXML
+	ChoiceBox slatUnit6;
+	@FXML
+	TextField slatChordRatio1;
+	@FXML
+	TextField slatChordRatio2;
+	@FXML
+	TextField slatChordRatio3;
+	@FXML
+	TextField slatChordRatio4;
+	@FXML
+	TextField slatChordRatio5;
+	@FXML
+	TextField slatChordRatio6;
+	@FXML
+	TextField slatExtensionRatio1;
+	@FXML
+	TextField slatExtensionRatio2;
+	@FXML
+	TextField slatExtensionRatio3;
+	@FXML
+	TextField slatExtensionRatio4;
+	@FXML
+	TextField slatExtensionRatio5;
+	@FXML
+	TextField slatExtensionRatio6;
+	@FXML
+	TextField slatInnerStation1;
+	@FXML
+	TextField slatInnerStation2;
+	@FXML
+	TextField slatInnerStation3;
+	@FXML
+	TextField slatInnerStation4;
+	@FXML
+	TextField slatInnerStation5;
+	@FXML
+	TextField slatInnerStation6;
+	@FXML
+	TextField slatOuterStation1;
+	@FXML
+	TextField slatOuterStation2;
+	@FXML
+	TextField slatOuterStation3;
+	@FXML
+	TextField slatOuterStation4;
+	@FXML
+	TextField slatOuterStation5;
+	@FXML
+	TextField slatOuterStation6;
+	@FXML
+	TextField slatDeflection1;
+	@FXML
+	TextField slatDeflection2;
+	@FXML
+	TextField slatDeflection3;
+	@FXML
+	TextField slatDeflection4;
+	@FXML
+	TextField slatDeflection5;
+	@FXML
+	TextField slatDeflection6;
 	
 	@FXML
 	TabPane flapTabPane;
 	@FXML
 	TabPane slatTabPane;
 	
-	
-	List<FlapTypeEnum> flapTypes;
-	List<Amount<Angle>> flapDeflection;
-	List<Double> flapChordRatio;
-	List<Double> flapInnerStation;
-	List<Double> flapOuterStation;
 	
 	Main main;
 	
@@ -139,7 +208,7 @@ public class HighLiftInputValues {
 			"TRIPLE_SLOTTED"
 			);
 	ObservableList<String> flapUnit = FXCollections.observableArrayList("°","rad");
-	
+	ObservableList<String> slatUnit = FXCollections.observableArrayList("°","rad");
 	
 	@FXML
 	public void initializeTabAnalyses(){
@@ -148,27 +217,103 @@ public class HighLiftInputValues {
 		if(theInputTree.getNumberOfFlaps() >= 1) {
 		flapTypeFXMLList.add(j,flapType1);
 		flapAngleUnitFXMLList.add(j,flapUnit1);
+		flapAngleFXMLList.add(j, flapDeflection1);
+		flapChordRatioFXMLList.add(j, flapChordRatio1);
+		flapNonDimensionalInnerFXMLList.add(j, flapInnerStation1);
+		flapNonDimensionalOuterFXMLList.add(j, flapOuterStation1);	
 		j++;
 		}
 		if(theInputTree.getNumberOfFlaps() >= 2) {
 		flapTypeFXMLList.add(j,flapType2);
 		flapAngleUnitFXMLList.add(j,flapUnit2);
+		flapAngleFXMLList.add(j, flapDeflection2);
+		flapChordRatioFXMLList.add(j, flapChordRatio2);
+		flapNonDimensionalInnerFXMLList.add(j, flapInnerStation2);
+		flapNonDimensionalOuterFXMLList.add(j, flapOuterStation2);	
 		j++;
 		}
 		if(theInputTree.getNumberOfFlaps() >= 3) {
 		flapTypeFXMLList.add(j,flapType3);
-		flapAngleUnitFXMLList.add(j,flapUnit3);
+		flapAngleUnitFXMLList.add(j,flapUnit3);	
+		flapAngleFXMLList.add(j, flapDeflection3);
+		flapChordRatioFXMLList.add(j, flapChordRatio3);
+		flapNonDimensionalInnerFXMLList.add(j, flapInnerStation3);
+		flapNonDimensionalOuterFXMLList.add(j, flapOuterStation3);	
 		j++;
 		}
 		if(theInputTree.getNumberOfFlaps() >= 4) {
 		flapTypeFXMLList.add(j,flapType4);
 		flapAngleUnitFXMLList.add(j,flapUnit4);
+		flapAngleFXMLList.add(j, flapDeflection4);
+		flapChordRatioFXMLList.add(j, flapChordRatio4);
+		flapNonDimensionalInnerFXMLList.add(j, flapInnerStation4);
+		flapNonDimensionalOuterFXMLList.add(j, flapOuterStation4);	
 		j++;
 		}
 		if(theInputTree.getNumberOfFlaps() >= 5) {
 		flapTypeFXMLList.add(j,flapType5);
 		flapAngleUnitFXMLList.add(j,flapUnit5);
+		flapAngleFXMLList.add(j, flapDeflection5);
+		flapChordRatioFXMLList.add(j, flapChordRatio5);
+		flapNonDimensionalInnerFXMLList.add(j, flapInnerStation5);
+		flapNonDimensionalOuterFXMLList.add(j, flapOuterStation5);	
 		j++;
+		}
+		
+		j=0;
+		if(theInputTree.getNumberOfSlats() >= 1) {
+			slatAngleUnitFXMLList.add(j,slatUnit1);
+			slatAngleFXMLList.add(j, slatDeflection1);
+			slatChordRatioFXMLList.add(j, slatChordRatio1);
+			slatExtensionRatioFXMLList.add(j, slatExtensionRatio1);
+			slatNonDimensionalInnerFXMLList.add(j,slatInnerStation1);
+			slatNonDimensionalOuterFXMLList.add(j, slatOuterStation1);
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 2) {
+			slatAngleUnitFXMLList.add(j,slatUnit2);
+			slatAngleFXMLList.add(j, slatDeflection2);
+			slatChordRatioFXMLList.add(j, slatChordRatio2);
+			slatExtensionRatioFXMLList.add(j, slatExtensionRatio2);
+			slatNonDimensionalInnerFXMLList.add(j,slatInnerStation2);
+			slatNonDimensionalOuterFXMLList.add(j, slatOuterStation2);
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 3) {
+			slatAngleUnitFXMLList.add(j,slatUnit3);
+			slatAngleFXMLList.add(j, slatDeflection3);
+			slatChordRatioFXMLList.add(j, slatChordRatio3);
+			slatExtensionRatioFXMLList.add(j, slatExtensionRatio3);
+			slatNonDimensionalInnerFXMLList.add(j,slatInnerStation3);
+			slatNonDimensionalOuterFXMLList.add(j, slatOuterStation3);
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 4) {
+			slatAngleUnitFXMLList.add(j,slatUnit4);
+			slatAngleFXMLList.add(j, slatDeflection4);
+			slatChordRatioFXMLList.add(j, slatChordRatio4);
+			slatExtensionRatioFXMLList.add(j, slatExtensionRatio4);
+			slatNonDimensionalInnerFXMLList.add(j,slatInnerStation4);
+			slatNonDimensionalOuterFXMLList.add(j, slatOuterStation4);
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 5) {
+			slatAngleUnitFXMLList.add(j,slatUnit5);
+			slatAngleFXMLList.add(j, slatDeflection5);
+			slatChordRatioFXMLList.add(j, slatChordRatio5);
+			slatExtensionRatioFXMLList.add(j, slatExtensionRatio5);
+			slatNonDimensionalInnerFXMLList.add(j,slatInnerStation5);
+			slatNonDimensionalOuterFXMLList.add(j, slatOuterStation5);
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 6) {
+			slatAngleUnitFXMLList.add(j,slatUnit6);
+			slatAngleFXMLList.add(j, slatDeflection6);
+			slatChordRatioFXMLList.add(j, slatChordRatio6);
+			slatExtensionRatioFXMLList.add(j, slatExtensionRatio6);
+			slatNonDimensionalInnerFXMLList.add(j,slatInnerStation6);
+			slatNonDimensionalOuterFXMLList.add(j, slatOuterStation6);
+			j++;
 		}
 		
 		//-----------------------------------------
@@ -188,9 +333,15 @@ public class HighLiftInputValues {
 		flapTypeFXMLList.get(i).setItems(flapFamily);
 		flapAngleUnitFXMLList.get(i).setItems(flapUnit);
 		}
+		for(int i=0; i<numberOfSlat; i++) {
+		slatAngleUnitFXMLList.get(i).setItems(slatUnit);
+		}
 	}
+	@SuppressWarnings("unchecked")
 	@FXML
 	private void confirmHighLiftData() throws IOException{
+		
+		cleanFlapSlatInputValues();
 		// fill flap values
 		for(int i=0; i<theInputTree.getNumberOfFlaps(); i++) {
 			//flap type
@@ -239,6 +390,11 @@ public class HighLiftInputValues {
 					unit)
 					);
 			
+			theInputTree.getSlatExtensionRatio().add(
+					Double.parseDouble(
+							slatExtensionRatioFXMLList.get(i).getText())
+					);
+			
 			theInputTree.getSlatChordRatio().add(
 					Double.parseDouble(
 							slatChordRatioFXMLList.get(i).getText())
@@ -254,7 +410,131 @@ public class HighLiftInputValues {
 							slatNonDimensionalOuterFXMLList.get(i).getText())
 					);
 		}
+		// set high lift tree is filled
+		theInputTree.setHighLiftInputTreeIsFilled(true);
 		
+		// close windows
+		
+		theVariableInputClass.getLeftPane().getChildren().clear();
+		theHighLiftController.getBottomPane().getChildren().clear();
+	}
+	
+	private void cleanFlapSlatInputValues() {
+		theInputTree.getFlapTypes().clear();
+		theInputTree.getFlapChordRatio().clear();
+		theInputTree.getFlapInnerStation().clear();
+		theInputTree.getFlapOuterStation().clear();
+		theInputTree.getFlapTypes().clear();
+		
+		theInputTree.getSlatChordRatio().clear();
+		theInputTree.getSlatDeflection().clear();
+		theInputTree.getSlatExtensionRatio().clear();
+		theInputTree.getSlatInnerStation().clear();
+		theInputTree.getSlatOuterStation().clear();
+	}
+	
+	public void writeFlapData() {
+		int j=0;
+		if(theInputTree.getNumberOfFlaps() >= 1) {
+			flapType1.setValue(theInputTree.getFlapTypes().get(j).toString());
+			flapUnit1.setValue(theInputTree.getFlapDeflection().get(j).getUnit().toString());
+			flapDeflection1.setText(Double.toString(theInputTree.getFlapDeflection().get(j).doubleValue(theInputTree.getFlapDeflection().get(j).getUnit())));
+			flapChordRatio1.setText(Double.toString(theInputTree.getFlapChordRatio().get(j)));
+			flapInnerStation1.setText(Double.toString(theInputTree.getFlapInnerStation().get(j)));
+			flapOuterStation1.setText(Double.toString(theInputTree.getFlapOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfFlaps() >= 2) {
+			flapType2.setValue(theInputTree.getFlapTypes().get(j).toString());
+			flapUnit2.setValue(theInputTree.getFlapDeflection().get(j).getUnit().toString());
+			flapDeflection2.setText(Double.toString(theInputTree.getFlapDeflection().get(j).doubleValue(theInputTree.getFlapDeflection().get(j).getUnit())));
+			flapChordRatio2.setText(Double.toString(theInputTree.getFlapChordRatio().get(j)));
+			flapInnerStation2.setText(Double.toString(theInputTree.getFlapInnerStation().get(j)));
+			flapOuterStation2.setText(Double.toString(theInputTree.getFlapOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfFlaps() >= 3) {
+			flapType3.setValue(theInputTree.getFlapTypes().get(j).toString());
+			flapUnit3.setValue(theInputTree.getFlapDeflection().get(j).getUnit().toString());
+			flapDeflection3.setText(Double.toString(theInputTree.getFlapDeflection().get(j).doubleValue(theInputTree.getFlapDeflection().get(j).getUnit())));
+			flapChordRatio3.setText(Double.toString(theInputTree.getFlapChordRatio().get(j)));
+			flapInnerStation3.setText(Double.toString(theInputTree.getFlapInnerStation().get(j)));
+			flapOuterStation3.setText(Double.toString(theInputTree.getFlapOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfFlaps() >= 4) {
+			flapType4.setValue(theInputTree.getFlapTypes().get(j).toString());
+			flapUnit4.setValue(theInputTree.getFlapDeflection().get(j).getUnit().toString());
+			flapDeflection4.setText(Double.toString(theInputTree.getFlapDeflection().get(j).doubleValue(theInputTree.getFlapDeflection().get(j).getUnit())));
+			flapChordRatio4.setText(Double.toString(theInputTree.getFlapChordRatio().get(j)));
+			flapInnerStation4.setText(Double.toString(theInputTree.getFlapInnerStation().get(j)));
+			flapOuterStation4.setText(Double.toString(theInputTree.getFlapOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfFlaps() >= 5) {
+			flapType5.setValue(theInputTree.getFlapTypes().get(j).toString());
+			flapUnit5.setValue(theInputTree.getFlapDeflection().get(j).getUnit().toString());
+			flapDeflection5.setText(Double.toString(theInputTree.getFlapDeflection().get(j).doubleValue(theInputTree.getFlapDeflection().get(j).getUnit())));
+			flapChordRatio5.setText(Double.toString(theInputTree.getFlapChordRatio().get(j)));
+			flapInnerStation5.setText(Double.toString(theInputTree.getFlapInnerStation().get(j)));
+			flapOuterStation5.setText(Double.toString(theInputTree.getFlapOuterStation().get(j)));
+			j++;
+		}
+		j=0;
+		if(theInputTree.getNumberOfSlats() >= 1) {
+			slatUnit1.setValue(theInputTree.getSlatDeflection().get(j).getUnit().toString());
+			slatDeflection1.setText(Double.toString(theInputTree.getSlatDeflection().get(j).doubleValue(theInputTree.getSlatDeflection().get(j).getUnit())));
+			slatChordRatio1.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatExtensionRatio1.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatInnerStation1.setText(Double.toString(theInputTree.getSlatInnerStation().get(j)));
+			slatOuterStation1.setText(Double.toString(theInputTree.getSlatOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 2) {
+			slatUnit2.setValue(theInputTree.getSlatDeflection().get(j).getUnit().toString());
+			slatDeflection2.setText(Double.toString(theInputTree.getSlatDeflection().get(j).doubleValue(theInputTree.getSlatDeflection().get(j).getUnit())));
+			slatChordRatio2.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatExtensionRatio2.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatInnerStation2.setText(Double.toString(theInputTree.getSlatInnerStation().get(j)));
+			slatOuterStation2.setText(Double.toString(theInputTree.getSlatOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 3) {
+			slatUnit3.setValue(theInputTree.getSlatDeflection().get(j).getUnit().toString());
+			slatDeflection3.setText(Double.toString(theInputTree.getSlatDeflection().get(j).doubleValue(theInputTree.getSlatDeflection().get(j).getUnit())));
+			slatChordRatio3.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatExtensionRatio3.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatInnerStation3.setText(Double.toString(theInputTree.getSlatInnerStation().get(j)));
+			slatOuterStation3.setText(Double.toString(theInputTree.getSlatOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 4) {
+			slatUnit4.setValue(theInputTree.getSlatDeflection().get(j).getUnit().toString());
+			slatDeflection4.setText(Double.toString(theInputTree.getSlatDeflection().get(j).doubleValue(theInputTree.getSlatDeflection().get(j).getUnit())));
+			slatChordRatio4.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatExtensionRatio4.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatInnerStation4.setText(Double.toString(theInputTree.getSlatInnerStation().get(j)));
+			slatOuterStation4.setText(Double.toString(theInputTree.getSlatOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 5) {
+			slatUnit5.setValue(theInputTree.getSlatDeflection().get(j).getUnit().toString());
+			slatDeflection5.setText(Double.toString(theInputTree.getSlatDeflection().get(j).doubleValue(theInputTree.getSlatDeflection().get(j).getUnit())));
+			slatChordRatio5.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatExtensionRatio5.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatInnerStation5.setText(Double.toString(theInputTree.getSlatInnerStation().get(j)));
+			slatOuterStation5.setText(Double.toString(theInputTree.getSlatOuterStation().get(j)));
+			j++;
+		}
+		if(theInputTree.getNumberOfSlats() >= 6) {
+			slatUnit6.setValue(theInputTree.getSlatDeflection().get(j).getUnit().toString());
+			slatDeflection6.setText(Double.toString(theInputTree.getSlatDeflection().get(j).doubleValue(theInputTree.getSlatDeflection().get(j).getUnit())));
+			slatChordRatio6.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatExtensionRatio6.setText(Double.toString(theInputTree.getSlatChordRatio().get(j)));
+			slatInnerStation6.setText(Double.toString(theInputTree.getSlatInnerStation().get(j)));
+			slatOuterStation6.setText(Double.toString(theInputTree.getSlatOuterStation().get(j)));
+			j++;
+		}
 	}
 	
 	public InputOutputTree getTheInputTree() {
@@ -268,5 +548,11 @@ public class HighLiftInputValues {
 	}
 	public void setTheVariableInputClass(VariablesInputData theVariableInputClass) {
 		this.theVariableInputClass = theVariableInputClass;
+	}
+	public HighLiftInputController getTheHighLiftController() {
+		return theHighLiftController;
+	}
+	public void setTheHighLiftController(HighLiftInputController theHighLiftController) {
+		this.theHighLiftController = theHighLiftController;
 	}
 }

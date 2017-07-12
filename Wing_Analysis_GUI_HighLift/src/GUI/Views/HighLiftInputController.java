@@ -69,6 +69,11 @@ public class HighLiftInputController {
 		
 	}
 
+	public void writeData() throws IOException {
+		numberOfFlap.setValue(Integer.toString(theInputTree.getNumberOfFlaps()));
+		numberOfSlat.setValue(Integer.toString(theInputTree.getNumberOfSlats()));
+		confirmNumber();
+	}
 	public InputOutputTree getTheInputTree() {
 		return theInputTree;
 	}

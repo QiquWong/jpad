@@ -327,7 +327,7 @@
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT">
                                                                      <children>
-                                                                        <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                        <TextField fx:id="slatExtensionRatio1" prefHeight="25.0" prefWidth="70.0" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -335,9 +335,9 @@
                                                             <Label text="Slat deflection" GridPane.rowIndex="2" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatDeflection1" prefHeight="25.0" prefWidth="70.0" />
                                                                   <Region prefHeight="34.0" prefWidth="9.0" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="55.0" />
+                                                                  <ChoiceBox fx:id="slatUnit1" prefHeight="25.0" prefWidth="55.0" />
                                                                   <Region prefHeight="34.0" prefWidth="13.0" />
                                                                </children>
                                                             </HBox>
@@ -345,18 +345,18 @@
                                                             <Label text="Slat non dimensional outer station" GridPane.rowIndex="4" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatInnerStation1" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatOuterStation1" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <Label text="Slat Extension Ratio  " GridPane.rowIndex="1" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatChordRatio1" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -388,7 +388,7 @@
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT">
                                                                      <children>
-                                                                        <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                        <TextField fx:id="slatExtensionRatio2" prefHeight="25.0" prefWidth="70.0" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -396,9 +396,9 @@
                                                             <Label text="Slat deflection" GridPane.rowIndex="2" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatDeflection2" prefHeight="25.0" prefWidth="70.0" />
                                                                   <Region prefHeight="34.0" prefWidth="9.0" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="55.0" />
+                                                                  <ChoiceBox fx:id="slatUnit2" prefHeight="25.0" prefWidth="55.0" />
                                                                   <Region prefHeight="34.0" prefWidth="13.0" />
                                                                </children>
                                                             </HBox>
@@ -406,18 +406,18 @@
                                                             <Label text="Slat non dimensional outer station" GridPane.rowIndex="4" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatInnerStation2" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatOuterStation2" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <Label text="Slat Extension Ratio  " GridPane.rowIndex="1" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatChordRatio2" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -449,7 +449,7 @@
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT">
                                                                      <children>
-                                                                        <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                        <TextField fx:id="slatExtensionRatio3" prefHeight="25.0" prefWidth="70.0" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -457,9 +457,9 @@
                                                             <Label text="Slat deflection" GridPane.rowIndex="2" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatDeflection3" prefHeight="25.0" prefWidth="70.0" />
                                                                   <Region prefHeight="34.0" prefWidth="9.0" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="55.0" />
+                                                                  <ChoiceBox fx:id="slatUnit3" prefHeight="25.0" prefWidth="55.0" />
                                                                   <Region prefHeight="34.0" prefWidth="13.0" />
                                                                </children>
                                                             </HBox>
@@ -467,18 +467,18 @@
                                                             <Label text="Slat non dimensional outer station" GridPane.rowIndex="4" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatInnerStation3" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatOuterStation3" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <Label text="Slat Extension Ratio  " GridPane.rowIndex="1" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatChordRatio3" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -510,7 +510,7 @@
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT">
                                                                      <children>
-                                                                        <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                        <TextField fx:id="slatExtensionRatio4" prefHeight="25.0" prefWidth="70.0" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -518,9 +518,9 @@
                                                             <Label text="Slat deflection" GridPane.rowIndex="2" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatDeflection4" prefHeight="25.0" prefWidth="70.0" />
                                                                   <Region prefHeight="34.0" prefWidth="9.0" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="55.0" />
+                                                                  <ChoiceBox fx:id="slatUnit4" prefHeight="25.0" prefWidth="55.0" />
                                                                   <Region prefHeight="34.0" prefWidth="13.0" />
                                                                </children>
                                                             </HBox>
@@ -528,18 +528,18 @@
                                                             <Label text="Slat non dimensional outer station" GridPane.rowIndex="4" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatInnerStation4" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatOuterStation4" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <Label text="Slat Extension Ratio  " GridPane.rowIndex="1" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatChordRatio4" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -571,7 +571,7 @@
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT">
                                                                      <children>
-                                                                        <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                        <TextField fx:id="slatExtensionRatio5" prefHeight="25.0" prefWidth="70.0" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -579,9 +579,9 @@
                                                             <Label text="Slat deflection" GridPane.rowIndex="2" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatDeflection5" prefHeight="25.0" prefWidth="70.0" />
                                                                   <Region prefHeight="34.0" prefWidth="9.0" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="55.0" />
+                                                                  <ChoiceBox fx:id="slatUnit5" prefHeight="25.0" prefWidth="55.0" />
                                                                   <Region prefHeight="34.0" prefWidth="13.0" />
                                                                </children>
                                                             </HBox>
@@ -589,18 +589,18 @@
                                                             <Label text="Slat non dimensional outer station" GridPane.rowIndex="4" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatInnerStation5" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatOuterStation5" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <Label text="Slat Extension Ratio  " GridPane.rowIndex="1" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatChordRatio5" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                          </children>
@@ -632,7 +632,7 @@
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT">
                                                                      <children>
-                                                                        <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                        <TextField fx:id="slatExtensionRatio6" prefHeight="25.0" prefWidth="70.0" />
                                                                      </children>
                                                                   </HBox>
                                                                </children>
@@ -640,9 +640,9 @@
                                                             <Label text="Slat deflection" GridPane.rowIndex="2" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatDeflection6" prefHeight="25.0" prefWidth="70.0" />
                                                                   <Region prefHeight="34.0" prefWidth="9.0" />
-                                                                  <ChoiceBox prefHeight="25.0" prefWidth="55.0" />
+                                                                  <ChoiceBox fx:id="slatUnit6" prefHeight="25.0" prefWidth="55.0" />
                                                                   <Region prefHeight="34.0" prefWidth="13.0" />
                                                                </children>
                                                             </HBox>
@@ -650,18 +650,18 @@
                                                             <Label text="Slat non dimensional outer station" GridPane.rowIndex="4" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatInnerStation6" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatOuterStation6" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                             <Label text="Slat Extension Ratio  " GridPane.rowIndex="1" />
                                                             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                                                <children>
-                                                                  <TextField prefHeight="25.0" prefWidth="70.0" />
+                                                                  <TextField fx:id="slatChordRatio6" prefHeight="25.0" prefWidth="70.0" />
                                                                </children>
                                                             </HBox>
                                                          </children>
