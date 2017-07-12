@@ -1,7 +1,6 @@
 package calculators.aerodynamics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,25 +14,21 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.LandingGears;
 import aircraft.components.LandingGears.MountingPosition;
 import aircraft.components.liftingSurface.LiftingSurface;
-import analyses.OperatingConditions;
 import calculators.geometry.FusNacGeometryCalc;
 import calculators.performance.customdata.DragMap;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
-import standaloneutils.customdata.DragPolarPoint;
 
 public class DragCalc {
 
@@ -818,6 +813,10 @@ public class DragCalc {
 			) 
 			{
 		
+		List<Double> clReferenceOfCdMatrixCut = new ArrayList<>();
+		for(int i=0; i<airfoilCdMatrix.get(0).size(); i++)
+			clReferenceOfCdMatrixCut.add(ClReferenceOfCdMatrix.get(i));
+		
 		List<Double> parasiteDrag = new ArrayList<Double>();
 	
 		double [] cdDistributionAtAlpha, cCd, clDistributionfromNasaBlackwell;
@@ -833,7 +832,7 @@ public class DragCalc {
 
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
 				cdDistributionAtAlpha[ii] = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
+						MyArrayUtils.convertToDoublePrimitive(clReferenceOfCdMatrixCut), 
 						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
 						clDistributionfromNasaBlackwell[ii]
 						);		

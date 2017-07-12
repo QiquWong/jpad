@@ -199,8 +199,8 @@ public class LSAerodynamicsManager {
 		this._alphaForDistribution = alphaForDistribution;
 		this._momentumPole = momentumPole;
 		
-		initializeData(_theCondition);
 		initializeVariables();
+		initializeData(_theCondition);
 		
 	}
 	
@@ -235,7 +235,7 @@ public class LSAerodynamicsManager {
 		}
 		
 		this._numberOfAlphas = _alphaArray.size();
-		this._numberOfAlphasPlot = 50;
+		this._numberOfAlphasPlot = _alphaArray.size();
 		this._vortexSemiSpanToSemiSpanRatio = 1.0/(2*_numberOfPointSemiSpanWise
 				);
 		this._alphaArrayPlot = new Double[this._numberOfAlphasPlot];
@@ -1090,7 +1090,7 @@ public class LSAerodynamicsManager {
 									MyArrayUtils.convertToDoublePrimitive(alphaZeroLiftDistribution),
 									MyArrayUtils.convertToDoublePrimitive(twistDistribution)
 									),
-							SI.RADIAN)
+							NonSI.DEGREE_ANGLE)
 					);
 		}
 
@@ -2476,8 +2476,6 @@ public class LSAerodynamicsManager {
 				Double mach,
 				Amount<Length> altitude) {
 
-			double cDActual = 0.0;
-
 			if(_cDParasite.get(MethodEnum.AIRFOIL_DISTRIBUTION) == null) {
 				CalcCDParasite calcCDParasite = new CalcCDParasite(); 
 				calcCDParasite.fromAirfoilDistribution(mach, altitude);
@@ -2508,7 +2506,7 @@ public class LSAerodynamicsManager {
 					+ _cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO)
 					);
 
-			return cDActual;
+			return _cDAtAlpha.get(MethodEnum.AIRFOIL_DISTRIBUTION);
 
 		}
 

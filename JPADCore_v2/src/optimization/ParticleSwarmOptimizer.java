@@ -256,36 +256,29 @@ public class ParticleSwarmOptimizer {
 			iterationIndex++;
 		}
 		
-		// Best Position
-		System.out.println("\n\n\t------------------------------------");
-		System.out.println("\tBEST PARTICLE POSITION: ");
-		System.out.println("\t------------------------------------");
-		Arrays.stream(_bestPosition).forEach(bp -> System.out.println("\t" + bp));
-		System.out.println("\t------------------------------------");
-		
-		// Cost Minimization chart
-		List<Double[]> xList = new ArrayList<>();
-		xList.add(MyArrayUtils.linspaceDouble(0.0, iterationIndex, iterationIndex));
-		
-		List<Double[]> yList = new ArrayList<>();
-		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_bestCostsFunctionValueOverIterations));
-		
-		List<String> legend = new ArrayList<>();
-		legend.add("PSO_Best_Cost_Value_Over_Iterations");
-		
-		try {
-			MyChartToFileUtils.plotLogAxisY(
-					xList, 
-					yList, 
-					"Best cost value over iterations", "Iterations", "Best Cost", 
-					0.0, (double) iterationIndex, null, null, 
-					"", "", 
-					false, legend, 
-					_outputFolder, "PSO_Best_Cost_Value_Over_Iterations"
-					);
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
+//		// Cost Minimization chart
+//		List<Double[]> xList = new ArrayList<>();
+//		xList.add(MyArrayUtils.linspaceDouble(0.0, iterationIndex, iterationIndex));
+//		
+//		List<Double[]> yList = new ArrayList<>();
+//		yList.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_bestCostsFunctionValueOverIterations));
+//		
+//		List<String> legend = new ArrayList<>();
+//		legend.add("PSO_Best_Cost_Value_Over_Iterations");
+//		
+//		try {
+//			MyChartToFileUtils.plotLogAxisY(
+//					xList, 
+//					yList, 
+//					"Best cost value over iterations", "Iterations", "Best Cost", 
+//					0.0, (double) iterationIndex, null, null, 
+//					"", "", 
+//					false, legend, 
+//					_outputFolder, "PSO_Best_Cost_Value_Over_Iterations"
+//					);
+//		} catch (InstantiationException | IllegalAccessException e) {
+//			e.printStackTrace();
+//		}
 		
 	}
 
