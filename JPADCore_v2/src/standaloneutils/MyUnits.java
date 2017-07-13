@@ -81,6 +81,7 @@ public class MyUnits {
 	public static final Unit USD_PER_GALLON = Currency.USD.divide(NonSI.GALLON_LIQUID_US);
 	public static final Unit BARREL = NonSI.LITER.times(158.98); 
 	public static final Unit USD_PER_BARREL = Currency.USD.divide(MyUnits.BARREL);
+	public static final Unit CENTS_PER_GALLON = (Currency.USD.divide(100)).divide(NonSI.GALLON_LIQUID_US);
 	public static final Unit G_PER_KN = SI.GRAM.divide(SI.NEWTON.divide(1000.0));
 	
 	
@@ -126,6 +127,24 @@ public class MyUnits {
 		return usDolPerCubM/conversionConst;
 	}
 
+	/**
+	 * Method that converts a price per gallon (US$/USGal) to a price cubic meter (US$/m^3) 
+	 * 
+	 * @param usDolPerGal Price per gallon (US$/gal)
+	 * @return Price per cubic meter (US$/m^3)
+	 * @author AC
+	 */
+	@SuppressWarnings("unchecked")
+	public static Amount<?> usDolPerUSGal2USDolPerBarrel(Amount<?> usDolPerCubM){
+		double conversionConst;
+		conversionConst = 1/_volSIUnit.doubleValue(SI.CUBIC_METRE);
+				
+		return Amount.valueOf(
+				usDolPerCubM.doubleValue(MyUnits.USD_PER_GALLON)/conversionConst,
+				MyUnits.USD_PER_BARREL
+				);
+	}
+	
 	/**
 	 * Method that converts a price per liter (US$/lt) to a price per US gallon (US$/USGal)
 	 * 

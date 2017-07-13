@@ -73,7 +73,7 @@
 	/>
 	-->
 	<costs 
-			file="analysis_costs.xml"
+			file="analysis_costs_IRON.xml"
 			plot="TRUE"
 			doc_capital="TRUE"
 			doc_capital_method="AEA"

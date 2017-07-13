@@ -383,14 +383,14 @@ public class ACCostsManager {
 		String calculateAircraftPriceString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//global_data/doc/aircraft_price/@calculate");
+						"//global_data/doc/capital/aircraft_price/@calculate");
 		
 		if(calculateAircraftPriceString.equalsIgnoreCase("TRUE")){
 			
 			String calculateAircraftPriceMethodString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
-							"//global_data/utilization/@method");
+							"//global_data/doc/capital/aircraft_price/@method");
 			
 			if(calculateAircraftPriceMethodString != null) {
 				
@@ -444,7 +444,7 @@ public class ACCostsManager {
 		// FUEL UNIT PRICE
 		String fuelUnitPriceProperty = reader.getXMLPropertyByPath("//global_data/doc/fuel/unit_price");
 		if(fuelUnitPriceProperty != null)
-			fuelUnitPrice = (Amount<Money>) reader.getXMLAmountWithUnitByPath("//global_data/doc/fuel/unit_price"); 
+			fuelUnitPrice = (Amount<?>) reader.getXMLAmountWithUnitByPath("//global_data/doc/fuel/unit_price"); 
 		
 		//---------------------------------------------------------------
 		// LANDING CHARGES
@@ -818,6 +818,8 @@ public class ACCostsManager {
 						"//maintenance/engine_price/@calculate");
 		
 		if(calculateEnginePriceString.equalsIgnoreCase("TRUE")){
+			if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOFAN) 
+					|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOJET))
 			enginePrice = Amount.valueOf(
 					CostsCalcUtils.calcSingleEngineCostSforza(
 					theAircraft.getPowerPlant().getT0Total().doubleValue(NonSI.POUND_FORCE), 
@@ -835,6 +837,12 @@ public class ACCostsManager {
 							),
 					Currency.USD
 					);
+			else if(theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP) 
+					|| theAircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.PISTON)) {
+				
+				// TODO : (for Vincenzo) IMPLEMENT THE METHOD FOR TURBOPROP ... 
+				
+			}
 					
 		}
 		else{
@@ -996,7 +1004,8 @@ public class ACCostsManager {
 
 		_airframeMass = Amount.valueOf(
 				_theCostsBuilderInterface.getOperatingEmptyMass().doubleValue(NonSI.POUND) -
-				_theCostsBuilderInterface.getAircraft().getPowerPlant().getDryMassPublicDomainTotal().doubleValue(NonSI.POUND)*_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
+				_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().doubleValue(NonSI.POUND)
+					*_theCostsBuilderInterface.getAircraft().getPowerPlant().getEngineNumber(),
 				NonSI.POUND);
 				
 		_airframeCost = 

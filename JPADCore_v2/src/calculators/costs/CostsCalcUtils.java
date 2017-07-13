@@ -466,7 +466,7 @@ public class CostsCalcUtils {
 		Amount<Volume> fuelVolume = fuelMass.divide(fuelDensity).to(MyUnits.BARREL);
 		
 		return  Amount.valueOf(
-				fuelPrice.doubleValue(MyUnits.USD_PER_BARREL)*fuelVolume.doubleValue(MyUnits.BARREL),
+				MyUnits.usDolPerUSGal2USDolPerBarrel(fuelPrice).doubleValue(MyUnits.USD_PER_BARREL)*fuelVolume.doubleValue(MyUnits.BARREL),
 				MyUnits.USD_PER_FLIGHT
 				);
 
@@ -961,8 +961,12 @@ public class CostsCalcUtils {
 				);
 
 		
-		return  Amount.valueOf((CFHE.doubleValue(MyUnits.USD_PER_HOUR)*flightTime.doubleValue(NonSI.HOUR) + CFCE.doubleValue(MyUnits.USD_PER_FLIGHT))
-				/(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)),
+		return  Amount.valueOf(
+				(CFHE.getEstimatedValue()*flightTime.doubleValue(NonSI.HOUR) 
+						+ CFCE.getEstimatedValue()
+						)/
+				(blockTime.doubleValue(NonSI.HOUR)*blockSpeed.doubleValue(NonSI.KNOT)
+						),
 				MyUnits.USD_PER_NAUTICAL_MILE					
 				);
 	}
@@ -980,10 +984,10 @@ public class CostsCalcUtils {
 	public static Amount<?> calcDOCMaintenanceCharges(Amount<?> labourAirframeMaintenanceCharges, Amount<?> materialAirframeMaintenanceCharges,
 			Amount<?> labourEngineMaintenanceCharges, Amount<?> materialEngineMaintenanceCharges) {
 
-		return  Amount.valueOf(labourAirframeMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
-									materialAirframeMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
-										labourAirframeMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT)+
-											materialEngineMaintenanceCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+		return  Amount.valueOf(labourAirframeMaintenanceCharges.getEstimatedValue() +
+									materialAirframeMaintenanceCharges.getEstimatedValue() +
+										labourAirframeMaintenanceCharges.getEstimatedValue() +
+											materialEngineMaintenanceCharges.getEstimatedValue(),
 								MyUnits.USD_PER_HOUR					
 									);
 	}

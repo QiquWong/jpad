@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
-import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -71,28 +70,10 @@ abstract class IACCostsManager_Builder {
     NAVIGATION_CHARGES("navigationCharges"),
     GROUND_HANDLING_CHARGES("groundHandlingCharges"),
     NOISE_CHARGES("noiseCharges"),
-    NOISE_CONSTANT("noiseConstant"),
-    NOISE_DEPARTURE_THRESHOLD("noiseDepartureThreshold"),
-    NOISE_ARRIVAL_THRESHOLD("noiseArrivalThreshold"),
-    APPROACH_CERTIFIED_NOISE_LEVEL("approachCertifiedNoiseLevel"),
-    LATERAL_CERTIFIED_NOISE_LEVEL("lateralCertifiedNoiseLevel"),
-    FLYOVER_CERTIFIED_NOISE_LEVEL("flyoverCertifiedNoiseLevel"),
     EMISSIONS_CHARGES_N_OX("emissionsChargesNOx"),
-    EMISSIONS_CONSTANT_N_OX("emissionsConstantNOx"),
-    MASS_N_OX("massNOx"),
-    DP_HC_FOO_N_OX("dpHCFooNOx"),
     EMISSIONS_CHARGES_CO("emissionsChargesCO"),
-    EMISSIONS_CONSTANT_CO("emissionsConstantCO"),
-    MASS_CO("massCO"),
-    DP_HC_FOO_CO("dpHCFooCO"),
     EMISSIONS_CHARGES_C_O2("emissionsChargesCO2"),
-    EMISSIONS_CONSTANT_C_O2("emissionsConstantCO2"),
-    MASS_C_O2("massCO2"),
-    DP_HC_FOO_C_O2("dpHCFooCO2"),
     EMISSIONS_CHARGES_HC("emissionsChargesHC"),
-    EMISSIONS_CONSTANT_HC("emissionsConstantHC"),
-    MASS_HC("massHC"),
-    DP_HC_FOO_HC("dpHCFooHC"),
     AIRFRAME_LABOUR_RATE("airframeLabourRate"),
     ENGINE_LABOUR_RATE("engineLabourRate"),
     ENGINE_PRICE("enginePrice"),
@@ -134,28 +115,10 @@ abstract class IACCostsManager_Builder {
   private Amount<?> navigationCharges;
   private Amount<?> groundHandlingCharges;
   private Amount<?> noiseCharges;
-  private Amount<Money> noiseConstant;
-  private Amount<Dimensionless> noiseDepartureThreshold;
-  private Amount<Dimensionless> noiseArrivalThreshold;
-  private Amount<Dimensionless> approachCertifiedNoiseLevel;
-  private Amount<Dimensionless> lateralCertifiedNoiseLevel;
-  private Amount<Dimensionless> flyoverCertifiedNoiseLevel;
   private Amount<?> emissionsChargesNOx;
-  private Amount<Money> emissionsConstantNOx;
-  private Amount<Mass> massNOx;
-  private Amount<?> dpHCFooNOx;
   private Amount<?> emissionsChargesCO;
-  private Amount<Money> emissionsConstantCO;
-  private Amount<Mass> massCO;
-  private Amount<?> dpHCFooCO;
   private Amount<?> emissionsChargesCO2;
-  private Amount<Money> emissionsConstantCO2;
-  private Amount<Mass> massCO2;
-  private Amount<?> dpHCFooCO2;
   private Amount<?> emissionsChargesHC;
-  private Amount<Money> emissionsConstantHC;
-  private Amount<Mass> massHC;
-  private Amount<?> dpHCFooHC;
   private Amount<?> airframeLabourRate;
   private Amount<?> engineLabourRate;
   private Amount<Money> enginePrice;
@@ -1049,238 +1012,6 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link IACCostsManager#getNoiseConstant()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code noiseConstant} is null
-   */
-  public IACCostsManager.Builder setNoiseConstant(Amount<Money> noiseConstant) {
-    this.noiseConstant = Preconditions.checkNotNull(noiseConstant);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.NOISE_CONSTANT);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getNoiseConstant()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapNoiseConstant(UnaryOperator<Amount<Money>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setNoiseConstant(mapper.apply(getNoiseConstant()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getNoiseConstant()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Money> getNoiseConstant() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CONSTANT),
-        "noiseConstant not set");
-    return noiseConstant;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getNoiseDepartureThreshold()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code noiseDepartureThreshold} is null
-   */
-  public IACCostsManager.Builder setNoiseDepartureThreshold(
-      Amount<Dimensionless> noiseDepartureThreshold) {
-    this.noiseDepartureThreshold = Preconditions.checkNotNull(noiseDepartureThreshold);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.NOISE_DEPARTURE_THRESHOLD);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getNoiseDepartureThreshold()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapNoiseDepartureThreshold(
-      UnaryOperator<Amount<Dimensionless>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setNoiseDepartureThreshold(mapper.apply(getNoiseDepartureThreshold()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getNoiseDepartureThreshold()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Dimensionless> getNoiseDepartureThreshold() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_DEPARTURE_THRESHOLD),
-        "noiseDepartureThreshold not set");
-    return noiseDepartureThreshold;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getNoiseArrivalThreshold()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code noiseArrivalThreshold} is null
-   */
-  public IACCostsManager.Builder setNoiseArrivalThreshold(
-      Amount<Dimensionless> noiseArrivalThreshold) {
-    this.noiseArrivalThreshold = Preconditions.checkNotNull(noiseArrivalThreshold);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.NOISE_ARRIVAL_THRESHOLD);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getNoiseArrivalThreshold()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapNoiseArrivalThreshold(
-      UnaryOperator<Amount<Dimensionless>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setNoiseArrivalThreshold(mapper.apply(getNoiseArrivalThreshold()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getNoiseArrivalThreshold()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Dimensionless> getNoiseArrivalThreshold() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_ARRIVAL_THRESHOLD),
-        "noiseArrivalThreshold not set");
-    return noiseArrivalThreshold;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getApproachCertifiedNoiseLevel()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code approachCertifiedNoiseLevel} is null
-   */
-  public IACCostsManager.Builder setApproachCertifiedNoiseLevel(
-      Amount<Dimensionless> approachCertifiedNoiseLevel) {
-    this.approachCertifiedNoiseLevel = Preconditions.checkNotNull(approachCertifiedNoiseLevel);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.APPROACH_CERTIFIED_NOISE_LEVEL);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getApproachCertifiedNoiseLevel()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapApproachCertifiedNoiseLevel(
-      UnaryOperator<Amount<Dimensionless>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setApproachCertifiedNoiseLevel(mapper.apply(getApproachCertifiedNoiseLevel()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getApproachCertifiedNoiseLevel()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Dimensionless> getApproachCertifiedNoiseLevel() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.APPROACH_CERTIFIED_NOISE_LEVEL),
-        "approachCertifiedNoiseLevel not set");
-    return approachCertifiedNoiseLevel;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getLateralCertifiedNoiseLevel()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code lateralCertifiedNoiseLevel} is null
-   */
-  public IACCostsManager.Builder setLateralCertifiedNoiseLevel(
-      Amount<Dimensionless> lateralCertifiedNoiseLevel) {
-    this.lateralCertifiedNoiseLevel = Preconditions.checkNotNull(lateralCertifiedNoiseLevel);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.LATERAL_CERTIFIED_NOISE_LEVEL);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getLateralCertifiedNoiseLevel()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapLateralCertifiedNoiseLevel(
-      UnaryOperator<Amount<Dimensionless>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setLateralCertifiedNoiseLevel(mapper.apply(getLateralCertifiedNoiseLevel()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getLateralCertifiedNoiseLevel()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Dimensionless> getLateralCertifiedNoiseLevel() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.LATERAL_CERTIFIED_NOISE_LEVEL),
-        "lateralCertifiedNoiseLevel not set");
-    return lateralCertifiedNoiseLevel;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getFlyoverCertifiedNoiseLevel()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code flyoverCertifiedNoiseLevel} is null
-   */
-  public IACCostsManager.Builder setFlyoverCertifiedNoiseLevel(
-      Amount<Dimensionless> flyoverCertifiedNoiseLevel) {
-    this.flyoverCertifiedNoiseLevel = Preconditions.checkNotNull(flyoverCertifiedNoiseLevel);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.FLYOVER_CERTIFIED_NOISE_LEVEL);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getFlyoverCertifiedNoiseLevel()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapFlyoverCertifiedNoiseLevel(
-      UnaryOperator<Amount<Dimensionless>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setFlyoverCertifiedNoiseLevel(mapper.apply(getFlyoverCertifiedNoiseLevel()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getFlyoverCertifiedNoiseLevel()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Dimensionless> getFlyoverCertifiedNoiseLevel() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.FLYOVER_CERTIFIED_NOISE_LEVEL),
-        "flyoverCertifiedNoiseLevel not set");
-    return flyoverCertifiedNoiseLevel;
-  }
-
-  /**
    * Sets the value to be returned by {@link IACCostsManager#getEmissionsChargesNOx()}.
    *
    * @return this {@code Builder} object
@@ -1315,116 +1046,6 @@ abstract class IACCostsManager_Builder {
         !_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_N_OX),
         "emissionsChargesNOx not set");
     return emissionsChargesNOx;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getEmissionsConstantNOx()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code emissionsConstantNOx} is null
-   */
-  public IACCostsManager.Builder setEmissionsConstantNOx(Amount<Money> emissionsConstantNOx) {
-    this.emissionsConstantNOx = Preconditions.checkNotNull(emissionsConstantNOx);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_N_OX);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getEmissionsConstantNOx()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapEmissionsConstantNOx(UnaryOperator<Amount<Money>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setEmissionsConstantNOx(mapper.apply(getEmissionsConstantNOx()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getEmissionsConstantNOx()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Money> getEmissionsConstantNOx() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_N_OX),
-        "emissionsConstantNOx not set");
-    return emissionsConstantNOx;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getMassNOx()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code massNOx} is null
-   */
-  public IACCostsManager.Builder setMassNOx(Amount<Mass> massNOx) {
-    this.massNOx = Preconditions.checkNotNull(massNOx);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.MASS_N_OX);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getMassNOx()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapMassNOx(UnaryOperator<Amount<Mass>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setMassNOx(mapper.apply(getMassNOx()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getMassNOx()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Mass> getMassNOx() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_N_OX), "massNOx not set");
-    return massNOx;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getDpHCFooNOx()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code dpHCFooNOx} is null
-   */
-  public IACCostsManager.Builder setDpHCFooNOx(Amount<?> dpHCFooNOx) {
-    this.dpHCFooNOx = Preconditions.checkNotNull(dpHCFooNOx);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.DP_HC_FOO_N_OX);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getDpHCFooNOx()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapDpHCFooNOx(UnaryOperator<Amount<?>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setDpHCFooNOx(mapper.apply(getDpHCFooNOx()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getDpHCFooNOx()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<?> getDpHCFooNOx() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_N_OX),
-        "dpHCFooNOx not set");
-    return dpHCFooNOx;
   }
 
   /**
@@ -1465,116 +1086,6 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link IACCostsManager#getEmissionsConstantCO()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code emissionsConstantCO} is null
-   */
-  public IACCostsManager.Builder setEmissionsConstantCO(Amount<Money> emissionsConstantCO) {
-    this.emissionsConstantCO = Preconditions.checkNotNull(emissionsConstantCO);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_CO);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getEmissionsConstantCO()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapEmissionsConstantCO(UnaryOperator<Amount<Money>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setEmissionsConstantCO(mapper.apply(getEmissionsConstantCO()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getEmissionsConstantCO()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Money> getEmissionsConstantCO() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_CO),
-        "emissionsConstantCO not set");
-    return emissionsConstantCO;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getMassCO()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code massCO} is null
-   */
-  public IACCostsManager.Builder setMassCO(Amount<Mass> massCO) {
-    this.massCO = Preconditions.checkNotNull(massCO);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.MASS_CO);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getMassCO()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapMassCO(UnaryOperator<Amount<Mass>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setMassCO(mapper.apply(getMassCO()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getMassCO()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Mass> getMassCO() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_CO), "massCO not set");
-    return massCO;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getDpHCFooCO()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code dpHCFooCO} is null
-   */
-  public IACCostsManager.Builder setDpHCFooCO(Amount<?> dpHCFooCO) {
-    this.dpHCFooCO = Preconditions.checkNotNull(dpHCFooCO);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.DP_HC_FOO_CO);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getDpHCFooCO()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapDpHCFooCO(UnaryOperator<Amount<?>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setDpHCFooCO(mapper.apply(getDpHCFooCO()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getDpHCFooCO()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<?> getDpHCFooCO() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_CO),
-        "dpHCFooCO not set");
-    return dpHCFooCO;
-  }
-
-  /**
    * Sets the value to be returned by {@link IACCostsManager#getEmissionsChargesCO2()}.
    *
    * @return this {@code Builder} object
@@ -1612,116 +1123,6 @@ abstract class IACCostsManager_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link IACCostsManager#getEmissionsConstantCO2()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code emissionsConstantCO2} is null
-   */
-  public IACCostsManager.Builder setEmissionsConstantCO2(Amount<Money> emissionsConstantCO2) {
-    this.emissionsConstantCO2 = Preconditions.checkNotNull(emissionsConstantCO2);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_C_O2);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getEmissionsConstantCO2()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapEmissionsConstantCO2(UnaryOperator<Amount<Money>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setEmissionsConstantCO2(mapper.apply(getEmissionsConstantCO2()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getEmissionsConstantCO2()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Money> getEmissionsConstantCO2() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_C_O2),
-        "emissionsConstantCO2 not set");
-    return emissionsConstantCO2;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getMassCO2()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code massCO2} is null
-   */
-  public IACCostsManager.Builder setMassCO2(Amount<Mass> massCO2) {
-    this.massCO2 = Preconditions.checkNotNull(massCO2);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.MASS_C_O2);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getMassCO2()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapMassCO2(UnaryOperator<Amount<Mass>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setMassCO2(mapper.apply(getMassCO2()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getMassCO2()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Mass> getMassCO2() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_C_O2), "massCO2 not set");
-    return massCO2;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getDpHCFooCO2()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code dpHCFooCO2} is null
-   */
-  public IACCostsManager.Builder setDpHCFooCO2(Amount<?> dpHCFooCO2) {
-    this.dpHCFooCO2 = Preconditions.checkNotNull(dpHCFooCO2);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.DP_HC_FOO_C_O2);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getDpHCFooCO2()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapDpHCFooCO2(UnaryOperator<Amount<?>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setDpHCFooCO2(mapper.apply(getDpHCFooCO2()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getDpHCFooCO2()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<?> getDpHCFooCO2() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_C_O2),
-        "dpHCFooCO2 not set");
-    return dpHCFooCO2;
-  }
-
-  /**
    * Sets the value to be returned by {@link IACCostsManager#getEmissionsChargesHC()}.
    *
    * @return this {@code Builder} object
@@ -1756,116 +1157,6 @@ abstract class IACCostsManager_Builder {
         !_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_HC),
         "emissionsChargesHC not set");
     return emissionsChargesHC;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getEmissionsConstantHC()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code emissionsConstantHC} is null
-   */
-  public IACCostsManager.Builder setEmissionsConstantHC(Amount<Money> emissionsConstantHC) {
-    this.emissionsConstantHC = Preconditions.checkNotNull(emissionsConstantHC);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_HC);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getEmissionsConstantHC()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapEmissionsConstantHC(UnaryOperator<Amount<Money>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setEmissionsConstantHC(mapper.apply(getEmissionsConstantHC()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getEmissionsConstantHC()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Money> getEmissionsConstantHC() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_HC),
-        "emissionsConstantHC not set");
-    return emissionsConstantHC;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getMassHC()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code massHC} is null
-   */
-  public IACCostsManager.Builder setMassHC(Amount<Mass> massHC) {
-    this.massHC = Preconditions.checkNotNull(massHC);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.MASS_HC);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getMassHC()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapMassHC(UnaryOperator<Amount<Mass>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setMassHC(mapper.apply(getMassHC()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getMassHC()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<Mass> getMassHC() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_HC), "massHC not set");
-    return massHC;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACCostsManager#getDpHCFooHC()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code dpHCFooHC} is null
-   */
-  public IACCostsManager.Builder setDpHCFooHC(Amount<?> dpHCFooHC) {
-    this.dpHCFooHC = Preconditions.checkNotNull(dpHCFooHC);
-    _unsetProperties.remove(IACCostsManager_Builder.Property.DP_HC_FOO_HC);
-    return (IACCostsManager.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACCostsManager#getDpHCFooHC()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACCostsManager.Builder mapDpHCFooHC(UnaryOperator<Amount<?>> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setDpHCFooHC(mapper.apply(getDpHCFooHC()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACCostsManager#getDpHCFooHC()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public Amount<?> getDpHCFooHC() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_HC),
-        "dpHCFooHC not set");
-    return dpHCFooHC;
   }
 
   /**
@@ -2250,106 +1541,21 @@ abstract class IACCostsManager_Builder {
         || !value.getNoiseCharges().equals(_defaults.getNoiseCharges())) {
       setNoiseCharges(value.getNoiseCharges());
     }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CONSTANT)
-        || !value.getNoiseConstant().equals(_defaults.getNoiseConstant())) {
-      setNoiseConstant(value.getNoiseConstant());
-    }
-    if (_defaults._unsetProperties.contains(
-            IACCostsManager_Builder.Property.NOISE_DEPARTURE_THRESHOLD)
-        || !value.getNoiseDepartureThreshold().equals(_defaults.getNoiseDepartureThreshold())) {
-      setNoiseDepartureThreshold(value.getNoiseDepartureThreshold());
-    }
-    if (_defaults._unsetProperties.contains(
-            IACCostsManager_Builder.Property.NOISE_ARRIVAL_THRESHOLD)
-        || !value.getNoiseArrivalThreshold().equals(_defaults.getNoiseArrivalThreshold())) {
-      setNoiseArrivalThreshold(value.getNoiseArrivalThreshold());
-    }
-    if (_defaults._unsetProperties.contains(
-            IACCostsManager_Builder.Property.APPROACH_CERTIFIED_NOISE_LEVEL)
-        || !value
-            .getApproachCertifiedNoiseLevel()
-            .equals(_defaults.getApproachCertifiedNoiseLevel())) {
-      setApproachCertifiedNoiseLevel(value.getApproachCertifiedNoiseLevel());
-    }
-    if (_defaults._unsetProperties.contains(
-            IACCostsManager_Builder.Property.LATERAL_CERTIFIED_NOISE_LEVEL)
-        || !value
-            .getLateralCertifiedNoiseLevel()
-            .equals(_defaults.getLateralCertifiedNoiseLevel())) {
-      setLateralCertifiedNoiseLevel(value.getLateralCertifiedNoiseLevel());
-    }
-    if (_defaults._unsetProperties.contains(
-            IACCostsManager_Builder.Property.FLYOVER_CERTIFIED_NOISE_LEVEL)
-        || !value
-            .getFlyoverCertifiedNoiseLevel()
-            .equals(_defaults.getFlyoverCertifiedNoiseLevel())) {
-      setFlyoverCertifiedNoiseLevel(value.getFlyoverCertifiedNoiseLevel());
-    }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_N_OX)
         || !value.getEmissionsChargesNOx().equals(_defaults.getEmissionsChargesNOx())) {
       setEmissionsChargesNOx(value.getEmissionsChargesNOx());
-    }
-    if (_defaults._unsetProperties.contains(
-            IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_N_OX)
-        || !value.getEmissionsConstantNOx().equals(_defaults.getEmissionsConstantNOx())) {
-      setEmissionsConstantNOx(value.getEmissionsConstantNOx());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_N_OX)
-        || !value.getMassNOx().equals(_defaults.getMassNOx())) {
-      setMassNOx(value.getMassNOx());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_N_OX)
-        || !value.getDpHCFooNOx().equals(_defaults.getDpHCFooNOx())) {
-      setDpHCFooNOx(value.getDpHCFooNOx());
     }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_CO)
         || !value.getEmissionsChargesCO().equals(_defaults.getEmissionsChargesCO())) {
       setEmissionsChargesCO(value.getEmissionsChargesCO());
     }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_CO)
-        || !value.getEmissionsConstantCO().equals(_defaults.getEmissionsConstantCO())) {
-      setEmissionsConstantCO(value.getEmissionsConstantCO());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_CO)
-        || !value.getMassCO().equals(_defaults.getMassCO())) {
-      setMassCO(value.getMassCO());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_CO)
-        || !value.getDpHCFooCO().equals(_defaults.getDpHCFooCO())) {
-      setDpHCFooCO(value.getDpHCFooCO());
-    }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_C_O2)
         || !value.getEmissionsChargesCO2().equals(_defaults.getEmissionsChargesCO2())) {
       setEmissionsChargesCO2(value.getEmissionsChargesCO2());
     }
-    if (_defaults._unsetProperties.contains(
-            IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_C_O2)
-        || !value.getEmissionsConstantCO2().equals(_defaults.getEmissionsConstantCO2())) {
-      setEmissionsConstantCO2(value.getEmissionsConstantCO2());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_C_O2)
-        || !value.getMassCO2().equals(_defaults.getMassCO2())) {
-      setMassCO2(value.getMassCO2());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_C_O2)
-        || !value.getDpHCFooCO2().equals(_defaults.getDpHCFooCO2())) {
-      setDpHCFooCO2(value.getDpHCFooCO2());
-    }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_HC)
         || !value.getEmissionsChargesHC().equals(_defaults.getEmissionsChargesHC())) {
       setEmissionsChargesHC(value.getEmissionsChargesHC());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_HC)
-        || !value.getEmissionsConstantHC().equals(_defaults.getEmissionsConstantHC())) {
-      setEmissionsConstantHC(value.getEmissionsConstantHC());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_HC)
-        || !value.getMassHC().equals(_defaults.getMassHC())) {
-      setMassHC(value.getMassHC());
-    }
-    if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_HC)
-        || !value.getDpHCFooHC().equals(_defaults.getDpHCFooHC())) {
-      setDpHCFooHC(value.getDpHCFooHC());
     }
     if (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.AIRFRAME_LABOUR_RATE)
         || !value.getAirframeLabourRate().equals(_defaults.getAirframeLabourRate())) {
@@ -2509,73 +1715,11 @@ abstract class IACCostsManager_Builder {
             || !template.getNoiseCharges().equals(_defaults.getNoiseCharges()))) {
       setNoiseCharges(template.getNoiseCharges());
     }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CONSTANT)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CONSTANT)
-            || !template.getNoiseConstant().equals(_defaults.getNoiseConstant()))) {
-      setNoiseConstant(template.getNoiseConstant());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_DEPARTURE_THRESHOLD)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.NOISE_DEPARTURE_THRESHOLD)
-            || !template
-                .getNoiseDepartureThreshold()
-                .equals(_defaults.getNoiseDepartureThreshold()))) {
-      setNoiseDepartureThreshold(template.getNoiseDepartureThreshold());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_ARRIVAL_THRESHOLD)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.NOISE_ARRIVAL_THRESHOLD)
-            || !template.getNoiseArrivalThreshold().equals(_defaults.getNoiseArrivalThreshold()))) {
-      setNoiseArrivalThreshold(template.getNoiseArrivalThreshold());
-    }
-    if (!base._unsetProperties.contains(
-            IACCostsManager_Builder.Property.APPROACH_CERTIFIED_NOISE_LEVEL)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.APPROACH_CERTIFIED_NOISE_LEVEL)
-            || !template
-                .getApproachCertifiedNoiseLevel()
-                .equals(_defaults.getApproachCertifiedNoiseLevel()))) {
-      setApproachCertifiedNoiseLevel(template.getApproachCertifiedNoiseLevel());
-    }
-    if (!base._unsetProperties.contains(
-            IACCostsManager_Builder.Property.LATERAL_CERTIFIED_NOISE_LEVEL)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.LATERAL_CERTIFIED_NOISE_LEVEL)
-            || !template
-                .getLateralCertifiedNoiseLevel()
-                .equals(_defaults.getLateralCertifiedNoiseLevel()))) {
-      setLateralCertifiedNoiseLevel(template.getLateralCertifiedNoiseLevel());
-    }
-    if (!base._unsetProperties.contains(
-            IACCostsManager_Builder.Property.FLYOVER_CERTIFIED_NOISE_LEVEL)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.FLYOVER_CERTIFIED_NOISE_LEVEL)
-            || !template
-                .getFlyoverCertifiedNoiseLevel()
-                .equals(_defaults.getFlyoverCertifiedNoiseLevel()))) {
-      setFlyoverCertifiedNoiseLevel(template.getFlyoverCertifiedNoiseLevel());
-    }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_N_OX)
         && (_defaults._unsetProperties.contains(
                 IACCostsManager_Builder.Property.EMISSIONS_CHARGES_N_OX)
             || !template.getEmissionsChargesNOx().equals(_defaults.getEmissionsChargesNOx()))) {
       setEmissionsChargesNOx(template.getEmissionsChargesNOx());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_N_OX)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_N_OX)
-            || !template.getEmissionsConstantNOx().equals(_defaults.getEmissionsConstantNOx()))) {
-      setEmissionsConstantNOx(template.getEmissionsConstantNOx());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_N_OX)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_N_OX)
-            || !template.getMassNOx().equals(_defaults.getMassNOx()))) {
-      setMassNOx(template.getMassNOx());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_N_OX)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_N_OX)
-            || !template.getDpHCFooNOx().equals(_defaults.getDpHCFooNOx()))) {
-      setDpHCFooNOx(template.getDpHCFooNOx());
     }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_CO)
         && (_defaults._unsetProperties.contains(
@@ -2583,65 +1727,17 @@ abstract class IACCostsManager_Builder {
             || !template.getEmissionsChargesCO().equals(_defaults.getEmissionsChargesCO()))) {
       setEmissionsChargesCO(template.getEmissionsChargesCO());
     }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_CO)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_CO)
-            || !template.getEmissionsConstantCO().equals(_defaults.getEmissionsConstantCO()))) {
-      setEmissionsConstantCO(template.getEmissionsConstantCO());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_CO)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_CO)
-            || !template.getMassCO().equals(_defaults.getMassCO()))) {
-      setMassCO(template.getMassCO());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_CO)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_CO)
-            || !template.getDpHCFooCO().equals(_defaults.getDpHCFooCO()))) {
-      setDpHCFooCO(template.getDpHCFooCO());
-    }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_C_O2)
         && (_defaults._unsetProperties.contains(
                 IACCostsManager_Builder.Property.EMISSIONS_CHARGES_C_O2)
             || !template.getEmissionsChargesCO2().equals(_defaults.getEmissionsChargesCO2()))) {
       setEmissionsChargesCO2(template.getEmissionsChargesCO2());
     }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_C_O2)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_C_O2)
-            || !template.getEmissionsConstantCO2().equals(_defaults.getEmissionsConstantCO2()))) {
-      setEmissionsConstantCO2(template.getEmissionsConstantCO2());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_C_O2)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_C_O2)
-            || !template.getMassCO2().equals(_defaults.getMassCO2()))) {
-      setMassCO2(template.getMassCO2());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_C_O2)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_C_O2)
-            || !template.getDpHCFooCO2().equals(_defaults.getDpHCFooCO2()))) {
-      setDpHCFooCO2(template.getDpHCFooCO2());
-    }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_HC)
         && (_defaults._unsetProperties.contains(
                 IACCostsManager_Builder.Property.EMISSIONS_CHARGES_HC)
             || !template.getEmissionsChargesHC().equals(_defaults.getEmissionsChargesHC()))) {
       setEmissionsChargesHC(template.getEmissionsChargesHC());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_HC)
-        && (_defaults._unsetProperties.contains(
-                IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_HC)
-            || !template.getEmissionsConstantHC().equals(_defaults.getEmissionsConstantHC()))) {
-      setEmissionsConstantHC(template.getEmissionsConstantHC());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_HC)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.MASS_HC)
-            || !template.getMassHC().equals(_defaults.getMassHC()))) {
-      setMassHC(template.getMassHC());
-    }
-    if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_HC)
-        && (_defaults._unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_HC)
-            || !template.getDpHCFooHC().equals(_defaults.getDpHCFooHC()))) {
-      setDpHCFooHC(template.getDpHCFooHC());
     }
     if (!base._unsetProperties.contains(IACCostsManager_Builder.Property.AIRFRAME_LABOUR_RATE)
         && (_defaults._unsetProperties.contains(
@@ -2693,28 +1789,10 @@ abstract class IACCostsManager_Builder {
     navigationCharges = _defaults.navigationCharges;
     groundHandlingCharges = _defaults.groundHandlingCharges;
     noiseCharges = _defaults.noiseCharges;
-    noiseConstant = _defaults.noiseConstant;
-    noiseDepartureThreshold = _defaults.noiseDepartureThreshold;
-    noiseArrivalThreshold = _defaults.noiseArrivalThreshold;
-    approachCertifiedNoiseLevel = _defaults.approachCertifiedNoiseLevel;
-    lateralCertifiedNoiseLevel = _defaults.lateralCertifiedNoiseLevel;
-    flyoverCertifiedNoiseLevel = _defaults.flyoverCertifiedNoiseLevel;
     emissionsChargesNOx = _defaults.emissionsChargesNOx;
-    emissionsConstantNOx = _defaults.emissionsConstantNOx;
-    massNOx = _defaults.massNOx;
-    dpHCFooNOx = _defaults.dpHCFooNOx;
     emissionsChargesCO = _defaults.emissionsChargesCO;
-    emissionsConstantCO = _defaults.emissionsConstantCO;
-    massCO = _defaults.massCO;
-    dpHCFooCO = _defaults.dpHCFooCO;
     emissionsChargesCO2 = _defaults.emissionsChargesCO2;
-    emissionsConstantCO2 = _defaults.emissionsConstantCO2;
-    massCO2 = _defaults.massCO2;
-    dpHCFooCO2 = _defaults.dpHCFooCO2;
     emissionsChargesHC = _defaults.emissionsChargesHC;
-    emissionsConstantHC = _defaults.emissionsConstantHC;
-    massHC = _defaults.massHC;
-    dpHCFooHC = _defaults.dpHCFooHC;
     airframeLabourRate = _defaults.airframeLabourRate;
     engineLabourRate = _defaults.engineLabourRate;
     enginePrice = _defaults.enginePrice;
@@ -2774,28 +1852,10 @@ abstract class IACCostsManager_Builder {
     private final Amount<?> navigationCharges;
     private final Amount<?> groundHandlingCharges;
     private final Amount<?> noiseCharges;
-    private final Amount<Money> noiseConstant;
-    private final Amount<Dimensionless> noiseDepartureThreshold;
-    private final Amount<Dimensionless> noiseArrivalThreshold;
-    private final Amount<Dimensionless> approachCertifiedNoiseLevel;
-    private final Amount<Dimensionless> lateralCertifiedNoiseLevel;
-    private final Amount<Dimensionless> flyoverCertifiedNoiseLevel;
     private final Amount<?> emissionsChargesNOx;
-    private final Amount<Money> emissionsConstantNOx;
-    private final Amount<Mass> massNOx;
-    private final Amount<?> dpHCFooNOx;
     private final Amount<?> emissionsChargesCO;
-    private final Amount<Money> emissionsConstantCO;
-    private final Amount<Mass> massCO;
-    private final Amount<?> dpHCFooCO;
     private final Amount<?> emissionsChargesCO2;
-    private final Amount<Money> emissionsConstantCO2;
-    private final Amount<Mass> massCO2;
-    private final Amount<?> dpHCFooCO2;
     private final Amount<?> emissionsChargesHC;
-    private final Amount<Money> emissionsConstantHC;
-    private final Amount<Mass> massHC;
-    private final Amount<?> dpHCFooHC;
     private final Amount<?> airframeLabourRate;
     private final Amount<?> engineLabourRate;
     private final Amount<Money> enginePrice;
@@ -2827,28 +1887,10 @@ abstract class IACCostsManager_Builder {
       this.navigationCharges = builder.navigationCharges;
       this.groundHandlingCharges = builder.groundHandlingCharges;
       this.noiseCharges = builder.noiseCharges;
-      this.noiseConstant = builder.noiseConstant;
-      this.noiseDepartureThreshold = builder.noiseDepartureThreshold;
-      this.noiseArrivalThreshold = builder.noiseArrivalThreshold;
-      this.approachCertifiedNoiseLevel = builder.approachCertifiedNoiseLevel;
-      this.lateralCertifiedNoiseLevel = builder.lateralCertifiedNoiseLevel;
-      this.flyoverCertifiedNoiseLevel = builder.flyoverCertifiedNoiseLevel;
       this.emissionsChargesNOx = builder.emissionsChargesNOx;
-      this.emissionsConstantNOx = builder.emissionsConstantNOx;
-      this.massNOx = builder.massNOx;
-      this.dpHCFooNOx = builder.dpHCFooNOx;
       this.emissionsChargesCO = builder.emissionsChargesCO;
-      this.emissionsConstantCO = builder.emissionsConstantCO;
-      this.massCO = builder.massCO;
-      this.dpHCFooCO = builder.dpHCFooCO;
       this.emissionsChargesCO2 = builder.emissionsChargesCO2;
-      this.emissionsConstantCO2 = builder.emissionsConstantCO2;
-      this.massCO2 = builder.massCO2;
-      this.dpHCFooCO2 = builder.dpHCFooCO2;
       this.emissionsChargesHC = builder.emissionsChargesHC;
-      this.emissionsConstantHC = builder.emissionsConstantHC;
-      this.massHC = builder.massHC;
-      this.dpHCFooHC = builder.dpHCFooHC;
       this.airframeLabourRate = builder.airframeLabourRate;
       this.engineLabourRate = builder.engineLabourRate;
       this.enginePrice = builder.enginePrice;
@@ -2977,53 +2019,8 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Amount<Money> getNoiseConstant() {
-      return noiseConstant;
-    }
-
-    @Override
-    public Amount<Dimensionless> getNoiseDepartureThreshold() {
-      return noiseDepartureThreshold;
-    }
-
-    @Override
-    public Amount<Dimensionless> getNoiseArrivalThreshold() {
-      return noiseArrivalThreshold;
-    }
-
-    @Override
-    public Amount<Dimensionless> getApproachCertifiedNoiseLevel() {
-      return approachCertifiedNoiseLevel;
-    }
-
-    @Override
-    public Amount<Dimensionless> getLateralCertifiedNoiseLevel() {
-      return lateralCertifiedNoiseLevel;
-    }
-
-    @Override
-    public Amount<Dimensionless> getFlyoverCertifiedNoiseLevel() {
-      return flyoverCertifiedNoiseLevel;
-    }
-
-    @Override
     public Amount<?> getEmissionsChargesNOx() {
       return emissionsChargesNOx;
-    }
-
-    @Override
-    public Amount<Money> getEmissionsConstantNOx() {
-      return emissionsConstantNOx;
-    }
-
-    @Override
-    public Amount<Mass> getMassNOx() {
-      return massNOx;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooNOx() {
-      return dpHCFooNOx;
     }
 
     @Override
@@ -3032,58 +2029,13 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Amount<Money> getEmissionsConstantCO() {
-      return emissionsConstantCO;
-    }
-
-    @Override
-    public Amount<Mass> getMassCO() {
-      return massCO;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooCO() {
-      return dpHCFooCO;
-    }
-
-    @Override
     public Amount<?> getEmissionsChargesCO2() {
       return emissionsChargesCO2;
     }
 
     @Override
-    public Amount<Money> getEmissionsConstantCO2() {
-      return emissionsConstantCO2;
-    }
-
-    @Override
-    public Amount<Mass> getMassCO2() {
-      return massCO2;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooCO2() {
-      return dpHCFooCO2;
-    }
-
-    @Override
     public Amount<?> getEmissionsChargesHC() {
       return emissionsChargesHC;
-    }
-
-    @Override
-    public Amount<Money> getEmissionsConstantHC() {
-      return emissionsConstantHC;
-    }
-
-    @Override
-    public Amount<Mass> getMassHC() {
-      return massHC;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooHC() {
-      return dpHCFooHC;
     }
 
     @Override
@@ -3141,28 +2093,10 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(navigationCharges, other.navigationCharges)
           && Objects.equals(groundHandlingCharges, other.groundHandlingCharges)
           && Objects.equals(noiseCharges, other.noiseCharges)
-          && Objects.equals(noiseConstant, other.noiseConstant)
-          && Objects.equals(noiseDepartureThreshold, other.noiseDepartureThreshold)
-          && Objects.equals(noiseArrivalThreshold, other.noiseArrivalThreshold)
-          && Objects.equals(approachCertifiedNoiseLevel, other.approachCertifiedNoiseLevel)
-          && Objects.equals(lateralCertifiedNoiseLevel, other.lateralCertifiedNoiseLevel)
-          && Objects.equals(flyoverCertifiedNoiseLevel, other.flyoverCertifiedNoiseLevel)
           && Objects.equals(emissionsChargesNOx, other.emissionsChargesNOx)
-          && Objects.equals(emissionsConstantNOx, other.emissionsConstantNOx)
-          && Objects.equals(massNOx, other.massNOx)
-          && Objects.equals(dpHCFooNOx, other.dpHCFooNOx)
           && Objects.equals(emissionsChargesCO, other.emissionsChargesCO)
-          && Objects.equals(emissionsConstantCO, other.emissionsConstantCO)
-          && Objects.equals(massCO, other.massCO)
-          && Objects.equals(dpHCFooCO, other.dpHCFooCO)
           && Objects.equals(emissionsChargesCO2, other.emissionsChargesCO2)
-          && Objects.equals(emissionsConstantCO2, other.emissionsConstantCO2)
-          && Objects.equals(massCO2, other.massCO2)
-          && Objects.equals(dpHCFooCO2, other.dpHCFooCO2)
           && Objects.equals(emissionsChargesHC, other.emissionsChargesHC)
-          && Objects.equals(emissionsConstantHC, other.emissionsConstantHC)
-          && Objects.equals(massHC, other.massHC)
-          && Objects.equals(dpHCFooHC, other.dpHCFooHC)
           && Objects.equals(airframeLabourRate, other.airframeLabourRate)
           && Objects.equals(engineLabourRate, other.engineLabourRate)
           && Objects.equals(enginePrice, other.enginePrice)
@@ -3197,28 +2131,10 @@ abstract class IACCostsManager_Builder {
           navigationCharges,
           groundHandlingCharges,
           noiseCharges,
-          noiseConstant,
-          noiseDepartureThreshold,
-          noiseArrivalThreshold,
-          approachCertifiedNoiseLevel,
-          lateralCertifiedNoiseLevel,
-          flyoverCertifiedNoiseLevel,
           emissionsChargesNOx,
-          emissionsConstantNOx,
-          massNOx,
-          dpHCFooNOx,
           emissionsChargesCO,
-          emissionsConstantCO,
-          massCO,
-          dpHCFooCO,
           emissionsChargesCO2,
-          emissionsConstantCO2,
-          massCO2,
-          dpHCFooCO2,
           emissionsChargesHC,
-          emissionsConstantHC,
-          massHC,
-          dpHCFooHC,
           airframeLabourRate,
           engineLabourRate,
           enginePrice,
@@ -3301,71 +2217,17 @@ abstract class IACCostsManager_Builder {
           + "noiseCharges="
           + noiseCharges
           + ", "
-          + "noiseConstant="
-          + noiseConstant
-          + ", "
-          + "noiseDepartureThreshold="
-          + noiseDepartureThreshold
-          + ", "
-          + "noiseArrivalThreshold="
-          + noiseArrivalThreshold
-          + ", "
-          + "approachCertifiedNoiseLevel="
-          + approachCertifiedNoiseLevel
-          + ", "
-          + "lateralCertifiedNoiseLevel="
-          + lateralCertifiedNoiseLevel
-          + ", "
-          + "flyoverCertifiedNoiseLevel="
-          + flyoverCertifiedNoiseLevel
-          + ", "
           + "emissionsChargesNOx="
           + emissionsChargesNOx
-          + ", "
-          + "emissionsConstantNOx="
-          + emissionsConstantNOx
-          + ", "
-          + "massNOx="
-          + massNOx
-          + ", "
-          + "dpHCFooNOx="
-          + dpHCFooNOx
           + ", "
           + "emissionsChargesCO="
           + emissionsChargesCO
           + ", "
-          + "emissionsConstantCO="
-          + emissionsConstantCO
-          + ", "
-          + "massCO="
-          + massCO
-          + ", "
-          + "dpHCFooCO="
-          + dpHCFooCO
-          + ", "
           + "emissionsChargesCO2="
           + emissionsChargesCO2
           + ", "
-          + "emissionsConstantCO2="
-          + emissionsConstantCO2
-          + ", "
-          + "massCO2="
-          + massCO2
-          + ", "
-          + "dpHCFooCO2="
-          + dpHCFooCO2
-          + ", "
           + "emissionsChargesHC="
           + emissionsChargesHC
-          + ", "
-          + "emissionsConstantHC="
-          + emissionsConstantHC
-          + ", "
-          + "massHC="
-          + massHC
-          + ", "
-          + "dpHCFooHC="
-          + dpHCFooHC
           + ", "
           + "airframeLabourRate="
           + airframeLabourRate
@@ -3410,28 +2272,10 @@ abstract class IACCostsManager_Builder {
     private final Amount<?> navigationCharges;
     private final Amount<?> groundHandlingCharges;
     private final Amount<?> noiseCharges;
-    private final Amount<Money> noiseConstant;
-    private final Amount<Dimensionless> noiseDepartureThreshold;
-    private final Amount<Dimensionless> noiseArrivalThreshold;
-    private final Amount<Dimensionless> approachCertifiedNoiseLevel;
-    private final Amount<Dimensionless> lateralCertifiedNoiseLevel;
-    private final Amount<Dimensionless> flyoverCertifiedNoiseLevel;
     private final Amount<?> emissionsChargesNOx;
-    private final Amount<Money> emissionsConstantNOx;
-    private final Amount<Mass> massNOx;
-    private final Amount<?> dpHCFooNOx;
     private final Amount<?> emissionsChargesCO;
-    private final Amount<Money> emissionsConstantCO;
-    private final Amount<Mass> massCO;
-    private final Amount<?> dpHCFooCO;
     private final Amount<?> emissionsChargesCO2;
-    private final Amount<Money> emissionsConstantCO2;
-    private final Amount<Mass> massCO2;
-    private final Amount<?> dpHCFooCO2;
     private final Amount<?> emissionsChargesHC;
-    private final Amount<Money> emissionsConstantHC;
-    private final Amount<Mass> massHC;
-    private final Amount<?> dpHCFooHC;
     private final Amount<?> airframeLabourRate;
     private final Amount<?> engineLabourRate;
     private final Amount<Money> enginePrice;
@@ -3464,28 +2308,10 @@ abstract class IACCostsManager_Builder {
       this.navigationCharges = builder.navigationCharges;
       this.groundHandlingCharges = builder.groundHandlingCharges;
       this.noiseCharges = builder.noiseCharges;
-      this.noiseConstant = builder.noiseConstant;
-      this.noiseDepartureThreshold = builder.noiseDepartureThreshold;
-      this.noiseArrivalThreshold = builder.noiseArrivalThreshold;
-      this.approachCertifiedNoiseLevel = builder.approachCertifiedNoiseLevel;
-      this.lateralCertifiedNoiseLevel = builder.lateralCertifiedNoiseLevel;
-      this.flyoverCertifiedNoiseLevel = builder.flyoverCertifiedNoiseLevel;
       this.emissionsChargesNOx = builder.emissionsChargesNOx;
-      this.emissionsConstantNOx = builder.emissionsConstantNOx;
-      this.massNOx = builder.massNOx;
-      this.dpHCFooNOx = builder.dpHCFooNOx;
       this.emissionsChargesCO = builder.emissionsChargesCO;
-      this.emissionsConstantCO = builder.emissionsConstantCO;
-      this.massCO = builder.massCO;
-      this.dpHCFooCO = builder.dpHCFooCO;
       this.emissionsChargesCO2 = builder.emissionsChargesCO2;
-      this.emissionsConstantCO2 = builder.emissionsConstantCO2;
-      this.massCO2 = builder.massCO2;
-      this.dpHCFooCO2 = builder.dpHCFooCO2;
       this.emissionsChargesHC = builder.emissionsChargesHC;
-      this.emissionsConstantHC = builder.emissionsConstantHC;
-      this.massHC = builder.massHC;
-      this.dpHCFooHC = builder.dpHCFooHC;
       this.airframeLabourRate = builder.airframeLabourRate;
       this.engineLabourRate = builder.engineLabourRate;
       this.enginePrice = builder.enginePrice;
@@ -3689,86 +2515,11 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Amount<Money> getNoiseConstant() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CONSTANT)) {
-        throw new UnsupportedOperationException("noiseConstant not set");
-      }
-      return noiseConstant;
-    }
-
-    @Override
-    public Amount<Dimensionless> getNoiseDepartureThreshold() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_DEPARTURE_THRESHOLD)) {
-        throw new UnsupportedOperationException("noiseDepartureThreshold not set");
-      }
-      return noiseDepartureThreshold;
-    }
-
-    @Override
-    public Amount<Dimensionless> getNoiseArrivalThreshold() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_ARRIVAL_THRESHOLD)) {
-        throw new UnsupportedOperationException("noiseArrivalThreshold not set");
-      }
-      return noiseArrivalThreshold;
-    }
-
-    @Override
-    public Amount<Dimensionless> getApproachCertifiedNoiseLevel() {
-      if (_unsetProperties.contains(
-          IACCostsManager_Builder.Property.APPROACH_CERTIFIED_NOISE_LEVEL)) {
-        throw new UnsupportedOperationException("approachCertifiedNoiseLevel not set");
-      }
-      return approachCertifiedNoiseLevel;
-    }
-
-    @Override
-    public Amount<Dimensionless> getLateralCertifiedNoiseLevel() {
-      if (_unsetProperties.contains(
-          IACCostsManager_Builder.Property.LATERAL_CERTIFIED_NOISE_LEVEL)) {
-        throw new UnsupportedOperationException("lateralCertifiedNoiseLevel not set");
-      }
-      return lateralCertifiedNoiseLevel;
-    }
-
-    @Override
-    public Amount<Dimensionless> getFlyoverCertifiedNoiseLevel() {
-      if (_unsetProperties.contains(
-          IACCostsManager_Builder.Property.FLYOVER_CERTIFIED_NOISE_LEVEL)) {
-        throw new UnsupportedOperationException("flyoverCertifiedNoiseLevel not set");
-      }
-      return flyoverCertifiedNoiseLevel;
-    }
-
-    @Override
     public Amount<?> getEmissionsChargesNOx() {
       if (_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_N_OX)) {
         throw new UnsupportedOperationException("emissionsChargesNOx not set");
       }
       return emissionsChargesNOx;
-    }
-
-    @Override
-    public Amount<Money> getEmissionsConstantNOx() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_N_OX)) {
-        throw new UnsupportedOperationException("emissionsConstantNOx not set");
-      }
-      return emissionsConstantNOx;
-    }
-
-    @Override
-    public Amount<Mass> getMassNOx() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_N_OX)) {
-        throw new UnsupportedOperationException("massNOx not set");
-      }
-      return massNOx;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooNOx() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_N_OX)) {
-        throw new UnsupportedOperationException("dpHCFooNOx not set");
-      }
-      return dpHCFooNOx;
     }
 
     @Override
@@ -3780,30 +2531,6 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Amount<Money> getEmissionsConstantCO() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_CO)) {
-        throw new UnsupportedOperationException("emissionsConstantCO not set");
-      }
-      return emissionsConstantCO;
-    }
-
-    @Override
-    public Amount<Mass> getMassCO() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_CO)) {
-        throw new UnsupportedOperationException("massCO not set");
-      }
-      return massCO;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooCO() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_CO)) {
-        throw new UnsupportedOperationException("dpHCFooCO not set");
-      }
-      return dpHCFooCO;
-    }
-
-    @Override
     public Amount<?> getEmissionsChargesCO2() {
       if (_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_C_O2)) {
         throw new UnsupportedOperationException("emissionsChargesCO2 not set");
@@ -3812,59 +2539,11 @@ abstract class IACCostsManager_Builder {
     }
 
     @Override
-    public Amount<Money> getEmissionsConstantCO2() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_C_O2)) {
-        throw new UnsupportedOperationException("emissionsConstantCO2 not set");
-      }
-      return emissionsConstantCO2;
-    }
-
-    @Override
-    public Amount<Mass> getMassCO2() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_C_O2)) {
-        throw new UnsupportedOperationException("massCO2 not set");
-      }
-      return massCO2;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooCO2() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_C_O2)) {
-        throw new UnsupportedOperationException("dpHCFooCO2 not set");
-      }
-      return dpHCFooCO2;
-    }
-
-    @Override
     public Amount<?> getEmissionsChargesHC() {
       if (_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_HC)) {
         throw new UnsupportedOperationException("emissionsChargesHC not set");
       }
       return emissionsChargesHC;
-    }
-
-    @Override
-    public Amount<Money> getEmissionsConstantHC() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_HC)) {
-        throw new UnsupportedOperationException("emissionsConstantHC not set");
-      }
-      return emissionsConstantHC;
-    }
-
-    @Override
-    public Amount<Mass> getMassHC() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_HC)) {
-        throw new UnsupportedOperationException("massHC not set");
-      }
-      return massHC;
-    }
-
-    @Override
-    public Amount<?> getDpHCFooHC() {
-      if (_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_HC)) {
-        throw new UnsupportedOperationException("dpHCFooHC not set");
-      }
-      return dpHCFooHC;
     }
 
     @Override
@@ -3931,28 +2610,10 @@ abstract class IACCostsManager_Builder {
           && Objects.equals(navigationCharges, other.navigationCharges)
           && Objects.equals(groundHandlingCharges, other.groundHandlingCharges)
           && Objects.equals(noiseCharges, other.noiseCharges)
-          && Objects.equals(noiseConstant, other.noiseConstant)
-          && Objects.equals(noiseDepartureThreshold, other.noiseDepartureThreshold)
-          && Objects.equals(noiseArrivalThreshold, other.noiseArrivalThreshold)
-          && Objects.equals(approachCertifiedNoiseLevel, other.approachCertifiedNoiseLevel)
-          && Objects.equals(lateralCertifiedNoiseLevel, other.lateralCertifiedNoiseLevel)
-          && Objects.equals(flyoverCertifiedNoiseLevel, other.flyoverCertifiedNoiseLevel)
           && Objects.equals(emissionsChargesNOx, other.emissionsChargesNOx)
-          && Objects.equals(emissionsConstantNOx, other.emissionsConstantNOx)
-          && Objects.equals(massNOx, other.massNOx)
-          && Objects.equals(dpHCFooNOx, other.dpHCFooNOx)
           && Objects.equals(emissionsChargesCO, other.emissionsChargesCO)
-          && Objects.equals(emissionsConstantCO, other.emissionsConstantCO)
-          && Objects.equals(massCO, other.massCO)
-          && Objects.equals(dpHCFooCO, other.dpHCFooCO)
           && Objects.equals(emissionsChargesCO2, other.emissionsChargesCO2)
-          && Objects.equals(emissionsConstantCO2, other.emissionsConstantCO2)
-          && Objects.equals(massCO2, other.massCO2)
-          && Objects.equals(dpHCFooCO2, other.dpHCFooCO2)
           && Objects.equals(emissionsChargesHC, other.emissionsChargesHC)
-          && Objects.equals(emissionsConstantHC, other.emissionsConstantHC)
-          && Objects.equals(massHC, other.massHC)
-          && Objects.equals(dpHCFooHC, other.dpHCFooHC)
           && Objects.equals(airframeLabourRate, other.airframeLabourRate)
           && Objects.equals(engineLabourRate, other.engineLabourRate)
           && Objects.equals(enginePrice, other.enginePrice)
@@ -3988,28 +2649,10 @@ abstract class IACCostsManager_Builder {
           navigationCharges,
           groundHandlingCharges,
           noiseCharges,
-          noiseConstant,
-          noiseDepartureThreshold,
-          noiseArrivalThreshold,
-          approachCertifiedNoiseLevel,
-          lateralCertifiedNoiseLevel,
-          flyoverCertifiedNoiseLevel,
           emissionsChargesNOx,
-          emissionsConstantNOx,
-          massNOx,
-          dpHCFooNOx,
           emissionsChargesCO,
-          emissionsConstantCO,
-          massCO,
-          dpHCFooCO,
           emissionsChargesCO2,
-          emissionsConstantCO2,
-          massCO2,
-          dpHCFooCO2,
           emissionsChargesHC,
-          emissionsConstantHC,
-          massHC,
-          dpHCFooHC,
           airframeLabourRate,
           engineLabourRate,
           enginePrice,
@@ -4094,75 +2737,17 @@ abstract class IACCostsManager_Builder {
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CHARGES)
                   ? "noiseCharges=" + noiseCharges
                   : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_CONSTANT)
-                  ? "noiseConstant=" + noiseConstant
-                  : null),
-              (!_unsetProperties.contains(
-                      IACCostsManager_Builder.Property.NOISE_DEPARTURE_THRESHOLD)
-                  ? "noiseDepartureThreshold=" + noiseDepartureThreshold
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.NOISE_ARRIVAL_THRESHOLD)
-                  ? "noiseArrivalThreshold=" + noiseArrivalThreshold
-                  : null),
-              (!_unsetProperties.contains(
-                      IACCostsManager_Builder.Property.APPROACH_CERTIFIED_NOISE_LEVEL)
-                  ? "approachCertifiedNoiseLevel=" + approachCertifiedNoiseLevel
-                  : null),
-              (!_unsetProperties.contains(
-                      IACCostsManager_Builder.Property.LATERAL_CERTIFIED_NOISE_LEVEL)
-                  ? "lateralCertifiedNoiseLevel=" + lateralCertifiedNoiseLevel
-                  : null),
-              (!_unsetProperties.contains(
-                      IACCostsManager_Builder.Property.FLYOVER_CERTIFIED_NOISE_LEVEL)
-                  ? "flyoverCertifiedNoiseLevel=" + flyoverCertifiedNoiseLevel
-                  : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_N_OX)
                   ? "emissionsChargesNOx=" + emissionsChargesNOx
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_N_OX)
-                  ? "emissionsConstantNOx=" + emissionsConstantNOx
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_N_OX)
-                  ? "massNOx=" + massNOx
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_N_OX)
-                  ? "dpHCFooNOx=" + dpHCFooNOx
                   : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_CO)
                   ? "emissionsChargesCO=" + emissionsChargesCO
                   : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_CO)
-                  ? "emissionsConstantCO=" + emissionsConstantCO
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_CO)
-                  ? "massCO=" + massCO
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_CO)
-                  ? "dpHCFooCO=" + dpHCFooCO
-                  : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_C_O2)
                   ? "emissionsChargesCO2=" + emissionsChargesCO2
                   : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_C_O2)
-                  ? "emissionsConstantCO2=" + emissionsConstantCO2
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_C_O2)
-                  ? "massCO2=" + massCO2
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_C_O2)
-                  ? "dpHCFooCO2=" + dpHCFooCO2
-                  : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CHARGES_HC)
                   ? "emissionsChargesHC=" + emissionsChargesHC
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.EMISSIONS_CONSTANT_HC)
-                  ? "emissionsConstantHC=" + emissionsConstantHC
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.MASS_HC)
-                  ? "massHC=" + massHC
-                  : null),
-              (!_unsetProperties.contains(IACCostsManager_Builder.Property.DP_HC_FOO_HC)
-                  ? "dpHCFooHC=" + dpHCFooHC
                   : null),
               (!_unsetProperties.contains(IACCostsManager_Builder.Property.AIRFRAME_LABOUR_RATE)
                   ? "airframeLabourRate=" + airframeLabourRate
