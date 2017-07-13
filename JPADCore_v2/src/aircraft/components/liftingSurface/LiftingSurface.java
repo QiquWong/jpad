@@ -33,6 +33,7 @@ import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
+import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -336,7 +337,8 @@ public class LiftingSurface implements ILiftingSurface {
 
 				methodsList.add(method);
 
-				if (!aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) {
+				if (!aircraft.getPowerPlant().getEngineType().equals(EngineTypeEnum.TURBOPROP)) { 
+					// TODO : FIND A WAY TO SEE THE EFFECT OF NACELLE POSITION ALSO FOR TURBOPROP
 
 					double R, kComp;
 
@@ -349,15 +351,18 @@ public class LiftingSurface implements ILiftingSurface {
 					for (int i = 0; i < 10; i++) {
 
 						try {
-							R = _mass.getEstimatedValue() + aircraft.getFuelTank().getFuelMass().getEstimatedValue() +
-									((2*(aircraft.getNacelles().getTotalMass().getEstimatedValue() + 
-											aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
-											aircraft.getNacelles().getDistanceBetweenInboardNacellesY().getEstimatedValue())/
-											(0.4*this.getSpan().getEstimatedValue())) + 
-									((2*(aircraft.getNacelles().getTotalMass().getEstimatedValue() + 
-											aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
-											aircraft.getNacelles().getDistanceBetweenOutboardNacellesY().getEstimatedValue())/
-											(0.4*this.getSpan().getEstimatedValue()));
+							if(aircraft.getPowerPlant().getMountingPosition().equals(EngineMountingPositionEnum.WING)) 
+								R = _mass.getEstimatedValue() + aircraft.getFuelTank().getFuelMass().getEstimatedValue() +
+								((2*(aircraft.getNacelles().getTotalMass().getEstimatedValue() + 
+										aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
+										aircraft.getNacelles().getDistanceBetweenInboardNacellesY().getEstimatedValue())/
+										(0.4*this.getSpan().getEstimatedValue())) + 
+								((2*(aircraft.getNacelles().getTotalMass().getEstimatedValue() + 
+										aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain().getEstimatedValue())*
+										aircraft.getNacelles().getDistanceBetweenOutboardNacellesY().getEstimatedValue())/
+										(0.4*this.getSpan().getEstimatedValue()));
+							else
+								R = 0.0;
 						} catch(NullPointerException e) {R = 0.;}
 
 						_mass = Amount.valueOf(
@@ -366,7 +371,7 @@ public class LiftingSurface implements ILiftingSurface {
 										aircraft.getTheAnalysisManager().getNUltimate(),0.4843)*
 										pow(this.getSurface().getEstimatedValue(),0.7819)*
 										pow(this.getAspectRatio(),0.993)*
-										pow(1 + this.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio(),0.4)*
+										pow(1 + this.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio(),0.4)*
 										pow(1 - R/aircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue(),0.4))/
 								(cos(this.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN).getEstimatedValue())*
 										pow(thicknessMean,0.4)), 

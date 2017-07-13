@@ -15,9 +15,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jscience.physics.amount.Amount;
 
@@ -26,7 +24,6 @@ import aircraft.components.LandingGears;
 import aircraft.components.fuselage.creator.FuselageCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.nacelles.NacelleCreator;
-import analyses.OperatingConditions;
 import analyses.fuselage.FuselageAerodynamicsManager;
 import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
@@ -40,7 +37,6 @@ import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.CenterOfGravity;
 import writers.JPADStaticWriteUtils;
-import writers.xmlAdapters.AmountAdapter;
 
 public class Fuselage implements IFuselage {
 
@@ -303,8 +299,10 @@ public class Fuselage implements IFuselage {
 		calculateMass(aircraft, MethodEnum.NICOLAI_1984);
 		calculateMass(aircraft, MethodEnum.ROSKAM);
 		
-		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) 
+		if(!methodsMapWeights.get(ComponentEnum.FUSELAGE).equals(MethodEnum.AVERAGE)) { 
 			_massEstimated = _massMap.get(methodsMapWeights.get(ComponentEnum.FUSELAGE));
+			_percentDifference =  new Double[_massMap.size()];
+		}
 		else {
 			_percentDifference =  new Double[_massMap.size()];
 			_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
@@ -335,7 +333,9 @@ public class Fuselage implements IFuselage {
 				k = k + 0.08;
 			}
 
-			if (aircraft.getNacelles().getNacellesList().get(0).getMountingPosition() == NacelleCreator.MountingPosition.FUSELAGE) {
+			// NACELLE ON THE H-TAIL IS ASSUMED TO INCREASE THE AIRCRAFT WEIGHT AS THEY ARE MOUNTED ON THE FUSELAGE
+			if (aircraft.getNacelles().getNacellesList().get(0).getMountingPosition() == NacelleCreator.MountingPosition.FUSELAGE
+					|| aircraft.getNacelles().getNacellesList().get(0).getMountingPosition() == NacelleCreator.MountingPosition.HTAIL) {
 				k = k + 0.04;
 			}
 
