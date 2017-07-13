@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
@@ -51,6 +53,7 @@ import sandbox2.javafx.D3Plotter;
 import sandbox2.javafx.D3PlotterOptions;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyUnits;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentWingOptimizationTest {
@@ -99,8 +102,10 @@ public class WingOptimizationTest extends Application {
 
 	public static Double cLmaxBaseline = null;
 	public static Double cDMinBaseline = null;
+	public static Amount<Mass> wingMassBaseline = null;
 	public static Double cLmaxOptimized = null;
 	public static Double cDMinOptimized = null;
+	public static Amount<Mass> wingMassOptimized = null;
 	
 	//-------------------------------------------------------------
 
@@ -485,29 +490,35 @@ public class WingOptimizationTest extends Application {
 			int numberOfVar2 = 5; // Taper Ratio
 			int numberOfVar3 = 5; // Sweep LE (Eq.)
 			WingAdjustCriteriaEnum wingAdjustCriterion = WingAdjustCriteriaEnum.AR_SPAN_TAPER;
-			OptimizationEnum costFunctionType = OptimizationEnum.CL_MAX_VS_CD_MIN_WING;
+			OptimizationEnum costFunctionType = OptimizationEnum.CL_MAX_VS_MASS_WING;
 			ConditionEnum theFlightCondition = ConditionEnum.CRUISE;
-			double objectiveWeight1 = 0.5;
-			double objectiveWeight2 = 0.5;
-			double objective2ScaleFactor = 100;
+			double objectiveWeight1 = 0.4;
+			double objectiveWeight2 = 1 - objectiveWeight1;
 			int numberOfPointsSemiSpanwise = 50;
 			Amount<Angle> alphaInitial = Amount.valueOf(-2.0, NonSI.DEGREE_ANGLE);
 			Amount<Angle> alphaFinal = Amount.valueOf(20.0, NonSI.DEGREE_ANGLE);
 			int numberOfAlphas = 23;
+
+			//............................................................................
+			// input only for wing mass
+			Amount<Mass> maxTakeOffMass = Amount.valueOf(53610, SI.KILOGRAM);
+			Amount<Mass> maxZeroFuelMass = Amount.valueOf(49345, SI.KILOGRAM);
+			double ultimateLoadFactor = 3.75; // 1.5 * limitLoadFactor = 1.5*2.5 = 3.75 
+			//............................................................................
 			
 			double[] var1Array = MyArrayUtils.linspace(
-					baselineWing.getLiftingSurfaceCreator().getAspectRatio()*0.7,
-					baselineWing.getLiftingSurfaceCreator().getAspectRatio()*1.3,
+					9.0,
+					12.0,
 					numberOfVar1
 					);
 			double[] var2Array = MyArrayUtils.linspace(
-					baselineWing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getTaperRatio()*0.7,
-					1.0,
+					0.3,
+					0.7,
 					numberOfVar2
 					);
 			double[] var3Array = MyArrayUtils.linspace(
 					0.0,
-					baselineWing.getLiftingSurfaceCreator().getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().doubleValue(NonSI.DEGREE_ANGLE)*1.3,
+					20,
 					numberOfVar3
 					);
 			
@@ -519,6 +530,56 @@ public class WingOptimizationTest extends Application {
 			Double phi1 = 2.05;
 			Double phi2 = 2.05;
 
+			// BASELINE
+			LSAerodynamicsManager theBaselineWingAerodynamicsManager = new LSAerodynamicsManager(
+					baselineWing,
+					theOperatingConditions,
+					theFlightCondition, 
+					numberOfPointsSemiSpanwise, 
+					MyArrayUtils.convertDoubleArrayToListOfAmount(
+							MyArrayUtils.linspace(
+									alphaInitial.doubleValue(NonSI.DEGREE_ANGLE), 
+									alphaFinal.doubleValue(NonSI.DEGREE_ANGLE), 
+									numberOfAlphas
+									),
+							NonSI.DEGREE_ANGLE),
+					null, 
+					null
+					);
+			
+			CalcCLmax calcCLmaxBaseline = theBaselineWingAerodynamicsManager.new CalcCLmax();
+			calcCLmaxBaseline.nasaBlackwell();
+			cLmaxBaseline = theBaselineWingAerodynamicsManager.getCLMax().get(MethodEnum.NASA_BLACKWELL);
+			
+			CalcPolar calcPolarBaseline = theBaselineWingAerodynamicsManager.new CalcPolar();
+			calcPolarBaseline.fromCdDistribution(
+					theBaselineWingAerodynamicsManager.getCurrentMachNumber(),
+					theBaselineWingAerodynamicsManager.getCurrentAltitude()
+					);
+			cDMinBaseline = MyArrayUtils.getMin(theBaselineWingAerodynamicsManager.getPolar3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION));
+			
+			Amount<Area> wingSurface = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSurfacePlanform();
+			Amount<Length> wingSpan = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSpan();
+			Double taperRatio = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getTaperRatio();
+			Amount<Angle> sweepQuarterChord = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
+			Double thicknessMean = theBaselineWingAerodynamicsManager.getTheLiftingSurface().getThicknessMean();
+			
+			wingMassBaseline = Amount.valueOf(
+					(4.22*wingSurface.doubleValue(MyUnits.FOOT2) 
+							+ 1.642e-6
+							* (ultimateLoadFactor
+									* Math.pow(wingSpan.doubleValue(NonSI.FOOT),3)
+									* Math.sqrt(maxTakeOffMass.doubleValue(NonSI.POUND)*maxZeroFuelMass.doubleValue(NonSI.POUND))
+									* (1 + 2*taperRatio)
+									)
+							/(thicknessMean
+									* Math.pow(Math.cos(sweepQuarterChord.doubleValue(SI.RADIAN)),2)
+									* wingSurface.doubleValue(MyUnits.FOOT2)
+									* (1 + taperRatio)
+									)
+							),
+					NonSI.POUND).to(SI.KILOGRAM);
+			
 			//................................................................................................
 			
 			System.out.println("\t------------------------------------");
@@ -531,10 +592,18 @@ public class WingOptimizationTest extends Application {
 			System.out.println("\tAlpha Initial : " + alphaInitial);
 			System.out.println("\tAlpha Final : " + alphaFinal);
 			System.out.println("\tNumber of alphas : " + numberOfAlphas);
-			if(costFunctionType.equals(OptimizationEnum.CL_MAX_VS_CD_MIN_WING)) {
-				System.out.println("\tCLmax objective weight : " + objectiveWeight1);
-				System.out.println("\tCDmin objective weight : " + objectiveWeight2);
-				System.out.println("\tCDmin scale factor : " + objective2ScaleFactor);
+
+			if(costFunctionType.equals(OptimizationEnum.CL_MAX_VS_CD_MIN_WING) 
+					|| costFunctionType.equals(OptimizationEnum.CL_MAX_VS_MASS_WING)) {
+				System.out.println("\tObjective 1 weight : " + objectiveWeight1);
+				System.out.println("\tObjective 2 weight : " + objectiveWeight2);
+			
+				if(costFunctionType.equals(OptimizationEnum.CL_MAX_VS_MASS_WING) 
+						|| costFunctionType.equals(OptimizationEnum.WING_MASS)) {
+					System.out.println("\tUltimate Load Factor : " + ultimateLoadFactor);
+					System.out.println("\tMax Take-Off Mass : " + maxTakeOffMass);
+					System.out.println("\tMax Zero Fuel Mass : " + maxZeroFuelMass);
+				}
 			}
 			System.out.println("\n\tConvergence Threshold : " + convergenceThreshold);
 			System.out.println("\tParticles Number : " + particlesNumber);
@@ -632,12 +701,31 @@ public class WingOptimizationTest extends Application {
 							costFunctionValues[i][j][k] = CostFunctions.cLmaxVsCDminWing(
 									objectiveWeight1,
 									objectiveWeight2,
-									objective2ScaleFactor,
+									cDMinBaseline,
 									theWingAerodynamicsManager
 									);
 							break;
 						case CD_MIN_WING:
 							costFunctionValues[i][j][k] = CostFunctions.cDMinWing(theWingAerodynamicsManager);
+							break;
+						case CL_MAX_VS_MASS_WING:
+							costFunctionValues[i][j][k] = CostFunctions.cLmaxVsMassWing(
+									objectiveWeight1, 
+									objectiveWeight2,
+									wingMassBaseline.doubleValue(SI.KILOGRAM), 
+									ultimateLoadFactor, 
+									maxTakeOffMass,
+									maxZeroFuelMass,
+									theWingAerodynamicsManager
+									);
+							break;
+						case WING_MASS:
+							costFunctionValues[i][j][k] = CostFunctions.wingMass(
+									ultimateLoadFactor,
+									maxTakeOffMass, 
+									maxZeroFuelMass, 
+									theWingAerodynamicsManager
+									);
 							break;
 						default:
 							break;
@@ -674,7 +762,7 @@ public class WingOptimizationTest extends Application {
 			System.out.println("\t------------------------------------");
 			System.out.println("\tAR = " + baselineWing.getAspectRatio());
 			System.out.println("\tTaper Ratio = " + baselineWing.getEquivalentWing().getPanels().get(0).getTaperRatio());
-			System.out.println("\tSweep LE = " + baselineWing.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge());
+			System.out.println("\tSweep LE = " + baselineWing.getEquivalentWing().getPanels().get(0).getSweepLeadingEdge().to(NonSI.DEGREE_ANGLE));
 			System.out.println("\t------------------------------------");
 			// Best Position
 			System.out.println("\n\n\t------------------------------------");
@@ -730,35 +818,7 @@ public class WingOptimizationTest extends Application {
 			System.out.println("\t------------------------------------");
 			System.setOut(filterStream);
 			
-			// BASELINE
-			LSAerodynamicsManager theBaselineWingAerodynamicsManager = new LSAerodynamicsManager(
-					baselineWing,
-					theOperatingConditions,
-					theFlightCondition, 
-					numberOfPointsSemiSpanwise, 
-					MyArrayUtils.convertDoubleArrayToListOfAmount(
-							MyArrayUtils.linspace(
-									alphaInitial.doubleValue(NonSI.DEGREE_ANGLE), 
-									alphaFinal.doubleValue(NonSI.DEGREE_ANGLE), 
-									numberOfAlphas
-									),
-							NonSI.DEGREE_ANGLE),
-					null, 
-					null
-					);
-			
-			CalcCLmax calcCLmaxBaseline = theBaselineWingAerodynamicsManager.new CalcCLmax();
-			calcCLmaxBaseline.nasaBlackwell();
-			cLmaxBaseline = theBaselineWingAerodynamicsManager.getCLMax().get(MethodEnum.NASA_BLACKWELL);
-			
-			CalcPolar calcPolarBaseline = theBaselineWingAerodynamicsManager.new CalcPolar();
-			calcPolarBaseline.fromCdDistribution(
-					theBaselineWingAerodynamicsManager.getCurrentMachNumber(),
-					theBaselineWingAerodynamicsManager.getCurrentAltitude()
-					);
-			cDMinBaseline = MyArrayUtils.getMin(theBaselineWingAerodynamicsManager.getPolar3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION));
-			
-			// OPTIMIZED
+			// OPTIMIZED WING OUTPUT
 			LSAerodynamicsManager theOptimizedWingAerodynamicsManager = new LSAerodynamicsManager(
 					optimizedWing,
 					theOperatingConditions,
@@ -775,7 +835,10 @@ public class WingOptimizationTest extends Application {
 					null
 					);
 			
-			if(costFunctionType.equals(OptimizationEnum.CL_MAX_WING) || costFunctionType.equals(OptimizationEnum.CL_MAX_VS_CD_MIN_WING)) {
+			if(costFunctionType.equals(OptimizationEnum.CL_MAX_WING) 
+					|| costFunctionType.equals(OptimizationEnum.CL_MAX_VS_CD_MIN_WING)
+					|| costFunctionType.equals(OptimizationEnum.CL_MAX_VS_MASS_WING)
+					) {
 				CalcCLmax calcCLmaxOptimized = theOptimizedWingAerodynamicsManager.new CalcCLmax();
 				calcCLmaxOptimized.nasaBlackwell();
 				cLmaxOptimized = theOptimizedWingAerodynamicsManager.getCLMax().get(MethodEnum.NASA_BLACKWELL);
@@ -788,6 +851,30 @@ public class WingOptimizationTest extends Application {
 						);
 				cDMinOptimized = MyArrayUtils.getMin(theOptimizedWingAerodynamicsManager.getPolar3DCurve().get(MethodEnum.AIRFOIL_DISTRIBUTION));
 			}
+			if(costFunctionType.equals(OptimizationEnum.CL_MAX_VS_MASS_WING) 
+					|| costFunctionType.equals(OptimizationEnum.WING_MASS)) {
+				Amount<Area> wingSurfaceOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSurfacePlanform();
+				Amount<Length> wingSpanOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getLiftingSurfaceCreator().getSpan();
+				Double taperRatioOptimied = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getTaperRatio();
+				Amount<Angle> sweepQuarterChordOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getEquivalentWing().getPanels().get(0).getSweepQuarterChord();
+				Double thicknessMeanOptimized = theOptimizedWingAerodynamicsManager.getTheLiftingSurface().getThicknessMean();
+				
+				wingMassOptimized = Amount.valueOf(
+						(4.22*wingSurfaceOptimized.doubleValue(MyUnits.FOOT2) 
+								+ 1.642e-6
+								* (ultimateLoadFactor
+										* Math.pow(wingSpanOptimized.doubleValue(NonSI.FOOT),3)
+										* Math.sqrt(maxTakeOffMass.doubleValue(NonSI.POUND)*maxZeroFuelMass.doubleValue(NonSI.POUND))
+										* (1 + 2*taperRatioOptimied)
+										)
+								/(thicknessMeanOptimized
+										* Math.pow(Math.cos(sweepQuarterChordOptimized.doubleValue(SI.RADIAN)),2)
+										* wingSurfaceOptimized.doubleValue(MyUnits.FOOT2)
+										* (1 + taperRatioOptimied)
+										)
+								),
+						NonSI.POUND).to(SI.KILOGRAM);
+			}
 
 			System.setOut(originalOut);
 			
@@ -796,13 +883,17 @@ public class WingOptimizationTest extends Application {
 				System.out.println("\tCLmax Optimized = " + cLmaxOptimized);
 			}
 			if(cDMinOptimized != null) {
-				System.out.println("\tCDmin Baseline = " + cDMinBaseline);
+				System.out.println("\n\tCDmin Baseline = " + cDMinBaseline);
 				System.out.println("\tCDmin Optimized = " + cDMinOptimized);
+			}
+			if(wingMassOptimized != null) {
+				System.out.println("\n\tWing Mass Baseline = " + wingMassBaseline);
+				System.out.println("\tWing Mass Optimized = " + wingMassOptimized);
 			}
 			System.out.println("\t------------------------------------");
 
 			long estimatedTime = System.currentTimeMillis() - startTime;
-			System.out.println("\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
+			System.out.println("\n\tTIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
 			
 
 		} catch (CmdLineException | IOException e) {
