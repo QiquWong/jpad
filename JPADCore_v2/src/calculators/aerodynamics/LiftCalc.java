@@ -27,6 +27,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import calculators.geometry.LSGeometryCalc;
+import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -887,6 +888,7 @@ public class LiftCalc {
 	 * @author Vittorio Trifari
 	 */
 	public static Map<HighLiftDeviceEffectEnum, Object> calculateHighLiftDevicesEffects(
+			AerodynamicDatabaseReader aeroDatabaseReader,
 			HighLiftDatabaseReader highLiftDatabaseReader,
 			List<SymmetricFlapCreator> flapList,
 			List<SlatCreator> slatList,
@@ -905,7 +907,8 @@ public class LiftCalc {
 			Amount<Length> rootChordEquivalent,
 			Double aspectRatio,
 			Amount<Area> surface,
-			Double[] alphaArrayHighLift,
+			Double meanAirfoilThickness,
+			AirfoilFamilyEnum meanAirfoilFamily,
 			Double cLZeroClean,
 			Double cLMaxClean,
 			Amount<Angle> alphaStarClean,
@@ -1338,10 +1341,10 @@ public class LiftCalc {
 				deltaClmaxFlap
 				);
 		
-		//---------------------------------------------------------------
-		// deltaClmax (slat)
+		double deltaCLmaxSlat = 0.0;
 		if(!slatDeflections.isEmpty()) {
-
+			//---------------------------------------------------------------
+			// deltaClmax (slat)
 			List<Double> dCldDelta = new ArrayList<Double>();
 			for(int i=0; i<slatDeflections.size(); i++)
 				dCldDelta.add(highLiftDatabaseReader
@@ -1415,7 +1418,6 @@ public class LiftCalc {
 					deltaCLmaxSlatList
 					);
 
-			double deltaCLmaxSlat = 0.0;
 			for(int i=0; i<slatDeflections.size(); i++)
 				deltaCLmaxSlat += deltaCLmaxSlatList.get(i);
 			resultsMap.put(
@@ -1656,13 +1658,42 @@ public class LiftCalc {
 							)
 					);
 		
+		double deltaYPercent = aeroDatabaseReader
+				.getDeltaYvsThickness(
+						meanAirfoilThickness,
+						meanAirfoilFamily
+						);
+		
+		Amount<Angle> deltaAlpha = Amount.valueOf(
+				aeroDatabaseReader
+				.getDAlphaVsLambdaLEVsDy(
+						sweepQuarterChordEquivalent.doubleValue(NonSI.DEGREE_ANGLE),
+						deltaYPercent
+						),
+				NonSI.DEGREE_ANGLE);
+		
+		Double cLmaxHighLift = cLMaxClean + deltaCLmaxFlap + deltaCLmaxSlat;
+		Double cLZeroHighLift = cLZeroClean + deltaCL0Flap;
+		
+		Amount<Angle> alphaStallHighLift = Amount.valueOf(
+				((cLmaxHighLift	- cLZeroHighLift)
+						/ cLAlphaFlap)
+				+ deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE),
+				NonSI.DEGREE_ANGLE);
+		
+		Double[] alphaArrayHighLift = MyArrayUtils.linspaceDouble(
+				-(cLZeroHighLift/cLAlphaFlap) - 2,
+				alphaStallClean.doubleValue(NonSI.DEGREE_ANGLE) + deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE) + 3,
+				40
+				);
+		
 		// evaluating CL of the high lift 3D curve ...
 		Double[] liftCurve = LiftCalc.calculateCLvsAlphaArray(
-				cLZeroClean,
-				cLMaxClean,
+				cLZeroHighLift,
+				cLmaxHighLift,
 				alphaStarClean,
-				alphaStarClean,
-				cLAlphaClean,
+				alphaStallHighLift,
+				Amount.valueOf(cLAlphaFlap, NonSI.DEGREE_ANGLE.inverse()),
 				alphaArrayHighLift
 				);
 		double currentLiftCoefficient = MyMathUtils.getInterpolatedValue1DLinear(

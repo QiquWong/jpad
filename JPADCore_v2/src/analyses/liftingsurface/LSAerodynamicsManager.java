@@ -2847,6 +2847,7 @@ public class LSAerodynamicsManager {
 			// EFFECTS:
 			Map<HighLiftDeviceEffectEnum, Object> highLiftDevicesEffectsMap = 
 					LiftCalc.calculateHighLiftDevicesEffects(
+							_theLiftingSurface.getAerodynamicDatabaseReader(),
 							_theLiftingSurface.getHighLiftDatabaseReader(),
 							_theLiftingSurface.getLiftingSurfaceCreator().getSymmetricFlaps(),
 							_theLiftingSurface.getLiftingSurfaceCreator().getSlats(),
@@ -2865,7 +2866,8 @@ public class LSAerodynamicsManager {
 							_theLiftingSurface.getChordRootEquivalent(),
 							_theLiftingSurface.getAspectRatio(),
 							_theLiftingSurface.getSurface(),
-							_alphaArrayPlotHighLift,
+							_meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
+							_meanAirfoil.getAirfoilCreator().getFamily(),
 							_cLZero.get(MethodEnum.NASA_BLACKWELL),
 							_cLMax.get(MethodEnum.NASA_BLACKWELL),
 							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),

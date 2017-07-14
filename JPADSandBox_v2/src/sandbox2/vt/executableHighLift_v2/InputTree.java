@@ -16,7 +16,7 @@ public class InputTree {
 	//------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
 	
-	private Double currentLiftingCoefficient;
+	private Amount<Angle> currentAlpha;
 	
 	private Double aspectRatio;
 	private Amount<Area> surface;
@@ -57,7 +57,7 @@ public class InputTree {
 	
 	public InputTree() {
 
-		currentLiftingCoefficient = 0.0;
+		currentAlpha = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
 		
 		aspectRatio = 0.0;
 		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
@@ -96,14 +96,6 @@ public class InputTree {
 	//------------------------------------------------------------------------------------------
 	// GETTERS & SETTERS:
 	
-	public Double getCurrentLiftingCoefficient() {
-		return currentLiftingCoefficient;
-	}
-
-	public void setCurrentLiftingCoefficient(Double currentLiftingCoefficient) {
-		this.currentLiftingCoefficient = currentLiftingCoefficient;
-	}
-
 	public Double getAspectRatio() {
 		return aspectRatio;
 	}
@@ -342,5 +334,13 @@ public class InputTree {
 
 	public void setEtaStations(List<Double> etaStations) {
 		this.etaStations = etaStations;
+	}
+
+	public Amount<Angle> getCurrentAlpha() {
+		return currentAlpha;
+	}
+
+	public void setCurrentAlpha(Amount<Angle> currentAlpha) {
+		this.currentAlpha = currentAlpha;
 	}
 }

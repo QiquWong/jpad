@@ -69,9 +69,9 @@ public class HighLiftDevicesCalc {
 		//---------------------------------------------------------------------------------
 		// FLIGHT CONDITION:
 		//---------------------------------------------------------------------------------------
-		String currentLiftCoefficientProperty = reader.getXMLPropertyByPath("//flight_condition/current_lifting_coefficient");
-		if(currentLiftCoefficientProperty != null)
-			input.setCurrentLiftingCoefficient(Double.valueOf(currentLiftCoefficientProperty));
+		String currentAlphaProperty = reader.getXMLPropertyByPath("//flight_condition/current_angle_of_attack");
+		if(currentAlphaProperty != null)
+			input.setCurrentAlpha(reader.getXMLAmountAngleByPath("//flight_condition/current_angle_of_attack"));
 
 		//---------------------------------------------------------------------------------
 		// WING:	
@@ -159,7 +159,7 @@ public class HighLiftDevicesCalc {
 		
 		//---------------------------------------------------------------------------------------
 		// Print data:
-		System.out.println("\tCurrent lifting coefficient = " + input.getCurrentLiftingCoefficient() + "\n");
+		System.out.println("\tCurrent lifting coefficient = " + input.getCurrentAlpha().to(NonSI.DEGREE_ANGLE) + "\n");
 		System.out.println("\tAspect Ratio = " + input.getAspectRatio());
 		System.out.println("\tSurface = " + input.getSurface());
 		System.out.println("\tSweep quarter chord equivalent wing = " + input.getSweepQuarteChordEq());
@@ -403,24 +403,29 @@ public class HighLiftDevicesCalc {
 //		// Calculation of the high lift effects ...
 //		Map<HighLiftDeviceEffectEnum, Object> resultsMap = 
 //				LiftCalc.calculateHighLiftDevicesEffects(
-//						highLiftDatabaseReader,
+//						highLiftDatabaseReader, 
 //						flapList,
 //						slatList,
 //						input.getEtaStations(),
 //						input.getClAlphaAirfoilsDistribution(),
 //						input.getCl0AirfoilsDistribution(),
 //						input.getMaxThicknessAirfoilsDistribution(),
-//						input.getLeadingEdgeRadiusAirfoilsDistribution(),
+//						input.getLeadingEdgeRadiusAirfoilsDistribution(), 
 //						input.getAirfoilsChordDistribution(),
-//						input.getDeltaFlap().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
-//						input.getDeltaSlat().stream().map(x -> x.to(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()),
-//						input.getCurrentLiftingCoefficient(),
-//						input.getcLAlphaClean(),
+//						input.getDeltaFlap(), 
+//						input.getDeltaSlat(), 
+//						input.getCurrentAlpha(),
+//						input.getcLAlphaClean(), 
 //						input.getSweepQuarteChordEq(),
 //						input.getTaperRatioEq(),
 //						input.getRootChordEquivalentWing(),
 //						input.getAspectRatio(),
-//						input.getSurface()
+//						input.getSurface(),
+//						alphaArrayHighLift, 
+//						input.getcL0Clean(), 
+//						input.getcLmaxClean(), 
+//						input.getAlphaStarClean(), 
+//						input.getAlphaStallClean()
 //						);
 //
 //		output.setDeltaCl0FlapList((List<Double>) resultsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST));
@@ -713,7 +718,7 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element flightConditionsElement = doc.createElement("flight_condition");
 		inputRootElement.appendChild(flightConditionsElement);
 
-		JPADStaticWriteUtils.writeSingleNode("current_lifting_coefficient", input.getCurrentLiftingCoefficient(), flightConditionsElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("current_lifting_coefficient", input.getCurrentAlpha().to(NonSI.DEGREE_ANGLE), flightConditionsElement, doc);
 				
 		org.w3c.dom.Element wingDataElement = doc.createElement("wing");
 		inputRootElement.appendChild(wingDataElement);
@@ -740,6 +745,7 @@ public class HighLiftDevicesCalc {
 		org.w3c.dom.Element airfoilDataDistributionElement = doc.createElement("mean_airfoil");
 		wingDataElement.appendChild(airfoilDataDistributionElement);
 		
+		JPADStaticWriteUtils.writeSingleNode("eta_station_distribution", input.getEtaStations(), airfoilDataDistributionElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("airfoil_chord_distribution", input.getAirfoilsChordDistribution(), airfoilDataDistributionElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("max_thickness_distribution", input.getMaxThicknessAirfoilsDistribution(), airfoilDataDistributionElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_distribution", input.getLeadingEdgeRadiusAirfoilsDistribution(), airfoilDataDistributionElement, doc);

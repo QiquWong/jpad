@@ -19,5 +19,6 @@
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/slf4j-nop-1.7.5.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/xstream-1.4.7.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/poi-3.10.1-20140818.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
