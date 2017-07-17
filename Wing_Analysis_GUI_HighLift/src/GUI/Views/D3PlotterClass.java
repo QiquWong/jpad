@@ -52,6 +52,11 @@ public class D3PlotterClass {
 				dataTopViewMirrored[i][0] = -dataTopView[i][0];
 				dataTopViewMirrored[i][1] = dataTopView[i][1];
 		}
+		
+		Double[][] dataTopViewFlap = null;
+		if(theInputTree.isHighLiftInputTreeIsFilled()) {
+		dataTopViewFlap = theInputTree.getFlapsAndSlatsAsArray();
+		}
 
 		//--------------------------------------------------
 		
@@ -65,8 +70,11 @@ public class D3PlotterClass {
 	double yMinTopView = -1.40*theInputTree.getSpan().divide(2).doubleValue(SI.METER);
 	
 	List<Double[][]> listDataArrayTopView = new ArrayList<Double[][]>();
-	listDataArrayTopView.add(dataTopView);
+	listDataArrayTopView.add(dataTopView); 
 	listDataArrayTopView.add(dataTopViewMirrored);
+	if(theInputTree.isHighLiftInputTreeIsFilled()) {
+	listDataArrayTopView.add(dataTopViewFlap);
+	}
 	
 	D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
 			.widthGraph(WIDTH).heightGraph(HEIGHT)

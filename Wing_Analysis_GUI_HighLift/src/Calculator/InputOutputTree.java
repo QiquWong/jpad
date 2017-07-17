@@ -186,6 +186,62 @@ public class InputOutputTree {
 
 	}
 
+	public void cleanCleanConfigurationData() {
+		altitude = Amount.valueOf(0.0, SI.METER);
+
+		surface = Amount.valueOf(0.0, SI.SQUARE_METRE);
+
+		chordDistribution = new ArrayList<Amount<Length>>();
+		xLEDistribution = new ArrayList<Amount<Length>>();
+		dihedralDistribution = new ArrayList<Amount<Angle>>();
+		twistDistribution = new ArrayList<Amount<Angle>>();
+
+		alphaZeroLiftDistribution = new ArrayList<Amount<Angle>>();
+		alphaStarDistribution = new ArrayList<Amount<Angle>>();
+		maximumliftCoefficientDistribution = new ArrayList<Double>();
+		yAdimensionalStationInput = new ArrayList<Double>();
+		yDimensionalDistributionInput = new ArrayList<>();
+		
+		yAdimensionalDistributionSemiSpan = new ArrayList<>();
+		yDimensionalDistributionSemiSpan = new ArrayList<>(); 
+	    chordDistributionSemiSpan = new ArrayList<>(); 
+	    xLEDistributionSemiSpan = new ArrayList<>(); 
+	    twistDistributionSemiSpan = new ArrayList<>(); 
+		alphaZeroLiftDistributionSemiSpan = new ArrayList<>(); 
+		alphaStarDistributionSemiSpan = new ArrayList<>(); 
+		dihedralDistributionSemiSpan = new ArrayList<>(); 
+		maximumliftCoefficientDistributionSemiSpan = new ArrayList<>(); 
+		
+		machNumber = 0.0;
+		aspectRatio = 0.0;
+		adimensionalKinkStation = 0.0;
+		meanThickness = 0.0;
+
+		numberOfPointSemispan = 0;
+		numberOfSections = 0;
+		
+		clDistributionCurves = new ArrayList<>();
+		
+		
+		cLAlphaDeg = 0.0;
+		cLAlphaRad = 0.0;
+		alphaZeroLift = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaStar = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaStall = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		alphaMaxLinear = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+		
+		cLZero = 0.0;
+		cLStar = 0.0;
+		cLMax = 0.0;
+		cLStall = 0.0;
+		
+		liftCoefficientCurve = new ArrayList<>();
+		outputTreeIsEmpty = true;
+		
+		performLoadAnalysis = false;
+		performLiftAnalysis= false;
+		performStallPathAnalysis = false;
+	}
 	public void calculateDerivedData(){
 		
 		
@@ -253,8 +309,60 @@ public class InputOutputTree {
 			array[i][1] = xLEDistribution.get(i).doubleValue(SI.METER);
 			array[2*numberOfSections-1-i][1] = xLEDistribution.get(i).doubleValue(SI.METER)+chordDistribution.get(i).doubleValue(SI.METER);
 		}
+//		if (highLiftInputTreeIsFilled) {
+//			array[array.length-1][0] = yDimensionalDistributionInput.get(0).doubleValue(SI.METER);
+//			array[array.length-1][1] =  xLEDistribution.get(0).doubleValue(SI.METER);
+//		}
 
 		
+		return array;
+	}
+	
+	public Double[][] getFlapsAndSlatsAsArray() {
+// + 4* numberOfSlats
+		Double[][] array = new Double[5*(numberOfFlaps-1)][2];
+		int j=0;
+		for(int i=0; i<numberOfFlaps-1; i++) {
+			array[i+j][0] = flapInnerStation.get(i)*semiSpan.doubleValue(SI.METER);
+			array[i+1+j][0] = flapInnerStation.get(i)*semiSpan.doubleValue(SI.METER);
+			array[i+2+j][0] = flapOuterStation.get(i)*semiSpan.doubleValue(SI.METER);
+			array[i+3+j][0] = flapOuterStation.get(i)*semiSpan.doubleValue(SI.METER);
+			array[i+4+j][0] = array[i+j][0];
+			array[i+0+j][1] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
+					flapInnerStation.get(i)
+					) +
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+							MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
+							flapInnerStation.get(i)
+							);
+			array[i+1+j][1] = array[i+0+j][1] - flapChordRatio.get(i)*MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
+					flapInnerStation.get(i)
+					);
+			array[i+2+j][1] = array[i+1+j][1];
+			array[i+3+j][1] =  MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
+					flapOuterStation.get(i)
+					) +
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+							MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
+							flapOuterStation.get(i)
+							);
+			array[i+4+j][1] = array[i+j][1];
+			j=j+3;
+			
+		}
+//		 System.out.println(" flap array " );
+//		 System.out.println(array[0][0] + " " +  array[0][1]);
+//		 System.out.println(array[1][0]  + " " +  array[1][1]);
+//		 System.out.println(array[2][0]  + " " +  array[2][1]);
+//		 System.out.println(array[3][0]  + " " +  array[3][1]);
 		return array;
 	}
 
@@ -874,9 +982,6 @@ public class InputOutputTree {
 	public void setHighLiftInputTreeIsFilled(boolean highLiftInputTreeIsFilled) {
 		this.highLiftInputTreeIsFilled = highLiftInputTreeIsFilled;
 	}
-	
-
-
 
 
 }

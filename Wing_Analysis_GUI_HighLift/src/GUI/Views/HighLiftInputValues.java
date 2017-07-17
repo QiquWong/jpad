@@ -415,8 +415,8 @@ public class HighLiftInputValues {
 		
 		// close windows
 		
-		theVariableInputClass.getLeftPane().getChildren().clear();
-		theHighLiftController.getBottomPane().getChildren().clear();
+		theVariableInputClass.getLeftPane().getChildren().remove(theVariableInputClass.getLeftPane().getChildren().size()-1);
+		theHighLiftController.getBottomPane().getChildren().remove(theHighLiftController.getBottomPane().getChildren().size()-1);
 	}
 	
 	private void cleanFlapSlatInputValues() {
@@ -554,5 +554,35 @@ public class HighLiftInputValues {
 	}
 	public void setTheHighLiftController(HighLiftInputController theHighLiftController) {
 		this.theHighLiftController = theHighLiftController;
+	}
+	public ChoiceBox getFlapType1() {
+		return flapType1;
+	}
+	public ChoiceBox getFlapType2() {
+		return flapType2;
+	}
+	public ChoiceBox getFlapType3() {
+		return flapType3;
+	}
+	public ChoiceBox getFlapType4() {
+		return flapType4;
+	}
+	public ChoiceBox getFlapType5() {
+		return flapType5;
+	}
+	public void setFlapType1(ChoiceBox flapType1) {
+		this.flapType1 = flapType1;
+	}
+	public void setFlapType2(ChoiceBox flapType2) {
+		this.flapType2 = flapType2;
+	}
+	public void setFlapType3(ChoiceBox flapType3) {
+		this.flapType3 = flapType3;
+	}
+	public void setFlapType4(ChoiceBox flapType4) {
+		this.flapType4 = flapType4;
+	}
+	public void setFlapType5(ChoiceBox flapType5) {
+		this.flapType5 = flapType5;
 	}
 }

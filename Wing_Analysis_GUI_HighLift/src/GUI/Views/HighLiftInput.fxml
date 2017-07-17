@@ -37,7 +37,7 @@
             <Button fx:id="confirmNumberButton" layoutX="175.0" layoutY="154.0" mnemonicParsing="false" onAction="#confirmNumber" prefHeight="25.0" prefWidth="127.0" text="Confirm Number" />
             <Separator layoutY="189.0" prefHeight="3.0" prefWidth="444.0" />
             <Pane fx:id="bottomPane" layoutX="-4.0" layoutY="190.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="454.0" prefWidth="444.0" />
-            <Button fx:id="exitButton" layoutX="406.0" layoutY="4.0" mnemonicParsing="false" text="X" textFill="#eb1111">
+            <Button fx:id="exitButton" layoutX="406.0" layoutY="4.0" mnemonicParsing="false" onAction="#exitFromFlap" text="X" textFill="#eb1111">
                <font>
                   <Font name="AR DESTINE" size="11.0" />
                </font>

@@ -52,6 +52,8 @@ public class Main extends Application {
 	static FXMLLoader loaderInputClass;
 	static InputOutputTree theInputTree;
 	
+	static VariablesInputData variablesInputClass;
+	
 	
 	@Override
 	public void start(Stage primaryStage) throws IOException {
@@ -137,9 +139,13 @@ public class Main extends Application {
 	public static void showHighLiftInput (
 			VariablesInputData theVariablesInputClass,
 			InputOutputTree theInputOutputTree) throws IOException{
+		variablesInputClass = theVariablesInputClass;
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("Views/HighLiftInput.fxml"));	
 		BorderPane centralItems = loader.load();
+		if(theVariablesInputClass.getGraphPane().getChildren().size()>=1) {
+		theVariablesInputClass.getGraphPane().getChildren().remove(theVariablesInputClass.getGraphPane().getChildren().size()-1);
+		}
 		theVariablesInputClass.getLeftPane().getChildren().add(centralItems);
 		HighLiftInputController theHighLiftController = loader.getController();
 		theHighLiftController.setTheVariableInputClass(theVariablesInputClass);
@@ -167,6 +173,27 @@ public class Main extends Application {
 		if(theInputOutputTree.isHighLiftInputTreeIsFilled()) {
 		theHighLiftValues.writeFlapData();
 		}
+	}
+	
+	public static void exitFromFlap() throws IOException {
+		newStageWindows = new Stage();
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("Views/ExitFlap.fxml"));
+	
+		BorderPane newWindowBorder = loader.load();
+		
+		// devo definire una nuova finestra e settarci dentro questo nuovo border pane
+		
+		newStageWindows.setTitle("Wing Analysis");
+		newStageWindows.initModality(Modality.WINDOW_MODAL);
+		newStageWindows.initOwner(primaryStage);
+
+		// Ora devo settare la scena definita
+		
+		Scene scene = new Scene(newWindowBorder);
+		newStageWindows.setScene(scene);
+		newStageWindows.showAndWait();
 	}
 	
 	public static void setInputData() throws IOException{
@@ -304,6 +331,12 @@ public class Main extends Application {
 		Scene scene = new Scene(newWindowBorder);
 		 newStageWindowsSave.setScene(scene);
 		 newStageWindowsSave.showAndWait();
+	}
+	
+	public static void exitFromHighLift() throws IOException{
+		variablesInputClass.getLeftPane().getChildren().remove(variablesInputClass.getLeftPane().getChildren().size()-1);
+		newStageWindows.close();
+		
 	}
 	
 	public static Double[] convertFromDoubleToPrimitive(double[] vec) {

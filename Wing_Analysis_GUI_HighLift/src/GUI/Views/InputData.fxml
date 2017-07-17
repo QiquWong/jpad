@@ -51,20 +51,20 @@
                   </RadioButton>
                   <TextField fx:id="filePath" disable="true" prefHeight="25.0" prefWidth="239.0" promptText="File Path">
                      <HBox.margin>
-                        <Insets left="60.0" />
+                        <Insets left="40.0" />
                      </HBox.margin>
                   </TextField>
-                  <Button fx:id="searchButton" disable="true" minHeight="-Infinity" mnemonicParsing="false" onAction="#searchInputFile" prefHeight="20.0" prefWidth="24.0" text="...">
+                  <Button fx:id="searchButton" disable="true" minHeight="-Infinity" mnemonicParsing="false" onAction="#searchInputFile" prefHeight="25.0" prefWidth="27.0" text="...">
                      <HBox.margin>
-                        <Insets left="-50.0" top="0.5" />
+                        <Insets left="-15.0" top="0.5" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="load" disable="true" mnemonicParsing="false" onAction="#loadDataFile" text="load">
+                  <Button fx:id="load" disable="true" mnemonicParsing="false" onAction="#loadDataFile" prefHeight="25.0" prefWidth="49.0" text="load">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#ConfirmData" text="Confirm Data">
+                  <Button mnemonicParsing="false" onAction="#ConfirmData" prefHeight="25.0" text="Confirm Data">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
@@ -72,7 +72,7 @@
                         <Insets />
                      </opaqueInsets>
                      <HBox.margin>
-                        <Insets bottom="2.4" left="25.0" />
+                        <Insets bottom="2.4" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="goToAnalysisButton" disable="true" mnemonicParsing="false" onAction="#returnToAnalysis" text="Go to Analyses">

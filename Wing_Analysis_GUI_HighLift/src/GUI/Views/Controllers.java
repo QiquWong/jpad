@@ -234,6 +234,12 @@ public class Controllers {
 		return outputList;
 	}
 	
+	@FXML
+	private void yes() throws IOException{
+		main.exitFromHighLift();
+	}
+
+	
 	public Main getTheMainClass() {
 		return theMainClass;
 	}

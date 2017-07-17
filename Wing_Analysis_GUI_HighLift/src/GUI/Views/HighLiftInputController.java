@@ -74,6 +74,14 @@ public class HighLiftInputController {
 		numberOfSlat.setValue(Integer.toString(theInputTree.getNumberOfSlats()));
 		confirmNumber();
 	}
+	
+	@FXML
+	private void exitFromFlap() throws IOException{
+		
+		Main.exitFromFlap();
+		
+	}
+	
 	public InputOutputTree getTheInputTree() {
 		return theInputTree;
 	}

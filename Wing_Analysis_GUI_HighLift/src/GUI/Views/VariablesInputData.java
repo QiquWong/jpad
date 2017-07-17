@@ -582,8 +582,12 @@ public class VariablesInputData {
 			
 		}
 			
-		theInputTree = new InputOutputTree();
+		boolean highLift = theInputTree.isHighLiftInputTreeIsFilled();
+		
+		theInputTree.cleanCleanConfigurationData();
 
+		theInputTree.setHighLiftInputTreeIsFilled(highLift);
+		
 		//data with units
 		theInputTree.setAltitude(
 				Amount.valueOf(
@@ -739,6 +743,7 @@ public class VariablesInputData {
 		
 		
 		main.setTheInputTree(theInputTree);
+
 	}
 
 	@FXML
@@ -1722,5 +1727,13 @@ public class VariablesInputData {
 
 	public void setLeftPane(AnchorPane leftPane) {
 		this.leftPane = leftPane;
+	}
+
+	public Pane getGraphPane() {
+		return graphPane;
+	}
+
+	public void setGraphPane(Pane graphPane) {
+		this.graphPane = graphPane;
 	}
 }

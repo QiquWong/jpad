@@ -1,6 +1,7 @@
 package Calculator;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.measure.quantity.Angle;
@@ -18,6 +19,7 @@ import org.w3c.dom.Document;
 
 import GUI.Views.VariablesInputData;
 import configuration.enumerations.AirfoilFamilyEnum;
+import configuration.enumerations.FlapTypeEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
@@ -108,7 +110,62 @@ public class Reader {
 		for(int i=0; i<clMaxDistribution.size(); i++)
 			theVariables.getClMaxList().get(i).setText((clMaxDistribution.get(i)));
 	
+		// high lift
+		
+		int numberOfFlap = reader.getXMLPropertiesByPath("//flap_type").size();
+		int numberOfSlat = reader.getXMLPropertiesByPath("//slat_deflection").size(); 
+		
+		if(numberOfFlap!=0 || numberOfSlat!= 0) {
+		theVariables.getTheInputTree().setHighLiftInputTreeIsFilled(true);	
+		theVariables.getTheInputTree().setNumberOfFlaps(numberOfFlap);
+		theVariables.getTheInputTree().setNumberOfSlats(numberOfSlat);
+		
+		List<String> flapTypeProperty = reader.getXMLPropertiesByPath("//flap_type");
+		
+		flapTypeProperty.stream().forEach(
+				x -> theVariables.getTheInputTree().getFlapTypes().add( 
+						Arrays.stream(FlapTypeEnum.values())
+						.filter(a -> a.toString().equals(x))
+						.findFirst()
+						.orElseThrow(() -> {throw new IllegalStateException(String.format("Unsupported flap type", flapTypeProperty));}))
+				);
+		}
+
+		List<String> cfcProperty = reader.getXMLPropertiesByPath("//flap_chord_ratio");
+		for(int i=0; i<cfcProperty.size(); i++)
+			theVariables.getTheInputTree().getFlapChordRatio().add(Double.valueOf(cfcProperty.get(i)));
+		
+		List<String> deltaFlapProperty = reader.getXMLPropertiesByPath("//flap_deflection");
+		for(int i=0; i<deltaFlapProperty.size(); i++)
+			theVariables.getTheInputTree().getFlapDeflection().add(Amount.valueOf(Double.valueOf(deltaFlapProperty.get(i)), NonSI.DEGREE_ANGLE));
+		
+		List<String> etaInFlapProperty = reader.getXMLPropertiesByPath("//flap_non_dimensional_inner_station");
+		for(int i=0; i<etaInFlapProperty.size(); i++)
+			theVariables.getTheInputTree().getFlapInnerStation().add(Double.valueOf(etaInFlapProperty.get(i)));
+		
+		List<String> etaOutFlapProperty = reader.getXMLPropertiesByPath("//flap_non_dimensional_outer_station");
+		for(int i=0; i<etaOutFlapProperty.size(); i++)
+			theVariables.getTheInputTree().getFlapOuterStation().add(Double.valueOf(etaOutFlapProperty.get(i)));
 	
+		List<String> delta_slat_property = reader.getXMLPropertiesByPath("//slat_deflection");
+		for(int i=0; i<delta_slat_property.size(); i++)
+			theVariables.getTheInputTree().getSlatDeflection().add(Amount.valueOf(Double.valueOf(delta_slat_property.get(i)), NonSI.DEGREE_ANGLE));
+		
+		List<String> cs_c_property = reader.getXMLPropertiesByPath("//slat_chord_ratio");
+		for(int i=0; i<cs_c_property.size(); i++)
+			theVariables.getTheInputTree().getSlatChordRatio().add(Double.valueOf(cs_c_property.get(i)));
+		
+		List<String> cExt_c_slat_property = reader.getXMLPropertiesByPath("//slat_extension_ratio");
+		for(int i=0; i<cExt_c_slat_property.size(); i++)
+			theVariables.getTheInputTree().getSlatExtensionRatio().add(Double.valueOf(cExt_c_slat_property.get(i)));
+		
+		List<String> eta_in_slat_property = reader.getXMLPropertiesByPath("//slat_non_dimensional_inner_station");
+		for(int i=0; i<eta_in_slat_property.size(); i++)
+			theVariables.getTheInputTree().getSlatInnerStation().add(Double.valueOf(eta_in_slat_property.get(i)));
+		
+		List<String> eta_out_slat_property = reader.getXMLPropertiesByPath("//slat_non_dimensional_outer_station");
+		for(int i=0; i<eta_out_slat_property.size(); i++)
+			theVariables.getTheInputTree().getSlatOuterStation().add(Double.valueOf(eta_out_slat_property.get(i)));
 	}
 	
 	public static void writeInputToXML(InputOutputTree theInputTree, String filenameWithPathAndExt) {

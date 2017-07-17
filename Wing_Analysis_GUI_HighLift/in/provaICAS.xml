@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Wing_analysis>
+    <operating_conditions>
+        <altitude unit="m">11000.0000</altitude>
+        <mach_number>0.8300</mach_number>
+    </operating_conditions>
+    <wing>
+        <global>
+            <surface unit="m²">511.0000</surface>
+            <aspect_ratio>7.0000</aspect_ratio>
+            <number_of_point_semispan>50</number_of_point_semispan>
+            <adimensional_kink_station>0.4300</adimensional_kink_station>
+        </global>
+        <distibution>
+            <number_of_given_sections>3</number_of_given_sections>
+            <airfoil_family>NACA_66_SERIES</airfoil_family>
+            <max_thickness_mean_airfoil>0.1500</max_thickness_mean_airfoil>
+            <geometry>
+                <y_adimensional_stations>[0.0, 0.42, 1.0]</y_adimensional_stations>
+                <chord_distribution unit="m">14.615199999999998;8.669999999999998;3.7904</chord_distribution>
+                <x_le_distribution unit="m">0.0;10.1967;23.658299999999997</x_le_distribution>
+                <twist_distribution unit="°">0.0;0.0;0.0</twist_distribution>
+            </geometry>
+            <aerodynamics>
+                <alpha_zero_lift_distribution unit="°">-1.5;-1.5;-2.5</alpha_zero_lift_distribution>
+                <alpha_star_distribution unit="°">8.0;8.0;8.0</alpha_star_distribution>
+                <maximum_lift_coefficient_distribution>1.5;1.5;1.5</maximum_lift_coefficient_distribution>
+            </aerodynamics>
+        </distibution>
+    </wing>
+</Wing_analysis>
