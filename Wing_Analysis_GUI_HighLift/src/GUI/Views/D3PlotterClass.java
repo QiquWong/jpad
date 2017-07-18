@@ -53,9 +53,26 @@ public class D3PlotterClass {
 				dataTopViewMirrored[i][1] = dataTopView[i][1];
 		}
 		
-		Double[][] dataTopViewFlap = null;
+		List<Double[][]> dataTopViewFlap = new ArrayList<>();
 		if(theInputTree.isHighLiftInputTreeIsFilled()) {
-		dataTopViewFlap = theInputTree.getFlapsAndSlatsAsArray();
+			for( int i=0; i<theInputTree.getNumberOfFlaps(); i++) {
+		dataTopViewFlap.add(theInputTree.getFlapsAsArray(i));
+		Double[][] dataFlapMirrored = new Double[dataTopViewFlap.get(i).length][dataTopViewFlap.get(i)[0].length];
+		for (int ii=0; ii<dataTopViewFlap.get(i).length; i++) { 
+			dataFlapMirrored[ii][0] = -dataTopViewFlap.get(i)[ii][0];
+			dataFlapMirrored[ii][1] = dataTopViewFlap.get(i)[ii][1];
+	}
+		dataTopViewFlap.add(dataFlapMirrored);
+			}
+			for( int i=0; i<theInputTree.getNumberOfSlats(); i++) {
+		dataTopViewFlap.add(theInputTree.getSlatsAsArray(i));
+		Double[][] dataSlatMirrored = new Double[dataTopViewFlap.get(i).length][dataTopViewFlap.get(i)[0].length];
+		for (int ii=0; ii<dataTopViewFlap.get(dataTopViewFlap.size()-1).length; i++) { 
+			dataSlatMirrored[ii][0] = -dataTopViewFlap.get(dataTopViewFlap.size()-1)[ii][0];
+			dataSlatMirrored[ii][1] = dataTopViewFlap.get(dataTopViewFlap.size()-1)[ii][1];
+	}
+		dataTopViewFlap.add(dataSlatMirrored);
+			}
 		}
 
 		//--------------------------------------------------
@@ -73,7 +90,8 @@ public class D3PlotterClass {
 	listDataArrayTopView.add(dataTopView); 
 	listDataArrayTopView.add(dataTopViewMirrored);
 	if(theInputTree.isHighLiftInputTreeIsFilled()) {
-	listDataArrayTopView.add(dataTopViewFlap);
+		for( int i=0; i<theInputTree.getNumberOfFlaps()+ theInputTree.getNumberOfSlats(); i++) 
+	listDataArrayTopView.add(dataTopViewFlap.get(i));
 	}
 	
 	D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()

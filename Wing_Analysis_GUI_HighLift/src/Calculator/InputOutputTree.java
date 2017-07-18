@@ -318,46 +318,58 @@ public class InputOutputTree {
 		return array;
 	}
 	
-	public Double[][] getFlapsAndSlatsAsArray() {
-// + 4* numberOfSlats
-		Double[][] array = new Double[5*(numberOfFlaps-1)][2];
-		int j=0;
-		for(int i=0; i<numberOfFlaps-1; i++) {
-			array[i+j][0] = flapInnerStation.get(i)*semiSpan.doubleValue(SI.METER);
-			array[i+1+j][0] = flapInnerStation.get(i)*semiSpan.doubleValue(SI.METER);
-			array[i+2+j][0] = flapOuterStation.get(i)*semiSpan.doubleValue(SI.METER);
-			array[i+3+j][0] = flapOuterStation.get(i)*semiSpan.doubleValue(SI.METER);
-			array[i+4+j][0] = array[i+j][0];
-			array[i+0+j][1] = MyMathUtils.getInterpolatedValue1DLinear(
+	public Double[][] getFlapsAsArray(
+			int flapNumber) {
+
+		Double[][] array = new Double[5][2];
+			array[0][0] = flapInnerStation.get(flapNumber)*semiSpan.doubleValue(SI.METER);
+			array[1][0] = flapInnerStation.get(flapNumber)*semiSpan.doubleValue(SI.METER);
+			array[2][0] = flapOuterStation.get(flapNumber)*semiSpan.doubleValue(SI.METER);
+			array[3][0] = flapOuterStation.get(flapNumber)*semiSpan.doubleValue(SI.METER);
+			array[4][0] = array[0][0];
+			array[0][1] = MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
 					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
-					flapInnerStation.get(i)
+					flapInnerStation.get(flapNumber)
 					) +
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
 							MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
-							flapInnerStation.get(i)
+							flapInnerStation.get(flapNumber)
 							);
-			array[i+1+j][1] = array[i+0+j][1] - flapChordRatio.get(i)*MyMathUtils.getInterpolatedValue1DLinear(
+			array[1][1] = array[0][1] - flapChordRatio.get(flapNumber)*MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
 					MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
-					flapInnerStation.get(i)
+					flapInnerStation.get(flapNumber)
 					);
-			array[i+2+j][1] = array[i+1+j][1];
-			array[i+3+j][1] =  MyMathUtils.getInterpolatedValue1DLinear(
+			array[2][1] = MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
 					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
-					flapOuterStation.get(i)
+					flapOuterStation.get(flapNumber)
 					) +
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
 							MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
-							flapOuterStation.get(i)
+							flapOuterStation.get(flapNumber)
+							) -
+					flapChordRatio.get(flapNumber)*MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+							MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
+							flapOuterStation.get(flapNumber)
 							);
-			array[i+4+j][1] = array[i+j][1];
-			j=j+3;
+			array[3][1] =  MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
+					flapOuterStation.get(flapNumber)
+					) +
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+							MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
+							flapOuterStation.get(flapNumber)
+							);
+			array[4][1] = array[0][1];
+	
 			
-		}
 //		 System.out.println(" flap array " );
 //		 System.out.println(array[0][0] + " " +  array[0][1]);
 //		 System.out.println(array[1][0]  + " " +  array[1][1]);
@@ -366,6 +378,49 @@ public class InputOutputTree {
 		return array;
 	}
 
+	public Double[][] getSlatsAsArray(
+			int slatNumber) {
+
+		Double[][] array = new Double[5][2];
+			array[0][0] = slatInnerStation.get(slatNumber)*semiSpan.doubleValue(SI.METER);
+			array[1][0] = slatInnerStation.get(slatNumber)*semiSpan.doubleValue(SI.METER);
+			array[2][0] = slatOuterStation.get(slatNumber)*semiSpan.doubleValue(SI.METER);
+			array[3][0] = slatOuterStation.get(slatNumber)*semiSpan.doubleValue(SI.METER);
+			array[4][0] = array[0][0];
+			array[0][1] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
+					slatInnerStation.get(slatNumber)
+					);
+			array[1][1] = array[0][1] + slatChordRatio.get(slatNumber)*MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
+					slatInnerStation.get(slatNumber)
+					);
+			array[2][1] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
+					slatOuterStation.get(slatNumber)
+					) + slatChordRatio.get(slatNumber)*MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+							MyArrayUtils.convertListOfAmountTodoubleArray(chordDistributionSemiSpan),  
+							slatOuterStation.get(slatNumber)
+							) ;
+			array[3][1] =  MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalDistributionSemiSpan), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(xLEDistributionSemiSpan),  
+					slatOuterStation.get(slatNumber)
+					) ;
+			array[4][1] = array[0][1];
+	
+			
+//		 System.out.println(" slat array " );
+//		 System.out.println(array[0][0] + " " +  array[0][1]);
+//		 System.out.println(array[1][0]  + " " +  array[1][1]);
+//		 System.out.println(array[2][0]  + " " +  array[2][1]);
+//		 System.out.println(array[3][0]  + " " +  array[3][1]);
+		return array;
+	}
 	public List<Amount<Angle>> calculateDiscretizedListAlongSemiSpanAmountAngle (
 			List<Amount<Angle>> inputList){
 				
