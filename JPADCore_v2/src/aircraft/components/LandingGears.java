@@ -48,6 +48,7 @@ public class LandingGears implements ILandingGear {
 	private int _numberOfFrontalWheels,
 				_numberOfRearWheels;
 	private Amount<Length> _mainLegsLenght;
+	private Amount<Length> _distanceBetweenWheels;
 	private Amount<Length> _frontalWheelsHeight,
 						   _frontalWheelsWidth,
 						   _rearWheelsHeight,
@@ -86,6 +87,7 @@ public class LandingGears implements ILandingGear {
 		private int __numberOfFrontalWheels,
 					__numberOfRearWheels;
 		private Amount<Length> __mainLegsLenght;
+		private Amount<Length> __distanceBetweenWheels;
 		private Amount<Length> __frontalWheelsHeight,
 							   __frontalWheelsWidth,
 							   __rearWheelsHeight,
@@ -120,6 +122,11 @@ public class LandingGears implements ILandingGear {
 		
 		public LandingGearsBuilder mainLegsLength (Amount<Length> mainLegsLength) {
 			this.__mainLegsLenght = mainLegsLength;
+			return this;
+		}
+		
+		public LandingGearsBuilder distanceBetweenWheels (Amount<Length> distanceBetweenWheels) {
+			this.__distanceBetweenWheels = distanceBetweenWheels;
 			return this;
 		}
 		
@@ -158,6 +165,7 @@ public class LandingGears implements ILandingGear {
 		 * 
 		 * @author Vittorio Trifari
 		 */
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultVariables (AircraftEnum aircraftName) {
 
 			switch(aircraftName) {
@@ -166,6 +174,7 @@ public class LandingGears implements ILandingGear {
 				__numberOfFrontalWheels = 2;
 				__numberOfRearWheels = 4;
 				__mainLegsLenght = Amount.valueOf(0.66, SI.METER);
+				__distanceBetweenWheels = Amount.valueOf(4.1, SI.METER);
 				__kMainLegsLength = 0.15; //TODO : CHECK THIS
 				__frontalWheelsHeight = Amount.valueOf(0.450, SI.METER);
 				__frontalWheelsWidth = Amount.valueOf(0.190, SI.METER);
@@ -177,6 +186,7 @@ public class LandingGears implements ILandingGear {
 				__numberOfFrontalWheels = 2;
 				__numberOfRearWheels = 8;
 				__mainLegsLenght = Amount.valueOf(3.26, SI.METER);
+				__distanceBetweenWheels = Amount.valueOf(4.1, SI.METER);
 				__kMainLegsLength = 0.15; //TODO : CHECK THIS
 				__frontalWheelsHeight = Amount.valueOf(1.245, SI.METER);
 				__frontalWheelsWidth = Amount.valueOf(0.4829, SI.METER);
@@ -196,6 +206,7 @@ public class LandingGears implements ILandingGear {
 		
 		this._id = builder.__id;
 		this._mainLegsLenght = builder.__mainLegsLenght;
+		this._distanceBetweenWheels = builder.__distanceBetweenWheels;
 		this._kMainLegsLength = builder.__kMainLegsLength;
 		this._numberOfFrontalWheels = builder.__numberOfFrontalWheels;
 		this._numberOfRearWheels = builder.__numberOfRearWheels;
@@ -228,50 +239,62 @@ public class LandingGears implements ILandingGear {
 		
 		//---------------------------------------------------------------
 		// GLOBAL DATA
-		Amount<Length> mainGearLegsLength = reader.getXMLAmountLengthByPath(
-				"//global_data/main_gear_legs_length"
-				);
+		Amount<Length> mainGearLegsLength = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> distanceBetweenWheels = Amount.valueOf(0.0, SI.METER);
+		Double kMainLegsLength = 0.0;
+		int numberOfFrontalWheels = 0;
+		int numberOfRearWheels = 0;
 		
-		Double kMainLegsLength = Double.valueOf(
-				reader.getXMLPropertyByPath("//global_data/k_main_gear_legs_length")
-				);
 		
-		int numberOfFrontalWheels = Integer.valueOf(
-				reader
-				.getXMLPropertyByPath(
-						"//global_data/number_of_frontal_wheels"
-						)
-				);
+		String mainGearLegsLengthProperty = reader.getXMLPropertyByPath("//global_data/main_gear_legs_length");
+		if(mainGearLegsLengthProperty != null)
+			mainGearLegsLength = reader.getXMLAmountLengthByPath("//global_data/main_gear_legs_length");
 		
-		int numberOfRearWheels = Integer.valueOf(
-				reader
-				.getXMLPropertyByPath(
-						"//global_data/number_of_rear_wheels"
-						)
-				);
+		String distanceBetweenWheelsProperty = reader.getXMLPropertyByPath("//global_data/distance_between_wheels");
+		if(distanceBetweenWheelsProperty != null)
+			distanceBetweenWheels = reader.getXMLAmountLengthByPath("//global_data/distance_between_wheels");
+		
+		String kMainLegsLengthProperty = reader.getXMLPropertyByPath("//global_data/k_main_gear_legs_length");
+		if(kMainLegsLengthProperty != null)
+			kMainLegsLength = Double.valueOf(kMainLegsLengthProperty);
+		
+		String numberOfFrontalWheelsProperty = reader.getXMLPropertyByPath("//global_data/number_of_frontal_wheels");
+		if(numberOfFrontalWheelsProperty != null)
+			numberOfFrontalWheels = Integer.valueOf(numberOfFrontalWheelsProperty);
+		
+		String numberOfRearWheelsProperty = reader.getXMLPropertyByPath("//global_data/number_of_rear_wheels");
+		if(numberOfRearWheelsProperty != null)
+			numberOfRearWheels = Integer.valueOf(numberOfRearWheelsProperty);
 		
 		//---------------------------------------------------------------
 		// FRONTAL WHEEL DATA
-		Amount<Length> frontalWheelsHeight = reader.getXMLAmountLengthByPath(
-				"//frontal_wheels_data/wheel_height"
-				);
+		Amount<Length> frontalWheelsHeight = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> frontalWheelsWidth = Amount.valueOf(0.0, SI.METER);
 		
-		Amount<Length> frontalWheelsWidth = reader.getXMLAmountLengthByPath(
-				"//frontal_wheels_data/wheel_width"
-				);
+		String frontalWheelsHeightProperty = reader.getXMLPropertyByPath("//frontal_wheels_data/wheel_height");
+		if(frontalWheelsHeightProperty != null)
+			frontalWheelsHeight = reader.getXMLAmountLengthByPath("//frontal_wheels_data/wheel_height");
+		
+		String frontalWheelsWidthProperty = reader.getXMLPropertyByPath("//frontal_wheels_data/wheel_width");
+		if(frontalWheelsWidthProperty != null)
+			frontalWheelsWidth = reader.getXMLAmountLengthByPath("//frontal_wheels_data/wheel_width");
 		
 		//---------------------------------------------------------------
 		// REAR WING DATA
-		Amount<Length> rearWheelsHeight = reader.getXMLAmountLengthByPath(
-				"//rear_wheels_data/wheel_height"
-				);
+		Amount<Length> rearWheelsHeight = Amount.valueOf(0.0, SI.METER);
+		Amount<Length> rearWheelsWidth = Amount.valueOf(0.0, SI.METER);
 		
-		Amount<Length> rearWheelsWidth = reader.getXMLAmountLengthByPath(
-				"//rear_wheels_data/wheel_width"
-				);
+		String rearWheelsHeightProperty = reader.getXMLPropertyByPath("//rear_wheels_data/wheel_height");
+		if(rearWheelsHeightProperty != null)
+			rearWheelsHeight = reader.getXMLAmountLengthByPath("//rear_wheels_data/wheel_height");
+		
+		String rearWheelsWidthProperty = reader.getXMLPropertyByPath("//rear_wheels_data/wheel_width");
+		if(rearWheelsWidthProperty != null)
+			rearWheelsWidth = reader.getXMLAmountLengthByPath("//rear_wheels_data/wheel_width");
 		
 		LandingGears landingGears = new LandingGearsBuilder(id)
 				.mainLegsLength(mainGearLegsLength)
+				.distanceBetweenWheels(distanceBetweenWheels)
 				.kMainLegsLength(kMainLegsLength)
 				.numberOfFrontalWheels(numberOfFrontalWheels)
 				.numberOfRearWheels(numberOfRearWheels)
@@ -298,6 +321,7 @@ public class LandingGears implements ILandingGear {
 				.append("\t·····································\n")
 				.append("\tMain gear legs length: " + _mainLegsLenght + "\n")
 				.append("\tK Main gear legs length: " + _kMainLegsLength + "\n")
+				.append("\tDistance between wheels: " + _distanceBetweenWheels + "\n")
 				.append("\tNumber of frontal wheels: " + _numberOfFrontalWheels + "\n")
 				.append("\tNumber of rear wheels: " + _numberOfRearWheels + "\n")
 				.append("\t·····································\n")
@@ -716,5 +740,13 @@ public class LandingGears implements ILandingGear {
 
 	public void setNoseMass(Amount<Mass> _noseMass) {
 		this._noseMass = _noseMass;
+	}
+
+	public Amount<Length> getDistanceBetweenWheels() {
+		return _distanceBetweenWheels;
+	}
+
+	public void setDistanceBetweenWheels(Amount<Length> _distanceBetweenWheels) {
+		this._distanceBetweenWheels = _distanceBetweenWheels;
 	}
 }

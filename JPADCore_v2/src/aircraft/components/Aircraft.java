@@ -193,7 +193,7 @@ public class Aircraft implements IAircraft {
 				createLandingGears(aircraftName);
 				__theLandingGears.setXApexConstructionAxes(Amount.valueOf(12.5, SI.METER));
 				__theLandingGears.setYApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
-				__theLandingGears.setZApexConstructionAxes(Amount.valueOf(0.0, SI.METER));
+				__theLandingGears.setZApexConstructionAxes(Amount.valueOf(-1.2, SI.METER));
 				__theLandingGears.setMountingPosition(LandingGears.MountingPosition.FUSELAGE);
 				
 				createSystems(aircraftName);
