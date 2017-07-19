@@ -504,7 +504,7 @@ public class CostsCalcUtils {
 		return Amount.valueOf(
 					navigationChargeConstant.doubleValue(MyUnits.USD_PER_KM_SQRT_TON)	
 									*range.doubleValue(SI.KILOMETER)
-										*maximumTakeOffMass.doubleValue(NonSI.METRIC_TON), 
+										*Math.sqrt(maximumTakeOffMass.doubleValue(NonSI.METRIC_TON)/50.0), 
 					MyUnits.USD_PER_FLIGHT);
 	}
 	
@@ -540,8 +540,8 @@ public class CostsCalcUtils {
 	public static Amount<?> calcDOCNoiseCharges(Amount<Dimensionless> approachCertifiedNoiseLevel, Amount<Dimensionless> lateralCertifiedNoiseLevel, 
 			Amount<Dimensionless> flyoverCertifiedNoiseLevel, Amount<Money> unitNoiseRate, Amount<Dimensionless> departureAirportThresholdNoise, Amount<Dimensionless> arrivalAirportThresholdNoise){
 		
-		double exp1 = (approachCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL) - arrivalAirportThresholdNoise.doubleValue(NonSI.DECIBEL))/2;
-		double exp2 = ((flyoverCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL) + flyoverCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL))/2  - departureAirportThresholdNoise.doubleValue(NonSI.DECIBEL))/10;
+		double exp1 = (approachCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL) - arrivalAirportThresholdNoise.doubleValue(NonSI.DECIBEL))/10;
+		double exp2 = ((flyoverCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL) + lateralCertifiedNoiseLevel.doubleValue(NonSI.DECIBEL))/2  - departureAirportThresholdNoise.doubleValue(NonSI.DECIBEL))/10;
 		
 		return Amount.valueOf(
 					unitNoiseRate.doubleValue(Currency.USD)*(Math.pow(10, exp1) + Math.pow(10, exp2)),
@@ -682,7 +682,7 @@ public class CostsCalcUtils {
 			
 		
 		return Amount.valueOf(
-					emissionConstant.doubleValue(Currency.USD)*massEmission.doubleValue(NonSI.METRIC_TON)*a, 
+					emissionConstant.doubleValue(Currency.USD)*massEmission.doubleValue(SI.KILOGRAM)*a, 
 					MyUnits.USD_PER_FLIGHT);
 	}
 	
@@ -724,7 +724,7 @@ public class CostsCalcUtils {
 										groundHandilingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)+
 											noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
 												emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
-								MyUnits.USD_PER_HOUR					
+								MyUnits.USD_PER_FLIGHT					
 									);
 
 	}
@@ -743,7 +743,7 @@ public class CostsCalcUtils {
 		return  Amount.valueOf(landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
 									navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT) +
 										groundHandilingCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
-								MyUnits.USD_PER_HOUR					
+								MyUnits.USD_PER_FLIGHT					
 									);
 
 	}
@@ -988,7 +988,7 @@ public class CostsCalcUtils {
 									materialAirframeMaintenanceCharges.getEstimatedValue() +
 										labourAirframeMaintenanceCharges.getEstimatedValue() +
 											materialEngineMaintenanceCharges.getEstimatedValue(),
-								MyUnits.USD_PER_HOUR					
+								MyUnits.USD_PER_NAUTICAL_MILE					
 									);
 	}
 	

@@ -310,14 +310,14 @@ public class FuselageCreator implements IFuselageCreator {
 		// calculate initial curves
 		// get variables
 
-		Double l_F = lenF.doubleValue(SI.METRE);
-		Double l_N = lenN.doubleValue(SI.METRE);
-		Double l_C = lenC.doubleValue(SI.METRE);
-		Double l_T = lenT.doubleValue(SI.METRE);
-		Double d_C = sectionCylinderHeight.doubleValue(SI.METRE);
-		Double h_N = heightN.doubleValue(SI.METRE); // FuselageCreator origin O_T at nose (>0, when below the cylindrical midline)
-		Double h_T = heightT.doubleValue(SI.METRE);
-		Double w_B = sectionCylinderWidth.doubleValue(SI.METRE);
+		Double l_F = lenF.doubleValue(SI.METER);
+		Double l_N = lenN.doubleValue(SI.METER);
+		Double l_C = lenC.doubleValue(SI.METER);
+		Double l_T = lenT.doubleValue(SI.METER);
+		Double d_C = sectionCylinderHeight.doubleValue(SI.METER);
+		Double h_N = heightN.doubleValue(SI.METER); // FuselageCreator origin O_T at nose (>0, when below the cylindrical midline)
+		Double h_T = heightT.doubleValue(SI.METER);
+		Double w_B = sectionCylinderWidth.doubleValue(SI.METER);
 		Double a   = sectionCylinderLowerToTotalHeightRatio.doubleValue();
 		Double rhoUpper = sectionCylinderRhoUpper.doubleValue();
 		Double rhoLower = sectionCylinderRhoLower.doubleValue();

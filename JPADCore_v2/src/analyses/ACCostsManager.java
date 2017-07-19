@@ -2,8 +2,10 @@ package analyses;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,10 @@ import javax.measure.unit.SI;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -37,6 +43,7 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyUnits;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
+import writers.JPADStaticWriteUtils;
 
 public class ACCostsManager {
 	
@@ -324,6 +331,12 @@ public class ACCostsManager {
 		Amount<?> landingCharges = null;
 		Amount<?> navigationCharges = null;
 		Amount<?> groundHandlingCharges = null;
+		Double noiseCostant = 4.12;
+		Double flyoverCertifiedNoiseLevel = null;
+		Double lateralCertifiedNoiseLevel = null;
+		Double approachCertifiedNoiseLevel = null;
+		Double departureThreshold = 91.0;
+		Double arrivalThreshold = 86.0;
 		Amount<?> noiseCharges = null;
 		Amount<?> emissionChargesNOx = null;
 		Amount<?> emissionChargesCO = null;
@@ -443,9 +456,10 @@ public class ACCostsManager {
 		//---------------------------------------------------------------
 		// FUEL UNIT PRICE
 		String fuelUnitPriceProperty = reader.getXMLPropertyByPath("//global_data/doc/fuel/unit_price");
-		if(fuelUnitPriceProperty != null)
-			fuelUnitPrice = (Amount<?>) reader.getXMLAmountWithUnitByPath("//global_data/doc/fuel/unit_price"); 
-		
+		if(fuelUnitPriceProperty != null) {
+			Amount<Money> fuelUnitPriceCurrency = (Amount<Money>) reader.getXMLAmountWithUnitByPath("//global_data/doc/fuel/unit_price");
+			fuelUnitPrice = Amount.valueOf(fuelUnitPriceCurrency.doubleValue(Currency.USD), MyUnits.USD_PER_BARREL); 
+		}
 		//---------------------------------------------------------------
 		// LANDING CHARGES
 		String calculateLandingChargesString = MyXMLReaderUtils
@@ -543,52 +557,46 @@ public class ACCostsManager {
 		
 		if(calculateNoiseChargesString.equalsIgnoreCase("TRUE")){
 			
-			Double noiseCostant = null;
 			String noiseCostantString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@noise_constant");
-			if(noiseCostantString != null)
+			if(!noiseCostantString.isEmpty())
 				noiseCostant = Double.valueOf(noiseCostantString);
 			
-			Double flyoverCertifiedNoiseLevel = null;
 			String flyoverCertifiedNoiseLevelString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@flyover_Certified_Noise_Level");
-			if(flyoverCertifiedNoiseLevelString != null)
+			if(!flyoverCertifiedNoiseLevelString.isEmpty())
 				flyoverCertifiedNoiseLevel = Double.valueOf(flyoverCertifiedNoiseLevelString);
 			
-			Double lateralCertifiedNoiseLevel = null;
 			String lateralCertifiedNoiseLevelString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@lateral_Certified_Noise_Level");
-			if(lateralCertifiedNoiseLevelString != null)
+			if(!lateralCertifiedNoiseLevelString.isEmpty())
 				lateralCertifiedNoiseLevel = Double.valueOf(lateralCertifiedNoiseLevelString);
 			
-			Double approachCertifiedNoiseLevel = null;
 			String approachCertifiedNoiseLevelString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@approach_Certified_Noise_Level");
-			if(approachCertifiedNoiseLevelString != null)
+			if(!approachCertifiedNoiseLevelString.isEmpty())
 				approachCertifiedNoiseLevel = Double.valueOf(approachCertifiedNoiseLevelString);
 			
-			Double departureThreshold = null;
 			String departureThresholdString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@departure_threshold");
-			if(departureThresholdString != null)
+			if(!departureThresholdString.isEmpty())
 				departureThreshold = Double.valueOf(departureThresholdString);
 			
-			Double arrivalThreshold = null;
 			String arrivalThresholdString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//charges/noise/@arrival_threshold");
-			if(arrivalThresholdString != null)
+			if(!arrivalThresholdString.isEmpty())
 				arrivalThreshold = Double.valueOf(arrivalThresholdString);
 			
 			noiseCharges = CostsCalcUtils.calcDOCNoiseCharges(
@@ -1028,14 +1036,13 @@ public class ACCostsManager {
 		
 	}
 
-	public void calculate() {
+	public void calculate(String resultsFolderPath) {
 		
 		initializeAnalysis();
 	
 		//=================================================================================================
 		// DOC CALCULATION
 		//=================================================================================================
-		//TODO switch case construct
 		//-------------------------------------------------------------------------------------------------
 		// DOC CAPITAL 
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL)) {
@@ -1058,17 +1065,6 @@ public class ACCostsManager {
 			
 			else if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW).equals(MethodEnum.ATA)) 
 				calcCrewDOC.calculateDOCCrewATA();
-			
-		}
-		
-		//-------------------------------------------------------------------------------------------------
-		// DOC FUEL
-		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL)) {
-			
-			CalcFuelDOC calcFuelDOC = new CalcFuelDOC();
-			
-			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL).equals(MethodEnum.AEA)) 
-				calcFuelDOC.calculateDOCFuelAEA();
 			
 		}
 		
@@ -1143,10 +1139,13 @@ public class ACCostsManager {
 			
 		}
 		
-		// TODO: CONVERT ALL UNITS
-		
 		try {
-			toXLSFile("???");
+			String costsFolderPath = JPADStaticWriteUtils.createNewFolder(
+					resultsFolderPath 
+					+ "COSTS"
+					+ File.separator
+					);
+			toXLSFile(costsFolderPath + "Costs");
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -1156,26 +1155,684 @@ public class ACCostsManager {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException {
 		
-		// TODO : FILL ME !!
-		// TODO : make conversion here
+		Workbook wb;
+		File outputFile = new File(filenameWithPathAndExt + ".xlsx");
+		if (outputFile.exists()) { 
+			outputFile.delete();		
+			System.out.println("Deleting the old .xls file ...");
+		} 
+		
+		if (outputFile.getName().endsWith(".xls")) {
+			wb = new HSSFWorkbook();
+		}
+		else if (outputFile.getName().endsWith(".xlsx")) {
+			wb = new XSSFWorkbook();
+		}
+		else {
+			throw new IllegalArgumentException("I don't know how to create that kind of new file");
+		}
+		
+		Sheet sheetDOC = wb.createSheet("DOC");
+		List<Object[]> dataListDOC = new ArrayList<>();
+		dataListDOC.add(new Object[] {"Description","$/flight","$/h","$/nmi","¢/(nmi*seat)"});
+		
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL)) {
+			
+			//--------------------------------------------------------------------------------
+			// CAPITAL DOC:
+			//--------------------------------------------------------------------------------
+			dataListDOC.add(new Object[] {
+					"Depreciation", 
+					_depreciation.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR),
+					_depreciation.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR),
+					_depreciation.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_depreciation.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"Interest", 
+					_interest.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR),
+					_interest.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR),
+					_interest.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_interest.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"Insurance", 
+					_insurance.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR),
+					_insurance.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR),
+					_insurance.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_insurance.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"DOC Capital", 
+					_capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR),
+					_capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR),
+					_capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*100	
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] { });
+		}
+		
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW)) {
+			
+			//--------------------------------------------------------------------------------
+			// CREW DOC:
+			//--------------------------------------------------------------------------------
+			dataListDOC.add(new Object[] {
+					"Cockpit Crew", 
+					_cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR),
+					_cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR),
+					_cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"Cabin Crew", 
+					_cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR),
+					_cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR),
+					_cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"DOC Crew", 
+					_crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR),
+					_crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR),
+					_crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*100
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] { });
+		}
+		
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL)) {
+			
+			//--------------------------------------------------------------------------------
+			// FUEL DOC:
+			//--------------------------------------------------------------------------------
+			dataListDOC.add(new Object[] {
+					"DOC Fuel", 
+					_fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue(),
+					_fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
+						/_blockTime.doubleValue(NonSI.HOUR),
+					_fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] { });
+		}
+		
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CHARGES)) {
+			
+			//--------------------------------------------------------------------------------
+			// CHARGES DOC:
+			//--------------------------------------------------------------------------------
+			dataListDOC.add(new Object[] {
+					"Landing charges", 
+					_landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+					_landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR),
+					_landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"Navigation charges", 
+					_navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+					_navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR),
+					_navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+						
+			});
+			dataListDOC.add(new Object[] {
+					"Ground handling charges", 
+					_groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+					_groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR),
+					_groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			
+			if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) {
+			
+				dataListDOC.add(new Object[] {
+						"Noise charges", 
+						_noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+						_noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR),
+						_noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+						_noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+				});
+				dataListDOC.add(new Object[] {
+						"Emissions charges", 
+						_emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT),
+						_emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR),
+						_emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+						_emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+				});
+				
+			}
+			dataListDOC.add(new Object[] {
+					"DOC Charges", 
+					_chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT),
+					_chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR),
+					_chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] { });
+		}
+		
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_MAINTENANCE)) {
+			
+			//--------------------------------------------------------------------------------
+			// MAINTENANCE DOC:
+			//--------------------------------------------------------------------------------
+			dataListDOC.add(new Object[] {
+					"Airframe Maintenance Charges", 
+					_airframeMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+							/_blockTime.doubleValue(NonSI.HOUR),
+					_airframeMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_airframeMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE),
+					_airframeMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*100		
+							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"Engine Maintenance Charges", 
+					_engineMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+							/_blockTime.doubleValue(NonSI.HOUR),
+					_engineMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_engineMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE),
+					_engineMaintenanceCharges.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*100		
+							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] {
+					"DOC Maintenance", 
+					_maintenanceChargesDOC.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+							/_blockTime.doubleValue(NonSI.HOUR),
+					_maintenanceChargesDOC.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+					_maintenanceChargesDOC.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE),
+					_maintenanceChargesDOC.get(
+							_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+							*100		
+							/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+			});
+			dataListDOC.add(new Object[] { });
+		}
+		
+		Double cashDOC = 0.0;
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL))
+			cashDOC += _capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW))
+			cashDOC += _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL))
+			cashDOC += _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue();
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CHARGES))
+			cashDOC += _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_MAINTENANCE))
+			cashDOC += _maintenanceChargesDOC.get(
+					_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+					*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+					/_blockTime.doubleValue(NonSI.HOUR);
+		
+		
+		dataListDOC.add(new Object[] { });
+		dataListDOC.add(new Object[] {
+				"Cash DOC", 
+				cashDOC,
+				cashDOC/_blockTime.doubleValue(NonSI.HOUR),
+				cashDOC/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+				cashDOC
+					/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+					*100
+					/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+		});
+		
+		CellStyle styleHead = wb.createCellStyle();
+		styleHead.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		styleHead.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Font font = wb.createFont();
+		font.setFontHeightInPoints((short) 20);
+		font.setColor(IndexedColors.BLACK.getIndex());
+		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		styleHead.setFont(font);
+		
+		Row row = sheetDOC.createRow(0);
+		Object[] objArr = dataListDOC.get(0);
+		int cellnum = 0;
+		for (Object obj : objArr) {
+			Cell cell = row.createCell(cellnum++);
+			cell.setCellStyle(styleHead);
+			if (obj instanceof Date) {
+				cell.setCellValue((Date) obj);
+			} else if (obj instanceof Boolean) {
+				cell.setCellValue((Boolean) obj);
+			} else if (obj instanceof String) {
+				cell.setCellValue((String) obj);
+			} else if (obj instanceof Double) {
+				cell.setCellValue((Double) obj);
+			}
+			sheetDOC.setDefaultColumnWidth(25);
+		}
+
+		int rownum = 1;
+		for (int i = 1; i < dataListDOC.size(); i++) {
+			objArr = dataListDOC.get(i);
+			row = sheetDOC.createRow(rownum++);
+			cellnum = 0;
+			for (Object obj : objArr) {
+				Cell cell = row.createCell(cellnum++);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+			}
+		}
+			
+		//--------------------------------------------------------------------------------
+		// XLS FILE CREATION:
+		//--------------------------------------------------------------------------------
+		FileOutputStream fileOut = new FileOutputStream(filenameWithPathAndExt + ".xlsx");
+		wb.write(fileOut);
+		fileOut.close();
+		System.out.println("Your excel file has been generated!");
+		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public String toString() {
 		
-		// TODO : make conversion here
 		MyConfiguration.customizeAmountOutput();
 
+		Double cashDOC = 0.0;
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL))
+			cashDOC += _capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW))
+			cashDOC += _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL))
+			cashDOC += _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue();
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CHARGES))
+			cashDOC += _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_MAINTENANCE))
+			cashDOC += _maintenanceChargesDOC.get(
+					_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+					*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+					/_blockTime.doubleValue(NonSI.HOUR);
+		
 		StringBuilder sb = new StringBuilder()
 				.append("\n\n\t-------------------------------------\n")
 				.append("\tCosts Analysis\n")
-				.append("\t-------------------------------------\n")
-				;
-	
-		// TODO : FILL ME !!
+				.append("\t-------------------------------------\n");
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL)) {
+				sb.append("\tCapital DOC\n")
+				.append("\t\t$/flight\n")
+				.append("\t\t\tDepreciation: " + _depreciation.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tInterest: " + _interest.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tInsurance: " + _insurance.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tDOC: " + _capitalDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t$/h\n")
+				.append("\t\t\tDepreciation: " + _depreciation.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR) + "\n")
+				.append("\t\t\tInterest: " + _interest.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR) + "\n")
+				.append("\t\t\tInsurance: " + _insurance.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR) + "\n")
+				.append("\t\t\tDOC: " + _capitalDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR) + "\n")
+				.append("\t\t$/nmi\n")
+				.append("\t\t\tDepreciation: " + _depreciation.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tInterest: " + _interest.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tInsurance: " + _insurance.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tDOC: " + _capitalDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\tcent/(nmi*seat)\n")
+				.append("\t\t\tDepreciation: " + _depreciation.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tInterest: " + _interest.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*100
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tInsurance: " + _insurance.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tDOC: " + _capitalDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t.....................................\n");
+		}
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW)) {
+				sb.append("\tCrew DOC\n")
+				.append("\t\t$/flight\n")
+				.append("\t\t\tCockpit Crew: " + _cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tCabin Crew: " + _cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tDOC: " + _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t$/h\n")
+				.append("\t\t\tCockpit Crew: " + _cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR) + "\n")
+				.append("\t\t\tCabin Crew: " + _cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR) + "\n")
+				.append("\t\t\tDOC: " + _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR) + "\n")
+				.append("\t\t$/nmi\n")
+				.append("\t\t\tCockpit Crew: " + _cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tCabin Crew: " + _cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tDOC: " + _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t¢/(nmi*seat)\n")
+				.append("\t\t\tCockpit Crew: " + _cockpitCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*_blockTime.doubleValue(NonSI.HOUR) 
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tCabin Crew: " + _cabinCrewCost.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*100
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tDOC: " + _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+						*100
+						*_blockTime.doubleValue(NonSI.HOUR)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t.....................................\n");
+		}
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL)) {
+				sb.append("\tFuel DOC\n")
+				.append("\t\t$/flight\n")
+				.append("\t\t\t" + _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue() + "\n")
+				.append("\t\t$/h\n")
+				.append("\t\t\t" + _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t$/nmi\n")
+				.append("\t\t\t" + _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t¢/(nmi*seat)\n")
+				.append("\t\t\t" + _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue()
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t.....................................\n");
+		}
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CHARGES)) {
+				sb.append("\tCharges DOC\n")
+				.append("\t\t$/flight\n")
+				.append("\t\t\tLanding charges: " + _landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) + "\n")
+				.append("\t\t\tNavigation charges: " + _navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT) + "\n")
+				.append("\t\t\tGround handling charges: " + _groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) + "\n");
+				
+				if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) {
+					sb.append("\t\t\tNoise charges: " + _noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) + "\n")
+					.append("\t\t\tEmissions charges: " + _emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT) + "\n");
+				}
+				
+				sb.append("\t\t\tDOC: " + _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT) + "  $/flight\n")
+				.append("\t\t$/h\n")
+				.append("\t\t\tLanding charges: " + _landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tNavigation charges: " + _navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tGround handling charges: " + _groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n");
+				
+				if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) {
+					sb.append("\t\t\tNoise charges: " + _noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+					/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+					.append("\t\t\tEmissions charges: " + _emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+					/_blockTime.doubleValue(NonSI.HOUR) + "\n");
+				}
+				
+				sb.append("\t\t\tDOC: " + _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t$/nmi\n")
+				.append("\t\t\tLanding charges: " + _landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tNavigation charges: " + _navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tGround handling charges: " + _groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n");
+				
+				if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) {
+					sb.append("\t\t\tNoise charges: " + _noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+					/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+					.append("\t\t\tEmissions charges: " + _emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+					/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n");
+				}
+				
+				sb.append("\t\t\tDOC: " + _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t¢/(nmi*seat)\n")
+				.append("\t\t\tLanding charges: " + _landingCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tNavigation charges: " + _navigationCharges.doubleValue(MyUnits.USD_PER_FLIGHT)
+						*100		
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tGround handling charges: " + _groundHandlingCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+						*100		
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n");
+				
+				if(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES).equals(MethodEnum.ILR_AACHEN)) {
+					sb.append("\t\t\tNoise charges: " + _noiseCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+						*100	
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+					.append("\t\t\tEmissions charges: " + _emissionsCharges.doubleValue(MyUnits.USD_PER_FLIGHT) 
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n");
+				}
+				
+				sb.append("\t\t\tDOC: " + _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT)
+						*100
+						/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) 
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t.....................................\n");
+		}
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_MAINTENANCE)) {
+				sb.append("\tMaintenance DOC\n")
+				.append("\t\t$/flight\n")
+				.append("\t\t\tAirframe Maintenance Charges: " + _airframeMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+						*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tEngine Maintenance Charges: " + _engineMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE) 
+						*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t\tDOC: " + _maintenanceChargesDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+						*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+						/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+				.append("\t\t$/h\n")
+				.append("\t\t\tAirframe Maintenance Charges: " + _airframeMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+						*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tEngine Maintenance Charges: " + _engineMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE) 
+						*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t\tDOC: " + _maintenanceChargesDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+						*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+				.append("\t\t$/nmi\n")
+				.append("\t\t\tAirframe Maintenance Charges: " + _airframeMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE) + "\n")
+				.append("\t\t\tEngine Maintenance Charges: " + _engineMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE) + "\n")
+				.append("\t\t\tDOC: " + _maintenanceChargesDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE) + "\n")
+				.append("\t\t¢/(nmi*seat)\n")
+				.append("\t\t\tAirframe Maintenance Charges: " + _airframeMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tEngine Maintenance Charges: " + _engineMaintenanceCharges.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t\t\tDOC: " + _maintenanceChargesDOC.get(
+						_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+						*100
+						/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+				.append("\t.....................................\n");
+		}
 		
+		sb.append("\tCash DOC\n")
+		.append("\t\t$/flight\n")
+		.append("\t\t\t"+ cashDOC + "\n")
+		.append("\t\t$/h\n")
+		.append("\t\t\t" + cashDOC/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+		.append("\t\t$/nmi\n")
+		.append("\t\t\t" + cashDOC/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+		.append("\t\t¢/(nmi*seat)\n")
+		.append("\t\t\t" + cashDOC
+				/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+				*100
+				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n");
+	
 		return sb.toString();
 		
 	}
@@ -1484,27 +2141,32 @@ public class ACCostsManager {
 
 		public void plotDocVsRange() {
 
+			// TODO: ONLY IF THERE IS A PERFORMANCE MANAGER
 
 		}
 		
 		public void plotDocVsBlockTime() {
 
+			// TODO: ONLY IF THERE IS A PERFORMANCE MANAGER
 
 		}
 		
 		public void plotDocVsBlockFuel() {
 
+			// TODO: ONLY IF THERE IS A PERFORMANCE MANAGER
 
 		}
 		
 		public void plotProfitability() {
 
+			// TODO: ONLY IF THERE IS A PERFORMANCE MANAGER
 
 		}
 		
 		public void plotDocPieChart() {
 
-
+			// TODO: COMPLETE ME !! (CAN BE CREATED IN ANY CASE)
+			
 		}
 		
 	}

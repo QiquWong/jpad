@@ -1,12 +1,10 @@
 package jpadcommander.inputmanager;
 
-import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -683,7 +681,7 @@ public class InputManagerAircraftFromFileController {
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2"
 						)
-				.plotAreas(true,true,true,true,true,true,true,true,false,true,true,true,true,true,true)
+				.plotAreas(true,true,true,true,true,true,true,false,true,true,true,true,true,true)
 				.areaStyles("fill:yellow;","fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;",
 						"fill:black;","fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;")
 				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
@@ -952,40 +950,52 @@ public class InputManagerAircraftFromFileController {
 		//--------------------------------------------------
 		// get data vectors from landing gears
 		//--------------------------------------------------
-		Double[][] leftLandingGearsPoints = new Double[5][2];
-		Double[][] rightLandingGearsPoints = new Double[5][2];
+		List<Double[][]> leftLandingGearsPointsList = new ArrayList<>();
+		List<Double[][]> rightLandingGearsPointsList = new ArrayList<>();
 		
-		// landing gears X coordinates
-		leftLandingGearsPoints[0][0] = Main.getTheAircraft().getLandingGears()
-				.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER);
-		leftLandingGearsPoints[1][0] = Main.getTheAircraft().getLandingGears()
-				.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
-				+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER);
-		leftLandingGearsPoints[2][0] = leftLandingGearsPoints[1][0];
-		leftLandingGearsPoints[3][0] = leftLandingGearsPoints[0][0];
-		leftLandingGearsPoints[4][0] = leftLandingGearsPoints[0][0];
+		for(int i=0; i<Main.getTheAircraft().getLandingGears().getNumberOfRearWheels()/2; i++) {
+			
+			Double[][] leftLandingGearsPoints = new Double[5][2];
+			Double[][] rightLandingGearsPoints = new Double[5][2];
+			
+			// landing gears X coordinates
+			leftLandingGearsPoints[0][0] = Main.getTheAircraft().getLandingGears()
+					.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER));
+			leftLandingGearsPoints[1][0] = Main.getTheAircraft().getLandingGears()
+					.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+					+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
+					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER));
+			leftLandingGearsPoints[2][0] = leftLandingGearsPoints[1][0];
+			leftLandingGearsPoints[3][0] = leftLandingGearsPoints[0][0];
+			leftLandingGearsPoints[4][0] = leftLandingGearsPoints[0][0];
+
+			rightLandingGearsPoints[0][0] = - leftLandingGearsPoints[0][0];
+			rightLandingGearsPoints[1][0] = - leftLandingGearsPoints[1][0];
+			rightLandingGearsPoints[2][0] = rightLandingGearsPoints[1][0];
+			rightLandingGearsPoints[3][0] = rightLandingGearsPoints[0][0];
+			rightLandingGearsPoints[4][0] = rightLandingGearsPoints[0][0];
+
+			// landing gears Y coordinates
+			leftLandingGearsPoints[0][1] = Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER);
+			leftLandingGearsPoints[1][1] = leftLandingGearsPoints[0][1];
+			leftLandingGearsPoints[2][1] = Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER);
+			leftLandingGearsPoints[3][1] = leftLandingGearsPoints[2][1];
+			leftLandingGearsPoints[4][1] = leftLandingGearsPoints[0][1];
+
+			rightLandingGearsPoints[0][1] = leftLandingGearsPoints[0][1];
+			rightLandingGearsPoints[1][1] = leftLandingGearsPoints[1][1];
+			rightLandingGearsPoints[2][1] = leftLandingGearsPoints[2][1];
+			rightLandingGearsPoints[3][1] = leftLandingGearsPoints[3][1];
+			rightLandingGearsPoints[4][1] = leftLandingGearsPoints[4][1];
 		
-		rightLandingGearsPoints[0][0] = - leftLandingGearsPoints[0][0];
-		rightLandingGearsPoints[1][0] = - leftLandingGearsPoints[1][0];
-		rightLandingGearsPoints[2][0] = rightLandingGearsPoints[1][0];
-		rightLandingGearsPoints[3][0] = rightLandingGearsPoints[0][0];
-		rightLandingGearsPoints[4][0] = rightLandingGearsPoints[0][0];
+			leftLandingGearsPointsList.add(leftLandingGearsPoints);
+			rightLandingGearsPointsList.add(rightLandingGearsPoints);
+		}
 		
-		// landing gears Y coordinates
-		leftLandingGearsPoints[0][1] = Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
-				- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER);
-		leftLandingGearsPoints[1][1] = leftLandingGearsPoints[0][1];
-		leftLandingGearsPoints[2][1] = Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
-				- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
-				- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER);
-		leftLandingGearsPoints[3][1] = leftLandingGearsPoints[2][1];
-		leftLandingGearsPoints[4][1] = leftLandingGearsPoints[0][1];
-		
-		rightLandingGearsPoints[0][1] = leftLandingGearsPoints[0][1];
-		rightLandingGearsPoints[1][1] = leftLandingGearsPoints[1][1];
-		rightLandingGearsPoints[2][1] = leftLandingGearsPoints[2][1];
-		rightLandingGearsPoints[3][1] = leftLandingGearsPoints[3][1];
-		rightLandingGearsPoints[4][1] = leftLandingGearsPoints[4][1];
 		
 		List<Double[][]> listDataArrayFrontView = new ArrayList<Double[][]>();
 
@@ -1000,9 +1010,11 @@ public class InputManagerAircraftFromFileController {
 		// fuselage
 		listDataArrayFrontView.add(dataSectionYZUpperCurve);
 		listDataArrayFrontView.add(dataSectionYZLowerCurve);
-		// nacelles
-		listDataArrayFrontView.add(leftLandingGearsPoints);
-		listDataArrayFrontView.add(rightLandingGearsPoints);
+		// landing gears
+		for (int i=0; i<Main.getTheAircraft().getLandingGears().getNumberOfRearWheels()/2; i++) {
+			listDataArrayFrontView.add(leftLandingGearsPointsList.get(i));
+			listDataArrayFrontView.add(rightLandingGearsPointsList.get(i));
+		}
 		// nacelles
 		for (int i=0; i<nacellePointsList.size(); i++)
 			listDataArrayFrontView.add(nacellePointsList.get(i));
@@ -1039,11 +1051,16 @@ public class InputManagerAircraftFromFileController {
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
 						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
+						SymbolType.CIRCLE,
 						SymbolType.CIRCLE
 						)
-				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2,2)
-				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
+				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2,2,2,2)
+				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
 				.symbolStyles(
+						"fill:cyan; stroke:darkblue; stroke-width:2",
+						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
 						"fill:cyan; stroke:darkblue; stroke-width:2",
@@ -1071,11 +1088,13 @@ public class InputManagerAircraftFromFileController {
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
+						"fill:none; stroke:black; stroke-width:2",
 						"fill:none; stroke:black; stroke-width:2"
 						)
-				.plotAreas(true,true,true,true,true,true,true,true,true,true)
+				.plotAreas(true,true,true,true,true,true,true,false,false,false,false,true,true,true,true)
 				.areaStyles("fill:blue;","fill:blue;","fill:yellow;","fill:lightblue;","fill:lightblue;","fill:white;","fill:white;",
-						"fill:black;","fill:black;","fill:orange;","fill:orange;","fill:orange;","fill:orange;")
+						"fill:black;","fill:black;","fill:black;","fill:black;","fill:orange;","fill:orange;","fill:orange;","fill:orange;")
 				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 				.showLegend(false)
 				.build();

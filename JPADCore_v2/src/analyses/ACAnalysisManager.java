@@ -1570,7 +1570,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	
 	public void calculateCosts(Aircraft aircraft, String resultsFolderPath) {
 		
-		aircraft.getTheAnalysisManager().getTheCosts().calculate();
+		aircraft.getTheAnalysisManager().getTheCosts().calculate(resultsFolderPath);
 		
 	}
 

@@ -19,6 +19,8 @@ import javax.measure.unit.Unit;
 import org.jscience.economics.money.Currency;
 import org.jscience.physics.amount.Amount;
 
+import com.sun.javafx.print.Units;
+
 /** 
  * Define custom units of measurement not included in SI or NonSI libraries
  * 
@@ -75,7 +77,7 @@ public class MyUnits {
 	
 	public static final Unit USD_PER_HOUR = Currency.USD.divide(NonSI.HOUR);
 	public static final Unit USD_PER_NAUTICAL_MILE = Currency.USD.divide(NonSI.NAUTICAL_MILE);
-	public static final Unit USD_PER_FLIGHT = Currency.USD;
+	public static final Unit USD_PER_FLIGHT = Currency.USD.divide(Unit.ONE);
 	public static final Unit USD_PER_TON = Currency.USD.divide(NonSI.METRIC_TON);
 	public static final Unit USD_PER_KM_SQRT_TON = Currency.USD.divide(SI.KILOGRAM.times(NonSI.METRIC_TON.root(2)));
 	public static final Unit USD_PER_GALLON = Currency.USD.divide(NonSI.GALLON_LIQUID_US);
@@ -140,7 +142,7 @@ public class MyUnits {
 		conversionConst = 1/_volSIUnit.doubleValue(SI.CUBIC_METRE);
 				
 		return Amount.valueOf(
-				usDolPerCubM.doubleValue(MyUnits.USD_PER_GALLON)/conversionConst,
+				usDolPerCubM.getEstimatedValue()/conversionConst,
 				MyUnits.USD_PER_BARREL
 				);
 	}
