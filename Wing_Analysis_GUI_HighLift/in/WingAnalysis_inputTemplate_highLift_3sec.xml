@@ -16,12 +16,12 @@
              </global>
              <distribution>
                 <number_of_given_sections>3</number_of_given_sections>
-                <airfoil_family>NACA_65_Series</airfoil_family> 
+                <airfoil_family>NACA_65_SERIES</airfoil_family> 
 				<max_thickness_mean_airfoil>0.14</max_thickness_mean_airfoil>
                    <geometry>
 						<y_adimensional_stations>[0,0.3,1]</y_adimensional_stations>
 						<chord_distribution unit="m">[4.48;3.47;1.65]</chord_distribution>
-						<x_le_distribution unit="m">[0,0.9025, 2.112]</x_le_distribution>
+						<x_le_distribution unit="m">[0,0.935, 3.115]</x_le_distribution>
 						<twist_distribution unit="rad">[0.0, 0.0, 0.0]</twist_distribution>
                     </geometry>
                     <aerodynamics>

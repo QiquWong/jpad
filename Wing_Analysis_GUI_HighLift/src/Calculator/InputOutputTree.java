@@ -3,6 +3,7 @@ package Calculator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
@@ -58,7 +59,7 @@ public class InputOutputTree {
 	
 	//--------------analyses input
 	List<Amount<Angle>> alphaArrayLiftDistribution, alphaArrayLiftCurve;
-	
+	List<Amount<Angle>> alphaArrayHighLiftDistribution, alphaArrayHighLiftCurve;
 	
 	// DERIVED INPUT
 	private List<Amount<Length>> yDimensionalDistributionInput;
@@ -80,10 +81,16 @@ public class InputOutputTree {
 	private Amount<Length> span;
 	private Amount<Length> semiSpan;
 	
+	//------------equivalentingData
+	private Amount<Length> rootChordEquivalentWing;
+	private Double taperRatioEquivalentWing;
+	private Amount<Angle> sweepQuarterChordEquivalent;
+	
 	// OUTPUT
 	List<List<Double>> clDistributionCurves;
 	
 	Double cLAlphaDeg, cLAlphaRad;
+	Amount<?> cLAlpha;
 	Amount<Angle> alphaZeroLift, alphaStar, alphaStall, alphaMaxLinear;
 	Double cLZero, cLMax, cLStall, cLStar;
 	
@@ -102,6 +109,7 @@ public class InputOutputTree {
 	Boolean performLoadAnalysis;
 	Boolean performLiftAnalysis;
 	Boolean performStallPathAnalysis;
+	Boolean performHighLiftAnalysis;
 	
 	// flap and slat
 	
@@ -290,6 +298,73 @@ public class InputOutputTree {
 			dihedralDistributionSemiSpan = MyArrayUtils.convertDoubleArrayToListOfAmount(
 					dihedral,
 					NonSI.DEGREE_ANGLE);
+			
+			// equivalent wing
+			
+			Double integral1 = MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+						this.yDimensionalDistributionInput), // y
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+						this.xLEDistribution) // xle(y)
+				);
+			int nSec = this.xLEDistribution.size();
+			Double xleAtTip = this.xLEDistribution.get(nSec - 1).doubleValue(SI.METER);
+			Double area1 = (semiSpan.doubleValue(SI.METER) * xleAtTip) - integral1;
+			
+			Double xOffsetEquivalentWingRootLE = xleAtTip - (area1 / (0.5*semiSpan.doubleValue(SI.METER)));
+			
+			//======================================================
+			// integral_2 = ((b/2)*(xte(0)-xte(b/2)) - [ (xte(0)*b/2) - (int_0^(b/2) [xle(y) + c(y)] dy)]
+			// _xOffsetEquivalentWingRootTE = chord_root - xte(b/2) - (A_2/((b/2*)(1/2)))
+
+			Tuple2<
+				List<Amount<Length>>, // Xle
+				List<Amount<Length>>  // c
+				> xlePlusCTuple = Tuple.of(this.xLEDistribution, this.chordDistribution);
+
+			List<Double> xlePlusC = IntStream.range(0, this.yDimensionalDistributionInput.size())
+					.mapToObj(i -> 
+						xlePlusCTuple._1.get(i).doubleValue(SI.METRE)
+						+ xlePlusCTuple._2.get(i).doubleValue(SI.METRE)) // xle + c
+					.collect(Collectors.toList());
+
+			Double integral2 = MyMathUtils.integrate1DSimpsonSpline(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							this.yDimensionalDistributionInput), // y
+					MyArrayUtils.convertToDoublePrimitive(xlePlusC) // xle + c
+					);
+			Double xteAtRoot = chordDistribution.get(0).doubleValue(SI.METER);
+			int nPan = this.numberOfSections-1;
+			Double xteAtTip = xleAtTip + chordDistribution.get(numberOfSections-1).doubleValue(SI.METER);
+			
+			Double area2a = (xteAtRoot*semiSpan.doubleValue(SI.METER)) - integral2;
+			Double area2 = semiSpan.doubleValue(SI.METER) * ( xteAtRoot - xteAtTip ) - area2a;
+			
+			Double xOffsetEquivalentWingRootTE = 
+					chordDistribution.get(0).doubleValue(SI.METER)
+					- xteAtTip - ((area2 / (0.5*semiSpan.doubleValue(SI.METER))));
+			
+			rootChordEquivalentWing = Amount.valueOf(
+					chordDistribution.get(0).doubleValue(SI.METER)
+					- xOffsetEquivalentWingRootLE 
+					- xOffsetEquivalentWingRootTE,
+					SI.METER
+					);
+			
+			// taper ratio equivalent wing
+			
+			taperRatioEquivalentWing = chordDistribution.get(numberOfSections-1).doubleValue(SI.METER)/rootChordEquivalentWing.doubleValue(SI.METER);
+			
+			// sweep quarter chord
+			
+//			sweepQuarterChordEquivalent = Amount.valueOf(
+//					Math.atan(
+//							(xLEDistribution.get(numberOfSections-1).doubleValue(SI.METER)+
+//							(chordDistribution.get(numberOfSections-1).doubleValue(SI.METER)/4))/
+//							
+//							), 
+//					SI.RADIAN
+//					);
 			
 	}
 
@@ -1036,6 +1111,46 @@ public class InputOutputTree {
 
 	public void setHighLiftInputTreeIsFilled(boolean highLiftInputTreeIsFilled) {
 		this.highLiftInputTreeIsFilled = highLiftInputTreeIsFilled;
+	}
+
+	public Boolean getPerformHighLiftAnalysis() {
+		return performHighLiftAnalysis;
+	}
+
+	public void setPerformHighLiftAnalysis(Boolean performHighLiftAnalysis) {
+		this.performHighLiftAnalysis = performHighLiftAnalysis;
+	}
+
+	public List<Amount<Angle>> getAlphaArrayHighLiftDistribution() {
+		return alphaArrayHighLiftDistribution;
+	}
+
+	public List<Amount<Angle>> getAlphaArrayHighLiftCurve() {
+		return alphaArrayHighLiftCurve;
+	}
+
+	public void setAlphaArrayHighLiftDistribution(List<Amount<Angle>> alphaArrayHighLiftDistribution) {
+		this.alphaArrayHighLiftDistribution = alphaArrayHighLiftDistribution;
+	}
+
+	public void setAlphaArrayHighLiftCurve(List<Amount<Angle>> alphaArrayHighLiftCurve) {
+		this.alphaArrayHighLiftCurve = alphaArrayHighLiftCurve;
+	}
+
+	public Amount<?> getcLAlpha() {
+		return cLAlpha;
+	}
+
+	public void setcLAlpha(Amount<?> cLAlpha) {
+		this.cLAlpha = cLAlpha;
+	}
+
+	public Amount<Length> getRootChordEquivalentWing() {
+		return rootChordEquivalentWing;
+	}
+
+	public void setRootChordEquivalentWing(Amount<Length> rootChordEquivalentWing) {
+		this.rootChordEquivalentWing = rootChordEquivalentWing;
 	}
 
 

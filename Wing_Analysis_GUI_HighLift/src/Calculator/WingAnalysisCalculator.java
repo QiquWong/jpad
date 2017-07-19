@@ -8,12 +8,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.swing.RootPaneContainer;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -27,11 +29,16 @@ import org.treez.javafxd3.javafx.JavaFxD3Browser;
 
 import GUI.Main;
 import GUI.Views.VaraiblesAnalyses;
+import aircraft.components.liftingSurface.creator.SlatCreator;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import calculators.aerodynamics.LiftCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.HighLiftDeviceEffectEnum;
+import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.DatabaseManager;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.geometry.Side;
@@ -285,6 +292,8 @@ public class WingAnalysisCalculator {
 		double cLAlpha = (cLSecond - cLFirst)/(alphaSecond.getEstimatedValue()-alphaFirst.getEstimatedValue()); // 1/rad
 		theInputOutputTree.setcLAlphaRad(cLAlpha);
 		theInputOutputTree.setcLAlphaDeg(Math.toRadians(cLAlpha));
+		Amount<?> clAlpha = Amount.valueOf(theInputOutputTree.getcLAlphaDeg(), NonSI.DEGREE_ANGLE.inverse());
+		theInputOutputTree.setcLAlpha(clAlpha);
 		
 		Amount<?> wingclAlpha = Amount.valueOf( theInputOutputTree.getcLAlphaRad() , SI.RADIAN.inverse());
 		
@@ -560,6 +569,95 @@ public class WingAnalysisCalculator {
 			if ( theController.getNoStallPath().isSelected() ){
 				theInputOutputTree.setPerformStallPathAnalysis(false);
 			}
+	}
+	
+	public static void calculateHighLiftCurve(
+			InputOutputTree theInputOutpuTree,
+			VaraiblesAnalyses theController) {
+		
+		
+		
+		// Setup database(s)
+		AerodynamicDatabaseReader aeroDatabaseReader;
+		HighLiftDatabaseReader highLiftDatabaseReader;
+		// Setup database(s)
+
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
+		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+				
+		aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
+		highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+		
+		theController.setRunLift(theController.getRunHighLift()+1);
+		
+		List<SymmetricFlapCreator> theFlapList = new ArrayList<>();
+		List<SlatCreator> theSlatList = new ArrayList<>();
+
+		for(int i=0; i<theInputOutpuTree.getNumberOfFlaps(); i++) {
+			theFlapList.add(
+					new SymmetricFlapCreator.SymmetricFlapBuilder(
+							"flap", 
+							theInputOutpuTree.getFlapTypes().get(i),
+							theInputOutpuTree.getFlapInnerStation().get(i), 
+							theInputOutpuTree.getFlapOuterStation().get(i), 
+							theInputOutpuTree.getFlapChordRatio().get(i), 
+							theInputOutpuTree.getFlapChordRatio().get(i), 
+							Amount.valueOf(-5.0, NonSI.DEGREE_ANGLE),
+							Amount.valueOf(40.0, NonSI.DEGREE_ANGLE)
+							).build()
+					);
+		}
+		
+		for(int i=0; i<theInputOutpuTree.getNumberOfSlats(); i++) {
+			theSlatList.add(
+					new SlatCreator.SlatBuilder(
+							"flap",
+							theInputOutpuTree.getSlatInnerStation().get(i), 
+							theInputOutpuTree.getSlatOuterStation().get(i),
+							theInputOutpuTree.getSlatChordRatio().get(i), 
+							theInputOutpuTree.getSlatChordRatio().get(i), 
+							theInputOutpuTree.getSlatExtensionRatio().get(i), 
+							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+							Amount.valueOf(20.0, NonSI.DEGREE_ANGLE)
+							).build()
+					);
+		}
+
+		if(!theInputOutpuTree.performLiftAnalysis) {
+			calculateLiftCurve(theInputOutpuTree, theController);
+		}
+		
+//		Map<HighLiftDeviceEffectEnum, Object> highLiftDevicesEffectsMap = 
+//				LiftCalc.calculateHighLiftDevicesEffects(
+//						aeroDatabaseReader,
+//						highLiftDatabaseReader, 
+//						theFlapList, 
+//						theSlatList,
+//						theInputOutpuTree.getyAdimensionalStationInput(),
+//						theInputOutpuTree.getclalpha, 
+//						clZeroBreakPoints, 
+//						maxThicknessRatioBreakPoints,
+//						radiusLeadingEdgeBreakPoints, 
+//						theInputOutpuTree.getChordDistribution(), 
+//						theInputOutpuTree.getFlapDeflection(), 
+//						theInputOutpuTree.getSlatDeflection(), 
+//						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), 
+//						theInputOutpuTree.getcLAlpha(), 
+//						sweepQuarterChordEquivalent, 
+//						taperRatioEquivalent, 
+//						theInputOutpuTree.getRootChordEquivalentWing(),
+//						theInputOutpuTree.getAspectRatio(), 
+//						theInputOutpuTree.getSurface(), 
+//						theInputOutpuTree.getMeanThickness(), 
+//						theInputOutpuTree.getMeanAirfoilFamily(), 
+//						theInputOutpuTree.getcLZero(), 
+//						theInputOutpuTree.getcLMax(), 
+//						theInputOutpuTree.getAlphaStar(),
+//						theInputOutpuTree.getAlphaStall()
+//						);
+				
+		
 	}
 	
 public static void displayChart(

@@ -234,7 +234,7 @@ public class Reader {
 			airfoilFamily = "BICONVEX";
 		if(input.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
 			airfoilFamily = "DOUBLE_WEDGE";
-		
+
 		JPADStaticWriteUtils.writeSingleNode("airfoil_family", airfoilFamily, cleanConfigurationDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", input.getMeanThickness(), cleanConfigurationDataElement, doc);
 		

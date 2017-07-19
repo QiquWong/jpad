@@ -49,6 +49,10 @@ public class VaraiblesAnalyses {
 	RadioButton enableLiftAnalysis;
 	@FXML
 	RadioButton disableLiftAnalysis;
+	@FXML
+	RadioButton enableHighLiftAnalysis;
+	@FXML
+	RadioButton disableHighLiftAnalysis;
 	
 	@FXML
 	RadioButton yesStallPath;
@@ -167,7 +171,75 @@ public class VaraiblesAnalyses {
 	Label anglesUnitLabelLift;
 	@FXML
 	ChoiceBox anglesUnitLift;
+	@FXML 
+	Label drawStallPath;
+
 	
+	//HIGH LIFT
+	@FXML
+	TextField alphaInitialHighLift;
+	@FXML
+	TextField alphaFinalHighLift;
+	@FXML
+	TextField numberOfAlphasArrayHighLift;
+	@FXML
+	ChoiceBox alphaInitialUnitsHighLift;
+	@FXML
+	ChoiceBox alphaFinalUnitsHighLift;	
+	@FXML
+	ChoiceBox numberOfAlphasValuesHighLift;	
+	@FXML
+	Button okButtonHighLift;	
+	@FXML
+	TextField alphaOneHighLift;
+	@FXML
+	TextField alphaTwoHighLift;
+	@FXML
+	TextField alphaThreeHighLift;
+	@FXML
+	TextField alphaFourHighLift;
+	@FXML
+	TextField alphaFiveHighLift;
+	@FXML
+	TextField alphaSixHighLift;	
+	@FXML
+	TextField alphaSevenHighLift;	
+	@FXML
+	TextField alphaEightHighLift;	
+	@FXML
+	TextField alphaNineHighLift;	
+	@FXML
+	TextField alphaTenHighLift;	
+	@FXML
+	RadioButton alphasAsArrayHighLift;
+	@FXML
+	RadioButton alphasAsInputHighLift;	
+	@FXML
+	Label numberOfAlphasValuesLabelHighLift;
+	@FXML
+	Label alphaAnglesValuesLabelHighLift;
+	@FXML
+	Label alphaInitialLabelHighLift;
+	@FXML
+	Label alphaFinalLabelHighLift;
+	@FXML
+	Label numberOfAlphasArrayLabelHighLift;	
+	@FXML
+	Label arrayLabelHighLift;	
+	@FXML
+	Label valuesLabelHighLift;	
+	@FXML
+	Label alphasInputLabelHighLift;
+	@FXML
+	Label anglesUnitLabelHighLift;
+	@FXML
+	ChoiceBox anglesUnitHighLift;
+	@FXML
+	RadioButton yesHighLift;
+	@FXML
+	RadioButton noHighLift;
+	@FXML
+	Label performHighLiftLabel;
 	
 	// OUTPUT----------
 	@FXML
@@ -200,6 +272,7 @@ public class VaraiblesAnalyses {
 	
 	int runLoad;
 	int runLift;
+	int runHighLift;
 	
 	//initialize choiche box
 	ObservableList<String> alphaInitialUnitsList = FXCollections.observableArrayList("°","rad" );
@@ -237,10 +310,20 @@ public class VaraiblesAnalyses {
 		anglesUnitLift.setValue("°");
 		anglesUnitLift.setItems(alphaInitialUnitsList);
 		
-		
+		numberOfAlphasValuesHighLift.setItems(numberOfAlphasInputLift);
 		numberOfAlphasValuesLift.setItems(numberOfAlphasInputLift);
 		runLoad =0;
 		runLift =0;
+		runHighLift =0;
+		
+		alphaInitialUnitsHighLift.setItems(alphaInitialUnitsList);
+		alphaInitialUnitsHighLift.setValue("°");
+		alphaFinalUnitsHighLift.setItems(alphaInitialUnitsList);
+		alphaFinalUnitsHighLift.setValue("°");
+		anglesUnitHighLift.setItems(alphaInitialUnitsList);
+		anglesUnitHighLift.setValue("°");
+		
+		
 	}
 	
 	
@@ -333,40 +416,114 @@ public class VaraiblesAnalyses {
 		valuesLabel.setDisable(true);
 		alphasInputLabel.setDisable(true);
 		theInputOutputTree.setPerformLoadAnalysis(false);
+
+		
 	}
 	
 	@FXML
 	private void enableLoadAnalysis(){
-		numberOfAlphasValues.setDisable(false);
-		okButton.setDisable(false);
-		alphaOne.setDisable(false);
-		alphaTwo.setDisable(false);
-		alphaThree.setDisable(false);
-		alphaFour.setDisable(false);
-		alphaFive.setDisable(false);
-		alphaSix.setDisable(false);
-		numberOfAlphasValuesLabel.setDisable(false);
-		alphaAnglesValuesLabel.setDisable(false);
-		anglesUnit.setDisable(false);
-		anglesUnitLabel.setDisable(false);
-		
-		alphaInitial.setDisable(false);
-		alphaFinal.setDisable(false);
-		alphaInitialUnits.setDisable(false);
-		alphaFinalUnits.setDisable(false);
-		numberOfAlphasArray.setDisable(false);
-		alphaInitialLabel.setDisable(false);
-		alphaFinalLabel.setDisable(false);
-		numberOfAlphasArrayLabel.setDisable(false);
+//		numberOfAlphasValues.setDisable(false);
+//		okButton.setDisable(false);
+//		alphaOne.setDisable(false);
+//		alphaTwo.setDisable(false);
+//		alphaThree.setDisable(false);
+//		alphaFour.setDisable(false);
+//		alphaFive.setDisable(false);
+//		alphaSix.setDisable(false);
+//		numberOfAlphasValuesLabel.setDisable(false);
+//		alphaAnglesValuesLabel.setDisable(false);
+//		anglesUnit.setDisable(false);
+//		anglesUnitLabel.setDisable(false);
+//		
+//		alphaInitial.setDisable(false);
+//		alphaFinal.setDisable(false);
+//		alphaInitialUnits.setDisable(false);
+//		alphaFinalUnits.setDisable(false);
+//		numberOfAlphasArray.setDisable(false);
+//		alphaInitialLabel.setDisable(false);
+//		alphaFinalLabel.setDisable(false);
+//		numberOfAlphasArrayLabel.setDisable(false);
 		
 		alphasAsArray.setDisable(false);
 		alphasAsInput.setDisable(false);
 		
-		arrayLabel.setDisable(false);
-		valuesLabel.setDisable(false);
+//		arrayLabel.setDisable(false);
+//		valuesLabel.setDisable(false);
 		alphasInputLabel.setDisable(false);
+	}
+	
+	@FXML
+	private void disableHighLiftAnalysis(){
+		yesHighLift.setDisable(true);
+		noHighLift.setDisable(true);
+		performHighLiftLabel.setDisable(true);
 		
+		numberOfAlphasValuesHighLift.setDisable(true);
+		okButtonHighLift.setDisable(true);
+		alphaOneHighLift.setDisable(true);
+		alphaTwoHighLift.setDisable(true);
+		alphaThreeHighLift.setDisable(true);
+		alphaFourHighLift.setDisable(true);
+		alphaFiveHighLift.setDisable(true);
+		alphaSixHighLift.setDisable(true);
+		alphaSevenHighLift.setDisable(true);
+		alphaEightHighLift.setDisable(true);
+		alphaNineHighLift.setDisable(true);
+		alphaTenHighLift.setDisable(true);
+		numberOfAlphasValuesLabelHighLift.setDisable(true);
+		alphaAnglesValuesLabelHighLift.setDisable(true);
+		anglesUnitHighLift.setDisable(true);
+		anglesUnitLabelHighLift.setDisable(true);
 		
+		alphaInitialHighLift.setDisable(true);
+		alphaFinalHighLift.setDisable(true);
+		alphaInitialUnitsHighLift.setDisable(true);
+		alphaFinalUnitsHighLift.setDisable(true);
+		numberOfAlphasArrayHighLift.setDisable(true);
+		alphaInitialLabelHighLift.setDisable(true);
+		alphaFinalLabelHighLift.setDisable(true);
+		numberOfAlphasArrayLabelHighLift.setDisable(true);	
+
+		arrayLabelHighLift.setDisable(true);
+		valuesLabelHighLift.setDisable(true);
+		theInputOutputTree.setPerformHighLiftAnalysis(false);
+	}
+	
+	@FXML
+	private void enableHighLiftAnalysis(){
+		yesHighLift.setDisable(false);
+		noHighLift.setDisable(false);
+		performHighLiftLabel.setDisable(false);
+		
+		numberOfAlphasValuesHighLift.setDisable(false);
+		okButtonHighLift.setDisable(false);
+		alphaOneHighLift.setDisable(false);
+		alphaTwoHighLift.setDisable(false);
+		alphaThreeHighLift.setDisable(false);
+		alphaFourHighLift.setDisable(false);
+		alphaFiveHighLift.setDisable(false);
+		alphaSixHighLift.setDisable(false);
+		alphaSevenHighLift.setDisable(false);
+		alphaEightHighLift.setDisable(false);
+		alphaNineHighLift.setDisable(false);
+		alphaTenHighLift.setDisable(false);
+		numberOfAlphasValuesLabelHighLift.setDisable(false);
+		alphaAnglesValuesLabelHighLift.setDisable(false);
+		anglesUnitHighLift.setDisable(false);
+		anglesUnitLabelHighLift.setDisable(false);
+		
+		alphaInitialHighLift.setDisable(false);
+		alphaFinalHighLift.setDisable(false);
+		alphaInitialUnitsHighLift.setDisable(false);
+		alphaFinalUnitsHighLift.setDisable(false);
+		numberOfAlphasArrayHighLift.setDisable(false);
+		alphaInitialLabelHighLift.setDisable(false);
+		alphaFinalLabelHighLift.setDisable(false);
+		numberOfAlphasArrayLabelHighLift.setDisable(false);	
+
+		arrayLabelHighLift.setDisable(false);
+		valuesLabelHighLift.setDisable(false);
+		theInputOutputTree.setPerformHighLiftAnalysis(true);
 	}
 	
 	@FXML
@@ -380,7 +537,7 @@ public class VaraiblesAnalyses {
 		alphaFiveLift.setDisable(true);
 		alphaSixLift.setDisable(true);
 		numberOfAlphasValuesLabelLift.setDisable(true);
-		alphaAnglesValuesLabelLift.setDisable(true);
+//		alphaAnglesValuesLabelLift.setDisable(true);
 		arrayLabelLift.setDisable(false);
 		anglesUnitLift.setDisable(true);
 		anglesUnitLabelLift.setDisable(true);
@@ -464,46 +621,96 @@ public class VaraiblesAnalyses {
 		alphasInputLabelLift.setDisable(true);
 		
 		theInputOutputTree.setPerformLiftAnalysis(false);
+		
+		
+		drawStallPath.setDisable(true);
+		yesStallPath.setDisable(true);
+		noStallPath.setDisable(true);
 	}
 	
 	
 	@FXML
 	private void enableLoadAnalysisLift(){
-		numberOfAlphasValuesLift.setDisable(false);
-		okButtonLift.setDisable(false);
-		alphaOneLift.setDisable(false);
-		alphaTwoLift.setDisable(false);
-		alphaThreeLift.setDisable(false);
-		alphaFourLift.setDisable(false);
-		alphaFiveLift.setDisable(false);
-		alphaSixLift.setDisable(false);
-		alphaSevenLift.setDisable(false);
-		alphaEightLift.setDisable(false);
-		alphaNineLift.setDisable(false);
-		alphaTenLift.setDisable(false);
-		numberOfAlphasValuesLabelLift.setDisable(false);
-		alphaAnglesValuesLabelLift.setDisable(false);
-		anglesUnitLift.setDisable(false);
-		anglesUnitLabelLift.setDisable(false);
+			
+		drawStallPath.setDisable(false);
+		yesStallPath.setDisable(false);
+		noStallPath.setDisable(false);
 		
-		alphaInitiallLift.setDisable(false);
-		alphaFinalLift.setDisable(false);
-		alphaInitialUnitsLift.setDisable(false);
-		alphaFinalUnitsLift.setDisable(false);
-		numberOfAlphasArrayLift.setDisable(false);
-		alphaInitialLabelLift.setDisable(false);
-		alphaFinalLabelLift.setDisable(false);
-		numberOfAlphasArrayLabelLift.setDisable(false);
-		
+//		numberOfAlphasValuesLift.setDisable(false);
+//		okButtonLift.setDisable(false);
+//		alphaOneLift.setDisable(false);
+//		alphaTwoLift.setDisable(false);
+//		alphaThreeLift.setDisable(false);
+//		alphaFourLift.setDisable(false);
+//		alphaFiveLift.setDisable(false);
+//		alphaSixLift.setDisable(false);
+//		alphaSevenLift.setDisable(false);
+//		alphaEightLift.setDisable(false);
+//		alphaNineLift.setDisable(false);
+//		alphaTenLift.setDisable(false);
+//		numberOfAlphasValuesLabelLift.setDisable(false);
+//		alphaAnglesValuesLabelLift.setDisable(false);
+//		anglesUnitLift.setDisable(false);
+//		anglesUnitLabelLift.setDisable(false);
+//		
+//		alphaInitiallLift.setDisable(false);
+//		alphaFinalLift.setDisable(false);
+//		alphaInitialUnitsLift.setDisable(false);
+//		alphaFinalUnitsLift.setDisable(false);
+//		numberOfAlphasArrayLift.setDisable(false);
+//		alphaInitialLabelLift.setDisable(false);
+//		alphaFinalLabelLift.setDisable(false);
+//		numberOfAlphasArrayLabelLift.setDisable(false);
+//		
 		alphasAsArrayLift.setDisable(false);
 		alphasAsInputLift.setDisable(false);
 		
-		arrayLabelLift.setDisable(false);
-		valuesLabelLift.setDisable(false);
+//		arrayLabelLift.setDisable(false);
+//		valuesLabelLift.setDisable(false);
 		alphasInputLabelLift.setDisable(false);
 		
 	}
 	
+	
+	@FXML
+	private void disableLoadDistributionHighLift(){
+		numberOfAlphasValuesHighLift.setDisable(true);
+		okButtonHighLift.setDisable(true);
+		alphaOneHighLift.setDisable(true);
+		alphaTwoHighLift.setDisable(true);
+		alphaThreeHighLift.setDisable(true);
+		alphaFourHighLift.setDisable(true);
+		alphaFiveHighLift.setDisable(true);
+		alphaSixHighLift.setDisable(true);
+		alphaSevenHighLift.setDisable(true);
+		alphaEightHighLift.setDisable(true);
+		alphaNineHighLift.setDisable(true);
+		alphaTenHighLift.setDisable(true);
+		numberOfAlphasValuesLabelHighLift.setDisable(true);
+		alphaAnglesValuesLabelHighLift.setDisable(true);
+		anglesUnitHighLift.setDisable(true);
+		anglesUnitLabelHighLift.setDisable(true);
+	}
+	
+	@FXML
+	private void enableLoadDistributionHighLift(){
+		numberOfAlphasValuesHighLift.setDisable(false);
+		okButtonHighLift.setDisable(false);
+		alphaOneHighLift.setDisable(false);
+		alphaTwoHighLift.setDisable(false);
+		alphaThreeHighLift.setDisable(false);
+		alphaFourHighLift.setDisable(false);
+		alphaFiveHighLift.setDisable(false);
+		alphaSixHighLift.setDisable(false);
+		alphaSevenHighLift.setDisable(false);
+		alphaEightHighLift.setDisable(false);
+		alphaNineHighLift.setDisable(false);
+		alphaTenHighLift.setDisable(false);
+		numberOfAlphasValuesLabelHighLift.setDisable(false);
+		alphaAnglesValuesLabelHighLift.setDisable(false);
+		anglesUnitHighLift.setDisable(false);
+		anglesUnitLabelHighLift.setDisable(false);
+	}
 	@FXML
 	public void setNumberOfGivenSection() throws IOException{
 		if((int)Double.parseDouble(numberOfAlphasValues.getValue().toString()) == 1){
@@ -683,6 +890,133 @@ public class VaraiblesAnalyses {
 			alphaTenLift.setDisable(false);
 		}
 	}
+	
+	@FXML
+	public void setNumberOfGivenSectionHighLift() throws IOException{
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 1){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(true);
+			alphaThreeHighLift.setDisable(true);
+			alphaFourHighLift.setDisable(true);
+			alphaFiveHighLift.setDisable(true);
+			alphaSixHighLift.setDisable(true);
+			alphaSevenHighLift.setDisable(true);
+			alphaEightHighLift.setDisable(true);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+			}
+
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 2){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(true);
+			alphaFourHighLift.setDisable(true);
+			alphaFiveHighLift.setDisable(true);
+			alphaSixHighLift.setDisable(true);
+			alphaSevenHighLift.setDisable(true);
+			alphaEightHighLift.setDisable(true);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+		}
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 3){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(true);
+			alphaFiveHighLift.setDisable(true);
+			alphaSixHighLift.setDisable(true);
+			alphaSevenHighLift.setDisable(true);
+			alphaEightHighLift.setDisable(true);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+		}
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 4){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(false);
+			alphaFiveHighLift.setDisable(true);
+			alphaSixHighLift.setDisable(true);
+			alphaSevenHighLift.setDisable(true);
+			alphaEightHighLift.setDisable(true);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+		}
+		
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 5){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(false);
+			alphaFiveHighLift.setDisable(false);
+			alphaSixHighLift.setDisable(true);
+			alphaSevenHighLift.setDisable(true);
+			alphaEightHighLift.setDisable(true);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+		}
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 6){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(false);
+			alphaFiveHighLift.setDisable(false);
+			alphaSixHighLift.setDisable(false);
+			alphaSevenHighLift.setDisable(true);
+			alphaEightHighLift.setDisable(true);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+		}
+		
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 7){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(false);
+			alphaFiveHighLift.setDisable(false);
+			alphaSixHighLift.setDisable(false);
+			alphaSevenHighLift.setDisable(false);
+			alphaEightHighLift.setDisable(true);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+		}
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 8){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(false);
+			alphaFiveHighLift.setDisable(false);
+			alphaSixHighLift.setDisable(false);
+			alphaSevenHighLift.setDisable(false);
+			alphaEightHighLift.setDisable(false);
+			alphaNineHighLift.setDisable(true);
+			alphaTenHighLift.setDisable(true);
+		}
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 9){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(false);
+			alphaFiveHighLift.setDisable(false);
+			alphaSixHighLift.setDisable(false);
+			alphaSevenHighLift.setDisable(false);
+			alphaEightHighLift.setDisable(false);
+			alphaNineHighLift.setDisable(false);
+			alphaTenHighLift.setDisable(true);
+		}
+		if((int)Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString()) == 10){
+			alphaOneHighLift.setDisable(false);
+			alphaTwoHighLift.setDisable(false);
+			alphaThreeHighLift.setDisable(false);
+			alphaFourHighLift.setDisable(false);
+			alphaFiveHighLift.setDisable(false);
+			alphaSixHighLift.setDisable(false);
+			alphaSevenHighLift.setDisable(false);
+			alphaEightHighLift.setDisable(false);
+			alphaNineHighLift.setDisable(false);
+			alphaTenHighLift.setDisable(false);
+		}
+	}
 		
 	//ANALYSES
 	//-----------------------------------------------------------------------------------------------
@@ -834,6 +1168,88 @@ public class VaraiblesAnalyses {
 		WingAnalysisCalculator.calculateLiftCurve(theInputOutputTree, this);
 		theInputOutputTree.getSaveButton().setDisable(false);
 		
+	}
+	@FXML
+	private void performHighLiftAnalyses(){
+		// SET DATA IN INPUT TREE
+		
+		//
+		Amount<Angle> alphaInitialAmount = Amount.valueOf(
+				Double.parseDouble(alphaInitialHighLift.getText()),
+				main.recognizeUnit(alphaInitialUnitsHighLift));
+		
+		Amount<Angle> alphaFinalAmount = Amount.valueOf(
+				Double.parseDouble(alphaFinalHighLift.getText()),
+				main.recognizeUnit(alphaFinalUnitsHighLift));
+		
+		List<Amount<Angle>>alphaLiftArray = MyArrayUtils.convertDoubleArrayToListOfAmount(
+				MyArrayUtils.linspace(
+				alphaInitialAmount.doubleValue(NonSI.DEGREE_ANGLE),
+				alphaFinalAmount.doubleValue(NonSI.DEGREE_ANGLE),
+				(int)Double.parseDouble(numberOfAlphasArrayHighLift.getText())),
+				NonSI.DEGREE_ANGLE);
+		
+		theInputOutputTree.setAlphaArrayHighLiftCurve(alphaLiftArray);
+		
+		// high lift distribution
+		
+		double [] alphaArray = new double[(int) Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString())];
+		int i=0;
+		if(!alphaOneHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaOneHighLift.getText()); 
+			i++;
+		}
+		if(!alphaTwoHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaTwoHighLift.getText()); 
+			i++;
+		}
+		if(!alphaThreeHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaThreeHighLift.getText()); 
+			i++;
+		}
+		if(!alphaFourHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaFourHighLift.getText()); 
+			i++;
+		}
+		if(!alphaFiveHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaFiveHighLift.getText()); 
+			i++;
+		}
+		if(!alphaSixHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaSixHighLift.getText()); 
+			i++;
+		}
+		if(!alphaSevenHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaSevenHighLift.getText()); 
+			i++;
+		}
+		if(!alphaEightHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaEightHighLift.getText()); 
+			i++;
+		}
+		if(!alphaNineHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaNineHighLift.getText()); 
+			i++;
+		}
+		if(!alphaTenHighLift.getText().trim().isEmpty()){
+			alphaArray[i] = Double.parseDouble(alphaTenHighLift.getText()); 
+			i++;
+		}
+		
+		Arrays.sort(alphaArray);
+		
+		alphaLiftArray = MyArrayUtils.convertDoubleArrayToListOfAmount(
+				alphaArray, 
+				main.recognizeUnit(anglesUnitHighLift)
+				);
+		
+		theInputOutputTree.setAlphaArrayHighLiftDistribution(alphaLiftArray);
+		
+		// LIFT CURVE
+		WingAnalysisCalculator.calculateHighLiftCurve();
+	
+		// LIFT DISTRIBUTION
+		jio
 	}
 	
 	public void addExternalCurveLoadFunct() throws IOException{
@@ -1090,6 +1506,22 @@ public class VaraiblesAnalyses {
 
 	public void setxArrayExternalLiftCoefficient(List<List<Double>> xArrayExternalLiftCoefficient) {
 		this.xArrayExternalLiftCoefficient = xArrayExternalLiftCoefficient;
+	}
+
+
+
+
+
+	public int getRunHighLift() {
+		return runHighLift;
+	}
+
+
+
+
+
+	public void setRunHighLift(int runHighLift) {
+		this.runHighLift = runHighLift;
 	}
 	
 }

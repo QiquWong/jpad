@@ -343,7 +343,7 @@
                                                                <children>
                                                                   <HBox alignment="CENTER_LEFT" prefHeight="73.0" prefWidth="274.0">
                                                                      <children>
-                                                                        <Label fx:id="valuesLabel111" prefHeight="20.0" prefWidth="145.0" text="Draw stall path">
+                                                                        <Label fx:id="drawStallPath" prefHeight="20.0" prefWidth="145.0" text="Draw stall path">
                                                                            <font>
                                                                               <Font size="14.0" />
                                                                            </font>
@@ -518,9 +518,9 @@
                                                    </font>
                                                 </Label>
                                                 <Separator prefWidth="200.0" />
-                                                <SplitPane dividerPositions="0.6208053691275168" orientation="VERTICAL" prefHeight="612.0" prefWidth="534.0">
+                                                <SplitPane dividerPositions="0.6208053691275168" orientation="VERTICAL" prefHeight="603.0" prefWidth="528.0">
                                                   <items>
-                                                    <AnchorPane fx:id="outputPaneFinalLIFT" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="600.0" />
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="600.0" />
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                          <children>
                                                             <GridPane fx:id="outputPaneTextLIFT" prefHeight="265.0" prefWidth="900.0">
@@ -537,6 +537,288 @@
                                                             </GridPane>
                                                          </children></AnchorPane>
                                                   </items>
+                                                </SplitPane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="High Lift ">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="310.0" layoutY="98.0" prefHeight="671.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <ToolBar maxWidth="320.0" minWidth="320.0" prefHeight="37.0" prefWidth="320.0">
+                                       <items>
+                                          <RadioButton fx:id="enableHighLiftAnalysis" mnemonicParsing="false" onAction="#enableHighLiftAnalysis" selected="true" text="Enable this Analysis">
+                                             <toggleGroup>
+                                                <ToggleGroup fx:id="Abilita11" />
+                                             </toggleGroup>
+                                          </RadioButton>
+                                          <RadioButton fx:id="disableHighLiftAnalysis" mnemonicParsing="false" onAction="#disableHighLiftAnalysis" text="Disable this Analysis" toggleGroup="$Abilita11">
+                                             <padding>
+                                                <Insets left="15.0" />
+                                             </padding>
+                                          </RadioButton>
+                                       </items>
+                                    </ToolBar>
+                                    <HBox alignment="CENTER_RIGHT" prefHeight="37.0" prefWidth="1500.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#performHighLiftAnalyses" prefHeight="31.0" prefWidth="169.0" text="Perform High Lift Analysis" textOverrun="CLIP">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Button>
+                                          <Region prefHeight="200.0" prefWidth="16.0" />
+                                          <Region prefHeight="39.0" prefWidth="5.0" />
+                                          <MenuButton minWidth="100.0" mnemonicParsing="false" text="Manage external curves">
+                                             <items>
+                                                <MenuItem fx:id="addExternalCurveLift1" mnemonicParsing="false" text="Add external curve" />
+                                                <MenuItem fx:id="deleteLastCurveLift1" mnemonicParsing="false" text="Delete last curve" />
+                                                <MenuItem fx:id="deleteAllCurveLift1" mnemonicParsing="false" text="Delete all external curves" />
+                                             </items>
+                                          </MenuButton>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
+                              <SplitPane dividerPositions="0.3741648106904232" prefHeight="635.0" prefWidth="900.0">
+                                 <items>
+                                    <ScrollPane>
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="700.0" prefWidth="343.0">
+                                             <children>
+                                                <VBox prefHeight="631.0" prefWidth="358.0">
+                                                   <children>
+                                                      <Label text="Input">
+                                                         <font>
+                                                            <Font name="AR ESSENCE" size="18.0" />
+                                                         </font>
+                                                         <VBox.margin>
+                                                            <Insets left="5.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <Separator prefWidth="200.0">
+                                                         <VBox.margin>
+                                                            <Insets top="3.0" />
+                                                         </VBox.margin>
+                                                      </Separator>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="73.0" prefWidth="358.0">
+                                                         <children>
+                                                            <VBox layoutX="7.0" layoutY="33.0">
+                                                               <children>
+                                                                  <HBox alignment="CENTER_LEFT" prefHeight="47.0" prefWidth="316.0">
+                                                                     <children>
+                                                                        <Label text="Lift Curve">
+                                                                           <font>
+                                                                              <Font name="System Bold" size="14.0" />
+                                                                           </font>
+                                                                           <padding>
+                                                                              <Insets top="20.0" />
+                                                                           </padding>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                            </VBox>
+                                                            <Label fx:id="performHighLiftLabel" layoutX="7.0" layoutY="14.0" prefHeight="20.0" prefWidth="202.0" text="Perform Load Distributions">
+                                                               <font>
+                                                                  <Font size="13.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <RadioButton fx:id="yesHighLift" layoutX="185.0" layoutY="16.0" mnemonicParsing="false" onAction="#enableLoadDistributionHighLift" prefHeight="17.0" prefWidth="48.0" text="yes">
+                                                               <toggleGroup>
+                                                                  <ToggleGroup fx:id="stallPath1" />
+                                                               </toggleGroup>
+                                                            </RadioButton>
+                                                            <RadioButton fx:id="noHighLift" layoutX="245.0" layoutY="16.0" mnemonicParsing="false" onAction="#disableLoadDistributionHighLift" prefHeight="17.0" prefWidth="51.0" text="no" toggleGroup="$stallPath1" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <Separator prefHeight="6.0" prefWidth="358.0" />
+                                                      <GridPane prefHeight="154.0" prefWidth="303.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="115.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="221.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints maxHeight="26.600006103515625" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="40.399993896484375" minHeight="-Infinity" prefHeight="35.20001220703125" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="31.600006103515625" minHeight="-Infinity" prefHeight="30.79998779296875" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label fx:id="alphaInitialLabelHighLift" text="Alpha Initial" GridPane.rowIndex="1" />
+                                                            <Label fx:id="alphaFinalLabelHighLift" text="Alpha Final" GridPane.rowIndex="2" />
+                                                            <Label fx:id="numberOfAlphasArrayLabelHighLift" text="Number of alphas" GridPane.rowIndex="3" />
+                                                            <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                               <children>
+                                                                  <TextField fx:id="alphaInitialHighLift" prefHeight="25.0" prefWidth="153.0" />
+                                                                  <ChoiceBox fx:id="alphaInitialUnitsHighLift" prefHeight="25.0" prefWidth="64.0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                               <children>
+                                                                  <TextField fx:id="alphaFinalHighLift" prefHeight="25.0" prefWidth="153.0" />
+                                                                  <ChoiceBox fx:id="alphaFinalUnitsHighLift" prefHeight="25.0" prefWidth="64.0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                               <children>
+                                                                  <TextField fx:id="numberOfAlphasArrayHighLift" prefHeight="25.0" prefWidth="219.0" />
+                                                               </children>
+                                                            </HBox>
+                                                            <VBox>
+                                                               <children>
+                                                                  <Label fx:id="arrayLabelHighLift" text="Alpha Array">
+                                                                     <font>
+                                                                        <Font size="14.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Separator prefWidth="200.0" />
+                                                               </children>
+                                                               <GridPane.margin>
+                                                                  <Insets />
+                                                               </GridPane.margin>
+                                                            </VBox>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets top="20.0" />
+                                                         </padding>
+                                                         <VBox.margin>
+                                                            <Insets left="5.0" right="50.0" />
+                                                         </VBox.margin>
+                                                      </GridPane>
+                                                      <Label text="Load Distributions">
+                                                         <font>
+                                                            <Font name="System Bold" size="14.0" />
+                                                         </font>
+                                                         <VBox.margin>
+                                                            <Insets left="5.0" top="30.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <Separator prefHeight="6.0" prefWidth="358.0" />
+                                                   </children>
+                                                </VBox>
+                                                <GridPane layoutX="8.0" layoutY="341.0" prefHeight="396.0" prefWidth="345.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="115.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="221.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="numberOfAlphasValuesLabelHighLift" text="Number of Alphas" GridPane.rowIndex="1" />
+                                                      <Label fx:id="alphaAnglesValuesLabelHighLift" text="Alpha Angles " GridPane.rowIndex="3" />
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <ChoiceBox fx:id="numberOfAlphasValuesHighLift" prefHeight="25.0" prefWidth="71.0" />
+                                                            <Button fx:id="okButtonHighLift" mnemonicParsing="false" onAction="#setNumberOfGivenSectionHighLift" prefHeight="25.0" prefWidth="29.0" style="-fx-background-radius: 5;" text="ok">
+                                                               <HBox.margin>
+                                                                  <Insets left="10.0" />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                         <children>
+                                                            <TextField fx:id="alphaOneHighLift" prefHeight="25.0" prefWidth="110.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <VBox>
+                                                         <children>
+                                                            <Label fx:id="valuesLabelHighLift" text="Input Values">
+                                                               <font>
+                                                                  <Font size="14.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Separator prefWidth="200.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                         <children>
+                                                            <TextField fx:id="alphaTwoHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <TextField fx:id="alphaThreeHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="65.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="alphaFourHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                      <TextField fx:id="alphaFiveHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                      <TextField fx:id="alphaSixHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                      <VBox alignment="BASELINE_LEFT" GridPane.rowIndex="12" />
+                                                      <HBox alignment="CENTER_LEFT" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
+                                                         <padding>
+                                                            <Insets left="3.0" />
+                                                         </padding>
+                                                      </HBox>
+                                                      <TextField fx:id="alphaSevenHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                      <TextField fx:id="alphaEightHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                      <TextField fx:id="alphaNineHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                      <TextField fx:id="alphaTenHighLift" maxWidth="110.0" prefHeight="25.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                      <Label fx:id="anglesUnitLabelHighLift" text="Angles Unit" GridPane.rowIndex="2" />
+                                                      <ChoiceBox fx:id="anglesUnitHighLift" prefHeight="25.0" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </ScrollPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="628.0" prefWidth="502.0">
+                                       <children>
+                                          <VBox layoutX="-53.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Separator prefWidth="200.0" />
+                                                <Label text="Output">
+                                                   <VBox.margin>
+                                                      <Insets left="5.0" />
+                                                   </VBox.margin>
+                                                   <font>
+                                                      <Font name="AR ESSENCE" size="18.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator prefWidth="200.0" />
+                                                <SplitPane dividerPositions="0.6208053691275168" orientation="VERTICAL" prefHeight="612.0" prefWidth="534.0">
+                                                   <items>
+                                                      <AnchorPane fx:id="outputPaneFinalLIFT1" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="600.0" />
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                         <children>
+                                                            <GridPane fx:id="outputPaneTextLIFT1" prefHeight="265.0" prefWidth="900.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1500.0" minWidth="-Infinity" prefWidth="380.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints maxHeight="94.5999755859375" minHeight="-Infinity" prefHeight="23.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="272.0" prefHeight="272.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <TextArea fx:id="outputTextLIFT1" GridPane.rowIndex="1" />
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </items>
                                                 </SplitPane>
                                              </children>
                                           </VBox>

@@ -204,7 +204,7 @@ public class HighLiftInputValues {
 			"DOUBLE_SLOTTED",
 			"PLAIN",
 			"FOWLER",
-			"OPTMIZED_FOWLER",
+			"OPTIMIZED_FOWLER",
 			"TRIPLE_SLOTTED"
 			);
 	ObservableList<String> flapUnit = FXCollections.observableArrayList("°","rad");
@@ -353,7 +353,7 @@ public class HighLiftInputValues {
 			theInputTree.getFlapTypes().add(FlapTypeEnum.PLAIN);
 			if(flapTypeFXMLList.get(i).getValue().toString() == "FOWLER")
 			theInputTree.getFlapTypes().add(FlapTypeEnum.FOWLER);
-			if(flapTypeFXMLList.get(i).getValue().toString() == "OPTMIZED_FOWLER")
+			if(flapTypeFXMLList.get(i).getValue().toString() == "OPTIMIZED_FOWLER")
 			theInputTree.getFlapTypes().add(FlapTypeEnum.OPTIMIZED_FOWLER);
 			if(flapTypeFXMLList.get(i).getValue().toString() == "TRIPLE_SLOTTED")
 			theInputTree.getFlapTypes().add(FlapTypeEnum.TRIPLE_SLOTTED);

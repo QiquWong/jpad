@@ -54,24 +54,29 @@ public class D3PlotterClass {
 		}
 		
 		List<Double[][]> dataTopViewFlap = new ArrayList<>();
+		List<Double[][]> dataTopViewFlapMirrored = new ArrayList<>();
 		if(theInputTree.isHighLiftInputTreeIsFilled()) {
 			for( int i=0; i<theInputTree.getNumberOfFlaps(); i++) {
 		dataTopViewFlap.add(theInputTree.getFlapsAsArray(i));
 		Double[][] dataFlapMirrored = new Double[dataTopViewFlap.get(i).length][dataTopViewFlap.get(i)[0].length];
-		for (int ii=0; ii<dataTopViewFlap.get(i).length; i++) { 
+		for (int ii=0; ii<dataTopViewFlap.get(i).length; ii++) { 
 			dataFlapMirrored[ii][0] = -dataTopViewFlap.get(i)[ii][0];
 			dataFlapMirrored[ii][1] = dataTopViewFlap.get(i)[ii][1];
 	}
-		dataTopViewFlap.add(dataFlapMirrored);
+		dataTopViewFlapMirrored.add(dataTopViewFlap.get(i));
+		dataTopViewFlapMirrored.add(dataFlapMirrored);
 			}
-			for( int i=0; i<theInputTree.getNumberOfSlats(); i++) {
+			
+		dataTopViewFlap = new ArrayList<>();
+		for( int i=0; i<theInputTree.getNumberOfSlats(); i++) {
 		dataTopViewFlap.add(theInputTree.getSlatsAsArray(i));
 		Double[][] dataSlatMirrored = new Double[dataTopViewFlap.get(i).length][dataTopViewFlap.get(i)[0].length];
-		for (int ii=0; ii<dataTopViewFlap.get(dataTopViewFlap.size()-1).length; i++) { 
-			dataSlatMirrored[ii][0] = -dataTopViewFlap.get(dataTopViewFlap.size()-1)[ii][0];
-			dataSlatMirrored[ii][1] = dataTopViewFlap.get(dataTopViewFlap.size()-1)[ii][1];
+		for (int ii=0; ii<dataTopViewFlap.get(i).length; ii++) { 
+			dataSlatMirrored[ii][0] = -dataTopViewFlap.get(i)[ii][0];
+			dataSlatMirrored[ii][1] = dataTopViewFlap.get(i)[ii][1];
 	}
-		dataTopViewFlap.add(dataSlatMirrored);
+		dataTopViewFlapMirrored.add(dataTopViewFlap.get(i));
+		dataTopViewFlapMirrored.add(dataSlatMirrored);
 			}
 		}
 
@@ -90,8 +95,8 @@ public class D3PlotterClass {
 	listDataArrayTopView.add(dataTopView); 
 	listDataArrayTopView.add(dataTopViewMirrored);
 	if(theInputTree.isHighLiftInputTreeIsFilled()) {
-		for( int i=0; i<theInputTree.getNumberOfFlaps()+ theInputTree.getNumberOfSlats(); i++) 
-	listDataArrayTopView.add(dataTopViewFlap.get(i));
+		for( int i=0; i<((theInputTree.getNumberOfFlaps()+ theInputTree.getNumberOfSlats())*2); i++) 
+	listDataArrayTopView.add(dataTopViewFlapMirrored.get(i));
 	}
 	
 	D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
@@ -150,8 +155,10 @@ public class D3PlotterClass {
 					"fill:none; stroke:black; stroke-width:2"
 					)
 			.plotAreas(true,true,true,true,true,true,true,true,true,true,true)
-			.areaStyles("fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:white;","fill:white;",
-					"fill:yellow;","fill:yellow;","fill:orange;","fill:orange;")
+			.areaStyles("fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:yellow;","fill:yellow;",
+					"fill:grey;","fill:grey;","fill:orange;","fill:orange;",
+					"fill:purple;","fill:purple;",
+					"fill:white;","fill:white;")
 			.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
 			.showLegend(false)
 			.build(); 
