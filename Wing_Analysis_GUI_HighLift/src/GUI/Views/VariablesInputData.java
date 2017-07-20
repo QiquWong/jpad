@@ -106,8 +106,8 @@ public class VariablesInputData {
 	TextField adimensionalKinkStation;
 	@FXML
 	ChoiceBox airfoilFamily;
-	@FXML
-	TextField maxThickness;
+//	@FXML
+//	TextField maxThickness;
 
 
 	@FXML
@@ -201,6 +201,58 @@ public class VariablesInputData {
 
 	List<TextField> clMaxList = new ArrayList<>();
 	
+	@FXML
+	TextField thickness1;
+	@FXML
+	TextField thickness2;
+	@FXML
+	TextField thickness3;
+	@FXML
+	TextField thickness4;
+	@FXML
+	TextField thickness5;
+
+	List<TextField> thicknessList = new ArrayList<>();
+	
+	@FXML
+	TextField leRadius1;
+	@FXML
+	TextField leRadius2;
+	@FXML
+	TextField leRadius3;
+	@FXML
+	TextField leRadius4;
+	@FXML
+	TextField leRadius5;
+
+	List<TextField> leRadiusList = new ArrayList<>();
+	
+	@FXML
+	TextField cLZero1;
+	@FXML
+	TextField cLZero2;
+	@FXML
+	TextField cLZero3;
+	@FXML
+	TextField cLZero4;
+	@FXML
+	TextField cLZero5;
+
+	List<TextField> cLZeroList = new ArrayList<>();
+	
+	@FXML
+	TextField cLAlpha1;
+	@FXML
+	TextField cLAlpha2;
+	@FXML
+	TextField cLAlpha3;
+	@FXML
+	TextField cLAlpha4;
+	@FXML
+	TextField cLAlpha5;
+
+	List<TextField> cLAlphaList = new ArrayList<>();
+	
 	// units
 	@FXML
 	ChoiceBox altitudeUnits;
@@ -222,6 +274,10 @@ public class VariablesInputData {
 	ChoiceBox alphaZeroLiftUnits;
 	@FXML
 	ChoiceBox numberOfGivenSections;
+	@FXML
+	ChoiceBox leRadiusUnits;
+	@FXML
+	ChoiceBox clAlphaUnits;
 
 	
 	@FXML
@@ -239,6 +295,8 @@ public class VariablesInputData {
 	ObservableList<String> chordsUnitsList = FXCollections.observableArrayList("m","ft" );
 	ObservableList<String> alphaStarUnitsList = FXCollections.observableArrayList("°","rad" );
 	ObservableList<String> alphaZeroLiftUnitsList = FXCollections.observableArrayList("°","rad" );
+	ObservableList<String> leRadiusUnitsList = FXCollections.observableArrayList("m","ft" );
+	ObservableList<String> clAlphaUnitsList = FXCollections.observableArrayList("1/°","1/rad" );
 	ObservableList<String> aifoilList = FXCollections.observableArrayList("NACA_4_DIGIT",
 			"NACA_5_DIGIT",
 			"NACA_63_SERIES",
@@ -278,7 +336,13 @@ public class VariablesInputData {
 
 		numberOfGivenSections.setValue("2");
 		numberOfGivenSections.setItems(numberOfGivenSectionsList);
+		
+		leRadiusUnits.setValue("m");
+		leRadiusUnits.setItems(leRadiusUnitsList);
 
+		clAlphaUnits.setValue("1/°");
+		clAlphaUnits.setItems(clAlphaUnitsList);
+		
 		stationList.add(adimensionalStations1);
 		stationList.add(adimensionalStations2);
 		stationList.add(adimensionalStations3);
@@ -314,7 +378,26 @@ public class VariablesInputData {
 		clMaxList.add(clMax3);
 		clMaxList.add(clMax4);
 		clMaxList.add(clMax5);
-		
+		thicknessList.add(thickness1);
+		thicknessList.add(thickness2);
+		thicknessList.add(thickness3);
+		thicknessList.add(thickness4);
+		thicknessList.add(thickness5);
+		leRadiusList.add(leRadius1);
+		leRadiusList.add(leRadius2);
+		leRadiusList.add(leRadius3);
+		leRadiusList.add(leRadius4);
+		leRadiusList.add(leRadius5);
+		cLZeroList.add(cLZero1);
+		cLZeroList.add(cLZero2);
+		cLZeroList.add(cLZero3);
+		cLZeroList.add(cLZero4);
+		cLZeroList.add(cLZero5);
+		cLAlphaList.add(cLAlpha1);
+		cLAlphaList.add(cLAlpha2);
+		cLAlphaList.add(cLAlpha3);
+		cLAlphaList.add(cLAlpha4);
+		cLAlphaList.add(cLAlpha5);
 		
 		
 	}
@@ -606,7 +689,7 @@ public class VariablesInputData {
 		theInputTree.setAspectRatio(Double.parseDouble(aspectRatio.getText()));
 		theInputTree.setNumberOfPointSemispan((int)Double.parseDouble(numberOfPoints.getText()));
 		theInputTree.setAdimensionalKinkStation(Double.parseDouble(adimensionalKinkStation.getText()));
-		theInputTree.setMeanThickness(Double.parseDouble(maxThickness.getText()));
+//		theInputTree.setMeanThickness(Double.parseDouble(maxThickness.getText()));
 		theInputTree.setNumberOfSections((int)Double.parseDouble(numberOfGivenSections.getValue().toString()));
 
 		// airfoil
@@ -719,6 +802,63 @@ public class VariablesInputData {
 		theInputTree.setAlphaStarDistribution((inputListAmountAngle));
 		
 		
+		//THICKNESS
+		inputList= new ArrayList<>();
+
+		inputList.add(Double.parseDouble(thickness1.getText()));
+		inputList.add(Double.parseDouble(thickness2.getText()));
+		if (numb == 3)
+			inputList.add(Double.parseDouble(thickness3.getText()));
+		if (numb == 4)
+			inputList.add(Double.parseDouble(thickness4.getText()));
+		if (numb == 5)
+			inputList.add(Double.parseDouble(thickness5.getText()));	
+		theInputTree.setThicknessDistribution(inputList);
+		
+		//CL ZERO
+		inputList= new ArrayList<>();
+
+		inputList.add(Double.parseDouble(cLZero1.getText()));
+		inputList.add(Double.parseDouble(cLZero2.getText()));
+		if (numb == 3)
+			inputList.add(Double.parseDouble(cLZero3.getText()));
+		if (numb == 4)
+			inputList.add(Double.parseDouble(cLZero4.getText()));
+		if (numb == 5)
+			inputList.add(Double.parseDouble(cLZero5.getText()));	
+		theInputTree.setcLZeroDistribution(inputList);
+		
+		//LE RADIUS
+		inputListAmount= new ArrayList<>();
+
+		unit = main.recognizeUnit(leRadiusUnits);
+
+		inputListAmount.add(Amount.valueOf(Double.parseDouble(leRadius1.getText()), unit));
+		inputListAmount.add(Amount.valueOf(Double.parseDouble(leRadius2.getText()), unit));
+		if (numb == 3)
+			inputListAmount.add(Amount.valueOf(Double.parseDouble(leRadius3.getText()), unit));
+		if (numb == 4)
+			inputListAmount.add(Amount.valueOf(Double.parseDouble(leRadius4.getText()), unit));
+		if (numb == 5)
+			inputListAmount.add(Amount.valueOf(Double.parseDouble(leRadius5.getText()), unit));
+		theInputTree.setLeRadiusDistribution(inputListAmount);
+		
+		//CL ALPHA
+		List<Amount<?>>inputListAmountCLAlpha = new ArrayList<>();
+		
+		unit = main.recognizeUnit(clAlphaUnits);
+
+		inputListAmountCLAlpha.add(Amount.valueOf(Double.parseDouble(cLAlpha1.getText()), unit));
+		inputListAmountCLAlpha.add(Amount.valueOf(Double.parseDouble(cLAlpha2.getText()), unit));
+		if (numb == 3)
+			inputListAmountCLAlpha.add(Amount.valueOf(Double.parseDouble(cLAlpha3.getText()), unit));
+		if (numb == 4)
+			inputListAmountCLAlpha.add(Amount.valueOf(Double.parseDouble(cLAlpha4.getText()), unit));
+		if (numb == 5)
+			inputListAmountCLAlpha.add(Amount.valueOf(Double.parseDouble(cLAlpha5.getText()), unit));
+		
+		theInputTree.setClAlphaDistribution(inputListAmountCLAlpha);
+		
 		//CL MAX
 		inputList= new ArrayList<>();
 
@@ -761,6 +901,13 @@ public class VariablesInputData {
 		
 	}
 	
+	public void addHighLiftDataFunc(InputOutputTree theInputTree) throws IOException{
+		Main.showHighLiftInput(this, theInputTree);
+	
+		
+	}
+	
+	
 	
 	
 	@FXML
@@ -799,7 +946,7 @@ public class VariablesInputData {
 		if(theInputTree.getMeanAirfoilFamily() == AirfoilFamilyEnum.DOUBLE_WEDGE)
 			this.airfoilFamily.setValue("DOUBLE_WEDGE");
 		
-		this.maxThickness.setText(Double.toString(theInputTree.getMeanThickness()));
+//		this.maxThickness.setText(Double.toString(theInputTree.getMeanThickness()));
 		
 		this.numberOfGivenSections.setValue(theInputTree.getNumberOfSections());
 		setNumberOfGivenSection();
@@ -818,79 +965,79 @@ public class VariablesInputData {
 			this.adimensionalStations5.setText(theInputTree.getyAdimensionalStationInput().get(4).toString());	
 			}
 			
-		this.chords1.setText(Double.toString(theInputTree.getChordDistribution().get(0).doubleValue(SI.METER)));
-		this.chords2.setText(Double.toString(theInputTree.getChordDistribution().get(1).doubleValue(SI.METER)));
+		this.chords1.setText(Double.toString(theInputTree.getChordDistribution().get(0).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
+		this.chords2.setText(Double.toString(theInputTree.getChordDistribution().get(1).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==3)
-			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(SI.METER)));
+			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==4){
-			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(SI.METER)));
-			this.chords4.setText(Double.toString(theInputTree.getChordDistribution().get(3).doubleValue(SI.METER)));
+			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
+			this.chords4.setText(Double.toString(theInputTree.getChordDistribution().get(3).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
 		}
 		if(theInputTree.getNumberOfSections()==5){
-			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(SI.METER)));
-			this.chords4.setText(Double.toString(theInputTree.getChordDistribution().get(3).doubleValue(SI.METER)));
-			this.chords5.setText(Double.toString(theInputTree.getChordDistribution().get(4).doubleValue(SI.METER)));
+			this.chords3.setText(Double.toString(theInputTree.getChordDistribution().get(2).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
+			this.chords4.setText(Double.toString(theInputTree.getChordDistribution().get(3).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
+			this.chords5.setText(Double.toString(theInputTree.getChordDistribution().get(4).doubleValue(theInputTree.getChordDistribution().get(0).getUnit())));
 			}
 		this.chordsUnits.setValue(theInputTree.getChordDistribution().get(0).getUnit().toString());
 		
-		this.xle1.setText(Double.toString(theInputTree.getxLEDistribution().get(0).doubleValue(SI.METER)));
-		this.xle2.setText(Double.toString(theInputTree.getxLEDistribution().get(1).doubleValue(SI.METER)));
+		this.xle1.setText(Double.toString(theInputTree.getxLEDistribution().get(0).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
+		this.xle2.setText(Double.toString(theInputTree.getxLEDistribution().get(1).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==3)
-			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(SI.METER)));
+			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==4){
-			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(SI.METER)));
-			this.xle4.setText(Double.toString(theInputTree.getxLEDistribution().get(3).doubleValue(SI.METER)));
+			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
+			this.xle4.setText(Double.toString(theInputTree.getxLEDistribution().get(3).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
 		}
 		if(theInputTree.getNumberOfSections()==5){
-			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(SI.METER)));
-			this.xle4.setText(Double.toString(theInputTree.getxLEDistribution().get(3).doubleValue(SI.METER)));
-			this.xle5.setText(Double.toString(theInputTree.getxLEDistribution().get(4).doubleValue(SI.METER)));
+			this.xle3.setText(Double.toString(theInputTree.getxLEDistribution().get(2).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
+			this.xle4.setText(Double.toString(theInputTree.getxLEDistribution().get(3).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
+			this.xle5.setText(Double.toString(theInputTree.getxLEDistribution().get(4).doubleValue(theInputTree.getxLEDistribution().get(0).getUnit())));
 			}
 		this.xleUnits.setValue(theInputTree.getxLEDistribution().get(0).getUnit().toString());
 		
-		this.twist1.setText(Double.toString(theInputTree.getTwistDistribution().get(0).doubleValue(NonSI.DEGREE_ANGLE)));
-		this.twist2.setText(Double.toString(theInputTree.getTwistDistribution().get(1).doubleValue(NonSI.DEGREE_ANGLE)));
+		this.twist1.setText(Double.toString(theInputTree.getTwistDistribution().get(0).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
+		this.twist2.setText(Double.toString(theInputTree.getTwistDistribution().get(1).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==3)
-			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==4){
-			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.twist4.setText(Double.toString(theInputTree.getTwistDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
+			this.twist4.setText(Double.toString(theInputTree.getTwistDistribution().get(3).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
 		}
 		if(theInputTree.getNumberOfSections()==5){
-			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.twist4.setText(Double.toString(theInputTree.getTwistDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.twist5.setText(Double.toString(theInputTree.getTwistDistribution().get(4).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.twist3.setText(Double.toString(theInputTree.getTwistDistribution().get(2).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
+			this.twist4.setText(Double.toString(theInputTree.getTwistDistribution().get(3).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
+			this.twist5.setText(Double.toString(theInputTree.getTwistDistribution().get(4).doubleValue(theInputTree.getTwistDistribution().get(0).getUnit())));
 			}
 		this.twistUnits.setValue(theInputTree.getTwistDistribution().get(0).getUnit().toString());
 		
 		
-		this.alphaZeroLift1.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(0).doubleValue(NonSI.DEGREE_ANGLE)));
-		this.alphaZeroLift2.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(1).doubleValue(NonSI.DEGREE_ANGLE)));
+		this.alphaZeroLift1.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(0).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
+		this.alphaZeroLift2.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(1).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==3)
-			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==4){
-			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.alphaZeroLift4.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
+			this.alphaZeroLift4.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(3).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
 		}
 		if(theInputTree.getNumberOfSections()==5){
-			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.alphaZeroLift4.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.alphaZeroLift5.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(4).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaZeroLift3.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(2).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
+			this.alphaZeroLift4.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(3).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
+			this.alphaZeroLift5.setText(Double.toString(theInputTree.getAlphaZeroLiftDistribution().get(4).doubleValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit())));
 			}
 		this.alphaZeroLiftUnits.setValue(theInputTree.getAlphaZeroLiftDistribution().get(0).getUnit().toString());
 		
-		this.alphaStar1.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(0).doubleValue(NonSI.DEGREE_ANGLE)));
-		this.alphaStar2.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(1).doubleValue(NonSI.DEGREE_ANGLE)));
+		this.alphaStar1.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(0).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
+		this.alphaStar2.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(1).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==3)
-			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
 		if(theInputTree.getNumberOfSections()==4){
-			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.alphaStar4.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
+			this.alphaStar4.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(3).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
 		}
 		if(theInputTree.getNumberOfSections()==5){
-			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.alphaStar4.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(3).doubleValue(NonSI.DEGREE_ANGLE)));
-			this.alphaStar5.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(4).doubleValue(NonSI.DEGREE_ANGLE)));
+			this.alphaStar3.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(2).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
+			this.alphaStar4.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(3).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
+			this.alphaStar5.setText(Double.toString(theInputTree.getAlphaStarDistribution().get(4).doubleValue(theInputTree.getAlphaStarDistribution().get(0).getUnit())));
 			}
 		this.alphaStarUnits.setValue(theInputTree.getAlphaStarDistribution().get(0).getUnit().toString());
 		 
@@ -908,10 +1055,78 @@ public class VariablesInputData {
 			this.clMax5.setText(theInputTree.getMaximumliftCoefficientDistribution().get(4).toString());	
 			}
 		
-
+		this.thickness1.setText(theInputTree.getThicknessDistribution().get(0).toString());
+		this.thickness2.setText(theInputTree.getThicknessDistribution().get(1).toString());
+		if(theInputTree.getNumberOfSections()==3)
+			this.thickness3.setText(theInputTree.getThicknessDistribution().get(2).toString());
+		if(theInputTree.getNumberOfSections()==4){
+			this.thickness3.setText(theInputTree.getThicknessDistribution().get(2).toString());	
+			this.thickness4.setText(theInputTree.getThicknessDistribution().get(3).toString());
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.thickness3.setText(theInputTree.getThicknessDistribution().get(2).toString());	
+			this.thickness4.setText(theInputTree.getThicknessDistribution().get(3).toString());	
+			this.thickness5.setText(theInputTree.getThicknessDistribution().get(4).toString());	
+			}
 		
-		
+		this.cLZero1.setText(theInputTree.getcLZeroDistribution().get(0).toString());
+		this.cLZero2.setText(theInputTree.getcLZeroDistribution().get(1).toString());
+		if(theInputTree.getNumberOfSections()==3)
+			this.cLZero3.setText(theInputTree.getcLZeroDistribution().get(2).toString());
+		if(theInputTree.getNumberOfSections()==4){
+			this.cLZero3.setText(theInputTree.getcLZeroDistribution().get(2).toString());	
+			this.cLZero4.setText(theInputTree.getcLZeroDistribution().get(3).toString());
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.cLZero3.setText(theInputTree.getcLZeroDistribution().get(2).toString());	
+			this.cLZero4.setText(theInputTree.getcLZeroDistribution().get(3).toString());	
+			this.cLZero5.setText(theInputTree.getcLZeroDistribution().get(4).toString());	
+			}
 
+		this.leRadius1.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(0).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+		this.leRadius2.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(1).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+		if(theInputTree.getNumberOfSections()==3)
+			this.leRadius3.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(2).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+		if(theInputTree.getNumberOfSections()==4){
+			this.leRadius3.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(2).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+			this.leRadius4.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(3).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.leRadius3.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(2).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+			this.leRadius4.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(3).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+			this.leRadius5.setText(Double.toString(theInputTree.getLeRadiusDistribution().get(4).doubleValue(theInputTree.getLeRadiusDistribution().get(0).getUnit())));
+			}
+		this.leRadiusUnits.setValue(theInputTree.getLeRadiusDistribution().get(0).getUnit().toString());
+		
+		Unit clAlphaUnitTemp = null;
+		
+		if(theInputTree.getClAlphaDistribution().get(0).getUnit().toString().equalsIgnoreCase("1/°")) {
+		this.clAlphaUnits.setValue(NonSI.DEGREE_ANGLE.inverse());
+		clAlphaUnitTemp = NonSI.DEGREE_ANGLE.inverse();
+		}
+		
+		if(theInputTree.getClAlphaDistribution().get(0).getUnit().toString().equalsIgnoreCase("1/rad")) {
+		this.clAlphaUnits.setValue(SI.RADIAN.inverse());
+		clAlphaUnitTemp = SI.RADIAN.inverse();
+		}
+		
+		this.cLAlpha1.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+		this.cLAlpha2.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+		if(theInputTree.getNumberOfSections()==3)
+			this.cLAlpha3.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+		if(theInputTree.getNumberOfSections()==4){
+			this.cLAlpha3.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+			this.cLAlpha4.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.cLAlpha3.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+			this.cLAlpha4.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+			this.cLAlpha5.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
+			}
+		
+		if(theInputTree.isHighLiftInputTreeIsFilled()) {
+			addHighLiftDataFunc(theInputTree);
+		}
 	}
 	
 
@@ -946,7 +1161,23 @@ public class VariablesInputData {
 			clMax3.setDisable(true);
 			clMax4.setDisable(true);
 			clMax5.setDisable(true);
+			
+			thickness3.setDisable(true);
+			thickness4.setDisable(true);
+			thickness5.setDisable(true);
+			
+			cLZero3.setDisable(true);
+			cLZero4.setDisable(true);
+			cLZero5.setDisable(true);
 
+			leRadius3.setDisable(true);
+			leRadius4.setDisable(true);
+			leRadius5.setDisable(true);
+			
+			cLAlpha3.setDisable(true);
+			cLAlpha4.setDisable(true);
+			cLAlpha5.setDisable(true);
+			
 		}
 		if((int)Double.parseDouble(numberOfGivenSections.getValue().toString()) == 3){
 			adimensionalStations3.setDisable(false);
@@ -976,6 +1207,23 @@ public class VariablesInputData {
 			clMax3.setDisable(false);
 			clMax4.setDisable(true);
 			clMax5.setDisable(true);
+			
+			thickness3.setDisable(false);
+			thickness4.setDisable(true);
+			thickness5.setDisable(true);
+			
+			cLZero3.setDisable(false);
+			cLZero4.setDisable(true);
+			cLZero5.setDisable(true);
+
+			leRadius3.setDisable(false);
+			leRadius4.setDisable(true);
+			leRadius5.setDisable(true);
+			
+			cLAlpha3.setDisable(false);
+			cLAlpha4.setDisable(true);
+			cLAlpha5.setDisable(true);
+
 
 		}
 		if((int)Double.parseDouble(numberOfGivenSections.getValue().toString()) == 4){
@@ -1007,6 +1255,22 @@ public class VariablesInputData {
 			clMax4.setDisable(false);
 			clMax5.setDisable(true);
 
+			thickness3.setDisable(false);
+			thickness4.setDisable(false);
+			thickness5.setDisable(true);
+			
+			cLZero3.setDisable(false);
+			cLZero4.setDisable(false);
+			cLZero5.setDisable(true);
+
+			leRadius3.setDisable(false);
+			leRadius4.setDisable(false);
+			leRadius5.setDisable(true);
+			
+			cLAlpha3.setDisable(false);
+			cLAlpha4.setDisable(false);
+			cLAlpha5.setDisable(true);
+
 		}
 		if((int)Double.parseDouble(numberOfGivenSections.getValue().toString()) == 5){
 
@@ -1037,6 +1301,23 @@ public class VariablesInputData {
 			clMax3.setDisable(false);
 			clMax4.setDisable(false);
 			clMax5.setDisable(false);
+			
+			thickness3.setDisable(false);
+			thickness4.setDisable(false);
+			thickness5.setDisable(false);
+			
+			cLZero3.setDisable(false);
+			cLZero4.setDisable(false);
+			cLZero5.setDisable(false);
+
+			leRadius3.setDisable(false);
+			leRadius4.setDisable(false);
+			leRadius5.setDisable(false);
+			
+			cLAlpha3.setDisable(false);
+			cLAlpha4.setDisable(false);
+			cLAlpha5.setDisable(false);
+
 
 		}
 	}
@@ -1125,9 +1406,9 @@ public class VariablesInputData {
 		return airfoilFamily;
 	}
 
-	public TextField getMaxThickness() {
-		return maxThickness;
-	}
+//	public TextField getMaxThickness() {
+//		return maxThickness;
+//	}
 
 	public TextField getAdimensionalStations1() {
 		return adimensionalStations1;
@@ -1417,9 +1698,9 @@ public class VariablesInputData {
 		this.airfoilFamily = airfoilFamily;
 	}
 
-	public void setMaxThickness(TextField maxThickness) {
-		this.maxThickness = maxThickness;
-	}
+//	public void setMaxThickness(TextField maxThickness) {
+//		this.maxThickness = maxThickness;
+//	}
 
 	public void setAdimensionalStations1(TextField adimensionalStations1) {
 		this.adimensionalStations1 = adimensionalStations1;
@@ -1735,5 +2016,53 @@ public class VariablesInputData {
 
 	public void setGraphPane(Pane graphPane) {
 		this.graphPane = graphPane;
+	}
+
+	public List<TextField> getThicknessList() {
+		return thicknessList;
+	}
+
+	public void setThicknessList(List<TextField> thicknessList) {
+		this.thicknessList = thicknessList;
+	}
+
+	public List<TextField> getLeRadiusList() {
+		return leRadiusList;
+	}
+
+	public List<TextField> getcLZeroList() {
+		return cLZeroList;
+	}
+
+	public void setLeRadiusList(List<TextField> leRadiusList) {
+		this.leRadiusList = leRadiusList;
+	}
+
+	public void setcLZeroList(List<TextField> cLZeroList) {
+		this.cLZeroList = cLZeroList;
+	}
+
+	public ChoiceBox getLeRadiusUnits() {
+		return leRadiusUnits;
+	}
+
+	public void setLeRadiusUnits(ChoiceBox leRadiusUnits) {
+		this.leRadiusUnits = leRadiusUnits;
+	}
+
+	public List<TextField> getcLAlphaList() {
+		return cLAlphaList;
+	}
+
+	public void setcLAlphaList(List<TextField> cLAlphaList) {
+		this.cLAlphaList = cLAlphaList;
+	}
+
+	public ChoiceBox getClAlphaUnits() {
+		return clAlphaUnits;
+	}
+
+	public void setClAlphaUnits(ChoiceBox clAlphaUnits) {
+		this.clAlphaUnits = clAlphaUnits;
 	}
 }

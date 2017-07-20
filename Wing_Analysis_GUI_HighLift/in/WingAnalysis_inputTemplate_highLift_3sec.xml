@@ -4,30 +4,33 @@
 <!-- Arrays could be defined with or without parenthesis and value can be separated both by , and by ; -->
 <wing_executable>
         <operating_conditions>
-                <altitude unit="ft">8000</altitude>
-                <mach_number>0.171</mach_number>
+                <altitude unit="m">0</altitude>
+                <mach_number>0.28</mach_number>
         </operating_conditions>
        <wing>
             <global>
                 <surface unit="m²">105</surface>
                 <aspect_ratio>12</aspect_ratio>
-                <number_of_point_semispan>100</number_of_point_semispan>
+                <number_of_point_semispan>60</number_of_point_semispan>
                 <adimensional_kink_station>1</adimensional_kink_station>
              </global>
              <distribution>
                 <number_of_given_sections>3</number_of_given_sections>
-                <airfoil_family>NACA_65_SERIES</airfoil_family> 
-				<max_thickness_mean_airfoil>0.14</max_thickness_mean_airfoil>
+                <airfoil_family>NACA_64_SERIES</airfoil_family> 
                    <geometry>
 						<y_adimensional_stations>[0,0.3,1]</y_adimensional_stations>
 						<chord_distribution unit="m">[4.48;3.47;1.65]</chord_distribution>
-						<x_le_distribution unit="m">[0,0.935, 3.115]</x_le_distribution>
-						<twist_distribution unit="rad">[0.0, 0.0, 0.0]</twist_distribution>
+						<x_le_distribution unit="m">[0,0.91966,3.12877]</x_le_distribution>
+						<twist_distribution unit="°">[0.0, 0.0, -2.0]</twist_distribution>
+						<max_thickness_distribution>[0.18,0.18, 0.14]</max_thickness_distribution>
+						<leading_edge_radius_distribution unit = "m">[0.15,0.15,0.15]</leading_edge_radius_distribution>
                     </geometry>
                     <aerodynamics>
-						<alpha_zero_lift_distribution unit="°">[0.0,0.0, 0.0 ]</alpha_zero_lift_distribution>
-						<alpha_star_distribution unit="°">[14,14, 14]</alpha_star_distribution>
-						<maximum_lift_coefficient_distribution>[1.5,1.5, 1.5]</maximum_lift_coefficient_distribution>
+						<alpha_zero_lift_distribution unit="°">[-4.22407, -4.21435 ,-4.22723 ]</alpha_zero_lift_distribution>
+						<alpha_star_distribution unit="°">[9,9,8]</alpha_star_distribution>
+						<cl0_distribution>[0.55,0.55,0.55]</cl0_distribution>   
+						<linear_slope_coefficient unit="1/°">[0.10, 0.10, 0.10]</linear_slope_coefficient>
+						<maximum_lift_coefficient_distribution>[1.85,1.78,1.706]</maximum_lift_coefficient_distribution>
                     </aerodynamics>
              </distribution>
         </wing>

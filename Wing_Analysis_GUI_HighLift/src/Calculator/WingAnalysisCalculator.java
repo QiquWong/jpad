@@ -375,15 +375,17 @@ public class WingAnalysisCalculator {
 			
 		
 		Double alphaStarDeg = 0.0;
-		
+		Double meanThickness = 0.0;
 		for (int i=0; i<kFactors.size(); i++){
 			alphaStarDeg = alphaStarDeg + (kFactors.get(i)*theInputOutputTree.getAlphaStarDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE));
+			meanThickness = meanThickness + (kFactors.get(i)*theInputOutputTree.getThicknessDistribution().get(i));
 		}
 		Amount<Angle> alphaStar =  Amount.valueOf(
 				alphaStarDeg,
 				NonSI.DEGREE_ANGLE);
 
 		theInputOutputTree.setAlphaStar(alphaStar);
+		theInputOutputTree.setMeanThickness(meanThickness);
 		
 		//CL STAR
 		
@@ -625,39 +627,184 @@ public class WingAnalysisCalculator {
 		}
 
 		if(!theInputOutpuTree.performLiftAnalysis) {
+			Amount<Angle> alphaInitialAmount = Amount.valueOf(0, NonSI.DEGREE_ANGLE);
+			
+			Amount<Angle> alphaFinalAmount = Amount.valueOf(20.0,
+					NonSI.DEGREE_ANGLE);
+			
+			List<Amount<Angle>>alphaLiftArray = MyArrayUtils.convertDoubleArrayToListOfAmount(
+					MyArrayUtils.linspace(
+					alphaInitialAmount.doubleValue(NonSI.DEGREE_ANGLE),
+					alphaFinalAmount.doubleValue(NonSI.DEGREE_ANGLE),
+					21),
+					NonSI.DEGREE_ANGLE);
+			
+			theInputOutpuTree.setAlphaArrayLiftCurve(alphaLiftArray);
 			calculateLiftCurve(theInputOutpuTree, theController);
 		}
 		
-//		Map<HighLiftDeviceEffectEnum, Object> highLiftDevicesEffectsMap = 
-//				LiftCalc.calculateHighLiftDevicesEffects(
-//						aeroDatabaseReader,
-//						highLiftDatabaseReader, 
-//						theFlapList, 
-//						theSlatList,
-//						theInputOutpuTree.getyAdimensionalStationInput(),
-//						theInputOutpuTree.getclalpha, 
-//						clZeroBreakPoints, 
-//						maxThicknessRatioBreakPoints,
-//						radiusLeadingEdgeBreakPoints, 
-//						theInputOutpuTree.getChordDistribution(), 
-//						theInputOutpuTree.getFlapDeflection(), 
-//						theInputOutpuTree.getSlatDeflection(), 
-//						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), 
-//						theInputOutpuTree.getcLAlpha(), 
-//						sweepQuarterChordEquivalent, 
-//						taperRatioEquivalent, 
-//						theInputOutpuTree.getRootChordEquivalentWing(),
-//						theInputOutpuTree.getAspectRatio(), 
-//						theInputOutpuTree.getSurface(), 
-//						theInputOutpuTree.getMeanThickness(), 
-//						theInputOutpuTree.getMeanAirfoilFamily(), 
-//						theInputOutpuTree.getcLZero(), 
-//						theInputOutpuTree.getcLMax(), 
-//						theInputOutpuTree.getAlphaStar(),
-//						theInputOutpuTree.getAlphaStall()
-//						);
+		Map<HighLiftDeviceEffectEnum, Object> highLiftDevicesEffectsMap = 
+				LiftCalc.calculateHighLiftDevicesEffects(
+						aeroDatabaseReader,
+						highLiftDatabaseReader, 
+						theFlapList, 
+						theSlatList,
+						theInputOutpuTree.getyAdimensionalStationInput(),
+						theInputOutpuTree.getClAlphaDistribution(),
+						theInputOutpuTree.getcLZeroDistribution(), 
+						theInputOutpuTree.getThicknessDistribution(),
+						theInputOutpuTree.getLeRadiusDistribution(), 
+						theInputOutpuTree.getChordDistribution(), 
+						theInputOutpuTree.getFlapDeflection(), 
+						theInputOutpuTree.getSlatDeflection(), 
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), 
+						theInputOutpuTree.getcLAlpha(), 
+						theInputOutpuTree.getSweepQuarterChordEquivalent(), 
+						theInputOutpuTree.getTaperRatioEquivalentWing(), 
+						theInputOutpuTree.getRootChordEquivalentWing(),
+						theInputOutpuTree.getAspectRatio(), 
+						theInputOutpuTree.getSurface(), 
+						theInputOutpuTree.getMeanThickness(), 
+						theInputOutpuTree.getMeanAirfoilFamily(), 
+						theInputOutpuTree.getcLZero(), 
+						theInputOutpuTree.getcLMax(), 
+						theInputOutpuTree.getAlphaStar(),
+						theInputOutpuTree.getAlphaStall()
+						);
 				
+		List<Double> _deltaCl0FlapList =  
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST);
 		
+		List<Double>  _deltaCL0FlapList =  
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST)
+				;
+		List<Double>  _deltaClmaxFlapList = 
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST);
+		
+		List<Double> _deltaCLmaxFlapList =  
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST);
+				
+		List<Double> _deltaClmaxSlatList =
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST);
+				
+		List<Double> _deltaCLmaxSlatList = 
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST);
+				
+		List<Double> _deltaCD0List =
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD_LIST);
+			
+		List<Double> _deltaCMc4List =
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4_LIST);
+				
+		Double _deltaCl0Flap = 
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP);
+				
+		Double _deltaCL0Flap = 
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP);
+				
+		Double  _deltaClmaxFlap = 
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP);
+				
+		Double  _deltaCLmaxFlap =
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP);
+				
+		Double  _deltaClmaxSlat = 
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT);
+				
+		Double _deltaCLmaxSlat = 
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT);
+				
+		Double _deltaCD0 =
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD);
+				
+		Double _deltaCMc4 =
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4);
+				
+		Amount<?> _cLAlphaHighLift = 
+				(Amount<?>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT);
+				
+		//------------------------------------------------------
+		// CL ZERO HIGH LIFT
+		theInputOutpuTree.setcLZeroHighLift(theInputOutpuTree.getcLZero() + _deltaCL0Flap);
+		
+		//------------------------------------------------------
+		// ALPHA ZERO LIFT HIGH LIFT
+		
+		theInputOutpuTree.setAlphaZeroLiftHighLift(Amount.valueOf(
+				-(theInputOutpuTree.getcLZero()/_cLAlphaHighLift.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()), 
+				NonSI.DEGREE_ANGLE));
+
+		//------------------------------------------------------
+		// CL MAX HIGH LIFT
+		if(theInputOutpuTree.getNumberOfSlats()==0) {
+			theInputOutpuTree.setcLMaxHighLift(theInputOutpuTree.getcLMax()+_deltaCLmaxFlap);
+		}
+		else 
+			theInputOutpuTree.setcLMaxHighLift(theInputOutpuTree.getcLMax()+_deltaCLmaxFlap+_deltaCLmaxSlat);
+		
+		//------------------------------------------------------
+		// ALPHA STALL HIGH LIFT
+		double deltaYPercent = aeroDatabaseReader
+				.getDeltaYvsThickness(
+						theInputOutpuTree.getMeanThickness(),
+						theInputOutpuTree.getMeanAirfoilFamily()
+						);
+		
+		Amount<Angle> deltaAlpha = Amount.valueOf(
+				aeroDatabaseReader
+				.getDAlphaVsLambdaLEVsDy(
+						theInputOutpuTree.getSweepQuarterChordEquivalent().doubleValue(NonSI.DEGREE_ANGLE),
+						deltaYPercent
+						),
+				NonSI.DEGREE_ANGLE);
+		
+		theInputOutpuTree.setAlphaStallHighLift(
+				Amount.valueOf(
+				((theInputOutpuTree.getcLMaxHighLift()
+				- theInputOutpuTree.getcLZeroHighLift()
+				/_cLAlphaHighLift
+					.to(NonSI.DEGREE_ANGLE.inverse())
+					.getEstimatedValue()
+							)
+				+ deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE)),
+				NonSI.DEGREE_ANGLE)
+				);
+		
+		//------------------------------------------------------
+		// ALPHA STAR HIGH LIFT
+		theInputOutpuTree.setAlphaStarHighLift(
+				Amount.valueOf(
+						theInputOutpuTree.getAlphaStallHighLift().doubleValue(NonSI.DEGREE_ANGLE)
+						-(theInputOutpuTree.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE)
+								- theInputOutpuTree.getAlphaStar().doubleValue(NonSI.DEGREE_ANGLE)),
+						NonSI.DEGREE_ANGLE)
+				);
+		//------------------------------------------------------
+		// ALPHA STAR HIGH LIFT
+		theInputOutpuTree.setClStarHighLift(
+				(_cLAlphaHighLift.to(NonSI.DEGREE_ANGLE.inverse())
+							.getEstimatedValue()
+				* theInputOutpuTree.getAlphaStarHighLift()
+					.doubleValue(NonSI.DEGREE_ANGLE))
+				+theInputOutpuTree.getcLZeroHighLift()
+				);
+		
+		
+		
+		theInputOutpuTree.setLiftCoefficient3DCurveHighLift(
+				MyArrayUtils.convertDoubleArrayToListDouble(
+				LiftCalc.calculateCLvsAlphaArray(
+						theInputOutpuTree.getcLZeroHighLift(),
+						theInputOutpuTree.getcLMaxHighLift(),
+						theInputOutpuTree.getAlphaStarHighLift(),
+						theInputOutpuTree.getAlphaStallHighLift(),
+						_cLAlphaHighLift,
+						MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getAlphaArrayHighLiftCurve())
+						))
+				);	
+		System.out.println(" alpha " + theInputOutpuTree.getAlphaArrayHighLiftCurve().toString());
+		System.out.println(" cl " + theInputOutpuTree.getLiftCoefficientCurve().toString());
+		System.out.println(" cl " + theInputOutpuTree.getLiftCoefficient3DCurveHighLift().toString());
 	}
 	
 public static void displayChart(

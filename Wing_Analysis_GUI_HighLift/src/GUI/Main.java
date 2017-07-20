@@ -200,7 +200,7 @@ public class Main extends Application {
 		loaderInputClass = new FXMLLoader();
 		loaderInputClass .setLocation(Main.class.getResource("Views/InputData.fxml"));
 		
-		BorderPane centralItems = loaderInputClass .load();
+		BorderPane centralItems = loaderInputClass.load();
 		mainLayout.setCenter(centralItems);
 	}
 	
@@ -379,6 +379,11 @@ public class Main extends Application {
 		if (textUnit.getValue().toString().equalsIgnoreCase("m²"))
 			unit = SI.SQUARE_METRE;
 		
+		if (textUnit.getValue().toString().equalsIgnoreCase("1/°"))
+			unit = NonSI.DEGREE_ANGLE.inverse();
+		
+		if (textUnit.getValue().toString().equalsIgnoreCase("1/rad"))
+			unit = SI.RADIAN.inverse();
 		
 		return unit;
 	}

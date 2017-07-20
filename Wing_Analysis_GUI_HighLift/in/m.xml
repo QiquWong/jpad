@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Wing_analysis>
+    <operating_conditions>
+        <altitude unit="m">0.0000</altitude>
+        <mach_number>0.2800</mach_number>
+    </operating_conditions>
+    <wing>
+        <global>
+            <surface unit="m²">105.0000</surface>
+            <aspect_ratio>12.0000</aspect_ratio>
+            <number_of_point_semispan>60</number_of_point_semispan>
+            <adimensional_kink_station>1.0000</adimensional_kink_station>
+        </global>
+        <distibution>
+            <number_of_given_sections>3</number_of_given_sections>
+            <airfoil_family>NACA_64_SERIES</airfoil_family>
+            <geometry>
+                <y_adimensional_stations>[0.0, 0.3, 1.0]</y_adimensional_stations>
+                <chord_distribution unit="m">4.48;3.4699999999999998;1.65</chord_distribution>
+                <x_le_distribution unit="m">0.0;0.9196599999999999;3.1287699999999994</x_le_distribution>
+                <twist_distribution unit="°">0.0;0.0;-2.0</twist_distribution>
+                <max_thickness_distribution>[0.18, 0.18, 0.14]</max_thickness_distribution>
+                <leading_edge_radius_distribution unit="m">0.14999999999999997;0.14999999999999997;0.14999999999999997</leading_edge_radius_distribution>
+            </geometry>
+            <aerodynamics>
+                <alpha_zero_lift_distribution unit="°">-4.224069999999999;-4.21435;-4.227229999999999</alpha_zero_lift_distribution>
+                <alpha_star_distribution unit="°">9.0;9.0;8.0</alpha_star_distribution>
+                <cl0_distribution>0.55;0.55;0.55</cl0_distribution>
+                <linear_slope_coefficient unit="1/°">0.1;0.1;0.1</linear_slope_coefficient>
+                <maximum_lift_coefficient_distribution>1.85;1.78;1.706</maximum_lift_coefficient_distribution>
+            </aerodynamics>
+        </distibution>
+    </wing>
+    <high_lift_devices>
+        <flaps>
+            <flap/>
+            <flap_type>OPTIMIZED_FOWLER</flap_type>
+            <flap_chord_ratio>0.3200</flap_chord_ratio>
+            <flap_deflection unit="°">15.0000</flap_deflection>
+            <flap_non_dimensional_inner_station>0.1000</flap_non_dimensional_inner_station>
+            <flap_non_dimensional_outer_station>0.3000</flap_non_dimensional_outer_station>
+            <flap/>
+            <flap_type>OPTIMIZED_FOWLER</flap_type>
+            <flap_chord_ratio>0.3200</flap_chord_ratio>
+            <flap_deflection unit="°">15.0000</flap_deflection>
+            <flap_non_dimensional_inner_station>0.3100</flap_non_dimensional_inner_station>
+            <flap_non_dimensional_outer_station>0.7800</flap_non_dimensional_outer_station>
+        </flaps>
+    </high_lift_devices>
+</Wing_analysis>

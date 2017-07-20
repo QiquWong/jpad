@@ -54,8 +54,8 @@ public class Reader {
 		double adimensionalKinkStation =  Double.parseDouble(reader.getXMLPropertiesByPath("//adimensional_kink_station").get(0));
 		theVariables.getAdimensionalKinkStation().setText(Double.toString(adimensionalKinkStation));
 		
-		double thickenssMeanAirfoil =  Double.parseDouble(reader.getXMLPropertiesByPath("//max_thickness_mean_airfoil").get(0));
-		theVariables.getMaxThickness().setText(Double.toString(thickenssMeanAirfoil));
+//		double thickenssMeanAirfoil =  Double.parseDouble(reader.getXMLPropertiesByPath("//max_thickness_mean_airfoil").get(0));
+//		theVariables.getMaxThickness().setText(Double.toString(thickenssMeanAirfoil));
 		
 		List<String> airfoilFamilyProperty = reader.getXMLPropertiesByPath("//airfoil_family");
 			theVariables.getAirfoilFamily().setValue(airfoilFamilyProperty.get(0));
@@ -73,6 +73,10 @@ public class Reader {
 		List<String> stationsDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//y_adimensional_stations").get(0));
 		for(int i=0; i<stationsDistribution.size(); i++)
 			theVariables.getStationList().get(i).setText((stationsDistribution.get(i)));
+		
+		List<String> thicknessDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//max_thickness_distribution").get(0));
+		for(int i=0; i<thicknessDistribution.size(); i++)
+			theVariables.getThicknessList().get(i).setText((thicknessDistribution.get(i)));
 		
 		Unit unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//chord_distribution" + "/@unit"));
 		List<String> chordDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//chord_distribution").get(0));
@@ -109,6 +113,28 @@ public class Reader {
 		List<String> clMaxDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution").get(0));
 		for(int i=0; i<clMaxDistribution.size(); i++)
 			theVariables.getClMaxList().get(i).setText((clMaxDistribution.get(i)));
+		
+		List<String> clZeroDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//cl0_distribution").get(0));
+		for(int i=0; i<clZeroDistribution.size(); i++)
+			theVariables.getcLZeroList().get(i).setText((clZeroDistribution.get(i)));
+		
+		unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//leading_edge_radius_distribution" + "/@unit"));
+		List<String>leRadiusDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//leading_edge_radius_distribution").get(0));
+		for(int i=0; i<leRadiusDistribution.size(); i++)
+			theVariables.getLeRadiusList().get(i).setText((leRadiusDistribution.get(i)));
+		theVariables.getLeRadiusUnits().setValue(unitOfMeas);
+		
+		System.out.println(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//linear_slope_coefficient" + "/@unit"));
+		
+		if((MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//linear_slope_coefficient" + "/@unit"))=="1/rad")
+			unitOfMeas = SI.RADIAN.inverse();
+		else
+		unitOfMeas = NonSI.DEGREE_ANGLE.inverse();
+		
+		List<String>clAlphaDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//linear_slope_coefficient").get(0));
+		for(int i=0; i<clAlphaDistribution.size(); i++)
+			theVariables.getcLAlphaList().get(i).setText((clAlphaDistribution.get(i)));
+		theVariables.getClAlphaUnits().setValue(unitOfMeas);
 	
 		// high lift
 		
@@ -236,7 +262,7 @@ public class Reader {
 			airfoilFamily = "DOUBLE_WEDGE";
 
 		JPADStaticWriteUtils.writeSingleNode("airfoil_family", airfoilFamily, cleanConfigurationDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", input.getMeanThickness(), cleanConfigurationDataElement, doc);
+//		JPADStaticWriteUtils.writeSingleNode("max_thickness_mean_airfoil", input.getMeanThickness(), cleanConfigurationDataElement, doc);
 		
 		org.w3c.dom.Element childDistribution = doc.createElement("geometry");
 		cleanConfigurationDataElement.appendChild(childDistribution);
@@ -245,14 +271,47 @@ public class Reader {
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("chord_distribution", input.getChordDistribution(), childDistribution, doc, input.getChordDistribution().get(0).getUnit().toString());
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("x_le_distribution", input.getxLEDistribution(), childDistribution, doc, input.getxLEDistribution().get(0).getUnit().toString());
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("twist_distribution", input.getTwistDistribution(), childDistribution, doc, input.getTwistDistribution().get(0).getUnit().toString());
+		JPADStaticWriteUtils.writeSingleNode("max_thickness_distribution", input.getThicknessDistribution(),childDistribution, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("leading_edge_radius_distribution", input.getLeRadiusDistribution(), childDistribution, doc, input.getLeRadiusDistribution().get(0).getUnit().toString());
 		
 		org.w3c.dom.Element childDistributionNew = doc.createElement("aerodynamics");
 		cleanConfigurationDataElement.appendChild(childDistributionNew);
 		
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_zero_lift_distribution", input.getAlphaZeroLiftDistribution(), childDistributionNew, doc,  input.getAlphaZeroLiftDistribution().get(0).getUnit().toString());
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_star_distribution", input.getAlphaStarDistribution(), childDistributionNew, doc,  input.getAlphaStarDistribution().get(0).getUnit().toString());
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl0_distribution", input.getcLZeroDistribution(), childDistributionNew, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("linear_slope_coefficient", input.getClAlphaDistribution(), childDistributionNew, doc,  input.getClAlphaDistribution().get(0).getUnit().toString());
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("maximum_lift_coefficient_distribution", input.getMaximumliftCoefficientDistribution(), childDistributionNew, doc);
 		
+		if(input.isHighLiftInputTreeIsFilled()) {
+			org.w3c.dom.Element highLiftwingDataElement = doc.createElement("high_lift_devices");
+			rootElement.appendChild(highLiftwingDataElement);
+			org.w3c.dom.Element flapElement = doc.createElement("flaps");
+			highLiftwingDataElement.appendChild(flapElement);
+			for(int i=0 ; i<input.getNumberOfFlaps(); i++) {
+				org.w3c.dom.Element flapDeviceElement = doc.createElement("flap");
+				flapElement.appendChild(flapDeviceElement);
+				JPADStaticWriteUtils.writeSingleNode("flap_type", input.getFlapTypes().get(i).toString(), flapElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("flap_chord_ratio", input.getFlapChordRatio().get(i), flapElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("flap_deflection", input.getFlapDeflection().get(i), flapElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("flap_non_dimensional_inner_station", input.getFlapInnerStation().get(i), flapElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("flap_non_dimensional_outer_station", input.getFlapOuterStation().get(i), flapElement, doc);
+			}
+			
+			org.w3c.dom.Element slatElement = doc.createElement("slats");
+			highLiftwingDataElement.appendChild(slatElement);
+			for(int i=0 ; i<input.getNumberOfSlats(); i++) {
+				org.w3c.dom.Element slatDevicesElement = doc.createElement("slat");
+				slatElement.appendChild(slatDevicesElement);
+				JPADStaticWriteUtils.writeSingleNode("slat_deflection", input.getSlatDeflection().get(i), slatElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("slat_chord_ratio", input.getSlatChordRatio().get(i), slatElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("slat_extension_ratio", input.getSlatExtensionRatio().get(i), slatElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("slat_non_dimensional_inner_station", input.getSlatInnerStation().get(i), slatElement, doc);
+				JPADStaticWriteUtils.writeSingleNode("slat_non_dimensional_outer_station", input.getSlatOuterStation().get(i), slatElement, doc);
+			}
+			
+			
+		}
 	}
 	
 	public static void writeOutputToXML(InputOutputTree theInputTree, String filenameWithPathAndExt) {

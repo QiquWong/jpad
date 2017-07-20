@@ -124,7 +124,6 @@
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
                                     <Label text="Surface" />
@@ -154,16 +153,6 @@
                                        </children>
                                     </HBox>
                                     <ChoiceBox fx:id="airfoilFamily" prefWidth="219.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                    <Label text="Max thickness mean airfoil" GridPane.rowIndex="5" />
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                                       <children>
-                                          <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="274.0">
-                                             <children>
-                                                <TextField fx:id="maxThickness" prefHeight="25.0" prefWidth="219.0" />
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </HBox>
                                  </children>
                               </GridPane>
                               <GridPane layoutX="9.0" layoutY="56.0" prefHeight="63.0" prefWidth="437.0">
@@ -191,20 +180,31 @@
                                     </HBox>
                                  </children>
                               </GridPane>
-                              <Label layoutY="408.0" text="Airfoil distribution input data">
+                              <Label layoutY="380.0" text="Airfoil distribution input data">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                               </Label>
-                              <Separator layoutX="14.0" layoutY="427.0" prefWidth="200.0" />
-                              <GridPane layoutX="10.0" layoutY="436.0" prefHeight="241.0" prefWidth="421.0">
+                              <Separator layoutX="14.0" layoutY="399.0" prefWidth="200.0" />
+                              <Label layoutY="29.0" text="Operating Conditions">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="inputHighLiftDevices" layoutX="265.0" layoutY="14.0" mnemonicParsing="false" onAction="#addHighLiftData" text="Insert High Lift Devices" />
+                              <GridPane layoutX="5.0" layoutY="415.0" prefHeight="270.0" prefWidth="423.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.80001831054688" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="272.1999816894531" />
                                  </columnConstraints>
                                  <rowConstraints>
+                                    <RowConstraints />
                                     <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
@@ -213,9 +213,9 @@
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label text="Adimentional stations" GridPane.rowIndex="1" />
-                                    <Label text="Chords" GridPane.rowIndex="2" />
-                                    <HBox alignment="CENTER_LEFT" prefHeight="31.0" prefWidth="234.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <Label text="Adimentional stations" GridPane.rowIndex="2" />
+                                    <Label text="Chords" GridPane.rowIndex="3" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="31.0" prefWidth="234.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <children>
                                           <TextField fx:id="adimensionalStations1" prefHeight="25.0" prefWidth="219.0" />
                                           <TextField fx:id="adimensionalStations2" prefHeight="25.0" prefWidth="219.0" />
@@ -224,7 +224,7 @@
                                           <TextField fx:id="adimensionalStations5" prefHeight="25.0" prefWidth="219.0" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                        <children>
                                           <TextField fx:id="chords1" prefHeight="25.0" prefWidth="219.0" />
                                           <TextField fx:id="chords2" prefHeight="25.0" prefWidth="219.0" />
@@ -234,9 +234,9 @@
                                           <ChoiceBox fx:id="chordsUnits" prefHeight="25.0" prefWidth="55.0" />
                                        </children>
                                     </HBox>
-                                    <Label text="Twist angles" GridPane.rowIndex="4" />
-                                    <Label text="Alpha zero lift angles" GridPane.rowIndex="5" />
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <Label text="Twist angles" GridPane.rowIndex="7" />
+                                    <Label text="Alpha zero lift angles" GridPane.rowIndex="8" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                        <children>
                                           <TextField fx:id="twist1" prefHeight="25.0" prefWidth="219.0" />
                                           <TextField fx:id="twist2" prefHeight="25.0" prefWidth="219.0" />
@@ -246,8 +246,8 @@
                                           <ChoiceBox fx:id="twistUnits" prefHeight="25.0" prefWidth="55.0" />
                                        </children>
                                     </HBox>
-                                    <Label text="Alpha star distribution" GridPane.rowIndex="6" />
-                                    <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="319.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                    <Label text="Alpha star distribution" GridPane.rowIndex="9" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="319.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                        <children>
                                           <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="290.0">
                                              <children>
@@ -261,9 +261,9 @@
                                           </HBox>
                                        </children>
                                     </HBox>
-                                    <Label text="X leading edge" GridPane.rowIndex="3" />
-                                    <Label text="Maximum lift coefficients" GridPane.rowIndex="7" />
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                    <Label text="X leading edge" GridPane.rowIndex="6" />
+                                    <Label text="Maximum lift coefficients" GridPane.rowIndex="12" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                        <children>
                                           <TextField prefHeight="25.0" prefWidth="219.0" fx:id="xle1" />
                                           <TextField prefHeight="25.0" prefWidth="219.0" fx:id="xle2" />
@@ -273,7 +273,7 @@
                                           <ChoiceBox prefHeight="25.0" prefWidth="55.0" fx:id="xleUnits" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="8">
                                        <children>
                                           <TextField fx:id="alphaZeroLift1" prefHeight="25.0" prefWidth="219.0" />
                                           <TextField fx:id="alphaZeroLift2" prefHeight="25.0" prefWidth="219.0" />
@@ -283,7 +283,7 @@
                                           <ChoiceBox fx:id="alphaZeroLiftUnits" prefHeight="25.0" prefWidth="55.0" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="12">
                                        <children>
                                           <TextField fx:id="clMax1" prefHeight="25.0" prefWidth="219.0" />
                                           <TextField fx:id="clMax2" prefHeight="25.0" prefWidth="219.0" />
@@ -292,8 +292,8 @@
                                           <TextField fx:id="clMax5" prefHeight="25.0" prefWidth="219.0" />
                                        </children>
                                     </HBox>
-                                    <Label text="Number of given sections" />
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                    <Label text="Number of given sections" GridPane.rowIndex="1" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
                                           <ChoiceBox fx:id="numberOfGivenSections" prefHeight="25.0" prefWidth="71.0" />
                                           <Button mnemonicParsing="false" onAction="#setNumberOfGivenSection" prefHeight="25.0" prefWidth="29.0" style="-fx-background-radius: 5;" text="ok">
@@ -303,14 +303,50 @@
                                           </Button>
                                        </children>
                                     </HBox>
+                                    <Label text="Max thickness" GridPane.rowIndex="4" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <children>
+                                          <TextField fx:id="thickness1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="thickness2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="thickness3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="thickness4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="thickness5" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                    <Label text="CL0 distribution" GridPane.rowIndex="10" />
+                                    <Label text="Radius eading edge " GridPane.rowIndex="5" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                       <children>
+                                          <TextField fx:id="leRadius1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="leRadius2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="leRadius3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="leRadius4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="leRadius5" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="leRadiusUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="10">
+                                       <children>
+                                          <TextField fx:id="cLZero1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLZero2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLZero3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLZero4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLZero5" prefHeight="25.0" prefWidth="219.0" />
+                                       </children>
+                                    </HBox>
+                                    <Label text="CL alpha distribution" GridPane.rowIndex="11" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="11">
+                                       <children>
+                                          <TextField fx:id="cLAlpha1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLAlpha2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLAlpha3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLAlpha4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="cLAlpha5" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="clAlphaUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </GridPane>
-                              <Label layoutY="29.0" text="Operating Conditions">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
-                              <Button fx:id="inputHighLiftDevices" layoutX="265.0" layoutY="14.0" mnemonicParsing="false" onAction="#addHighLiftData" text="Insert High Lift Devices" />
                            </children>
                         </AnchorPane>
                      </content>

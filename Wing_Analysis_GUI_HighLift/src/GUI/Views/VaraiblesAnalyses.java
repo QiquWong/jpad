@@ -1193,6 +1193,7 @@ public class VaraiblesAnalyses {
 		
 		// high lift distribution
 		
+		if(yesHighLift.isSelected()) {
 		double [] alphaArray = new double[(int) Double.parseDouble(numberOfAlphasValuesHighLift.getValue().toString())];
 		int i=0;
 		if(!alphaOneHighLift.getText().trim().isEmpty()){
@@ -1244,12 +1245,12 @@ public class VaraiblesAnalyses {
 				);
 		
 		theInputOutputTree.setAlphaArrayHighLiftDistribution(alphaLiftArray);
-		
+		}
 		// LIFT CURVE
-		WingAnalysisCalculator.calculateHighLiftCurve();
+		WingAnalysisCalculator.calculateHighLiftCurve(theInputOutputTree, this);
 	
 		// LIFT DISTRIBUTION
-		jio
+		
 	}
 	
 	public void addExternalCurveLoadFunct() throws IOException{

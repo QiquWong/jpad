@@ -48,12 +48,16 @@ public class InputOutputTree {
 	private double  meanThickness;
 	
 	private int numberOfSections;
-	private List<Double> yAdimensionalStationInput;
+	private List<Double> yAdimensionalStationInput,
+							thicknessDistribution,
+							cLZeroDistribution;
 	private List<Amount<Length>> chordDistribution;
-	private List<Amount<Length>> xLEDistribution;
+	private List<Amount<Length>> xLEDistribution,
+								leRadiusDistribution;
 	private List<Amount<Angle>> twistDistribution,
 								alphaZeroLiftDistribution,
 								alphaStarDistribution;
+	private List<Amount<?>> clAlphaDistribution;
 	private List<Double> maximumliftCoefficientDistribution;
 	
 	
@@ -130,6 +134,13 @@ public class InputOutputTree {
 	boolean highLiftInputTreeIsFilled = false;
 	
 	
+	//high lift
+	Double cLZeroHighLift, cLMaxHighLift, clStarHighLift;
+	Amount<Angle> alphaZeroLiftHighLift, alphaStallHighLift, alphaStarHighLift;
+	
+	List<Double> liftCoefficient3DCurveHighLift;
+	
+	
 	
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
@@ -161,6 +172,7 @@ public class InputOutputTree {
 		alphaStarDistributionSemiSpan = new ArrayList<>(); 
 		dihedralDistributionSemiSpan = new ArrayList<>(); 
 		maximumliftCoefficientDistributionSemiSpan = new ArrayList<>(); 
+
 		
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -357,14 +369,15 @@ public class InputOutputTree {
 			
 			// sweep quarter chord
 			
-//			sweepQuarterChordEquivalent = Amount.valueOf(
-//					Math.atan(
-//							(xLEDistribution.get(numberOfSections-1).doubleValue(SI.METER)+
-//							(chordDistribution.get(numberOfSections-1).doubleValue(SI.METER)/4))/
-//							
-//							), 
-//					SI.RADIAN
-//					);
+			sweepQuarterChordEquivalent = Amount.valueOf(
+					Math.atan(
+							(xLEDistribution.get(numberOfSections-1).doubleValue(SI.METER)+
+							(chordDistribution.get(numberOfSections-1).doubleValue(SI.METER)/4) -
+							(xOffsetEquivalentWingRootLE + chordDistribution.get(0).doubleValue(SI.METER)/4)
+							)/ semiSpan.doubleValue(SI.METER)
+							), 
+					SI.RADIAN
+					);
 			
 	}
 
@@ -487,7 +500,6 @@ public class InputOutputTree {
 					slatOuterStation.get(slatNumber)
 					) ;
 			array[4][1] = array[0][1];
-	
 			
 //		 System.out.println(" slat array " );
 //		 System.out.println(array[0][0] + " " +  array[0][1]);
@@ -1151,6 +1163,110 @@ public class InputOutputTree {
 
 	public void setRootChordEquivalentWing(Amount<Length> rootChordEquivalentWing) {
 		this.rootChordEquivalentWing = rootChordEquivalentWing;
+	}
+
+	public Double getTaperRatioEquivalentWing() {
+		return taperRatioEquivalentWing;
+	}
+
+	public Amount<Angle> getSweepQuarterChordEquivalent() {
+		return sweepQuarterChordEquivalent;
+	}
+
+	public void setTaperRatioEquivalentWing(Double taperRatioEquivalentWing) {
+		this.taperRatioEquivalentWing = taperRatioEquivalentWing;
+	}
+
+	public void setSweepQuarterChordEquivalent(Amount<Angle> sweepQuarterChordEquivalent) {
+		this.sweepQuarterChordEquivalent = sweepQuarterChordEquivalent;
+	}
+
+	public List<Double> getThicknessDistribution() {
+		return thicknessDistribution;
+	}
+
+	public void setThicknessDistribution(List<Double> thicknessDistribution) {
+		this.thicknessDistribution = thicknessDistribution;
+	}
+
+	public List<Double> getcLZeroDistribution() {
+		return cLZeroDistribution;
+	}
+
+	public List<Amount<Length>> getLeRadiusDistribution() {
+		return leRadiusDistribution;
+	}
+
+	public void setcLZeroDistribution(List<Double> cLZeroDistribution) {
+		this.cLZeroDistribution = cLZeroDistribution;
+	}
+
+	public void setLeRadiusDistribution(List<Amount<Length>> leRadiusDistribution) {
+		this.leRadiusDistribution = leRadiusDistribution;
+	}
+
+	public List<Amount<?>> getClAlphaDistribution() {
+		return clAlphaDistribution;
+	}
+
+	public void setClAlphaDistribution(List<Amount<?>> clAlphaDistribution) {
+		this.clAlphaDistribution = clAlphaDistribution;
+	}
+
+	public Double getcLZeroHighLift() {
+		return cLZeroHighLift;
+	}
+
+	public Double getcLMaxHighLift() {
+		return cLMaxHighLift;
+	}
+
+	public Double getClStarHighLift() {
+		return clStarHighLift;
+	}
+
+	public Amount<Angle> getAlphaZeroLiftHighLift() {
+		return alphaZeroLiftHighLift;
+	}
+
+	public Amount<Angle> getAlphaStallHighLift() {
+		return alphaStallHighLift;
+	}
+
+	public Amount<Angle> getAlphaStarHighLift() {
+		return alphaStarHighLift;
+	}
+
+	public void setcLZeroHighLift(Double cLZeroHighLift) {
+		this.cLZeroHighLift = cLZeroHighLift;
+	}
+
+	public void setcLMaxHighLift(Double cLMaxHighLift) {
+		this.cLMaxHighLift = cLMaxHighLift;
+	}
+
+	public void setClStarHighLift(Double clStarHighLift) {
+		this.clStarHighLift = clStarHighLift;
+	}
+
+	public void setAlphaZeroLiftHighLift(Amount<Angle> alphaZeroLiftHighLift) {
+		this.alphaZeroLiftHighLift = alphaZeroLiftHighLift;
+	}
+
+	public void setAlphaStallHighLift(Amount<Angle> alphaStallHighLift) {
+		this.alphaStallHighLift = alphaStallHighLift;
+	}
+
+	public void setAlphaStarHighLift(Amount<Angle> alphaStarHighLift) {
+		this.alphaStarHighLift = alphaStarHighLift;
+	}
+
+	public List<Double> getLiftCoefficient3DCurveHighLift() {
+		return liftCoefficient3DCurveHighLift;
+	}
+
+	public void setLiftCoefficient3DCurveHighLift(List<Double> liftCoefficient3DCurveHighLift) {
+		this.liftCoefficient3DCurveHighLift = liftCoefficient3DCurveHighLift;
 	}
 
 

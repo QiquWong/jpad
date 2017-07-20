@@ -256,7 +256,11 @@
                                                                 <RowConstraints maxHeight="272.0" minHeight="10.0" prefHeight="272.0" vgrow="SOMETIMES" />
                                                               </rowConstraints>
                                                                <children>
-                                                                  <TextArea fx:id="outputTextLOAD" GridPane.rowIndex="1" />
+                                                                  <ScrollPane GridPane.rowIndex="1">
+                                                                     <content>
+                                                                        <TextArea fx:id="outputTextLOAD" prefHeight="191.0" prefWidth="848.0" />
+                                                                     </content>
+                                                                  </ScrollPane>
                                                                </children>
                                                             </GridPane>
                                                          </children></AnchorPane>
@@ -520,7 +524,7 @@
                                                 <Separator prefWidth="200.0" />
                                                 <SplitPane dividerPositions="0.6208053691275168" orientation="VERTICAL" prefHeight="603.0" prefWidth="528.0">
                                                   <items>
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="600.0" />
+                                                    <AnchorPane fx:id="outputPaneFinalLIFT" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="600.0" />
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                          <children>
                                                             <GridPane fx:id="outputPaneTextLIFT" prefHeight="265.0" prefWidth="900.0">
@@ -532,7 +536,11 @@
                                                                   <RowConstraints maxHeight="272.0" prefHeight="272.0" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <TextArea fx:id="outputTextLIFT" GridPane.rowIndex="1" />
+                                                                  <ScrollPane GridPane.rowIndex="1">
+                                                                     <content>
+                                                                        <TextArea fx:id="outputTextLIFT" prefHeight="191.0" prefWidth="883.0" />
+                                                                     </content>
+                                                                  </ScrollPane>
                                                                </children>
                                                             </GridPane>
                                                          </children></AnchorPane>
