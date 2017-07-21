@@ -137,6 +137,8 @@ public class InputOutputTree {
 	//high lift
 	Double cLZeroHighLift, cLMaxHighLift, clStarHighLift;
 	Amount<Angle> alphaZeroLiftHighLift, alphaStallHighLift, alphaStarHighLift;
+	Double deltaCL0Flap, deltaCLMaxFlap, deltaCLMaxSlat;
+	Amount<?> clAlphaFlap;
 	
 	List<Double> liftCoefficient3DCurveHighLift;
 	
@@ -203,7 +205,7 @@ public class InputOutputTree {
 		performLoadAnalysis = false;
 		performLiftAnalysis= false;
 		performStallPathAnalysis = false;
-
+		performHighLiftAnalysis = false;
 	}
 
 	public void cleanCleanConfigurationData() {
@@ -1267,6 +1269,38 @@ public class InputOutputTree {
 
 	public void setLiftCoefficient3DCurveHighLift(List<Double> liftCoefficient3DCurveHighLift) {
 		this.liftCoefficient3DCurveHighLift = liftCoefficient3DCurveHighLift;
+	}
+
+	public Double getDeltaCL0Flap() {
+		return deltaCL0Flap;
+	}
+
+	public Double getDeltaCLMaxFlap() {
+		return deltaCLMaxFlap;
+	}
+
+	public Double getDeltaCLMaxSlat() {
+		return deltaCLMaxSlat;
+	}
+
+	public void setDeltaCL0Flap(Double deltaCL0Flap) {
+		this.deltaCL0Flap = deltaCL0Flap;
+	}
+
+	public void setDeltaCLMaxFlap(Double deltaCLMaxFlap) {
+		this.deltaCLMaxFlap = deltaCLMaxFlap;
+	}
+
+	public void setDeltaCLMaxSlat(Double deltaCLMaxSlat) {
+		this.deltaCLMaxSlat = deltaCLMaxSlat;
+	}
+
+	public Amount<?> getClAlphaFlap() {
+		return clAlphaFlap;
+	}
+
+	public void setClAlphaFlap(Amount<?> clAlphaFlap) {
+		this.clAlphaFlap = clAlphaFlap;
 	}
 
 

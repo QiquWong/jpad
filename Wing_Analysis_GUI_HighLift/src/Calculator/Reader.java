@@ -340,7 +340,7 @@ public class Reader {
 		//--------------------------------------------------------------------------------------
 		// INPUT
 		//--------------------------------------------------------------------------------------
-		if(input.performLiftAnalysis==true){
+		if(input.performLiftAnalysis==true || input.performHighLiftAnalysis==true){
 		org.w3c.dom.Element flightConditionsElement = doc.createElement("lift_curves_results");
 		rootElement.appendChild(flightConditionsElement);
 		
@@ -377,6 +377,22 @@ public class Reader {
 		JPADStaticWriteUtils.writeSingleNode("cl_max_airfoils", input.getMaximumliftCoefficientDistributionSemiSpan(), stallPath, doc);
 		JPADStaticWriteUtils.writeSingleNode("cl_max_at_alpha_" +  input.getAlphaMaxLinear().doubleValue(NonSI.DEGREE_ANGLE) +"_deg", input.getClMaxStallPath(), stallPath, doc);
 	}
+		if(input.performHighLiftAnalysis==true) {
+			org.w3c.dom.Element highLift = doc.createElement("high_lift");
+			rootElement.appendChild(highLift);
+			
+			JPADStaticWriteUtils.writeSingleNode("alpha_Zero_Lift", input.getAlphaZeroLiftHighLift(), highLift, doc);
+			JPADStaticWriteUtils.writeSingleNode("alpha_Star", input.getAlphaStarHighLift(), highLift, doc);
+			JPADStaticWriteUtils.writeSingleNode("alpha_Stall", input.getAlphaStallHighLift(), highLift, doc);
+			JPADStaticWriteUtils.writeSingleNode("cL_alpha", input.getClAlphaFlap(), highLift, doc);
+			JPADStaticWriteUtils.writeSingleNode("cL_Zero", input.getcLZeroHighLift(), highLift, doc);
+			JPADStaticWriteUtils.writeSingleNode("cL_Star", input.getClStarHighLift(), highLift, doc);
+			JPADStaticWriteUtils.writeSingleNode("cL_Max", input.getcLMaxHighLift(), highLift, doc);
+			org.w3c.dom.Element liftCurve = doc.createElement("lift_curve");
+			highLift.appendChild(liftCurve);
+			JPADStaticWriteUtils.writeSingleNode("alpha_angles", input.getAlphaArrayHighLiftCurve(), liftCurve, doc);
+			JPADStaticWriteUtils.writeSingleNode("cL", input.getLiftCoefficient3DCurveHighLift(), liftCurve, doc);
+		}
 	}
 	
 

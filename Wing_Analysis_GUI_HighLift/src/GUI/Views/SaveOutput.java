@@ -33,6 +33,16 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import jxl.Workbook;
+import jxl.biff.drawing.Chart;
+import jxl.format.Colour;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+import jxl.write.biff.RowsExceededException;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -71,7 +81,7 @@ public class SaveOutput {
 	Button save;
 
 	@FXML
-	public void saveFiles() throws IOException{
+	public void saveFiles() throws IOException, RowsExceededException, WriteException{
 
 		if(svg.isSelected()){
 			
@@ -89,7 +99,7 @@ public class SaveOutput {
 		}
 		
 		if(xls.isSelected()){
-			
+			saveXLS();
 		}
 		
 		if(png.isSelected()){
@@ -257,7 +267,7 @@ public class SaveOutput {
 		}
 	}
 	
-	private void saveXLS(){
+	private void saveXLS() throws IOException, RowsExceededException, WriteException{
 		
 		String outputChartPath = 	MyConfiguration.createNewFolder(
 				outputDirectory
@@ -265,6 +275,137 @@ public class SaveOutput {
 				+ "XlsFiles"
 				+ File.separator
 				);
+		
+		WritableWorkbook workbook = Workbook.createWorkbook(new File(outputChartPath + File.separator + "Results.xls"));
+
+		// label format
+		  WritableFont labelFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+		  labelFont.setColour(Colour.RED);
+		  WritableCellFormat labelFormat = new WritableCellFormat(labelFont);
+		  
+		  //eta station format 
+		  WritableFont etaFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+		  etaFont.setColour(Colour.BLUE);
+		  WritableCellFormat etaFormat = new WritableCellFormat(etaFont);
+		  
+		int i=0;
+		if(theInputOutputTree.getPerformLoadAnalysis()==true) {
+			WritableSheet sheet = workbook.createSheet("Clean Load Analyses", i);
+			Label label;
+			jxl.write.Number number;
+		    
+			label = new Label(0, 0, "eta Stations"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+			number = new jxl.write.Number(0, k+1, theInputOutputTree.getyAdimensionalDistributionSemiSpan().get(k));					
+			sheet.addCell(number);
+			}
+			
+			for(int j=0; j<theInputOutputTree.getAlphaArrayLiftDistribution().size();j++) {
+				label = new Label(j+1, 0, "Cl distribution at alpha " +
+			theInputOutputTree.getAlphaArrayLiftDistribution().get(j).doubleValue(NonSI.DEGREE_ANGLE) + 
+			" deg"); 
+				label.setCellFormat(labelFormat);
+				sheet.addCell(label); 
+				for(int k=0; k<theInputOutputTree.getClDistributionCurves().get(j).size(); k++) {
+				number = new jxl.write.Number(j+1, k+1, theInputOutputTree.getClDistributionCurves().get(j).get(k));
+				sheet.addCell(number);
+				}
+			}
+			i++;
+		}
+		
+		if(theInputOutputTree.getPerformLiftAnalysis()==true || theInputOutputTree.getPerformHighLiftAnalysis() == true) {
+			
+			WritableSheet sheet = workbook.createSheet("Clean Configuration", i);
+			Label label;
+			jxl.write.Number number;
+			 i++;
+			 
+			label = new Label(0, 0, "alpha wing (deg)"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getAlphaArrayLiftCurve().size(); k++) {
+			number = new jxl.write.Number(0, k+1, theInputOutputTree.getAlphaArrayLiftCurve().get(k).doubleValue(NonSI.DEGREE_ANGLE));					
+			sheet.addCell(number);
+			}
+			
+			
+			label = new Label(1, 0, "CL"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getLiftCoefficientCurve().size(); k++) {
+			number = new jxl.write.Number(1, k+1, theInputOutputTree.getLiftCoefficientCurve().get(k));					
+			sheet.addCell(number);
+			}
+			
+			if(theInputOutputTree.getPerformStallPathAnalysis()==true) {
+				
+				label = new Label(4, 0, "eta station"); 
+				label.setCellFormat(etaFormat);
+				sheet.addCell(label);
+				
+				for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+					number = new jxl.write.Number(4, k+1, theInputOutputTree.getyAdimensionalDistributionSemiSpan().get(k));					
+					sheet.addCell(number);
+					}
+				
+				label = new Label(5, 0, "cl max airfoils"); 
+				label.setCellFormat(etaFormat);
+				sheet.addCell(label);
+				
+				for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+					number = new jxl.write.Number(5, k+1, theInputOutputTree.getClMaxAirfoils().get(k));					
+					sheet.addCell(number);
+					}
+				
+				label = new Label(6, 0, "cl max distribution"); 
+				label.setCellFormat(etaFormat);
+				sheet.addCell(label);
+				
+				for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+					number = new jxl.write.Number(6, k+1, theInputOutputTree.getClMaxStallPath().get(k));					
+					sheet.addCell(number);
+					}
+				
+			}
+		}
+		
+		if(theInputOutputTree.getPerformHighLiftAnalysis()==true) {
+			WritableSheet sheet = workbook.createSheet("High Lift Configuration", i);
+			Label label;
+			jxl.write.Number number;
+			
+			label = new Label(0, 0, "alpha wing (deg)"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getAlphaArrayLiftCurve().size(); k++) {
+			number = new jxl.write.Number(0, k+1, theInputOutputTree.getAlphaArrayHighLiftCurve().get(k).doubleValue(NonSI.DEGREE_ANGLE));					
+			sheet.addCell(number);
+			}
+			
+			
+			label = new Label(1, 0, "CL"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getLiftCoefficientCurve().size(); k++) {
+			number = new jxl.write.Number(1, k+1, theInputOutputTree.getLiftCoefficient3DCurveHighLift().get(k));					
+			sheet.addCell(number);
+	
+			}
+		}
+		
+	
+		workbook.write();
+		workbook.close();
+//		Number number = new Number(3, 4, 3.1459); 
+//		sheet.addCell(number);
 	}
 	
 	public InputOutputTree getTheInputOutputTree() {

@@ -260,6 +260,15 @@ public class VaraiblesAnalyses {
 	@FXML
 	TextArea outputTextLIFT;
 	
+	@FXML
+	Pane outputPaneFinalHIGHLIFT;
+	
+	@FXML
+	GridPane outputPaneTextHIGHLIFT;
+	
+	@FXML
+	TextArea outputTextHIGHLIFT;
+	
 	// EXTERNAL CURVES
 	
 	MenuItem addExternalCurveLoad;
@@ -1248,6 +1257,7 @@ public class VaraiblesAnalyses {
 		}
 		// LIFT CURVE
 		WingAnalysisCalculator.calculateHighLiftCurve(theInputOutputTree, this);
+		theInputOutputTree.getSaveButton().setDisable(false);
 	
 		// LIFT DISTRIBUTION
 		
@@ -1523,6 +1533,54 @@ public class VaraiblesAnalyses {
 
 	public void setRunHighLift(int runHighLift) {
 		this.runHighLift = runHighLift;
+	}
+
+
+
+
+
+	public Pane getOutputPaneFinalHIGHLIFT() {
+		return outputPaneFinalHIGHLIFT;
+	}
+
+
+
+
+
+	public GridPane getOutputPaneTextHIGHLIFT() {
+		return outputPaneTextHIGHLIFT;
+	}
+
+
+
+
+
+	public TextArea getOutputTextHIGHLIFT() {
+		return outputTextHIGHLIFT;
+	}
+
+
+
+
+
+	public void setOutputPaneFinalHIGHLIFT(Pane outputPaneFinalHIGHLIFT) {
+		this.outputPaneFinalHIGHLIFT = outputPaneFinalHIGHLIFT;
+	}
+
+
+
+
+
+	public void setOutputPaneTextHIGHLIFT(GridPane outputPaneTextHIGHLIFT) {
+		this.outputPaneTextHIGHLIFT = outputPaneTextHIGHLIFT;
+	}
+
+
+
+
+
+	public void setOutputTextHIGHLIFT(TextArea outputTextHIGHLIFT) {
+		this.outputTextHIGHLIFT = outputTextHIGHLIFT;
 	}
 	
 }

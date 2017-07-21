@@ -15,6 +15,7 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 import javax.swing.RootPaneContainer;
 
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -591,6 +592,7 @@ public class WingAnalysisCalculator {
 		aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
 		highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
 		
+		theInputOutpuTree.setPerformHighLiftAnalysis(true);
 		theController.setRunLift(theController.getRunHighLift()+1);
 		
 		List<SymmetricFlapCreator> theFlapList = new ArrayList<>();
@@ -701,12 +703,16 @@ public class WingAnalysisCalculator {
 				
 		Double _deltaCL0Flap = 
 				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP);
+		
+		theInputOutpuTree.setDeltaCL0Flap(_deltaCL0Flap);
 				
 		Double  _deltaClmaxFlap = 
 				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP);
 				
 		Double  _deltaCLmaxFlap =
 				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP);
+		
+		theInputOutpuTree.setDeltaCLMaxFlap(_deltaCLmaxFlap);
 				
 		Double  _deltaClmaxSlat = 
 				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT);
@@ -714,6 +720,8 @@ public class WingAnalysisCalculator {
 		Double _deltaCLmaxSlat = 
 				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT);
 				
+		theInputOutpuTree.setDeltaCLMaxSlat(_deltaCLmaxSlat);
+		
 		Double _deltaCD0 =
 				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD);
 				
@@ -722,6 +730,8 @@ public class WingAnalysisCalculator {
 				
 		Amount<?> _cLAlphaHighLift = 
 				(Amount<?>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT);
+		
+		theInputOutpuTree.setClAlphaFlap(_cLAlphaHighLift);
 				
 		//------------------------------------------------------
 		// CL ZERO HIGH LIFT
@@ -761,11 +771,11 @@ public class WingAnalysisCalculator {
 		theInputOutpuTree.setAlphaStallHighLift(
 				Amount.valueOf(
 				((theInputOutpuTree.getcLMaxHighLift()
-				- theInputOutpuTree.getcLZeroHighLift()
+				- theInputOutpuTree.getcLZeroHighLift())
 				/_cLAlphaHighLift
 					.to(NonSI.DEGREE_ANGLE.inverse())
 					.getEstimatedValue()
-							)
+							
 				+ deltaAlpha.doubleValue(NonSI.DEGREE_ANGLE)),
 				NonSI.DEGREE_ANGLE)
 				);
@@ -802,9 +812,133 @@ public class WingAnalysisCalculator {
 						MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getAlphaArrayHighLiftCurve())
 						))
 				);	
-		System.out.println(" alpha " + theInputOutpuTree.getAlphaArrayHighLiftCurve().toString());
-		System.out.println(" cl " + theInputOutpuTree.getLiftCoefficientCurve().toString());
-		System.out.println(" cl " + theInputOutpuTree.getLiftCoefficient3DCurveHighLift().toString());
+
+		
+		//LINECHART javafx
+
+		List<List<Double>> xList = new ArrayList<>();
+		List<List<Double>> yList = new ArrayList<>();
+		List<String> legend = new ArrayList<>();
+
+		xList.add(
+				Main.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertListOfAmountToDoubleArray(
+								theInputOutpuTree.alphaArrayLiftCurve
+								)));
+		xList.add(
+				Main.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertListOfAmountToDoubleArray(
+								theInputOutpuTree.alphaArrayHighLiftCurve
+								)));
+
+		yList.add(theInputOutpuTree.getLiftCoefficientCurve());
+		yList.add(theInputOutpuTree.getLiftCoefficient3DCurveHighLift());
+		
+		legend.add("Clean configuration");
+		legend.add("With high lift devices");
+	
+		TabPane newOutputCharts = new TabPane();
+		
+		//lift
+		Tab Lift = new Tab();
+		Lift.setText("Lift Curve");
+		Pane LiftPane = new Pane();		
+		Lift.setContent(LiftPane);
+
+
+		//stall path 
+//		Tab stallPath = new Tab();
+//		stallPath.setText("Stall Path");
+//		Pane stallPathPane = new Pane();
+//
+//		stallPath.setContent(stallPathPane);
+
+		newOutputCharts.getTabs().add(0, Lift);
+//		newOutputCharts.getTabs().add(1, stallPath);
+
+
+//		if(theController.getYesStallPath().isSelected()){
+//			theController.getOutputPaneFinalHIGHLIFT().getChildren().clear();
+//			
+//			theController.getOutputPaneFinalHIGHLIFT().getChildren().add(newOutputCharts);
+//
+//			Node chart = displayChartNode(
+//					"Lift Curve",
+//					"alpha",
+//					"CL", 
+//					150, 
+//					750,
+//					false,
+//					Side.RIGHT,
+//					legend, 
+//					xList, 
+//					yList, 
+//					newOutputCharts.getTabs().get(0).getContent()
+//					);
+//
+//			LiftPane.getChildren().clear();
+//			LiftPane.getChildren().add(chart);
+//		}
+//
+//		if(theController.getNoStallPath().isSelected()){
+	displayChart(
+			"Lift Curve",
+			"alpha",
+			"CL", 
+			150, 
+			750,
+			true,
+			Side.RIGHT,
+			legend, 
+			xList, 
+			yList, 
+			theController.getOutputPaneFinalHIGHLIFT().getChildren()
+			);
+//		}
+		
+	GridPane gridText = theController.getOutputPaneTextHIGHLIFT();
+	gridText.add(new Label("Text Output"), 0, 0);
+
+	textOutputLift = theController.getOutputTextHIGHLIFT();
+	
+	textOutputLift.appendText("--------ANALYSIS NUMBER " + theController.getRunHighLift() + "------------\n");
+	
+	textOutputLift.appendText("\n\n--------CLEAN RESULTS ------------\n");
+	textOutputLift.appendText("Alpha Array --> (deg)  " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getAlphaArrayLiftCurve())));
+	textOutputLift.appendText("\nCL curve --> " + theInputOutpuTree.getLiftCoefficientCurve());
+
+	textOutputLift.appendText("\nAlpha zero Lift (deg) --> " + theInputOutpuTree.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE));
+	textOutputLift.appendText("\nCL zero --> " + theInputOutpuTree.getcLZero());
+	textOutputLift.appendText("\nCL alpha (1/deg) --> " + theInputOutpuTree.getcLAlphaDeg());
+	textOutputLift.appendText("\nCL alpha (1/rad) --> " + theInputOutpuTree.getcLAlphaRad());
+	textOutputLift.appendText("\nAlpha star (deg) --> " + theInputOutpuTree.getAlphaStar().doubleValue(NonSI.DEGREE_ANGLE));
+	textOutputLift.appendText("\nCL star --> " + theInputOutpuTree.getcLStar());
+	textOutputLift.appendText("\nAlpha max Linear (deg) --> " + theInputOutpuTree.getAlphaMaxLinear().doubleValue(NonSI.DEGREE_ANGLE));
+	textOutputLift.appendText("\nCL max --> " + theInputOutpuTree.getcLMax());
+	textOutputLift.appendText("\nAlpha stall (deg) --> " + theInputOutpuTree.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE));
+	
+	textOutputLift.appendText("\n\n--------HIGH LIFT RESULTS ------------\n");
+	textOutputLift.appendText("Alpha Array --> (deg)  " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getAlphaArrayHighLiftCurve())));
+	textOutputLift.appendText("\nCL curve --> " + theInputOutpuTree.getLiftCoefficient3DCurveHighLift());
+
+	textOutputLift.appendText("\nDelta CL0 --> " + theInputOutpuTree.getDeltaCL0Flap());
+	textOutputLift.appendText("\nDelta CL max flap--> " + theInputOutpuTree.getDeltaCLMaxFlap());
+	textOutputLift.appendText("\nDelta CL max slat--> " + theInputOutpuTree.getDeltaCLMaxSlat());
+	textOutputLift.appendText("\nAlpha zero Lift (deg) --> " + theInputOutpuTree.getAlphaZeroLiftHighLift().doubleValue(NonSI.DEGREE_ANGLE));
+	textOutputLift.appendText("\nCL zero --> " + theInputOutpuTree.getcLZeroHighLift());
+	textOutputLift.appendText("\nCL alpha (1/deg) --> " + theInputOutpuTree.getClAlphaFlap().to(NonSI.DEGREE_ANGLE.inverse()));
+	textOutputLift.appendText("\nCL alpha (1/rad) --> " + theInputOutpuTree.getClAlphaFlap().to(SI.RADIAN.inverse()));
+	textOutputLift.appendText("\nAlpha star (deg) --> " + theInputOutpuTree.getAlphaStarHighLift().doubleValue(NonSI.DEGREE_ANGLE));
+	textOutputLift.appendText("\nCL star --> " + theInputOutpuTree.getClStarHighLift());
+	textOutputLift.appendText("\nCL max --> " + theInputOutpuTree.getcLMaxHighLift());
+	textOutputLift.appendText("\nAlpha stall (deg) --> " + theInputOutpuTree.getAlphaStallHighLift().doubleValue(NonSI.DEGREE_ANGLE));
+//	
+//	if(theController.getNoStallPath().isSelected()){
+//	textOutputLift.appendText("\n\n--------End of " + theController.getRunLift() + "st Run------------\n\n");
+//
+//	}
+	
+
 	}
 	
 public static void displayChart(
