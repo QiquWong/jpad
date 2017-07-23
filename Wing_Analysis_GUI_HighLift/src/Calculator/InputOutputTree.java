@@ -72,13 +72,16 @@ public class InputOutputTree {
 	//-------------distributions
 	private List<Double> yAdimensionalDistributionSemiSpan;
 	private List<Amount<Length>> yDimensionalDistributionSemiSpan, 
-							     chordDistributionSemiSpan,
-							     xLEDistributionSemiSpan;
+	chordDistributionSemiSpan,
+	xLEDistributionSemiSpan;
 	private List<Amount<Angle>> twistDistributionSemiSpan,
-								alphaZeroLiftDistributionSemiSpan,
-								alphaStarDistributionSemiSpan,
-								dihedralDistributionSemiSpan;
-	private List<Double> maximumliftCoefficientDistributionSemiSpan;
+	alphaZeroLiftDistributionSemiSpan,
+	alphaStarDistributionSemiSpan,
+	dihedralDistributionSemiSpan;
+	private List<Double> maximumliftCoefficientDistributionSemiSpan,
+	clZeroDistributionSemispan, 
+	clAlphaDegDistributionSemiSpan;
+
 
 
 	//------------wing Data
@@ -141,6 +144,11 @@ public class InputOutputTree {
 	Amount<?> clAlphaFlap;
 	
 	List<Double> liftCoefficient3DCurveHighLift;
+	
+	List<List<Double>> clDistributionCurvesHighLift;
+	
+	List<Double> flapTypeIndex = new ArrayList<>();
+	List<Double> deltaFlapRef = new ArrayList<>();
 	
 	
 	
@@ -206,6 +214,7 @@ public class InputOutputTree {
 		performLiftAnalysis= false;
 		performStallPathAnalysis = false;
 		performHighLiftAnalysis = false;
+		highLiftInputTreeIsFilled = false;
 	}
 
 	public void cleanCleanConfigurationData() {
@@ -295,15 +304,18 @@ public class InputOutputTree {
 							),
 					SI.METER);
 			
-			
+			List<Double> clAlphaDeg = new ArrayList<>();
+			for (int i =0; i<numberOfSections; i++) {
+				clAlphaDeg.add(clAlphaDistribution.get(i).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue());
+			}
 			xLEDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountLength(xLEDistribution);
 			chordDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountLength(chordDistribution);
 			twistDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(twistDistribution);;
 			alphaStarDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(alphaStarDistribution);
 			alphaZeroLiftDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(alphaZeroLiftDistribution);
 			maximumliftCoefficientDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanListDouble(maximumliftCoefficientDistribution);
-			
-			
+			clZeroDistributionSemispan = calculateDiscretizedListAlongSemiSpanListDouble(cLZeroDistribution);
+			clAlphaDegDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanListDouble(clAlphaDeg);
 			
 			double[] dihedral = new double [numberOfPointSemispan];
 			for(int i=0; i<numberOfPointSemispan; i++)
@@ -381,6 +393,36 @@ public class InputOutputTree {
 					SI.RADIAN
 					);
 			
+			
+			if (flapTypes.get(0) != null) {
+				
+				for(int i=0; i<flapChordRatio.size(); i++) {
+					if(flapTypes.get(i) == FlapTypeEnum.SINGLE_SLOTTED) {
+						flapTypeIndex.add(1.0);
+						deltaFlapRef.add(45.0);
+					}
+					else if(flapTypes.get(i) == FlapTypeEnum.DOUBLE_SLOTTED) {
+						flapTypeIndex.add(2.0);
+						deltaFlapRef.add(50.0);
+					}
+					else if(flapTypes.get(i) == FlapTypeEnum.PLAIN) {
+						flapTypeIndex.add(3.0);
+						deltaFlapRef.add(60.0);
+					}
+					else if(flapTypes.get(i) == FlapTypeEnum.FOWLER) {
+						flapTypeIndex.add(4.0);
+						deltaFlapRef.add(40.0);
+					}
+					else if(flapTypes.get(i) == FlapTypeEnum.TRIPLE_SLOTTED) {
+						flapTypeIndex.add(5.0);
+						deltaFlapRef.add(50.0);
+					}
+					else if(flapTypes.get(i) == FlapTypeEnum.OPTIMIZED_FOWLER) {
+						flapTypeIndex.add(6.0);
+						deltaFlapRef.add(40.0);
+					}
+				}
+			}
 	}
 
 //	public void buildOutput(){
@@ -1301,6 +1343,38 @@ public class InputOutputTree {
 
 	public void setClAlphaFlap(Amount<?> clAlphaFlap) {
 		this.clAlphaFlap = clAlphaFlap;
+	}
+
+	public List<Double> getFlapTypeIndex() {
+		return flapTypeIndex;
+	}
+
+	public void setFlapTypeIndex(List<Double> flapTypeIndex) {
+		this.flapTypeIndex = flapTypeIndex;
+	}
+
+	public List<Double> getClZeroDistributionSemispan() {
+		return clZeroDistributionSemispan;
+	}
+
+	public void setClZeroDistributionSemispan(List<Double> clZeroDistributionSemispan) {
+		this.clZeroDistributionSemispan = clZeroDistributionSemispan;
+	}
+
+	public List<Double> getClAlphaDegDistributionSemiSpan() {
+		return clAlphaDegDistributionSemiSpan;
+	}
+
+	public void setClAlphaDegDistributionSemiSpan(List<Double> clAlphaDegDistributionSemiSpan) {
+		this.clAlphaDegDistributionSemiSpan = clAlphaDegDistributionSemiSpan;
+	}
+
+	public List<List<Double>> getClDistributionCurvesHighLift() {
+		return clDistributionCurvesHighLift;
+	}
+
+	public void setClDistributionCurvesHighLift(List<List<Double>> clDistributionCurvesHighLift) {
+		this.clDistributionCurvesHighLift = clDistributionCurvesHighLift;
 	}
 
 

@@ -558,7 +558,7 @@
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab text="High Lift ">
+            <Tab fx:id="highLiftTab" disable="true" text="High Lift ">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>

@@ -224,6 +224,9 @@ public class Main extends Application {
 		VaraiblesAnalyses theAnalysesClass = loaderInputClass.getController();
 		theAnalysesClass.setTheInputOutputTree(theInputTree);
 		theAnalysesClass.getTheInputOutputTree().setSaveButton(theController.getSaveButton());
+		if(theInputTree.isHighLiftInputTreeIsFilled()) {
+			theAnalysesClass.getHighLiftTab().setDisable(false);
+		}
 //		theAnalysesClass.setMain(this);
 	}
 	

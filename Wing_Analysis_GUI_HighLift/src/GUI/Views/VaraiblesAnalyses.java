@@ -24,6 +24,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -268,6 +269,9 @@ public class VaraiblesAnalyses {
 	
 	@FXML
 	TextArea outputTextHIGHLIFT;
+	
+	@FXML 
+	Tab highLiftTab;
 	
 	// EXTERNAL CURVES
 	
@@ -1261,6 +1265,9 @@ public class VaraiblesAnalyses {
 	
 		// LIFT DISTRIBUTION
 		
+		if(highLiftTab.isSelected())
+		WingAnalysisCalculator.calculateHighLiftDistribution(theInputOutputTree, this);
+		
 	}
 	
 	public void addExternalCurveLoadFunct() throws IOException{
@@ -1581,6 +1588,22 @@ public class VaraiblesAnalyses {
 
 	public void setOutputTextHIGHLIFT(TextArea outputTextHIGHLIFT) {
 		this.outputTextHIGHLIFT = outputTextHIGHLIFT;
+	}
+
+
+
+
+
+	public Tab getHighLiftTab() {
+		return highLiftTab;
+	}
+
+
+
+
+
+	public void setHighLiftTab(Tab highLiftTab) {
+		this.highLiftTab = highLiftTab;
 	}
 	
 }

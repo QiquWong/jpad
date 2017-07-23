@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
@@ -71,7 +73,8 @@ import writers.JPADStaticWriteUtils;
 public class WingAnalysisCalculator {
 	static NasaBlackwell theNasaBlackwellCalculator;
 	static TextArea textOutputLift;
-	
+	static List<Double>  _deltaCL0FlapList = new ArrayList<>();
+	static double[] newChordDistributionWithFlapMeter;
 
 	public static void calculateLoadDistributions(InputOutputTree theInputOutputTree, VaraiblesAnalyses theController){
 		
@@ -577,9 +580,7 @@ public class WingAnalysisCalculator {
 	public static void calculateHighLiftCurve(
 			InputOutputTree theInputOutpuTree,
 			VaraiblesAnalyses theController) {
-		
-		
-		
+			
 		// Setup database(s)
 		AerodynamicDatabaseReader aeroDatabaseReader;
 		HighLiftDatabaseReader highLiftDatabaseReader;
@@ -677,7 +678,7 @@ public class WingAnalysisCalculator {
 		List<Double> _deltaCl0FlapList =  
 				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST);
 		
-		List<Double>  _deltaCL0FlapList =  
+		_deltaCL0FlapList =  
 				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST)
 				;
 		List<Double>  _deltaClmaxFlapList = 
@@ -939,6 +940,345 @@ public class WingAnalysisCalculator {
 //	}
 	
 
+	}
+	
+	public static void calculateHighLiftDistribution(
+			InputOutputTree theInputOutpuTree,
+			VaraiblesAnalyses theController) {
+		
+		//Y ARRAY ----------------------------------------
+
+		List<Double> yAdimensionalArrayHighLiftModified = new ArrayList<>();
+
+		Map<Double, Amount<Length>> mapAdimensionalStationChord = new HashMap<>(); // map chord
+		Map<Double, Amount<Length>> mapAdimensionalStationXle = new HashMap<>(); // map xle
+		Map<Double, Amount<Angle>> mapAdimensionalStationAlphaZeroLift = new HashMap<>(); // map aol
+
+		// Setup database(s)
+		HighLiftDatabaseReader highLiftDatabaseReader;
+		// Setup database(s)
+
+		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
+		String highLiftDatabaseFileName = "HighLiftDatabase.h5";
+
+		highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
+
+
+		//fill y array with input values----------------------------------------------
+		theInputOutpuTree.getyAdimensionalStationInput().stream().forEach(yAd ->{
+			int i = theInputOutpuTree.getyAdimensionalStationInput().indexOf(yAd);
+			yAdimensionalArrayHighLiftModified.add(yAd);
+			mapAdimensionalStationChord.put(yAd, theInputOutpuTree.getChordDistribution().get(i));
+			mapAdimensionalStationXle.put(yAd, theInputOutpuTree.getxLEDistribution().get(i));
+			mapAdimensionalStationAlphaZeroLift.put(yAd, theInputOutpuTree.getAlphaZeroLiftDistribution().get(i));
+		}	
+				);
+
+		// fill y array with flap values----------------------------------------------
+		theInputOutpuTree.getFlapInnerStation().stream().forEach(yFlapAd ->{
+			int i = theInputOutpuTree.getFlapInnerStation().indexOf(yFlapAd);
+
+			if(yAdimensionalArrayHighLiftModified.contains(yFlapAd))
+				yFlapAd=yFlapAd - 0.001;
+
+			// calc delta flap
+			Double deltaCCfFlap = 0.0;
+			Double cFirstC = 0.0;
+			Double newClAlpha = 0.0;
+
+			deltaCCfFlap = 
+					highLiftDatabaseReader
+					.getDeltaCCfVsDeltaFlap(
+							theInputOutpuTree.getFlapDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE),
+							theInputOutpuTree.getFlapTypeIndex().get(i)
+							);
+
+			cFirstC = 
+					(1+(deltaCCfFlap*theInputOutpuTree.getFlapChordRatio().get(i)));
+
+			newClAlpha = (MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClAlphaDegDistributionSemiSpan()),
+					yFlapAd))* (
+							cFirstC * (
+									1-theInputOutpuTree.getFlapChordRatio().get(i) * Math.pow(
+											Math.sin(theInputOutpuTree.getFlapDeflection().get(i).doubleValue(SI.RADIAN)),
+											2
+											)));
+
+
+			yAdimensionalArrayHighLiftModified.add(yFlapAd);
+			mapAdimensionalStationChord.put(yFlapAd, 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())),
+									yFlapAd) + 
+							(deltaCCfFlap*theInputOutpuTree.getFlapChordRatio().get(i)*
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+											MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())),
+											yFlapAd)
+									),
+							SI.METER));
+
+			mapAdimensionalStationXle.put(yFlapAd, 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getxLEDistributionSemiSpan())),
+									yFlapAd),
+							SI.METER)
+					);
+
+			mapAdimensionalStationAlphaZeroLift.put(yFlapAd, 
+					Amount.valueOf(
+							-((MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClZeroDistributionSemispan()),
+									yFlapAd) + _deltaCL0FlapList.get(i))/
+									newClAlpha),
+							NonSI.DEGREE_ANGLE)
+					);
+		}	
+				);
+
+		// fill y array with flap outer values----------------------------------------------
+		theInputOutpuTree.getFlapOuterStation().stream().forEach(yFlapAd ->{
+			int i = theInputOutpuTree.getFlapOuterStation().indexOf(yFlapAd);
+
+			if(yAdimensionalArrayHighLiftModified.contains(yFlapAd))
+				yFlapAd=yFlapAd+0.001;
+
+			// calc delta flap
+			Double deltaCCfFlap = 0.0;
+			Double cFirstC = 0.0;
+			Double newClAlpha = 0.0;
+
+			deltaCCfFlap = 
+					highLiftDatabaseReader
+					.getDeltaCCfVsDeltaFlap(
+							theInputOutpuTree.getFlapDeflection().get(i).doubleValue(NonSI.DEGREE_ANGLE),
+							theInputOutpuTree.getFlapTypeIndex().get(i)
+							);
+
+			cFirstC = 
+					(1+(deltaCCfFlap*theInputOutpuTree.getFlapChordRatio().get(i)));
+
+			newClAlpha = (MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClAlphaDegDistributionSemiSpan()),
+					yFlapAd))* (
+							cFirstC * (
+									1-theInputOutpuTree.getFlapChordRatio().get(i) * Math.pow(
+											Math.sin(theInputOutpuTree.getFlapDeflection().get(i).doubleValue(SI.RADIAN)),
+											2
+											)));
+
+
+			yAdimensionalArrayHighLiftModified.add(yFlapAd);
+			mapAdimensionalStationChord.put(yFlapAd, 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())),
+									yFlapAd) + 
+							(deltaCCfFlap*theInputOutpuTree.getFlapChordRatio().get(i)*
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+											MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())),
+											yFlapAd)
+									),
+							SI.METER));
+
+			mapAdimensionalStationXle.put(yFlapAd, 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getxLEDistributionSemiSpan())),
+									yFlapAd),
+							SI.METER)
+					);
+
+			mapAdimensionalStationAlphaZeroLift.put(yFlapAd, 
+					Amount.valueOf(
+							-((MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClZeroDistributionSemispan()),
+									yFlapAd) + _deltaCL0FlapList.get(i))/
+									newClAlpha),
+							NonSI.DEGREE_ANGLE)
+					);
+		}	
+				);
+
+
+
+		// create new chord array----------------------------------------------
+
+		newChordDistributionWithFlapMeter = new double[yAdimensionalArrayHighLiftModified.size()];
+		Arrays.sort(MyArrayUtils.convertToDoublePrimitive(
+				MyArrayUtils.convertListOfDoubleToDoubleArray(yAdimensionalArrayHighLiftModified)));
+		yAdimensionalArrayHighLiftModified.stream().forEach(yADnew ->{
+			int i = yAdimensionalArrayHighLiftModified.indexOf(yADnew);
+			newChordDistributionWithFlapMeter [i] = mapAdimensionalStationChord.get(yADnew).doubleValue(SI.METER);
+		});
+
+
+		// fill y array with slat inner values----------------------------------------------
+		theInputOutpuTree.getSlatInnerStation().stream().forEach(ySlatAd ->{
+			int i = theInputOutpuTree.getSlatInnerStation().indexOf(ySlatAd);
+
+			if(yAdimensionalArrayHighLiftModified.contains(ySlatAd))
+				ySlatAd=ySlatAd-0.001;
+
+			yAdimensionalArrayHighLiftModified.add(ySlatAd);
+			
+			mapAdimensionalStationChord.put(ySlatAd, 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									newChordDistributionWithFlapMeter,
+									ySlatAd) + 
+							(theInputOutpuTree.getSlatExtensionRatio().get(i)*
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+											MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())),
+											ySlatAd)
+									),
+							SI.METER));
+
+			mapAdimensionalStationXle.put(ySlatAd,
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getxLEDistributionSemiSpan())),
+									ySlatAd) - 
+							(theInputOutpuTree.getSlatExtensionRatio().get(i)*
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+											MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())),
+											ySlatAd)
+									)
+							,
+							SI.METER));
+
+			mapAdimensionalStationAlphaZeroLift.put(
+					ySlatAd, 
+					Amount.valueOf(
+							MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+									MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getAlphaZeroLiftDistributionSemiSpan())),
+									ySlatAd),
+							NonSI.DEGREE_ANGLE));
+
+		}
+				);
+			
+// CREATE SORTED ARRAY FOR Y STATIONS, CHORD, ALPHA ZERO LIFT AND XLE
+	
+		double[] chordDistributionHighLift = new double [yAdimensionalArrayHighLiftModified.size()];
+		double[] alphaZeroLiftDistributionHighLift = new double [yAdimensionalArrayHighLiftModified.size()];
+		double[] xleDistributionHighLift = new double [yAdimensionalArrayHighLiftModified.size()];
+		double[] dihedralxleDistributionHighLift = new double [yAdimensionalArrayHighLiftModified.size()];
+		double[] twistDistributionHighLift = new double [yAdimensionalArrayHighLiftModified.size()];
+		double[] yMeterDimensionalDistributionHighLift = new double [yAdimensionalArrayHighLiftModified.size()];
+		
+		Arrays.sort(MyArrayUtils.convertToDoublePrimitive(
+				MyArrayUtils.convertListOfDoubleToDoubleArray(yAdimensionalArrayHighLiftModified)));
+		
+		yAdimensionalArrayHighLiftModified.stream().forEach(yADnew ->{
+			int i = yAdimensionalArrayHighLiftModified.indexOf(yADnew);
+			chordDistributionHighLift [i] = mapAdimensionalStationChord.get(yADnew).doubleValue(SI.METER);
+			xleDistributionHighLift [i] = mapAdimensionalStationXle.get(yADnew).doubleValue(SI.METER);
+			alphaZeroLiftDistributionHighLift[i] = mapAdimensionalStationAlphaZeroLift.get(yADnew).doubleValue(SI.RADIAN);
+			dihedralxleDistributionHighLift[i] = 0.0;
+			twistDistributionHighLift[i] =
+					Math.toRadians(MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
+							MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getTwistDistributionSemiSpan())),
+							yADnew));
+			yMeterDimensionalDistributionHighLift[i]=yADnew*theInputOutpuTree.getSemiSpan().doubleValue(SI.METER);
+			
+		});
+	
+		double[] chordDistributionHighLiftFinal = new double [theInputOutpuTree.getyAdimensionalDistributionSemiSpan().size()];
+		double[] alphaZeroLiftDistributionHighLiftFinal = new double [theInputOutpuTree.getyAdimensionalDistributionSemiSpan().size()];
+		double[] xleDistributionHighLiftFinal = new double [theInputOutpuTree.getyAdimensionalDistributionSemiSpan().size()];
+		double[] dihedralxleDistributionHighLiftFinal = new double [theInputOutpuTree.getyAdimensionalDistributionSemiSpan().size()];
+		double[] twistDistributionHighLiftFinal = new double [theInputOutpuTree.getyAdimensionalDistributionSemiSpan().size()];
+		double[] yMeterDimensionalDistributionHighLiftFinal = new double [theInputOutpuTree.getyAdimensionalDistributionSemiSpan().size()];
+		
+		theInputOutpuTree.getyAdimensionalDistributionSemiSpan().stream().forEach(yADold ->{	
+			int i = theInputOutpuTree.getyAdimensionalDistributionSemiSpan().indexOf(yADold);
+			
+			chordDistributionHighLiftFinal[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalArrayHighLiftModified), 
+					chordDistributionHighLift,
+					yADold);
+			
+			alphaZeroLiftDistributionHighLiftFinal[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalArrayHighLiftModified), 
+					alphaZeroLiftDistributionHighLift,
+					yADold);
+			
+			xleDistributionHighLiftFinal[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalArrayHighLiftModified), 
+					xleDistributionHighLift,
+					yADold);
+			
+			dihedralxleDistributionHighLiftFinal[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalArrayHighLiftModified), 
+					dihedralxleDistributionHighLift,
+					yADold);
+			
+			twistDistributionHighLiftFinal[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(yAdimensionalArrayHighLiftModified), 
+					twistDistributionHighLift,
+					yADold);
+			
+			
+		});
+			
+		
+// creating new array for dihedral and twist with new y stations.		
+		double vortexSemiSpanToSemiSpanRatio = (1./(2*theInputOutpuTree.getNumberOfPointSemispan()));
+		
+		NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
+				theInputOutpuTree.getSemiSpan().doubleValue(SI.METER),
+				theInputOutpuTree.getSurface().doubleValue(SI.SQUARE_METRE),
+				MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getyDimensionalDistributionSemiSpan()),
+				chordDistributionHighLiftFinal,
+				xleDistributionHighLiftFinal, 
+				dihedralxleDistributionHighLiftFinal, 
+				twistDistributionHighLiftFinal,
+				alphaZeroLiftDistributionHighLiftFinal, 
+				vortexSemiSpanToSemiSpanRatio,
+				0.0,
+				theInputOutpuTree.getMachNumber(),
+				theInputOutpuTree.getAltitude().doubleValue(SI.METER));
+		
+		
+// calculating curves
+		
+		for (int i=0; i<theInputOutpuTree.getAlphaArrayHighLiftDistribution().size(); i++){
+
+			theNasaBlackwellCalculator.calculate(theInputOutpuTree.getAlphaArrayHighLiftDistribution().get(i));
+			List<Double> clList = new ArrayList<>();
+			clList = Main.convertDoubleArrayToListDouble(
+					Main.convertFromDoubleToPrimitive(
+							theNasaBlackwellCalculator.getClTotalDistribution().toArray()));
+			if (clList.get(i).isNaN()){
+				for (int ii=0; ii< clList.size(); ii++){
+					clList.set(ii, 0.0);
+				}
+			}
+			
+			theInputOutpuTree.getClDistributionCurvesHighLift().add(i, 
+					clList);
+			
+			System.out.println(" alpha = " + theInputOutpuTree.getAlphaArrayHighLiftDistribution().get(i) + " cl " + clList);
+			}
 	}
 	
 public static void displayChart(
