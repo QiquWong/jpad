@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
+	<!-- all SFC values are in lb/(lb*hr) -->
     <analysis>
         <weights id="JPAD Test analysis - WEIGHTS">
 			<global_data>
 				<maximum_take_off_mass unit="kg">53610</maximum_take_off_mass>
-				<maximum_landing_mass unit="kg">52000</maximum_landing_mass>
-				<maximum_zero_fuel_mass unit="kg">49345</maximum_zero_fuel_mass>
-				<operating_empty_mass unit="kg">33500</operating_empty_mass>
-				<trapped_fuel_oil_mass unit="kg">268</trapped_fuel_oil_mass>
 				<single_passenger_mass unit="kg">106</single_passenger_mass>
+				<cruise_phase>
+					<range unit="nmi">1600</range> 
+					<sfc>0.44</sfc>
+				</cruise_phase>
+				<alternate_phase>
+					<range unit="min">100</range> 
+					<altitude unit="ft">15000</altitude>
+					<mach>0.57</mach>
+					<sfc>0.48</sfc> 
+				</alternate_phase>
+				<holding_phase>
+					<duration unit="min">30</duration> 
+					<altitude unit="ft">1500</altitude>
+					<mach>0.3</mach>
+					<sfc>0.36</sfc> 
+				</holding_phase>
 			</global_data>
 			<component_data>
 			<!-- if these tags are empty, a reference value will be calculated using default percentages of the MZFM -->

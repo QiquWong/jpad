@@ -90,8 +90,8 @@ public interface IACAnalysisManager {
 	public Map<AnalysisTypeEnum, Boolean> getExecutedAnalysesMap();
 	public void setExecutedAnalysesMap(Map<AnalysisTypeEnum, Boolean> _executedAnalysesMap);
 
-	public ACWeightsManager getTheWeights();
-	public void setTheWeights(ACWeightsManager theWeights);
+	public ACWeightsManager2 getTheWeights();
+	public void setTheWeights(ACWeightsManager2 theWeights);
 
 	public ACBalanceManager getTheBalance();
 	public void setTheBalance(ACBalanceManager theBalance);

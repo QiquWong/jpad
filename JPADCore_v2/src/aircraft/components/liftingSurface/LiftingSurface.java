@@ -409,7 +409,6 @@ public class LiftingSurface implements ILiftingSurface {
 				Double _kRho = 0.0035;
 				_mass = Amount.valueOf(
 						this.getSurface().getEstimatedValue()*
-						//_meanAerodChordCk.getEstimatedValue()*
 						aircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().getEstimatedValue()* //
 						(this.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilRoot().getThicknessToChordRatio())
 						*aircraft.getTheAnalysisManager().getTheWeights().getMaterialDensity().getEstimatedValue()*

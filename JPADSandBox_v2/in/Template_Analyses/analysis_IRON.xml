@@ -5,6 +5,7 @@
 	-->
 <jpad_config>
     <!-- Input data, shared across analysis tasks -->
+	<!-- TODO: CHECK WHICH OF THESE IS NECESSARY -->
     <global_data>
         <positive_limit_load_factor>2.5</positive_limit_load_factor>
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
