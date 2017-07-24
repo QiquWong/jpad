@@ -145,7 +145,7 @@ public class InputOutputTree {
 	
 	List<Double> liftCoefficient3DCurveHighLift;
 	
-	List<List<Double>> clDistributionCurvesHighLift;
+	List<List<Double>> clDistributionCurvesHighLift = new ArrayList<>();
 	
 	List<Double> flapTypeIndex = new ArrayList<>();
 	List<Double> deltaFlapRef = new ArrayList<>();
