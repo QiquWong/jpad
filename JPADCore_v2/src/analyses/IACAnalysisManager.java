@@ -60,12 +60,6 @@ public interface IACAnalysisManager {
 	public Double getMachOptimumCruise();
 	public void setMachOptimumCruise(Double _machOptimumCruise);
 
-	public Amount<Duration> getBlockTime();
-	public void setBlockTime(Amount<Duration> _blockTime);
-
-	public Amount<Duration> getFlightTime();
-	public void setFlightTime(Amount<Duration> _flightTime);
-
 	public Double getNUltimate();
 	public void setNUltimate(Double _nUltimate);
 

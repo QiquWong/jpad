@@ -33,11 +33,14 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 
 /**
  * Manage components weight calculations
+ * 
+ * FIXME!!!
  * 
  * @author Lorenzo Attanasio, Vittorio Trifari
  */
@@ -50,14 +53,13 @@ public class ACWeightsManager implements IACWeightsManager {
 	public static Amount<VolumetricDensity> _materialDensity = 
 			Amount.valueOf(2711.0,VolumetricDensity.UNIT);
 
-	// 84 kg assumed for each passenger + 15 kg baggage (EASA 2008.C.06) 
-	public static Amount<Mass> _paxSingleMass = Amount.valueOf(99.0, SI.KILOGRAM);
-	
 	//---------------------------------------------------------------------------------
 	// INPUT DATA : 
 	private Amount<Mass> _maximumTakeOffMass;
 	private Amount<Mass> _maximumZeroFuelMass;
 	private Amount<Mass> _maximumLandingMass;
+	private Amount<Mass> _fuelMass;
+	private Amount<Mass> _paxSingleMass;
 	private Amount<Mass> _operatingEmptyMass;
 	private Amount<Mass> _trappedFuelOilMass;
 	private Amount<Length> _referenceRange;
@@ -111,6 +113,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		private Amount<Mass> __maximumTakeOffMass;
 		private Amount<Mass> __maximumZeroFuelMass;
 		private Amount<Mass> __maximumLandingMass;
+		public  Amount<Mass> __paxSingleMass;
 		private Amount<Mass> __operatingEmptyMass;
 		private Amount<Mass> __trappedFuelOilMass;
 		private Amount<Mass> __fuselageReferenceMass;
@@ -154,6 +157,11 @@ public class ACWeightsManager implements IACWeightsManager {
 		
 		public ACWeightsManagerBuilder operatingEmptyMass(Amount<Mass> operatingEmptyMass) {
 			this.__operatingEmptyMass = operatingEmptyMass;
+			return this;
+		}
+		
+		public ACWeightsManagerBuilder singlePassengerMass(Amount<Mass> singlePassengerMass) {
+			this.__paxSingleMass = singlePassengerMass;
 			return this;
 		}
 		
@@ -215,7 +223,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		public ACWeightsManagerBuilder (String id, Aircraft theAircraft) {
 			this.__id = id;
 			this.__theAircraft = theAircraft;
-			this.initializeDefaultData(AircraftEnum.ATR72);
+//			this.initializeDefaultData(AircraftEnum.ATR72);
 		}
 		
 		public ACWeightsManagerBuilder (String id, Aircraft theAircraft, AircraftEnum aircraftName) {
@@ -224,6 +232,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			this.initializeDefaultData(aircraftName);
 		}
 		
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultData(AircraftEnum aircraftName) {
 
 			switch(aircraftName) {
@@ -233,6 +242,7 @@ public class ACWeightsManager implements IACWeightsManager {
 				__maximumLandingMass = Amount.valueOf(20757.2210, SI.KILOGRAM);
 				__operatingEmptyMass = Amount.valueOf(12935.5789, SI.KILOGRAM);
 				__trappedFuelOilMass = Amount.valueOf(0.0, SI.KILOGRAM);
+				__paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
 				break;
 				
 			case B747_100B:
@@ -241,6 +251,7 @@ public class ACWeightsManager implements IACWeightsManager {
 				__maximumLandingMass = Amount.valueOf(319517.5554, SI.KILOGRAM); // B747-100B MTOM, see REPORT_B747_100B in database
 				__operatingEmptyMass = Amount.valueOf(153131.9860, SI.KILOGRAM);
 				__trappedFuelOilMass = Amount.valueOf(0.005*(__maximumTakeOffMass.getEstimatedValue()), SI.KILOGRAM);
+				__paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
 				break;
 				
 			case AGILE_DC1:
@@ -249,6 +260,7 @@ public class ACWeightsManager implements IACWeightsManager {
 				__maximumLandingMass = Amount.valueOf(32702.4, SI.KILOGRAM);
 				__operatingEmptyMass = Amount.valueOf(20529, SI.KILOGRAM);
 				__trappedFuelOilMass = Amount.valueOf(0., SI.KILOGRAM);
+				__paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
 				break;
 			}
 		}
@@ -265,9 +277,11 @@ public class ACWeightsManager implements IACWeightsManager {
 		this._maximumTakeOffMass = builder.__maximumTakeOffMass;
 		this._maximumZeroFuelMass = builder.__maximumZeroFuelMass;
 		this._maximumLandingMass = builder.__maximumLandingMass;
+		this._paxSingleMass = builder.__paxSingleMass;
 		this._operatingEmptyMass = builder.__operatingEmptyMass;
 		this._trappedFuelOilMass = builder.__trappedFuelOilMass;
 		this._referenceRange = _theAircraft.getTheAnalysisManager().getReferenceRange();
+		this._fuelMass = _maximumTakeOffMass.to(SI.KILOGRAM).minus(_maximumZeroFuelMass.to(SI.KILOGRAM));
 		
 		this._fuselageReferenceMass = builder.__fuselageReferenceMass;
 		this._wingReferenceMass = builder.__wingReferenceMass;
@@ -374,6 +388,17 @@ public class ACWeightsManager implements IACWeightsManager {
 			operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/global_data/operating_empty_mass");
 		else {
 			System.err.println("MAXIMUM ZERO FUEL MASS REQUIRED !! \n ... returning ");
+			return null; 
+		}
+		
+		//---------------------------------------------------------------
+		// SINGLE PASSENGER MASS
+		Amount<Mass> singlePassengerMass = Amount.valueOf(0.0, SI.KILOGRAM);
+		String singlePassengerMassProperty = reader.getXMLPropertyByPath("//weights/global_data/single_passenger_mass");
+		if(singlePassengerMassProperty != null)
+			singlePassengerMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/global_data/single_passenger_mass");
+		else {
+			System.err.println("SINGLE PASSENGER MASS REQUIRED !! \n ... returning ");
 			return null; 
 		}
 		
@@ -494,6 +519,7 @@ public class ACWeightsManager implements IACWeightsManager {
 				.maximumZeroFuelMass(maximumZeroFuelMass)
 				.operatingEmptyMass(operatingEmptyMass)
 				.trappedFuelOilMass(trappedFuelOilMass)
+				.singlePassengerMass(singlePassengerMass)
 				.fuselageReferenceMass(fuselageReferenceMass)
 				.wingReferenceMass(wingReferenceMass)
 				.horizontalTailReferenceMass(horizontalTailReferenceMass)
@@ -504,8 +530,7 @@ public class ACWeightsManager implements IACWeightsManager {
 				.fuelTankReferenceMass(fuelTankReferenceMass)
 				.landingGearsReferenceMass(landingGearsReferenceMass)
 				.systemsReferenceMass(systemsReferenceMass)
-				.build()
-				;
+				.build();
 		
 		return theWeigths;
 
@@ -522,7 +547,7 @@ public class ACWeightsManager implements IACWeightsManager {
 				.append("\t-------------------------------------\n")
 				.append("\tReference Range: " + _referenceRange + "\n")
 				.append("\tMaterial Density (Alluminuim): " + _materialDensity + "\n")
-				.append("\tPax Single Mass: " + _paxSingleMass + "\n")
+				.append("\tPax Single Mass: " + getPaxSingleMass() + "\n")
 				.append("\t-------------------------------------\n")
 				.append("\tMaximum Take-Off Mass: " + _maximumTakeOffMass + "\n")
 				.append("\tMaximum Take-Off Weight: " + _maximumTakeOffWeight + "\n")
@@ -542,8 +567,11 @@ public class ACWeightsManager implements IACWeightsManager {
 				.append("\tCrew Mass: " + _crewMass + "\n")
 				.append("\tCrew Weight: " + _crewMass.times(AtmosphereCalc.g0).to(SI.NEWTON) + "\n")			
 				.append("\t·····································\n")
-				.append("\tFuel Mass: " + _theAircraft.getFuelTank().getFuelMass() + "\n")
-				.append("\tFuel Weight: " + _theAircraft.getFuelTank().getFuelWeight() + "\n")			
+				.append("\tMax Fuel Mass: " + _theAircraft.getFuelTank().getFuelMass() + "\n")
+				.append("\tMax Fuel Weight: " + _theAircraft.getFuelTank().getFuelWeight() + "\n")	
+				.append("\t·····································\n")
+				.append("\tFuel Mass: " + _fuelMass + "\n")
+				.append("\tFuel Weight: " + _fuelMass + "\n")	
 				.append("\t·····································\n")
 				.append("\tMaximum Zero Fuel Mass: " + _maximumZeroFuelMass + "\n")
 				.append("\tMaximum Zero Fuel Weight: " + _maximumZeroFuelWeight + "\n")			
@@ -602,13 +630,14 @@ public class ACWeightsManager implements IACWeightsManager {
 		dataListGlobal.add(new Object[] {"Description","Unit","Value"});
 		dataListGlobal.add(new Object[] {"Reference Range","nmi",_referenceRange.doubleValue(NonSI.NAUTICAL_MILE)});
 		dataListGlobal.add(new Object[] {"Material density","kg/m³",_materialDensity.getEstimatedValue()});
-		dataListGlobal.add(new Object[] {"Single passenger Mass","kg",_paxSingleMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Single passenger Mass","kg",getPaxSingleMass().doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Maximum Take-Off Mass","kg",_maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Take-Off Mass","kg",_takeOffMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Maximum Landing Mass","kg",_maximumLandingMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Maximum Passengers Mass","kg",_paxMassMax.doubleValue(SI.KILOGRAM)});
-		dataListGlobal.add(new Object[] {"Fuel Mass","kg",_theAircraft.getFuelTank().getFuelMass().doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Maximum Fuel Mass","kg",_theAircraft.getFuelTank().getFuelMass().doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Fuel Mass","kg", _fuelMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Crew Mass","kg",_crewMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Maximum Zero Fuel Mass","kg",_maximumZeroFuelMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Zero Fuel Mass","kg",_zeroFuelMass.doubleValue(SI.KILOGRAM)});
@@ -1318,15 +1347,134 @@ public class ACWeightsManager implements IACWeightsManager {
 		System.out.println("Your excel file has been generated!");
 	}
 
+	public void plotWeightBreakdown(String weightsFolderPath) {
+		
+		List<String> labels = new ArrayList<>();
+		List<Double> values = new ArrayList<>();
+		
+		Double fuselageMass = 0.0;
+		Double wingMass = 0.0;
+		Double hTailMass = 0.0;
+		Double vTailMass = 0.0;
+		Double canardMass = 0.0;
+		Double nacellesMass = 0.0;
+		Double landingGearsMass = 0.0;
+		
+		Double powerPlantMass = 0.0;
+		Double systemsMass = 0.0;
+		Double cabinConfigurationMass = 0.0;
+		
+		Double operatingItemMass = 0.0;
+		Double crewMass = 0.0;
+		
+		Double maxPassengersMass = 0.0;
+		
+		Double maxFuelMass = 0.0;
+		
+		Double maxTakeOffMass = _theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().doubleValue(SI.KILOGRAM);
+		
+		if(_theAircraft.getFuselage() != null)
+			if(_theAircraft.getFuselage().getMassEstimated() != null) {
+				labels.add("Fuselage");
+				fuselageMass = _theAircraft.getFuselage().getMassEstimated().doubleValue(SI.KILOGRAM);
+				values.add(fuselageMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getWing() != null)
+			if(_theAircraft.getWing().getMassEstimated() != null) {
+				labels.add("Wing");
+				wingMass = _theAircraft.getWing().getMassEstimated().doubleValue(SI.KILOGRAM);
+				values.add(wingMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getHTail() != null)
+			if(_theAircraft.getHTail().getMassEstimated() != null) {
+				labels.add("Horizontal Tail");
+				hTailMass = _theAircraft.getHTail().getMassEstimated().doubleValue(SI.KILOGRAM);
+				values.add(hTailMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getVTail() != null)
+			if(_theAircraft.getVTail().getMassEstimated() != null) {
+				labels.add("Vertical Tail");
+				vTailMass = _theAircraft.getVTail().getMassEstimated().doubleValue(SI.KILOGRAM);
+				values.add(vTailMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getCanard() != null)
+			if(_theAircraft.getCanard().getMassEstimated() != null) {
+				labels.add("Canard");
+				canardMass = _theAircraft.getCanard().getMassEstimated().doubleValue(SI.KILOGRAM);
+				values.add(canardMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getNacelles() != null)
+			if(_theAircraft.getNacelles().getTotalMass() != null) {
+				labels.add("Nacelles");
+				nacellesMass = _theAircraft.getNacelles().getTotalMass().doubleValue(SI.KILOGRAM);
+				values.add(nacellesMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getLandingGears() != null)
+			if(_theAircraft.getLandingGears().getMassEstimated() != null) {
+				labels.add("Landing Gears");
+				landingGearsMass = _theAircraft.getLandingGears().getMassEstimated().doubleValue(SI.KILOGRAM);
+				values.add(landingGearsMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getPowerPlant() != null)
+			if(_theAircraft.getPowerPlant().getTotalMass() != null) {
+				labels.add("Power Plant");
+				powerPlantMass = _theAircraft.getPowerPlant().getTotalMass().doubleValue(SI.KILOGRAM);
+				values.add(powerPlantMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getSystems() != null)
+			if(_theAircraft.getSystems().getOverallMass() != null) {
+				labels.add("Systems");
+				systemsMass = _theAircraft.getSystems().getOverallMass().doubleValue(SI.KILOGRAM);
+				values.add(systemsMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getCabinConfiguration() != null)
+			if(_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment() != null) {
+				labels.add("Furnishings and Equipment");
+				cabinConfigurationMass = _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().doubleValue(SI.KILOGRAM);
+				values.add(cabinConfigurationMass/maxTakeOffMass*100.0);
+			}
+		if(_theAircraft.getTheAnalysisManager().getTheWeights().getOperatingItemMass() != null) {
+			labels.add("Operating Items");
+			operatingItemMass = _theAircraft.getTheAnalysisManager().getTheWeights().getOperatingItemMass().doubleValue(SI.KILOGRAM);
+			values.add(operatingItemMass/maxTakeOffMass*100.0);
+		}
+		if(_theAircraft.getTheAnalysisManager().getTheWeights().getCrewMass() != null) {
+			labels.add("Crew");
+			crewMass = _theAircraft.getTheAnalysisManager().getTheWeights().getCrewMass().doubleValue(SI.KILOGRAM);
+			values.add(crewMass/maxTakeOffMass*100.0);
+		}
+		if(_theAircraft.getTheAnalysisManager().getTheWeights().getPaxMassMax() != null) {
+			labels.add("Passengers");
+			maxPassengersMass = _theAircraft.getTheAnalysisManager().getTheWeights().getPaxMassMax().doubleValue(SI.KILOGRAM);
+			values.add(maxPassengersMass/maxTakeOffMass*100.0);
+		}
+		if(_theAircraft.getFuelTank() != null)
+			if(_theAircraft.getFuelTank().getFuelMass() != null) {
+				labels.add("Fuel");
+				maxFuelMass = _theAircraft.getFuelTank().getFuelMass().doubleValue(SI.KILOGRAM);
+				values.add(maxFuelMass/maxTakeOffMass*100.0);
+			}
+
+		MyChartToFileUtils.plotPieChart(
+				labels, 
+				values, 
+				"Weights Breakdown", 
+				false, 
+				weightsFolderPath, 
+				"Weights_Breakdown"
+				);
+		
+	}
+	
 	public void calculateDependentVariables(Aircraft aircraft) {
 
 		// Passengers and crew mass
 		// 76.5 kg for each crew member + baggage
 		_paxMass = _paxSingleMass.times(aircraft.getCabinConfiguration().getNPax());
 		_crewMass = Amount.valueOf(aircraft.getCabinConfiguration().getNCrew() * 76.5145485, SI.KILOGRAM); 
-
+		
 		// Passengers and crew mass
-		_paxMassMax = _paxSingleMass.times(aircraft.getCabinConfiguration().getMaxPax());
+		_paxMassMax = getPaxSingleMass().times(aircraft.getCabinConfiguration().getMaxPax());
 
 		// Operating items mass
 		if (_referenceRange.getEstimatedValue() < 2000) { 
@@ -1382,8 +1530,6 @@ public class ACWeightsManager implements IACWeightsManager {
 			// Evaluate weights with more than one method for each component
 			//////////////////////////////////////////////////////////////////
 
-			// --- STRUCTURE MASS-----------------------------------
-
 			calculateStructuralMass(aircraft, methodsMap);
 
 			// --- END OF STRUCTURE MASS-----------------------------------
@@ -1422,7 +1568,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			// Take-off mass
 			aircraft.getTheAnalysisManager().getTheWeights().setTakeOffMass(
 					aircraft.getTheAnalysisManager().getTheWeights().getZeroFuelMass().plus(
-							aircraft.getFuelTank().getFuelMass()));
+							this._fuelMass));
 
 			aircraft.getTheAnalysisManager().getTheWeights().setTakeOffWeight(
 					aircraft.getTheAnalysisManager().getTheWeights().getTakeOffMass().times(
@@ -1431,15 +1577,19 @@ public class ACWeightsManager implements IACWeightsManager {
 			// Maximum take-off mass
 			aircraft.getTheAnalysisManager().getTheWeights().setMaximumTakeOffMass(
 					aircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().plus(
-							aircraft.getFuelTank().getFuelMass()));
+							this._fuelMass));
 
+			// --- END TAKE-OFF MASS-----------------------------------
+			
 			// Maximum landing mass
-			aircraft.getTheAnalysisManager().getTheWeights().setMaximumLandingMass(_maximumTakeOffMass.times(0.9));
+			aircraft.getTheAnalysisManager().getTheWeights().setMaximumLandingMass(_maximumTakeOffMass.times(0.97));
 
 			System.out.println("Iteration " + (i+1) + 
 					", Structure mass: " + aircraft.getTheAnalysisManager().getTheWeights().getStructuralMass() + 
 					" , Maximum Take-Off Mass: " + _maximumTakeOffMass);
 
+			// --- END LANDING MASS-----------------------------------
+			
 			sum = sum.plus(_maximumTakeOffMass);
 			i++;
 			if(i<4)
@@ -1482,9 +1632,6 @@ public class ACWeightsManager implements IACWeightsManager {
 
 		if(aircraft.getLandingGears() != null)
 			aircraft.getLandingGears().calculateMass(aircraft, methodsMap);
-
-		if(aircraft.getSystems() != null)
-			aircraft.getSystems().calculateMass(aircraft, MethodEnum.TORENBEEK_2013);
 
 		if(aircraft.getCanard() != null)
 			aircraft.getTheAnalysisManager().getTheWeights().setStructuralMass(
@@ -1755,14 +1902,6 @@ public class ACWeightsManager implements IACWeightsManager {
 		this._takeOffWeight = _takeOffWeight;
 	}
 
-	public Amount<Mass> getPaxSingleMass() {
-		return _paxSingleMass;
-	}
-
-	public void setPaxSingleMass(Amount<Mass> _paxSingleMass) {
-		ACWeightsManager._paxSingleMass = _paxSingleMass;
-	}
-
 	public List<Amount<Mass>> getMassStructureList() {
 		return _massStructureList;
 	}
@@ -1880,4 +2019,21 @@ public class ACWeightsManager implements IACWeightsManager {
 	public void setSystemsReferenceMass(Amount<Mass> _systemsReferenceMass) {
 		this._systemsReferenceMass = _systemsReferenceMass;
 	}
+
+	public Amount<Mass> getFuelMass() {
+		return _fuelMass;
+	}
+
+	public void setFuelMass(Amount<Mass> _fuelMass) {
+		this._fuelMass = _fuelMass;
+	}
+
+	public Amount<Mass> getPaxSingleMass() {
+		return _paxSingleMass;
+	}
+
+	public void setPaxSingleMass(Amount<Mass> _paxSingleMass) {
+		this._paxSingleMass = _paxSingleMass;
+	}
+
 }

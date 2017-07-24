@@ -1,6 +1,7 @@
 package standaloneutils;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Paint;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +10,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +34,8 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.plot.PiePlot;
@@ -1060,6 +1065,67 @@ public class MyChartToFileUtils {
 //				chartFactory.addTraceToTikz(xList.get(i), yList.get(i), legend.get(i));
 //
 //		chartFactory.closeTikz();
+	}
+	
+	/**
+	 * @author Vittorio Triari
+	 * 
+	 * @param labels a list of String containing all the labels
+	 * @param values a list of Double containing all values (must be of the same size of labels)
+	 * @param chartName
+	 * @param plotLegend a boolean flag used to decide wheter to plot the legend
+	 * @param folderPathName
+	 * @param fileName
+	 */
+	public static void plotPieChart(
+			List<String> labels,
+			List<Double> values,
+			String chartName,
+			Boolean plotLegend,
+			String folderPathName, 
+			String fileName
+			) {
+		
+		if(labels.size() != values.size()) {
+			System.err.println("WARNING: labels and values must have the same size !!");
+			return;			
+		}
+		
+		DefaultPieDataset dataset = new DefaultPieDataset( );
+		values.stream().forEach(v -> dataset.setValue(labels.get(values.indexOf(v)), v));
+		
+		JFreeChart chart = ChartFactory.createPieChart(      
+		        chartName,   // chart title 
+		        dataset,     // data    
+		        plotLegend,  // include legend   
+		        true,        // include tooltips 
+		        false        // include urls
+		        );     
+		
+		Font font = new Font("FreeMono", Font.PLAIN, 32);
+		PieSectionLabelGenerator gen = new StandardPieSectionLabelGenerator(
+				"{0}: {2}", new DecimalFormat("0.00"), new DecimalFormat("0.00%"));
+
+		PiePlot piePlot = (PiePlot) chart.getPlot();
+		piePlot.setLabelGenerator(gen);
+		piePlot.setLabelFont(font);
+		
+		chart.setBackgroundPaint(Color.WHITE);
+		chart.setBackgroundImageAlpha(0.0f);
+		chart.setAntiAlias(true);
+		chart.getPlot().setBackgroundPaint(Color.WHITE);
+		chart.getPlot().setBackgroundAlpha(0.0f);
+		
+		
+		// creation of the file .png
+		File pieChart = new File(folderPathName + fileName + ".png"); 
+
+		try {
+			ChartUtilities.saveChartAsPNG(pieChart, chart, 1920, 1080);
+		} catch (IOException e) {
+			System.err.println("Problem occurred creating chart.");
+		}
+		
 	}
 	
 	/** 

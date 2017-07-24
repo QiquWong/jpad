@@ -69,10 +69,10 @@
         </costs>
     </analysis>
 	<plot>
-		<doc_vs_Range perform="TRUE"/>
-		<doc_vs_BlockFuel perform="TRUE"/>
-		<doc_vs_BlockTime perform="TRUE"/>
 		<doc_Breakdown perform="TRUE"/>
-		<profitability perform="TRUE"/>
+		<doc_vs_Range perform="FALSE"/>
+		<doc_vs_BlockFuel perform="FALSE"/>
+		<doc_vs_BlockTime perform="FALSE"/>
+		<profitability perform="FALSE"/>
 	</plot>
 </jpad_config>

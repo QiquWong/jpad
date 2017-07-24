@@ -3,11 +3,12 @@
     <analysis>
         <weights id="JPAD Test analysis - WEIGHTS">
 			<global_data>
-				<maximum_take_off_mass unit="kg">54037</maximum_take_off_mass>
-				<maximum_landing_mass unit="kg">48633.3</maximum_landing_mass>
-				<maximum_zero_fuel_mass unit="kg">45569.3</maximum_zero_fuel_mass>
-				<operating_empty_mass unit="kg">33219.3</operating_empty_mass>
-				<trapped_fuel_oil_mass unit="kg">270</trapped_fuel_oil_mass>
+				<maximum_take_off_mass unit="kg">53610</maximum_take_off_mass>
+				<maximum_landing_mass unit="kg">52000</maximum_landing_mass>
+				<maximum_zero_fuel_mass unit="kg">49345</maximum_zero_fuel_mass>
+				<operating_empty_mass unit="kg">33500</operating_empty_mass>
+				<trapped_fuel_oil_mass unit="kg">268</trapped_fuel_oil_mass>
+				<single_passenger_mass unit="kg">106</single_passenger_mass>
 			</global_data>
 			<component_data>
 				<fuselage_reference_mass unit="kg">5004.7</fuselage_reference_mass>

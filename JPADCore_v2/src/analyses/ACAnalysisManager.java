@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.measure.quantity.Duration;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Velocity;
@@ -61,8 +60,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Double _machMaxCruise;
 	private Amount<Length> _altitudeOptimumCruise;
 	private Double _machOptimumCruise;
-	private Amount<Duration> _blockTime;
-	private Amount<Duration> _flightTime;
 	private Amount<Length> _referenceRange;
 	
 	// DEPENDENT VARIABLES: 
@@ -82,6 +79,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Map<CostsEnum, MethodEnum> _taskListCosts;
 	private Map <AnalysisTypeEnum, Boolean> _executedAnalysesMap;
 	private List<AnalysisTypeEnum> _analysisList;
+	private Boolean _plotWeights;
 	private Boolean _plotBalance;
 	private Boolean _plotAerodynamicAndStability;
 	private Boolean _plotPerformance;
@@ -114,8 +112,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		private Double __machMaxCruise;
 		private Amount<Length> __altitudeOptimumCruise;
 		private Double __machOptimumCruise;
-		private Amount<Duration> __blockTime;
-		private Amount<Duration> __flightTime;
 		private Amount<Length> __referenceRange;
 		
 		private Map <ComponentEnum, MethodEnum> __methodsMapWeights = new HashMap<ComponentEnum, MethodEnum>();
@@ -126,6 +122,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		private Map <AnalysisTypeEnum, Boolean> __executedAnalysesMap = new HashMap<AnalysisTypeEnum, Boolean>();
 		private List<AnalysisTypeEnum> __analysisList = new ArrayList<AnalysisTypeEnum>();
 		
+		private Boolean __plotWeights = Boolean.FALSE;
 		private Boolean __plotBalance = Boolean.FALSE;
 		private Boolean __plotAerodynamicAndStability = Boolean.FALSE;
 		private Boolean __plotPerformance = Boolean.FALSE;
@@ -143,6 +140,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		public ACAnalysisManagerBuilder analysisList (List<AnalysisTypeEnum> analysisList) {
 			this.__analysisList = analysisList;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder plotWeights (Boolean plotWeights){
+			this.__plotWeights = plotWeights;
 			return this;
 		}
 		
@@ -206,16 +208,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
-		public ACAnalysisManagerBuilder blockTime (Amount<Duration> blockTime) {
-			this.__blockTime = blockTime;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder flightTime (Amount<Duration> flightTime) {
-			this.__flightTime = flightTime;
-			return this;
-		}
-		
 		public ACAnalysisManagerBuilder methodsMapWeights (Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 			this.__methodsMapWeights = methodsMapWeights;
 			return this;
@@ -264,8 +256,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				__machMaxCruise = 0.45;
 				__altitudeOptimumCruise = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
 				__machOptimumCruise = 0.43;
-				__blockTime = Amount.valueOf(1.5, NonSI.HOUR);
-				__flightTime = Amount.valueOf(1.35, NonSI.HOUR);
 				__cruiseCL = 0.45;
 				__referenceRange = Amount.valueOf(1528., SI.KILOMETER); 
 				break;
@@ -277,8 +267,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				__machMaxCruise = 0.89;
 				__altitudeOptimumCruise = Amount.valueOf(35000., NonSI.FOOT).to(SI.METER);
 				__machOptimumCruise = 0.84;
-				__blockTime = Amount.valueOf(1.5, NonSI.HOUR);
-				__flightTime = Amount.valueOf(1.35, NonSI.HOUR);
 				__cruiseCL = 0.58;
 				__referenceRange = Amount.valueOf(9800., SI.KILOMETER);
 				break;
@@ -290,8 +278,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				__machMaxCruise = 0.82;
 				__altitudeOptimumCruise = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
 				__machOptimumCruise = 0.78;
-				__blockTime = Amount.valueOf(2.6, NonSI.HOUR);
-				__flightTime = Amount.valueOf(2.33, NonSI.HOUR);
 				__cruiseCL = 0.5;
 				__referenceRange = Amount.valueOf(3500., SI.KILOMETER);
 				break;
@@ -314,8 +300,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._machMaxCruise = builder.__machMaxCruise;
 		this._altitudeOptimumCruise = builder.__altitudeOptimumCruise;
 		this._machOptimumCruise = builder.__machOptimumCruise;
-		this._blockTime = builder.__blockTime;
-		this._flightTime = builder.__flightTime;
 		this._referenceRange = builder.__referenceRange;
 		
 		this._methodsMapWeights = builder.__methodsMapWeights;
@@ -325,7 +309,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._taskListCosts = builder.__taskListCosts;
 		this._executedAnalysesMap = builder.__executedAnalysesMap;
 		this._analysisList = builder.__analysisList;
-		
+
+		this._plotWeights = builder.__plotWeights;
 		this._plotBalance = builder.__plotBalance;
 		this._plotAerodynamicAndStability = builder.__plotAerodynamicAndStability;
 		this._plotPerformance = builder.__plotPerformance;
@@ -346,7 +331,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	// End of the builder pattern 
 	//============================================================================================
 		
-	@SuppressWarnings("unchecked")
 	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft) throws IOException {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -367,8 +351,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		Double maxCruiseMach = null;
 		Amount<Length> optimumCruiseAltitude = null;
 		Double optimumCruiseMach = null;
-		Amount<Duration> blockTime = null;
-		Amount<Duration> flightTime = null;
 		Amount<Length> referenceRange = null;
 
 		//-------------------------------------------------------------------------------------
@@ -407,34 +389,35 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		if(optimumCruiseMachProperty != null)
 			optimumCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/optimum_cruise_mach_number"));
 		//-------------------------------------------------------------------------------------
-		// BLOCK TIME
-		String blockTimeProperty = reader.getXMLPropertyByPath("//global_data/block_time");
-		if(blockTimeProperty != null)
-			blockTime = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//global_data/block_time");
-		//-------------------------------------------------------------------------------------
-		// FLIGHT TIME
-		String flightTimeProperty = reader.getXMLPropertyByPath("//global_data/flight_time");
-		if(flightTimeProperty != null)
-			flightTime = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//global_data/flight_time");
-		//-------------------------------------------------------------------------------------
 		// REFERENCE RANGE
-		String referenceRangeProperty = reader.getXMLPropertyByPath("//global_data/block_time");
+		String referenceRangeProperty = reader.getXMLPropertyByPath("//global_data/reference_range");
 		if(referenceRangeProperty != null)
 			referenceRange = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/reference_range")), NonSI.NAUTICAL_MILE);
 		
 		//-------------------------------------------------------------------------------------------
 		// WEIGHTS ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapWeights = new HashMap<>();
+		Boolean plotWeights = null;
 		
 		NodeList weightsTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//weights");
+		Node weightsNode = weightsTag.item(0);
 		
-		if(weightsTag != null) {
+		if(weightsNode != null) {
 
 			String weightsFile = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@file");
+			
+			String plotWeightsString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//weights/@plot");
+			if(plotWeightsString.equalsIgnoreCase("FALSE") || plotWeightsString == null)
+				plotWeights = Boolean.FALSE;
+			else if(plotWeightsString.equalsIgnoreCase("TRUE"))
+				plotWeights = Boolean.TRUE;
 
 			if(weightsFile != null) {
 
@@ -1278,14 +1261,13 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.machMaxCruise(maxCruiseMach)
 				.altitudeOptimumCruise(optimumCruiseAltitude)
 				.machOptimumCruise(optimumCruiseMach)
-				.blockTime(blockTime)
-				.flightTime(flightTime)
 				.referenceRange(referenceRange)
 				.methodsMapWeights(methodsMapWeights)
 				.methodsMapBalance(methodsMapBalance)
 				.taskListPerfromance(taskListPerformance)
 				.taskListAerodynamicAndStability(taskListAerodynamicAndStability)
 				.taskListCosts(taskListCosts)
+				.plotWeights(plotWeights)
 				.plotBalance(plotBalance)
 				.plotAerodynamicAndStability(plotAerodynamicAndStability)
 				.plotPerformance(plotPerformance)
@@ -1314,8 +1296,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.append("\tMaximum cruise Mach number: " + _machMaxCruise + "\n")
 				.append("\tOptimum cruise altitude: " + _altitudeOptimumCruise + "\n")
 				.append("\tOptimum cruise Mach number: " + _machOptimumCruise + "\n")
-				.append("\tBlock time: " + _blockTime + "\n")
-				.append("\tFlight time: " + _flightTime + "\n")
 				.append("\tReference range: " + _referenceRange + "\n")
 				.append("\t·····································\n")
 				.append("\tn Ultimate " + _nUltimate + "\n")
@@ -1497,15 +1477,18 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// Evaluate aircraft masses
 		aircraft.getTheAnalysisManager().getTheWeights().calculateAllMasses(aircraft, _methodsMapWeights);
 
-		// Plot
+		// Plot and print
 		try {
 			String weightsFolderPath = JPADStaticWriteUtils.createNewFolder(
 					resultsFolderPath 
 					+ "WEIGHTS"
 					+ File.separator);
+			
+			aircraft.getTheAnalysisManager().getTheWeights().plotWeightBreakdown(weightsFolderPath);
 			aircraft.getTheAnalysisManager().getTheWeights().toXLSFile(
 					weightsFolderPath
 					+ "Weights");
+			
 		} catch (InvalidFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -1647,22 +1630,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setMachOptimumCruise(Double _machOptimumCruise) {
 		this._machOptimumCruise = _machOptimumCruise;
-	}
-
-	public Amount<Duration> getBlockTime() {
-		return _blockTime;
-	}
-
-	public void setBlockTime(Amount<Duration> _blockTime) {
-		this._blockTime = _blockTime;
-	}
-
-	public Amount<Duration> getFlightTime() {
-		return _flightTime;
-	}
-
-	public void setFlightTime(Amount<Duration> _flightTime) {
-		this._flightTime = _flightTime;
 	}
 
 	public Double getNUltimate() {
@@ -1927,6 +1894,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setTaskListCosts(Map<CostsEnum, MethodEnum> _taskListCosts) {
 		this._taskListCosts = _taskListCosts;
+	}
+
+	public Boolean getPlotWeights() {
+		return _plotWeights;
+	}
+
+	public void setPlotWeights(Boolean _plotWeights) {
+		this._plotWeights = _plotWeights;
 	}
 
 }
