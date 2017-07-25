@@ -8,6 +8,7 @@ import javax.measure.quantity.Power;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
@@ -16,7 +17,7 @@ import standaloneutils.customdata.CenterOfGravity;
 
 public interface IPowerPlant {
 
-	public void calculateMass();
+	public void calculateMass(Aircraft theAircraft);
 
 	public CenterOfGravity calculateCG();
 

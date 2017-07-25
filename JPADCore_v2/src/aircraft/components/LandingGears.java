@@ -15,8 +15,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import com.sun.org.apache.xml.internal.utils.NSInfo;
-
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
@@ -71,8 +69,6 @@ public class LandingGears implements ILandingGear {
 	private CenterOfGravity _cg;
 
 	private Amount<Length> _xCG;
-
-	private Double[] _percentDifferenceXCG;
 
 	//============================================================================================
 	// Builder pattern 

@@ -46,7 +46,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private String _id;
 	private Aircraft _theAircraft;
 
-	private ACWeightsManager2 _theWeights;
+	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
 	private Map<ConditionEnum, ACAerodynamicCalculator> _theAerodynamicAndStability;
 	private ACPerformanceManager _thePerformance;
@@ -1369,9 +1369,10 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.WEIGHTS)) {
-			_theWeights = ACWeightsManager2.importFromXML(
+			_theWeights = ACWeightsManager.importFromXML(
 					_weightsFileComplete.getAbsolutePath(),
-					aircraft
+					aircraft,
+					theOperatingConditions
 					);
 			calculateWeights(aircraft, resultsFolderPath); 
 			_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, true);
@@ -1717,11 +1718,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._executedAnalysesMap = _executedAnalysesMap;
 	}
 
-	public ACWeightsManager2 getTheWeights() {
+	public ACWeightsManager getTheWeights() {
 		return _theWeights;
 	}
 
-	public void setTheWeights(ACWeightsManager2 theWeights) {
+	public void setTheWeights(ACWeightsManager theWeights) {
 		this._theWeights = theWeights;
 	}
 

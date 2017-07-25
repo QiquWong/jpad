@@ -11,14 +11,13 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
 import aircraft.components.powerplant.Engine;
 import analyses.analysismodel.InnerCalculator;
 import analyses.analysismodel.analysiscalcmanager.WeightsManager;
-import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.atmosphere.AtmosphereCalc;
-import writers.JPADStaticWriteUtils;
 
 public class EngineWeightsManager extends WeightsManager{
 
@@ -62,18 +61,18 @@ public class EngineWeightsManager extends WeightsManager{
 	 */
 	@Override
 	public void calculateAll() {
-		calculator.allMethods();
-
-		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
-		_percentDifference =  new Double[_massMap.size()]; 
-
-		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_dryMassPublicDomain, 
-				_massMap,
-				_percentDifference,
-				20.).getFilteredMean(), SI.KILOGRAM);
-
-		calculateTotalMass();
+//		calculator.allMethods();
+//
+//		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
+//		_percentDifference =  new Double[_massMap.size()]; 
+//
+//		_massEstimated = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
+//				_dryMassPublicDomain, 
+//				_massMap,
+//				_percentDifference,
+//				20.).getFilteredMean(), SI.KILOGRAM);
+//
+//		calculateTotalMass();
 
 	}
 
@@ -143,7 +142,7 @@ public class EngineWeightsManager extends WeightsManager{
 	 * Calculate engine mass only if public domain data
 	 * about engine is not available
 	 */
-	public void calculateTotalMass() {
+	public void calculateTotalMass(Aircraft theAircraft) {
 
 		if (_dryMassPublicDomain != null) {
 			_massEstimated = Amount.valueOf(_dryMassPublicDomain.getEstimatedValue(), SI.KILOGRAM);
@@ -151,8 +150,8 @@ public class EngineWeightsManager extends WeightsManager{
 
 		// TORENBEEK_1982 method gives better results for 50000 < MTOM < 200000
 		if (_engineType.equals(EngineTypeEnum.TURBOPROP) | ( 
-				_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue() < 50000 |
-				_theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue() > 200000)) {
+				theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue() < 50000 |
+				theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().getEstimatedValue() > 200000)) {
 			calculateTotalMass(MethodEnum.TORENBEEK_1982);
 
 		} else {
@@ -173,13 +172,13 @@ public class EngineWeightsManager extends WeightsManager{
 		switch(method){
 
 		case TORENBEEK_1982 : {
-			_totalMass = _massEstimated.times(1.377);
+			_totalMass = _massEstimated.to(NonSI.POUND).times(1.377).to(SI.KILOGRAM);
 		} break;
 
 		case TORENBEEK_2013 : {
 			_totalMass = Amount.valueOf((
-					_t0.times(0.25).getEstimatedValue() + 
-					8000)/AtmosphereCalc.g0.getEstimatedValue(), SI.KILOGRAM);
+					_t0.to(SI.NEWTON).times(0.25).getEstimatedValue() + 
+					8000)/AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND), SI.KILOGRAM);
 		} break;
 
 		default : break;

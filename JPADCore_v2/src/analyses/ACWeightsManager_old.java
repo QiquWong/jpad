@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.measure.quantity.Duration;
 import javax.measure.quantity.Force;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -37,18 +36,18 @@ import standaloneutils.JPADXmlReader;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
-import sun.launcher.resources.launcher;
 
 /**
  * Manage components weight calculations
  * 
+ * FIXME!!!
+ * 
  * @author Lorenzo Attanasio, Vittorio Trifari
  */
-public class ACWeightsManager2 implements IACWeightsManager {
+public class ACWeightsManager_old implements IACWeightsManager {
 
 	private String _id;
 	private static Aircraft _theAircraft;
-	private static OperatingConditions _theOperatingConditions;
 	
 	// Aluminum density
 	public static Amount<VolumetricDensity> _materialDensity = 
@@ -57,18 +56,12 @@ public class ACWeightsManager2 implements IACWeightsManager {
 	//---------------------------------------------------------------------------------
 	// INPUT DATA : 
 	private Amount<Mass> _maximumTakeOffMass;
+	private Amount<Mass> _maximumZeroFuelMass;
+	private Amount<Mass> _maximumLandingMass;
+	private Amount<Mass> _fuelMass;
 	private Amount<Mass> _paxSingleMass;
-	private Double _cruiseSFC;
-	private Amount<Length> _cruiseRange;
-	private Amount<Length> _alternateRange;
-	private Double _alternateMach;
-	private Amount<Length> _alternateAltitude;
-	private Double _alternateSFC;
-	private Amount<Duration> _holdingDuration;
-	private Amount<Length> _holdingAltitude;
-	private Double _holdingMach;
-	private Double _holdingSFC;
-	
+	private Amount<Mass> _operatingEmptyMass;
+	private Amount<Mass> _trappedFuelOilMass;
 	private Amount<Length> _referenceRange;
 	private Amount<Mass> _fuselageReferenceMass;
 	private Amount<Mass> _wingReferenceMass;
@@ -86,27 +79,22 @@ public class ACWeightsManager2 implements IACWeightsManager {
 	private Amount<Mass> _paxMass;
 	private Amount<Mass> _paxMassMax;
 	private Amount<Mass> _crewMass;
-	private Amount<Mass> _structuralMass;
 	private Amount<Mass> _operatingItemMass;
-	private Amount<Mass> _operatingEmptyMass;
 	private Amount<Force> _operatingItemWeight;
 	private Amount<Mass> _emptyMass;
 	private Amount<Force> _emptyWeight;
-	private Amount<Mass> _maximumZeroFuelMass;
+	private Amount<Force> _maximumTakeOffWeight;
 	private Amount<Force> _maximumZeroFuelWeight;
 	private Amount<Force> _operatingEmptyWeight;
-	private Amount<Mass> _maximumLandingMass;
-	private Amount<Force> _maximumLandingWeight;
-	private Amount<Mass> _manufacturerEmptyMass;
-	private Amount<Force> _manufacturerEmptyWeight;
-	private Amount<Mass> _zeroFuelMass;
-	private Amount<Force> _zeroFuelWeight;
-	private Amount<Mass> _takeOffMass;
-	private Amount<Force> _takeOffWeight;
-	private Amount<Force> _maximumTakeOffWeight;
-	private Amount<Mass> _trappedFuelOilMass;
 	private Amount<Force> _trappedFuelOilWeight;
-	private Amount<Mass> _fuelMass;
+	private Amount<Force> _maximumLandingWeight;
+	private Amount<Force> _manufacturerEmptyWeight;
+	private Amount<Mass> _structuralMass;
+	private Amount<Mass> _manufacturerEmptyMass;
+	private Amount<Mass> _zeroFuelMass;
+	private Amount<Mass> _takeOffMass;
+	private Amount<Force> _zeroFuelWeight;
+	private Amount<Force> _takeOffWeight;
 
 	private List<Amount<Mass>> _maximumTakeOffMassList;
 	private List<Amount<Mass>> _massStructureList;
@@ -119,23 +107,15 @@ public class ACWeightsManager2 implements IACWeightsManager {
 		// required parameters
 		private String __id;
 		private Aircraft __theAircraft;
-		private OperatingConditions __theOperatingConditions;
 		
 		// optional parameters ... defaults
 		// ...
 		private Amount<Mass> __maximumTakeOffMass;
-		private Amount<Mass> __paxSingleMass;
-		private Double __cruiseSFC;
-		private Amount<Length> __cruiseRange;
-		private Amount<Length> __alternateRange;
-		private Double __alternateMach;
-		private Amount<Length> __alternateAltitude;
-		private Double __alternateSFC;
-		private Amount<Duration> __holdingDuration;
-		private Amount<Length> __holdingAltitude;
-		private Double __holdingMach;
-		private Double __holdingSFC;
-		
+		private Amount<Mass> __maximumZeroFuelMass;
+		private Amount<Mass> __maximumLandingMass;
+		public  Amount<Mass> __paxSingleMass;
+		private Amount<Mass> __operatingEmptyMass;
+		private Amount<Mass> __trappedFuelOilMass;
 		private Amount<Mass> __fuselageReferenceMass;
 		private Amount<Mass> __wingReferenceMass;
 		private Amount<Mass> __horizontalTailReferenceMass;
@@ -160,13 +140,23 @@ public class ACWeightsManager2 implements IACWeightsManager {
 			return this;
 		}
 		
-		public ACWeightsManagerBuilder operatingConditions(OperatingConditions theOperatingConditions) {
-			this.__theOperatingConditions = theOperatingConditions;
+		public ACWeightsManagerBuilder maximumTakeOffMass(Amount<Mass> maximumTakeOffMass) {
+			this.__maximumTakeOffMass = maximumTakeOffMass;
 			return this;
 		}
 		
-		public ACWeightsManagerBuilder maximumTakeOffMass(Amount<Mass> maximumTakeOffMass) {
-			this.__maximumTakeOffMass = maximumTakeOffMass;
+		public ACWeightsManagerBuilder maximumZeroFuelMass(Amount<Mass> maximumZeroFuelMass) {
+			this.__maximumZeroFuelMass = maximumZeroFuelMass;
+			return this;
+		}
+		
+		public ACWeightsManagerBuilder maximumLandingMass(Amount<Mass> maximumLandingMass) {
+			this.__maximumLandingMass = maximumLandingMass;
+			return this;
+		}
+		
+		public ACWeightsManagerBuilder operatingEmptyMass(Amount<Mass> operatingEmptyMass) {
+			this.__operatingEmptyMass = operatingEmptyMass;
 			return this;
 		}
 		
@@ -175,53 +165,8 @@ public class ACWeightsManager2 implements IACWeightsManager {
 			return this;
 		}
 		
-		public ACWeightsManagerBuilder cruiseRange(Amount<Length> cruiseRange) {
-			this.__cruiseRange = cruiseRange;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder cruiseSFC(Double cruiseSFC) {
-			this.__cruiseSFC = cruiseSFC;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder alternateRange(Amount<Length> alternateRange) {
-			this.__alternateRange = alternateRange;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder alternateAltitude(Amount<Length> alternateAltitude) {
-			this.__alternateAltitude = alternateAltitude;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder alternateMach(Double alternateMach) {
-			this.__alternateMach = alternateMach;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder alternateSFC(Double alternateSFC) {
-			this.__alternateSFC = alternateSFC;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder holdingDuration(Amount<Duration> holdingDuration) {
-			this.__holdingDuration = holdingDuration;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder holdingAltitude(Amount<Length> holdingAltitude) {
-			this.__holdingAltitude = holdingAltitude;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder holdingMach(Double holdingMach) {
-			this.__holdingMach = holdingMach;
-			return this;
-		}
-		
-		public ACWeightsManagerBuilder holdingSFC(Double holdingSFC) {
-			this.__holdingSFC = holdingSFC;
+		public ACWeightsManagerBuilder trappedFuelOilMass(Amount<Mass> trappedFuelOilMass) {
+			this.__trappedFuelOilMass = trappedFuelOilMass;
 			return this;
 		}
 		
@@ -280,30 +225,62 @@ public class ACWeightsManager2 implements IACWeightsManager {
 			this.__theAircraft = theAircraft;
 		}
 		
-		public ACWeightsManager2 build() {
-			return new ACWeightsManager2(this);
+		public ACWeightsManagerBuilder (String id, Aircraft theAircraft, AircraftEnum aircraftName) {
+			this.__id = id;
+			this.__theAircraft = theAircraft;
+			this.initializeDefaultData(aircraftName);
+		}
+		
+		@SuppressWarnings("incomplete-switch")
+		private void initializeDefaultData(AircraftEnum aircraftName) {
+
+			switch(aircraftName) {
+			case ATR72:
+				__maximumTakeOffMass = Amount.valueOf(23063.5789, SI.KILOGRAM); // ATR72 MTOM, REPORT_ATR72
+				__maximumZeroFuelMass = Amount.valueOf(20063.5789, SI.KILOGRAM); // ATR72 MZFM, REPORT_ATR72
+				__maximumLandingMass = Amount.valueOf(20757.2210, SI.KILOGRAM);
+				__operatingEmptyMass = Amount.valueOf(12935.5789, SI.KILOGRAM);
+				__trappedFuelOilMass = Amount.valueOf(0.0, SI.KILOGRAM);
+				__paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
+				break;
+				
+			case B747_100B:
+				__maximumTakeOffMass = Amount.valueOf(354991.5060, SI.KILOGRAM); // B747-100B MTOM, see REPORT_B747_100B in database
+				__maximumZeroFuelMass = Amount.valueOf(207581.9860, SI.KILOGRAM); // B747-100B MTOM, see REPORT_B747_100B in database
+				__maximumLandingMass = Amount.valueOf(319517.5554, SI.KILOGRAM); // B747-100B MTOM, see REPORT_B747_100B in database
+				__operatingEmptyMass = Amount.valueOf(153131.9860, SI.KILOGRAM);
+				__trappedFuelOilMass = Amount.valueOf(0.005*(__maximumTakeOffMass.getEstimatedValue()), SI.KILOGRAM);
+				__paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
+				break;
+				
+			case AGILE_DC1:
+				__maximumTakeOffMass = Amount.valueOf(36336, SI.KILOGRAM); // ADAS project
+				__maximumZeroFuelMass = Amount.valueOf(29716, SI.KILOGRAM); // 
+				__maximumLandingMass = Amount.valueOf(32702.4, SI.KILOGRAM);
+				__operatingEmptyMass = Amount.valueOf(20529, SI.KILOGRAM);
+				__trappedFuelOilMass = Amount.valueOf(0., SI.KILOGRAM);
+				__paxSingleMass = Amount.valueOf(102.0, SI.KILOGRAM);
+				break;
+			}
+		}
+		
+		public ACWeightsManager_old build() {
+			return new ACWeightsManager_old(this);
 		}
 	}
 	
-	private ACWeightsManager2(ACWeightsManagerBuilder builder) {
+	private ACWeightsManager_old(ACWeightsManagerBuilder builder) {
 		
 		this._id = builder.__id;
-		ACWeightsManager2._theAircraft = builder.__theAircraft;
-		ACWeightsManager2._theOperatingConditions = builder.__theOperatingConditions;
+		ACWeightsManager_old._theAircraft = builder.__theAircraft;
 		this._maximumTakeOffMass = builder.__maximumTakeOffMass;
+		this._maximumZeroFuelMass = builder.__maximumZeroFuelMass;
+		this._maximumLandingMass = builder.__maximumLandingMass;
 		this._paxSingleMass = builder.__paxSingleMass;
-		this._cruiseRange = builder.__cruiseRange;
-		this._cruiseSFC = builder.__cruiseSFC;
-		this._alternateRange = builder.__alternateRange;
-		this._alternateAltitude = builder.__alternateAltitude;
-		this._alternateMach = builder.__alternateMach;
-		this._alternateSFC = builder.__alternateSFC;
-		this._holdingDuration = builder.__holdingDuration;
-		this._holdingAltitude = builder.__holdingAltitude;
-		this._holdingMach = builder.__holdingMach;
-		this._holdingSFC = builder.__holdingSFC;
-		
-		this._referenceRange = this._cruiseRange;
+		this._operatingEmptyMass = builder.__operatingEmptyMass;
+		this._trappedFuelOilMass = builder.__trappedFuelOilMass;
+		this._referenceRange = _theAircraft.getTheAnalysisManager().getReferenceRange();
+		this._fuelMass = _maximumTakeOffMass.to(SI.KILOGRAM).minus(_maximumZeroFuelMass.to(SI.KILOGRAM));
 		
 		this._fuselageReferenceMass = builder.__fuselageReferenceMass;
 		this._wingReferenceMass = builder.__wingReferenceMass;
@@ -319,7 +296,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 		this._maximumTakeOffMassList = builder.__maximumTakeOffMassList;
 		this._massStructureList = builder.__massStructureList;
 		
-		// ESTIMATION OF THE REFERENCE MASS OF EACH COMPONENT (if not assigned) FIXME
+		// ESTIMATION OF THE REFERENCE MASS OF EACH COMPONENT (if not assigned)
 		if(_theAircraft.getFuselage() != null) 
 			if(this._fuselageReferenceMass == null)
 				this._fuselageReferenceMass = _maximumZeroFuelMass.times(.15);
@@ -358,7 +335,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 	//============================================================================================
 	
 	@SuppressWarnings("unchecked")
-	public static ACWeightsManager2 importFromXML (String pathToXML, Aircraft theAircraft) {
+	public static ACWeightsManager_old importFromXML (String pathToXML, Aircraft theAircraft) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -381,6 +358,39 @@ public class ACWeightsManager2 implements IACWeightsManager {
 		}
 			
 		//---------------------------------------------------------------
+		// MAXIMUM LANDING MASS
+		Amount<Mass> maximumLandingMass = Amount.valueOf(0.0, SI.KILOGRAM);
+		String maximumLandingMassProperty = reader.getXMLPropertyByPath("//weights/global_data/maximum_landing_mass");
+		if(maximumLandingMassProperty != null)
+			maximumLandingMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/global_data/maximum_landing_mass");
+		else {
+			System.err.println("MAXIMUM LANDING MASS REQUIRED !! \n ... returning ");
+			return null; 
+		}
+		
+		//---------------------------------------------------------------
+		// MAXIMUM ZERO FUEL MASS
+		Amount<Mass> maximumZeroFuelMass = Amount.valueOf(0.0, SI.KILOGRAM);
+		String maximumZeroFuelMassProperty = reader.getXMLPropertyByPath("//weights/global_data/maximum_zero_fuel_mass");
+		if(maximumZeroFuelMassProperty != null)
+			maximumZeroFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/global_data/maximum_zero_fuel_mass");
+		else {
+			System.err.println("MAXIMUM ZERO FUEL MASS REQUIRED !! \n ... returning ");
+			return null; 
+		}
+		
+		//---------------------------------------------------------------
+		// OPERATING EMPTY MASS
+		Amount<Mass> operatingEmptyMass = Amount.valueOf(0.0, SI.KILOGRAM);
+		String operatingEmptyMassProperty = reader.getXMLPropertyByPath("//weights/global_data/operating_empty_mass");
+		if(operatingEmptyMassProperty != null)
+			operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/global_data/operating_empty_mass");
+		else {
+			System.err.println("MAXIMUM ZERO FUEL MASS REQUIRED !! \n ... returning ");
+			return null; 
+		}
+		
+		//---------------------------------------------------------------
 		// SINGLE PASSENGER MASS
 		Amount<Mass> singlePassengerMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		String singlePassengerMassProperty = reader.getXMLPropertyByPath("//weights/global_data/single_passenger_mass");
@@ -392,112 +402,13 @@ public class ACWeightsManager2 implements IACWeightsManager {
 		}
 		
 		//---------------------------------------------------------------
-		// CRUISE RANGE
-		Amount<Length> cruiseRange = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String cruiseRangeProperty = reader.getXMLPropertyByPath("//cruise_phase/range");
-		if(cruiseRangeProperty != null)
-			cruiseRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//cruise_phase/range");
+		// TRAPPED FUEL OIL MASS
+		Amount<Mass> trappedFuelOilMass = Amount.valueOf(0.0, SI.KILOGRAM);
+		String trappedFuelOilMassProperty = reader.getXMLPropertyByPath("//weights/global_data/trapped_fuel_oil_mass");
+		if(trappedFuelOilMassProperty != null)
+			trappedFuelOilMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/global_data/trapped_fuel_oil_mass");
 		else {
-			System.err.println("CRUISE RANGE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// CRUISE SFC
-		Double cruiseSFC = 0.0;
-		String cruiseSFCProperty = reader.getXMLPropertyByPath("//cruise_phase/sfc");
-		if(cruiseSFCProperty != null)
-			cruiseSFC = Double.valueOf(cruiseSFCProperty);
-		else {
-			System.err.println("CRUISE SFC REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE RANGE
-		Amount<Length> alternateRange = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String alternateRangeProperty = reader.getXMLPropertyByPath("//alternate_phase/range");
-		if(alternateRangeProperty != null)
-			alternateRange = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//alternate_phase/range");
-		else {
-			System.err.println("ALTERNATE RANGE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE ALTITUDE
-		Amount<Length> alternateAltitude = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String alternateAltitudeProperty = reader.getXMLPropertyByPath("//alternate_phase/altitude");
-		if(alternateAltitudeProperty != null)
-			alternateAltitude = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//alternate_phase/altitude");
-		else {
-			System.err.println("ALTERNATE ALTITUDE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE MACH
-		Double alternateMach = 0.0;
-		String alternateMachProperty = reader.getXMLPropertyByPath("//alternate_phase/mach");
-		if(alternateMachProperty != null)
-			alternateMach = Double.valueOf(alternateMachProperty);
-		else {
-			System.err.println("ALTERNATE MACH REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// ALTERNATE SFC
-		Double alternateSFC = 0.0;
-		String alternateSFCProperty = reader.getXMLPropertyByPath("//alternate_phase/sfc");
-		if(alternateSFCProperty != null)
-			alternateSFC = Double.valueOf(alternateMachProperty);
-		else {
-			System.err.println("ALTERNATE SFC REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING DURATION
-		Amount<Duration> holdingDuration = Amount.valueOf(0.0, NonSI.MINUTE);
-		String holdingDurationProperty = reader.getXMLPropertyByPath("//holding_phase/duration");
-		if(holdingDurationProperty != null)
-			holdingDuration = (Amount<Duration>) reader.getXMLAmountWithUnitByPath("//holding_phase/duration");
-		else {
-			System.err.println("HOLDING DURATION REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING ALTITUDE
-		Amount<Length> holdingAltitude = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
-		String holdingAltitudeProperty = reader.getXMLPropertyByPath("//holding_phase/altitude");
-		if(holdingAltitudeProperty != null)
-			holdingAltitude = (Amount<Length>) reader.getXMLAmountWithUnitByPath("//holding_phase/altitude");
-		else {
-			System.err.println("HOLDING ALTITUDE REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING MACH
-		Double holdingMach = 0.0;
-		String holdingMachProperty = reader.getXMLPropertyByPath("//holding_phase/mach");
-		if(holdingMachProperty != null)
-			holdingMach = Double.valueOf(holdingMachProperty);
-		else {
-			System.err.println("HOLDING MACH REQUIRED !! \n ... returning ");
-			return null; 
-		}
-		
-		//---------------------------------------------------------------
-		// HOLDING SFC
-		Double holdingSFC = 0.0;
-		String holdingSFCProperty = reader.getXMLPropertyByPath("//holding_phase/sfc");
-		if(holdingSFCProperty != null)
-			holdingSFC = Double.valueOf(holdingSFCProperty);
-		else {
-			System.err.println("HOLDING SFC REQUIRED !! \n ... returning ");
+			System.err.println("TRAPPED FUEL OIL MASS REQUIRED !! \n ... returning ");
 			return null; 
 		}
 		
@@ -601,19 +512,13 @@ public class ACWeightsManager2 implements IACWeightsManager {
 			systemsReferenceMass = null;
 		}
 		
-		ACWeightsManager2 theWeigths = new ACWeightsManagerBuilder(id, theAircraft)
+		ACWeightsManager_old theWeigths = new ACWeightsManagerBuilder(id, theAircraft)
 				.maximumTakeOffMass(maximumTakeOffMass)
+				.maximumLandingMass(maximumLandingMass)
+				.maximumZeroFuelMass(maximumZeroFuelMass)
+				.operatingEmptyMass(operatingEmptyMass)
+				.trappedFuelOilMass(trappedFuelOilMass)
 				.singlePassengerMass(singlePassengerMass)
-				.cruiseRange(cruiseRange)
-				.cruiseSFC(cruiseSFC)
-				.alternateRange(alternateRange)
-				.alternateAltitude(alternateAltitude)
-				.alternateMach(alternateMach)
-				.alternateSFC(alternateSFC)
-				.holdingDuration(holdingDuration)
-				.holdingAltitude(holdingAltitude)
-				.holdingMach(holdingMach)
-				.holdingSFC(holdingSFC)
 				.fuselageReferenceMass(fuselageReferenceMass)
 				.wingReferenceMass(wingReferenceMass)
 				.horizontalTailReferenceMass(horizontalTailReferenceMass)
@@ -641,7 +546,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 				.append("\t-------------------------------------\n")
 				.append("\tReference Range: " + _referenceRange + "\n")
 				.append("\tMaterial Density (Alluminuim): " + _materialDensity + "\n")
-				.append("\tPax Single Mass: " + _paxSingleMass + "\n")
+				.append("\tPax Single Mass: " + getPaxSingleMass() + "\n")
 				.append("\t-------------------------------------\n")
 				.append("\tMaximum Take-Off Mass: " + _maximumTakeOffMass + "\n")
 				.append("\tMaximum Take-Off Weight: " + _maximumTakeOffWeight + "\n")
@@ -1588,9 +1493,6 @@ public class ACWeightsManager2 implements IACWeightsManager {
 		_trappedFuelOilWeight = _trappedFuelOilMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
 		_maximumLandingWeight = _maximumLandingMass.times(AtmosphereCalc.g0).to(SI.NEWTON);
 
-		// FIXME : CALCULATE FUEL MASS WITH FUEL FRACTION METHOD
-		
-		
 	}
 
 	/** 
@@ -1606,9 +1508,6 @@ public class ACWeightsManager2 implements IACWeightsManager {
 		System.out.println("\n-----------------------------------------------");
 		System.out.println("----- WEIGHT ESTIMATION PROCEDURE STARTED -----");
 		System.out.println("-----------------------------------------------\n");
-		
-		// FIXME (new iterative loop)
-		
 		calculateFirstGuessMTOM(aircraft);
 
 		aircraft.getFuelTank().calculateFuelMass();
@@ -1624,7 +1523,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 
 			_maximumTakeOffMassList.add(_maximumTakeOffMass);
 
-			aircraft.getTheAnalysisManager().getTheWeights().calculateDependentVariables(aircraft);
+			calculateDependentVariables(aircraft);
 
 			//////////////////////////////////////////////////////////////////
 			// Evaluate weights with more than one method for each component
@@ -1634,7 +1533,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 
 			// --- END OF STRUCTURE MASS-----------------------------------
 
-			aircraft.getPowerPlant().calculateMass();
+			aircraft.getPowerPlant().calculateMass(aircraft);
 
 			// --- END OF POWER PLANT MASS-----------------------------------
 
@@ -1695,7 +1594,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 			if(i<4)
 				_maximumTakeOffMass = sum.divide(i);
 
-			aircraft.getTheAnalysisManager().getTheWeights().calculateDependentVariables(aircraft);
+			calculateDependentVariables(aircraft);
 		}
 
 		_massStructureList.add(aircraft.getFuselage().getMassEstimated());
@@ -1879,7 +1778,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 	}
 
 	public void setMaterialDensity(Amount<VolumetricDensity> _materialDensity) {
-		ACWeightsManager2._materialDensity = _materialDensity;
+		ACWeightsManager_old._materialDensity = _materialDensity;
 	}
 
 	public Amount<Force> getMaximumLandingWeight() {
@@ -2023,7 +1922,7 @@ public class ACWeightsManager2 implements IACWeightsManager {
 	}
 
 	public void setTheAircraft(Aircraft _theAircraft) {
-		ACWeightsManager2._theAircraft = _theAircraft;
+		ACWeightsManager_old._theAircraft = _theAircraft;
 	}
 
 	public Amount<Length> getRange() {
@@ -2134,94 +2033,6 @@ public class ACWeightsManager2 implements IACWeightsManager {
 
 	public void setPaxSingleMass(Amount<Mass> _paxSingleMass) {
 		this._paxSingleMass = _paxSingleMass;
-	}
-
-	public Double getCruiseSFC() {
-		return _cruiseSFC;
-	}
-
-	public void setCruiseSFC(Double _cruiseSFC) {
-		this._cruiseSFC = _cruiseSFC;
-	}
-
-	public Amount<Length> getCruiseRange() {
-		return _cruiseRange;
-	}
-
-	public void setCruiseRange(Amount<Length> _cruiseRange) {
-		this._cruiseRange = _cruiseRange;
-	}
-
-	public Amount<Length> getAlternateRange() {
-		return _alternateRange;
-	}
-
-	public void setAlternateRange(Amount<Length> _alternateRange) {
-		this._alternateRange = _alternateRange;
-	}
-
-	public Double getAlternateMach() {
-		return _alternateMach;
-	}
-
-	public void setAlternateMach(Double _alternateMach) {
-		this._alternateMach = _alternateMach;
-	}
-
-	public Amount<Length> getAlternateAltitude() {
-		return _alternateAltitude;
-	}
-
-	public void setAlternateAltitude(Amount<Length> _alternateAltitude) {
-		this._alternateAltitude = _alternateAltitude;
-	}
-
-	public Double getAlternateSFC() {
-		return _alternateSFC;
-	}
-
-	public void setAlternateSFC(Double _alternateSFC) {
-		this._alternateSFC = _alternateSFC;
-	}
-
-	public Amount<Duration> getHoldingDuration() {
-		return _holdingDuration;
-	}
-
-	public void setHoldingDuration(Amount<Duration> _holdingDuration) {
-		this._holdingDuration = _holdingDuration;
-	}
-
-	public Amount<Length> getHoldingAltitude() {
-		return _holdingAltitude;
-	}
-
-	public void setHoldingAltitude(Amount<Length> _holdingAltitude) {
-		this._holdingAltitude = _holdingAltitude;
-	}
-
-	public Double getHoldingMach() {
-		return _holdingMach;
-	}
-
-	public void setHoldingMach(Double _holdingMach) {
-		this._holdingMach = _holdingMach;
-	}
-
-	public Double getHoldingSFC() {
-		return _holdingSFC;
-	}
-
-	public void setHoldingSFC(Double _holdingSFC) {
-		this._holdingSFC = _holdingSFC;
-	}
-
-	public static OperatingConditions getTheOperatingConditions() {
-		return _theOperatingConditions;
-	}
-
-	public static void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
-		ACWeightsManager2._theOperatingConditions = _theOperatingConditions;
 	}
 
 }

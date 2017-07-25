@@ -50,8 +50,6 @@ public class ACCostsManager {
 	
 	/*
 	 *******************************************************************************
-	 * THIS CLASS IS A PROTOTYPE OF THE NEW ACCostsManager (WORK IN PROGRESS)
-	 * 
 	 * @author Vincenzo Cusati & Vittorio Trifari
 	 *******************************************************************************
 	 */

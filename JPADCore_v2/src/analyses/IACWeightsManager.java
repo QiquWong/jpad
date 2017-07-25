@@ -1,7 +1,6 @@
 package analyses;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import javax.measure.quantity.Force;
@@ -19,19 +18,12 @@ import configuration.enumerations.MethodEnum;
 public interface IACWeightsManager {
 
 	public void toXLSFile(String filenameWithPathAndExt) throws InvalidFormatException, IOException;
-	public void calculateDependentVariables(Aircraft aircraft);
 	public void calculateAllMasses(
 			Aircraft aircraft, 
 			Map <ComponentEnum, MethodEnum> methodsMap
 			);
-	public void calculateStructuralMass(
-			Aircraft aircraft, 
-			Map <ComponentEnum, MethodEnum> methodsMap
-			); 
 	
-	public void calculateManufacturerEmptyMass(Aircraft aircraft);
-	
-	public void calculateFirstGuessMTOM(Aircraft aircraft);
+	public void plotWeightBreakdown(String weightsFolderPath);
 	
 	public Amount<Mass> getMaximumTakeOffMass();
 	public void setMaximumTakeOffMass(Amount<Mass> _MTOM);
@@ -106,9 +98,6 @@ public interface IACWeightsManager {
 
 	public Amount<Mass> getPaxSingleMass();
 	public void setPaxSingleMass(Amount<Mass> _paxSingleMass);
-
-	public List<Amount<Mass>> getMassStructureList();
-	public void setMassStructureList(List<Amount<Mass>> _massStructureList);
 
 	public String getId();
 	public void setId(String id);

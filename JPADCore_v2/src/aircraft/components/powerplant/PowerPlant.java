@@ -1,6 +1,5 @@
 package aircraft.components.powerplant;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
+import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
@@ -237,14 +237,14 @@ public class PowerPlant implements IPowerPlant {
 	}
 	
 	@Override
-	public void calculateMass() {
+	public void calculateMass(Aircraft theAircraft) {
 
 		_totalMass = Amount.valueOf(0., SI.KILOGRAM);
 		_dryMassPublicDomainTotal = Amount.valueOf(0., SI.KILOGRAM);
 
 		for(int i=0; i < _engineNumber; i++) {
-			_engineList.get(i).setTotalMass(_engineList.get(i).getDryMassPublicDomain().times(1.5));
-			_totalMass = _totalMass.plus(_engineList.get(i).getTotalMass());
+			_engineList.get(i).getTheWeights().calculateTotalMass(theAircraft);
+			_totalMass = _totalMass.plus(_engineList.get(i).getTheWeights().getTotalMass());
 			_dryMassPublicDomainTotal = _dryMassPublicDomainTotal.plus(_engineList.get(i).getTheWeights().getDryMassPublicDomain());
 		}
 	}

@@ -284,6 +284,7 @@ public class Engine implements IEngine {
 	// End of builder pattern
 	//===================================================================================================
 	
+	@SuppressWarnings("unchecked")
 	public static Engine importFromXML (String pathToXML) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -323,16 +324,91 @@ public class Engine implements IEngine {
 		
 		if((engineType == EngineTypeEnum.TURBOJET)||(engineType == EngineTypeEnum.TURBOFAN)) {
 			
-			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
+			//..............................................................................
+			// LENGTH
+			Amount<Length> length = null; 
+			String lengthProperty = reader.getXMLPropertyByPath("//dimensions/length");
+			if(lengthProperty != null)
+				length = reader.getXMLAmountLengthByPath("//dimensions/length");
 			
-			@SuppressWarnings("unchecked")
-			Amount<Force> staticThrust = ((Amount<Force>) reader.getXMLAmountWithUnitByPath("//specifications/static_thrust"));
-			@SuppressWarnings("unchecked")
-			Amount<Mass> dryMass = ((Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass")); 
-			Double bpr = Double.valueOf(reader.getXMLPropertyByPath("//specifications/by_pass_ratio"));
-			Integer numberOfCompressorStages = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages"));
-			Integer numberOfShafts = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_shafts"));
-			Double overallPressureRatio = Double.valueOf(reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio"));
+			//..............................................................................
+			// STATIC THRUST
+			Amount<Force> staticThrust = null; 
+			String staticThrustProperty = reader.getXMLPropertyByPath("//specifications/static_thrust");
+			if(staticThrustProperty != null)
+				staticThrust = (Amount<Force>) reader.getXMLAmountWithUnitByPath("//specifications/static_thrust");
+			
+			//..............................................................................
+			// DRY MASS
+			Amount<Mass> dryMass = null;
+			String calculateDryMassString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//specifications/dry_mass/@calculate");
+			
+			if(calculateDryMassString.equalsIgnoreCase("TRUE")){
+				
+				if(staticThrust.doubleValue(NonSI.POUND_FORCE) < 10000)
+					dryMass = Amount.valueOf(
+							Amount.valueOf(
+									Math.pow(
+											0.4054*staticThrust.doubleValue(NonSI.POUND_FORCE),
+											0.9255
+											),
+									NonSI.POUND_FORCE)
+							.to(SI.NEWTON)
+							.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+							.getEstimatedValue(),
+							SI.KILOGRAM
+							);
+				else
+					dryMass = Amount.valueOf(
+							Amount.valueOf(
+									Math.pow(
+											0.616*staticThrust.doubleValue(NonSI.POUND_FORCE),
+											0.886
+											),
+									NonSI.POUND_FORCE)
+							.to(SI.NEWTON)
+							.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+							.getEstimatedValue(),
+							SI.KILOGRAM
+							);
+
+			}
+			else {
+				String dryMassProperty = reader.getXMLPropertyByPath("//specifications/dry_mass");
+				if(dryMassProperty != null)
+					dryMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass");
+			}
+
+			//..............................................................................
+			// BRR
+			Double bpr = null;
+			String bprProperty = reader.getXMLPropertyByPath("//specifications/by_pass_ratio");
+			if(bprProperty != null)
+				bpr = Double.valueOf(bprProperty);
+			
+			//..............................................................................
+			// NUMBER OF COMPRESSOR STAGES
+			Integer numberOfCompressorStages = null;
+			String numberOfCompressorStagesProperty = reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages");
+			if(numberOfCompressorStagesProperty != null)
+				numberOfCompressorStages = Integer.valueOf(numberOfCompressorStagesProperty);
+			
+			//..............................................................................
+			// NUMBER OF COMPRESSOR STAGES
+			Integer numberOfShafts = null;
+			String numberOfShaftsProperty = reader.getXMLPropertyByPath("//specifications/number_of_shafts");
+			if(numberOfShaftsProperty != null)
+				numberOfShafts = Integer.valueOf(numberOfShaftsProperty);
+			
+			//..............................................................................
+			// OVERALL PRESSURE RATIO
+			Double overallPressureRatio = null;
+			String overallPressureRatioProperty = reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio");
+			if(overallPressureRatioProperty != null)
+				overallPressureRatio = Double.valueOf(overallPressureRatioProperty);
 			
 			theEngine = new EngineBuilder(id, engineType)
 					.id(id)
@@ -350,18 +426,105 @@ public class Engine implements IEngine {
 		}
 		else if(engineType == EngineTypeEnum.TURBOPROP) {
 
-			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
-			Amount<Length> propellerDiameter = reader.getXMLAmountLengthByPath("//dimensions/propeller_diameter");
+			//..............................................................................
+			// LENGTH
+			Amount<Length> length = null; 
+			String lengthProperty = reader.getXMLPropertyByPath("//dimensions/length");
+			if(lengthProperty != null)
+				length = reader.getXMLAmountLengthByPath("//dimensions/length");
 			
-			@SuppressWarnings("unchecked")
-			Amount<Power> staticPower = ((Amount<Power>) reader.getXMLAmountWithUnitByPath("//specifications/static_power"));
-			@SuppressWarnings("unchecked")
-			Amount<Mass> dryMass = ((Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass")); 
-			int numberOfPropellerBlades = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_propeller_blades"));
-			Double etaPropeller = Double.valueOf(reader.getXMLPropertyByPath("//specifications/eta_propeller"));
-			Integer numberOfCompressorStages = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages"));
-			Integer numberOfShafts = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_shafts"));
-			Double overallPressureRatio = Double.valueOf(reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio"));
+			//..............................................................................
+			// PROPELLER DIAMETER
+			Amount<Length> propellerDiameter = null; 
+			String propellerDiameterProperty = reader.getXMLPropertyByPath("//dimensions/propeller_diameter");
+			if(propellerDiameterProperty != null)
+				propellerDiameter = reader.getXMLAmountLengthByPath("//dimensions/propeller_diameter");
+			
+			//..............................................................................
+			// STATIC POWER
+			Amount<Power> staticPower = null; 
+			String staticPowerProperty = reader.getXMLPropertyByPath("//specifications/static_power");
+			if(staticPowerProperty != null)
+				staticPower = (Amount<Power>) reader.getXMLAmountWithUnitByPath("//specifications/static_power");
+			
+			//..............................................................................
+			// DRY MASS
+			Amount<Mass> dryMass = null;
+			String calculateDryMassString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//specifications/dry_mass/@calculate");
+			
+			if(calculateDryMassString.equalsIgnoreCase("TRUE")){
+				
+				if(staticPower.doubleValue(NonSI.HORSEPOWER)*2.8 < 10000)
+					dryMass = Amount.valueOf(
+							Amount.valueOf(
+									Math.pow(
+											0.4054*staticPower.doubleValue(NonSI.HORSEPOWER)*2.8,
+											0.9255
+											),
+									NonSI.POUND_FORCE)
+							.to(SI.NEWTON)
+							.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+							.getEstimatedValue(),
+							SI.KILOGRAM
+							);
+				else
+					dryMass = Amount.valueOf(
+							Amount.valueOf(
+									Math.pow(
+											0.616*staticPower.doubleValue(NonSI.HORSEPOWER)*2.8,
+											0.886
+											),
+									NonSI.POUND_FORCE)
+							.to(SI.NEWTON)
+							.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+							.getEstimatedValue(),
+							SI.KILOGRAM
+							);
+
+			}
+			else {
+				String dryMassProperty = reader.getXMLPropertyByPath("//specifications/dry_mass");
+				if(dryMassProperty != null)
+					dryMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass");
+			}
+			
+			//..............................................................................
+			// NUMBER OF PROPERLLER BLADES 
+			Integer numberOfPropellerBlades = null;
+			String numberOfPropellerBladesProperty = reader.getXMLPropertyByPath("//specifications/number_of_propeller_blades");
+			if(numberOfPropellerBladesProperty != null)
+				numberOfPropellerBlades = Integer.valueOf(numberOfPropellerBladesProperty);
+			
+			//..............................................................................
+			// PROPERLLER EFFICIENCY 
+			Double etaPropeller = null;
+			String etaPropellerProperty = reader.getXMLPropertyByPath("//specifications/eta_propeller");
+			if(etaPropellerProperty != null)
+				etaPropeller = Double.valueOf(etaPropellerProperty);
+			
+			//..............................................................................
+			// NUMBER OF COMPRESSOR STAGES
+			Integer numberOfCompressorStages = null;
+			String numberOfCompressorStagesProperty = reader.getXMLPropertyByPath("//specifications/number_of_compressor_stages");
+			if(numberOfCompressorStagesProperty != null)
+				numberOfCompressorStages = Integer.valueOf(numberOfCompressorStagesProperty);
+			
+			//..............................................................................
+			// NUMBER OF COMPRESSOR STAGES
+			Integer numberOfShafts = null;
+			String numberOfShaftsProperty = reader.getXMLPropertyByPath("//specifications/number_of_shafts");
+			if(numberOfShaftsProperty != null)
+				numberOfShafts = Integer.valueOf(numberOfShaftsProperty);
+			
+			//..............................................................................
+			// OVERALL PRESSURE RATIO
+			Double overallPressureRatio = null;
+			String overallPressureRatioProperty = reader.getXMLPropertyByPath("//specifications/overall_pressure_ratio");
+			if(overallPressureRatioProperty != null)
+				overallPressureRatio = Double.valueOf(overallPressureRatioProperty);
 			
 			theEngine = new EngineBuilder(id, engineType)
 					.id(id)
@@ -380,15 +543,84 @@ public class Engine implements IEngine {
 		}
 		else if(engineType == EngineTypeEnum.PISTON) {
 
-			Amount<Length> length = reader.getXMLAmountLengthByPath("//dimensions/length");
-			Amount<Length> propellerDiameter = reader.getXMLAmountLengthByPath("//dimensions/propeller_diameter");
+			//..............................................................................
+			// LENGTH
+			Amount<Length> length = null; 
+			String lengthProperty = reader.getXMLPropertyByPath("//dimensions/length");
+			if(lengthProperty != null)
+				length = reader.getXMLAmountLengthByPath("//dimensions/length");
 			
-			@SuppressWarnings("unchecked")
-			Amount<Power> staticPower = ((Amount<Power>) reader.getXMLAmountWithUnitByPath("//specifications/static_power"));
-			@SuppressWarnings("unchecked")
-			Amount<Mass> dryMass = ((Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass")); 
-			int numberOfPropellerBlades = Integer.valueOf(reader.getXMLPropertyByPath("//specifications/number_of_propeller_blades"));
-			Double etaPropeller = Double.valueOf(reader.getXMLPropertyByPath("//specifications/eta_propeller"));
+			//..............................................................................
+			// PROPELLER DIAMETER
+			Amount<Length> propellerDiameter = null; 
+			String propellerDiameterProperty = reader.getXMLPropertyByPath("//dimensions/propeller_diameter");
+			if(propellerDiameterProperty != null)
+				propellerDiameter = reader.getXMLAmountLengthByPath("//dimensions/propeller_diameter");
+			
+			//..............................................................................
+			// STATIC POWER
+			Amount<Power> staticPower = null; 
+			String staticPowerProperty = reader.getXMLPropertyByPath("//specifications/static_power");
+			if(staticPowerProperty != null)
+				staticPower = (Amount<Power>) reader.getXMLAmountWithUnitByPath("//specifications/static_power");
+			
+			//..............................................................................
+			// DRY MASS
+			Amount<Mass> dryMass = null;
+			String calculateDryMassString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//specifications/dry_mass/@calculate");
+			
+			if(calculateDryMassString.equalsIgnoreCase("TRUE")){
+				
+				if(staticPower.doubleValue(NonSI.HORSEPOWER)*2.8 < 10000)
+					dryMass = Amount.valueOf(
+							Amount.valueOf(
+									Math.pow(
+											0.4054*staticPower.doubleValue(NonSI.HORSEPOWER)*2.8,
+											0.9255
+											),
+									NonSI.POUND_FORCE)
+							.to(SI.NEWTON)
+							.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+							.getEstimatedValue(),
+							SI.KILOGRAM
+							);
+				else
+					dryMass = Amount.valueOf(
+							Amount.valueOf(
+									Math.pow(
+											0.616*staticPower.doubleValue(NonSI.HORSEPOWER)*2.8,
+											0.886
+											),
+									NonSI.POUND_FORCE)
+							.to(SI.NEWTON)
+							.divide(AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND))
+							.getEstimatedValue(),
+							SI.KILOGRAM
+							);
+
+			}
+			else {
+				String dryMassProperty = reader.getXMLPropertyByPath("//specifications/dry_mass");
+				if(dryMassProperty != null)
+					dryMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//specifications/dry_mass");
+			}
+			
+			//..............................................................................
+			// NUMBER OF PROPERLLER BLADES 
+			Integer numberOfPropellerBlades = null;
+			String numberOfPropellerBladesProperty = reader.getXMLPropertyByPath("//specifications/number_of_propeller_blades");
+			if(numberOfPropellerBladesProperty != null)
+				numberOfPropellerBlades = Integer.valueOf(numberOfPropellerBladesProperty);
+			
+			//..............................................................................
+			// PROPERLLER EFFICIENCY 
+			Double etaPropeller = null;
+			String etaPropellerProperty = reader.getXMLPropertyByPath("//specifications/eta_propeller");
+			if(etaPropellerProperty != null)
+				etaPropeller = Double.valueOf(etaPropellerProperty);
 			
 			theEngine = new EngineBuilder(id, engineType)
 					.id(id)
@@ -430,6 +662,7 @@ public class Engine implements IEngine {
 	 * @see: thrustmodelsToFromP0.pdf in JPAD DOCS
 	 */
 	@SuppressWarnings("unused")
+	@Deprecated
 	private void calculateT0FromP0Bernoulli () {
 		
 		// this is the maximal static thrust 
@@ -449,7 +682,7 @@ public class Engine implements IEngine {
 		// this is the maximal static thrust 
 		this._t0 = Amount.valueOf(
 				this._p0.doubleValue(NonSI.HORSEPOWER)*2.8,
-				SI.NEWTON
+				NonSI.POUND_FORCE
 				);
 		
 	}

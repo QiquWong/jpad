@@ -21,7 +21,7 @@ import aircraft.components.powerplant.PowerPlant;
 import analyses.ACAerodynamicsManager;
 import analyses.ACBalanceManager;
 import analyses.ACPerformanceManager;
-import analyses.ACWeightsManager2;
+import analyses.ACWeightsManager;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AnalysisTypeEnum;

@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<!-- all SFC values are in lb/(lb*hr) -->
+	<!-- all SFC values must be assigned in lb/(lb*hr) for JET engines -->
+	<!-- all SFC values must be assigned in lb/(hp*hr) for PISTON engines -->
     <analysis>
         <weights id="JPAD Test analysis - WEIGHTS">
 			<global_data>
-				<maximum_take_off_mass unit="kg">53610</maximum_take_off_mass>
-				<single_passenger_mass unit="kg">106</single_passenger_mass>
+				<maximum_take_off_mass unit="kg">22303</maximum_take_off_mass>
+				<single_passenger_mass unit="kg">93</single_passenger_mass>
 				<cruise_phase>
-					<range unit="nmi">1600</range> 
-					<sfc>0.44</sfc>
+					<range unit="nmi">1200</range> 
+					<sfc>0.61</sfc>
+					<efficiency>12.51</efficiency>
 				</cruise_phase>
 				<alternate_phase>
-					<range unit="min">100</range> 
-					<altitude unit="ft">15000</altitude>
-					<mach>0.57</mach>
-					<sfc>0.48</sfc> 
+					<range unit="nmi">100</range> 
+					<altitude unit="ft">10000</altitude>
+					<mach>0.4</mach>
+					<sfc>0.61</sfc> 
+					<efficiency>12.51</efficiency> 
 				</alternate_phase>
 				<holding_phase>
 					<duration unit="min">30</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
-					<sfc>0.36</sfc> 
+					<sfc>0.7</sfc> 
+					<efficiency>16.0</efficiency> 
 				</holding_phase>
 			</global_data>
 			<component_data>

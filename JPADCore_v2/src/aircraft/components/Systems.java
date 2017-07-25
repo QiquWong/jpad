@@ -17,7 +17,6 @@ import org.jscience.physics.amount.Amount;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.AnalysisTypeEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -81,6 +80,7 @@ public class Systems implements ISystems {
 		 * 
 		 * @author Vittorio Trifari
 		 */
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultVariables (AircraftEnum aircraftName) {
 
 			switch(aircraftName) {
@@ -195,10 +195,10 @@ public class Systems implements ISystems {
 		case TORENBEEK_2013 : {
 
 			_overallMass = Amount.valueOf((
-					270*aircraft.getFuselage().getFuselageCreator().getLenF().getEstimatedValue()*
-					aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().getEstimatedValue() +
-					150*aircraft.getFuselage().getFuselageCreator().getLenF().getEstimatedValue())/
-					AtmosphereCalc.g0.getEstimatedValue(), 
+					250*aircraft.getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METER)*
+					aircraft.getFuselage().getFuselageCreator().getEquivalentDiameterCylinderGM().doubleValue(SI.METER)+
+					150*aircraft.getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METER))/
+					AtmosphereCalc.g0.doubleValue(SI.METERS_PER_SQUARE_SECOND), 
 					SI.KILOGRAM);
 			_methodsList.add(method);
 			_massMap.put(method, Amount.valueOf(round(_overallMass.getEstimatedValue()), SI.KILOGRAM));

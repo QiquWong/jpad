@@ -254,7 +254,7 @@ public class CompleteAnalysisTest extends Application {
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader,
 //			        fusDesDatabaseReader,
-//					veDSCDatabaseReader,
+//					veDSCDatabaseReader
 //					)
 //					.build();
 
