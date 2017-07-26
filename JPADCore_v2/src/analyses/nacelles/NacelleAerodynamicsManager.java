@@ -135,7 +135,7 @@ public class NacelleAerodynamicsManager {
 		public void semiempirical() {
 
 			_cD0Parasite.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					DragCalc.calculateCD0Parasite(
 							_theNacelles.getNacellesList().get(0).calculateFormFactor(), 
 							_cF, 
@@ -157,16 +157,16 @@ public class NacelleAerodynamicsManager {
 		
 		public void semiempirical() {
 			
-			if(_cD0Parasite.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+			if(_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcCD0Parasite calcCD0Parasite = new CalcCD0Parasite();
 				calcCD0Parasite.semiempirical();
 			}
 			
 			_cD0Base.put(
-					MethodEnum.SEMPIEMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					DragCalc.calculateCD0Base(
 							MethodEnum.MATLAB, 
-							_cD0Parasite.get(MethodEnum.SEMPIEMPIRICAL), 
+							_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL), 
 							_theWing.getSurface().doubleValue(SI.SQUARE_METRE),
 							_theNacelles.getNacellesList().get(0).getDiameterOutlet().doubleValue(SI.METER), 
 							_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
@@ -186,16 +186,16 @@ public class NacelleAerodynamicsManager {
 		
 		public void semiempirical() {
 			
-			if(_cD0Base.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+			if(_cD0Base.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcCD0Base calcCD0Base = new CalcCD0Base();
 				calcCD0Base.semiempirical();
 			}
 			
 			_cD0Total.put(
-					MethodEnum.SEMPIEMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					((1 + _theNacelles.getKExcr())
-							*_cD0Parasite.get(MethodEnum.SEMPIEMPIRICAL)) 
-					+ _cD0Base.get(MethodEnum.SEMPIEMPIRICAL)
+							*_cD0Parasite.get(MethodEnum.SEMIEMPIRICAL)) 
+					+ _cD0Base.get(MethodEnum.SEMIEMPIRICAL)
 					);
 			
 		}
@@ -224,7 +224,7 @@ public class NacelleAerodynamicsManager {
 							);
 			
 			_cDInduced.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					DragCalc.calculateCDInducedFuselageOrNacelle(
 							xStations, 
 							alphaBody, 
@@ -273,20 +273,20 @@ public class NacelleAerodynamicsManager {
 			
 			double cDActual = 0.0;
 			
-			if(_cD0Total.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+			if(_cD0Total.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcCD0Total calcCD0Total = new CalcCD0Total(); 
 				calcCD0Total.semiempirical();
 			}
 			
-			if(_cDInduced.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+			if(_cDInduced.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
 				calcCDInduced.semiempirical(alphaBody);
 			}
 			
 			getCDAtAlpha().put(
-					MethodEnum.SEMPIEMPIRICAL,
-					_cD0Total.get(MethodEnum.SEMPIEMPIRICAL)
-					+ _cDInduced.get(MethodEnum.SEMPIEMPIRICAL)
+					MethodEnum.SEMIEMPIRICAL,
+					_cD0Total.get(MethodEnum.SEMIEMPIRICAL)
+					+ _cDInduced.get(MethodEnum.SEMIEMPIRICAL)
 					);
 			
 			return cDActual;
@@ -311,7 +311,7 @@ public class NacelleAerodynamicsManager {
 				cDArray[i] = calcCDAtAlpha.semiempirical(getAlphaArray().get(i));
 			}
 			
-			getPolar3DCurve().put(MethodEnum.SEMPIEMPIRICAL, cDArray);
+			getPolar3DCurve().put(MethodEnum.SEMIEMPIRICAL, cDArray);
 			
 		}
 		
@@ -425,7 +425,7 @@ public class NacelleAerodynamicsManager {
 			}
 			
 			_cMAtAlpha.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					MomentCalc.calculateCMAtAlphaFuselage(
 							alphaBody, 
 							_cMAlpha.get(MethodEnum.GILRUTH), 
@@ -457,7 +457,7 @@ public class NacelleAerodynamicsManager {
 			}
 			
 			_moment3DCurve.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_alphaArray.stream()
 							.map(a -> MomentCalc.calculateCMAtAlphaFuselage(

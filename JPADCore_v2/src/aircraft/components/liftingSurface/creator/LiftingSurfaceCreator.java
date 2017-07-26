@@ -2620,15 +2620,21 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 		Amount<Length> span = Amount.valueOf(
 				Math.sqrt(
-						_equivalentWing.getSurfacePlanform().to(SI.SQUARE_METRE)
-						.times(_equivalentWing.getAspectRatio())
+						surfacePlanform.to(SI.SQUARE_METRE)
+						.times(aspectRatio)
 						.getEstimatedValue()
 						),
 				SI.METER);
 		
-		double chord = ((2 * _equivalentWing.getSurfacePlanform().doubleValue(SI.SQUARE_METRE))/
-				(span.getEstimatedValue() * (1+_equivalentWing.getTaperRatio()))) * 
-				(1-((2 * (1-_equivalentWing.getTaperRatio())/span.getEstimatedValue()) * 
+		double taperRatio = 0.0;
+		if(_type.equals(ComponentEnum.WING))
+			taperRatio = _equivalentWing.getPanels().get(0).getTaperRatio();
+		else
+			taperRatio = getPanels().get(0).getTaperRatio();
+		
+		double chord = ((2 * getSurfacePlanform().doubleValue(SI.SQUARE_METRE))/
+				(span.getEstimatedValue() * (1+taperRatio))) * 
+				(1-((2 * (1-taperRatio)/span.getEstimatedValue()) * 
 						y));
 		return chord;
 
@@ -2653,8 +2659,8 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		
 		Amount<Length> span = Amount.valueOf(
 				Math.sqrt(
-						_equivalentWing.getSurfacePlanform().to(SI.SQUARE_METRE)
-						.times(_equivalentWing.getAspectRatio())
+						surfacePlanform.to(SI.SQUARE_METRE)
+						.times(aspectRatio)
 						.getEstimatedValue()
 						),
 				SI.METER);

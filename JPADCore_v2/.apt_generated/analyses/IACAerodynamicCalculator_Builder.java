@@ -67,9 +67,10 @@ abstract class IACAerodynamicCalculator_Builder {
     TAU_RUDDER_FUNCTION("tauRudderFunction"),
     FUSELAGE_EFFECT_ON_WING_LIFT_CURVE("fuselageEffectOnWingLiftCurve"),
     WING_PENDULAR_STABILITY("wingPendularStability"),
-    C_D0_MISCELLANEOUS("CD0Miscellaneous"),
+    DELTA_C_D0_MISCELLANEOUS("deltaCD0Miscellaneous"),
     WING_MOMENTUM_POLE("wingMomentumPole"),
     H_TAIL_MOMENTUM_POLE("HTailMomentumPole"),
+    V_TAIL_MOMENTUM_POLE("VTailMomentumPole"),
     ADIMENSIONAL_FUSELAGE_MOMENTUM_POLE("adimensionalFuselageMomentumPole"),
     ;
 
@@ -106,6 +107,7 @@ abstract class IACAerodynamicCalculator_Builder {
   private int VTailNumberOfPointSemiSpanWise;
   private final ArrayList<Amount<Angle>> alphaWingForDistribution = new ArrayList<>();
   private final ArrayList<Amount<Angle>> alphaHorizontalTailForDistribution = new ArrayList<>();
+  private final ArrayList<Amount<Angle>> betaVerticalTailForDistribution = new ArrayList<>();
   private Boolean downwashConstant;
   private Double dynamicPressureRatio;
   private MyInterpolatingFunction tauElevatorFunction;
@@ -114,9 +116,10 @@ abstract class IACAerodynamicCalculator_Builder {
   private final ArrayList<Amount<Angle>> deltaRudderList = new ArrayList<>();
   private Boolean fuselageEffectOnWingLiftCurve;
   private Boolean wingPendularStability;
-  private Double CD0Miscellaneous;
+  private Double deltaCD0Miscellaneous;
   private Amount<Length> wingMomentumPole;
   private Amount<Length> HTailMomentumPole;
+  private Amount<Length> VTailMomentumPole;
   private Double adimensionalFuselageMomentumPole;
   private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties =
       EnumSet.allOf(IACAerodynamicCalculator_Builder.Property.class);
@@ -1146,6 +1149,92 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
+   * Adds {@code element} to the list to be returned from {@link IACAerodynamicCalculator#getBetaVerticalTailForDistribution()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code element} is null
+   */
+  public IACAerodynamicCalculator.Builder addBetaVerticalTailForDistribution(
+      Amount<Angle> element) {
+    this.betaVerticalTailForDistribution.add(Preconditions.checkNotNull(element));
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link IACAerodynamicCalculator#getBetaVerticalTailForDistribution()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public IACAerodynamicCalculator.Builder addBetaVerticalTailForDistribution(
+      Amount<Angle>... elements) {
+    betaVerticalTailForDistribution.ensureCapacity(
+        betaVerticalTailForDistribution.size() + elements.length);
+    for (Amount<Angle> element : elements) {
+      addBetaVerticalTailForDistribution(element);
+    }
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link IACAerodynamicCalculator#getBetaVerticalTailForDistribution()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public IACAerodynamicCalculator.Builder addAllBetaVerticalTailForDistribution(
+      Iterable<? extends Amount<Angle>> elements) {
+    if (elements instanceof Collection) {
+      betaVerticalTailForDistribution.ensureCapacity(
+          betaVerticalTailForDistribution.size() + ((Collection<?>) elements).size());
+    }
+    for (Amount<Angle> element : elements) {
+      addBetaVerticalTailForDistribution(element);
+    }
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Applies {@code mutator} to the list to be returned from {@link IACAerodynamicCalculator#getBetaVerticalTailForDistribution()}.
+   *
+   * <p>This method mutates the list in-place. {@code mutator} is a void
+   * consumer, so any value returned from a lambda will be ignored. Take care
+   * not to call pure functions, like {@link Collection#stream()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mutator} is null
+   */
+  public IACAerodynamicCalculator.Builder mutateBetaVerticalTailForDistribution(
+      Consumer<? super List<Amount<Angle>>> mutator) {
+    // If addBetaVerticalTailForDistribution is overridden, this method will be updated to delegate to it
+    mutator.accept(betaVerticalTailForDistribution);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Clears the list to be returned from {@link IACAerodynamicCalculator#getBetaVerticalTailForDistribution()}.
+   *
+   * @return this {@code Builder} object
+   */
+  public IACAerodynamicCalculator.Builder clearBetaVerticalTailForDistribution() {
+    this.betaVerticalTailForDistribution.clear();
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Returns an unmodifiable view of the list that will be returned by
+   * {@link IACAerodynamicCalculator#getBetaVerticalTailForDistribution()}.
+   * Changes to this builder will be reflected in the view.
+   */
+  public List<Amount<Angle>> getBetaVerticalTailForDistribution() {
+    return Collections.unmodifiableList(betaVerticalTailForDistribution);
+  }
+
+  /**
    * Sets the value to be returned by {@link IACAerodynamicCalculator#getDownwashConstant()}.
    *
    * @return this {@code Builder} object
@@ -1543,40 +1632,41 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link IACAerodynamicCalculator#getCD0Miscellaneous()}.
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getDeltaCD0Miscellaneous()}.
    *
    * @return this {@code Builder} object
-   * @throws NullPointerException if {@code CD0Miscellaneous} is null
+   * @throws NullPointerException if {@code deltaCD0Miscellaneous} is null
    */
-  public IACAerodynamicCalculator.Builder setCD0Miscellaneous(Double CD0Miscellaneous) {
-    this.CD0Miscellaneous = Preconditions.checkNotNull(CD0Miscellaneous);
-    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS);
+  public IACAerodynamicCalculator.Builder setDeltaCD0Miscellaneous(Double deltaCD0Miscellaneous) {
+    this.deltaCD0Miscellaneous = Preconditions.checkNotNull(deltaCD0Miscellaneous);
+    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.DELTA_C_D0_MISCELLANEOUS);
     return (IACAerodynamicCalculator.Builder) this;
   }
 
   /**
-   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getCD0Miscellaneous()}
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getDeltaCD0Miscellaneous()}
    * by applying {@code mapper} to it and using the result.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code mapper} is null or returns null
    * @throws IllegalStateException if the field has not been set
    */
-  public IACAerodynamicCalculator.Builder mapCD0Miscellaneous(UnaryOperator<Double> mapper) {
+  public IACAerodynamicCalculator.Builder mapDeltaCD0Miscellaneous(UnaryOperator<Double> mapper) {
     Preconditions.checkNotNull(mapper);
-    return setCD0Miscellaneous(mapper.apply(getCD0Miscellaneous()));
+    return setDeltaCD0Miscellaneous(mapper.apply(getDeltaCD0Miscellaneous()));
   }
 
   /**
-   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getCD0Miscellaneous()}.
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getDeltaCD0Miscellaneous()}.
    *
    * @throws IllegalStateException if the field has not been set
    */
-  public Double getCD0Miscellaneous() {
+  public Double getDeltaCD0Miscellaneous() {
     Preconditions.checkState(
-        !_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS),
-        "CD0Miscellaneous not set");
-    return CD0Miscellaneous;
+        !_unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.DELTA_C_D0_MISCELLANEOUS),
+        "deltaCD0Miscellaneous not set");
+    return deltaCD0Miscellaneous;
   }
 
   /**
@@ -1653,6 +1743,44 @@ abstract class IACAerodynamicCalculator_Builder {
         !_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE),
         "HTailMomentumPole not set");
     return HTailMomentumPole;
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getVTailMomentumPole()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code VTailMomentumPole} is null
+   */
+  public IACAerodynamicCalculator.Builder setVTailMomentumPole(Amount<Length> VTailMomentumPole) {
+    this.VTailMomentumPole = Preconditions.checkNotNull(VTailMomentumPole);
+    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENTUM_POLE);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getVTailMomentumPole()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapVTailMomentumPole(
+      UnaryOperator<Amount<Length>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setVTailMomentumPole(mapper.apply(getVTailMomentumPole()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getVTailMomentumPole()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<Length> getVTailMomentumPole() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENTUM_POLE),
+        "VTailMomentumPole not set");
+    return VTailMomentumPole;
   }
 
   /**
@@ -1780,6 +1908,7 @@ abstract class IACAerodynamicCalculator_Builder {
     }
     addAllAlphaWingForDistribution(value.getAlphaWingForDistribution());
     addAllAlphaHorizontalTailForDistribution(value.getAlphaHorizontalTailForDistribution());
+    addAllBetaVerticalTailForDistribution(value.getBetaVerticalTailForDistribution());
     if (_defaults._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.DOWNWASH_CONSTANT)
         || !value.getDownwashConstant().equals(_defaults.getDownwashConstant())) {
@@ -1815,9 +1944,9 @@ abstract class IACAerodynamicCalculator_Builder {
       setWingPendularStability(value.getWingPendularStability());
     }
     if (_defaults._unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS)
-        || !value.getCD0Miscellaneous().equals(_defaults.getCD0Miscellaneous())) {
-      setCD0Miscellaneous(value.getCD0Miscellaneous());
+            IACAerodynamicCalculator_Builder.Property.DELTA_C_D0_MISCELLANEOUS)
+        || !value.getDeltaCD0Miscellaneous().equals(_defaults.getDeltaCD0Miscellaneous())) {
+      setDeltaCD0Miscellaneous(value.getDeltaCD0Miscellaneous());
     }
     if (_defaults._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)
@@ -1828,6 +1957,11 @@ abstract class IACAerodynamicCalculator_Builder {
             IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)
         || !value.getHTailMomentumPole().equals(_defaults.getHTailMomentumPole())) {
       setHTailMomentumPole(value.getHTailMomentumPole());
+    }
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENTUM_POLE)
+        || !value.getVTailMomentumPole().equals(_defaults.getVTailMomentumPole())) {
+      setVTailMomentumPole(value.getVTailMomentumPole());
     }
     if (_defaults._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.ADIMENSIONAL_FUSELAGE_MOMENTUM_POLE)
@@ -1953,6 +2087,8 @@ abstract class IACAerodynamicCalculator_Builder {
         ((IACAerodynamicCalculator_Builder) template).alphaWingForDistribution);
     addAllAlphaHorizontalTailForDistribution(
         ((IACAerodynamicCalculator_Builder) template).alphaHorizontalTailForDistribution);
+    addAllBetaVerticalTailForDistribution(
+        ((IACAerodynamicCalculator_Builder) template).betaVerticalTailForDistribution);
     if (!base._unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.DOWNWASH_CONSTANT)
         && (_defaults._unsetProperties.contains(
                 IACAerodynamicCalculator_Builder.Property.DOWNWASH_CONSTANT)
@@ -1999,11 +2135,11 @@ abstract class IACAerodynamicCalculator_Builder {
       setWingPendularStability(template.getWingPendularStability());
     }
     if (!base._unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS)
+            IACAerodynamicCalculator_Builder.Property.DELTA_C_D0_MISCELLANEOUS)
         && (_defaults._unsetProperties.contains(
-                IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS)
-            || !template.getCD0Miscellaneous().equals(_defaults.getCD0Miscellaneous()))) {
-      setCD0Miscellaneous(template.getCD0Miscellaneous());
+                IACAerodynamicCalculator_Builder.Property.DELTA_C_D0_MISCELLANEOUS)
+            || !template.getDeltaCD0Miscellaneous().equals(_defaults.getDeltaCD0Miscellaneous()))) {
+      setDeltaCD0Miscellaneous(template.getDeltaCD0Miscellaneous());
     }
     if (!base._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)
@@ -2018,6 +2154,13 @@ abstract class IACAerodynamicCalculator_Builder {
                 IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)
             || !template.getHTailMomentumPole().equals(_defaults.getHTailMomentumPole()))) {
       setHTailMomentumPole(template.getHTailMomentumPole());
+    }
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENTUM_POLE)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENTUM_POLE)
+            || !template.getVTailMomentumPole().equals(_defaults.getVTailMomentumPole()))) {
+      setVTailMomentumPole(template.getVTailMomentumPole());
     }
     if (!base._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.ADIMENSIONAL_FUSELAGE_MOMENTUM_POLE)
@@ -2056,6 +2199,7 @@ abstract class IACAerodynamicCalculator_Builder {
     VTailNumberOfPointSemiSpanWise = _defaults.VTailNumberOfPointSemiSpanWise;
     alphaWingForDistribution.clear();
     alphaHorizontalTailForDistribution.clear();
+    betaVerticalTailForDistribution.clear();
     downwashConstant = _defaults.downwashConstant;
     dynamicPressureRatio = _defaults.dynamicPressureRatio;
     tauElevatorFunction = _defaults.tauElevatorFunction;
@@ -2064,9 +2208,10 @@ abstract class IACAerodynamicCalculator_Builder {
     deltaRudderList.clear();
     fuselageEffectOnWingLiftCurve = _defaults.fuselageEffectOnWingLiftCurve;
     wingPendularStability = _defaults.wingPendularStability;
-    CD0Miscellaneous = _defaults.CD0Miscellaneous;
+    deltaCD0Miscellaneous = _defaults.deltaCD0Miscellaneous;
     wingMomentumPole = _defaults.wingMomentumPole;
     HTailMomentumPole = _defaults.HTailMomentumPole;
+    VTailMomentumPole = _defaults.VTailMomentumPole;
     adimensionalFuselageMomentumPole = _defaults.adimensionalFuselageMomentumPole;
     _unsetProperties.clear();
     _unsetProperties.addAll(_defaults._unsetProperties);
@@ -2119,6 +2264,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final int VTailNumberOfPointSemiSpanWise;
     private final List<Amount<Angle>> alphaWingForDistribution;
     private final List<Amount<Angle>> alphaHorizontalTailForDistribution;
+    private final List<Amount<Angle>> betaVerticalTailForDistribution;
     private final Boolean downwashConstant;
     private final Double dynamicPressureRatio;
     private final MyInterpolatingFunction tauElevatorFunction;
@@ -2127,9 +2273,10 @@ abstract class IACAerodynamicCalculator_Builder {
     private final List<Amount<Angle>> deltaRudderList;
     private final Boolean fuselageEffectOnWingLiftCurve;
     private final Boolean wingPendularStability;
-    private final Double CD0Miscellaneous;
+    private final Double deltaCD0Miscellaneous;
     private final Amount<Length> wingMomentumPole;
     private final Amount<Length> HTailMomentumPole;
+    private final Amount<Length> VTailMomentumPole;
     private final Double adimensionalFuselageMomentumPole;
 
     private Value(IACAerodynamicCalculator_Builder builder) {
@@ -2154,6 +2301,8 @@ abstract class IACAerodynamicCalculator_Builder {
       this.alphaWingForDistribution = ImmutableList.copyOf(builder.alphaWingForDistribution);
       this.alphaHorizontalTailForDistribution =
           ImmutableList.copyOf(builder.alphaHorizontalTailForDistribution);
+      this.betaVerticalTailForDistribution =
+          ImmutableList.copyOf(builder.betaVerticalTailForDistribution);
       this.downwashConstant = builder.downwashConstant;
       this.dynamicPressureRatio = builder.dynamicPressureRatio;
       this.tauElevatorFunction = builder.tauElevatorFunction;
@@ -2162,9 +2311,10 @@ abstract class IACAerodynamicCalculator_Builder {
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
       this.wingPendularStability = builder.wingPendularStability;
-      this.CD0Miscellaneous = builder.CD0Miscellaneous;
+      this.deltaCD0Miscellaneous = builder.deltaCD0Miscellaneous;
       this.wingMomentumPole = builder.wingMomentumPole;
       this.HTailMomentumPole = builder.HTailMomentumPole;
+      this.VTailMomentumPole = builder.VTailMomentumPole;
       this.adimensionalFuselageMomentumPole = builder.adimensionalFuselageMomentumPole;
     }
 
@@ -2269,6 +2419,11 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public List<Amount<Angle>> getBetaVerticalTailForDistribution() {
+      return betaVerticalTailForDistribution;
+    }
+
+    @Override
     public Boolean getDownwashConstant() {
       return downwashConstant;
     }
@@ -2309,8 +2464,8 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
-    public Double getCD0Miscellaneous() {
-      return CD0Miscellaneous;
+    public Double getDeltaCD0Miscellaneous() {
+      return deltaCD0Miscellaneous;
     }
 
     @Override
@@ -2321,6 +2476,11 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public Amount<Length> getHTailMomentumPole() {
       return HTailMomentumPole;
+    }
+
+    @Override
+    public Amount<Length> getVTailMomentumPole() {
+      return VTailMomentumPole;
     }
 
     @Override
@@ -2355,6 +2515,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(alphaWingForDistribution, other.alphaWingForDistribution)
           && Objects.equals(
               alphaHorizontalTailForDistribution, other.alphaHorizontalTailForDistribution)
+          && Objects.equals(betaVerticalTailForDistribution, other.betaVerticalTailForDistribution)
           && Objects.equals(downwashConstant, other.downwashConstant)
           && Objects.equals(dynamicPressureRatio, other.dynamicPressureRatio)
           && Objects.equals(tauElevatorFunction, other.tauElevatorFunction)
@@ -2363,9 +2524,10 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(deltaRudderList, other.deltaRudderList)
           && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
           && Objects.equals(wingPendularStability, other.wingPendularStability)
-          && Objects.equals(CD0Miscellaneous, other.CD0Miscellaneous)
+          && Objects.equals(deltaCD0Miscellaneous, other.deltaCD0Miscellaneous)
           && Objects.equals(wingMomentumPole, other.wingMomentumPole)
           && Objects.equals(HTailMomentumPole, other.HTailMomentumPole)
+          && Objects.equals(VTailMomentumPole, other.VTailMomentumPole)
           && Objects.equals(
               adimensionalFuselageMomentumPole, other.adimensionalFuselageMomentumPole);
     }
@@ -2393,6 +2555,7 @@ abstract class IACAerodynamicCalculator_Builder {
           VTailNumberOfPointSemiSpanWise,
           alphaWingForDistribution,
           alphaHorizontalTailForDistribution,
+          betaVerticalTailForDistribution,
           downwashConstant,
           dynamicPressureRatio,
           tauElevatorFunction,
@@ -2401,9 +2564,10 @@ abstract class IACAerodynamicCalculator_Builder {
           deltaRudderList,
           fuselageEffectOnWingLiftCurve,
           wingPendularStability,
-          CD0Miscellaneous,
+          deltaCD0Miscellaneous,
           wingMomentumPole,
           HTailMomentumPole,
+          VTailMomentumPole,
           adimensionalFuselageMomentumPole);
     }
 
@@ -2470,6 +2634,9 @@ abstract class IACAerodynamicCalculator_Builder {
           + "alphaHorizontalTailForDistribution="
           + alphaHorizontalTailForDistribution
           + ", "
+          + "betaVerticalTailForDistribution="
+          + betaVerticalTailForDistribution
+          + ", "
           + "downwashConstant="
           + downwashConstant
           + ", "
@@ -2494,14 +2661,17 @@ abstract class IACAerodynamicCalculator_Builder {
           + "wingPendularStability="
           + wingPendularStability
           + ", "
-          + "CD0Miscellaneous="
-          + CD0Miscellaneous
+          + "deltaCD0Miscellaneous="
+          + deltaCD0Miscellaneous
           + ", "
           + "wingMomentumPole="
           + wingMomentumPole
           + ", "
           + "HTailMomentumPole="
           + HTailMomentumPole
+          + ", "
+          + "VTailMomentumPole="
+          + VTailMomentumPole
           + ", "
           + "adimensionalFuselageMomentumPole="
           + adimensionalFuselageMomentumPole
@@ -2531,6 +2701,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final int VTailNumberOfPointSemiSpanWise;
     private final List<Amount<Angle>> alphaWingForDistribution;
     private final List<Amount<Angle>> alphaHorizontalTailForDistribution;
+    private final List<Amount<Angle>> betaVerticalTailForDistribution;
     private final Boolean downwashConstant;
     private final Double dynamicPressureRatio;
     private final MyInterpolatingFunction tauElevatorFunction;
@@ -2539,9 +2710,10 @@ abstract class IACAerodynamicCalculator_Builder {
     private final List<Amount<Angle>> deltaRudderList;
     private final Boolean fuselageEffectOnWingLiftCurve;
     private final Boolean wingPendularStability;
-    private final Double CD0Miscellaneous;
+    private final Double deltaCD0Miscellaneous;
     private final Amount<Length> wingMomentumPole;
     private final Amount<Length> HTailMomentumPole;
+    private final Amount<Length> VTailMomentumPole;
     private final Double adimensionalFuselageMomentumPole;
     private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties;
 
@@ -2567,6 +2739,8 @@ abstract class IACAerodynamicCalculator_Builder {
       this.alphaWingForDistribution = ImmutableList.copyOf(builder.alphaWingForDistribution);
       this.alphaHorizontalTailForDistribution =
           ImmutableList.copyOf(builder.alphaHorizontalTailForDistribution);
+      this.betaVerticalTailForDistribution =
+          ImmutableList.copyOf(builder.betaVerticalTailForDistribution);
       this.downwashConstant = builder.downwashConstant;
       this.dynamicPressureRatio = builder.dynamicPressureRatio;
       this.tauElevatorFunction = builder.tauElevatorFunction;
@@ -2575,9 +2749,10 @@ abstract class IACAerodynamicCalculator_Builder {
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
       this.wingPendularStability = builder.wingPendularStability;
-      this.CD0Miscellaneous = builder.CD0Miscellaneous;
+      this.deltaCD0Miscellaneous = builder.deltaCD0Miscellaneous;
       this.wingMomentumPole = builder.wingMomentumPole;
       this.HTailMomentumPole = builder.HTailMomentumPole;
+      this.VTailMomentumPole = builder.VTailMomentumPole;
       this.adimensionalFuselageMomentumPole = builder.adimensionalFuselageMomentumPole;
       this._unsetProperties = builder._unsetProperties.clone();
     }
@@ -2731,6 +2906,11 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public List<Amount<Angle>> getBetaVerticalTailForDistribution() {
+      return betaVerticalTailForDistribution;
+    }
+
+    @Override
     public Boolean getDownwashConstant() {
       if (_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.DOWNWASH_CONSTANT)) {
         throw new UnsupportedOperationException("downwashConstant not set");
@@ -2794,11 +2974,12 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
-    public Double getCD0Miscellaneous() {
-      if (_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS)) {
-        throw new UnsupportedOperationException("CD0Miscellaneous not set");
+    public Double getDeltaCD0Miscellaneous() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.DELTA_C_D0_MISCELLANEOUS)) {
+        throw new UnsupportedOperationException("deltaCD0Miscellaneous not set");
       }
-      return CD0Miscellaneous;
+      return deltaCD0Miscellaneous;
     }
 
     @Override
@@ -2816,6 +2997,15 @@ abstract class IACAerodynamicCalculator_Builder {
         throw new UnsupportedOperationException("HTailMomentumPole not set");
       }
       return HTailMomentumPole;
+    }
+
+    @Override
+    public Amount<Length> getVTailMomentumPole() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENTUM_POLE)) {
+        throw new UnsupportedOperationException("VTailMomentumPole not set");
+      }
+      return VTailMomentumPole;
     }
 
     @Override
@@ -2855,6 +3045,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(alphaWingForDistribution, other.alphaWingForDistribution)
           && Objects.equals(
               alphaHorizontalTailForDistribution, other.alphaHorizontalTailForDistribution)
+          && Objects.equals(betaVerticalTailForDistribution, other.betaVerticalTailForDistribution)
           && Objects.equals(downwashConstant, other.downwashConstant)
           && Objects.equals(dynamicPressureRatio, other.dynamicPressureRatio)
           && Objects.equals(tauElevatorFunction, other.tauElevatorFunction)
@@ -2863,9 +3054,10 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(deltaRudderList, other.deltaRudderList)
           && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
           && Objects.equals(wingPendularStability, other.wingPendularStability)
-          && Objects.equals(CD0Miscellaneous, other.CD0Miscellaneous)
+          && Objects.equals(deltaCD0Miscellaneous, other.deltaCD0Miscellaneous)
           && Objects.equals(wingMomentumPole, other.wingMomentumPole)
           && Objects.equals(HTailMomentumPole, other.HTailMomentumPole)
+          && Objects.equals(VTailMomentumPole, other.VTailMomentumPole)
           && Objects.equals(
               adimensionalFuselageMomentumPole, other.adimensionalFuselageMomentumPole)
           && Objects.equals(_unsetProperties, other._unsetProperties);
@@ -2894,6 +3086,7 @@ abstract class IACAerodynamicCalculator_Builder {
           VTailNumberOfPointSemiSpanWise,
           alphaWingForDistribution,
           alphaHorizontalTailForDistribution,
+          betaVerticalTailForDistribution,
           downwashConstant,
           dynamicPressureRatio,
           tauElevatorFunction,
@@ -2902,9 +3095,10 @@ abstract class IACAerodynamicCalculator_Builder {
           deltaRudderList,
           fuselageEffectOnWingLiftCurve,
           wingPendularStability,
-          CD0Miscellaneous,
+          deltaCD0Miscellaneous,
           wingMomentumPole,
           HTailMomentumPole,
+          VTailMomentumPole,
           adimensionalFuselageMomentumPole,
           _unsetProperties);
     }
@@ -2973,6 +3167,7 @@ abstract class IACAerodynamicCalculator_Builder {
                   : null),
               "alphaWingForDistribution=" + alphaWingForDistribution,
               "alphaHorizontalTailForDistribution=" + alphaHorizontalTailForDistribution,
+              "betaVerticalTailForDistribution=" + betaVerticalTailForDistribution,
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.DOWNWASH_CONSTANT)
                   ? "downwashConstant=" + downwashConstant
@@ -3000,8 +3195,8 @@ abstract class IACAerodynamicCalculator_Builder {
                   ? "wingPendularStability=" + wingPendularStability
                   : null),
               (!_unsetProperties.contains(
-                      IACAerodynamicCalculator_Builder.Property.C_D0_MISCELLANEOUS)
-                  ? "CD0Miscellaneous=" + CD0Miscellaneous
+                      IACAerodynamicCalculator_Builder.Property.DELTA_C_D0_MISCELLANEOUS)
+                  ? "deltaCD0Miscellaneous=" + deltaCD0Miscellaneous
                   : null),
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.WING_MOMENTUM_POLE)
@@ -3010,6 +3205,10 @@ abstract class IACAerodynamicCalculator_Builder {
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENTUM_POLE)
                   ? "HTailMomentumPole=" + HTailMomentumPole
+                  : null),
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENTUM_POLE)
+                  ? "VTailMomentumPole=" + VTailMomentumPole
                   : null),
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.ADIMENSIONAL_FUSELAGE_MOMENTUM_POLE)

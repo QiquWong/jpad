@@ -812,18 +812,31 @@ public class LSAerodynamicsManager {
 		 */
 		public double linearAndersonCompressibleSubsonic(Amount<Angle> alpha) {
 
-			if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.andersonSweptCompressibleSubsonic();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.andersonSweptCompressibleSubsonic();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			
 			if(_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
 				CalcCL0 calcCLZero = new CalcCL0();
 				calcCLZero.andersonSweptCompressibleSubsonic();
 			}
-
-			double cLActual = _cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-					*alpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue() + 
-					_cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);
+			
+			double cLActual = cLAlpha*alpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue() 
+					+ _cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC);	
 			
 			_cLAtAlpha.put(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC, cLActual);
 			
@@ -868,27 +881,40 @@ public class LSAerodynamicsManager {
 					calcAlphaStar.meanAirfoilWithInfluenceAreas();
 				}
 				
-				if(alpha.doubleValue(NonSI.DEGREE_ANGLE)
-						<= _alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS).doubleValue(NonSI.DEGREE_ANGLE)) { // linear trait
-
+				if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 					if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
 						CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
 						calcCLAlpha.nasaBlackwell();
 					}
+				}
+				else
+					if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+						CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+						calcCLAlpha.helmboldDiederich(_currentMachNumber);
+					}
+				
+				Double cLAlpha = null;
+				if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+					cLAlpha = _cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+				else
+					cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+				
+				if(alpha.doubleValue(NonSI.DEGREE_ANGLE)
+						<= _alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS).doubleValue(NonSI.DEGREE_ANGLE)) { // linear trait
+
 					if(_cLZero.get(MethodEnum.NASA_BLACKWELL) == null) {
 						CalcCL0 calcCLZero = new CalcCL0();
 						calcCLZero.nasaBlackwell();
 					}
 					
-					cLActual = (_cLAlpha.get(MethodEnum.NASA_BLACKWELL).getEstimatedValue()
-							* alpha.doubleValue(NonSI.DEGREE_ANGLE))
+					cLActual = cLAlpha* alpha.doubleValue(NonSI.DEGREE_ANGLE)
 							+ _cLZero.get(MethodEnum.NASA_BLACKWELL);
 				}
 				else { // complete curve 
 					
 					cLActual = LiftCalc.calculateCLAtAlphaNonLinearTrait(
 							alpha,
-							_cLAlpha.get(MethodEnum.NASA_BLACKWELL),
+							Amount.valueOf(cLAlpha, NonSI.DEGREE_ANGLE.inverse()),
 							_cLStar.get(MethodEnum.NASA_BLACKWELL),
 							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
 							_cLMax.get(MethodEnum.NASA_BLACKWELL),
@@ -914,10 +940,24 @@ public class LSAerodynamicsManager {
 
 		public void andersonSweptCompressibleSubsonic() {
 			
-			if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.andersonSweptCompressibleSubsonic();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.andersonSweptCompressibleSubsonic();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
 				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
 				calcAlphaZeroLift.integralMeanWithTwist();
@@ -927,17 +967,31 @@ public class LSAerodynamicsManager {
 					MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
 					LiftCalc.calculateLiftCoefficientAtAlpha0(
 							_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE),
-							_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+							cLAlpha
 							)
 					);
 		}
 
 		public void nasaBlackwell() {
 			
-			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.nasaBlackwell();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.nasaBlackwell();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
 				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
 				calcAlphaZeroLift.integralMeanWithTwist();
@@ -947,7 +1001,7 @@ public class LSAerodynamicsManager {
 					MethodEnum.NASA_BLACKWELL,
 					LiftCalc.calculateLiftCoefficientAtAlpha0(
 							_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE),
-							_cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+							cLAlpha
 							)
 					);
 			
@@ -1285,14 +1339,27 @@ public class LSAerodynamicsManager {
 
 		public void phillipsAndAlley() {
 			
-			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.nasaBlackwell();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.nasaBlackwell();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 			
 			double result = LiftCalc.calculateCLmaxPhillipsAndAlley( //5.07
 					_meanAirfoil.getAirfoilCreator().getClMax().doubleValue(),
-					_cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(SI.RADIAN.inverse()).getEstimatedValue(), 
+					cLAlpha, 
 					_theLiftingSurface.getLiftingSurfaceCreator().getEquivalentWing().getTaperRatio().doubleValue(),
 					_theLiftingSurface.getSweepLEEquivalent().doubleValue(SI.RADIAN),
 					_theLiftingSurface.getAspectRatio(),
@@ -1473,10 +1540,23 @@ public class LSAerodynamicsManager {
 					theCL0Calculator.andersonSweptCompressibleSubsonic();
 				}
 					
-				if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
-					CalcCLAlpha theCLAlphaCalculator = new CalcCLAlpha();
-					theCLAlphaCalculator.andersonSweptCompressibleSubsonic();
+				if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+					if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+						CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+						calcCLAlpha.andersonSweptCompressibleSubsonic();
+					}
 				}
+				else
+					if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+						CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+						calcCLAlpha.helmboldDiederich(_currentMachNumber);
+					}
+				
+				Double cLAlpha = null;
+				if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+					cLAlpha = _cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+				else
+					cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 				
 				if(_cLMax.get(MethodEnum.PHILLIPS_ALLEY) == null) {
 					CalcCLmax theCLMaxCalculator = new CalcCLmax();
@@ -1487,7 +1567,7 @@ public class LSAerodynamicsManager {
 						MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
 						Amount.valueOf(
 								(_cLMax.get(MethodEnum.PHILLIPS_ALLEY) - _cLZero.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC))
-								/_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+								/cLAlpha,
 								NonSI.DEGREE_ANGLE
 								)
 						);
@@ -1517,11 +1597,11 @@ public class LSAerodynamicsManager {
 		public void fromAlphaMaxLinearNasaBlackwell(double mach) {
 			
 			if(_alphaMaxLinear.get(MethodEnum.NASA_BLACKWELL) == null) {
-				if(_theLiftingSurface.getType() != ComponentEnum.VERTICAL_TAIL) {
+				if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
 					CalcCLmax theCLMaxCalculator = new CalcCLmax();
 					theCLMaxCalculator.nasaBlackwell();
 				}
-				else if(_theLiftingSurface.getType() == ComponentEnum.VERTICAL_TAIL) {
+				else {
 					CalcCLmax theCLMaxCalculator = new CalcCLmax();
 					theCLMaxCalculator.roskam();
 					CalcCLAlpha theCLAlphaCalculator = new CalcCLAlpha();
@@ -1588,10 +1668,23 @@ public class LSAerodynamicsManager {
 				calcCLZero.andersonSweptCompressibleSubsonic();
 			}
 			
-			if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.andersonSweptCompressibleSubsonic();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.andersonSweptCompressibleSubsonic();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 			
 			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
 				CalcAlphaStar calcAlphaStar = new CalcAlphaStar();
@@ -1626,7 +1719,7 @@ public class LSAerodynamicsManager {
 							_cLMax.get(MethodEnum.PHILLIPS_ALLEY),
 							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
 							_alphaStall.get(MethodEnum.PHILLIPS_ALLEY),
-							_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC),
+							Amount.valueOf(cLAlpha, NonSI.DEGREE_ANGLE.inverse()),
 							_alphaArrayPlot
 							)
 					);
@@ -1644,10 +1737,24 @@ public class LSAerodynamicsManager {
 				calcCLZero.nasaBlackwell();
 			}
 			
-			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.nasaBlackwell();
+
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.nasaBlackwell();;
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 			
 			if(_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS) == null) {
 				CalcAlphaStar calcAlphaStar = new CalcAlphaStar();
@@ -1682,7 +1789,7 @@ public class LSAerodynamicsManager {
 							_cLMax.get(MethodEnum.NASA_BLACKWELL),
 							_alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS),
 							_alphaStall.get(MethodEnum.NASA_BLACKWELL),
-							_cLAlpha.get(MethodEnum.NASA_BLACKWELL),
+							Amount.valueOf(cLAlpha, NonSI.DEGREE_ANGLE.inverse()),
 							_alphaArrayPlot
 							)
 					);
@@ -2074,7 +2181,7 @@ public class LSAerodynamicsManager {
 			Double cD0Gap = DragCalc.calculateCDGap(_theLiftingSurface);
 			
 			_cD0.put(
-					MethodEnum.SEMPIEMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					cD0Parasite*(1+kExcr)
 					+ cD0Gap
 					);
@@ -2396,7 +2503,7 @@ public class LSAerodynamicsManager {
 						);
 			}
 			
-			_polar3DCurve.put(MethodEnum.SEMPIEMPIRICAL, cDArray);
+			_polar3DCurve.put(MethodEnum.SEMIEMPIRICAL, cDArray);
 			
 		}
 		
@@ -2445,7 +2552,7 @@ public class LSAerodynamicsManager {
 			
 			double cDActual = 0.0;
 			
-			if(_cD0.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+			if(_cD0.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcCD0 calcCD0 = new CalcCD0(); 
 				calcCD0.semiempirical(mach, altitude);
 			}
@@ -2462,8 +2569,8 @@ public class LSAerodynamicsManager {
 			}
 			
 			_cDAtAlpha.put(
-					MethodEnum.SEMPIEMPIRICAL,
-					_cD0.get(MethodEnum.SEMPIEMPIRICAL)
+					MethodEnum.SEMIEMPIRICAL,
+					_cD0.get(MethodEnum.SEMIEMPIRICAL)
 					+ _cDInduced.get(MethodEnum.RAYMER)
 					+ _cDWave.get(MethodEnum.LOCK_KORN_WITH_KROO)
 					);
@@ -2627,10 +2734,23 @@ public class LSAerodynamicsManager {
 
 		public void andersonSweptCompressibleSubsonic() {
 			
-			if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.andersonSweptCompressibleSubsonic();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.andersonSweptCompressibleSubsonic();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 			
 			if(_xacMRF.get(MethodEnum.DEYOUNG_HARPER) == null) {
 				CalcXAC calcXAC = new CalcXAC();
@@ -2643,7 +2763,7 @@ public class LSAerodynamicsManager {
 					MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC,
 					Amount.valueOf(
 							MomentCalc.calcCMalphaLS(
-									_cLAlpha.get(MethodEnum.ANDERSON_COMPRESSIBLE_SUBSONIC).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+									cLAlpha,
 									_momentumPole.doubleValue(SI.METER), 
 									_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
 									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
@@ -2656,10 +2776,23 @@ public class LSAerodynamicsManager {
 
 		public void polhamus() {
 	
-			if(_cLAlpha.get(MethodEnum.POLHAMUS) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.polhamus();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.POLHAMUS) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.polhamus();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.POLHAMUS).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 			
 			if(_xacMRF.get(MethodEnum.DEYOUNG_HARPER) == null) {
 				CalcXAC calcXAC = new CalcXAC();
@@ -2672,7 +2805,7 @@ public class LSAerodynamicsManager {
 					MethodEnum.POLHAMUS,
 					Amount.valueOf(
 							MomentCalc.calcCMalphaLS(
-									_cLAlpha.get(MethodEnum.POLHAMUS).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
+									cLAlpha,
 									_momentumPole.doubleValue(SI.METER), 
 									_xacMRF.get(MethodEnum.DEYOUNG_HARPER), 
 									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().getEstimatedValue(), 
@@ -2828,10 +2961,23 @@ public class LSAerodynamicsManager {
 				calcCLStar.nasaBlackwell();
 			}
 			
-			if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
-				calcCLAlpha.nasaBlackwell();
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) {
+				if(_cLAlpha.get(MethodEnum.NASA_BLACKWELL) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.nasaBlackwell();
+				}
 			}
+			else
+				if(_cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH) == null) {
+					CalcCLAlpha calcCLAlpha = new CalcCLAlpha();
+					calcCLAlpha.helmboldDiederich(_currentMachNumber);
+				}
+			
+			Double cLAlpha = null;
+			if(!_theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL)) 
+				cLAlpha = _cLAlpha.get(MethodEnum.NASA_BLACKWELL).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
+			else
+				cLAlpha = _cLAlpha.get(MethodEnum.HELMBOLD_DIEDERICH).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 			
 			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
 				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
@@ -2860,7 +3006,7 @@ public class LSAerodynamicsManager {
 							flapDeflection,
 							slatDeflection,
 							_currentAlpha,
-							_cLAlpha.get(MethodEnum.NASA_BLACKWELL),
+							Amount.valueOf(cLAlpha, NonSI.DEGREE_ANGLE.inverse()),
 							_theLiftingSurface.getSweepQuarterChordEquivalent(),
 							_theLiftingSurface.getTaperRatioEquivalent(),
 							_theLiftingSurface.getChordRootEquivalent(),
@@ -2875,89 +3021,89 @@ public class LSAerodynamicsManager {
 							);	
 			
 			_deltaCl0FlapList.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST)
 					);
 			_deltaCL0FlapList.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST)
 					);
 			_deltaClmaxFlapList.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP_LIST)
 					);
 			_deltaCLmaxFlapList.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP_LIST)
 					);
 			_deltaClmaxSlatList.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT_LIST)
 					);
 			_deltaCLmaxSlatList.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT_LIST)
 					);
 			_deltaCD0List.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD_LIST)
 					);
 			_deltaCMc4List.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4_LIST)
 					);
 			_deltaCl0Flap.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP)
 					);
 			_deltaCL0Flap.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP)
 					);
 			_deltaClmaxFlap.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP)
 					);
 			_deltaCLmaxFlap.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP)
 					);
 			_deltaClmaxSlat.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl_MAX_SLAT)
 					);
 			_deltaCLmaxSlat.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT)
 					);
 			_deltaCD0.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD)
 					);
 			_deltaCMc4.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4)
 					);
 			_cLAlphaHighLift.put(
-					MethodEnum.SEMPIEMPIRICAL, 
+					MethodEnum.SEMIEMPIRICAL, 
 					(Amount<?>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT)
 					);
 			
 			//------------------------------------------------------
 			// CL ZERO HIGH LIFT
 			_cLZeroHighLift.put(
-					MethodEnum.SEMPIEMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					_cLZero.get(MethodEnum.NASA_BLACKWELL)
-						+ _deltaCL0Flap.get(MethodEnum.SEMPIEMPIRICAL)
+						+ _deltaCL0Flap.get(MethodEnum.SEMIEMPIRICAL)
 					);
 			
 			//------------------------------------------------------
 			// ALPHA ZERO LIFT HIGH LIFT
 			_alphaZeroLiftHighLift.put(
-					MethodEnum.SEMPIEMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					Amount.valueOf(
 							-(_cLZero.get(MethodEnum.NASA_BLACKWELL)
-									/_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL)
+									/_cLAlphaHighLift.get(MethodEnum.SEMIEMPIRICAL)
 									.to(NonSI.DEGREE_ANGLE.inverse())
 									.getEstimatedValue()
 									),
@@ -2966,18 +3112,18 @@ public class LSAerodynamicsManager {
 			
 			//------------------------------------------------------
 			// CL MAX HIGH LIFT
-			if(_deltaCLmaxSlat.get(MethodEnum.SEMPIEMPIRICAL) == null)
+			if(_deltaCLmaxSlat.get(MethodEnum.SEMIEMPIRICAL) == null)
 				_cLMaxHighLift.put(
-						MethodEnum.SEMPIEMPIRICAL,
+						MethodEnum.SEMIEMPIRICAL,
 						_cLMax.get(MethodEnum.NASA_BLACKWELL)
 						+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
 						);
 			else 
 				_cLMaxHighLift.put(
-						MethodEnum.SEMPIEMPIRICAL,
+						MethodEnum.SEMIEMPIRICAL,
 						_cLMax.get(MethodEnum.NASA_BLACKWELL)
-						+ _deltaCLmaxFlap.get(MethodEnum.SEMPIEMPIRICAL)
-						+ _deltaCLmaxSlat.get(MethodEnum.SEMPIEMPIRICAL)
+						+ _deltaCLmaxFlap.get(MethodEnum.SEMIEMPIRICAL)
+						+ _deltaCLmaxSlat.get(MethodEnum.SEMIEMPIRICAL)
 						);
 			
 			//------------------------------------------------------
@@ -2997,11 +3143,11 @@ public class LSAerodynamicsManager {
 					NonSI.DEGREE_ANGLE);
 			
 			_alphaStallHighLift.put(
-					MethodEnum.SEMPIEMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					Amount.valueOf(
-					((_cLMaxHighLift.get(MethodEnum.SEMPIEMPIRICAL)
-					- _cLZeroHighLift.get(MethodEnum.SEMPIEMPIRICAL))
-					/_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL)
+					((_cLMaxHighLift.get(MethodEnum.SEMIEMPIRICAL)
+					- _cLZeroHighLift.get(MethodEnum.SEMIEMPIRICAL))
+					/_cLAlphaHighLift.get(MethodEnum.SEMIEMPIRICAL)
 						.to(NonSI.DEGREE_ANGLE.inverse())
 						.getEstimatedValue()
 								)
@@ -3012,9 +3158,9 @@ public class LSAerodynamicsManager {
 			//------------------------------------------------------
 			// ALPHA STAR HIGH LIFT
 			_alphaStarHighLift.put(
-					MethodEnum.SEMPIEMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					Amount.valueOf(
-							_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)
+							_alphaStallHighLift.get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)
 							-(_alphaStall.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE)
 									- _alphaStar.get(MethodEnum.MEAN_AIRFOIL_INFLUENCE_AREAS).doubleValue(NonSI.DEGREE_ANGLE)),
 							NonSI.DEGREE_ANGLE)
@@ -3022,13 +3168,13 @@ public class LSAerodynamicsManager {
 			//------------------------------------------------------
 			// ALPHA STAR HIGH LIFT
 			_cLStarHighLift.put(
-					MethodEnum.SEMPIEMPIRICAL,
-					(_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL)
+					MethodEnum.SEMIEMPIRICAL,
+					(_cLAlphaHighLift.get(MethodEnum.SEMIEMPIRICAL)
 						.to(NonSI.DEGREE_ANGLE.inverse())
 								.getEstimatedValue()
-					* _alphaStarHighLift.get(MethodEnum.SEMPIEMPIRICAL)
+					* _alphaStarHighLift.get(MethodEnum.SEMIEMPIRICAL)
 						.doubleValue(NonSI.DEGREE_ANGLE))
-					+ _cLZeroHighLift.get(MethodEnum.SEMPIEMPIRICAL)
+					+ _cLZeroHighLift.get(MethodEnum.SEMIEMPIRICAL)
 					);
 			
 		}
@@ -3050,14 +3196,14 @@ public class LSAerodynamicsManager {
 				Amount<Length> altitude
 				) {
 			
-			if((_deltaCL0Flap.get(MethodEnum.SEMPIEMPIRICAL) == null) ||
-			   (_deltaCLmaxFlap.get(MethodEnum.SEMPIEMPIRICAL) == null) ||
-			   (_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL) == null)
+			if((_deltaCL0Flap.get(MethodEnum.SEMIEMPIRICAL) == null) ||
+			   (_deltaCLmaxFlap.get(MethodEnum.SEMIEMPIRICAL) == null) ||
+			   (_cLAlphaHighLift.get(MethodEnum.SEMIEMPIRICAL) == null)
 					) {
 				
 				_alphaArrayPlotHighLift = MyArrayUtils.linspaceDouble(
-						_alphaZeroLiftHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
-						_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+						_alphaZeroLiftHighLift.get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
+						_alphaStallHighLift.get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
 						_numberOfAlphasPlot
 						);
 				
@@ -3073,11 +3219,11 @@ public class LSAerodynamicsManager {
 			_liftCoefficient3DCurveHighLift.put(
 					MethodEnum.EMPIRICAL,
 					LiftCalc.calculateCLvsAlphaArray(
-							_cLZeroHighLift.get(MethodEnum.SEMPIEMPIRICAL),
-							_cLMaxHighLift.get(MethodEnum.SEMPIEMPIRICAL),
-							_alphaStarHighLift.get(MethodEnum.SEMPIEMPIRICAL),
-							_alphaStallHighLift.get(MethodEnum.SEMPIEMPIRICAL),
-							_cLAlphaHighLift.get(MethodEnum.SEMPIEMPIRICAL),
+							_cLZeroHighLift.get(MethodEnum.SEMIEMPIRICAL),
+							_cLMaxHighLift.get(MethodEnum.SEMIEMPIRICAL),
+							_alphaStarHighLift.get(MethodEnum.SEMIEMPIRICAL),
+							_alphaStallHighLift.get(MethodEnum.SEMIEMPIRICAL),
+							_cLAlphaHighLift.get(MethodEnum.SEMIEMPIRICAL),
 							_alphaArrayPlotHighLift
 							)
 					);			
@@ -3104,7 +3250,7 @@ public class LSAerodynamicsManager {
 			double cLActual = 0.0;
 			
 			if ((_alphaArrayPlotHighLift == null) 
-					&& (_liftCoefficient3DCurveHighLift.get(MethodEnum.SEMPIEMPIRICAL) == null)) {
+					&& (_liftCoefficient3DCurveHighLift.get(MethodEnum.SEMIEMPIRICAL) == null)) {
 				
 				CalcHighLiftCurve theHighLiftCurveCalculator = new CalcHighLiftCurve();
 				theHighLiftCurveCalculator.semiempirical(flapDeflection, slatDeflection, mach, altitude);
@@ -3113,11 +3259,11 @@ public class LSAerodynamicsManager {
 			cLActual = MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(_alphaArrayPlotHighLift),
 					MyArrayUtils.convertToDoublePrimitive(_liftCoefficient3DCurveHighLift
-							.get(MethodEnum.SEMPIEMPIRICAL)),
+							.get(MethodEnum.SEMIEMPIRICAL)),
 					alpha.doubleValue(NonSI.DEGREE_ANGLE)
 					);
 			
-			_cLAtAlphaHighLift.put(MethodEnum.SEMPIEMPIRICAL, cLActual);
+			_cLAtAlphaHighLift.put(MethodEnum.SEMIEMPIRICAL, cLActual);
 			
 			return cLActual;
 		}
@@ -3141,7 +3287,7 @@ public class LSAerodynamicsManager {
 			
 			double cDActual = 0.0;
 			
-			if (_deltaCD0.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+			if (_deltaCD0.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = new CalcHighLiftDevicesEffects();
 				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection, mach);
 			}
@@ -3149,9 +3295,9 @@ public class LSAerodynamicsManager {
 			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
 			double cDActualClean = calcCDAtAlpha.fromCdDistribution(alpha, mach, altitude);
 
-			cDActual = cDActualClean + _deltaCD0.get(MethodEnum.SEMPIEMPIRICAL);
+			cDActual = cDActualClean + _deltaCD0.get(MethodEnum.SEMIEMPIRICAL);
 			
-			_cDAtAlphaHighLift.put(MethodEnum.SEMPIEMPIRICAL, cDActual);
+			_cDAtAlphaHighLift.put(MethodEnum.SEMIEMPIRICAL, cDActual);
 			
 			return cDActual;
 			
@@ -3176,7 +3322,7 @@ public class LSAerodynamicsManager {
 
 			double cMActual = 0.0;
 			
-			if (_deltaCMc4.get(MethodEnum.SEMPIEMPIRICAL) == null) {
+			if (_deltaCMc4.get(MethodEnum.SEMIEMPIRICAL) == null) {
 				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = new CalcHighLiftDevicesEffects();
 				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection, mach);
 			}
@@ -3184,9 +3330,9 @@ public class LSAerodynamicsManager {
 			CalcCMAtAlpha calcCMAtAlpha = new CalcCMAtAlpha();
 			double cMActualClean = calcCMAtAlpha.fromAirfoilDistribution(alpha);
 
-			cMActual = cMActualClean + _deltaCMc4.get(MethodEnum.SEMPIEMPIRICAL);
+			cMActual = cMActualClean + _deltaCMc4.get(MethodEnum.SEMIEMPIRICAL);
 			
-			_cMAtAlphaHighLift.put(MethodEnum.SEMPIEMPIRICAL, cMActual);
+			_cMAtAlphaHighLift.put(MethodEnum.SEMIEMPIRICAL, cMActual);
 
 			return 0.0;
 		}

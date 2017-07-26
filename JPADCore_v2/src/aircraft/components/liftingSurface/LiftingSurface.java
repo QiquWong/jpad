@@ -747,10 +747,14 @@ public class LiftingSurface implements ILiftingSurface {
 		_zCG = Amount.valueOf(0., SI.METER);
 
 		@SuppressWarnings("unused")
-		Double lambda = _liftingSurfaceCreator.getEquivalentWing().getTaperRatio(),
-				span = getSpan().getEstimatedValue(),
-				xRearSpar = _liftingSurfaceCreator.getSecondarySparNonDimensionalPosition(),
-				xFrontSpar = _liftingSurfaceCreator.getMainSparNonDimensionalPosition();
+		Double lambda = 0.0;
+		if(type.equals(ComponentEnum.WING))
+			lambda = _liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getTaperRatio();
+		else
+			lambda = _liftingSurfaceCreator.getPanels().get(0).getTaperRatio();
+		Double span = getSpan().getEstimatedValue();
+		Double xRearSpar = _liftingSurfaceCreator.getSecondarySparNonDimensionalPosition();
+		Double xFrontSpar = _liftingSurfaceCreator.getMainSparNonDimensionalPosition();
 
 		switch (type) {
 		case WING : {

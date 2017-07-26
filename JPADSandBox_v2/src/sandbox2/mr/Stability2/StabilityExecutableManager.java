@@ -3363,14 +3363,14 @@ public class StabilityExecutableManager {
 					_anglesOfElevatorDeflection.get(i));
 
 			
-			if( _horizontalTailCL==MethodEnum.SEMPIEMPIRICAL){
+			if( _horizontalTailCL==MethodEnum.SEMIEMPIRICAL){
 				
 				if ( _tauInput == MethodEnum.INPUT){
 					_tauElevator.put(_anglesOfElevatorDeflection.get(i),
 							_tauIndex);
 				}
 				
-				if( _tauInput ==  MethodEnum.SEMPIEMPIRICAL){
+				if( _tauInput ==  MethodEnum.SEMIEMPIRICAL){
 				_tauElevator.put(_anglesOfElevatorDeflection.get(i),
 						LiftCalc.calculateTauIndexElevator(
 								_elevatorCfC, 
@@ -3484,7 +3484,7 @@ public class StabilityExecutableManager {
 							));
 		}
 			
-			if(_horizontalTailCL == MethodEnum.SEMPIEMPIRICAL) {
+			if(_horizontalTailCL == MethodEnum.SEMIEMPIRICAL) {
 			//------------------------------------------------------
 			// CL ZERO HIGH LIFT
 			_hTailCLZeroElevator.put(
@@ -3576,7 +3576,7 @@ public class StabilityExecutableManager {
 					- 0.0374    // NANDO CORRECTION
 					); 
 		}
-			if(_horizontalTailCL == MethodEnum.SEMPIEMPIRICAL){
+			if(_horizontalTailCL == MethodEnum.SEMIEMPIRICAL){
 				_tauElevatorArray.put(_deltaEAnglesArray.get(i),
 						LiftCalc.calculateTauIndexElevator(
 								_elevatorCfC, 
@@ -4764,7 +4764,7 @@ public class StabilityExecutableManager {
 						
 			}
 			
-			if(_tauInput == MethodEnum.SEMPIEMPIRICAL){
+			if(_tauInput == MethodEnum.SEMIEMPIRICAL){
 			tauActual = 
 					LiftCalc.calculateTauIndexElevator(
 							_elevatorCfC, 

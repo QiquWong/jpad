@@ -36,7 +36,6 @@ import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.CenterOfGravity;
-import standaloneutils.customdata.MyArray;
 
 /**
  * Manage the calculations for estimating the aircraft balance.

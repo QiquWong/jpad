@@ -4017,7 +4017,7 @@ public class StabilityExecutableManager {
 					);
 			}
 			
-			if( _horizontalTailCL==MethodEnum.SEMPIEMPIRICAL){
+			if( _horizontalTailCL==MethodEnum.SEMIEMPIRICAL){
 				_tauElevator.put(_anglesOfElevatorDeflection.get(i),
 						LiftCalc.calculateTauIndexElevator(
 								_elevatorCfC, 
@@ -4130,7 +4130,7 @@ public class StabilityExecutableManager {
 							));
 		}
 			
-			if(_horizontalTailCL == MethodEnum.SEMPIEMPIRICAL) {
+			if(_horizontalTailCL == MethodEnum.SEMIEMPIRICAL) {
 			//------------------------------------------------------
 			// CL ZERO HIGH LIFT
 			_hTailCLZeroElevator.put(
@@ -4222,7 +4222,7 @@ public class StabilityExecutableManager {
 					- 0.0374    // NANDO CORRECTION
 					); 
 		}
-			if(_horizontalTailCL == MethodEnum.SEMPIEMPIRICAL){
+			if(_horizontalTailCL == MethodEnum.SEMIEMPIRICAL){
 				_tauElevatorArray.put(_deltaEAnglesArray.get(i),
 						LiftCalc.calculateTauIndexElevator(
 								_elevatorCfC, 
@@ -4500,7 +4500,7 @@ public class StabilityExecutableManager {
 
 				}
 
-				if(this._deltaDueToFlapMethod==MethodEnum.SEMPIEMPIRICAL){
+				if(this._deltaDueToFlapMethod==MethodEnum.SEMIEMPIRICAL){
 					// delta CD0
 
 				

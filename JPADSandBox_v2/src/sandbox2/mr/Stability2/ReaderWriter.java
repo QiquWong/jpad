@@ -556,7 +556,7 @@ public class ReaderWriter{
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@deltaDueToFlap");
 		if(deltaDueToFlaplMethod.equalsIgnoreCase("SEMIEMPIRICAL"))
-			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.SEMPIEMPIRICAL);
+			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.SEMIEMPIRICAL);
 		if(deltaDueToFlaplMethod.equalsIgnoreCase("INPUT_CURVE"))
 			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.AIRFOIL_INPUT);
 		
@@ -589,7 +589,7 @@ public class ReaderWriter{
 		if(horizontalTailLiftMethod.equalsIgnoreCase("CFD_CORRECTION"))
 			theStabilityCalculator.set_horizontalWingCL(MethodEnum.FROM_CFD);
 		if(horizontalTailLiftMethod.equalsIgnoreCase("SEMIEMPIRICAL"))
-			theStabilityCalculator.set_horizontalWingCL(MethodEnum.SEMPIEMPIRICAL);
+			theStabilityCalculator.set_horizontalWingCL(MethodEnum.SEMIEMPIRICAL);
 		
 		
 		//------------------LIFT AND MOMENT CURVE 3D
@@ -610,7 +610,7 @@ public class ReaderWriter{
 			theStabilityCalculator.set_tauIndex(Double.valueOf(reader.getXMLPropertyByPath("//operating_conditions/tau_index")));
 		}
 		if(tauInput.equalsIgnoreCase("SEMIEMPIRICAL"))
-			theStabilityCalculator.setTauInput(MethodEnum.SEMPIEMPIRICAL);
+			theStabilityCalculator.setTauInput(MethodEnum.SEMIEMPIRICAL);
 
 		
 		//--------INPUT 3D VALUES

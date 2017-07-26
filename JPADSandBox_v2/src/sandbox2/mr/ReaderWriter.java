@@ -588,7 +588,7 @@ public class ReaderWriter{
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@deltaDueToFlap");
 		if(deltaDueToFlaplMethod.equalsIgnoreCase("SEMIEMPIRICAL"))
-			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.SEMPIEMPIRICAL);
+			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.SEMIEMPIRICAL);
 		if(deltaDueToFlaplMethod.equalsIgnoreCase("INPUT_CURVE"))
 			theStabilityCalculator.setDeltaDueToFlapMethod(MethodEnum.AIRFOIL_INPUT);
 		
@@ -621,7 +621,7 @@ public class ReaderWriter{
 		if(horizontalTailLiftMethod.equalsIgnoreCase("CFD_CORRECTION"))
 			theStabilityCalculator.set_horizontalWingCL(MethodEnum.FROM_CFD);
 		if(horizontalTailLiftMethod.equalsIgnoreCase("SEMIEMPIRICAL"))
-			theStabilityCalculator.set_horizontalWingCL(MethodEnum.SEMPIEMPIRICAL);
+			theStabilityCalculator.set_horizontalWingCL(MethodEnum.SEMIEMPIRICAL);
 		
 		//---------------------------------------------------------------------------------
 		// PLOT:

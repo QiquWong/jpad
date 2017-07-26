@@ -18,6 +18,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="IRON analysis">
+	<!--
         <weights 
             file="analysis_weights_IRON.xml" 
 			plot="TRUE"
@@ -29,8 +30,9 @@
 			method_landing_gears=""
 			method_systems=""
             />
+	-->
 		<!-- method_XXX="AVERAGED" if empty string -->
-    <!--		
+	<!--
     <balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
@@ -41,19 +43,17 @@
 			method_canard=""
 		/>
 	-->
-	<!--
 	<aerodynamic_and_stability 
 			plot="TRUE"
 			take_off_condition="TRUE"
-			file_take_off_condition="analysis_aerodynamics_TakeOff.xml"
+			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
 			climb_condition="TRUE"
-			file_climb_condition="analysis_aerodynamics_Climb.xml"
+			file_climb_condition="analysis_aerodynamics_Prototype.xml"
 			cruise_condition="FALSE"
-			file_cruise_condition="analysis_aerodynamics_Cruise.xml"
+			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
 			landing_condition="FALSE"
-			file_landing_condition="analysis_aerodynamics_Landing.xml"
+			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
-	-->
 	<!--
 	<performance 
 			file="analysis_performance_IRON.xml"

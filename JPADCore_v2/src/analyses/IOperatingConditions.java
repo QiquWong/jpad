@@ -43,6 +43,18 @@ public interface IOperatingConditions {
 	public Amount<Angle> getAlphaCurrentLanding();
 	public void setAlphaCurrentLanding(Amount<Angle> _alphaCurrentLanding);
 	
+	public Amount<Angle> getBetaCurrentClimb();
+	public void setBetaCurrentClimb(Amount<Angle> _betaCurrentClimb);
+	
+	public Amount<Angle> getBetaCurrentCruise();
+	public void setBetaCurrentCruise(Amount<Angle> _betaCurrentCruise);
+	
+	public Amount<Angle> getBetaCurrentTakeOff();
+	public void setBetaCurrentTakeOff(Amount<Angle> _betaCurrentTakeOff);
+	
+	public Amount<Angle> getBetaCurrentLanding();
+	public void setBetaCurrentLanding(Amount<Angle> _betaCurrentLanding);
+	
 	public String getId();
 	public void setId(String id);
 	
