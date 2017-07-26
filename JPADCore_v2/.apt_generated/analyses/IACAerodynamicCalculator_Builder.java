@@ -50,6 +50,7 @@ abstract class IACAerodynamicCalculator_Builder {
     THE_AIRCRAFT("theAircraft"),
     THE_OPERATING_CONDITIONS("theOperatingConditions"),
     CURRENT_CONDITION("currentCondition"),
+    ID("id"),
     ZCG_LANDING_GEAR("ZCGLandingGear"),
     LANDING_GEAR_DRAG_COEFFICIENT("landingGearDragCoefficient"),
     ALPHA_BODY_INITIAL("alphaBodyInitial"),
@@ -92,6 +93,7 @@ abstract class IACAerodynamicCalculator_Builder {
   private final LinkedHashMap<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>>
       componentTaskList = new LinkedHashMap<>();
   private final ArrayList<AerodynamicAndStabilityPlotEnum> plotList = new ArrayList<>();
+  private String id;
   private final ArrayList<Double> XCGAircraft = new ArrayList<>();
   private final ArrayList<Double> ZCGAircraft = new ArrayList<>();
   private Amount<Length> ZCGLandingGear;
@@ -403,6 +405,42 @@ abstract class IACAerodynamicCalculator_Builder {
    */
   public List<AerodynamicAndStabilityPlotEnum> getPlotList() {
     return Collections.unmodifiableList(plotList);
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getId()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code id} is null
+   */
+  public IACAerodynamicCalculator.Builder setId(String id) {
+    this.id = Preconditions.checkNotNull(id);
+    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.ID);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getId()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapId(UnaryOperator<String> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setId(mapper.apply(getId()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getId()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public String getId() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ID), "id not set");
+    return id;
   }
 
   /**
@@ -1846,6 +1884,10 @@ abstract class IACAerodynamicCalculator_Builder {
     }
     putAllComponentTaskList(value.getComponentTaskList());
     addAllPlotList(value.getPlotList());
+    if (_defaults._unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ID)
+        || !value.getId().equals(_defaults.getId())) {
+      setId(value.getId());
+    }
     addAllXCGAircraft(value.getXCGAircraft());
     addAllZCGAircraft(value.getZCGAircraft());
     if (_defaults._unsetProperties.contains(
@@ -2004,6 +2046,11 @@ abstract class IACAerodynamicCalculator_Builder {
     }
     putAllComponentTaskList(((IACAerodynamicCalculator_Builder) template).componentTaskList);
     addAllPlotList(((IACAerodynamicCalculator_Builder) template).plotList);
+    if (!base._unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ID)
+        && (_defaults._unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ID)
+            || !template.getId().equals(_defaults.getId()))) {
+      setId(template.getId());
+    }
     addAllXCGAircraft(((IACAerodynamicCalculator_Builder) template).XCGAircraft);
     addAllZCGAircraft(((IACAerodynamicCalculator_Builder) template).ZCGAircraft);
     if (!base._unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ZCG_LANDING_GEAR)
@@ -2184,6 +2231,7 @@ abstract class IACAerodynamicCalculator_Builder {
     currentCondition = _defaults.currentCondition;
     componentTaskList.clear();
     plotList.clear();
+    id = _defaults.id;
     XCGAircraft.clear();
     ZCGAircraft.clear();
     ZCGLandingGear = _defaults.ZCGLandingGear;
@@ -2249,6 +2297,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>>
         componentTaskList;
     private final List<AerodynamicAndStabilityPlotEnum> plotList;
+    private final String id;
     private final List<Double> XCGAircraft;
     private final List<Double> ZCGAircraft;
     private final Amount<Length> ZCGLandingGear;
@@ -2285,6 +2334,7 @@ abstract class IACAerodynamicCalculator_Builder {
       this.currentCondition = builder.currentCondition;
       this.componentTaskList = ImmutableMap.copyOf(builder.componentTaskList);
       this.plotList = ImmutableList.copyOf(builder.plotList);
+      this.id = builder.id;
       this.XCGAircraft = ImmutableList.copyOf(builder.XCGAircraft);
       this.ZCGAircraft = ImmutableList.copyOf(builder.ZCGAircraft);
       this.ZCGLandingGear = builder.ZCGLandingGear;
@@ -2341,6 +2391,11 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public List<AerodynamicAndStabilityPlotEnum> getPlotList() {
       return plotList;
+    }
+
+    @Override
+    public String getId() {
+      return id;
     }
 
     @Override
@@ -2499,6 +2554,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(currentCondition, other.currentCondition)
           && Objects.equals(componentTaskList, other.componentTaskList)
           && Objects.equals(plotList, other.plotList)
+          && Objects.equals(id, other.id)
           && Objects.equals(XCGAircraft, other.XCGAircraft)
           && Objects.equals(ZCGAircraft, other.ZCGAircraft)
           && Objects.equals(ZCGLandingGear, other.ZCGLandingGear)
@@ -2540,6 +2596,7 @@ abstract class IACAerodynamicCalculator_Builder {
           currentCondition,
           componentTaskList,
           plotList,
+          id,
           XCGAircraft,
           ZCGAircraft,
           ZCGLandingGear,
@@ -2588,6 +2645,9 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "plotList="
           + plotList
+          + ", "
+          + "id="
+          + id
           + ", "
           + "XCGAircraft="
           + XCGAircraft
@@ -2686,6 +2746,7 @@ abstract class IACAerodynamicCalculator_Builder {
     private final Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>>
         componentTaskList;
     private final List<AerodynamicAndStabilityPlotEnum> plotList;
+    private final String id;
     private final List<Double> XCGAircraft;
     private final List<Double> ZCGAircraft;
     private final Amount<Length> ZCGLandingGear;
@@ -2723,6 +2784,7 @@ abstract class IACAerodynamicCalculator_Builder {
       this.currentCondition = builder.currentCondition;
       this.componentTaskList = ImmutableMap.copyOf(builder.componentTaskList);
       this.plotList = ImmutableList.copyOf(builder.plotList);
+      this.id = builder.id;
       this.XCGAircraft = ImmutableList.copyOf(builder.XCGAircraft);
       this.ZCGAircraft = ImmutableList.copyOf(builder.ZCGAircraft);
       this.ZCGLandingGear = builder.ZCGLandingGear;
@@ -2790,6 +2852,14 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public List<AerodynamicAndStabilityPlotEnum> getPlotList() {
       return plotList;
+    }
+
+    @Override
+    public String getId() {
+      if (_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ID)) {
+        throw new UnsupportedOperationException("id not set");
+      }
+      return id;
     }
 
     @Override
@@ -3029,6 +3099,7 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(currentCondition, other.currentCondition)
           && Objects.equals(componentTaskList, other.componentTaskList)
           && Objects.equals(plotList, other.plotList)
+          && Objects.equals(id, other.id)
           && Objects.equals(XCGAircraft, other.XCGAircraft)
           && Objects.equals(ZCGAircraft, other.ZCGAircraft)
           && Objects.equals(ZCGLandingGear, other.ZCGLandingGear)
@@ -3071,6 +3142,7 @@ abstract class IACAerodynamicCalculator_Builder {
           currentCondition,
           componentTaskList,
           plotList,
+          id,
           XCGAircraft,
           ZCGAircraft,
           ZCGLandingGear,
@@ -3120,6 +3192,9 @@ abstract class IACAerodynamicCalculator_Builder {
                   : null),
               "componentTaskList=" + componentTaskList,
               "plotList=" + plotList,
+              (!_unsetProperties.contains(IACAerodynamicCalculator_Builder.Property.ID)
+                  ? "id=" + id
+                  : null),
               "XCGAircraft=" + XCGAircraft,
               "ZCGAircraft=" + ZCGAircraft,
               (!_unsetProperties.contains(

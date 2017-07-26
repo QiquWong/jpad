@@ -1,6 +1,7 @@
 package analyses;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,12 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.components.Aircraft;
@@ -61,12 +67,17 @@ import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
+import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.Tuple3;
+import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyXLSUtils;
+import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
 /**
@@ -4006,6 +4017,7 @@ public class ACAerodynamicCalculator {
 
 	}
 
+	@SuppressWarnings("resource")
 	public static ACAerodynamicCalculator importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
@@ -4013,15 +4025,494 @@ public class ACAerodynamicCalculator {
 			ConditionEnum theCondition
 			) throws IOException {
 
-		// TODO : FILL ME !!
+		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
-		// NB remember to set the current condition
+		System.out.println("Reading aerodynamic ansd stability analysis data ...");
 
-		//		ACAerodynamicCalculator theAerodynamicAndStabilityManager = new _theAerodynamicBuilderInterface()
-		//				.currentCondition(theCondition)
-		//				.build();
+		String id = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@id");
 
-		return null;
+		Boolean readBalanceFromXLSFlag;
+		
+		String readBalanceFromXLSString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@balance_from_xls_file");
+		
+		if(readBalanceFromXLSString.equalsIgnoreCase("true"))
+			readBalanceFromXLSFlag = Boolean.TRUE;
+		else
+			readBalanceFromXLSFlag = Boolean.FALSE;
+		
+		String fileBalanceXLS = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@file_balance");
+		
+		//===============================================================
+		// READING BALANCE DATA
+		//===============================================================
+		List<Double> xCGAdimensionalPositions = new ArrayList<>();
+		List<Double> zCGAdimensionalPositions = new ArrayList<>();
+		Amount<Length> zCGLandingGears = null;
+		
+		/********************************************************************************************
+		 * If the boolean flag is true, the method reads from the xls file and ignores the assigned
+		 * data inside the xlm file.
+		 * Otherwise it ignores the xls file and reads the input data from the xml.
+		 */
+		if(readBalanceFromXLSFlag == Boolean.TRUE) {
+
+			File balanceFile = new File(
+					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
+					+ theAircraft.getId() 
+					+ File.separator
+					+ "WEIGHTS"
+					+ File.separator
+					+ fileBalanceXLS);
+			if(balanceFile.exists()) {
+
+				FileInputStream readerXLS = new FileInputStream(balanceFile);
+				Workbook workbook;
+				if (balanceFile.getAbsolutePath().endsWith(".xls")) {
+					workbook = new HSSFWorkbook(readerXLS);
+				}
+				else if (balanceFile.getAbsolutePath().endsWith(".xlsx")) {
+					workbook = new XSSFWorkbook(readerXLS);
+				}
+				else {
+					throw new IllegalArgumentException("I don't know how to create that kind of new file");
+				}
+
+				//---------------------------------------------------------------
+				// XCG POSITIONS
+				Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "GLOBAL RESULTS");
+				Double xCGAtMaxTakeOffWeight = 0.0;
+				Double xCGMaxForward = 0.0;
+				Double xCGMaxAfterward = 0.0;
+				
+				if(sheetGlobalData != null) {
+					//...............................................................
+					// Xcg AT MAX TAKE-OFF WEIGHT
+					Cell xCGAtMaxTakeOffWeightCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Xcg maximum take-off mass MAC").get(0)).getCell(2);
+					if(xCGAtMaxTakeOffWeightCell != null)
+						xCGAtMaxTakeOffWeight = xCGAtMaxTakeOffWeightCell.getNumericCellValue()/100;
+					//...............................................................
+					// MAX FORWARD Xcg
+					Cell xCGMaxForwardCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Max forward Xcg MAC").get(0)).getCell(2);
+					if(xCGMaxForwardCell != null)
+						xCGMaxForward = xCGMaxForwardCell.getNumericCellValue()/100;
+					//...............................................................
+					// MAX AFTERWARD Xcg
+					Cell xCGMaxAfterwardCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Max aft Xcg MAC").get(0)).getCell(2);
+					if(xCGMaxAfterwardCell != null)
+						xCGMaxAfterward = xCGMaxAfterwardCell.getNumericCellValue()/100;
+				}
+				
+				xCGAdimensionalPositions.add(xCGMaxForward);
+				xCGAdimensionalPositions.add(xCGAtMaxTakeOffWeight);
+				xCGAdimensionalPositions.add(xCGMaxAfterward);
+				
+				//---------------------------------------------------------------
+				// ZCG POSITIONS
+				Double zCGAtMaxTakeOffWeight = 0.0;
+				
+				if(sheetGlobalData != null) {
+					//...............................................................
+					// Zcg AT MAX TAKE-OFF WEIGHT
+					Cell zCGAtMaxTakeOffWeightCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Zcg maximum take-off mass MAC").get(0)).getCell(2);
+					if(zCGAtMaxTakeOffWeightCell != null)
+						zCGAtMaxTakeOffWeight = zCGAtMaxTakeOffWeightCell.getNumericCellValue()/100;
+				}
+				
+				zCGAdimensionalPositions.add(zCGAtMaxTakeOffWeight);
+				zCGAdimensionalPositions.add(zCGAtMaxTakeOffWeight);
+				zCGAdimensionalPositions.add(zCGAtMaxTakeOffWeight);
+				
+				//---------------------------------------------------------------
+				// ZCG POSITIONS LANDING GEAR
+				Sheet sheetLandingGear = MyXLSUtils.findSheet(workbook, "LANDING GEARS");
+				
+				if(sheetLandingGear != null) {
+					//...............................................................
+					// Zcg LANDING GEAR
+					Cell zCGLandingGearCell = sheetLandingGear.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Zcg BRF").get(0)).getCell(2);
+					if(zCGLandingGearCell != null)
+						zCGLandingGears = Amount.valueOf(zCGLandingGearCell.getNumericCellValue(), SI.METER);
+				}
+			}
+			else {
+				System.err.println("FILE '" + balanceFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
+				return null;
+			}
+		}
+		else {
+		
+			//---------------------------------------------------------------
+			// XCG POSITIONS
+			String xCGAdimensionalPositionsProperty = reader.getXMLPropertyByPath("//balance/adimensional_center_of_gravity_x_position_list");
+			if(xCGAdimensionalPositionsProperty != null)
+				xCGAdimensionalPositions = reader.readArrayDoubleFromXML("//balance/adimensional_center_of_gravity_x_position_list");
+			
+			//---------------------------------------------------------------
+			// ZCG POSITIONS
+			String zCGAdimensionalPositionsProperty = reader.getXMLPropertyByPath("//balance/adimensional_center_of_gravity_z_position_list");
+			if(zCGAdimensionalPositionsProperty != null)
+				zCGAdimensionalPositions = reader.readArrayDoubleFromXML("//balance/adimensional_center_of_gravity_z_position_list");
+			
+			//---------------------------------------------------------------
+			// ZCG POSITIONS LANDING GEAR
+			String zCGLandingGearsProperty = reader.getXMLPropertyByPath("//balance/rear_landing_gear_dimensional_center_of_gravity_z_position");
+			if(zCGLandingGearsProperty != null)
+				zCGLandingGears = reader.getXMLAmountLengthByPath("//balance/rear_landing_gear_dimensional_center_of_gravity_z_position");
+		}
+		
+		//===============================================================
+		// READING GLOBAL DATA
+		//===============================================================
+		Amount<Angle> alphaBodyInitial = null;
+		Amount<Angle> alphaBodyFinal = null;
+		Integer numberOfAlphaBody = null;
+		Amount<Angle> betaInitial = null;
+		Amount<Angle> betaFinal = null;
+		Integer numberOfBeta = null;
+		List<Amount<Angle>> alphaWingArrayForDistributions = new ArrayList<>();
+		List<Amount<Angle>> alphaHorizontalTailArrayForDistributions = new ArrayList<>();
+		List<Amount<Angle>> betaVerticalTailArrayForDistributions = new ArrayList<>();
+		Integer numberOfPointsSemispanwiseWing = null;
+		Integer numberOfPointsSemispanwiseHTail = null;
+		Integer numberOfPointsSemispanwiseVTail = null;
+		List<Amount<Angle>> deltaElevatorList = new ArrayList<>();
+		List<Amount<Angle>> deltaRudderList = new ArrayList<>();
+		Double adimensionalWingMomentumPole = null;
+		Double adimensionalHTailMomentumPole = null;
+		Double adimensionalVTailMomentumPole = null;
+		Double adimensionalFuselageMomentumPole = null;
+		Double horizontalTailDynamicPressureRatio = null;
+		
+		MyInterpolatingFunction tauElevator = new MyInterpolatingFunction();
+		List<Double> tauElevatorFunction = new ArrayList<>();
+		List<Amount<Angle>> tauElevatorFunctionDeltaElevator = new ArrayList<>();
+		
+		MyInterpolatingFunction tauRudder = new MyInterpolatingFunction();
+		List<Double> tauRudderFunction = new ArrayList<>();
+		List<Amount<Angle>> tauRudderFunctionDeltaRudder = new ArrayList<>();
+		
+		//---------------------------------------------------------------
+		// ALPHA BODY INITIAL
+		String alphaBodyInitialProperty = reader.getXMLPropertyByPath("//global_data/alpha_body_initial");
+		if(alphaBodyInitialProperty != null)
+			alphaBodyInitial = reader.getXMLAmountAngleByPath("//global_data/alpha_body_initial");
+		
+		//---------------------------------------------------------------
+		// ALPHA BODY FINAL
+		String alphaBodyFinalProperty = reader.getXMLPropertyByPath("//global_data/alpha_body_final");
+		if(alphaBodyFinalProperty != null)
+			alphaBodyFinal = reader.getXMLAmountAngleByPath("//global_data/alpha_body_final");
+		
+		//---------------------------------------------------------------
+		// NUMBER OF ALPHA BODY
+		String numberOfAlphaBodyProperty = reader.getXMLPropertyByPath("//global_data/number_of_alpha_body");
+		if(numberOfAlphaBodyProperty != null)
+			numberOfAlphaBody = Integer.valueOf(numberOfAlphaBodyProperty);
+		
+		//---------------------------------------------------------------
+		// BETA INITIAL
+		String betaInitialProperty = reader.getXMLPropertyByPath("//global_data/beta_initial");
+		if(betaInitialProperty != null)
+			betaInitial = reader.getXMLAmountAngleByPath("//global_data/beta_initial");
+		
+		//---------------------------------------------------------------
+		// BETA FINAL
+		String betaFinalProperty = reader.getXMLPropertyByPath("//global_data/beta_final");
+		if(betaFinalProperty != null)
+			betaFinal = reader.getXMLAmountAngleByPath("//global_data/beta_final");
+		
+		//---------------------------------------------------------------
+		// NUMBER OF BETA 
+		String numberOfBetaProperty = reader.getXMLPropertyByPath("//global_data/number_of_beta");
+		if(numberOfBetaProperty != null)
+			numberOfBeta = Integer.valueOf(numberOfBetaProperty);
+		
+		//---------------------------------------------------------------
+		// ALPHA WING FOR DISTRIBUTION
+		String alphaWingArrayForDistributionsProperty = reader.getXMLPropertyByPath("//global_data/alpha_wing_array_for_distributions");
+		if(alphaWingArrayForDistributionsProperty != null)
+			alphaWingArrayForDistributions = reader.readArrayofAmountFromXML("//global_data/alpha_wing_array_for_distributions");
+		
+		//---------------------------------------------------------------
+		// ALPHA HORIZONTAL TAIL FOR DISTRIBUTION
+		String alphaHorizontalTailArrayForDistributionsProperty = reader.getXMLPropertyByPath("//global_data/alpha_horizontal_tail_array_for_distributions");
+		if(alphaHorizontalTailArrayForDistributionsProperty != null)
+			alphaHorizontalTailArrayForDistributions = reader.readArrayofAmountFromXML("//global_data/alpha_horizontal_tail_array_for_distributions");
+		
+		//---------------------------------------------------------------
+		// BETA VERTICAL TAIL FOR DISTRIBUTION
+		String betaVerticalTailArrayForDistributionsProperty = reader.getXMLPropertyByPath("//global_data/beta_vertical_tail_array_for_distributions");
+		if(betaVerticalTailArrayForDistributionsProperty != null)
+			betaVerticalTailArrayForDistributions = reader.readArrayofAmountFromXML("//global_data/beta_vertical_tail_array_for_distributions");
+		
+		//---------------------------------------------------------------
+		// NUMBER OF POINTS SEMISPANWISE WING
+		String numberOfPointsSemispanwiseWingProperty = reader.getXMLPropertyByPath("//global_data/number_of_points_semispawise_wing");
+		if(numberOfPointsSemispanwiseWingProperty != null)
+			numberOfPointsSemispanwiseWing = Integer.valueOf(numberOfPointsSemispanwiseWingProperty);
+		
+		//---------------------------------------------------------------
+		// NUMBER OF POINTS SEMISPANWISE HTAIL
+		String numberOfPointsSemispanwiseHTailProperty = reader.getXMLPropertyByPath("//global_data/number_of_points_semispawise_horizontal_tail");
+		if(numberOfPointsSemispanwiseHTailProperty != null)
+			numberOfPointsSemispanwiseHTail = Integer.valueOf(numberOfPointsSemispanwiseHTailProperty);
+		
+		//---------------------------------------------------------------
+		// NUMBER OF POINTS SEMISPANWISE VTAIL
+		String numberOfPointsSemispanwiseVTailProperty = reader.getXMLPropertyByPath("//global_data/number_of_points_semispawise_vertical_tail");
+		if(numberOfPointsSemispanwiseVTailProperty != null)
+			numberOfPointsSemispanwiseVTail = Integer.valueOf(numberOfPointsSemispanwiseVTailProperty);
+		
+		//---------------------------------------------------------------
+		// DELTA ELEVATOR LIST
+		String deltaElevatorListProperty = reader.getXMLPropertyByPath("//global_data/delta_elevator_array");
+		if(deltaElevatorListProperty != null)
+			deltaElevatorList = reader.readArrayofAmountFromXML("//global_data/delta_elevator_array");
+		
+		//---------------------------------------------------------------
+		// DELTA RUDDER LIST
+		String deltaRudderListProperty = reader.getXMLPropertyByPath("//global_data/delta_rudder_array");
+		if(deltaRudderListProperty != null)
+			deltaRudderList = reader.readArrayofAmountFromXML("//global_data/delta_rudder_array");
+		
+		//---------------------------------------------------------------
+		// WING MOMENTUM POLE
+		String adimensionalWingMomentumPoleProperty = reader.getXMLPropertyByPath("//global_data/adimensional_wing_momentum_pole");
+		if(adimensionalWingMomentumPoleProperty != null)
+			adimensionalWingMomentumPole = Double.valueOf(adimensionalWingMomentumPoleProperty);
+		
+		Amount<Length> wingMomentumPole =
+				Amount.valueOf(
+						adimensionalWingMomentumPole
+						* theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)
+						+ theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
+						SI.METER
+						);
+ 		
+		//---------------------------------------------------------------
+		// HTAIL MOMENTUM POLE
+		String adimensionalHTailMomentumPoleProperty = reader.getXMLPropertyByPath("//global_data/adimensional_horizontal_tail_momentum_pole");
+		if(adimensionalHTailMomentumPoleProperty != null)
+			adimensionalHTailMomentumPole = Double.valueOf(adimensionalHTailMomentumPoleProperty);
+		
+		Amount<Length> hTailMomentumPole =
+				Amount.valueOf(
+						adimensionalHTailMomentumPole
+						* theAircraft.getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)
+						+ theAircraft.getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
+						SI.METER
+						);
+		
+		//---------------------------------------------------------------
+		// VTAIL MOMENTUM POLE
+		String adimensionalVTailMomentumPoleProperty = reader.getXMLPropertyByPath("//global_data/adimensional_vertical_tail_momentum_pole");
+		if(adimensionalVTailMomentumPoleProperty != null)
+			adimensionalVTailMomentumPole = Double.valueOf(adimensionalVTailMomentumPoleProperty);
+		
+		Amount<Length> vTailMomentumPole =
+				Amount.valueOf(
+						adimensionalVTailMomentumPole
+						* theAircraft.getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)
+						+ theAircraft.getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER),
+						SI.METER
+						);
+		
+		//---------------------------------------------------------------
+		// FUSELAGE MOMENTUM POLE
+		String adimensionalFuselageMomentumPoleProperty = reader.getXMLPropertyByPath("//global_data/adimensional_fuselage_momentum_pole");
+		if(adimensionalFuselageMomentumPoleProperty != null)
+			adimensionalFuselageMomentumPole = Double.valueOf(adimensionalFuselageMomentumPoleProperty);
+		
+		//---------------------------------------------------------------
+		// DYNAMIC PRESSURE RATIO
+		String dynamicPressureRatioFromFileString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/@dynamic_pressure_ratio_from_file");
+		
+		if(dynamicPressureRatioFromFileString.equalsIgnoreCase("FALSE")){
+			horizontalTailDynamicPressureRatio = 
+					AerodynamicCalc.calculateDynamicPressureRatio(
+							theAircraft.getHTail().getPositionRelativeToAttachment()
+							);
+		}
+		else {
+			String horizontalTailDynamicPressureRatioProperty = reader.getXMLPropertyByPath("//global_data/horizontal_tail_dynamic_pressure_ratio");
+			if(horizontalTailDynamicPressureRatioProperty != null)
+				horizontalTailDynamicPressureRatio = Double.valueOf(horizontalTailDynamicPressureRatioProperty);
+		}
+		
+		//---------------------------------------------------------------
+		// TAU ELEVATOR
+		String tauElevatorFromFileString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/@tau_elevator_from_file");
+		
+		if(tauElevatorFromFileString.equalsIgnoreCase("FALSE")){
+			double[] deltaElevatorArray = MyArrayUtils.linspace(-25, 5, 31);
+ 			for(int i=0; i<deltaElevatorArray.length; i++)
+				tauElevatorFunction.add(
+						LiftCalc.calculateTauIndexElevator(
+								theAircraft.getHTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(), 
+								theAircraft.getHTail().getLiftingSurfaceCreator().getAspectRatio(), 
+								theAircraft.getHTail().getHighLiftDatabaseReader(), 
+								theAircraft.getHTail().getAerodynamicDatabaseReader(), 
+								Amount.valueOf(deltaElevatorArray[i], NonSI.DEGREE_ANGLE)
+								)
+						);
+ 			
+			tauElevator.interpolateLinear(
+					deltaElevatorArray,
+					MyArrayUtils.convertToDoublePrimitive(tauElevatorFunction)
+					);
+		}
+		else {
+			String tauElevatorFunctionProperty = reader.getXMLPropertyByPath("//global_data/tau_elevator_function/tau");
+			if(tauElevatorFunctionProperty != null)
+				tauElevatorFunction = reader.readArrayDoubleFromXML("//global_data/tau_elevator_function/tau"); 
+			String tauElevatorFunctionDeltaElevatorProperty = reader.getXMLPropertyByPath("//global_data/tau_elevator_function/delta_elevator");
+			if(tauElevatorFunctionDeltaElevatorProperty != null)
+				tauElevatorFunctionDeltaElevator = reader.readArrayofAmountFromXML("//global_data/tau_elevator_function/delta_elevator");
+			
+			if(tauElevatorFunction.size() > 1)
+				if(tauElevatorFunction.size() != tauElevatorFunctionDeltaElevator.size())
+				{
+					System.err.println("TAU ELEVATOR ARRAY AND THE RELATED DELTA ELEVATOR ARRAY MUST HAVE THE SAME LENGTH !");
+					System.exit(1);
+				}
+			if(tauElevatorFunction.size() == 1) {
+				tauElevatorFunction.add(tauElevatorFunction.get(0));
+				tauElevatorFunctionDeltaElevator.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				tauElevatorFunctionDeltaElevator.add(Amount.valueOf(360.0, NonSI.DEGREE_ANGLE));
+			}
+			
+			tauElevator.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							tauElevatorFunctionDeltaElevator.stream()
+							.map(f -> f.to(NonSI.DEGREE_ANGLE))
+							.collect(Collectors.toList())
+							),
+					MyArrayUtils.convertToDoublePrimitive(tauElevatorFunction)
+					);
+		}
+		
+		//---------------------------------------------------------------
+		// TAU RUDDER
+		String tauRudderFromFileString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//global_data/@tau_rudder_from_file");
+		
+		if(tauRudderFromFileString.equalsIgnoreCase("FALSE")){
+			double[] deltaRudderArray = MyArrayUtils.linspace(-25, 25, 51);
+ 			for(int i=0; i<deltaRudderArray.length; i++)
+				tauRudderFunction.add(
+						LiftCalc.calculateTauIndexElevator(
+								theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(), 
+								theAircraft.getVTail().getLiftingSurfaceCreator().getAspectRatio(), 
+								theAircraft.getVTail().getHighLiftDatabaseReader(), 
+								theAircraft.getVTail().getAerodynamicDatabaseReader(), 
+								Amount.valueOf(deltaRudderArray[i], NonSI.DEGREE_ANGLE)
+								)
+						);
+ 			
+ 			tauRudder.interpolateLinear(
+					deltaRudderArray,
+					MyArrayUtils.convertToDoublePrimitive(tauRudderFunction)
+					);
+		}
+		else {
+			String tauRudderFunctionProperty = reader.getXMLPropertyByPath("//global_data/tau_rudder_function/tau");
+			if(tauRudderFunctionProperty != null)
+				tauRudderFunction = reader.readArrayDoubleFromXML("//global_data/tau_rudder_function/tau"); 
+			String tauRudderFunctionDeltaRudderProperty = reader.getXMLPropertyByPath("//global_data/tau_rudder_function/delta_rudder");
+			if(tauRudderFunctionDeltaRudderProperty != null)
+				tauRudderFunctionDeltaRudder = reader.readArrayofAmountFromXML("//global_data/tau_rudder_function/delta_rudder");
+			
+			if(tauRudderFunction.size() > 1)
+				if(tauRudderFunction.size() != tauRudderFunctionDeltaRudder.size())
+				{
+					System.err.println("TAU RUDDER ARRAY AND THE RELATED DELTA RUDDER ARRAY MUST HAVE THE SAME LENGTH !");
+					System.exit(1);
+				}
+			if(tauRudderFunction.size() == 1) {
+				tauRudderFunction.add(tauRudderFunction.get(0));
+				tauRudderFunctionDeltaRudder.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+				tauRudderFunctionDeltaRudder.add(Amount.valueOf(360.0, NonSI.DEGREE_ANGLE));
+			}
+			
+			tauRudder.interpolateLinear(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							tauRudderFunctionDeltaRudder.stream()
+							.map(f -> f.to(NonSI.DEGREE_ANGLE))
+							.collect(Collectors.toList())
+							),
+					MyArrayUtils.convertToDoublePrimitive(tauRudderFunction)
+					);
+		}
+		
+		//===============================================================
+		// READING COMPONENTS TASK LIST DATA
+		//===============================================================		
+		
+		// TODO: FILL ME !!
+		
+		//===============================================================
+		// READING PLOT DATA
+		//===============================================================
+		
+		// TODO: FILL ME !!
+		
+		/********************************************************************************************
+		 * Once the data are ready, it's possible to create the manager object can be created
+		 * using the builder pattern.
+		 */
+		IACAerodynamicCalculator theAerodynamicAndStabilityBuilderInterface = new IACAerodynamicCalculator.Builder()
+				.setId(id)
+				.setTheAircraft(theAircraft)
+				.setTheOperatingConditions(theOperatingConditions)
+				.setCurrentCondition(theCondition)
+				.addAllXCGAircraft(xCGAdimensionalPositions)
+				.addAllZCGAircraft(zCGAdimensionalPositions)
+				.setZCGLandingGear(zCGLandingGears)
+				.setAlphaBodyInitial(alphaBodyInitial)
+				.setAlphaBodyFinal(alphaBodyFinal)
+				.setNumberOfAlphasBody(numberOfAlphaBody)
+				.setBetaInitial(betaInitial)
+				.setBetaFinal(betaFinal)
+				.setNumberOfBeta(numberOfBeta)
+				.addAllAlphaWingForDistribution(alphaWingArrayForDistributions)
+				.addAllAlphaHorizontalTailForDistribution(alphaHorizontalTailArrayForDistributions)
+				.addAllBetaVerticalTailForDistribution(betaVerticalTailArrayForDistributions)
+				.setWingNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseWing)
+				.setHTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseHTail)
+				.setVTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseVTail)
+				.addAllDeltaElevatorList(deltaElevatorList)
+				.addAllDeltaRudderList(deltaRudderList)
+				.setWingMomentumPole(wingMomentumPole)
+				.setHTailMomentumPole(hTailMomentumPole)
+				.setVTailMomentumPole(vTailMomentumPole)
+				.setAdimensionalFuselageMomentumPole(adimensionalFuselageMomentumPole)
+				.setDynamicPressureRatio(horizontalTailDynamicPressureRatio)
+				.setTauElevatorFunction(tauElevator)
+				.setTauRudderFunction(tauRudder)
+				// TODO: CONTINUE
+				.buildPartial();
+		
+		ACAerodynamicCalculator theAerodynamicAndStabilityManager = new ACAerodynamicCalculator();
+		theAerodynamicAndStabilityManager.setTheAerodynamicBuilderInterface(theAerodynamicAndStabilityBuilderInterface);
+		
+		return theAerodynamicAndStabilityManager;
 
 	}
 

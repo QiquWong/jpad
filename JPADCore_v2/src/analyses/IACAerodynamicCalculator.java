@@ -29,6 +29,7 @@ public interface IACAerodynamicCalculator {
 	// FROM INPUT (Passed from XML file)
 	Map<ComponentEnum, Map<AerodynamicAndStabilityEnum, MethodEnum>> getComponentTaskList();
 	List<AerodynamicAndStabilityPlotEnum> getPlotList();
+	String getId();
 	List<Double> getXCGAircraft(); //in MAC perc.
 	List<Double> getZCGAircraft();
 	Amount<Length> getZCGLandingGear(); // TODO: IN IMPORT FROM XML, READ OR CALCULATE THIS

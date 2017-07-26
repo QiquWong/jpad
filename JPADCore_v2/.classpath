@@ -74,5 +74,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/flanagan/flanagan.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/chartsFxHanSolo/charts-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
