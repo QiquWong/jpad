@@ -9,12 +9,6 @@
     <global_data>
         <positive_limit_load_factor>2.5</positive_limit_load_factor>
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
-		<cruise_lift_coefficient>0.61</cruise_lift_coefficient>
-		<reference_range unit="nmi">1600</reference_range>
-		<maximum_altitude_at_maximum_speed unit="ft">30000</maximum_altitude_at_maximum_speed>
-		<maximum_cruise_mach_number>0.62</maximum_cruise_mach_number>
-		<optimum_cruise_altitude unit="ft">30000</optimum_cruise_altitude>
-		<optimum_cruise_mach_number>0.62</optimum_cruise_mach_number>
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="IRON analysis">

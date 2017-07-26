@@ -100,9 +100,9 @@ public class ACAerodynamicCalculator {
 	private Amount<Angle> _alphaHTailCurrent;
 	private Amount<Angle> _betaVTailCurrent;
 	private Amount<Angle> _alphaNacelleCurrent;
-	Double landingGearUsedDrag = null;
-	private List<Amount<Angle>> deltaEForEquilibrium = new ArrayList<>();
-	private List<Double> horizontalTailEquilibriumCoefficient= new ArrayList<>();
+	Double _landingGearUsedDrag = null;
+	private List<Amount<Angle>> _deltaEForEquilibrium = new ArrayList<>();
+	private List<Double> _horizontalTailEquilibriumCoefficient= new ArrayList<>();
 	
 	// for downwash estimation
 	private Amount<Length> _zACRootWing;
@@ -140,7 +140,6 @@ public class ACAerodynamicCalculator {
 
 	//..............................................................................
 	// OUTPUT
-	
 	private Map<Amount<Angle>, List<Double>> _hTail3DLiftCurvesElevator;
 	
 	// Methods are always the same used for the wing Lift curve. If the wing lift curve is not required, the use method is Nasa Blackwell
@@ -165,7 +164,7 @@ public class ACAerodynamicCalculator {
 	Map<MethodEnum, List<Amount<Length>>> _verticalDistanceZeroLiftDirectionWingHTailVariable;
 	private Map<Boolean, Map<MethodEnum, List<Double>>> _downwashGradientMap;
 	private Map<Boolean, Map<MethodEnum, List<Amount<Angle>>>> _downwashAngleMap;
-	private List<Tuple3<MethodEnum, Double, Double>> buffetBarrierCurve = new ArrayList<>();
+	private List<Tuple3<MethodEnum, Double, Double>> _buffetBarrierCurve = new ArrayList<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbFuselage = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbVertical = new HashMap<>();
 	private Map<MethodEnum, List<Tuple2<Double, Double>>> _cNbWing = new HashMap<>();
@@ -188,11 +187,9 @@ public class ACAerodynamicCalculator {
 	private Map<Double, List<Double>> _totalEquilibriumDragCoefficient = new HashMap<>(); //xcg, CL
 	private Map<Double, List<Amount<Angle>>> _deltaEEquilibrium = new HashMap<>(); //xcg
 
-	// COMPLETE ME !!
-
-
-
-
+	//------------------------------------------------------------------------------
+	// METHODS:
+	//------------------------------------------------------------------------------
 	private void initializeAnalysis() {
 
 		_downwashGradientMap = new HashMap<>();
@@ -249,16 +246,16 @@ public class ACAerodynamicCalculator {
 		//...................................................................................
 		switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
 		case TAKE_OFF:
-			landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
+			_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
 			break;
 		case CLIMB:
-			landingGearUsedDrag = 0.0;
+			_landingGearUsedDrag = 0.0;
 			break;
 		case CRUISE:
-			landingGearUsedDrag = 0.0;
+			_landingGearUsedDrag = 0.0;
 			break;
 		case LANDING:
-			landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
+			_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
 			break;
 		}
 		
@@ -382,7 +379,7 @@ public class ACAerodynamicCalculator {
 						),
 				SI.METER);
 		
-		deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-45, 10, 20)), NonSI.DEGREE_ANGLE); 
+		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-45, 10, 20)), NonSI.DEGREE_ANGLE); 
 	}
 
 	private void initializeArrays() {
@@ -4115,7 +4112,7 @@ public class ACAerodynamicCalculator {
 									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 											.get(ComponentEnum.FUSELAGE)
 											.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
-							landingGearUsedDrag,
+							_landingGearUsedDrag,
 							_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),  // FIX THIS
 							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
 							_alphaBodyList)
@@ -4273,7 +4270,7 @@ public class ACAerodynamicCalculator {
 								_current3DHorizontalTailLiftCurve.get(de),
 							    _current3DHorizontalTailPolarCurve.get(de),
 								_current3DHorizontalTailMomentCurve,
-								landingGearUsedDrag,
+								_landingGearUsedDrag,
 								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
 								_alphaBodyList, 
 								_theAerodynamicBuilderInterface.getWingPendularStability())						
@@ -4347,7 +4344,7 @@ public class ACAerodynamicCalculator {
 										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 												.get(ComponentEnum.FUSELAGE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
-								landingGearUsedDrag,
+								_landingGearUsedDrag,
 								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
 								_alphaBodyList, 
 								_theAerodynamicBuilderInterface.getWingPendularStability()
@@ -4381,7 +4378,7 @@ public class ACAerodynamicCalculator {
 			
 			CalcHighLiftCurve calcHTailHighLiftCurveForDEEquilibrium = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).new CalcHighLiftCurve();
 
-			deltaEForEquilibrium.stream().forEach(de -> {
+			_deltaEForEquilibrium.stream().forEach(de -> {
 				List<Double> temporaryLiftHorizontalTail = new ArrayList<>();
 				List<Amount<Angle>> temporaryDeList = new ArrayList<>();
 				temporaryDeList.add(de);
@@ -4407,7 +4404,7 @@ public class ACAerodynamicCalculator {
 			_deltaEEquilibrium.put(xcg, 
 					AerodynamicCalc.calculateDeltaEEquilibrium(
 					liftCoefficientHorizontalTailForEquilibrium, 
-					deltaEForEquilibrium, 
+					_deltaEForEquilibrium, 
 					_horizontalTailEquilibriumLiftCoefficient.get(xcg), 
 					_alphaBodyList
 					));
@@ -4417,7 +4414,7 @@ public class ACAerodynamicCalculator {
 			// Calculating total equilibrium Drag coefficient ... CDtot_e
 			//=======================================================================================
 			
-			deltaEForEquilibrium.stream().forEach(de -> {
+			_deltaEForEquilibrium.stream().forEach(de -> {
 		
 				int i = _theAerodynamicBuilderInterface.getDeltaElevatorList().indexOf(de);
 			_deltaCDElevatorList.add(0.0000156*
@@ -4443,19 +4440,19 @@ public class ACAerodynamicCalculator {
 
 			
 			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
-				horizontalTailEquilibriumCoefficient = new ArrayList<>();
+				_horizontalTailEquilibriumCoefficient = new ArrayList<>();
 				
-				horizontalTailEquilibriumCoefficient = 
+				_horizontalTailEquilibriumCoefficient = 
 					DragCalc.calculateTrimmedPolar(
 							_3DHorizontalTailPolarCurveForElevatorDeflection,
 							_deltaEEquilibrium.get(xcg), 
-							deltaEForEquilibrium, 
+							_deltaEForEquilibrium, 
 							_alphaBodyList);
 		
 				_totalEquilibriumDragCoefficient.put(xcg, 
 						DragCalc.calculateTotalPolarFromEquation(
 						_current3DWingPolarCurve, 
-						horizontalTailEquilibriumCoefficient, 
+						_horizontalTailEquilibriumCoefficient, 
 						_current3DVerticalTailDragCoefficient,
 						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
 						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(),
@@ -4466,7 +4463,7 @@ public class ACAerodynamicCalculator {
 								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 										.get(ComponentEnum.FUSELAGE)
 										.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
-						landingGearUsedDrag,
+						_landingGearUsedDrag,
 						_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),  // FIX THIS
 						_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
 						_alphaBodyList));
@@ -5433,11 +5430,11 @@ public class ACAerodynamicCalculator {
 	}
 
 	public List<Tuple3<MethodEnum, Double, Double>> getBuffetBarrierCurve() {
-		return buffetBarrierCurve;
+		return _buffetBarrierCurve;
 	}
 
 	public void setBuffetBarrierCurve(List<Tuple3<MethodEnum, Double, Double>> buffetBarrierCurve) {
-		this.buffetBarrierCurve = buffetBarrierCurve;
+		this._buffetBarrierCurve = buffetBarrierCurve;
 	}
 
 	public Map<MethodEnum, List<Tuple2<Double, Double>>> getCNbFuselage() {

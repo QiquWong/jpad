@@ -293,7 +293,7 @@ public class CompleteAnalysisTest extends Application {
 			System.setOut(originalOut);
 			System.out.println("\n\n\tRunning requested analyses ... \n\n");
 			System.setOut(filterStream);
-			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft));
+			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
 			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
 			System.setOut(originalOut);
 			System.out.println("\n\n\tDone!! \n\n");

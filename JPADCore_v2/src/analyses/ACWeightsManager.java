@@ -54,6 +54,7 @@ public class ACWeightsManager implements IACWeightsManager {
 	private String _id;
 	private static Aircraft _theAircraft;
 	private static OperatingConditions _theOperatingConditions;
+	private static int _maxIteration = 20;  
 	
 	// Aluminum density
 	public static Amount<VolumetricDensity> _materialDensity = 
@@ -1651,10 +1652,11 @@ public class ACWeightsManager implements IACWeightsManager {
 		 * The while loop will evaluate all the aircraft masses until the maximum take-off changes less then the threshold value 
 		 */
 		int i=1;
-		while (Math.abs((_maximumTakeOffMassList.get(i).minus(_maximumTakeOffMassList.get(i-1)))
+		while ((Math.abs((_maximumTakeOffMassList.get(i).minus(_maximumTakeOffMassList.get(i-1)))
 				.divide(_maximumTakeOffMassList.get(i))
 				.getEstimatedValue())
-				>= 0.01
+				>= 0.01)
+				|| (_maxIteration >= i)
 				) {
 			
 			/*
@@ -2604,6 +2606,14 @@ public class ACWeightsManager implements IACWeightsManager {
 
 	public void setFuelWeight(Amount<Force> _fuelWeight) {
 		this._fuelWeight = _fuelWeight;
+	}
+
+	public static int getMaxIteration() {
+		return _maxIteration;
+	}
+
+	public static void setMaxIteration(int _maxIteration) {
+		ACWeightsManager._maxIteration = _maxIteration;
 	}
 
 }

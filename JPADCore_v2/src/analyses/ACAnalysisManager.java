@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Velocity;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -45,6 +43,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	private String _id;
 	private Aircraft _theAircraft;
+	private OperatingConditions _theOperatingConditions;
 
 	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
@@ -55,12 +54,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	// INPUT DATA: 
 	private Double _positiveLimitLoadFactor;
 	private Double _negativeLimitLoadFactor;
-	private Double _cruiseCL;
-	private Amount<Length> _maxAltitudeAtMaxSpeed;
-	private Double _machMaxCruise;
-	private Amount<Length> _altitudeOptimumCruise;
-	private Double _machOptimumCruise;
-	private Amount<Length> _referenceRange;
 	
 	// DEPENDENT VARIABLES: 
 	private Double _nUltimate;
@@ -102,17 +95,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// required parameters
 		private String __id;
 		private Aircraft __theAircraft;
+		private OperatingConditions __theOperatingConditions;
 
 		// optional parameters ... defaults
 		// ...
 		private Double __positiveLimitLoadFactor;
 		private Double __negativeLimitLoadFactor;
-		private Double __cruiseCL;
-		private Amount<Length> __maxAltitudeAtMaxSpeed;
-		private Double __machMaxCruise;
-		private Amount<Length> __altitudeOptimumCruise;
-		private Double __machOptimumCruise;
-		private Amount<Length> __referenceRange;
 		
 		private Map <ComponentEnum, MethodEnum> __methodsMapWeights = new HashMap<ComponentEnum, MethodEnum>();
 		private Map <ComponentEnum, MethodEnum> __methodsMapBalance = new HashMap<ComponentEnum, MethodEnum>();
@@ -135,6 +123,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		public ACAnalysisManagerBuilder aircraft (Aircraft theAircraft) {
 			this.__theAircraft = theAircraft;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder operatingConditions (OperatingConditions operatingConditions) {
+			this.__theOperatingConditions = operatingConditions;
 			return this;
 		}
 		
@@ -178,36 +171,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
-		public ACAnalysisManagerBuilder referenceRange (Amount<Length> refernceRange) {
-			this.__referenceRange = refernceRange;
-			return this;
-		}
- 		
-		public ACAnalysisManagerBuilder cruiseCL (Double cruiseCL) {
-			this.__cruiseCL = cruiseCL;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder maxAltitudeAtMaxSpeed (Amount<Length> maxAltitudeAtMaxSpeed) {
-			this.__maxAltitudeAtMaxSpeed = maxAltitudeAtMaxSpeed;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder machMaxCruise (Double machMaxCruise) {
-			this.__machMaxCruise = machMaxCruise;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder altitudeOptimumCruise (Amount<Length> altitudeOptimumCruise) {
-			this.__altitudeOptimumCruise = altitudeOptimumCruise;
-			return this;
-		}
-		
-		public ACAnalysisManagerBuilder machOptimumCruise (Double machOptimumCruise) {
-			this.__machOptimumCruise = machOptimumCruise;
-			return this;
-		}
-		
 		public ACAnalysisManagerBuilder methodsMapWeights (Map<ComponentEnum, MethodEnum> methodsMapWeights) {
 			this.__methodsMapWeights = methodsMapWeights;
 			return this;
@@ -233,15 +196,17 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			return this;
 		}
 		
-		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft) {
+		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft, OperatingConditions operatingConditions) {
 			this.__id = id;
 			this.__theAircraft = theAircraft;
+			this.__theOperatingConditions = operatingConditions;
 			initializeDefaultData(AircraftEnum.ATR72);
 		}
 		
-		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft, AircraftEnum aircraftName) {
+		public ACAnalysisManagerBuilder(String id, Aircraft theAircraft, OperatingConditions operatingConditions, AircraftEnum aircraftName) {
 			this.__id = id;
 			this.__theAircraft = theAircraft;
+			this.__theOperatingConditions = operatingConditions;
 			initializeDefaultData(aircraftName);
 		}
 
@@ -252,34 +217,16 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			case ATR72:
 				__positiveLimitLoadFactor = 2.5;
 				__negativeLimitLoadFactor = -1.0;
-				__maxAltitudeAtMaxSpeed = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
-				__machMaxCruise = 0.45;
-				__altitudeOptimumCruise = Amount.valueOf(16000., NonSI.FOOT).to(SI.METER);
-				__machOptimumCruise = 0.43;
-				__cruiseCL = 0.45;
-				__referenceRange = Amount.valueOf(1528., SI.KILOMETER); 
 				break;
 				
 			case B747_100B:
 				__positiveLimitLoadFactor = 2.5;
 				__negativeLimitLoadFactor = -1.0;
-				__maxAltitudeAtMaxSpeed = Amount.valueOf(35000., NonSI.FOOT).to(SI.METER);
-				__machMaxCruise = 0.89;
-				__altitudeOptimumCruise = Amount.valueOf(35000., NonSI.FOOT).to(SI.METER);
-				__machOptimumCruise = 0.84;
-				__cruiseCL = 0.58;
-				__referenceRange = Amount.valueOf(9800., SI.KILOMETER);
 				break;
 				
 			case AGILE_DC1:
 				__positiveLimitLoadFactor = 2.5;
 				__negativeLimitLoadFactor = -1.0;
-				__maxAltitudeAtMaxSpeed = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
-				__machMaxCruise = 0.82;
-				__altitudeOptimumCruise = Amount.valueOf(36000., NonSI.FOOT).to(SI.METER);
-				__machOptimumCruise = 0.78;
-				__cruiseCL = 0.5;
-				__referenceRange = Amount.valueOf(3500., SI.KILOMETER);
 				break;
 			}
 		}
@@ -293,14 +240,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		this._id = builder.__id;
 		this._theAircraft = builder.__theAircraft;
+		this._theOperatingConditions = builder.__theOperatingConditions;
 		this._positiveLimitLoadFactor = builder.__positiveLimitLoadFactor;
 		this._negativeLimitLoadFactor = builder.__negativeLimitLoadFactor;
-		this._cruiseCL = builder.__cruiseCL;
-		this._maxAltitudeAtMaxSpeed = builder.__maxAltitudeAtMaxSpeed;
-		this._machMaxCruise = builder.__machMaxCruise;
-		this._altitudeOptimumCruise = builder.__altitudeOptimumCruise;
-		this._machOptimumCruise = builder.__machOptimumCruise;
-		this._referenceRange = builder.__referenceRange;
 		
 		this._methodsMapWeights = builder.__methodsMapWeights;
 		this._methodsMapBalance = builder.__methodsMapBalance;
@@ -331,7 +273,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	// End of the builder pattern 
 	//============================================================================================
 		
-	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft) throws IOException {
+	public static ACAnalysisManager importFromXML (String pathToXML, Aircraft theAircraft, OperatingConditions operatingConditions) throws IOException {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
@@ -346,12 +288,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		Double positiveLimitLoadFactor = null;
 		Double negativeLimitLoadFactor = null;
-		Double cruiseCL = null; 
-		Amount<Length> maxAltitudeMaxSpeed = null;
-		Double maxCruiseMach = null;
-		Amount<Length> optimumCruiseAltitude = null;
-		Double optimumCruiseMach = null;
-		Amount<Length> referenceRange = null;
 
 		//-------------------------------------------------------------------------------------
 		// POSITIVE LIMIT LOAD FACTOR
@@ -363,36 +299,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		String negativeLimitLoadFactorProperty = reader.getXMLPropertyByPath("//global_data/negative_limit_load_factor");
 		if(negativeLimitLoadFactorProperty != null)
 			negativeLimitLoadFactor = Double.valueOf(reader.getXMLPropertyByPath("//global_data/negative_limit_load_factor"));
-		//-------------------------------------------------------------------------------------
-		// CRUISE LIFT COEFFICIENT
-		String cruiseLiftCoefficientProperty = reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient");
-		if(cruiseLiftCoefficientProperty != null)
-			cruiseCL = Double.valueOf(reader.getXMLPropertyByPath("//global_data/cruise_lift_coefficient"));
-		//-------------------------------------------------------------------------------------
-		// MAX ALTITUDE AT MAX SPEED
-		String maxAltitudeMaxSpeedProperty = reader.getXMLPropertyByPath("//global_data/maximum_altitude_at_maximum_speed");
-		if(maxAltitudeMaxSpeedProperty != null)
-			maxAltitudeMaxSpeed = reader.getXMLAmountLengthByPath("//global_data/maximum_altitude_at_maximum_speed");
-		//-------------------------------------------------------------------------------------
-		// MAX CRUISE MACH NUMBER
-		String maxCruiseMachProperty = reader.getXMLPropertyByPath("//global_data/maximum_cruise_mach_number");
-		if(maxCruiseMachProperty != null)
-			maxCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/maximum_cruise_mach_number"));
-		//-------------------------------------------------------------------------------------
-		// OPTIMUM CRUISE ALTITUDE
-		String optimumCruiseAltitudeProperty = reader.getXMLPropertyByPath("//global_data/optimum_cruise_altitude");
-		if(optimumCruiseAltitudeProperty != null)
-			optimumCruiseAltitude = reader.getXMLAmountLengthByPath("//global_data/optimum_cruise_altitude");
-		//-------------------------------------------------------------------------------------
-		// OPTIMUM CRUISE MACH NUMBER
-		String optimumCruiseMachProperty = reader.getXMLPropertyByPath("//global_data/optimum_cruise_mach_number");
-		if(optimumCruiseMachProperty != null)
-			optimumCruiseMach = Double.valueOf(reader.getXMLPropertyByPath("//global_data/optimum_cruise_mach_number"));
-		//-------------------------------------------------------------------------------------
-		// REFERENCE RANGE
-		String referenceRangeProperty = reader.getXMLPropertyByPath("//global_data/reference_range");
-		if(referenceRangeProperty != null)
-			referenceRange = Amount.valueOf(Double.valueOf(reader.getXMLPropertyByPath("//global_data/reference_range")), NonSI.NAUTICAL_MILE);
 		
 		//-------------------------------------------------------------------------------------------
 		// WEIGHTS ANALYSIS:
@@ -1251,17 +1157,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		//-------------------------------------------------------------------------------------------
 		ACAnalysisManager theAnalysisManager = new ACAnalysisManager.ACAnalysisManagerBuilder(
 				id,
-				theAircraft
+				theAircraft, 
+				operatingConditions
 				)
 				.analysisList(analysisList)
 				.positiveLimitLoadFactor(positiveLimitLoadFactor)
 				.negativeLimitLoadFactor(negativeLimitLoadFactor)
-				.cruiseCL(cruiseCL)
-				.maxAltitudeAtMaxSpeed(maxAltitudeMaxSpeed)
-				.machMaxCruise(maxCruiseMach)
-				.altitudeOptimumCruise(optimumCruiseAltitude)
-				.machOptimumCruise(optimumCruiseMach)
-				.referenceRange(referenceRange)
 				.methodsMapWeights(methodsMapWeights)
 				.methodsMapBalance(methodsMapBalance)
 				.taskListPerfromance(taskListPerformance)
@@ -1291,12 +1192,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.append("\t·····································\n")
 				.append("\tPositive limit load factor: " + _positiveLimitLoadFactor + "\n")
 				.append("\tNegative limit load factor: " + _negativeLimitLoadFactor + "\n")
-				.append("\tCruise CL: " + _cruiseCL + "\n")
-				.append("\tMaximum altitude at maximum speed: " + _maxAltitudeAtMaxSpeed + "\n")
-				.append("\tMaximum cruise Mach number: " + _machMaxCruise + "\n")
-				.append("\tOptimum cruise altitude: " + _altitudeOptimumCruise + "\n")
-				.append("\tOptimum cruise Mach number: " + _machOptimumCruise + "\n")
-				.append("\tReference range: " + _referenceRange + "\n")
 				.append("\t·····································\n")
 				.append("\tn Ultimate " + _nUltimate + "\n")
 				.append("\tV dive (TAS): " + _vDive + "\n")
@@ -1340,14 +1235,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		// Maximum cruise TAS
 		_vMaxCruise = Amount.valueOf(
-				_machMaxCruise * 
-				OperatingConditions.getAtmosphere(_maxAltitudeAtMaxSpeed.doubleValue(SI.METER)).getSpeedOfSound(), 
+				_theOperatingConditions.getMachCruise() * 
+				OperatingConditions.getAtmosphere(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)).getSpeedOfSound(), 
 				SI.METERS_PER_SECOND);
 		_vMaxCruiseEAS = _vMaxCruise.
 				times(Math.sqrt(
-						OperatingConditions.getAtmosphere(_maxAltitudeAtMaxSpeed.doubleValue(SI.METER)).getDensityRatio()));
+						OperatingConditions.getAtmosphere(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)).getDensityRatio()));
 
-		_vOptimumCruise = Amount.valueOf(_machOptimumCruise*AtmosphereCalc.getSpeedOfSound(_altitudeOptimumCruise.doubleValue(SI.METER)), SI.METERS_PER_SECOND);
+		_vOptimumCruise = Amount.valueOf(_theOperatingConditions.getMachCruise()
+				*AtmosphereCalc.getSpeedOfSound(_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)), SI.METERS_PER_SECOND);
 		
 		// FAR Part 25 paragraph 25.335
 		_vDive = _vMaxCruise.times(1.25); 
@@ -1590,46 +1486,6 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._negativeLimitLoadFactor = _negativeLimitLoadFactor;
 	}
 
-	public Double getCruiseCL() {
-		return _cruiseCL;
-	}
-
-	public void setCruiseCL(Double _cruiseCL) {
-		this._cruiseCL = _cruiseCL;
-	}
-
-	public Amount<Length> getMaxAltitudeAtMaxSpeed() {
-		return _maxAltitudeAtMaxSpeed;
-	}
-
-	public void setMaxAltitudeAtMaxSpeed(Amount<Length> _maxAltitudeAtMaxSpeed) {
-		this._maxAltitudeAtMaxSpeed = _maxAltitudeAtMaxSpeed;
-	}
-
-	public Double getMachMaxCruise() {
-		return _machMaxCruise;
-	}
-
-	public void setMachMaxCruise(Double _machMaxCruise) {
-		this._machMaxCruise = _machMaxCruise;
-	}
-
-	public Amount<Length> getAltitudeOptimumCruise() {
-		return _altitudeOptimumCruise;
-	}
-
-	public void setAltitudeOptimumCruise(Amount<Length> _altitudeOptimumCruise) {
-		this._altitudeOptimumCruise = _altitudeOptimumCruise;
-	}
-
-	public Double getMachOptimumCruise() {
-		return _machOptimumCruise;
-	}
-
-	public void setMachOptimumCruise(Double _machOptimumCruise) {
-		this._machOptimumCruise = _machOptimumCruise;
-	}
-
 	public Double getNUltimate() {
 		return _nUltimate;
 	}
@@ -1870,20 +1726,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._taskListPerformance = _taskListPerformance;
 	}
 
-	public Amount<Length> getReferenceRange() {
-		return _referenceRange;
-	}
-
 	public List<ConditionEnum> getTaskListAerodynamicAndStability() {
 		return _taskListAerodynamicAndStability;
 	}
 
 	public void setTaskListAerodynamicAndStability(List<ConditionEnum> _taskListAerodynamicAndStability) {
 		this._taskListAerodynamicAndStability = _taskListAerodynamicAndStability;
-	}
-
-	public void setReferenceRange(Amount<Length> _referenceRange) {
-		this._referenceRange = _referenceRange;
 	}
 
 	public Map<CostsEnum, MethodEnum> getTaskListCosts() {
@@ -1900,6 +1748,14 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setPlotWeights(Boolean _plotWeights) {
 		this._plotWeights = _plotWeights;
+	}
+
+	public OperatingConditions getTheOperatingConditions() {
+		return _theOperatingConditions;
+	}
+
+	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
+		this._theOperatingConditions = _theOperatingConditions;
 	}
 
 }

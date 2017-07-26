@@ -3,8 +3,6 @@ package analyses;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.measure.quantity.Duration;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Velocity;
 
@@ -45,21 +43,6 @@ public interface IACAnalysisManager {
 	public Double getNegativeLimitLoadFactor();
 	public void setNegativeLimitLoadFactor(Double _nLimit);
 	
-	public Double getCruiseCL();
-	public void setCruiseCL(Double _cruiseCL);
-
-	public Amount<Length> getMaxAltitudeAtMaxSpeed();
-	public void setMaxAltitudeAtMaxSpeed(Amount<Length> _maxAltitudeAtMaxSpeed);
-
-	public Double getMachMaxCruise();
-	public void setMachMaxCruise(Double _machMaxCruise);
-
-	public Amount<Length> getAltitudeOptimumCruise();
-	public void setAltitudeOptimumCruise(Amount<Length> _altitudeOptimumCruise);
-
-	public Double getMachOptimumCruise();
-	public void setMachOptimumCruise(Double _machOptimumCruise);
-
 	public Double getNUltimate();
 	public void setNUltimate(Double _nUltimate);
 
