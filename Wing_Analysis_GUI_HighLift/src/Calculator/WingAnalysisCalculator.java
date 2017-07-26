@@ -103,7 +103,7 @@ public class WingAnalysisCalculator {
 
 		theInputOutputTree.initializeData();
 
-		NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
+		calculators.aerodynamics.NasaBlackwell theNasaBlackwellCalculator = new  calculators.aerodynamics.NasaBlackwell(
 				theInputOutputTree.getSemiSpan().doubleValue(SI.METER), 
 				theInputOutputTree.getSurface().doubleValue(SI.SQUARE_METRE),
 				yDistributionMeter,
@@ -852,41 +852,65 @@ public class WingAnalysisCalculator {
 		Lift.setContent(LiftPane);
 
 
-		//stall path 
-		//		Tab stallPath = new Tab();
-		//		stallPath.setText("Stall Path");
-		//		Pane stallPathPane = new Pane();
-		//
-		//		stallPath.setContent(stallPathPane);
+		//lift distribution 
+		Tab liftDistribution = new Tab();
+		liftDistribution.setText("Lift disrtibution");
+		Pane liftDistributionPane = new Pane();
+		
+		liftDistribution.setContent(liftDistributionPane);
 
+		// chord distribution
+		Tab chordDistribution = new Tab();
+		chordDistribution.setText("Chord disrtibution");
+		Pane chordDistributionPane = new Pane();
+		
+		chordDistribution.setContent(chordDistributionPane);
+		
+		// xle distribution
+		Tab xleDistribution = new Tab();
+		xleDistribution.setText("Xle disrtibution");
+		Pane xleDistributionPane = new Pane();
+		
+		xleDistribution.setContent(xleDistributionPane);
+		
+		// alpha zero lift distribution
+		Tab alpaZeroLiftDistribution = new Tab();
+		alpaZeroLiftDistribution.setText("Alpha zero lift disrtibution");
+		Pane alpaZeroLiftDistributionPane = new Pane();
+		
+		alpaZeroLiftDistribution.setContent(alpaZeroLiftDistributionPane);
+		
 		newOutputCharts.getTabs().add(0, Lift);
-		//		newOutputCharts.getTabs().add(1, stallPath);
+		newOutputCharts.getTabs().add(1, chordDistribution);
+		newOutputCharts.getTabs().add(2, xleDistribution);
+		newOutputCharts.getTabs().add(3, alpaZeroLiftDistribution);
+	    newOutputCharts.getTabs().add(4, liftDistribution);
 
 
-		//		if(theController.getYesStallPath().isSelected()){
-		//			theController.getOutputPaneFinalHIGHLIFT().getChildren().clear();
-		//			
-		//			theController.getOutputPaneFinalHIGHLIFT().getChildren().add(newOutputCharts);
-		//
-		//			Node chart = displayChartNode(
-		//					"Lift Curve",
-		//					"alpha",
-		//					"CL", 
-		//					150, 
-		//					750,
-		//					false,
-		//					Side.RIGHT,
-		//					legend, 
-		//					xList, 
-		//					yList, 
-		//					newOutputCharts.getTabs().get(0).getContent()
-		//					);
-		//
-		//			LiftPane.getChildren().clear();
-		//			LiftPane.getChildren().add(chart);
-		//		}
-		//
-		//		if(theController.getNoStallPath().isSelected()){
+				if(theController.getYesHighLift().isSelected()){
+					theController.getOutputPaneFinalHIGHLIFT().getChildren().clear();
+					
+					theController.getOutputPaneFinalHIGHLIFT().getChildren().add(newOutputCharts);
+		
+					Node chart = displayChartNode(
+							"Lift Curve",
+							"alpha",
+							"CL", 
+							150, 
+							750,
+							false,
+							Side.RIGHT,
+							legend, 
+							xList, 
+							yList, 
+							newOutputCharts.getTabs().get(0).getContent()
+							);
+		
+					LiftPane.getChildren().clear();
+					LiftPane.getChildren().add(chart);
+				}
+		
+				if(theController.getNoHighLift().isSelected()){
 		displayChart(
 				"Lift Curve",
 				"alpha",
@@ -900,7 +924,7 @@ public class WingAnalysisCalculator {
 				yList, 
 				theController.getOutputPaneFinalHIGHLIFT().getChildren()
 				);
-		//		}
+			}
 
 		GridPane gridText = theController.getOutputPaneTextHIGHLIFT();
 		gridText.add(new Label("Text Output"), 0, 0);
@@ -938,18 +962,34 @@ public class WingAnalysisCalculator {
 		textOutputLift.appendText("\nCL star --> " + theInputOutpuTree.getClStarHighLift());
 		textOutputLift.appendText("\nCL max --> " + theInputOutpuTree.getcLMaxHighLift());
 		textOutputLift.appendText("\nAlpha stall (deg) --> " + theInputOutpuTree.getAlphaStallHighLift().doubleValue(NonSI.DEGREE_ANGLE));
-		//	
-		//	if(theController.getNoStallPath().isSelected()){
-		//	textOutputLift.appendText("\n\n--------End of " + theController.getRunLift() + "st Run------------\n\n");
-		//
-		//	}
+			
+			if(theController.getNoHighLift().isSelected()){
+			textOutputLift.appendText("\n\n--------End of " + theController.getRunLift() + "st Run------------\n\n");
+		
+			}
 
+			if ( theController.getYesHighLift().isSelected() ){
+				WingAnalysisCalculator.calculateHighLiftDistribution(
+						theInputOutpuTree,
+						theController, 
+						chordDistributionPane,
+						xleDistributionPane,
+						alpaZeroLiftDistributionPane,
+						liftDistributionPane,
+						newOutputCharts);
+			}
 
 	}
 
 	public static void calculateHighLiftDistribution(
 			InputOutputTree theInputOutpuTree,
-			VaraiblesAnalyses theController) {
+			VaraiblesAnalyses theController,
+			Pane chordPane,
+			Pane xlePane,
+			Pane a0lPane,
+			Pane liftPane,
+			TabPane newOutputCharts
+			) {
 
 		//Y ARRAY ----------------------------------------
 
@@ -1426,6 +1466,13 @@ public class WingAnalysisCalculator {
 			int i = yAdimensionalArrayHighLiftModified.indexOf(y);
 			chordArrayFinal [i] = chordBaseLine[i] + deltaChordsFlapInterpolated[i]+ deltaChordsSlatInterpolated[i];
 		});
+		
+		Double [] twist = 
+				MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()), 
+					    MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getTwistDistributionSemiSpan()), 
+						MyArrayUtils.convertToDoublePrimitive(yAdimensionalArrayHighLiftModified)
+						);
 
 		// CREATE SORTED ARRAY FOR Y STATIONS, CHORD, ALPHA ZERO LIFT AND XLE
 
@@ -1441,6 +1488,7 @@ public class WingAnalysisCalculator {
 		System.out.println(" y station " + yAdimensionalArrayHighLiftModified.toString());
 		System.out.println(" chord distribution " + Arrays.toString(chordArrayFinal));
 		System.out.println(" alpha zero lift distribution " + Arrays.toString(alphaZeroLiftInterpolated));
+		System.out.println(" twist distribution " + Arrays.toString(twist));
 		System.out.println(" xle distribution " + Arrays.toString(xleInterpolated));
 
 
@@ -1473,7 +1521,7 @@ public class WingAnalysisCalculator {
 		// creating new array for dihedral and twist with new y stations.		
 		double vortexSemiSpanToSemiSpanRatio = (1./(2*theInputOutpuTree.getNumberOfPointSemispan()));
 
-		NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
+		calculators.aerodynamics.NasaBlackwell theNasaBlackwellCalculator = new  calculators.aerodynamics.NasaBlackwell(
 				theInputOutpuTree.getSemiSpan().doubleValue(SI.METER),
 				theInputOutpuTree.getSurface().doubleValue(SI.SQUARE_METRE),
 				MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getyDimensionalDistributionSemiSpan()),
@@ -1508,7 +1556,163 @@ public class WingAnalysisCalculator {
 
 			System.out.println(" alpha = " + theInputOutpuTree.getAlphaArrayHighLiftDistribution().get(i) + " cl " + clList);
 		}
+		
+		// chart
+		
+		//chord
+		List<List<Double>> xList = new ArrayList<>();
+		List<List<Double>> yList = new ArrayList<>();
+		List<String> legend = new ArrayList<>();
+		
+		xList.add(theInputOutpuTree.getyAdimensionalDistributionSemiSpan());
+		xList.add(theInputOutpuTree.getyAdimensionalDistributionSemiSpan());
+		
+		yList.add(MyArrayUtils.convertDoubleArrayToListDouble(
+				MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())));
+		
+		yList.add(MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(chordDistributionHighLiftFinal)));
+		
+		
+		legend.add("Clean configuration");
+		legend.add("With High Lift Devices");
+		
+		
+		Node chartChord = displayChartNode(
+				"Chord distribution",
+				"eta",
+				"Chord (m)", 
+				150, 
+				750,
+				true,
+				Side.BOTTOM,
+				legend, 
+				xList, 
+				yList, 
+				newOutputCharts.getTabs().get(1).getContent()
+				);
+		
+		chordPane.getChildren().clear();
+		chordPane.getChildren().add(chartChord);
+		
+		
+		//xle
+		xList = new ArrayList<>();
+		yList = new ArrayList<>();
+		legend = new ArrayList<>();
+		
+		xList.add(theInputOutpuTree.getyAdimensionalDistributionSemiSpan());
+		xList.add(theInputOutpuTree.getyAdimensionalDistributionSemiSpan());
+		
+		yList.add(MyArrayUtils.convertDoubleArrayToListDouble(
+				MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getxLEDistributionSemiSpan())));
+		yList.add(MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(xleDistributionHighLiftFinal)));
+		
+		legend.add("Clean configuration");
+		legend.add("With High Lift Devices");
+		
+		Node xleChart = displayChartNode(
+				"Xle distribution",
+				"eta",
+				"Xle (m)", 
+				150, 
+				750,
+				true,
+				Side.BOTTOM,
+				legend, 
+				xList, 
+				yList, 
+				newOutputCharts.getTabs().get(2).getContent()
+				);
+		
+		
+		xlePane.getChildren().clear();
+		xlePane.getChildren().add(xleChart);
+		
+		//a0l
+		
+
+		double[] alphazeroLiftdeg = new double [alphaZeroLiftDistributionHighLiftFinal.length];
+		for(int i=0; i<alphazeroLiftdeg.length; i++) {
+			alphazeroLiftdeg [i] = Math.toDegrees(alphaZeroLiftDistributionHighLiftFinal[i]);
+		}
+		
+		xList = new ArrayList<>();
+		yList = new ArrayList<>();
+		legend = new ArrayList<>();
+		
+		xList.add(theInputOutpuTree.getyAdimensionalDistributionSemiSpan());
+		xList.add(theInputOutpuTree.getyAdimensionalDistributionSemiSpan());
+		
+		yList.add(MyArrayUtils.convertDoubleArrayToListDouble(
+				MyArrayUtils.convertListOfAmountToDoubleArray(theInputOutpuTree.getAlphaZeroLiftDistributionSemiSpan())));
+		yList.add(MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(alphazeroLiftdeg)));
+		
+		legend.add("Clean configuration");
+		legend.add("With High Lift Devices");
+		
+		Node alphaZeroLiftChart = displayChartNode(
+				"Alpha Zero lift distribution",
+				"eta",
+				"a0l (°)", 
+				150, 
+				750,
+				true,
+				Side.BOTTOM,
+				legend, 
+				xList, 
+				yList, 
+				newOutputCharts.getTabs().get(2).getContent()
+				);
+		
+		a0lPane.getChildren().clear();
+		a0lPane.getChildren().add(alphaZeroLiftChart);
+		//lift
+		xList = new ArrayList<>();
+		yList = new ArrayList<>();
+		legend = new ArrayList<>();
+		
+
+		for (int i =0; i<theInputOutpuTree.getAlphaArrayHighLiftDistribution().size(); i++) {
+		xList.add(theInputOutpuTree.getyAdimensionalDistributionSemiSpan());
+		yList.add(theInputOutpuTree.getClDistributionCurvesHighLift().get(i));
+		legend.add("cl distribution at alpha (deg) " + theInputOutpuTree.getAlphaArrayHighLiftDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE));
+		}
+
+		Node chart = displayChartNode(
+				"Lift distribution",
+				"alpha",
+				"Cl", 
+				150, 
+				750,
+				true,
+				Side.BOTTOM,
+				legend, 
+				xList, 
+				yList, 
+				newOutputCharts.getTabs().get(3).getContent()
+				);
+
+
+		liftPane.getChildren().clear();
+		liftPane.getChildren().add(chart);
+		
+		textOutputLift.appendText("\n\nHIGH LIFT DISTRIBUTION");
+		textOutputLift.appendText("\nEta Stations (deg) --> " + theInputOutpuTree.getyAdimensionalDistributionSemiSpan().toString());
+		textOutputLift.appendText("\nOld chord distribution (m) --> " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getChordDistributionSemiSpan())));
+		textOutputLift.appendText("\nNew chord distribution (m) --> " + Arrays.toString(chordDistributionHighLiftFinal));
+		textOutputLift.appendText("\nOld xle distribution (m) --> " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getxLEDistributionSemiSpan())));
+		textOutputLift.appendText("\nNew xle distribution (m) --> " + Arrays.toString(xleDistributionHighLiftFinal));
+		textOutputLift.appendText("\nOld alpha zero lift distribution (°) --> " + Arrays.toString(MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getAlphaZeroLiftDistributionSemiSpan())));
+		textOutputLift.appendText("\nNew alpha zero lift distribution (°) --> " + Arrays.toString(alphazeroLiftdeg));
+	
+		for(int i=0; i<theInputOutpuTree.getAlphaArrayHighLiftDistribution().size(); i++){
+			textOutputLift.appendText("Cl distribution at alpha = " + 
+					theInputOutpuTree.getAlphaArrayHighLiftDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + 
+					" deg ---> " + theInputOutpuTree.getClDistributionCurvesHighLift().get(i) + "\n");
+		}
+		
 	}
+
 
 	public static void displayChart(
 			String chartTitle, 

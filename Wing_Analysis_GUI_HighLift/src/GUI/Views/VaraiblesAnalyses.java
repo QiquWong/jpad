@@ -1263,10 +1263,7 @@ public class VaraiblesAnalyses {
 		WingAnalysisCalculator.calculateHighLiftCurve(theInputOutputTree, this);
 		theInputOutputTree.getSaveButton().setDisable(false);
 	
-		// LIFT DISTRIBUTION
-		
-		if(highLiftTab.isSelected())
-		WingAnalysisCalculator.calculateHighLiftDistribution(theInputOutputTree, this);
+
 		
 	}
 	
@@ -1604,6 +1601,38 @@ public class VaraiblesAnalyses {
 
 	public void setHighLiftTab(Tab highLiftTab) {
 		this.highLiftTab = highLiftTab;
+	}
+
+
+
+
+
+	public RadioButton getYesHighLift() {
+		return yesHighLift;
+	}
+
+
+
+
+
+	public void setYesHighLift(RadioButton yesHighLift) {
+		this.yesHighLift = yesHighLift;
+	}
+
+
+
+
+
+	public RadioButton getNoHighLift() {
+		return noHighLift;
+	}
+
+
+
+
+
+	public void setNoHighLift(RadioButton noHighLift) {
+		this.noHighLift = noHighLift;
 	}
 	
 }
