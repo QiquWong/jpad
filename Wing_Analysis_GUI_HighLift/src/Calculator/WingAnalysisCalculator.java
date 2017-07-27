@@ -73,7 +73,8 @@ import writers.JPADStaticWriteUtils;
 public class WingAnalysisCalculator {
 	static NasaBlackwell theNasaBlackwellCalculator;
 	static TextArea textOutputLift;
-	static List<Double>  _deltaCL0FlapList = new ArrayList<>();
+	static List<Double>  _deltaCl0FlapList = new ArrayList<>();
+	static List<Double>  _clAlphaFlapList = new ArrayList<>();
 	static double[] newChordDistributionWithFlapMeter;
 	static List<Double> yAdimensionalArrayHighLiftModified = new ArrayList<>();
 	static double[] yTemp;
@@ -680,10 +681,10 @@ public class WingAnalysisCalculator {
 						theInputOutpuTree.getAlphaStall()
 						);
 
-		List<Double> _deltaCl0FlapList =  
+		 _deltaCl0FlapList =  
 				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP_LIST);
 
-		_deltaCL0FlapList =  
+		List<Double>  _deltaCL0FlapList =  
 				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP_LIST)
 				;
 		List<Double>  _deltaClmaxFlapList = 
@@ -738,6 +739,9 @@ public class WingAnalysisCalculator {
 				(Amount<?>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT);
 
 		theInputOutpuTree.setClAlphaFlap(_cLAlphaHighLift);
+		
+		_clAlphaFlapList = 
+				(List<Double>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT_LIST);
 
 		//------------------------------------------------------
 		// CL ZERO HIGH LIFT
@@ -1047,7 +1051,9 @@ public class WingAnalysisCalculator {
 			cFirstC = 
 					(1+(deltaCCfFlap*theInputOutpuTree.getFlapChordRatio().get(i)));
 
-			newClAlpha = (MyMathUtils.getInterpolatedValue1DLinear(
+			newClAlpha = 
+//					_clAlphaFlapList.get(i);
+					(MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
 					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClAlphaDegDistributionSemiSpan()),
 					yFlapAd))* (
@@ -1097,7 +1103,7 @@ public class WingAnalysisCalculator {
 							-((MyMathUtils.getInterpolatedValue1DLinear(
 									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
 									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClZeroDistributionSemispan()),
-									yFlapAd) + _deltaCL0FlapList.get(i))/
+									yFlapAd) + _deltaCl0FlapList.get(i))/
 									newClAlpha),
 							NonSI.DEGREE_ANGLE)
 					);
@@ -1133,7 +1139,9 @@ public class WingAnalysisCalculator {
 			cFirstC = 
 					(1+(deltaCCfFlap*theInputOutpuTree.getFlapChordRatio().get(i)));
 
-			newClAlpha = (MyMathUtils.getInterpolatedValue1DLinear(
+			newClAlpha = 
+//					_clAlphaFlapList.get(i);
+					(MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
 					MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClAlphaDegDistributionSemiSpan()),
 					yFlapAd))* (
@@ -1181,7 +1189,7 @@ public class WingAnalysisCalculator {
 							-((MyMathUtils.getInterpolatedValue1DLinear(
 									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getyAdimensionalDistributionSemiSpan()),
 									MyArrayUtils.convertToDoublePrimitive(theInputOutpuTree.getClZeroDistributionSemispan()),
-									yFlapAd) + _deltaCL0FlapList.get(i))/
+									yFlapAd) + _deltaCl0FlapList.get(i))/
 									newClAlpha),
 							NonSI.DEGREE_ANGLE)
 					);
@@ -1521,6 +1529,30 @@ public class WingAnalysisCalculator {
 		// creating new array for dihedral and twist with new y stations.		
 		double vortexSemiSpanToSemiSpanRatio = (1./(2*theInputOutpuTree.getNumberOfPointSemispan()));
 
+		// new surface 
+		
+		Double flapSurfaceMeter = 0.0;
+		
+		for (int i=0; i<theInputOutpuTree.getFlapChordRatio().size(); i++) {
+			flapSurfaceMeter = flapSurfaceMeter + 
+					( ( 
+							(theInputOutpuTree.getFlapOuterStation().get(i) - theInputOutpuTree.getFlapInnerStation().get(i)) *
+							theInputOutpuTree.getSemiSpan().doubleValue(SI.METER)) *
+							mapDeltaChordFlap.get(theInputOutpuTree.getFlapInnerStation().get(i)).doubleValue(SI.METER));
+		}
+		
+		Double slatSurfaceMeter = 0.0;
+		
+		for (int i=0; i<theInputOutpuTree.getSlatChordRatio().size(); i++) {
+			slatSurfaceMeter = slatSurfaceMeter + 
+					( ( 
+							(theInputOutpuTree.getSlatOuterStation().get(i) - theInputOutpuTree.getSlatInnerStation().get(i)) *
+							theInputOutpuTree.getSemiSpan().doubleValue(SI.METER)) *
+							mapDeltaChordSlat.get(theInputOutpuTree.getSlatInnerStation().get(i)).doubleValue(SI.METER));
+		}
+		
+		Double totalSurfaceMeter = theInputOutpuTree.getSurface().doubleValue(SI.SQUARE_METRE) + flapSurfaceMeter + slatSurfaceMeter;
+		 
 		calculators.aerodynamics.NasaBlackwell theNasaBlackwellCalculator = new  calculators.aerodynamics.NasaBlackwell(
 				theInputOutpuTree.getSemiSpan().doubleValue(SI.METER),
 				theInputOutpuTree.getSurface().doubleValue(SI.SQUARE_METRE),
@@ -1534,6 +1566,21 @@ public class WingAnalysisCalculator {
 				0.0,
 				theInputOutpuTree.getMachNumber(),
 				theInputOutpuTree.getAltitude().doubleValue(SI.METER));
+		
+//		calculators.aerodynamics.NasaBlackwell theNasaBlackwellCalculator = new  calculators.aerodynamics.NasaBlackwell(
+//				theInputOutpuTree.getSemiSpan().doubleValue(SI.METER),
+//				totalSurfaceMeter,
+//				MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutpuTree.getyDimensionalDistributionSemiSpan()),
+//				chordDistributionHighLiftFinal,
+//				xleDistributionHighLiftFinal, 
+//				dihedralxleDistributionHighLiftFinal, 
+//				twistDistributionHighLiftFinal,
+//				alphaZeroLiftDistributionHighLiftFinal, 
+//				vortexSemiSpanToSemiSpanRatio,
+//				0.0,
+//				theInputOutpuTree.getMachNumber(),
+//				theInputOutpuTree.getAltitude().doubleValue(SI.METER));
+
 
 
 		// calculating curves
@@ -1542,9 +1589,21 @@ public class WingAnalysisCalculator {
 
 			theNasaBlackwellCalculator.calculate(theInputOutpuTree.getAlphaArrayHighLiftDistribution().get(i));
 			List<Double> clList = new ArrayList<>();
+			// chords new
+//			clList = Main.convertDoubleArrayToListDouble(
+//					Main.convertFromDoubleToPrimitive(
+//							theNasaBlackwellCalculator.getClTotalDistribution().toArray()));
+			
+			// chords old
 			clList = Main.convertDoubleArrayToListDouble(
 					Main.convertFromDoubleToPrimitive(
-							theNasaBlackwellCalculator.getClTotalDistribution().toArray()));
+							theNasaBlackwellCalculator.get_ccLDistribution().toArray()));
+			for(int j =0; j<clList.size(); j++) {
+				clList.set(j, clList.get(j)/theInputOutpuTree.getChordDistributionSemiSpan().get(j).doubleValue(SI.METER));
+			}
+			
+			
+			
 			if (clList.get(i).isNaN()){
 				for (int ii=0; ii< clList.size(); ii++){
 					clList.set(ii, 0.0);
@@ -1706,7 +1765,7 @@ public class WingAnalysisCalculator {
 		textOutputLift.appendText("\nNew alpha zero lift distribution (°) --> " + Arrays.toString(alphazeroLiftdeg));
 	
 		for(int i=0; i<theInputOutpuTree.getAlphaArrayHighLiftDistribution().size(); i++){
-			textOutputLift.appendText("Cl distribution at alpha = " + 
+			textOutputLift.appendText("\nCl distribution at alpha = " + 
 					theInputOutpuTree.getAlphaArrayHighLiftDistribution().get(i).doubleValue(NonSI.DEGREE_ANGLE) + 
 					" deg ---> " + theInputOutpuTree.getClDistributionCurvesHighLift().get(i) + "\n");
 		}

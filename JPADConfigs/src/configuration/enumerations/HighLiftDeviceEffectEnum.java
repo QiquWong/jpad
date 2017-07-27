@@ -18,6 +18,7 @@ public enum HighLiftDeviceEffectEnum {
 	DELTA_CL_MAX_SLAT,
 	DELTA_CD,
 	DELTA_CM_c4,
-	CL_ALPHA_HIGH_LIFT	
+	CL_ALPHA_HIGH_LIFT,
+	CL_ALPHA_HIGH_LIFT_LIST
 	
 }

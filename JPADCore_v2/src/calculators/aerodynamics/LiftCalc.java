@@ -1527,6 +1527,7 @@ public class LiftCalc {
 									*Math.pow(Math.sin(flapDeflections.get(i).doubleValue(SI.RADIAN)), 2)))-1))));
 			swf.add(flapSurface.get(i)/surface.doubleValue(SI.SQUARE_METRE));
 		}
+		resultsMap.put(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT_LIST, cLalphaFlapList);
 
 		double swfTot = 0;
 		for(int i=0; i<swf.size(); i++)
