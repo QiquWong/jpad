@@ -17,6 +17,7 @@ import aircraft.components.Aircraft;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
+import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
@@ -237,31 +238,31 @@ public class CompleteAnalysisTest extends Application {
 			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader,
-//			        fusDesDatabaseReader,
-//					veDSCDatabaseReader
-//					)
-//					.build();
-
-			// reading aircraft from xml ... 
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
+			theAircraft = new Aircraft.AircraftBuilder(
+					"ATR-72",
+					AircraftEnum.ATR72,
 					aeroDatabaseReader,
 					highLiftDatabaseReader,
-					fusDesDatabaseReader,
-					veDSCDatabaseReader);
+			        fusDesDatabaseReader,
+					veDSCDatabaseReader
+					)
+					.build();
+
+			// reading aircraft from xml ... 
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader,
+//					fusDesDatabaseReader,
+//					veDSCDatabaseReader);
 			
 			// activating system.out
 			System.setOut(originalOut);			
@@ -292,10 +293,10 @@ public class CompleteAnalysisTest extends Application {
 			// Analyzing the aircraft
 			System.setOut(originalOut);
 			System.out.println("\n\n\tRunning requested analyses ... \n\n");
-			System.setOut(filterStream);
+//			System.setOut(filterStream);
 			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
 			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
-			System.setOut(originalOut);
+//			System.setOut(originalOut);
 			System.out.println("\n\n\tDone!! \n\n");
 			System.setOut(filterStream);
 			

@@ -155,7 +155,7 @@ public class CenterOfGravity {
 			Amount<Length> len) {
 
 		_xMAC = (_xBRF.minus(xB)).divide(len).getEstimatedValue();
-		_zMAC = _xBRF.divide(len).getEstimatedValue();
+		_zMAC = _zBRF.divide(len).getEstimatedValue();
 	}
 
 	public CenterOfGravity plus(CenterOfGravity cg) {

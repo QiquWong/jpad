@@ -1692,7 +1692,7 @@ public class ACWeightsManager implements IACWeightsManager {
 			// --- END LANDING MASS-----------------------------------
 			
 			_maximumTakeOffMassList.add(_maximumTakeOffMass.to(SI.KILOGRAM));
-			System.out.println("Iteration " + (i+1) + " --> Maximum Take-Off Mass: " + _maximumTakeOffMass);
+			System.out.println("Iteration " + (i) + " --> Maximum Take-Off Mass: " + _maximumTakeOffMass);
 			i++;
 			
 		}

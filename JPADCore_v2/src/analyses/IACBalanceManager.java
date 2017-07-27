@@ -49,6 +49,9 @@ public interface IACBalanceManager {
 
 	public Amount<Mass> getPassengersTotalMass();
 	public void setPassengersTotalMass(Amount<Mass> _passengerTotalMass);
+	
+	public Amount<Mass> getFuelMass();
+	public void setFuelMass(Amount<Mass> _fuelMass);
 
 	public Amount<Mass> getFuselageMass();
 	public void setFuselageMass(Amount<Mass> _fuselageMass);

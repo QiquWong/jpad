@@ -215,7 +215,9 @@ public class MomentCalc {
 
 		if (wingSpan == 0. || sWing == 0.) return 0.; 
 
-		return cL_alpha_v * kFv * kWv * kHv * (sVertical/sWing)  * (armVertical/wingSpan);
+		double  cNBeta = cL_alpha_v * kFv * kWv * kHv * (sVertical/sWing)  * (armVertical/wingSpan);
+		
+		return cNBeta;
 	}
 
 	/**

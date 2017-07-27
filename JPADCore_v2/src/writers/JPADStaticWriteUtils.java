@@ -67,6 +67,7 @@ import org.apache.poi.ss.usermodel.charts.ScatterChartSerie;
 import org.apache.poi.ss.usermodel.charts.ValueAxis;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.azeckoski.reflectutils.ReflectUtils;
+import org.jscience.mathematics.vector.DimensionException;
 import org.jscience.physics.amount.Amount;
 import org.omg.PortableInterceptor.NON_EXISTENT;
 import org.w3c.dom.Document;
@@ -187,8 +188,7 @@ public class JPADStaticWriteUtils {
 			) {
 		
 		if(xList.size() != yList.size()) {
-			System.err.println("X AND Y LISTS MUST HAVE THE SAME SIZE !!");
-			return;
+			throw new DimensionException("X AND Y LISTS MUST HAVE THE SAME SIZE !!");
 		}
 		
 		for (int i = 0; i < xList.size(); i++) {
@@ -213,8 +213,7 @@ public class JPADStaticWriteUtils {
 				writer.println(xListName.get(i) + ", " + yListName.get(i));
 
 				if(xList.get(i).length != yList.get(i).length) {
-					System.err.println("CORRESPONDING ELEMENTS OF THE TWO LISTS MUST HAVE THE SAME LENGTH");
-					return;
+					throw new DimensionException("CORRESPONDING ELEMENTS OF THE TWO LISTS MUST HAVE THE SAME LENGTH");
 				}
 
 				for (int j = 0; j < xList.get(i).length; j++) {

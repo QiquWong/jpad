@@ -15,6 +15,7 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+
 import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.ode.FirstOrderDifferentialEquations;
@@ -25,7 +26,6 @@ import org.apache.commons.math3.ode.sampling.StepHandler;
 import org.apache.commons.math3.ode.sampling.StepInterpolator;
 import org.jscience.physics.amount.Amount;
 
-import aircraft.components.Aircraft;
 import aircraft.components.powerplant.PowerPlant;
 import calculators.performance.customdata.TakeOffResultsMap;
 import configuration.enumerations.EngineOperatingConditionEnum;
@@ -285,7 +285,7 @@ public class TakeOffCalc {
 	 * 
 	 * @author Vittorio Trifari
 	 */
-	public void calculateTakeOffDistanceODE(Double vFailure, boolean isAborted) {
+	public void calculateTakeOffDistanceODE(Double vFailure, boolean isAborted, boolean iterativeLoopOverV2) {
 
 		System.out.println("---------------------------------------------------");
 		System.out.println("CalcTakeOff :: ODE integration\n\n");
@@ -1073,9 +1073,8 @@ public class TakeOffCalc {
 			theIntegrator.clearEventHandlers();
 			theIntegrator.clearStepHandlers();
 
-			if(isAborted) {
-					break;
-			}
+			if(isAborted || !iterativeLoopOverV2) 
+				break;
 			
 			//--------------------------------------------------------------------------------
 			// NEW ALPHA REDUCTION RATE 
@@ -1085,6 +1084,8 @@ public class TakeOffCalc {
 				newAlphaRed = alphaRed - 0.1;
 			
 			i++;
+			
+			
 		}
 		
 		System.out.println("\n---------------------------END!!-------------------------------");
@@ -1115,14 +1116,14 @@ public class TakeOffCalc {
 
 		// iterative take-off distance calculation for both conditions
 		for(int i=0; i<failureSpeedArray.length; i++) {
-			calculateTakeOffDistanceODE(failureSpeedArray[i], false);
+			calculateTakeOffDistanceODE(failureSpeedArray[i], false, false);
 			if(!getGroundDistance().isEmpty())
 				continuedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			else {
 				failureSpeedArray[i] = 0.0;
 				continuedTakeOffArray[i] = 0.0;
 			}
-			calculateTakeOffDistanceODE(failureSpeedArray[i], true);
+			calculateTakeOffDistanceODE(failureSpeedArray[i], true, false);
 			if(!getGroundDistance().isEmpty() && groundDistance.get(groundDistance.size()-1).getEstimatedValue() >= 0.0)
 				abortedTakeOffArray[i] = getGroundDistance().get(groundDistance.size()-1).getEstimatedValue();
 			else {

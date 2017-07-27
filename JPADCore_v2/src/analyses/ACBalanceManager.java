@@ -53,6 +53,7 @@ public class ACBalanceManager implements IACBalanceManager {
 	private Amount<Mass> _maximumTakeOffMass;
 	private Amount<Mass> _maximumZeroFuelMass;
 	private Amount<Mass> _operatingEmptyMass;	
+	private Amount<Mass> _fuelMass;
 	private Amount<Mass> _passengersTotalMass;
 	private Amount<Mass> _passengersSingleMass;
 	private Amount<Mass> _fuselageMass;
@@ -88,6 +89,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		private Amount<Mass> __maximumTakeOffMass;
 		private Amount<Mass> __maximumZeroFuelMass;
 		private Amount<Mass> __operatingEmptyMass;	
+		private Amount<Mass> __fuelMass;
 		private Amount<Mass> __passengersTotalMass;
 		private Amount<Mass> __passengersSingleMass;
 		private Amount<Mass> __fuselageMass;
@@ -118,6 +120,11 @@ public class ACBalanceManager implements IACBalanceManager {
 		
 		public ACBalanceManagerBuilder operatingEmptyMass (Amount<Mass> operatingEmptyMass) {
 			this.__operatingEmptyMass = operatingEmptyMass;
+			return this;
+		}
+		
+		public ACBalanceManagerBuilder fuelMass (Amount<Mass> fuelMass) {
+			this.__fuelMass = fuelMass;
 			return this;
 		}
 		
@@ -187,6 +194,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		this._maximumTakeOffMass = builder.__maximumTakeOffMass;
 		this._maximumZeroFuelMass = builder.__maximumZeroFuelMass;
 		this._operatingEmptyMass = builder.__operatingEmptyMass;
+		this._fuelMass = builder.__fuelMass;
 		this._passengersTotalMass = builder.__passengersTotalMass;
 		this._passengersSingleMass = builder.__passengersSingleMass;
 		this._fuselageMass = builder.__fuselageMass;
@@ -242,6 +250,7 @@ public class ACBalanceManager implements IACBalanceManager {
 		Amount<Mass> maximumTakeOffMass = null;
 		Amount<Mass> maximumZeroFuelMass = null;
 		Amount<Mass> operatingEmptyMass = null;
+		Amount<Mass> fuelMass = null;
 		Amount<Mass> passengersTotalMass = null;
 		Amount<Mass> passengersSingleMass = null;
 		Amount<Mass> fuselageMass = null;
@@ -302,6 +311,12 @@ public class ACBalanceManager implements IACBalanceManager {
 				if(operatingEmptyMassCell != null)
 					operatingEmptyMass = Amount.valueOf(operatingEmptyMassCell.getNumericCellValue(), SI.KILOGRAM);
 
+				//---------------------------------------------------------------
+				// FUEL MASS
+				Cell fuelMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Fuel Mass").get(0)).getCell(2);
+				if(fuelMassCell != null)
+					fuelMass = Amount.valueOf(fuelMassCell.getNumericCellValue(), SI.KILOGRAM);
+				
 				//---------------------------------------------------------------
 				// PASSENGERS TOTAL MASS
 				Cell passengersTotalMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Passengers Mass").get(0)).getCell(2);
@@ -419,6 +434,12 @@ public class ACBalanceManager implements IACBalanceManager {
 				operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/operating_empty_mass");
 			
 			//---------------------------------------------------------------
+			// FUEL MASS
+			String fuelMassProperty = reader.getXMLPropertyByPath("//balance/fuel_mass");
+			if(fuelMassProperty != null)
+				fuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/fuel_mass");
+			
+			//---------------------------------------------------------------
 			// PASSENGERS TOTAL MASS
 			String passengersTotalMassProperty = reader.getXMLPropertyByPath("//balance/passengers_total_mass");
 			if(passengersTotalMassProperty != null)
@@ -489,6 +510,7 @@ public class ACBalanceManager implements IACBalanceManager {
 				.maximumTakeOffMass(maximumTakeOffMass)
 				.maximumZeroFuelMass(maximumZeroFuelMass)
 				.operatingEmptyMass(operatingEmptyMass)
+				.fuelMass(fuelMass)
 				.passengersTotalMass(passengersTotalMass)
 				.passengersSingleMass(passengersSingleMass)
 				.fuselageMass(fuselageMass)
@@ -666,7 +688,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getFuselage().getXCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getFuselage().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -730,7 +752,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getWing().getXCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getWing().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -742,7 +764,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getWing().getYCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getWing().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -860,7 +882,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getHTail().getXCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getHTail().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -872,7 +894,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getHTail().getYCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getHTail().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -937,7 +959,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getVTail().getXCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getVTail().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -949,7 +971,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getVTail().getYCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getVTail().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1014,7 +1036,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getCanard().getXCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getCanard().getXCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1026,7 +1048,7 @@ public class ACBalanceManager implements IACBalanceManager {
 							new Object[] {
 									methods.toString(),
 									"m",
-									_theAircraft.getCanard().getYCGMap().get(methods).getEstimatedValue(),
+									_theAircraft.getCanard().getYCGMap().get(methods).doubleValue(SI.METER),
 							}
 							);
 			}
@@ -1272,9 +1294,10 @@ public class ACBalanceManager implements IACBalanceManager {
 					_theAircraft
 						.getCabinConfiguration()
 							.getSeatsCoGFrontToRear().get(i)
-								.minus(meanAerodynamicChord.times(0.02))
-					.minus(meanAerodynamicChordXle)
-					.divide(meanAerodynamicChord)
+								.to(SI.METER)
+								.minus(meanAerodynamicChord.times(0.02).to(SI.METER))
+					.minus(meanAerodynamicChordXle.to(SI.METER))
+					.divide(meanAerodynamicChord.to(SI.METER))
 					.times(100)
 					.getEstimatedValue();
 			seatCoGRearToFrontReferToMAC[i] = 
@@ -1282,9 +1305,10 @@ public class ACBalanceManager implements IACBalanceManager {
 					_theAircraft
 						.getCabinConfiguration()
 							.getSeatsCoGRearToFront().get(i)
-								.plus(meanAerodynamicChord.times(0.02))
-					.minus(meanAerodynamicChordXle)
-					.divide(meanAerodynamicChord)
+							.to(SI.METER)
+								.plus(meanAerodynamicChord.times(0.02).to(SI.METER))
+					.minus(meanAerodynamicChordXle.to(SI.METER))
+					.divide(meanAerodynamicChord.to(SI.METER))
 					.times(100)
 					.getEstimatedValue();
 		}
@@ -1296,14 +1320,14 @@ public class ACBalanceManager implements IACBalanceManager {
 				MyArrayUtils.convertListOfAmountToDoubleArray(
 						_theAircraft.getCabinConfiguration().getCurrentMassList()
 						)[indexOfMax];
-		fuelCoGBeforeBoardingReferToMAC[1] = ((((_cgOEM.getXBRF().times(_operatingEmptyMass).getEstimatedValue())
-				+ (_theAircraft.getFuelTank().getXCG()
-						.times(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
-				/(_operatingEmptyMass.plus(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
+		fuelCoGBeforeBoardingReferToMAC[1] = ((((_cgOEM.getXBRF().to(SI.METER).times(_operatingEmptyMass.to(SI.KILOGRAM)).getEstimatedValue())
+				+ (_theAircraft.getFuelTank().getXCG().to(SI.METER)
+						.times(_fuelMass.to(SI.KILOGRAM)).getEstimatedValue()))
+				/(_operatingEmptyMass.to(SI.KILOGRAM).plus(_fuelMass.to(SI.KILOGRAM)).getEstimatedValue()))
 				- meanAerodynamicChordXle.doubleValue(SI.METER))
 				/ (meanAerodynamicChord.doubleValue(SI.METER)/100);
-		massWithFuelBeforeBoarding[1] = _operatingEmptyMass
-				.plus(_theAircraft.getFuelTank().getFuelMass())
+		massWithFuelBeforeBoarding[1] = _operatingEmptyMass.to(SI.KILOGRAM)
+				.plus(_fuelMass.to(SI.KILOGRAM))
 				.doubleValue(SI.KILOGRAM); 
 				
 		
@@ -1518,9 +1542,9 @@ public class ACBalanceManager implements IACBalanceManager {
 		double prodX = 0., prodZ = 0., sum = 0.;
 		for (int i=0; i < _cgList.size(); i++) {
 
-			prodX += _cgList.get(i).getXBRF().getEstimatedValue()*massStructureList.get(i).getEstimatedValue();
-			prodZ += _cgList.get(i).getZBRF().getEstimatedValue()*massStructureList.get(i).getEstimatedValue();			
-			sum += massStructureList.get(i).getEstimatedValue();
+			prodX += _cgList.get(i).getXBRF().doubleValue(SI.METER)*massStructureList.get(i).doubleValue(SI.KILOGRAM);
+			prodZ += _cgList.get(i).getZBRF().doubleValue(SI.METER)*massStructureList.get(i).doubleValue(SI.KILOGRAM);			
+			sum += massStructureList.get(i).doubleValue(SI.KILOGRAM);
 
 		}
 		
@@ -1532,50 +1556,50 @@ public class ACBalanceManager implements IACBalanceManager {
 				);
 		
 		_cgStructure.calculateCGinMAC(
-				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+						.plus(_theAircraft.getWing().getXApexConstructionAxes().to(SI.METER))), 
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
 				Amount.valueOf(0., SI.METER), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER));
 
 		// Structure + engines CG
 		_cgStructureAndPower = new CenterOfGravity();
 
-		System.out.println("fuel tank (X_BRF) --> " + _theAircraft.getFuelTank().getXCG().getEstimatedValue());
-		System.out.println("fuel tank (Z_BRF) --> " + _theAircraft.getFuelTank().getZCG().getEstimatedValue());		
+		System.out.println("fuel tank (X_BRF) --> " + _theAircraft.getFuelTank().getXCG().doubleValue(SI.METER));
+		System.out.println("fuel tank (Z_BRF) --> " + _theAircraft.getFuelTank().getZCG().doubleValue(SI.METER));		
 		double xCGPowerPlantContribute =0.0;
 		double zCGPowerPlantContribute =0.0;
 		Amount<Mass> powerPlantMass = Amount.valueOf(0.0, SI.KILOGRAM);
 		
 		for(int i=0 ; i< _theAircraft.getPowerPlant().getEngineNumber(); i++){
-			powerPlantMass = powerPlantMass.plus(_enginesMassList.get(i));
-			xCGPowerPlantContribute = xCGPowerPlantContribute + (_theAircraft.getPowerPlant().getCGList().get(i).getXBRF().getEstimatedValue()*
-					_enginesMassList.get(i).getEstimatedValue());
-			zCGPowerPlantContribute = zCGPowerPlantContribute + (_theAircraft.getPowerPlant().getCGList().get(i).getZBRF().getEstimatedValue()*
-					_enginesMassList.get(i).getEstimatedValue());
+			powerPlantMass = powerPlantMass.to(SI.KILOGRAM).plus(_enginesMassList.get(i).to(SI.KILOGRAM));
+			xCGPowerPlantContribute = xCGPowerPlantContribute + (_theAircraft.getPowerPlant().getCGList().get(i).getXBRF().doubleValue(SI.METER)*
+					_enginesMassList.get(i).doubleValue(SI.KILOGRAM));
+			zCGPowerPlantContribute = zCGPowerPlantContribute + (_theAircraft.getPowerPlant().getCGList().get(i).getZBRF().doubleValue(SI.METER)*
+					_enginesMassList.get(i).doubleValue(SI.KILOGRAM));
 			System.out.println("Engine " + i + " (X_BRF) --> " + _theAircraft.getPowerPlant().getCGList().get(i).getXBRF());
 			System.out.println("Engine " + i + " (Z_BRF) --> " + _theAircraft.getPowerPlant().getCGList().get(i).getZBRF());
 		}
 		_cgStructureAndPower.setXBRF(
 				Amount.valueOf(
 						       (xCGPowerPlantContribute+
-						    		   sum*getCGStructure().getXBRF().getEstimatedValue())/
-								(sum + powerPlantMass.getEstimatedValue())
+						    		   sum*getCGStructure().getXBRF().doubleValue(SI.METER))/
+								(sum + powerPlantMass.doubleValue(SI.KILOGRAM))
 										, SI.METER));
 
 		_cgStructureAndPower.setZBRF(
 				Amount.valueOf(
 						       (zCGPowerPlantContribute+
-						    		   sum*getCGStructure().getZBRF().getEstimatedValue())/
-								(sum + powerPlantMass.getEstimatedValue())
+						    		   sum*getCGStructure().getZBRF().doubleValue(SI.METER))/
+								(sum + powerPlantMass.doubleValue(SI.KILOGRAM))
 										, SI.METER));
 		
 		_cgStructureAndPower.calculateCGinMAC(
-				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+						.plus(_theAircraft.getWing().getXApexConstructionAxes().to(SI.METER))), 
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
 				Amount.valueOf(0., SI.METER), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER));
 
 		// OEM CG location
 		/**
@@ -1585,14 +1609,14 @@ public class ACBalanceManager implements IACBalanceManager {
 		 * DO NOT AFFECT THE CG LOCATION.
 		 */
 		_cgOEM = new CenterOfGravity();
-		_cgOEM.setXBRF(getCGStructureAndPower().getXBRF());
-		_cgOEM.setZBRF(getCGStructureAndPower().getZBRF());
+		_cgOEM.setXBRF(getCGStructureAndPower().getXBRF().to(SI.METER));
+		_cgOEM.setZBRF(getCGStructureAndPower().getZBRF().to(SI.METER));
 		_cgOEM.calculateCGinMAC(
-				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+						.plus(_theAircraft.getWing().getXApexConstructionAxes().to(SI.METER))), 
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
 				Amount.valueOf(0., SI.METER), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER));
 		
 		_theAircraft.getCabinConfiguration().buildSimpleLayout(_theAircraft);
 		
@@ -1606,49 +1630,49 @@ public class ACBalanceManager implements IACBalanceManager {
 				);
 		
 		_cgMZFM.setZBRF(Amount.valueOf(
-				getCGStructureAndPower().getZBRF().getEstimatedValue()*_operatingEmptyMass.getEstimatedValue() 
-						/(_passengersTotalMass.getEstimatedValue() 
-								+ _operatingEmptyMass.getEstimatedValue())
+				getCGStructureAndPower().getZBRF().doubleValue(SI.METER)*_operatingEmptyMass.doubleValue(SI.KILOGRAM)
+						/(_passengersTotalMass.doubleValue(SI.KILOGRAM) 
+								+ _operatingEmptyMass.doubleValue(SI.KILOGRAM))
 						, SI.METER));
 		
 		_cgMZFM.calculateCGinMAC(
-				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+						.plus(_theAircraft.getWing().getXApexConstructionAxes().to(SI.METER))), 
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
 				Amount.valueOf(0., SI.METER), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER));
 
 		// MTOM CG location
 		_cgMTOM = new CenterOfGravity();
 
 		_cgMTOM.setXBRF(Amount.valueOf(
-				(_cgMZFM.getXBRF().getEstimatedValue() 
-						* _maximumZeroFuelMass.getEstimatedValue()
-						+ _theAircraft.getFuelTank().getFuelMass().getEstimatedValue()
-						* _theAircraft.getFuelTank().getXCG().getEstimatedValue())
-						/ this._maximumTakeOffMass.getEstimatedValue(),
+				(_cgMZFM.getXBRF().doubleValue(SI.METER)
+						* _maximumZeroFuelMass.doubleValue(SI.KILOGRAM)
+						+ _fuelMass.doubleValue(SI.KILOGRAM)
+						* _theAircraft.getFuelTank().getXCG().doubleValue(SI.METER))
+						/ this._maximumTakeOffMass.doubleValue(SI.KILOGRAM),
 						SI.METER));
 
 		_cgMTOM.setZBRF(Amount.valueOf(
-				(_cgMZFM.getZBRF().getEstimatedValue() 
-						* _maximumZeroFuelMass.getEstimatedValue()
-						+ _theAircraft.getFuelTank().getFuelMass().getEstimatedValue()
-						* _theAircraft.getFuelTank().getZCG().getEstimatedValue())
-						/ this._maximumTakeOffMass.getEstimatedValue(),
+				(_cgMZFM.getZBRF().doubleValue(SI.METER)
+						* _maximumZeroFuelMass.doubleValue(SI.KILOGRAM)
+						+ _fuelMass.doubleValue(SI.KILOGRAM)
+						* _theAircraft.getFuelTank().getZCG().doubleValue(SI.METER))
+						/ this._maximumTakeOffMass.doubleValue(SI.KILOGRAM),
 						SI.METER));
 		
 		_cgMTOM.calculateCGinMAC(
-				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-						.plus(_theAircraft.getWing().getXApexConstructionAxes())), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX(), 
+				(_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+						.plus(_theAircraft.getWing().getXApexConstructionAxes().to(SI.METER))), 
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER), 
 				Amount.valueOf(0., SI.METER), 
-				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord());
+				_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER));
 
 		// MAX AFT AND FWD CG
 		int index = _theAircraft.getCabinConfiguration().getSeatsCoGFrontToRear().size();
-		Amount<Length> meanAerodynamicChordXle = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-				.plus(_theAircraft.getWing().getXApexConstructionAxes());
-		Amount<Length> meanAerodynamicChord = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord();
+		Amount<Length> meanAerodynamicChordXle = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().to(SI.METER)
+				.plus(_theAircraft.getWing().getXApexConstructionAxes().to(SI.METER));
+		Amount<Length> meanAerodynamicChord = _theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER);
 		
 		List<Double> cgExcursionRefToMAC = new ArrayList<>();
 		
@@ -1679,9 +1703,9 @@ public class ACBalanceManager implements IACBalanceManager {
 		}
 		
 		cgExcursionRefToMAC.add(((((_cgOEM.getXBRF().times(_operatingEmptyMass).getEstimatedValue())
-				+ (_theAircraft.getFuelTank().getXCG()
-						.times(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
-				/(_operatingEmptyMass.plus(_theAircraft.getFuelTank().getFuelMass()).getEstimatedValue()))
+				+ (_theAircraft.getFuelTank().getXCG().to(SI.METER)
+						.times(_fuelMass.doubleValue(SI.KILOGRAM)).getEstimatedValue()))
+				/(_operatingEmptyMass.to(SI.KILOGRAM).plus(_fuelMass.to(SI.KILOGRAM)).getEstimatedValue()))
 				- meanAerodynamicChordXle.doubleValue(SI.METER))
 				/ (meanAerodynamicChord.doubleValue(SI.METER)/100)
 				);
@@ -1879,5 +1903,13 @@ public class ACBalanceManager implements IACBalanceManager {
 
 	public void setMaxForwardCG(Double _maxForwardCG) {
 		this._maxForwardCG = _maxForwardCG;
+	}
+
+	public Amount<Mass> getFuelMass() {
+		return _fuelMass;
+	}
+
+	public void setFuelMass(Amount<Mass> _fuelMass) {
+		this._fuelMass = _fuelMass;
 	}
 }

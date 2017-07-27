@@ -1460,10 +1460,36 @@ public class ACCostsManager {
 			dataListDOC.add(new Object[] { });
 		}
 		
-		Double cashDOC = 0.0;
+		Double totalDOC = 0.0;
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL))
-			cashDOC += _capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+			totalDOC += _capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
 					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW))
+			totalDOC += _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL))
+			totalDOC += _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue();
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CHARGES))
+			totalDOC += _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_MAINTENANCE))
+			totalDOC += _maintenanceChargesDOC.get(
+					_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+					*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE);
+		
+		
+		dataListDOC.add(new Object[] { });
+		dataListDOC.add(new Object[] {
+				"Total DOC", 
+				totalDOC,
+				totalDOC/_blockTime.doubleValue(NonSI.HOUR),
+				totalDOC/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE),
+				totalDOC
+					/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+					*100
+					/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax()
+		});
+		
+		Double cashDOC = 0.0;
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW))
 			cashDOC += _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
 					*_blockTime.doubleValue(NonSI.HOUR);
@@ -1551,10 +1577,23 @@ public class ACCostsManager {
 		
 		MyConfiguration.customizeAmountOutput();
 
-		Double cashDOC = 0.0;
+		Double totalDOC = 0.0;
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CAPITAL))
-			cashDOC += _capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
+			totalDOC += _capitalDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CAPITAL)).doubleValue(MyUnits.USD_PER_HOUR)
 					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW))
+			totalDOC += _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
+					*_blockTime.doubleValue(NonSI.HOUR);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_FUEL))
+			totalDOC += _fuelDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_FUEL)).getEstimatedValue();
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CHARGES))
+			totalDOC += _chargesDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CHARGES)).doubleValue(MyUnits.USD_PER_FLIGHT);
+		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_MAINTENANCE))
+			totalDOC += _maintenanceChargesDOC.get(
+					_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_MAINTENANCE)).doubleValue(MyUnits.USD_PER_NAUTICAL_MILE)
+					*_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE);
+		
+		Double cashDOC = 0.0;
 		if(_theCostsBuilderInterface.getTaskList().containsKey(CostsEnum.DOC_CREW))
 			cashDOC += _crewDOC.get(_theCostsBuilderInterface.getTaskList().get(CostsEnum.DOC_CREW)).doubleValue(MyUnits.USD_PER_HOUR)
 					*_blockTime.doubleValue(NonSI.HOUR);
@@ -1823,7 +1862,20 @@ public class ACCostsManager {
 				.append("\t.....................................\n");
 		}
 		
-		sb.append("\tCash DOC\n")
+		sb.append("\tTotal DOC\n")
+		.append("\t\t$/flight\n")
+		.append("\t\t\t"+ totalDOC + "\n")
+		.append("\t\t$/h\n")
+		.append("\t\t\t" + totalDOC/_blockTime.doubleValue(NonSI.HOUR) + "\n")
+		.append("\t\t$/nmi\n")
+		.append("\t\t\t" + totalDOC/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE) + "\n")
+		.append("\t\t¢/(nmi*seat)\n")
+		.append("\t\t\t" + totalDOC
+				/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
+				*100
+				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+		.append("\t.....................................\n")
+		.append("\tCash DOC\n")
 		.append("\t\t$/flight\n")
 		.append("\t\t\t"+ cashDOC + "\n")
 		.append("\t\t$/h\n")
@@ -1834,8 +1886,9 @@ public class ACCostsManager {
 		.append("\t\t\t" + cashDOC
 				/_theCostsBuilderInterface.getRange().doubleValue(NonSI.NAUTICAL_MILE)
 				*100
-				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n");
-	
+				/_theCostsBuilderInterface.getAircraft().getCabinConfiguration().getMaxPax() + "\n")
+		.append("\t.....................................\n");
+		
 		return sb.toString();
 		
 	}

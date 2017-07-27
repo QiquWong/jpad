@@ -295,7 +295,7 @@ public class LiftingSurface implements ILiftingSurface {
 			case ROSKAM : { // Roskam page 85 (pdf) part V
 				methodsList.add(method);
 
-				System.out.println("---" + this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN));
+//				System.out.println("---" + this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getSweepQuarterChord().to(SI.RADIAN));
 				_mass = Amount.valueOf(
 						Amount.valueOf(2*(0.00428*
 								Math.pow(surface, 0.48)*this.getAspectRatio()*

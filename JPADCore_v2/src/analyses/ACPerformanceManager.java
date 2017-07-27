@@ -906,7 +906,7 @@ public class ACPerformanceManager {
 	// End of the builder pattern 
 	//============================================================================================
 	
-	@SuppressWarnings({ "resource", "unchecked" })
+	@SuppressWarnings({ "resource", "unchecked", "unused" })
 	public static ACPerformanceManager importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
@@ -3500,7 +3500,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theTakeOffCalculator.calculateTakeOffDistanceODE(0.0, false);
+			_theTakeOffCalculator.calculateTakeOffDistanceODE(0.0, false, true);
 
 			// Distances:
 			_groundRollDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT);
@@ -3599,8 +3599,9 @@ public class ACPerformanceManager {
 					_theOperatingConditions.getMachTakeOff(), 
 					veDSCDatabaseReader.getkFv(),
 					veDSCDatabaseReader.getkWv(),
-					veDSCDatabaseReader.getkHv())/(180/Math.PI);
-					
+					veDSCDatabaseReader.getkHv()
+					);
+			
 			//..................................................................................
 			// CALCULATING THE THRUST YAWING MOMENT
 			double[] speed = MyArrayUtils.linspace(
@@ -3752,16 +3753,19 @@ public class ACPerformanceManager {
 					);
 			
 			double[][] thrustPlotVector = new double [2][speed.length];
+			double[][] speedPlotVector = new double [2][speed.length];
 			
 			for(int i=0; i < speed.length; i++){
-			thrustPlotVector[0][i] = _thrustMomentOEI[i];
-			thrustPlotVector[1][i] = _yawingMomentOEI[i];
+				speedPlotVector[0][i] = speed[i];
+				speedPlotVector[1][i] = speed[i];
+				thrustPlotVector[0][i] = _thrustMomentOEI[i];
+				thrustPlotVector[1][i] = _yawingMomentOEI[i];
 			}
 			String[] legendValue = new String[2];
 			legendValue[0] = "Thrust Moment";
 			legendValue[1] = "Yawning Moment";
 			
-			MyChartToFileUtils.plot(speed,thrustPlotVector,
+			MyChartToFileUtils.plot(speedPlotVector,thrustPlotVector,
 					null, null, null, null,
 					"V/VsTO", "Thrust - Yawing Moment",
 					"", "N m",legendValue,
@@ -4896,7 +4900,7 @@ public class ACPerformanceManager {
 						speedTASList_SI.add(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed());
 						speedTASList_Imperial.add(Amount.valueOf(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed(), SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT));
 						speedCASList_SI.add(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed()*(Math.sqrt(sigma)));
-						speedCASList_SI.add(Amount.valueOf(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed()*(Math.sqrt(sigma)), SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT));
+						speedCASList_Imperial.add(Amount.valueOf(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxSpeed()*(Math.sqrt(sigma)), SI.METERS_PER_SECOND).doubleValue(NonSI.KNOT));
 						machList.add(_cruiseEnvelopeList.get(_cruiseEnvelopeList.size()-1-i).getMaxMach());
 					}
 				}

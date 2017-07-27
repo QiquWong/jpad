@@ -426,7 +426,7 @@ public class MissionProfileCalc {
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
 					);
 
-			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false);
+			theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, false);
 
 			Amount<Length> groundRollDistanceTakeOff = theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0);
 			Amount<Length> rotationDistanceTakeOff = 
