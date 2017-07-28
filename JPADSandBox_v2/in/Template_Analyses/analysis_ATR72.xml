@@ -24,7 +24,7 @@
 			method_systems=""
             />
 		<!-- method_XXX="AVERAGED" if empty string -->
-    <balance 
+	<balance 
 			file="analysis_balance_ATR72.xml"
 			plot="TRUE"
             method_fuselage=""
@@ -58,7 +58,6 @@
 			V_n_diagram="TRUE"
 			mission_profile="TRUE"
 	/>
-	<!--
 	<costs 
 			file="analysis_costs_ATR72.xml"
 			plot="TRUE"
@@ -73,7 +72,6 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
-	-->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

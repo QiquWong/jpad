@@ -554,7 +554,7 @@ public class DescentCalc {
 							) 
 							/ _rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
 							)
-					> 0.001
+					> 0.01
 					) {
 				
 				double rateOfDescentRatio = Math.abs(
