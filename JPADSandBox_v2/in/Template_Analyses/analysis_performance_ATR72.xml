@@ -11,10 +11,10 @@
 			file_aerodynamics="Aerodynamics.xlsx"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">23170.0</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">13208.0</operating_empty_mass>
+				<maximum_take_off_mass unit="kg">22500.0</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">12950.0</operating_empty_mass>
 				<maximum_fuel_mass unit="kg">5000.0</maximum_fuel_mass>
-				<single_passenger_mass unit="kg">95.0</single_passenger_mass>
+				<single_passenger_mass unit="kg">102.0</single_passenger_mass>
 			</weights>
 			<balance>
 				<xCG_max_aft unit="%">30</xCG_max_aft>
@@ -114,14 +114,14 @@
 			</flight_maneuvering_and_gust_envelope>
 			<mission_profile_and_payload_range>
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
-				<mission_range unit="nmi">890</mission_range> 
-				<alternate_cruise_length unit="nmi"></alternate_cruise_length> <!-- (default = 0.0) -->
-				<alternate_cruise_altitude unit="ft"></alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
-				<holding_duration unit="min"></holding_duration> <!-- (default = 0.0) -->
-				<holding_altitude unit="ft"></holding_altitude> <!-- (default = 0.0) -->
-				<holding_mach_number></holding_mach_number>
+				<mission_range unit="nmi">200</mission_range> 
+				<alternate_cruise_length unit="nmi">87</alternate_cruise_length> <!-- (default = 0.0) -->
+				<alternate_cruise_altitude unit="ft">10000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
+				<holding_duration unit="min">45</holding_duration> <!-- (default = 0.0) -->
+				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
+				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
-				<cruise_length unit="nmi">300</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<cruise_length unit="nmi">100</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<cruise_sfc_function>
 					<sfc>0.4409</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
@@ -134,7 +134,7 @@
 					<sfc>0.386702736</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
-				<initial_mission_fuel unit="kg">3100</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<initial_mission_fuel unit="kg">1000</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
 				<landing_ground_idle_fuel_flow unit="kg/min">2.65</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
