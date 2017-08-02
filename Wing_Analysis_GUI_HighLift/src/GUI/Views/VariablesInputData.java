@@ -253,6 +253,19 @@ public class VariablesInputData {
 
 	List<TextField> cLAlphaList = new ArrayList<>();
 	
+	@FXML
+	TextField aphaStall1;
+	@FXML
+	TextField aphaStall2;
+	@FXML
+	TextField aphaStall3;
+	@FXML
+	TextField aphaStall4;
+	@FXML
+	TextField aphaStall5;
+
+	List<TextField> alphaStallList = new ArrayList<>();
+	
 	// units
 	@FXML
 	ChoiceBox altitudeUnits;
@@ -278,6 +291,8 @@ public class VariablesInputData {
 	ChoiceBox leRadiusUnits;
 	@FXML
 	ChoiceBox clAlphaUnits;
+	@FXML
+	ChoiceBox alphaStallUnits;
 
 	
 	@FXML
@@ -297,6 +312,7 @@ public class VariablesInputData {
 	ObservableList<String> alphaZeroLiftUnitsList = FXCollections.observableArrayList("°","rad" );
 	ObservableList<String> leRadiusUnitsList = FXCollections.observableArrayList("m","ft" );
 	ObservableList<String> clAlphaUnitsList = FXCollections.observableArrayList("1/°","1/rad" );
+	ObservableList<String> alphaStallUnitsList = FXCollections.observableArrayList("°","rad" );
 	ObservableList<String> aifoilList = FXCollections.observableArrayList("NACA_4_DIGIT",
 			"NACA_5_DIGIT",
 			"NACA_63_SERIES",
@@ -342,6 +358,9 @@ public class VariablesInputData {
 
 		clAlphaUnits.setValue("1/°");
 		clAlphaUnits.setItems(clAlphaUnitsList);
+		
+		alphaStallUnits.setValue("°");
+		alphaStallUnits.setItems(alphaStallUnitsList);
 		
 		stationList.add(adimensionalStations1);
 		stationList.add(adimensionalStations2);
@@ -398,6 +417,11 @@ public class VariablesInputData {
 		cLAlphaList.add(cLAlpha3);
 		cLAlphaList.add(cLAlpha4);
 		cLAlphaList.add(cLAlpha5);
+		alphaStallList.add(aphaStall1);
+		alphaStallList.add(aphaStall2);
+		alphaStallList.add(aphaStall3);
+		alphaStallList.add(aphaStall4);
+		alphaStallList.add(aphaStall5);
 		
 		
 	}
@@ -872,6 +896,23 @@ public class VariablesInputData {
 			inputList.add(Double.parseDouble(clMax5.getText()));	
 		theInputTree.setMaximumliftCoefficientDistribution(inputList);
 		
+		//ALPHA STAR
+		inputListAmountAngle = new ArrayList<>();
+
+		unit = main.recognizeUnit(alphaStallUnits);
+
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(aphaStall1.getText()), unit));
+		inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(aphaStall2.getText()), unit));
+		if (numb == 3)
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(aphaStall3.getText()), unit));
+		if (numb == 4)
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(aphaStall4.getText()), unit));
+		if (numb == 5)
+			inputListAmountAngle.add(Amount.valueOf(Double.parseDouble(aphaStall5.getText()), unit));
+		theInputTree.setAlphaStallDistribution((inputListAmountAngle));
+		
+		
+		
 		theInputTree.setInputFile(inputFile);
 		theInputTree.calculateDerivedData();
 		Scene graph = D3PlotterClass.createWingDesign(theInputTree);
@@ -1124,6 +1165,22 @@ public class VariablesInputData {
 			this.cLAlpha5.setText(Double.toString(theInputTree.getClAlphaDistribution().get(0).doubleValue(clAlphaUnitTemp)));
 			}
 		
+		this.aphaStall1.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(0).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+		this.aphaStall2.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(1).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+		if(theInputTree.getNumberOfSections()==3)
+			this.aphaStall3.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(2).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+		if(theInputTree.getNumberOfSections()==4){
+			this.aphaStall3.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(2).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+			this.aphaStall4.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(3).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+		}
+		if(theInputTree.getNumberOfSections()==5){
+			this.aphaStall3.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(2).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+			this.aphaStall4.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(3).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+			this.aphaStall5.setText(Double.toString(theInputTree.getAlphaStallDistribution().get(4).doubleValue(theInputTree.getAlphaStallDistribution().get(0).getUnit())));
+			}
+		this.alphaStallUnits.setValue(theInputTree.getAlphaStallDistribution().get(0).getUnit().toString());
+		
+		
 		if(theInputTree.isHighLiftInputTreeIsFilled()) {
 			addHighLiftDataFunc(theInputTree);
 		}
@@ -1178,6 +1235,10 @@ public class VariablesInputData {
 			cLAlpha4.setDisable(true);
 			cLAlpha5.setDisable(true);
 			
+			aphaStall3.setDisable(true);
+			aphaStall4.setDisable(true);
+			aphaStall5.setDisable(true);
+			
 		}
 		if((int)Double.parseDouble(numberOfGivenSections.getValue().toString()) == 3){
 			adimensionalStations3.setDisable(false);
@@ -1223,6 +1284,10 @@ public class VariablesInputData {
 			cLAlpha3.setDisable(false);
 			cLAlpha4.setDisable(true);
 			cLAlpha5.setDisable(true);
+			
+			aphaStall3.setDisable(false);
+			aphaStall4.setDisable(true);
+			aphaStall5.setDisable(true);
 
 
 		}
@@ -1270,6 +1335,10 @@ public class VariablesInputData {
 			cLAlpha3.setDisable(false);
 			cLAlpha4.setDisable(false);
 			cLAlpha5.setDisable(true);
+			
+			aphaStall3.setDisable(false);
+			aphaStall4.setDisable(false);
+			aphaStall5.setDisable(true);
 
 		}
 		if((int)Double.parseDouble(numberOfGivenSections.getValue().toString()) == 5){
@@ -1317,6 +1386,10 @@ public class VariablesInputData {
 			cLAlpha3.setDisable(false);
 			cLAlpha4.setDisable(false);
 			cLAlpha5.setDisable(false);
+			
+			aphaStall3.setDisable(false);
+			aphaStall4.setDisable(false);
+			aphaStall5.setDisable(false);
 
 
 		}
@@ -2064,5 +2137,21 @@ public class VariablesInputData {
 
 	public void setClAlphaUnits(ChoiceBox clAlphaUnits) {
 		this.clAlphaUnits = clAlphaUnits;
+	}
+
+	public List<TextField> getAlphaStallList() {
+		return alphaStallList;
+	}
+
+	public void setAlphaStallList(List<TextField> alphaStallList) {
+		this.alphaStallList = alphaStallList;
+	}
+
+	public ChoiceBox getAlphaStallUnits() {
+		return alphaStallUnits;
+	}
+
+	public void setAlphaStallUnits(ChoiceBox alphaStallUnits) {
+		this.alphaStallUnits = alphaStallUnits;
 	}
 }

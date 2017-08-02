@@ -379,12 +379,13 @@ public class SaveOutput {
 			WritableSheet sheet = workbook.createSheet("High Lift Configuration", i);
 			Label label;
 			jxl.write.Number number;
+			i++;
 			
 			label = new Label(0, 0, "alpha wing (deg)"); 
 			label.setCellFormat(etaFormat);
 			sheet.addCell(label);
 			
-			for(int k=0 ; k<theInputOutputTree.getAlphaArrayLiftCurve().size(); k++) {
+			for(int k=0 ; k<theInputOutputTree.getAlphaArrayHighLiftCurve().size(); k++) {
 			number = new jxl.write.Number(0, k+1, theInputOutputTree.getAlphaArrayHighLiftCurve().get(k).doubleValue(NonSI.DEGREE_ANGLE));					
 			sheet.addCell(number);
 			}
@@ -394,10 +395,104 @@ public class SaveOutput {
 			label.setCellFormat(etaFormat);
 			sheet.addCell(label);
 			
-			for(int k=0 ; k<theInputOutputTree.getLiftCoefficientCurve().size(); k++) {
+			for(int k=0 ; k<theInputOutputTree.getAlphaArrayHighLiftCurve().size(); k++) {
 			number = new jxl.write.Number(1, k+1, theInputOutputTree.getLiftCoefficient3DCurveHighLift().get(k));					
 			sheet.addCell(number);
 	
+			}
+		}
+		
+		if(theInputOutputTree.getPerformHighLiftDistributionAnalysis() ==true) {
+			WritableSheet sheet = workbook.createSheet("High Lift Distribution", i);
+			Label label;
+			jxl.write.Number number;
+			jxl.write.Number numberTwo;
+			i++;
+			
+			label = new Label(0, 0, "eta Stations"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+			number = new jxl.write.Number(0, k+1, theInputOutputTree.getyAdimensionalDistributionSemiSpan().get(k));					
+			sheet.addCell(number);
+			}
+			
+			
+			label = new Label(1, 0, "Chord Distribution Old"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			
+			label = new Label(2, 0, "Chord Distribution New"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+			number = new jxl.write.Number(1, k+1, theInputOutputTree.getChordDistributionSemiSpan().get(k).doubleValue(SI.METER));					
+			numberTwo = new jxl.write.Number(2, k+1, theInputOutputTree.getNewChordDistributionMeter()[k]);					
+			sheet.addCell(number);
+			sheet.addCell(numberTwo);
+			}
+
+			label = new Label(3, 0, "Xle Distribution Old"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			
+			label = new Label(4, 0, "Xle Distribution New"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+				number = new jxl.write.Number(3, k+1, theInputOutputTree.getxLEDistributionSemiSpan().get(k).doubleValue(SI.METER));					
+				numberTwo = new jxl.write.Number(4, k+1, theInputOutputTree.getNewXLEDisributionMeter()[k]);					
+				sheet.addCell(number);
+				sheet.addCell(numberTwo);
+			}
+			
+			label = new Label(5, 0, "Alpha zero lift Distribution Old"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			
+			label = new Label(6, 0, "Alpha zero lift Distribution New"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+			number = new jxl.write.Number(5, k+1, theInputOutputTree.getAlphaZeroLiftDistributionSemiSpan().get(k).doubleValue(NonSI.DEGREE_ANGLE));					
+			numberTwo = new jxl.write.Number(6, k+1, theInputOutputTree.getNewAlphaZeroLiftDistributionDeg()[k]);					
+			sheet.addCell(number);
+			sheet.addCell(numberTwo);
+			}
+			
+			
+			for(int j=0; j<theInputOutputTree.getAlphaArrayHighLiftDistribution().size();j++) {
+				label = new Label(j+7, 0, "Cl distribution at alpha " +
+			theInputOutputTree.getAlphaArrayHighLiftDistribution().get(j).doubleValue(NonSI.DEGREE_ANGLE) + 
+			" deg"); 
+				label.setCellFormat(labelFormat);
+				sheet.addCell(label); 
+				for(int k=0; k<theInputOutputTree.getClDistributionCurvesHighLift().get(j).size(); k++) {
+				number = new jxl.write.Number(j+7, k+1, theInputOutputTree.getClDistributionCurvesHighLift().get(j).get(k));
+				sheet.addCell(number);
+				}
+			}
+			
+			label = new Label(7+theInputOutputTree.getAlphaArrayHighLiftDistribution().size(), 0, "Alpha zero lift Distribution New"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			label = new Label(8+theInputOutputTree.getAlphaArrayHighLiftDistribution().size(), 0, "Alpha zero lift Distribution New"); 
+			label.setCellFormat(etaFormat);
+			sheet.addCell(label);
+			
+			for(int k=0 ; k<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); k++) {
+			number = new jxl.write.Number(7+theInputOutputTree.getAlphaArrayHighLiftDistribution().size(), k+1, theInputOutputTree.getAlphaArrayHighLiftDistribution().get(k).doubleValue(NonSI.DEGREE_ANGLE));					
+			numberTwo = new jxl.write.Number(8+theInputOutputTree.getAlphaArrayHighLiftDistribution().size(), k+1, theInputOutputTree.getLiftCoefficient3DCurveHighLiftModified().get(k));					
+			sheet.addCell(number);
+			sheet.addCell(numberTwo);
 			}
 		}
 		

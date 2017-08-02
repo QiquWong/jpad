@@ -31,6 +31,7 @@
 						<cl0_distribution>[0.52,0.52,0.52]</cl0_distribution>   
 						<linear_slope_coefficient unit="1/°">[0.12, 0.12, 0.12]</linear_slope_coefficient>
 						<maximum_lift_coefficient_distribution>[1.85,1.78,1.706]</maximum_lift_coefficient_distribution>
+						<alpha_stall_distribution unit="°">[15,15,12]</alpha_stall_distribution>
                     </aerodynamics>
              </distribution>
         </wing>

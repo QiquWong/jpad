@@ -109,6 +109,12 @@ public class Reader {
 			theVariables.getAlphaStarList().get(i).setText((alphaStarDistribution.get(i)));
 		theVariables.getAlphaStarUnits().setValue(unitOfMeas);
 		
+		unitOfMeas = Unit.valueOf(MyXMLReaderUtils.getXMLPropertyByPath(reader.getXmlDoc(),reader.getXpath(),"//alpha_stall_distribution" + "/@unit"));
+		List<String> alphaStallDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_stall_distribution").get(0));
+		for(int i=0; i<alphaStallDistribution.size(); i++)
+			theVariables.getAlphaStallList().get(i).setText((alphaStallDistribution.get(i)));
+		theVariables.getAlphaStallUnits().setValue(unitOfMeas);
+		
 		
 		List<String> clMaxDistribution = reader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution").get(0));
 		for(int i=0; i<clMaxDistribution.size(); i++)
@@ -282,6 +288,7 @@ public class Reader {
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl0_distribution", input.getcLZeroDistribution(), childDistributionNew, doc);
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("linear_slope_coefficient", input.getClAlphaDistribution(), childDistributionNew, doc,  input.getClAlphaDistribution().get(0).getUnit().toString());
 		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("maximum_lift_coefficient_distribution", input.getMaximumliftCoefficientDistribution(), childDistributionNew, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_stall_distribution", input.getAlphaStallDistribution(), childDistributionNew, doc);
 		
 		if(input.isHighLiftInputTreeIsFilled()) {
 			org.w3c.dom.Element highLiftwingDataElement = doc.createElement("high_lift_devices");

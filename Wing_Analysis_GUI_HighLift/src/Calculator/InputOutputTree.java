@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javaslang.Tuple;
 import javaslang.Tuple2;
+import ncsa.hdf.view.NewAttributeDialog;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.customdata.MyArray;
@@ -56,7 +57,8 @@ public class InputOutputTree {
 								leRadiusDistribution;
 	private List<Amount<Angle>> twistDistribution,
 								alphaZeroLiftDistribution,
-								alphaStarDistribution;
+								alphaStarDistribution,
+								alphaStallDistribution;
 	private List<Amount<?>> clAlphaDistribution;
 	private List<Double> maximumliftCoefficientDistribution;
 	
@@ -77,7 +79,9 @@ public class InputOutputTree {
 	private List<Amount<Angle>> twistDistributionSemiSpan,
 	alphaZeroLiftDistributionSemiSpan,
 	alphaStarDistributionSemiSpan,
-	dihedralDistributionSemiSpan;
+	dihedralDistributionSemiSpan,
+	alphaStallDistributionSemiSpan,
+	deltaAlphaStallaSemispan;
 	private List<Double> maximumliftCoefficientDistributionSemiSpan,
 	clZeroDistributionSemispan, 
 	clAlphaDegDistributionSemiSpan;
@@ -117,6 +121,7 @@ public class InputOutputTree {
 	Boolean performLiftAnalysis;
 	Boolean performStallPathAnalysis;
 	Boolean performHighLiftAnalysis;
+	Boolean performHighLiftDistributionAnalysis;
 	
 	// flap and slat
 	
@@ -145,10 +150,17 @@ public class InputOutputTree {
 	
 	List<Double> liftCoefficient3DCurveHighLift;
 	
+	List<Double> liftCoefficient3DCurveHighLiftModified = new ArrayList<>();
+	
 	List<List<Double>> clDistributionCurvesHighLift = new ArrayList<>();
 	
 	List<Double> flapTypeIndex = new ArrayList<>();
 	List<Double> deltaFlapRef = new ArrayList<>();
+	
+	double[] newChordDistributionMeter;
+	double[] newAlphaZeroLiftDistributionDeg;
+	double[] newXLEDisributionMeter;
+
 	
 	
 	
@@ -182,7 +194,8 @@ public class InputOutputTree {
 		alphaStarDistributionSemiSpan = new ArrayList<>(); 
 		dihedralDistributionSemiSpan = new ArrayList<>(); 
 		maximumliftCoefficientDistributionSemiSpan = new ArrayList<>(); 
-
+		alphaStallDistributionSemiSpan = new ArrayList<>();
+		deltaAlphaStallaSemispan = new ArrayList<>();
 		
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -211,10 +224,11 @@ public class InputOutputTree {
 		outputTreeIsEmpty = true;
 		
 		performLoadAnalysis = false;
-		performLiftAnalysis= false;
+		performLiftAnalysis = false;
 		performStallPathAnalysis = false;
 		performHighLiftAnalysis = false;
 		highLiftInputTreeIsFilled = false;
+		performHighLiftDistributionAnalysis = false;
 	}
 
 	public void cleanCleanConfigurationData() {
@@ -242,6 +256,7 @@ public class InputOutputTree {
 		alphaStarDistributionSemiSpan = new ArrayList<>(); 
 		dihedralDistributionSemiSpan = new ArrayList<>(); 
 		maximumliftCoefficientDistributionSemiSpan = new ArrayList<>(); 
+		
 		
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -316,6 +331,17 @@ public class InputOutputTree {
 			maximumliftCoefficientDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanListDouble(maximumliftCoefficientDistribution);
 			clZeroDistributionSemispan = calculateDiscretizedListAlongSemiSpanListDouble(cLZeroDistribution);
 			clAlphaDegDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanListDouble(clAlphaDeg);
+			alphaStallDistributionSemiSpan = calculateDiscretizedListAlongSemiSpanAmountAngle(alphaStallDistribution);
+			
+			for (int i=0; i<yAdimensionalDistributionSemiSpan.size(); i++) {
+				deltaAlphaStallaSemispan.add(i, 
+						Amount.valueOf(
+								alphaStallDistributionSemiSpan.get(i).doubleValue(NonSI.DEGREE_ANGLE) - 
+								((maximumliftCoefficientDistributionSemiSpan.get(i)-clZeroDistributionSemispan.get(i)) / clAlphaDegDistributionSemiSpan.get(i)),
+								NonSI.DEGREE_ANGLE
+								)
+						);
+			}
 			
 			double[] dihedral = new double [numberOfPointSemispan];
 			for(int i=0; i<numberOfPointSemispan; i++)
@@ -1375,6 +1401,70 @@ public class InputOutputTree {
 
 	public void setClDistributionCurvesHighLift(List<List<Double>> clDistributionCurvesHighLift) {
 		this.clDistributionCurvesHighLift = clDistributionCurvesHighLift;
+	}
+
+	public Boolean getPerformHighLiftDistributionAnalysis() {
+		return performHighLiftDistributionAnalysis;
+	}
+
+	public void setPerformHighLiftDistributionAnalysis(Boolean performHighLiftDistributionAnalysis) {
+		this.performHighLiftDistributionAnalysis = performHighLiftDistributionAnalysis;
+	}
+
+	public double[] getNewChordDistributionMeter() {
+		return newChordDistributionMeter;
+	}
+
+	public void setNewChordDistributionMeter(double[] newChordDistributionMeter) {
+		this.newChordDistributionMeter = newChordDistributionMeter;
+	}
+
+	public double[] getNewAlphaZeroLiftDistributionDeg() {
+		return newAlphaZeroLiftDistributionDeg;
+	}
+
+	public void setNewAlphaZeroLiftDistributionDeg(double[] newAlphaZeroLiftDistributionDeg) {
+		this.newAlphaZeroLiftDistributionDeg = newAlphaZeroLiftDistributionDeg;
+	}
+
+	public double[] getNewXLEDisributionMeter() {
+		return newXLEDisributionMeter;
+	}
+
+	public void setNewXLEDisributionMeter(double[] newXLEDisributionMeter) {
+		this.newXLEDisributionMeter = newXLEDisributionMeter;
+	}
+
+	public List<Double> getLiftCoefficient3DCurveHighLiftModified() {
+		return liftCoefficient3DCurveHighLiftModified;
+	}
+
+	public void setLiftCoefficient3DCurveHighLiftModified(List<Double> liftCoefficient3DCurveHighLiftModified) {
+		this.liftCoefficient3DCurveHighLiftModified = liftCoefficient3DCurveHighLiftModified;
+	}
+
+	public List<Amount<Angle>> getAlphaStallDistribution() {
+		return alphaStallDistribution;
+	}
+
+	public void setAlphaStallDistribution(List<Amount<Angle>> alphaStallDistribution) {
+		this.alphaStallDistribution = alphaStallDistribution;
+	}
+
+	public List<Amount<Angle>> getAlphaStallDistributionSemiSpan() {
+		return alphaStallDistributionSemiSpan;
+	}
+
+	public void setAlphaStallDistributionSemiSpan(List<Amount<Angle>> alphaStallDistributionSemiSpan) {
+		this.alphaStallDistributionSemiSpan = alphaStallDistributionSemiSpan;
+	}
+
+	public List<Amount<Angle>> getDeltaAlphaStallaSemispan() {
+		return deltaAlphaStallaSemispan;
+	}
+
+	public void setDeltaAlphaStallaSemispan(List<Amount<Angle>> deltaAlphaStallaSemispan) {
+		this.deltaAlphaStallaSemispan = deltaAlphaStallaSemispan;
 	}
 
 

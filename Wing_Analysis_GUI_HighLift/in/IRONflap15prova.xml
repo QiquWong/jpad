@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Following tag names are required -->
+<!-- The following unit of measurement are allowed : LENGTH-> "m" (meter), "ft" (foot) ; ANGLES -> "°" (degree), "rad" (radians) ; SURFACE-> "m2" (squared meter). It is possible to use different units in different fields.-->
+<!-- Arrays could be defined with or without parenthesis and value can be separated both by , and by ; -->
+<wing_executable>
+        <operating_conditions>
+                <altitude unit="m">0</altitude>
+                <mach_number>0.171</mach_number>
+        </operating_conditions>
+       <wing>
+            <global>
+                <surface unit="m²">105</surface>
+                <aspect_ratio>12</aspect_ratio>
+                <number_of_point_semispan>100</number_of_point_semispan>
+                <adimensional_kink_station>1</adimensional_kink_station>
+             </global>
+             <distribution>
+                <number_of_given_sections>3</number_of_given_sections>
+                <airfoil_family>NACA_64_SERIES</airfoil_family> 
+                   <geometry>
+						<y_adimensional_stations>[0,0.3,1]</y_adimensional_stations>
+						<chord_distribution unit="m">[4.48;3.47;1.65]</chord_distribution>
+						<x_le_distribution unit="m">[0,0.91966,3.12877]</x_le_distribution>
+						<twist_distribution unit="°">[0.0, 0.0, -2.0]</twist_distribution>
+						<max_thickness_distribution>[0.18,0.18, 0.14]</max_thickness_distribution>
+						<leading_edge_radius_distribution unit = "m">[0.15,0.15,0.15]</leading_edge_radius_distribution>
+                    </geometry>
+                    <aerodynamics>
+						<alpha_zero_lift_distribution unit="°">[-4.22407, -4.21435 ,-4.22723 ]</alpha_zero_lift_distribution>
+						<alpha_star_distribution unit="°">[9,9,8]</alpha_star_distribution>
+						<cl0_distribution>[0.52,0.52,0.52]</cl0_distribution>   
+						<linear_slope_coefficient unit="1/°">[0.12, 0.12, 0.12]</linear_slope_coefficient>
+						<maximum_lift_coefficient_distribution>[1.85,1.78,1.706]</maximum_lift_coefficient_distribution>
+                    </aerodynamics>
+             </distribution>
+        </wing>
+		<high_lift_devices>
+		        <flaps>
+					<flap id = "1">
+						<flap_type unit="">FOWLER</flap_type>
+						<flap_chord_ratio unit="">0.32</flap_chord_ratio>
+						<flap_deflection unit="°">15</flap_deflection>
+						<flap_non_dimensional_inner_station unit="">0.1</flap_non_dimensional_inner_station>
+						<flap_non_dimensional_outer_station unit="">0.3</flap_non_dimensional_outer_station>
+					</flap>
+					<flap id = "2">
+						<flap_type unit="">FOWLER</flap_type>
+						<flap_chord_ratio unit="">0.3200</flap_chord_ratio>
+						<flap_deflection unit="°">15</flap_deflection>
+						<flap_non_dimensional_inner_station unit="">0.31</flap_non_dimensional_inner_station>
+						<flap_non_dimensional_outer_station unit="">0.78</flap_non_dimensional_outer_station>
+					</flap>
+				</flaps>
+	<!-- 			<slats>
+					<slat id = "1">
+						<slat_deflection unit="°">25.0000</slat_deflection>
+						<slat_chord_ratio unit="">0.0585</slat_chord_ratio>
+						<slat_extension_ratio unit="">1.1000</slat_extension_ratio>
+						<slat_non_dimensional_inner_station unit="">0.1200</slat_non_dimensional_inner_station>
+						<slat_non_dimensional_outer_station unit="">0.3300</slat_non_dimensional_outer_station>
+					</slat>
+					<slat id = "2">
+						<slat_deflection unit="°">25.0000</slat_deflection>
+						<slat_chord_ratio unit="">0.0826</slat_chord_ratio>
+						<slat_extension_ratio unit="">1.1000</slat_extension_ratio>
+						<slat_non_dimensional_inner_station unit="">0.4000</slat_non_dimensional_inner_station>
+						<slat_non_dimensional_outer_station unit="">0.5600</slat_non_dimensional_outer_station>
+					</slat>
+					<slat id = "3">
+						<slat_deflection unit="°">25.0000</slat_deflection>
+						<slat_chord_ratio unit="">0.0956</slat_chord_ratio>
+						<slat_extension_ratio unit="">1.1000</slat_extension_ratio>
+						<slat_non_dimensional_inner_station unit="">0.5700</slat_non_dimensional_inner_station>
+						<slat_non_dimensional_outer_station unit="">0.7300</slat_non_dimensional_outer_station>
+					</slat>
+					<slat id = "4">
+						<slat_deflection unit="°">25.0000</slat_deflection>
+						<slat_chord_ratio unit="">0.1119</slat_chord_ratio>
+						<slat_extension_ratio unit="">1.1000</slat_extension_ratio>
+						<slat_non_dimensional_inner_station unit="">0.7400</slat_non_dimensional_inner_station>
+						<slat_non_dimensional_outer_station unit="">0.9500</slat_non_dimensional_outer_station>
+					</slat>
+				</slats> -->
+		</high_lift_devices>
+</wing_executable>

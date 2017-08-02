@@ -192,7 +192,7 @@
                                  </font>
                               </Label>
                               <Button fx:id="inputHighLiftDevices" layoutX="265.0" layoutY="14.0" mnemonicParsing="false" onAction="#addHighLiftData" text="Insert High Lift Devices" />
-                              <GridPane layoutX="5.0" layoutY="415.0" prefHeight="270.0" prefWidth="423.0">
+                              <GridPane layoutX="8.0" layoutY="405.0" prefHeight="437.0" prefWidth="423.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="194.0" minWidth="-Infinity" prefWidth="148.80001831054688" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.60003662109375" minWidth="10.0" prefWidth="272.1999816894531" />
@@ -211,6 +211,7 @@
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
                                     <RowConstraints minHeight="-Infinity" prefHeight="35.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
                                     <Label text="Adimentional stations" GridPane.rowIndex="2" />
@@ -283,13 +284,14 @@
                                           <ChoiceBox fx:id="alphaZeroLiftUnits" prefHeight="25.0" prefWidth="55.0" />
                                        </children>
                                     </HBox>
-                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="12">
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="13">
                                        <children>
-                                          <TextField fx:id="clMax1" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax2" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax3" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax4" prefHeight="25.0" prefWidth="219.0" />
-                                          <TextField fx:id="clMax5" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="aphaStall1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="aphaStall2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="aphaStall3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="aphaStall4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="aphaStall5" prefHeight="25.0" prefWidth="219.0" />
+                                          <ChoiceBox fx:id="alphaStallUnits" prefHeight="25.0" prefWidth="55.0" />
                                        </children>
                                     </HBox>
                                     <Label text="Number of given sections" GridPane.rowIndex="1" />
@@ -343,6 +345,16 @@
                                           <TextField fx:id="cLAlpha4" prefHeight="25.0" prefWidth="219.0" />
                                           <TextField fx:id="cLAlpha5" prefHeight="25.0" prefWidth="219.0" />
                                           <ChoiceBox fx:id="clAlphaUnits" prefHeight="25.0" prefWidth="55.0" />
+                                       </children>
+                                    </HBox>
+                                    <Label text="Alpha Stall" GridPane.rowIndex="13" />
+                                    <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="12">
+                                       <children>
+                                          <TextField fx:id="clMax1" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax2" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax3" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax4" prefHeight="25.0" prefWidth="219.0" />
+                                          <TextField fx:id="clMax5" prefHeight="25.0" prefWidth="219.0" />
                                        </children>
                                     </HBox>
                                  </children>

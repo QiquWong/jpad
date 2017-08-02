@@ -11,7 +11,7 @@
 			file_aerodynamics="Aerodynamics.xlsx"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">22500.0</maximum_take_off_mass>
+				<maximum_take_off_mass unit="kg">22500.00</maximum_take_off_mass>
 				<operating_empty_mass unit="kg">12950.0</operating_empty_mass>
 				<maximum_fuel_mass unit="kg">5000.0</maximum_fuel_mass>
 				<single_passenger_mass unit="kg">95.0</single_passenger_mass>

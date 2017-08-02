@@ -531,12 +531,12 @@ public class StabilityExecutableManager {
 	private Double [] _wingclAlphaArrayCONDITION;
 
 	//Fuselage 
-	private Double _fuselageWingClAlphaDeg;
+	private Amount<?> _fuselageWingClAlphaDeg;
 	private Double _fuselageWingClMax;
 	private Double _fuselageWingClZero;
 	private Amount<Angle> _fuselageWingAlphaStar;
 	private Amount<Angle> _fuselageWingAlphaStall;
-	private Amount<?> _fuselageWingClAlpha;
+	private Double _fuselageWingClAlpha;
 	private Double _fuselageWingCLStar;
 	private Double[] _fuselagewingliftCoefficient3DCurve;
 
@@ -4241,16 +4241,16 @@ public class StabilityExecutableManager {
 
 	public void calculateWingFuselageLiftCharacterstics(){
 
-//		// cl alpha	
-//		_fuselageWingClAlphaDeg = LiftCalc.calculateCLAlphaFuselage(
-//				_wingcLAlphaDegCONDITION, 
-//				_wingSpan, 
-//				_fuselageDiameter);
+		// cl alpha	
+		_fuselageWingClAlphaDeg = LiftCalc.calculateCLAlphaFuselage(
+				_wingclAlpha, 
+				_wingSpan, 
+				_fuselageDiameter);
 
-		_fuselageWingClAlpha = Amount.valueOf(this._fuselageWingClAlphaDeg, NonSI.DEGREE_ANGLE.inverse());
+		_fuselageWingClAlpha = this._fuselageWingClAlphaDeg.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
 
 		// cl Zero
-		_fuselageWingClZero = -_fuselageWingClAlphaDeg * _wingAlphaZeroLiftCONDITION.doubleValue(NonSI.DEGREE_ANGLE);
+		_fuselageWingClZero = -_fuselageWingClAlpha * _wingAlphaZeroLiftCONDITION.doubleValue(NonSI.DEGREE_ANGLE);
 
 		// cl max
 		_fuselageWingClMax = _wingcLMaxCONDITION;
@@ -4260,7 +4260,7 @@ public class StabilityExecutableManager {
 
 		//alphaStar
 		_fuselageWingAlphaStar = Amount.valueOf(
-				(_fuselageWingCLStar - _fuselageWingClZero)/_fuselageWingClAlphaDeg, 
+				(_fuselageWingCLStar - _fuselageWingClZero)/_fuselageWingClAlpha, 
 				NonSI.DEGREE_ANGLE);
 
 		//alpha stall
@@ -4277,7 +4277,7 @@ public class StabilityExecutableManager {
 				this._fuselageWingClMax,
 				this._fuselageWingAlphaStar,
 				this._fuselageWingAlphaStall,
-				this._fuselageWingClAlpha,
+				this._fuselageWingClAlphaDeg,
 				MyArrayUtils.convertListOfAmountToDoubleArray(this._alphasWing)
 				);
 
@@ -8381,11 +8381,11 @@ public class StabilityExecutableManager {
 		this._wingliftCoefficientDistributionatCLMax = _wingliftCoefficientDistributionatCLMax;
 	}
 
-	public Double getFuselageWingClAlphaDeg() {
+	public Amount<?> getFuselageWingClAlphaDeg() {
 		return _fuselageWingClAlphaDeg;
 	}
 
-	public void setFuselageWingClAlphaDeg(Double _fuselageWingClAlphaDeg) {
+	public void setFuselageWingClAlphaDeg(Amount<?> _fuselageWingClAlphaDeg) {
 		this._fuselageWingClAlphaDeg = _fuselageWingClAlphaDeg;
 	}
 
@@ -9705,7 +9705,7 @@ public class StabilityExecutableManager {
 		return _wingclAlphaArrayCONDITION;
 	}
 
-	public Double get_fuselageWingClAlphaDeg() {
+	public Amount<?> get_fuselageWingClAlphaDeg() {
 		return _fuselageWingClAlphaDeg;
 	}
 
@@ -9725,7 +9725,7 @@ public class StabilityExecutableManager {
 		return _fuselageWingAlphaStall;
 	}
 
-	public Amount<?> get_fuselageWingClAlpha() {
+	public Double get_fuselageWingClAlpha() {
 		return _fuselageWingClAlpha;
 	}
 
@@ -11524,7 +11524,7 @@ public class StabilityExecutableManager {
 		this._wingclAlphaArrayCONDITION = _wingclAlphaArrayCONDITION;
 	}
 
-	public void set_fuselageWingClAlphaDeg(Double _fuselageWingClAlphaDeg) {
+	public void set_fuselageWingClAlphaDeg(Amount<?> _fuselageWingClAlphaDeg) {
 		this._fuselageWingClAlphaDeg = _fuselageWingClAlphaDeg;
 	}
 
@@ -11544,7 +11544,7 @@ public class StabilityExecutableManager {
 		this._fuselageWingAlphaStall = _fuselageWingAlphaStall;
 	}
 
-	public void set_fuselageWingClAlpha(Amount<?> _fuselageWingClAlpha) {
+	public void set_fuselageWingClAlpha(Double _fuselageWingClAlpha) {
 		this._fuselageWingClAlpha = _fuselageWingClAlpha;
 	}
 
