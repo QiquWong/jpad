@@ -124,5 +124,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/flanagan/flanagan.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jxl.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/chartsFxHanSolo/charts-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/toxiclibs/toxiclibscore.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
