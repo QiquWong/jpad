@@ -26,9 +26,9 @@
 						<leading_edge_radius_distribution unit = "m">[0.15,0.15,0.15]</leading_edge_radius_distribution>
                     </geometry>
                     <aerodynamics>
-						<alpha_zero_lift_distribution unit="°">[-4.22407, -4.21435 ,-4.22723 ]</alpha_zero_lift_distribution>
+						<alpha_zero_lift_distribution unit="°">[-4.4, -4.4 ,-4.3 ]</alpha_zero_lift_distribution>
 						<alpha_star_distribution unit="°">[9,9,8]</alpha_star_distribution>
-						<cl0_distribution>[0.55,0.55,0.55]</cl0_distribution>   
+						<cl0_distribution>[0.53,0.53,0.53]</cl0_distribution>   
 						<linear_slope_coefficient unit="1/°">[0.12, 0.12, 0.12]</linear_slope_coefficient>
 						<maximum_lift_coefficient_distribution>[1.85,1.78,1.706]</maximum_lift_coefficient_distribution>
 						<alpha_stall_distribution unit="°">[16,16,16]</alpha_stall_distribution>
@@ -39,7 +39,7 @@
 		        <flaps>
 					<flap id = "1">
 						<flap_type unit="">FOWLER</flap_type>
-						<flap_chord_ratio unit="">0.29</flap_chord_ratio>
+						<flap_chord_ratio unit="">0.32</flap_chord_ratio>
 						<flap_deflection unit="°">15</flap_deflection>
 						<flap_non_dimensional_inner_station unit="">0.1</flap_non_dimensional_inner_station>
 						<flap_non_dimensional_outer_station unit="">0.3</flap_non_dimensional_outer_station>

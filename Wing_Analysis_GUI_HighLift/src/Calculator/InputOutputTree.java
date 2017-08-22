@@ -160,6 +160,20 @@ public class InputOutputTree {
 	double[] newChordDistributionMeter;
 	double[] newAlphaZeroLiftDistributionDeg;
 	double[] newXLEDisributionMeter;
+	
+	private List<Double> maximumliftCoefficientDistributionSemiSpanHighLift;
+	
+	double clMaxHighLiftFromStallPath;
+	
+	Double cLAlphaDegHL, cLAlphaRadHL;
+	Amount<?> cLAlphaHL;
+	Amount<Angle> alphaZeroLiftHL, alphaStarHL, alphaStallHL, alphaMaxLinearHL;
+	Double cLZeroHL, cLMaxHL, cLStallHL, cLStarHL;
+	
+	List<Double> liftCoefficientCurveHL;
+
+	List<Double> clMaxStallPathHL;
+
 
 	
 	
@@ -196,6 +210,7 @@ public class InputOutputTree {
 		maximumliftCoefficientDistributionSemiSpan = new ArrayList<>(); 
 		alphaStallDistributionSemiSpan = new ArrayList<>();
 		deltaAlphaStallaSemispan = new ArrayList<>();
+		maximumliftCoefficientDistributionSemiSpanHighLift = new ArrayList<>();
 		
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -1465,6 +1480,127 @@ public class InputOutputTree {
 
 	public void setDeltaAlphaStallaSemispan(List<Amount<Angle>> deltaAlphaStallaSemispan) {
 		this.deltaAlphaStallaSemispan = deltaAlphaStallaSemispan;
+	}
+
+	public List<Double> getMaximumliftCoefficientDistributionSemiSpanHighLift() {
+		return maximumliftCoefficientDistributionSemiSpanHighLift;
+	}
+
+	public void setMaximumliftCoefficientDistributionSemiSpanHighLift(
+			List<Double> maximumliftCoefficientDistributionSemiSpanHighLift) {
+		this.maximumliftCoefficientDistributionSemiSpanHighLift = maximumliftCoefficientDistributionSemiSpanHighLift;
+	}
+
+	public double getClMaxHighLiftFromStallPath() {
+		return clMaxHighLiftFromStallPath;
+	}
+
+	public void setClMaxHighLiftFromStallPath(double clMaxHighLiftFromStallPath) {
+		this.clMaxHighLiftFromStallPath = clMaxHighLiftFromStallPath;
+	}
+
+	public Double getcLAlphaDegHL() {
+		return cLAlphaDegHL;
+	}
+
+	public void setcLAlphaDegHL(Double cLAlphaDegHL) {
+		this.cLAlphaDegHL = cLAlphaDegHL;
+	}
+
+	public Double getcLAlphaRadHL() {
+		return cLAlphaRadHL;
+	}
+
+	public void setcLAlphaRadHL(Double cLAlphaRadHL) {
+		this.cLAlphaRadHL = cLAlphaRadHL;
+	}
+
+	public Amount<?> getcLAlphaHL() {
+		return cLAlphaHL;
+	}
+
+	public void setcLAlphaHL(Amount<?> cLAlphaHL) {
+		this.cLAlphaHL = cLAlphaHL;
+	}
+
+	public Amount<Angle> getAlphaZeroLiftHL() {
+		return alphaZeroLiftHL;
+	}
+
+	public void setAlphaZeroLiftHL(Amount<Angle> alphaZeroLiftHL) {
+		this.alphaZeroLiftHL = alphaZeroLiftHL;
+	}
+
+	public Amount<Angle> getAlphaStarHL() {
+		return alphaStarHL;
+	}
+
+	public void setAlphaStarHL(Amount<Angle> alphaStarHL) {
+		this.alphaStarHL = alphaStarHL;
+	}
+
+	public Amount<Angle> getAlphaStallHL() {
+		return alphaStallHL;
+	}
+
+	public void setAlphaStallHL(Amount<Angle> alphaStallHL) {
+		this.alphaStallHL = alphaStallHL;
+	}
+
+	public Amount<Angle> getAlphaMaxLinearHL() {
+		return alphaMaxLinearHL;
+	}
+
+	public void setAlphaMaxLinearHL(Amount<Angle> alphaMaxLinearHL) {
+		this.alphaMaxLinearHL = alphaMaxLinearHL;
+	}
+
+	public Double getcLZeroHL() {
+		return cLZeroHL;
+	}
+
+	public void setcLZeroHL(Double cLZeroHL) {
+		this.cLZeroHL = cLZeroHL;
+	}
+
+	public Double getcLMaxHL() {
+		return cLMaxHL;
+	}
+
+	public void setcLMaxHL(Double cLMaxHL) {
+		this.cLMaxHL = cLMaxHL;
+	}
+
+	public Double getcLStallHL() {
+		return cLStallHL;
+	}
+
+	public void setcLStallHL(Double cLStallHL) {
+		this.cLStallHL = cLStallHL;
+	}
+
+	public Double getcLStarHL() {
+		return cLStarHL;
+	}
+
+	public void setcLStarHL(Double cLStarHL) {
+		this.cLStarHL = cLStarHL;
+	}
+
+	public List<Double> getLiftCoefficientCurveHL() {
+		return liftCoefficientCurveHL;
+	}
+
+	public void setLiftCoefficientCurveHL(List<Double> liftCoefficientCurveHL) {
+		this.liftCoefficientCurveHL = liftCoefficientCurveHL;
+	}
+
+	public List<Double> getClMaxStallPathHL() {
+		return clMaxStallPathHL;
+	}
+
+	public void setClMaxStallPathHL(List<Double> clMaxStallPathHL) {
+		this.clMaxStallPathHL = clMaxStallPathHL;
 	}
 
 

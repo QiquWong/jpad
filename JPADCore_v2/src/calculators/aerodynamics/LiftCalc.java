@@ -877,6 +877,158 @@ public class LiftCalc {
 			double cLMaxActual = theNasaBlackwellCalculator.getCLCurrent();
 			return cLMaxActual;
 		}
+	
+	public static double calculateCLMaxHIGHLIFT(
+			double[] maximumLiftCoefficient, 
+			double semispan, 
+			double surface,
+			double[] yStationsActual,
+			double[] chordsVsYActual,
+			double[] xLEvsYActual,
+			double[] dihedral,
+			double[] twist,
+			double[] alpha0l,
+			double vortexSemiSpanToSemiSpanRatio,
+			double alpha,
+			double mach,
+			double altitude,
+			double[] chordsOld){
+
+		// parameters definition
+
+		double cLMax = 0;
+		Amount<Angle> alphaAtCLMaX = null;
+
+		int _nPointsSemispanWise = (int)(1./(2*vortexSemiSpanToSemiSpanRatio));
+		int stepsToStallCounter = 0;
+		double accuracy =0.0001;
+		double diffCL = 0;
+		double diffCLappOld = 0;
+		double diffCLapp = 0;
+		double deltaAlpha;
+		double alphaNew = 0;
+		double alphaOld;
+		boolean _findStall = false;
+		Amount<Angle> alphaNewAmount;
+		boolean found = false;
+
+		Amount<Angle> alphaStart = Amount.valueOf(toRadians(-2.), SI.RADIAN);
+		Amount<Angle> alphaEnd = Amount.valueOf(toRadians(32.), SI.RADIAN);
+		int _numberOfAlpha = 15; 
+		MyArray alphaArray = new MyArray();
+		alphaArray.setDouble(MyArrayUtils.linspace(
+				alphaStart.getEstimatedValue(), 
+				alphaEnd.getEstimatedValue(), 
+				_numberOfAlpha));
+
+		NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
+				semispan, 
+				surface,
+				yStationsActual,
+				chordsVsYActual,
+				xLEvsYActual,
+				dihedral,
+				twist,
+				alpha0l,
+				vortexSemiSpanToSemiSpanRatio,
+				0.0,
+				mach,
+				altitude);
+
+		for (int j=0; j < _numberOfAlpha; j++) {
+			if (found == false) {
+				Amount<Angle> alphaInputAngle = Amount.valueOf(alphaArray.get(j), SI.RADIAN);
+				List<Double> clDistributionArray = new ArrayList<>();
+				
+				theNasaBlackwellCalculator.calculate(alphaInputAngle);
+				
+				List<Double> clDistributionHighLift = MyArrayUtils.convertDoubleArrayToListDouble(
+						MyArrayUtils.convertFromDoubleToPrimitive(
+								theNasaBlackwellCalculator.get_ccLDistribution().toArray()));
+				for(int jj =0; jj<clDistributionHighLift.size(); jj++) {
+					clDistributionHighLift.set(jj, clDistributionHighLift.get(jj)/chordsOld[jj]);
+				}
+				
+				clDistributionArray = clDistributionHighLift;
+
+				for(int i =0; i< _nPointsSemispanWise; i++) {
+					if (found == false 
+							&& clDistributionArray.get(i)
+							> maximumLiftCoefficient[i] ) {	
+
+						for (int k =i; k< _nPointsSemispanWise; k++) {
+							diffCLapp = ( clDistributionArray.get(k) -  maximumLiftCoefficient[k]);
+							diffCL = Math.max(diffCLapp, diffCLappOld);
+							diffCLappOld = diffCL;
+						}
+						if( Math.abs(diffCL) < accuracy){
+							cLMax = theNasaBlackwellCalculator.get_cLEvaluated();
+							found = true;
+							alphaAtCLMaX = alphaArray.getAsAmount(j); 
+						}
+
+						else{
+							deltaAlpha = alphaArray.getAsAmount(j).getEstimatedValue()
+									- alphaArray.getAsAmount(j-1).getEstimatedValue();
+							alphaNew = alphaArray.getAsAmount(j).getEstimatedValue() - (deltaAlpha/2);
+							alphaOld = alphaArray.getAsAmount(j).getEstimatedValue(); 
+							alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
+							diffCLappOld = 0;
+							while ( diffCL > accuracy){
+								theNasaBlackwellCalculator.calculate(alphaNewAmount);		
+								clDistributionHighLift = new ArrayList<>();
+								clDistributionHighLift = MyArrayUtils.convertDoubleArrayToListDouble(
+										MyArrayUtils.convertFromDoubleToPrimitive(
+												theNasaBlackwellCalculator.get_ccLDistribution().toArray()));
+								for(int jj =0; jj<clDistributionHighLift.size(); jj++) {
+									clDistributionHighLift.set(jj, clDistributionHighLift.get(jj)/chordsOld[jj]);
+								}
+								
+								clDistributionArray = clDistributionHighLift;
+								diffCL = 0;
+
+								for (int m =0; m< _nPointsSemispanWise; m++) {
+									diffCLapp = (clDistributionArray.get(m) -  maximumLiftCoefficient[m]);
+
+									if ( diffCLapp > 0 ){
+										diffCL = Math.max(diffCLapp,diffCLappOld);
+										diffCLappOld = diffCL;
+									}
+
+								}
+								deltaAlpha = Math.abs(alphaOld - alphaNew);
+								alphaOld = alphaNew;
+								if (diffCL == 0 ){
+									alphaNew = alphaOld + (deltaAlpha/2);
+									alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
+									diffCL = 1;
+									diffCLappOld = 0;
+								}
+								else { 
+									if(deltaAlpha > 0.005){
+										alphaNew = alphaOld - (deltaAlpha/2);	
+										alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
+										diffCLappOld = 0;
+										if ( diffCL < accuracy) break;
+									}
+									else {
+										alphaNew = alphaOld - (deltaAlpha);	
+										alphaNewAmount = Amount.valueOf(alphaNew, SI.RADIAN);
+										diffCLappOld = 0;
+										if ( diffCL < accuracy) break;}}
+
+							}
+							found = true;
+						}
+						alphaAtCLMaX = Amount.valueOf(alphaNew, SI.RADIAN);
+				}
+			}
+		}
+		}
+			theNasaBlackwellCalculator.calculate(alphaAtCLMaX);
+			double cLMaxActual = theNasaBlackwellCalculator.getCLCurrent();
+			return cLMaxActual;
+		}
 
 	/*********************************************************************************************
 	 * This method calculate high lift devices effects on lift coefficient curve of the 
