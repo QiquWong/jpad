@@ -59,6 +59,28 @@ public interface IACAerodynamicCalculator {
 	Amount<Length> getHTailMomentumPole();
 	Amount<Length> getVTailMomentumPole();
 	Double getAdimensionalFuselageMomentumPole();
+	//..............................................................................
+	// AUXILIARY DATA
+	MyInterpolatingFunction getWingLiftCurveFunction();
+	MyInterpolatingFunction getWingPolarCurveFunction();
+	MyInterpolatingFunction getWingHighLiftCurveFunction();
+	MyInterpolatingFunction getWingMomentCurveFunction();
+	
+	MyInterpolatingFunction getHTailLiftCurveFunction();
+	MyInterpolatingFunction getHTailPolarCurveFunction();
+	MyInterpolatingFunction getHTailHighLiftCurveFunction();
+	MyInterpolatingFunction getHTailMomentCurveFunction();
+	
+	MyInterpolatingFunction getVTailLiftCurveFunction();
+	MyInterpolatingFunction getVTailPolarCurveFunction();
+	MyInterpolatingFunction getVTailHighLiftCurveFunction();
+	MyInterpolatingFunction getVTailMomentCurveFunction();
+	
+	MyInterpolatingFunction getFuselagePolarCurveFunction();
+	MyInterpolatingFunction getFuselageMomentCurveFunction();
+	
+	MyInterpolatingFunction getNacellePolarCurveFunction();
+	MyInterpolatingFunction getNacelleMomentCurveFunction();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder { }
