@@ -4,11 +4,8 @@
 		plot=TRUE -> enters the plot tag.
 		plot=FALSE -> plot nothing.
 		
-		All the variables which have "METHOD" as attirubte, can be calculated with the deifned method (TODO: or can be assigned)
-		
-		IF THE MOMENTIUM POLE IS NOT ASSIGNED (wing/HTail/VTail), IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD SPECIFIED HERE 
-		(IF THE CALCULATION IS NOT REQUIRED A DEFAULT METHOD IS ASSUMED EQUAL TO DE_YOUNG_HARPER)
-		
+		- All the variables which have "METHOD" as attirubte, can be calculated with the deifned method 
+		- IF THE MOMENTIUM POLE IS NOT ASSIGNED (wing/HTail/VTail), IT WILL BE ASSUMED AS THE Xac CALCUALTED USING THE METHOD "DEYOUNG_HARPER"
 	-->
     <analysis>
         <aerodynamics_and_stability 
@@ -83,7 +80,7 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
                     </cL_vs_alpha>
-					<cL_at_alpha_current perform="TRUE"/>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD_at_alpha_current perform="TRUE"/>
 					<cm_at_alpha_current perform="TRUE"/>
 				</high_lift_devices>
@@ -138,7 +135,7 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
                     </cL_vs_alpha>
-					<cL_at_alpha_current perform="TRUE"/>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD_at_alpha_current perform="TRUE"/>
 					<cm_at_alpha_current perform="TRUE"/>
 				</elevator>
@@ -193,7 +190,7 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
                     </cL_vs_alpha>
-					<cL_at_alpha_current perform="TRUE"/>
+					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD_at_alpha_current perform="TRUE"/>
 					<cm_at_alpha_current perform="TRUE"/>
 				</rudder>
@@ -224,10 +221,10 @@
 			</vertical_tail_analyses>
 			<fuselage_analyses>
 				<drag>
+					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD0_upsweep perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD0_windshield perform="TRUE" method="SEMIEMPIRICAL"/>
-					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
-					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD0_total perform="TRUE" method="FUSDES"/>
 					<cD_induced perform="TRUE" method="FUSDES"/>
 					<!-- <cD_vs_cL perform="TRUE" method="FUSDES"/> -->
@@ -248,10 +245,10 @@
 					<cM_at_alpha_current perform="TRUE" method="FUSDES"/>
 				</pitching_moment>
 			</fuselage_analyses>
-			<nacelles_analyses>
+			<nacelle_analyses>
 				<drag>
-					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD0_total perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD_induced perform="TRUE" method="SEMIEMPIRICAL"/>
 					<!-- <cD_vs_cL perform="TRUE" method="SEMIEMPIRICAL"/> -->
@@ -271,7 +268,7 @@
                     </cM_vs_alpha>
 					<cM_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 				</pitching_moment>
-			</nacelles_analyses>
+			</nacelle_analyses>
 			<aircraft_analyses>
 				<!-- <downwash perform="TRUE" downwash_gradient="CONSTANT" method="SLINGERLAND"/> -->
                 <downwash perform="FALSE" downwash_gradient="INPUT" method="UNKNOWN"/>

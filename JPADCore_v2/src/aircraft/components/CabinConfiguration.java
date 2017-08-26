@@ -97,8 +97,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 						   _distanceFromWallBusinessClass,
 						   _distanceFromWallFirstClass;
 
-	private RelativePositionEnum _position;
-
 	/*
 	 * Each element in the following lists is relative to a class:
 	 * index 0: ECONOMY
@@ -176,8 +174,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 							   __distanceFromWallFirstClass,
 							   __xCoordinateFirstRow;
 
-		private RelativePositionEnum __position;
-		
 		private List<Integer[]> __missingSeatsRowList = new ArrayList<Integer[]>();
 		private List<ClassTypeEnum> __typeList = new ArrayList<ClassTypeEnum>();
 
@@ -336,11 +332,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 			return this;
 		}
 		
-		public ConfigurationBuilder position (RelativePositionEnum position) { 
-			__position  = position;
-			return this;
-		}
-		
 		public ConfigurationBuilder xCoordinateFirstRow (Amount<Length> xCoordinateFirstRow) { 
 			__xCoordinateFirstRow  = xCoordinateFirstRow;
 			return this;
@@ -384,7 +375,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 				// Number of aisles
 				__aislesNumber = new Integer(1);
 
-				__position = RelativePositionEnum.RIGHT;
 				__xCoordinateFirstRow = Amount.valueOf(6.16, SI.METER);
 
 				__pitchEconomyClass = Amount.valueOf(0.79, SI.METER);
@@ -436,7 +426,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 				// Number of aisles
 				__aislesNumber = new Integer(1);
 
-				__position = RelativePositionEnum.RIGHT;
 				__xCoordinateFirstRow = Amount.valueOf(7.45, SI.METER);
 
 				__pitchEconomyClass = Amount.valueOf(0.79, SI.METER);
@@ -488,7 +477,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 				// Number of aisles
 				__aislesNumber = new Integer(1);
 
-				__position = RelativePositionEnum.RIGHT;
 				__xCoordinateFirstRow = Amount.valueOf(7.40, SI.METER);
 
 				__pitchEconomyClass = Amount.valueOf(0.80, SI.METER);
@@ -561,8 +549,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 		this._distanceFromWallBusinessClass = builder.__distanceFromWallBusinessClass;
 		this._distanceFromWallFirstClass = builder.__distanceFromWallFirstClass;
 
-		this._position = builder.__position;
-		
 		this._xCoordinateFirstRow = builder.__xCoordinateFirstRow;
 		
 		this._missingSeatsRowList = builder.__missingSeatsRowList;
@@ -670,19 +656,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 						),
 				SI.METER
 				);
-		
-		RelativePositionEnum seatBlockPosition;
-		String seatBlockPositionProperty = reader.getXMLPropertyByPath("//global_data/seat_block_position");
-		if(seatBlockPositionProperty.equalsIgnoreCase("RIGHT"))
-			seatBlockPosition = RelativePositionEnum.RIGHT;
-		else if(seatBlockPositionProperty.equalsIgnoreCase("LEFT"))
-			seatBlockPosition = RelativePositionEnum.LEFT;
-		else if(seatBlockPositionProperty.equalsIgnoreCase("CENTER"))
-			seatBlockPosition = RelativePositionEnum.CENTER;
-		else {
-			System.err.println("ERROR : INVALID SEAT BLOCK POSITION !!");
-			return null;
-		}
 		
 		List<Integer[]> missingSeatsRow = new ArrayList<Integer[]>();
 		List<String> missingSeatsRowProperty = reader.getXMLPropertiesByPath
@@ -900,7 +873,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 				.typeList(classesType)
 				.aislesNumber(aislesNumber)
 				.xCoordinateFirstRow(xCoordinatesFirstRow)
-				.position(seatBlockPosition)
 				.missingSeatsRowList(missingSeatsRow)
 				.numberOfBreaksEconomyClass(numberOfBreaksEconomyClass)
 				.numberOfBreaksBusinessClass(numberOfBreaksBusinessClass)
@@ -1147,8 +1119,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 				.append("\tClasses number: " + _classesNumber + "\n")
 				.append("\tClasses type: " + _typeList + "\n")
 				.append("\tAisles number: " + _aislesNumber + "\n")
-				.append("\tX coordinates first row: " + _xCoordinateFirstRow + "\n")
-				.append("\tSeat block position: " + _position + "\n");
+				.append("\tX coordinates first row: " + _xCoordinateFirstRow + "\n");
 
 		if((_missingSeatsRowList.size() == 1) && (_missingSeatsRowList.get(0).equals(-1)))
 			sb.append("\tMissing seats each row: " + 0 + "\n");
@@ -1737,14 +1708,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 
 	public void setTypeList(List<ClassTypeEnum> _typeList) {
 		this._typeList = _typeList;
-	}
-
-	public RelativePositionEnum getPosition() {
-		return _position;
-	}
-
-	public void setPosition(RelativePositionEnum _position) {
-		this._position = _position;
 	}
 
 }

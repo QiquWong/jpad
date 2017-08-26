@@ -2094,11 +2094,6 @@ public class JPADStaticWriteUtils {
 				aircraft.getCabinConfiguration().getXCoordinateFirstRow(),
 				globalDataElement, doc);
 		
-		// global_data - seat_block_position 
-		JPADStaticWriteUtils.writeSingleNode("seat_block_position", 
-				aircraft.getCabinConfiguration().getPosition(),
-				globalDataElement, doc);
-		
 		// global_data - missing_seat_row
 		org.w3c.dom.Element missingSeatRowElement = doc.createElement("missing_seat_row");
 		globalDataElement.appendChild(missingSeatRowElement);

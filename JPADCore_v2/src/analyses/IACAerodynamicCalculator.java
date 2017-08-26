@@ -68,12 +68,12 @@ public interface IACAerodynamicCalculator {
 	
 	MyInterpolatingFunction getHTailLiftCurveFunction();
 	MyInterpolatingFunction getHTailPolarCurveFunction();
-	MyInterpolatingFunction getHTailHighLiftCurveFunction();
+	MyInterpolatingFunction getHTailElevatorCurveFunction();
 	MyInterpolatingFunction getHTailMomentCurveFunction();
 	
 	MyInterpolatingFunction getVTailLiftCurveFunction();
 	MyInterpolatingFunction getVTailPolarCurveFunction();
-	MyInterpolatingFunction getVTailHighLiftCurveFunction();
+	MyInterpolatingFunction getVTailRudderCurveFunction();
 	MyInterpolatingFunction getVTailMomentCurveFunction();
 	
 	MyInterpolatingFunction getFuselagePolarCurveFunction();

@@ -9,8 +9,6 @@
 			<classes_type>ECONOMY;BUSINESS;FIRST</classes_type>
 			<aisles_number>1</aisles_number>
 			<x_coordinates_first_row unit="m">5.5</x_coordinates_first_row>
-			<seat_block_position>RIGHT</seat_block_position> <!--LEFT means the block is in the y axis negative side. 
-																 RIGHT means the block is in the y axis positive side.-->
 			<missing_seat_row>
 				<!--
 				The size of missing seat list has to be equal to the class size.
