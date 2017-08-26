@@ -32,7 +32,7 @@ public interface IACAerodynamicCalculator {
 	String getId();
 	List<Double> getXCGAircraft(); //in MAC perc.
 	List<Double> getZCGAircraft();
-	Amount<Length> getZCGLandingGear(); // TODO: IN IMPORT FROM XML, READ OR CALCULATE THIS
+	Amount<Length> getZCGLandingGear(); 
 	Double getLandingGearDragCoefficient();
 	Amount<Angle> getAlphaBodyInitial();
 	Amount<Angle> getAlphaBodyFinal();
@@ -68,12 +68,10 @@ public interface IACAerodynamicCalculator {
 	
 	MyInterpolatingFunction getHTailLiftCurveFunction();
 	MyInterpolatingFunction getHTailPolarCurveFunction();
-	MyInterpolatingFunction getHTailElevatorCurveFunction();
 	MyInterpolatingFunction getHTailMomentCurveFunction();
 	
 	MyInterpolatingFunction getVTailLiftCurveFunction();
 	MyInterpolatingFunction getVTailPolarCurveFunction();
-	MyInterpolatingFunction getVTailRudderCurveFunction();
 	MyInterpolatingFunction getVTailMomentCurveFunction();
 	
 	MyInterpolatingFunction getFuselagePolarCurveFunction();
@@ -81,6 +79,8 @@ public interface IACAerodynamicCalculator {
 	
 	MyInterpolatingFunction getNacellePolarCurveFunction();
 	MyInterpolatingFunction getNacelleMomentCurveFunction();
+	
+	MyInterpolatingFunction getAircraftDownwashGradientFunction();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
 	class Builder extends IACAerodynamicCalculator_Builder { }

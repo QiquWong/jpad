@@ -79,16 +79,15 @@ abstract class IACAerodynamicCalculator_Builder {
     WING_MOMENT_CURVE_FUNCTION("wingMomentCurveFunction"),
     H_TAIL_LIFT_CURVE_FUNCTION("HTailLiftCurveFunction"),
     H_TAIL_POLAR_CURVE_FUNCTION("HTailPolarCurveFunction"),
-    H_TAIL_ELEVATOR_CURVE_FUNCTION("HTailElevatorCurveFunction"),
     H_TAIL_MOMENT_CURVE_FUNCTION("HTailMomentCurveFunction"),
     V_TAIL_LIFT_CURVE_FUNCTION("VTailLiftCurveFunction"),
     V_TAIL_POLAR_CURVE_FUNCTION("VTailPolarCurveFunction"),
-    V_TAIL_RUDDER_CURVE_FUNCTION("VTailRudderCurveFunction"),
     V_TAIL_MOMENT_CURVE_FUNCTION("VTailMomentCurveFunction"),
     FUSELAGE_POLAR_CURVE_FUNCTION("fuselagePolarCurveFunction"),
     FUSELAGE_MOMENT_CURVE_FUNCTION("fuselageMomentCurveFunction"),
     NACELLE_POLAR_CURVE_FUNCTION("nacellePolarCurveFunction"),
     NACELLE_MOMENT_CURVE_FUNCTION("nacelleMomentCurveFunction"),
+    AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION("aircraftDownwashGradientFunction"),
     ;
 
     private final String name;
@@ -145,16 +144,15 @@ abstract class IACAerodynamicCalculator_Builder {
   private MyInterpolatingFunction wingMomentCurveFunction;
   private MyInterpolatingFunction HTailLiftCurveFunction;
   private MyInterpolatingFunction HTailPolarCurveFunction;
-  private MyInterpolatingFunction HTailElevatorCurveFunction;
   private MyInterpolatingFunction HTailMomentCurveFunction;
   private MyInterpolatingFunction VTailLiftCurveFunction;
   private MyInterpolatingFunction VTailPolarCurveFunction;
-  private MyInterpolatingFunction VTailRudderCurveFunction;
   private MyInterpolatingFunction VTailMomentCurveFunction;
   private MyInterpolatingFunction fuselagePolarCurveFunction;
   private MyInterpolatingFunction fuselageMomentCurveFunction;
   private MyInterpolatingFunction nacellePolarCurveFunction;
   private MyInterpolatingFunction nacelleMomentCurveFunction;
+  private MyInterpolatingFunction aircraftDownwashGradientFunction;
   private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties =
       EnumSet.allOf(IACAerodynamicCalculator_Builder.Property.class);
 
@@ -2137,47 +2135,6 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
-   * Sets the value to be returned by {@link IACAerodynamicCalculator#getHTailElevatorCurveFunction()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code HTailElevatorCurveFunction} is null
-   */
-  public IACAerodynamicCalculator.Builder setHTailElevatorCurveFunction(
-      MyInterpolatingFunction HTailElevatorCurveFunction) {
-    this.HTailElevatorCurveFunction = Preconditions.checkNotNull(HTailElevatorCurveFunction);
-    _unsetProperties.remove(
-        IACAerodynamicCalculator_Builder.Property.H_TAIL_ELEVATOR_CURVE_FUNCTION);
-    return (IACAerodynamicCalculator.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getHTailElevatorCurveFunction()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACAerodynamicCalculator.Builder mapHTailElevatorCurveFunction(
-      UnaryOperator<MyInterpolatingFunction> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setHTailElevatorCurveFunction(mapper.apply(getHTailElevatorCurveFunction()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getHTailElevatorCurveFunction()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public MyInterpolatingFunction getHTailElevatorCurveFunction() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.H_TAIL_ELEVATOR_CURVE_FUNCTION),
-        "HTailElevatorCurveFunction not set");
-    return HTailElevatorCurveFunction;
-  }
-
-  /**
    * Sets the value to be returned by {@link IACAerodynamicCalculator#getHTailMomentCurveFunction()}.
    *
    * @return this {@code Builder} object
@@ -2295,46 +2252,6 @@ abstract class IACAerodynamicCalculator_Builder {
             IACAerodynamicCalculator_Builder.Property.V_TAIL_POLAR_CURVE_FUNCTION),
         "VTailPolarCurveFunction not set");
     return VTailPolarCurveFunction;
-  }
-
-  /**
-   * Sets the value to be returned by {@link IACAerodynamicCalculator#getVTailRudderCurveFunction()}.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code VTailRudderCurveFunction} is null
-   */
-  public IACAerodynamicCalculator.Builder setVTailRudderCurveFunction(
-      MyInterpolatingFunction VTailRudderCurveFunction) {
-    this.VTailRudderCurveFunction = Preconditions.checkNotNull(VTailRudderCurveFunction);
-    _unsetProperties.remove(IACAerodynamicCalculator_Builder.Property.V_TAIL_RUDDER_CURVE_FUNCTION);
-    return (IACAerodynamicCalculator.Builder) this;
-  }
-
-  /**
-   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getVTailRudderCurveFunction()}
-   * by applying {@code mapper} to it and using the result.
-   *
-   * @return this {@code Builder} object
-   * @throws NullPointerException if {@code mapper} is null or returns null
-   * @throws IllegalStateException if the field has not been set
-   */
-  public IACAerodynamicCalculator.Builder mapVTailRudderCurveFunction(
-      UnaryOperator<MyInterpolatingFunction> mapper) {
-    Preconditions.checkNotNull(mapper);
-    return setVTailRudderCurveFunction(mapper.apply(getVTailRudderCurveFunction()));
-  }
-
-  /**
-   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getVTailRudderCurveFunction()}.
-   *
-   * @throws IllegalStateException if the field has not been set
-   */
-  public MyInterpolatingFunction getVTailRudderCurveFunction() {
-    Preconditions.checkState(
-        !_unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.V_TAIL_RUDDER_CURVE_FUNCTION),
-        "VTailRudderCurveFunction not set");
-    return VTailRudderCurveFunction;
   }
 
   /**
@@ -2541,6 +2458,48 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getAircraftDownwashGradientFunction()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code aircraftDownwashGradientFunction} is null
+   */
+  public IACAerodynamicCalculator.Builder setAircraftDownwashGradientFunction(
+      MyInterpolatingFunction aircraftDownwashGradientFunction) {
+    this.aircraftDownwashGradientFunction =
+        Preconditions.checkNotNull(aircraftDownwashGradientFunction);
+    _unsetProperties.remove(
+        IACAerodynamicCalculator_Builder.Property.AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getAircraftDownwashGradientFunction()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapAircraftDownwashGradientFunction(
+      UnaryOperator<MyInterpolatingFunction> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setAircraftDownwashGradientFunction(mapper.apply(getAircraftDownwashGradientFunction()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getAircraftDownwashGradientFunction()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public MyInterpolatingFunction getAircraftDownwashGradientFunction() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION),
+        "aircraftDownwashGradientFunction not set");
+    return aircraftDownwashGradientFunction;
+  }
+
+  /**
    * Sets all property values using the given {@code IACAerodynamicCalculator} as a template.
    */
   public IACAerodynamicCalculator.Builder mergeFrom(IACAerodynamicCalculator value) {
@@ -2720,13 +2679,6 @@ abstract class IACAerodynamicCalculator_Builder {
       setHTailPolarCurveFunction(value.getHTailPolarCurveFunction());
     }
     if (_defaults._unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.H_TAIL_ELEVATOR_CURVE_FUNCTION)
-        || !value
-            .getHTailElevatorCurveFunction()
-            .equals(_defaults.getHTailElevatorCurveFunction())) {
-      setHTailElevatorCurveFunction(value.getHTailElevatorCurveFunction());
-    }
-    if (_defaults._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENT_CURVE_FUNCTION)
         || !value.getHTailMomentCurveFunction().equals(_defaults.getHTailMomentCurveFunction())) {
       setHTailMomentCurveFunction(value.getHTailMomentCurveFunction());
@@ -2740,11 +2692,6 @@ abstract class IACAerodynamicCalculator_Builder {
             IACAerodynamicCalculator_Builder.Property.V_TAIL_POLAR_CURVE_FUNCTION)
         || !value.getVTailPolarCurveFunction().equals(_defaults.getVTailPolarCurveFunction())) {
       setVTailPolarCurveFunction(value.getVTailPolarCurveFunction());
-    }
-    if (_defaults._unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.V_TAIL_RUDDER_CURVE_FUNCTION)
-        || !value.getVTailRudderCurveFunction().equals(_defaults.getVTailRudderCurveFunction())) {
-      setVTailRudderCurveFunction(value.getVTailRudderCurveFunction());
     }
     if (_defaults._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENT_CURVE_FUNCTION)
@@ -2776,6 +2723,13 @@ abstract class IACAerodynamicCalculator_Builder {
             .getNacelleMomentCurveFunction()
             .equals(_defaults.getNacelleMomentCurveFunction())) {
       setNacelleMomentCurveFunction(value.getNacelleMomentCurveFunction());
+    }
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION)
+        || !value
+            .getAircraftDownwashGradientFunction()
+            .equals(_defaults.getAircraftDownwashGradientFunction())) {
+      setAircraftDownwashGradientFunction(value.getAircraftDownwashGradientFunction());
     }
     return (IACAerodynamicCalculator.Builder) this;
   }
@@ -3036,15 +2990,6 @@ abstract class IACAerodynamicCalculator_Builder {
       setHTailPolarCurveFunction(template.getHTailPolarCurveFunction());
     }
     if (!base._unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.H_TAIL_ELEVATOR_CURVE_FUNCTION)
-        && (_defaults._unsetProperties.contains(
-                IACAerodynamicCalculator_Builder.Property.H_TAIL_ELEVATOR_CURVE_FUNCTION)
-            || !template
-                .getHTailElevatorCurveFunction()
-                .equals(_defaults.getHTailElevatorCurveFunction()))) {
-      setHTailElevatorCurveFunction(template.getHTailElevatorCurveFunction());
-    }
-    if (!base._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENT_CURVE_FUNCTION)
         && (_defaults._unsetProperties.contains(
                 IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENT_CURVE_FUNCTION)
@@ -3070,15 +3015,6 @@ abstract class IACAerodynamicCalculator_Builder {
                 .getVTailPolarCurveFunction()
                 .equals(_defaults.getVTailPolarCurveFunction()))) {
       setVTailPolarCurveFunction(template.getVTailPolarCurveFunction());
-    }
-    if (!base._unsetProperties.contains(
-            IACAerodynamicCalculator_Builder.Property.V_TAIL_RUDDER_CURVE_FUNCTION)
-        && (_defaults._unsetProperties.contains(
-                IACAerodynamicCalculator_Builder.Property.V_TAIL_RUDDER_CURVE_FUNCTION)
-            || !template
-                .getVTailRudderCurveFunction()
-                .equals(_defaults.getVTailRudderCurveFunction()))) {
-      setVTailRudderCurveFunction(template.getVTailRudderCurveFunction());
     }
     if (!base._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENT_CURVE_FUNCTION)
@@ -3124,6 +3060,15 @@ abstract class IACAerodynamicCalculator_Builder {
                 .getNacelleMomentCurveFunction()
                 .equals(_defaults.getNacelleMomentCurveFunction()))) {
       setNacelleMomentCurveFunction(template.getNacelleMomentCurveFunction());
+    }
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION)
+            || !template
+                .getAircraftDownwashGradientFunction()
+                .equals(_defaults.getAircraftDownwashGradientFunction()))) {
+      setAircraftDownwashGradientFunction(template.getAircraftDownwashGradientFunction());
     }
     return (IACAerodynamicCalculator.Builder) this;
   }
@@ -3174,16 +3119,15 @@ abstract class IACAerodynamicCalculator_Builder {
     wingMomentCurveFunction = _defaults.wingMomentCurveFunction;
     HTailLiftCurveFunction = _defaults.HTailLiftCurveFunction;
     HTailPolarCurveFunction = _defaults.HTailPolarCurveFunction;
-    HTailElevatorCurveFunction = _defaults.HTailElevatorCurveFunction;
     HTailMomentCurveFunction = _defaults.HTailMomentCurveFunction;
     VTailLiftCurveFunction = _defaults.VTailLiftCurveFunction;
     VTailPolarCurveFunction = _defaults.VTailPolarCurveFunction;
-    VTailRudderCurveFunction = _defaults.VTailRudderCurveFunction;
     VTailMomentCurveFunction = _defaults.VTailMomentCurveFunction;
     fuselagePolarCurveFunction = _defaults.fuselagePolarCurveFunction;
     fuselageMomentCurveFunction = _defaults.fuselageMomentCurveFunction;
     nacellePolarCurveFunction = _defaults.nacellePolarCurveFunction;
     nacelleMomentCurveFunction = _defaults.nacelleMomentCurveFunction;
+    aircraftDownwashGradientFunction = _defaults.aircraftDownwashGradientFunction;
     _unsetProperties.clear();
     _unsetProperties.addAll(_defaults._unsetProperties);
     return (IACAerodynamicCalculator.Builder) this;
@@ -3256,16 +3200,15 @@ abstract class IACAerodynamicCalculator_Builder {
     private final MyInterpolatingFunction wingMomentCurveFunction;
     private final MyInterpolatingFunction HTailLiftCurveFunction;
     private final MyInterpolatingFunction HTailPolarCurveFunction;
-    private final MyInterpolatingFunction HTailElevatorCurveFunction;
     private final MyInterpolatingFunction HTailMomentCurveFunction;
     private final MyInterpolatingFunction VTailLiftCurveFunction;
     private final MyInterpolatingFunction VTailPolarCurveFunction;
-    private final MyInterpolatingFunction VTailRudderCurveFunction;
     private final MyInterpolatingFunction VTailMomentCurveFunction;
     private final MyInterpolatingFunction fuselagePolarCurveFunction;
     private final MyInterpolatingFunction fuselageMomentCurveFunction;
     private final MyInterpolatingFunction nacellePolarCurveFunction;
     private final MyInterpolatingFunction nacelleMomentCurveFunction;
+    private final MyInterpolatingFunction aircraftDownwashGradientFunction;
 
     private Value(IACAerodynamicCalculator_Builder builder) {
       this.theAircraft = builder.theAircraft;
@@ -3311,16 +3254,15 @@ abstract class IACAerodynamicCalculator_Builder {
       this.wingMomentCurveFunction = builder.wingMomentCurveFunction;
       this.HTailLiftCurveFunction = builder.HTailLiftCurveFunction;
       this.HTailPolarCurveFunction = builder.HTailPolarCurveFunction;
-      this.HTailElevatorCurveFunction = builder.HTailElevatorCurveFunction;
       this.HTailMomentCurveFunction = builder.HTailMomentCurveFunction;
       this.VTailLiftCurveFunction = builder.VTailLiftCurveFunction;
       this.VTailPolarCurveFunction = builder.VTailPolarCurveFunction;
-      this.VTailRudderCurveFunction = builder.VTailRudderCurveFunction;
       this.VTailMomentCurveFunction = builder.VTailMomentCurveFunction;
       this.fuselagePolarCurveFunction = builder.fuselagePolarCurveFunction;
       this.fuselageMomentCurveFunction = builder.fuselageMomentCurveFunction;
       this.nacellePolarCurveFunction = builder.nacellePolarCurveFunction;
       this.nacelleMomentCurveFunction = builder.nacelleMomentCurveFunction;
+      this.aircraftDownwashGradientFunction = builder.aircraftDownwashGradientFunction;
     }
 
     @Override
@@ -3529,11 +3471,6 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
-    public MyInterpolatingFunction getHTailElevatorCurveFunction() {
-      return HTailElevatorCurveFunction;
-    }
-
-    @Override
     public MyInterpolatingFunction getHTailMomentCurveFunction() {
       return HTailMomentCurveFunction;
     }
@@ -3546,11 +3483,6 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public MyInterpolatingFunction getVTailPolarCurveFunction() {
       return VTailPolarCurveFunction;
-    }
-
-    @Override
-    public MyInterpolatingFunction getVTailRudderCurveFunction() {
-      return VTailRudderCurveFunction;
     }
 
     @Override
@@ -3576,6 +3508,11 @@ abstract class IACAerodynamicCalculator_Builder {
     @Override
     public MyInterpolatingFunction getNacelleMomentCurveFunction() {
       return nacelleMomentCurveFunction;
+    }
+
+    @Override
+    public MyInterpolatingFunction getAircraftDownwashGradientFunction() {
+      return aircraftDownwashGradientFunction;
     }
 
     @Override
@@ -3627,16 +3564,16 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(wingMomentCurveFunction, other.wingMomentCurveFunction)
           && Objects.equals(HTailLiftCurveFunction, other.HTailLiftCurveFunction)
           && Objects.equals(HTailPolarCurveFunction, other.HTailPolarCurveFunction)
-          && Objects.equals(HTailElevatorCurveFunction, other.HTailElevatorCurveFunction)
           && Objects.equals(HTailMomentCurveFunction, other.HTailMomentCurveFunction)
           && Objects.equals(VTailLiftCurveFunction, other.VTailLiftCurveFunction)
           && Objects.equals(VTailPolarCurveFunction, other.VTailPolarCurveFunction)
-          && Objects.equals(VTailRudderCurveFunction, other.VTailRudderCurveFunction)
           && Objects.equals(VTailMomentCurveFunction, other.VTailMomentCurveFunction)
           && Objects.equals(fuselagePolarCurveFunction, other.fuselagePolarCurveFunction)
           && Objects.equals(fuselageMomentCurveFunction, other.fuselageMomentCurveFunction)
           && Objects.equals(nacellePolarCurveFunction, other.nacellePolarCurveFunction)
-          && Objects.equals(nacelleMomentCurveFunction, other.nacelleMomentCurveFunction);
+          && Objects.equals(nacelleMomentCurveFunction, other.nacelleMomentCurveFunction)
+          && Objects.equals(
+              aircraftDownwashGradientFunction, other.aircraftDownwashGradientFunction);
     }
 
     @Override
@@ -3683,16 +3620,15 @@ abstract class IACAerodynamicCalculator_Builder {
           wingMomentCurveFunction,
           HTailLiftCurveFunction,
           HTailPolarCurveFunction,
-          HTailElevatorCurveFunction,
           HTailMomentCurveFunction,
           VTailLiftCurveFunction,
           VTailPolarCurveFunction,
-          VTailRudderCurveFunction,
           VTailMomentCurveFunction,
           fuselagePolarCurveFunction,
           fuselageMomentCurveFunction,
           nacellePolarCurveFunction,
-          nacelleMomentCurveFunction);
+          nacelleMomentCurveFunction,
+          aircraftDownwashGradientFunction);
     }
 
     @Override
@@ -3821,9 +3757,6 @@ abstract class IACAerodynamicCalculator_Builder {
           + "HTailPolarCurveFunction="
           + HTailPolarCurveFunction
           + ", "
-          + "HTailElevatorCurveFunction="
-          + HTailElevatorCurveFunction
-          + ", "
           + "HTailMomentCurveFunction="
           + HTailMomentCurveFunction
           + ", "
@@ -3832,9 +3765,6 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "VTailPolarCurveFunction="
           + VTailPolarCurveFunction
-          + ", "
-          + "VTailRudderCurveFunction="
-          + VTailRudderCurveFunction
           + ", "
           + "VTailMomentCurveFunction="
           + VTailMomentCurveFunction
@@ -3850,6 +3780,9 @@ abstract class IACAerodynamicCalculator_Builder {
           + ", "
           + "nacelleMomentCurveFunction="
           + nacelleMomentCurveFunction
+          + ", "
+          + "aircraftDownwashGradientFunction="
+          + aircraftDownwashGradientFunction
           + "}";
     }
   }
@@ -3897,16 +3830,15 @@ abstract class IACAerodynamicCalculator_Builder {
     private final MyInterpolatingFunction wingMomentCurveFunction;
     private final MyInterpolatingFunction HTailLiftCurveFunction;
     private final MyInterpolatingFunction HTailPolarCurveFunction;
-    private final MyInterpolatingFunction HTailElevatorCurveFunction;
     private final MyInterpolatingFunction HTailMomentCurveFunction;
     private final MyInterpolatingFunction VTailLiftCurveFunction;
     private final MyInterpolatingFunction VTailPolarCurveFunction;
-    private final MyInterpolatingFunction VTailRudderCurveFunction;
     private final MyInterpolatingFunction VTailMomentCurveFunction;
     private final MyInterpolatingFunction fuselagePolarCurveFunction;
     private final MyInterpolatingFunction fuselageMomentCurveFunction;
     private final MyInterpolatingFunction nacellePolarCurveFunction;
     private final MyInterpolatingFunction nacelleMomentCurveFunction;
+    private final MyInterpolatingFunction aircraftDownwashGradientFunction;
     private final EnumSet<IACAerodynamicCalculator_Builder.Property> _unsetProperties;
 
     Partial(IACAerodynamicCalculator_Builder builder) {
@@ -3953,16 +3885,15 @@ abstract class IACAerodynamicCalculator_Builder {
       this.wingMomentCurveFunction = builder.wingMomentCurveFunction;
       this.HTailLiftCurveFunction = builder.HTailLiftCurveFunction;
       this.HTailPolarCurveFunction = builder.HTailPolarCurveFunction;
-      this.HTailElevatorCurveFunction = builder.HTailElevatorCurveFunction;
       this.HTailMomentCurveFunction = builder.HTailMomentCurveFunction;
       this.VTailLiftCurveFunction = builder.VTailLiftCurveFunction;
       this.VTailPolarCurveFunction = builder.VTailPolarCurveFunction;
-      this.VTailRudderCurveFunction = builder.VTailRudderCurveFunction;
       this.VTailMomentCurveFunction = builder.VTailMomentCurveFunction;
       this.fuselagePolarCurveFunction = builder.fuselagePolarCurveFunction;
       this.fuselageMomentCurveFunction = builder.fuselageMomentCurveFunction;
       this.nacellePolarCurveFunction = builder.nacellePolarCurveFunction;
       this.nacelleMomentCurveFunction = builder.nacelleMomentCurveFunction;
+      this.aircraftDownwashGradientFunction = builder.aircraftDownwashGradientFunction;
       this._unsetProperties = builder._unsetProperties.clone();
     }
 
@@ -4289,15 +4220,6 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
-    public MyInterpolatingFunction getHTailElevatorCurveFunction() {
-      if (_unsetProperties.contains(
-          IACAerodynamicCalculator_Builder.Property.H_TAIL_ELEVATOR_CURVE_FUNCTION)) {
-        throw new UnsupportedOperationException("HTailElevatorCurveFunction not set");
-      }
-      return HTailElevatorCurveFunction;
-    }
-
-    @Override
     public MyInterpolatingFunction getHTailMomentCurveFunction() {
       if (_unsetProperties.contains(
           IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENT_CURVE_FUNCTION)) {
@@ -4322,15 +4244,6 @@ abstract class IACAerodynamicCalculator_Builder {
         throw new UnsupportedOperationException("VTailPolarCurveFunction not set");
       }
       return VTailPolarCurveFunction;
-    }
-
-    @Override
-    public MyInterpolatingFunction getVTailRudderCurveFunction() {
-      if (_unsetProperties.contains(
-          IACAerodynamicCalculator_Builder.Property.V_TAIL_RUDDER_CURVE_FUNCTION)) {
-        throw new UnsupportedOperationException("VTailRudderCurveFunction not set");
-      }
-      return VTailRudderCurveFunction;
     }
 
     @Override
@@ -4376,6 +4289,15 @@ abstract class IACAerodynamicCalculator_Builder {
         throw new UnsupportedOperationException("nacelleMomentCurveFunction not set");
       }
       return nacelleMomentCurveFunction;
+    }
+
+    @Override
+    public MyInterpolatingFunction getAircraftDownwashGradientFunction() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION)) {
+        throw new UnsupportedOperationException("aircraftDownwashGradientFunction not set");
+      }
+      return aircraftDownwashGradientFunction;
     }
 
     @Override
@@ -4428,16 +4350,16 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(wingMomentCurveFunction, other.wingMomentCurveFunction)
           && Objects.equals(HTailLiftCurveFunction, other.HTailLiftCurveFunction)
           && Objects.equals(HTailPolarCurveFunction, other.HTailPolarCurveFunction)
-          && Objects.equals(HTailElevatorCurveFunction, other.HTailElevatorCurveFunction)
           && Objects.equals(HTailMomentCurveFunction, other.HTailMomentCurveFunction)
           && Objects.equals(VTailLiftCurveFunction, other.VTailLiftCurveFunction)
           && Objects.equals(VTailPolarCurveFunction, other.VTailPolarCurveFunction)
-          && Objects.equals(VTailRudderCurveFunction, other.VTailRudderCurveFunction)
           && Objects.equals(VTailMomentCurveFunction, other.VTailMomentCurveFunction)
           && Objects.equals(fuselagePolarCurveFunction, other.fuselagePolarCurveFunction)
           && Objects.equals(fuselageMomentCurveFunction, other.fuselageMomentCurveFunction)
           && Objects.equals(nacellePolarCurveFunction, other.nacellePolarCurveFunction)
           && Objects.equals(nacelleMomentCurveFunction, other.nacelleMomentCurveFunction)
+          && Objects.equals(
+              aircraftDownwashGradientFunction, other.aircraftDownwashGradientFunction)
           && Objects.equals(_unsetProperties, other._unsetProperties);
     }
 
@@ -4485,16 +4407,15 @@ abstract class IACAerodynamicCalculator_Builder {
           wingMomentCurveFunction,
           HTailLiftCurveFunction,
           HTailPolarCurveFunction,
-          HTailElevatorCurveFunction,
           HTailMomentCurveFunction,
           VTailLiftCurveFunction,
           VTailPolarCurveFunction,
-          VTailRudderCurveFunction,
           VTailMomentCurveFunction,
           fuselagePolarCurveFunction,
           fuselageMomentCurveFunction,
           nacellePolarCurveFunction,
           nacelleMomentCurveFunction,
+          aircraftDownwashGradientFunction,
           _unsetProperties);
     }
 
@@ -4637,10 +4558,6 @@ abstract class IACAerodynamicCalculator_Builder {
                   ? "HTailPolarCurveFunction=" + HTailPolarCurveFunction
                   : null),
               (!_unsetProperties.contains(
-                      IACAerodynamicCalculator_Builder.Property.H_TAIL_ELEVATOR_CURVE_FUNCTION)
-                  ? "HTailElevatorCurveFunction=" + HTailElevatorCurveFunction
-                  : null),
-              (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.H_TAIL_MOMENT_CURVE_FUNCTION)
                   ? "HTailMomentCurveFunction=" + HTailMomentCurveFunction
                   : null),
@@ -4651,10 +4568,6 @@ abstract class IACAerodynamicCalculator_Builder {
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.V_TAIL_POLAR_CURVE_FUNCTION)
                   ? "VTailPolarCurveFunction=" + VTailPolarCurveFunction
-                  : null),
-              (!_unsetProperties.contains(
-                      IACAerodynamicCalculator_Builder.Property.V_TAIL_RUDDER_CURVE_FUNCTION)
-                  ? "VTailRudderCurveFunction=" + VTailRudderCurveFunction
                   : null),
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.V_TAIL_MOMENT_CURVE_FUNCTION)
@@ -4675,6 +4588,10 @@ abstract class IACAerodynamicCalculator_Builder {
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.NACELLE_MOMENT_CURVE_FUNCTION)
                   ? "nacelleMomentCurveFunction=" + nacelleMomentCurveFunction
+                  : null),
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.AIRCRAFT_DOWNWASH_GRADIENT_FUNCTION)
+                  ? "aircraftDownwashGradientFunction=" + aircraftDownwashGradientFunction
                   : null))
           + "}";
     }

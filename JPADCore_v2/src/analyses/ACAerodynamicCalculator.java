@@ -65,6 +65,7 @@ import calculators.aerodynamics.MomentCalc;
 import calculators.stability.StabilityCalculators;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
+import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.FoldersEnum;
@@ -255,21 +256,6 @@ public class ACAerodynamicCalculator {
 		//...................................................................................
 		// DISTANCE BETWEEN WING VORTEX PLANE AND THE AERODYNAMIC CENTER OF THE HTAIL
 		//...................................................................................
-		switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
-		case TAKE_OFF:
-			_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
-			break;
-		case CLIMB:
-			_landingGearUsedDrag = 0.0;
-			break;
-		case CRUISE:
-			_landingGearUsedDrag = 0.0;
-			break;
-		case LANDING:
-			_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
-			break;
-		}
-		
 		_zACRootWing = Amount.valueOf(
 				_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) 
 				- (
@@ -733,49 +719,30 @@ public class ACAerodynamicCalculator {
 		_downwashGradientMap.put(Boolean.FALSE, downwashGradientNonLinear);
 		_downwashAngleMap.put(Boolean.FALSE, downwashAngleNonLinear);
 
+		/*
+		 * TODO: ADD THE POSSIBILITY TO SET THE DOWNWASH STARTING FROM THE "INPUT FILE"
+		 */
+		
 		/////////////////////////////////////////////////////////////////////////////////////
 		// ALPHA HTAIL ARRAY 
-		if (_theAerodynamicBuilderInterface.getDownwashConstant() == Boolean.TRUE){
-			_alphaHTailList = new ArrayList<>();
-			for (int i=0; i<_theAerodynamicBuilderInterface.getNumberOfAlphasBody(); i++){
-				_alphaHTailList.add(
-						Amount.valueOf(
-								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-								- _downwashAngleMap
-								.get(Boolean.TRUE)
-								.get(
-										_theAerodynamicBuilderInterface.getComponentTaskList()
-										.get(ComponentEnum.AIRCRAFT)
-										.get(AerodynamicAndStabilityEnum.DOWNWASH)
-										)
-								.get(i)
-								.doubleValue(NonSI.DEGREE_ANGLE)
-								+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
-								NonSI.DEGREE_ANGLE
-								)
-						);
-			}
-		}
-		if (_theAerodynamicBuilderInterface.getDownwashConstant() == Boolean.FALSE){
-			_alphaHTailList = new ArrayList<>();
-			for (int i=0; i<_theAerodynamicBuilderInterface.getNumberOfAlphasBody(); i++){
-				_alphaHTailList.add(
-						Amount.valueOf(
-								_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
-								- _downwashAngleMap
-								.get(Boolean.FALSE)
-								.get(
-										_theAerodynamicBuilderInterface.getComponentTaskList()
-										.get(ComponentEnum.AIRCRAFT)
-										.get(AerodynamicAndStabilityEnum.DOWNWASH)
-										)
-								.get(i)
-								.doubleValue(NonSI.DEGREE_ANGLE)
-								+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
-								NonSI.DEGREE_ANGLE
-								)
-						);
-			}
+		_alphaHTailList = new ArrayList<>();
+		for (int i=0; i<_theAerodynamicBuilderInterface.getNumberOfAlphasBody(); i++){
+			_alphaHTailList.add(
+					Amount.valueOf(
+							_alphaBodyList.get(i).doubleValue(NonSI.DEGREE_ANGLE)
+							- _downwashAngleMap
+							.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+							.get(
+									_theAerodynamicBuilderInterface.getComponentTaskList()
+									.get(ComponentEnum.AIRCRAFT)
+									.get(AerodynamicAndStabilityEnum.DOWNWASH)
+									)
+							.get(i)
+							.doubleValue(NonSI.DEGREE_ANGLE)
+							+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getRiggingAngle().doubleValue(NonSI.DEGREE_ANGLE),
+							NonSI.DEGREE_ANGLE
+							)
+					);
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////
@@ -2814,145 +2781,146 @@ public class ACAerodynamicCalculator {
 							)
 					);
 
-		//.........................................................................................................................
-		//	CD0_PARASITE
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
+			//.........................................................................................................................
+			//	CD0_PARASITE
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
 
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Parasite calcCD0Parasite = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Parasite();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
-			case SEMIEMPIRICAL:
-				calcCD0Parasite.semiempirical();
-				break;
-			default:
-				break;
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Parasite calcCD0Parasite = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Parasite();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_NACELLE)) {
+				case SEMIEMPIRICAL:
+					calcCD0Parasite.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD0_BASE
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Base calcCD0Base = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Base();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
+				case SEMIEMPIRICAL:
+					calcCD0Base.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD0_TOTAL
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0Total = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
+				case SEMIEMPIRICAL:
+					calcCD0Total.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_INDUCED
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+				case SEMIEMPIRICAL:
+					calcCDInduced.semiempirical(_alphaNacelleCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	POLAR_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcPolar calcPolar = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcPolar();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
+				case SEMIEMPIRICAL:
+					calcPolar.semiempirical();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CD_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
+				case SEMIEMPIRICAL:
+					calcCDInduced.semiempirical(_alphaNacelleCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM0
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCM0 calcCM0 = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCM0();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
+				case MULTHOPP:
+					calcCM0.multhopp();
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	CM_ALPHA
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCMAlpha calcCMAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
+				case GILRUTH:
+					calcCMAlpha.gilruth();
+					break;
+				default:
+					break;
+				}
+			}
+			//.........................................................................................................................
+			//	CM_AT_ALPHA 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAtAlpha();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
+				case SEMIEMPIRICAL:
+					calcCMAtAlpha.semiempirical(_alphaNacelleCurrent);
+					break;
+				default:
+					break;
+				}
+			}
+
+			//.........................................................................................................................
+			//	MOMENT_CURVE_3D
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcMomentCurve calcMomentCurve = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcMomentCurve();
+				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
+				case SEMIEMPIRICAL:
+					calcMomentCurve.semiempirical();
+					break;
+				default:
+					break;
+				}
 			}
 		}
-
-		//.........................................................................................................................
-		//	CD0_BASE
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Base calcCD0Base = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Base();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_BASE_NACELLE)) {
-			case SEMIEMPIRICAL:
-				calcCD0Base.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CD0_TOTAL
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCD0Total calcCD0Total = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCD0Total();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_NACELLE)) {
-			case SEMIEMPIRICAL:
-				calcCD0Total.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CD_INDUCED
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
-			case SEMIEMPIRICAL:
-				calcCDInduced.semiempirical(_alphaNacelleCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	POLAR_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcPolar calcPolar = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcPolar();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
-			case SEMIEMPIRICAL:
-				calcPolar.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CD_AT_ALPHA 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
-			case SEMIEMPIRICAL:
-				calcCDInduced.semiempirical(_alphaNacelleCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CM0
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCM0 calcCM0 = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCM0();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM0_NACELLE)) {
-			case MULTHOPP:
-				calcCM0.multhopp();
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	CM_ALPHA
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCMAlpha calcCMAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
-			case GILRUTH:
-				calcCMAlpha.gilruth();
-				break;
-			default:
-				break;
-			}
-		}
-		//.........................................................................................................................
-		//	CM_AT_ALPHA 
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAtAlpha();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
-			case SEMIEMPIRICAL:
-				calcCMAtAlpha.semiempirical(_alphaNacelleCurrent);
-				break;
-			default:
-				break;
-			}
-		}
-
-		//.........................................................................................................................
-		//	MOMENT_CURVE_3D
-		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
-
-			analyses.nacelles.NacelleAerodynamicsManager.CalcMomentCurve calcMomentCurve = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcMomentCurve();
-			switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
-			case SEMIEMPIRICAL:
-				calcMomentCurve.semiempirical();
-				break;
-			default:
-				break;
-			}
-		}
-	}
+		
 		//--------------------------AIRCRAFT----------------------------------------
 		//.........................................................................................................................
 		//	WING AERODYNAMIC_CENTER
@@ -3941,6 +3909,10 @@ public class ACAerodynamicCalculator {
 				+ File.separator
 				);
 		
+		/*
+		 * TODO: CHECK ALL THE DEPENDECIES STARTIN FROM HERE...
+		 */
+		
 		initializeAnalysis();
 
 		//=================================================================================================
@@ -4016,7 +3988,10 @@ public class ACAerodynamicCalculator {
 		// PLOTS
 		//=================================================================================================
 		
-		// TODO : FILL ME !!
+		/*
+		 * TODO : FILL ME !!
+		 *        REMEMBER TO PERFORM ALL THE NEEDED CHECKS FOR EACH PLOT !!
+		 */
 		
 		//------------------------------------------------------------------------------------------------------------------------------------
 		try {
@@ -4801,7 +4776,8 @@ public class ACAerodynamicCalculator {
 							), 
 					MyArrayUtils.convertToDoublePrimitive(wingLiftCurveCL)
 					);
-			
+		
+			wingTaskList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -4924,6 +4900,8 @@ public class ACAerodynamicCalculator {
 							), 
 					MyArrayUtils.convertToDoublePrimitive(wingHighLiftCurveCL)
 					);
+			
+			wingTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, MethodEnum.INPUT);
 			
 		}
 		
@@ -5146,6 +5124,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(wingPolarCurveCD)
 					);
 			
+			wingTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -5293,6 +5272,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(wingMomentCurveCM)
 					);
 			
+			wingTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -5348,7 +5328,6 @@ public class ACAerodynamicCalculator {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> hTailTaskList = new HashMap<>();
 		MyInterpolatingFunction hTailLiftCurveFunction = null;
-		MyInterpolatingFunction hTailElevatorLiftCurveFunction = null;
 		MyInterpolatingFunction hTailPolarCurveFunction = null;
 		MyInterpolatingFunction hTailMomentCurveFunction = null;
 		MethodEnum hTailCriticalMachMethod = null;
@@ -5670,6 +5649,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(hTailLiftCurveCL)
 					);
 			
+			hTailTaskList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -5778,21 +5758,6 @@ public class ACAerodynamicCalculator {
 				hTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, hTailElevatorLiftCurveMethod);
 				
 			}
-		}
-		else if(hTailElevatorLiftCurvePerformString.equalsIgnoreCase("FALSE")){
-			
-			hTailElevatorLiftCurveFunction = new MyInterpolatingFunction();
-			List<Amount<Angle>> hTailElevatorLiftCurveAlpha = reader.readArrayofAmountFromXML("//horizontal_tail_analyses/elevator/cL_vs_alpha/alpha");
-			List<Double> hTailElevatorLiftCurveCL = reader.readArrayDoubleFromXML("//horizontal_tail_analyses/elevator/cL_vs_alpha/cL");
-			hTailElevatorLiftCurveFunction.interpolate(
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							hTailElevatorLiftCurveAlpha.stream()
-							.map(a -> a.to(NonSI.DEGREE_ANGLE))
-							.collect(Collectors.toList())
-							), 
-					MyArrayUtils.convertToDoublePrimitive(hTailElevatorLiftCurveCL)
-					);
-			
 		}
 		
 		//---------------------------------------------------------------
@@ -6014,6 +5979,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(hTailPolarCurveCD)
 					);
 			
+			hTailTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -6161,6 +6127,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(hTailMomentCurveCM)
 					);
 			
+			hTailTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -6216,7 +6183,6 @@ public class ACAerodynamicCalculator {
 		//...............................................................
 		Map<AerodynamicAndStabilityEnum, MethodEnum> vTailTaskList = new HashMap<>();
 		MyInterpolatingFunction vTailLiftCurveFunction = null;
-		MyInterpolatingFunction vTailRudderLiftCurveFunction = null;
 		MyInterpolatingFunction vTailPolarCurveFunction = null;
 		MyInterpolatingFunction vTailMomentCurveFunction = null;
 		MethodEnum vTailCriticalMachMethod = null;
@@ -6529,6 +6495,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(vTailLiftCurveCL)
 					);
 			
+			vTailTaskList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -6637,21 +6604,6 @@ public class ACAerodynamicCalculator {
 				vTailTaskList.put(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D, vTailRudderLiftCurveMethod);
 				
 			}
-		}
-		else if(vTailRudderLiftCurvePerformString.equalsIgnoreCase("FALSE")){
-			
-			vTailRudderLiftCurveFunction = new MyInterpolatingFunction();
-			List<Amount<Angle>> vTailRudderLiftCurveAlpha = reader.readArrayofAmountFromXML("//vertical_tail_analyses/rudder/cL_vs_alpha/alpha");
-			List<Double> vTailRudderLiftCurveCL = reader.readArrayDoubleFromXML("//vertical_tail_analyses/rudder/cL_vs_alpha/cL");
-			vTailRudderLiftCurveFunction.interpolate(
-					MyArrayUtils.convertListOfAmountTodoubleArray(
-							vTailRudderLiftCurveAlpha.stream()
-							.map(a -> a.to(NonSI.DEGREE_ANGLE))
-							.collect(Collectors.toList())
-							), 
-					MyArrayUtils.convertToDoublePrimitive(vTailRudderLiftCurveCL)
-					);
-			
 		}
 		
 		//---------------------------------------------------------------
@@ -6873,6 +6825,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(vTailPolarCurveCD)
 					);
 			
+			vTailTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -7020,6 +6973,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(vTailMomentCurveCM)
 					);
 			
+			vTailTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -7272,6 +7226,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(fuselagePolarCurveCD)
 					);
 			
+			fuselageTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -7395,6 +7350,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(fuselageMomentCurveCM)
 					);
 			
+			fuselageTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -7570,6 +7526,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(nacellePolarCurveCD)
 					);
 			
+			nacelleTaskList.put(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -7681,6 +7638,7 @@ public class ACAerodynamicCalculator {
 					MyArrayUtils.convertToDoublePrimitive(nacelleMomentCurveCM)
 					);
 			
+			nacelleTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE, MethodEnum.INPUT);
 		}
 		
 		//---------------------------------------------------------------
@@ -7710,19 +7668,1185 @@ public class ACAerodynamicCalculator {
 		//...............................................................
 		// AIRCRAFT:
 		//...............................................................
+		Map<AerodynamicAndStabilityEnum, MethodEnum> aircraftTaskList = new HashMap<>();
+		MyInterpolatingFunction aircraftDownwashGradientFunction = null;
+		Boolean aircraftDownwashConstantGradient = null;
+		Boolean aircraftFuselageEffectOnWingLiftCurve = null;
+		Boolean aircraftWingPendularStability = null;
+		Double aircraftDeltaCD0Miscellaneous = 0.0;
+		Double aircraftDeltaCD0LandingGears = 0.0;
+		MethodEnum aircraftDownwashMethod = null;
+		MethodEnum aircraftBuffetBarrierMethod = null;
+		MethodEnum aircraftTotalLiftCurveMethod = null;
+		MethodEnum aircraftTotalPolarCurveMethod = null;
+		MethodEnum aircraftTotalMomentCurveMethod = null;
+		MethodEnum aircraftLongitudinalStaticStabilityMethod = null;
+		MethodEnum aircraftLateralStaticStabilityMethod = null;
+		MethodEnum aircraftDirectionalStaticStabilityMethod = null;
+		MethodEnum aircraftDynamicStabilityMethod = null;
+		
+		//---------------------------------------------------------------
+		// DOWNWASH
+		String aircraftDownwashPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/downwash/@perform");
+		
+		if(aircraftDownwashPerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftDownwashConstantGradientString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/downwash/@constant_downwash_gradient");
+			
+			if(aircraftDownwashConstantGradientString != null) {
+				
+				if(aircraftDownwashConstantGradientString.equalsIgnoreCase("TRUE"))
+					aircraftDownwashConstantGradient = Boolean.TRUE;
+				
+				if(aircraftDownwashConstantGradientString.equalsIgnoreCase("FALSE"))
+					aircraftDownwashConstantGradient = Boolean.FALSE;
+				
+			}
+			
+			String aircraftDownwashMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/downwash/@method");
+			
+			if(aircraftDownwashMethodString != null) {
+				
+				if(aircraftDownwashMethodString.equalsIgnoreCase("ROSKAM")) 
+					aircraftDownwashMethod = MethodEnum.ROSKAM;
+				
+				if(aircraftDownwashMethodString.equalsIgnoreCase("SLINGERLAND")) 
+					aircraftDownwashMethod = MethodEnum.SLINGERLAND;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.DOWNWASH, aircraftDownwashMethod);
+				
+			}
+		}
+		else if(aircraftDownwashPerformString.equalsIgnoreCase("FALSE")){
+
+			aircraftDownwashConstantGradient = Boolean.FALSE;
+			
+			aircraftDownwashGradientFunction = new MyInterpolatingFunction();
+			List<Amount<Angle>> aircraftDownwashGradientAlpha = reader.readArrayofAmountFromXML("//aircraft_analyses/downwash/downwash_gradient_vs_alpha/alpha");
+			List<Double> aircraftDownwashGradient = reader.readArrayDoubleFromXML("//aircraft_analyses/downwash/downwash_gradient_vs_alpha/downwash_gradient");
+			aircraftDownwashGradientFunction.interpolate(
+					MyArrayUtils.convertListOfAmountTodoubleArray(
+							aircraftDownwashGradientAlpha.stream()
+							.map(a -> a.to(NonSI.DEGREE_ANGLE))
+							.collect(Collectors.toList())
+							), 
+					MyArrayUtils.convertToDoublePrimitive(aircraftDownwashGradient)
+					);
+
+			aircraftTaskList.put(AerodynamicAndStabilityEnum.DOWNWASH, MethodEnum.INPUT);
+			
+		}
+
+		//---------------------------------------------------------------
+		// BUFFET BARRIER
+		String aircraftBuffetBarrierPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/buffet_barrier/@perform");
+		
+		if(aircraftBuffetBarrierPerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftBuffetBarrierMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/buffet_barrier/@method");
+			
+			if(aircraftBuffetBarrierMethodString != null) {
+				
+				if(aircraftBuffetBarrierMethodString.equalsIgnoreCase("KROO")) 
+					aircraftBuffetBarrierMethod = MethodEnum.KROO;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.BUFFET_BARRIER, aircraftBuffetBarrierMethod);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------
+		// TOTAL LIFT CURVE
+		String aircraftTotalLiftCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/lift_curve/@perform");
+		
+		if(aircraftTotalLiftCurvePerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftFuselageEffectsOnWingLiftCurveString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/lift_curve/@fuselage_effects");
+			
+			if(aircraftFuselageEffectsOnWingLiftCurveString != null) {
+				
+				if(aircraftFuselageEffectsOnWingLiftCurveString.equalsIgnoreCase("TRUE")) 
+					aircraftFuselageEffectOnWingLiftCurve = Boolean.TRUE;
+				else if(aircraftFuselageEffectsOnWingLiftCurveString.equalsIgnoreCase("FALSE"))
+					aircraftFuselageEffectOnWingLiftCurve = Boolean.FALSE;
+				
+			}
+			
+			String aircraftTotalLiftCurveMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/lift_curve/@method");
+			
+			if(aircraftTotalLiftCurveMethodString != null) {
+				
+				if(aircraftTotalLiftCurveMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
+					aircraftTotalLiftCurveMethod = MethodEnum.FROM_BALANCE_EQUATION;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.CL_TOTAL, aircraftTotalLiftCurveMethod);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------
+		// TOTAL POLAR CURVE
+		String aircraftTotalPolarCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/drag_polar/@perform");
+		
+		if(aircraftTotalPolarCurvePerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftDeltaCD0MiscellaneousString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/drag_polar/@delta_CD0_miscellaneous");
+			
+			if(aircraftDeltaCD0MiscellaneousString != null) 
+				aircraftDeltaCD0Miscellaneous = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
+			
+			String aircraftDeltaCD0LandingGearsString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/drag_polar/@delta_CD0_landing_gears");
+			
+			if(aircraftDeltaCD0LandingGearsString != null) 
+				aircraftDeltaCD0LandingGears = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
+			
+			
+			String aircraftTotalPolarCurveMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/drag_polar/@method");
+			
+			if(aircraftTotalPolarCurveMethodString != null) {
+				
+				if(aircraftTotalPolarCurveMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
+					aircraftTotalPolarCurveMethod = MethodEnum.FROM_BALANCE_EQUATION;
+				
+				if(aircraftTotalPolarCurveMethodString.equalsIgnoreCase("ROSKAM")) 
+					aircraftTotalPolarCurveMethod = MethodEnum.ROSKAM;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.CD_TOTAL, aircraftTotalPolarCurveMethod);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------
+		// TOTAL MOMENT CURVE
+		String aircraftTotalMomentCurvePerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/moment_curve/@perform");
+		
+		if(aircraftTotalMomentCurvePerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftTotalMomentCurveMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/moment_curve/@method");
+			
+			if(aircraftTotalMomentCurveMethodString != null) {
+				
+				if(aircraftTotalMomentCurveMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
+					aircraftTotalMomentCurveMethod = MethodEnum.FROM_BALANCE_EQUATION;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.CM_TOTAL, aircraftTotalMomentCurveMethod);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------
+		// LONGITUDINAL STATIC STABILITY
+		String aircraftLongitudinalStaticStabilityPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/longitudinal_static_stability/@perform");
+		
+		if(aircraftLongitudinalStaticStabilityPerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftWingPendularStabilityString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/longitudinal_static_stability/@wing_pendular_stability_effect");
+			
+			if(aircraftWingPendularStabilityString != null) {
+				
+				if(aircraftWingPendularStabilityString.equalsIgnoreCase("TRUE")) 
+					aircraftWingPendularStability = Boolean.TRUE;
+				else if(aircraftWingPendularStabilityString.equalsIgnoreCase("FALSE"))
+					aircraftWingPendularStability = Boolean.FALSE;
+				
+			}
+			
+			String aircraftLongitudinalStaticStabilityMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/longitudinal_static_stability/@method");
+			
+			if(aircraftLongitudinalStaticStabilityMethodString != null) {
+				
+				if(aircraftLongitudinalStaticStabilityMethodString.equalsIgnoreCase("FROM_BALANCE_EQUATION")) 
+					aircraftLongitudinalStaticStabilityMethod = MethodEnum.FROM_BALANCE_EQUATION;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY, aircraftLongitudinalStaticStabilityMethod);
+				
+			}
+		}
+		
+		//---------------------------------------------------------------
+		// DIRECTIONAL STATIC STABILITY
+		String aircraftDirectionalStaticStabilityPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//aircraft_analyses/directional_static_stability/@perform");
+		
+		if(aircraftDirectionalStaticStabilityPerformString.equalsIgnoreCase("TRUE")){
+			
+			String aircraftDirectionalStaticStabilityMethodString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aircraft_analyses/directional_static_stability/@method");
+			
+			if(aircraftDirectionalStaticStabilityMethodString != null) {
+				
+				if(aircraftDirectionalStaticStabilityMethodString.equalsIgnoreCase("VEDSC_SIMPLIFIED_WING")) 
+					aircraftDirectionalStaticStabilityMethod = MethodEnum.VEDSC_SIMPLIFIED_WING;
+				
+				if(aircraftDirectionalStaticStabilityMethodString.equalsIgnoreCase("VEDSC_USAFDATCOM_WING")) 
+					aircraftDirectionalStaticStabilityMethod = MethodEnum.VEDSC_USAFDATCOM_WING;
+				
+				aircraftTaskList.put(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY, aircraftDirectionalStaticStabilityMethod);
+				
+			}
+		}
+		
 		/*
-		 * TODO: FILL ME (create a Map<AerodynamicAndStabilityEnum, MethodEnum> 
-		 *       with all the methods different from "null")
+		 * TODO: COMPLETE WITH LATERAL STABILITY AND DYNAMIC STABILITY WHEN AVAILABLE!
 		 */
 		
 		//===============================================================
 		// READING PLOT DATA
 		//===============================================================
+		List<AerodynamicAndStabilityPlotEnum> plotList = new ArrayList<>();
 		
-		// TODO: FILL ME !!
+		//...............................................................
+		// WING:
+		//...............................................................
+		// LIFT CURVE
+		String wingLiftCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/cL_vs_alpha/@perform");
+
+		if(wingLiftCurvePlotPerformString != null) 
+			if(wingLiftCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN);
+
+		//----------------------------------------------------------------
+		// STALL PATH
+		String wingStallPathPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/stall_path/@perform");
+
+		if(wingStallPathPlotPerformString != null) 
+			if(wingStallPathPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH);
+
+		//----------------------------------------------------------------
+		// CL DISTRIBUTION
+		String wingCLDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/cl_distribution/@perform");
+
+		if(wingCLDistributionPlotPerformString != null) {
+			if(wingCLDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_CL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// CL ADDITIONAL DISTRIBUTION
+		String wingCLAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/cl_additional_distribution/@perform");
+
+		if(wingCLAdditionalDistributionPlotPerformString != null) {
+			if(wingCLAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_CL_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// CL BASIC DISTRIBUTION
+		String wingCLBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/cl_basic_distribution/@perform");
+
+		if(wingCLBasicDistributionPlotPerformString != null) {
+			if(wingCLBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_CL_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL DISTRIBUTION
+		String wingCCLDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/ccl_distribution/@perform");
+
+		if(wingCCLDistributionPlotPerformString != null) {
+			if(wingCCLDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_cCL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL ADDITIONAL DISTRIBUTION
+		String wingCCLAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/ccl_additional_distribution/@perform");
+
+		if(wingCCLAdditionalDistributionPlotPerformString != null) {
+			if(wingCCLAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_cCL_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL BASIC DISTRIBUTION
+		String wingCCLBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/ccl_basic_distribution/@perform");
+
+		if(wingCCLBasicDistributionPlotPerformString != null) {
+			if(wingCCLBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_cCL_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA DISTRIBUTION
+		String wingGammaDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/gamma_distribution/@perform");
+
+		if(wingGammaDistributionPlotPerformString != null) {
+			if(wingGammaDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_GAMMA_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA ADDITIONAL DISTRIBUTION
+		String wingGammaAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/gamma_additional_distribution/@perform");
+
+		if(wingGammaAdditionalDistributionPlotPerformString != null) {
+			if(wingGammaAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_GAMMA_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA BASIC DISTRIBUTION
+		String wingGammaBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/gamma_basic_distribution/@perform");
+
+		if(wingGammaBasicDistributionPlotPerformString != null) {
+			if(wingGammaBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_GAMMA_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// TOTAL LOAD DISTRIBUTION
+		String wingTotalLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/total_load_distribution/@perform");
+
+		if(wingTotalLoadDistributionPlotPerformString != null) {
+			if(wingTotalLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_TOTAL_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// ADDITIONAL LOAD DISTRIBUTION
+		String wingAdditionalLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/additional_load_distribution/@perform");
+
+		if(wingAdditionalLoadDistributionPlotPerformString != null) {
+			if(wingAdditionalLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_ADDITIONAL_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// BASIC LOAD DISTRIBUTION
+		String wingBasicLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/lift/basic_load_distribution/@perform");
+
+		if(wingBasicLoadDistributionPlotPerformString != null) {
+			if(wingBasicLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_BASIC_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// HIGH LIFT CURVE
+		String wingHighLiftCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/high_lift/cL_vs_alpha_high_lift/@perform");
+
+		if(wingHighLiftCurvePlotPerformString != null) {
+			if(wingHighLiftCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_HIGH_LIFT);
+		}
+		
+		//----------------------------------------------------------------
+		// HIGH LIFT POLAR CURVE
+		String wingHighLiftPolarCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/high_lift/cD_vs_cL_high_lift/@perform");
+
+		if(wingHighLiftPolarCurvePlotPerformString != null) {
+			if(wingHighLiftPolarCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_HIGH_LIFT);
+		}
+		
+		//----------------------------------------------------------------
+		// HIGH LIFT MOMENT CURVE
+		String wingHighLiftMomentCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/high_lift/cM_vs_alpha_high_lift/@perform");
+
+		if(wingHighLiftMomentCurvePlotPerformString != null) {
+			if(wingHighLiftMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_MOMENT_CURVE_HIGH_LIFT);
+		}
+		
+		//----------------------------------------------------------------
+		// POLAR CURVE BREAKDOWN
+		String wingPolarCurveBreakdownPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/drag/cD_vs_cL_breakdown/@perform");
+
+		if(wingPolarCurveBreakdownPlotPerformString != null) {
+			if(wingPolarCurveBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_CLEAN_BREAKDOWN);
+		}
+		
+		//----------------------------------------------------------------
+		// DRAG DISTRIBUTION
+		String wingDragDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/drag/drag_distributions/@perform");
+
+		if(wingDragDistributionPlotPerformString != null) {
+			if(wingDragDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_DRAG_DISTRIBUTION);
+		}
+		
+		//----------------------------------------------------------------
+		// MOMENT CURVE
+		String wingMomentCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/pitching_moment/cM_vs_alpha/@perform");
+
+		if(wingMomentCurvePlotPerformString != null) {
+			if(wingMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_MOMENT_CURVE_CLEAN);
+		}
+		
+		//----------------------------------------------------------------
+		// MOMENT DISTRIBUTION
+		String wingMomentDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/wing/pitching_moment/moment_distributions/@perform");
+
+		if(wingMomentDistributionPlotPerformString != null) {
+			if(wingMomentDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION);
+		}
+		
+		
+		//...............................................................
+		// HTAIL:
+		//...............................................................
+		// LIFT CURVE
+		String hTailLiftCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/cL_vs_alpha/@perform");
+
+		if(hTailLiftCurvePlotPerformString != null) 
+			if(hTailLiftCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_LIFT_CURVE_CLEAN);
+
+		//----------------------------------------------------------------
+		// STALL PATH
+		String hTailStallPathPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/stall_path/@perform");
+
+		if(hTailStallPathPlotPerformString != null) 
+			if(hTailStallPathPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_STALL_PATH);
+
+		//----------------------------------------------------------------
+		// CL DISTRIBUTION
+		String hTailCLDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/cl_distribution/@perform");
+
+		if(hTailCLDistributionPlotPerformString != null) {
+			if(hTailCLDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_CL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// CL ADDITIONAL DISTRIBUTION
+		String hTailCLAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/cl_additional_distribution/@perform");
+
+		if(hTailCLAdditionalDistributionPlotPerformString != null) {
+			if(hTailCLAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_CL_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// CL BASIC DISTRIBUTION
+		String hTailCLBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/cl_basic_distribution/@perform");
+
+		if(hTailCLBasicDistributionPlotPerformString != null) {
+			if(hTailCLBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_CL_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL DISTRIBUTION
+		String hTailCCLDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/ccl_distribution/@perform");
+
+		if(hTailCCLDistributionPlotPerformString != null) {
+			if(hTailCCLDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_cCL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL ADDITIONAL DISTRIBUTION
+		String hTailCCLAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/ccl_additional_distribution/@perform");
+
+		if(hTailCCLAdditionalDistributionPlotPerformString != null) {
+			if(hTailCCLAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_cCL_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL BASIC DISTRIBUTION
+		String hTailCCLBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/ccl_basic_distribution/@perform");
+
+		if(hTailCCLBasicDistributionPlotPerformString != null) {
+			if(hTailCCLBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_cCL_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA DISTRIBUTION
+		String hTailGammaDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/gamma_distribution/@perform");
+
+		if(hTailGammaDistributionPlotPerformString != null) {
+			if(hTailGammaDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_GAMMA_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA ADDITIONAL DISTRIBUTION
+		String hTailGammaAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/gamma_additional_distribution/@perform");
+
+		if(hTailGammaAdditionalDistributionPlotPerformString != null) {
+			if(hTailGammaAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_GAMMA_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA BASIC DISTRIBUTION
+		String hTailGammaBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/gamma_basic_distribution/@perform");
+
+		if(hTailGammaBasicDistributionPlotPerformString != null) {
+			if(hTailGammaBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_GAMMA_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// TOTAL LOAD DISTRIBUTION
+		String hTailTotalLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/total_load_distribution/@perform");
+
+		if(hTailTotalLoadDistributionPlotPerformString != null) {
+			if(hTailTotalLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_TOTAL_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// ADDITIONAL LOAD DISTRIBUTION
+		String hTailAdditionalLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/additional_load_distribution/@perform");
+
+		if(hTailAdditionalLoadDistributionPlotPerformString != null) {
+			if(hTailAdditionalLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_ADDITIONAL_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// BASIC LOAD DISTRIBUTION
+		String hTailBasicLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/lift/basic_load_distribution/@perform");
+
+		if(hTailBasicLoadDistributionPlotPerformString != null) {
+			if(hTailBasicLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_BASIC_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// POLAR CURVE BREAKDOWN
+		String hTailPolarCurveBreakdownPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/drag/cD_vs_cL_breakdown/@perform");
+
+		if(hTailPolarCurveBreakdownPlotPerformString != null) {
+			if(hTailPolarCurveBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN_BREAKDOWN);
+		}
+		
+		//----------------------------------------------------------------
+		// DRAG DISTRIBUTION
+		String hTailDragDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/drag/drag_distributions/@perform");
+
+		if(hTailDragDistributionPlotPerformString != null) {
+			if(hTailDragDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_DRAG_DISTRIBUTION);
+		}
+		
+		//----------------------------------------------------------------
+		// MOMENT CURVE
+		String hTailMomentCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/pitching_moment/cM_vs_alpha/@perform");
+
+		if(hTailMomentCurvePlotPerformString != null) {
+			if(hTailMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_CURVE_CLEAN);
+		}
+		
+		//----------------------------------------------------------------
+		// MOMENT DISTRIBUTION
+		String hTailMomentDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/horizontal_tail/pitching_moment/moment_distributions/@perform");
+
+		if(hTailMomentDistributionPlotPerformString != null) {
+			if(hTailMomentDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_DISTRIBUTION);
+		}
+		
+		
+		//...............................................................
+		// VTAIL:
+		//...............................................................
+		// LIFT CURVE
+		String vTailLiftCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/cL_vs_alpha/@perform");
+
+		if(vTailLiftCurvePlotPerformString != null) 
+			if(vTailLiftCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_LIFT_CURVE_CLEAN);
+
+		//----------------------------------------------------------------
+		// STALL PATH
+		String vTailStallPathPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/stall_path/@perform");
+
+		if(vTailStallPathPlotPerformString != null) 
+			if(vTailStallPathPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_STALL_PATH);
+
+		//----------------------------------------------------------------
+		// CL DISTRIBUTION
+		String vTailCLDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/cl_distribution/@perform");
+
+		if(vTailCLDistributionPlotPerformString != null) {
+			if(vTailCLDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_CL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// CL ADDITIONAL DISTRIBUTION
+		String vTailCLAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/cl_additional_distribution/@perform");
+
+		if(vTailCLAdditionalDistributionPlotPerformString != null) {
+			if(vTailCLAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_CL_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// CL BASIC DISTRIBUTION
+		String vTailCLBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/cl_basic_distribution/@perform");
+
+		if(vTailCLBasicDistributionPlotPerformString != null) {
+			if(vTailCLBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_CL_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL DISTRIBUTION
+		String vTailCCLDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/ccl_distribution/@perform");
+
+		if(vTailCCLDistributionPlotPerformString != null) {
+			if(vTailCCLDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_cCL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL ADDITIONAL DISTRIBUTION
+		String vTailCCLAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/ccl_additional_distribution/@perform");
+
+		if(vTailCCLAdditionalDistributionPlotPerformString != null) {
+			if(vTailCCLAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_cCL_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// cCL BASIC DISTRIBUTION
+		String vTailCCLBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/ccl_basic_distribution/@perform");
+
+		if(vTailCCLBasicDistributionPlotPerformString != null) {
+			if(vTailCCLBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_cCL_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA DISTRIBUTION
+		String vTailGammaDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/gamma_distribution/@perform");
+
+		if(vTailGammaDistributionPlotPerformString != null) {
+			if(vTailGammaDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_GAMMA_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA ADDITIONAL DISTRIBUTION
+		String vTailGammaAdditionalDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/gamma_additional_distribution/@perform");
+
+		if(vTailGammaAdditionalDistributionPlotPerformString != null) {
+			if(vTailGammaAdditionalDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_GAMMA_ADDITIONAL_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// GAMMA BASIC DISTRIBUTION
+		String vTailGammaBasicDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/gamma_basic_distribution/@perform");
+
+		if(vTailGammaBasicDistributionPlotPerformString != null) {
+			if(vTailGammaBasicDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_GAMMA_BASIC_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// TOTAL LOAD DISTRIBUTION
+		String vTailTotalLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/total_load_distribution/@perform");
+
+		if(vTailTotalLoadDistributionPlotPerformString != null) {
+			if(vTailTotalLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_TOTAL_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// ADDITIONAL LOAD DISTRIBUTION
+		String vTailAdditionalLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/additional_load_distribution/@perform");
+
+		if(vTailAdditionalLoadDistributionPlotPerformString != null) {
+			if(vTailAdditionalLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_ADDITIONAL_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// BASIC LOAD DISTRIBUTION
+		String vTailBasicLoadDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/lift/basic_load_distribution/@perform");
+
+		if(vTailBasicLoadDistributionPlotPerformString != null) {
+			if(vTailBasicLoadDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_BASIC_LOAD_DISTRIBUTION);
+		}
+
+		//----------------------------------------------------------------
+		// POLAR CURVE BREAKDOWN
+		String vTailPolarCurveBreakdownPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/drag/cD_vs_cL_breakdown/@perform");
+
+		if(vTailPolarCurveBreakdownPlotPerformString != null) {
+			if(vTailPolarCurveBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_POLAR_CURVE_CLEAN_BREAKDOWN);
+		}
+		
+		//----------------------------------------------------------------
+		// DRAG DISTRIBUTION
+		String vTailDragDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/drag/drag_distributions/@perform");
+
+		if(vTailDragDistributionPlotPerformString != null) {
+			if(vTailDragDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_DRAG_DISTRIBUTION);
+		}
+		
+		//----------------------------------------------------------------
+		// MOMENT CURVE
+		String vTailMomentCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/pitching_moment/cM_vs_alpha/@perform");
+
+		if(vTailMomentCurvePlotPerformString != null) {
+			if(vTailMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_MOMENT_CURVE_CLEAN);
+		}
+		
+		//----------------------------------------------------------------
+		// MOMENT DISTRIBUTION
+		String vTailMomentDistributionPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/vertical_tail/pitching_moment/moment_distributions/@perform");
+
+		if(vTailMomentDistributionPlotPerformString != null) {
+			if(vTailMomentDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_MOMENT_DISTRIBUTION);
+		}
+		
+		//...............................................................
+		// FUSELAGE:
+		//...............................................................
+		// POLAR CURVE
+		String fuselagePolarCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/fuselage/drag/cD_vs_cL/@perform");
+
+		if(fuselagePolarCurvePlotPerformString != null) 
+			if(fuselagePolarCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.FUSELAGE_POLAR_CURVE);
+
+		//----------------------------------------------------------------
+		// MOMENT CURVE
+		String fuselageMomentCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/fuselage/pitching_moment/cM_vs_alpha/@perform");
+
+		if(fuselageMomentCurvePlotPerformString != null) 
+			if(fuselageMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.FUSELAGE_MOMENT_CURVE);
+
+
+		//...............................................................
+		// NACELLE:
+		//...............................................................
+		// POLAR CURVE
+		String nacellePolarCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/nacelles/drag/cD_vs_cL/@perform");
+
+		if(nacellePolarCurvePlotPerformString != null) 
+			if(nacellePolarCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.NACELLE_POLAR_CURVE);
+
+		//----------------------------------------------------------------
+		// MOMENT CURVE
+		String nacelleMomentCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/nacelles/pitching_moment/cM_vs_alpha/@perform");
+
+		if(nacelleMomentCurvePlotPerformString != null) 
+			if(nacelleMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.NACELLE_MOMENT_CURVE);
+		
+		
+		//...............................................................
+		// AIRCRAFT:
+		//...............................................................
+		// DOWNWASH GRADIENT
+		String downwashGradientPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/downwash_gradient/@perform");
+
+		if(downwashGradientPlotPerformString != null) 
+			if(downwashGradientPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT);
+		
+		//----------------------------------------------------------------
+		// DOWNWASH ANGLE
+		String downwashAnglePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/downwash_angle/@perform");
+
+		if(downwashAnglePlotPerformString != null) 
+			if(downwashAnglePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE);
+		
+		//----------------------------------------------------------------
+		// TOTAL LIFT CURVE
+		String totalLiftCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cL_total_vs_alpha/@perform");
+
+		if(totalLiftCurvePlotPerformString != null) 
+			if(totalLiftCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_LIFT_CURVE);
+		
+		//----------------------------------------------------------------
+		// TOTAL POLAR CURVE
+		String totalPolarCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cD_total_vs_cL_total/@perform");
+
+		if(totalPolarCurvePlotPerformString != null) 
+			if(totalPolarCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_POLAR_CURVE);
+		
+		//----------------------------------------------------------------
+		// TOTAL MOMENT CURVE VS ALPHA
+		String totalMomentCurveAlphaPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cM_total_vs_alpha/@perform");
+
+		if(totalMomentCurveAlphaPlotPerformString != null) 
+			if(totalMomentCurveAlphaPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_MOMENT_CURVE_VS_ALPHA);
+		
+		//----------------------------------------------------------------
+		// TOTAL MOMENT CURVE VS CL TOTAL
+		String totalMomentCurveCLPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cM_total_vs_cL_total/@perform");
+
+		if(totalMomentCurveCLPlotPerformString != null) 
+			if(totalMomentCurveCLPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_MOMENT_CURVE_VS_CL);
+		
+		//----------------------------------------------------------------
+		// TRIMMED LIFT CURVE
+		String trimmedLiftCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cL_total_equilibrium_vs_alpha/@perform");
+
+		if(trimmedLiftCurvePlotPerformString != null) 
+			if(trimmedLiftCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE);
+		
+		//----------------------------------------------------------------
+		// TRIMMED LIFT CURVE HTAIL
+		String trimmedLiftCurveHTailPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cL_horizontal_tail_equilibrium_vs_alpha/@perform");
+
+		if(trimmedLiftCurveHTailPlotPerformString != null) 
+			if(trimmedLiftCurveHTailPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE_HTAIL);
+		
+		//----------------------------------------------------------------
+		// TRIMMED POLAR CURVE HTAIL
+		String trimmedPolarCurvePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cD_total_equilibrium_vs_cL_total_equilibrium/@perform");
+
+		if(trimmedPolarCurvePlotPerformString != null) 
+			if(trimmedPolarCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TRIMMED_POLAR_CURVE);
+		
+		//----------------------------------------------------------------
+		// DELTA ELEVATOR EQUILIBRIUM
+		String deltaElevatorEquilibriumPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/delta_elevator_equilibrium_vs_alpha/@perform");
+
+		if(deltaElevatorEquilibriumPlotPerformString != null) 
+			if(deltaElevatorEquilibriumPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.DELTA_ELEVATOR_EQUILIBRIUM);
+		
+		//----------------------------------------------------------------
+		// TOTAL CM BREAKDOWN
+		String totalCMBreakdownPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cM_vs_alpha_breakdown/@perform");
+
+		if(totalCMBreakdownPlotPerformString != null) 
+			if(totalCMBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_CM_BREAKDOWN);
+		
+		//----------------------------------------------------------------
+		// TOTAL CN BREAKDOWN
+		String totalCNBreakdownPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cN_vs_beta_breakdown/@perform");
+
+		if(totalCNBreakdownPlotPerformString != null) 
+			if(totalCNBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_CN_BREAKDOWN);
+		
+		//----------------------------------------------------------------
+		// TOTAL CN VS BETA VS DELTA RUDDER
+		String totalCNBetaDeltaRudderPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/cN_vs_beta_delta_rudder/@perform");
+
+		if(totalCNBetaDeltaRudderPlotPerformString != null) 
+			if(totalCNBetaDeltaRudderPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.TOTAL_CN_VS_BETA_VS_DELTA_RUDDER);
+		
+		//----------------------------------------------------------------
+		// DELTA RUDDER EQUILIBRIUM
+		String deltaRudderEquilibriumPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/delta_rudder_equilibrium_vs_beta/@perform");
+
+		if(deltaRudderEquilibriumPlotPerformString != null) 
+			if(deltaRudderEquilibriumPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.DELTA_RUDDER_EQUILIBRIUM);
+		
+		
+		// TODO: COMPLETE ME WITH ALL THE PLOT OF THE ANALYSES UNDER DEVELOPMENT!!
 		
 		/********************************************************************************************
-		 * Once the data are ready, it's possible to create the manager object can be created
+		 * Once the data are ready, it's possible to create the manager object. This can be created
 		 * using the builder pattern.
 		 */
 		IACAerodynamicCalculator theAerodynamicAndStabilityBuilderInterface = new IACAerodynamicCalculator.Builder()
@@ -7761,12 +8885,10 @@ public class ACAerodynamicCalculator {
 				.setWingMomentCurveFunction(wingMomentCurveFunction)
 				.putComponentTaskList(ComponentEnum.HORIZONTAL_TAIL, hTailTaskList)
 				.setHTailLiftCurveFunction(hTailLiftCurveFunction)
-				.setHTailElevatorCurveFunction(hTailElevatorLiftCurveFunction)
 				.setHTailPolarCurveFunction(hTailPolarCurveFunction)
 				.setHTailMomentCurveFunction(hTailMomentCurveFunction)
 				.putComponentTaskList(ComponentEnum.VERTICAL_TAIL, vTailTaskList)
 				.setVTailLiftCurveFunction(vTailLiftCurveFunction)
-				.setVTailRudderCurveFunction(vTailRudderLiftCurveFunction)
 				.setVTailPolarCurveFunction(vTailPolarCurveFunction)
 				.setVTailMomentCurveFunction(vTailMomentCurveFunction)
 				.putComponentTaskList(ComponentEnum.FUSELAGE, fuselageTaskList)
@@ -7775,8 +8897,14 @@ public class ACAerodynamicCalculator {
 				.putComponentTaskList(ComponentEnum.NACELLE, nacelleTaskList)
 				.setNacellePolarCurveFunction(nacellePolarCurveFunction)
 				.setNacelleMomentCurveFunction(nacelleMomentCurveFunction)
-				// TODO: CONTINUE
-				.buildPartial();
+				.putComponentTaskList(ComponentEnum.AIRCRAFT, aircraftTaskList)
+				.setDownwashConstant(aircraftDownwashConstantGradient)
+				.setFuselageEffectOnWingLiftCurve(aircraftFuselageEffectOnWingLiftCurve)
+				.setLandingGearDragCoefficient(aircraftDeltaCD0LandingGears)
+				.setDeltaCD0Miscellaneous(aircraftDeltaCD0Miscellaneous)
+				.setWingPendularStability(aircraftWingPendularStability)
+				.addAllPlotList(plotList)
+				.build();
 		
 		ACAerodynamicCalculator theAerodynamicAndStabilityManager = new ACAerodynamicCalculator();
 		theAerodynamicAndStabilityManager.setTheAerodynamicBuilderInterface(theAerodynamicAndStabilityBuilderInterface);
@@ -7802,7 +8930,10 @@ public class ACAerodynamicCalculator {
 				.append("\t-------------------------------------\n")
 				;
 
-		// TODO : FILL ME !!
+		/*
+		 * TODO : FILL ME !!
+		 *        CHECK WHICH DATA HAVE TO BE REPORTED SINCE THEY CAN BE MASSIVE 
+		 */
 
 		return sb.toString();
 
@@ -7855,6 +8986,21 @@ public class ACAerodynamicCalculator {
 	public class CalcTotalDragCoefficient {
 
 		public void fromAircraftComponents() {
+			
+			switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
+			case TAKE_OFF:
+				_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
+				break;
+			case CLIMB:
+				_landingGearUsedDrag = 0.0;
+				break;
+			case CRUISE:
+				_landingGearUsedDrag = 0.0;
+				break;
+			case LANDING:
+				_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
+				break;
+			}
 			
 			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
 			_totalDragCoefficient.put(

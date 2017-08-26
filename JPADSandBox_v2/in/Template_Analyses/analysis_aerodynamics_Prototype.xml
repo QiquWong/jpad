@@ -130,11 +130,7 @@
 				</lift>
 				<elevator>
 					<high_lift_devices_effects perform="TRUE" method="SEMIEMPIRICAL"/>
-					<!-- <cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/> -->
-                    <cL_vs_alpha perform="FALSE" method="SEMIEMPIRICAL">
-                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
-                        <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
-                    </cL_vs_alpha>
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD_at_alpha_current perform="TRUE"/>
 					<cm_at_alpha_current perform="TRUE"/>
@@ -185,11 +181,7 @@
 				</lift>
 				<rudder>
 					<high_lift_devices_effects perform="TRUE" method="SEMIEMPIRICAL"/>
-					<!-- <cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/> -->
-                    <cL_vs_alpha perform="FALSE" method="SEMIEMPIRICAL">
-                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
-                        <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
-                    </cL_vs_alpha>
+					<cL_vs_alpha perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD_at_alpha_current perform="TRUE"/>
 					<cm_at_alpha_current perform="TRUE"/>
@@ -270,25 +262,21 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
-				<!-- <downwash perform="TRUE" downwash_gradient="CONSTANT" method="SLINGERLAND"/> -->
-                <downwash perform="FALSE" downwash_gradient="INPUT" method="UNKNOWN"/>
+				<!-- <downwash perform="TRUE" constant_downwash_gradient="TRUE" method="SLINGERLAND"/> -->
+                <downwash perform="FALSE" constant_downwash_gradient="FALSE" method="UNKNOWN"/>
                     <downwash_gradient_vs_alpha>
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <downwash_gradient>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</downwash_gradient>
                     </downwash_gradient_vs_alpha>
                 </downwash/>
-				<dynamic_pressure_ratio perform="TRUE" method="SEMIEMPIRICAL"/>
-				<buffet_barrier perform="FALSE"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<lift_curve perform="TRUE" fuselage_effects="TRUE"/>
-				<drag_polar perform="TRUE" delta_CD0_miscellaneous="0.0"/>
-				<moment_curve perform="TRUE"/>
-				<trimmed_lift_curve perform="TRUE"/>
-				<trimmed_drag_polar perform="TRUE"/>
-				<trimmed_moment_curve perform="TRUE"/>
-				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE"/>
-				<lateral_static_stability perform="TRUE"/>
-				<directional_static_stability perform="TRUE"/>
-				<dynamic_stability perform="TRUE"/>
+				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+				<lift_curve perform="TRUE" fuselage_effects="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<drag_polar perform="TRUE" delta_CD0_miscellaneous="0.0" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>
+				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<lateral_static_stability perform="TRUE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
+				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
+				<dynamic_stability perform="TRUE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 			</aircraft_analyses>
         </aerodynamics_and_stability>
     </analysis>
@@ -342,11 +330,6 @@
 				<additional_load_distribution perform="TRUE"/>
 				<basic_load_distribution perform="TRUE"/>
 			</lift>
-			<high_lift>
-				<cL_vs_alpha_high_lift perform="TRUE"/>
-				<cD_vs_cL_high_lift perform="TRUE"/>
-				<cM_vs_alpha_high_lift perform="TRUE"/>
-			</high_lift>
 			<drag>
 				<cD_vs_cL_breakdown perform="TRUE"/>
 				<drag_distributions perform="TRUE"/>
@@ -373,11 +356,6 @@
 				<additional_load_distribution perform="TRUE"/>
 				<basic_load_distribution perform="TRUE"/>
 			</lift>
-			<high_lift>
-				<cL_vs_alpha_high_lift perform="TRUE"/>
-				<cD_vs_cL_high_lift perform="TRUE"/>
-				<cM_vs_alpha_high_lift perform="TRUE"/>
-			</high_lift>
 			<drag>
 				<cD_vs_cL_breakdown perform="TRUE"/>
 				<drag_distributions perform="TRUE"/>
