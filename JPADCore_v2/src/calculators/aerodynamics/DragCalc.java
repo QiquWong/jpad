@@ -122,7 +122,7 @@ public class DragCalc {
 		Double deltaCd = 0.0;
 
 		switch(method){ // Behind ADAS page 101
-		case EMPIRICAL : {
+		case SEMIEMPIRICAL : {
 			cDWindshield = 0.07*windshieldArea.doubleValue(SI.SQUARE_METRE)/
 					wingSurface.doubleValue(SI.SQUARE_METRE);
 		} break;

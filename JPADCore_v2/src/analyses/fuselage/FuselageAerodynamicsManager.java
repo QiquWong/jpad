@@ -290,7 +290,7 @@ public class FuselageAerodynamicsManager {
 			_cD0Windshield.put(
 					MethodEnum.SEMIEMPIRICAL, 
 					DragCalc.calculateCD0Windshield(
-							MethodEnum.EMPIRICAL,
+							MethodEnum.SEMIEMPIRICAL,
 							_theFuselage.getFuselageCreator().getWindshieldType(),
 							_theFuselage.getFuselageCreator().getWindshieldArea(),
 							_theFuselage.getFuselageCreator().getAreaC(),

@@ -222,6 +222,39 @@ public class LiftCalc {
 		return kPolhamus;
 	}
 
+	public static double calculateCLStarFromCurve (List<Amount<Angle>> alphaList, List<Double> cLList) {
+		
+		double cLStar = 0.0;
+		int indexOfCLStar = 0;
+		List<Amount<?>> cLAlphaList = new ArrayList<>();
+		List<Double> cLAlphaDiffList = new ArrayList<>();
+		for(int i=1; i<alphaList.size(); i++) 
+			cLAlphaList.add(
+					Amount.valueOf(
+							(cLList.get(i)-cLList.get(i-1))
+							/(alphaList.get(i).doubleValue(NonSI.DEGREE_ANGLE)-alphaList.get(i-1).doubleValue(NonSI.DEGREE_ANGLE)),
+							NonSI.DEGREE_ANGLE.inverse()
+							)
+					);
+		for(int i=1; i<cLAlphaList.size(); i++)
+			cLAlphaDiffList.add(
+					(cLAlphaList.get(i).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+							- cLAlphaList.get(i-1).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+					/cLAlphaList.get(i-1).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+					);
+		for(int i=0; i<cLAlphaDiffList.size(); i++)
+			if(cLAlphaDiffList.get(i) > 0.01) // TODO: EVENTUALLY CHANGE THE THRESHOLD
+				/* 
+				 * cLalphaList HAS n-1 ELEMENTS WITH RESPECT TO cLList, WHILE cLAlphaDiffList HAS n-2 ELEMENTS WITH RESPECT TO cLList
+				 * in this way the index of cLStar to be used is i+2
+				 */
+				indexOfCLStar = i+2;  
+		
+		cLStar = cLList.get(indexOfCLStar);
+		
+		return cLStar;
+	}
+	
 	public static double calculateCLAlphaAtMachNasaBlackwell (
 			Amount<Length> semiSpan,
 			Amount<Area> surface,

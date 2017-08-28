@@ -3116,7 +3116,7 @@ public class LSAerodynamicsManager {
 				_cLMaxHighLift.put(
 						MethodEnum.SEMIEMPIRICAL,
 						_cLMax.get(MethodEnum.NASA_BLACKWELL)
-						+ _deltaCLmaxFlap.get(MethodEnum.EMPIRICAL)
+						+ _deltaCLmaxFlap.get(MethodEnum.SEMIEMPIRICAL)
 						);
 			else 
 				_cLMaxHighLift.put(
@@ -3217,7 +3217,7 @@ public class LSAerodynamicsManager {
 			}
 			
 			_liftCoefficient3DCurveHighLift.put(
-					MethodEnum.EMPIRICAL,
+					MethodEnum.SEMIEMPIRICAL,
 					LiftCalc.calculateCLvsAlphaArray(
 							_cLZeroHighLift.get(MethodEnum.SEMIEMPIRICAL),
 							_cLMaxHighLift.get(MethodEnum.SEMIEMPIRICAL),
