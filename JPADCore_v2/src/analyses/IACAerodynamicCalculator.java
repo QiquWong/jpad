@@ -51,7 +51,9 @@ public interface IACAerodynamicCalculator {
 	MyInterpolatingFunction getTauElevatorFunction();
 	MyInterpolatingFunction getTauRudderFunction();
 	List<Amount<Angle>> getDeltaElevatorList();
+	Amount<Angle> getElevatorDeflectionForAnalysis();
 	List<Amount<Angle>> getDeltaRudderList();
+	Amount<Angle> getRudderDeflectionForAnalysis();
 	Boolean getFuselageEffectOnWingLiftCurve();
 	Boolean getWingPendularStability();
 	Double getDeltaCD0Miscellaneous();

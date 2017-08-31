@@ -66,6 +66,8 @@ abstract class IACAerodynamicCalculator_Builder {
     DYNAMIC_PRESSURE_RATIO("dynamicPressureRatio"),
     TAU_ELEVATOR_FUNCTION("tauElevatorFunction"),
     TAU_RUDDER_FUNCTION("tauRudderFunction"),
+    ELEVATOR_DEFLECTION_FOR_ANALYSIS("elevatorDeflectionForAnalysis"),
+    RUDDER_DEFLECTION_FOR_ANALYSIS("rudderDeflectionForAnalysis"),
     FUSELAGE_EFFECT_ON_WING_LIFT_CURVE("fuselageEffectOnWingLiftCurve"),
     WING_PENDULAR_STABILITY("wingPendularStability"),
     DELTA_C_D0_MISCELLANEOUS("deltaCD0Miscellaneous"),
@@ -130,7 +132,9 @@ abstract class IACAerodynamicCalculator_Builder {
   private MyInterpolatingFunction tauElevatorFunction;
   private MyInterpolatingFunction tauRudderFunction;
   private final ArrayList<Amount<Angle>> deltaElevatorList = new ArrayList<>();
+  private Amount<Angle> elevatorDeflectionForAnalysis;
   private final ArrayList<Amount<Angle>> deltaRudderList = new ArrayList<>();
+  private Amount<Angle> rudderDeflectionForAnalysis;
   private Boolean fuselageEffectOnWingLiftCurve;
   private Boolean wingPendularStability;
   private Double deltaCD0Miscellaneous;
@@ -1539,6 +1543,47 @@ abstract class IACAerodynamicCalculator_Builder {
   }
 
   /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getElevatorDeflectionForAnalysis()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elevatorDeflectionForAnalysis} is null
+   */
+  public IACAerodynamicCalculator.Builder setElevatorDeflectionForAnalysis(
+      Amount<Angle> elevatorDeflectionForAnalysis) {
+    this.elevatorDeflectionForAnalysis = Preconditions.checkNotNull(elevatorDeflectionForAnalysis);
+    _unsetProperties.remove(
+        IACAerodynamicCalculator_Builder.Property.ELEVATOR_DEFLECTION_FOR_ANALYSIS);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getElevatorDeflectionForAnalysis()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapElevatorDeflectionForAnalysis(
+      UnaryOperator<Amount<Angle>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setElevatorDeflectionForAnalysis(mapper.apply(getElevatorDeflectionForAnalysis()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getElevatorDeflectionForAnalysis()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<Angle> getElevatorDeflectionForAnalysis() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.ELEVATOR_DEFLECTION_FOR_ANALYSIS),
+        "elevatorDeflectionForAnalysis not set");
+    return elevatorDeflectionForAnalysis;
+  }
+
+  /**
    * Adds {@code element} to the list to be returned from {@link IACAerodynamicCalculator#getDeltaRudderList()}.
    *
    * @return this {@code Builder} object
@@ -1618,6 +1663,47 @@ abstract class IACAerodynamicCalculator_Builder {
    */
   public List<Amount<Angle>> getDeltaRudderList() {
     return Collections.unmodifiableList(deltaRudderList);
+  }
+
+  /**
+   * Sets the value to be returned by {@link IACAerodynamicCalculator#getRudderDeflectionForAnalysis()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code rudderDeflectionForAnalysis} is null
+   */
+  public IACAerodynamicCalculator.Builder setRudderDeflectionForAnalysis(
+      Amount<Angle> rudderDeflectionForAnalysis) {
+    this.rudderDeflectionForAnalysis = Preconditions.checkNotNull(rudderDeflectionForAnalysis);
+    _unsetProperties.remove(
+        IACAerodynamicCalculator_Builder.Property.RUDDER_DEFLECTION_FOR_ANALYSIS);
+    return (IACAerodynamicCalculator.Builder) this;
+  }
+
+  /**
+   * Replaces the value to be returned by {@link IACAerodynamicCalculator#getRudderDeflectionForAnalysis()}
+   * by applying {@code mapper} to it and using the result.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mapper} is null or returns null
+   * @throws IllegalStateException if the field has not been set
+   */
+  public IACAerodynamicCalculator.Builder mapRudderDeflectionForAnalysis(
+      UnaryOperator<Amount<Angle>> mapper) {
+    Preconditions.checkNotNull(mapper);
+    return setRudderDeflectionForAnalysis(mapper.apply(getRudderDeflectionForAnalysis()));
+  }
+
+  /**
+   * Returns the value that will be returned by {@link IACAerodynamicCalculator#getRudderDeflectionForAnalysis()}.
+   *
+   * @throws IllegalStateException if the field has not been set
+   */
+  public Amount<Angle> getRudderDeflectionForAnalysis() {
+    Preconditions.checkState(
+        !_unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.RUDDER_DEFLECTION_FOR_ANALYSIS),
+        "rudderDeflectionForAnalysis not set");
+    return rudderDeflectionForAnalysis;
   }
 
   /**
@@ -2608,7 +2694,21 @@ abstract class IACAerodynamicCalculator_Builder {
       setTauRudderFunction(value.getTauRudderFunction());
     }
     addAllDeltaElevatorList(value.getDeltaElevatorList());
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.ELEVATOR_DEFLECTION_FOR_ANALYSIS)
+        || !value
+            .getElevatorDeflectionForAnalysis()
+            .equals(_defaults.getElevatorDeflectionForAnalysis())) {
+      setElevatorDeflectionForAnalysis(value.getElevatorDeflectionForAnalysis());
+    }
     addAllDeltaRudderList(value.getDeltaRudderList());
+    if (_defaults._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.RUDDER_DEFLECTION_FOR_ANALYSIS)
+        || !value
+            .getRudderDeflectionForAnalysis()
+            .equals(_defaults.getRudderDeflectionForAnalysis())) {
+      setRudderDeflectionForAnalysis(value.getRudderDeflectionForAnalysis());
+    }
     if (_defaults._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
         || !value
@@ -2883,7 +2983,25 @@ abstract class IACAerodynamicCalculator_Builder {
       setTauRudderFunction(template.getTauRudderFunction());
     }
     addAllDeltaElevatorList(((IACAerodynamicCalculator_Builder) template).deltaElevatorList);
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.ELEVATOR_DEFLECTION_FOR_ANALYSIS)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.ELEVATOR_DEFLECTION_FOR_ANALYSIS)
+            || !template
+                .getElevatorDeflectionForAnalysis()
+                .equals(_defaults.getElevatorDeflectionForAnalysis()))) {
+      setElevatorDeflectionForAnalysis(template.getElevatorDeflectionForAnalysis());
+    }
     addAllDeltaRudderList(((IACAerodynamicCalculator_Builder) template).deltaRudderList);
+    if (!base._unsetProperties.contains(
+            IACAerodynamicCalculator_Builder.Property.RUDDER_DEFLECTION_FOR_ANALYSIS)
+        && (_defaults._unsetProperties.contains(
+                IACAerodynamicCalculator_Builder.Property.RUDDER_DEFLECTION_FOR_ANALYSIS)
+            || !template
+                .getRudderDeflectionForAnalysis()
+                .equals(_defaults.getRudderDeflectionForAnalysis()))) {
+      setRudderDeflectionForAnalysis(template.getRudderDeflectionForAnalysis());
+    }
     if (!base._unsetProperties.contains(
             IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
         && (_defaults._unsetProperties.contains(
@@ -3105,7 +3223,9 @@ abstract class IACAerodynamicCalculator_Builder {
     tauElevatorFunction = _defaults.tauElevatorFunction;
     tauRudderFunction = _defaults.tauRudderFunction;
     deltaElevatorList.clear();
+    elevatorDeflectionForAnalysis = _defaults.elevatorDeflectionForAnalysis;
     deltaRudderList.clear();
+    rudderDeflectionForAnalysis = _defaults.rudderDeflectionForAnalysis;
     fuselageEffectOnWingLiftCurve = _defaults.fuselageEffectOnWingLiftCurve;
     wingPendularStability = _defaults.wingPendularStability;
     deltaCD0Miscellaneous = _defaults.deltaCD0Miscellaneous;
@@ -3186,7 +3306,9 @@ abstract class IACAerodynamicCalculator_Builder {
     private final MyInterpolatingFunction tauElevatorFunction;
     private final MyInterpolatingFunction tauRudderFunction;
     private final List<Amount<Angle>> deltaElevatorList;
+    private final Amount<Angle> elevatorDeflectionForAnalysis;
     private final List<Amount<Angle>> deltaRudderList;
+    private final Amount<Angle> rudderDeflectionForAnalysis;
     private final Boolean fuselageEffectOnWingLiftCurve;
     private final Boolean wingPendularStability;
     private final Double deltaCD0Miscellaneous;
@@ -3240,7 +3362,9 @@ abstract class IACAerodynamicCalculator_Builder {
       this.tauElevatorFunction = builder.tauElevatorFunction;
       this.tauRudderFunction = builder.tauRudderFunction;
       this.deltaElevatorList = ImmutableList.copyOf(builder.deltaElevatorList);
+      this.elevatorDeflectionForAnalysis = builder.elevatorDeflectionForAnalysis;
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
+      this.rudderDeflectionForAnalysis = builder.rudderDeflectionForAnalysis;
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
       this.wingPendularStability = builder.wingPendularStability;
       this.deltaCD0Miscellaneous = builder.deltaCD0Miscellaneous;
@@ -3401,8 +3525,18 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public Amount<Angle> getElevatorDeflectionForAnalysis() {
+      return elevatorDeflectionForAnalysis;
+    }
+
+    @Override
     public List<Amount<Angle>> getDeltaRudderList() {
       return deltaRudderList;
+    }
+
+    @Override
+    public Amount<Angle> getRudderDeflectionForAnalysis() {
+      return rudderDeflectionForAnalysis;
     }
 
     @Override
@@ -3549,7 +3683,9 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(tauElevatorFunction, other.tauElevatorFunction)
           && Objects.equals(tauRudderFunction, other.tauRudderFunction)
           && Objects.equals(deltaElevatorList, other.deltaElevatorList)
+          && Objects.equals(elevatorDeflectionForAnalysis, other.elevatorDeflectionForAnalysis)
           && Objects.equals(deltaRudderList, other.deltaRudderList)
+          && Objects.equals(rudderDeflectionForAnalysis, other.rudderDeflectionForAnalysis)
           && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
           && Objects.equals(wingPendularStability, other.wingPendularStability)
           && Objects.equals(deltaCD0Miscellaneous, other.deltaCD0Miscellaneous)
@@ -3606,7 +3742,9 @@ abstract class IACAerodynamicCalculator_Builder {
           tauElevatorFunction,
           tauRudderFunction,
           deltaElevatorList,
+          elevatorDeflectionForAnalysis,
           deltaRudderList,
+          rudderDeflectionForAnalysis,
           fuselageEffectOnWingLiftCurve,
           wingPendularStability,
           deltaCD0Miscellaneous,
@@ -3715,8 +3853,14 @@ abstract class IACAerodynamicCalculator_Builder {
           + "deltaElevatorList="
           + deltaElevatorList
           + ", "
+          + "elevatorDeflectionForAnalysis="
+          + elevatorDeflectionForAnalysis
+          + ", "
           + "deltaRudderList="
           + deltaRudderList
+          + ", "
+          + "rudderDeflectionForAnalysis="
+          + rudderDeflectionForAnalysis
           + ", "
           + "fuselageEffectOnWingLiftCurve="
           + fuselageEffectOnWingLiftCurve
@@ -3816,7 +3960,9 @@ abstract class IACAerodynamicCalculator_Builder {
     private final MyInterpolatingFunction tauElevatorFunction;
     private final MyInterpolatingFunction tauRudderFunction;
     private final List<Amount<Angle>> deltaElevatorList;
+    private final Amount<Angle> elevatorDeflectionForAnalysis;
     private final List<Amount<Angle>> deltaRudderList;
+    private final Amount<Angle> rudderDeflectionForAnalysis;
     private final Boolean fuselageEffectOnWingLiftCurve;
     private final Boolean wingPendularStability;
     private final Double deltaCD0Miscellaneous;
@@ -3871,7 +4017,9 @@ abstract class IACAerodynamicCalculator_Builder {
       this.tauElevatorFunction = builder.tauElevatorFunction;
       this.tauRudderFunction = builder.tauRudderFunction;
       this.deltaElevatorList = ImmutableList.copyOf(builder.deltaElevatorList);
+      this.elevatorDeflectionForAnalysis = builder.elevatorDeflectionForAnalysis;
       this.deltaRudderList = ImmutableList.copyOf(builder.deltaRudderList);
+      this.rudderDeflectionForAnalysis = builder.rudderDeflectionForAnalysis;
       this.fuselageEffectOnWingLiftCurve = builder.fuselageEffectOnWingLiftCurve;
       this.wingPendularStability = builder.wingPendularStability;
       this.deltaCD0Miscellaneous = builder.deltaCD0Miscellaneous;
@@ -4099,8 +4247,26 @@ abstract class IACAerodynamicCalculator_Builder {
     }
 
     @Override
+    public Amount<Angle> getElevatorDeflectionForAnalysis() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.ELEVATOR_DEFLECTION_FOR_ANALYSIS)) {
+        throw new UnsupportedOperationException("elevatorDeflectionForAnalysis not set");
+      }
+      return elevatorDeflectionForAnalysis;
+    }
+
+    @Override
     public List<Amount<Angle>> getDeltaRudderList() {
       return deltaRudderList;
+    }
+
+    @Override
+    public Amount<Angle> getRudderDeflectionForAnalysis() {
+      if (_unsetProperties.contains(
+          IACAerodynamicCalculator_Builder.Property.RUDDER_DEFLECTION_FOR_ANALYSIS)) {
+        throw new UnsupportedOperationException("rudderDeflectionForAnalysis not set");
+      }
+      return rudderDeflectionForAnalysis;
     }
 
     @Override
@@ -4335,7 +4501,9 @@ abstract class IACAerodynamicCalculator_Builder {
           && Objects.equals(tauElevatorFunction, other.tauElevatorFunction)
           && Objects.equals(tauRudderFunction, other.tauRudderFunction)
           && Objects.equals(deltaElevatorList, other.deltaElevatorList)
+          && Objects.equals(elevatorDeflectionForAnalysis, other.elevatorDeflectionForAnalysis)
           && Objects.equals(deltaRudderList, other.deltaRudderList)
+          && Objects.equals(rudderDeflectionForAnalysis, other.rudderDeflectionForAnalysis)
           && Objects.equals(fuselageEffectOnWingLiftCurve, other.fuselageEffectOnWingLiftCurve)
           && Objects.equals(wingPendularStability, other.wingPendularStability)
           && Objects.equals(deltaCD0Miscellaneous, other.deltaCD0Miscellaneous)
@@ -4393,7 +4561,9 @@ abstract class IACAerodynamicCalculator_Builder {
           tauElevatorFunction,
           tauRudderFunction,
           deltaElevatorList,
+          elevatorDeflectionForAnalysis,
           deltaRudderList,
+          rudderDeflectionForAnalysis,
           fuselageEffectOnWingLiftCurve,
           wingPendularStability,
           deltaCD0Miscellaneous,
@@ -4504,7 +4674,15 @@ abstract class IACAerodynamicCalculator_Builder {
                   ? "tauRudderFunction=" + tauRudderFunction
                   : null),
               "deltaElevatorList=" + deltaElevatorList,
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.ELEVATOR_DEFLECTION_FOR_ANALYSIS)
+                  ? "elevatorDeflectionForAnalysis=" + elevatorDeflectionForAnalysis
+                  : null),
               "deltaRudderList=" + deltaRudderList,
+              (!_unsetProperties.contains(
+                      IACAerodynamicCalculator_Builder.Property.RUDDER_DEFLECTION_FOR_ANALYSIS)
+                  ? "rudderDeflectionForAnalysis=" + rudderDeflectionForAnalysis
+                  : null),
               (!_unsetProperties.contains(
                       IACAerodynamicCalculator_Builder.Property.FUSELAGE_EFFECT_ON_WING_LIFT_CURVE)
                   ? "fuselageEffectOnWingLiftCurve=" + fuselageEffectOnWingLiftCurve

@@ -1285,6 +1285,8 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY)) {
 			
+			_theAerodynamicAndStability = new HashMap<>();
+			
 			_theAerodynamicAndStability.put(ConditionEnum.TAKE_OFF, new ACAerodynamicCalculator());
 			_theAerodynamicAndStability.put(ConditionEnum.CLIMB, new ACAerodynamicCalculator());
 			_theAerodynamicAndStability.put(ConditionEnum.CRUISE, new ACAerodynamicCalculator());
