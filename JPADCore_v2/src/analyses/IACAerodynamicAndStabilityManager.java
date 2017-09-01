@@ -18,7 +18,7 @@ import configuration.enumerations.MethodEnum;
 import standaloneutils.MyInterpolatingFunction;
 
 @FreeBuilder
-public interface IACAerodynamicCalculator {
+public interface IACAerodynamicAndStabilityManager {
 
 	//..............................................................................
 	// FROM INPUT (Passed from ACAnalysisManager)
@@ -66,6 +66,8 @@ public interface IACAerodynamicCalculator {
 	MyInterpolatingFunction getWingLiftCurveFunction();
 	MyInterpolatingFunction getWingPolarCurveFunction();
 	MyInterpolatingFunction getWingHighLiftCurveFunction();
+	MyInterpolatingFunction getWingHighLiftPolarCurveFunction();
+	MyInterpolatingFunction getWingHighLiftMomentCurveFunction();
 	MyInterpolatingFunction getWingMomentCurveFunction();
 	
 	MyInterpolatingFunction getHTailLiftCurveFunction();
@@ -85,6 +87,6 @@ public interface IACAerodynamicCalculator {
 	MyInterpolatingFunction getAircraftDownwashGradientFunction();
 	
 	/** Builder of ACAErodynamicCalculator instances. */
-	class Builder extends IACAerodynamicCalculator_Builder { }
+	class Builder extends IACAerodynamicAndStabilityManager_Builder { }
 	
 }

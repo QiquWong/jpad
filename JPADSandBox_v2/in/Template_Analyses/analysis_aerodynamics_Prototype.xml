@@ -88,9 +88,27 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
                     </cL_vs_alpha>
+					<cD_vs_cL perform="TRUE" user_defined="TRUE" method="SEMIEMPIRICAL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
+						<cD>-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</cD>
+                    </cD_vs_cL>
+					<cM_vs_alpha perform="TRUE" user_defined="TRUE" method="SEMIEMPIRICAL">
+					<!-- 
+					"perform" allows to do or not this analysis. 
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
+					-->
+                        <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
+                    </cM_vs_alpha>
 					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
-					<cD_at_alpha_current perform="TRUE"/>
-					<cM_at_alpha_current perform="TRUE"/>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 				</high_lift_devices>
 				<drag>
 					<cD_Zero perform="TRUE" method="SEMIEMPIRICAL"/>
@@ -151,9 +169,11 @@
 				<elevator deflection_angle_degree="5.0">
 					<high_lift_devices_effects perform="FALSE" method="SEMIEMPIRICAL"/>
 					<cL_vs_alpha perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cD_vs_cL perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cM_vs_alpha perform="FALSE" method="SEMIEMPIRICAL"/>
 					<cL_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
-					<cD_at_alpha_current perform="FALSE"/>
-					<cM_at_alpha_current perform="FALSE"/>
+					<cD_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
 				</elevator>
 				<drag>
 					<cD_Zero perform="FALSE" method="AIRFOIL_DISTRIBUTION"/>
@@ -214,9 +234,11 @@
 				<rudder deflection_angle_degree="5.0">
 					<high_lift_devices_effects perform="FALSE"  method="SEMIEMPIRICAL"/>
 					<cL_vs_alpha perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cD_vs_cL perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cM_vs_alpha perform="FALSE" method="SEMIEMPIRICAL"/>
 					<cL_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
-					<cD_at_alpha_current perform="FALSE"/>
-					<cM_at_alpha_current perform="FALSE"/>
+					<cD_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
 				</rudder>
 				<drag>
 					<cD_Zero perform="FALSE" method="AIRFOIL_DISTRIBUTION"/>
@@ -318,7 +340,7 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
-                <downwash perform="FALSE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" method="UNKNOWN">
+                <downwash perform="FALSE" user_defined_gradient="FALSE" constant_downwash_gradient="TRUE" method="ROSKAM">
 				<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)

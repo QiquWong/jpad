@@ -20,11 +20,11 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.ACAerodynamicCalculator;
+import analyses.ACAerodynamicAndStabilityManager;
+import analyses.ACAerodynamicAndStabilityManager.CalcDirectionalStability;
 import analyses.ACAnalysisManager;
-import analyses.IACAerodynamicCalculator;
+import analyses.IACAerodynamicAndStabilityManager;
 import analyses.OperatingConditions;
-import analyses.ACAerodynamicCalculator.CalcDirectionalStability;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcAlphaStall;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcAlphaStar;
@@ -307,7 +307,7 @@ public class DirectionalStabilityTest extends Application {
 //			MethodEnum directionalStabilityMethod = MethodEnum.VEDSC_SIMPLIFIED_WING;
 			MethodEnum directionalStabilityMethod = MethodEnum.VEDSC_USAFDATCOM_WING;
 			
-			ACAerodynamicCalculator theAerodynamicCalculator = new ACAerodynamicCalculator();
+			ACAerodynamicAndStabilityManager theAerodynamicCalculator = new ACAerodynamicAndStabilityManager();
 			theAerodynamicCalculator.setBetaList(
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(0.0, 30, 50),
@@ -333,7 +333,7 @@ public class DirectionalStabilityTest extends Application {
 			wingAnalysisList.put(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER, MethodEnum.QUARTER);
 			wingAnalysisList.put(AerodynamicAndStabilityEnum.LIFT_CURVE_3D, MethodEnum.NASA_BLACKWELL);
 			
-			IACAerodynamicCalculator theAerodynamicBuilderInterface = new IACAerodynamicCalculator.Builder()
+			IACAerodynamicAndStabilityManager theAerodynamicBuilderInterface = new IACAerodynamicAndStabilityManager.Builder()
 					.setTheAircraft(theAircraft)
 					.addXCGAircraft(0.25)
 					.addAllDeltaRudderList(MyArrayUtils.convertDoubleArrayToListOfAmount(

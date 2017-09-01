@@ -9,7 +9,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import aircraft.components.Aircraft;
 import aircraft.components.CabinConfiguration;
 import aircraft.components.liftingSurface.LiftingSurface;
-import analyses.ACAerodynamicsManager;
 import analyses.ACPerformanceManager;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;

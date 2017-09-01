@@ -79,8 +79,8 @@ public interface IACAnalysisManager {
 	public ACBalanceManager getTheBalance();
 	public void setTheBalance(ACBalanceManager theBalance);
 
-	public Map<ConditionEnum, ACAerodynamicCalculator> getTheAerodynamicAndStability();
-	public void setTheAerodynamicAndStability(Map<ConditionEnum, ACAerodynamicCalculator> theAerodynamics);
+	public Map<ConditionEnum, ACAerodynamicAndStabilityManager> getTheAerodynamicAndStability();
+	public void setTheAerodynamicAndStability(Map<ConditionEnum, ACAerodynamicAndStabilityManager> theAerodynamics);
 
 	public ACPerformanceManager getThePerformance();
 	public void setThePerformance(ACPerformanceManager thePerformance);

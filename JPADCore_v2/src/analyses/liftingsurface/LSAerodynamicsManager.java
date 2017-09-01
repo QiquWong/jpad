@@ -3,6 +3,7 @@ package analyses.liftingsurface;
 import static java.lang.Math.toRadians;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
+
+import com.sun.jna.platform.win32.OaIdl.TYPEDESC._TYPEDESC;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.liftingSurface.LiftingSurface;
@@ -63,9 +66,6 @@ public class LSAerodynamicsManager {
 	private Amount<Length> _currentAltitude;
 	private Double _currentMachNumber;
 	private Amount<Angle> _currentAlpha;
-//	private Double _currentLiftCoefficient;
-//	private Double _currentDragCoefficient;
-//	private Double _currentMomentCoefficient;
 	private double[] _etaStationDistribution; 
 	private List<Amount<Length>> _yStationDistribution;
 	private List<Amount<Angle>> _alphaZeroLiftDistribution;
@@ -114,6 +114,8 @@ public class LSAerodynamicsManager {
 	private Map <MethodEnum, Double> _cLAtAlpha;
 	private Map <MethodEnum, Double[]> _liftCoefficient3DCurve;
 	private Map <MethodEnum, Double[]> _liftCoefficient3DCurveHighLift;
+	private Map <MethodEnum, Double[]> _polar3DCurveHighLift;
+	private Map <MethodEnum, Double[]> _momentCoefficient3DCurveHighLift;
 	private Map <MethodEnum, double[]> _liftCoefficientDistributionAtCLMax;
 	private Map <MethodEnum, List<List<Double>>> _liftCoefficientDistribution;
 	private Map <MethodEnum, List<List<Amount<Force>>>> _liftDistribution;
@@ -606,6 +608,8 @@ public class LSAerodynamicsManager {
 		this._deltaCD0 = new HashMap<MethodEnum, Double>();
 		this._deltaCMc4 = new HashMap<MethodEnum, Double>();
 		this._liftCoefficient3DCurveHighLift = new HashMap<MethodEnum, Double[]>();
+		this._polar3DCurveHighLift = new HashMap<MethodEnum, Double[]>();
+		this._momentCoefficient3DCurveHighLift = new HashMap<MethodEnum, Double[]>();
 		
 		this._cD0 = new HashMap<MethodEnum, Double>();
 		this._cDParasite = new HashMap<MethodEnum, List<Double>>();
@@ -3192,8 +3196,7 @@ public class LSAerodynamicsManager {
 		public void semiempirical(
 				List<Amount<Angle>> flapDeflection,
 				List<Amount<Angle>> slatDeflection,
-				Double mach,
-				Amount<Length> altitude
+				Double mach
 				) {
 			
 			if((_deltaCL0Flap.get(MethodEnum.SEMIEMPIRICAL) == null) ||
@@ -3235,6 +3238,104 @@ public class LSAerodynamicsManager {
 	//............................................................................
 
 	//............................................................................
+	// HIGH LIFT POLAR CURVE INNER CLASS
+	//............................................................................
+	public class CalcHighLiftPolarCurve {
+		
+		public void semiempirical(
+				Double[] cleanPolarCurve,
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach
+				) {
+			
+			if(_theLiftingSurface.getType().equals(ComponentEnum.WING)) {
+
+				if(_deltaCD0.get(MethodEnum.SEMIEMPIRICAL) == null) {
+
+					CalcHighLiftDevicesEffects theHighLiftEffectsCalculator = new CalcHighLiftDevicesEffects();
+					theHighLiftEffectsCalculator.semiempirical(
+							flapDeflection,
+							slatDeflection,
+							mach
+							);
+
+				}
+
+				_polar3DCurveHighLift.put(
+						MethodEnum.SEMIEMPIRICAL,
+						MyArrayUtils.convertListOfDoubleToDoubleArray(
+								Arrays.stream(cleanPolarCurve)
+								.map(cD -> cD + _deltaCD0.get(MethodEnum.SEMIEMPIRICAL))
+								.collect(Collectors.toList())
+								)
+						);			
+			}
+			else {
+				/*
+				 * THIS EQUATION IS AN INTERPOLATING FUNCTION OBTAINED FROM CFD ANALYSES ON THE IRON AIRCRAFT
+				 * SINCE THE SEMIEMPIRICAL METHOD ESTIMATES A DELTA_CD0 TOO HIGH FOR HTAIL 
+				 */
+				double deltaCD0 = 0.0000156*
+						Math.pow(flapDeflection.get(0).doubleValue(NonSI.DEGREE_ANGLE),2) + 
+						0.000002 * flapDeflection.get(0).doubleValue(NonSI.DEGREE_ANGLE); 
+				
+				_polar3DCurveHighLift.put(
+						MethodEnum.SEMIEMPIRICAL,
+						MyArrayUtils.convertListOfDoubleToDoubleArray(
+								Arrays.stream(cleanPolarCurve)
+								.map(cD -> cD + deltaCD0)
+								.collect(Collectors.toList())
+								)
+						);
+				
+			}
+		}
+		
+	}	
+	//............................................................................
+	// END OF THE HIGH LIFT POLAR CURVE INNER CLASS
+	//............................................................................
+	
+	//............................................................................
+	// HIGH LIFT MOMENT CURVE INNER CLASS
+	//............................................................................
+	public class CalcHighLiftMomentCurve {
+		
+		public void semiempirical(
+				Double[] cleanMomentCurve,
+				List<Amount<Angle>> flapDeflection,
+				List<Amount<Angle>> slatDeflection,
+				Double mach
+				) {
+			
+			if(_deltaCMc4.get(MethodEnum.SEMIEMPIRICAL) == null) {
+				
+				CalcHighLiftDevicesEffects theHighLiftEffectsCalculator = new CalcHighLiftDevicesEffects();
+				theHighLiftEffectsCalculator.semiempirical(
+						flapDeflection,
+						slatDeflection,
+						mach
+						);
+				
+			}
+			
+			_momentCoefficient3DCurveHighLift.put(
+					MethodEnum.SEMIEMPIRICAL,
+					MyArrayUtils.convertListOfDoubleToDoubleArray(
+							Arrays.stream(cleanMomentCurve)
+							.map(cM -> cM + _deltaCMc4.get(MethodEnum.SEMIEMPIRICAL))
+							.collect(Collectors.toList())
+							)
+					);			
+		}
+		
+	}	
+	//............................................................................
+	// END OF THE HIGH LIFT MOMENT CURVE INNER CLASS
+	//............................................................................	
+	
+	//............................................................................
 	// CALC CL AT ALPHA HIGH LIFT INNER CLASS
 	//............................................................................
 	public class CalcCLAtAlphaHighLift {
@@ -3253,7 +3354,7 @@ public class LSAerodynamicsManager {
 					&& (_liftCoefficient3DCurveHighLift.get(MethodEnum.SEMIEMPIRICAL) == null)) {
 				
 				CalcHighLiftCurve theHighLiftCurveCalculator = new CalcHighLiftCurve();
-				theHighLiftCurveCalculator.semiempirical(flapDeflection, slatDeflection, mach, altitude);
+				theHighLiftCurveCalculator.semiempirical(flapDeflection, slatDeflection, mach);
 				
 			}
 			cLActual = MyMathUtils.getInterpolatedValue1DLinear(
@@ -3287,17 +3388,36 @@ public class LSAerodynamicsManager {
 			
 			double cDActual = 0.0;
 			
-			if (_deltaCD0.get(MethodEnum.SEMIEMPIRICAL) == null) {
-				CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = new CalcHighLiftDevicesEffects();
-				calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection, mach);
+			if(_theLiftingSurface.getType().equals(ComponentEnum.WING)) {
+
+				if (_deltaCD0.get(MethodEnum.SEMIEMPIRICAL) == null) {
+					CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = new CalcHighLiftDevicesEffects();
+					calcHighLiftDevicesEffects.semiempirical(flapDeflection, slatDeflection, mach);
+				}
+
+				CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+				double cDActualClean = calcCDAtAlpha.fromCdDistribution(alpha, mach, altitude);
+
+				cDActual = cDActualClean + _deltaCD0.get(MethodEnum.SEMIEMPIRICAL);
+
+				_cDAtAlphaHighLift.put(MethodEnum.SEMIEMPIRICAL, cDActual);
+				
 			}
-
-			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
-			double cDActualClean = calcCDAtAlpha.fromCdDistribution(alpha, mach, altitude);
-
-			cDActual = cDActualClean + _deltaCD0.get(MethodEnum.SEMIEMPIRICAL);
-			
-			_cDAtAlphaHighLift.put(MethodEnum.SEMIEMPIRICAL, cDActual);
+			else {
+				/*
+				 * THIS EQUATION IS AN INTERPOLATING FUNCTION OBTAINED FROM CFD ANALYSES ON THE IRON AIRCRAFT
+				 * SINCE THE SEMIEMPIRICAL METHOD ESTIMATES A DELTA_CD0 TOO HIGH FOR HTAIL 
+				 */
+				double deltaCD0 = 0.0000156*
+						Math.pow(flapDeflection.get(0).doubleValue(NonSI.DEGREE_ANGLE),2) + 
+						0.000002 * flapDeflection.get(0).doubleValue(NonSI.DEGREE_ANGLE);
+				
+				CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
+				double cDActualClean = calcCDAtAlpha.fromCdDistribution(alpha, mach, altitude);
+				
+				cDActual = cDActualClean + deltaCD0;
+				
+			}
 			
 			return cDActual;
 			
@@ -4133,5 +4253,21 @@ public class LSAerodynamicsManager {
 
 	public void setCurrentAlpha(Amount<Angle> _currentAlpha) {
 		this._currentAlpha = _currentAlpha;
+	}
+
+	public Map <MethodEnum, Double[]> getPolar3DCurveHighLift() {
+		return _polar3DCurveHighLift;
+	}
+
+	public void setPolar3DCurveHighLift(Map <MethodEnum, Double[]> _polar3DCurveHighLift) {
+		this._polar3DCurveHighLift = _polar3DCurveHighLift;
+	}
+
+	public Map <MethodEnum, Double[]> getMomentCoefficient3DCurveHighLift() {
+		return _momentCoefficient3DCurveHighLift;
+	}
+
+	public void setMomentCoefficient3DCurveHighLift(Map <MethodEnum, Double[]> _momentCoefficient3DCurveHighLift) {
+		this._momentCoefficient3DCurveHighLift = _momentCoefficient3DCurveHighLift;
 	}
 }

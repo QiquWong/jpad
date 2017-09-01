@@ -49,7 +49,6 @@ import aircraft.components.nacelles.NacelleCreator;
 import aircraft.components.nacelles.Nacelles;
 import aircraft.components.powerplant.Engine;
 import aircraft.components.powerplant.PowerPlant;
-import analyses.ACAerodynamicsManager;
 import analyses.ACAnalysisManager;
 import analyses.ACBalanceManager;
 import analyses.ACPerformanceManager;
