@@ -13,13 +13,16 @@ import org.kohsuke.args4j.Option;
 import com.interactivemesh.jfx.importer.stl.StlMeshImporter;
 
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -28,8 +31,11 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.PointLight;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -38,6 +44,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Mesh;
 import javafx.scene.shape.MeshView;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import sandbox2.vt.FuselageTest;
 import standaloneutils.JPADXmlReader;
@@ -165,6 +172,52 @@ public class Test03 extends Application {
 		return perspectiveCamera;
 	}
 
+	private class ZoomingPane extends Pane {
+		Node content;
+		private DoubleProperty zoomFactor = new SimpleDoubleProperty(1);
+
+		private ZoomingPane(Node content) {
+			this.content = content;
+			getChildren().add(content);
+			Scale scale = new Scale(1, 1);
+			content.getTransforms().add(scale);
+
+			zoomFactor.addListener(new ChangeListener<Number>() {
+				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+					scale.setX(newValue.doubleValue());
+					scale.setY(newValue.doubleValue());
+					requestLayout();
+				}
+			});
+		}	
+		protected void layoutChildren() {
+			Pos pos = Pos.TOP_LEFT;
+			double width = getWidth();
+			double height = getHeight();
+			double top = getInsets().getTop();
+			double right = getInsets().getRight();
+			double left = getInsets().getLeft();
+			double bottom = getInsets().getBottom();
+			double contentWidth = (width - left - right)/zoomFactor.get();
+			double contentHeight = (height - top - bottom)/zoomFactor.get();
+			layoutInArea(content, left, top,
+					contentWidth, contentHeight,
+					0, null,
+					pos.getHpos(),
+					pos.getVpos());
+		}
+
+		public final Double getZoomFactor() {
+			return zoomFactor.get();
+		}
+		public final void setZoomFactor(Double zoomFactor) {
+			this.zoomFactor.set(zoomFactor);
+		}
+		public final DoubleProperty zoomFactorProperty() {
+			return zoomFactor;
+		}
+	}
+
 	@Override
 	public void start(Stage primaryStage) {
 		Group group = buildScene();
@@ -174,10 +227,20 @@ public class Test03 extends Application {
 		group.setTranslateX(50);
 		group.setTranslateY(50);
 
-		Scene scene = 
-				new Scene(
-						group, VIEWPORT_SIZE, VIEWPORT_SIZE, true
-						);
+		//		Scene scene = 
+		//				new Scene(
+		//						group, VIEWPORT_SIZE, VIEWPORT_SIZE, true
+		//						);
+
+		Slider slider = new Slider(0.5,2,1);
+		ZoomingPane zoomingPane = new ZoomingPane(group);
+		zoomingPane.zoomFactorProperty().bind(slider.valueProperty());
+		
+		Scene scene = new Scene(
+				new BorderPane(zoomingPane, null, null, slider, null),
+				VIEWPORT_SIZE, VIEWPORT_SIZE, false
+				);
+
 		scene.setFill(Color.rgb(10, 10, 40));
 		addCamera(scene);
 		primaryStage.setTitle("STL Viewer");

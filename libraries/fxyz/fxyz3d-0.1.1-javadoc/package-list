@@ -1,0 +1,15 @@
+org.fxyz3d.collections
+org.fxyz3d.concurrent
+org.fxyz3d.event
+org.fxyz3d.geometry
+org.fxyz3d.io
+org.fxyz3d.scene
+org.fxyz3d.scene.paint
+org.fxyz3d.shapes
+org.fxyz3d.shapes.complex.cloth
+org.fxyz3d.shapes.composites
+org.fxyz3d.shapes.containers
+org.fxyz3d.shapes.primitives
+org.fxyz3d.shapes.primitives.helper
+org.fxyz3d.tools
+org.fxyz3d.utils
