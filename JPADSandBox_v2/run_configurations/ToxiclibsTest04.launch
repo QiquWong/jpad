@@ -11,6 +11,6 @@
 </mapAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.adm.toxiclibs.Test04"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/toxiclibs/wing.stl -o out/toxiclibs"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i in/toxiclibs/wing-bin.stl -o out/toxiclibs"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
 </launchConfiguration>

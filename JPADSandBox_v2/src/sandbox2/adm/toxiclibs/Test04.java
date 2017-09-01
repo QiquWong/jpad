@@ -1,9 +1,13 @@
 package sandbox2.adm.toxiclibs;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.fxyz.geometry.Point3D;
+import org.fxyz.shapes.primitives.TriangulatedMesh;
 import org.fxyz3d.shapes.primitives.SpringMesh;
 import org.fxyz3d.utils.CameraTransformer;
 import org.kohsuke.args4j.Argument;
@@ -26,6 +30,7 @@ import javafx.scene.shape.Mesh;
 import javafx.scene.shape.MeshView;
 import javafx.stage.Stage;
 import standaloneutils.JPADXmlReader;
+import toxi.geom.mesh.STLReader;
 
 class MyArgumentTest04 {
 	@Option(name = "-i", aliases = { "--input" }, required = true,
@@ -74,9 +79,56 @@ public class Test04 extends Application {
 	}
 
 	private Group buildWing() {
-		MeshView[] meshViews = loadMeshViews(Test04.meshFile);
+//		MeshView[] meshViews = loadMeshViews(Test04.meshFile);
 
-		return new Group(meshViews);
+		System.out.println("Importing the binary STL via com.interactivemesh.jfx.importer into a Mesh ...");
+		StlMeshImporter importer = new StlMeshImporter();
+		importer.read(meshFile);
+		Mesh mesh = importer.getImport();
+		importer.close();
+		System.out.println("Done.");
+		
+		//-------------------------------------------------
+		// test toxiclibs triangle mesh import
+		
+		System.out.println("Importing the binary STL into a Toxiclib-TriangleMesh ...");
+		System.out.println(meshFile.getAbsolutePath());
+		toxi.geom.mesh.TriangleMesh tlMesh =
+				(toxi.geom.mesh.TriangleMesh)new STLReader().loadBinary(
+						meshFile.getAbsolutePath(), STLReader.TRIANGLEMESH);
+//		System.out.println("Report - " + tmesh.toString());
+//		System.out.println("Faces:");
+//		tmesh.getFaces().stream()
+//			.forEach(f -> System.out.println(f));
+	
+//		tlMesh.getVertices().stream()
+//			.forEach(v -> System.out.println(v));
+//
+//		List<org.fxyz3d.geometry.Point3D> points =
+//				tlMesh.getVertices().stream()
+//					.map(v -> new org.fxyz3d.geometry.Point3D(v.x, v.y, v.z))
+//					.collect(Collectors.toList());
+//		org.fxyz3d.shapes.primitives.TriangulatedMesh trMesh 
+//			= new org.fxyz3d.shapes.primitives.TriangulatedMesh(points);
+		System.out.println("Done.");
+//		return new Group(trMesh);
+		
+		//------------------------------------------------
+		// test STLLoader by miho at Github
+		System.out.println("Importing the binary STL via Mihosoft STLLoader ...");
+		STLLoader sl = new STLLoader();
+		try {
+//			sl.parse(meshFile).stream()
+//				.forEach(p -> System.out.println(p));
+			List<eu.mihosoft.vvecmath.Vector3d> points =
+					sl.parse(meshFile);
+			System.out.println("Done.");
+		} catch (RuntimeException | IOException e) {
+			System.out.println("error reading " + meshFile.getName());
+			//throw e;
+		}
+
+		return new Group(new MeshView(mesh));
 	}
 
 	@Override
