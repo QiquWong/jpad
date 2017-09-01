@@ -1068,7 +1068,7 @@ public class LSAerodynamicsManager {
 									MyArrayUtils.convertToDoublePrimitive(chordDistribution),
 									MyArrayUtils.convertToDoublePrimitive(alphaZeroLiftDistribution)
 									),
-							SI.RADIAN)
+							NonSI.DEGREE_ANGLE)
 					);
 		}
 
