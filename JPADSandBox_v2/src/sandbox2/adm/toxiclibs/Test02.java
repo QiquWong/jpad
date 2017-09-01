@@ -145,7 +145,7 @@ public class Test02 {
 
 		} catch (CmdLineException e) {
 			System.err.println("Error: " + e.getMessage());
-			FuselageTest.theCmdLineParser.printUsage(System.err);
+			Test02.theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
