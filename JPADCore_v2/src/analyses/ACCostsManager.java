@@ -1539,7 +1539,9 @@ public class ACCostsManager {
 			} else if (obj instanceof Double) {
 				cell.setCellValue((Double) obj);
 			}
-			sheetDOC.setDefaultColumnWidth(25);
+			sheetDOC.setDefaultColumnWidth(35);
+			sheetDOC.setColumnWidth(1, 2048);
+			sheetDOC.setColumnWidth(2, 3840);
 		}
 
 		int rownum = 1;

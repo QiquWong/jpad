@@ -58,14 +58,14 @@
 				<critical_mach perform="TRUE" method="KROO"></critical_mach>
 				<aerodynamic_center perform="TRUE" method="DEYOUNG_HARPER"></aerodynamic_center> <!-- referred to the mean aerodynamic chord --> 
 				<lift>
-					<cL_alpha perform="TURE" method="NASA_BLACKWELL"/>
+					<cL_alpha perform="TRUE" method="NASA_BLACKWELL"/>
 					<cL_zero perform="TRUE" method="NASA_BLACKWELL"/>
 					<cL_star perform="TRUE" method="NASA_BLACKWELL"/>
 					<cL_max perform="TRUE" method="NASA_BLACKWELL"/>
 					<alpha_zero_lift perform="TRUE" method="INTEGRAL_MEAN_NO_TWIST"/>
 					<alpha_star perform="TRUE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
 					<alpha_stall perform="TRUE" method="NASA_BLACKWELL"/>
-                    <cL_vs_alpha perform="TRUE" user_defined="TRUE" method="NASA_BLACKWELL">
+                    <cL_vs_alpha perform="TRUE" user_defined="FALSE" method="NASA_BLACKWELL">
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
@@ -79,7 +79,7 @@
 				</lift>
 				<high_lift_devices>
 					<high_lift_devices_effects perform="TRUE" method="SEMIEMPIRICAL"/>
-                    <cL_vs_alpha perform="TRUE" user_defined="TRUE" method="SEMIEMPIRICAL">
+                    <cL_vs_alpha perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
@@ -88,7 +88,7 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
                     </cL_vs_alpha>
-					<cD_vs_cL perform="TRUE" user_defined="TRUE" method="SEMIEMPIRICAL">
+					<cD_vs_cL perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
@@ -97,14 +97,14 @@
                         <cL>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
 						<cD>-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</cD>
                     </cD_vs_cL>
-					<cM_vs_alpha perform="TRUE" user_defined="TRUE" method="SEMIEMPIRICAL">
+					<cM_vs_alpha perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
 					or the assignment of the curve by the user (TRUE)
 					-->
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
-                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cL>
+                        <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
                     </cM_vs_alpha>
 					<cL_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
@@ -115,7 +115,7 @@
 					<oswald_factor perform="TRUE" method="RAYMER"/>
 					<cD_induced perform="TRUE" method="RAYMER"/>
 					<cD_wave perform="TRUE" method="LOCK_KORN_WITH_KROO"/>
-                    <cD_vs_cL perform="TRUE" user_defined="TRUE" method="AIRFOIL_DISTRIBUTION">
+                    <cD_vs_cL perform="TRUE" user_defined="FALSE" method="AIRFOIL_DISTRIBUTION">
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
@@ -152,7 +152,7 @@
 					<cL_star perform="FALSE" method="NASA_BLACKWELL"/>
 					<cL_max perform="FALSE" method="NASA_BLACKWELL"/>
 					<alpha_zero_lift perform="FALSE" method="INTEGRAL_MEAN_TWIST"/>
-					<alpha_star perform="FALSE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="FALSE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
 					<alpha_stall perform="FALSE" method="NASA_BLACKWELL"/>
 					<cL_vs_alpha perform="FALSE" user_defined="FALSE" method="NASA_BLACKWELL">
 					<!-- 
@@ -176,7 +176,7 @@
 					<cM_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
 				</elevator>
 				<drag>
-					<cD_Zero perform="FALSE" method="AIRFOIL_DISTRIBUTION"/>
+					<cD_Zero perform="FALSE" method="SEMIEMPIRICAL"/>
 					<oswald_factor perform="FALSE" method="RAYMER"/>
 					<cD_induced perform="FALSE" method="RAYMER"/>
 					<cD_wave perform="FALSE" method="LOCK_KORN_WITH_KROO"/>
@@ -217,7 +217,7 @@
 					<cL_star perform="FALSE" method="NASA_BLACKWELL"/>
 					<cL_max perform="FALSE" method="NASA_BLACKWELL"/>
 					<alpha_zero_lift perform="FALSE" method="INTEGRAL_MEAN_TWIST"/>
-					<alpha_star perform="FALSE" method="INTEGRAL_MEAN_TWIST"/>
+					<alpha_star perform="FALSE" method="MEAN_AIRFOIL_INFLUENCE_AREAS"/>
 					<alpha_stall perform="FALSE" method="NASA_BLACKWELL"/>
 					<cL_vs_alpha perform="FALSE" user_defined="FALSE" method="NASA_BLACKWELL">
 					<!-- 
@@ -241,7 +241,7 @@
 					<cM_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
 				</rudder>
 				<drag>
-					<cD_Zero perform="FALSE" method="AIRFOIL_DISTRIBUTION"/>
+					<cD_Zero perform="FALSE" method="SEMIEMPIRICAL"/>
 					<oswald_factor perform="FALSE" method="RAYMER"/>
 					<cD_induced perform="FALSE" method="RAYMER"/>
 					<cD_wave perform="FALSE" method="LOCK_KORN_WITH_KROO"/>

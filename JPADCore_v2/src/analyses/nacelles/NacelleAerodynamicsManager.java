@@ -327,7 +327,7 @@ public class NacelleAerodynamicsManager {
 		
 		public void multhopp() {
 			
-			switch (_theNacelles.getMountingPositionNacelles()) {
+			switch (_theNacelles.getNacellesList().get(0).getMountingPosition()) {
 			case WING:
 				getCM0().put(
 						MethodEnum.MULTHOPP, 

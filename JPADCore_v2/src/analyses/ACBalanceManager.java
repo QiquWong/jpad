@@ -645,6 +645,8 @@ public class ACBalanceManager implements IACBalanceManager {
 				cell.setCellValue((Double) obj);
 			}
 			sheet.setDefaultColumnWidth(35);
+			sheet.setColumnWidth(1, 2048);
+			sheet.setColumnWidth(2, 3840);
 		}
 	
 		int rownum = 1;
@@ -708,7 +710,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetFuselage.setDefaultColumnWidth(25);
+				sheetFuselage.setDefaultColumnWidth(35);
+				sheetFuselage.setColumnWidth(1, 2048);
+				sheetFuselage.setColumnWidth(2, 3840);
 			}
 
 			int rownumFuselage = 1;
@@ -784,7 +788,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetWing.setDefaultColumnWidth(25);
+				sheetWing.setDefaultColumnWidth(35);
+				sheetWing.setColumnWidth(1, 2048);
+				sheetWing.setColumnWidth(2, 3840);
 			}
 
 			int rownumWing = 1;
@@ -837,7 +843,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetFuelTank.setDefaultColumnWidth(25);
+				sheetFuelTank.setDefaultColumnWidth(35);
+				sheetFuelTank.setColumnWidth(1, 2048);
+				sheetFuelTank.setColumnWidth(2, 3840);
 			}
 
 			int rownumFuelTank = 1;
@@ -914,7 +922,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetHTail.setDefaultColumnWidth(25);
+				sheetHTail.setDefaultColumnWidth(35);
+				sheetHTail.setColumnWidth(1, 2048);
+				sheetHTail.setColumnWidth(2, 3840);
 			}
 
 			int rownumHTail = 1;
@@ -991,7 +1001,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetVTail.setDefaultColumnWidth(25);
+				sheetVTail.setDefaultColumnWidth(35);
+				sheetVTail.setColumnWidth(1, 2048);
+				sheetVTail.setColumnWidth(2, 3840);
 			}
 
 			int rownumVTail = 1;
@@ -1068,7 +1080,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetCanard.setDefaultColumnWidth(25);
+				sheetCanard.setDefaultColumnWidth(35);
+				sheetCanard.setColumnWidth(1, 2048);
+				sheetCanard.setColumnWidth(2, 3840);
 			}
 
 			int rownumCanard = 1;
@@ -1129,7 +1143,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetNacelles.setDefaultColumnWidth(25);
+				sheetNacelles.setDefaultColumnWidth(35);
+				sheetNacelles.setColumnWidth(1, 2048);
+				sheetNacelles.setColumnWidth(2, 3840);
 			}
 
 			int rownumNacelles = 1;
@@ -1190,7 +1206,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetPowerPlant.setDefaultColumnWidth(25);
+				sheetPowerPlant.setDefaultColumnWidth(35);
+				sheetPowerPlant.setColumnWidth(1, 2048);
+				sheetPowerPlant.setColumnWidth(2, 3840);
 			}
 
 			int rownumEngines = 1;
@@ -1240,7 +1258,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				} else if (obj instanceof Double) {
 					cell.setCellValue((Double) obj);
 				}
-				sheetLandingGears.setDefaultColumnWidth(25);
+				sheetLandingGears.setDefaultColumnWidth(35);
+				sheetLandingGears.setColumnWidth(1, 2048);
+				sheetLandingGears.setColumnWidth(2, 3840);
 			}
 
 			int rownumLandingGears = 1;

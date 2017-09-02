@@ -937,11 +937,25 @@ public class DragCalc {
 		clDistributionfromNasaBlackwell =theNasaBlackwellCalculator.getClTotalDistribution().toArray();
 
 		for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
-			parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
-					MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
-					MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
-					clDistributionfromNasaBlackwell[ii]
-					));		
+			if(ClReferenceOfCdMatrix.size() > airfoilCdMatrix.get(0).size()) 
+				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix.subList(0, airfoilCdMatrix.get(ii).size())), 
+						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
+						clDistributionfromNasaBlackwell[ii]
+						));
+			else if(ClReferenceOfCdMatrix.size() < airfoilCdMatrix.get(0).size())
+				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
+						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii).subList(0, ClReferenceOfCdMatrix.size())), 
+						clDistributionfromNasaBlackwell[ii]
+						));
+			else
+				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
+						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
+						clDistributionfromNasaBlackwell[ii]
+						));
+					
 		}	
 		
 		

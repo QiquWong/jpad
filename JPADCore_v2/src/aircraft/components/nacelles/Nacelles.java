@@ -34,7 +34,6 @@ public class Nacelles implements INacelles {
 	private int _nacellesNumber;
 	private List<NacelleCreator> _nacellesList;
 	private Map<NacelleCreator, Engine> _nacelleEngineMap;
-	private NacelleCreator.MountingPosition _mountingPositionNacelles;
 	
 	private Amount<Mass> _totalMass;
 	private List<Amount<Mass>> _massList;
@@ -76,6 +75,7 @@ public class Nacelles implements INacelles {
 			initializeDefaultVariables(aircraftName);
 		}
 		
+		@SuppressWarnings("incomplete-switch")
 		private void initializeDefaultVariables (AircraftEnum aircraftName) {
 			switch(aircraftName) {
 			
@@ -318,16 +318,6 @@ public class Nacelles implements INacelles {
 	@Override
 	public void setNacelleEngineMap(Map<NacelleCreator, Engine> _nacelleEngineMap) {
 		this._nacelleEngineMap = _nacelleEngineMap;
-	}
-
-	@Override
-	public NacelleCreator.MountingPosition getMountingPositionNacelles() {
-		return _mountingPositionNacelles;
-	}
-
-	@Override
-	public void setMountingPositionNacelles(NacelleCreator.MountingPosition _mountingPositionNacelles) {
-		this._mountingPositionNacelles = _mountingPositionNacelles;
 	}
 
 	@Override

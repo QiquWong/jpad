@@ -2524,6 +2524,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheet.setDefaultColumnWidth(35);
+        		sheet.setColumnWidth(1, 2048);
+        		sheet.setColumnWidth(2, 3840);
         	}
 
         	int rownumTakeOff = 1;
@@ -2583,6 +2585,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheetClimb.setDefaultColumnWidth(35);
+        		sheetClimb.setColumnWidth(1, 2048);
+        		sheetClimb.setColumnWidth(2, 3840);
         	}
 
         	int rownumClimb = 1;
@@ -2654,6 +2658,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheetCruise.setDefaultColumnWidth(35);
+        		sheetCruise.setColumnWidth(1, 2048);
+        		sheetCruise.setColumnWidth(2, 3840);
         	}
 
         	int rownumCruise = 1;
@@ -2704,6 +2710,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheetDescent.setDefaultColumnWidth(35);
+        		sheetDescent.setColumnWidth(1, 2048);
+        		sheetDescent.setColumnWidth(2, 3840);
         	}
 
         	int rownumDescent = 1;
@@ -2777,6 +2785,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheetLanding.setDefaultColumnWidth(35);
+        		sheetLanding.setColumnWidth(1, 2048);
+        		sheetLanding.setColumnWidth(2, 3840);
         	}
 
         	int rownumLanding = 1;
@@ -3042,6 +3052,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheetMissionProfile.setDefaultColumnWidth(35);
+        		sheetMissionProfile.setColumnWidth(1, 2048);
+        		sheetMissionProfile.setColumnWidth(2, 3840);
         	}
 
         	int rownumMissionProfile = 1;
@@ -3117,6 +3129,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheetPayloadRange.setDefaultColumnWidth(35);
+        		sheetPayloadRange.setColumnWidth(1, 2048);
+        		sheetPayloadRange.setColumnWidth(2, 3840);
         	}
 
         	int rownumPayloadRange = 1;
@@ -3245,6 +3259,8 @@ public class ACPerformanceManager {
         			cell.setCellValue((Double) obj);
         		}
         		sheetVnDiagram.setDefaultColumnWidth(35);
+        		sheetVnDiagram.setColumnWidth(1, 2048);
+        		sheetVnDiagram.setColumnWidth(2, 3840);
         	}
 
         	int rownumVnDiagram = 1;

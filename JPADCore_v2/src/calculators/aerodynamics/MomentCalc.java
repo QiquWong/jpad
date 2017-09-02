@@ -188,8 +188,8 @@ public class MomentCalc {
 						MyArrayUtils.convertToDoublePrimitive(
 								cmACDistribution.stream()
 								.map(cmac -> cmac
-										*chordDistribution.get(chordDistribution.indexOf(cmac)).doubleValue(SI.METER)
-										*chordDistribution.get(chordDistribution.indexOf(cmac)).doubleValue(SI.METER)
+										*chordDistribution.get(cmACDistribution.indexOf(cmac)).doubleValue(SI.METER)
+										*chordDistribution.get(cmACDistribution.indexOf(cmac)).doubleValue(SI.METER)
 										)
 								.collect(Collectors.toList())
 								),

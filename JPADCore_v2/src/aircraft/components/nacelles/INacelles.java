@@ -34,9 +34,6 @@ public interface INacelles {
 	public Map<NacelleCreator, Engine> getNacelleEngineMap();
 	public void setNacelleEngineMap(Map<NacelleCreator, Engine> _nacelleEngineMap);
 
-	public NacelleCreator.MountingPosition getMountingPositionNacelles();
-	public void setMountingPositionNacelles(NacelleCreator.MountingPosition _mountingPositionNacelles);
-
 	public Amount<Mass> getTotalMass();
 	public void setTotalMass(Amount<Mass> _totalMass);
 	
