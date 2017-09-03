@@ -473,16 +473,59 @@ public class FuselageAerodynamicsManager {
 				calcCD0Total.semiempirical();
 			}
 			
-			if(_cDInduced.get(MethodEnum.SEMIEMPIRICAL) == null) {
-				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
-				calcCDInduced.semiempirical(alphaBody);
-			}
+			List<Amount<Length>> xStations = 
+					MyArrayUtils.convertDoubleArrayToListOfAmount(
+							MyArrayUtils.linspace(
+									0,
+									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									50
+									),
+							SI.METER
+							);
+			
+			double cDInduced = DragCalc.calculateCDInducedFuselageOrNacelle(
+					xStations, 
+					alphaBody, 
+					_theFuselage.getFuselageCreator().getsWet(), 
+					FusNacGeometryCalc.calculateFuselageVolume(
+							_theFuselage.getFuselageCreator().getLenF(), 
+							MyArrayUtils.convertListOfDoubleToDoubleArray(
+									xStations.stream()
+									.map(x -> FusNacGeometryCalc.getWidthAtX(
+											x.doubleValue(SI.METER),
+											_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(), 
+											_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX()
+											))
+									.collect(Collectors.toList())
+									)
+							), 
+					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+							_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+							_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
+							), 
+					FusNacGeometryCalc.calculateMaxDiameter(
+							xStations,
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
+							), 
+					_theFuselage.getFuselageCreator().getLenF(), 
+					_theWing.getSurface(), 
+					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
+					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
+					_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
+					_theFuselage.getFuselageCreator().getOutlineXZLowerCurveZ(),
+					_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(), 
+					_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
+					);
 			
 			_cDAtAlpha.put(
 					MethodEnum.SEMIEMPIRICAL,
 					_cD0Total.get(MethodEnum.SEMIEMPIRICAL)
-					+ _cDInduced.get(MethodEnum.SEMIEMPIRICAL)
+					+ cDInduced
 					);
+			
+			cDActual = _cD0Total.get(MethodEnum.SEMIEMPIRICAL)
+					+ cDInduced;
 			
 			return cDActual;
 		}
@@ -496,16 +539,59 @@ public class FuselageAerodynamicsManager {
 				calcCD0Total.fusDes();
 			}
 			
-			if(_cDInduced.get(MethodEnum.SEMIEMPIRICAL) == null) {
-				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
-				calcCDInduced.semiempirical(alphaBody);
-			}
+			List<Amount<Length>> xStations = 
+					MyArrayUtils.convertDoubleArrayToListOfAmount(
+							MyArrayUtils.linspace(
+									0,
+									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+									50
+									),
+							SI.METER
+							);
+			
+			double cDInduced = DragCalc.calculateCDInducedFuselageOrNacelle(
+					xStations, 
+					alphaBody, 
+					_theFuselage.getFuselageCreator().getsWet(), 
+					FusNacGeometryCalc.calculateFuselageVolume(
+							_theFuselage.getFuselageCreator().getLenF(), 
+							MyArrayUtils.convertListOfDoubleToDoubleArray(
+									xStations.stream()
+									.map(x -> FusNacGeometryCalc.getWidthAtX(
+											x.doubleValue(SI.METER),
+											_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(), 
+											_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX()
+											))
+									.collect(Collectors.toList())
+									)
+							), 
+					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+							_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
+							_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
+							), 
+					FusNacGeometryCalc.calculateMaxDiameter(
+							xStations,
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
+							), 
+					_theFuselage.getFuselageCreator().getLenF(), 
+					_theWing.getSurface(), 
+					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
+					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
+					_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
+					_theFuselage.getFuselageCreator().getOutlineXZLowerCurveZ(),
+					_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(), 
+					_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
+					);
 			
 			_cDAtAlpha.put(
 					MethodEnum.FUSDES,
 					_cD0Total.get(MethodEnum.FUSDES)
-					+ _cDInduced.get(MethodEnum.SEMIEMPIRICAL)
+					+ cDInduced
 					);
+			
+			cDActual = _cD0Total.get(MethodEnum.FUSDES)
+					+ cDInduced;
 			
 			return cDActual;			
 		}
@@ -713,8 +799,8 @@ public class FuselageAerodynamicsManager {
 					MethodEnum.FUSDES, 
 					MomentCalc.calculateCMAtAlphaFuselage(
 							alphaBody, 
-							_cMAlpha.get(MethodEnum.GILRUTH), 
-							_cM0.get(MethodEnum.MULTHOPP)
+							_cMAlpha.get(MethodEnum.FUSDES), 
+							_cM0.get(MethodEnum.FUSDES)
 							)
 					);
 			

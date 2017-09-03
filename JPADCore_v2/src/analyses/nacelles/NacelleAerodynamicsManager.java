@@ -278,16 +278,55 @@ public class NacelleAerodynamicsManager {
 				calcCD0Total.semiempirical();
 			}
 			
-			if(_cDInduced.get(MethodEnum.SEMIEMPIRICAL) == null) {
-				CalcCDInduced calcCDInduced = new CalcCDInduced(); 
-				calcCDInduced.semiempirical(alphaBody);
-			}
+			List<Amount<Length>> xStations = 
+					MyArrayUtils.convertDoubleArrayToListOfAmount(
+							MyArrayUtils.linspace(
+									0,
+									_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+									50
+									),
+							SI.METER
+							);
+			
+			double cDInduced = DragCalc.calculateCDInducedFuselageOrNacelle(
+					xStations, 
+					alphaBody, 
+					_theNacelles.getNacellesList().get(0).getSurfaceWetted(), 
+					FusNacGeometryCalc.calculateFuselageVolume(
+							_theNacelles.getNacellesList().get(0).getLength(), 
+							MyArrayUtils.convertListOfDoubleToDoubleArray(
+									xStations.stream()
+									.map(x -> FusNacGeometryCalc.getWidthAtX(
+											x.doubleValue(SI.METER),
+											_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
+											_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList())
+											))
+									.collect(Collectors.toList())
+									)
+							), 
+					_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+							_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+							_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
+							), 
+					_theNacelles.getNacellesList().get(0).getDiameterMax(), 
+					_theNacelles.getNacellesList().get(0).getLength(), 
+					_theWing.getSurface(), 
+					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
+					_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+					_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()),
+					_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList())
+					);
 			
 			getCDAtAlpha().put(
 					MethodEnum.SEMIEMPIRICAL,
 					_cD0Total.get(MethodEnum.SEMIEMPIRICAL)
-					+ _cDInduced.get(MethodEnum.SEMIEMPIRICAL)
+					+ cDInduced
 					);
+			
+			cDActual = _cD0Total.get(MethodEnum.SEMIEMPIRICAL)
+					+ cDInduced;
 			
 			return cDActual;
 		}

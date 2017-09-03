@@ -1064,7 +1064,7 @@ public class DragCalc {
 	 * @see NASA TN D-6800 (pag.47 pdf)
 	 * 
 	 * @param xStations in m
-	 * @param alphaBody in deg
+	 * @param alphaBody in rad
 	 * @param wettedSurface in m^2
 	 * @param volume in m^3
 	 * @param k2k1
@@ -1108,18 +1108,35 @@ public class DragCalc {
 						)
 				.collect(Collectors.toList()); 
 		
+		double maxDiameterFormList = MyArrayUtils.getMax(
+				MyArrayUtils.convertListOfAmountToDoubleArray(equivalentDiameters)
+				);
+		int indexOfMaxDiameter = 0;
+		for(int i=0; i<MyArrayUtils.convertListOfAmountToDoubleArray(equivalentDiameters).length; i++) {
+			if(MyArrayUtils.convertListOfAmountToDoubleArray(equivalentDiameters)[i] == maxDiameterFormList)
+				indexOfMaxDiameter = i;
+		}
+		
 		Double integral = MyMathUtils.integrate1DSimpsonSpline(
 				MyArrayUtils.convertToDoublePrimitive(
 						xStations.stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+						.subList(
+								indexOfMaxDiameter,
+								xStations.size()-1
+								)
 						),
 				MyArrayUtils.convertToDoublePrimitive(
 						equivalentDiameters.stream().map(eq -> eq.doubleValue(SI.METER)*eta).collect(Collectors.toList())
+						.subList(
+								indexOfMaxDiameter,
+								xStations.size()-1
+								)
 						)
 				);
 		
 		Double cDi = (
-				(2*alphaBody.doubleValue(NonSI.DEGREE_ANGLE)*k2k1*wettedSurface.doubleValue(SI.SQUARE_METRE)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3)))
-				+ (2*Math.pow(alphaBody.doubleValue(NonSI.DEGREE_ANGLE),3)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))*integral)
+				(2*Math.pow(alphaBody.doubleValue(SI.RADIAN),2)*k2k1*wettedSurface.doubleValue(SI.SQUARE_METRE)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3)))
+				+ (2*Math.pow(alphaBody.doubleValue(SI.RADIAN),3)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))*integral)
 				)
 				*(Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))/wingSurface.doubleValue(SI.SQUARE_METRE));
 		
