@@ -705,6 +705,18 @@ public class FuselageAerodynamicsManager {
 	//............................................................................
 	public class CalcCMAlpha {
 		
+		public void multhopp() {
+			
+			
+			
+		}
+		
+		public void munk() {
+			
+			
+			
+		}
+		
 		public void gilruth() {
 			
 			_cMAlpha.put(

@@ -423,7 +423,13 @@ public class NacelleAerodynamicsManager {
 	//............................................................................
 	public class CalcCMAlpha {
 		
-		public void gilruth() {
+		public void munk() {
+			
+			
+			
+		}
+		
+		public void gilruth() { // TODO: REMOVE THIS FOR NACELLE
 			
 			_cMAlpha.put(
 					MethodEnum.GILRUTH, 

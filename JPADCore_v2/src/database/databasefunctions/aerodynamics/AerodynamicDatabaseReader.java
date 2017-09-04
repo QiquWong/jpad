@@ -1,6 +1,11 @@
 package database.databasefunctions.aerodynamics;
 
 
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
+
 import configuration.enumerations.AirfoilFamilyEnum;
 import database.databasefunctions.DatabaseReader;
 import standaloneutils.MyInterpolatingFunction;
@@ -13,7 +18,7 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 	 x_bar_ac_w_k1_vs_lambda, x_bar_ac_w_k2_vs_L_LE_AR_lambda,
 	 d_Alpha_Vs_LambdaLE_VsDy, d_Alpha_d_Delta_2d_VS_cf_c, d_Alpha_d_Delta_2d_d_Alpha_d_Delta_3D_VS_aspectRatio,
 	 d_epsilon_d_alpha_VS_position_aspectRatio, deltaYvsThicknessRatio, kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR,
-	 clmaxCLmaxVsLambdaLEVsDeltaY;
+	 clmaxCLmaxVsLambdaLEVsDeltaY, cmAlphaBodyUpwashVsXiOverRootChord, cmAlphaBodyNearUpwashVsXiOverRootChord;
 	
 	double cM0_b_k2_minus_k1, ar_v_eff_c2, x_bar_ac_w_k1, x_bar_ac_w_k2, x_bar_ac_w_xac_cr, d_Alpha_Vs_LambdaLE, deltaYvsThickness, clmaxCLmaxVsLambdaLE;
  
@@ -41,6 +46,11 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 		kOmega_vs_CLalphaOmegaClmax_vs_taperRatio_vs_AR = database.interpolate3DFromDatasetFunction("K_Omega_vs_CLalphaOmegaFracClmax_(taperRatio)_(AR)");
 		
 		clmaxCLmaxVsLambdaLEVsDeltaY = database.interpolate2DFromDatasetFunction("Clmax_CLmax_vs_LambdaLE_vs_dy");
+		
+		cmAlphaBodyUpwashVsXiOverRootChord = database.interpolate1DFromDatasetFunction("(C_m_alpha_b)_upwash_vs_x_i_over_root_chord");
+		
+		cmAlphaBodyNearUpwashVsXiOverRootChord = database.interpolate1DFromDatasetFunction("(C_m_alpha_b)_upwash_(NTWLE)_vs_x_i_over_root_chord");
+		
 		//TODO Insert other aerodynamic functions (see "Aerodynamic_Database_Ultimate.h5")
 	}
 	
@@ -198,5 +208,19 @@ public class AerodynamicDatabaseReader extends DatabaseReader {
 			sharpnessParameterLE = 2.5;
 		return clmaxCLmaxVsLambdaLEVsDeltaY.valueBilinear(sweepAngleLE, sharpnessParameterLE);
 	}
-	
+
+
+
+
+	public double getCmAlphaBodyUpwashVsXiOverRootChord(Amount<Length> wingRootChord, Amount<Length> xi) {
+		return cmAlphaBodyUpwashVsXiOverRootChord.value(xi.doubleValue(SI.METER)/wingRootChord.doubleValue(SI.METER));
+	}
+
+
+
+	public double getCmAlphaBodyNearUpwashVsXiOverRootChord(Amount<Length> wingRootChord, Amount<Length> xi) {
+		return cmAlphaBodyNearUpwashVsXiOverRootChord.value(xi.doubleValue(SI.METER)/wingRootChord.doubleValue(SI.METER));
+	}
+
+
 }
