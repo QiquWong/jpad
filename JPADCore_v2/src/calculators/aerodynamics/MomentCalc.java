@@ -928,10 +928,10 @@ public class MomentCalc {
 		return cM0;
 	}
 	
-	public static Amount<?> calculateCMAlphaFuselageOrNacelleGilruth(
+	public static Amount<?> calculateCMAlphaFuselageGilruth(
 			Amount<Length> length,
 			Amount<Length> maxWidth,
-			double[] positionOfC4ToFuselageOrNacelleLength,
+			double[] positionOfC4ToFuselageLength,
 			double[] kF,
 			Amount<Area> wingSurface,
 			Amount<Length> wingMeanAerodynamicChord,
@@ -942,7 +942,7 @@ public class MomentCalc {
 		Double cMAlpha = 0.0;
 
 		double kf = MyMathUtils
-				.interpolate1DLinear(positionOfC4ToFuselageOrNacelleLength, kF)
+				.interpolate1DLinear(positionOfC4ToFuselageLength, kF)
 				.value(
 						(wingXApex.doubleValue(SI.METER) 
 								+ 0.25*wingRootChord.doubleValue(SI.METER)

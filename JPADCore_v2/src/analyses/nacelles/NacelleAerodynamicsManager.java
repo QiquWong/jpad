@@ -427,7 +427,7 @@ public class NacelleAerodynamicsManager {
 			
 			_cMAlpha.put(
 					MethodEnum.GILRUTH, 
-					MomentCalc.calculateCMAlphaFuselageOrNacelleGilruth(
+					MomentCalc.calculateCMAlphaFuselageGilruth(
 							_theNacelles.getNacellesList().get(0).getLength(),
 							_theNacelles.getNacellesList().get(0).getDiameterMax(),
 							_positionOfC4ToNacelleLength,
