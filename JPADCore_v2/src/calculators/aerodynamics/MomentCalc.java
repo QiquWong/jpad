@@ -1090,7 +1090,7 @@ public class MomentCalc {
 		//-----------------------------------------------------------------
 		// CMalpha CALCULATION
 		Amount<?> cMAlpha = Amount.valueOf(
-				(1/36.5*wingMeanAerodynamicChord.doubleValue(SI.METER))*totalSum,
+				(1/(36.5*wingSurface.doubleValue(SI.SQUARE_METRE)*wingMeanAerodynamicChord.doubleValue(SI.METER)))*totalSum,
 				NonSI.DEGREE_ANGLE.inverse()
 				);
 		
