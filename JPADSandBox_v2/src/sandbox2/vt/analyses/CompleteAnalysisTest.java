@@ -319,7 +319,5 @@ public class CompleteAnalysisTest extends Application {
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
 		}	    
-
 	}
-
 }

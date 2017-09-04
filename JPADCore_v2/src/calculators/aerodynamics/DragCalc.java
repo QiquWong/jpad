@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.DoubleUnaryOperator;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
@@ -827,10 +828,15 @@ public class DragCalc {
 			cdDistributionAtAlpha = new double [numberOfPointSemiSpanWise];
 			cCd =  new double [numberOfPointSemiSpanWise];
 			clDistributionfromNasaBlackwell = new double [numberOfPointSemiSpanWise];
+			
 			theNasaBlackwellCalculator.calculate(alphasArray.get(i));
 			clDistributionfromNasaBlackwell =theNasaBlackwellCalculator.getClTotalDistribution().toArray();
 
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+				if(Double.isNaN(clDistributionfromNasaBlackwell[ii]))
+					clDistributionfromNasaBlackwell[ii] = 0.0;
+					
 				cdDistributionAtAlpha[ii] = MyMathUtils.getInterpolatedValue1DLinear(
 						MyArrayUtils.convertToDoublePrimitive(clReferenceOfCdMatrixCut), 
 						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
@@ -937,6 +943,10 @@ public class DragCalc {
 		clDistributionfromNasaBlackwell =theNasaBlackwellCalculator.getClTotalDistribution().toArray();
 
 		for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+			
+			if(Double.isNaN(clDistributionfromNasaBlackwell[ii]))
+				clDistributionfromNasaBlackwell[ii] = 0.0;
+			
 			if(ClReferenceOfCdMatrix.size() > airfoilCdMatrix.get(0).size()) 
 				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
 						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix.subList(0, airfoilCdMatrix.get(ii).size())), 
@@ -987,6 +997,10 @@ public class DragCalc {
 				MyArrayUtils.convertListOfAmountToDoubleArray(anglesOfAttackClMatrix)));
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+				if(Double.isNaN(clDistributionfromNasaBlackwell[ii]))
+					clDistributionfromNasaBlackwell[ii] = 0.0;
+				
 				alphaDistribution [ii] = (clDistributionfromNasaBlackwell[ii] - clZeroDistribution.get(ii))/
 						clAlphaDegDistribution.get(ii);
 

@@ -473,6 +473,7 @@ public class AerodynamicCalc {
 	public static List<Double> calculateVariableDownwashRoskam( // it returns downwash gradient list
 			double aspectRatio,
 			double taperRatio,
+			Amount<Length> wingSpan,
 			Amount<Length> zApexWing,
 			Amount<Length> zApexHTail,
 			Amount<Angle> iw,
@@ -533,9 +534,9 @@ public class AerodynamicCalc {
 
 
 		double kH = (
-				1-zDistanceZero.doubleValue(SI.METER)) /
+				1-(zDistanceZero.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER))) /
 				Math.cbrt(
-						2*horizontalDistanceInitial.doubleValue(SI.METER));
+						2*(horizontalDistanceInitial.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER)));
 
 		//initializing array
 		double [] downwashArray = new double [nValue]; //deg
@@ -594,6 +595,10 @@ public class AerodynamicCalc {
 					zTemp * 
 					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp);
 			
+			kH = (
+					1-(zTemp/wingSpan.doubleValue(SI.METER))) /
+					Math.cbrt(
+							2*(horizontalDistanceInitial.doubleValue(SI.METER)/wingSpan.doubleValue(SI.METER)));
 			
 			//downwash gradient
 			downwashGradientTemp = 4.44* Math.pow(
@@ -657,6 +662,7 @@ public class AerodynamicCalc {
 	 */
 	public static List<Double> calculateVariableDownwashGradientRoskamWithMachEffect(double aspectRatio, 
 			double taperRatio, 
+			Amount<Length> wingSpan,
 			Amount<Length> zApexWing,
 			Amount<Length> zApexHTail,
 			Amount<Angle> iw,
@@ -674,6 +680,7 @@ public class AerodynamicCalc {
 		List<Double> downwashGradientMachZero = calculateVariableDownwashRoskam(
 				aspectRatio,
 				taperRatio, 
+				wingSpan,
 				zApexWing,
 				zApexHTail,
 				iw,
@@ -685,8 +692,7 @@ public class AerodynamicCalc {
 				);
 
 		for (int i=0; i<alphasBody.size(); i++){
-		downwashGradientMach.set(i,
-				machCorrection * downwashGradientMachZero.get(i));
+		downwashGradientMach.add(machCorrection * downwashGradientMachZero.get(i));
 		}
 		return downwashGradientMach;
 	}
@@ -977,11 +983,11 @@ public class AerodynamicCalc {
 	
 		
 		// first value
-		downwashAngleTemp.set(0, Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+		downwashAngleTemp.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		
 		// other values
-		for (int i=0; i<alphaAbsoluteArray.length; i++){
-		downwashAngleTemp.set(i, Amount.valueOf(
+		for (int i=1; i<alphaAbsoluteArray.length; i++){
+		downwashAngleTemp.add(Amount.valueOf(
 				downwashAngleTemp.get(i-1).doubleValue(NonSI.DEGREE_ANGLE) + 
 				downwashGradientInterp.get(i)*deltaAlpha, 
 				NonSI.DEGREE_ANGLE));

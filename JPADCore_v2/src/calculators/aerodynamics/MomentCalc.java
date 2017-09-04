@@ -687,6 +687,10 @@ public class MomentCalc {
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+				if(Double.isNaN(clDistribution[ii]))
+					clDistribution[ii] = 0.0;
+					
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
@@ -772,8 +776,12 @@ public class MomentCalc {
 
 			theNasaBlackwellCalculator.calculate(angleOfAttack);
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
-
+			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+				if(Double.isNaN(clDistribution[ii]))
+					clDistribution[ii] = 0.0;
+				
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
