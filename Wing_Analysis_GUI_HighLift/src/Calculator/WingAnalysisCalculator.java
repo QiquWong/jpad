@@ -2520,8 +2520,6 @@ public class WingAnalysisCalculator {
 					alphaStarDeg,
 					NonSI.DEGREE_ANGLE);
 
-			theInputOutputTree.setAlphaStarHL(alphaStar);
-
 
 			//CL STAR
 
@@ -2575,17 +2573,27 @@ public class WingAnalysisCalculator {
 							theInputOutputTree.getMeanAirfoilFamily()
 							);
 
-			Amount<Angle> deltaAlpha = Amount.valueOf(
-					aeroDatabaseReader
-					.getDAlphaVsLambdaLEVsDy(
-							sweepLEDeg,
-							deltaYPercent
-							),
+			Amount<Angle> deltaAlpha = 
+					Amount.valueOf(
+							0.0,
+//					aeroDatabaseReader
+//					.getDAlphaVsLambdaLEVsDy(
+//							sweepLEDeg,
+//							deltaYPercent
+//							),
 					NonSI.DEGREE_ANGLE);
 
 			theInputOutputTree.setAlphaStallHL(theInputOutputTree.getAlphaMaxLinearHL()
 					.plus(deltaAlpha));
+		
+			// alpha star
 			
+			theInputOutputTree.setAlphaStarHL(Amount.valueOf(
+					alphaStar.doubleValue(NonSI.DEGREE_ANGLE) - 
+					(theInputOutputTree.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE)-
+							theInputOutputTree.getAlphaStallHighLift().doubleValue(NonSI.DEGREE_ANGLE)
+							), 
+					NonSI.DEGREE_ANGLE));
 			//------------------------------
 			
 			

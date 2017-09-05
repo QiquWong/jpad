@@ -38,19 +38,19 @@
 		<high_lift_devices>
 		        <flaps>
 					<flap id = "1">
-						<flap_type unit="">FOWLER</flap_type>
+						<flap_type unit="">DOUBLE_SLOTTED</flap_type>
 						<flap_chord_ratio unit="">0.32</flap_chord_ratio>
-						<flap_deflection unit="°">15</flap_deflection>
-						<flap_non_dimensional_inner_station unit="">0.1</flap_non_dimensional_inner_station>
-						<flap_non_dimensional_outer_station unit="">0.3</flap_non_dimensional_outer_station>
+						<flap_deflection unit="°">45</flap_deflection>
+						<flap_non_dimensional_inner_station unit="">0.01</flap_non_dimensional_inner_station>
+						<flap_non_dimensional_outer_station unit="">0.5</flap_non_dimensional_outer_station>
 					</flap>
-					<flap id = "2">
+<!-- 					<flap id = "2">
 						<flap_type unit="">FOWLER</flap_type>
 						<flap_chord_ratio unit="">0.3200</flap_chord_ratio>
-						<flap_deflection unit="°">15</flap_deflection>
+						<flap_deflection unit="°">20</flap_deflection>
 						<flap_non_dimensional_inner_station unit="">0.31</flap_non_dimensional_inner_station>
 						<flap_non_dimensional_outer_station unit="">0.78</flap_non_dimensional_outer_station>
-					</flap>
+					</flap> -->
 				</flaps>
 	<!-- 			<slats>
 					<slat id = "1">

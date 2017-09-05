@@ -5308,6 +5308,10 @@ public class ACAerodynamicAndStabilityManager {
 		//...................................................................................
 	}
 	
+//	private void plotAllCharts(Double mach) {
+//		_theAerodynamicBuilderInterface.getPlotList()
+//	}
+//	
 	public void calculate(String resultsFolderPath) {
 
 		String aerodynamicAndStabilityFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -5406,6 +5410,7 @@ public class ACAerodynamicAndStabilityManager {
 		}
 
 	}
+	
 
 	@SuppressWarnings("resource")
 	public static ACAerodynamicAndStabilityManager importFromXML (
