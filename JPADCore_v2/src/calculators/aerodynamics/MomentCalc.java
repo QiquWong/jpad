@@ -843,8 +843,8 @@ public class MomentCalc {
 								noseLength,
 								cabinLength
 								) 
-								+ wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
-								+ Math.abs(wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE))
+								- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+								+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE)
 								)
 						* (x[i] - x[i-1]);
 			}
@@ -897,8 +897,8 @@ public class MomentCalc {
 								outlineXZLowerCurveX,
 								outlineXZLowerCurveZ
 								) 
-								+ wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
-								+ Math.abs(wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE))
+								- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+								+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE)
 								)
 						* (x[i] - x[i-1]);
 			}
@@ -965,7 +965,7 @@ public class MomentCalc {
 	 * @return
 	 */
 	public static Amount<?> calculateCMAlphaFuselageOrNacelleMulthopp(
-			ComponentEnum type,
+			Amount<Length> startingPoint,
 			Amount<Length> length,
 			double downwashGradientRoskamConstant,
 			double wingAspectRatio,
@@ -980,50 +980,62 @@ public class MomentCalc {
 			List<Double> outlineXYSideRCurveY
 			) {
 
-		int nSecBeforeWing = 0;
-		int nSecAfterWing = 0;
+		int nSecBeforeWing = 8;
+		int nSecAfterWing = 8;
 		
-		if(type.equals(ComponentEnum.FUSELAGE)) {
-			nSecBeforeWing = 8;
-			nSecAfterWing = 8;
-		}
-		else if (type.equals(ComponentEnum.NACELLE)) { //TODO: COMPLETE FOR NACELLE
-			nSecBeforeWing = 6;
-			nSecAfterWing = 4;
-		}
-			
 		//-----------------------------------------------------------------
 		// X STATIONS
-		Double[] xStationsBeforeWing = MyArrayUtils.linspaceDouble(
-				0.0,
-				wingXApex.doubleValue(SI.METER),
-				nSecBeforeWing
-				);
+		Double[] xStationsBeforeWing = new Double[nSecBeforeWing];
+		Double[] xStationsAfterWing = new Double[nSecAfterWing];
 		
-		Double[] xStationsAfterWing = MyArrayUtils.linspaceDouble(
-				wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER),
-				length.doubleValue(SI.METER),
-				nSecAfterWing
-				);
+		if(startingPoint.doubleValue(SI.METER) >= wingXApex.doubleValue(SI.METER)) 
+			for(int i=0; i<nSecBeforeWing; i++)
+				xStationsBeforeWing[i] = 0.0;
+		else
+			xStationsBeforeWing = MyArrayUtils.linspaceDouble(
+					startingPoint.doubleValue(SI.METER),
+					wingXApex.doubleValue(SI.METER),
+					nSecBeforeWing
+					);
+		
+		if((wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER)) >= 
+				length.doubleValue(SI.METER) + startingPoint.doubleValue(SI.METER)) 
+			for(int i=0; i<nSecAfterWing; i++)
+				xStationsAfterWing[i] = 0.0;
+		else
+			xStationsAfterWing = MyArrayUtils.linspaceDouble(
+					wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER),
+					length.doubleValue(SI.METER),
+					nSecAfterWing
+					);
 		
 		//-----------------------------------------------------------------
 		// Delta Xi AND Xi STATIONS
-		Double[] deltaXiBeforeWing = new Double[xStationsBeforeWing.length];
-		Double[] deltaXiAfterWing = new Double[xStationsAfterWing.length];
+		Double deltaXiBeforeWing = 0.0;
+		Double deltaXiAfterWing = 0.0; 
 		
-		Double[] xiBeforeWing = new Double[xStationsBeforeWing.length];
-		Double[] xiAfterWing = new Double[xStationsAfterWing.length];
+		Double[] xiBeforeWing = new Double[xStationsBeforeWing.length-1];
+		Double[] xiAfterWing = new Double[xStationsAfterWing.length-1];
 		
 		for (int i=1; i<xStationsBeforeWing.length; i++) {
-			deltaXiBeforeWing[i-1] = xStationsBeforeWing[i] - deltaXiBeforeWing[i-1];
-			xiBeforeWing[i-1] = wingXApex.doubleValue(SI.METER) - (deltaXiBeforeWing[i-1]/2);
+			if(i==1) {
+				deltaXiBeforeWing = xStationsBeforeWing[i] - xStationsBeforeWing[i-1];
+				xiBeforeWing[i-1] = wingXApex.doubleValue(SI.METER) - (deltaXiBeforeWing/2);
+			}
+			else {
+				deltaXiBeforeWing = xStationsBeforeWing[i] - xStationsBeforeWing[i-1];
+				xiBeforeWing[i-1] = xiBeforeWing[i-2] - (deltaXiBeforeWing);
+			}
 		}
 		for (int i=1; i<xStationsAfterWing.length; i++) {
-			deltaXiAfterWing[i-1] = xStationsAfterWing[i] - deltaXiAfterWing[i-1];
-			xiAfterWing[i-1] = 
-					wingXApex.doubleValue(SI.METER) 
-					+ wingRootChord.doubleValue(SI.METER) 
-					+ (deltaXiBeforeWing[i-1]/2);
+			if (i==1) {
+				deltaXiAfterWing = xStationsAfterWing[i] - xStationsAfterWing[i-1];
+				xiAfterWing[i-1] = deltaXiAfterWing/2;
+			}
+			else {
+				deltaXiAfterWing = xStationsAfterWing[i] - xStationsAfterWing[i-1];
+				xiAfterWing[i-1] = xiAfterWing[i-2] + (deltaXiAfterWing);
+			}
 		}
 		
 		//-----------------------------------------------------------------
@@ -1032,21 +1044,21 @@ public class MomentCalc {
 		Double[] wfSquareAfterWing = new Double[xiAfterWing.length];
 		
 		for(int i=0; i<xiBeforeWing.length; i++)
-			wfSquareBeforeWing[i] = pow(
-					FusNacGeometryCalc.getWidthAtX(
-							xiBeforeWing[i],
-							outlineXYSideRCurveX,
-							outlineXYSideRCurveY
-							),
-					2);
+				wfSquareBeforeWing[i] = pow(
+						FusNacGeometryCalc.getWidthAtX(
+								xStationsBeforeWing[i] + (deltaXiBeforeWing/2),
+								outlineXYSideRCurveX,
+								outlineXYSideRCurveY
+								),
+						2);
 		for(int i=0; i<xiAfterWing.length; i++)
-			wfSquareAfterWing[i] = pow(
-					FusNacGeometryCalc.getWidthAtX(
-							xiAfterWing[i],
-							outlineXYSideRCurveX,
-							outlineXYSideRCurveY
-							),
-					2);
+				wfSquareAfterWing[i] = pow(
+						FusNacGeometryCalc.getWidthAtX(
+								xStationsAfterWing[i] + (deltaXiAfterWing/2),
+								outlineXYSideRCurveX,
+								outlineXYSideRCurveY
+								),
+						2);
 
 		//-----------------------------------------------------------------
 		// Depsilon\DAlpha AT Xi STATIONS
@@ -1057,22 +1069,26 @@ public class MomentCalc {
 			if(i<xiBeforeWing.length-1)
 				dEpsilonDAlphaBeforeWing[i] = aeroDatabaseReader.getCmAlphaBodyUpwashVsXiOverRootChord(
 						wingRootChord, 
-						Amount.valueOf(xiBeforeWing[i], SI.METER)
-						)
-				*(wingCLAlpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue()/0.0785);
+						Amount.valueOf(
+								xiBeforeWing[i],
+								SI.METER
+								)
+						);
 			else
 				dEpsilonDAlphaBeforeWing[i] = aeroDatabaseReader.getCmAlphaBodyNearUpwashVsXiOverRootChord(
 						wingRootChord, 
-						Amount.valueOf(xiBeforeWing[i], SI.METER)
-						)
-				*(wingCLAlpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue()/0.0785);
+						Amount.valueOf(
+								xiBeforeWing[i],
+								SI.METER
+								)
+						);
 		}
 
 		for(int i=0; i<xiAfterWing.length; i++) 
-			dEpsilonDAlphaAfterWing[i] = (
-					(xiAfterWing[i]/wingTrailingEdgeToHTailQuarterChordDistance.doubleValue(SI.METER))
-					*(1-downwashGradientRoskamConstant)
-					)-1;
+				dEpsilonDAlphaAfterWing[i] = (
+						(xiAfterWing[i]/wingTrailingEdgeToHTailQuarterChordDistance.doubleValue(SI.METER))
+						*(1-downwashGradientRoskamConstant)
+						);
 		
 		//-----------------------------------------------------------------
 		// SUM
@@ -1081,16 +1097,18 @@ public class MomentCalc {
 		Double totalSum = 0.0;
 		
 		for(int i=0; i<xiBeforeWing.length; i++)
-			sumBeforeWing += wfSquareBeforeWing[i]*(dEpsilonDAlphaBeforeWing[i] + 1)*deltaXiBeforeWing[i];
+			sumBeforeWing += wfSquareBeforeWing[i]*(dEpsilonDAlphaBeforeWing[i])*deltaXiBeforeWing;
 		for(int i=0; i<xiAfterWing.length; i++)
-			sumAfterWing += wfSquareAfterWing[i]*(dEpsilonDAlphaAfterWing[i] + 1)*deltaXiAfterWing[i];
+			sumAfterWing += wfSquareAfterWing[i]*(dEpsilonDAlphaAfterWing[i])*deltaXiAfterWing;
 		
-		totalSum = sumBeforeWing + sumBeforeWing;
+		totalSum = sumBeforeWing + sumAfterWing;
 		
 		//-----------------------------------------------------------------
 		// CMalpha CALCULATION
 		Amount<?> cMAlpha = Amount.valueOf(
-				(1/(36.5*wingSurface.doubleValue(SI.SQUARE_METRE)*wingMeanAerodynamicChord.doubleValue(SI.METER)))*totalSum,
+				(1/(36.5*wingSurface.doubleValue(SI.SQUARE_METRE)*wingMeanAerodynamicChord.doubleValue(SI.METER)))
+				*(wingCLAlpha.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()/0.0785)
+				*totalSum,
 				NonSI.DEGREE_ANGLE.inverse()
 				);
 		

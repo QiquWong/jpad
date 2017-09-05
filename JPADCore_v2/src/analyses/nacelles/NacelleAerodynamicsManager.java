@@ -15,6 +15,8 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import aircraft.components.nacelles.Nacelles;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
@@ -368,6 +370,12 @@ public class NacelleAerodynamicsManager {
 			
 			switch (_theNacelles.getNacellesList().get(0).getMountingPosition()) {
 			case WING:
+				
+				if(_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+					CalcAlpha0L calcAlpha0L = _theWingAerodynamicManager.new CalcAlpha0L();
+					calcAlpha0L.integralMeanWithTwist();
+				}
+				
 				getCM0().put(
 						MethodEnum.MULTHOPP, 
 						MomentCalc.calculateCM0NacelleMulthopp(
@@ -378,7 +386,7 @@ public class NacelleAerodynamicsManager {
 										),
 								_theWing.getSurface(), 
 								_theWing.getRiggingAngle(),
-								getTheWingAerodynamicManager().getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
+								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
 								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
@@ -423,30 +431,36 @@ public class NacelleAerodynamicsManager {
 	//............................................................................
 	public class CalcCMAlpha {
 		
-		public void munk() {
+		public void multhopp(
+				Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance,
+				Double downwashGradientRoskamConstant
+				) {
 			
-			
-			
-		}
-		
-		public void gilruth() { // TODO: REMOVE THIS FOR NACELLE
+			if(_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAlpha calcCLAlpha = _theWingAerodynamicManager.new CalcCLAlpha();
+				calcCLAlpha.nasaBlackwell();
+			}
 			
 			_cMAlpha.put(
-					MethodEnum.GILRUTH, 
-					MomentCalc.calculateCMAlphaFuselageGilruth(
+					MethodEnum.MULTHOPP, 
+					MomentCalc.calculateCMAlphaFuselageOrNacelleMulthopp(
+							_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
 							_theNacelles.getNacellesList().get(0).getLength(),
-							_theNacelles.getNacellesList().get(0).getDiameterMax(),
-							_positionOfC4ToNacelleLength,
-							_kF,
+							downwashGradientRoskamConstant, 
+							_theWing.getAspectRatio(),
 							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
-							_theWing.getXApexConstructionAxes(), 
-							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot()
+							_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
+							_theWing.getXApexConstructionAxes(),
+							wingTrailingEdgeToHTailQuarterChordDistance,
+							_theWing.getAerodynamicDatabaseReader(),
+							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+							_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
 							)
 					);
 			
 		}
-		
 	}
 	//............................................................................
 	// END Calc CM_Alpha INNER CLASS
@@ -457,23 +471,30 @@ public class NacelleAerodynamicsManager {
 	//............................................................................
 	public class CalcCMAtAlpha {
 		
-		public void semiempirical(Amount<Angle> alphaBody) {
+		public void multhopp(
+				Amount<Angle> alphaBody,
+				Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance,
+				Double downwashGradientRoskamConstant
+				) {
 			
 			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
 				CalcCM0 calcCM0 = new CalcCM0();
 				calcCM0.multhopp();
 			}
 			
-			if(_cMAlpha.get(MethodEnum.GILRUTH) == null) {
+			if(_cMAlpha.get(MethodEnum.MULTHOPP) == null) {
 				CalcCMAlpha calcCMAlpha = new CalcCMAlpha();
-				calcCMAlpha.gilruth();
+				calcCMAlpha.multhopp(
+						wingTrailingEdgeToHTailQuarterChordDistance, 
+						downwashGradientRoskamConstant
+						);
 			}
 			
 			_cMAtAlpha.put(
-					MethodEnum.SEMIEMPIRICAL, 
+					MethodEnum.MULTHOPP, 
 					MomentCalc.calculateCMAtAlphaFuselage(
 							alphaBody, 
-							_cMAlpha.get(MethodEnum.GILRUTH), 
+							_cMAlpha.get(MethodEnum.MULTHOPP), 
 							_cM0.get(MethodEnum.MULTHOPP)
 							)
 					);
@@ -489,25 +510,31 @@ public class NacelleAerodynamicsManager {
 	//............................................................................
 	public class CalcMomentCurve {
 		
-		public void semiempirical() {
+		public void multhopp(
+				Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance,
+				Double downwashGradientRoskamConstant
+				) {
 			
 			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
 				CalcCM0 calcCM0 = new CalcCM0();
 				calcCM0.multhopp();
 			}
 			
-			if(_cMAlpha.get(MethodEnum.GILRUTH) == null) {
+			if(_cMAlpha.get(MethodEnum.MULTHOPP) == null) {
 				CalcCMAlpha calcCMAlpha = new CalcCMAlpha();
-				calcCMAlpha.gilruth();
+				calcCMAlpha.multhopp(
+						wingTrailingEdgeToHTailQuarterChordDistance,
+						downwashGradientRoskamConstant
+						);
 			}
 			
 			_moment3DCurve.put(
-					MethodEnum.SEMIEMPIRICAL, 
+					MethodEnum.MULTHOPP, 
 					MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_alphaArray.stream()
 							.map(a -> MomentCalc.calculateCMAtAlphaFuselage(
 									a, 
-									_cMAlpha.get(MethodEnum.GILRUTH), 
+									_cMAlpha.get(MethodEnum.MULTHOPP), 
 									_cM0.get(MethodEnum.MULTHOPP))
 									)
 							.collect(Collectors.toList())

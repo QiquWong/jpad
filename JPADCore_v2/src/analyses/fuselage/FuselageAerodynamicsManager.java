@@ -18,6 +18,7 @@ import aircraft.components.liftingSurface.LiftingSurface;
 import analyses.OperatingConditions;
 import analyses.liftingsurface.LSAerodynamicsManager;
 import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
+import analyses.liftingsurface.LSAerodynamicsManager.CalcCLAlpha;
 import calculators.aerodynamics.AerodynamicCalc;
 import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.MomentCalc;
@@ -705,16 +706,34 @@ public class FuselageAerodynamicsManager {
 	//............................................................................
 	public class CalcCMAlpha {
 		
-		public void multhopp() {
+		public void multhopp(
+				Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance,
+				Double downwashGradientRoskamConstant
+				) {
 			
+			if(_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL) == null) {
+				CalcCLAlpha calcCLAlpha = _theWingAerodynamicManager.new CalcCLAlpha();
+				calcCLAlpha.nasaBlackwell();
+			}
 			
-			
-		}
-		
-		public void munk() {
-			
-			
-			
+			_cMAlpha.put(
+					MethodEnum.MULTHOPP, 
+					MomentCalc.calculateCMAlphaFuselageOrNacelleMulthopp(
+							_theFuselage.getXApexConstructionAxes(),
+							_theFuselage.getFuselageCreator().getLenF(),
+							downwashGradientRoskamConstant, 
+							_theWing.getAspectRatio(),
+							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
+							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+							_theWingAerodynamicManager.getCLAlpha().get(MethodEnum.NASA_BLACKWELL),
+							_theWing.getXApexConstructionAxes(),
+							wingTrailingEdgeToHTailQuarterChordDistance,
+							_theWing.getAerodynamicDatabaseReader(),
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
+							)
+					);
 		}
 		
 		public void gilruth() {
@@ -773,7 +792,7 @@ public class FuselageAerodynamicsManager {
 	//............................................................................
 	public class CalcCMAtAlpha {
 		
-		public void semiempirical(Amount<Angle> alphaBody) {
+		public void gilruth(Amount<Angle> alphaBody) {
 			
 			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
 				CalcCM0 calcCM0 = new CalcCM0();
@@ -786,10 +805,39 @@ public class FuselageAerodynamicsManager {
 			}
 			
 			_cMAtAlpha.put(
-					MethodEnum.SEMIEMPIRICAL, 
+					MethodEnum.GILRUTH, 
 					MomentCalc.calculateCMAtAlphaFuselage(
 							alphaBody, 
 							_cMAlpha.get(MethodEnum.GILRUTH), 
+							_cM0.get(MethodEnum.MULTHOPP)
+							)
+					);
+		}
+		
+		public void multhopp(
+				Amount<Angle> alphaBody,
+				Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance,
+				Double downwashGradientRoskamConstant
+				) {
+			
+			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
+				CalcCM0 calcCM0 = new CalcCM0();
+				calcCM0.multhopp();
+			}
+			
+			if(_cMAlpha.get(MethodEnum.MULTHOPP) == null) {
+				CalcCMAlpha calcCMAlpha = new CalcCMAlpha();
+				calcCMAlpha.multhopp(
+						wingTrailingEdgeToHTailQuarterChordDistance,
+						downwashGradientRoskamConstant
+						);
+			}
+			
+			_cMAtAlpha.put(
+					MethodEnum.MULTHOPP, 
+					MomentCalc.calculateCMAtAlphaFuselage(
+							alphaBody, 
+							_cMAlpha.get(MethodEnum.MULTHOPP), 
 							_cM0.get(MethodEnum.MULTHOPP)
 							)
 					);
@@ -828,7 +876,39 @@ public class FuselageAerodynamicsManager {
 	//............................................................................
 	public class CalcMomentCurve {
 		
-		public void semiempirical() {
+		public void multhopp(
+				Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance,
+				Double downwashGradientRoskamConstant
+				) {
+			
+			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
+				CalcCM0 calcCM0 = new CalcCM0();
+				calcCM0.multhopp();
+			}
+			
+			if(_cMAlpha.get(MethodEnum.MULTHOPP) == null) {
+				CalcCMAlpha calcCMAlpha = new CalcCMAlpha();
+				calcCMAlpha.multhopp(
+						wingTrailingEdgeToHTailQuarterChordDistance, 
+						downwashGradientRoskamConstant
+						);
+			}
+			
+			_moment3DCurve.put(
+					MethodEnum.MULTHOPP, 
+					MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_alphaArray.stream()
+							.map(a -> MomentCalc.calculateCMAtAlphaFuselage(
+									a, 
+									_cMAlpha.get(MethodEnum.MULTHOPP), 
+									_cM0.get(MethodEnum.MULTHOPP))
+									)
+							.collect(Collectors.toList())
+							)
+					);
+		}
+		
+		public void gilruth() {
 			
 			if(_cM0.get(MethodEnum.MULTHOPP) == null) {
 				CalcCM0 calcCM0 = new CalcCM0();
@@ -841,7 +921,7 @@ public class FuselageAerodynamicsManager {
 			}
 			
 			_moment3DCurve.put(
-					MethodEnum.SEMIEMPIRICAL, 
+					MethodEnum.GILRUTH, 
 					MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_alphaArray.stream()
 							.map(a -> MomentCalc.calculateCMAtAlphaFuselage(

@@ -370,7 +370,8 @@ public class FusNacGeometryCalc {
 //							outlineXZLowerCurveZ
 //							)
 //					/x
-//					); 
+//					);
+			
 			List<Double> camberList = outlineXZUpperCurveX.stream()
 					.map(xc -> getCamberZAtX(xc, outlineXZUpperCurveX, outlineXZUpperCurveZ, outlineXZLowerCurveX, outlineXZLowerCurveZ))
 					.collect(Collectors.toList());

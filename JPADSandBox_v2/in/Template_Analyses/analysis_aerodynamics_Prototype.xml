@@ -293,7 +293,7 @@
 					<cD_at_alpha_current perform="TRUE" method="FUSDES"/>
 				</drag>
 				<pitching_moment>
-					<cM0 perform="TRUE" method="FUSDES"/>
+					<cM0 perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
 					<cM_alpha perform="TRUE" method="FUSDES"/>
                     <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="FUSDES">
 					<!-- 
@@ -309,34 +309,34 @@
 			</fuselage_analyses>
 			<nacelle_analyses>
 				<drag>
-					<cD0_parasite perform="FALSE" method="SEMIEMPIRICAL"/>
-					<cD0_base perform="FALSE" method="SEMIEMPIRICAL"/>
-					<cD0_total perform="FALSE" method="SEMIEMPIRICAL"/>
-					<cD_induced perform="FALSE" method="SEMIEMPIRICAL"/>
-                    <cD_vs_alpha perform="FALSE" user_defined="FALSE" method="SEMIEMPIRICAL">
+					<cD0_parasite perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_base perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD0_total perform="TRUE" method="SEMIEMPIRICAL"/>
+					<cD_induced perform="TRUE" method="SEMIEMPIRICAL"/>
+                    <cD_vs_alpha perform="TRUE" user_defined="FALSE" method="SEMIEMPIRICAL">
 					<!-- 
 					"perform" allows to do or not this analysis. 
-					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method (FALSE)
-					or the assignment of the curve by the user (FALSE)
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
 					-->
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cD>0.02;0.03;0.07;0.09;0.095;0.09;0.085;0.07</cD>
                     </cD_vs_alpha>
-					<cD_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cD_at_alpha_current perform="TRUE" method="SEMIEMPIRICAL"/>
 				</drag>
 				<pitching_moment>
-					<cM0 perform="FALSE" method="MULTHOPP"/>
-					<cM_alpha perform="FALSE" method="GILRUTH"/>
-                    <cM_vs_alpha perform="FALSE" user_defined="FALSE" method="SEMIEMPIRICAL">
+					<cM0 perform="TRUE" method="MULTHOPP"/> <!-- MULTHOPP method gives poor results for the CM0 -->
+					<cM_alpha perform="TRUE" method="MULTHOPP"/>
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="MULTHOPP">
 					<!-- 
 					"perform" allows to do or not this analysis. 
-					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method (FALSE)
-					or the assignment of the curve by the user (FALSE)
+					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
+					or the assignment of the curve by the user (TRUE)
 					-->
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
                     </cM_vs_alpha>
-					<cM_at_alpha_current perform="FALSE" method="SEMIEMPIRICAL"/>
+					<cM_at_alpha_current perform="TRUE" method="MULTHOPP"/>
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>

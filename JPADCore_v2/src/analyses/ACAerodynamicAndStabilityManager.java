@@ -3524,6 +3524,17 @@ public class ACAerodynamicAndStabilityManager {
 				case GILRUTH:
 					calcCMAlpha.gilruth();
 					break;
+				case MULTHOPP:
+					calcCMAlpha.multhopp(
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+							.minus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+									),
+							_downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							);
+					break;
 				case FUSDES:
 					calcCMAlpha.fusDes();
 					break;
@@ -3550,9 +3561,19 @@ public class ACAerodynamicAndStabilityManager {
 				else {
 					analyses.fuselage.FuselageAerodynamicsManager.CalcMomentCurve calcMomentCurve = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcMomentCurve();
 					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE)) {
-					case SEMIEMPIRICAL:
-						calcMomentCurve.semiempirical();
+					case MULTHOPP:
+						calcMomentCurve.multhopp(
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+								.minus(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+										.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+										),
+								_downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+								);
 						break;
+					case GILRUTH:
+						calcMomentCurve.gilruth();
 					case FUSDES:
 						calcMomentCurve.fusDes();
 						break;
@@ -3568,8 +3589,20 @@ public class ACAerodynamicAndStabilityManager {
 
 				analyses.fuselage.FuselageAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCMAtAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_FUSELAGE)) {
-				case SEMIEMPIRICAL:
-					calcCMAtAlpha.semiempirical(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE));
+				case GILRUTH:
+					calcCMAtAlpha.gilruth(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE));
+					break;
+				case MULTHOPP:
+					calcCMAtAlpha.multhopp(
+							_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE),
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+							.minus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+									),
+							_downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							);
 					break;
 				case FUSDES:
 					calcCMAtAlpha.fusDes(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE));
@@ -3750,8 +3783,16 @@ public class ACAerodynamicAndStabilityManager {
 
 				analyses.nacelles.NacelleAerodynamicsManager.CalcCMAlpha calcCMAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE)) {
-				case GILRUTH:
-					calcCMAlpha.gilruth();
+				case MULTHOPP:
+					calcCMAlpha.multhopp(
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+							.minus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+									),
+							_downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							);
 					break;
 				default:
 					break;
@@ -3776,8 +3817,16 @@ public class ACAerodynamicAndStabilityManager {
 				else {
 					analyses.nacelles.NacelleAerodynamicsManager.CalcMomentCurve calcMomentCurve = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcMomentCurve();
 					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
-					case SEMIEMPIRICAL:
-						calcMomentCurve.semiempirical();
+					case MULTHOPP:
+						calcMomentCurve.multhopp(
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+								.minus(
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+										.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+										),
+								_downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+								);
 						break;
 					default:
 						break;
@@ -3791,8 +3840,17 @@ public class ACAerodynamicAndStabilityManager {
 
 				analyses.nacelles.NacelleAerodynamicsManager.CalcCMAtAlpha calcCMAtAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCMAtAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CM_AT_ALPHA_NACELLE)) {
-				case SEMIEMPIRICAL:
-					calcCMAtAlpha.semiempirical(_alphaNacelleCurrent);
+				case MULTHOPP:
+					calcCMAtAlpha.multhopp(
+							_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE), 
+							_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+							.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+							.minus(
+									_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+									.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+									),
+							_downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+							);
 					break;
 				case INPUT: 
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE).equals(MethodEnum.INPUT))
@@ -9122,6 +9180,9 @@ public class ACAerodynamicAndStabilityManager {
 			
 			if(fuselageCMAlphaMethodString != null) {
 				
+				if(fuselageCMAlphaMethodString.equalsIgnoreCase("MULTHOPP")) 
+					fuselageCMAlphaMethod = MethodEnum.MULTHOPP;
+				
 				if(fuselageCMAlphaMethodString.equalsIgnoreCase("GILRUTH")) 
 					fuselageCMAlphaMethod = MethodEnum.GILRUTH;
 				
@@ -9175,8 +9236,11 @@ public class ACAerodynamicAndStabilityManager {
 					
 					if(fuselageMomentCurveMethodString != null) {
 						
-						if(fuselageMomentCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							fuselageMomentCurveMethod = MethodEnum.SEMIEMPIRICAL;
+						if(fuselageMomentCurveMethodString.equalsIgnoreCase("GILRUTH")) 
+							fuselageMomentCurveMethod = MethodEnum.GILRUTH;
+						
+						if(fuselageMomentCurveMethodString.equalsIgnoreCase("MULTHOPP")) 
+							fuselageMomentCurveMethod = MethodEnum.MULTHOPP;
 						
 						if(fuselageMomentCurveMethodString.equalsIgnoreCase("FUSDES")) 
 							fuselageMomentCurveMethod = MethodEnum.FUSDES;
@@ -9204,8 +9268,11 @@ public class ACAerodynamicAndStabilityManager {
 			
 			if(fuselageCMAtAlphaMethodString != null) {
 				
-				if(fuselageCMAtAlphaMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-					fuselageCMAtAlphaMethod = MethodEnum.SEMIEMPIRICAL;
+				if(fuselageCMAtAlphaMethodString.equalsIgnoreCase("GILRUTH")) 
+					fuselageCMAtAlphaMethod = MethodEnum.GILRUTH;
+				
+				if(fuselageCMAtAlphaMethodString.equalsIgnoreCase("MULTHOPP")) 
+					fuselageCMAtAlphaMethod = MethodEnum.MULTHOPP;
 				
 				if(fuselageCMAtAlphaMethodString.equalsIgnoreCase("FUSDES")) 
 					fuselageCMAtAlphaMethod = MethodEnum.FUSDES;
@@ -9446,8 +9513,8 @@ public class ACAerodynamicAndStabilityManager {
 			
 			if(nacelleCMAlphaMethodString != null) {
 				
-				if(nacelleCMAlphaMethodString.equalsIgnoreCase("GILRUTH")) 
-					nacelleCMAlphaMethod = MethodEnum.GILRUTH;
+				if(nacelleCMAlphaMethodString.equalsIgnoreCase("MULTHOPP")) 
+					nacelleCMAlphaMethod = MethodEnum.MULTHOPP;
 				
 				nacelleTaskList.put(AerodynamicAndStabilityEnum.CM_ALPHA_NACELLE, nacelleCMAlphaMethod);
 				
@@ -9496,8 +9563,8 @@ public class ACAerodynamicAndStabilityManager {
 					
 					if(nacelleMomentCurveMethodString != null) {
 						
-						if(nacelleMomentCurveMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-							nacelleMomentCurveMethod = MethodEnum.SEMIEMPIRICAL;
+						if(nacelleMomentCurveMethodString.equalsIgnoreCase("MULTHOPP")) 
+							nacelleMomentCurveMethod = MethodEnum.MULTHOPP;
 						
 						nacelleTaskList.put(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE, nacelleMomentCurveMethod);
 						
@@ -9522,8 +9589,8 @@ public class ACAerodynamicAndStabilityManager {
 			
 			if(nacelleCMAtAlphaMethodString != null) {
 				
-				if(nacelleCMAtAlphaMethodString.equalsIgnoreCase("SEMIEMPIRICAL")) 
-					nacelleCMAtAlphaMethod = MethodEnum.SEMIEMPIRICAL;
+				if(nacelleCMAtAlphaMethodString.equalsIgnoreCase("MULTHOPP")) 
+					nacelleCMAtAlphaMethod = MethodEnum.MULTHOPP;
 				
 				if(nacelleCMAtAlphaMethodString.equalsIgnoreCase("INPUT")) 
 					nacelleCMAtAlphaMethod = MethodEnum.INPUT;

@@ -346,19 +346,19 @@ public class FuselageCreator implements IFuselageCreator {
 		// UPPER CURVES ----------------------------------
 
 		// UPPER NOSE
-		for (int i = 0; i <= fuselageCurvesSideView.getNoseUpperPoints().size() - 1; i++){
+		for (int i = 0; i < fuselageCurvesSideView.getNoseUpperPoints().size(); i++){
 			outlineXZUpperCurveX.add((double) fuselageCurvesSideView.getNoseUpperPoints().get(i).x);
 			outlineXZUpperCurveZ.add((double) fuselageCurvesSideView.getNoseUpperPoints().get(i).y);
 		}
 
 		// UPPER CYLINDER
-		for (int i = 0; i <= fuselageCurvesSideView.getCylinderUpperPoints().size() - 1; i++){
+		for (int i = 1; i < fuselageCurvesSideView.getCylinderUpperPoints().size(); i++){
 			outlineXZUpperCurveX.add((double) fuselageCurvesSideView.getCylinderUpperPoints().get(i).x);
 			outlineXZUpperCurveZ.add((double) fuselageCurvesSideView.getCylinderUpperPoints().get(i).y);
 		}
 
 		// UPPER TAIL
-		for (int i = 0; i <= fuselageCurvesSideView.getTailUpperPoints().size() - 1; i++){
+		for (int i = 1; i < fuselageCurvesSideView.getTailUpperPoints().size(); i++){
 			outlineXZUpperCurveX.add((double) fuselageCurvesSideView.getTailUpperPoints().get(i).x);
 			outlineXZUpperCurveZ.add((double) fuselageCurvesSideView.getTailUpperPoints().get(i).y);
 		}
@@ -366,19 +366,19 @@ public class FuselageCreator implements IFuselageCreator {
 		// LOWER CURVES ----------------------------------
 
 		// LOWER NOSE
-		for (int i = 0; i <= fuselageCurvesSideView.getNoseLowerPoints().size() - 1; i++){
+		for (int i = 0; i < fuselageCurvesSideView.getNoseLowerPoints().size(); i++){
 			outlineXZLowerCurveX.add((double) fuselageCurvesSideView.getNoseLowerPoints().get(i).x);
 			outlineXZLowerCurveZ.add((double) fuselageCurvesSideView.getNoseLowerPoints().get(i).y);
 		}
 
 		// LOWER CYLINDER
-		for (int i = 0; i<= fuselageCurvesSideView.getCylinderLowerPoints().size() - 1; i++){
+		for (int i = 1; i< fuselageCurvesSideView.getCylinderLowerPoints().size(); i++){
 			outlineXZLowerCurveX.add((double) fuselageCurvesSideView.getCylinderLowerPoints().get(i).x);
 			outlineXZLowerCurveZ.add((double) fuselageCurvesSideView.getCylinderLowerPoints().get(i).y);
 		}
 
 		// LOWER TAIL
-		for (int i = 0; i <= fuselageCurvesSideView.getTailLowerPoints().size() - 1; i++)
+		for (int i = 1; i < fuselageCurvesSideView.getTailLowerPoints().size(); i++)
 		{
 			outlineXZLowerCurveX.add((double) fuselageCurvesSideView.getTailLowerPoints().get(i).x);
 			outlineXZLowerCurveZ.add((double) fuselageCurvesSideView.getTailLowerPoints().get(i).y);
@@ -391,13 +391,13 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 
 		//  CYLINDER CAMBER LINE
-		for (int i = 0; i <= fuselageCurvesSideView.getCylinderCamberlinePoints().size() - 1; i++){
+		for (int i = 0; i < fuselageCurvesSideView.getCylinderCamberlinePoints().size(); i++){
 			outlineXZCamberLineX.add((double) fuselageCurvesSideView.getCylinderCamberlinePoints().get(i).x);
 			outlineXZCamberLineZ.add((double) fuselageCurvesSideView.getCylinderCamberlinePoints().get(i).y);
 		}
 
 		//  TAIL CAMBER LINE
-		for (int i = 0; i <= fuselageCurvesSideView.getTailCamberlinePoints().size() - 1; i++){
+		for (int i = 1; i < fuselageCurvesSideView.getTailCamberlinePoints().size(); i++){
 			outlineXZCamberLineX.add((double) fuselageCurvesSideView.getTailCamberlinePoints().get(i).x);
 			outlineXZCamberLineZ.add((double) fuselageCurvesSideView.getTailCamberlinePoints().get(i).y);
 		}
@@ -413,19 +413,19 @@ public class FuselageCreator implements IFuselageCreator {
 		// RIGHT CURVE -----------------------------------
 
 		// RIGHT NOSE
-		for (int i=0; i<=fuselageCurvesUpperView.getNoseUpperPoints().size()-1; i++){
+		for (int i=0; i<fuselageCurvesUpperView.getNoseUpperPoints().size(); i++){
 			outlineXYSideRCurveX.add((double) fuselageCurvesUpperView.getNoseUpperPoints().get(i).x);
 			outlineXYSideRCurveY.add((double) fuselageCurvesUpperView.getNoseUpperPoints().get(i).y);
 		}
 
 		// RIGHT CYLINDER
-		for (int i=0; i<=fuselageCurvesUpperView.getCylinderUpperPoints().size()-1; i++){
+		for (int i=1; i<fuselageCurvesUpperView.getCylinderUpperPoints().size(); i++){
 			outlineXYSideRCurveX.add((double) fuselageCurvesUpperView.getCylinderUpperPoints().get(i).x);
 			outlineXYSideRCurveY.add((double) fuselageCurvesUpperView.getCylinderUpperPoints().get(i).y);
 		}
 
 		// RIGHT TAIL
-		for (int i=0; i<=fuselageCurvesUpperView.getTailUpperPoints().size()-1; i++){
+		for (int i=1; i<fuselageCurvesUpperView.getTailUpperPoints().size(); i++){
 			outlineXYSideRCurveX.add((double) fuselageCurvesUpperView.getTailUpperPoints().get(i).x);
 			outlineXYSideRCurveY.add((double) fuselageCurvesUpperView.getTailUpperPoints().get(i).y);
 		}
