@@ -3,10 +3,7 @@ package calculators.aerodynamics;
 import static java.lang.Math.pow;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
@@ -17,22 +14,14 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import com.sun.javafx.geom.transform.BaseTransform.Degree;
-
-import aircraft.components.fuselage.Fuselage;
-import analyses.liftingsurface.LSAerodynamicsManager.CalcAlpha0L;
 import calculators.geometry.FusNacGeometryCalc;
-import calculators.geometry.LSGeometryCalc;
 import calculators.stability.StabilityCalculators;
 import configuration.enumerations.AirfoilFamilyEnum;
-import configuration.enumerations.DirStabEnum;
-import configuration.enumerations.MethodEnum;
+import configuration.enumerations.ComponentEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
-import jahuwaldt.tools.units.Degrees;
 //import databasesIO.vedscdatabase.VeDSCDatabaseCalc;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -687,6 +676,10 @@ public class MomentCalc {
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+				if(Double.isNaN(clDistribution[ii]))
+					clDistribution[ii] = 0.0;
+					
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
@@ -772,8 +765,12 @@ public class MomentCalc {
 
 			theNasaBlackwellCalculator.calculate(angleOfAttack);
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
-
+			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+				if(Double.isNaN(clDistribution[ii]))
+					clDistribution[ii] = 0.0;
+				
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
@@ -920,10 +917,10 @@ public class MomentCalc {
 		return cM0;
 	}
 	
-	public static Amount<?> calculateCMAlphaFuselageOrNacelleGilruth(
+	public static Amount<?> calculateCMAlphaFuselageGilruth(
 			Amount<Length> length,
 			Amount<Length> maxWidth,
-			double[] positionOfC4ToFuselageOrNacelleLength,
+			double[] positionOfC4ToFuselageLength,
 			double[] kF,
 			Amount<Area> wingSurface,
 			Amount<Length> wingMeanAerodynamicChord,
@@ -934,7 +931,7 @@ public class MomentCalc {
 		Double cMAlpha = 0.0;
 
 		double kf = MyMathUtils
-				.interpolate1DLinear(positionOfC4ToFuselageOrNacelleLength, kF)
+				.interpolate1DLinear(positionOfC4ToFuselageLength, kF)
 				.value(
 						(wingXApex.doubleValue(SI.METER) 
 								+ 0.25*wingRootChord.doubleValue(SI.METER)
@@ -951,6 +948,156 @@ public class MomentCalc {
 		
 	}
 
+	/**
+	 * see Roskam (Part 6) chapter 8 pag 326
+	 * 
+	 * @param type ComponentEnum
+	 * @param length of Fuselage/Nacelle
+	 * @param downwashGradient 
+	 * @param wingAspectRatio
+	 * @param wingSurface
+	 * @param wingRootChord
+	 * @param wingCLAlpha
+	 * @param wingXApex
+	 * @param aeroDatabaseReader
+	 * @param outlineXYSideRCurveX
+	 * @param outlineXYSideRCurveY
+	 * @return
+	 */
+	public static Amount<?> calculateCMAlphaFuselageOrNacelleMulthopp(
+			ComponentEnum type,
+			Amount<Length> length,
+			double downwashGradientRoskamConstant,
+			double wingAspectRatio,
+			Amount<Area> wingSurface,
+			Amount<Length> wingRootChord,
+			Amount<Length> wingMeanAerodynamicChord,
+			Amount<?> wingCLAlpha,
+			Amount<Length> wingXApex,
+			Amount<Length> wingTrailingEdgeToHTailQuarterChordDistance,
+			AerodynamicDatabaseReader aeroDatabaseReader,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY
+			) {
+
+		int nSecBeforeWing = 0;
+		int nSecAfterWing = 0;
+		
+		if(type.equals(ComponentEnum.FUSELAGE)) {
+			nSecBeforeWing = 8;
+			nSecAfterWing = 8;
+		}
+		else if (type.equals(ComponentEnum.NACELLE)) { //TODO: COMPLETE FOR NACELLE
+			nSecBeforeWing = 6;
+			nSecAfterWing = 4;
+		}
+			
+		//-----------------------------------------------------------------
+		// X STATIONS
+		Double[] xStationsBeforeWing = MyArrayUtils.linspaceDouble(
+				0.0,
+				wingXApex.doubleValue(SI.METER),
+				nSecBeforeWing
+				);
+		
+		Double[] xStationsAfterWing = MyArrayUtils.linspaceDouble(
+				wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER),
+				length.doubleValue(SI.METER),
+				nSecAfterWing
+				);
+		
+		//-----------------------------------------------------------------
+		// Delta Xi AND Xi STATIONS
+		Double[] deltaXiBeforeWing = new Double[xStationsBeforeWing.length];
+		Double[] deltaXiAfterWing = new Double[xStationsAfterWing.length];
+		
+		Double[] xiBeforeWing = new Double[xStationsBeforeWing.length];
+		Double[] xiAfterWing = new Double[xStationsAfterWing.length];
+		
+		for (int i=1; i<xStationsBeforeWing.length; i++) {
+			deltaXiBeforeWing[i-1] = xStationsBeforeWing[i] - deltaXiBeforeWing[i-1];
+			xiBeforeWing[i-1] = wingXApex.doubleValue(SI.METER) - (deltaXiBeforeWing[i-1]/2);
+		}
+		for (int i=1; i<xStationsAfterWing.length; i++) {
+			deltaXiAfterWing[i-1] = xStationsAfterWing[i] - deltaXiAfterWing[i-1];
+			xiAfterWing[i-1] = 
+					wingXApex.doubleValue(SI.METER) 
+					+ wingRootChord.doubleValue(SI.METER) 
+					+ (deltaXiBeforeWing[i-1]/2);
+		}
+		
+		//-----------------------------------------------------------------
+		// Wf^2 AT Xi STATIONS
+		Double[] wfSquareBeforeWing = new Double[xiBeforeWing.length];
+		Double[] wfSquareAfterWing = new Double[xiAfterWing.length];
+		
+		for(int i=0; i<xiBeforeWing.length; i++)
+			wfSquareBeforeWing[i] = pow(
+					FusNacGeometryCalc.getWidthAtX(
+							xiBeforeWing[i],
+							outlineXYSideRCurveX,
+							outlineXYSideRCurveY
+							),
+					2);
+		for(int i=0; i<xiAfterWing.length; i++)
+			wfSquareAfterWing[i] = pow(
+					FusNacGeometryCalc.getWidthAtX(
+							xiAfterWing[i],
+							outlineXYSideRCurveX,
+							outlineXYSideRCurveY
+							),
+					2);
+
+		//-----------------------------------------------------------------
+		// Depsilon\DAlpha AT Xi STATIONS
+		Double[] dEpsilonDAlphaBeforeWing = new Double[xiBeforeWing.length];
+		Double[] dEpsilonDAlphaAfterWing = new Double[xiAfterWing.length];
+		
+		for(int i=0; i<xiBeforeWing.length; i++) {
+			if(i<xiBeforeWing.length-1)
+				dEpsilonDAlphaBeforeWing[i] = aeroDatabaseReader.getCmAlphaBodyUpwashVsXiOverRootChord(
+						wingRootChord, 
+						Amount.valueOf(xiBeforeWing[i], SI.METER)
+						)
+				*(wingCLAlpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue()/0.0785);
+			else
+				dEpsilonDAlphaBeforeWing[i] = aeroDatabaseReader.getCmAlphaBodyNearUpwashVsXiOverRootChord(
+						wingRootChord, 
+						Amount.valueOf(xiBeforeWing[i], SI.METER)
+						)
+				*(wingCLAlpha.to(NonSI.DEGREE_ANGLE).getEstimatedValue()/0.0785);
+		}
+
+		for(int i=0; i<xiAfterWing.length; i++) 
+			dEpsilonDAlphaAfterWing[i] = (
+					(xiAfterWing[i]/wingTrailingEdgeToHTailQuarterChordDistance.doubleValue(SI.METER))
+					*(1-downwashGradientRoskamConstant)
+					)-1;
+		
+		//-----------------------------------------------------------------
+		// SUM
+		Double sumBeforeWing = 0.0;
+		Double sumAfterWing = 0.0;
+		Double totalSum = 0.0;
+		
+		for(int i=0; i<xiBeforeWing.length; i++)
+			sumBeforeWing += wfSquareBeforeWing[i]*(dEpsilonDAlphaBeforeWing[i] + 1)*deltaXiBeforeWing[i];
+		for(int i=0; i<xiAfterWing.length; i++)
+			sumAfterWing += wfSquareAfterWing[i]*(dEpsilonDAlphaAfterWing[i] + 1)*deltaXiAfterWing[i];
+		
+		totalSum = sumBeforeWing + sumBeforeWing;
+		
+		//-----------------------------------------------------------------
+		// CMalpha CALCULATION
+		Amount<?> cMAlpha = Amount.valueOf(
+				(1/(36.5*wingSurface.doubleValue(SI.SQUARE_METRE)*wingMeanAerodynamicChord.doubleValue(SI.METER)))*totalSum,
+				NonSI.DEGREE_ANGLE.inverse()
+				);
+		
+		return cMAlpha;
+		
+	}
+	
 	public static Double calculateCMAtAlphaFuselage(
 			Amount<Angle> alphaBody,
 			Amount<?> cMAlpha,

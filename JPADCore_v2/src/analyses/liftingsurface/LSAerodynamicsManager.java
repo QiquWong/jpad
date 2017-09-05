@@ -868,7 +868,7 @@ public class LSAerodynamicsManager {
 		 * @author Manuela Ruocco
 		 *
 		 */		
-		public double nasaBlackwellCompleteCurve(Amount<Angle> alpha){
+		public double nasaBlackwellCompleteCurve(Amount<Angle> alpha) {
 
 			double cLActual = 0.0;
 			
@@ -2059,6 +2059,13 @@ public class LSAerodynamicsManager {
 				theNasaBlackwellCalculator.calculate(_alphaForDistribution.get(i));
 				
 				for(int j=0; j<_numberOfPointSemiSpanWise; j++) {
+					
+					if(Double.isNaN(theNasaBlackwellCalculator.getClTotalDistribution().get(j)))
+						theNasaBlackwellCalculator.getClTotalDistribution().toArray()[j] = 0.0;
+					
+					if(Double.isNaN(theNasaBlackwellCalculatorAlphaZeroLift.getClTotalDistribution().get(j)))
+						theNasaBlackwellCalculatorAlphaZeroLift.getClTotalDistribution().toArray()[j] = 0.0;
+					
 					ccLTotal.add(
 							Amount.valueOf(
 									theNasaBlackwellCalculator.getClTotalDistribution().get(j)

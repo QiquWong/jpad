@@ -705,11 +705,23 @@ public class FuselageAerodynamicsManager {
 	//............................................................................
 	public class CalcCMAlpha {
 		
+		public void multhopp() {
+			
+			
+			
+		}
+		
+		public void munk() {
+			
+			
+			
+		}
+		
 		public void gilruth() {
 			
 			_cMAlpha.put(
 					MethodEnum.GILRUTH, 
-					MomentCalc.calculateCMAlphaFuselageOrNacelleGilruth(
+					MomentCalc.calculateCMAlphaFuselageGilruth(
 							_theFuselage.getFuselageCreator().getLenF(),
 							_theFuselage.getFuselageCreator().getSectionCylinderWidth(),
 							_positionOfC4ToFuselageLength,
