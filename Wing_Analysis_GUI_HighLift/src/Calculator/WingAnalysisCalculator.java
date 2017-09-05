@@ -2391,8 +2391,10 @@ public class WingAnalysisCalculator {
 			double [] deltaClAtStall = new double[theInputOutputTree.getNumberOfPointSemispan()];
 			
 			
-			theInputOutputTree.getyAdimensionalDistributionSemiSpan().stream().forEach(eta ->{
-				int i = theInputOutputTree.getyAdimensionalDistributionSemiSpan().indexOf(eta);
+//			theInputOutputTree.getyAdimensionalDistributionSemiSpan().stream().forEach(eta ->{
+//				int i = theInputOutputTree.getyAdimensionalDistributionSemiSpan().indexOf(eta);
+			
+			for(int i=0; i<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); i++) {
 				
 				// new delta 
 				deltaClAtStall[i] = MyMathUtils.getInterpolatedValue1DLinear(
@@ -2404,7 +2406,8 @@ public class WingAnalysisCalculator {
 				theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpanHighLift().add(
 						i, 
 						theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpan().get(i) + deltaClAtStall[i]);
-			});
+			}
+			//);
 			
 			System.out.println("eta station " + theInputOutputTree.getyAdimensionalDistributionSemiSpan().toString());
 			System.out.println(" old cl max distribution " + theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpan().toString());

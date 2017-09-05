@@ -86,6 +86,7 @@ import javaslang.Tuple2;
 import javaslang.Tuple3;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyXLSUtils;
@@ -5374,10 +5375,77 @@ public class ACAerodynamicAndStabilityManager {
 		//...................................................................................
 	}
 	
-//	private void plotAllCharts(Double mach) {
-//		_theAerodynamicBuilderInterface.getPlotList()
-//	}
-//	
+	private void plotAllCharts(Double mach) {
+		List<Double[]> xVector = new ArrayList<Double[]>();
+		List<Double[]> yVector = new ArrayList<Double[]>();
+		List<String> legend  = new ArrayList<>(); 
+		
+		// wing
+//		WING_LIFT_CURVE_CLEAN,
+//		WING_STALL_PATH,
+//		WING_CL_DISTRIBUTION,
+//		WING_CL_ADDITIONAL_DISTRIBUTION,
+//		WING_CL_BASIC_DISTRIBUTION,
+//		WING_cCL_DISTRIBUTION,
+//		WING_cCL_ADDITIONAL_DISTRIBUTION,
+//		WING_cCL_BASIC_DISTRIBUTION,
+//		WING_GAMMA_DISTRIBUTION,
+//		WING_GAMMA_ADDITIONAL_DISTRIBUTION,
+//		WING_GAMMA_BASIC_DISTRIBUTION,
+//		WING_TOTAL_LOAD_DISTRIBUTION,
+//		WING_ADDITIONAL_LOAD_DISTRIBUTION,
+//		WING_BASIC_LOAD_DISTRIBUTION,
+//		
+//		WING_LIFT_CURVE_HIGH_LIFT,
+//		WING_POLAR_CURVE_HIGH_LIFT,
+//		WING_MOMENT_CURVE_HIGH_LIFT,
+//		
+//		WING_POLAR_CURVE_CLEAN_BREAKDOWN,
+//		WING_DRAG_DISTRIBUTION,
+//		
+//		WING_MOMENT_CURVE_CLEAN,
+//		WING_MOMENT_DISTRIBUTION;
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
+			
+			xVector = new ArrayList<Double[]>();
+			yVector = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+			// TODO: CONTINUE HERE
+//			
+//			MyChartToFileUtils.plotNoLegend(
+//					MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutputTree.getAlphaArrayLiftCurve()),
+//					MyArrayUtils.convertToDoublePrimitive(theInputOutputTree.getLiftCoefficientCurve()),
+//					null, 
+//					null, 
+//					null, 
+//					null, 
+//					"alpha",
+//					"CL",
+//					"deg", 
+//					"",
+//					outputChartPath,
+//					"Lift_Coefficient_curve"
+//					);
+//			
+//			MyChartToFileUtils.plotNOCSV(
+//					xVector,
+//					yVector, 
+//					0., 
+//					1., 
+//					null, 
+//					null,
+//					"eta", 
+//					"C_l",
+//					"", 
+//					"", 
+//					legend, 
+//					outputChartPath,
+//					"Lift_Coefficient_distribution");
+		}
+//
+	}
+	
 	public void calculate(String resultsFolderPath) {
 
 		String aerodynamicAndStabilityFolderPath = JPADStaticWriteUtils.createNewFolder(
@@ -5473,6 +5541,16 @@ public class ACAerodynamicAndStabilityManager {
 		//=================================================================================================
 		// PLOTS
 		//=================================================================================================
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.WING)) {
+			String wingPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+					aerodynamicAndStabilityFolderPath 
+					+ "WING"
+					+ File.separator
+					);
+		}
+
+		// TODO: continue me with all components
 		
 		/*
 		 * TODO : FILL ME !!
@@ -9894,6 +9972,7 @@ public class ACAerodynamicAndStabilityManager {
 		//===============================================================
 		// READING PLOT DATA
 		//===============================================================
+		Map<ComponentEnum, List<AerodynamicAndStabilityPlotEnum>> plotMap = new HashMap<>();
 		List<AerodynamicAndStabilityPlotEnum> plotList = new ArrayList<>();
 		
 		//...............................................................
@@ -10146,12 +10225,15 @@ public class ACAerodynamicAndStabilityManager {
 		if(wingMomentDistributionPlotPerformString != null) {
 			if(wingMomentDistributionPlotPerformString.equalsIgnoreCase("TRUE")) 
 				plotList.add(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION);
-		}
+		}	
 		
+		plotMap.put(ComponentEnum.WING, plotList);
 		
 		//...............................................................
 		// HTAIL:
 		//...............................................................
+		plotList = new ArrayList<>();
+		
 		// LIFT CURVE
 		String hTailLiftCurvePlotPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -10365,10 +10447,13 @@ public class ACAerodynamicAndStabilityManager {
 				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_DISTRIBUTION);
 		}
 		
+		plotMap.put(ComponentEnum.HORIZONTAL_TAIL, plotList);
 		
 		//...............................................................
 		// VTAIL:
 		//...............................................................
+		plotList = new ArrayList<>();
+
 		// LIFT CURVE
 		String vTailLiftCurvePlotPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -10582,9 +10667,14 @@ public class ACAerodynamicAndStabilityManager {
 				plotList.add(AerodynamicAndStabilityPlotEnum.VTAIL_MOMENT_DISTRIBUTION);
 		}
 		
+		plotMap.put(ComponentEnum.VERTICAL_TAIL, plotList);
+		
 		//...............................................................
 		// FUSELAGE:
 		//...............................................................
+		
+		plotList = new ArrayList<>();
+		
 		// POLAR CURVE
 		String fuselagePolarCurvePlotPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -10606,10 +10696,14 @@ public class ACAerodynamicAndStabilityManager {
 			if(fuselageMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
 				plotList.add(AerodynamicAndStabilityPlotEnum.FUSELAGE_MOMENT_CURVE);
 
+		plotMap.put(ComponentEnum.FUSELAGE, plotList);
 
 		//...............................................................
 		// NACELLE:
 		//...............................................................
+		
+		plotList = new ArrayList<>();
+		
 		// POLAR CURVE
 		String nacellePolarCurvePlotPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -10631,10 +10725,14 @@ public class ACAerodynamicAndStabilityManager {
 			if(nacelleMomentCurvePlotPerformString.equalsIgnoreCase("TRUE")) 
 				plotList.add(AerodynamicAndStabilityPlotEnum.NACELLE_MOMENT_CURVE);
 		
+		plotMap.put(ComponentEnum.NACELLE, plotList);
 		
 		//...............................................................
 		// AIRCRAFT:
 		//...............................................................
+		
+		plotList = new ArrayList<>();
+		
 		// DOWNWASH GRADIENT
 		String downwashGradientPlotPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -10788,6 +10886,7 @@ public class ACAerodynamicAndStabilityManager {
 			if(deltaRudderEquilibriumPlotPerformString.equalsIgnoreCase("TRUE")) 
 				plotList.add(AerodynamicAndStabilityPlotEnum.DELTA_RUDDER_EQUILIBRIUM);
 		
+		plotMap.put(ComponentEnum.AIRCRAFT, plotList);
 		
 		// TODO: COMPLETE ME WITH ALL THE PLOT OF THE ANALYSES UNDER DEVELOPMENT!!
 		
@@ -10854,7 +10953,7 @@ public class ACAerodynamicAndStabilityManager {
 				.setLandingGearDragCoefficient(aircraftDeltaCD0LandingGears)
 				.setDeltaCD0Miscellaneous(aircraftDeltaCD0Miscellaneous)
 				.setWingPendularStability(aircraftWingPendularStability)
-				.addAllPlotList(plotList)
+				.putAllPlotList(plotMap)
 				.build();
 
 		ACAerodynamicAndStabilityManager theAerodynamicAndStabilityManager = new ACAerodynamicAndStabilityManager();
