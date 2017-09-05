@@ -376,38 +376,89 @@ public class NacelleAerodynamicsManager {
 					calcAlpha0L.integralMeanWithTwist();
 				}
 				
-				getCM0().put(
+				_cM0.put(
 						MethodEnum.MULTHOPP, 
-						MomentCalc.calculateCM0NacelleMulthopp(
-								_theNacelles.getNacellesList().get(0).getLength(),
+						MomentCalc.calculateCM0Multhopp(
+								_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
+								_theNacelles.getNacellesList().get(0).getLength(), 
 								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
 										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 										),
-								_theWing.getSurface(), 
 								_theWing.getRiggingAngle(),
 								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
+								_theWing.getSurface(), 
+								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theWing.getXApexConstructionAxes(),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
 								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
-								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
-								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
-								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
 								)
 						);
 				break;
 			case FUSELAGE:
-				// TODO : FIND OUT HOW TO CALCULATE
-				getCM0().put(
-						MethodEnum.MULTHOPP,
-						0.0
+				
+				if(_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+					CalcAlpha0L calcAlpha0L = _theWingAerodynamicManager.new CalcAlpha0L();
+					calcAlpha0L.integralMeanWithTwist();
+				}
+				
+				_cM0.put(
+						MethodEnum.MULTHOPP, 
+						MomentCalc.calculateCM0Multhopp(
+								_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
+								_theNacelles.getNacellesList().get(0).getLength(), 
+								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
+										),
+								_theWing.getRiggingAngle(),
+								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
+								_theWing.getSurface(), 
+								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
+								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theWing.getXApexConstructionAxes(),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+								)
 						);
 			case HTAIL:
-				// TODO : FIND OUT HOW TO CALCULATE
-				getCM0().put(
-						MethodEnum.MULTHOPP,
-						0.0
+				
+				if(_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+					CalcAlpha0L calcAlpha0L = _theWingAerodynamicManager.new CalcAlpha0L();
+					calcAlpha0L.integralMeanWithTwist();
+				}
+				
+				_cM0.put(
+						MethodEnum.MULTHOPP, 
+						MomentCalc.calculateCM0Multhopp(
+								_theNacelles.getNacellesList().get(0).getXApexConstructionAxes(),
+								_theNacelles.getNacellesList().get(0).getLength(), 
+								_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
+										_theNacelles.getNacellesList().get(0).getLength().doubleValue(SI.METER), 
+										_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
+										),
+								_theWing.getRiggingAngle(),
+								_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
+								_theWing.getSurface(), 
+								_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
+								_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theWing.getXApexConstructionAxes(),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZUpper().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()),
+								_theNacelles.getNacellesList().get(0).getZCoordinatesOutlineXZLower().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
+								)
 						);
 			case UNDERCARRIAGE_HOUSING:
 				// TODO : FIND OUT HOW TO CALCULATE

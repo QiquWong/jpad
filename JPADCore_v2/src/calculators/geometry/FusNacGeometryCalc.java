@@ -356,11 +356,9 @@ public class FusNacGeometryCalc {
 			List<Double> outlineXZUpperCurveX,
 			List<Double> outlineXZUpperCurveZ,
 			List<Double> outlineXZLowerCurveX,
-			List<Double> outlineXZLowerCurveZ,
-			Amount<Length> noseLength,
-			Amount<Length> cabinLength
+			List<Double> outlineXZLowerCurveZ
 			) {
-		if (x<= noseLength.doubleValue(SI.METER) || x<= cabinLength.doubleValue(SI.METER)) {
+//		if (x<= noseLength.doubleValue(SI.METER) || x<= cabinLength.doubleValue(SI.METER)) {
 //			return Math.atan(
 //					getCamberZAtX(
 //							x,
@@ -377,16 +375,21 @@ public class FusNacGeometryCalc {
 					.collect(Collectors.toList());
 
 			List<Double> camberAngleList = new ArrayList<>();
-			camberAngleList.add((camberList.get(1)-camberList.get(0))/(outlineXZUpperCurveX.get(1)-outlineXZUpperCurveX.get(0)));
+			camberAngleList.add(
+					Math.atan(
+					(camberList.get(1)-camberList.get(0))
+					/(outlineXZUpperCurveX.get(1)-outlineXZUpperCurveX.get(0))
+					)
+					);
 			for (int i = 1; i < camberList.size(); i++)
 				camberAngleList.add((camberList.get(i)-camberList.get(i-1))/(outlineXZUpperCurveX.get(i)-outlineXZUpperCurveX.get(i-1)));
 
-			return MyMathUtils.getInterpolatedValue1DLinear(
+			return -MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(outlineXZUpperCurveX),
 					MyArrayUtils.convertToDoublePrimitive(camberAngleList),
 					x
-					);
-		}
+					)*57.3;
+//		}
 //		if (x>= cabinLength.doubleValue(SI.METER)) 
 //			return Math.atan(
 //					-getCamberZAtX(
@@ -398,7 +401,7 @@ public class FusNacGeometryCalc {
 //							)
 //					/x
 //					);
-		return 0.;
+//		return 0.;
 	}
 	
 	public static Double getCamberAngleAtXNacelle(

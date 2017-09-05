@@ -645,29 +645,34 @@ public class FuselageAerodynamicsManager {
 		
 		public void multhopp() {
 			
+			if(_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+				CalcAlpha0L calcAlpha0L = _theWingAerodynamicManager.new CalcAlpha0L();
+				calcAlpha0L.integralMeanWithTwist();
+			}
+			
 			_cM0.put(
 					MethodEnum.MULTHOPP, 
-					MomentCalc.calculateCM0FuselageMulthopp(
-							_theFuselage.getFuselageCreator().getLenF(),
-							_theFuselage.getFuselageCreator().getLenN(), 
-							_theFuselage.getFuselageCreator().getLenC(), 
+					MomentCalc.calculateCM0Multhopp(
+							_theFuselage.getXApexConstructionAxes(),
+							_theFuselage.getFuselageCreator().getLenF(), 
 							_theWing.getAerodynamicDatabaseReader().get_C_m0_b_k2_minus_k1_vs_FFR(
 									_theFuselage.getFuselageCreator().getLenF().doubleValue(SI.METER), 
 									_theFuselage.getFuselageCreator().getEquivalentDiameterGM().doubleValue(SI.METER)
 									),
-							_theWing.getSurface(), 
 							_theWing.getRiggingAngle(),
 							_theWingAerodynamicManager.getAlphaZeroLift().get(MethodEnum.INTEGRAL_MEAN_TWIST),
+							_theWing.getSurface(), 
+							_theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordRoot(), 
 							_theWing.getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+							_theWing.getXApexConstructionAxes(),
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
+							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY(),
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveZ(), 
 							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveX(),
-							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveZ(),
-							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
-							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
+							_theFuselage.getFuselageCreator().getOutlineXZLowerCurveZ()
 							)
 					);
-			
 		}
 		
 		public void fusDes() {

@@ -805,117 +805,296 @@ public class MomentCalc {
 		return cmDistribution;
 	}
 	
-	public static Double calculateCM0FuselageMulthopp(
-			Amount<Length> fuselageLength,
-			Amount<Length> noseLength,
-			Amount<Length> cabinLength,
+	public static Double calculateCM0Multhopp(
+			Amount<Length> startingPoint,
+			Amount<Length> length,
 			Double k2k1,
-			Amount<Area> wingSurface,
 			Amount<Angle> wingRiggingAngle,
 			Amount<Angle> wingAlphaZeroLift,
+			Amount<Area> wingSurface,
+			Amount<Length> wingRootChord,
 			Amount<Length> wingMeanAerodynamicChord,
+			Amount<Length> wingXApex,
+			List<Double> outlineXYSideRCurveX,
+			List<Double> outlineXYSideRCurveY,
 			List<Double> outlineXZUpperCurveX,
 			List<Double> outlineXZUpperCurveZ,
 			List<Double> outlineXZLowerCurveX,
-			List<Double> outlineXZLowerCurveZ,
-			List<Double> outlineXYSideRCurveX,
-			List<Double> outlineXYSideRCurveY
+			List<Double> outlineXZLowerCurveZ
 			) {
+		
+		int nSecBeforeWing = 8;
+		int nSecWing = 4;
+		int nSecAfterWing = 8;
+		
+		//-----------------------------------------------------------------
+		// X STATIONS
+		Double[] xStationsBeforeWing = new Double[nSecBeforeWing];
+		Double[] xStationsWing = new Double[nSecWing];
+		Double[] xStationsAfterWing = new Double[nSecAfterWing];
+		
+		if(startingPoint.doubleValue(SI.METER) >= wingXApex.doubleValue(SI.METER)) 
+			for(int i=0; i<nSecBeforeWing; i++)
+				xStationsBeforeWing[i] = 0.0;
+		else
+			xStationsBeforeWing = MyArrayUtils.linspaceDouble(
+					startingPoint.doubleValue(SI.METER),
+					wingXApex.doubleValue(SI.METER),
+					nSecBeforeWing
+					);
+		
+		if((wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER)) > 
+				(startingPoint.doubleValue(SI.METER) + length.doubleValue(SI.METER)))
+			xStationsWing = MyArrayUtils.linspaceDouble(
+					wingXApex.doubleValue(SI.METER),
+					startingPoint.doubleValue(SI.METER) + length.doubleValue(SI.METER),
+					nSecWing
+					);
+		else
+			xStationsWing = MyArrayUtils.linspaceDouble(
+					wingXApex.doubleValue(SI.METER),
+					wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER),
+					nSecWing
+					);
+			
+		
+		if((wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER)) >= 
+				length.doubleValue(SI.METER) + startingPoint.doubleValue(SI.METER)) 
+			for(int i=0; i<nSecAfterWing; i++)
+				xStationsAfterWing[i] = 0.0;
+		else
+			xStationsAfterWing = MyArrayUtils.linspaceDouble(
+					wingXApex.doubleValue(SI.METER) + wingRootChord.doubleValue(SI.METER),
+					length.doubleValue(SI.METER),
+					nSecAfterWing
+					);
+		
+		//-----------------------------------------------------------------
+		// Delta Xi 
+		Double deltaXiBeforeWing = 0.0;
+		Double deltaXiWing = 0.0;
+		Double deltaXiAfterWing = 0.0; 
+		
+		for (int i=1; i<xStationsBeforeWing.length; i++) 
+				deltaXiBeforeWing = xStationsBeforeWing[i] - xStationsBeforeWing[i-1];
+		
+		for (int i=2; i<xStationsWing.length; i++) 
+				deltaXiWing = xStationsWing[i] - xStationsWing[i-1];
+		
+		for (int i=2; i<xStationsAfterWing.length; i++) 
+				deltaXiAfterWing = xStationsAfterWing[i] - xStationsAfterWing[i-1];
+		
+		//-----------------------------------------------------------------
+		// Wf^2 AT Xi STATIONS
+		Double[] wfSquareBeforeWing = new Double[xStationsBeforeWing.length-1];
+		Double[] wfSquareWing = new Double[xStationsWing.length-1];
+		Double[] wfSquareAfterWing = new Double[xStationsAfterWing.length-1];
+		
+		for(int i=0; i<wfSquareBeforeWing.length; i++)
+			wfSquareBeforeWing[i] = pow(
+					FusNacGeometryCalc.getWidthAtX(
+							xStationsBeforeWing[i] + (deltaXiBeforeWing/2),
+							outlineXYSideRCurveX,
+							outlineXYSideRCurveY
+							),
+					2);
+		
+		for(int i=0; i<wfSquareWing.length; i++)
+			wfSquareWing[i] = pow(
+					FusNacGeometryCalc.getWidthAtX(
+							xStationsWing[i] + (deltaXiWing/2),
+							outlineXYSideRCurveX,
+							outlineXYSideRCurveY
+							),
+					2);
 
-		Double cM0 = 0.0;
-		Double sum = 0.0;
-		double[] x = MyArrayUtils.linspace(
-				0.,
-				fuselageLength.doubleValue(SI.METER)*(1-0.0001),
-				100
-				);
+		for(int i=0; i<wfSquareAfterWing.length; i++)
+			wfSquareAfterWing[i] = pow(
+					FusNacGeometryCalc.getWidthAtX(
+							xStationsAfterWing[i] + (deltaXiAfterWing/2),
+							outlineXYSideRCurveX,
+							outlineXYSideRCurveY
+							),
+					2);
 
-		try {
-			for(int i=1; i<x.length; i++){
-				sum = sum 
-						+ pow(FusNacGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
-						*(FusNacGeometryCalc.getCamberAngleAtXFuselage(
-								x[i],
-								outlineXZUpperCurveX,
-								outlineXZUpperCurveZ,
-								outlineXZLowerCurveX,
-								outlineXZLowerCurveZ,
-								noseLength,
-								cabinLength
-								) 
-								- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
-								+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-						* (x[i] - x[i-1]);
-			}
-
-			cM0 = k2k1
-					/(36.5
-							*wingSurface.doubleValue(SI.SQUARE_METRE)
-							*wingMeanAerodynamicChord.doubleValue(SI.METER)
-							) 
-					* sum;
-
-		} catch (NullPointerException e) {
-			cM0 = 0.0;
+		//-----------------------------------------------------------------
+		// ANGLE SUM AT X STATIONS (in deg)
+		Double[] angleSumBeforeWing = new Double[xStationsBeforeWing.length-1];
+		Double[] angleSumWing = new Double[xStationsWing.length-1];
+		Double[] angleSumAfterWing = new Double[xStationsAfterWing.length-1];
+		
+		for(int i=0; i<angleSumBeforeWing.length; i++) {
+			angleSumBeforeWing[i] = FusNacGeometryCalc.getCamberAngleAtXFuselage(
+					xStationsBeforeWing[i] + (deltaXiBeforeWing/2),
+					outlineXZUpperCurveX,
+					outlineXZUpperCurveZ,
+					outlineXZLowerCurveX,
+					outlineXZLowerCurveZ
+					) 
+					- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+					+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE);
 		}
 
-		return cM0;
-	}
-
-	public static Double calculateCM0NacelleMulthopp(
-			Amount<Length> nacelleLength,
-			Double k2k1,
-			Amount<Area> wingSurface,
-			Amount<Angle> wingRiggingAngle,
-			Amount<Angle> wingAlphaZeroLift,
-			Amount<Length> wingMeanAerodynamicChord,
-			List<Double> outlineXZUpperCurveX,
-			List<Double> outlineXZUpperCurveZ,
-			List<Double> outlineXZLowerCurveX,
-			List<Double> outlineXZLowerCurveZ,
-			List<Double> outlineXYSideRCurveX,
-			List<Double> outlineXYSideRCurveY
-			) {
-
-		Double cM0 = 0.0;
-		Double sum = 0.0;
-		double[] x = MyArrayUtils.linspace(
-				0.,
-				nacelleLength.doubleValue(SI.METER)*(1-0.0001),
-				100
-				);
-
-		try {
-			for(int i=1; i<x.length; i++){
-				sum = sum 
-						+ pow(FusNacGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
-						*(FusNacGeometryCalc.getCamberAngleAtXNacelle(
-								x[i],
-								outlineXZUpperCurveX,
-								outlineXZUpperCurveZ,
-								outlineXZLowerCurveX,
-								outlineXZLowerCurveZ
-								) 
-								- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
-								+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-						* (x[i] - x[i-1]);
-			}
-
-			cM0 = k2k1
-					/(36.5
-							*wingSurface.doubleValue(SI.SQUARE_METRE)
-							*wingMeanAerodynamicChord.doubleValue(SI.METER)
-							) 
-					* sum;
-
-		} catch (NullPointerException e) {
-			cM0 = 0.0;
+		for(int i=0; i<angleSumWing.length; i++) {
+			angleSumWing[i] = FusNacGeometryCalc.getCamberAngleAtXFuselage(
+					xStationsWing[i] + (deltaXiWing/2),
+					outlineXZUpperCurveX,
+					outlineXZUpperCurveZ,
+					outlineXZLowerCurveX,
+					outlineXZLowerCurveZ
+					) 
+					- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+					+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE);
 		}
-
+		
+		for(int i=0; i<angleSumAfterWing.length; i++) {
+			angleSumAfterWing[i] = FusNacGeometryCalc.getCamberAngleAtXFuselage(
+					xStationsAfterWing[i] + (deltaXiAfterWing/2),
+					outlineXZUpperCurveX,
+					outlineXZUpperCurveZ,
+					outlineXZLowerCurveX,
+					outlineXZLowerCurveZ
+					) 
+					- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+					+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE);
+		}
+		
+		//-----------------------------------------------------------------
+		// SUM
+		Double sumBeforeWing = 0.0;
+		Double sumWing = 0.0;
+		Double sumAfterWing = 0.0;
+		Double totalSum = 0.0;
+		
+		for(int i=0; i<angleSumBeforeWing.length; i++)
+			sumBeforeWing += wfSquareBeforeWing[i]*angleSumBeforeWing[i]*deltaXiBeforeWing;
+		for(int i=0; i<angleSumWing.length; i++)
+			sumWing += wfSquareWing[i]*angleSumWing[i]*deltaXiWing;
+		for(int i=0; i<angleSumAfterWing.length; i++)
+			sumAfterWing += wfSquareAfterWing[i]*angleSumAfterWing[i]*deltaXiAfterWing;
+		
+		totalSum = sumBeforeWing + sumAfterWing;
+		
+		//-----------------------------------------------------------------
+		// CMalpha CALCULATION
+		Double cM0 = k2k1
+				/(36.5
+						*wingSurface.doubleValue(SI.SQUARE_METRE)
+						*wingMeanAerodynamicChord.doubleValue(SI.METER)
+						) 
+				* totalSum;
+		
 		return cM0;
+		
 	}
+	
+//	public static Double calculateCM0FuselageMulthopp(
+//			Amount<Length> fuselageLength,
+//			Double k2k1,
+//			Amount<Area> wingSurface,
+//			Amount<Angle> wingRiggingAngle,
+//			Amount<Angle> wingAlphaZeroLift,
+//			Amount<Length> wingMeanAerodynamicChord,
+//			List<Double> outlineXZUpperCurveX,
+//			List<Double> outlineXZUpperCurveZ,
+//			List<Double> outlineXZLowerCurveX,
+//			List<Double> outlineXZLowerCurveZ,
+//			List<Double> outlineXYSideRCurveX,
+//			List<Double> outlineXYSideRCurveY
+//			) {
+//
+//		Double cM0 = 0.0;
+//		Double sum = 0.0;
+//		double[] x = MyArrayUtils.linspace(
+//				0.,
+//				fuselageLength.doubleValue(SI.METER)*(1-0.0001),
+//				100
+//				);
+//
+//		try {
+//			for(int i=1; i<x.length; i++){
+//				sum = sum 
+//						+ pow(FusNacGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
+//						*(FusNacGeometryCalc.getCamberAngleAtXFuselage(
+//								x[i],
+//								outlineXZUpperCurveX,
+//								outlineXZUpperCurveZ,
+//								outlineXZLowerCurveX,
+//								outlineXZLowerCurveZ
+//								) 
+//								- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+//								+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE)
+//								)
+//						* (x[i] - x[i-1]);
+//			}
+//
+//			cM0 = k2k1
+//					/(36.5
+//							*wingSurface.doubleValue(SI.SQUARE_METRE)
+//							*wingMeanAerodynamicChord.doubleValue(SI.METER)
+//							) 
+//					* sum;
+//
+//		} catch (NullPointerException e) {
+//			cM0 = 0.0;
+//		}
+//
+//		return cM0;
+//	}
+//
+//	public static Double calculateCM0NacelleMulthopp(
+//			Amount<Length> nacelleLength,
+//			Double k2k1,
+//			Amount<Area> wingSurface,
+//			Amount<Angle> wingRiggingAngle,
+//			Amount<Angle> wingAlphaZeroLift,
+//			Amount<Length> wingMeanAerodynamicChord,
+//			List<Double> outlineXZUpperCurveX,
+//			List<Double> outlineXZUpperCurveZ,
+//			List<Double> outlineXZLowerCurveX,
+//			List<Double> outlineXZLowerCurveZ,
+//			List<Double> outlineXYSideRCurveX,
+//			List<Double> outlineXYSideRCurveY
+//			) {
+//
+//		Double cM0 = 0.0;
+//		Double sum = 0.0;
+//		double[] x = MyArrayUtils.linspace(
+//				0.,
+//				nacelleLength.doubleValue(SI.METER)*(1-0.0001),
+//				100
+//				);
+//
+//		try {
+//			for(int i=1; i<x.length; i++){
+//				sum = sum 
+//						+ pow(FusNacGeometryCalc.getWidthAtX(x[i], outlineXYSideRCurveX, outlineXYSideRCurveY),2)
+//						*(FusNacGeometryCalc.getCamberAngleAtXNacelle(
+//								x[i],
+//								outlineXZUpperCurveX,
+//								outlineXZUpperCurveZ,
+//								outlineXZLowerCurveX,
+//								outlineXZLowerCurveZ
+//								) 
+//								- wingRiggingAngle.doubleValue(NonSI.DEGREE_ANGLE)
+//								+ wingAlphaZeroLift.doubleValue(NonSI.DEGREE_ANGLE)
+//								)
+//						* (x[i] - x[i-1]);
+//			}
+//
+//			cM0 = k2k1
+//					/(36.5
+//							*wingSurface.doubleValue(SI.SQUARE_METRE)
+//							*wingMeanAerodynamicChord.doubleValue(SI.METER)
+//							) 
+//					* sum;
+//
+//		} catch (NullPointerException e) {
+//			cM0 = 0.0;
+//		}
+//
+//		return cM0;
+//	}
 	
 	public static Amount<?> calculateCMAlphaFuselageGilruth(
 			Amount<Length> length,
@@ -1015,7 +1194,7 @@ public class MomentCalc {
 		Double deltaXiAfterWing = 0.0; 
 		
 		Double[] xiBeforeWing = new Double[xStationsBeforeWing.length-1];
-		Double[] xiAfterWing = new Double[xStationsAfterWing.length-1];
+		Double[] xiAfterWing = new Double[xStationsAfterWing.length-2];
 		
 		for (int i=1; i<xStationsBeforeWing.length; i++) {
 			if(i==1) {
@@ -1027,14 +1206,14 @@ public class MomentCalc {
 				xiBeforeWing[i-1] = xiBeforeWing[i-2] - (deltaXiBeforeWing);
 			}
 		}
-		for (int i=1; i<xStationsAfterWing.length; i++) {
-			if (i==1) {
+		for (int i=2; i<xStationsAfterWing.length; i++) {
+			if (i==2) {
 				deltaXiAfterWing = xStationsAfterWing[i] - xStationsAfterWing[i-1];
-				xiAfterWing[i-1] = deltaXiAfterWing/2;
+				xiAfterWing[i-2] = deltaXiAfterWing/2;
 			}
 			else {
 				deltaXiAfterWing = xStationsAfterWing[i] - xStationsAfterWing[i-1];
-				xiAfterWing[i-1] = xiAfterWing[i-2] + (deltaXiAfterWing);
+				xiAfterWing[i-2] = xiAfterWing[i-3] + (deltaXiAfterWing);
 			}
 		}
 		

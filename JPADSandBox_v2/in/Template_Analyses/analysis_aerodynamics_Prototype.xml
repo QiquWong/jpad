@@ -294,8 +294,8 @@
 				</drag>
 				<pitching_moment>
 					<cM0 perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
-					<cM_alpha perform="TRUE" method="FUSDES"/>
-                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="FUSDES">
+					<cM_alpha perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
+                    <cM_vs_alpha perform="TRUE" user_defined="FALSE" method="FUSDES"> <!-- MULTHOPP method gives poor results for the CM0 -->
 					<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is TRUE, "user_defined" allows to choose between the calculation with the specified method (TRUE)
@@ -304,7 +304,7 @@
                         <alpha unit="deg">-3.0;0.0;8.0;11.0;12.0;13.0;14.0;15.0</alpha>
                         <cM>0.2;0.3;0.7;0.9;0.95;0.9;0.85;0.7</cM>
                     </cM_vs_alpha>
-					<cM_at_alpha_current perform="TRUE" method="FUSDES"/>
+					<cM_at_alpha_current perform="TRUE" method="FUSDES"/> <!-- MULTHOPP method gives poor results for the CM0 -->
 				</pitching_moment>
 			</fuselage_analyses>
 			<nacelle_analyses>
