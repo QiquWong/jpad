@@ -5419,13 +5419,42 @@ public class ACAerodynamicAndStabilityManager {
 //		WING_MOMENT_CURVE_CLEAN,
 //		WING_MOMENT_DISTRIBUTION;
 		
+		// LIFT CURVE
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
 			
 			xVector = new ArrayList<Double>();
 			yVector = new ArrayList<Double>();
-			legend  = new ArrayList<>(); 
 			
-			// TODO: CONTINUE HERE
+			//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+			xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+			yVector =MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+					_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.WING)
+							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+					MyArrayUtils.convertToDoublePrimitive(yVector),
+					null, 
+					null, 
+					null, 
+					null, 
+					"alpha",
+					"CL",
+					"deg", 
+					"",
+					wingPlotFolderPath,
+					"Lift_Coefficient_Curve",
+					false
+					);
+		}
+		
+		// STALL PATH 
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
+			
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
 			
 			xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
 			yVector =MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
@@ -5448,6 +5477,7 @@ public class ACAerodynamicAndStabilityManager {
 					"Lift_Coefficient_Curve",
 					false
 					);
+		}
 //			
 //			MyChartToFileUtils.plotNOCSV(
 //					xVector,
@@ -5463,7 +5493,6 @@ public class ACAerodynamicAndStabilityManager {
 //					legend, 
 //					outputChartPath,
 //					"Lift_Coefficient_distribution");
-		}
 //
 	}
 	
