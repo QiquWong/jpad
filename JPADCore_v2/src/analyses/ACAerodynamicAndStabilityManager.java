@@ -11463,7 +11463,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
 				dataListWing.add(new Object[] {
-						"CD_induced",
+						"CD_induced at Alpha = " + _alphaWingCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
 						"",
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCDInduced().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)
@@ -12593,7 +12593,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
 				dataListHTail.add(new Object[] {
-						"CD_induced",
+						"CD_induced at Alpha = " + _alphaHTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
 						"",
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCDInduced().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)
@@ -13565,7 +13565,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)) {
 				dataListVTail.add(new Object[] {
-						"CD_induced",
+						"CD_induced at Alpha = " + _betaVTailCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
 						"",
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCDInduced().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.CD_INDUCED_LIFTING_SURFACE)
@@ -14202,7 +14202,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
 				dataListFuselage.add(new Object[] {
-						"CD_induced",
+						"CD_induced at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
 						"",
 						_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCDInduced().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)
@@ -14423,7 +14423,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_NACELLE)) {
 				dataListNacelle.add(new Object[] {
-						"CD_induced",
+						"CD_induced at Alpha = " + _alphaNacelleCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
 						"",
 						_nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).getCDInduced().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_NACELLE)
