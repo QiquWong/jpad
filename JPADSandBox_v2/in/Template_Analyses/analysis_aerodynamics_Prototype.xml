@@ -36,8 +36,8 @@
 				<number_of_points_semispawise_wing>50</number_of_points_semispawise_wing>
 				<number_of_points_semispawise_horizontal_tail>50</number_of_points_semispawise_horizontal_tail>
 				<number_of_points_semispawise_vertical_tail>50</number_of_points_semispawise_vertical_tail>
-				<delta_elevator_array unit="deg">0.0;-5.0;-10.0;-15.0;-20.0;-25.0</delta_elevator_array>
-				<delta_rudder_array unit="deg">0.0;5.0;10.0;15.0;20.0;25.0</delta_rudder_array>
+				<delta_elevator_array unit="deg">-5.0;-10.0;-15.0;-20.0;-25.0</delta_elevator_array>
+				<delta_rudder_array unit="deg">5.0;10.0;15.0;20.0;25.0</delta_rudder_array>
 				<adimensional_wing_momentum_pole>0.25</adimensional_wing_momentum_pole> 
 				<adimensional_horizontal_tail_momentum_pole>0.25</adimensional_horizontal_tail_momentum_pole> 
 				<adimensional_vertical_tail_momentum_pole>0.25</adimensional_vertical_tail_momentum_pole> 
