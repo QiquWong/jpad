@@ -5389,6 +5389,9 @@ public class ACAerodynamicAndStabilityManagerV {
 		List<Double[]> xVectorMatrix = new ArrayList<Double[]>();
 		List<Double[]> yVectorMatxrix = new ArrayList<Double[]>();
 		List<String> legend  = new ArrayList<>(); 
+		double[][] xMatrix;
+		double[][] yMatrix;
+		String[] legendString;
 		
 		List<Double> xVector = new ArrayList<Double>();
 		List<Double> yVector = new ArrayList<Double>();
@@ -5420,64 +5423,116 @@ public class ACAerodynamicAndStabilityManagerV {
 //		WING_MOMENT_DISTRIBUTION;
 		
 		// LIFT CURVE
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
-			
-			xVector = new ArrayList<Double>();
-			yVector = new ArrayList<Double>();
-			
-			//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-			xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-			yVector =MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
-					_theAerodynamicBuilderInterface.getComponentTaskList()
-							.get(ComponentEnum.WING)
-							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-			
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
-					MyArrayUtils.convertToDoublePrimitive(yVector),
-					null, 
-					null, 
-					null, 
-					null, 
-					"alpha",
-					"CL",
-					"deg", 
-					"",
-					wingPlotFolderPath,
-					"Lift_Coefficient_Curve",
-					false
-					);
+		if (_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CRUISE || 
+				_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CLIMB ) {
+			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
+
+				xVector = new ArrayList<Double>();
+				yVector = new ArrayList<Double>();
+
+				//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+				yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+						MyArrayUtils.convertToDoublePrimitive(yVector),
+						null, 
+						null, 
+						null, 
+						null, 
+						"alpha",
+						"CL",
+						"deg", 
+						"",
+						wingPlotFolderPath,
+						"Lift_Coefficient_Curve",
+						false
+						);
+			}
 		}
 		
-		// STALL PATH 
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
+		if (_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.TAKE_OFF || 
+				_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.LANDING ) {
 			
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
 			legend  = new ArrayList<>(); 
 			
-			xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-			yVector =MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+			xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift());
+			yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 					_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+			yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+					_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.WING)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
+
+			legend.add("Clean configuration");
+			legend.add("Configuration with high lift devices");
 			
-			MyChartToFileUtils.plotNoLegend(
-					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
-					MyArrayUtils.convertToDoublePrimitive(yVector),
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+			
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+			
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
 					null, 
 					null, 
 					null, 
-					null, 
-					"alpha",
-					"CL",
-					"deg", 
-					"",
+					null,
+					"eta", 
+					"C_l",
+					"", 
+					"", 
+					legendString, 
 					wingPlotFolderPath,
-					"Lift_Coefficient_Curve",
-					false
-					);
+					"Lift_Coefficient_distribution");
+
 		}
+		
+//		// STALL PATH 
+//		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
+//			
+//			xVectorMatrix = new ArrayList<Double[]>();
+//			yVectorMatxrix = new ArrayList<Double[]>();
+//			legend  = new ArrayList<>(); 
+//			
+//			xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+//			yVector =MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+//					_theAerodynamicBuilderInterface.getComponentTaskList()
+//							.get(ComponentEnum.WING)
+//							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+//			
+//			MyChartToFileUtils.plotNoLegend(
+//					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+//					MyArrayUtils.convertToDoublePrimitive(yVector),
+//					null, 
+//					null, 
+//					null, 
+//					null, 
+//					"alpha",
+//					"CL",
+//					"deg", 
+//					"",
+//					wingPlotFolderPath,
+//					"Lift_Coefficient_Curve",
+//					false
+//					);
+//		}
 //			
 //			MyChartToFileUtils.plotNOCSV(
 //					xVector,
