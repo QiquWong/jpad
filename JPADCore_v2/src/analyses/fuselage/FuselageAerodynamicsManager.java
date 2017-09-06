@@ -403,7 +403,7 @@ public class FuselageAerodynamicsManager {
 	public class CalcCDInduced {
 		
 		//@see NASA TN D-6800 (pag.47 pdf)
-		public void semiempirical(Amount<Angle> alphaBody) {
+		public void semiempirical(Amount<Angle> alphaBody, Double currentMach) {
 			
 			List<Amount<Length>> xStations = 
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
@@ -420,7 +420,7 @@ public class FuselageAerodynamicsManager {
 					DragCalc.calculateCDInducedFuselageOrNacelle(
 							xStations, 
 							alphaBody, 
-							_theFuselage.getFuselageCreator().getsWet(), 
+							currentMach,
 							FusNacGeometryCalc.calculateFuselageVolume(
 									_theFuselage.getFuselageCreator().getLenF(), 
 									MyArrayUtils.convertListOfDoubleToDoubleArray(
@@ -442,6 +442,7 @@ public class FuselageAerodynamicsManager {
 									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 									), 
+							_theFuselage.getFuselageCreator().getLenN(), // TODO: TRY ALSO WING APEX AND HALF CABIN LENGTH 
 							_theFuselage.getFuselageCreator().getLenF(), 
 							_theWing.getSurface(), 
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
@@ -465,7 +466,7 @@ public class FuselageAerodynamicsManager {
 	//............................................................................
 	public class CalcCDAtAlpha {
 		
-		public double semiempirical(Amount<Angle> alphaBody) {
+		public double semiempirical(Amount<Angle> alphaBody, Double currentMach) {
 			
 			double cDActual = 0.0;
 			
@@ -487,7 +488,7 @@ public class FuselageAerodynamicsManager {
 			double cDInduced = DragCalc.calculateCDInducedFuselageOrNacelle(
 					xStations, 
 					alphaBody, 
-					_theFuselage.getFuselageCreator().getsWet(), 
+					currentMach,
 					FusNacGeometryCalc.calculateFuselageVolume(
 							_theFuselage.getFuselageCreator().getLenF(), 
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
@@ -509,6 +510,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							), 
+					_theFuselage.getFuselageCreator().getLenN(), // TODO: TRY ALSO WING APEX AND HALF CABIN LENGTH 
 					_theFuselage.getFuselageCreator().getLenF(), 
 					_theWing.getSurface(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
@@ -531,7 +533,7 @@ public class FuselageAerodynamicsManager {
 			return cDActual;
 		}
 		
-		public double fusDes(Amount<Angle> alphaBody) {
+		public double fusDes(Amount<Angle> alphaBody, Double currentMach) {
 			
 			double cDActual = 0.0;
 			
@@ -553,7 +555,7 @@ public class FuselageAerodynamicsManager {
 			double cDInduced = DragCalc.calculateCDInducedFuselageOrNacelle(
 					xStations, 
 					alphaBody, 
-					_theFuselage.getFuselageCreator().getsWet(), 
+					currentMach,
 					FusNacGeometryCalc.calculateFuselageVolume(
 							_theFuselage.getFuselageCreator().getLenF(), 
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
@@ -575,6 +577,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							), 
+					_theFuselage.getFuselageCreator().getLenN(), // TODO: TRY ALSO WING APEX AND HALF CABIN LENGTH 
 					_theFuselage.getFuselageCreator().getLenF(), 
 					_theWing.getSurface(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
@@ -607,26 +610,26 @@ public class FuselageAerodynamicsManager {
 	//............................................................................
 	public class CalcPolar {
 		
-		public void semiempirical() {
+		public void semiempirical(Double currentMach) {
 			
 			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
 			
 			Double[] cDArray = new Double[_alphaArray.size()];
 			for(int i=0; i<_alphaArray.size(); i++) {
-				cDArray[i] = calcCDAtAlpha.semiempirical(_alphaArray.get(i));
+				cDArray[i] = calcCDAtAlpha.semiempirical(_alphaArray.get(i), currentMach);
 			}
 			
 			_polar3DCurve.put(MethodEnum.SEMIEMPIRICAL, cDArray);
 			
 		}
 		
-		public void fusDes() {
+		public void fusDes(Double currentMach) {
 
 			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
 			
 			Double[] cDArray = new Double[_alphaArray.size()];
 			for(int i=0; i<_alphaArray.size(); i++) {
-				cDArray[i] = calcCDAtAlpha.fusDes(_alphaArray.get(i));
+				cDArray[i] = calcCDAtAlpha.fusDes(_alphaArray.get(i), currentMach);
 			}
 			
 			_polar3DCurve.put(MethodEnum.FUSDES, cDArray);

@@ -28,6 +28,7 @@ import configuration.enumerations.MethodEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -1074,25 +1075,33 @@ public class DragCalc {
 		
 	}
 	
-	/**
-	 * @see NASA TN D-6800 (pag.47 pdf)
-	 * 
-	 * @param xStations in m
-	 * @param alphaBody in rad
-	 * @param wettedSurface in m^2
-	 * @param volume in m^3
-	 * @param k2k1
-	 * @param maxDiameter in m
-	 * @param wingSurface in m2
-	 * @return the CDi of the fuselage or of the nacelle
-	 */
+	 /**
+	  * @see NASA TN D-6800 (pag.139 pdf)
+	  * 
+	  * @param xStations ()
+	  * @param alphaBody
+	  * @param volume
+	  * @param k2k1
+	  * @param maxDiameter
+	  * @param maxDiameterPosition
+	  * @param length
+	  * @param wingSurface
+	  * @param outlineXZUpperCurveX
+	  * @param outlineXZUpperCurveZ
+	  * @param outlineXZLowerCurveX
+	  * @param outlineXZLowerCurveZ
+	  * @param outlineXYSideRCurveX
+	  * @param outlineXYSideRCurveY
+	  * @return @return the CDi of the fuselage or of the nacelle
+	  */
 	public static Double calculateCDInducedFuselageOrNacelle(
 			List<Amount<Length>> xStations,
 			Amount<Angle> alphaBody,
-			Amount<Area> wettedSurface,
+			Double currentMachNumber,
 			Amount<Volume> volume,
 			Double k2k1,
 			Amount<Length> maxDiameter,
+			Amount<Length> maxDiameterPosition,
 			Amount<Length> length,
 			Amount<Area> wingSurface,
 			List<Double> outlineXZUpperCurveX,
@@ -1110,7 +1119,7 @@ public class DragCalc {
 				+ 0.0296842457*(length.doubleValue(SI.METER)/maxDiameter.doubleValue(SI.METER)) 
 				+ 0.5038353579;
 		
-		List<Amount<Length>> equivalentDiameters = xStations.stream()
+		List<Amount<Length>> equivalentDiametersList = xStations.stream()
 				.map(x -> FusNacGeometryCalc.calculateEquivalentDiameterAtX(
 						x,
 						outlineXZUpperCurveX, 
@@ -1122,37 +1131,48 @@ public class DragCalc {
 						)
 				.collect(Collectors.toList()); 
 		
-		double maxDiameterFormList = MyArrayUtils.getMax(
-				MyArrayUtils.convertListOfAmountToDoubleArray(equivalentDiameters)
+		Amount<Area> maxCrossEquivalentArea = Amount.valueOf( 
+				equivalentDiametersList.stream()
+				.map(d -> Amount.valueOf(
+						Math.pow(d.doubleValue(SI.METER)/2, 2)*Math.PI,
+						SI.SQUARE_METRE
+						))
+				.mapToDouble(a -> a.doubleValue(SI.SQUARE_METRE))
+				.max()
+				.getAsDouble(),
+				SI.SQUARE_METRE
 				);
-		int indexOfMaxDiameter = 0;
-		for(int i=0; i<MyArrayUtils.convertListOfAmountToDoubleArray(equivalentDiameters).length; i++) {
-			if(MyArrayUtils.convertListOfAmountToDoubleArray(equivalentDiameters)[i] == maxDiameterFormList)
-				indexOfMaxDiameter = i;
-		}
+		
+		Double x0 = (0.374 + 0.533*(maxDiameterPosition.doubleValue(SI.METER)/length.doubleValue(SI.METER)))*length.doubleValue(NonSI.FOOT);
+		
+		Double cDc = 49.844*Math.pow(currentMachNumber*Math.sin(alphaBody.doubleValue(SI.RADIAN)), 6)
+				- 148.56*Math.pow(currentMachNumber*Math.sin(alphaBody.doubleValue(SI.RADIAN)), 5) 
+				+ 162.32*Math.pow(currentMachNumber*Math.sin(alphaBody.doubleValue(SI.RADIAN)), 4)
+				- 80.611*Math.pow(currentMachNumber*Math.sin(alphaBody.doubleValue(SI.RADIAN)), 3)
+				+ 19.433*Math.pow(currentMachNumber*Math.sin(alphaBody.doubleValue(SI.RADIAN)), 2) 
+				- 1.8178*currentMachNumber*Math.sin(alphaBody.doubleValue(SI.RADIAN))
+				+ 1.2014;
+		
+		double[] xStationsIntegral = MyArrayUtils.linspace(
+				x0,
+				length.doubleValue(NonSI.FOOT),
+				50
+				);
+		double[] etaRcDcIntegral = new double[xStationsIntegral.length];
+		for (int i = 0; i < etaRcDcIntegral.length; i++) 			
+			etaRcDcIntegral[i] = eta*cDc*equivalentDiametersList.get(i).divide(2).doubleValue(NonSI.FOOT);
 		
 		Double integral = MyMathUtils.integrate1DSimpsonSpline(
-				MyArrayUtils.convertToDoublePrimitive(
-						xStations.stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList())
-						.subList(
-								indexOfMaxDiameter,
-								xStations.size()-1
-								)
-						),
-				MyArrayUtils.convertToDoublePrimitive(
-						equivalentDiameters.stream().map(eq -> eq.doubleValue(SI.METER)*eta).collect(Collectors.toList())
-						.subList(
-								indexOfMaxDiameter,
-								xStations.size()-1
-								)
-						)
+				xStationsIntegral,
+				etaRcDcIntegral
 				);
 		
 		Double cDi = (
-				(2*Math.pow(alphaBody.doubleValue(SI.RADIAN),2)*k2k1*wettedSurface.doubleValue(SI.SQUARE_METRE)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3)))
-				+ (2*Math.pow(alphaBody.doubleValue(SI.RADIAN),3)/Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))*integral)
+				(2*Math.pow(alphaBody.doubleValue(SI.RADIAN),2)*k2k1*maxCrossEquivalentArea.doubleValue(MyUnits.FOOT2)
+						/Math.pow(volume.doubleValue(MyUnits.FOOT3), (2/3)))
+				+ ((2*Math.pow(alphaBody.doubleValue(SI.RADIAN),3)/Math.pow(volume.doubleValue(MyUnits.FOOT3), (2/3)))*integral)
 				)
-				*(Math.pow(volume.doubleValue(SI.CUBIC_METRE), (2/3))/wingSurface.doubleValue(SI.SQUARE_METRE));
+				*(Math.pow(volume.doubleValue(MyUnits.FOOT3), (2/3))/wingSurface.doubleValue(MyUnits.FOOT2));
 		
 		return cDi;
 		

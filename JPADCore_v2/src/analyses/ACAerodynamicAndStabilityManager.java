@@ -3445,7 +3445,7 @@ public class ACAerodynamicAndStabilityManager {
 				analyses.fuselage.FuselageAerodynamicsManager.CalcCDInduced calcCDInduced = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCDInduced();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
 				case SEMIEMPIRICAL:  
-					calcCDInduced.semiempirical(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE));
+					calcCDInduced.semiempirical(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE), _currentMachNumber);
 					break;
 				default:
 					break;
@@ -3470,10 +3470,10 @@ public class ACAerodynamicAndStabilityManager {
 					analyses.fuselage.FuselageAerodynamicsManager.CalcPolar calcPolar = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcPolar();
 					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
 					case SEMIEMPIRICAL:
-						calcPolar.semiempirical();
+						calcPolar.semiempirical(_currentMachNumber);
 						break;
 					case FUSDES:
-						calcPolar.fusDes();
+						calcPolar.fusDes(_currentMachNumber);
 						break;
 					default:
 						break;
@@ -3488,10 +3488,10 @@ public class ACAerodynamicAndStabilityManager {
 				analyses.fuselage.FuselageAerodynamicsManager.CalcCDAtAlpha calcCDAtAlpha = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcCDAtAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)) {
 				case SEMIEMPIRICAL: 
-					calcCDAtAlpha.semiempirical(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE));
+					calcCDAtAlpha.semiempirical(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE), _currentMachNumber);
 					break;
 				case FUSDES: 
-					calcCDAtAlpha.fusDes(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE));
+					calcCDAtAlpha.fusDes(_alphaBodyCurrent.to(NonSI.DEGREE_ANGLE), _currentMachNumber);
 					break;
 				case INPUT: 
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE).equals(MethodEnum.INPUT))
@@ -3715,7 +3715,7 @@ public class ACAerodynamicAndStabilityManager {
 				analyses.nacelles.NacelleAerodynamicsManager.CalcCDInduced calcCDInduced = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDInduced();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) {
 				case SEMIEMPIRICAL:
-					calcCDInduced.semiempirical(_alphaNacelleCurrent);
+					calcCDInduced.semiempirical(_alphaNacelleCurrent, _currentMachNumber);
 					break;
 				default:
 					break;
@@ -3741,7 +3741,7 @@ public class ACAerodynamicAndStabilityManager {
 					analyses.nacelles.NacelleAerodynamicsManager.CalcPolar calcPolar = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcPolar();
 					switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
 					case SEMIEMPIRICAL:
-						calcPolar.semiempirical();
+						calcPolar.semiempirical(_currentMachNumber);
 						break;
 					default:
 						break;
@@ -3756,7 +3756,7 @@ public class ACAerodynamicAndStabilityManager {
 				analyses.nacelles.NacelleAerodynamicsManager.CalcCDAtAlpha calcCDAtAlpha = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcCDAtAlpha();
 				switch (_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_NACELLE)) {
 				case SEMIEMPIRICAL:
-					calcCDAtAlpha.semiempirical(_alphaNacelleCurrent);
+					calcCDAtAlpha.semiempirical(_alphaNacelleCurrent, _currentMachNumber);
 					break;
 				case INPUT: 
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE).equals(MethodEnum.INPUT))
@@ -5090,7 +5090,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				analyses.fuselage.FuselageAerodynamicsManager.CalcPolar calcFuselagePolarCurve = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).new CalcPolar();
 
-				calcFuselagePolarCurve.fusDes();
+				calcFuselagePolarCurve.fusDes(_currentMachNumber);
 
 				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).put(
 						AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE,

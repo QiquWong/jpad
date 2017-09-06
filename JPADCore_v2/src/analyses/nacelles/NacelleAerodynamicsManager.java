@@ -213,7 +213,7 @@ public class NacelleAerodynamicsManager {
 	public class CalcCDInduced {
 		
 		//@see NASA TN D-6800 (pag.47 pdf)
-		public void semiempirical(Amount<Angle> alphaBody) {
+		public void semiempirical(Amount<Angle> alphaBody, Double currentMach) {
 			
 			List<Amount<Length>> xStations = 
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
@@ -230,7 +230,7 @@ public class NacelleAerodynamicsManager {
 					DragCalc.calculateCDInducedFuselageOrNacelle(
 							xStations, 
 							alphaBody, 
-							_theNacelles.getNacellesList().get(0).getSurfaceWetted(), 
+							currentMach,
 							FusNacGeometryCalc.calculateFuselageVolume(
 									_theNacelles.getNacellesList().get(0).getLength(), 
 									MyArrayUtils.convertListOfDoubleToDoubleArray(
@@ -248,6 +248,7 @@ public class NacelleAerodynamicsManager {
 									_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 									), 
 							_theNacelles.getNacellesList().get(0).getDiameterMax(), 
+							_theNacelles.getNacellesList().get(0).getXPositionMaximumDiameterLRF(), 
 							_theNacelles.getNacellesList().get(0).getLength(), 
 							_theWing.getSurface(), 
 							_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
@@ -258,7 +259,7 @@ public class NacelleAerodynamicsManager {
 							_theNacelles.getNacellesList().get(0).getYCoordinatesOutlineXYRight().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList())
 							)
 					);
-			
+
 		}
 		
 	}
@@ -271,7 +272,7 @@ public class NacelleAerodynamicsManager {
 	//............................................................................
 	public class CalcCDAtAlpha {
 		
-		public double semiempirical(Amount<Angle> alphaBody) {
+		public double semiempirical(Amount<Angle> alphaBody, Double currentMach) {
 			
 			double cDActual = 0.0;
 			
@@ -293,7 +294,7 @@ public class NacelleAerodynamicsManager {
 			double cDInduced = DragCalc.calculateCDInducedFuselageOrNacelle(
 					xStations, 
 					alphaBody, 
-					_theNacelles.getNacellesList().get(0).getSurfaceWetted(), 
+					currentMach,
 					FusNacGeometryCalc.calculateFuselageVolume(
 							_theNacelles.getNacellesList().get(0).getLength(), 
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
@@ -311,6 +312,7 @@ public class NacelleAerodynamicsManager {
 							_theNacelles.getNacellesList().get(0).getDiameterMax().doubleValue(SI.METER)
 							), 
 					_theNacelles.getNacellesList().get(0).getDiameterMax(), 
+					_theNacelles.getNacellesList().get(0).getXPositionMaximumDiameterLRF(), 
 					_theNacelles.getNacellesList().get(0).getLength(), 
 					_theWing.getSurface(), 
 					_theNacelles.getNacellesList().get(0).getXCoordinatesOutline().stream().map(p -> p.doubleValue(SI.METER)).collect(Collectors.toList()), 
@@ -343,13 +345,13 @@ public class NacelleAerodynamicsManager {
 	//............................................................................
 	public class CalcPolar {
 		
-		public void semiempirical() {
+		public void semiempirical(Double currentMach) {
 			
 			CalcCDAtAlpha calcCDAtAlpha = new CalcCDAtAlpha();
 			
 			Double[] cDArray = new Double[getAlphaArray().size()];
 			for(int i=0; i<getAlphaArray().size(); i++) {
-				cDArray[i] = calcCDAtAlpha.semiempirical(getAlphaArray().get(i));
+				cDArray[i] = calcCDAtAlpha.semiempirical(getAlphaArray().get(i), currentMach);
 			}
 			
 			getPolar3DCurve().put(MethodEnum.SEMIEMPIRICAL, cDArray);

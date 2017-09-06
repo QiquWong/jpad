@@ -37,6 +37,7 @@ public class MyUnits {
 											_volSIUnit.doubleValue(NonSI.GALLON_LIQUID_US);
 	
 	public static final Unit<Area> FOOT2 = SI.SQUARE_METRE.times(0.09290304);
+	public static final Unit<Volume> FOOT3 = SI.CUBIC_METRE.times(0.0283168);
 	public static final Unit<Velocity> FOOT_PER_SECOND = SI.METERS_PER_SECOND.times(0.3048);
 	public static final Unit<Pressure> LB_FT2 = SI.PASCAL.times(47.8802589804);
 	public static final Unit<VolumetricDensity> KILOGRAM_LITER = VolumetricDensity.UNIT.times(0.001);
