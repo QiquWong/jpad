@@ -4386,4 +4386,12 @@ public class LSAerodynamicsManager {
 	public void setMomentDistribution(Map <MethodEnum, Map<Amount<Angle>, List<Amount<Force>>>> _momentDistribution) {
 		this._momentDistribution = _momentDistribution;
 	}
+
+	public NasaBlackwell getTheNasaBlackwellCalculator() {
+		return theNasaBlackwellCalculator;
+	}
+
+	public void setTheNasaBlackwellCalculator(NasaBlackwell theNasaBlackwellCalculator) {
+		this.theNasaBlackwellCalculator = theNasaBlackwellCalculator;
+	}
 }
