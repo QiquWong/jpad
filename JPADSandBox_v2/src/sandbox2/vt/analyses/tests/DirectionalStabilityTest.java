@@ -20,8 +20,8 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import aircraft.components.Aircraft;
-import analyses.ACAerodynamicAndStabilityManager;
-import analyses.ACAerodynamicAndStabilityManager.CalcDirectionalStability;
+import analyses.ACAerodynamicAndStabilityManagerV;
+import analyses.ACAerodynamicAndStabilityManagerV.CalcDirectionalStability;
 import analyses.ACAnalysisManager;
 import analyses.IACAerodynamicAndStabilityManager;
 import analyses.OperatingConditions;
@@ -307,7 +307,7 @@ public class DirectionalStabilityTest extends Application {
 //			MethodEnum directionalStabilityMethod = MethodEnum.VEDSC_SIMPLIFIED_WING;
 			MethodEnum directionalStabilityMethod = MethodEnum.VEDSC_USAFDATCOM_WING;
 			
-			ACAerodynamicAndStabilityManager theAerodynamicCalculator = new ACAerodynamicAndStabilityManager();
+			ACAerodynamicAndStabilityManagerV theAerodynamicCalculator = new ACAerodynamicAndStabilityManagerV();
 			theAerodynamicCalculator.setBetaList(
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(0.0, 30, 50),

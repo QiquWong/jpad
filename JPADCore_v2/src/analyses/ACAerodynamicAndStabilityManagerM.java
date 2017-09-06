@@ -100,7 +100,7 @@ import writers.JPADStaticWriteUtils;
  * in order to obtain quantities relative to the whole aircraft.
  */ 
 
-public class ACAerodynamicAndStabilityManager {
+public class ACAerodynamicAndStabilityManagerM {
 
 	/*
 	 *******************************************************************************
@@ -5660,7 +5660,7 @@ public class ACAerodynamicAndStabilityManager {
 	
 
 	@SuppressWarnings("resource")
-	public static ACAerodynamicAndStabilityManager importFromXML (
+	public static ACAerodynamicAndStabilityManagerM importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
@@ -11046,7 +11046,7 @@ public class ACAerodynamicAndStabilityManager {
 				.putAllPlotList(plotMap)
 				.build();
 
-		ACAerodynamicAndStabilityManager theAerodynamicAndStabilityManager = new ACAerodynamicAndStabilityManager();
+		ACAerodynamicAndStabilityManagerM theAerodynamicAndStabilityManager = new ACAerodynamicAndStabilityManagerM();
 		theAerodynamicAndStabilityManager.setTheAerodynamicBuilderInterface(theAerodynamicAndStabilityBuilderInterface);
 
 		return theAerodynamicAndStabilityManager;

@@ -442,7 +442,7 @@ public class FuselageAerodynamicsManager {
 									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 									_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 									), 
-							_theFuselage.getFuselageCreator().getLenN(), // TODO: TRY ALSO WING APEX AND HALF CABIN LENGTH 
+							_theFuselage.getFuselageCreator().getLenN(),                                    
 							_theFuselage.getFuselageCreator().getLenF(), 
 							_theWing.getSurface(), 
 							_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
@@ -510,7 +510,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							), 
-					_theFuselage.getFuselageCreator().getLenN(), // TODO: TRY ALSO WING APEX AND HALF CABIN LENGTH 
+					_theFuselage.getFuselageCreator().getLenN(),                                   
 					_theFuselage.getFuselageCreator().getLenF(), 
 					_theWing.getSurface(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
@@ -577,7 +577,7 @@ public class FuselageAerodynamicsManager {
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveX(),
 							_theFuselage.getFuselageCreator().getOutlineXYSideRCurveY()
 							), 
-					_theFuselage.getFuselageCreator().getLenN(), // TODO: TRY ALSO WING APEX AND HALF CABIN LENGTH 
+					_theFuselage.getFuselageCreator().getLenN(),                       
 					_theFuselage.getFuselageCreator().getLenF(), 
 					_theWing.getSurface(), 
 					_theFuselage.getFuselageCreator().getOutlineXZUpperCurveX(), 
