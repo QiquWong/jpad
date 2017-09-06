@@ -1188,7 +1188,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance),
 					0.0, null, 0.0, null,
 					"Ground Distance", "Altitude", "m", "m",
-					takeOffFolderPath, "TakeOff_Trajectory_SI)");
+					takeOffFolderPath, "TakeOff_Trajectory_SI",true);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1203,7 +1203,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Ground Distance", "Altitude", "ft", "ft",
-					takeOffFolderPath, "TakeOff_Trajectory_IMPERIAL");
+					takeOffFolderPath, "TakeOff_Trajectory_IMPERIAL",true);
 
 			//.................................................................................
 			// vertical distance v.s. time
@@ -1212,7 +1212,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(verticalDistance),
 					0.0, null, 0.0, null,
 					"Time", "Altitude", "s", "m",
-					takeOffFolderPath, "Altitude_evolution_SI");
+					takeOffFolderPath, "Altitude_evolution_SI",true);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(time),
@@ -1223,7 +1223,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Time", "Altitude", "s", "ft",
-					takeOffFolderPath, "Altitude_evolution_IMPERIAL");
+					takeOffFolderPath, "Altitude_evolution_IMPERIAL",true);
 			
 		}
 		
@@ -1234,7 +1234,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speed),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "m/s",
-				takeOffFolderPath, "Speed_evolution_SI");
+				takeOffFolderPath, "Speed_evolution_SI",true);
 		
 		
 		MyChartToFileUtils.plotNoLegend(
@@ -1246,7 +1246,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, 0.0, null,
 				"Time", "Speed", "s", "kn",
-				takeOffFolderPath, "Speed_evolution_IMPERIAL");
+				takeOffFolderPath, "Speed_evolution_IMPERIAL",true);
 		
 		//.................................................................................
 		// speed v.s. ground distance
@@ -1255,7 +1255,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(speed),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "m", "m/s",
-				takeOffFolderPath, "Speed_vs_GroundDistance_SI");
+				takeOffFolderPath, "Speed_vs_GroundDistance_SI",true);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1270,7 +1270,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, 0.0, null,
 				"Ground Distance", "Speed", "ft", "kn",
-				takeOffFolderPath, "Speed_vs_GroundDistance_IMPERIAL");
+				takeOffFolderPath, "Speed_vs_GroundDistance_IMPERIAL",true);
 
 		//.................................................................................
 		// acceleration v.s. time
@@ -1279,7 +1279,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
 				0.0, null, null, null,
 				"Time", "Acceleration", "s", "m/(s^2)",
-				takeOffFolderPath, "Acceleration_evolution_SI");
+				takeOffFolderPath, "Acceleration_evolution_SI",true);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(time),
@@ -1290,7 +1290,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, null, null,
 				"Time", "Acceleration", "s", "ft/(min^2)",
-				takeOffFolderPath, "Acceleration_evolution_IMPERIAL");
+				takeOffFolderPath, "Acceleration_evolution_IMPERIAL",true);
 		
 		//.................................................................................
 		// acceleration v.s. time
@@ -1299,7 +1299,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
 				0.0, null, null, null,
 				"Ground Distance", "Acceleration", "m", "m/(s^2)",
-				takeOffFolderPath, "Acceleration_vs_GroundDistance_SI");
+				takeOffFolderPath, "Acceleration_vs_GroundDistance_SI",true);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1314,7 +1314,7 @@ public class TakeOffCalc {
 						),
 				0.0, null, null, null,
 				"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
-				takeOffFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL");
+				takeOffFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL",true);
 
 		//.................................................................................
 		// load factor v.s. time
@@ -1323,7 +1323,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Time", "Load Factor", "s", "",
-				takeOffFolderPath, "LoadFactor_evolution");
+				takeOffFolderPath, "LoadFactor_evolution",true);
 
 		//.................................................................................
 		// load factor v.s. ground distance
@@ -1332,7 +1332,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				takeOffFolderPath, "LoadFactor_vs_GroundDistance_SI");
+				takeOffFolderPath, "LoadFactor_vs_GroundDistance_SI",true);
 		
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1343,7 +1343,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				0.0, null, 0.0, null,
 				"Ground distance", "Load Factor", "m", "",
-				takeOffFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL");
+				takeOffFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
 
 		if(!isAborted) {
 			//.................................................................................
@@ -1353,7 +1353,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimb),
 					0.0, null, 0.0, null,
 					"Time", "Rate of Climb", "s", "m/s",
-					takeOffFolderPath, "RateOfClimb_evolution_SI");
+					takeOffFolderPath, "RateOfClimb_evolution_SI",true);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(time),
@@ -1364,7 +1364,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Time", "Rate of Climb", "s", "ft/min",
-					takeOffFolderPath, "RateOfClimb_evolution_IMPERIAL");
+					takeOffFolderPath, "RateOfClimb_evolution_IMPERIAL",true);
 
 			//.................................................................................
 			// Rate of Climb v.s. Ground distance
@@ -1373,7 +1373,7 @@ public class TakeOffCalc {
 					MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimb),
 					0.0, null, 0.0, null,
 					"Ground distance", "Rate of Climb", "m", "m/s",
-					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_SI");
+					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_SI",true);
 			
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1388,7 +1388,7 @@ public class TakeOffCalc {
 							),
 					0.0, null, 0.0, null,
 					"Ground distance", "Rate of Climb", "ft", "ft/min",
-					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_IMPERIAL");
+					takeOffFolderPath, "RateOfClimb_vs_GroundDistance_IMPERIAL",true);
 		}
 		
 		//.................................................................................
@@ -1398,7 +1398,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Time", "CL", "s", "",
-				takeOffFolderPath, "CL_evolution");
+				takeOffFolderPath, "CL_evolution",true);
 
 		//.................................................................................
 		// CL v.s. Ground distance
@@ -1407,7 +1407,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "m", "",
-				takeOffFolderPath, "CL_vs_GroundDistance_SI");
+				takeOffFolderPath, "CL_vs_GroundDistance_SI",true);
 
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -1418,7 +1418,7 @@ public class TakeOffCalc {
 				MyArrayUtils.convertToDoublePrimitive(cL),
 				0.0, null, 0.0, null,
 				"Ground distance", "CL", "ft", "",
-				takeOffFolderPath, "CL_vs_GroundDistance_IMPERIAL");
+				takeOffFolderPath, "CL_vs_GroundDistance_IMPERIAL",true);
 		
 		//.................................................................................
 		// Horizontal Forces v.s. Time

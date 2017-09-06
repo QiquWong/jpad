@@ -514,7 +514,7 @@ public class MyChartToFileUtils {
 			yListName.add(yLabel);
 		}
 	}
-		
+	
 	
 	public static void plot( //xArrays is 1D
 			double[] xArray, double[][] yArrays,
@@ -602,7 +602,8 @@ public class MyChartToFileUtils {
 			Double yMin, Double yMax,
 			String xLabel, String yLabel,
 			String xUnit, String yUnit, String path,
-			String fileName) {
+			String fileName,
+			Boolean toCSV) {
 
 		List<String> legend = new ArrayList<>();
 		List<String> xListName = new ArrayList<>();
@@ -635,6 +636,7 @@ public class MyChartToFileUtils {
 		
 		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
 		
+		if (toCSV == true) {
 		JPADStaticWriteUtils.exportToCSV(
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
 				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
@@ -646,25 +648,26 @@ public class MyChartToFileUtils {
 						+ fileName 
 						)
 				);
+		}
 		
 	}
 
-	public static void plotNoLegend( //xArrays is 1D
-			double[] xArray, Double[][] yArrays,
-			Double xMin, Double xMax,
-			Double yMin, Double yMax,
-			String xLabel, String yLabel,
-			String xUnit, String yUnit,
-		     String path,
-			String fileName) {
-
-		RealMatrix m = new Array2DRowRealMatrix();
-		for (int i=0; i < yArrays.length; i++)
-			m.setRow(i, ArrayUtils.toPrimitive(yArrays[i]));
-
-		plotNoLegend(xArray, m.transpose().getData(), xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				 path, fileName);
-	}
+//	public static void plotNoLegend( //xArrays is 1D
+//			double[] xArray, Double[][] yArrays,
+//			Double xMin, Double xMax,
+//			Double yMin, Double yMax,
+//			String xLabel, String yLabel,
+//			String xUnit, String yUnit,
+//		     String path,
+//			String fileName) {
+//
+//		RealMatrix m = new Array2DRowRealMatrix();
+//		for (int i=0; i < yArrays.length; i++)
+//			m.setRow(i, ArrayUtils.toPrimitive(yArrays[i]));
+//
+//		plotNoLegend(xArray, m.transpose().getData(), xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
+//				 path, fileName);
+//	}
 
 	
 	public static void plotNoLegend( //xArrays is 1D
@@ -673,15 +676,16 @@ public class MyChartToFileUtils {
 			Double yMin, Double yMax,
 			String xLabel, String yLabel,
 			String xUnit, String yUnit,
-		     String path,
-			String fileName) {
+		    String path,
+			String fileName,
+			Boolean toCSV) {
 
 		double[][] xArrays = new double[1][xArray.length];
 		for (int i=0; i < xArray.length; i++)
 			xArrays[0][i] = xArray[i];
 
 		plotNoLegend(xArrays, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				 path, fileName);
+				 path, fileName, toCSV);
 	}
 
 	public static void plotNoLegend(
@@ -690,14 +694,15 @@ public class MyChartToFileUtils {
 			Double yMin, Double yMax,
 			String xLabel, String yLabel,
 			String xUnit, String yUnit, String path,
-			String fileName) {
+			String fileName,
+			Boolean toCSV) {
 
 		double[][] yArrays = new double[1][yArray.length];
 		for (int i=0; i < yArray.length; i++)
 			yArrays[0][i] = yArray[i];
 
 		plotNoLegend(xArray, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				 path, fileName);
+				 path, fileName, toCSV);
 	}
 	
 	/**

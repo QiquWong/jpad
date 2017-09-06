@@ -1681,7 +1681,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"m/s", "m",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_SI"
+					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_SI",true
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListAEO_Imperial),
@@ -1689,7 +1689,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"ft/min", "ft",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_IMPERIAL"
+					climbFolderPath, "Max_Rate_of_Climb_envelope_AEO_IMPERIAL",true
 					);
 
 			//.......................................................
@@ -1720,7 +1720,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"m/s", "m",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_SI"
+					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_SI",true
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxRateOfClimbListOEI_Imperial),
@@ -1728,7 +1728,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Rate of Climb", "Altitude",
 					"ft/min", "ft",
-					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_IMPEIRAL"
+					climbFolderPath, "Max_Rate_of_Climb_envelope_OEI_IMPEIRAL",true
 					);
 
 		}
@@ -1757,7 +1757,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "m",
-					climbFolderPath, "Max_Climb_Angle_envelope_AEO_SI"
+					climbFolderPath, "Max_Climb_Angle_envelope_AEO_SI",true
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListAEO),
@@ -1765,7 +1765,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "ft",
-					climbFolderPath, "Max_Climb_Angle_envelope_AEO_IMPERIAL"
+					climbFolderPath, "Max_Climb_Angle_envelope_AEO_IMPERIAL",true
 					);
 			
 			//.......................................................
@@ -1791,7 +1791,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "m",
-					climbFolderPath, "Max_Climb_Angle_envelope_OEI_SI"
+					climbFolderPath, "Max_Climb_Angle_envelope_OEI_SI",true
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(maxClimbAngleListOEI),
@@ -1799,7 +1799,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Maximum Climb Angle", "Altitude",
 					"rad", "ft",
-					climbFolderPath, "Max_Climb_Angle_envelope_OEI_IMPERIAL"
+					climbFolderPath, "Max_Climb_Angle_envelope_OEI_IMPERIAL",true
 					);
 			
 		}
@@ -1883,7 +1883,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Altitude", "Fuel  used",
 					"m", "kg",
-					climbFolderPath, "Fuel_used_AEO_SI"
+					climbFolderPath, "Fuel_used_AEO_SI",true
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertToDoublePrimitive(altitudeList_Imperial),
@@ -1891,7 +1891,7 @@ public class ClimbCalc {
 					0.0, null, 0.0, null,
 					"Altitude", "Fuel  used",
 					"ft", "kg",
-					climbFolderPath, "Fuel_used_AEO_IMPERIAL"
+					climbFolderPath, "Fuel_used_AEO_IMPERIAL",true
 					);
 			
 		}

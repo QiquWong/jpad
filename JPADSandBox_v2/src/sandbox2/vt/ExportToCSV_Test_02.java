@@ -125,7 +125,7 @@ public class ExportToCSV_Test_02 {
 				"Distance", "Height",
 				"m", "ft",
 				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR),
-				"Plot_Test_04"
+				"Plot_Test_04",true
 				);
 		
 		

@@ -910,7 +910,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
 						0.0, null, 0.0, null,
 						"Time", "Speed", "s", "m/s",
-						simulationDetailsOutputFolder, "Speed_evolution_SI");
+						simulationDetailsOutputFolder, "Speed_evolution_SI",true);
 
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
@@ -923,7 +923,7 @@ public class LandingNoiseTrajectoryCalc {
 								),
 						0.0, null, 0.0, null,
 						"Time", "Speed", "s", "kn",
-						simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL");
+						simulationDetailsOutputFolder, "Speed_evolution_IMPERIAL",true);
 
 			//.................................................................................
 			// speed v.s. ground distance
@@ -933,7 +933,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertListOfAmountTodoubleArray(speedList),
 						0.0, null, 0.0, null,
 						"Ground Distance", "Speed", "m", "m/s",
-						simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "Speed_vs_GroundDistance_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -949,7 +949,7 @@ public class LandingNoiseTrajectoryCalc {
 								),
 						0.0, null, 0.0, null,
 						"Ground Distance", "Speed", "ft", "kn",
-						simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "Speed_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// acceleration v.s. time
@@ -959,7 +959,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 						0.0, null, -10.0, 10.0,
 						"Time", "Acceleration", "s", "m/(s^2)",
-						simulationDetailsOutputFolder, "Acceleration_evolution_SI");
+						simulationDetailsOutputFolder, "Acceleration_evolution_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -971,7 +971,7 @@ public class LandingNoiseTrajectoryCalc {
 								),
 						0.0, null, -10.0, 10.0,
 						"Time", "Acceleration", "s", "ft/(min^2)",
-						simulationDetailsOutputFolder, "Acceleration_evolution_IMPERIAL");
+						simulationDetailsOutputFolder, "Acceleration_evolution_IMPERIAL",true);
 
 			//.................................................................................
 			// acceleration v.s. ground distance
@@ -981,7 +981,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertListOfAmountTodoubleArray(accelerationList),
 						0.0, null, -10.0, 10.0,
 						"Ground Distance", "Acceleration", "m", "m/(s^2)",
-						simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -997,7 +997,7 @@ public class LandingNoiseTrajectoryCalc {
 								),
 						0.0, null, -10.0, 10.0,
 						"Ground Distance", "Acceleration", "ft", "ft/(min^2)",
-						simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "Acceleration_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// load factor v.s. time
@@ -1006,7 +1006,7 @@ public class LandingNoiseTrajectoryCalc {
 					MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 					0.0, null, 0.0, null,
 					"Time", "Load Factor", "s", "",
-					simulationDetailsOutputFolder, "LoadFactor_evolution");
+					simulationDetailsOutputFolder, "LoadFactor_evolution",true);
 
 			//.................................................................................
 			// load factor v.s. ground distance
@@ -1016,7 +1016,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 						0.0, null, 0.0, null,
 						"Ground distance", "Load Factor", "m", "",
-						simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -1028,7 +1028,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertToDoublePrimitive(loadFactorList),
 						0.0, null, 0.0, null,
 						"Ground distance", "Load Factor", "ft", "",
-						simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// Rate of Climb v.s. Time
@@ -1038,7 +1038,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
 						0.0, null, null, 0.0,
 						"Time", "Rate of Climb", "s", "m/s",
-						simulationDetailsOutputFolder, "RateOfClimb_evolution_SI");
+						simulationDetailsOutputFolder, "RateOfClimb_evolution_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -1050,7 +1050,7 @@ public class LandingNoiseTrajectoryCalc {
 								),
 						0.0, null, null, 0.0,
 						"Time", "Rate of Climb", "s", "ft/min",
-						simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL");
+						simulationDetailsOutputFolder, "RateOfClimb_evolution_IMPERIAL",true);
 
 			//.................................................................................
 			// Rate of Climb v.s. Ground distance
@@ -1060,7 +1060,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertListOfAmountTodoubleArray(rateOfClimbList),
 						0.0, null, null, 0.0,
 						"Ground distance", "Rate of Climb", "m", "m/s",
-						simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -1076,7 +1076,7 @@ public class LandingNoiseTrajectoryCalc {
 								),
 						0.0, null, null, 0.0,
 						"Ground distance", "Rate of Climb", "ft", "ft/min",
-						simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "RateOfClimb_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// CL v.s. Time
@@ -1085,7 +1085,7 @@ public class LandingNoiseTrajectoryCalc {
 					MyArrayUtils.convertToDoublePrimitive(cLList),
 					0.0, null, 0.0, null,
 					"Time", "CL", "s", "",
-					simulationDetailsOutputFolder, "CL_evolution");
+					simulationDetailsOutputFolder, "CL_evolution",true);
 
 			//.................................................................................
 			// CL v.s. Ground distance
@@ -1095,7 +1095,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertToDoublePrimitive(cLList),
 						0.0, null, 0.0, null,
 						"Ground distance", "CL", "m", "",
-						simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "CL_vs_GroundDistance_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -1107,7 +1107,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertToDoublePrimitive(cLList),
 						0.0, null, 0.0, null,
 						"Ground distance", "CL", "ft", "",
-						simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "CL_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// CD v.s. Time
@@ -1116,7 +1116,7 @@ public class LandingNoiseTrajectoryCalc {
 					MyArrayUtils.convertToDoublePrimitive(cDList),
 					0.0, null, 0.0, null,
 					"Time", "CD", "s", "",
-					simulationDetailsOutputFolder, "CD_evolution");
+					simulationDetailsOutputFolder, "CD_evolution",true);
 
 			//.................................................................................
 			// CD v.s. Ground distance
@@ -1126,7 +1126,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertToDoublePrimitive(cDList),
 						0.0, null, 0.0, null,
 						"Ground distance", "CD", "m", "",
-						simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "CD_vs_GroundDistance_SI",true);
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL)
 				MyChartToFileUtils.plotNoLegend(
@@ -1138,7 +1138,7 @@ public class LandingNoiseTrajectoryCalc {
 						MyArrayUtils.convertToDoublePrimitive(cDList),
 						0.0, null, 0.0, null,
 						"Ground distance", "CD", "ft", "",
-						simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "CD_vs_GroundDistance_IMPERIAL",true);
 
 			//.................................................................................
 			// Horizontal Forces v.s. Time
@@ -1599,7 +1599,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Ground distance", "Altitude",
 					"m", "m",
-					trajectoryOutputFolder, "Trajectory_SI"
+					trajectoryOutputFolder, "Trajectory_SI",true
 					);
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plotNoLegend(
@@ -1612,7 +1612,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Ground distance", "Altitude",
 					"ft", "ft",
-					trajectoryOutputFolder, "Trajectory_IMPERIAL"
+					trajectoryOutputFolder, "Trajectory_IMPERIAL",true
 					);
 			
 		//.................................................................................
@@ -1624,7 +1624,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Time", "Altitude",
 					"s", "m",
-					trajectoryOutputFolder, "Altitude_evolution_SI"
+					trajectoryOutputFolder, "Altitude_evolution_SI",true
 					);
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plotNoLegend(
@@ -1635,7 +1635,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Time", "Altitude",
 					"s", "ft",
-					trajectoryOutputFolder, "Altitude_evolution_IMPERIAL"
+					trajectoryOutputFolder, "Altitude_evolution_IMPERIAL",true
 					);
 		
 		System.setOut(originalOut);
@@ -1651,7 +1651,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Time", "Thrust",
 					"s", "N",
-					thrustOutputFolder, "Thrust_evolution_SI"
+					thrustOutputFolder, "Thrust_evolution_SI",true
 					);
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plotNoLegend(
@@ -1662,7 +1662,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Time", "Thrust",
 					"s", "lbf",
-					thrustOutputFolder, "Thrust_evolution_IMPERIAL"
+					thrustOutputFolder, "Thrust_evolution_IMPERIAL",true
 					);
 
 		//.................................................................................
@@ -1674,7 +1674,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Ground distance", "Thrust",
 					"m", "N",
-					thrustOutputFolder, "Thrust_vs_GroundDistance_SI"
+					thrustOutputFolder, "Thrust_vs_GroundDistance_SI",true
 					);
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plotNoLegend(
@@ -1687,7 +1687,7 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, 0.0, null, 
 					"Ground distance", "Thrust",
 					"ft", "lbf",
-					thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL"
+					thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL",true
 					);
 		
 		System.setOut(originalOut);

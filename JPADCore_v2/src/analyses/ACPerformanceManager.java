@@ -4927,7 +4927,7 @@ public class ACPerformanceManager {
 						null, null, 0.0, null,
 						"Speed(TAS)", "Altitude",
 						"m/s", "m",
-						cruiseFolderPath, "Cruise_flight_envelope_TAS_SI"
+						cruiseFolderPath, "Cruise_flight_envelope_TAS_SI",true
 						);
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(speedCASList_SI),
@@ -4935,7 +4935,7 @@ public class ACPerformanceManager {
 						null, null, 0.0, null,
 						"Speed(CAS)", "Altitude",
 						"m/s", "m",
-						cruiseFolderPath, "Cruise_flight_envelope_CAS_SI"
+						cruiseFolderPath, "Cruise_flight_envelope_CAS_SI",true
 						);
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(machList),
@@ -4943,7 +4943,7 @@ public class ACPerformanceManager {
 						null, null, 0.0, null,
 						"Mach", "Altitude",
 						"", "m",
-						cruiseFolderPath, "Cruise_flight_envelope_MACH_SI"
+						cruiseFolderPath, "Cruise_flight_envelope_MACH_SI",true
 						);
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(speedTASList_Imperial),
@@ -4951,7 +4951,7 @@ public class ACPerformanceManager {
 						null, null, 0.0, null,
 						"Speed(TAS)", "Altitude",
 						"kn", "ft",
-						cruiseFolderPath, "Cruise_flight_envelope_TAS_IMPERIAL"
+						cruiseFolderPath, "Cruise_flight_envelope_TAS_IMPERIAL",true
 						);
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(speedCASList_Imperial),
@@ -4959,7 +4959,7 @@ public class ACPerformanceManager {
 						null, null, 0.0, null,
 						"Speed(CAS)", "Altitude",
 						"kn", "ft",
-						cruiseFolderPath, "Cruise_flight_envelope_CAS_IMPERIAL"
+						cruiseFolderPath, "Cruise_flight_envelope_CAS_IMPERIAL",true
 						);
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(machList),
@@ -4967,7 +4967,7 @@ public class ACPerformanceManager {
 						null, null, 0.0, null,
 						"Mach", "Altitude",
 						"", "ft",
-						cruiseFolderPath, "Cruise_flight_envelope_MACH_IMPERIAL"
+						cruiseFolderPath, "Cruise_flight_envelope_MACH_IMPERIAL",true
 						);
 				
 			}

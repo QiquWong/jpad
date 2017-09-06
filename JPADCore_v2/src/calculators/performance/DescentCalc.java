@@ -734,7 +734,7 @@ public class DescentCalc {
 				0.0, null, 0.0, null,
 				"Time", "Altitude",
 				"min", "m",
-				descentFolderPath, "Descent_Time_SI"
+				descentFolderPath, "Descent_Time_SI",true
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(timePlot),
@@ -746,7 +746,7 @@ public class DescentCalc {
 				0.0, null, 0.0, null,
 				"Time", "Altitude",
 				"min", "ft",
-				descentFolderPath, "Descent_Time_IMPERIAL"
+				descentFolderPath, "Descent_Time_IMPERIAL",true
 				);
 		
 		//............................................................................................
@@ -765,7 +765,7 @@ public class DescentCalc {
 				0.0, null, 0.0, null,
 				"Distance", "Altitude",
 				"km", "m",
-				descentFolderPath, "Descent_Range_SI"
+				descentFolderPath, "Descent_Range_SI",true
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(rangePlot),
@@ -777,7 +777,7 @@ public class DescentCalc {
 				0.0, null, 0.0, null,
 				"Distance", "Altitude",
 				"nmi", "ft",
-				descentFolderPath, "Descent_Range_IMPERIAL"
+				descentFolderPath, "Descent_Range_IMPERIAL",true
 				);
 		
 		//............................................................................................
@@ -792,7 +792,7 @@ public class DescentCalc {
 				0.0, null, 0.0, null,
 				"Fuel used", "Altitude",
 				"kg", "m",
-				descentFolderPath, "Descent_Fuel_Used_SI"
+				descentFolderPath, "Descent_Fuel_Used_SI",true
 				);
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -808,7 +808,7 @@ public class DescentCalc {
 				0.0, null, 0.0, null,
 				"Fuel used", "Altitude",
 				"lb", "ft",
-				descentFolderPath, "Descent_Fuel_Used_IMPERIAL"
+				descentFolderPath, "Descent_Fuel_Used_IMPERIAL",true
 				);
 		
 	}

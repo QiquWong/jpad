@@ -1304,7 +1304,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, 0.0, null,
 					"Time", "Speed", "s", "m/s",
-					outputChartDir, "Speed_Inertial");
+					outputChartDir, "Speed_Inertial",true);
 
 			// speed, airspeed vs. time
 			xMatrix2 = null; yMatrix2 = null;
@@ -1349,7 +1349,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, 0.0, null,
 					"Time", "Altitude", "s", "m",
-					outputChartDir, "Altitude");
+					outputChartDir, "Altitude",true);
 
 			// rate-of-climb vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1365,7 +1365,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, -20.0, 20.0,
 					"Time", "Rate Of Climb", "s", "m/s",
-					outputChartDir, "Rate_of_Climb");
+					outputChartDir, "Rate_of_Climb",true);
 			
 			// flightpath angle vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1381,7 +1381,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, -45.0, 45.0,
 					"Time", "Flightpath Angle", "s", "deg",
-					outputChartDir, "Flightpath_Angle");
+					outputChartDir, "Flightpath_Angle",true);
 			
 			// heading angle vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1397,7 +1397,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, -180.0, 180.0,
 					"Time", "Heading Angle", "s", "deg",
-					outputChartDir, "Heading_Angle");
+					outputChartDir, "Heading_Angle",true);
 
 			// bank angle vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1413,7 +1413,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, -180.0, 180.0,
 					"Time", "Bank Angle", "s", "deg",
-					outputChartDir, "Bank_Angle");
+					outputChartDir, "Bank_Angle",true);
 
 			// int( m(Vc - V) ) angle vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1429,7 +1429,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, null, null,
 					"Time", "xT = int(m(Vc - V))", "s", "kg*m",
-					outputChartDir, "xT");
+					outputChartDir, "xT",true);
 
 			// m(Vc - V) angle vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1445,7 +1445,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, null, null,
 					"Time", "xTDot = m(Vc - V)", "s", "kg*m/s",
-					outputChartDir, "xTDot");
+					outputChartDir, "xTDot",true);
 			
 			// thrust vs. time
 //			MyChartToFileUtils.plotNoLegend(
@@ -1477,7 +1477,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, null, null,
 					"Time", "xL = int(m(hdotc - hdot))", "s", "kg*m",
-					outputChartDir, "xL");
+					outputChartDir, "xL",true);
 
 			// m(hdotc - hdot) angle vs. time
 			MyChartToFileUtils.plotNoLegend(
@@ -1493,7 +1493,7 @@ public class AircraftPointMassPropagator {
 							).mapToDouble(Double::doubleValue).toArray(), // list-of-Amount --> double[]
 					0.0, null, null, null,
 					"Time", "xLDot = m(hdotc - hdot)", "s", "kg*m/s",
-					outputChartDir, "xLDot");
+					outputChartDir, "xLDot",true);
 			
 //			// drag vs. time
 ////			MyChartToFileUtils.plotNoLegend(

@@ -199,7 +199,8 @@ public class SaveOutput {
 				"deg", 
 				"",
 				outputChartPath,
-				"Lift_Coefficient_curve"
+				"Lift_Coefficient_curve",
+				true
 				);
 		
 		}

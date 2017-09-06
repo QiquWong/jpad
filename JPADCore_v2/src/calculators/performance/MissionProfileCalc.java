@@ -2194,7 +2194,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Range", "Altitude",
 					"km", "m",
-					_missionProfilesFolderPath, "Range_Profile_SI"
+					_missionProfilesFolderPath, "Range_Profile_SI",true
 					);
 			
 			MyChartToFileUtils.plotNoLegend(
@@ -2213,7 +2213,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Range", "Altitude",
 					"nmi", "ft",
-					_missionProfilesFolderPath, "Range_Profile_IMPERIAL"
+					_missionProfilesFolderPath, "Range_Profile_IMPERIAL",true
 					);
 			
 		}
@@ -2236,7 +2236,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
 					"min", "m",
-					_missionProfilesFolderPath, "Time_Profile_(min)_SI"
+					_missionProfilesFolderPath, "Time_Profile_(min)_SI",true
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -2254,7 +2254,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
 					"min", "ft",
-					_missionProfilesFolderPath, "Time_Profile_(min)_IMPERIAL"
+					_missionProfilesFolderPath, "Time_Profile_(min)_IMPERIAL",true
 					);
 			
 			
@@ -2274,7 +2274,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
 					"hr", "m",
-					_missionProfilesFolderPath, "Time_Profile_(hours)_SI"
+					_missionProfilesFolderPath, "Time_Profile_(hours)_SI",true
 					);
 			MyChartToFileUtils.plotNoLegend(
 					MyArrayUtils.convertListOfAmountTodoubleArray(
@@ -2292,7 +2292,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Time", "Altitude",
 					"hr", "ft",
-					_missionProfilesFolderPath, "Time_Profile_(hours)_IMPERIAL"
+					_missionProfilesFolderPath, "Time_Profile_(hours)_IMPERIAL",true
 					);
 			
 		}
@@ -2315,7 +2315,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Fuel used", "Altitude",
 					"kg", "m",
-					_missionProfilesFolderPath, "Fuel_used_Profile_SI"
+					_missionProfilesFolderPath, "Fuel_used_Profile_SI",true
 					);
 			
 			MyChartToFileUtils.plotNoLegend(
@@ -2334,7 +2334,7 @@ public class MissionProfileCalc {
 					0.0, null, 0.0, null,
 					"Fuel used", "Altitude",
 					"lb", "ft",
-					_missionProfilesFolderPath, "Fuel_used_Profile_IMPERIAL"
+					_missionProfilesFolderPath, "Fuel_used_Profile_IMPERIAL",true
 					);
 		}
 		
@@ -2356,7 +2356,7 @@ public class MissionProfileCalc {
 					0.0, null, null, null,
 					"Time", "Aircraft mass",
 					"min", "kg",
-					_missionProfilesFolderPath, "Mass_Profile"
+					_missionProfilesFolderPath, "Mass_Profile",true
 					);
 		}
 		

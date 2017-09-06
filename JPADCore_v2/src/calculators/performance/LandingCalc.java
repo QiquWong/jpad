@@ -583,7 +583,7 @@ public class LandingCalc {
 				MyArrayUtils.convertListOfAmountTodoubleArray(acceleration),
 				sApproach.plus(sFlare).doubleValue(SI.METER), null, null, null,
 				"Ground Roll Distance", "Acceleration", "m", "m/(s^2)",
-				landingFolderPath, "Acceleration_vs_GroundDistance_SI");
+				landingFolderPath, "Acceleration_vs_GroundDistance_SI",true);
 		
 		MyChartToFileUtils.plotNoLegend(
 				groundRollDistance_Imperial,
@@ -594,7 +594,7 @@ public class LandingCalc {
 						),
 				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, null, null,
 				"Ground Roll Distance", "Acceleration", "ft", "ft/(min^2)",
-				landingFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL");
+				landingFolderPath, "Acceleration_vs_GroundDistance_IMPERIAL",true);
 
 		//.............................................................................
 		// load factor v.s. ground roll distance
@@ -603,14 +603,14 @@ public class LandingCalc {
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				sApproach.plus(sFlare).doubleValue(SI.METER), null, 0.0, null,
 				"Ground Roll distance", "Load Factor", "m", "",
-				landingFolderPath, "LoadFactor_vs_GroundDistance_SI");
+				landingFolderPath, "LoadFactor_vs_GroundDistance_SI",true);
 
 		MyChartToFileUtils.plotNoLegend(
 				groundRollDistance_Imperial,
 				MyArrayUtils.convertToDoublePrimitive(loadFactor),
 				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, 0.0, null,
 				"Ground Roll distance", "Load Factor", "ft", "",
-				landingFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL");
+				landingFolderPath, "LoadFactor_vs_GroundDistance_IMPERIAL",true);
 		//.............................................................................
 		// Horizontal Forces v.s. ground roll distance
 		double[][] xMatrix2_SI = new double[4][totalForce.size()];

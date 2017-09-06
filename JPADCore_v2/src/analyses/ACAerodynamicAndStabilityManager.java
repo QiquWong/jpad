@@ -222,6 +222,16 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<Double, List<Double>> _totalEquilibriumDragCoefficient = new HashMap<>(); //xcg, CL
 	private Map<Double, List<Amount<Angle>>> _deltaEEquilibrium = new HashMap<>(); //xcg
 
+	
+	//output path
+	
+	private String wingPlotFolderPath = new String();
+	private String horizontalTailPlotFolderPath = new String();
+	private String verticalTailPlotFolderPath = new String();
+	private String fuselagePlotFolderPath = new String();
+	private String nacellePlotFolderPath = new String();
+	private String aircraftPlotFolderPath = new String();
+	
 	//------------------------------------------------------------------------------
 	// METHODS:
 	//------------------------------------------------------------------------------
@@ -5375,10 +5385,13 @@ public class ACAerodynamicAndStabilityManager {
 		//...................................................................................
 	}
 	
-	private void plotAllCharts(Double mach) {
-		List<Double[]> xVector = new ArrayList<Double[]>();
-		List<Double[]> yVector = new ArrayList<Double[]>();
+	private void plotAllCharts () {
+		List<Double[]> xVectorMatrix = new ArrayList<Double[]>();
+		List<Double[]> yVectorMatxrix = new ArrayList<Double[]>();
 		List<String> legend  = new ArrayList<>(); 
+		
+		List<Double> xVector = new ArrayList<Double>();
+		List<Double> yVector = new ArrayList<Double>();
 		
 		// wing
 //		WING_LIFT_CURVE_CLEAN,
@@ -5408,25 +5421,33 @@ public class ACAerodynamicAndStabilityManager {
 		
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
 			
-			xVector = new ArrayList<Double[]>();
-			yVector = new ArrayList<Double[]>();
+			xVector = new ArrayList<Double>();
+			yVector = new ArrayList<Double>();
 			legend  = new ArrayList<>(); 
+			
 			// TODO: CONTINUE HERE
-//			
-//			MyChartToFileUtils.plotNoLegend(
-//					MyArrayUtils.convertListOfAmountTodoubleArray(theInputOutputTree.getAlphaArrayLiftCurve()),
-//					MyArrayUtils.convertToDoublePrimitive(theInputOutputTree.getLiftCoefficientCurve()),
-//					null, 
-//					null, 
-//					null, 
-//					null, 
-//					"alpha",
-//					"CL",
-//					"deg", 
-//					"",
-//					outputChartPath,
-//					"Lift_Coefficient_curve"
-//					);
+			
+			xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+			yVector =MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+					_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.WING)
+							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+			
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+					MyArrayUtils.convertToDoublePrimitive(yVector),
+					null, 
+					null, 
+					null, 
+					null, 
+					"alpha",
+					"CL",
+					"deg", 
+					"",
+					wingPlotFolderPath,
+					"Lift_Coefficient_Curve",
+					false
+					);
 //			
 //			MyChartToFileUtils.plotNOCSV(
 //					xVector,
@@ -5543,15 +5564,55 @@ public class ACAerodynamicAndStabilityManager {
 		//=================================================================================================
 		
 		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.WING)) {
-			String wingPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+			wingPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
 					aerodynamicAndStabilityFolderPath 
 					+ "WING"
 					+ File.separator
 					);
 		}
-
-		// TODO: continue me with all components
 		
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.HORIZONTAL_TAIL)) {
+			horizontalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+					aerodynamicAndStabilityFolderPath 
+					+ "HORIZONTAL_TAIL"
+					+ File.separator
+					);
+		}
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.VERTICAL_TAIL)) {
+			verticalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+					aerodynamicAndStabilityFolderPath 
+					+ "VERTICAL_TAIL"
+					+ File.separator
+					);
+		}
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.FUSELAGE)) {
+			fuselagePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+					aerodynamicAndStabilityFolderPath 
+					+ "FUSELAGE"
+					+ File.separator
+					);
+		}
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.NACELLE)) {
+			nacellePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+					aerodynamicAndStabilityFolderPath 
+					+ "NACELLE"
+					+ File.separator
+					);
+		}
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.AIRCRAFT)) {
+			aircraftPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+					aerodynamicAndStabilityFolderPath 
+					+ "AIRCRAFT"
+					+ File.separator
+					);
+		}
+	
+		plotAllCharts();
 		/*
 		 * TODO : FILL ME !!
 		 *        REMEMBER TO PERFORM ALL THE NEEDED CHECKS FOR EACH PLOT !!
