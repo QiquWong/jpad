@@ -1112,10 +1112,13 @@ public class LiftCalc {
 				SI.METER
 				);
 		
+		Boolean negativeFlapDeflection = Boolean.FALSE;
+		
 		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
 			Double newFlapDeflection = -flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE);
 			flapDeflections.remove(0);
 			flapDeflections.add(0, Amount.valueOf(newFlapDeflection, NonSI.DEGREE_ANGLE));
+			negativeFlapDeflection = Boolean.TRUE;
 		}
 		
 		if(flapDeflections.size() != flapList.size()) {
@@ -1425,7 +1428,7 @@ public class LiftCalc {
 					(deltaCl0First.get(i).doubleValue()*cFirstCFlap.get(i).doubleValue())
 					+(clZeroMeanFlap[i]*(cFirstCFlap.get(i).doubleValue()-1))
 					);
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
+		if(negativeFlapDeflection) {
 			Double deltaCl0FlapNew = deltaCl0FlapList.get(0);
 			deltaCl0FlapList.remove(0);
 			deltaCl0FlapList.add(0, -deltaCl0FlapNew);
@@ -1444,7 +1447,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCl0Flap += deltaCl0FlapList.get(i);
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0)
+		if(negativeFlapDeflection)
 			resultsMap.put(
 					HighLiftDeviceEffectEnum.DELTA_Cl0_FLAP,
 					-deltaCl0Flap
@@ -1537,7 +1540,7 @@ public class LiftCalc {
 					*deltaClmaxBase.get(i).doubleValue()
 					);
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
+		if(negativeFlapDeflection) {
 			Double deltaClmaxFlapNew = deltaClmaxFlapList.get(0);
 			deltaClmaxFlapList.remove(0);
 			deltaClmaxFlapList.add(0, -deltaClmaxFlapNew);
@@ -1556,7 +1559,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaClmaxFlap += deltaClmaxFlapList.get(i);
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) 
+		if(negativeFlapDeflection) 
 			resultsMap.put(
 					HighLiftDeviceEffectEnum.DELTA_Cl_MAX_FLAP,
 					-deltaClmaxFlap
@@ -1688,7 +1691,7 @@ public class LiftCalc {
 							/(clAlphaMeanFlap[i]))
 					);
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
+		if(negativeFlapDeflection) {
 			Double deltaCl0FlapNew = deltaCL0FlapList.get(0);
 			deltaCL0FlapList.remove(0);
 			deltaCL0FlapList.add(0, -deltaCl0FlapNew);
@@ -1707,7 +1710,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCL0Flap += deltaCL0FlapList.get(i);
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0)
+		if(negativeFlapDeflection)
 			resultsMap.put(
 					HighLiftDeviceEffectEnum.DELTA_CL0_FLAP,
 					-deltaCL0Flap
@@ -1746,7 +1749,7 @@ public class LiftCalc {
 					*kLambdaFlap.get(i)
 					);
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0) {
+		if(negativeFlapDeflection) {
 			Double deltaCLmaxFlapNew = deltaCLmaxFlapList.get(0);
 			deltaCLmaxFlapList.remove(0);
 			deltaCLmaxFlapList.add(0, -deltaCLmaxFlapNew);
@@ -1765,7 +1768,7 @@ public class LiftCalc {
 		for(int i=0; i<flapTypeIndex.size(); i++)
 			deltaCLmaxFlap += deltaCLmaxFlapList.get(i).doubleValue();
 		
-		if(flapDeflections.get(0).doubleValue(NonSI.DEGREE_ANGLE) < 0.0)
+		if(negativeFlapDeflection)
 			resultsMap.put(
 					HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP,
 					-deltaCLmaxFlap
@@ -2283,11 +2286,11 @@ public class LiftCalc {
 		horizontalTailEquilibriumLiftCoefficient.add(i,
 				(-wingMomentCoefficientWithRespectToCG.get(i)-
 						fuselageMomentCoefficientWithRespectToCG.get(i) -
-						landingGearMomentCoefficientWithRespectToCG.get(i) *
+						landingGearMomentCoefficientWithRespectToCG.get(i)) *
 				(wingSurface.doubleValue(SI.SQUARE_METRE)/horizontalTailSurface.doubleValue(SI.SQUARE_METRE)) *
 				(wingMeanAerodynamicChord.doubleValue(SI.METER)/horizontalTailHorizontalDistanceACtoCG.doubleValue(SI.METER))*
 				(1/horizontalTailDynamicPressureRatio)
-				));
+				);
 		}
 				);
 		

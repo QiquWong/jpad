@@ -426,7 +426,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						),
 				SI.METER);
 		
-		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-45, 10, 20)), NonSI.DEGREE_ANGLE); 
+		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-25, 10, 20)), NonSI.DEGREE_ANGLE); 
 	}
 
 	private void calculateDownwash() {

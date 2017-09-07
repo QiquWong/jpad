@@ -1180,31 +1180,38 @@ public class AerodynamicCalc {
 	{
 		List<Amount<Angle>> deltaEEquilibrium = new ArrayList<>();
 
-		alphaBodyList.stream().forEach( ab-> {
-
-			int i = alphaBodyList.indexOf(ab);
+		List<Integer> cLmaxHTailForEachDeltaElevatorIndex = new ArrayList<>();
+		
+		for(int i=0; i<deltaEForEquilibrium.size(); i++) 
+			cLmaxHTailForEachDeltaElevatorIndex.add(
+					MyArrayUtils.getIndexOfMax(
+							MyArrayUtils.convertListOfDoubleToDoubleArray(
+									liftCoefficientHorizontalTailWithRespectToDeltaE.get(deltaEForEquilibrium.get(i))
+									)
+							)
+					);
+		
+		int minimumcLMaxElevatorIndex = cLmaxHTailForEachDeltaElevatorIndex.stream().mapToInt(i -> i).min().getAsInt();
+		
+		for (int i = 0; i < minimumcLMaxElevatorIndex; i++) {
+			
 			List<Double> temporaryCL = new ArrayList<>();
-			List<Double> temporaryCLFinal = new ArrayList<>();
-			List<Amount<Angle>> temporaryDeltaE = new ArrayList<>();
-			deltaEForEquilibrium.stream().forEach( de-> {
-				temporaryCL.add(liftCoefficientHorizontalTailWithRespectToDeltaE.get(de).get(i));
-				for (int ii=0; ii<temporaryCL.size()-1 ; ii++){
-					if(temporaryCL.get(ii) < temporaryCL.get(ii+1))
-					{
-						temporaryCLFinal.add(temporaryCL.get(ii));
-						temporaryDeltaE.add(deltaEForEquilibrium.get(ii));
-					}
-				}
-			});
+			
+			for (int j = 0; j < deltaEForEquilibrium.size(); j++) 
+				temporaryCL.add(liftCoefficientHorizontalTailWithRespectToDeltaE
+						.get(deltaEForEquilibrium.get(j))
+						.get(i)
+						);
+				
 			deltaEEquilibrium.add(
 					Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertToDoublePrimitive(temporaryCLFinal),
-									MyArrayUtils.convertListOfAmountTodoubleArray(temporaryDeltaE),
+									MyArrayUtils.convertToDoublePrimitive(temporaryCL),
+									MyArrayUtils.convertListOfAmountTodoubleArray(deltaEForEquilibrium),
 									cLEquilibriumHorizontalTail.get(i)),
 							NonSI.DEGREE_ANGLE)
 					);
-		});
+		};
 
 
 		return deltaEEquilibrium;
