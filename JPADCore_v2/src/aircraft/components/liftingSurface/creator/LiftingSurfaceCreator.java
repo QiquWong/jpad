@@ -448,7 +448,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									airfoil1, // airfoilTip,
 									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 									Amount.valueOf(3.6548,SI.METER), // semiSpan, 
-									Amount.valueOf(3.44, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
+									Amount.valueOf(13.44, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
 									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE) // dihedral
 									)
 							.build();

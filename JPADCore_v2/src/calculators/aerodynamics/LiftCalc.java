@@ -1784,12 +1784,15 @@ public class LiftCalc {
 		List<Double> cLalphaFlapList = new ArrayList<Double>();
 		List<Double> swf = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {
-			cLalphaFlapList.add(
-					cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-					*(1+((deltaCL0FlapList.get(i)/
-							deltaCl0FlapList.get(i))
-							*(cFirstCFlap.get(i)*(1-((cfc.get(i))*(1/cFirstCFlap.get(i))
-									*Math.pow(Math.sin(flapDeflections.get(i).doubleValue(SI.RADIAN)), 2)))-1))));
+			if(flapTypeIndex.get(i) == 3.0)
+				cLalphaFlapList.add(cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue());
+			else
+				cLalphaFlapList.add(
+						cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+						*(1+((deltaCL0FlapList.get(i)/
+								deltaCl0FlapList.get(i))
+								*(cFirstCFlap.get(i)*(1-((cfc.get(i))*(1/cFirstCFlap.get(i))
+										*Math.pow(Math.sin(flapDeflections.get(i).doubleValue(SI.RADIAN)), 2)))-1))));
 			swf.add(flapSurface.get(i)/surface.doubleValue(SI.SQUARE_METRE));
 		}
 		resultsMap.put(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT_LIST, cLalphaFlapList);
@@ -1803,6 +1806,7 @@ public class LiftCalc {
 			cLAlphaFlap += cLalphaFlapList.get(i)*swf.get(i);
 
 		cLAlphaFlap /= swfTot;
+		
 		resultsMap.put(
 				HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT,
 				Amount.valueOf(
