@@ -1176,8 +1176,8 @@ public class AerodynamicCalc {
 			List<Amount<Angle>> deltaEForEquilibrium,
 			List<Double> cLEquilibriumHorizontalTail,
 			List<Amount<Angle>> alphaBodyList
-			)
-	{
+			) {
+		
 		List<Amount<Angle>> deltaEEquilibrium = new ArrayList<>();
 
 		List<Integer> cLmaxHTailForEachDeltaElevatorIndex = new ArrayList<>();

@@ -426,7 +426,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						),
 				SI.METER);
 		
-		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-25, 10, 20)), NonSI.DEGREE_ANGLE); 
+		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-25, 5, 10)), NonSI.DEGREE_ANGLE); 
 	}
 
 	private void calculateDownwash() {
@@ -7251,12 +7251,14 @@ public class ACAerodynamicAndStabilityManagerV {
 		}	
 
 		
+		
+		
 		//-----------------------------------------------------------------------------------------------------------------------
 		//HORIZONTAL TAIL--------------------------------------------------------------------------------------------------------
 		//-----------------------------------------------------------------------------------------------------------------------
 		
 		// LIFT CURVE---------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_LIFT_CURVE_CLEAN)) {
 
 			xVector = new ArrayList<Double>();
 			yVector = new ArrayList<Double>();
@@ -7286,7 +7288,7 @@ public class ACAerodynamicAndStabilityManagerV {
 		}
 
 		// DRAG BREAKDOWN---------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN)) {
 
 			xVector = new ArrayList<Double>();
 			yVector = new ArrayList<Double>();
@@ -7320,7 +7322,7 @@ public class ACAerodynamicAndStabilityManagerV {
 		}
 
 		// MOMENT CURVE---------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_CURVE_CLEAN)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_CURVE_CLEAN)) {
 
 			xVector = new ArrayList<Double>();
 			yVector = new ArrayList<Double>();
@@ -7350,7 +7352,7 @@ public class ACAerodynamicAndStabilityManagerV {
 		}
 
 		// STALL PATH-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_STALL_PATH)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7396,7 +7398,7 @@ public class ACAerodynamicAndStabilityManagerV {
 		}
 
 		// LIFT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_CL_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_CL_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7440,7 +7442,7 @@ public class ACAerodynamicAndStabilityManagerV {
 		}
 
 		// DRAG COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_DRAG_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_DRAG_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7484,7 +7486,7 @@ public class ACAerodynamicAndStabilityManagerV {
 		}
 
 		// MOMENT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7527,96 +7529,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"Moment_Coefficient_Distributions");
 		}
 
-		// CL ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_CL_ADDITIONAL_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionAdditionalLoad().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("Cl additional distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"Cl_add.",
-					"", 
-					"", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"Additional_Lift_Coefficient_Distributions");
-		}
-
-		// CL ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_CL_BASIC_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionBasicLoad().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("Cl basic distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"Cl_basic",
-					"", 
-					"", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"Basic_Lift_Coefficient_Distributions");
-		}
-
 		//C CL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_cCL_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_cCL_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7659,94 +7573,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"cCl_Distributions");
 		}		
 
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_cCL_ADDITIONAL_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionAdditionalLoad().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("cCl additional distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"cCl_add.",
-					"", 
-					"m", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"cCl_Additional_Distributions");
-		}	
-
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_cCL_BASIC_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistributionBasicLoad().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("cCl basic distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"cCl_basic",
-					"", 
-					"m", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"cCl_Basic_Distributions");
-		}	
-
 		// GAMMA DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_GAMMA_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_GAMMA_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7789,96 +7617,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"Gamma_Distributions");
 		}
 
-		// GAMMA ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_GAMMA_ADDITIONAL_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionAdditionalLoad().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("Gamma additional distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"Gamma_add.",
-					"", 
-					"", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"Gamma_Additional_Distributions");
-		}
-
-		// GAMMA BASIC DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_GAMMA_BASIC_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistributionBasicLoad().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("Gamma basic distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"Gamma_basic",
-					"", 
-					"", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"Gamma_Basic_Distributions");
-		}
-
 		//LOAD -------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_TOTAL_LOAD_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_TOTAL_LOAD_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7921,96 +7661,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"Total_load_Distributions");
 		}
 
-		//ADDITIONAL LOAD -------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_ADDITIONAL_LOAD_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAdditionalLoadDistribution().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("Additional load distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"Additional_load",
-					"", 
-					"Newton", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"Additional_load_Distributions");
-		}		
-
-		//BASIC LOAD -------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_BASIC_LOAD_DISTRIBUTION)) {
-
-			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
-			legend  = new ArrayList<>(); 
-
-			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
-				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getBasicLoadDistribution().get(
-						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
-						.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
-						));
-				legend.add("Basic load distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i) + " deg");
-			}
-
-			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-			legendString = new String[xVectorMatrix.size()];
-
-			for(int i=0; i <xVectorMatrix.size(); i++){
-				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
-				legendString [i] = legend.get(i);
-			}
-
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					null, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"Basic_load",
-					"", 
-					"Newton", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"Basic_load_Distributions");
-		}
-
 		// MOMENT-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -18104,9 +17756,11 @@ public class ACAerodynamicAndStabilityManagerV {
 								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER), 
-								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
 								_liftingSurfaceAerodynamicManagers
 								.get(ComponentEnum.WING)
 								.getXacLRF()
@@ -18344,7 +17998,7 @@ public class ACAerodynamicAndStabilityManagerV {
 			//=======================================================================================
 			// Calculating total equilibrium Drag coefficient ... CDtot_e
 			//=======================================================================================
-			
+			_3DHorizontalTailPolarCurveForElevatorDeflection = new HashMap<>();
 			_deltaEForEquilibrium.stream().forEach(de -> {
 		
 				int i = _theAerodynamicBuilderInterface.getDeltaElevatorList().indexOf(de);
@@ -18363,15 +18017,17 @@ public class ACAerodynamicAndStabilityManagerV {
 			.forEach(cd -> {
 				temporaryDragCurveForElevatorDeflection.add(cd + _deltaCDElevatorList.get(i));
 			});
+			
+			// FIXME: SINCE THERE ARE MANY dee WITH THE SAME VALUE THE MAP CANNOT BE FILLED !!  
 			_3DHorizontalTailPolarCurveForElevatorDeflection.put(
 					de, 
 					temporaryDragCurveForElevatorDeflection
 					);
 			});
 
-			
 			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
 				_horizontalTailEquilibriumCoefficient = new ArrayList<>();
+				
 				
 				_horizontalTailEquilibriumCoefficient = 
 					DragCalc.calculateTrimmedPolar(
@@ -18399,8 +18055,21 @@ public class ACAerodynamicAndStabilityManagerV {
 						_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
 						_alphaBodyList));
 			});
+			
+			//=======================================================================================
+			// Calculating neutral point position vs alpha body ... 
+			//=======================================================================================
+			
+			// TODO
+			
+			//=======================================================================================
+			// Calculating MSS position vs alpha body ...
+			//=======================================================================================
+			
+			// TODO
 		}
 	}
+	
 	//............................................................................
 	// END Longitudinal Stability INNER CLASS
 	//............................................................................

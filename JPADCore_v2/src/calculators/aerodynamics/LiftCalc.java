@@ -1785,7 +1785,7 @@ public class LiftCalc {
 		List<Double> swf = new ArrayList<Double>();
 		for(int i=0; i<flapTypeIndex.size(); i++) {
 			if(flapTypeIndex.get(i) == 3.0)
-				cLalphaFlapList.add(cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue());
+				cLalphaFlapList.add(cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()/flapTypeIndex.size());
 			else
 				cLalphaFlapList.add(
 						cLAlphaClean.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
@@ -1807,13 +1807,19 @@ public class LiftCalc {
 
 		cLAlphaFlap /= swfTot;
 		
-		resultsMap.put(
-				HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT,
-				Amount.valueOf(
-						cLAlphaFlap,
-						NonSI.DEGREE_ANGLE.inverse()
-						)
-				);
+		if(flapTypeIndex.size() == 1 && flapTypeIndex.get(0) == 3.0)
+			resultsMap.put(
+					HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT,
+					cLAlphaClean
+					);
+		else
+			resultsMap.put(
+					HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT,
+					Amount.valueOf(
+							cLAlphaFlap,
+							NonSI.DEGREE_ANGLE.inverse()
+							)
+					);
 		
 		//---------------------------------------------------------------
 		// deltaCD
