@@ -675,7 +675,7 @@ public class ReaderWriter{
 			String wingPolarDrag = reader.getXMLPropertyByPath("//plot/drag/wing/polar_drag");
 			if (wingPolarDrag != null) {
 				if(wingPolarDrag.equalsIgnoreCase("TRUE")) 
-					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_CLEAN);
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE);
 			}
 
 			// CD vs Alpha wing highlift

@@ -5458,6 +5458,70 @@ public class ACAerodynamicAndStabilityManagerM {
 						);
 			}
 			
+			// DRAG BREAKDOWN---------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE)) {
+
+				xVector = new ArrayList<Double>();
+				yVector = new ArrayList<Double>();
+				
+				xVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+						));
+				yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+						MyArrayUtils.convertToDoublePrimitive(yVector),
+						null, 
+						null, 
+						null, 
+						null, 
+						"CD",
+						"CL",
+						"", 
+						"",
+						wingPlotFolderPath,
+						"Polar_Curve",
+						false
+						);
+				
+			}
+			
+			// MOMENT CURVE---------------------------------------------------------------------------
+			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_CURVE_CLEAN)) {
+
+				xVector = new ArrayList<Double>();
+				yVector = new ArrayList<Double>();
+
+				//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+				yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
+
+				MyChartToFileUtils.plotNoLegend(
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+						MyArrayUtils.convertToDoublePrimitive(yVector),
+						null, 
+						null, 
+						null, 
+						null, 
+						"alpha",
+						"CM",
+						"deg", 
+						"",
+						wingPlotFolderPath,
+						"Moment_Coefficient_Curve",
+						false
+						);
+			}
+			
 		// STALL PATH-------------------------------------------------------------------------------
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
 			
@@ -5545,7 +5609,96 @@ public class ACAerodynamicAndStabilityManagerM {
 					"", 
 					legendString, 
 					wingPlotFolderPath,
-					"Lift_Coefficient_Distributions_Clean_Configuration");
+					"Lift_Coefficient_Distributions");
+		}
+		
+		// DRAG COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_DRAG_DISTRIBUTION)) {
+			
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+			
+			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
+				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
+						));
+				legend.add("Cd distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i) + " deg");
+			}
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+			
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+			
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
+					null, 
+					null, 
+					null, 
+					null,
+					"eta", 
+					"Cd",
+					"", 
+					"", 
+					legendString, 
+					wingPlotFolderPath,
+					"Drag_Coefficient_Distributions");
+		}
+		
+		// MOMENT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION)) {
+			
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+			
+			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
+				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
+						));
+				legend.add("Cm distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i) + " deg");
+			}
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+			
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+			
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
+					null, 
+					null, 
+					null, 
+					null,
+					"eta", 
+					"Cm",
+					"", 
+					"", 
+					legendString, 
+					wingPlotFolderPath,
+					"Moment_Coefficient_Distributions");
+		}
 		
 		// CL ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_CL_ADDITIONAL_DISTRIBUTION)) {
@@ -6030,16 +6183,74 @@ public class ACAerodynamicAndStabilityManagerM {
 				}
 				
 		} // end climb cruise
+
 		
 		if (_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.TAKE_OFF || 
 				_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.LANDING ) {
+			
+			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_HIGH_LIFT)) {
+				
+				xVectorMatrix = new ArrayList<Double[]>();
+				yVectorMatxrix = new ArrayList<Double[]>();
+				legend  = new ArrayList<>(); 
+				
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift());
+				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.WING)
+								.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
+				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.WING)
+								.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
+
+				legend.add("Clean configuration");
+				legend.add("Configuration with high lift devices");
+				
+
+				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				legendString = new String[xVectorMatrix.size()];
+				
+				for(int i=0; i <xVectorMatrix.size(); i++){
+					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					legendString [i] = legend.get(i);
+				}
+				
+				MyChartToFileUtils.plotNOCSV(
+						xMatrix,
+						yMatrix, 
+						null, 
+						null, 
+						null, 
+						null,
+						"alpha", 
+						"C_l",
+						"deg", 
+						"", 
+						legendString, 
+						wingPlotFolderPath,
+						"Lift_Coefficient_curve");
+		}
+		// DRAG-------------------------------------------------------------------------------
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_HIGH_LIFT)) {
 			
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
 			legend  = new ArrayList<>(); 
 			
-			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
-			xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift());
+			xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
+					_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.WING)
+					.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
+					));
+			xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
+					_theAerodynamicBuilderInterface.getComponentTaskList()
+					.get(ComponentEnum.WING)
+					.get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
+					));
 			yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 					_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
@@ -6076,10 +6287,56 @@ public class ACAerodynamicAndStabilityManagerM {
 					"", 
 					legendString, 
 					wingPlotFolderPath,
-					"Lift_Coefficient_curve");
+					"Polar_curve");
 
 		}
 		
+		// MOMENT ----------------
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_CURVE_HIGH_LIFT)) {
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+			
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+			xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift());
+			yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
+					_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.WING)
+							.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
+			yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
+					_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.WING)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)));
+
+			legend.add("Clean configuration");
+			legend.add("Configuration with high lift devices");
+			
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+			
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+			
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
+					null, 
+					null, 
+					null, 
+					null,
+					"alpha", 
+					"C_M",
+					"deg", 
+					"", 
+					legendString, 
+					wingPlotFolderPath,
+					"Moment_Coefficient_curve");
+		}
 		// STALL PATH-------------------------------------------------------------------------------
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
 			
@@ -6168,6 +6425,95 @@ public class ACAerodynamicAndStabilityManagerM {
 					legendString, 
 					wingPlotFolderPath,
 					"Lift_Coefficient_Distributions_Clean_Configuration");
+		}
+		
+		// DRAG COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_DRAG_DISTRIBUTION)) {
+			
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+			
+			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
+				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
+						));
+				legend.add("Cd distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i) + " deg");
+			}
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+			
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+			
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
+					null, 
+					null, 
+					null, 
+					null,
+					"eta", 
+					"Cd",
+					"", 
+					"", 
+					legendString, 
+					wingPlotFolderPath,
+					"Drag_Coefficient_Distributions_Clean_Configuration");
+		}
+		
+		
+		// MOMENT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION)) {
+			
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+			
+			for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
+				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.WING)
+						.get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
+						));
+				legend.add("Cm distribution at alpha = " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i) + " deg");
+			}
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+			
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+			
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
+					null, 
+					null, 
+					null, 
+					null,
+					"eta", 
+					"Cm",
+					"", 
+					"", 
+					legendString, 
+					wingPlotFolderPath,
+					"Moment_Coefficient_Distributions_Clean_Configuration");
 		}
 		
 		// CL ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
@@ -11399,7 +11745,7 @@ public class ACAerodynamicAndStabilityManagerM {
 
 		if(wingPolarCurveBreakdownPlotPerformString != null) {
 			if(wingPolarCurveBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
-				plotList.add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_CLEAN_BREAKDOWN);
+				plotList.add(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE);
 		}
 		
 		//----------------------------------------------------------------

@@ -2593,7 +2593,7 @@ public class StabilityExecutableManager {
 		// CD
 		//------------------------------------------------------------------------------------------------------------
 		
-		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE_CLEAN)){
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE)){
 			if(this._wingDragMethod==MethodEnum.AIRFOIL_INPUT || this._wingDragMethod==MethodEnum.PARASITE_AIRFOIL_INPUT){
 			List<Double[]> xList = new ArrayList<>();
 			List<Double[]> yList = new ArrayList<>();
