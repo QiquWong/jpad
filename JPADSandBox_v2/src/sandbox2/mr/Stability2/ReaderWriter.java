@@ -692,7 +692,7 @@ public class ReaderWriter{
 			String horizontalTailPolarDrag = reader.getXMLPropertyByPath("//plot/drag/horizontal_tail/polar_drag");
 			if (horizontalTailPolarDrag != null) {
 				if(horizontalTailPolarDrag.equalsIgnoreCase("TRUE")) 
-					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN);
+					theStabilityCalculator.getPlotList().add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE);
 			}
 
 			//MOMENT

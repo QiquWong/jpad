@@ -7046,12 +7046,14 @@ public class ACAerodynamicAndStabilityManagerM {
 		}	
 
 		
+		
+		
 		//-----------------------------------------------------------------------------------------------------------------------
 		//HORIZONTAL TAIL--------------------------------------------------------------------------------------------------------
 		//-----------------------------------------------------------------------------------------------------------------------
 		
 		// LIFT CURVE---------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_LIFT_CURVE_CLEAN)) {
 
 			xVector = new ArrayList<Double>();
 			yVector = new ArrayList<Double>();
@@ -7081,7 +7083,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// DRAG BREAKDOWN---------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_POLAR_CURVE)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE)) {
 
 			xVector = new ArrayList<Double>();
 			yVector = new ArrayList<Double>();
@@ -7115,7 +7117,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// MOMENT CURVE---------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_CURVE_CLEAN)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_CURVE_CLEAN)) {
 
 			xVector = new ArrayList<Double>();
 			yVector = new ArrayList<Double>();
@@ -7145,7 +7147,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// STALL PATH-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_STALL_PATH)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7191,7 +7193,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// LIFT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_CL_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_CL_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7235,7 +7237,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// DRAG COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_DRAG_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_DRAG_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7279,7 +7281,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// MOMENT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7323,7 +7325,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// CL ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_CL_ADDITIONAL_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_CL_ADDITIONAL_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7367,7 +7369,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// CL ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_CL_BASIC_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_CL_BASIC_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7411,7 +7413,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		//C CL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_cCL_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_cCL_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7454,7 +7456,7 @@ public class ACAerodynamicAndStabilityManagerM {
 					"cCl_Distributions");
 		}		
 
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_cCL_ADDITIONAL_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_cCL_ADDITIONAL_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7497,7 +7499,7 @@ public class ACAerodynamicAndStabilityManagerM {
 					"cCl_Additional_Distributions");
 		}	
 
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_cCL_BASIC_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_cCL_BASIC_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7541,7 +7543,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}	
 
 		// GAMMA DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_GAMMA_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_GAMMA_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7585,7 +7587,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// GAMMA ADDITIONAL DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_GAMMA_ADDITIONAL_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_GAMMA_ADDITIONAL_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7629,7 +7631,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// GAMMA BASIC DISTRIBUTION-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_GAMMA_BASIC_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_GAMMA_BASIC_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7673,7 +7675,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		//LOAD -------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_TOTAL_LOAD_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_TOTAL_LOAD_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7717,7 +7719,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		//ADDITIONAL LOAD -------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_ADDITIONAL_LOAD_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_ADDITIONAL_LOAD_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7761,7 +7763,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}		
 
 		//BASIC LOAD -------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_BASIC_LOAD_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_BASIC_LOAD_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -7805,7 +7807,7 @@ public class ACAerodynamicAndStabilityManagerM {
 		}
 
 		// MOMENT-------------------------------------------------------------------------------
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.WING_MOMENT_DISTRIBUTION)) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_MOMENT_DISTRIBUTION)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatxrix = new ArrayList<Double[]>();
@@ -12853,7 +12855,7 @@ public class ACAerodynamicAndStabilityManagerM {
 
 		if(hTailPolarCurveBreakdownPlotPerformString != null) {
 			if(hTailPolarCurveBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
-				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN_BREAKDOWN);
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN);
 		}
 		
 		//----------------------------------------------------------------

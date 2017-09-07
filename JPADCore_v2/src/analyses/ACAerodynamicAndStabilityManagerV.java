@@ -13058,7 +13058,7 @@ public class ACAerodynamicAndStabilityManagerV {
 
 		if(hTailPolarCurveBreakdownPlotPerformString != null) {
 			if(hTailPolarCurveBreakdownPlotPerformString.equalsIgnoreCase("TRUE")) 
-				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN_BREAKDOWN);
+				plotList.add(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN);
 		}
 		
 		//----------------------------------------------------------------

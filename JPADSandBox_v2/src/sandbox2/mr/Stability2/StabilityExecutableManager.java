@@ -2682,7 +2682,7 @@ public class StabilityExecutableManager {
 		}
 		
 		//htail--------------------------
-		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE_CLEAN)){
+		if(_plotList.contains(AerodynamicAndStabilityPlotEnum.HTAIL_POLAR_CURVE)){
 			if(this._hTailDragMethod==MethodEnum.AIRFOIL_INPUT || this._hTailDragMethod==MethodEnum.PARASITE_AIRFOIL_INPUT){
 			List<Double[]> xList = new ArrayList<>();
 			List<Double[]> yList = new ArrayList<>();
