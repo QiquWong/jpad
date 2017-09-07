@@ -6496,7 +6496,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						.get(ComponentEnum.WING)
 						.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE)
 						));
-				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
+				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.WING)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
