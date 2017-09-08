@@ -17349,7 +17349,7 @@ public class ACAerodynamicAndStabilityManagerV {
 			dataListlongitudinalStaticStabilityAndControl.add(alphaBodyArray);
 			currentBoldIndex = currentBoldIndex+1;
 
-			for (int i = 0; i < _theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++) {
+			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
 
 				dataListlongitudinalStaticStabilityAndControl.add(new Object[] {""});
 				dataListlongitudinalStaticStabilityAndControl.add(new Object[] {"Xcg = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(i)*100 + " %"});
@@ -17446,6 +17446,342 @@ public class ACAerodynamicAndStabilityManagerV {
 			}
 		}
 		
+		//--------------------------------------------------------------------------------
+		// DIRECTIONAL STABILITY AND CONTROL RESULTS:
+		//--------------------------------------------------------------------------------
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+
+			Sheet directionalStabilityAndControlSheet = wb.createSheet("DIRECTIONAL STABILITY AND CONTROL");
+			List<Object[]> dataListDirectionalStabilityAndControl = new ArrayList<>();
+
+			List<Integer> boldRowIndex = new ArrayList<>();
+			int currentBoldIndex = 1;
+
+			dataListDirectionalStabilityAndControl.add(new Object[] {"Description","Unit","Value"});
+
+			Object[] betaArray = new Object[getBetaList().size()+2];
+			betaArray[0] = "Beta";
+			betaArray[1] = "deg";
+			for(int i=0; i<getBetaList().size(); i++) 
+				betaArray[i+2] = getBetaList().get(i).doubleValue(NonSI.DEGREE_ANGLE);			
+
+			dataListDirectionalStabilityAndControl.add(betaArray);
+			currentBoldIndex = currentBoldIndex+1;
+
+			for (int i = 0; i < _theAerodynamicBuilderInterface.getXCGAircraft().size(); i++) {
+
+				dataListDirectionalStabilityAndControl.add(new Object[] {""});
+				dataListDirectionalStabilityAndControl.add(new Object[] {"Xcg = " + _theAerodynamicBuilderInterface.getXCGAircraft().get(i)*100 + " %"});
+				currentBoldIndex = currentBoldIndex+2;
+				boldRowIndex.add(currentBoldIndex);
+
+				dataListDirectionalStabilityAndControl.add(new Object[] {""});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {
+						"CN_beta_vertical_tail",
+						"1/deg",
+						_cNbVertical.get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.AIRCRAFT)
+								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+								).get(i)._2()});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {
+						"CN_beta_fuselage",
+						"1/deg",
+						_cNbFuselage.get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.AIRCRAFT)
+								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+								).get(i)._2()});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {
+						"CN_beta_wing",
+						"1/deg",
+						_cNbWing.get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.AIRCRAFT)
+								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+								).get(i)._2()});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {
+						"CN_beta_total",
+						"1/deg",
+						_cNbTotal.get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.AIRCRAFT)
+								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+								).get(i)._2()});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {""});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] deltaRudderArray = new Object[_theAerodynamicBuilderInterface.getDeltaRudderList().size()+2];
+				deltaRudderArray[0] = "Delta_rudder";
+				deltaRudderArray[1] = "deg";
+				for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) 
+					deltaRudderArray[j+2] = _theAerodynamicBuilderInterface.getDeltaRudderList().get(j).doubleValue(NonSI.DEGREE_ANGLE);			
+				
+				dataListDirectionalStabilityAndControl.add(deltaRudderArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] cNdrArray = new Object[_cNdr.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).keySet().size()+2];
+				cNdrArray[0] = "CN_delta_rudder";
+				cNdrArray[1] = "1/deg";
+				for(int j=0; 
+						j<_cNdr.get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.AIRCRAFT)
+								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+								).keySet().size();
+						j++) 
+					cNdrArray[j+2] = _cNdr.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2();		
+				
+				dataListDirectionalStabilityAndControl.add(cNdrArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {""});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] cNVerticalTailArray = new Object[_cNVertical.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size()+2];
+				cNVerticalTailArray[0] = "CN_vertical_tail";
+				cNVerticalTailArray[1] = "";
+				for(int j=0; 
+						j<_cNVertical.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size(); 
+						j++) 
+					cNVerticalTailArray[j+2] = _cNVertical.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(i)._2().get(j);
+				
+				dataListDirectionalStabilityAndControl.add(cNVerticalTailArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] cNFuslegaArray = new Object[_cNFuselage.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size()+2];
+				cNFuslegaArray[0] = "CN_fuselage";
+				cNFuslegaArray[1] = "";
+				for(int j=0; 
+						j<_cNFuselage.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size(); 
+						j++) 
+					cNFuslegaArray[j+2] = _cNFuselage.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(i)._2().get(j);
+				
+				dataListDirectionalStabilityAndControl.add(cNFuslegaArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] cNWingArray = new Object[_cNWing.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size()+2];
+				cNWingArray[0] = "CN_wing";
+				cNWingArray[1] = "";
+				for(int j=0; 
+						j<_cNWing.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size(); 
+						j++) 
+					cNWingArray[j+2] = _cNWing.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(i)._2().get(j);
+				
+				dataListDirectionalStabilityAndControl.add(cNWingArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] cNTotalArray = new Object[_cNTotal.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size()+2];
+				cNTotalArray[0] = "CN_total";
+				cNTotalArray[1] = "";
+				for(int j=0; 
+						j<_cNTotal.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(i)._2().size(); 
+						j++) 
+					cNTotalArray[j+2] = _cNTotal.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(i)._2().get(j);
+				
+				dataListDirectionalStabilityAndControl.add(cNTotalArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {""});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				for (int j = 0; j < _theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++) {
+
+					Object[] cNDueToDeltaRudderArray = new Object[_cNDueToDeltaRudder.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2().size()+2];
+					cNDueToDeltaRudderArray[0] = "CN at delta rudder = " + _theAerodynamicBuilderInterface.getDeltaRudderList().get(j).doubleValue(NonSI.DEGREE_ANGLE) + " deg";
+					cNDueToDeltaRudderArray[1] = "";
+					for(int k=0; 
+							k<_cNDueToDeltaRudder.get(
+									_theAerodynamicBuilderInterface.getComponentTaskList()
+									.get(ComponentEnum.AIRCRAFT)
+									.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+									).get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2().size(); 
+							k++) 
+						cNDueToDeltaRudderArray[k+2] = _cNDueToDeltaRudder.get(
+								_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.AIRCRAFT)
+								.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+								).get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j)).get(i)._2().get(k);
+					
+					dataListDirectionalStabilityAndControl.add(cNDueToDeltaRudderArray);
+					currentBoldIndex = currentBoldIndex+1;
+					
+				}
+				
+				dataListDirectionalStabilityAndControl.add(new Object[] {""});
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] deltaRudderEquilibriumArray = new Object[_betaOfEquilibrium.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+				deltaRudderEquilibriumArray[0] = "Delta_rudder equilibrium";
+				deltaRudderEquilibriumArray[1] = "deg";
+				for(int j=0; 
+						j<_betaOfEquilibrium.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); 
+						j++) 
+					deltaRudderEquilibriumArray[j+2] = _betaOfEquilibrium.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+					._1().doubleValue(NonSI.DEGREE_ANGLE);			
+				
+				dataListDirectionalStabilityAndControl.add(deltaRudderEquilibriumArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] betaEquilibriumArray = new Object[_betaOfEquilibrium.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+				betaEquilibriumArray[0] = "Beta equilibrium";
+				betaEquilibriumArray[1] = "deg";
+				for(int j=0; 
+						j<_betaOfEquilibrium.get(
+						_theAerodynamicBuilderInterface.getComponentTaskList()
+						.get(ComponentEnum.AIRCRAFT)
+						.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+						).get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); 
+						j++) 
+					betaEquilibriumArray[j+2] = _betaOfEquilibrium.get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.AIRCRAFT)
+							.get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)
+							).get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+					._2().doubleValue(NonSI.DEGREE_ANGLE);			
+				dataListDirectionalStabilityAndControl.add(betaEquilibriumArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+			}
+
+			//------------------------------------------------------------------------------------------------------------------------
+			// CREATING CELLS ...
+			//--------------------------------------------------------------------------------
+			Row rowDirectionalStabilityAndControl = directionalStabilityAndControlSheet.createRow(0);
+			Object[] objArrDirectionalStabilityAndControl = dataListDirectionalStabilityAndControl.get(0);
+			int cellnumDirectionalStabilityAndControl = 0;
+			for (Object obj : objArrDirectionalStabilityAndControl) {
+				Cell cell = rowDirectionalStabilityAndControl.createCell(cellnumDirectionalStabilityAndControl++);
+				cell.setCellStyle(styleHead);
+				if (obj instanceof Date) {
+					cell.setCellValue((Date) obj);
+				} else if (obj instanceof Boolean) {
+					cell.setCellValue((Boolean) obj);
+				} else if (obj instanceof String) {
+					cell.setCellValue((String) obj);
+				} else if (obj instanceof Double) {
+					cell.setCellValue((Double) obj);
+				}
+			}
+
+			int rownumDirectionalStabilityAndControl = 1;
+			for (int i = 1; i < dataListDirectionalStabilityAndControl.size(); i++) {
+				objArrDirectionalStabilityAndControl = dataListDirectionalStabilityAndControl.get(i);
+				rowDirectionalStabilityAndControl = directionalStabilityAndControlSheet.createRow(rownumDirectionalStabilityAndControl++);
+				cellnumDirectionalStabilityAndControl = 0;
+				Boolean isBold = Boolean.FALSE;
+				for(int bri=0; bri<boldRowIndex.size(); bri++) 
+					if(rownumDirectionalStabilityAndControl == boldRowIndex.get(bri))
+						isBold = Boolean.TRUE;
+				for (Object obj : objArrDirectionalStabilityAndControl) {
+					Cell cell = rowDirectionalStabilityAndControl.createCell(cellnumDirectionalStabilityAndControl++);
+					if(isBold == Boolean.TRUE)
+						cell.setCellStyle(styleHeader);
+					if (obj instanceof Date) {
+						cell.setCellValue((Date) obj);
+					} else if (obj instanceof Boolean) {
+						cell.setCellValue((Boolean) obj);
+					} else if (obj instanceof String) {
+						cell.setCellValue((String) obj);
+					} else if (obj instanceof Double) {
+						cell.setCellValue((Double) obj);
+					}
+				}
+
+				directionalStabilityAndControlSheet.setDefaultColumnWidth(35);
+				directionalStabilityAndControlSheet.setColumnWidth(1, 2048);
+				for(int k=2; k<100; k++)
+					directionalStabilityAndControlSheet.setColumnWidth(k, 3840);
+
+			}
+		}
+		
         //////////////////////////////////////////////////////////////////////
 		// TODO : CONTINUE WITH ALL THE AIRCRAFT ANALYSES (EACH PER SHEET). //
         //////////////////////////////////////////////////////////////////////
@@ -17471,6 +17807,22 @@ public class ACAerodynamicAndStabilityManagerV {
 				.append("\t-------------------------------------\n")
 				;
 
+		if(_writeWing) {
+			
+		}
+		if(_writeHTail) {
+			
+		}
+		if(_writeVTail) {
+			
+		}
+		if(_writeFuselage) {
+			
+		}
+		if(_writeNacelle) {
+			
+		}
+		
 		/*
 		 * TODO : FILL ME !!
 		 *        CHECK WHICH DATA HAVE TO BE REPORTED SINCE THEY CAN BE MASSIVE 

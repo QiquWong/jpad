@@ -28,7 +28,7 @@
 				<alpha_body_final unit="deg">23</alpha_body_final>
 				<number_of_alpha_body>34</number_of_alpha_body>
 				<beta_initial unit="deg">0</beta_initial>
-				<beta_final unit="deg">20</beta_final>
+				<beta_final unit="deg">30</beta_final>
 				<number_of_beta>21</number_of_beta>
 				<alpha_wing_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_wing_array_for_distributions> <!-- these distributions are only in CLEAN configuration -->
 				<alpha_horizontal_tail_array_for_distributions unit="deg">0.0;2.0;10.0</alpha_horizontal_tail_array_for_distributions>
@@ -37,7 +37,7 @@
 				<number_of_points_semispawise_horizontal_tail>50</number_of_points_semispawise_horizontal_tail>
 				<number_of_points_semispawise_vertical_tail>50</number_of_points_semispawise_vertical_tail>
 				<delta_elevator_array unit="deg">-5.0;-10.0;-15.0;-20.0;-25.0</delta_elevator_array>
-				<delta_rudder_array unit="deg">5.0;10.0;15.0;20.0;25.0</delta_rudder_array>
+				<delta_rudder_array unit="deg">5.0;10.0;15.0;20.0;25.0;30.0</delta_rudder_array>
 				<adimensional_wing_momentum_pole>0.25</adimensional_wing_momentum_pole> 
 				<adimensional_horizontal_tail_momentum_pole>0.25</adimensional_horizontal_tail_momentum_pole> 
 				<adimensional_vertical_tail_momentum_pole>0.25</adimensional_vertical_tail_momentum_pole> 
@@ -357,7 +357,7 @@
 				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<longitudinal_static_stability perform="FALSE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<lateral_static_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<directional_static_stability perform="FALSE" method="VEDSC_USAFDATCOM_WING"/>
+				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 			</aircraft_analyses>
         </aerodynamics_and_stability>
