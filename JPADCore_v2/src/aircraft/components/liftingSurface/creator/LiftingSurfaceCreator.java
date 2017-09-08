@@ -3450,7 +3450,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				}
 			}
 			
-			reportDiscretizedVariables();
+//			reportDiscretizedVariables();
 
 			sb
 			.append("\t=====================================\n")
@@ -3487,7 +3487,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					sb.append(symmetricFlap.toString());
 				}
 			}
-			reportDiscretizedVariables();
+//			reportDiscretizedVariables();
 
 			sb
 			.append("\t=====================================\n")
@@ -3524,7 +3524,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					sb.append(symmetricFlap.toString());
 				}
 			}
-			reportDiscretizedVariables();
+//			reportDiscretizedVariables();
 
 			sb
 			.append("\t=====================================\n")

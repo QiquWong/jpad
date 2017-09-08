@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -263,6 +264,8 @@ public class CompleteAnalysisTest extends Application {
 //					highLiftDatabaseReader,
 //					fusDesDatabaseReader,
 //					veDSCDatabaseReader);
+			
+			
 			
 			// activating system.out
 			System.setOut(originalOut);			
