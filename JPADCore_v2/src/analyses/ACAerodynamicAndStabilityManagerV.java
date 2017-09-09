@@ -7289,7 +7289,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					null, 
 					null, 
 					null, 
-					"alpha",
+					"alpha_h",
 					"CL",
 					"deg", 
 					"",
@@ -7353,7 +7353,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					null, 
 					null, 
 					null, 
-					"alpha",
+					"alpha_h",
 					"CM",
 					"deg", 
 					"",
@@ -7405,8 +7405,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"Stall_Path");
+					horizontalTailPlotFolderPath,
+					"Stall_Path"+ legendStringCondition);
 		}
 
 		// LIFT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
@@ -7449,8 +7449,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"Lift_Coefficient_Distributions");
+					horizontalTailPlotFolderPath ,
+					"Lift_Coefficient_Distributions"+ legendStringCondition);
 		}
 
 		// DRAG COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
@@ -7493,8 +7493,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"Drag_Coefficient_Distributions");
+					horizontalTailPlotFolderPath ,
+					"Drag_Coefficient_Distributions"+ legendStringCondition);
 		}
 
 		// MOMENT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
@@ -7537,8 +7537,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"Moment_Coefficient_Distributions");
+					horizontalTailPlotFolderPath,
+					"Moment_Coefficient_Distributions"+ legendStringCondition);
 		}
 
 		//C CL DISTRIBUTION-------------------------------------------------------------------------------
@@ -7581,8 +7581,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"m", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"cCl_Distributions");
+					horizontalTailPlotFolderPath,
+					"cCl_Distributions"+ legendStringCondition);
 		}		
 
 		// GAMMA DISTRIBUTION-------------------------------------------------------------------------------
@@ -7625,8 +7625,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"Gamma_Distributions");
+					horizontalTailPlotFolderPath,
+					"Gamma_Distributions"+ legendStringCondition);
 		}
 
 		//LOAD -------------------------------------------------------------------------------
@@ -7669,8 +7669,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"Newton", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"Total_load_Distributions");
+					horizontalTailPlotFolderPath,
+					"Total_load_Distributions"+ legendStringCondition);
 		}
 
 		// MOMENT-------------------------------------------------------------------------------
@@ -7711,8 +7711,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"Nm", 
 					legendString, 
-					horizontalTailPlotFolderPath + legendStringCondition,
-					"Moment_Distributions");
+					horizontalTailPlotFolderPath,
+					"Moment_Distributions"+ legendStringCondition);
 		}
 		
 		
@@ -7740,12 +7740,12 @@ public class ACAerodynamicAndStabilityManagerV {
 					null, 
 					null, 
 					null, 
-					"alpha",
+					"beta",
 					"CL",
 					"deg", 
 					"",
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Lift_Coefficient_Curve",
+					verticalTailPlotFolderPath ,
+					"Lift_Coefficient_Curve"+ legendStringCondition,
 					false
 					);
 		}
@@ -7777,8 +7777,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"CL",
 					"", 
 					"",
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Polar_Curve",
+					verticalTailPlotFolderPath ,
+					"Polar_Curve"+ legendStringCondition,
 					false
 					);
 
@@ -7804,7 +7804,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					null, 
 					null, 
 					null, 
-					"alpha",
+					"beta",
 					"CM",
 					"deg", 
 					"",
@@ -7900,8 +7900,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Lift_Coefficient_Distributions");
+					verticalTailPlotFolderPath,
+					"Lift_Coefficient_Distributions"+ legendStringCondition);
 		}
 
 		// DRAG COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
@@ -7944,8 +7944,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Drag_Coefficient_Distributions");
+					verticalTailPlotFolderPath ,
+					"Drag_Coefficient_Distributions"+ legendStringCondition);
 		}
 
 		// MOMENT COEFFICIENT DISTRIBUTION-------------------------------------------------------------------------------
@@ -7988,8 +7988,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Moment_Coefficient_Distributions");
+					verticalTailPlotFolderPath ,
+					"Moment_Coefficient_Distributions"+ legendStringCondition);
 		}
 
 		//C CL DISTRIBUTION-------------------------------------------------------------------------------
@@ -8032,8 +8032,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"m", 
 					legendString, 
-					verticalTailPlotFolderPath + legendStringCondition,
-					"cCl_Distributions");
+					verticalTailPlotFolderPath,
+					"cCl_Distributions"+ legendStringCondition);
 		}		
 
 		// GAMMA DISTRIBUTION-------------------------------------------------------------------------------
@@ -8076,8 +8076,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"", 
 					legendString, 
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Gamma_Distributions");
+					verticalTailPlotFolderPath,
+					"Gamma_Distributions" + legendStringCondition);
 		}
 
 		//LOAD -------------------------------------------------------------------------------
@@ -8120,8 +8120,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"Newton", 
 					legendString, 
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Total_load_Distributions");
+					verticalTailPlotFolderPath ,
+					"Total_load_Distributions"+ legendStringCondition);
 		}
 
 		// MOMENT-------------------------------------------------------------------------------
@@ -8162,8 +8162,8 @@ public class ACAerodynamicAndStabilityManagerV {
 					"", 
 					"Nm", 
 					legendString, 
-					verticalTailPlotFolderPath + legendStringCondition,
-					"Moment_Distributions");
+					verticalTailPlotFolderPath,
+					"Moment_Distributions"+ legendStringCondition);
 		}
 		//-----------------------------------------------------------------------------------------------------------------------
 		//FUSELAGE--------------------------------------------------------------------------------------------------------
@@ -8187,7 +8187,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						null, 
 						null, 
 						null, 
-						"alpha",
+						"alpha_b", 
 						"CD",
 						"deg", 
 						"",
@@ -8215,7 +8215,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					null, 
 					null, 
 					null, 
-					"alpha",
+					"alpha_b", 
 					"CM",
 					"deg", 
 					"",
@@ -8247,7 +8247,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					null, 
 					null, 
 					null, 
-					"alpha",
+					"alpha_b", 
 					"CD",
 					"deg", 
 					"",
@@ -8275,7 +8275,7 @@ public class ACAerodynamicAndStabilityManagerV {
 				null, 
 				null, 
 				null, 
-				"alpha",
+				"alpha_b", 
 				"CM",
 				"deg", 
 				"",
@@ -8287,6 +8287,512 @@ public class ACAerodynamicAndStabilityManagerV {
 		//-----------------------------------------------------------------------------------------------------------------------
 		//AIRCRAFT--------------------------------------------------------------------------------------------------------
 		//-----------------------------------------------------------------------------------------------------------------------
+	
+	//DOWNWASH-------------------------------------------------------------------------------
+	if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
+			xVector = new ArrayList<Double>();
+			yVector = new ArrayList<Double>();
+
+			
+			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+			yVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH))));
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+					MyArrayUtils.convertToDoublePrimitive(yVector),
+					null, 
+					null, 
+					null, 
+					null, 
+					"alpha_b", 
+					"epsilon",
+					"deg", 
+					"deg", 
+					aircraftPlotFolderPath,
+					"Downwash_Angle",
+					false
+					);
+		}
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
+		
+			xVector = new ArrayList<Double>();
+			yVector = new ArrayList<Double>();
+
+			
+			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+			yVector = _downwashGradientMap.get(Boolean.TRUE).get(
+					_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH));
+
+			MyChartToFileUtils.plotNoLegend(
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+					MyArrayUtils.convertToDoublePrimitive(yVector),
+					null, 
+					null, 
+					null, 
+					null, 
+					"alpha_b",  
+					"d_epsilon/d_alpha",
+					"deg", 
+					"", 
+					aircraftPlotFolderPath,
+					"Downwash_Gradient",
+					false
+					);
+		}
+		
+	}
+	
+	if(!_theAerodynamicBuilderInterface.getDownwashConstant()) {
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
+
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+						)));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.FALSE).get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+						)));
+				legend.add("Constant downwash gradient");
+				legend.add("Linear downwash gradient");
+			
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
+					null, 
+					null, 
+					null, 
+					null,
+					"alpha_b",  
+					"epsilon",
+					"deg", 
+					"deg", 
+					legendString, 
+					aircraftPlotFolderPath,
+					"Downwash_Angle");
+		}
+		
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
+
+			xVectorMatrix = new ArrayList<Double[]>();
+			yVectorMatxrix = new ArrayList<Double[]>();
+			legend  = new ArrayList<>(); 
+
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.TRUE).get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+						)));
+				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.FALSE).get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+						)));
+				legend.add("Constant downwash gradient");
+				legend.add("Linear downwash gradient");
+			
+
+			xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+			legendString = new String[xVectorMatrix.size()];
+
+			for(int i=0; i <xVectorMatrix.size(); i++){
+				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				legendString [i] = legend.get(i);
+			}
+
+			MyChartToFileUtils.plotNOCSV(
+					xMatrix,
+					yMatrix, 
+					null, 
+					null, 
+					null, 
+					null,
+					"alpha_b", 
+					"d_epsilon/d_alpha",
+					"deg", 
+					"", 
+					legendString, 
+					aircraftPlotFolderPath,
+					"Downwash_Gradient");
+		}
+	}
+	
+	//CL TOTAL -------------------------------------------------------------------------------
+	
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.CL_TOTAL)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalLiftCoefficient.get(
+							_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
+			legend.add("delta e = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"alpha_b",  
+				"CL",
+				"deg", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Total_Lift_Coefficient");
+	}
+	
+	//CD TOTAL -------------------------------------------------------------------------------
+	
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_POLAR_CURVE)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalLiftCoefficient.get(
+							_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalDragCoefficient.get(
+							_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
+			legend.add("delta e = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"CL",  
+				"CD",
+				"", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Total_Drag_Polar");
+	}
+	
+	//CM TOTAL -------------------------------------------------------------------------------
+	
+	for (int j = 0; j<_theAerodynamicBuilderInterface.getXCGAircraft().size(); j++){
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_MOMENT_CURVE_VS_ALPHA)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalMomentCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(j)).get(
+							_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
+			legend.add("delta e = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"alpha_b",  
+				"CM",
+				"deg", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Total_Moment_Coefficient_with respect_to_alpha_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(j));
+	}
+	
+	}
+	
+	//CM TOTAL -------------------------------------------------------------------------------
+	
+	for (int j = 0; j<_theAerodynamicBuilderInterface.getXCGAircraft().size(); j++){
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_MOMENT_CURVE_VS_CL)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalLiftCoefficient.get(
+							_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalMomentCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(j)).get(
+							_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
+			legend.add("delta e = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"CL",  
+				"CM",
+				"", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Total_Moment_Coefficient_with respect_to_CL_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(j));
+	}
+	
+	}
+	
+	
+	//CL TOTAL EQUILIBRIUM-------------------------------------------------------------------------------
+	
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalEquilibriumLiftCoefficient.get(
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
+			legend.add("Xcg = " + 
+					_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"alpha_b",  
+				"CL",
+				"deg", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Total_Equilibrium_Lift_Coefficient");
+	}
+	
+	//CD TOTAL EQUILIBRIUM-------------------------------------------------------------------------------
+	
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_POLAR_CURVE)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalEquilibriumLiftCoefficient.get(
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_totalEquilibriumDragCoefficient.get(
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
+			legend.add("Xcg = " + 
+					_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"CL", 
+				"CD",
+				"", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Total_Equilibrium_Polar_Curve");
+	}
+	
+	//CL HTAIL EQUILIBRIUM-------------------------------------------------------------------------------
+	
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE_HTAIL)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					_horizontalTailEquilibriumLiftCoefficient.get(
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
+			legend.add("Xcg = " + 
+					_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"alpha_b", 
+				"CL",
+				"deg", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Htail_Equilibrium_Lift_Coefficient");
+	}
+	
+	//DELTA E ELEVATOR EQUILIBRIUM-------------------------------------------------------------------------------
+	
+	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DELTA_ELEVATOR_EQUILIBRIUM)) {
+		
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatxrix = new ArrayList<Double[]>();
+		legend  = new ArrayList<>(); 
+
+		for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+			yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+					_deltaEEquilibrium.get(
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
+			legend.add("Xcg = " + 
+					_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+			legendString [i] = legend.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				null, 
+				null, 
+				null, 
+				null,
+				"alpha_b", 
+				"delta_e_eq",
+				"deg", 
+				"", 
+				legendString, 
+				aircraftPlotFolderPath,
+				"Delta_e_Elevator_Equilibrium");
+	}
+	
+
+//	TOTAL_CM_BREAKDOWN,
+//	TOTAL_CN_BREAKDOWN,
+//	TOTAL_CN_VS_BETA_VS_DELTA_RUDDER,
+//	DELTA_RUDDER_EQUILIBRIUM,
 	
 		//-----------------------------------------------------------------------
 		// TO HERE  -------------------------------------------------------
