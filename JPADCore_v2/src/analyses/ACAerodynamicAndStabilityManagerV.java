@@ -8782,12 +8782,57 @@ public class ACAerodynamicAndStabilityManagerV {
 				"alpha_b", 
 				"delta_e_eq",
 				"deg", 
-				"", 
+				"deg", 
 				legendString, 
 				aircraftPlotFolderPath,
 				"Delta_e_Elevator_Equilibrium");
 	}
 	
+	//CM BREAKDOWN-------------------------------------------------------------------------------
+	
+//	if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CM_BREAKDOWN)) {
+//		for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+//		xVectorMatrix = new ArrayList<Double[]>();
+//		yVectorMatxrix = new ArrayList<Double[]>();
+//		legend  = new ArrayList<>(); 
+//
+//		if (_theAerodynamicBuilderInterface.getTheAircraft().getWing() != null) {
+//			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+//			yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
+//					_theAerodynamicBuilderInterface.getComponentTaskList()
+//					.get(ComponentEnum.HORIZONTAL_TAIL)
+//					.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
+//			legend.add("Wing");
+//		}
+//		
+//
+//		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+//		legendString = new String[xVectorMatrix.size()];
+//
+//		for(int i=0; i <xVectorMatrix.size(); i++){
+//			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+//			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+//			legendString [i] = legend.get(i);
+//		}
+//
+//		MyChartToFileUtils.plotNOCSV(
+//				xMatrix,
+//				yMatrix, 
+//				null, 
+//				null, 
+//				null, 
+//				null,
+//				"alpha_b", 
+//				"CM",
+//				"deg", 
+//				"", 
+//				legendString, 
+//				aircraftPlotFolderPath,
+//				"Total_Moment_Coefficient_Breakdown_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(j));
+//	}
+//	}
+//	
 
 //	TOTAL_CM_BREAKDOWN,
 //	TOTAL_CN_BREAKDOWN,
