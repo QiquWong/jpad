@@ -470,10 +470,10 @@
 			<cD_total_vs_cL_total perform="TRUE"/>
 			<cM_total_vs_alpha perform="TRUE"/>
 			<cM_total_vs_cL_total perform="TRUE"/>
-			<cL_total_equilibrium_vs_alpha perform="TRUE"/>
-			<cL_horizontal_tail_equilibrium_vs_alpha perform="TRUE"/>
-			<cD_total_equilibrium_vs_cL_total_equilibrium perform="TRUE"/>
-			<delta_elevator_equilibrium_vs_alpha perform="TRUE"/>
+			<cL_total_equilibrium_vs_alpha perform="FALSE"/>
+			<cL_horizontal_tail_equilibrium_vs_alpha perform="FALSE"/>
+			<cD_total_equilibrium_vs_cL_total_equilibrium perform="FALSE"/>
+			<delta_elevator_equilibrium_vs_alpha perform="FALSE"/>
 			<cM_vs_alpha_breakdown perform="TRUE"/>
 			<cN_vs_beta_breakdown perform="TRUE"/>
 			<cN_vs_beta_delta_rudder perform="TRUE"/>
