@@ -259,24 +259,28 @@ public class ACAerodynamicAndStabilityManagerV {
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeTakeOff();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentTakeOff();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentTakeOff();
+			this._landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
 			break;
 		case CLIMB:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachClimb();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeClimb();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentClimb();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentClimb();
+			this._landingGearUsedDrag = 0.0;
 			break;
 		case CRUISE:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachCruise();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeCruise();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentCruise();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentCruise();
+			this._landingGearUsedDrag = 0.0;
 			break;
 		case LANDING:
 			this._currentMachNumber = _theAerodynamicBuilderInterface.getTheOperatingConditions().getMachLanding();
 			this._currentAltitude = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAltitudeLanding();
 			this._alphaBodyCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getAlphaCurrentLanding();
 			this._betaVTailCurrent = _theAerodynamicBuilderInterface.getTheOperatingConditions().getBetaCurrentLanding();
+			this._landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
 			break;
 		default:
 			break;
@@ -19942,21 +19946,6 @@ public class ACAerodynamicAndStabilityManagerV {
 	public class CalcTotalDragCoefficient {
 
 		public void fromAircraftComponents() {
-			
-			switch (_theAerodynamicBuilderInterface.getCurrentCondition()) {
-			case TAKE_OFF:
-				_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
-				break;
-			case CLIMB:
-				_landingGearUsedDrag = 0.0;
-				break;
-			case CRUISE:
-				_landingGearUsedDrag = 0.0;
-				break;
-			case LANDING:
-				_landingGearUsedDrag = _theAerodynamicBuilderInterface.getLandingGearDragCoefficient();
-				break;
-			}
 			
 			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
 			_totalDragCoefficient.put(
