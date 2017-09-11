@@ -5603,33 +5603,6 @@ public class ACAerodynamicAndStabilityManagerV {
 		List<Double> yVector = new ArrayList<Double>();
 		
 		// wing
-//		WING_LIFT_CURVE_CLEAN, d
-//		WING_STALL_PATH,d
-//		WING_CL_DISTRIBUTION,d
-//		WING_CL_ADDITIONAL_DISTRIBUTION,
-//		WING_CL_BASIC_DISTRIBUTION,
-//		WING_cCL_DISTRIBUTION,
-//		WING_cCL_ADDITIONAL_DISTRIBUTION,
-//		WING_cCL_BASIC_DISTRIBUTION,
-//		WING_GAMMA_DISTRIBUTION,
-//		WING_GAMMA_ADDITIONAL_DISTRIBUTION,
-//		WING_GAMMA_BASIC_DISTRIBUTION,
-//		WING_TOTAL_LOAD_DISTRIBUTION,
-//		WING_ADDITIONAL_LOAD_DISTRIBUTION,
-//		WING_BASIC_LOAD_DISTRIBUTION,
-//		
-//		WING_LIFT_CURVE_HIGH_LIFT,
-//		WING_POLAR_CURVE_HIGH_LIFT,
-//		WING_MOMENT_CURVE_HIGH_LIFT,
-//		
-//		WING_POLAR_CURVE_CLEAN_BREAKDOWN,
-//		WING_DRAG_DISTRIBUTION,
-//		
-//		WING_MOMENT_CURVE_CLEAN,
-//		WING_MOMENT_DISTRIBUTION;
-		//-----------------------------------------------------------------------
-		// COPY FROM HERE -------------------------------------------------------
-		//-----------------------------------------------------------------------		
 		if (_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CRUISE || 
 				_theAerodynamicBuilderInterface.getCurrentCondition() == ConditionEnum.CLIMB ) {
 			//-----------------------------------------------------------------------------------------------------------------------
@@ -8839,11 +8812,9 @@ public class ACAerodynamicAndStabilityManagerV {
 				aircraftPlotFolderPath,
 				"Delta_e_Elevator_Equilibrium");
 	}
+
+	// TODO : ADD CHECKS FOR EACH PLOT ...
 	
-	
-		//-----------------------------------------------------------------------
-		// TO HERE  -------------------------------------------------------
-		//-----------------------------------------------------------------------
 	}
 	
 	public void calculate(String resultsFolderPath) {
@@ -8941,61 +8912,60 @@ public class ACAerodynamicAndStabilityManagerV {
 		//=================================================================================================
 		// PLOTS
 		//=================================================================================================
-		
-		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.WING)) {
-			wingPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
-					aerodynamicAndStabilityFolderPath 
-					+ "WING"
-					+ File.separator
-					);
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getPlotAerodynamicAndStability()) {
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.WING)) {
+				wingPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "WING"
+						+ File.separator
+						);
+			}
+
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.HORIZONTAL_TAIL)) {
+				horizontalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "HORIZONTAL_TAIL"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.VERTICAL_TAIL)) {
+				verticalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "VERTICAL_TAIL"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.FUSELAGE)) {
+				fuselagePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "FUSELAGE"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.NACELLE)) {
+				nacellePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "NACELLE"
+						+ File.separator
+						);
+			}
+
+			if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.AIRCRAFT)) {
+				aircraftPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
+						aerodynamicAndStabilityFolderPath 
+						+ "AIRCRAFT"
+						+ File.separator
+						);
+			}
+
+			plotAllCharts();
+
 		}
-		
-		
-		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.HORIZONTAL_TAIL)) {
-			horizontalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
-					aerodynamicAndStabilityFolderPath 
-					+ "HORIZONTAL_TAIL"
-					+ File.separator
-					);
-		}
-		
-		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.VERTICAL_TAIL)) {
-			verticalTailPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
-					aerodynamicAndStabilityFolderPath 
-					+ "VERTICAL_TAIL"
-					+ File.separator
-					);
-		}
-		
-		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.FUSELAGE)) {
-			fuselagePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
-					aerodynamicAndStabilityFolderPath 
-					+ "FUSELAGE"
-					+ File.separator
-					);
-		}
-		
-		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.NACELLE)) {
-			nacellePlotFolderPath = JPADStaticWriteUtils.createNewFolder(
-					aerodynamicAndStabilityFolderPath 
-					+ "NACELLE"
-					+ File.separator
-					);
-		}
-		
-		if(_theAerodynamicBuilderInterface.getPlotList().containsKey(ComponentEnum.AIRCRAFT)) {
-			aircraftPlotFolderPath = JPADStaticWriteUtils.createNewFolder(
-					aerodynamicAndStabilityFolderPath 
-					+ "AIRCRAFT"
-					+ File.separator
-					);
-		}
-	
-		plotAllCharts();
-		/*
-		 * TODO : FILL ME !!
-		 *        REMEMBER TO PERFORM ALL THE NEEDED CHECKS FOR EACH PLOT !!
-		 */
 		
 		//------------------------------------------------------------------------------------------------------------------------------------
 		try {
@@ -13348,6 +13318,26 @@ public class ACAerodynamicAndStabilityManagerV {
 						"//aircraft_analyses/longitudinal_static_stability/@perform");
 		
 		if(aircraftLongitudinalStaticStabilityPerformString.equalsIgnoreCase("TRUE")){
+			
+			if(aircraftTotalPolarCurvePerformString.equals("FALSE")) {
+				
+				String aircraftDeltaCD0MiscellaneousString = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aircraft_analyses/drag_polar/@delta_CD0_miscellaneous");
+				
+				if(aircraftDeltaCD0MiscellaneousString != null) 
+					aircraftDeltaCD0Miscellaneous = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
+				
+				String aircraftDeltaCD0LandingGearsString = MyXMLReaderUtils
+						.getXMLPropertyByPath(
+								reader.getXmlDoc(), reader.getXpath(),
+								"//aircraft_analyses/drag_polar/@delta_CD0_landing_gears");
+				
+				if(aircraftDeltaCD0LandingGearsString != null) 
+					aircraftDeltaCD0LandingGears = Double.valueOf(aircraftDeltaCD0MiscellaneousString);
+				
+			}
 			
 			String aircraftWingPendularStabilityString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
@@ -20085,6 +20075,205 @@ public class ACAerodynamicAndStabilityManagerV {
 	//............................................................................
 
 	//............................................................................
+	// END Total Drag Coefficient INNER CLASS
+	//............................................................................
+	
+//	//............................................................................
+//	// Total Moment Coefficient INNER CLASS
+//	//............................................................................
+//	public class CalcTotalMomentCoefficient {
+//	
+//		public void fromAircraftComponents() {
+//			
+//			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg ->{
+//	
+//				int i = _theAerodynamicBuilderInterface.getXCGAircraft().indexOf(xcg);
+//				
+//				// Component breakdown
+//				
+//				Map<ComponentEnum, List<Double>> _momentTemporaryMap = new HashMap<>();
+//				//wing
+//				_momentTemporaryMap.put(
+//						ComponentEnum.WING, 
+//						MomentCalc.calculateCMWingCurveWithBalanceEquation(
+//								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING)
+//								.getXacLRF()
+//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//										.get(ComponentEnum.WING)
+//										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+//								_current3DWingLiftCurve,
+//								_current3DWingPolarCurve,
+//								_current3DWingMomentCurve,
+//								_alphaBodyList, 
+//								_theAerodynamicBuilderInterface.getWingPendularStability())	
+//						);
+//				// htail
+//				_momentTemporaryMap.put(
+//						ComponentEnum.HORIZONTAL_TAIL, 
+//						MomentCalc.calculateCMHTailCurveWithBalanceEquation(
+//								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.HORIZONTAL_TAIL)
+//								.getXacLRF()
+//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//										.get(ComponentEnum.HORIZONTAL_TAIL)
+//										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
+//								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.HORIZONTAL_TAIL)
+//								.getLiftCoefficient3DCurve()
+//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//										.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D))),
+//								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.HORIZONTAL_TAIL)
+//								.getPolar3DCurve()
+//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//										.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_LIFTING_SURFACE))),
+//								MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(
+//										ComponentEnum.HORIZONTAL_TAIL)
+//								.getMoment3DCurve()
+//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//										.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE))),
+//								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+//								_alphaBodyList
+//								)
+//						);
+//		
+//				// fuselage
+//				
+//				_momentTemporaryMap.put(
+//						ComponentEnum.FUSELAGE, 
+//						MomentCalc.calculateCMFuselageCurveWithBalanceEquation(
+//								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
+//								MyArrayUtils.convertDoubleArrayToListDouble(_fuselageAerodynamicManagers
+//										.get(ComponentEnum.FUSELAGE)
+//										.getMoment3DCurve()
+//										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//												.get(ComponentEnum.FUSELAGE)
+//												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE))),
+//								MyArrayUtils.convertDoubleArrayToListDouble(_fuselageAerodynamicManagers
+//										.get(ComponentEnum.FUSELAGE)
+//										.getPolar3DCurve()
+//										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//												.get(ComponentEnum.FUSELAGE)
+//												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+//								_alphaBodyList
+//								)
+//						);
+//				
+//				// landing gear
+//				_momentTemporaryMap.put(
+//						ComponentEnum.LANDING_GEAR,
+//						MomentCalc.calculateCMLandingGearCurveWithBalanceEquation(
+//								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								_theAerodynamicBuilderInterface.getZCGLandingGear(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),  
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+//								_landingGearUsedDrag,
+//								_alphaBodyList
+//								)
+//						);
+//				
+//				_momentCoefficientBreakDown.put(
+//						xcg,
+//						_momentTemporaryMap
+//						);
+//				
+//				Map<Amount<Angle>, List<Double>> momentMap = new HashMap<>();
+//				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
+//				momentMap.put(
+//						de,
+//						MomentCalc.calculateCMTotalCurveWithBalanceEquation(
+//								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.WING)
+//								.getXacLRF()
+//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//										.get(ComponentEnum.WING)
+//										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes()), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(), 
+//								_liftingSurfaceAerodynamicManagers
+//								.get(ComponentEnum.HORIZONTAL_TAIL)
+//								.getXacLRF()
+//								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//										.get(ComponentEnum.HORIZONTAL_TAIL)
+//										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
+//								_theAerodynamicBuilderInterface.getZCGLandingGear(),
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
+//								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
+//								_current3DWingLiftCurve,
+//								_current3DWingPolarCurve,
+//								_current3DWingMomentCurve,
+//								MyArrayUtils.convertDoubleArrayToListDouble(_fuselageAerodynamicManagers
+//										.get(ComponentEnum.FUSELAGE)
+//										.getMoment3DCurve()
+//										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//												.get(ComponentEnum.FUSELAGE)
+//												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE))),
+//								MyArrayUtils.convertDoubleArrayToListDouble(_fuselageAerodynamicManagers
+//										.get(ComponentEnum.FUSELAGE)
+//										.getPolar3DCurve()
+//										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+//												.get(ComponentEnum.FUSELAGE)
+//												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+//								_current3DHorizontalTailLiftCurve.get(de),
+//							    _current3DHorizontalTailPolarCurve.get(de),
+//								_current3DHorizontalTailMomentCurve.get(de),
+//								_landingGearUsedDrag,
+//								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+//								_alphaBodyList, 
+//								_theAerodynamicBuilderInterface.getWingPendularStability())						
+//						)
+//						);
+//				_totalMomentCoefficient.put(
+//						xcg,
+//						momentMap
+//						);
+//	
+//			});
+//		}
+//	}
+
+	//............................................................................
 	// Total Moment Coefficient INNER CLASS
 	//............................................................................
 	public class CalcTotalMomentCoefficient {
@@ -20105,9 +20294,11 @@ public class ACAerodynamicAndStabilityManagerV {
 								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
-								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
 								_liftingSurfaceAerodynamicManagers
 								.get(ComponentEnum.WING)
 								.getXacLRF()
@@ -20130,9 +20321,11 @@ public class ACAerodynamicAndStabilityManagerV {
 								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
-								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
 								_liftingSurfaceAerodynamicManagers
 								.get(ComponentEnum.HORIZONTAL_TAIL)
 								.getXacLRF()
@@ -20172,9 +20365,11 @@ public class ACAerodynamicAndStabilityManagerV {
 								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
-								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
 								MyArrayUtils.convertDoubleArrayToListDouble(_fuselageAerodynamicManagers
@@ -20200,9 +20395,11 @@ public class ACAerodynamicAndStabilityManagerV {
 								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
-								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
 								_theAerodynamicBuilderInterface.getZCGLandingGear(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),  
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
@@ -20224,9 +20421,11 @@ public class ACAerodynamicAndStabilityManagerV {
 								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
 										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
-								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
 								_liftingSurfaceAerodynamicManagers
 								.get(ComponentEnum.WING)
 								.getXacLRF()
