@@ -590,7 +590,7 @@ public class MomentCalc {
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
-				if (alphaDistribution[ii]<anglesOfAttackClMatrix.get(0).doubleValue(NonSI.DEGREE_ANGLE)){
+				if (alphaDistribution[ii]<anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE)){
 					clInducedDistributionAtAlphaNew[ii] =
 							liftingSurfaceCLAlphaDegDistribution.get(ii)*
 							alphaDistribution[ii]+
@@ -685,7 +685,7 @@ public class MomentCalc {
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
-				if (alphaDistribution[ii]<anglesOfAttackClMatrix.get(0).doubleValue(NonSI.DEGREE_ANGLE)){
+				if (alphaDistribution[ii]<anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE)){
 					clInducedDistributionAtAlphaNew[ii] =
 							liftingSurfaceCLAlphaDegDistribution.get(ii)*
 							alphaDistribution[ii]+
@@ -701,25 +701,30 @@ public class MomentCalc {
 							);
 				}
 
+//				cmActual = MyMathUtils.getInterpolatedValue1DLinear(
+//						MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCLforCMMatrix),
+//						MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCmC4Distribution.get(ii)),
+//						clInducedDistributionAtAlphaNew[ii]
+//						);
 				cmActual = MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCLforCMMatrix),
+						MyArrayUtils.convertListOfAmountTodoubleArray(anglesOfAttack.subList(0, liftingSurfaceCmC4Distribution.get(ii).size())),
 						MyArrayUtils.convertToDoublePrimitive(liftingSurfaceCmC4Distribution.get(ii)),
-						clInducedDistributionAtAlphaNew[ii]
+						anglesOfAttack.get(i).doubleValue(NonSI.DEGREE_ANGLE)
 						);
 				
-
+				
 				distancesArrayAC[ii] =
 						momentumPole.doubleValue(SI.METER) - 
 						(liftingSurfaceXLEDistribution.get(ii).doubleValue(SI.METER) +
 								(liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)/4));
 
-//				cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * 
-//						(distancesArrayAC[ii]/
-//								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER))+cmActual;
-				
-				cmDistribution[ii] = clInducedDistributionAtAlphaNew[ii] * 
+				cmDistribution [ii] = clInducedDistributionAtAlphaNew[ii] * 
 						(distancesArrayAC[ii]/
-								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)) + liftingSurfaceCmC4Distribution.get(ii).get(i);
+								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER))+cmActual;
+				
+//				cmDistribution[ii] = clInducedDistributionAtAlphaNew[ii] * 
+//						(distancesArrayAC[ii]/
+//								liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER)) + liftingSurfaceCmC4Distribution.get(ii).get(i);
 
 				cCm[ii] = cmDistribution [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) *
 						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) ;
@@ -780,7 +785,7 @@ public class MomentCalc {
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
-				if (alphaDistribution[ii]<anglesOfAttackClMatrix.get(0).doubleValue(NonSI.DEGREE_ANGLE)){
+				if (alphaDistribution[ii]<angleOfAttack.doubleValue(NonSI.DEGREE_ANGLE)){
 					clInducedDistributionAtAlphaNew[ii] =
 							liftingSurfaceCLAlphaDegDistribution.get(ii)*
 							alphaDistribution[ii]+

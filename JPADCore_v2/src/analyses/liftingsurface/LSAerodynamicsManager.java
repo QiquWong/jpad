@@ -2948,34 +2948,17 @@ public class LSAerodynamicsManager {
 			_moment3DCurve.put(
 					MethodEnum.AIRFOIL_DISTRIBUTION, 
 					MyArrayUtils.convertListOfDoubleToDoubleArray(
-//							MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
-//									theNasaBlackwellCalculator,
-//									_alphaArray,
-//									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
-//									_yStationDistribution,
-//									_clZeroDistribution,
-//									_clAlphaDistribution.stream()
-//										.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
-//											.collect(Collectors.toList()), 
-//									_clForCmMatrix, 
-//									_discretizedAirfoilsCm,
-//									_chordDistribution,
-//									_xLEDistribution,
-//									_discretizedAirfoilsCl,
-//									_alphaArray, 
-//									_theLiftingSurface.getSurface(), 
-//									_momentumPole
-//									)
-							MomentCalc.calcCMLiftingSurfaceWithIntegral(
-									theNasaBlackwellCalculator, 
-									_alphaArray, 
+							MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
+									theNasaBlackwellCalculator,
+									_alphaArray,
 									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
 									_yStationDistribution,
 									_clZeroDistribution,
 									_clAlphaDistribution.stream()
-									.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
-									.collect(Collectors.toList()), 
-									_cmACDistribution,
+										.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+											.collect(Collectors.toList()), 
+									_clForCmMatrix, 
+									_discretizedAirfoilsCm,
 									_chordDistribution,
 									_xLEDistribution,
 									_discretizedAirfoilsCl,
@@ -2983,6 +2966,23 @@ public class LSAerodynamicsManager {
 									_theLiftingSurface.getSurface(), 
 									_momentumPole
 									)
+//							MomentCalc.calcCMLiftingSurfaceWithIntegral(
+//									theNasaBlackwellCalculator, 
+//									_alphaArray, 
+//									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+//									_yStationDistribution,
+//									_clZeroDistribution,
+//									_clAlphaDistribution.stream()
+//									.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+//									.collect(Collectors.toList()), 
+//									_cmACDistribution,
+//									_chordDistribution,
+//									_xLEDistribution,
+//									_discretizedAirfoilsCl,
+//									_alphaArray, 
+//									_theLiftingSurface.getSurface(), 
+//									_momentumPole
+//									)
 							)
 
 					);

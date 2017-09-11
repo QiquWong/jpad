@@ -498,11 +498,68 @@ public class MyChartToFileUtils {
 		chartFactory.setXarrays(xArrays);
 		chartFactory.setYarrays(yArrays);
 
-		if (xMin != null) chartFactory.setxMin(xMin);
-		if (xMax != null) chartFactory.setxMax(xMax);
-		if (yMin != null) chartFactory.setyMin(yMin);
-		if (yMax != null) chartFactory.setyMax(yMax);
-
+		// minimum and maximum of Lists research
+		if(xMin == null) {
+			xMin = 0.0;
+			Double[] xMinArray = new Double[xArrays.length];
+			for(int i=0; i<xArrays.length; i++) 
+				xMinArray[i] = MyArrayUtils.getMin(
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										xArrays[i]
+										)
+								)
+						);
+			xMin = MyArrayUtils.getMin(xMinArray);
+		}
+		
+		if(xMax == null) {
+			xMax = 0.0;
+			Double[] xMaxArray = new Double[xArrays.length];
+			for(int i=0; i<xArrays.length; i++) 
+				xMaxArray[i] = MyArrayUtils.getMax(
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										xArrays[i]
+										)
+								)
+						);			
+			xMax = MyArrayUtils.getMax(xMaxArray);
+		}
+		
+		if(yMin == null) {
+			yMin = 0.0;
+			Double[] yMinArray = new Double[yArrays.length];
+			for(int i=0; i<yArrays.length; i++) 
+				yMinArray[i] = MyArrayUtils.getMin(
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										yArrays[i]
+										)
+								)
+						);			
+			yMin = MyArrayUtils.getMin(yMinArray);
+		}
+		
+		if(yMax == null) {
+			yMax = 0.0;
+			Double[] yMaxArray = new Double[yArrays.length];
+			for(int i=0; i<yArrays.length; i++) 
+				yMaxArray[i] = MyArrayUtils.getMax(
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										yArrays[i]
+										)
+								)
+						);			
+			yMax = MyArrayUtils.getMax(yMaxArray);
+		}
+		
+		chartFactory.setxMin(xMin - Math.abs(0.1*xMin));
+		chartFactory.setxMax(xMax + Math.abs(0.1*xMax));
+		chartFactory.setyMin(yMin - Math.abs(0.1*yMin));
+		chartFactory.setyMax(yMax + Math.abs(0.1*yMax));
+		
 		chartFactory.createMultiTraceChart();
 		
 		List<String> legend = new ArrayList<>();

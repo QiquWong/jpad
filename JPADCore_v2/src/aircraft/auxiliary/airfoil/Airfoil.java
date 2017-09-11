@@ -26,13 +26,13 @@ public class Airfoil {
 		this._theAirfoilCreator = airfoilCreator;
 		
 		//........................................................................
-		if(_theAirfoilCreator.getClCurve().isEmpty()) {
+		if(airfoilCreator.getClCurve().isEmpty()) {
 
 			_theAirfoilCreator.setAlphaForClCurve(
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(
 									_theAirfoilCreator.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)-2,
-									_theAirfoilCreator.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE)+2,
+									_theAirfoilCreator.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE)+1,
 									30
 									),
 							NonSI.DEGREE_ANGLE
@@ -50,7 +50,7 @@ public class Airfoil {
 					_theAirfoilCreator.getAlphaForClCurve(),
 					_theAirfoilCreator);
 		//........................................................................
-		if(_theAirfoilCreator.getCmCurve().isEmpty()) {
+		if(airfoilCreator.getCmCurve().isEmpty()) {
 
 			_theAirfoilCreator.setClForCmCurve(
 					MyArrayUtils.convertDoubleArrayToListDouble(
@@ -73,7 +73,7 @@ public class Airfoil {
 					_theAirfoilCreator.getClForCmCurve(),
 					_theAirfoilCreator);
 		//........................................................................
-		if(_theAirfoilCreator.getCdCurve().isEmpty()) {
+		if(airfoilCreator.getCdCurve().isEmpty()) {
 
 			_theAirfoilCreator.setClForCdCurve(
 					MyArrayUtils.convertDoubleArrayToListDouble(

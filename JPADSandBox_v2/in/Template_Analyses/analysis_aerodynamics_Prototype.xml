@@ -352,10 +352,10 @@
                     </downwash_gradient_vs_alpha>
                 </downwash>
 				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<lift_curve perform="FALSE" fuselage_effects="FALSE" method="FROM_BALANCE_EQUATION"/>
-				<drag_polar perform="FALSE" delta_CD0_miscellaneous="0.0" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>
-				<moment_curve perform="FALSE" method="FROM_BALANCE_EQUATION"/>
-				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<lift_curve perform="TRUE" fuselage_effects="FALSE" method="FROM_BALANCE_EQUATION"/>
+				<drag_polar perform="TRUE" delta_CD0_miscellaneous="0.0" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>
+				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
+				<longitudinal_static_stability perform="FALSE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<lateral_static_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 				<directional_static_stability perform="FALSE" method="VEDSC_USAFDATCOM_WING"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->

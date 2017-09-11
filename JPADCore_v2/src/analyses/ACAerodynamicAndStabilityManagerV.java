@@ -20347,7 +20347,6 @@ public class ACAerodynamicAndStabilityManagerV {
 						);
 		
 				// fuselage
-				
 				_momentTemporaryMap.put(
 						ComponentEnum.FUSELAGE, 
 						MomentCalc.calculateCMFuselageCurveWithBalanceEquation(
