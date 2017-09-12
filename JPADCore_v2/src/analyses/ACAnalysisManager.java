@@ -47,7 +47,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	private ACWeightsManager _theWeights;
 	private ACBalanceManager _theBalance;
-	private Map<ConditionEnum, ACAerodynamicAndStabilityManagerV> _theAerodynamicAndStability;
+	private Map<ConditionEnum, ACAerodynamicAndStabilityManager> _theAerodynamicAndStability;
 	private ACPerformanceManager _thePerformance;
 	private ACCostsManager _theCosts;
 	
@@ -1287,16 +1287,16 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			
 			_theAerodynamicAndStability = new HashMap<>();
 			
-			_theAerodynamicAndStability.put(ConditionEnum.TAKE_OFF, new ACAerodynamicAndStabilityManagerV());
-			_theAerodynamicAndStability.put(ConditionEnum.CLIMB, new ACAerodynamicAndStabilityManagerV());
-			_theAerodynamicAndStability.put(ConditionEnum.CRUISE, new ACAerodynamicAndStabilityManagerV());
-			_theAerodynamicAndStability.put(ConditionEnum.LANDING, new ACAerodynamicAndStabilityManagerV());
+			_theAerodynamicAndStability.put(ConditionEnum.TAKE_OFF, new ACAerodynamicAndStabilityManager());
+			_theAerodynamicAndStability.put(ConditionEnum.CLIMB, new ACAerodynamicAndStabilityManager());
+			_theAerodynamicAndStability.put(ConditionEnum.CRUISE, new ACAerodynamicAndStabilityManager());
+			_theAerodynamicAndStability.put(ConditionEnum.LANDING, new ACAerodynamicAndStabilityManager());
 			
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) {
 				_theAerodynamicAndStability.remove(ConditionEnum.TAKE_OFF);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.TAKE_OFF,
-						ACAerodynamicAndStabilityManagerV.importFromXML(
+						ACAerodynamicAndStabilityManager.importFromXML(
 								_aerodynamicAndStabilityTakeOffFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
@@ -1308,7 +1308,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAerodynamicAndStability.remove(ConditionEnum.CLIMB);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CLIMB,
-						ACAerodynamicAndStabilityManagerV.importFromXML(
+						ACAerodynamicAndStabilityManager.importFromXML(
 								_aerodynamicAndStabilityClimbFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
@@ -1320,7 +1320,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAerodynamicAndStability.remove(ConditionEnum.CRUISE);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CRUISE,
-						ACAerodynamicAndStabilityManagerV.importFromXML(
+						ACAerodynamicAndStabilityManager.importFromXML(
 								_aerodynamicAndStabilityCruiseFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
@@ -1332,7 +1332,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				_theAerodynamicAndStability.remove(ConditionEnum.LANDING);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.LANDING,
-						ACAerodynamicAndStabilityManagerV.importFromXML(
+						ACAerodynamicAndStabilityManager.importFromXML(
 								_aerodynamicAndStabilityLandingFileComplete.getAbsolutePath(),
 								aircraft,
 								theOperatingConditions,
@@ -1592,11 +1592,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._theBalance = theBalance;
 	}
 
-	public Map<ConditionEnum, ACAerodynamicAndStabilityManagerV> getTheAerodynamicAndStability() {
+	public Map<ConditionEnum, ACAerodynamicAndStabilityManager> getTheAerodynamicAndStability() {
 		return _theAerodynamicAndStability;
 	}
 
-	public void setTheAerodynamicAndStability(Map<ConditionEnum, ACAerodynamicAndStabilityManagerV> theAerodynamicAndStability) {
+	public void setTheAerodynamicAndStability(Map<ConditionEnum, ACAerodynamicAndStabilityManager> theAerodynamicAndStability) {
 		this._theAerodynamicAndStability = theAerodynamicAndStability;
 	}
 

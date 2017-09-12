@@ -101,7 +101,7 @@ import writers.JPADStaticWriteUtils;
  * in order to obtain quantities relative to the whole aircraft.
  */ 
 
-public class ACAerodynamicAndStabilityManagerV {
+public class ACAerodynamicAndStabilityManager {
 
 	/*
 	 *******************************************************************************
@@ -968,7 +968,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().put(
 							MethodEnum.INPUT,
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
-									_alphaWingList.stream()
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
 									.map(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 									.collect(Collectors.toList())
 									)
@@ -1300,7 +1300,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().put(
 							MethodEnum.INPUT,
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
-									_alphaWingList.stream()
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
 									.map(aw -> _theAerodynamicBuilderInterface.getWingMomentCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 									.collect(Collectors.toList())
 									)
@@ -1392,42 +1392,42 @@ public class ACAerodynamicAndStabilityManagerV {
 
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D).equals(MethodEnum.INPUT)) {					
 						
-						if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-						
-							CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-							if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-								calcHighLiftDevicesEffects.semiempirical(
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-										_currentMachNumber
-										);
-							else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-								calcHighLiftDevicesEffects.semiempirical(
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-										_currentMachNumber
-										);
-							
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
-									AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS,
-									MethodEnum.SEMIEMPIRICAL
-									);
-							
-						}
-						
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setAlphaArrayPlotHighLift(
-								MyArrayUtils.linspaceDouble(
-										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
-										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
-										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getNumberOfAlphasPlot()
-										)
-								);
+//						if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+//						
+//							CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+//							if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+//								calcHighLiftDevicesEffects.semiempirical(
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+//										_currentMachNumber
+//										);
+//							else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+//								calcHighLiftDevicesEffects.semiempirical(
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+//										_currentMachNumber
+//										);
+//							
+//							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//									AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS,
+//									MethodEnum.SEMIEMPIRICAL
+//									);
+//							
+//						}
+//						
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setAlphaArrayPlotHighLift(
+//								MyArrayUtils.linspaceDouble(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getNumberOfAlphasPlot()
+//										)
+//								);
 
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().put(
 								MethodEnum.INPUT,
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
-										Arrays.stream(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift())
-										.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw))
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+										.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 										.collect(Collectors.toList())
 										)
 								);
@@ -1563,42 +1563,42 @@ public class ACAerodynamicAndStabilityManagerV {
 
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D).equals(MethodEnum.INPUT)) {					
 						
-						if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
-							
-							CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
-							if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
-								calcHighLiftDevicesEffects.semiempirical(
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
-										_currentMachNumber
-										);
-							else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
-								calcHighLiftDevicesEffects.semiempirical(
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
-										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
-										_currentMachNumber
-										);
-							
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
-									AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, 
-									MethodEnum.SEMIEMPIRICAL
-									);
-							
-						}
-						
-						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setAlphaArrayPlotHighLift(
-								MyArrayUtils.linspaceDouble(
-										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
-										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
-										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getNumberOfAlphasPlot()
-										)
-								);
+//						if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS)) {
+//							
+//							CalcHighLiftDevicesEffects calcHighLiftDevicesEffects = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).new CalcHighLiftDevicesEffects();
+//							if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.TAKE_OFF))
+//								calcHighLiftDevicesEffects.semiempirical(
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionTakeOff(), 
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionTakeOff(), 
+//										_currentMachNumber
+//										);
+//							else if(_theAerodynamicBuilderInterface.getCurrentCondition().equals(ConditionEnum.LANDING))
+//								calcHighLiftDevicesEffects.semiempirical(
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getFlapDeflectionLanding(), 
+//										_theAerodynamicBuilderInterface.getTheOperatingConditions().getSlatDeflectionLanding(), 
+//										_currentMachNumber
+//										);
+//							
+//							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).put(
+//									AerodynamicAndStabilityEnum.HIGH_LIFT_DEVICES_EFFECTS, 
+//									MethodEnum.SEMIEMPIRICAL
+//									);
+//							
+//						}
+//						
+//						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).setAlphaArrayPlotHighLift(
+//								MyArrayUtils.linspaceDouble(
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaZeroLiftHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE)-2,
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().get(MethodEnum.SEMIEMPIRICAL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
+//										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getNumberOfAlphasPlot()
+//										)
+//								);
 
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().put(
 								MethodEnum.INPUT,
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
-										Arrays.stream(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift())
-										.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftMomentCurveFunction().value(aw))
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+										.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftMomentCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 										.collect(Collectors.toList())
 										)
 								);
@@ -2032,7 +2032,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().put(
 							MethodEnum.INPUT,
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
-									_alphaHTailList.stream()
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().stream()
 									.map(ah -> _theAerodynamicBuilderInterface.getHTailLiftCurveFunction().value(ah.doubleValue(NonSI.DEGREE_ANGLE)))
 									.collect(Collectors.toList())
 									)
@@ -2366,7 +2366,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().put(
 							MethodEnum.INPUT,
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
-									_alphaHTailList.stream()
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().stream()
 									.map(ah -> _theAerodynamicBuilderInterface.getHTailMomentCurveFunction().value(ah.doubleValue(NonSI.DEGREE_ANGLE)))
 									.collect(Collectors.toList())
 									)
@@ -2793,7 +2793,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().put(
 							MethodEnum.INPUT,
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
-									_betaList.stream()
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().stream()
 									.map(b -> _theAerodynamicBuilderInterface.getVTailLiftCurveFunction().value(b.doubleValue(NonSI.DEGREE_ANGLE)))
 									.collect(Collectors.toList())
 									)
@@ -3127,7 +3127,7 @@ public class ACAerodynamicAndStabilityManagerV {
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().put(
 							MethodEnum.INPUT,
 							MyArrayUtils.convertListOfDoubleToDoubleArray(
-									_betaList.stream()
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().stream()
 									.map(b -> _theAerodynamicBuilderInterface.getVTailMomentCurveFunction().value(b.doubleValue(NonSI.DEGREE_ANGLE)))
 									.collect(Collectors.toList())
 									)
@@ -3668,7 +3668,7 @@ public class ACAerodynamicAndStabilityManagerV {
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING), 
 							_theAerodynamicBuilderInterface.getTheOperatingConditions(), 
 							_theAerodynamicBuilderInterface.getCurrentCondition(), 
-							getAlphaNacelleList() 
+							_alphaNacelleList 
 							)
 					);
 
@@ -4038,7 +4038,9 @@ public class ACAerodynamicAndStabilityManagerV {
 								this._alphaStarWingFuselage,
 								this._alphaStallWingFuselage,
 								this._clAlphaWingFuselage,
-								MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList)
+								MyArrayUtils.convertListOfAmountToDoubleArray(
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+										)
 								));
 					}
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D).equals(MethodEnum.INPUT)){
@@ -4064,13 +4066,13 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 
 						// CLstar HIGH LIFT /* TODO: CHECK THIS */
-						List<Double> cLHighLiftList = _alphaWingList.stream()
+						List<Double> cLHighLiftList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
 								.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.collect(Collectors.toList());
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStarHighLift().put(
 								MethodEnum.INPUT,
 								LiftCalc.calculateCLStarFromCurve(
-										_alphaWingList, 
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray(), 
 										cLHighLiftList
 										)
 								);
@@ -4078,7 +4080,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						// CLmax HIGH LIFT
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMaxHighLift().put(
 								MethodEnum.INPUT,
-								_alphaWingList.stream()
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
 								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.max()
 								.getAsDouble()
@@ -4090,7 +4092,7 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().put(
 								MethodEnum.INPUT,
-								_alphaWingList.get(indexOfMaxCLHighLiftList)
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(indexOfMaxCLHighLiftList)
 								);
 
 						//............................................................................................
@@ -4149,7 +4151,9 @@ public class ACAerodynamicAndStabilityManagerV {
 								this._alphaStarWingFuselage,
 								this._alphaStallWingFuselage,
 								this._clAlphaWingFuselage,
-								MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList)
+								MyArrayUtils.convertListOfAmountToDoubleArray(
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+										)
 								));
 					}
 				}
@@ -4306,13 +4310,13 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 
 						// CLstar /* TODO: CHECK THIS */
-						List<Double> cLList = _alphaWingList.stream()
+						List<Double> cLList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
 								.map(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.collect(Collectors.toList());
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStar().put(
 								MethodEnum.INPUT,
 								LiftCalc.calculateCLStarFromCurve(
-										_alphaWingList, 
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean(), 
 										cLList
 										)
 								);
@@ -4320,7 +4324,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						// CLmax 
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMax().put(
 								MethodEnum.INPUT,
-								_alphaWingList.stream()
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
 								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.max()
 								.getAsDouble()
@@ -4332,7 +4336,7 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStall().put(
 								MethodEnum.INPUT,
-								_alphaWingList.get(indexOfMaxCLList)
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(indexOfMaxCLList)
 								);
 
 						//............................................................................................
@@ -4392,7 +4396,9 @@ public class ACAerodynamicAndStabilityManagerV {
 							this._alphaStarWingFuselage,
 							this._alphaStallWingFuselage,
 							this._clAlphaWingFuselage,
-							MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList)
+							MyArrayUtils.convertListOfAmountToDoubleArray(
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+									)
 							));
 				}
 				break;
@@ -4547,13 +4553,13 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 
 						// CLstar /* TODO: CHECK THIS */
-						List<Double> cLList = _alphaWingList.stream()
+						List<Double> cLList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
 								.map(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.collect(Collectors.toList());
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStar().put(
 								MethodEnum.INPUT,
 								LiftCalc.calculateCLStarFromCurve(
-										_alphaWingList, 
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean(), 
 										cLList
 										)
 								);
@@ -4561,7 +4567,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						// CLmax 
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMax().put(
 								MethodEnum.INPUT,
-								_alphaWingList.stream()
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
 								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.max()
 								.getAsDouble()
@@ -4573,7 +4579,7 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStall().put(
 								MethodEnum.INPUT,
-								_alphaWingList.get(indexOfMaxCLList)
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(indexOfMaxCLList)
 								);
 
 						//............................................................................................
@@ -4633,7 +4639,9 @@ public class ACAerodynamicAndStabilityManagerV {
 							this._alphaStarWingFuselage,
 							this._alphaStallWingFuselage,
 							this._clAlphaWingFuselage,
-							MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList)
+							MyArrayUtils.convertListOfAmountToDoubleArray(
+									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+									)
 							));
 				}
 				break;
@@ -4730,7 +4738,9 @@ public class ACAerodynamicAndStabilityManagerV {
 								this._alphaStarWingFuselage,
 								this._alphaStallWingFuselage,
 								this._clAlphaWingFuselage,
-								MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList)
+								MyArrayUtils.convertListOfAmountToDoubleArray(
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+										)
 								));
 					}
 					if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D).equals(MethodEnum.INPUT)){
@@ -4756,13 +4766,13 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 
 						// CLstar HIGH LIFT /* TODO: CHECK THIS */
-						List<Double> cLHighLiftList = _alphaWingList.stream()
+						List<Double> cLHighLiftList = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
 								.map(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.collect(Collectors.toList());
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLStarHighLift().put(
 								MethodEnum.INPUT,
 								LiftCalc.calculateCLStarFromCurve(
-										_alphaWingList, 
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray(), 
 										cLHighLiftList
 										)
 								);
@@ -4770,7 +4780,7 @@ public class ACAerodynamicAndStabilityManagerV {
 						// CLmax HIGH LIFT
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCLMaxHighLift().put(
 								MethodEnum.INPUT,
-								_alphaWingList.stream()
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
 								.mapToDouble(aw -> _theAerodynamicBuilderInterface.getWingHighLiftCurveFunction().value(aw.doubleValue(NonSI.DEGREE_ANGLE)))
 								.max()
 								.getAsDouble()
@@ -4782,7 +4792,7 @@ public class ACAerodynamicAndStabilityManagerV {
 								);
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaStallHighLift().put(
 								MethodEnum.INPUT,
-								_alphaWingList.get(indexOfMaxCLHighLiftList)
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(indexOfMaxCLHighLiftList)
 								);
 
 						//............................................................................................
@@ -4841,7 +4851,9 @@ public class ACAerodynamicAndStabilityManagerV {
 								this._alphaStarWingFuselage,
 								this._alphaStallWingFuselage,
 								this._clAlphaWingFuselage,
-								MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList)
+								MyArrayUtils.convertListOfAmountToDoubleArray(
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+										)
 								));
 					}
 				}
@@ -5620,7 +5632,9 @@ public class ACAerodynamicAndStabilityManagerV {
 				yVector = new ArrayList<Double>();
 
 				//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+						));
 				yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.WING)
@@ -5684,7 +5698,9 @@ public class ACAerodynamicAndStabilityManagerV {
 				yVector = new ArrayList<Double>();
 
 				//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+						));
 				yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.WING)
@@ -6421,8 +6437,12 @@ public class ACAerodynamicAndStabilityManagerV {
 				yVectorMatxrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
-				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift());
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+						));
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+						));
 				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.WING)
@@ -6524,8 +6544,12 @@ public class ACAerodynamicAndStabilityManagerV {
 				yVectorMatxrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
-				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift());
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
+						));
+				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
+						));
 				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.WING)
@@ -7254,7 +7278,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			yVector = new ArrayList<Double>();
 
 			//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaHTailList));
+			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean()
+					));
 			yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
 					_theAerodynamicBuilderInterface.getComponentTaskList()
 					.get(ComponentEnum.HORIZONTAL_TAIL)
@@ -7318,7 +7344,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			yVector = new ArrayList<Double>();
 
 			//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean()
+					));
 			yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
 					_theAerodynamicBuilderInterface.getComponentTaskList()
 					.get(ComponentEnum.HORIZONTAL_TAIL)
@@ -7705,7 +7733,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			yVector = new ArrayList<Double>();
 
 			//xVector= MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+			xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(
+					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean()
+					));
 			yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
 					_theAerodynamicBuilderInterface.getComponentTaskList()
 					.get(ComponentEnum.VERTICAL_TAIL)
@@ -8984,7 +9014,7 @@ public class ACAerodynamicAndStabilityManagerV {
 	
 
 	@SuppressWarnings("resource")
-	public static ACAerodynamicAndStabilityManagerV importFromXML (
+	public static ACAerodynamicAndStabilityManager importFromXML (
 			String pathToXML,
 			Aircraft theAircraft,
 			OperatingConditions theOperatingConditions,
@@ -14390,7 +14420,7 @@ public class ACAerodynamicAndStabilityManagerV {
 				.putAllPlotList(plotMap)
 				.build();
 
-		ACAerodynamicAndStabilityManagerV theAerodynamicAndStabilityManager = new ACAerodynamicAndStabilityManagerV();
+		ACAerodynamicAndStabilityManager theAerodynamicAndStabilityManager = new ACAerodynamicAndStabilityManager();
 		theAerodynamicAndStabilityManager.setTheAerodynamicBuilderInterface(theAerodynamicAndStabilityBuilderInterface);
 
 		return theAerodynamicAndStabilityManager;
@@ -14572,11 +14602,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListWing.add(new Object[] {""});
 				dataListWing.add(new Object[] {"LIFT CURVE"});
 
-				Object[] liftCurveAlpha = new Object[_alphaWingList.size()+2];
+				Object[] liftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size()+2];
 				liftCurveAlpha[0] = "Alpha";
 				liftCurveAlpha[1] = "deg";
-				for(int i=0; i<_alphaWingList.size(); i++) 
-					liftCurveAlpha[i+2] = _alphaWingList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size(); i++) 
+					liftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] liftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
@@ -15040,11 +15070,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListWing.add(new Object[] {""});
 				dataListWing.add(new Object[] {"PITCHING MOMENT CURVE"});
 
-				Object[] momentCurveAlpha = new Object[_alphaWingList.size()+2];
+				Object[] momentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size()+2];
 				momentCurveAlpha[0] = "Alpha";
 				momentCurveAlpha[1] = "deg";
-				for(int i=0; i<_alphaWingList.size(); i++) 
-					momentCurveAlpha[i+2] = _alphaWingList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().size(); i++) 
+					momentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] momentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
@@ -15383,11 +15413,11 @@ public class ACAerodynamicAndStabilityManagerV {
 					dataListWing.add(new Object[] {""});
 					dataListWing.add(new Object[] {"HIGH LIFT CURVE"});
 
-					Object[] highLiftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift().length+2];
+					Object[] highLiftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size()+2];
 					highLiftCurveAlpha[0] = "Alpha";
 					highLiftCurveAlpha[1] = "deg";
-					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift().length; i++) 
-						highLiftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift()[i];
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size(); i++) 
+						highLiftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 					Object[] highLiftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
@@ -15453,11 +15483,11 @@ public class ACAerodynamicAndStabilityManagerV {
 					dataListWing.add(new Object[] {""});
 					dataListWing.add(new Object[] {"HIGH LIFT PITCHING MOMENT CURVE"});
 
-					Object[] highLiftMomentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift().length+2];
+					Object[] highLiftMomentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size()+2];
 					highLiftMomentCurveAlpha[0] = "Alpha";
 					highLiftMomentCurveAlpha[1] = "deg";
-					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift().length; i++) 
-						highLiftMomentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift()[i];
+					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().size(); i++) 
+						highLiftMomentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 					Object[] highLiftMomentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
@@ -15702,11 +15732,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListHTail.add(new Object[] {""});
 				dataListHTail.add(new Object[] {"LIFT CURVE"});
 
-				Object[] liftCurveAlpha = new Object[_alphaHTailList.size()+2];
+				Object[] liftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size()+2];
 				liftCurveAlpha[0] = "Alpha";
 				liftCurveAlpha[1] = "deg";
-				for(int i=0; i<_alphaHTailList.size(); i++) 
-					liftCurveAlpha[i+2] = _alphaHTailList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size(); i++) 
+					liftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] liftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
@@ -16170,11 +16200,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListHTail.add(new Object[] {""});
 				dataListHTail.add(new Object[] {"PITCHING MOMENT CURVE"});
 
-				Object[] momentCurveAlpha = new Object[_alphaHTailList.size()+2];
+				Object[] momentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size()+2];
 				momentCurveAlpha[0] = "Alpha";
 				momentCurveAlpha[1] = "deg";
-				for(int i=0; i<_alphaHTailList.size(); i++) 
-					momentCurveAlpha[i+2] = _alphaHTailList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().size(); i++) 
+					momentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] momentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
@@ -16357,11 +16387,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListHTail.add(new Object[] {""});
 				dataListHTail.add(new Object[] {"LIFT CURVE WITH ELEVATOR"});
 
-				Object[] highLiftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift().length+2];
+				Object[] highLiftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().size()+2];
 				highLiftCurveAlpha[0] = "Alpha";
 				highLiftCurveAlpha[1] = "deg";
-				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift().length; i++) 
-					highLiftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift()[i];
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().size(); i++) 
+					highLiftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] highLiftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
@@ -16427,11 +16457,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListHTail.add(new Object[] {""});
 				dataListHTail.add(new Object[] {"PITCHING MOMENT CURVE WITH ELEVATOR"});
 
-				Object[] highLiftMomentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift().length+2];
+				Object[] highLiftMomentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().size()+2];
 				highLiftMomentCurveAlpha[0] = "Alpha";
 				highLiftMomentCurveAlpha[1] = "deg";
-				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift().length; i++) 
-					highLiftMomentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift()[i];
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().size(); i++) 
+					highLiftMomentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] highLiftMomentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
@@ -16674,11 +16704,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListVTail.add(new Object[] {""});
 				dataListVTail.add(new Object[] {"LIFT CURVE"});
 
-				Object[] liftCurveAlpha = new Object[_betaList.size()+2];
+				Object[] liftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size()+2];
 				liftCurveAlpha[0] = "Alpha";
 				liftCurveAlpha[1] = "deg";
-				for(int i=0; i<_betaList.size(); i++) 
-					liftCurveAlpha[i+2] = _betaList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size(); i++) 
+					liftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] liftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
@@ -17142,11 +17172,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListVTail.add(new Object[] {""});
 				dataListVTail.add(new Object[] {"PITCHING MOMENT CURVE"});
 
-				Object[] momentCurveAlpha = new Object[_betaList.size()+2];
+				Object[] momentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size()+2];
 				momentCurveAlpha[0] = "Alpha";
 				momentCurveAlpha[1] = "deg";
-				for(int i=0; i<_betaList.size(); i++) 
-					momentCurveAlpha[i+2] = _betaList.get(i).doubleValue(NonSI.DEGREE_ANGLE);
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().size(); i++) 
+					momentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] momentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
@@ -17329,11 +17359,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListVTail.add(new Object[] {""});
 				dataListVTail.add(new Object[] {"LIFT CURVE WITH RUDDER"});
 
-				Object[] highLiftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift().length+2];
+				Object[] highLiftCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().size()+2];
 				highLiftCurveAlpha[0] = "Alpha";
 				highLiftCurveAlpha[1] = "deg";
-				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift().length; i++) 
-					highLiftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift()[i];
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().size(); i++) 
+					highLiftCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] highLiftCurveCL = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
@@ -17399,11 +17429,11 @@ public class ACAerodynamicAndStabilityManagerV {
 				dataListVTail.add(new Object[] {""});
 				dataListVTail.add(new Object[] {"PITCHING MOMENT CURVE WITH RUDDER"});
 
-				Object[] highLiftMomentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift().length+2];
+				Object[] highLiftMomentCurveAlpha = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().size()+2];
 				highLiftMomentCurveAlpha[0] = "Alpha";
 				highLiftMomentCurveAlpha[1] = "deg";
-				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift().length; i++) 
-					highLiftMomentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift()[i];
+				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().size(); i++) 
+					highLiftMomentCurveAlpha[i+2] = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
 				Object[] highLiftMomentCurveCM = new Object[_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
@@ -18996,7 +19026,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
 				
 				sb.append("\n\t\tLIFT CURVE\n");
-				sb.append("\t\tAlpha " + _alphaWingList + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCL " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
 						)) + "\n");
@@ -19125,7 +19157,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
 				
 				sb.append("\n\t\tPITCHING MOMENT CURVE\n");
-				sb.append("\t\tAlpha " + _alphaWingList + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCM " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
 						)) + "\n");
@@ -19243,7 +19277,9 @@ public class ACAerodynamicAndStabilityManagerV {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 					
 					sb.append("\n\t\tHIGH LIFT CURVE\n");
-					sb.append("\t\tAlpha " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift()) + "\n");
+					sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+							.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+							.collect(Collectors.toList()) + "\n");
 					sb.append("\t\tCL " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
 							)) + "\n");
@@ -19263,7 +19299,9 @@ public class ACAerodynamicAndStabilityManagerV {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
 					
 					sb.append("\n\t\tHIGH LIFT PITCHING MOMENT CURVE\n");
-					sb.append("\t\tAlpha " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayPlotHighLift()) + "\n");
+					sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().stream()
+							.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+							.collect(Collectors.toList()) + "\n");
 					sb.append("\t\tCM " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
 							)) + "\n");
@@ -19341,7 +19379,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
 				
 				sb.append("\n\t\tLIFT CURVE\n");
-				sb.append("\t\tAlpha " + _alphaHTailList + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCL " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
 						)) + "\n");
@@ -19470,7 +19510,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
 				
 				sb.append("\n\t\tPITCHING MOMENT CURVE\n");
-				sb.append("\t\tAlpha " + _alphaHTailList + "\n");
+				sb.append("\t\tAlpha (deg)" + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayClean().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCM " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
 						)) + "\n");
@@ -19544,7 +19586,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
 				sb.append("\n\t\tLIFT CURVE WITH ELEVATOR\n");
-				sb.append("\t\tAlpha " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift()) + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCL " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
 						)) + "\n");
@@ -19564,7 +19608,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
 
 				sb.append("\n\t\tPITCHING MOMENT CURVE WITH ELEVATOR\n");
-				sb.append("\t\tAlpha " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArrayPlotHighLift()) + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCM " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
 						)) + "\n");
@@ -19641,7 +19687,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
 				
 				sb.append("\n\t\tLIFT CURVE\n");
-				sb.append("\t\tAlpha " + _betaList + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCL " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)
 						)) + "\n");
@@ -19770,7 +19818,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
 				
 				sb.append("\n\t\tPITCHING MOMENT CURVE\n");
-				sb.append("\t\tAlpha " + _betaList + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCM " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)
 						)) + "\n");
@@ -19844,7 +19894,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
 				sb.append("\n\t\tLIFT CURVE WITH RUDDER\n");
-				sb.append("\t\tAlpha " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift()) + "\n");
+				sb.append("\t\tAlpha (deg)" + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList()) + "\n");
 				sb.append("\t\tCL " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)
 						)) + "\n");
@@ -19864,7 +19916,9 @@ public class ACAerodynamicAndStabilityManagerV {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
 
 				sb.append("\n\t\tPITCHING MOMENT CURVE WITH RUDDER\n");
-				sb.append("\t\tAlpha " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayPlotHighLift()) + "\n");
+				sb.append("\t\tAlpha (deg) " + _liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray().stream()
+						.map(aw -> aw.doubleValue(NonSI.DEGREE_ANGLE))
+						.collect(Collectors.toList())  + "\n");
 				sb.append("\t\tCM " + Arrays.toString(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)
 						)) + "\n");
