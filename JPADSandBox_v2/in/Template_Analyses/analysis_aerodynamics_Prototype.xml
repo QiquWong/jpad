@@ -340,7 +340,7 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
-                <downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" method="SLINGERLAND">
+                <downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="TRUE" method="ROSKAM">
 				<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)
@@ -388,10 +388,12 @@
 			</high_lift>
 			<drag>
 				<cD_vs_cL_breakdown perform="TRUE"/>
+				<cD_distributions perform="TRUE"/>
 				<drag_distributions perform="TRUE"/>
 			</drag>
 			<pitching_moment>
 				<cM_vs_alpha perform="TRUE"/>
+				<cM_distributions perform="TRUE"/>
 				<moment_distributions perform="TRUE"/>
 			</pitching_moment>
 		</wing>
@@ -400,24 +402,18 @@
 				<cL_vs_alpha perform="TRUE"/>
 				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
 				<cl_distribution perform="TRUE"/>
-				<cl_additional_distribution perform="TRUE"/>
-				<cl_basic_distribution perform="TRUE"/>
 				<ccl_distribution perform="TRUE"/>
-				<ccl_additional_distribution perform="TRUE"/>
-				<ccl_basic_distribution perform="TRUE"/>
 				<gamma_distribution perform="TRUE"/>
-				<gamma_additional_distribution perform="TRUE"/>
-				<gamma_basic_distribution perform="TRUE"/>
 				<total_load_distribution perform="TRUE"/>
-				<additional_load_distribution perform="TRUE"/>
-				<basic_load_distribution perform="TRUE"/>
 			</lift>
 			<drag>
 				<cD_vs_cL_breakdown perform="TRUE"/>
+				<cD_distributions perform="TRUE"/>
 				<drag_distributions perform="TRUE"/>
 			</drag>
 			<pitching_moment>
 				<cM_vs_alpha perform="TRUE"/>
+				<cM_distributions perform="TRUE"/>
 				<moment_distributions perform="TRUE"/>
 			</pitching_moment>
 		</horizontal_tail>
@@ -426,24 +422,18 @@
 				<cL_vs_alpha perform="TRUE"/>
 				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
 				<cl_distribution perform="TRUE"/>
-				<cl_additional_distribution perform="TRUE"/>
-				<cl_basic_distribution perform="TRUE"/>
 				<ccl_distribution perform="TRUE"/>
-				<ccl_additional_distribution perform="TRUE"/>
-				<ccl_basic_distribution perform="TRUE"/>
 				<gamma_distribution perform="TRUE"/>
-				<gamma_additional_distribution perform="TRUE"/>
-				<gamma_basic_distribution perform="TRUE"/>
 				<total_load_distribution perform="TRUE"/>
-				<additional_load_distribution perform="TRUE"/>
-				<basic_load_distribution perform="TRUE"/>
 			</lift>
 			<drag>
 				<cD_vs_cL_breakdown perform="TRUE"/>
+				<cD_distributions perform="TRUE"/>
 				<drag_distributions perform="TRUE"/>
 			</drag>
 			<pitching_moment>
 				<cM_vs_alpha perform="TRUE"/>
+				<cM_distributions perform="TRUE"/>
 				<moment_distributions perform="TRUE"/>
 			</pitching_moment>
 		</vertical_tail>

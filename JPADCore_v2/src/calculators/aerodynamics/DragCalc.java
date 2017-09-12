@@ -1219,8 +1219,7 @@ public class DragCalc {
 			List<Amount<Angle>> equilibriumDeltaE,
 			List<Amount<Angle>> deltaEVectorForEquilibrium,
 			List<Amount<Angle>> alphaBodyList
-			)
-	{
+			) {
 		List<Double> trimmedPolar = new ArrayList<>();
 
 		alphaBodyList.stream().forEach( ab-> {
@@ -1229,25 +1228,31 @@ public class DragCalc {
 			List<Double> temporaryCD = new ArrayList<>();
 			List<Double> temporaryCDFinal = new ArrayList<>();
 			List<Amount<Angle>> temporaryDeltaE = new ArrayList<>();
-			deltaEVectorForEquilibrium.stream().forEach( de-> {
-				temporaryCD.add(dragCoefficientHorizontalTailWithRespectToDeltaE.get(de).get(i));
-				for (int ii=0; ii<temporaryCD.size()-1 ; ii++){
-					if(temporaryCD.get(ii) > temporaryCD.get(ii+1))
-					{
-						temporaryCDFinal.add(temporaryCD.get(ii));
-						temporaryDeltaE.add(deltaEVectorForEquilibrium.get(ii));
-					}
-				}
-			});
+			deltaEVectorForEquilibrium.stream().forEach( de-> 
+			temporaryCD.add(dragCoefficientHorizontalTailWithRespectToDeltaE.get(de).get(i))
+					);
 			
+			int ii=0;
+			int lastIndexTemporaryCD = 0;
+			while (ii < temporaryCD.size()-1) {
+				if(temporaryCD.get(ii) > temporaryCD.get(ii+1)) {
+					temporaryCDFinal.add(temporaryCD.get(ii));
+					temporaryDeltaE.add(deltaEVectorForEquilibrium.get(ii));
+					lastIndexTemporaryCD++;
+				}
+				ii++;
+			}
+			temporaryCDFinal.add(lastIndexTemporaryCD, temporaryCD.get(lastIndexTemporaryCD));
+			temporaryDeltaE.add(deltaEVectorForEquilibrium.get(lastIndexTemporaryCD));
+
 			ArrayUtils.reverse(MyArrayUtils.convertListOfDoubleToDoubleArray(temporaryCDFinal));
 			ArrayUtils.reverse(MyArrayUtils.convertListOfAmountToDoubleArray(temporaryDeltaE));
-			
+
 			trimmedPolar.add(
-							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(temporaryDeltaE),
-									MyArrayUtils.convertToDoublePrimitive(temporaryCDFinal),
-									equilibriumDeltaE.get(i).doubleValue(NonSI.DEGREE_ANGLE))
+					MyMathUtils.getInterpolatedValue1DLinear(
+							MyArrayUtils.convertListOfAmountTodoubleArray(temporaryDeltaE),
+							MyArrayUtils.convertToDoublePrimitive(temporaryCDFinal),
+							equilibriumDeltaE.get(i).doubleValue(NonSI.DEGREE_ANGLE))
 					);
 		});
 
