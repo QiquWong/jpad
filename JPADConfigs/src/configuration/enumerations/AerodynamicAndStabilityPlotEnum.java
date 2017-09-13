@@ -48,6 +48,10 @@ public enum AerodynamicAndStabilityPlotEnum {
 	HTAIL_CM_DISTRIBUTION,
 	HTAIL_MOMENT_DISTRIBUTION,
 	
+	HTAIL_LIFT_CURVE_ELEVATOR,
+	HTAIL_POLAR_CURVE_ELEVATOR,
+	HTAIL_MOMENT_CURVE_ELEVATOR,
+	
 	//..............................................
 	// VTail
 	VTAIL_LIFT_CURVE_CLEAN,
@@ -64,6 +68,10 @@ public enum AerodynamicAndStabilityPlotEnum {
 	VTAIL_MOMENT_CURVE_CLEAN,
 	VTAIL_CM_DISTRIBUTION,
 	VTAIL_MOMENT_DISTRIBUTION,
+	
+	VTAIL_LIFT_CURVE_ELEVATOR,
+	VTAIL_POLAR_CURVE_ELEVATOR,
+	VTAIL_MOMENT_CURVE_ELEVATOR,
 	
 	//..............................................
 	// Fuselage

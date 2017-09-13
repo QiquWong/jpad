@@ -20,7 +20,7 @@
 			-->
 				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
 				<adimensional_center_of_gravity_x_position_list>0.33</adimensional_center_of_gravity_x_position_list>
-				<adimensional_center_of_gravity_z_position_list>0.0;0.0;0.0</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
+				<adimensional_center_of_gravity_z_position_list>0.52</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
 				<rear_landing_gear_dimensional_center_of_gravity_z_position>-3.067</rear_landing_gear_dimensional_center_of_gravity_z_position>
 			</balance>
 			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE" tau_rudder_from_file="FALSE">
@@ -357,7 +357,7 @@
 				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<lateral_static_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<directional_static_stability perform="FALSE" method="VEDSC_USAFDATCOM_WING"/>
+				<directional_static_stability perform="TRUE" method="VEDSC_USAFDATCOM_WING"/>
 				<dynamic_stability perform="FALSE" method="??"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
 			</aircraft_analyses>
         </aerodynamics_and_stability>
@@ -463,6 +463,7 @@
 			<cL_total_equilibrium_vs_alpha perform="FALSE"/>
 			<cL_horizontal_tail_equilibrium_vs_alpha perform="FALSE"/>
 			<cD_total_equilibrium_vs_cL_total_equilibrium perform="FALSE"/>
+			<cD_horizontal_tail_equilibrium_vs_cL_horizontal_tail_equilibrium perform="FALSE"/>
 			<delta_elevator_equilibrium_vs_alpha perform="FALSE"/>
 			<cM_vs_alpha_breakdown perform="TRUE"/>
 			<cN_vs_beta_breakdown perform="TRUE"/>

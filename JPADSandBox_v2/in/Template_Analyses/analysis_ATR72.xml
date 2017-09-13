@@ -37,7 +37,7 @@
 		/>
 	-->
 	<aerodynamic_and_stability
-			plot="TRUE"
+			plot="FALSE"
 			take_off_condition="TRUE"
 			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
 			climb_condition="FALSE"
