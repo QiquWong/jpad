@@ -447,36 +447,36 @@ public class LSAerodynamicsManager {
 		//----------------------------------------------------------------------------------------------------------------------
 		// Initialize ALPHA ARRAY CLEAN
 		if(_theLiftingSurface.getType().equals(ComponentEnum.WING)) {
-		if(theCondition.equals(ConditionEnum.TAKE_OFF) || theCondition.equals(ConditionEnum.LANDING)) {
+			if(theCondition.equals(ConditionEnum.TAKE_OFF) || theCondition.equals(ConditionEnum.LANDING)) {
 
-			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
-				CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
-				calcAlphaZeroLift.integralMeanWithTwist();
-			}
-			
-			if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
-				CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
-				calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(_currentMachNumber);
-			}
-			
-			_alphaArrayClean = MyArrayUtils.convertDoubleArrayToListOfAmount(
-					MyArrayUtils.linspace(
-							_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE)-2,
-							_alphaStall.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE)+2,
-							_numberOfAlphas
-							), 
-					NonSI.DEGREE_ANGLE
-					);
+				if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
+					CalcAlpha0L calcAlphaZeroLift = new CalcAlpha0L();
+					calcAlphaZeroLift.integralMeanWithTwist();
+				}
 
-		}
-		else
-			_alphaArrayClean = _alphaArray;
+				if(_alphaStall.get(MethodEnum.NASA_BLACKWELL) == null) {
+					CalcAlphaStall calcAlphaStall = new CalcAlphaStall();
+					calcAlphaStall.fromAlphaMaxLinearNasaBlackwell(_currentMachNumber);
+				}
+
+				_alphaArrayClean = MyArrayUtils.convertDoubleArrayToListOfAmount(
+						MyArrayUtils.linspace(
+								_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE)-2,
+								_alphaStall.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE)+2,
+								_numberOfAlphas
+								), 
+						NonSI.DEGREE_ANGLE
+						);
+
+			}
+			else
+				_alphaArrayClean = _alphaArray;
 		}
 		else if(_theLiftingSurface.getType().equals(ComponentEnum.HORIZONTAL_TAIL) 
 				|| _theLiftingSurface.getType().equals(ComponentEnum.VERTICAL_TAIL))
 			_alphaArrayClean = _alphaArray;
-			
-		
+
+
 		//----------------------------------------------------------------------------------------------------------------------
 		// Initialize LIFTING COEFFICIENT 3D CURVE
 		if(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL) == null){
@@ -1815,12 +1815,6 @@ public class LSAerodynamicsManager {
 				CalcCLmax calcCLmax = new CalcCLmax();
 				calcCLmax.nasaBlackwell();
 			}
-			
-//			_alphaArrayPlot = MyArrayUtils.linspaceDouble(
-//					_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST).doubleValue(NonSI.DEGREE_ANGLE)-2,
-//					_alphaStall.get(MethodEnum.NASA_BLACKWELL).doubleValue(NonSI.DEGREE_ANGLE) + 3,
-//					_numberOfAlphasPlot
-//					);
 			
 			_liftCoefficient3DCurve.put(
 					MethodEnum.NASA_BLACKWELL,

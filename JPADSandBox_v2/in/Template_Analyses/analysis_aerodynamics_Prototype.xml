@@ -406,6 +406,11 @@
 				<gamma_distribution perform="TRUE"/>
 				<total_load_distribution perform="TRUE"/>
 			</lift>
+			<elevator>
+				<cL_vs_alpha_elevator perform="TRUE"/>
+				<cD_vs_cL_elevator perform="TRUE"/>
+				<cM_vs_alpha_elevator perform="TRUE"/>
+			</elevator>
 			<drag>
 				<cD_vs_cL_breakdown perform="TRUE"/>
 				<cD_distributions perform="TRUE"/>
@@ -420,12 +425,16 @@
 		<vertical_tail>
 			<lift>
 				<cL_vs_alpha perform="TRUE"/>
-				<stall_path perform="TRUE"/> <!-- it uses NASA_BLACKWELL and is not linked to any analysis-->
 				<cl_distribution perform="TRUE"/>
 				<ccl_distribution perform="TRUE"/>
 				<gamma_distribution perform="TRUE"/>
 				<total_load_distribution perform="TRUE"/>
 			</lift>
+			<rudder>
+				<cL_vs_alpha_rudder perform="TRUE"/>
+				<cD_vs_cL_rudder perform="TRUE"/>
+				<cM_vs_alpha_rudder perform="TRUE"/>
+			</rudder>
 			<drag>
 				<cD_vs_cL_breakdown perform="TRUE"/>
 				<cD_distributions perform="TRUE"/>
@@ -460,11 +469,11 @@
 			<cD_total_vs_cL_total perform="TRUE"/>
 			<cM_total_vs_alpha perform="TRUE"/>
 			<cM_total_vs_cL_total perform="TRUE"/>
-			<cL_total_equilibrium_vs_alpha perform="FALSE"/>
-			<cL_horizontal_tail_equilibrium_vs_alpha perform="FALSE"/>
-			<cD_total_equilibrium_vs_cL_total_equilibrium perform="FALSE"/>
-			<cD_horizontal_tail_equilibrium_vs_cL_horizontal_tail_equilibrium perform="FALSE"/>
-			<delta_elevator_equilibrium_vs_alpha perform="FALSE"/>
+			<cL_total_equilibrium_vs_alpha perform="TRUE"/>
+			<cL_horizontal_tail_equilibrium_vs_alpha perform="TRUE"/>
+			<cD_total_equilibrium_vs_cL_total_equilibrium perform="TRUE"/>
+			<cD_horizontal_tail_equilibrium_vs_cL_horizontal_tail_equilibrium perform="TRUE"/>
+			<delta_elevator_equilibrium_vs_alpha perform="TRUE"/>
 			<cM_vs_alpha_breakdown perform="TRUE"/>
 			<cN_vs_beta_breakdown perform="TRUE"/>
 			<cN_vs_beta_delta_rudder perform="TRUE"/>
