@@ -3571,6 +3571,8 @@ public class LSAerodynamicsManager {
 				
 				cDActual = cDActualClean + deltaCD0;
 				
+				_cDAtAlphaHighLift.put(MethodEnum.SEMIEMPIRICAL, cDActual);
+				
 			}
 			
 			return cDActual;

@@ -1179,41 +1179,6 @@ public class AerodynamicCalc {
 			List<Amount<Angle>> alphaBodyList
 			) {
 		
-//		List<Amount<Angle>> deltaEEquilibrium = new ArrayList<>();
-//
-//		List<Integer> cLmaxHTailForEachDeltaElevatorIndex = new ArrayList<>();
-//		
-//		for(int i=0; i<deltaEForEquilibrium.size(); i++) 
-//			cLmaxHTailForEachDeltaElevatorIndex.add(
-//					MyArrayUtils.getIndexOfMax(
-//							MyArrayUtils.convertListOfDoubleToDoubleArray(
-//									liftCoefficientHorizontalTailWithRespectToDeltaE.get(deltaEForEquilibrium.get(i))
-//									)
-//							)
-//					);
-//		
-//		int minimumcLMaxElevatorIndex = cLmaxHTailForEachDeltaElevatorIndex.stream().mapToInt(i -> i).min().getAsInt();
-//		
-//		for (int i = 0; i < minimumcLMaxElevatorIndex; i++) {
-//			
-//			List<Double> temporaryCL = new ArrayList<>();
-//			
-//			for (int j = 0; j < deltaEForEquilibrium.size(); j++) 
-//				temporaryCL.add(liftCoefficientHorizontalTailWithRespectToDeltaE
-//						.get(deltaEForEquilibrium.get(j))
-//						.get(i)
-//						);
-//				
-//			deltaEEquilibrium.add(
-//					Amount.valueOf(
-//							MyMathUtils.getInterpolatedValue1DLinear(
-//									MyArrayUtils.convertToDoublePrimitive(temporaryCL),
-//									MyArrayUtils.convertListOfAmountTodoubleArray(deltaEForEquilibrium),
-//									cLEquilibriumHorizontalTail.get(i)),
-//							NonSI.DEGREE_ANGLE)
-//					);
-//		};
-
 		List<Amount<Angle>> deltaEEquilibrium = new ArrayList<>();
 
 		alphaBodyList.stream().forEach( ab-> {
