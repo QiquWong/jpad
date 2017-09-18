@@ -5543,7 +5543,7 @@ public class ACAerodynamicAndStabilityManager {
 	
 	private void plotAllCharts () {
 		List<Double[]> xVectorMatrix = new ArrayList<Double[]>();
-		List<Double[]> yVectorMatxrix = new ArrayList<Double[]>();
+		List<Double[]> yVectorMatrix = new ArrayList<Double[]>();
 		List<String> legend  = new ArrayList<>(); 
 		double[][] xMatrix;
 		double[][] yMatrix;
@@ -5674,16 +5674,16 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
 				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
 
 
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+				yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getClMaxDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertFromDoubleToPrimitive(
+				yVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAtCLMax().get(MethodEnum.NASA_BLACKWELL)));
 
 				legend.add("Cl max airfoils");
@@ -5696,7 +5696,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -5722,12 +5722,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -5742,7 +5742,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -5771,12 +5771,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
@@ -5791,7 +5791,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -5820,12 +5820,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
@@ -5840,7 +5840,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -5869,12 +5869,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAdditionalLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAdditionalLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -5889,7 +5889,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -5918,12 +5918,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionBasicLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionBasicLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -5938,7 +5938,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -5967,12 +5967,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -5987,7 +5987,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6017,12 +6017,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionAdditionalLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionAdditionalLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6037,7 +6037,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6067,12 +6067,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionBasicLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionBasicLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6087,7 +6087,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6117,12 +6117,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6137,7 +6137,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6167,12 +6167,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionAdditionalLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionAdditionalLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6187,7 +6187,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6217,12 +6217,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionBasicLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionBasicLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6237,7 +6237,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6267,12 +6267,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6287,7 +6287,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6317,12 +6317,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAdditionalLoadDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAdditionalLoadDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6337,7 +6337,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6367,12 +6367,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getBasicLoadDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getBasicLoadDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6387,7 +6387,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6417,12 +6417,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
 								));
@@ -6435,7 +6435,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6465,12 +6465,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
 								));
@@ -6483,7 +6483,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6519,7 +6519,7 @@ public class ACAerodynamicAndStabilityManager {
 						|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -6528,11 +6528,11 @@ public class ACAerodynamicAndStabilityManager {
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
 							));
-					yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-					yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
@@ -6547,7 +6547,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6578,7 +6578,7 @@ public class ACAerodynamicAndStabilityManager {
 						|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getPolar3DCurve().get(
@@ -6591,11 +6591,11 @@ public class ACAerodynamicAndStabilityManager {
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
 							));
-					yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-					yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
@@ -6610,7 +6610,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6642,7 +6642,7 @@ public class ACAerodynamicAndStabilityManager {
 						|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -6651,11 +6651,11 @@ public class ACAerodynamicAndStabilityManager {
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
 							));
-					yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMoment3DCurve().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
-					yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
+					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)));
@@ -6670,7 +6670,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6698,16 +6698,16 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_STALL_PATH)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
 				xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
 
 
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+				yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getClMaxDistribution()));
-				yVectorMatxrix.add(MyArrayUtils.convertFromDoubleToPrimitive(
+				yVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAtCLMax().get(MethodEnum.NASA_BLACKWELL)));
 
 				legend.add("Cl max airfoils");
@@ -6720,7 +6720,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -6746,12 +6746,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6766,7 +6766,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6796,12 +6796,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragCoefficientDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
@@ -6816,7 +6816,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6846,12 +6846,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentCoefficientDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
@@ -6866,7 +6866,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6896,12 +6896,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAdditionalLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionAdditionalLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6916,7 +6916,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6946,12 +6946,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionBasicLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficientDistributionBasicLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -6966,7 +6966,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -6995,12 +6995,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7015,7 +7015,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7045,12 +7045,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionAdditionalLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionAdditionalLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7065,7 +7065,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7094,12 +7094,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionBasicLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getCclDistributionBasicLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7114,7 +7114,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7143,12 +7143,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7163,7 +7163,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7193,12 +7193,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionAdditionalLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionAdditionalLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7213,7 +7213,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7243,12 +7243,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionBasicLoad().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getGammaDistributionBasicLoad().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7263,7 +7263,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7293,12 +7293,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7313,7 +7313,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7343,12 +7343,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAdditionalLoadDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAdditionalLoadDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7363,7 +7363,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7393,12 +7393,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getBasicLoadDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getBasicLoadDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
 								.get(ComponentEnum.WING)
 								.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7413,7 +7413,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7443,12 +7443,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getMomentDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
 								));
@@ -7461,7 +7461,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7491,12 +7491,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getEtaStationDistribution()));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragDistribution().get(
+						yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getDragDistribution().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
 										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaForDistribution().get(i))
 								));
@@ -7509,7 +7509,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -7670,16 +7670,16 @@ public class ACAerodynamicAndStabilityManager {
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_STALL_PATH)) {
 
 			xVectorMatrix = new ArrayList<Double[]>();
-			yVectorMatxrix = new ArrayList<Double[]>();
+			yVectorMatrix = new ArrayList<Double[]>();
 			legend  = new ArrayList<>(); 
 
 			xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
 			xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
 
 
-			yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+			yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getClMaxDistribution()));
-			yVectorMatxrix.add(MyArrayUtils.convertFromDoubleToPrimitive(
+			yVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(
 					_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistributionAtCLMax().get(MethodEnum.NASA_BLACKWELL)));
 
 			legend.add("Cl max airfoils");
@@ -7692,7 +7692,7 @@ public class ACAerodynamicAndStabilityManager {
 
 			for(int i=0; i <xVectorMatrix.size(); i++){
 				xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+				yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 				legendString [i] = legend.get(i);
 			}
 
@@ -7718,12 +7718,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficientDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.HORIZONTAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7738,7 +7738,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -7768,12 +7768,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragCoefficientDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragCoefficientDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.HORIZONTAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
@@ -7788,7 +7788,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -7818,12 +7818,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficientDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficientDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.HORIZONTAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
@@ -7838,7 +7838,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -7867,12 +7867,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCclDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.HORIZONTAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7887,7 +7887,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -7917,12 +7917,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getGammaDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.HORIZONTAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7937,7 +7937,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -7967,12 +7967,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.HORIZONTAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -7987,7 +7987,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8017,12 +8017,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
 									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
 							));
@@ -8035,7 +8035,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8065,12 +8065,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getDragDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
 									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaForDistribution().get(i))
 							));
@@ -8083,7 +8083,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8114,7 +8114,7 @@ public class ACAerodynamicAndStabilityManager {
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -8123,11 +8123,11 @@ public class ACAerodynamicAndStabilityManager {
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray()
 						));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
@@ -8142,7 +8142,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8173,7 +8173,7 @@ public class ACAerodynamicAndStabilityManager {
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getPolar3DCurve().get(
@@ -8186,11 +8186,11 @@ public class ACAerodynamicAndStabilityManager {
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
 						));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
@@ -8205,7 +8205,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8237,7 +8237,7 @@ public class ACAerodynamicAndStabilityManager {
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -8246,11 +8246,11 @@ public class ACAerodynamicAndStabilityManager {
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getAlphaArray()
 						));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)));
@@ -8265,7 +8265,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8409,12 +8409,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficientDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.VERTICAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -8429,7 +8429,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8459,12 +8459,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragCoefficientDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragCoefficientDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.VERTICAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
@@ -8479,7 +8479,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8509,12 +8509,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficientDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficientDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.VERTICAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
@@ -8529,7 +8529,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8559,12 +8559,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getCclDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.VERTICAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -8579,7 +8579,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8609,12 +8609,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getGammaDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.VERTICAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -8629,7 +8629,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8659,12 +8659,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.VERTICAL_TAIL)
 							.get(AerodynamicAndStabilityEnum.LIFT_DISTRIBUTION)).get(
@@ -8679,7 +8679,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8709,12 +8709,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getDragDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.DRAG_DISTRIBUTION)).get(
 									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().get(i))
 							));
@@ -8727,7 +8727,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8758,12 +8758,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertFromDoubleToPrimitive(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getEtaStationDistribution()));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentDistribution().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentDistribution().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_DISTRIBUTION_LIFTING_SURFACE)).get(
 									_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaForDistribution().get(i))
 							));
@@ -8776,7 +8776,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8807,7 +8807,7 @@ public class ACAerodynamicAndStabilityManager {
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -8816,11 +8816,11 @@ public class ACAerodynamicAndStabilityManager {
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray()
 						));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
@@ -8835,7 +8835,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8866,7 +8866,7 @@ public class ACAerodynamicAndStabilityManager {
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getPolar3DCurve().get(
@@ -8879,11 +8879,11 @@ public class ACAerodynamicAndStabilityManager {
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_POLAR_CURVE_3D)
 						));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
@@ -8898,7 +8898,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -8930,7 +8930,7 @@ public class ACAerodynamicAndStabilityManager {
 					|| _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.VERTICAL_TAIL).containsKey(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -8939,11 +8939,11 @@ public class ACAerodynamicAndStabilityManager {
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArray()
 						));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
-				yVectorMatxrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
+				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMomentCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_MOMENT_CURVE_3D)));
@@ -8958,7 +8958,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9185,15 +9185,15 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
+				yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
 						)));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.FALSE).get(
+				yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.FALSE).get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
 						)));
 				legend.add("Constant downwash gradient");
@@ -9206,7 +9206,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9229,15 +9229,15 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
 				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.TRUE).get(
+				yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.TRUE).get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
 						)));
-				yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.FALSE).get(
+				yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.FALSE).get(
 						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
 						)));
 				legend.add("Constant downwash gradient");
@@ -9250,7 +9250,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9278,12 +9278,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
 					legend.add("delta e = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i));
@@ -9295,7 +9295,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9326,23 +9326,23 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.WING)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.WING)));
 					legend.add("Wing");
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.HORIZONTAL_TAIL)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.HORIZONTAL_TAIL)));
 					legend.add("Horizontal_Tail");
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.FUSELAGE)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.FUSELAGE)));
 					legend.add("Fuselage");
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.LANDING_GEAR)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.LANDING_GEAR)));
 					legend.add("Landing_Gear");
 
 					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
@@ -9351,7 +9351,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int ii=0; ii <xVectorMatrix.size(); ii++){
 						xMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(ii));
-						yMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(ii));
+						yMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(ii));
 						legendString [ii] = legend.get(ii);
 					}
 
@@ -9383,11 +9383,11 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
@@ -9402,7 +9402,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9435,12 +9435,12 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_totalMomentCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(j)).get(
 										_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
 						legend.add("delta e = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i));
@@ -9452,7 +9452,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -9488,14 +9488,14 @@ public class ACAerodynamicAndStabilityManager {
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL)) {
 
 					xVectorMatrix = new ArrayList<Double[]>();
-					yVectorMatxrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
 					for(int i=0; i<_theAerodynamicBuilderInterface.getDeltaElevatorList().size(); i++){
 						xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_totalLiftCoefficient.get(
 										_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
-						yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_totalMomentCoefficient.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(j)).get(
 										_theAerodynamicBuilderInterface.getDeltaElevatorList().get(i))));
 						legend.add("delta e = " + _theAerodynamicBuilderInterface.getDeltaElevatorList().get(i));
@@ -9507,7 +9507,7 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i <xVectorMatrix.size(); i++){
 						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
 
@@ -9541,12 +9541,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
 					legend.add("Xcg = " + 
@@ -9559,7 +9559,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9589,11 +9589,11 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
@@ -9609,7 +9609,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9639,12 +9639,12 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
 					legend.add("Xcg = " + 
@@ -9657,7 +9657,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9687,14 +9687,14 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumDragCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
 					legend.add("Xcg = " + 
@@ -9707,7 +9707,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9737,14 +9737,14 @@ public class ACAerodynamicAndStabilityManager {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatxrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
-					yVectorMatxrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 							_deltaEEquilibrium.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i))));
 					legend.add("Xcg = " + 
@@ -9757,7 +9757,7 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i <xVectorMatrix.size(); i++){
 					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatxrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
 
@@ -9786,8 +9786,64 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
 
-				// TODO: FILL ME !!
-				
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+					xVectorMatrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
+					legend  = new ArrayList<>(); 
+
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_cNVertical
+							.get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY))
+							.get(i)._2()));
+					legend.add("Vertical Tail");
+
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_cNFuselage
+							.get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY))
+							.get(i)._2()));
+					legend.add("Fuselage");
+
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_cNWing
+							.get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY))
+							.get(i)._2()));
+					legend.add("Wing");
+
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_cNTotal
+							.get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY))
+							.get(i)._2()));
+					legend.add("Total Aircraft");
+					
+					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					legendString = new String[xVectorMatrix.size()];
+
+					for(int ii=0; ii <xVectorMatrix.size(); ii++){
+						xMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(ii));
+						yMatrix[ii] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(ii));
+						legendString [ii] = legend.get(ii);
+					}
+
+					MyChartToFileUtils.plotNOCSV(
+							xMatrix,
+							yMatrix, 
+							null, 
+							null, 
+							null, 
+							null,
+							"beta", 
+							"CN",
+							"deg", 
+							"", 
+							legendString, 
+							aircraftPlotFolderPath,
+							"Total_Yawing_Coefficient_Breakdown_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+				}
 			}
 			else
 				System.err.println("WARNING!! THE CN CURVES FOR EACH COMPONENT HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE CN BREAKDOWN");
@@ -9799,8 +9855,48 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
 
-				// TODO: FILL ME !!
-				
+				xVectorMatrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
+				legend  = new ArrayList<>(); 
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+
+					for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++){
+						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+								_cNDueToDeltaRudder
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY))
+								.get(_theAerodynamicBuilderInterface.getDeltaRudderList().get(j))
+								.get(i)
+								._2()));
+						legend.add("delta_r = " + 
+								_theAerodynamicBuilderInterface.getDeltaRudderList().get(j));
+					}
+
+					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					legendString = new String[xVectorMatrix.size()];
+
+					for(int k=0; k <xVectorMatrix.size(); k++){
+						xMatrix[k] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(k));
+						yMatrix[k] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(k));
+						legendString [k] = legend.get(k);
+					}
+
+					MyChartToFileUtils.plotNOCSV(
+							xMatrix,
+							yMatrix, 
+							null, 
+							null, 
+							null, 
+							null,
+							"beta",  
+							"CN_total",
+							"deg", 
+							"", 
+							legendString, 
+							aircraftPlotFolderPath,
+							"Total_Yawing_Coefficient_with respect_to_beta_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+				}
 			}
 			else
 				System.err.println("WARNING!! THE CN CURVES FOR EACH CHOSEN DELTA RUDDER HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE CN CURVES");
@@ -9812,7 +9908,53 @@ public class ACAerodynamicAndStabilityManager {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
 
-				// TODO: FILL ME !!
+				xVectorMatrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
+				legend  = new ArrayList<>(); 
+
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_betaOfEquilibrium
+							.get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY))
+							.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+							.stream()
+							.map(tpl -> tpl._1.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+							));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_betaOfEquilibrium
+							.get(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY))
+							.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i))
+							.stream()
+							.map(tpl -> tpl._2.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList())
+							));
+					legend.add("Xcg = " + 
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+				}
+
+				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				legendString = new String[xVectorMatrix.size()];
+
+				for(int i=0; i <xVectorMatrix.size(); i++){
+					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+					legendString [i] = legend.get(i);
+				}
+
+				MyChartToFileUtils.plotNOCSV(
+						xMatrix,
+						yMatrix, 
+						null, 
+						null, 
+						null, 
+						null,
+						"beta", 
+						"delta_r",
+						"deg", 
+						"deg", 
+						legendString, 
+						aircraftPlotFolderPath,
+						"Delta_Rudder_Equilibrium");
 				
 			}
 			else
@@ -20902,6 +21044,55 @@ public class ACAerodynamicAndStabilityManager {
 			
 		}
 		if(_writeFuselage) {
+			
+			sb.append("\n\tDRAG\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)) 
+				sb.append("\t\tCD0_parasite = " + _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Parasite().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_PARASITE_FUSELAGE)
+						) + "\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)) 
+				sb.append("\t\tCD0_base = " + _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Base().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_BASE_FUSELAGE)
+						) + "\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)) 
+				sb.append("\t\tCD0_upsweep = " + _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Upsweep().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_UPSWEEP_FUSELAGE)
+						) + "\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)) 
+				sb.append("\t\tCD0_windshield = " + _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Windshield().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_WINDSHIELD_FUSELAGE)
+						) + "\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)) 
+				sb.append("\t\tCD0_total = " + _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCD0Total().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD0_TOTAL_FUSELAGE)
+						) + "\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)) 
+				sb.append("\t\tCD_induced at Alpha " + _alphaBodyCurrent.to(NonSI.DEGREE_ANGLE) + " = " + _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCDInduced().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_INDUCED_FUSELAGE)
+						) + "\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)) 
+				sb.append("\t\tCD at Alpha " + _alphaBodyCurrent.to(NonSI.DEGREE_ANGLE) + " = " + _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getCDAtAlpha().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.CD_AT_ALPHA_FUSELAGE)
+						) + "\n");
+			
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)) {
+
+				sb.append("\n\t\tDRAG POLAR CURVE\n");
+				sb.append("\t\tAlpha (deg) " + _alphaBodyList.stream().map(a -> a.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()) + "\n");
+				sb.append("\t\tCD " + Arrays.toString(_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE).getPolar3DCurve().get(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE)
+						)) + "\n");
+
+			}
+			
+			sb.append("\n\tPITCHING MOMENT\n");
 			
 		}
 		if(_writeNacelle) {
