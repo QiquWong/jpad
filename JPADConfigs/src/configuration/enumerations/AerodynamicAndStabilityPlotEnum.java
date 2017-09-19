@@ -100,8 +100,8 @@ public enum AerodynamicAndStabilityPlotEnum {
 	TOTAL_CN_BREAKDOWN,
 	TOTAL_CN_VS_BETA_VS_DELTA_RUDDER,
 	DELTA_RUDDER_EQUILIBRIUM,
-	
-	
+	TRIMMED_EFFICIENCY_CURVE_VS_ALPHA,
+	TRIMMED_EFFICIENCY_CURVE_VS_CL,
 	
 	
 	//..............................................

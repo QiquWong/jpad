@@ -478,6 +478,8 @@
 			<cN_vs_beta_breakdown perform="TRUE"/>
 			<cN_vs_beta_delta_rudder perform="TRUE"/>
 			<delta_rudder_equilibrium_vs_beta perform="TRUE"/>
+			<total_equilibrium_efficiency_vs_alpha perform="TRUE"/>
+			<total_equilibrium_efficiency_vs_cL_total_equilibrium perform="TRUE"/>
 		</aircraft>
 	</plot>
 </jpad_config>

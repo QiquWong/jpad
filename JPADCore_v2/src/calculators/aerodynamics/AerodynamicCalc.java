@@ -1216,6 +1216,23 @@ public class AerodynamicCalc {
 		
 		return deltaEEquilibrium;
 	}
+	
+	public static List<Double> calculateTrimmedEfficiencyCurve (
+			List<Double> totalEquilibriumCL, 
+			List<Double> totalEquilibriumCD
+			) {
+		
+		if(totalEquilibriumCL.size() != totalEquilibriumCD.size()) {
+			System.err.println("CL and CD array in 'calculateTrimmedEfficiencyCurve' must have the same size!!");
+			System.exit(1);
+		}
+		
+		return totalEquilibriumCL.stream()
+				.map(cLe -> cLe/totalEquilibriumCD.get(totalEquilibriumCL.indexOf(cLe)))
+				.collect(Collectors.toList());
+		
+	}
+	
 }
 
 
