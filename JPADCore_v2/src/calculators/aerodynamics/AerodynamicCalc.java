@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
@@ -1231,6 +1232,48 @@ public class AerodynamicCalc {
 				.map(cLe -> cLe/totalEquilibriumCD.get(totalEquilibriumCL.indexOf(cLe)))
 				.collect(Collectors.toList());
 		
+	}
+	
+	public static List<Double> calculateNeutralPointPositionVsAlpha (
+			List<Amount<Angle>> alphaBodyList,
+			Double nonDimensionalXacWingFuselage,
+			Double nonDimensionalXacHorizontalTail,
+			Amount<?> cLalphaWingFuselage,
+			Amount<?> cLalphaHorizontalTail,
+			Double horizontalTailDynamicPressureRatio,
+			Amount<Area> wingSurface,
+			Amount<Area> horizontalTailSurface,
+			List<Double> downwashGradientList
+			) {
+		
+		List<Double> neutralPointPositionList = new ArrayList<>();
+		
+		alphaBodyList.stream().forEach(ab -> {
+			
+			neutralPointPositionList.add(
+					(nonDimensionalXacWingFuselage 
+							+ (cLalphaHorizontalTail.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									/cLalphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									* horizontalTailDynamicPressureRatio
+									* horizontalTailSurface.doubleValue(SI.SQUARE_METRE)
+									/ wingSurface.doubleValue(SI.SQUARE_METRE)
+									* nonDimensionalXacHorizontalTail
+									* (1 - downwashGradientList.get(alphaBodyList.indexOf(ab)))
+									) ) 
+					/(1 
+							+ (cLalphaHorizontalTail.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									/cLalphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+									* horizontalTailDynamicPressureRatio
+									* horizontalTailSurface.doubleValue(SI.SQUARE_METRE)
+									/ wingSurface.doubleValue(SI.SQUARE_METRE)
+									* (1 - downwashGradientList.get(alphaBodyList.indexOf(ab)))
+									)
+							)
+					);
+			
+		});
+		
+		return neutralPointPositionList;
 	}
 	
 }

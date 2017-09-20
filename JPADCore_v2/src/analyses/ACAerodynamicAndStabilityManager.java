@@ -225,7 +225,9 @@ public class ACAerodynamicAndStabilityManager {
 	private Map<Double, Map<ComponentEnum, List<Double>>> _momentCoefficientBreakDown = new HashMap<>();
 	private Map<Double, List<Double>> _totalEquilibriumEfficiencyMap = new HashMap<>(); // xcg, efficiency curve
 	private Map<Double, Double> _totalEquilibriumMaximumEfficiencyMap = new HashMap<>(); // xcg, max efficiency 
-
+	private Map<Double, List<Double>> _neutralPointPositionMap = new HashMap<>(); // xcg, N0
+	private Map<Double, List<Double>> _staticStabilityMarginMap = new HashMap<>(); // xcg, SSM
+	
 	
 	//output path
 	
@@ -5069,12 +5071,57 @@ public class ACAerodynamicAndStabilityManager {
 				calcFuselageMomentCurve.fusDes();
 
 				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.FUSELAGE).put(
-						AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE,
+						AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_FUSELAGE,
 						MethodEnum.FUSDES
 						);
 			}
 		}
 
+		//.........................................................................................................................
+		//	NACELLE POLAR_CURVE_3D
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CD_TOTAL) ||
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL) ||
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
+			
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcPolar calcNacellePolarCurve = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcPolar();
+
+				calcNacellePolarCurve.semiempirical(_currentMachNumber);
+
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).put(
+						AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE,
+						MethodEnum.SEMIEMPIRICAL
+						);
+			}
+		}
+
+		//.........................................................................................................................
+		//	NACELLE MOMENT_CURVE_3D
+		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CM_TOTAL) ||
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)){
+			
+			if(!_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).containsKey(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE)) {
+
+				analyses.nacelles.NacelleAerodynamicsManager.CalcMomentCurve calcNacelleMomentCurve = _nacelleAerodynamicManagers.get(ComponentEnum.NACELLE).new CalcMomentCurve();
+
+				calcNacelleMomentCurve.multhopp(
+						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().to(SI.METER)
+						.plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().to(SI.METER).divide(4))
+						.minus(
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().to(SI.METER)
+								.plus(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().to(SI.METER))
+								),
+						_downwashGradientMap.get(Boolean.TRUE).get(MethodEnum.ROSKAM).get(0)
+						);
+
+				_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.NACELLE).put(
+						AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE,
+						MethodEnum.MULTHOPP
+						);
+			}
+		}
+		
 		//.........................................................................................................................
 		//	HORIZONTAL TAIL LIFT_CURVES_3D
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.CL_TOTAL) ||
@@ -5158,15 +5205,6 @@ public class ACAerodynamicAndStabilityManager {
 				//------------------------------------------------------
 				// CL ALPHA HIGH LIFT
 				Amount<?> cLAlphaHighLift = (Amount<?>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT); 
-				
-				//------------------------------------------------------
-				// ALPHA ZERO LIFT HIGH LIFT
-				Amount<Angle> alphaZeroLiftHighLift = 
-						Amount.valueOf(
-								-(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL).getCLZero().get(MethodEnum.NASA_BLACKWELL)
-										/cLAlphaHighLift.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()),
-								NonSI.DEGREE_ANGLE
-								);
 				
 				//------------------------------------------------------
 				// CL ZERO HIGH LIFT
@@ -9344,6 +9382,10 @@ public class ACAerodynamicAndStabilityManager {
 					legend.add("Fuselage");
 
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.NACELLE)));
+					legend.add("Nacelles");
+					
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_momentCoefficientBreakDown.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(ComponentEnum.LANDING_GEAR)));
 					legend.add("Landing_Gear");
 
@@ -9980,6 +10022,256 @@ public class ACAerodynamicAndStabilityManager {
 		}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
+		// NEUTRAL POINT VS ALPHA
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT_VS_ALPHA)) {
+
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+
+				xVectorMatrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
+				legend  = new ArrayList<>(); 
+
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+					
+					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+					
+					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+								.equals(_deltaEForEquilibrium.get(0))
+								) {
+							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+							break;
+						}
+					
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_neutralPointPositionMap.get(
+									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+							));
+					legend.add("Xcg = " + 
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+				}
+
+				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				legendString = new String[xVectorMatrix.size()];
+
+				for(int i=0; i <xVectorMatrix.size(); i++){
+					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+					legendString [i] = legend.get(i);
+				}
+
+				MyChartToFileUtils.plotNOCSV(
+						xMatrix,
+						yMatrix, 
+						null, 
+						null, 
+						null, 
+						null,
+						"alpha body", 
+						"Neutral Point",
+						"deg", 
+						"", 
+						legendString, 
+						aircraftPlotFolderPath,
+						"Neutral_Point_vs_Alpha");
+			}
+			else
+				System.err.println("WARNING!! THE NEUTRAL POINT ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE NEUTRAL POINT CURVE VS ALPHA");
+		}
+		
+		//-----------------------------------------------------------------------------------------------------------------------
+		// NEUTRAL POINT VS CLe
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT_VS_CLe)) {
+
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+
+				xVectorMatrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
+				legend  = new ArrayList<>(); 
+
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+					
+					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+					
+					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+								.equals(_deltaEForEquilibrium.get(0))
+								) {
+							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+							break;
+						}
+					
+					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_totalEquilibriumLiftCoefficient.get(
+									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_neutralPointPositionMap.get(
+									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+							));
+					legend.add("Xcg = " + 
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+				}
+
+				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				legendString = new String[xVectorMatrix.size()];
+
+				for(int i=0; i <xVectorMatrix.size(); i++){
+					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+					legendString [i] = legend.get(i);
+				}
+
+				MyChartToFileUtils.plotNOCSV(
+						xMatrix,
+						yMatrix, 
+						null, 
+						null, 
+						null, 
+						null,
+						"CLe", 
+						"Neutral Point",
+						"", 
+						"", 
+						legendString, 
+						aircraftPlotFolderPath,
+						"Neutral_Point_vs_CLe");
+			}
+			else
+				System.err.println("WARNING!! THE NEUTRAL POINT ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE NEUTRAL POINT CURVE VS CLe");
+		}
+		
+		//-----------------------------------------------------------------------------------------------------------------------
+		// STATIC STABILITY MARGIN VS ALPHA
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.STATIC_STABILITY_MARGIN_VS_ALPHA)) {
+
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+
+				xVectorMatrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
+				legend  = new ArrayList<>(); 
+
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+					
+					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+					
+					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+								.equals(_deltaEForEquilibrium.get(0))
+								) {
+							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+							break;
+						}
+					
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_staticStabilityMarginMap.get(
+									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+							));
+					legend.add("Xcg = " + 
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+				}
+
+				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				legendString = new String[xVectorMatrix.size()];
+
+				for(int i=0; i <xVectorMatrix.size(); i++){
+					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+					legendString [i] = legend.get(i);
+				}
+
+				MyChartToFileUtils.plotNOCSV(
+						xMatrix,
+						yMatrix, 
+						null, 
+						null, 
+						null, 
+						null,
+						"alpha body", 
+						"Static Stability Margin",
+						"deg", 
+						"", 
+						legendString, 
+						aircraftPlotFolderPath,
+						"Static_Stability_Margin_vs_Alpha");
+			}
+			else
+				System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS ALPHA");
+		}
+		
+		//-----------------------------------------------------------------------------------------------------------------------
+		// STATIC STABILITY MARGIN VS CLe
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.STATIC_STABILITY_MARGIN_VS_CLe)) {
+
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+
+				xVectorMatrix = new ArrayList<Double[]>();
+				yVectorMatrix = new ArrayList<Double[]>();
+				legend  = new ArrayList<>(); 
+
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+					
+					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+					
+					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+								.equals(_deltaEForEquilibrium.get(0))
+								) {
+							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+							break;
+						}
+					
+					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_totalEquilibriumLiftCoefficient.get(
+									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+							_staticStabilityMarginMap.get(
+									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+							));
+					legend.add("Xcg = " + 
+							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+				}
+
+				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+				legendString = new String[xVectorMatrix.size()];
+
+				for(int i=0; i <xVectorMatrix.size(); i++){
+					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+					legendString [i] = legend.get(i);
+				}
+
+				MyChartToFileUtils.plotNOCSV(
+						xMatrix,
+						yMatrix, 
+						null, 
+						null, 
+						null, 
+						null,
+						"CLe", 
+						"Static Stability Margin",
+						"", 
+						"", 
+						legendString, 
+						aircraftPlotFolderPath,
+						"Static_Stability_Margin_vs_CLe");
+			}
+			else
+				System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS CLe");
+		}
+		
+		//-----------------------------------------------------------------------------------------------------------------------
 		// CN BREAKDOWN
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CN_BREAKDOWN)) {
 
@@ -10395,7 +10687,12 @@ public class ACAerodynamicAndStabilityManager {
 		//===============================================================
 		List<Double> xCGAdimensionalPositions = new ArrayList<>();
 		List<Double> zCGAdimensionalPositions = new ArrayList<>();
+		Amount<Length> xCGFuselage = null;
+		Amount<Length> zCGFuselage = null;
+		Amount<Length> xCGLandingGears = null;
 		Amount<Length> zCGLandingGears = null;
+		Amount<Length> xCGNacelles = null;
+		Amount<Length> zCGNacelles = null;
 		
 		/********************************************************************************************
 		 * If the boolean flag is true, the method reads from the xls file and ignores the assigned
@@ -10471,15 +10768,54 @@ public class ACAerodynamicAndStabilityManager {
 				zCGAdimensionalPositions.add(zCGAtMaxTakeOffWeight);
 				
 				//---------------------------------------------------------------
-				// ZCG POSITIONS LANDING GEAR
+				// XCG AND ZCG POSITIONS FUSELAGE
+				Sheet sheetFuselage = MyXLSUtils.findSheet(workbook, "FUSELAGE");
+				
+				if(sheetFuselage != null) {
+					//...............................................................
+					// Xcg FUSELAGE
+					Cell xCGFuselageCell = sheetFuselage.getRow(MyXLSUtils.findRowIndex(sheetFuselage, "Xcg BRF").get(0)).getCell(2);
+					if(xCGFuselageCell != null)
+						xCGFuselage = Amount.valueOf(xCGFuselageCell.getNumericCellValue(), SI.METER);
+					//...............................................................
+					// Zcg FUSELAGE
+					Cell zCGFuselageCell = sheetFuselage.getRow(MyXLSUtils.findRowIndex(sheetFuselage, "Zcg BRF").get(0)).getCell(2);
+					if(zCGFuselageCell != null)
+						zCGFuselage = Amount.valueOf(zCGFuselageCell.getNumericCellValue(), SI.METER);
+				}
+				
+				//---------------------------------------------------------------
+				// XCG AND ZCG POSITIONS LANDING GEAR
 				Sheet sheetLandingGear = MyXLSUtils.findSheet(workbook, "LANDING GEARS");
 				
 				if(sheetLandingGear != null) {
 					//...............................................................
+					// Xcg LANDING GEAR
+					Cell xCGLandingGearCell = sheetLandingGear.getRow(MyXLSUtils.findRowIndex(sheetLandingGear, "Xcg BRF").get(0)).getCell(2);
+					if(xCGLandingGearCell != null)
+						xCGLandingGears = Amount.valueOf(xCGLandingGearCell.getNumericCellValue(), SI.METER);
+					//...............................................................
 					// Zcg LANDING GEAR
-					Cell zCGLandingGearCell = sheetLandingGear.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Zcg BRF").get(0)).getCell(2);
+					Cell zCGLandingGearCell = sheetLandingGear.getRow(MyXLSUtils.findRowIndex(sheetLandingGear, "Zcg BRF").get(0)).getCell(2);
 					if(zCGLandingGearCell != null)
 						zCGLandingGears = Amount.valueOf(zCGLandingGearCell.getNumericCellValue(), SI.METER);
+				}
+				
+				//---------------------------------------------------------------
+				// XCG AND ZCG POSITIONS NACELLE
+				Sheet sheetNacelles = MyXLSUtils.findSheet(workbook, "NACELLES");
+				
+				if(sheetNacelles != null) {
+					//...............................................................
+					// Xcg LANDING GEAR
+					Cell xCGNacelleCell = sheetNacelles.getRow(MyXLSUtils.findRowIndex(sheetNacelles, "Xcg BRF").get(0)).getCell(2);
+					if(xCGNacelleCell != null)
+						xCGNacelles = Amount.valueOf(xCGNacelleCell.getNumericCellValue(), SI.METER);
+					//...............................................................
+					// Zcg LANDING GEAR
+					Cell zCGNacelleCell = sheetNacelles.getRow(MyXLSUtils.findRowIndex(sheetNacelles, "Zcg BRF").get(0)).getCell(2);
+					if(zCGNacelleCell != null)
+						zCGNacelles = Amount.valueOf(zCGNacelleCell.getNumericCellValue(), SI.METER);
 				}
 			}
 			else {
@@ -10502,10 +10838,40 @@ public class ACAerodynamicAndStabilityManager {
 				zCGAdimensionalPositions = reader.readArrayDoubleFromXML("//balance/adimensional_center_of_gravity_z_position_list");
 			
 			//---------------------------------------------------------------
+			// XCG POSITIONS FUSELAGE
+			String xCGFuselageProperty = reader.getXMLPropertyByPath("//balance/fuselage_dimensional_center_of_gravity_x_position");
+			if(xCGFuselageProperty != null)
+				xCGFuselage= reader.getXMLAmountLengthByPath("//balance/fuselage_dimensional_center_of_gravity_x_position");
+			
+			//---------------------------------------------------------------
+			// ZCG POSITIONS FUSELAGE
+			String zCGFuselageProperty = reader.getXMLPropertyByPath("//balance/fuselage_dimensional_center_of_gravity_z_position");
+			if(zCGFuselageProperty != null)
+				zCGFuselage= reader.getXMLAmountLengthByPath("//balance/fuselage_dimensional_center_of_gravity_z_position");
+			
+			//---------------------------------------------------------------
+			// XCG POSITIONS LANDING GEAR
+			String xCGLandingGearsProperty = reader.getXMLPropertyByPath("//balance/rear_landing_gear_dimensional_center_of_gravity_x_position");
+			if(xCGLandingGearsProperty != null)
+				xCGLandingGears = reader.getXMLAmountLengthByPath("//balance/rear_landing_gear_dimensional_center_of_gravity_x_position");
+			
+			//---------------------------------------------------------------
 			// ZCG POSITIONS LANDING GEAR
 			String zCGLandingGearsProperty = reader.getXMLPropertyByPath("//balance/rear_landing_gear_dimensional_center_of_gravity_z_position");
 			if(zCGLandingGearsProperty != null)
 				zCGLandingGears = reader.getXMLAmountLengthByPath("//balance/rear_landing_gear_dimensional_center_of_gravity_z_position");
+			
+			//---------------------------------------------------------------
+			// XCG POSITIONS NACELLES
+			String xCGNacellesProperty = reader.getXMLPropertyByPath("//balance/nacelle_dimensional_center_of_gravity_x_position");
+			if(xCGNacellesProperty != null)
+				xCGNacelles = reader.getXMLAmountLengthByPath("//balance/nacelle_dimensional_center_of_gravity_x_position");
+			
+			//---------------------------------------------------------------
+			// ZCG POSITIONS NACELLES
+			String zCGNacellesProperty = reader.getXMLPropertyByPath("//balance/nacelle_dimensional_center_of_gravity_z_position");
+			if(zCGNacellesProperty != null)
+				zCGNacelles = reader.getXMLAmountLengthByPath("//balance/nacelle_dimensional_center_of_gravity_z_position");
 		}
 		
 		//===============================================================
@@ -15603,6 +15969,50 @@ public class ACAerodynamicAndStabilityManager {
 				plotList.add(AerodynamicAndStabilityPlotEnum.DELTA_ELEVATOR_EQUILIBRIUM);
 		
 		//----------------------------------------------------------------
+		// NEUTRAL POINT VS ALPHA
+		String neutralPointVsAlphaPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/neutral_point_vs_alpha/@perform");
+
+		if(neutralPointVsAlphaPlotPerformString != null) 
+			if(neutralPointVsAlphaPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT_VS_ALPHA);
+		
+		//----------------------------------------------------------------
+		// NEUTRAL POINT VS CLe
+		String neutralPointVsCLePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/neutral_point_vs_cL_total_equilibrium/@perform");
+
+		if(neutralPointVsCLePlotPerformString != null) 
+			if(neutralPointVsCLePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT_VS_CLe);
+		
+		//----------------------------------------------------------------
+		// STATIC STABILITY MARGIN VS ALPHA
+		String staticStabilityMarginVsAlphaPlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/static_stability_margin_vs_alpha/@perform");
+
+		if(staticStabilityMarginVsAlphaPlotPerformString != null) 
+			if(staticStabilityMarginVsAlphaPlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.STATIC_STABILITY_MARGIN_VS_ALPHA);
+		
+		//----------------------------------------------------------------
+		// STATIC STABILITY MARGIN VS CLe
+		String staticStabilityMarginVsCLePlotPerformString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//plot/aircraft/static_stability_margin_vs_cL_total_equilibrium/@perform");
+
+		if(staticStabilityMarginVsCLePlotPerformString != null) 
+			if(staticStabilityMarginVsCLePlotPerformString.equalsIgnoreCase("TRUE")) 
+				plotList.add(AerodynamicAndStabilityPlotEnum.STATIC_STABILITY_MARGIN_VS_CLe);
+		
+		//----------------------------------------------------------------
 		// TOTAL TRIMMED EFFICIENCY CURVES VS ALPHA
 		String totalTrimmedEfficiencyCurvesVsAlphaPlotPerformString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
@@ -15683,7 +16093,12 @@ public class ACAerodynamicAndStabilityManager {
 				.setCurrentCondition(theCondition)
 				.addAllXCGAircraft(xCGAdimensionalPositions)
 				.addAllZCGAircraft(zCGAdimensionalPositions)
+				.setXCGFuselage(xCGFuselage)
+				.setZCGFuselage(zCGFuselage)
+				.setXCGLandingGear(xCGLandingGears)
 				.setZCGLandingGear(zCGLandingGears)
+				.setXCGNacelles(xCGNacelles)
+				.setZCGNacelles(zCGNacelles)
 				.setAlphaBodyInitial(alphaBodyInitial)
 				.setAlphaBodyFinal(alphaBodyFinal)
 				.setNumberOfAlphasBody(numberOfAlphaBody)
@@ -19999,6 +20414,24 @@ public class ACAerodynamicAndStabilityManager {
 				dataListlongitudinalStaticStabilityAndControl.add(deltaElevatorEquilibriumArray);
 				currentBoldIndex = currentBoldIndex+1;
 				
+				Object[] neutralPointArray = new Object[_neutralPointPositionMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+				neutralPointArray[0] = "Neutral_point";
+				neutralPointArray[1] = "";
+				for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+					neutralPointArray[j+2] = _neutralPointPositionMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j);
+
+				dataListlongitudinalStaticStabilityAndControl.add(neutralPointArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
+				Object[] staticStabilityMarginArray = new Object[_staticStabilityMarginMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
+				staticStabilityMarginArray[0] = "Static_Stability_Margin";
+				staticStabilityMarginArray[1] = "";
+				for(int j=0; j<=indexOfFirstMaximumDeltaElevatorOfEquilibrium; j++) 
+					staticStabilityMarginArray[j+2] = _staticStabilityMarginMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j);
+
+				dataListlongitudinalStaticStabilityAndControl.add(staticStabilityMarginArray);
+				currentBoldIndex = currentBoldIndex+1;
+				
 				Object[] trimmedEquilibriumEfficiencyArray = new Object[_totalEquilibriumEfficiencyMap.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size()+2];
 				trimmedEquilibriumEfficiencyArray[0] = "Efficiency";
 				trimmedEquilibriumEfficiencyArray[1] = "";
@@ -21811,12 +22244,19 @@ public class ACAerodynamicAndStabilityManager {
 						dee -> dee.doubleValue(NonSI.DEGREE_ANGLE))
 						.collect(Collectors.toList()).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) 
 						+ "\n");
+				sb.append("\t\tNeutral Point = " + _neutralPointPositionMap.get(
+						_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+						).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) + "\n");
+				sb.append("\t\tStatic Stability Margin = " + _staticStabilityMarginMap.get(
+						_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+						).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) + "\n");
 				sb.append("\t\tEfficiency = " + _totalEquilibriumEfficiencyMap.get(
 						_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
 						).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1) + "\n");
 				sb.append("\t\tMaximum efficiency = " + _totalEquilibriumMaximumEfficiencyMap.get(
 						_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
 						) + "\n");
+				
 
 			}
 		}
@@ -22002,6 +22442,12 @@ public class ACAerodynamicAndStabilityManager {
 									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 											.get(ComponentEnum.FUSELAGE)
 											.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+							MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+									.get(ComponentEnum.NACELLE)
+									.getPolar3DCurve()
+									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+											.get(ComponentEnum.NACELLE)
+											.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 							_landingGearUsedDrag,
 							_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),  // FIX THIS
 							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
@@ -22144,7 +22590,7 @@ public class ACAerodynamicAndStabilityManager {
 								_current3DWingLiftCurve,
 								_current3DWingPolarCurve,
 								_current3DWingMomentCurve,
-								_alphaBodyList, 
+								_alphaWingList, 
 								_theAerodynamicBuilderInterface.getWingPendularStability())	
 						);
 				// htail
@@ -22186,7 +22632,8 @@ public class ACAerodynamicAndStabilityManager {
 								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 										.get(ComponentEnum.HORIZONTAL_TAIL).get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE))),
 								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
-								_alphaBodyList
+								_alphaHTailList,
+								_theAerodynamicBuilderInterface.getWingPendularStability()
 								)
 						);
 		
@@ -22202,6 +22649,8 @@ public class ACAerodynamicAndStabilityManager {
 //										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
 										,
 										SI.METER),
+								_theAerodynamicBuilderInterface.getXCGFuselage(),
+								_theAerodynamicBuilderInterface.getZCGFuselage(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
 								MyArrayUtils.convertDoubleArrayToListDouble(_fuselageAerodynamicManagers
@@ -22216,7 +22665,41 @@ public class ACAerodynamicAndStabilityManager {
 										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 												.get(ComponentEnum.FUSELAGE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
-								_alphaBodyList
+								_alphaBodyList,
+								_theAerodynamicBuilderInterface.getWingPendularStability()
+								)
+						);
+				
+				// nacelle
+				_momentTemporaryMap.put(
+						ComponentEnum.NACELLE, 
+						MomentCalc.calculateCMNacelleCurveWithBalanceEquation(
+								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
+										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER),
+								Amount.valueOf((_theAerodynamicBuilderInterface.getZCGAircraft().get(i)*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
+//										+_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeZ().doubleValue(SI.METER)+
+//										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
+										,
+										SI.METER),
+								_theAerodynamicBuilderInterface.getXCGNacelles(),
+								_theAerodynamicBuilderInterface.getZCGNacelles(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
+								MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+										.get(ComponentEnum.NACELLE)
+										.getMoment3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.NACELLE)
+												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+										.get(ComponentEnum.NACELLE)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.NACELLE)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
+								_alphaNacelleList,
+								_theAerodynamicBuilderInterface.getWingPendularStability()
 								)
 						);
 				
@@ -22232,11 +22715,13 @@ public class ACAerodynamicAndStabilityManager {
 //										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER)
 										,
 										SI.METER),
+								_theAerodynamicBuilderInterface.getXCGLandingGear(),
 								_theAerodynamicBuilderInterface.getZCGLandingGear(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),  
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
 								_landingGearUsedDrag,
-								_alphaBodyList
+								_alphaBodyList,
+								_theAerodynamicBuilderInterface.getWingPendularStability()
 								)
 						);
 				
@@ -22244,6 +22729,7 @@ public class ACAerodynamicAndStabilityManager {
 						xcg,
 						_momentTemporaryMap
 						);
+				
 				
 				Map<Amount<Angle>, List<Double>> momentMap = new HashMap<>();
 				_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach( de -> 
@@ -22272,7 +22758,12 @@ public class ACAerodynamicAndStabilityManager {
 										.get(ComponentEnum.HORIZONTAL_TAIL)
 										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
+								_theAerodynamicBuilderInterface.getXCGFuselage(),
+								_theAerodynamicBuilderInterface.getZCGFuselage(),
+								_theAerodynamicBuilderInterface.getXCGLandingGear(),
 								_theAerodynamicBuilderInterface.getZCGLandingGear(),
+								_theAerodynamicBuilderInterface.getXCGNacelles(),
+								_theAerodynamicBuilderInterface.getZCGNacelles(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
@@ -22292,6 +22783,18 @@ public class ACAerodynamicAndStabilityManager {
 										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 												.get(ComponentEnum.FUSELAGE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+										.get(ComponentEnum.NACELLE)
+										.getMoment3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.NACELLE)
+												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+										.get(ComponentEnum.NACELLE)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.NACELLE)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 								_current3DHorizontalTailLiftCurve.get(de),
 							    _current3DHorizontalTailPolarCurve.get(de),
 								_current3DHorizontalTailMomentCurve.get(de),
@@ -22352,7 +22855,12 @@ public class ACAerodynamicAndStabilityManager {
 								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 										.get(ComponentEnum.HORIZONTAL_TAIL)
 										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()), 
+								_theAerodynamicBuilderInterface.getXCGFuselage(),
+								_theAerodynamicBuilderInterface.getZCGFuselage(),
+								_theAerodynamicBuilderInterface.getXCGLandingGear(),
 								_theAerodynamicBuilderInterface.getZCGLandingGear(),
+								_theAerodynamicBuilderInterface.getXCGNacelles(),
+								_theAerodynamicBuilderInterface.getZCGNacelles(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(), 
 								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
 								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
@@ -22371,9 +22879,23 @@ public class ACAerodynamicAndStabilityManager {
 										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 												.get(ComponentEnum.FUSELAGE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+										.get(ComponentEnum.NACELLE)
+										.getMoment3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.NACELLE)
+												.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_NACELLE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+										.get(ComponentEnum.NACELLE)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.NACELLE)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 								_landingGearUsedDrag,
 								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
-								_alphaBodyList, 
+								_alphaBodyList,
+								_alphaWingList,
+								_alphaNacelleList,
 								_theAerodynamicBuilderInterface.getWingPendularStability()
 								));
 						
@@ -22616,6 +23138,12 @@ public class ACAerodynamicAndStabilityManager {
 										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 												.get(ComponentEnum.FUSELAGE)
 												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_FUSELAGE))),
+								MyArrayUtils.convertDoubleArrayToListDouble(_nacelleAerodynamicManagers
+										.get(ComponentEnum.NACELLE)
+										.getPolar3DCurve()
+										.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+												.get(ComponentEnum.NACELLE)
+												.get(AerodynamicAndStabilityEnum.POLAR_CURVE_3D_NACELLE))),
 								_landingGearUsedDrag,
 								_theAerodynamicBuilderInterface.getDeltaCD0Miscellaneous(),  // FIX THIS
 								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
@@ -22651,13 +23179,86 @@ public class ACAerodynamicAndStabilityManager {
 			// Calculating neutral point position vs alpha body ... 
 			//=======================================================================================
 
-			// TODO
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
+
+				Double nonDimensionalXacWingFuselage = _liftingSurfaceAerodynamicManagers
+						.get(ComponentEnum.WING)
+						.getXacMRF()
+						.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+								.get(ComponentEnum.WING)
+								.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER))
+						- (
+								_fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
+								.getCMAlpha().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.FUSELAGE)
+										.get(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)
+										).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+								/_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
+								.getCLAlpha().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.WING)
+										.get(AerodynamicAndStabilityEnum.CL_ALPHA)
+										).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+								);
+
+				Amount<?> cLAlphaWingFuselage = null;
+				if(_theAerodynamicBuilderInterface.getFuselageEffectOnWingLiftCurve())
+					cLAlphaWingFuselage = _clAlphaWingFuselage;
+				else
+					cLAlphaWingFuselage = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
+					.getCLAlpha().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.WING)
+							.get(AerodynamicAndStabilityEnum.CL_ALPHA)
+							);
+				
+				
+				_neutralPointPositionMap.put(
+						xcg,
+						AerodynamicCalc.calculateNeutralPointPositionVsAlpha(
+								_alphaBodyList,
+								nonDimensionalXacWingFuselage, 
+								_liftingSurfaceAerodynamicManagers
+								.get(ComponentEnum.HORIZONTAL_TAIL)
+								.getXacMRF()
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.WING)
+										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)), 
+								cLAlphaWingFuselage, 
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL)
+								.getCLAlpha().get(
+										_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.HORIZONTAL_TAIL)
+										.get(AerodynamicAndStabilityEnum.CL_ALPHA)
+										),
+								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
+								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(),
+								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(), 
+								_downwashGradientMap
+								.get(_theAerodynamicBuilderInterface.getDownwashConstant())
+								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
+										.get(ComponentEnum.AIRCRAFT)
+										.get(AerodynamicAndStabilityEnum.DOWNWASH)
+										)
+								)
+						);
+			});
 
 			//=======================================================================================
 			// Calculating MSS position vs alpha body ...
 			//=======================================================================================
 
-			// TODO
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
+
+				_staticStabilityMarginMap.put(
+						xcg,
+						_neutralPointPositionMap.get(xcg).stream()
+						.map(n0 -> n0-xcg)
+						.collect(Collectors.toList())
+						);
+			});
+			
 		}
 	}
 
@@ -23879,5 +24480,21 @@ public class ACAerodynamicAndStabilityManager {
 
 	public void setTotalEquilibriumMaximumEfficiencyMap(Map<Double, Double> _totalEquilibriumMaximumEfficiencyMap) {
 		this._totalEquilibriumMaximumEfficiencyMap = _totalEquilibriumMaximumEfficiencyMap;
+	}
+
+	public Map<Double, List<Double>> getNeutralPointPositionMap() {
+		return _neutralPointPositionMap;
+	}
+
+	public void setNeutralPointPositionMap(Map<Double, List<Double>> _neutralPointPositionMap) {
+		this._neutralPointPositionMap = _neutralPointPositionMap;
+	}
+
+	public Map<Double, List<Double>> getStaticStabilityMarginMap() {
+		return _staticStabilityMarginMap;
+	}
+
+	public void setStaticStabilityMarginMap(Map<Double, List<Double>> _staticStabilityMarginMap) {
+		this._staticStabilityMarginMap = _staticStabilityMarginMap;
 	}
 }

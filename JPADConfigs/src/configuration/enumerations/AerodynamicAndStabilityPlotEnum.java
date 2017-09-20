@@ -102,7 +102,10 @@ public enum AerodynamicAndStabilityPlotEnum {
 	DELTA_RUDDER_EQUILIBRIUM,
 	TRIMMED_EFFICIENCY_CURVE_VS_ALPHA,
 	TRIMMED_EFFICIENCY_CURVE_VS_CL,
-	
+	NEUTRAL_POINT_VS_ALPHA,
+	NEUTRAL_POINT_VS_CLe,
+	STATIC_STABILITY_MARGIN_VS_ALPHA,
+	STATIC_STABILITY_MARGIN_VS_CLe,
 	
 	//..............................................
 	//..............................................

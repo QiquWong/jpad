@@ -48,8 +48,8 @@
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
 	<!--
-	<performance 
-			file="analysis_performance_ATR72.xml"
+	<performance id="101" ??
+			file="analysis_performance_ATR72_CG25.xml"
 			plot="TRUE"
 			take_off="TRUE"
 			climb="TRUE"
@@ -59,6 +59,10 @@
 			payload_range="TRUE"
 			V_n_diagram="TRUE"
 			mission_profile="TRUE"
+	/>
+	<performance id="102" copy="101"
+			file="analysis_performance_ATR72_CG15.xml"
+			climb="FALSE"
 	/>
 	-->
 	<!--

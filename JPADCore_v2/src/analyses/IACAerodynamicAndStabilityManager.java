@@ -32,7 +32,12 @@ public interface IACAerodynamicAndStabilityManager {
 	String getId();
 	List<Double> getXCGAircraft(); //in MAC perc.
 	List<Double> getZCGAircraft();
-	Amount<Length> getZCGLandingGear(); 
+	Amount<Length> getXCGFuselage();
+	Amount<Length> getZCGFuselage();
+	Amount<Length> getXCGLandingGear();
+	Amount<Length> getZCGLandingGear();
+	Amount<Length> getXCGNacelles();
+	Amount<Length> getZCGNacelles();
 	Double getLandingGearDragCoefficient();
 	Amount<Angle> getAlphaBodyInitial();
 	Amount<Angle> getAlphaBodyFinal();

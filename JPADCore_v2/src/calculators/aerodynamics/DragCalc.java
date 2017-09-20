@@ -1186,6 +1186,7 @@ public class DragCalc {
 			Amount<Area> horizontalTailSurface,
 			Amount<Area> verticalTailSurface,
 			List<Double> fuselageDragCoefficient,
+			List<Double> nacellesDragCoefficient,
 			Double cD0LandingGear,
 			Double cD0Miscellaneous,
 			Double horizontalTailDynamicPressureRatio,
@@ -1206,6 +1207,7 @@ public class DragCalc {
 					(verticalTailDragCoefficient*horizontalTailDynamicPressureRatio*
 							(verticalTailSurface.doubleValue(SI.SQUARE_METRE)/wingSurface.doubleValue(SI.SQUARE_METRE)))+
 					fuselageDragCoefficient.get(i)+
+					nacellesDragCoefficient.get(i)+
 					cD0LandingGear+
 					cD0Miscellaneous);
 				}

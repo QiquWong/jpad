@@ -21,7 +21,12 @@
 				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
 				<adimensional_center_of_gravity_x_position_list>0.33</adimensional_center_of_gravity_x_position_list>
 				<adimensional_center_of_gravity_z_position_list>0.52</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
-				<rear_landing_gear_dimensional_center_of_gravity_z_position>-3.067</rear_landing_gear_dimensional_center_of_gravity_z_position>
+				<fuselage_dimensional_center_of_gravity_x_position unit="m">11.04</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<fuselage_dimensional_center_of_gravity_z_position unit="m">0.0</fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<rear_landing_gear_dimensional_center_of_gravity_x_position unit="m">12.32170821</rear_landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<rear_landing_gear_dimensional_center_of_gravity_z_position unit="m">-1.8746387</rear_landing_gear_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_x_position unit="m">10.31742</nacelle_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
+				<nacelle_dimensional_center_of_gravity_z_position unit="m">1.02895</nacelle_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 			</balance>
 			<global_data dynamic_pressure_ratio_from_file="FALSE" tau_elevator_from_file="FALSE" tau_rudder_from_file="FALSE">
 				<alpha_body_initial unit="deg">-10</alpha_body_initial>
@@ -352,7 +357,7 @@
                     </downwash_gradient_vs_alpha>
                 </downwash>
 				<buffet_barrier perform="FALSE" method="KROO"/> <!-- TODO: IMPLEMENT THIS (work in progress) -->
-				<lift_curve perform="TRUE" fuselage_effects="FALSE" method="FROM_BALANCE_EQUATION"/>
+				<lift_curve perform="TRUE" fuselage_effects="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<drag_polar perform="TRUE" delta_CD0_miscellaneous="0.0" delta_CD0_landing_gears="0.0" method="FROM_BALANCE_EQUATION"/>
 				<moment_curve perform="TRUE" method="FROM_BALANCE_EQUATION"/>
 				<longitudinal_static_stability perform="TRUE" wing_pendular_stability_effect="TRUE" method="FROM_BALANCE_EQUATION"/>
@@ -480,6 +485,10 @@
 			<delta_rudder_equilibrium_vs_beta perform="TRUE"/>
 			<total_equilibrium_efficiency_vs_alpha perform="TRUE"/>
 			<total_equilibrium_efficiency_vs_cL_total_equilibrium perform="TRUE"/>
+			<neutral_point_vs_alpha perform="TRUE"/>
+			<neutral_point_vs_cL_total_equilibrium perform="TRUE"/>
+			<static_stability_margin_vs_alpha perform="TRUE"/>
+			<static_stability_margin_vs_cL_total_equilibrium perform="TRUE"/>
 		</aircraft>
 	</plot>
 </jpad_config>
