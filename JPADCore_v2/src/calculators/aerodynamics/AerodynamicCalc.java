@@ -1235,42 +1235,47 @@ public class AerodynamicCalc {
 	}
 	
 	public static List<Double> calculateNeutralPointPositionVsAlpha (
-			List<Amount<Angle>> alphaBodyList,
-			Double nonDimensionalXacWingFuselage,
-			Double nonDimensionalXacHorizontalTail,
-			Amount<?> cLalphaWingFuselage,
+			Amount<Length> xCGPosition,
+			Amount<Length> xACWingFuselage,
+			Amount<Length> xACHorizontalTail,
+			Amount<?> cLalphaWing,
 			Amount<?> cLalphaHorizontalTail,
 			Double horizontalTailDynamicPressureRatio,
 			Amount<Area> wingSurface,
+			Amount<Length> wingMeanAerodynamicChord,
 			Amount<Area> horizontalTailSurface,
-			List<Double> downwashGradientList
+			List<Double> downwashGradientList,
+			List<Amount<Angle>> alphaBodyList
 			) {
 		
 		List<Double> neutralPointPositionList = new ArrayList<>();
 		
 		alphaBodyList.stream().forEach(ab -> {
 			
+			Amount<Length> horizontalTailHorizontalDistanceACtoCG = Amount.valueOf(
+					xACHorizontalTail.doubleValue(SI.METER) - xCGPosition.doubleValue(SI.METER),
+					SI.METER);
+			
+			Double nondimensionalHorizontalTailHorizontalDistance = 
+					horizontalTailHorizontalDistanceACtoCG.doubleValue(SI.METER)/
+					wingMeanAerodynamicChord.doubleValue(SI.METER);
+			
+			Double nondimensionalXacWingFuselage = 
+					xACWingFuselage.doubleValue(SI.METER)/
+					wingMeanAerodynamicChord.doubleValue(SI.METER);
+			
 			neutralPointPositionList.add(
-					(nonDimensionalXacWingFuselage 
-							+ (cLalphaHorizontalTail.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-									/cLalphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-									* horizontalTailDynamicPressureRatio
-									* horizontalTailSurface.doubleValue(SI.SQUARE_METRE)
-									/ wingSurface.doubleValue(SI.SQUARE_METRE)
-									* nonDimensionalXacHorizontalTail
-									* (1 - downwashGradientList.get(alphaBodyList.indexOf(ab)))
-									) ) 
-					/(1 
-							+ (cLalphaHorizontalTail.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-									/cLalphaWingFuselage.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
-									* horizontalTailDynamicPressureRatio
-									* horizontalTailSurface.doubleValue(SI.SQUARE_METRE)
-									/ wingSurface.doubleValue(SI.SQUARE_METRE)
-									* (1 - downwashGradientList.get(alphaBodyList.indexOf(ab)))
-									)
+					nondimensionalXacWingFuselage 
+					+ (
+							cLalphaHorizontalTail.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+							/ cLalphaWing.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
+							* nondimensionalHorizontalTailHorizontalDistance
+							* horizontalTailDynamicPressureRatio
+							* horizontalTailSurface.doubleValue(SI.SQUARE_METRE)
+							/ wingSurface.doubleValue(SI.SQUARE_METRE)
+							* (1 -  downwashGradientList.get(alphaBodyList.indexOf(ab)))
 							)
 					);
-			
 		});
 		
 		return neutralPointPositionList;

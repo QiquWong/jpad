@@ -555,10 +555,10 @@ public class MyChartToFileUtils {
 			yMax = MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		chartFactory.setxMin(xMin - Math.abs(0.1*xMin));
-		chartFactory.setxMax(xMax + Math.abs(0.1*xMax));
-		chartFactory.setyMin(yMin - Math.abs(0.1*yMin));
-		chartFactory.setyMax(yMax + Math.abs(0.1*yMax));
+		chartFactory.setxMin(xMin - Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
+		chartFactory.setxMax(xMax + Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
+		chartFactory.setyMin(yMin - Math.abs(0.1*Math.max(Math.abs(yMax), Math.abs(yMin))));
+		chartFactory.setyMax(yMax + Math.abs(0.1*Math.max(Math.abs(yMax), Math.abs(yMin))));
 		
 		chartFactory.createMultiTraceChart();
 		
@@ -741,10 +741,10 @@ public class MyChartToFileUtils {
 			yMax = MyArrayUtils.getMax(yMaxArray);
 		}
 		
-		chartFactory.setxMin(xMin - Math.abs(0.1*xMin));
-		chartFactory.setxMax(xMax + Math.abs(0.1*xMax));
-		chartFactory.setyMin(yMin - Math.abs(0.1*yMin));
-		chartFactory.setyMax(yMax + Math.abs(0.1*yMax));
+		chartFactory.setxMin(xMin - Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
+		chartFactory.setxMax(xMax + Math.abs(0.1*Math.max(Math.abs(xMax), Math.abs(xMin))));
+		chartFactory.setyMin(yMin - Math.abs(0.1*Math.max(Math.abs(yMax), Math.abs(yMin))));
+		chartFactory.setyMax(yMax + Math.abs(0.1*Math.max(Math.abs(yMax), Math.abs(yMin))));
 		
 		chartFactory.createMultiTraceChartNoLegend();
 		

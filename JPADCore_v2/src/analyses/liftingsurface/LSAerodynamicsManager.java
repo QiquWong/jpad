@@ -3260,7 +3260,7 @@ public class LSAerodynamicsManager {
 			_alphaZeroLiftHighLift.put(
 					MethodEnum.SEMIEMPIRICAL,
 					Amount.valueOf(
-							-(_cLZero.get(MethodEnum.NASA_BLACKWELL)
+							-(_cLZeroHighLift.get(MethodEnum.SEMIEMPIRICAL)
 									/_cLAlphaHighLift.get(MethodEnum.SEMIEMPIRICAL)
 									.to(NonSI.DEGREE_ANGLE.inverse())
 									.getEstimatedValue()
