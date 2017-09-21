@@ -31,9 +31,9 @@ public class Airfoil {
 			_theAirfoilCreator.setAlphaForClCurve(
 					MyArrayUtils.convertDoubleArrayToListOfAmount(
 							MyArrayUtils.linspace(
-									_theAirfoilCreator.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)-2,
-									_theAirfoilCreator.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE)+1,
-									30
+									-30,
+									30,
+									50
 									),
 							NonSI.DEGREE_ANGLE
 							)
@@ -55,9 +55,9 @@ public class Airfoil {
 			_theAirfoilCreator.setClForCmCurve(
 					MyArrayUtils.convertDoubleArrayToListDouble(
 							MyArrayUtils.linspaceDouble(
-									-0.2,
-									_theAirfoilCreator.getClMax(),
-									30
+									-3,
+									3,
+									50
 									)
 							)
 					);
@@ -78,9 +78,9 @@ public class Airfoil {
 			_theAirfoilCreator.setClForCdCurve(
 					MyArrayUtils.convertDoubleArrayToListDouble(
 							MyArrayUtils.linspaceDouble(
-									-0.2,
-									_theAirfoilCreator.getClMax(),
-									30
+									-3,
+									3,
+									50
 									)
 							)
 					);

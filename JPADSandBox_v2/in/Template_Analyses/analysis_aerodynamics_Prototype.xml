@@ -345,7 +345,7 @@
 				</pitching_moment>
 			</nacelle_analyses>
 			<aircraft_analyses>
-                <downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="TRUE" method="ROSKAM">
+                <downwash perform="TRUE" user_defined_gradient="FALSE" constant_downwash_gradient="FALSE" method="SLINGERLAND"> <!-- ROSKAM NON LINEAR GIVES PROBLEM: DISABLED TEMPORARY --> 
 				<!-- 
 					"perform" allows to do or not this analysis. 
 					In case perfrom is FALSE, "user_defined" allows to choose between the calculation with the specified method and type of gradient (FALSE)

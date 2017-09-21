@@ -587,6 +587,10 @@ public class MomentCalc {
 			clDistribution = theNasaBlackwellCalculator.getClTotalDistribution().toArray();
 			
 			for (int ii=0; ii<numberOfPointSemiSpanWise; ii++){
+				
+				if(Double.isNaN(clDistribution[ii]))
+					clDistribution[ii] = 0.0;
+				
 				alphaDistribution [ii] = (clDistribution[ii] - liftingSurfaceCl0Distribution.get(ii))/
 						liftingSurfaceCLAlphaDegDistribution.get(ii);
 
@@ -618,13 +622,6 @@ public class MomentCalc {
 				cCm[ii] = cmDistribution [ii] * liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) *
 						liftingSurfaceChordDistribution.get(ii).doubleValue(SI.METER) ;
 			}
-			
-//			System.out.println(" distance " +  Arrays.toString(distancesArrayAC));
-//			System.out.println(" xcp " +  Arrays.toString(xcPfracC));
-//			System.out.println(" cl " +  Arrays.toString(clDistribution));
-//			System.out.println(" cl new " +  Arrays.toString(clInducedDistributionAtAlphaNew));
-//			System.out.println(" cm " + Arrays.toString(cmDistribution) );
-//			System.out.println(" ccm " + Arrays.toString(cCm));
 			
 			cCm[numberOfPointSemiSpanWise-1] = 0;
 

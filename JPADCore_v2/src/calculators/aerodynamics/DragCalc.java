@@ -805,7 +805,8 @@ public class DragCalc {
 		return results;
 	}
 	
-	public static List<Double> calculateParasiteDragLiftingSurfaceFromAirfoil (List<Amount<Angle>> alphasArray,
+	public static List<Double> calculateParasiteDragLiftingSurfaceFromAirfoil (
+			List<Amount<Angle>> alphasArray,
 			NasaBlackwell theNasaBlackwellCalculator,
 			List<List<Double>> airfoilCdMatrix, //this is a list of list. each list is referred to an airfoil along the semispan
 			List<Double> ClReferenceOfCdMatrix,// references Cl of the list of list airfoilCdMatrix

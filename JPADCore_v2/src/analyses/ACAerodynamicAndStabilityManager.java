@@ -385,7 +385,7 @@ public class ACAerodynamicAndStabilityManager {
 					Amount.valueOf(
 							_verticalDistanceZeroLiftDirectionWingHTailPARTIAL.doubleValue(SI.METER) + (
 									(_horizontalDistanceQuarterChordWingHTail.doubleValue(SI.METER) *
-											Math.tan(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN) -
+											Math.tan(- _theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN) +
 													_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
 													.getAlphaZeroLift().get(
 															_theAerodynamicBuilderInterface.getComponentTaskList()
@@ -424,7 +424,7 @@ public class ACAerodynamicAndStabilityManager {
 
 		this._verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE = Amount.valueOf(
 				this._verticalDistanceZeroLiftDirectionWingHTailCOMPLETE.doubleValue(SI.METER) * 
-				Math.cos(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN) -
+				Math.cos(- _theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN) +
 						_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
 						.getAlphaZeroLift().get(
 								_theAerodynamicBuilderInterface.getComponentTaskList()
@@ -628,48 +628,48 @@ public class ACAerodynamicAndStabilityManager {
 		Map<MethodEnum, List<Double>> downwashGradientNonLinear = new HashMap<>();
 
 		/* FIXME */
-		downwashGradientNonLinear.put(
-				MethodEnum.ROSKAM,
-				AerodynamicCalc.calculateVariableDownwashGradientRoskamWithMachEffect(
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getTaperRatioEquivalent(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
-						alphaZeroLiftWingCurrent,
-						_horizontalDistanceQuarterChordWingHTail,
-						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSweepQuarterChordEquivalent(),
-						cLAlphaMachZero,
-						cLAlphaWingCurrent.to(SI.RADIAN.inverse()).getEstimatedValue(), 
-						_alphaBodyList
-						)
-				);
+//		downwashGradientNonLinear.put(
+//				MethodEnum.ROSKAM,
+//				AerodynamicCalc.calculateVariableDownwashGradientRoskamWithMachEffect(
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getTaperRatioEquivalent(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSpan(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
+//						alphaZeroLiftWingCurrent,
+//						_horizontalDistanceQuarterChordWingHTail,
+//						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSweepQuarterChordEquivalent(),
+//						cLAlphaMachZero,
+//						cLAlphaWingCurrent.to(SI.RADIAN.inverse()).getEstimatedValue(), 
+//						_alphaBodyList
+//						)
+//				);
 
 		Map<MethodEnum, List<Amount<Angle>>> downwashAngleNonLinear = new HashMap<>();
 
-		downwashAngleNonLinear.put(
-				MethodEnum.ROSKAM,
-				AerodynamicCalc.calculateDownwashAngleFromDownwashGradient(
-						downwashGradientNonLinear.get(MethodEnum.ROSKAM),
-						_alphaBodyList,
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
-						alphaZeroLiftWingCurrent
-						)
-				);
-
-		_verticalDistanceZeroLiftDirectionWingHTailVariable.put(
-				MethodEnum.ROSKAM,
-				AerodynamicCalc.calculateVortexPlaneHorizontalTailVerticalDistance(
-						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
-						alphaZeroLiftWingCurrent,
-						_horizontalDistanceQuarterChordWingHTail,
-						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
-						_alphaBodyList, 
-						downwashAngleNonLinear.get(MethodEnum.ROSKAM)
-						)	
-				);
+//		downwashAngleNonLinear.put(
+//				MethodEnum.ROSKAM,
+//				AerodynamicCalc.calculateDownwashAngleFromDownwashGradient(
+//						downwashGradientNonLinear.get(MethodEnum.ROSKAM),
+//						_alphaBodyList,
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
+//						alphaZeroLiftWingCurrent
+//						)
+//				);
+//
+//		_verticalDistanceZeroLiftDirectionWingHTailVariable.put(
+//				MethodEnum.ROSKAM,
+//				AerodynamicCalc.calculateVortexPlaneHorizontalTailVerticalDistance(
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
+//						alphaZeroLiftWingCurrent,
+//						_horizontalDistanceQuarterChordWingHTail,
+//						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
+//						_alphaBodyList, 
+//						downwashAngleNonLinear.get(MethodEnum.ROSKAM)
+//						)	
+//				);
 
 		//...................................................................................
 		// SLINGERLAND (non linear gradient)
@@ -688,7 +688,7 @@ public class ACAerodynamicAndStabilityManager {
 						_verticalDistanceZeroLiftDirectionWingHTailPARTIAL, 
 						MyArrayUtils.convertToDoublePrimitive(liftCurveWingCurrent),
 						MyArrayUtils.convertListOfAmountTodoubleArray(
-								_alphaWingList.stream()
+								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
 								.map(x -> x.to(NonSI.DEGREE_ANGLE))
 								.collect(Collectors.toList())
 								),
@@ -5822,7 +5822,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -5868,7 +5868,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -5917,7 +5917,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -5966,7 +5966,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6015,7 +6015,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6064,7 +6064,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6113,7 +6113,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6163,7 +6163,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6213,7 +6213,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6263,7 +6263,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6313,7 +6313,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6363,7 +6363,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6413,7 +6413,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6463,7 +6463,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6513,7 +6513,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6561,7 +6561,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6609,7 +6609,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6846,7 +6846,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -6892,7 +6892,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6942,7 +6942,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -6992,7 +6992,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7042,7 +7042,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7092,7 +7092,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7141,7 +7141,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7191,7 +7191,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7240,7 +7240,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7289,7 +7289,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7339,7 +7339,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7389,7 +7389,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7439,7 +7439,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7489,7 +7489,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7539,7 +7539,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7587,7 +7587,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7635,7 +7635,7 @@ public class ACAerodynamicAndStabilityManager {
 					MyChartToFileUtils.plotNOCSV(
 							xMatrix,
 							yMatrix, 
-							null, 
+							0.0, 
 							null, 
 							null, 
 							null,
@@ -7818,7 +7818,7 @@ public class ACAerodynamicAndStabilityManager {
 			MyChartToFileUtils.plotNOCSV(
 					xMatrix,
 					yMatrix, 
-					null, 
+					0.0, 
 					null, 
 					null, 
 					null,
@@ -7864,7 +7864,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -7914,7 +7914,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -7964,7 +7964,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8013,7 +8013,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8063,7 +8063,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8113,7 +8113,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8161,7 +8161,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8209,7 +8209,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8433,7 +8433,7 @@ public class ACAerodynamicAndStabilityManager {
 						null, 
 						null, 
 						null, 
-						"beta",
+						"alpha",
 						"CL",
 						"deg", 
 						"",
@@ -8495,7 +8495,11 @@ public class ACAerodynamicAndStabilityManager {
 				xVector = new ArrayList<Double>();
 				yVector = new ArrayList<Double>();
 
-				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaWingList));
+				xVector = MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertListOfAmountToDoubleArray(
+										_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getAlphaArrayClean()
+										)
+								);
 				yVector = MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getMoment3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
 						.get(ComponentEnum.VERTICAL_TAIL)
@@ -8508,7 +8512,7 @@ public class ACAerodynamicAndStabilityManager {
 						null, 
 						null, 
 						null, 
-						"beta",
+						"alpha",
 						"CM",
 						"deg", 
 						"",
@@ -8555,7 +8559,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8605,7 +8609,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8655,7 +8659,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8705,7 +8709,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8755,7 +8759,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8805,7 +8809,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8853,7 +8857,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,
@@ -8902,7 +8906,7 @@ public class ACAerodynamicAndStabilityManager {
 				MyChartToFileUtils.plotNOCSV(
 						xMatrix,
 						yMatrix, 
-						null, 
+						0.0, 
 						null, 
 						null, 
 						null,

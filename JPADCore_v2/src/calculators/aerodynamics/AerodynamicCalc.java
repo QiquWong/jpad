@@ -492,8 +492,11 @@ public class AerodynamicCalc {
 		// variable value (kh)	
 
 		Amount<Angle> startingAngle = 
-		          iw.to(SI.RADIAN)
-		          	.minus(alphaZeroLiftWing.to(SI.RADIAN));
+				Amount.valueOf(
+						- iw.doubleValue(SI.RADIAN)
+						+ alphaZeroLiftWing.doubleValue(SI.RADIAN),
+						SI.RADIAN
+						);
 
 		// Alpha Absolute array 
 		double alphaFirst = 0.0;
@@ -742,8 +745,11 @@ public class AerodynamicCalc {
 			double [] alphaBody   //deg
 			){
 		Amount<Angle> startingAngle = 
-				iw.to(SI.RADIAN)
-				.minus(alphaZeroLiftWing.to(SI.RADIAN));
+				Amount.valueOf(
+						- iw.doubleValue(SI.RADIAN)
+						+ alphaZeroLiftWing.doubleValue(SI.RADIAN),
+						SI.RADIAN
+						);
 
 		// Alpha Absolute array 
 		double alphaFirst = 0.0;
