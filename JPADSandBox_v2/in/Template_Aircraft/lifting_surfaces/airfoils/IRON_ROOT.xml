@@ -66,7 +66,7 @@
             <!---->
 			<airfoil_curves>
 				<Cl_curve></Cl_curve>
-				<alpha_for_Cl_curve unit="deg"></alpha_for_Cl_curve>
+				<alpha_for_Cl_curve unit="deg"></alpha_for_Cl_curve> <!-- this array have to be large enough to cover all the alpha array defined in the aerodynamic analysis maanger -->
 				<Cd_curve></Cd_curve>
 				<Cl_for_Cd_curve></Cl_for_Cd_curve>
 				<Cm_curve></Cm_curve>

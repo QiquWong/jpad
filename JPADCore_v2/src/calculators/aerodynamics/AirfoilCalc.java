@@ -561,13 +561,19 @@ public class AirfoilCalc {
 
 	 */
 	
-	public static List<List<Double>> calculateCLMatrixAirfoils(List<Amount<Angle>> referenceAlphaArray,
+	public static List<List<Double>> calculateCLMatrixAirfoils(
+			List<Amount<Angle>> referenceAlphaArray,
 			List<List<Amount<Angle>>> alphaArrayInput,
 			List<List<Double>> clArrayInput,
 			List<Double> yAdimensionalBreakPoints,
 			List<Double> yAdimensionalDistribution
 			){
 
+		if(referenceAlphaArray.get(0).doubleValue(NonSI.DEGREE_ANGLE) < alphaArrayInput.get(0).get(0).doubleValue(NonSI.DEGREE_ANGLE)) 
+			System.err.println("\n\tWARNING THE referenceAlphaArray SIZE IS BIGGER THAN THE alphaArrayInput!! "
+					+ "\n\tTHIS MAY CAUSE PROBLEMS DURING INTERPOLATION AIRFOIL LIFT CURVE !!");
+			
+		
 		List<List<Double>> clMatrixAirfoils = new ArrayList<>();
 
 		int numberOfAlpha = referenceAlphaArray.size();
