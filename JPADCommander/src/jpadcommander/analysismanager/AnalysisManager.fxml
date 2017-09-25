@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="4720.0" prefWidth="1072.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.inputmanager.InputManagerController">
+   <center>
+      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Analyses">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <BorderPane id="mainInputManagerAircraftSubContent" layoutX="552.0" layoutY="58.0" prefHeight="691.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <top>
+                              <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <items>
+                                    <RadioButton mnemonicParsing="false" onAction="#showInputManagerAircraftFromFileContent" text="Import from file">
+                                       <padding>
+                                          <Insets left="10.0" right="10.0" />
+                                       </padding>
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="groupAircraftInputType" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                 </items>
+                              </ToolBar>
+                           </top>
+                           <center>
+                              <BorderPane id="mainInputManagerAircraftSubContentFields" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <center>
+                                    <SplitPane dividerPositions="0.37509727626459144" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                       <items>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
+                                             <children>
+                                                <ScrollPane prefHeight="674.0" prefWidth="635.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <content>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0">
+                                                         <children>
+                                                            <Label layoutX="5.0" layoutY="199.0" prefHeight="21.0" prefWidth="68.0" text="Fuselage:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="5.0" layoutY="220.0" prefHeight="146.0" prefWidth="383.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="82.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="264.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="47.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <TextField id="textFieldAircraftFuselageFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageX" prefHeight="31.0" prefWidth="125.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftFuselageZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftFuselageY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="fuselageXUnitChoiceBox" fx:id="fuselageXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="fuselageYUnitChoiceBox" fx:id="fuselageYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="fuselageZUnitChoiceBox" fx:id="fuselageZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="-4.0" layoutY="374.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                            <Label layoutX="5.0" layoutY="377.0" text="Wing:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="5.0" layoutY="402.0" prefHeight="174.0" prefWidth="383.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="295.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="69.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <TextField id="textFieldAircraftWingFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftWingX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftWingZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftWingY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label text="Rigging Angle:" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftWingRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="wingXUnitChoiceBox" fx:id="wingXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="wingYUnitChoiceBox" fx:id="wingYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="wingZUnitChoiceBox" fx:id="wingZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="wingRiggingAngleUnitChoiceBox" fx:id="wingRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="-46.0" layoutY="587.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                            <Label layoutX="5.0" layoutY="593.0" text="Horizontal Tail:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="4.0" layoutY="611.0" prefHeight="174.0" prefWidth="383.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="331.0" minWidth="10.0" prefWidth="295.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="69.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <TextField id="textFieldAircraftHTailFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftHTailX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftHTailZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftHTailY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label text="Rigging Angle:" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftHTailRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="hTailXUnitChoiceBox" fx:id="hTailXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="hTailYUnitChoiceBox" fx:id="hTailYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="hTailZUnitChoiceBox" fx:id="htailZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="hTailRiggingAngleUnitChoiceBox" fx:id="hTailRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="4.0" layoutY="792.0" prefHeight="0.0" prefWidth="1346.0" />
+                                                            <Label layoutX="8.0" layoutY="802.0" text="Vertical Tail:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="4.0" layoutY="820.0" prefHeight="174.0" prefWidth="383.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="317.0" minWidth="10.0" prefWidth="294.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="70.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <TextField id="textFieldAircraftVTailFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftVTailX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftVTailZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftVTailY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label text="Rigging Angle:" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftVTailRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="vTailXUnitChoiceBox" fx:id="vTailXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="vTailYUnitChoiceBox" fx:id="vTailYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="vTailZUnitChoiceBox" fx:id="vTailZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="vTailRiggingAngleUnitChoiceBox" fx:id="vTailRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="-4.0" layoutY="1005.0" prefHeight="0.0" prefWidth="1435.0" />
+                                                            <Label layoutX="8.0" layoutY="1015.0" text="Canard:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="5.0" layoutY="1036.0" prefHeight="174.0" prefWidth="383.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="292.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="72.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <TextField id="textFieldAircraftCanardFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftCanardX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftCanardZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftCanardY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label text="Rigging Angle:" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftCanardRiggingAngle" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="canardXUnitChoiceBox" fx:id="canardXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="canardYUnitChoiceBox" fx:id="canardYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="canardZUnitChoiceBox" fx:id="canardZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="canardRiggingAngleUnitChoiceBox" fx:id="canardRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="-12.0" layoutY="1224.0" prefHeight="2.0" prefWidth="1431.0" />
+                                                            <Label layoutX="8.0" layoutY="1228.0" text="Power Plant:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="25.0" layoutY="1249.0" prefHeight="220.0" prefWidth="474.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="67.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="67.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="10.0" prefWidth="63.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="1.0" prefWidth="61.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <TextField id="textFieldAircraftEngineFile1" GridPane.columnIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineFile2" GridPane.columnIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineFile3" GridPane.columnIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineFile4" GridPane.columnIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineFile5" GridPane.columnIndex="6" />
+                                                                  <TextField id="textFieldAircraftEngineY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftEngineX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="Position:" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftEngineFile6" GridPane.columnIndex="7" />
+                                                                  <TextField id="textFieldAircraftEngineX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftEngineY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftEngineZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                  <Label text="Tilting Angle:" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt5" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                                  <TextField id="textFieldAircraftEngineTilt6" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition6" fx:id="powerPlantMountingPositionTypeChoiceBox6" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="powerPlantXUnitChoiceBox" fx:id="powerPlantXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="powerPlantYUnitChoiceBox" fx:id="powerPlantYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="powerPlantZUnitChoiceBox" fx:id="powerPlantZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="powerPlantTiltingAngleUnitChoiceBox" fx:id="powerPlantTiltAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition1" fx:id="powerPlantMountingPositionTypeChoiceBox1" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition2" fx:id="powerPlantMountingPositionTypeChoiceBox2" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition3" fx:id="powerPlantMountingPositionTypeChoiceBox3" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition4" fx:id="powerPlantMountingPositionTypeChoiceBox4" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftEnginePosition5" fx:id="powerPlantMountingPositionTypeChoiceBox5" prefWidth="150.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="-4.0" layoutY="1477.0" prefHeight="0.0" prefWidth="1372.0" />
+                                                            <Label layoutX="7.0" layoutY="1489.0" text="Nacelles:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="25.0" layoutY="1515.0" prefHeight="181.0" prefWidth="474.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="89.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="50.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="62.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="496.0" minWidth="10.0" prefWidth="58.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="65.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="518.0" minWidth="10.0" prefWidth="67.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="10.0" prefWidth="63.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="515.0" minWidth="1.0" prefWidth="61.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <TextField id="textFieldAircraftNacelleFile1" GridPane.columnIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleX1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleZ1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleY1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleFile2" GridPane.columnIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleX2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleY2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleFile3" GridPane.columnIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleY3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleFile4" GridPane.columnIndex="5" />
+                                                                  <TextField id="textFieldAircraftNacelleX4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleFile5" GridPane.columnIndex="6" />
+                                                                  <TextField id="textFieldAircraftNacelleY4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftNacelleX3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleY5" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleX5" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleZ5" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="Position:" GridPane.rowIndex="4" />
+                                                                  <TextField id="textFieldAircraftNacelleFile6" GridPane.columnIndex="7" />
+                                                                  <TextField id="textFieldAircraftNacelleX6" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftNacelleY6" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                  <TextField id="textFieldAircraftNacelleZ6" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="nacellesXUnitChoiceBox" fx:id="nacelleXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="nacellesYUnitChoiceBox" fx:id="nacelleYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="nacellesZUnit" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="nacelleZUnitChoiceBox" fx:id="nacelleZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition6" fx:id="nacellesMountingPositionTypeChoiceBox6" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition1" fx:id="nacellesMountingPositionTypeChoiceBox1" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition2" fx:id="nacellesMountingPositionTypeChoiceBox2" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition3" fx:id="nacellesMountingPositionTypeChoiceBox3" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition4" fx:id="nacellesMountingPositionTypeChoiceBox4" prefWidth="150.0" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="choiceBoxAircraftNacellePosition5" fx:id="nacellesMountingPositionTypeChoiceBox5" prefWidth="150.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="-4.0" layoutY="1707.0" prefHeight="0.0" prefWidth="1369.0" />
+                                                            <Label layoutX="8.0" layoutY="1716.0" text="Landing Gears:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="5.0" layoutY="1753.0" prefHeight="174.0" prefWidth="383.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="78.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="262.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="46.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <TextField id="textFieldAircraftLandingGearsFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftLandingGearsX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftLandingGearsZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftLandingGearsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label text="Position:" GridPane.rowIndex="4" />
+                                                                  <ChoiceBox id="landingGearsXUnitChoiceBox" fx:id="landingGearsXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="landingGearsYUnitChoiceBox" fx:id="landingGearsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="landingGearsZUnitChoiceBox" fx:id="landingGearsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <ChoiceBox id="choiceBoxAircraftLandingGearsPosition" fx:id="landingGearsMountingPositionTypeChoiceBox" prefHeight="25.0" prefWidth="261.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Separator layoutX="-40.0" layoutY="1942.0" prefHeight="0.0" prefWidth="1604.0" />
+                                                            <Label layoutX="7.0" layoutY="1948.0" text="Systems:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <GridPane layoutX="4.0" layoutY="1973.0" prefHeight="148.0" prefWidth="383.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="110.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="293.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="71.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label text="X:" GridPane.rowIndex="1" />
+                                                                  <Label text="Y:" GridPane.rowIndex="2" />
+                                                                  <Label text="Z:" GridPane.rowIndex="3" />
+                                                                  <Label text="File:" />
+                                                                  <TextField id="textFieldAircraftSystemsFile" GridPane.columnIndex="1" />
+                                                                  <TextField id="textFieldAircraftSystemsX" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <TextField id="textFieldAircraftSystemsZ" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <TextField id="textFieldAircraftSystemsY" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="systemsXUnitChoiceBox" fx:id="systemsXUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <ChoiceBox id="systemsYUnitChoiceBox" fx:id="systemsYUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                  <ChoiceBox id="systemsZUnitChoiceBox" fx:id="systemsZUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </content>
+                                                </ScrollPane>
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                             <children>
+                                                <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <center>
+                                                      <SplitPane id="aircraftViewsAndDataLogSplitPane" dividerPositions="0.9" focusTraversable="false" orientation="VERTICAL" prefHeight="400.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+                                                         <items>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
+                                                               <children>
+                                                                  <TabPane onMouseClicked="#zoomViews" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <tabs>
+                                                                        <Tab id="TopView" text="Top view">
+                                                                           <content>
+                                                                              <Pane id="TopViewPane" />
+                                                                           </content></Tab>
+                                                                        <Tab id="SideView" text="Side view">
+                                                                           <content>
+                                                                              <Pane id="SideViewPane" />
+                                                                           </content></Tab>
+                                                                        <Tab id="FrontView" text="Front view">
+                                                                           <content>
+                                                                              <Pane id="FrontViewPane" />
+                                                                           </content>
+                                                                        </Tab>
+                                                                     </tabs>
+                                                                  </TabPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                               <children>
+                                                                  <TabPane onMouseClicked="#zoomDataLogAndMessages" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <tabs>
+                                                                        <Tab text="Data log">
+                                                                           <content>
+                                                                              <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                                                 <content>
+                                                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                                       <children>
+                                                                                          <TextArea id="output" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                                       </children>
+                                                                                    </AnchorPane>
+                                                                                 </content>
+                                                                              </ScrollPane>
+                                                                           </content>
+                                                                        </Tab>
+                                                                     </tabs>
+                                                                  </TabPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </items>
+                                                      </SplitPane>
+                                                   </center>
+                                                </BorderPane>
+                                             </children>
+                                          </AnchorPane>
+                                       </items>
+                                    </SplitPane>
+                                 </center>
+                              </BorderPane>
+                           </center>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Weights">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <BorderPane prefHeight="681.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <center>
+                              <SplitPane dividerPositions="0.37509727626459144" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
+                                       <children>
+                                          <ScrollPane prefHeight="674.0" prefWidth="635.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0">
+                                                   <children>
+                                                      <Label layoutX="5.0" layoutY="108.0" text="Deck number:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageDeckNumber" layoutX="4.0" layoutY="131.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="5.0" layoutY="162.0" prefHeight="21.0" prefWidth="68.0" text="Length:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutX="-4.0" layoutY="276.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="5.0" layoutY="50.0" text="Pressurized">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutX="-20.0" layoutY="75.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <Separator layoutX="-20.0" layoutY="105.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <CheckBox id="fuselagePressurizedCheckBox" layoutX="91.0" layoutY="50.0" mnemonicParsing="false" />
+                                                      <Label layoutX="5.0" layoutY="80.0" text="GLOBAL DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageLength" layoutX="4.0" layoutY="182.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="7.0" layoutY="215.0" prefHeight="21.0" prefWidth="128.0" text="Roughness:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldSurfaceRoughness" layoutX="6.0" layoutY="236.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="5.0" layoutY="284.0" prefHeight="21.0" prefWidth="156.0" text="NOSE TRUNK DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutX="-28.0" layoutY="312.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="6.0" layoutY="316.0" text="Length ratio:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseLengthRatio" layoutX="5.0" layoutY="339.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="6.0" layoutY="370.0" prefHeight="21.0" prefWidth="389.0" text="Tip z offset from origin (&lt;0 under the reference line)">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseTipOffset" layoutX="5.0" layoutY="391.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="8.0" layoutY="426.0" prefHeight="21.0" prefWidth="163.0" text="dx of the nose cap (%)">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseDxCap" layoutX="7.0" layoutY="447.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="7.0" layoutY="485.0" text="Windshiled type:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label layoutX="7.0" layoutY="539.0" prefHeight="21.0" prefWidth="146.0" text="Windshield width:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseWindshieldWidth" layoutX="6.0" layoutY="559.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="7.0" layoutY="594.0" prefHeight="21.0" prefWidth="164.0" text="Windshield height:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseWindshieldHeight" layoutX="6.0" layoutY="615.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="9.0" layoutY="650.0" prefHeight="21.0" prefWidth="366.0" text="Mid section height to total section height ratio:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseMidSectionHeight" layoutX="8.0" layoutY="671.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="8.0" layoutY="710.0" prefHeight="21.0" prefWidth="209.0" text="Mid section rho upper curve:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseMidSectionRhoUpper" layoutX="7.0" layoutY="731.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="10.0" layoutY="767.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho lower curve:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageNoseMidSectionRhoLower" layoutX="9.0" layoutY="788.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <ChoiceBox id="choiceBoxFuselageNoseWindshieldType" fx:id="windshieldTypeChoiceBox" layoutX="7.0" layoutY="506.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Separator layoutX="-1.0" layoutY="825.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="8.0" layoutY="833.0" prefHeight="21.0" prefWidth="241.0" text="CYLINDRICAL TRUNK DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutX="-25.0" layoutY="861.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="9.0" layoutY="865.0" text="Length ratio:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageCylinderLengthRatio" layoutX="8.0" layoutY="888.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="9.0" layoutY="919.0" prefHeight="21.0" prefWidth="111.0" text="Section width:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageCylinderSectionWidth" layoutX="8.0" layoutY="939.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="9.0" layoutY="974.0" prefHeight="21.0" prefWidth="389.0" text="Section height:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageCylinderSectionHeight" layoutX="8.0" layoutY="995.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="11.0" layoutY="1030.0" prefHeight="21.0" prefWidth="163.0" text="Height from ground:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageCylinderHeightFromGround" layoutX="10.0" layoutY="1051.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="11.0" layoutY="1089.0" prefHeight="21.0" prefWidth="366.0" text="Section height to total section height ratio:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageCylinderSectionHeightRatio" layoutX="10.0" layoutY="1110.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="10.0" layoutY="1149.0" prefHeight="21.0" prefWidth="209.0" text="Section rho upper curve:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageCylinderSectionRhoUpper" layoutX="9.0" layoutY="1170.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="12.0" layoutY="1205.0" prefHeight="21.0" prefWidth="226.0" text="Section rho lower curve:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageCylinderSectionRhoLower" layoutX="11.0" layoutY="1226.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Separator layoutX="3.0" layoutY="1259.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="12.0" layoutY="1267.0" prefHeight="21.0" prefWidth="241.0" text="TAIL TRUNK DATA" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutX="-21.0" layoutY="1295.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <Label layoutX="13.0" layoutY="1299.0" text="Tip z offset from origin (&lt;0 under the reference line)">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageTailTipOffset" layoutX="12.0" layoutY="1322.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="13.0" layoutY="1353.0" prefHeight="21.0" prefWidth="173.0" text="dx of the nose cap (%)">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageTailDxCap" layoutX="12.0" layoutY="1373.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="13.0" layoutY="1408.0" prefHeight="21.0" prefWidth="389.0" text="Mid section height to total section height ratio:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageTailMidSectionHeight" layoutX="12.0" layoutY="1429.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="15.0" layoutY="1464.0" prefHeight="21.0" prefWidth="226.0" text="Mid section rho upper curve:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageTailMidRhoUpper" layoutX="14.0" layoutY="1485.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Label layoutX="15.0" layoutY="1523.0" prefHeight="21.0" prefWidth="366.0" text="Mid section rho lower curve:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField id="textFieldFuselageTailMidRhoLower" layoutX="14.0" layoutY="1544.0" prefHeight="31.0" prefWidth="340.0" />
+                                                      <Separator layoutX="-1.0" layoutY="1584.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                      <Label layoutX="8.0" layoutY="1589.0" prefHeight="21.0" prefWidth="241.0" text="SPOILERS DATA (eventually)" textFill="#0400ff">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Separator layoutX="-25.0" layoutY="1610.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <GridPane layoutX="4.0" layoutY="1618.0" prefHeight="212.0" prefWidth="383.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="120.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="187.0" minWidth="10.0" prefWidth="52.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="56.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="54.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="55.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="56.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label text="X out:" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label text="Y in:" GridPane.rowIndex="2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label text="Y out:" GridPane.rowIndex="3">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label text="X in:">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <TextField id="textFieldFuselageSpoilerXin1" GridPane.columnIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerXout1" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerYout1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerYin1" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerXin2" GridPane.columnIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerXout2" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerYin2" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerYout2" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerXin3" GridPane.columnIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerXout3" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerYin3" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerYout3" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerXout4" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                            <TextField id="textFieldFuselageSpoilerXin4" GridPane.columnIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerYin4" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                            <TextField id="textFieldFuselageSpoilerYout4" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin1" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin2" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin3" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMin4" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                                                            <Label text="Deflection min:" GridPane.rowIndex="4">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label text="Deflection max:" GridPane.rowIndex="5">
+                                                               <font>
+                                                                  <Font name="System Bold" size="15.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax1" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax2" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax3" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                            <TextField id="textFieldFuselageSpoilerDeltaMax4" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+                                                            <ChoiceBox id="fuselageSpoilersDeltaMinUnitChoiceBox" fx:id="fuselageSpoilersDeltaMinUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <ChoiceBox id="fuselageSpoilersDeltaMaxUnitChoiceBox" fx:id="fuselageSpoilersDeltaMaxUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                         </children>
+                                                      </GridPane>
+                                                      <Separator layoutX="-15.0" layoutY="1957.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="fuselageLengthUnitChoiceBox" layoutX="345.0" layoutY="182.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageNoseTipOffsetZUnitChoiceBox" fx:id="fuselageNoseTipOffsetZUnitChoiceBox" layoutX="346.0" layoutY="392.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageWindshieldWidthUnitChoiceBox" fx:id="fuselageWindshieldWidthUnitChoiceBox" layoutX="348.0" layoutY="560.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageWindshieldHeightUnitChoiceBox" fx:id="fuselageWindshieldHeightUnitChoiceBox" layoutX="348.0" layoutY="616.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageCylinderSectionWidthUnitChoiceBox" fx:id="fuselageCylinderSectionWidthUnitChoiceBox" layoutX="350.0" layoutY="940.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageCylinderSectionHeightUnitChoiceBox" fx:id="fuselageCylinderSectionHeightUnitChoiceBox" layoutX="350.0" layoutY="996.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageHeightFromGroundUnitChoiceBox" fx:id="fuselageHeightFromGroundUnitChoiceBox" layoutX="352.0" layoutY="1052.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <ChoiceBox id="fuselageTailTipOffsetZUnitChoiceBox" fx:id="fuselageTailTipOffsetZUnitChoiceBox" layoutX="354.0" layoutY="1323.0" prefHeight="30.0" prefWidth="47.0" />
+                                                      <Separator layoutX="-10.0" layoutY="43.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                      <Label layoutX="5.0" layoutY="14.0" text="Adjust Criterion:">
+                                                         <font>
+                                                            <Font name="System Bold" size="15.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ChoiceBox id="fuselageAdjustCriterionChoiceBox" fx:id="fuselageAdjustCriterionChoiceBox" disable="true" layoutX="123.0" layoutY="12.0" prefHeight="25.0" prefWidth="270.0" />
+                                                      <ChoiceBox id="fuselageRoughnessUnitChoiceBox" fx:id="fuselageRoughnessUnitChoiceBox" layoutX="347.0" layoutY="237.0" prefHeight="30.0" prefWidth="47.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                       <children>
+                                          <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <center>
+                                                <SplitPane id="fuselageViewsAndDataLogSplitPane" dividerPositions="0.9" focusTraversable="false" orientation="VERTICAL" prefHeight="400.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+                                                   <items>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
+                                                         <children>
+                                                            <TabPane onMouseClicked="#zoomViewsFuselage" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <tabs>
+                                                                  <Tab id="FuselageTopView" text="Top view">
+                                                                     <content>
+                                                                        <Pane id="fuselageTopViewPane" />
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab id="FuselageSideView" text="Side view">
+                                                                     <content>
+                                                                        <Pane id="fuselageSideViewPane" />
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab id="fuselageFrontView" text="Front view">
+                                                                     <content>
+                                                                        <Pane id="fuselageFrontViewPane" />
+                                                                     </content>
+                                                                  </Tab>
+                                                               </tabs>
+                                                            </TabPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                         <children>
+                                                            <TabPane onMouseClicked="#zoomDataLogAndMessagesFuselage" prefHeight="977.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <tabs>
+                                                                  <Tab text="Data log">
+                                                                     <content>
+                                                                        <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                                           <content>
+                                                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                                 <children>
+                                                                                    <TextArea id="FuselageOutput" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                           </content>
+                                                                        </ScrollPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab text="Messages">
+                                                                     <content>
+                                                                        <ScrollPane prefHeight="977.0" prefWidth="797.0">
+                                                                           <content>
+                                                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="30000.0" prefWidth="3000.0">
+                                                                                 <children>
+                                                                                    <TextArea id="FuselageMessages" onMouseClicked="#zoomDataLogAndMessages" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                           </content>
+                                                                        </ScrollPane>
+                                                                     </content>
+                                                                  </Tab>
+                                                               </tabs>
+                                                            </TabPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </items>
+                                                </SplitPane>
+                                             </center>
+                                          </BorderPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </center>
+                        </BorderPane>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Balance">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="Aerodynamic and Stability">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="Performance">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="Costs">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+   <top>
+      <ToolBar id="actionButtonsToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+            <Button id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Analysis" />
+            <Region prefWidth="50.0" />
+          <Button id="setDataButton" mnemonicParsing="false" text="Set  Data" />
+            <Button id="updateAllButton" mnemonicParsing="false" text="Save Aircraft" />
+            <Button id="saveAircraftButton" mnemonicParsing="false" text="Run" />
+        </items>
+      </ToolBar>
+   </top>
+</BorderPane>
