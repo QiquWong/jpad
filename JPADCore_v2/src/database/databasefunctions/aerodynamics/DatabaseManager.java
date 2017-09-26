@@ -147,7 +147,6 @@ public class DatabaseManager {
 	public static FusDesDatabaseReader initializeFusDes(FusDesDatabaseReader reader, String databaseDirectory){
 
 		//Set the fuselage database folder
-
 		String interpolaterFusDesDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
 				+ File.separator; 
 		String interpolaterFusDesatabaseSerializedFullName = interpolaterFusDesDatabaseSerializedDirectory +  

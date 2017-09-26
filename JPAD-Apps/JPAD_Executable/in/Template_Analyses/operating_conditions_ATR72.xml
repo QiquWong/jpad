@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<operating_conditions id="ATR72 - Operating Conditions">
+		<climb>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
+			<beta_current unit="deg">0.0</beta_current>
+			<mach>0.3</mach>
+			<altitude unit="ft">17000</altitude>
+		</climb>
+		<cruise> 
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
+			<beta_current unit="deg">0.0</beta_current>
+			<mach>0.42</mach>	
+			<altitude unit="ft">17000.0</altitude>
+			<throttle>1.0</throttle>
+		</cruise>
+		<take_off>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
+			<beta_current unit="deg">0.0</beta_current>
+			<mach>0.172</mach> <!-- default = 0.2 -->
+			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
+			<throttle></throttle> <!-- default = 1.0 -->
+			<throttle_ground_idle>
+				<throttle>0.0143;-0.055;-0.19;-0.348</throttle>
+				<speed unit="kn">0;50;100;150</speed>
+			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
+			<delta_flap unit="deg">20;20</delta_flap>
+			<delta_slat unit="deg"></delta_slat>
+		</take_off>
+		<landing>
+			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
+			<alpha_current unit="deg">2</alpha_current>
+			<beta_current unit="deg">0.0</beta_current>
+			<mach>0.172</mach> <!-- default = 0.2 -->
+			<altitude unit="m"></altitude> <!-- default = 0.0 -->
+			<throttle_ground_idle>
+				<throttle>0.0143;-0.055;-0.19;-0.348</throttle>
+				<speed unit="kn">0;50;100;150</speed>
+			</throttle_ground_idle> <!-- if the throttle array contains only 1 value this tag can be left empty -->
+			<delta_flap unit="deg">40;40</delta_flap>
+			<delta_slat unit="deg"></delta_slat>
+		</landing>
+	</operating_conditions>
+</jpad_config>

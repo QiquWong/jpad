@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <performance
+			id="ATR-72 - PERFORMANCE"
+			weights_from_xls_file="false" 
+			file_weights="Weights.xlsx"
+			balance_from_xls_file="false"
+			file_balance="Balance.xlsx"
+			aerodynamics_from_xls_file="false" 
+			file_aerodynamics="Aerodynamics.xlsx"
+			>
+			<weights>
+				<maximum_take_off_mass unit="kg">22500.0</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">12950.0</operating_empty_mass>
+				<maximum_fuel_mass unit="kg">5000.0</maximum_fuel_mass>
+				<single_passenger_mass unit="kg">102.0</single_passenger_mass>
+			</weights>
+			<balance>
+				<xCG_max_aft unit="%">30</xCG_max_aft>
+			</balance>
+			<aerodynamics parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
+				<cLmax_clean_configuration>1.5</cLmax_clean_configuration>
+				<cL_alpha_clean_configuration unit="1/deg">0.09</cL_alpha_clean_configuration>
+				<cLmax_take_off_configuration>2.05</cLmax_take_off_configuration>
+				<cL_alpha_take_off unit="1/deg">0.0905</cL_alpha_take_off>
+				<cL0_take_off_configuration>0.801</cL0_take_off_configuration>
+				<cLmax_landing_configuration>2.63</cLmax_landing_configuration>
+				<cL_alpha_landing unit="1/deg">0.0925</cL_alpha_landing>
+				<cL0_landing_configuration>1.2577</cL0_landing_configuration>
+				<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
+				<cD0>0.0306</cD0>
+				<oswald_cruise>0.83</oswald_cruise> 
+				<oswald_climb>0.83</oswald_climb>
+				<oswald_take_off>0.80</oswald_take_off>
+				<oswald_landing>0.80</oswald_landing>
+				<delta_CD0_flap_take_off>0.0167</delta_CD0_flap_take_off>
+				<delta_CD0_flap_landing>0.0673</delta_CD0_flap_landing>
+				<delta_CD0_landing_gears>0.014</delta_CD0_landing_gears>
+				<delta_CD0_spoilers>0.011</delta_CD0_spoilers>
+				<!---->
+				<polar_curves>
+					<cruise>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
+					</cruise>
+					<climb>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
+					</climb>
+					<take_off>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
+					</take_off>
+					<landing>
+						<polar_curve_CL></polar_curve_CL>
+						<polar_curve_CD></polar_curve_CD>
+					</landing>
+				</polar_curves>
+			</aerodynamics>
+			<!-- the following data can be assigned between tags, or not. If not, default values are used -->
+			<takeoff_landing>
+				<!-- general data -->
+				<wind_speed_along_runway unit="m/s"></wind_speed_along_runway> <!-- positive if behind the aircraft (default = 0m/s)-->
+					<!-- here is possible to assign the fricition coefficient function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_function>
+					<friction_coefficient>0.03</friction_coefficient>
+					<speed unit="m/s"></speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_function>
+					<!-- here is possible to assign the fricition coefficient (with brakes) function of the speed. If only one value is given, the function is constant -->
+				<wheels_friction_coefficient_with_brakes_function>
+					<friction_coefficient_with_brakes>0.94;0.89;0.85;0.8;0.74;0.68;0.62;0.57;0.52</friction_coefficient_with_brakes>
+					<speed unit="m/s">0;10;20;30;40;50;60;70;80</speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+				</wheels_friction_coefficient_with_brakes_function>
+				<!-- take-off data -->
+				<dt_rotation unit="s"></dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
+				<dt_hold unit="s"></dt_hold> <!-- the duration of the constant CL phase (default = 0.5s) -->
+				<alpha_ground unit="deg"></alpha_ground> <!-- angle of attack in BRF along the runway (default = 0°)-->
+				<obstacle_take_off unit="ft"></obstacle_take_off> <!-- default = 35 ft -->
+				<k_rotation></k_rotation> <!-- V_rotation/V_stall in take-off (default = 1.05) -->
+				<alpha_dot_rotation></alpha_dot_rotation> <!-- rotation angular velocity (must be in deg/s) (default = 3.0) -->
+				<k_cLmax>0.85</k_cLmax> <!-- percentage of the CLmax,TO not to be surpassed during the rotation  (default = 0.9)-->
+				<drag_due_to_engine_failure>0.005</drag_due_to_engine_failure> <!-- drag coefficient to be added due to the failed engine and rudder deflection (default = 0.0) -->
+				<k_alpha_dot></k_alpha_dot> <!-- indicates how fast the rotation maneuver is - faster with decreasing k_alpha_dot - (default 0.04) -->
+				<!-- landing data -->
+				<k_landing_weight>0.95</k_landing_weight> <!-- percentage of the maximum take-off weight to be used for the landing performance - (default = 0.97) -->
+				<obstacle_landing unit="ft"></obstacle_landing> <!-- default = 50ft -->
+				<theta_approach unit="deg"></theta_approach> <!-- default = 3deg -->
+				<k_approach></k_approach> <!-- V_approach/V_stall in landing (default = 1.3) -->
+				<k_flare></k_flare> <!-- V_flare/V_stall in landing (default = 1.23) -->
+				<k_touch_down></k_touch_down> <!-- V_touch_down/V_stall in landing (default = 1.15) -->
+				<free_roll_duration unit="s"></free_roll_duration> <!-- default = 2s -->
+			</takeoff_landing>
+			<climb>
+				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
+				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
+				<initial_climb_altitude unit="ft">0.0</initial_climb_altitude>
+				<final_climb_altitude unit="ft">17000.0</final_climb_altitude>
+				<climb_speed_CAS unit="kn">170</climb_speed_CAS>
+			</climb>
+			<cruise>
+				<altitudes_array unit="m">0;1500;3000;4500;6000</altitudes_array>
+				<k_cruise_weight>0.95</k_cruise_weight> <!-- percentage of the maximum take-off weight to be used for the cruise performance - (default = 0.98) -->
+			</cruise>
+			<descent>
+				<rate_of_descent unit="ft/min">1500</rate_of_descent>
+				<descent_speed_CAS unit="kn">220</descent_speed_CAS>
+				<k_descent_weight></k_descent_weight> <!-- percentage of the maximum take-off weight to be used for the descent performance - (default = 0.9) -->
+				<initial_descent_altitude unit="ft">17000</initial_descent_altitude>
+				<final_descent_altitude unit="ft">50</final_descent_altitude>
+			</descent>
+			<flight_maneuvering_and_gust_envelope>
+				<cLmax_inverted></cLmax_inverted> <!-- to be assigned for the manoeuvring flight and gust envelope (default = -1.0) --> 
+			</flight_maneuvering_and_gust_envelope>
+			<mission_profile_and_payload_range>
+			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
+				<mission_range unit="nmi">200</mission_range> 
+				<alternate_cruise_length unit="nmi">87</alternate_cruise_length> <!-- (default = 0.0) -->
+				<alternate_cruise_altitude unit="ft">10000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
+				<holding_duration unit="min">45</holding_duration> <!-- (default = 0.0) -->
+				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
+				<holding_mach_number>0.3</holding_mach_number>
+				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
+				<cruise_length unit="nmi">100</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<cruise_sfc_function>
+					<sfc>0.4409</sfc>
+					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+				</cruise_sfc_function>
+				<alternate_cruise_sfc_function>
+					<sfc>0.4160</sfc>
+					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
+				</alternate_cruise_sfc_function>
+				<holding_sfc_function>
+					<sfc>0.386702736</sfc>
+					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
+				</holding_sfc_function>
+				<initial_mission_fuel unit="kg">1000</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
+				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
+				<landing_ground_idle_fuel_flow unit="kg/min">2.65</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
+			</mission_profile_and_payload_range>
+        </performance>
+    </analysis>
+	<plot>
+		<takeoff>
+			<simulations perform="TRUE"/>
+			<balanced_field_length perform="TRUE"/>
+			<vMC perform="TRUE"/>
+		</takeoff>
+		<climb>
+			<thrust_drag perform="TRUE"/>
+			<power_needed_and_available perform="TRUE"/>
+			<efficiency perform="TRUE"/>
+			<rate_of_climb_curves perform="TRUE"/>
+			<climb_angle_curves perform="TRUE"/>
+			<max_rate_of_climb_envelope perform="TRUE"/>
+			<max_climb_angle_envelope perform="TRUE"/>
+			<climb_time perform="TRUE"/>
+			<fuel_used perform="TRUE"/>
+		</climb>
+		<cruise>
+			<thrust_drag perform="TRUE"/>
+			<power_needed_and_available perform="TRUE"/>
+			<efficiency perform="TRUE"/>
+			<cruise_grid perform="TRUE"/>
+			<flight_envelope perform="TRUE"/>
+		</cruise>
+		<descent perform="TRUE"/>
+		<landing>
+			<simulations perform="TRUE"/>
+		</landing>
+		<payload_range perform="TRUE"/>
+		<maneuvering_flight_and_gust_envelope perform="TRUE"/>
+		<mission_profile>
+			<range_profile perform="TRUE"/>
+			<time_profile perform="TRUE"/>
+			<fuel_used_profile perform="TRUE"/>
+			<weight_profile perform="TRUE"/>
+		</mission_profile>
+	</plot>
+</jpad_config>
