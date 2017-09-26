@@ -1,6 +1,9 @@
 setlocal
 set PATH=%PATH%;..\lib;
-java -jar JPAD.jar^
+
+set JAVA_EXEC="%JAVA_HOME%\bin\java.exe"
+
+%JAVA_EXEC% -jar JPAD.jar^
  -i in\Template_Aircraft\aircraft.xml^
  -ia in\Template_Analyses\analysis.xml^
  -ioc in\Template_Analyses\operating_conditions.xml^
