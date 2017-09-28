@@ -9248,151 +9248,155 @@ public class ACAerodynamicAndStabilityManager {
 		// AIRCRAFT
 		//-----------------------------------------------------------------------------------------------------------------------
 		// DOWNWASH
-		if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
-			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
-				xVector = new ArrayList<Double>();
-				yVector = new ArrayList<Double>();
+		if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
+			if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+				if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
+					xVector = new ArrayList<Double>();
+					yVector = new ArrayList<Double>();
 
 
-				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				yVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH))));
+					xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+					yVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH))));
 
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
-						MyArrayUtils.convertToDoublePrimitive(yVector),
-						null, 
-						null, 
-						null, 
-						null, 
-						"alpha body", 
-						"epsilon",
-						"deg", 
-						"deg", 
-						aircraftPlotFolderPath,
-						"Downwash_Angle",
-						false
-						);
-			}
-
-			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
-
-				xVector = new ArrayList<Double>();
-				yVector = new ArrayList<Double>();
-
-
-				xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				yVector = _downwashGradientMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH));
-
-				MyChartToFileUtils.plotNoLegend(
-						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
-						MyArrayUtils.convertToDoublePrimitive(yVector),
-						null, 
-						null, 
-						null, 
-						null, 
-						"alpha body",  
-						"d_epsilon/d_alpha",
-						"deg", 
-						"", 
-						aircraftPlotFolderPath,
-						"Downwash_Gradient",
-						false
-						);
-			}
-
-		}
-
-		if(!_theAerodynamicBuilderInterface.getDownwashConstant()) {
-			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
-
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
-
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						)));
-				yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.FALSE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						)));
-				legend.add("Constant downwash gradient");
-				legend.add("Linear downwash gradient");
-
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
+					MyChartToFileUtils.plotNoLegend(
+							MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+							MyArrayUtils.convertToDoublePrimitive(yVector),
+							null, 
+							null, 
+							null, 
+							null, 
+							"alpha body", 
+							"epsilon",
+							"deg", 
+							"deg", 
+							aircraftPlotFolderPath,
+							"Downwash_Angle",
+							false
+							);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body",  
-						"epsilon",
-						"deg", 
-						"deg", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Downwash_Angle");
-			}
+				if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
 
-			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
-
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
-
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
-				yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						)));
-				yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.FALSE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						)));
-				legend.add("Constant downwash gradient");
-				legend.add("Linear downwash gradient");
+					xVector = new ArrayList<Double>();
+					yVector = new ArrayList<Double>();
 
 
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
+					xVector = MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+					yVector = _downwashGradientMap.get(Boolean.TRUE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH));
 
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
+					MyChartToFileUtils.plotNoLegend(
+							MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
+							MyArrayUtils.convertToDoublePrimitive(yVector),
+							null, 
+							null, 
+							null, 
+							null, 
+							"alpha body",  
+							"d_epsilon/d_alpha",
+							"deg", 
+							"", 
+							aircraftPlotFolderPath,
+							"Downwash_Gradient",
+							false
+							);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body", 
-						"d_epsilon/d_alpha",
-						"deg", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Downwash_Gradient");
+			}
+
+			if(!_theAerodynamicBuilderInterface.getDownwashConstant()) {
+				if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_ANGLE)) {
+
+					xVectorMatrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
+					legend  = new ArrayList<>(); 
+
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.TRUE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_downwashAngleMap.get(Boolean.FALSE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							)));
+					legend.add("Constant downwash gradient");
+					legend.add("Linear downwash gradient");
+
+
+					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					legendString = new String[xVectorMatrix.size()];
+
+					for(int i=0; i <xVectorMatrix.size(); i++){
+						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+						legendString [i] = legend.get(i);
+					}
+
+					MyChartToFileUtils.plotNOCSV(
+							xMatrix,
+							yMatrix, 
+							null, 
+							null, 
+							null, 
+							null,
+							"alpha body",  
+							"epsilon",
+							"deg", 
+							"deg", 
+							legendString, 
+							aircraftPlotFolderPath,
+							"Downwash_Angle");
+				}
+
+				if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
+
+					xVectorMatrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
+					legend  = new ArrayList<>(); 
+
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.TRUE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							)));
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(_downwashGradientMap.get(Boolean.FALSE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							)));
+					legend.add("Constant downwash gradient");
+					legend.add("Linear downwash gradient");
+
+
+					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					legendString = new String[xVectorMatrix.size()];
+
+					for(int i=0; i <xVectorMatrix.size(); i++){
+						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+						legendString [i] = legend.get(i);
+					}
+
+					MyChartToFileUtils.plotNOCSV(
+							xMatrix,
+							yMatrix, 
+							null, 
+							null, 
+							null, 
+							null,
+							"alpha body", 
+							"d_epsilon/d_alpha",
+							"deg", 
+							"", 
+							legendString, 
+							aircraftPlotFolderPath,
+							"Downwash_Gradient");
+				}
 			}
 		}
+		else
+			System.err.println("WARNING!! IMPOSSIBLE TO PLOT DOWNWASH ANGLE AND DOWNWASH GRADIENT. THERE IS NO HORIZONTAL TAIL ...");
 
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CL TOTAL 
@@ -19891,332 +19895,310 @@ public class ACAerodynamicAndStabilityManager {
 		//--------------------------------------------------------------------------------
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DOWNWASH)) {
 
-			Sheet downwashSheet = wb.createSheet("DOWNWASH");
-			List<Object[]> dataListDownwash = new ArrayList<>();
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
 
-			List<Integer> boldRowIndex = new ArrayList<>();
-			int currentBoldIndex = 1;
+				Sheet downwashSheet = wb.createSheet("DOWNWASH");
+				List<Object[]> dataListDownwash = new ArrayList<>();
 
-			dataListDownwash.add(new Object[] {"Description","Unit","Value"});
+				List<Integer> boldRowIndex = new ArrayList<>();
+				int currentBoldIndex = 1;
 
-			Object[] alphaBodyArray = new Object[getAlphaBodyList().size()+2];
-			alphaBodyArray[0] = "Alpha body";
-			alphaBodyArray[1] = "deg";
-			for(int i=0; i<getAlphaBodyList().size(); i++) 
-				alphaBodyArray[i+2] = getAlphaBodyList().get(i).doubleValue(NonSI.DEGREE_ANGLE);			
+				dataListDownwash.add(new Object[] {"Description","Unit","Value"});
 
-			dataListDownwash.add(alphaBodyArray);
-			dataListDownwash.add(new Object[] {""});
-			currentBoldIndex = currentBoldIndex+2;
+				Object[] alphaBodyArray = new Object[getAlphaBodyList().size()+2];
+				alphaBodyArray[0] = "Alpha body";
+				alphaBodyArray[1] = "deg";
+				for(int i=0; i<getAlphaBodyList().size(); i++) 
+					alphaBodyArray[i+2] = getAlphaBodyList().get(i).doubleValue(NonSI.DEGREE_ANGLE);			
 
-			//-----------------------------------------------------------------------------
-			// CONSTANT GRADIENT
-			if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
-				
-				dataListDownwash.add(new Object[] {"LINEAR"});
-				currentBoldIndex = currentBoldIndex+1;
-				boldRowIndex.add(currentBoldIndex);
-				
-				Object[] downwashGradientArray = new Object[_downwashGradientMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						).size()+2];
-				downwashGradientArray[0] = "Downwash gradient (" 
-						+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ ")";
-				downwashGradientArray[1] = "";
-				for(int i=0; 
-						i<_downwashGradientMap.get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).size();
-						i++) 
-					downwashGradientArray[i+2] = _downwashGradientMap.get(Boolean.TRUE).get(
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).get(i);
-
-				dataListDownwash.add(downwashGradientArray);
-				currentBoldIndex = currentBoldIndex+1;
-				
-				Object[] downwashAngleArray = new Object[_downwashAngleMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						).size()+2];
-				downwashAngleArray[0] = "Downwash angle (" 
-						+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " )";
-				downwashAngleArray[1] = "deg";
-				for(int i=0; 
-						i<_downwashAngleMap.get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).size();
-						i++) 
-					downwashAngleArray[i+2] = _downwashAngleMap.get(Boolean.TRUE).get(
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).get(i).doubleValue(NonSI.DEGREE_ANGLE);
-
-				dataListDownwash.add(downwashAngleArray);
-				currentBoldIndex = currentBoldIndex+1;
-				
+				dataListDownwash.add(alphaBodyArray);
 				dataListDownwash.add(new Object[] {""});
-				currentBoldIndex = currentBoldIndex+1;
-				
-				dataListDownwash.add(new Object[] {
-						"Downwash gradient (" + 
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-								+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
-						"",
-						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashGradientMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg)
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-				});
-				currentBoldIndex = currentBoldIndex+1;
-				dataListDownwash.add(new Object[] {
-						"Downwash angle (" +
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-								+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
-						"",
-						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashAngleMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-				});
-				currentBoldIndex = currentBoldIndex+1;
-				
-			}
-			//-----------------------------------------------------------------------------
-			// NON LINEAR GRADIENT
-			else {
-				
-				dataListDownwash.add(new Object[] {"LINEAR"});
-				currentBoldIndex = currentBoldIndex+1;
-				boldRowIndex.add(currentBoldIndex);
-				
-				Object[] downwashConstantGradientArray = new Object[_downwashGradientMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						).size()+2];
-				downwashConstantGradientArray[0] = "Downwash gradient (" 
-						+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ ")";
-				downwashConstantGradientArray[1] = "";
-				for(int i=0; 
-						i<_downwashGradientMap.get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).size();
-						i++) 
-					downwashConstantGradientArray[i+2] = _downwashGradientMap.get(Boolean.TRUE).get(
+				currentBoldIndex = currentBoldIndex+2;
+
+				//-----------------------------------------------------------------------------
+				// CONSTANT GRADIENT
+				if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+
+					dataListDownwash.add(new Object[] {"LINEAR"});
+					currentBoldIndex = currentBoldIndex+1;
+					boldRowIndex.add(currentBoldIndex);
+
+					Object[] downwashGradientArray = new Object[_downwashGradientMap.get(Boolean.TRUE).get(
 							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).get(i);
-
-				dataListDownwash.add(downwashConstantGradientArray);
-				currentBoldIndex = currentBoldIndex+1;
-				
-				Object[] downwashAngleConstantGradientArray = new Object[_downwashAngleMap.get(Boolean.TRUE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						).size()+2];
-				downwashAngleConstantGradientArray[0] = "Downwash angle (" 
-						+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ ")";
-				downwashAngleConstantGradientArray[1] = "deg";
-				for(int i=0; 
-						i<_downwashAngleMap.get(Boolean.TRUE).get(
+							).size()+2];
+					downwashGradientArray[0] = "Downwash gradient (" 
+							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ ")";
+					downwashGradientArray[1] = "";
+					for(int i=0; 
+							i<_downwashGradientMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									).size();
+							i++) 
+						downwashGradientArray[i+2] = _downwashGradientMap.get(Boolean.TRUE).get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).size();
-						i++) 
-					downwashAngleConstantGradientArray[i+2] = _downwashAngleMap.get(Boolean.TRUE).get(
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+								).get(i);
 
-				dataListDownwash.add(downwashAngleConstantGradientArray);
-				currentBoldIndex = currentBoldIndex+1;
-				
-				dataListDownwash.add(new Object[] {""});
-				currentBoldIndex = currentBoldIndex+1;
-				
-				dataListDownwash.add(new Object[] {
-						"Downwash gradient ("+
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-								+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
-						"",
-						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashGradientMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg)
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-				});
-				currentBoldIndex = currentBoldIndex+1;
-				
-				dataListDownwash.add(new Object[] {
-						"Downwash angle (" +
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-								+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
-						"",
-						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashAngleMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-				});
-				currentBoldIndex = currentBoldIndex+1;
-				
-				dataListDownwash.add(new Object[] {""});
-				currentBoldIndex = currentBoldIndex+1;
-				
-				//.............................................................................................................................................
-				
-				dataListDownwash.add(new Object[] {"NON LINEAR"});
-				currentBoldIndex = currentBoldIndex+1;
-				boldRowIndex.add(currentBoldIndex);
-				
-				Object[] downwashNonLinearGradientArray = new Object[_downwashGradientMap.get(Boolean.FALSE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						).size()+2];
-				downwashNonLinearGradientArray[0] = "Downwash gradient (" 
-						+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString() 
-						+ ")";
-				downwashNonLinearGradientArray[1] = "";
-				for(int i=0; 
-						i<_downwashGradientMap.get(Boolean.FALSE).get(
+					dataListDownwash.add(downwashGradientArray);
+					currentBoldIndex = currentBoldIndex+1;
+
+					Object[] downwashAngleArray = new Object[_downwashAngleMap.get(Boolean.TRUE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							).size()+2];
+					downwashAngleArray[0] = "Downwash angle (" 
+							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " )";
+					downwashAngleArray[1] = "deg";
+					for(int i=0; 
+							i<_downwashAngleMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									).size();
+							i++) 
+						downwashAngleArray[i+2] = _downwashAngleMap.get(Boolean.TRUE).get(
 								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).size();
-						i++) 
-					downwashNonLinearGradientArray[i+2] = _downwashGradientMap.get(Boolean.FALSE).get(
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).get(i);
+								).get(i).doubleValue(NonSI.DEGREE_ANGLE);
 
-				dataListDownwash.add(downwashNonLinearGradientArray);
-				currentBoldIndex = currentBoldIndex+1;
-				
-				Object[] downwashAngleNonLinearGradientArray = new Object[_downwashAngleMap.get(Boolean.FALSE).get(
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-						).size()+2];
-				downwashAngleNonLinearGradientArray[0] = "Downwash angle (" 
-						+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString() 
-						+ ")";
-				downwashAngleNonLinearGradientArray[1] = "deg";
-				for(int i=0; 
-						i<_downwashAngleMap.get(Boolean.FALSE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								).size();
-						i++) 
-					downwashAngleNonLinearGradientArray[i+2] = _downwashAngleMap.get(Boolean.FALSE).get(
-							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-							).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+					dataListDownwash.add(downwashAngleArray);
+					currentBoldIndex = currentBoldIndex+1;
 
-				dataListDownwash.add(downwashAngleNonLinearGradientArray);
-				currentBoldIndex = currentBoldIndex+1;
-				
-				dataListDownwash.add(new Object[] {""});
-				currentBoldIndex = currentBoldIndex+1;
+					dataListDownwash.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
 
-				dataListDownwash.add(new Object[] {
-						"Downwash gradient (" + 
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-								+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
-						"",
-						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashGradientMap.get(Boolean.FALSE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg)
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-				});
-				currentBoldIndex = currentBoldIndex+1;
-				dataListDownwash.add(new Object[] {
-						"Downwash angle (" +
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-								+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
-								"",
-						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashAngleMap.get(Boolean.FALSE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								)
-				});
-				currentBoldIndex = currentBoldIndex+1;
-				
-			}
-			
-			//------------------------------------------------------------------------------------------------------------------------
-			// CREATING CELLS ...
-			//--------------------------------------------------------------------------------
-			Row rowDownwashCurves = downwashSheet.createRow(0);
-			Object[] objArrDownwash = dataListDownwash.get(0);
-			int cellnumDownwash = 0;
-			for (Object obj : objArrDownwash) {
-				Cell cell = rowDownwashCurves.createCell(cellnumDownwash++);
-				cell.setCellStyle(styleHead);
-				if (obj instanceof Date) {
-					cell.setCellValue((Date) obj);
-				} else if (obj instanceof Boolean) {
-					cell.setCellValue((Boolean) obj);
-				} else if (obj instanceof String) {
-					cell.setCellValue((String) obj);
-				} else if (obj instanceof Double) {
-					cell.setCellValue((Double) obj);
+					dataListDownwash.add(new Object[] {
+							"Downwash gradient (" + 
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+									+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+									"",
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertListOfAmountTodoubleArray(
+													_alphaBodyList.stream()
+													.map(a -> a.to(NonSI.DEGREE_ANGLE))
+													.collect(Collectors.toList())
+													),
+											_downwashGradientMap.get(Boolean.TRUE).get(
+													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+													).stream()
+											.mapToDouble(dg -> dg)
+											.toArray(),
+											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+											)
+					});
+					currentBoldIndex = currentBoldIndex+1;
+					dataListDownwash.add(new Object[] {
+							"Downwash angle (" +
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+									+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+									"",
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertListOfAmountTodoubleArray(
+													_alphaBodyList.stream()
+													.map(a -> a.to(NonSI.DEGREE_ANGLE))
+													.collect(Collectors.toList())
+													),
+											_downwashAngleMap.get(Boolean.TRUE).get(
+													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+													).stream()
+											.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+											.toArray(),
+											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+											)
+					});
+					currentBoldIndex = currentBoldIndex+1;
+
 				}
-			}
+				//-----------------------------------------------------------------------------
+				// NON LINEAR GRADIENT
+				else {
 
-			int rownumDownwash = 1;
-			for (int i = 1; i < dataListDownwash.size(); i++) {
-				objArrDownwash = dataListDownwash.get(i);
-				rowDownwashCurves = downwashSheet.createRow(rownumDownwash++);
-				cellnumDownwash = 0;
-				Boolean isBold = Boolean.FALSE;
-				for(int bri=0; bri<boldRowIndex.size(); bri++) 
-					if(rownumDownwash == boldRowIndex.get(bri))
-						isBold = Boolean.TRUE;
+					dataListDownwash.add(new Object[] {"LINEAR"});
+					currentBoldIndex = currentBoldIndex+1;
+					boldRowIndex.add(currentBoldIndex);
+
+					Object[] downwashConstantGradientArray = new Object[_downwashGradientMap.get(Boolean.TRUE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							).size()+2];
+					downwashConstantGradientArray[0] = "Downwash gradient (" 
+							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ ")";
+					downwashConstantGradientArray[1] = "";
+					for(int i=0; 
+							i<_downwashGradientMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									).size();
+							i++) 
+						downwashConstantGradientArray[i+2] = _downwashGradientMap.get(Boolean.TRUE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+								).get(i);
+
+					dataListDownwash.add(downwashConstantGradientArray);
+					currentBoldIndex = currentBoldIndex+1;
+
+					Object[] downwashAngleConstantGradientArray = new Object[_downwashAngleMap.get(Boolean.TRUE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							).size()+2];
+					downwashAngleConstantGradientArray[0] = "Downwash angle (" 
+							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ ")";
+					downwashAngleConstantGradientArray[1] = "deg";
+					for(int i=0; 
+							i<_downwashAngleMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									).size();
+							i++) 
+						downwashAngleConstantGradientArray[i+2] = _downwashAngleMap.get(Boolean.TRUE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+								).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					dataListDownwash.add(downwashAngleConstantGradientArray);
+					currentBoldIndex = currentBoldIndex+1;
+
+					dataListDownwash.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+
+					dataListDownwash.add(new Object[] {
+							"Downwash gradient ("+
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+									+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+									"",
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertListOfAmountTodoubleArray(
+													_alphaBodyList.stream()
+													.map(a -> a.to(NonSI.DEGREE_ANGLE))
+													.collect(Collectors.toList())
+													),
+											_downwashGradientMap.get(Boolean.TRUE).get(
+													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+													).stream()
+											.mapToDouble(dg -> dg)
+											.toArray(),
+											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+											)
+					});
+					currentBoldIndex = currentBoldIndex+1;
+
+					dataListDownwash.add(new Object[] {
+							"Downwash angle (" +
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+									+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+									"",
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertListOfAmountTodoubleArray(
+													_alphaBodyList.stream()
+													.map(a -> a.to(NonSI.DEGREE_ANGLE))
+													.collect(Collectors.toList())
+													),
+											_downwashAngleMap.get(Boolean.TRUE).get(
+													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+													).stream()
+											.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+											.toArray(),
+											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+											)
+					});
+					currentBoldIndex = currentBoldIndex+1;
+
+					dataListDownwash.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+
+					//.............................................................................................................................................
+
+					dataListDownwash.add(new Object[] {"NON LINEAR"});
+					currentBoldIndex = currentBoldIndex+1;
+					boldRowIndex.add(currentBoldIndex);
+
+					Object[] downwashNonLinearGradientArray = new Object[_downwashGradientMap.get(Boolean.FALSE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							).size()+2];
+					downwashNonLinearGradientArray[0] = "Downwash gradient (" 
+							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString() 
+							+ ")";
+					downwashNonLinearGradientArray[1] = "";
+					for(int i=0; 
+							i<_downwashGradientMap.get(Boolean.FALSE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									).size();
+							i++) 
+						downwashNonLinearGradientArray[i+2] = _downwashGradientMap.get(Boolean.FALSE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+								).get(i);
+
+					dataListDownwash.add(downwashNonLinearGradientArray);
+					currentBoldIndex = currentBoldIndex+1;
+
+					Object[] downwashAngleNonLinearGradientArray = new Object[_downwashAngleMap.get(Boolean.FALSE).get(
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+							).size()+2];
+					downwashAngleNonLinearGradientArray[0] = "Downwash angle (" 
+							+ _theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString() 
+							+ ")";
+					downwashAngleNonLinearGradientArray[1] = "deg";
+					for(int i=0; 
+							i<_downwashAngleMap.get(Boolean.FALSE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									).size();
+							i++) 
+						downwashAngleNonLinearGradientArray[i+2] = _downwashAngleMap.get(Boolean.FALSE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+								).get(i).doubleValue(NonSI.DEGREE_ANGLE);
+
+					dataListDownwash.add(downwashAngleNonLinearGradientArray);
+					currentBoldIndex = currentBoldIndex+1;
+
+					dataListDownwash.add(new Object[] {""});
+					currentBoldIndex = currentBoldIndex+1;
+
+					dataListDownwash.add(new Object[] {
+							"Downwash gradient (" + 
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+									+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+									"",
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertListOfAmountTodoubleArray(
+													_alphaBodyList.stream()
+													.map(a -> a.to(NonSI.DEGREE_ANGLE))
+													.collect(Collectors.toList())
+													),
+											_downwashGradientMap.get(Boolean.FALSE).get(
+													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+													).stream()
+											.mapToDouble(dg -> dg)
+											.toArray(),
+											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+											)
+					});
+					currentBoldIndex = currentBoldIndex+1;
+					dataListDownwash.add(new Object[] {
+							"Downwash angle (" +
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+									+ ") at Alpha = " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " deg",
+									"",
+									MyMathUtils.getInterpolatedValue1DLinear(
+											MyArrayUtils.convertListOfAmountTodoubleArray(
+													_alphaBodyList.stream()
+													.map(a -> a.to(NonSI.DEGREE_ANGLE))
+													.collect(Collectors.toList())
+													),
+											_downwashAngleMap.get(Boolean.FALSE).get(
+													_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+													).stream()
+											.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+											.toArray(),
+											_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+											)
+					});
+					currentBoldIndex = currentBoldIndex+1;
+
+				}
+
+				//------------------------------------------------------------------------------------------------------------------------
+				// CREATING CELLS ...
+				//--------------------------------------------------------------------------------
+				Row rowDownwashCurves = downwashSheet.createRow(0);
+				Object[] objArrDownwash = dataListDownwash.get(0);
+				int cellnumDownwash = 0;
 				for (Object obj : objArrDownwash) {
 					Cell cell = rowDownwashCurves.createCell(cellnumDownwash++);
-					if(isBold == Boolean.TRUE)
-						cell.setCellStyle(styleHeader);
+					cell.setCellStyle(styleHead);
 					if (obj instanceof Date) {
 						cell.setCellValue((Date) obj);
 					} else if (obj instanceof Boolean) {
@@ -20228,12 +20210,39 @@ public class ACAerodynamicAndStabilityManager {
 					}
 				}
 
-				downwashSheet.setDefaultColumnWidth(55);
-				downwashSheet.setColumnWidth(1, 2048);
-				for(int k=2; k<100; k++)
-					downwashSheet.setColumnWidth(k, 3840);
+				int rownumDownwash = 1;
+				for (int i = 1; i < dataListDownwash.size(); i++) {
+					objArrDownwash = dataListDownwash.get(i);
+					rowDownwashCurves = downwashSheet.createRow(rownumDownwash++);
+					cellnumDownwash = 0;
+					Boolean isBold = Boolean.FALSE;
+					for(int bri=0; bri<boldRowIndex.size(); bri++) 
+						if(rownumDownwash == boldRowIndex.get(bri))
+							isBold = Boolean.TRUE;
+					for (Object obj : objArrDownwash) {
+						Cell cell = rowDownwashCurves.createCell(cellnumDownwash++);
+						if(isBold == Boolean.TRUE)
+							cell.setCellStyle(styleHeader);
+						if (obj instanceof Date) {
+							cell.setCellValue((Date) obj);
+						} else if (obj instanceof Boolean) {
+							cell.setCellValue((Boolean) obj);
+						} else if (obj instanceof String) {
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Double) {
+							cell.setCellValue((Double) obj);
+						}
+					}
 
+					downwashSheet.setDefaultColumnWidth(55);
+					downwashSheet.setColumnWidth(1, 2048);
+					for(int k=2; k<100; k++)
+						downwashSheet.setColumnWidth(k, 3840);
+
+				}
 			}
+			else
+				System.err.println("WARNING!! DOWNWASH ANGLE AND DOWNWASH GRADIENT CANNOT BE WRITTEN SINCE THERE IS NO HORIZONTAL TAIL ... ");
 		}
 		
 		//--------------------------------------------------------------------------------
@@ -22067,168 +22076,172 @@ public class ACAerodynamicAndStabilityManager {
 		
 		if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DOWNWASH)) {
 			
-			sb.append("\n\t-------------------------------------\n")
-			.append("\tDOWNWASH\n")
-			.append("\t-------------------------------------\n");
-			
-			sb.append("\n\tAlpha body (deg) = " + _alphaBodyList.stream().map(a -> a.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()) + "\n");
-			
-			if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
-				
-				sb.append("\n\tLINEAR\n");
-				
-				sb.append("\t\tDownwash gradient " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " (1/deg) = "
-						+ _downwashGradientMap.get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								) + "\n");
-				
-				sb.append("\t\tDownwash angle " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " (deg) = "
-						+ _downwashAngleMap.get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								) + "\n");
-				
-				sb.append("\n\t\tDownwash gradient " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
-						+ MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashGradientMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg)
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								) + "\n");
-				
-				sb.append("\t\tDownwash angle " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
-						+ MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashAngleMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								) + "\n");
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getHTail() != null) {
+				sb.append("\n\t-------------------------------------\n")
+				.append("\tDOWNWASH\n")
+				.append("\t-------------------------------------\n");
 
+				sb.append("\n\tAlpha body (deg) = " + _alphaBodyList.stream().map(a -> a.doubleValue(NonSI.DEGREE_ANGLE)).collect(Collectors.toList()) + "\n");
+
+				if(_theAerodynamicBuilderInterface.getDownwashConstant()) {
+
+					sb.append("\n\tLINEAR\n");
+
+					sb.append("\t\tDownwash gradient " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " (1/deg) = "
+							+ _downwashGradientMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									) + "\n");
+
+					sb.append("\t\tDownwash angle " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " (deg) = "
+							+ _downwashAngleMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									) + "\n");
+
+					sb.append("\n\t\tDownwash gradient " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
+							+ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(
+											_alphaBodyList.stream()
+											.map(a -> a.to(NonSI.DEGREE_ANGLE))
+											.collect(Collectors.toList())
+											),
+									_downwashGradientMap.get(Boolean.TRUE).get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+											).stream()
+									.mapToDouble(dg -> dg)
+									.toArray(),
+									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+									) + "\n");
+
+					sb.append("\t\tDownwash angle " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
+							+ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(
+											_alphaBodyList.stream()
+											.map(a -> a.to(NonSI.DEGREE_ANGLE))
+											.collect(Collectors.toList())
+											),
+									_downwashAngleMap.get(Boolean.TRUE).get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+											).stream()
+									.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+									.toArray(),
+									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+									) + "\n");
+
+				}
+				else {
+
+					sb.append("\n\tLINEAR\n");
+
+					sb.append("\t\tDownwash gradient " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " (1/deg) = "
+							+ _downwashGradientMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									) + "\n");
+
+					sb.append("\t\tDownwash angle " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " (deg) = "
+							+ _downwashAngleMap.get(Boolean.TRUE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									) + "\n");
+
+					sb.append("\n\t\tDownwash gradient " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
+							+ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(
+											_alphaBodyList.stream()
+											.map(a -> a.to(NonSI.DEGREE_ANGLE))
+											.collect(Collectors.toList())
+											),
+									_downwashGradientMap.get(Boolean.TRUE).get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+											).stream()
+									.mapToDouble(dg -> dg)
+									.toArray(),
+									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+									) + "\n");
+
+					sb.append("\t\tDownwash angle " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
+							+ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(
+											_alphaBodyList.stream()
+											.map(a -> a.to(NonSI.DEGREE_ANGLE))
+											.collect(Collectors.toList())
+											),
+									_downwashAngleMap.get(Boolean.TRUE).get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+											).stream()
+									.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+									.toArray(),
+									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+									) + "\n");
+
+					sb.append("\n\tNON LINEAR\n");
+
+					sb.append("\t\tDownwash gradient " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " (1/deg) = "
+							+ _downwashGradientMap.get(Boolean.FALSE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									) + "\n");
+
+					sb.append("\t\tDownwash angle " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " (deg) = "
+							+ _downwashAngleMap.get(Boolean.FALSE).get(
+									_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+									) + "\n");
+
+					sb.append("\n\t\tDownwash gradient " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
+							+ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(
+											_alphaBodyList.stream()
+											.map(a -> a.to(NonSI.DEGREE_ANGLE))
+											.collect(Collectors.toList())
+											),
+									_downwashGradientMap.get(Boolean.FALSE).get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+											).stream()
+									.mapToDouble(dg -> dg)
+									.toArray(),
+									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+									) + "\n");
+
+					sb.append("\t\tDownwash angle " +
+							_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
+							+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
+							+ MyMathUtils.getInterpolatedValue1DLinear(
+									MyArrayUtils.convertListOfAmountTodoubleArray(
+											_alphaBodyList.stream()
+											.map(a -> a.to(NonSI.DEGREE_ANGLE))
+											.collect(Collectors.toList())
+											),
+									_downwashAngleMap.get(Boolean.FALSE).get(
+											_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
+											).stream()
+									.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
+									.toArray(),
+									_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
+									) + "\n");
+
+				}
 			}
-			else {
-				
-				sb.append("\n\tLINEAR\n");
-				
-				sb.append("\t\tDownwash gradient " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " (1/deg) = "
-						+ _downwashGradientMap.get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								) + "\n");
-				
-				sb.append("\t\tDownwash angle " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " (deg) = "
-						+ _downwashAngleMap.get(Boolean.TRUE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								) + "\n");
-				
-				sb.append("\n\t\tDownwash gradient " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
-						+ MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashGradientMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg)
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								) + "\n");
-				
-				sb.append("\t\tDownwash angle " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
-						+ MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashAngleMap.get(Boolean.TRUE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								) + "\n");
-				
-				sb.append("\n\tNON LINEAR\n");
-				
-				sb.append("\t\tDownwash gradient " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " (1/deg) = "
-						+ _downwashGradientMap.get(Boolean.FALSE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								) + "\n");
-				
-				sb.append("\t\tDownwash angle " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " (deg) = "
-						+ _downwashAngleMap.get(Boolean.FALSE).get(
-								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-								) + "\n");
-				
-				sb.append("\n\t\tDownwash gradient " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
-						+ MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashGradientMap.get(Boolean.FALSE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg)
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								) + "\n");
-				
-				sb.append("\t\tDownwash angle " +
-						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH).toString()
-						+ " at alpha " + _alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE) + " (deg) = "
-						+ MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertListOfAmountTodoubleArray(
-										_alphaBodyList.stream()
-										.map(a -> a.to(NonSI.DEGREE_ANGLE))
-										.collect(Collectors.toList())
-										),
-								_downwashAngleMap.get(Boolean.FALSE).get(
-										_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)
-										).stream()
-								.mapToDouble(dg -> dg.doubleValue(NonSI.DEGREE_ANGLE))
-								.toArray(),
-								_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
-								) + "\n");
-				
-			}
+			else
+				System.err.println("WARNING!! DOWNWASH ANGLE AND DOWNWASH GRADIENT CANNOT BE WRITTEN SINCE THERE IS NO HORIZONTAL TAIL ... ");
 		}
 		
 		
