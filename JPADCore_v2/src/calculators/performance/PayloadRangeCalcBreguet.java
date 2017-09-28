@@ -1,6 +1,5 @@
 package calculators.performance;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,9 @@ import configuration.enumerations.AircraftTypeEnum;
 import configuration.enumerations.AirfoilTypeEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
+import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.FuelFractionDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.engine.EngineDatabaseManager;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyArrayUtils;
@@ -147,7 +148,7 @@ public class PayloadRangeCalcBreguet{
 			double cruiseMach,
 			Amount<Length> altitude,
 			Amount<Mass> passengerSingleMass
-			) {
+			) throws HDF5LibraryException {
 		
 		this.theAircraft = theAircraft;
 		this.theOperatingConditions = theOperatingConditions; 
@@ -174,13 +175,12 @@ public class PayloadRangeCalcBreguet{
 		this.engineType = theAircraft.getPowerPlant().getEngineType();
 		this.airfoilType = theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType();
 		
-		///////////////////////////////////////////////////////////////////////////////////////
-		// Defining the fuel fraction ratio as function of the aircraft type:
-		this.fuelFractionDatabase = new FuelFractionDatabaseReader(
-				System.getProperty("user.dir")
-					+ File.separator 
-					+ MyConfiguration.databaseFolderPath, 
-				"FuelFractions.h5"
+		this.fuelFractionDatabase = DatabaseManager.initializeFuelFractionDatabase(
+				new FuelFractionDatabaseReader(
+						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
+						"FuelFractions.h5"
+						),
+				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
 				);
 		try {
 			this.fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");

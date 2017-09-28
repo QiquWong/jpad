@@ -13,6 +13,7 @@ import configuration.enumerations.AnalysisTypeEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.MethodEnum;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
 public interface IACAnalysisManager {
 
@@ -21,7 +22,7 @@ public interface IACAnalysisManager {
 			Aircraft aircraft, 
 			OperatingConditions theOperatingConditions,
 			String resultsFolderPath
-			) throws IOException;
+			) throws IOException, HDF5LibraryException;
 	public void calculateWeights(Aircraft aircraft, String resultsFolderPath);
 	public void calculateBalance(Aircraft aircraft, String resultsFolderPath);
 	public void calculateAerodynamicAndStability(

@@ -34,6 +34,7 @@ import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.FuelFractionDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyChartToFileUtils;
@@ -313,12 +314,12 @@ public class ACWeightsManager implements IACWeightsManager {
 			this.__theOperatingConditions = theOperatingConditions;
 		}
 		
-		public ACWeightsManager build() {
+		public ACWeightsManager build() throws HDF5LibraryException {
 			return new ACWeightsManager(this);
 		}
 	}
 	
-	private ACWeightsManager(ACWeightsManagerBuilder builder) {
+	private ACWeightsManager(ACWeightsManagerBuilder builder) throws HDF5LibraryException {
 		
 		this._id = builder.__id;
 		ACWeightsManager._theAircraft = builder.__theAircraft;
@@ -354,10 +355,12 @@ public class ACWeightsManager implements IACWeightsManager {
 		
 		this._maximumTakeOffMassList = builder.__maximumTakeOffMassList;
 		
-		// initialization of the database for the mission fuel estimation
-		_fuelFractionDatabaseReader = new FuelFractionDatabaseReader(
-				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
-				"FuelFractions.h5"
+		this._fuelFractionDatabaseReader = DatabaseManager.initializeFuelFractionDatabase(
+				new FuelFractionDatabaseReader(
+						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
+						"FuelFractions.h5"
+						),
+				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
 				);
 		
 	}
@@ -370,7 +373,7 @@ public class ACWeightsManager implements IACWeightsManager {
 	// METHODS:
 	//------------------------------------------------------------------------------
 	@SuppressWarnings("unchecked")
-	public static ACWeightsManager importFromXML (String pathToXML, Aircraft theAircraft, OperatingConditions theOperatingConditions) {
+	public static ACWeightsManager importFromXML (String pathToXML, Aircraft theAircraft, OperatingConditions theOperatingConditions) throws HDF5LibraryException {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 

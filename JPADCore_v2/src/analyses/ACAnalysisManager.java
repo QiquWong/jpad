@@ -26,6 +26,7 @@ import configuration.enumerations.CostsEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import configuration.enumerations.PerformanceEnum;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
@@ -1259,7 +1260,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			Aircraft aircraft, 
 			OperatingConditions theOperatingConditions,
 			String resultsFolderPath
-			) throws IOException {
+			) throws IOException, HDF5LibraryException {
 
 		if (aircraft == null) return;
 		

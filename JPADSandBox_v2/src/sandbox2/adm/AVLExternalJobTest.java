@@ -32,6 +32,7 @@ import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.launchers.avl.AVLAircraft;
 import standaloneutils.launchers.avl.AVLExternalJob;
@@ -172,8 +173,9 @@ public class AVLExternalJobTest extends Application {
 	 *
 	 * @param args
 	 * @throws InvalidFormatException 
+	 * @throws HDF5LibraryException 
 	 */
-	public static void main(String[] args) throws InvalidFormatException, IOException, InterruptedException {
+	public static void main(String[] args) throws InvalidFormatException, IOException, InterruptedException, HDF5LibraryException {
 
 		// TODO: check out this as an alternative
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/

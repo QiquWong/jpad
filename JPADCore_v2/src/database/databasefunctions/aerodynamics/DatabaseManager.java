@@ -1,18 +1,15 @@
 package database.databasefunctions.aerodynamics;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
 
 import configuration.MyConfiguration;
-import configuration.enumerations.FusDesDatabaseEnum;
-import configuration.enumerations.VeDSCDatabaseEnum;
-import database.databasefunctions.DatabaseReader;
+import database.databasefunctions.FuelFractionDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
+import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.MyXMLReaderUtils;
-import standaloneutils.database.io.InputFileReader;
-import standaloneutils.database.io.DatabaseIOmanager;
 import writers.JPADStaticWriteUtils;
 
 public class DatabaseManager {
@@ -264,13 +261,13 @@ public class DatabaseManager {
 	 */
 	public static HighLiftDatabaseReader initializeHighLiftDatabase(HighLiftDatabaseReader reader){
 
-		File fileHighLiftDatabase = new File(MyConfiguration.interpolaterHighLiftDatabaseSerializedFullName);
+		File fileHighLiftDatabase = new File(MyConfiguration.interpolaterTurbofanDatabaseSerializedFullName);
 
 		if(fileHighLiftDatabase.exists()){
 			System.out.println("De-serializing file: " + fileHighLiftDatabase.getAbsolutePath() + " ...");
 			reader = (HighLiftDatabaseReader) 
 					MyXMLReaderUtils.deserializeObject(reader,
-							MyConfiguration.interpolaterHighLiftDatabaseSerializedFullName);
+							MyConfiguration.interpolaterTurbofanDatabaseSerializedFullName);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> HighLiftDatabase.h5 ==> "+ 
@@ -278,13 +275,13 @@ public class DatabaseManager {
 			reader = new HighLiftDatabaseReader(MyConfiguration.databaseDirectory,"HighLiftDatabase.h5");
 
 
-			File dir = new File(MyConfiguration.interpolaterHighLiftDatabaseSerializedDirectory);
+			File dir = new File(MyConfiguration.interpolaterTurbofanDatabaseSerializedDirectory);
 			if(!dir.exists()){
 				dir.mkdirs(); 
 			}else{
 				JPADStaticWriteUtils.serializeObject(reader, 
-						MyConfiguration.interpolaterHighLiftDatabaseSerializedDirectory,
-						MyConfiguration.interpolaterHighLiftDatabaseSerializedName);
+						MyConfiguration.interpolaterTurbofanDatabaseSerializedDirectory,
+						MyConfiguration.interpolaterTurbofanDatabaseSerializedName);
 			}
 		}
 		return reader;
@@ -306,7 +303,7 @@ public class DatabaseManager {
 		String interpolaterHighLiftDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
 				+ File.separator; 
 		String interpolaterHighLiftDatabaseSerializedFullName = interpolaterHighLiftDatabaseSerializedDirectory +  
-				MyConfiguration.interpolaterHighLiftDatabaseSerializedName;
+				MyConfiguration.interpolaterTurbofanDatabaseSerializedName;
 
 		File fileHighLiftDatabase = new File(interpolaterHighLiftDatabaseSerializedFullName);
 
@@ -328,7 +325,122 @@ public class DatabaseManager {
 			}else{
 				JPADStaticWriteUtils.serializeObject(reader, 
 						interpolaterHighLiftDatabaseSerializedDirectory,
-						MyConfiguration.interpolaterHighLiftDatabaseSerializedName);
+						MyConfiguration.interpolaterTurbofanDatabaseSerializedName);
+			}
+		}
+		return reader;
+	}
+	
+	public static TurbofanEngineDatabaseReader initializeTurbofanDatabase(TurbofanEngineDatabaseReader reader, String databaseDirectory){
+
+		//Set the high lift database folder
+
+		String interpolaterTurbofanDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
+				+ File.separator; 
+		String interpolaterTurbofanDatabaseSerializedFullName = interpolaterTurbofanDatabaseSerializedDirectory +  
+				MyConfiguration.interpolaterTurbofanDatabaseSerializedName;
+
+		File fileTurbofanDatabase = new File(interpolaterTurbofanDatabaseSerializedFullName);
+
+		if(fileTurbofanDatabase.exists()){
+			System.out.println("De-serializing file: " + fileTurbofanDatabase.getAbsolutePath() + " ...");
+			reader = (TurbofanEngineDatabaseReader) 
+					MyXMLReaderUtils.deserializeObject(reader,
+							interpolaterTurbofanDatabaseSerializedFullName);
+		}
+		else {
+			System.out.println(	"Serializing file " + "==> TurbofanEngineDatabase.h5 ==> "+ 
+					fileTurbofanDatabase.getAbsolutePath() + " ...");
+			reader = new TurbofanEngineDatabaseReader(databaseDirectory,"TurbofanEngineDatabase.h5");
+
+
+			File dir = new File(interpolaterTurbofanDatabaseSerializedDirectory);
+			if(!dir.exists()){
+				dir.mkdirs(); 
+			}else{
+				JPADStaticWriteUtils.serializeObject(reader, 
+						interpolaterTurbofanDatabaseSerializedDirectory,
+						MyConfiguration.interpolaterTurbofanDatabaseSerializedName);
+			}
+		}
+		return reader;
+	}
+	
+	public static TurbopropEngineDatabaseReader initializeTurbopropDatabase(TurbopropEngineDatabaseReader reader, String databaseDirectory){
+
+		//Set the high lift database folder
+
+		String interpolaterTurbopropDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
+				+ File.separator; 
+		String interpolaterTurbopropDatabaseSerializedFullName = interpolaterTurbopropDatabaseSerializedDirectory +  
+				MyConfiguration.interpolaterTurbopropDatabaseSerializedName;
+
+		File fileTurbopropDatabase = new File(interpolaterTurbopropDatabaseSerializedFullName);
+
+		if(fileTurbopropDatabase.exists()){
+			System.out.println("De-serializing file: " + fileTurbopropDatabase.getAbsolutePath() + " ...");
+			reader = (TurbopropEngineDatabaseReader) 
+					MyXMLReaderUtils.deserializeObject(reader,
+							interpolaterTurbopropDatabaseSerializedFullName);
+		}
+		else {
+			System.out.println(	"Serializing file " + "==> TurbopropEngineDatabase.h5 ==> "+ 
+					fileTurbopropDatabase.getAbsolutePath() + " ...");
+			try {
+				reader = new TurbopropEngineDatabaseReader(databaseDirectory,"TurbopropEngineDatabase.h5");
+			} catch (HDF5LibraryException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
+
+
+			File dir = new File(interpolaterTurbopropDatabaseSerializedDirectory);
+			if(!dir.exists()){
+				dir.mkdirs(); 
+			}else{
+				JPADStaticWriteUtils.serializeObject(reader, 
+						interpolaterTurbopropDatabaseSerializedDirectory,
+						MyConfiguration.interpolaterTurbopropDatabaseSerializedName);
+			}
+		}
+		return reader;
+	}
+	
+	public static FuelFractionDatabaseReader initializeFuelFractionDatabase(FuelFractionDatabaseReader reader, String databaseDirectory) {
+
+		//Set the high lift database folder
+
+		String interpolaterFuelFractionDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
+				+ File.separator; 
+		String interpolaterFuelFractionDatabaseSerializedFullName = interpolaterFuelFractionDatabaseSerializedDirectory +  
+				MyConfiguration.interpolaterFuelFractionDatabaseSerializedName;
+
+		File fileFuelFractionsDatabase = new File(interpolaterFuelFractionDatabaseSerializedFullName);
+
+		if(fileFuelFractionsDatabase.exists()){
+			System.out.println("De-serializing file: " + fileFuelFractionsDatabase.getAbsolutePath() + " ...");
+			reader = (FuelFractionDatabaseReader) 
+					MyXMLReaderUtils.deserializeObject(reader,
+							interpolaterFuelFractionDatabaseSerializedFullName);
+		}
+		else {
+			System.out.println(	"Serializing file " + "==> FuelFractions.h5 ==> "+ 
+					fileFuelFractionsDatabase.getAbsolutePath() + " ...");
+			try {
+				reader = new FuelFractionDatabaseReader(databaseDirectory,"FuelFractions.h5");
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
+
+
+			File dir = new File(interpolaterFuelFractionDatabaseSerializedDirectory);
+			if(!dir.exists()){
+				dir.mkdirs(); 
+			}else{
+				JPADStaticWriteUtils.serializeObject(reader, 
+						interpolaterFuelFractionDatabaseSerializedDirectory,
+						MyConfiguration.interpolaterFuelFractionDatabaseSerializedName);
 			}
 		}
 		return reader;

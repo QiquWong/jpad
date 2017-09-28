@@ -16,7 +16,6 @@ import aircraft.components.Aircraft;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.DatabaseManager;
@@ -25,6 +24,7 @@ import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
@@ -163,9 +163,10 @@ public class JPAD extends Application {
 	 * Main
 	 *
 	 * @param args
+	 * @throws HDF5LibraryException 
 	 * @throws InvalidFormatException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws HDF5LibraryException {
 
 		// TODO: check out this as an alternative
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
@@ -230,7 +231,11 @@ public class JPAD extends Application {
 
 			//------------------------------------------------------------------------------------
 			// Setup database(s)
-			MyConfiguration.initWorkingDirectoryTree();
+			MyConfiguration.initWorkingDirectoryTree(
+					MyConfiguration.databaseDirectory,
+					MyConfiguration.inputDirectory,
+					MyConfiguration.outputDirectory
+					);
 			
 			String databaseFolderPath = va.getDatabasePath().getAbsolutePath();
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";

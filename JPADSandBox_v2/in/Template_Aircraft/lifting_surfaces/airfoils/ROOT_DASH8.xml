@@ -19,10 +19,10 @@
 			<alpha_zero_lift unit="deg">-1.4</alpha_zero_lift>
             <alpha_end_linear_trait unit="deg">12.4</alpha_end_linear_trait>
             <alpha_stall unit="deg">19.5</alpha_stall>
-            <Cl_alpha_linear_trait unit="1/rad">6.0</Cl_alpha_linear_trait>
+            <Cl_alpha_linear_trait unit="1/rad">7.0</Cl_alpha_linear_trait>
             <Cl_at_alpha_zero>0.2</Cl_at_alpha_zero>
             <Cl_end_linear_trait>1.55</Cl_end_linear_trait>
-            <Cl_max>1.78</Cl_max>	
+            <Cl_max>1.78</Cl_max>	l
             <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cd_curve" flag is "FALSE"; 
 				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->			
 			<Cd_min>0.0157</Cd_min>

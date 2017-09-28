@@ -21,11 +21,13 @@ import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
@@ -156,8 +158,9 @@ public class CompleteAnalysisTest extends Application {
 	 *
 	 * @param args
 	 * @throws InvalidFormatException 
+	 * @throws HDF5LibraryException 
 	 */
-	public static void main(String[] args) throws InvalidFormatException {
+	public static void main(String[] args) throws InvalidFormatException, HDF5LibraryException {
 
 		// TODO: check out this as an alternative
 		// https://blog.codecentric.de/en/2015/09/javafx-how-to-easily-implement-application-preloader-2/
@@ -219,17 +222,29 @@ public class CompleteAnalysisTest extends Application {
 
 			//------------------------------------------------------------------------------------
 			// Setup database(s)
-			MyConfiguration.initWorkingDirectoryTree();
+			MyConfiguration.initWorkingDirectoryTree(
+					MyConfiguration.databaseDirectory,
+					MyConfiguration.inputDirectory,
+					MyConfiguration.outputDirectory
+					);
 			
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
 			String fusDesDatabaseFilename = "FusDes_database.h5";
 			String vedscDatabaseFilename = "VeDSC_database.h5";
-			AerodynamicDatabaseReader aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-			HighLiftDatabaseReader highLiftDatabaseReader = new HighLiftDatabaseReader(databaseFolderPath, highLiftDatabaseFileName);
-			FusDesDatabaseReader fusDesDatabaseReader = new FusDesDatabaseReader(databaseFolderPath, fusDesDatabaseFilename);
-			VeDSCDatabaseReader veDSCDatabaseReader = new VeDSCDatabaseReader(databaseFolderPath, vedscDatabaseFilename);
+			AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(new AerodynamicDatabaseReader(
+					databaseFolderPath,	aerodynamicDatabaseFileName),
+					databaseFolderPath);
+			HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(new HighLiftDatabaseReader(
+					databaseFolderPath,	highLiftDatabaseFileName),
+					databaseFolderPath);
+			FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(new FusDesDatabaseReader(
+					databaseFolderPath,	fusDesDatabaseFilename),
+					databaseFolderPath);
+			VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(
+					databaseFolderPath,	vedscDatabaseFilename),
+					databaseFolderPath);
 			
 			////////////////////////////////////////////////////////////////////////
 			// Aircraft creation
@@ -239,31 +254,31 @@ public class CompleteAnalysisTest extends Application {
 			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader,
-//			        fusDesDatabaseReader,
-//					veDSCDatabaseReader
-//					)
-//					.build();
-
-			// reading aircraft from xml ... 
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
+			theAircraft = new Aircraft.AircraftBuilder(
+					"ATR-72",
+					AircraftEnum.ATR72,
 					aeroDatabaseReader,
 					highLiftDatabaseReader,
-					fusDesDatabaseReader,
-					veDSCDatabaseReader);
+			        fusDesDatabaseReader,
+					veDSCDatabaseReader
+					)
+					.build();
+
+			// reading aircraft from xml ... 
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader,
+//					fusDesDatabaseReader,
+//					veDSCDatabaseReader);
 			
 			
 			

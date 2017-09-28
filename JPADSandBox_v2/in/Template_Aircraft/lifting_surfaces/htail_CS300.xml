@@ -1,0 +1,35 @@
+<jpad_config>
+    <horizontal_tail id="CS-300 Horizontal Tail" mirrored="TRUE">
+         <global_data>
+			<composite_correction_factor>1</composite_correction_factor>
+			<roughness unit="m">0.405e-5</roughness>
+		</global_data>
+		<panels>
+            <panel id="Horizontal tail panel">
+                <span unit="m">6.25</span>
+                <dihedral unit="deg">5.5</dihedral>
+                <sweep_leading_edge unit="deg">32</sweep_leading_edge>
+                <inner_section>
+                    <chord unit="m">3.36</chord>
+                    <airfoil file="naca0012.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <chord unit="m">1.31</chord>
+                    <airfoil file="naca0012.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Elevator" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.16</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">1.0</outer_station_spanwise_position>
+                <inner_chord_ratio>0.36</inner_chord_ratio>
+				<outer_chord_ratio>0.36</outer_chord_ratio>
+                <min_deflection unit="deg">-25.0</min_deflection>
+				<max_deflection unit="deg">5.0</max_deflection>
+            </symmetric_flap>
+        </symmetric_flaps>
+    </horizontal_tail>
+</jpad_config>

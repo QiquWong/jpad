@@ -17,6 +17,8 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
@@ -174,9 +176,12 @@ public class PowerPlant implements IPowerPlant {
 		if((this._engineList.get(0).getEngineType() == EngineTypeEnum.TURBOPROP)
 				|| (this._engineType == EngineTypeEnum.PISTON))
 			try {
-				_turbopropEngineDatabaseReader = new TurbopropEngineDatabaseReader(
-						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
-						_engineList.get(0).getEngineDatabaseName()
+				_turbopropEngineDatabaseReader =  DatabaseManager.initializeTurbopropDatabase(
+						new TurbopropEngineDatabaseReader(
+								MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
+								_engineList.get(0).getEngineDatabaseName()
+								), 
+						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
 						);
 			} catch (HDF5LibraryException e) {
 				e.printStackTrace();
@@ -184,9 +189,12 @@ public class PowerPlant implements IPowerPlant {
 				e.printStackTrace();
 			}
 		else
-			_turbofanEngineDatabaseReader = new TurbofanEngineDatabaseReader(
-					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
-					_engineList.get(0).getEngineDatabaseName()
+			_turbofanEngineDatabaseReader = DatabaseManager.initializeTurbofanDatabase(
+					new TurbofanEngineDatabaseReader(
+							MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
+							_engineList.get(0).getEngineDatabaseName()
+							), 
+					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
 					);
 		
 		calculateDerivedVariables();
