@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <fuselage id="AGILE Fuselage" pressurized="TRUE">
+        <global_data>
+			<deck_number>1</deck_number>
+			<length unit="m">29.14</length> 
+			<roughness unit="m">0.405e-5</roughness>
+		</global_data>
+		<nose_trunk>
+            <length_ratio>0.15</length_ratio>    
+			<tip_height_offset unit="m">-0.508</tip_height_offset>
+            <dx_cap_percent>0.075</dx_cap_percent>
+            <windshield_type>FLAT_FLUSH</windshield_type> 
+            <windshield_width unit="m">3.2</windshield_width> 
+            <windshield_height unit="m">0.683</windshield_height>
+            <!-- 
+			mid_section_lower_to_total_height_ratio = 0.5
+			mid_section_rho_upper = 0.1
+			mid_section_rho_lower = 0.1
+			for circular section
+			-->
+			<mid_section_lower_to_total_height_ratio>0.5</mid_section_lower_to_total_height_ratio> 
+            <mid_section_rho_upper>0.1</mid_section_rho_upper>
+            <mid_section_rho_lower>0.1</mid_section_rho_lower>
+        </nose_trunk>
+		<cylindrical_trunk>
+            <length_ratio>0.56</length_ratio>
+			<section_width unit="m">3.54</section_width>
+			<section_height unit="m">3.54</section_height>
+			<height_from_ground unit="m">1.52</height_from_ground> 
+            <!-- 
+			mid_section_lower_to_total_height_ratio = 0.5
+			mid_section_rho_upper = 0.1
+			mid_section_rho_lower = 0.1
+			for circular section
+			-->
+			<section_lower_to_total_height_ratio>0.5</section_lower_to_total_height_ratio>
+            <section_rho_upper>0.1</section_rho_upper>
+            <section_rho_lower>0.1</section_rho_lower>
+        </cylindrical_trunk>
+		<tail_trunk>
+            <tip_height_offset unit="m">0.911</tip_height_offset>
+            <dx_cap_percent>0.020</dx_cap_percent>
+			<!-- 
+			mid_section_lower_to_total_height_ratio = 0.5
+			mid_section_rho_upper = 0.1
+			mid_section_rho_lower = 0.1
+			for circular section
+			-->
+            <mid_section_lower_to_total_height_ratio>0.5</mid_section_lower_to_total_height_ratio>
+            <mid_section_rho_upper>0.1</mid_section_rho_upper>
+            <mid_section_rho_lower>0.1</mid_section_rho_lower>
+        </tail_trunk>
+		<!-- SPOILERS DATA ARE NOT AVAILABLE YET
+		<spoilers>
+            <spoiler id="1">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="DIAMETER">0.40</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="DIAMETER">0.60</outer_station_spanwise_position>
+                <inner_station_chordwise_position type="PERCENT_CHORD" ref_to="FUSELAGE_LENGTH">0.15</inner_station_chordwise_position>
+                <outer_station_chordwise_position type="PERCENT_CHORD" ref_to="FUSELAGE_LEGNTH">0.20</outer_station_chordwise_position>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">90.0</max_deflection>
+            </spoiler>
+        </spoilers>
+		-->
+    </fuselage>
+</jpad_config>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<landing_gears id="JPAD Test Landing Gears DAF - 2016">
+	<landing_gears id="AGILE Landing Gears">
 		<global_data>
-			<main_gear_legs_length unit="m">2.0</main_gear_legs_length>
+			<main_gear_legs_length unit="m">0.66</main_gear_legs_length>
 			<k_main_gear_legs_length>0.15</k_main_gear_legs_length>
-			<distance_between_wheels unit="m">5.0</distance_between_wheels>
+			<distance_between_wheels unit="m">3.5</distance_between_wheels>
 			<number_of_frontal_wheels>2</number_of_frontal_wheels>
 			<number_of_rear_wheels>4</number_of_rear_wheels>
 		</global_data>
 		<frontal_wheels_data>
-			<wheel_height unit="m">1.0</wheel_height>
-			<wheel_width unit="m">0.5</wheel_width>
+			<wheel_height unit="m">0.45</wheel_height>
+			<wheel_width unit="m">0.19</wheel_width>
 		</frontal_wheels_data>
 		<rear_wheels_data>
-			<wheel_height unit="m">1.0</wheel_height>
-			<wheel_width unit="m">0.8</wheel_width>
+			<wheel_height unit="m">0.8636</wheel_height>
+			<wheel_width unit="m">0.254</wheel_width>
 		</rear_wheels_data>
 	</landing_gears>
 </jpad_config>
