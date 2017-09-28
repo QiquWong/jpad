@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <wing id="AIRBUS A-320 Wing " mirrored="TRUE" equivalent="FALSE">
+        <global_data>
+			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
+			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
+			<composite_correction_factor>0.85</composite_correction_factor>
+			<roughness unit="m">0.405e-5</roughness>
+			<winglet_height unit="m">2.43</winglet_height>
+		</global_data>
+		<equivalent_wing>
+			<surface unit="m²">105</surface>
+			<aspect_ratio>12</aspect_ratio>
+			<taper_ratio>0.387</taper_ratio>
+			<sweep_leading_edge unit="deg">10.0</sweep_leading_edge>
+			<dihedral unit="deg">5.0</dihedral>
+			<non_dimensional_span_station_kink>0.3</non_dimensional_span_station_kink>
+			<twist_at_tip unit="deg">-2.0</twist_at_tip>
+			<twist_at_kink_real_wing unit="deg">0.0</twist_at_kink_real_wing>	
+			<x_offset_root_chord_leading_edge>0.0</x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
+			<x_offset_root_chord_trailing_edge>0.05</x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
+			<airfoils>
+				<airfoil_root file="ROOT.xml"/>
+				<airfoil_kink file="ROOT.xml"/>
+				<airfoil_tip file="TIP.xml"/>
+			</airfoils>
+		</equivalent_wing>
+		<panels>
+            <panel id="A320 - Inner panel">
+                <span unit="m">6.123</span>
+                <dihedral unit="deg">8.1</dihedral>
+                <sweep_leading_edge unit="deg">28</sweep_leading_edge>
+                <inner_section>
+                    <chord unit="m">6.1</chord>
+                    <airfoil file="ROOT.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </inner_section>
+                <outer_section>
+                    <chord unit="m">3.92</chord>
+                    <airfoil file="ROOT.xml"/>
+                    <geometric_twist unit="deg">0.0</geometric_twist>
+                </outer_section>
+            </panel>
+            <panel id="A320 - Outer panel" linked_to="A320 - Inner panel">
+                <span unit="m">10.922</span>
+                <dihedral unit="deg">8.1</dihedral>
+                <sweep_leading_edge unit="deg">28</sweep_leading_edge>
+                <outer_section>
+                    <chord unit="m">1.64</chord>
+                    <airfoil file="TIP.xml"/>
+                    <geometric_twist unit="deg">-2</geometric_twist>
+                </outer_section>
+            </panel>
+        </panels>
+        <symmetric_flaps>
+            <symmetric_flap id="Inner flap" type="FOWLER">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.121</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.375</outer_station_spanwise_position>
+                <inner_chord_ratio>0.11</inner_chord_ratio>
+				<outer_chord_ratio>0.15</outer_chord_ratio>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">40.0</max_deflection>
+            </symmetric_flap>
+			<symmetric_flap id="Outer flap" type="FOWLER">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.376</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.72</outer_station_spanwise_position>
+                <inner_chord_ratio>0.11</inner_chord_ratio>
+				<outer_chord_ratio>0.09</outer_chord_ratio>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">40.0</max_deflection>
+            </symmetric_flap>
+        </symmetric_flaps>
+		
+        <slats>
+			<slat id="1">
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
+                <inner_chord_ratio>0.052</inner_chord_ratio>
+				<outer_chord_ratio>0.18</outer_chord_ratio>
+                <extension_ratio>1.0</extension_ratio>
+				<inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.12</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.98</outer_station_spanwise_position>
+            </slat>
+        </slats>
+		
+        <asymmetric_flaps>
+            <asymmetric_flap id="Left aileron" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.77</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.95</outer_station_spanwise_position>
+                <inner_chord_ratio>0.25</inner_chord_ratio>
+				<outer_chord_ratio>0.25</outer_chord_ratio>
+                <min_deflection unit="deg">-25.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
+            </asymmetric_flap>
+			<asymmetric_flap id="Right aileron" type="PLAIN">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.77</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.95</outer_station_spanwise_position>
+                <inner_chord_ratio>0.25</inner_chord_ratio>
+				<outer_chord_ratio>0.25</outer_chord_ratio>
+                <min_deflection unit="deg">-25.0</min_deflection>
+				<max_deflection unit="deg">25.0</max_deflection>
+            </asymmetric_flap>
+        </asymmetric_flaps>
+        <!-- SPOILERS DATA ARE NOT AVAILABLE YET
+		<spoilers>
+            <spoiler id="1">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.20</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.30</outer_station_spanwise_position>
+                <inner_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.65</inner_station_chordwise_position>
+                <outer_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.80</outer_station_chordwise_position>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">90.0</max_deflection>
+            </spoiler>
+			<spoiler id="2">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.40</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.75</outer_station_spanwise_position>
+                <inner_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.65</inner_station_chordwise_position>
+                <outer_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.80</outer_station_chordwise_position>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">90.0</max_deflection>
+            </spoiler>
+        </spoilers>
+		-->
+    </wing>
+</jpad_config>
