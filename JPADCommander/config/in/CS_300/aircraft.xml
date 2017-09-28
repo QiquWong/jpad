@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="CS300" type="TURBOFAN" regulations="FAR_25">
+    <aircraft id="CS300" type="JET" regulations="FAR_25">
 		<global_data>
 			<cabin_configuration file="cabin_configuration_CS300.xml"></cabin_configuration>
 		</global_data>
@@ -9,7 +9,7 @@
                 <position>
                     <x unit="m">12.54</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">0.44</z>
+                    <z unit="m">-0.44</z>
                 </position>
                 <rigging_angle unit="deg">2</rigging_angle>
             </wing>
@@ -17,7 +17,7 @@
                 <position>
                     <x unit="m">32.75</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.66</z>
+                    <z unit="m">1.0</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
@@ -25,7 +25,7 @@
                 <position>
                     <x unit="m">30.75</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">2.73</z>
+                    <z unit="m">1.85</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
@@ -68,7 +68,7 @@
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
-            <nacelle file="nacelle.xml">
+            <nacelle file="nacelle_CS300.xml">
                 <position>
                     <x unit="m">11.95</x>
                     <y unit="m">-5.4844</y>
