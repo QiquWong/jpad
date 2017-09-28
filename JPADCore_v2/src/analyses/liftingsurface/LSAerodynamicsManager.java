@@ -79,6 +79,7 @@ public class LSAerodynamicsManager {
 	private List<Amount<Length>> _airfoilACToWingACDistribution;
 	private double[] twistDistributionRadians;
 	private double[] alphaZeroLiftDistributionRadians;
+	private double[] dihedralDistributionRadians;
 	
 	private NasaBlackwell theNasaBlackwellCalculator;
 	
@@ -423,10 +424,12 @@ public class LSAerodynamicsManager {
 		//......................................................................................................................
 		twistDistributionRadians = new double[_numberOfPointSemiSpanWise];
 		alphaZeroLiftDistributionRadians = new double[_numberOfPointSemiSpanWise];
+		dihedralDistributionRadians = new double[_numberOfPointSemiSpanWise];
 		
 		for (int i=0; i< _numberOfPointSemiSpanWise; i++) {
 			twistDistributionRadians[i] = _twistDistribution.get(i).doubleValue(SI.RADIAN);
 			alphaZeroLiftDistributionRadians[i] = _alphaZeroLiftDistribution.get(i).doubleValue(SI.RADIAN);
+			dihedralDistributionRadians[i] = 0.0;
 		}
 
 		theNasaBlackwellCalculator = new NasaBlackwell(
@@ -435,7 +438,7 @@ public class LSAerodynamicsManager {
 				MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
-				MyArrayUtils.convertListOfAmountTodoubleArray(_dihedralDistribution),
+				dihedralDistributionRadians,
 				twistDistributionRadians,
 				alphaZeroLiftDistributionRadians,
 				_vortexSemiSpanToSemiSpanRatio,
