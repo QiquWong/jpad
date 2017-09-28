@@ -347,6 +347,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 				SymmetricFlapCreator flap1 =
 						new SymmetricFlapBuilder(
+		
 								"ATR72 wing, inner flap",
 								FlapTypeEnum.SINGLE_SLOTTED,
 								0.08,

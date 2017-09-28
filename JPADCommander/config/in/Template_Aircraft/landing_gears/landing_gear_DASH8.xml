@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<landing_gears id="DASH8 Landing Gears">
+		<global_data>
+			<main_gear_legs_length unit="m">2.16</main_gear_legs_length>
+			<k_main_gear_legs_length>0.15</k_main_gear_legs_length>
+			<number_of_frontal_wheels>2</number_of_frontal_wheels>
+			<number_of_rear_wheels>4</number_of_rear_wheels>
+		</global_data>
+		<frontal_wheels_data>
+			<wheel_height unit="m">0.59</wheel_height>
+			<wheel_width unit="m">0.19</wheel_width>
+		</frontal_wheels_data>
+		<rear_wheels_data>
+			<wheel_height unit="m">0.72</wheel_height>
+			<wheel_width unit="m">0.21</wheel_width>
+		</rear_wheels_data>
+	</landing_gears>
+</jpad_config>

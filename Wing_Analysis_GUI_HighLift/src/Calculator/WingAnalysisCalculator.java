@@ -2693,32 +2693,32 @@ public class WingAnalysisCalculator {
 			TabPane newOutputCharts){
 		// Setup database(s)
 		AerodynamicDatabaseReader aeroDatabaseReader;
-		
+
 		// Setup database(s)
 
 		String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 		String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";
 
 		aeroDatabaseReader = new AerodynamicDatabaseReader(databaseFolderPath,aerodynamicDatabaseFileName);
-		
+
 		List<Amount<Angle>> alphaArrayForCalculation =
 				MyArrayUtils.convertDoubleArrayToListOfAmount(
-				MyArrayUtils.linspace(0, 25, 26),
-				NonSI.DEGREE_ANGLE
-				);
+						MyArrayUtils.linspace(0, 25, 26),
+						NonSI.DEGREE_ANGLE
+						);
 
 		// OUTPUT ARRAYS
-		
+
 		List<List<Double>> deltaClStationWithRespectToAlpha = new ArrayList<>();	
 		List<List<Amount<Angle>>> effectiveAngleOfAttackDistribution = new ArrayList<>();
-		
+
 		Amount<Velocity> vTAS;
-		
+
 		vTAS = Amount.valueOf(
 				theInputOutputTree.getMachNumber() * AtmosphereCalc.getSpeedOfSound(theInputOutputTree.getAltitude().doubleValue(SI.METER)), 
 				SI.METERS_PER_SECOND
 				);
-		
+
 		//NASA BLACKWELL CLEAN
 		double vortexSemiSpanToSemiSpanRatio = (1./(2*theInputOutputTree.getNumberOfPointSemispan()));
 
@@ -2750,26 +2750,26 @@ public class WingAnalysisCalculator {
 				0.0,
 				theInputOutputTree.getMachNumber(),
 				theInputOutputTree.getAltitude().doubleValue(SI.METER));
-		
-//-------------------------------------------------------
+
+		//-------------------------------------------------------
 		Double[][] deltaClLocal = new Double [26][theInputOutputTree.getNumberOfPointSemispan()];
 		List<Double> temporaryClList = new ArrayList<>();
-	
-		
+
+
 		alphaArrayForCalculation.stream().forEach( a ->{
 			int i = alphaArrayForCalculation.indexOf(a);
-			
+
 			List<Double> clDistributionHighLift = new ArrayList<>();
 			List<Double> clDistributonClean = new ArrayList<>();
-		
-            theNasaBlackwellCleanCalculator.calculate(alphaArrayForCalculation.get(i));
+
+			theNasaBlackwellCleanCalculator.calculate(alphaArrayForCalculation.get(i));
 			theNasaBlackwellHIGHLIFTCalculator.calculate(alphaArrayForCalculation.get(i));
-			
+
 			clDistributonClean = Main.convertDoubleArrayToListDouble(
 					Main.convertFromDoubleToPrimitive(
 							theNasaBlackwellCleanCalculator.getClTotalDistribution().toArray()));
 
-			
+
 			// chords old
 			clDistributionHighLift = Main.convertDoubleArrayToListDouble(
 					Main.convertFromDoubleToPrimitive(
@@ -2777,7 +2777,7 @@ public class WingAnalysisCalculator {
 			for(int j =0; j<clDistributionHighLift.size(); j++) {
 				clDistributionHighLift.set(j, clDistributionHighLift.get(j)/theInputOutputTree.getChordDistributionSemiSpan().get(j).doubleValue(SI.METER));
 			}
-			
+
 
 			if (clDistributionHighLift.get(i).isNaN()){
 				for (int ii=0; ii< clDistributionHighLift.size(); ii++){
@@ -2789,7 +2789,7 @@ public class WingAnalysisCalculator {
 				deltaClLocal[i][ii] =  
 						clDistributionHighLift.get(ii)-clDistributonClean.get(ii);
 			}
-			
+
 			//alpha effective
 			effectiveAngleOfAttackDistribution.add(AlphaEffective.calculateAlphaEffective(
 					theNasaBlackwellCleanCalculator,
@@ -2798,30 +2798,68 @@ public class WingAnalysisCalculator {
 					vTAS, 
 					theInputOutputTree.getTwistDistributionSemiSpan()
 					));
-			
+
 		}
 				);
-			for(int i=0; i<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); i++) {
-				for(int ii=0; ii<alphaArrayForCalculation.size(); ii++) {		
-					temporaryClList.add(deltaClLocal[ii][i]);
-				}
-				deltaClStationWithRespectToAlpha.add(temporaryClList);
-				temporaryClList = new ArrayList<>();
+		for(int i=0; i<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); i++) {
+			for(int ii=0; ii<alphaArrayForCalculation.size(); ii++) {		
+				temporaryClList.add(deltaClLocal[ii][i]);
+			}
+			deltaClStationWithRespectToAlpha.add(temporaryClList);
+			temporaryClList = new ArrayList<>();
+		}
+
+
+		System.out.println(" eta station " + theInputOutputTree.getyAdimensionalDistributionSemiSpan().toString());
+		for(int i=0; i<alphaArrayForCalculation.size(); i++) {
+			System.out.print(" \n delta cl at alpha =" + alphaArrayForCalculation.get(i) + " = ");
+			for(int ii=0; ii<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); ii++)
+				System.out.print(" " + deltaClStationWithRespectToAlpha.get(ii).get(i));
+		}
+
+		for(int i=0; i<alphaArrayForCalculation.size(); i++) {
+			System.out.print("\n alpha effective at alpha = " + alphaArrayForCalculation.get(i) + " = ");
+			for(int ii=0; ii<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); ii++)
+				System.out.print("  " + effectiveAngleOfAttackDistribution.get(i).get(ii).doubleValue(NonSI.DEGREE_ANGLE));
+		}
+		
+		// NEW CL MAX DISTRIBUTION
+
+		double [] deltaClAtStall = new double[theInputOutputTree.getNumberOfPointSemispan()];
+		theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpanHighLift().clear();
+		
+		for(int i=0; i<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); i++) {
+
+			// alpha
+			
+			double alphaLocal;
+			double [] alphasEffectiveAtStation = new double [alphaArrayForCalculation.size()];
+			
+			for(int ii=0; ii<alphaArrayForCalculation.size(); ii++) {
+				alphasEffectiveAtStation[ii] = effectiveAngleOfAttackDistribution.get(ii).get(i).doubleValue(NonSI.DEGREE_ANGLE);
 			}
 			
-	
-			System.out.println(" eta station " + theInputOutputTree.getyAdimensionalDistributionSemiSpan().toString());
-			for(int i=0; i<alphaArrayForCalculation.size(); i++) {
-				System.out.print(" \n delta cl at alpha =" + alphaArrayForCalculation.get(i) + " = ");
-				for(int ii=0; ii<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); ii++)
-			System.out.print(" " + deltaClStationWithRespectToAlpha.get(ii).get(i));
-			}
+			alphaLocal = MyMathUtils.getInterpolatedValue1DLinear(
+					alphasEffectiveAtStation, 
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(alphaArrayForCalculation)),
+					theInputOutputTree.getAlphaStallDistributionSemiSpan().get(i).doubleValue(NonSI.DEGREE_ANGLE));
 			
-			for(int i=0; i<alphaArrayForCalculation.size(); i++) {
-				System.out.print("\n alpha effective at alpha = " + alphaArrayForCalculation.get(i) + " = ");
-				for(int ii=0; ii<theInputOutputTree.getyAdimensionalDistributionSemiSpan().size(); ii++)
-			System.out.print("  " + effectiveAngleOfAttackDistribution.get(i).get(ii).doubleValue(NonSI.DEGREE_ANGLE));
-			}
-			
+			// new delta 
+			deltaClAtStall[i] = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(alphaArrayForCalculation)),
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(deltaClStationWithRespectToAlpha.get(i))),
+					alphaLocal);
+
+			// new cl max distribution high lift
+			theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpanHighLift().add(
+					i, 
+					theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpan().get(i) + deltaClAtStall[i]);
+		}
+		
+		System.out.println("\ncl max distribution clean " + theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpan().toString());
+		System.out.println("delta cl max " + Arrays.toString(deltaClAtStall));
+		System.out.println("alphas stall " + theInputOutputTree.getAlphaStallDistributionSemiSpan().toString());
+		System.out.println(" new cl max distribution " + theInputOutputTree.getMaximumliftCoefficientDistributionSemiSpanHighLift().toString());
+		//); 
 	}
 }

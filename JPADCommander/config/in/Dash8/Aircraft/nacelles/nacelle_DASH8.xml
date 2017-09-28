@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<nacelle id="DASH8 Nacelle" engine="engine_DASH8.xml">
+		<global_data>
+			<roughness unit="m">0.405e-5</roughness>
+		</global_data>
+		<geometry>
+			<length unit="m">7.54</length>
+			<maximum_diameter unit="m">1.63</maximum_diameter>
+			<k_inlet>0.52</k_inlet>
+			<k_outlet>0.22</k_outlet>
+			<k_length>0.24</k_length>
+			<k_diameter_outlet>1.21</k_diameter_outlet>
+		</geometry>
+	</nacelle>
+</jpad_config>

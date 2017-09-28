@@ -79,6 +79,10 @@ public class AlphaEffective {
 					NonSI.DEGREE_ANGLE));
 		}
 
+		System.out.println(" alpha induced AT ALPHA " + alphaInitial);
+		for(int i=0; i<numberOfPoints;i++) {
+			System.out.print(alphaInduced.get(i).doubleValue(NonSI.DEGREE_ANGLE) + " , ");
+		}
 		return alphaEffective;
 
 	}
