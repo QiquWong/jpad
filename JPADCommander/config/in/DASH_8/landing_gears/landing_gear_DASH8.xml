@@ -4,6 +4,7 @@
 		<global_data>
 			<main_gear_legs_length unit="m">2.16</main_gear_legs_length>
 			<k_main_gear_legs_length>0.15</k_main_gear_legs_length>
+			<distance_between_wheels unit="m">8.52</distance_between_wheels>
 			<number_of_frontal_wheels>2</number_of_frontal_wheels>
 			<number_of_rear_wheels>4</number_of_rear_wheels>
 		</global_data>

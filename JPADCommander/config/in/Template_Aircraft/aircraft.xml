@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="DASH8" type="TURBOPROP" regulations="FAR_25">
+    <aircraft id="CS300" type="TURBOFAN" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration_DASH8.xml"> </cabin_configuration>
+			<cabin_configuration file="cabin_configuration_CS300.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
-            <wing file="wing_DASH8.xml">
+            <wing file="wing_CS300.xml">
                 <position>
-                    <x unit="m">13.73</x>
+                    <x unit="m">12.54</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">0.95</z>
+                    <z unit="m">0.44</z>
                 </position>
-                <rigging_angle unit="deg">0.55</rigging_angle>
+                <rigging_angle unit="deg">2</rigging_angle>
             </wing>
-            <horizontal_tail file="htail_DASH8.xml">
+            <horizontal_tail file="htail_CS300.xml">
                 <position>
-                    <x unit="m">30.14</x>
+                    <x unit="m">32.75</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">5.45</z>
+                    <z unit="m">1.66</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
-            <vertical_tail file="vtail_DASH8.xml">
+            <vertical_tail file="vtail_CS300.xml">
                 <position>
-                    <x unit="m">26.71</x>
+                    <x unit="m">30.75</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.28</z>
+                    <z unit="m">2.73</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
         </lifting_surfaces>
         <fuselages>
-            <fuselage file="fuselage_DASH8.xml">
+            <fuselage file="fuselage_CS300.xml">
                 <position>
                     <x unit="m">0.0</x>
                     <y unit="m">0.0</y>
@@ -40,52 +40,52 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engine_DASH8.xml">
+            <engine file="engine_CS300.xml">
                 <position>
-                    <x unit="m">10.52</x>
-                    <y unit="m">4.26</y>
-                    <z unit="m">0.87</z>
+                    <x unit="m">11.95</x>
+                    <y unit="m">5.4844</y>
+                    <z unit="m">-1.17</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>WING</mounting_point>
             </engine>
-            <engine file="engine_DASH8.xml">
+            <engine file="engine_CS300.xml">
                 <position>
-                    <x unit="m">10.52</x>
-                    <y unit="m">-4.26</y>
-                    <z unit="m">0.87</z>
+                    <x unit="m">11.95</x>
+                    <y unit="m">-5.4844</y>
+                    <z unit="m">-1.10</z>
                 </position>
                 <tilting_angle unit="deg">0.0</tilting_angle>
                 <mounting_point>WING</mounting_point>
             </engine>
 		</power_plant> 
 		<nacelles>
-            <nacelle file="nacelle_DASH8.xml">
+            <nacelle file="nacelle_CS300.xml">
                 <position>
-                    <x unit="m">11.7</x>
-                    <y unit="m">4.26</y>
-                    <z unit="m">0.87</z>
+                    <x unit="m">11.95</x>
+                    <y unit="m">5.4844</y>
+                    <z unit="m">-1.10</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
-            <nacelle file="nacelle_DASH8.xml">
+            <nacelle file="nacelle.xml">
                 <position>
-                    <x unit="m">11.7</x>
-                    <y unit="m">-4.26</y>
-                    <z unit="m">0.87</z>
+                    <x unit="m">11.95</x>
+                    <y unit="m">-5.4844</y>
+                    <z unit="m">-1.10</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
 		</nacelles> 
-		<landing_gears file="landing_gear_DASH8.xml">
+		<landing_gears file="landing_gear_CS300.xml">
 			<position>
-                <x unit="m">15.4</x>
+                <x unit="m">18.68</x>
                 <y unit="m">0.0</y>
-                <z unit="m">-0.34</z>
+                <z unit="m">-0.27</z>                                                                 <!-- -1.402 -->
             </position>
-			<mounting_point>NACELLE</mounting_point>
+			<mounting_point>WING</mounting_point>
 		</landing_gears>
-		<systems file="systems.xml">
+		<systems file="systems_CS300.xml">
 			<position>
                 <x unit="m">0.0</x>
                 <y unit="m">0.0</y>
