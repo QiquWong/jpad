@@ -1,5 +1,6 @@
 package standaloneutils.database.hdf;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -14,6 +15,8 @@ import org.apache.commons.math3.analysis.interpolation.TricubicInterpolatingFunc
 import com.sun.org.apache.bcel.internal.generic.ARRAYLENGTH;
 import com.sun.org.apache.xerces.internal.xs.StringList;
 
+import configuration.MyConfiguration;
+import configuration.enumerations.FoldersEnum;
 import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.callbacks.H5O_iterate_cb;
@@ -76,13 +79,249 @@ public class MyHDFReader {
 	public void open(){
 
 		_fileH5 = new H5File(_fileName, FileFormat.READ); // throws an exception in case of failure
-
+		_fileH5.setMaxMembers(1000000);
+		
 		// get the root node
 		String DATASETNAME = "/";
 		try {
 			_rootGroup = (H5Group) _fileH5.get(DATASETNAME);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
+			String interpolaterDatabaseSerializedDirectory = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR) + File.separator + "serializedDatabase" + File.separator; 
+			String interpolaterDatabaseSerializedFullName = "";
+			File fileDatabase = null;
+			
+			String fileName = _fileH5.getName();
+			if(fileName.contains("Aerodynamic_Database_Ultimate")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory +  
+						MyConfiguration.interpolaterAerodynamicDatabaseSerializedName;
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName);
+
+				if(!fileDatabase.exists()){
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("HighLiftDatabase")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory +  
+						MyConfiguration.interpolaterHighLiftDatabaseSerializedName;
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName);
+
+				if(!fileDatabase.exists()){
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("FusDes_database")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory +  
+						MyConfiguration.interpolaterFusDesDatabaseSerializedName;
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName);
+
+				if(!fileDatabase.exists()){
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("VeDSC_database")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ MyConfiguration.interpolaterVeDSCDatabaseSerializedName; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("FuelFractions")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ MyConfiguration.interpolaterFuelFractionDatabaseSerializedName; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("TurbofanEngineDatabase")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "TurbofanEngineDatabase.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("TurbopropEngineDatabase")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "TurbopropEngineDatabase.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("Normalized_TurboProp_100%Cruise_ISA0")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_100%Cruise_ISA0.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("Normalized_TurboProp_100%Cruise_ISA10")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_100%Cruise_ISA10.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("Normalized_TurboProp_100%Cruise_ISA30")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_100%Cruise_ISA30.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("Normalized_TurboProp_100%Cruise_ISA40")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_100%Cruise_ISA40.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("Normalized_TurboProp_95%Cruise_ISA0")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_95%Cruise_ISA0.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			} 
+			else if(fileName.contains("Normalized_TurboProp_95%Cruise_ISA10")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_95%Cruise_ISA10.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_95%Cruise_ISA30")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_95%Cruise_ISA30.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_95%Cruise_ISA40")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_95%Cruise_ISA40.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_75%Cruise_ISA0")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_75%Cruise_ISA0.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_75%Cruise_ISA10")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_75%Cruise_ISA10.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_75%Cruise_ISA30")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_75%Cruise_ISA30.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_75%Cruise_ISA40")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_75%Cruise_ISA40.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_40%Cruise_ISA0")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_40%Cruise_ISA0.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_40%Cruise_ISA10")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_40%Cruise_ISA10.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_40%Cruise_ISA30")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_40%Cruise_ISA30.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
+			else if(fileName.contains("Normalized_TurboProp_40%Cruise_ISA40")) {
+				interpolaterDatabaseSerializedFullName = interpolaterDatabaseSerializedDirectory 
+						+ "Normalized_TurboProp_40%Cruise_ISA40.xml"; 
+
+				fileDatabase = new File(interpolaterDatabaseSerializedFullName); 
+
+				if (!fileDatabase.exists()) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		//		System.out.println("Root group: " + _rootGroup.getName());

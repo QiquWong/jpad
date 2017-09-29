@@ -1,18 +1,11 @@
 package database.databasefunctions.aerodynamics;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
 
 import configuration.MyConfiguration;
-import configuration.enumerations.FusDesDatabaseEnum;
-import configuration.enumerations.VeDSCDatabaseEnum;
-import database.databasefunctions.DatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.MyXMLReaderUtils;
-import standaloneutils.database.io.InputFileReader;
-import standaloneutils.database.io.DatabaseIOmanager;
 import writers.JPADStaticWriteUtils;
 
 public class DatabaseManager {
@@ -265,13 +258,13 @@ public class DatabaseManager {
 	 */
 	public static HighLiftDatabaseReader initializeHighLiftDatabase(HighLiftDatabaseReader reader){
 
-		File fileHighLiftDatabase = new File(MyConfiguration.interpolaterTurbofanDatabaseSerializedFullName);
+		File fileHighLiftDatabase = new File(MyConfiguration.interpolaterHighLiftDatabaseSerializedFullName);
 
 		if(fileHighLiftDatabase.exists()){
 			System.out.println("De-serializing file: " + fileHighLiftDatabase.getAbsolutePath() + " ...");
 			reader = (HighLiftDatabaseReader) 
 					MyXMLReaderUtils.deserializeObject(reader,
-							MyConfiguration.interpolaterTurbofanDatabaseSerializedFullName);
+							MyConfiguration.interpolaterHighLiftDatabaseSerializedFullName);
 		}
 		else {
 			System.out.println(	"Serializing file " + "==> HighLiftDatabase.h5 ==> "+ 
@@ -279,13 +272,13 @@ public class DatabaseManager {
 			reader = new HighLiftDatabaseReader(MyConfiguration.databaseDirectory,"HighLiftDatabase.h5");
 
 
-			File dir = new File(MyConfiguration.interpolaterTurbofanDatabaseSerializedDirectory);
+			File dir = new File(MyConfiguration.interpolaterHighLiftDatabaseSerializedDirectory);
 			if(!dir.exists()){
 				dir.mkdirs(); 
 			}else{
 				JPADStaticWriteUtils.serializeObject(reader, 
-						MyConfiguration.interpolaterTurbofanDatabaseSerializedDirectory,
-						MyConfiguration.interpolaterTurbofanDatabaseSerializedName);
+						MyConfiguration.interpolaterHighLiftDatabaseSerializedDirectory,
+						MyConfiguration.interpolaterHighLiftDatabaseSerializedName);
 			}
 		}
 		return reader;
@@ -307,7 +300,7 @@ public class DatabaseManager {
 		String interpolaterHighLiftDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
 				+ File.separator; 
 		String interpolaterHighLiftDatabaseSerializedFullName = interpolaterHighLiftDatabaseSerializedDirectory +  
-				MyConfiguration.interpolaterTurbofanDatabaseSerializedName;
+				MyConfiguration.interpolaterHighLiftDatabaseSerializedName;
 
 		File fileHighLiftDatabase = new File(interpolaterHighLiftDatabaseSerializedFullName);
 
@@ -329,7 +322,7 @@ public class DatabaseManager {
 			}else{
 				JPADStaticWriteUtils.serializeObject(reader, 
 						interpolaterHighLiftDatabaseSerializedDirectory,
-						MyConfiguration.interpolaterTurbofanDatabaseSerializedName);
+						MyConfiguration.interpolaterHighLiftDatabaseSerializedName);
 			}
 		}
 		return reader;

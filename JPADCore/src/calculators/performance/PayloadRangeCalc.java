@@ -292,7 +292,7 @@ public class PayloadRangeCalc{
 		 * derived from mff dividing by all other phases ratios.
 		 */
 
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
+		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable();
 		double ratio = 1.0;
 
 		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.
@@ -679,7 +679,7 @@ public class PayloadRangeCalc{
 		 * derived from mff dividing by all other phases ratios.
 		 */
 
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
+		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable();
 		double ratio = 1.0;
 
 		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.
@@ -1066,7 +1066,7 @@ public class PayloadRangeCalc{
 		 * derived from mff dividing by all other phases ratios.
 		 */
 		
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
+		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable();
 		double ratio = 1.0;
 
 		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.

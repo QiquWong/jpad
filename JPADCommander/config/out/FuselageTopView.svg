@@ -4,23 +4,23 @@
             <rect width="620" height="510" fill="blue" opacity="0.05"/>
             <rect width="620" height="510" fill="none" opacity="1.0" style="stroke: darkblue; stroke-width: 2px;"/>
             <g id="xAxis" class="axis" transform="translate(0,510)">
-                <g class="tick" transform="translate(15.311989049013185,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(23.916574381690623,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-25</text>
                 </g>
-                <g class="tick" transform="translate(74.24959123921055,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(81.1332595053525,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-20</text>
                 </g>
-                <g class="tick" transform="translate(133.18719342940793,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(138.34994462901437,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-15</text>
                 </g>
-                <g class="tick" transform="translate(192.12479561960527,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(195.56662975267628,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-10</text>
                 </g>
-                <g class="tick" transform="translate(251.06239780980263,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(252.78331487633812,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">-5</text>
                 </g>
@@ -28,82 +28,82 @@
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">0</text>
                 </g>
-                <g class="tick" transform="translate(368.93760219019737,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(367.2166851236619,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">5</text>
                 </g>
-                <g class="tick" transform="translate(427.87520438039473,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(424.43337024732375,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">10</text>
                 </g>
-                <g class="tick" transform="translate(486.8128065705921,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(481.6500553709856,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">15</text>
                 </g>
-                <g class="tick" transform="translate(545.7504087607895,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(538.8667404946475,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">20</text>
                 </g>
-                <g class="tick" transform="translate(604.6880109509868,0)" style="opacity: 1;">
+                <g class="tick" transform="translate(596.0834256183094,0)" style="opacity: 1;">
                     <line y2="-510" x2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
                     <text dy=".71em" y="12" x="0" style="text-anchor: middle;">25</text>
                 </g>
                 <path class="domain" d="M0,-510V0H620V-510" style="fill: none; stroke: rgb(128, 128, 128); stroke-width: 0.8px; stroke-dasharray: 15px, 2px; font-style: normal; font-variant-caps: normal; font-weight: normal; font-size: 10px; line-height: normal; font-family: sans-serif; shape-rendering: geometricprecision;"/>
             </g>
             <g id="yAxis" class="axis">
-                <g class="tick" transform="translate(0,24.37621202327083)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,25.7918050941307)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">-5</text>
                 </g>
-                <g class="tick" transform="translate(0,72.85714285714282)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,72.85714285714288)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">0</text>
                 </g>
-                <g class="tick" transform="translate(0,121.33807369101487)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,119.92248062015506)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">5</text>
                 </g>
-                <g class="tick" transform="translate(0,169.81900452488688)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,166.98781838316725)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">10</text>
                 </g>
-                <g class="tick" transform="translate(0,218.29993535875892)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,214.05315614617936)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">15</text>
                 </g>
-                <g class="tick" transform="translate(0,266.7808661926309)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,261.11849390919156)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">20</text>
                 </g>
-                <g class="tick" transform="translate(0,315.26179702650296)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,308.1838316722037)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">25</text>
                 </g>
-                <g class="tick" transform="translate(0,363.742727860375)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,355.2491694352159)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">30</text>
                 </g>
-                <g class="tick" transform="translate(0,412.22365869424704)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,402.3145071982281)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">35</text>
                 </g>
-                <g class="tick" transform="translate(0,460.704589528119)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,449.3798449612403)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">40</text>
                 </g>
-                <g class="tick" transform="translate(0,509.18552036199105)" style="opacity: 1;">
+                <g class="tick" transform="translate(0,496.44518272425245)" style="opacity: 1;">
                     <line x2="620" y2="0" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
                     <text dy=".32em" x="-8" y="0" style="text-anchor: end;">45</text>
                 </g>
                 <path class="domain" d="M620,0H0V510H620" style="fill: none; stroke: rgb(128, 128, 128); stroke-dasharray: 15px, 2px; stroke-width: 0.8px; shape-rendering: geometricprecision;"/>
             </g>
             <g id="xy" class="xy">
-                <path id="line" d="M310,72.85714285714282L307.92006497822985,73.25940622945099L305.19066716052765,75.5655497894336L301.6861602718728,80.44642928036549L297.69145777227396,87.56849119103796L293.72507039129636,95.96855143230812L290.3621355827927,104.42857502503941L288.0574545324871,111.85045831651938L286.9685270577865,117.63080194987398L286.77858439981856,122.03571388624371L286.77858580500055,175.94999916259138L286.77858439981856,240.79286502574288L286.77858439981856,316.56429298169087L286.9685270577865,327.15538567393236L288.0574545324871,342.86783890332725L290.3621397983385,362.5131352824709L293.7250675809325,383.7954102351578L297.6914591774559,403.94796025005564L301.68616097446375,420.3710457148982L305.1906675118231,431.26838067615125L307.92006550517306,436.28480621515445L310,437.14285418381604" class="line" style="fill:none; stroke:black; stroke-width:2"/>
-                <path id="area" d="M310,72.85714285714282L307.92006497822985,73.25940622945099L305.19066716052765,75.5655497894336L301.6861602718728,80.44642928036549L297.69145777227396,87.56849119103796L293.72507039129636,95.96855143230812L290.3621355827927,104.42857502503941L288.0574545324871,111.85045831651938L286.9685270577865,117.63080194987398L286.77858439981856,122.03571388624371L286.77858580500055,175.94999916259138L286.77858439981856,240.79286502574288L286.77858439981856,316.56429298169087L286.9685270577865,327.15538567393236L288.0574545324871,342.86783890332725L290.3621397983385,362.5131352824709L293.7250675809325,383.7954102351578L297.6914591774559,403.94796025005564L301.68616097446375,420.3710457148982L305.1906675118231,431.26838067615125L307.92006550517306,436.28480621515445L310,437.14285418381604L310,72.85714285714282L307.92006550517306,72.85714285714282L305.1906675118231,72.85714285714282L301.68616097446375,72.85714285714282L297.6914591774559,72.85714285714282L293.7250675809325,72.85714285714282L290.3621397983385,72.85714285714282L288.0574545324871,72.85714285714282L286.9685270577865,72.85714285714282L286.77858439981856,72.85714285714282L286.77858439981856,72.85714285714282L286.77858580500055,72.85714285714282L286.77858439981856,72.85714285714282L286.9685270577865,72.85714285714282L288.0574545324871,72.85714285714282L290.3621355827927,72.85714285714282L293.72507039129636,72.85714285714282L297.69145777227396,72.85714285714282L301.6861602718728,72.85714285714282L305.19066716052765,72.85714285714282L307.92006497822985,72.85714285714282L310,72.85714285714282Z" class="area" style="fill:white;" opacity="1"/>
+                <path id="line" d="M310,72.85714285714288L308.10379382735823,73.31304134877354L305.6154948387167,75.92667089018182L302.42055552522385,81.45833382706837L298.7787203324066,89.53000406358198L295.1627003534908,99.05007185466003L292.09682585525087,108.63809666364295L289.99572881520476,117.04956657730727L289.0029916960448,123.60062714298962L288.8298262314147,128.59285845709007L288.82982895971884,183.35713689641435L288.82982759556677,250.50714038667223L288.8298262314147,330.0428644393633L289.0029889677406,339.4500610334664L289.99572881520476,353.40615527046344L292.0968313118592,370.8554159525621L295.16269898933865,389.75873531033164L298.77872237863465,407.65858756875406L302.42055552522385,422.24585472943374L305.61549517975476,431.92507240067283L308.10379450943424,436.3807169596354L310,437.1428643244577" class="line" style="fill:none; stroke:black; stroke-width:2"/>
+                <path id="area" d="M310,72.85714285714288L308.10379382735823,73.31304134877354L305.6154948387167,75.92667089018182L302.42055552522385,81.45833382706837L298.7787203324066,89.53000406358198L295.1627003534908,99.05007185466003L292.09682585525087,108.63809666364295L289.99572881520476,117.04956657730727L289.0029916960448,123.60062714298962L288.8298262314147,128.59285845709007L288.82982895971884,183.35713689641435L288.82982759556677,250.50714038667223L288.8298262314147,330.0428644393633L289.0029889677406,339.4500610334664L289.99572881520476,353.40615527046344L292.0968313118592,370.8554159525621L295.16269898933865,389.75873531033164L298.77872237863465,407.65858756875406L302.42055552522385,422.24585472943374L305.61549517975476,431.92507240067283L308.10379450943424,436.3807169596354L310,437.1428643244577L310,72.85714285714288L308.10379450943424,72.85714285714288L305.61549517975476,72.85714285714288L302.42055552522385,72.85714285714288L298.77872237863465,72.85714285714288L295.16269898933865,72.85714285714288L292.0968313118592,72.85714285714288L289.99572881520476,72.85714285714288L289.0029889677406,72.85714285714288L288.8298262314147,72.85714285714288L288.82982759556677,72.85714285714288L288.82982895971884,72.85714285714288L288.8298262314147,72.85714285714288L289.0029916960448,72.85714285714288L289.99572881520476,72.85714285714288L292.09682585525087,72.85714285714288L295.1627003534908,72.85714285714288L298.7787203324066,72.85714285714288L302.42055552522385,72.85714285714288L305.6154948387167,72.85714285714288L308.10379382735823,72.85714285714288L310,72.85714285714288Z" class="area" style="fill:white;" opacity="1"/>
             </g>
             <g id="xy" class="xy">
-                <path id="line" d="M310,72.85714285714282L312.07993502177015,73.25940622945099L314.80933283947235,75.5655497894336L318.3138397281272,80.44642928036549L322.308542227726,87.56849119103796L326.27492960870364,95.96855143230812L329.63786441720737,104.42857502503941L331.94254546751296,111.85045831651938L333.03147294221344,117.63080194987398L333.22141560018144,122.03571388624371L333.2214141949995,175.94999916259138L333.22141560018144,240.79286502574288L333.22141560018144,316.56429298169087L333.03147294221344,327.15538567393236L331.94254546751296,342.86783890332725L329.6378602016615,362.5131352824709L326.2749324190675,383.7954102351578L322.30854082254405,403.94796025005564L318.31383902553625,420.3710457148982L314.8093324881769,431.26838067615125L312.07993449482694,436.28480621515445L310,437.14285418381604" class="line" style="fill:none; stroke:black; stroke-width:2"/>
-                <path id="area" d="M310,72.85714285714282L312.07993502177015,73.25940622945099L314.80933283947235,75.5655497894336L318.3138397281272,80.44642928036549L322.308542227726,87.56849119103796L326.27492960870364,95.96855143230812L329.63786441720737,104.42857502503941L331.94254546751296,111.85045831651938L333.03147294221344,117.63080194987398L333.22141560018144,122.03571388624371L333.2214141949995,175.94999916259138L333.22141560018144,240.79286502574288L333.22141560018144,316.56429298169087L333.03147294221344,327.15538567393236L331.94254546751296,342.86783890332725L329.6378602016615,362.5131352824709L326.2749324190675,383.7954102351578L322.30854082254405,403.94796025005564L318.31383902553625,420.3710457148982L314.8093324881769,431.26838067615125L312.07993449482694,436.28480621515445L310,437.14285418381604L310,72.85714285714282L312.07993449482694,72.85714285714282L314.8093324881769,72.85714285714282L318.31383902553625,72.85714285714282L322.30854082254405,72.85714285714282L326.2749324190675,72.85714285714282L329.6378602016615,72.85714285714282L331.94254546751296,72.85714285714282L333.03147294221344,72.85714285714282L333.22141560018144,72.85714285714282L333.22141560018144,72.85714285714282L333.2214141949995,72.85714285714282L333.22141560018144,72.85714285714282L333.03147294221344,72.85714285714282L331.94254546751296,72.85714285714282L329.63786441720737,72.85714285714282L326.27492960870364,72.85714285714282L322.308542227726,72.85714285714282L318.3138397281272,72.85714285714282L314.80933283947235,72.85714285714282L312.07993502177015,72.85714285714282L310,72.85714285714282Z" class="area" style="fill:white;" opacity="1"/>
+                <path id="line" d="M310,72.85714285714288L311.89620617264177,73.31304134877354L314.3845051612833,75.92667089018182L317.5794444747761,81.45833382706837L321.2212796675935,89.53000406358198L324.8372996465092,99.05007185466003L327.90317414474913,108.63809666364295L330.00427118479524,117.04956657730727L330.9970083039552,123.60062714298962L331.17017376858536,128.59285845709007L331.17017104028116,183.35713689641435L331.17017240443323,250.50714038667223L331.17017376858536,330.0428644393633L330.99701103225937,339.4500610334664L330.00427118479524,353.40615527046344L327.9031686881408,370.8554159525621L324.83730101066135,389.75873531033164L321.22127762136535,407.65858756875406L317.5794444747761,422.24585472943374L314.38450482024524,431.92507240067283L311.8962054905657,436.3807169596354L310,437.1428643244577" class="line" style="fill:none; stroke:black; stroke-width:2"/>
+                <path id="area" d="M310,72.85714285714288L311.89620617264177,73.31304134877354L314.3845051612833,75.92667089018182L317.5794444747761,81.45833382706837L321.2212796675935,89.53000406358198L324.8372996465092,99.05007185466003L327.90317414474913,108.63809666364295L330.00427118479524,117.04956657730727L330.9970083039552,123.60062714298962L331.17017376858536,128.59285845709007L331.17017104028116,183.35713689641435L331.17017240443323,250.50714038667223L331.17017376858536,330.0428644393633L330.99701103225937,339.4500610334664L330.00427118479524,353.40615527046344L327.9031686881408,370.8554159525621L324.83730101066135,389.75873531033164L321.22127762136535,407.65858756875406L317.5794444747761,422.24585472943374L314.38450482024524,431.92507240067283L311.8962054905657,436.3807169596354L310,437.1428643244577L310,72.85714285714288L311.8962054905657,72.85714285714288L314.38450482024524,72.85714285714288L317.5794444747761,72.85714285714288L321.22127762136535,72.85714285714288L324.83730101066135,72.85714285714288L327.9031686881408,72.85714285714288L330.00427118479524,72.85714285714288L330.99701103225937,72.85714285714288L331.17017376858536,72.85714285714288L331.17017240443323,72.85714285714288L331.17017104028116,72.85714285714288L331.17017376858536,72.85714285714288L330.9970083039552,72.85714285714288L330.00427118479524,72.85714285714288L327.90317414474913,72.85714285714288L324.8372996465092,72.85714285714288L321.2212796675935,72.85714285714288L317.5794444747761,72.85714285714288L314.3845051612833,72.85714285714288L311.89620617264177,72.85714285714288L310,72.85714285714288Z" class="area" style="fill:white;" opacity="1"/>
             </g>
         </g>
     </g>

@@ -14,7 +14,7 @@
 		<weights 
             file="analysis_weights_IRON.xml" 
 			plot="TRUE"
-            method_fuselage=""
+			method_fuselage=""
             method_wing=""
             method_htail=""
             method_vtail=""

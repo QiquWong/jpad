@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Length;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
@@ -584,6 +585,7 @@ public class InputManagerAircraftFromFileController {
 				Main.getTheAircraft().getLandingGears().getXApexConstructionAxes().doubleValue(SI.METER),
 				Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
 				- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+				- radius.doubleValue(SI.METER)
 		};
 		Double[] thetaArray = MyArrayUtils.linspaceDouble(0, 2*Math.PI, 360);
 		

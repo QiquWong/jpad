@@ -20,13 +20,14 @@ import analyses.OperatingConditions;
 import configuration.MyConfiguration;
 import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
+import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
@@ -233,19 +234,32 @@ public class CompleteAnalysisTest extends Application {
 			String highLiftDatabaseFileName = "HighLiftDatabase.h5";
 			String fusDesDatabaseFilename = "FusDes_database.h5";
 			String vedscDatabaseFilename = "VeDSC_database.h5";
-			AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(new AerodynamicDatabaseReader(
-					databaseFolderPath,	aerodynamicDatabaseFileName),
-					databaseFolderPath);
-			HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(new HighLiftDatabaseReader(
-					databaseFolderPath,	highLiftDatabaseFileName),
-					databaseFolderPath);
-			FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(new FusDesDatabaseReader(
-					databaseFolderPath,	fusDesDatabaseFilename),
-					databaseFolderPath);
-			VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(new VeDSCDatabaseReader(
-					databaseFolderPath,	vedscDatabaseFilename),
-					databaseFolderPath);
 			
+			AerodynamicDatabaseReader aeroDatabaseReader = DatabaseManager.initializeAeroDatabase(
+					new AerodynamicDatabaseReader(
+							databaseFolderPath,	aerodynamicDatabaseFileName
+							),
+					databaseFolderPath
+					);
+			HighLiftDatabaseReader highLiftDatabaseReader = DatabaseManager.initializeHighLiftDatabase(
+					new HighLiftDatabaseReader(
+							databaseFolderPath,	highLiftDatabaseFileName
+							),
+					databaseFolderPath
+					);
+			FusDesDatabaseReader fusDesDatabaseReader = DatabaseManager.initializeFusDes(
+					new FusDesDatabaseReader(
+							databaseFolderPath,	fusDesDatabaseFilename
+							),
+					databaseFolderPath
+					);
+			VeDSCDatabaseReader veDSCDatabaseReader = DatabaseManager.initializeVeDSC(
+					new VeDSCDatabaseReader(
+							databaseFolderPath,	vedscDatabaseFilename
+							),
+					databaseFolderPath
+					);
+
 			////////////////////////////////////////////////////////////////////////
 			// Aircraft creation
 			System.out.println("\n\n\tCreating the Aircraft ... \n\n");

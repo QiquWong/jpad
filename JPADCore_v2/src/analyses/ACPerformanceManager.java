@@ -63,7 +63,7 @@ import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
-import database.databasefunctions.aerodynamics.DatabaseManager;
+import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;

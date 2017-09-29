@@ -14,7 +14,7 @@
         <default>
           <fid>16777223</fid>
           <isReadOnly>true</isReadOnly>
-          <max__members>10000</max__members>
+          <max__members>1000000</max__members>
           <start__members>0</start__members>
           <fullFileName>D:\JPAD\jpad\JPADSandBox_v2\data\VeDSC_database.h5</fullFileName>
         </default>

@@ -16,7 +16,7 @@ import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.DirStabEnum;
 import configuration.enumerations.FoldersEnum;
-import database.databasefunctions.aerodynamics.DatabaseManager;
+import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 

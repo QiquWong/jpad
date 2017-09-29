@@ -543,7 +543,7 @@ public class PayloadRangeCalcSA {
 		 */
 
 //		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Perkins");
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
+		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable();
 		double ratio = 1.0;
 
 		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.
@@ -937,7 +937,7 @@ public class PayloadRangeCalcSA {
 		 */
 
 //		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Perkins");
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
+		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable();
 		double ratio = 1.0;
 
 		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.
@@ -1325,7 +1325,7 @@ public class PayloadRangeCalcSA {
 		 */
 
 //		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Perkins");
-		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable("FuelFractions_Roskam");
+		double[][] fuelFractionTable = fuelFractionDatabase.getFuelFractionTable();
 		double ratio = 1.0;
 
 		//TODO: WHEN UNKNOWN ARICRAFTS DATA WILL BE AVAIABLE, MODIFY THE ERROR MESSAGE.

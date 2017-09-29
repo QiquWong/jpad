@@ -22,8 +22,8 @@
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="ATR-72 analysis">
 		<weights 
-            file="analysis_weights_AVL.xml" 
-            method_fuselage=""
+            file="analysis_weights_AVL.xml"          
+		    method_fuselage=""
             method_wing=""
             method_htail=""
             method_vtail=""

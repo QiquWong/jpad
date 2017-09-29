@@ -98,18 +98,6 @@ public class MyConfiguration {
 	public static final String interpolaterHighLiftDatabaseSerializedFullName = 
 			interpolaterHighLiftDatabaseSerializedDirectory + File.separator + interpolaterHighLiftDatabaseSerializedName;
 	
-	public static final String interpolaterTurbofanDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
-			+ File.separator; 
-	public static final String interpolaterTurbofanDatabaseSerializedName = "interpolaterTurbofanDatabase.xml"; 
-	public static final String interpolaterTurbofanDatabaseSerializedFullName = 
-			interpolaterTurbofanDatabaseSerializedDirectory + File.separator + interpolaterTurbofanDatabaseSerializedName;
-	
-	public static final String interpolaterTurbopropDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
-			+ File.separator; 
-	public static final String interpolaterTurbopropDatabaseSerializedName = "interpolaterTurbopropDatabase.xml"; 
-	public static final String interpolaterTurbopropDatabaseSerializedFullName = 
-			interpolaterTurbopropDatabaseSerializedDirectory + File.separator + interpolaterTurbopropDatabaseSerializedName;
-
 	public static final String interpolaterFuelFractionDatabaseSerializedDirectory = databaseDirectory + File.separator + "serializedDatabase" 
 			+ File.separator; 
 	public static final String interpolaterFuelFractionDatabaseSerializedName = "interpolaterFuelFractionsDatabase.xml"; 

@@ -17,8 +17,8 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.EngineMountingPositionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.FoldersEnum;
+import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.engine.TurbofanEngineDatabaseReader;
 import database.databasefunctions.engine.TurbopropEngineDatabaseReader;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
@@ -181,7 +181,8 @@ public class PowerPlant implements IPowerPlant {
 								MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
 								_engineList.get(0).getEngineDatabaseName()
 								), 
-						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
+						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR),
+						_engineList.get(0).getEngineDatabaseName()
 						);
 			} catch (HDF5LibraryException e) {
 				e.printStackTrace();
@@ -194,7 +195,8 @@ public class PowerPlant implements IPowerPlant {
 							MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
 							_engineList.get(0).getEngineDatabaseName()
 							), 
-					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
+					MyConfiguration.getDir(FoldersEnum.DATABASE_DIR),
+					_engineList.get(0).getEngineDatabaseName()
 					);
 		
 		calculateDerivedVariables();
