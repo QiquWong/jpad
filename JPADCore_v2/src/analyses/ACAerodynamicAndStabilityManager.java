@@ -144,6 +144,8 @@ public class ACAerodynamicAndStabilityManager {
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailPARTIAL;
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailCOMPLETE;
 	private Amount<Length> _verticalDistanceZeroLiftDirectionWingHTailEFFECTIVE;
+	private Amount<Length> _horizontalDistanceSlingerland;
+	private Amount<Length> _verticalDistanceSlingerland;
 
 	// for discretized airfoil Cl along sempispan
 	private List<List<Double>> _discretizedWingAirfoilsCl;
@@ -329,6 +331,57 @@ public class ACAerodynamicAndStabilityManager {
 				);
 
 		//Horizontal and vertical distance
+		
+		//--------------------new 
+		_horizontalDistanceSlingerland = Amount.valueOf(
+				_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER) -
+				(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER) + 
+						(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getChordRoot().doubleValue(SI.METER) *
+								Math.cos(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle().doubleValue(SI.RADIAN)))
+						),
+				SI.METER);
+		
+		if ( (_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) > 0 
+				&& _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER) > 0 ) 
+				|| (_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) < 0 
+						&& _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER) < 0 ) ) {
+
+			this._verticalDistanceSlingerland = Amount.valueOf(
+					_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER) 
+					- this._zACRootWing.doubleValue(SI.METER),
+					SI.METER
+					);
+
+		}
+
+		if ( (_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) > 0 
+				&& _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER) < 0 ) 
+				|| (_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) < 0 
+						&& _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER) > 0 ) ) { // different sides
+
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) < 0 ){
+
+				this._verticalDistanceSlingerland = Amount.valueOf(
+						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER) 
+						+ Math.abs(this._zACRootWing.doubleValue(SI.METER)),
+						SI.METER
+						);
+
+			}
+
+			if(_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER) > 0 ){
+				this._verticalDistanceSlingerland = Amount.valueOf(
+						-( Math.abs(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER)) 
+								+ this._zACRootWing.doubleValue(SI.METER)
+								),
+						SI.METER
+						);	
+			}
+		}
+		
+		
+		//----------------------------------------------------------------
+		
 		_horizontalDistanceQuarterChordWingHTail = Amount.valueOf(
 				(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER)
 						+ _theAerodynamicBuilderInterface.getTheAircraft().getHTail().getLiftingSurfaceCreator().getChordsBreakPoints().get(0).doubleValue(SI.METER)/4) - 
@@ -593,6 +646,17 @@ public class ACAerodynamicAndStabilityManager {
 							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSemiSpan()
 							).to(NonSI.DEGREE_ANGLE)
 					);
+			
+//			downwashAngleConstantList.add(
+//					AerodynamicCalc.calculateDownwashAngleLinearSlingerland(
+//							_horizontalDistanceSlingerland.doubleValue(SI.METER), 
+//							_verticalDistanceSlingerland.doubleValue(SI.METER), 
+//							cl, 
+//							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSweepQuarterChordEquivalent(),
+//							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(), 
+//							_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSemiSpan()
+//							).to(NonSI.DEGREE_ANGLE)
+//					);
 		}
 
 		downwashAngleConstant.put(
@@ -699,6 +763,32 @@ public class ACAerodynamicAndStabilityManager {
 								))
 						)
 				);
+		
+//		downwashAngleNonLinear.put(
+//				MethodEnum.SLINGERLAND,
+//				AerodynamicCalc.calculateDownwashAngleNonLinearSlingerland(
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getRiggingAngle(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getZApexConstructionAxes(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getZApexConstructionAxes(),
+//						alphaZeroLiftWingCurrent,
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSweepQuarterChordEquivalent(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getAspectRatio(),
+//						_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSemiSpan(), 
+//						_horizontalDistanceSlingerland,
+//						_verticalDistanceSlingerland, 
+//						MyArrayUtils.convertToDoublePrimitive(liftCurveWingCurrent),
+//						MyArrayUtils.convertListOfAmountTodoubleArray(
+//								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean().stream()
+//								.map(x -> x.to(NonSI.DEGREE_ANGLE))
+//								.collect(Collectors.toList())
+//								),
+//						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfAmountToDoubleArray(
+//								_alphaBodyList.stream()
+//								.map(x -> x.to(NonSI.DEGREE_ANGLE))
+//								.collect(Collectors.toList())
+//								))
+//						)
+//				);
 
 		downwashGradientNonLinear.put(
 				MethodEnum.SLINGERLAND,

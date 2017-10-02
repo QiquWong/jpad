@@ -43,7 +43,6 @@ import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
-import database.databasefunctions.aerodynamics.DatabaseManager;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
