@@ -796,7 +796,7 @@ public class AerodynamicCalc {
 				zDistanceZero.doubleValue(SI.METER) * 
 				Math.cos(startingAngle.doubleValue(SI.RADIAN)), SI.METER);
 
-		double epsilonTemp, downwashArrayTemp;
+		double epsilonTemp, downwashArrayTemp = 0;
 		double zTemp = 0;
 
 		// Initialize Array
@@ -827,6 +827,7 @@ public class AerodynamicCalc {
 		for ( int i = 1 ; i<alphaAbsoluteArray.length ; i++){
 
 			epsilonTemp = downwashArray[i-1];
+			double zOld = 100000;
 
 			if (zApexWing.doubleValue(SI.METER) < zApexHTail.doubleValue(SI.METER)){
 
@@ -849,6 +850,8 @@ public class AerodynamicCalc {
 					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + epsilonTemp);
 
 
+			while(Math.abs(zOld - zTemp)>0.00000005) {
+				
 			downwashArrayTemp = calculateDownwashAngleLinearSlingerland( 
 					xDistanceZero.doubleValue(SI.METER),
 					zTemp, 
@@ -857,15 +860,15 @@ public class AerodynamicCalc {
 					aspectRatio,
 					wingSemiSpan
 					).doubleValue(SI.RADIAN);
-
-			downwashArray[i] =  downwashArrayTemp;
+			
+			zOld = zTemp;
 
 			if (zApexWing.doubleValue(SI.METER) < zApexHTail.doubleValue(SI.METER)){
 
 				zDistanceArray[i] =
 						verticalDistanceInitial.doubleValue(SI.METER) + (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArrayTemp)));
 			}
 
 			if (zApexWing.doubleValue(SI.METER) >= zApexHTail.doubleValue(SI.METER)){
@@ -873,51 +876,16 @@ public class AerodynamicCalc {
 				zDistanceArray[i] =
 						verticalDistanceInitial.doubleValue(SI.METER) - (
 								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
+										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArrayTemp)));
 			}
 
 			zDistanceArray[i] =
 					zDistanceArray[i] * 
-					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i]);
+					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArrayTemp);
 
-			downwashArray[i] = calculateDownwashAngleLinearSlingerland( 
-					xDistanceZero.doubleValue(SI.METER),
-					zDistanceArray[i],
-					cLArray[i], 
-					sweepQuarterChordWing,
-					aspectRatio,
-					wingSemiSpan
-					).doubleValue(SI.RADIAN);
-
-			if (zApexWing.doubleValue(SI.METER) < zApexHTail.doubleValue(SI.METER)){
-
-				zDistanceArray[i] =
-						verticalDistanceInitial.doubleValue(SI.METER) + (
-								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
-			}
-
-			if (zApexWing.doubleValue(SI.METER) >= zApexHTail.doubleValue(SI.METER)){
-
-				zDistanceArray[i] =
-						verticalDistanceInitial.doubleValue(SI.METER) - (
-								(horizontalDistanceInitial.doubleValue(SI.METER) *
-										Math.tan(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i])));
-			}
-
-			zDistanceArray[i] =
-					zDistanceArray[i] * 
-					Math.cos(startingAngle.doubleValue(SI.RADIAN)- i * deltaAlpha + downwashArray[i]);
-
-			xDistanceArray[i] = xDistanceZero.doubleValue(SI.METER);
-			downwashArray[i] = calculateDownwashAngleLinearSlingerland( 
-					xDistanceZero.doubleValue(SI.METER),
-					zDistanceArray[i],
-					cLArray[i], 
-					sweepQuarterChordWing,
-					aspectRatio,
-					wingSemiSpan
-					).doubleValue(SI.RADIAN);
+			zTemp =  zDistanceArray[i];
+		}
+			downwashArray[i] = downwashArrayTemp;
 
 			alphaBodyArray[i] = 
 					alphaAbsoluteArray[i] 

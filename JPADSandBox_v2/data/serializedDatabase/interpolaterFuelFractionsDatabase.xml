@@ -12,7 +12,7 @@
       </file>
       <ncsa.hdf.object.FileFormat>
         <default>
-          <fid>16777222</fid>
+          <fid>16777227</fid>
           <isReadOnly>true</isReadOnly>
           <max__members>1000000</max__members>
           <start__members>0</start__members>
