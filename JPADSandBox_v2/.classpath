@@ -77,7 +77,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/swing/swing2swt.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jna/jna-4.1.0.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jna/jna-platform-4.1.0.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/tigl/win64/tigl-2.1.6.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/tigl/v2.2.1/win64/tigl-2.2.1.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.databinding_1.5.0.v20150422-0725.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.databinding.beans_1.3.0.v20150422-0725.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.core.databinding.observable_1.5.0.v20150422-0725.jar"/>
