@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<landing_gears id="AGILE-NTP Landing Gears">
+	<landing_gears id="AGILE Landing Gears">
 		<global_data>
 			<main_gear_legs_length unit="m">0.66</main_gear_legs_length>
 			<k_main_gear_legs_length>0.15</k_main_gear_legs_length>

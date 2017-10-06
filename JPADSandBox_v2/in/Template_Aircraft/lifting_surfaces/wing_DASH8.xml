@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <wing id="DASH-8 Wing" mirrored="TRUE" equivalent="FALSE">
+    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="FALSE">
         <global_data>
 			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
 			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
@@ -20,9 +20,9 @@
 			<x_offset_root_chord_leading_edge></x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
 			<x_offset_root_chord_trailing_edge></x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
 			<airfoils>
-				<airfoil_root file=""/>
-				<airfoil_kink file=""/>
-				<airfoil_tip file=""/>
+				<airfoil_root file="ROOT_DASH8.xml"/>
+				<airfoil_kink file="ROOT_DASH8.xml"/>
+				<airfoil_tip file="TIP_DASH8.xml"/>
 			</airfoils>
 		</equivalent_wing>
 		<panels>
@@ -59,7 +59,7 @@
                 <inner_chord_ratio>0.33</inner_chord_ratio>
 				<outer_chord_ratio>0.36</outer_chord_ratio>
                 <min_deflection unit="deg">0.0</min_deflection>
-				<max_deflection unit="deg">45.0</max_deflection>
+				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
 			<symmetric_flap id="Outer flap" type="FOWLER">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.35</inner_station_spanwise_position>
@@ -67,7 +67,7 @@
                 <inner_chord_ratio>0.33</inner_chord_ratio>
 				<outer_chord_ratio>0.33</outer_chord_ratio>
                 <min_deflection unit="deg">0.0</min_deflection>
-				<max_deflection unit="deg">45.0</max_deflection>
+				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
         </symmetric_flaps>
 		<!--

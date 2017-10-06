@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <configuration id="DASH-8 Cabin Configuration">
+    <configuration id="DASH8 Cabin Configuration">
 		<global_data>
 			<actual_passengers_number>74</actual_passengers_number>
 			<maximum_passengers_number>74</maximum_passengers_number>

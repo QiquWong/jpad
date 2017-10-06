@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<engine id="Airbus-A320 Engine" type="TURBOFAN" database="TurbofanEngineDatabase.h5">
+	<engine id="PW1100G" type="TURBOFAN" database="TurbofanEngineDatabase.h5">
 		<dimensions>
 			<length unit="m">3.401</length>
 		</dimensions>

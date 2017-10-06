@@ -1,5 +1,5 @@
 <jpad_config>
-    <vertical_tail id="CS-300 Vertical Tail" mirrored="FALSE">
+    <vertical_tail id="CS300 Vertical Tail" mirrored="FALSE">
 		 <global_data>
 			<composite_correction_factor>1</composite_correction_factor>
 			<roughness unit="m">0.405e-5</roughness>

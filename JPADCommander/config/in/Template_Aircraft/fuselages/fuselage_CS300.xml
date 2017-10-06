@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <fuselage id="CS-300 Fuselage" pressurized="TRUE">
+    <fuselage id="CS300 Fuselage" pressurized="TRUE">
         <global_data>
 			<deck_number>1</deck_number>
 			<length unit="m">38.70</length> 

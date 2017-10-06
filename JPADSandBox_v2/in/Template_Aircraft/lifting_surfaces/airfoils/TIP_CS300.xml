@@ -3,7 +3,7 @@
     <airfoil name="SC(2)-0710" family="NACA_66_Series" type="SUPERCRITICAL">
         <geometry>
             <thickness_to_chord_ratio_max>0.14</thickness_to_chord_ratio_max>
-            <radius_leading_edge_normalized>0.01</radius_leading_edge_normalized>
+            <radius_leading_edge_normalized>0.02</radius_leading_edge_normalized>
             <x_coordinates>[1.000000 , 0.990000 , 0.980000 , 0.970000 , 0.960000 , 0.950000 , 0.940000 , 0.930000 , 0.920000 , 0.910000 , 0.900000 , 
 						  	0.890000 , 0.880000 , 0.870000 , 0.860000 , 0.850000 , 0.840000 , 0.830000 , 0.820000 , 0.810000 , 0.800000 , 0.790000 ,
 							0.780000 , 0.770000 , 0.760000 , 0.750000 , 0.740000 , 0.730000 , 0.720000 , 0.710000 , 0.700000 , 0.690000 , 0.680000 ,
@@ -51,25 +51,25 @@
 			>
             <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cl_curve" flag is "FALSE"; 
 				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->
-            <alpha_zero_lift unit="deg">-3.0</alpha_zero_lift>
-            <alpha_end_linear_trait unit="deg">10</alpha_end_linear_trait>
-            <alpha_stall unit="deg">17.0</alpha_stall>
-            <Cl_alpha_linear_trait unit="1/rad">6.2457</Cl_alpha_linear_trait>
-            <Cl_at_alpha_zero>0.37</Cl_at_alpha_zero>
-            <Cl_end_linear_trait>1.2</Cl_end_linear_trait>
-            <Cl_max>1.55</Cl_max>
+            <alpha_zero_lift unit="deg">-5.0</alpha_zero_lift>                               
+            <alpha_end_linear_trait unit="deg">8.0</alpha_end_linear_trait>
+            <alpha_stall unit="deg">11.0</alpha_stall>
+            <Cl_alpha_linear_trait unit="1/rad">6.3598</Cl_alpha_linear_trait>                
+            <Cl_at_alpha_zero>0.569</Cl_at_alpha_zero>                                         
+            <Cl_end_linear_trait>1.344</Cl_end_linear_trait>
+            <Cl_max>1.6</Cl_max>
             <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cd_curve" flag is "FALSE"; 
 				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->
-			<Cd_min>0.0037</Cd_min>
-            <Cl_at_Cdmin>0.5</Cl_at_Cdmin>
+			<Cd_min>0.00792</Cd_min>
+            <Cl_at_Cdmin>0.040</Cl_at_Cdmin>
 			<laminar_bucket_semi_extension></laminar_bucket_semi_extension>
 			<laminar_bucket_depth></laminar_bucket_depth>
-            <K_factor_drag_polar>0.006</K_factor_drag_polar>
+            <K_factor_drag_polar>0.003</K_factor_drag_polar>
             <!-- the following data are used to generate the airfoil aerodynamic curves if the "external_cm_curve" flag is "FALSE"; 
 				 otherwise the "airfoil_curves" tag will be read and the data below can be left empty -->			
-            <Cm_alpha_quarter_chord unit="1/°">0.0</Cm_alpha_quarter_chord>
-            <Cm_ac>-0.08</Cm_ac>
-            <Cm_ac_at_stall>-0.05</Cm_ac_at_stall>
+            <Cm_alpha_quarter_chord unit="1/°">-0.069</Cm_alpha_quarter_chord>
+            <Cm_ac>-0.12</Cm_ac>                                                              
+            <Cm_ac_at_stall>-0.12</Cm_ac_at_stall>
             <!---->
 			<airfoil_curves>
 				<Cl_curve></Cl_curve>
@@ -81,10 +81,10 @@
 			</airfoil_curves>
 			<!---->
 			<!-- these data are always needed -->            
-			<x_ac_normalized unit="">0.25</x_ac_normalized>
-			<mach_critical>0.76</mach_critical>
-			<x_transition_upper>0.60</x_transition_upper>
-            <x_transition_lower>0.60</x_transition_lower>
+			<x_ac_normalized unit="">0.26</x_ac_normalized>
+			<mach_critical>0.61</mach_critical>
+			<x_transition_upper>0.03</x_transition_upper>                                     
+            <x_transition_lower>0.14</x_transition_lower>
         </aerodynamics>
     </airfoil>
 </jpad_config>

@@ -7,8 +7,8 @@
 		<panels>
             <panel id="Horizontal tail panel">
                 <span unit="m">6.225</span>
-                <dihedral unit="deg">7.8</dihedral>
-                <sweep_leading_edge unit="deg">17.76</sweep_leading_edge>
+                <dihedral unit="deg">6.0</dihedral>
+                <sweep_leading_edge unit="deg">36.47</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">3.31</chord>
                     <airfoil file="naca0012.xml"/>

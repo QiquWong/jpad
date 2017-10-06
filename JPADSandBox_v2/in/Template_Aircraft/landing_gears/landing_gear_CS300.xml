@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<landing_gears id="CS-300 Landing Gears">
+	<landing_gears id="CS300 Landing Gears">
 		<global_data>
 			<main_gear_legs_length unit="m">1.5</main_gear_legs_length>
 			<k_main_gear_legs_length>0.15</k_main_gear_legs_length>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="DASH-8" type="TURBOPROP" regulations="FAR_25">
+    <aircraft id="DASH8" type="TURBOPROP" regulations="FAR_25">
 		<global_data>
 			<cabin_configuration file="cabin_configuration_DASH8.xml"> </cabin_configuration>
 		</global_data>
@@ -15,7 +15,7 @@
             </wing>
             <horizontal_tail file="htail_DASH8.xml">
                 <position>
-                    <x unit="m">30.14</x>
+                    <x unit="m">29.39</x>
                     <y unit="m">0.0</y>
                     <z unit="m">5.45</z>
                 </position>
@@ -85,7 +85,7 @@
             </position>
 			<mounting_point>NACELLE</mounting_point>
 		</landing_gears>
-		<systems file="systems_DASH8.xml">
+		<systems file="systems.xml">
 			<position>
                 <x unit="m">0.0</x>
                 <y unit="m">0.0</y>

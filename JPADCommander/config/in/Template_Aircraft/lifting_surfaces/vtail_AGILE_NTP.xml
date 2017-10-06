@@ -1,14 +1,14 @@
 <jpad_config>
-    <vertical_tail id="AGILE-NTP Vertical Tail" mirrored="FALSE">
+    <vertical_tail id="AGILE Vertical Tail" mirrored="FALSE">
 		 <global_data>
 			<composite_correction_factor>0.83</composite_correction_factor>
 			<roughness unit="m">0.405e-5</roughness>
 		</global_data>
 		<panels>
             <panel id="Vertical tail panel">
-                <span unit="m">6.33</span> 
+                <span unit="m">5.38</span> 
                 <dihedral unit="deg">0.0</dihedral>
-                <sweep_leading_edge unit="deg">32</sweep_leading_edge>
+                <sweep_leading_edge unit="deg">31.86</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">4.27</chord>
                     <airfoil file="naca0012.xml"/>

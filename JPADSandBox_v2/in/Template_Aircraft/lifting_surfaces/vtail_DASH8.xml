@@ -1,5 +1,5 @@
 <jpad_config>
-    <vertical_tail id="DASH-8 Vertical Tail" mirrored="FALSE">
+    <vertical_tail id="IRON Vertical Tail" mirrored="FALSE">
 		 <global_data>
 			<composite_correction_factor>1</composite_correction_factor>
 			<roughness unit="m">0.405e-5</roughness>
@@ -11,12 +11,12 @@
                 <sweep_leading_edge unit="deg">30</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">3.76</chord>
-                    <airfoil file="naca0012.xml"/>
+                    <airfoil file="naca0012_DASH8.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
                     <chord unit="m">2.98</chord>
-                    <airfoil file="naca0012.xml"/>
+                    <airfoil file="naca0012_DASH8.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
             </panel>

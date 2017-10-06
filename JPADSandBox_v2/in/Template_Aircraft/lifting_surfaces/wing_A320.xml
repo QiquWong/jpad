@@ -9,20 +9,20 @@
 			<winglet_height unit="m">2.43</winglet_height>
 		</global_data>
 		<equivalent_wing>
-			<surface unit="m²"></surface>
-			<aspect_ratio></aspect_ratio>
-			<taper_ratio></taper_ratio>
-			<sweep_leading_edge unit="deg"></sweep_leading_edge>
-			<dihedral unit="deg"></dihedral>
-			<non_dimensional_span_station_kink></non_dimensional_span_station_kink>
-			<twist_at_tip unit="deg"></twist_at_tip>
-			<twist_at_kink_real_wing unit="deg"></twist_at_kink_real_wing>	
-			<x_offset_root_chord_leading_edge></x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
-			<x_offset_root_chord_trailing_edge></x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
+			<surface unit="m²">105</surface>
+			<aspect_ratio>12</aspect_ratio>
+			<taper_ratio>0.387</taper_ratio>
+			<sweep_leading_edge unit="deg">10.0</sweep_leading_edge>
+			<dihedral unit="deg">5.0</dihedral>
+			<non_dimensional_span_station_kink>0.3</non_dimensional_span_station_kink>
+			<twist_at_tip unit="deg">-2.0</twist_at_tip>
+			<twist_at_kink_real_wing unit="deg">0.0</twist_at_kink_real_wing>	
+			<x_offset_root_chord_leading_edge>0.0</x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
+			<x_offset_root_chord_trailing_edge>0.05</x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
 			<airfoils>
-				<airfoil_root file=""/>
-				<airfoil_kink file=""/>
-				<airfoil_tip file=""/>
+				<airfoil_root file="ROOT.xml"/>
+				<airfoil_kink file="ROOT.xml"/>
+				<airfoil_tip file="TIP.xml"/>
 			</airfoils>
 		</equivalent_wing>
 		<panels>
@@ -32,12 +32,12 @@
                 <sweep_leading_edge unit="deg">28</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">6.1</chord>
-                    <airfoil file="ROOT_A320.xml"/>
+                    <airfoil file="ROOT.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
                     <chord unit="m">3.92</chord>
-                    <airfoil file="ROOT_A320.xml"/>
+                    <airfoil file="ROOT.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
             </panel>
@@ -47,7 +47,7 @@
                 <sweep_leading_edge unit="deg">28</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.64</chord>
-                    <airfoil file="TIP_A320.xml"/>
+                    <airfoil file="TIP.xml"/>
                     <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>
             </panel>
@@ -70,6 +70,7 @@
 				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
         </symmetric_flaps>
+		
         <slats>
 			<slat id="1">
                 <min_deflection unit="deg">0.0</min_deflection>
@@ -81,6 +82,7 @@
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.98</outer_station_spanwise_position>
             </slat>
         </slats>
+		
         <asymmetric_flaps>
             <asymmetric_flap id="Left aileron" type="PLAIN">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.77</inner_station_spanwise_position>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<nacelle id="AGILE-NTP Nacelle" engine="engine_AGILE_NTP.xml">
+	<nacelle id="IRON Nacelle" engine="AGILE_engine.xml">
 		<global_data>
 			<roughness unit="m">0.405e-5</roughness> 
 		</global_data>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="AIRBUS A-320" type="JET" regulations="FAR_25">
+    <aircraft id="AIRBUS A-320" type="GENERAL_AVIATION" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration_A320.xml"></cabin_configuration>
+			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
-            <wing file="wing_A320.xml">
+            <wing file="wing.xml">
                 <position>
                     <x unit="m">12.54</x>
                     <y unit="m">0.0</y>
@@ -13,25 +13,25 @@
                 </position>
                 <rigging_angle unit="deg">2</rigging_angle>
             </wing>
-            <horizontal_tail file="htail_A320.xml">
+            <horizontal_tail file="htail.xml">
                 <position>
-                    <x unit="m">28.83</x>
+                    <x unit="m">32.046</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">1.58</z>
+                    <z unit="m">1.06</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
-            <vertical_tail file="vtail_A320.xml">
+            <vertical_tail file="vtail.xml">
                 <position>
                     <x unit="m">29.81</x>
                     <y unit="m">0.0</y>
-                    <z unit="m">2.07</z>
+                    <z unit="m">2.00</z>
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </vertical_tail>
         </lifting_surfaces>
         <fuselages>
-            <fuselage file="fuselage_A320.xml">
+            <fuselage file="fuselage.xml">
                 <position>
                     <x unit="m">0.0</x>
                     <y unit="m">0.0</y>
@@ -40,7 +40,7 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engine_A320.xml">
+            <engine file="engineTurbofan.xml">
                 <position>
                     <x unit="m">11.19</x>
                     <y unit="m">5.75</y>
@@ -49,7 +49,7 @@
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>WING</mounting_point>
             </engine>
-            <engine file="engine_A320.xml">
+            <engine file="engineTurbofan.xml">
                 <position>
                     <x unit="m">11.19</x>
                     <y unit="m">-5.75</y>
@@ -60,32 +60,32 @@
             </engine>
 		</power_plant> 
 		<nacelles>
-            <nacelle file="nacelle_A320.xml">
+            <nacelle file="nacelle.xml">
                 <position>
-                    <x unit="m">11.12</x>
+                    <x unit="m">11.14</x>
                     <y unit="m">5.75</y>
                     <z unit="m">-1.42</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
-            <nacelle file="nacelle_A320.xml">
+            <nacelle file="nacelle.xml">
                 <position>
-                    <x unit="m">11.12</x>
+                    <x unit="m">11.14</x>
                     <y unit="m">-5.75</y>
                     <z unit="m">-1.42</z>
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
 		</nacelles> 
-		<landing_gears file="landing_gear_A320.xml">
+		<landing_gears file="landing_gear.xml">
 			<position>
                 <x unit="m">17.71</x>
                 <y unit="m">0.0</y>
-                <z unit="m">-0.31</z>
+                <z unit="m">-0.45</z>
             </position>
 			<mounting_point>WING</mounting_point>
 		</landing_gears>
-		<systems file="systems_A320.xml">
+		<systems file="systems.xml">
 			<position>
                 <x unit="m">0.0</x>
                 <y unit="m">0.0</y>

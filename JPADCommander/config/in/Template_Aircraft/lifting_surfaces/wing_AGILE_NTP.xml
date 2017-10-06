@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <wing id="AGILE-NTP Wing" mirrored="TRUE" equivalent="FALSE">
+    <wing id="JPAD Test Wing DAF - 2016" mirrored="TRUE" equivalent="FALSE">
         <global_data>
 			<main_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.25</main_spar_non_dimensional_position>
 			<secondary_spar_non_dimensional_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.55</secondary_spar_non_dimensional_position>
@@ -9,49 +9,50 @@
 			<winglet_height unit="m">0.0</winglet_height>
 		</global_data>
 		<equivalent_wing>
-			<surface unit="m²"></surface>
-			<aspect_ratio></aspect_ratio>
-			<taper_ratio></taper_ratio>
-			<sweep_leading_edge unit="deg"></sweep_leading_edge>
-			<dihedral unit="deg"></dihedral>
-			<non_dimensional_span_station_kink></non_dimensional_span_station_kink>
-			<twist_at_tip unit="deg"></twist_at_tip>
-			<twist_at_kink_real_wing unit="deg"></twist_at_kink_real_wing>	
-			<x_offset_root_chord_leading_edge></x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
-			<x_offset_root_chord_trailing_edge></x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
+			<surface unit="m²">79.21</surface>
+			<aspect_ratio>10.83</aspect_ratio>
+			<taper_ratio>0.387</taper_ratio>
+			<sweep_leading_edge unit="deg">10.0</sweep_leading_edge>
+			<dihedral unit="deg">3.2</dihedral>
+			<non_dimensional_span_station_kink>0.3</non_dimensional_span_station_kink>
+			<twist_at_tip unit="deg">-2.0</twist_at_tip>
+			<twist_at_kink_real_wing unit="deg">0.0</twist_at_kink_real_wing>	
+			<x_offset_root_chord_leading_edge>0.0</x_offset_root_chord_leading_edge> <!-- percentage of the equivalent wing root chord -->
+			<x_offset_root_chord_trailing_edge>0.05</x_offset_root_chord_trailing_edge> <!-- percentage of the equivalent wing root chord -->
 			<airfoils>
-				<airfoil_root file=""/>
-				<airfoil_kink file=""/>
-				<airfoil_tip file=""/>
+				<airfoil_root file="ROOT.xml"/>
+				<airfoil_kink file="ROOT.xml"/>
+				<airfoil_tip file="TIP.xml"/>
 			</airfoils>
 		</equivalent_wing>
 		<panels>
-            <panel id="AGILE-NTP - Inner panel">
+            <panel id="IRON - Inner panel">
                 <span unit="m">4.73</span>
                 <dihedral unit="deg">3.2</dihedral>
                 <sweep_leading_edge unit="deg">2.2</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">4.1</chord>
-                    <airfoil file="naca23018.xml"/>
+                    <airfoil file="ROOT.xml"/>
                     <geometric_twist unit="deg">4</geometric_twist>
                 </inner_section>
                 <outer_section>
                     <chord unit="m">3.23</chord>
-                    <airfoil file="naca23018.xml"/>
+                    <airfoil file="ROOT.xml"/>
                     <geometric_twist unit="deg">4</geometric_twist>
                 </outer_section>
             </panel>
-            <panel id="AGILE-NTP - Outer panel" linked_to="AGILE-NTP - Inner panel">
+            <panel id="IRON - Outer panel" linked_to="IRON - Inner panel">
                 <span unit="m">9.9</span>
                 <dihedral unit="deg">3.2</dihedral>
                 <sweep_leading_edge unit="deg">2.2</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.3</chord>
-                    <airfoil file="naca23015.xml"/>
+                    <airfoil file="TIP.xml"/>
                     <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>
             </panel>
-        </panels>
+			
+           </panels>
         <symmetric_flaps> 
             <symmetric_flap id="Inner flap" type="SINGLE_SLOTTED">
                 <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.08</inner_station_spanwise_position>

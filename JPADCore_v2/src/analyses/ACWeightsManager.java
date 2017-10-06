@@ -355,13 +355,17 @@ public class ACWeightsManager implements IACWeightsManager {
 		
 		this._maximumTakeOffMassList = builder.__maximumTakeOffMassList;
 		
-		this._fuelFractionDatabaseReader = DatabaseManager.initializeFuelFractionDatabase(
-				new FuelFractionDatabaseReader(
+//		this._fuelFractionDatabaseReader = DatabaseManager.initializeFuelFractionDatabase(
+//				new FuelFractionDatabaseReader(
+//						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
+//						"FuelFractions.h5"
+//						),
+//				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
+//				);
+		this._fuelFractionDatabaseReader = new FuelFractionDatabaseReader(
 						MyConfiguration.getDir(FoldersEnum.DATABASE_DIR), 
 						"FuelFractions.h5"
-						),
-				MyConfiguration.getDir(FoldersEnum.DATABASE_DIR)
-				);
+						);
 		
 	}
 	

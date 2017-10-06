@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <configuration id="CS-300 Cabin Configuration">
+    <configuration id="CS300 Cabin Configuration">
 		<global_data>
 			<actual_passengers_number>150</actual_passengers_number>
 			<maximum_passengers_number>160</maximum_passengers_number>

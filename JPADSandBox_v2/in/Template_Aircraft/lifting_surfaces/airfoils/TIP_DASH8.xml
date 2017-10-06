@@ -48,8 +48,8 @@
 			<!-- these data are always needed -->            
 			<x_ac_normalized unit="">0.247</x_ac_normalized>
 			<mach_critical>0.66</mach_critical>
-			<x_transition_upper>0.6</x_transition_upper>
-            <x_transition_lower>0.53</x_transition_lower>
+			<x_transition_upper>0.39</x_transition_upper>
+            <x_transition_lower>0.70</x_transition_lower>
         </aerodynamics>
     </airfoil>
 </jpad_config>

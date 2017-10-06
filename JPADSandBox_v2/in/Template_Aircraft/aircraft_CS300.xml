@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-    <aircraft id="CS-300" type="JET" regulations="FAR_25">
+    <aircraft id="CS300" type="JET" regulations="FAR_25">
 		<global_data>
 			<cabin_configuration file="cabin_configuration_CS300.xml"></cabin_configuration>
 		</global_data>
@@ -81,7 +81,7 @@
 			<position>
                 <x unit="m">18.68</x>
                 <y unit="m">0.0</y>
-                <z unit="m">-0.27</z>                                                                 <!-- -1.402 -->
+                <z unit="m">-0.27</z>                                                               
             </position>
 			<mounting_point>WING</mounting_point>
 		</landing_gears>
