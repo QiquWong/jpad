@@ -23,6 +23,7 @@
 			method_systems=""
             />
 		<!-- method_XXX="AVERAGED" if empty string -->
+	<!--
 	<balance 
 			file="analysis_balance_DASH8.xml"
 			plot="TRUE"
@@ -32,7 +33,8 @@
             method_vtail=""
 			method_canard=""
 		/>
-		
+	-->
+	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
 			take_off_condition="TRUE"
@@ -44,6 +46,7 @@
 			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_LANDING_DASH8.xml"
 	/>
+	-->
 	<!--
 	<performance 
 			file="analysis_performance_DASH8.xml"

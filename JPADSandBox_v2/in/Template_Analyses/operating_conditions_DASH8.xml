@@ -3,22 +3,22 @@
 	<operating_conditions id="ATR72 - Operating Conditions">
 		<climb>
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
-			<alpha_current unit="deg">2</alpha_current>
+			<alpha_current unit="deg">12</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
 			<mach>0.3</mach>
-			<altitude unit="ft">17000</altitude>
+			<altitude unit="ft">27000</altitude>
 		</climb>
 		<cruise> 
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
-			<alpha_current unit="deg">2</alpha_current>
+			<alpha_current unit="deg">0.0</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
-			<mach>0.42</mach>	
-			<altitude unit="ft">17000.0</altitude>
+			<mach>0.6</mach>	
+			<altitude unit="ft">27000</altitude>
 			<throttle>1.0</throttle>
 		</cruise>
 		<take_off>
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
-			<alpha_current unit="deg">2</alpha_current>
+			<alpha_current unit="deg">12</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
 			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="ft">0.0</altitude> <!-- default = 0.0 -->
@@ -32,7 +32,7 @@
 		</take_off>
 		<landing>
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
-			<alpha_current unit="deg">2</alpha_current>
+			<alpha_current unit="deg">0.0</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
 			<mach>0.172</mach> <!-- default = 0.2 -->
 			<altitude unit="m"></altitude> <!-- default = 0.0 -->
