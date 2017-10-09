@@ -10,7 +10,7 @@
 		</climb>
 		<cruise> 
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
-			<alpha_current unit="deg">0</alpha_current>
+			<alpha_current unit="deg">0.0</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
 			<mach>0.56</mach>	
 			<altitude unit="ft">25000</altitude>

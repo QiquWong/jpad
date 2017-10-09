@@ -32,12 +32,12 @@
                 <sweep_leading_edge unit="deg">28</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">6.1</chord>
-                    <airfoil file="ROOT.xml"/>
+                    <airfoil file="ROOT_A320.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
                     <chord unit="m">3.92</chord>
-                    <airfoil file="ROOT.xml"/>
+                    <airfoil file="ROOT_A320.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
             </panel>
@@ -47,7 +47,7 @@
                 <sweep_leading_edge unit="deg">28</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.64</chord>
-                    <airfoil file="TIP.xml"/>
+                    <airfoil file="TIP_A320.xml"/>
                     <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>
             </panel>

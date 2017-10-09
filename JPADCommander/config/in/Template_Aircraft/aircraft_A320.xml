@@ -5,7 +5,7 @@
 			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
-            <wing file="wing.xml">
+            <wing file="wing_A320.xml">
                 <position>
                     <x unit="m">12.54</x>
                     <y unit="m">0.0</y>
@@ -13,7 +13,7 @@
                 </position>
                 <rigging_angle unit="deg">2</rigging_angle>
             </wing>
-            <horizontal_tail file="htail.xml">
+            <horizontal_tail file="htail_A320.xml">
                 <position>
                     <x unit="m">32.046</x>
                     <y unit="m">0.0</y>
@@ -21,7 +21,7 @@
                 </position>
                 <rigging_angle unit="deg">0.0</rigging_angle>
             </horizontal_tail>
-            <vertical_tail file="vtail.xml">
+            <vertical_tail file="vtail_A320.xml">
                 <position>
                     <x unit="m">29.81</x>
                     <y unit="m">0.0</y>
@@ -31,7 +31,7 @@
             </vertical_tail>
         </lifting_surfaces>
         <fuselages>
-            <fuselage file="fuselage.xml">
+            <fuselage file="fuselage_A320.xml">
                 <position>
                     <x unit="m">0.0</x>
                     <y unit="m">0.0</y>
@@ -40,7 +40,7 @@
             </fuselage>
         </fuselages>
 		<power_plant>
-            <engine file="engineTurbofan.xml">
+            <engine file="engine_A320.xml">
                 <position>
                     <x unit="m">11.19</x>
                     <y unit="m">5.75</y>
@@ -49,7 +49,7 @@
                 <tilting_angle unit="deg">0.0</tilting_angle>
 				<mounting_point>WING</mounting_point>
             </engine>
-            <engine file="engineTurbofan.xml">
+            <engine file="engine_A320.xml">
                 <position>
                     <x unit="m">11.19</x>
                     <y unit="m">-5.75</y>
@@ -60,7 +60,7 @@
             </engine>
 		</power_plant> 
 		<nacelles>
-            <nacelle file="nacelle.xml">
+            <nacelle file="nacelle_A320.xml">
                 <position>
                     <x unit="m">11.14</x>
                     <y unit="m">5.75</y>
@@ -68,7 +68,7 @@
                 </position>
                 <mounting_point>WING</mounting_point>
             </nacelle>
-            <nacelle file="nacelle.xml">
+            <nacelle file="nacelle_A320.xml">
                 <position>
                     <x unit="m">11.14</x>
                     <y unit="m">-5.75</y>
@@ -77,7 +77,7 @@
                 <mounting_point>WING</mounting_point>
             </nacelle>
 		</nacelles> 
-		<landing_gears file="landing_gear.xml">
+		<landing_gears file="landing_gear_A320.xml">
 			<position>
                 <x unit="m">17.71</x>
                 <y unit="m">0.0</y>
@@ -85,7 +85,7 @@
             </position>
 			<mounting_point>WING</mounting_point>
 		</landing_gears>
-		<systems file="systems.xml">
+		<systems file="systems_A320.xml">
 			<position>
                 <x unit="m">0.0</x>
                 <y unit="m">0.0</y>

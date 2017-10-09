@@ -6,24 +6,24 @@
         <weights id="DASH-8 - WEIGHTS">
 			<global_data>
 				<maximum_take_off_mass unit="kg">29000</maximum_take_off_mass>
-				<single_passenger_mass unit="kg">102</single_passenger_mass>
+				<single_passenger_mass unit="kg">103</single_passenger_mass>
 				<cruise_phase>
-					<range unit="nmi">1100</range> 
-					<sfc>0.61</sfc>
-					<efficiency>12.51</efficiency>
+					<range unit="nmi">1000</range> 
+					<sfc>0.55</sfc>
+					<efficiency>13.5</efficiency>
 				</cruise_phase>
 				<alternate_phase>
-					<range unit="nmi">0.0</range> 
+					<range unit="nmi">100.0</range> 
 					<altitude unit="ft">10000</altitude>
 					<mach>0.4</mach>
-					<sfc>0.61</sfc> 
-					<efficiency>12.51</efficiency> 
+					<sfc>0.55</sfc> 
+					<efficiency>13.5</efficiency> 
 				</alternate_phase>
 				<holding_phase>
-					<duration unit="min">0.0</duration> 
+					<duration unit="min">45</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
-					<sfc>0.7</sfc> 
+					<sfc>0.65</sfc> 
 					<efficiency>16.0</efficiency> 
 				</holding_phase>
 			</global_data>

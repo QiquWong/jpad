@@ -1,7 +1,7 @@
 <jpad_config>
     <vertical_tail id="AIRBUS A-320 Vertical Tail" mirrored="FALSE">
 		 <global_data>
-			<composite_correction_factor>0.83</composite_correction_factor>
+			<composite_correction_factor>1.0</composite_correction_factor>
 			<roughness unit="m">0.405e-5</roughness>
 		</global_data>
 		<panels>

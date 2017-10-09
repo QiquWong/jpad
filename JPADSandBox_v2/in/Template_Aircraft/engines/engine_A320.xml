@@ -5,7 +5,7 @@
 			<length unit="m">3.401</length>
 		</dimensions>
 		<specifications>
-			<static_thrust unit="lbf">24000</static_thrust>
+			<static_thrust unit="lbf">33110</static_thrust>
 			<by_pass_ratio>12.5</by_pass_ratio>
 			<dry_mass calculate="FALSE" unit="kg">2857.6</dry_mass>
 			<number_of_compressor_stages>15</number_of_compressor_stages>

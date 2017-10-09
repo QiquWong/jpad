@@ -8,19 +8,19 @@
 				<maximum_take_off_mass unit="kg">34400</maximum_take_off_mass>
 				<single_passenger_mass unit="kg">106</single_passenger_mass>
 				<cruise_phase>
-					<range unit="nmi">1200</range> 
+					<range unit="nmi">1100</range> 
 					<sfc>0.45</sfc>
 					<efficiency>16.5</efficiency>
 				</cruise_phase>
 				<alternate_phase>
-					<range unit="nmi">0.0</range> 
+					<range unit="nmi">100.0</range> 
 					<altitude unit="ft">10000</altitude>
 					<mach>0.4</mach>
 					<sfc>0.45</sfc> 
-					<efficiency>12</efficiency> 
+					<efficiency>16.5</efficiency> 
 				</alternate_phase>
 				<holding_phase>
-					<duration unit="min">0.0</duration> 
+					<duration unit="min">45</duration> 
 					<altitude unit="ft">1500</altitude>
 					<mach>0.3</mach>
 					<sfc>0.5</sfc> 

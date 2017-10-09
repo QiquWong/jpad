@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<nacelle id="AIRBUS A-320 Nacelle" engine="engineTurbofan.xml">
+	<nacelle id="AIRBUS A-320 Nacelle" engine="engine_A320.xml">
 		<global_data>
 			<roughness unit="m">0.405e-5</roughness>
 		</global_data>

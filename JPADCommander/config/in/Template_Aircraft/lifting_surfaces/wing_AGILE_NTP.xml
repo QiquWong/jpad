@@ -32,12 +32,12 @@
                 <sweep_leading_edge unit="deg">2.2</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">4.1</chord>
-                    <airfoil file="ROOT.xml"/>
+                    <airfoil file="naca23018.xml"/>
                     <geometric_twist unit="deg">4</geometric_twist>
                 </inner_section>
                 <outer_section>
                     <chord unit="m">3.23</chord>
-                    <airfoil file="ROOT.xml"/>
+                    <airfoil file="naca23018.xml"/>
                     <geometric_twist unit="deg">4</geometric_twist>
                 </outer_section>
             </panel>
@@ -47,7 +47,7 @@
                 <sweep_leading_edge unit="deg">2.2</sweep_leading_edge>
                 <outer_section>
                     <chord unit="m">1.3</chord>
-                    <airfoil file="TIP.xml"/>
+                    <airfoil file="naca23015.xml"/>
                     <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>
             </panel>

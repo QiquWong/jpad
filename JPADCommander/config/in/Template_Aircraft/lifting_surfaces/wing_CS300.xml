@@ -70,8 +70,7 @@
 				<max_deflection unit="deg">40.0</max_deflection>
             </symmetric_flap>
         </symmetric_flaps>
-		
-              <slats>
+		<slats>
 			<slat id="1">
                 <min_deflection unit="deg">0.0</min_deflection>
 				<max_deflection unit="deg">25.0</max_deflection>
