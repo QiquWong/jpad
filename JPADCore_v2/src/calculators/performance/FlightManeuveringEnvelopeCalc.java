@@ -30,6 +30,7 @@ public class FlightManeuveringEnvelopeCalc {
 	//assigned:
 	RegulationsEnum _regulations;
 	AircraftTypeEnum _aircraftType;
+	private boolean _createCSV; 
 	Double _positiveLimitLoadFactor;
 	Double _negativeLimitLoadFactor;
 	Double _cLMaxClean;
@@ -91,6 +92,7 @@ public class FlightManeuveringEnvelopeCalc {
 	public FlightManeuveringEnvelopeCalc(
 			RegulationsEnum regulations,
 			AircraftTypeEnum aircraftType,
+			boolean createCSV,
 			double cLMaxClean,
 			double cLMaxFullFlap,
 			double cLMaxInverted,
@@ -108,6 +110,8 @@ public class FlightManeuveringEnvelopeCalc {
 		
 		this._regulations = regulations;
 		this._aircraftType = aircraftType;
+		
+		this._createCSV = createCSV;
 		
 		this._cLMaxClean = cLMaxClean;
 		this._cLMaxFullFlap = cLMaxFullFlap;
@@ -1183,14 +1187,16 @@ public class FlightManeuveringEnvelopeCalc {
 					"Flight Maneuvering Envelope", "V (EAS)", "",
 					0.0, null, null, null, "m/s", "",
 					true, legend, 
-					folderPathName, "Flight Maneuvering Envelope_SI"
+					folderPathName, "Flight Maneuvering Envelope_SI",
+					_createCSV
 					);
 			MyChartToFileUtils.plot(
 					xList_Imperial, yList,
 					"Flight Maneuvering Envelope", "V (EAS)", "",
 					0.0, null, null, null, "kn", "",
 					true, legend, 
-					folderPathName, "Flight Maneuvering Envelope_IMPERIAL"
+					folderPathName, "Flight Maneuvering Envelope_IMPERIAL",
+					_createCSV
 					);
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
@@ -1582,6 +1588,14 @@ public class FlightManeuveringEnvelopeCalc {
 
 	public void setAircraftType(AircraftTypeEnum _aircraftType) {
 		this._aircraftType = _aircraftType;
+	}
+
+	public boolean getCreateCSV() {
+		return _createCSV;
+	}
+
+	public void setCreateCSV(boolean _createCSV) {
+		this._createCSV = _createCSV;
 	}
 	
 }

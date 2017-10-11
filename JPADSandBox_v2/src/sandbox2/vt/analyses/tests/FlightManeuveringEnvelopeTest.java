@@ -42,6 +42,7 @@ public class FlightManeuveringEnvelopeTest {
 		Amount<Length> altitude = Amount.valueOf(6000, SI.METER);
 		RegulationsEnum regulation = RegulationsEnum.FAR_25;
 		AircraftTypeEnum aircraftType = AircraftTypeEnum.TURBOPROP;
+		boolean createCSV = Boolean.TRUE;
 		
 		// DATA FAR-23:
 //		Amount<Mass> maxTakeOffMass = Amount.valueOf(3290, SI.KILOGRAM);	
@@ -64,6 +65,7 @@ public class FlightManeuveringEnvelopeTest {
 		FlightManeuveringEnvelopeCalc theCalculator = new FlightManeuveringEnvelopeCalc(
 				regulation,
 				aircraftType,
+				createCSV,
 				cLMaxClean,
 				cLMaxFullFlap,
 				cLMaxInverted,

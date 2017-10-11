@@ -70,6 +70,16 @@ public class TakeOffNoiseTrajectoryCalc {
 
 	//-------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION
+	private boolean createCSV;
+	
+	public boolean isCreateCSV() {
+		return createCSV;
+	}
+
+	public void setCreateCSV(boolean createCSV) {
+		this.createCSV = createCSV;
+	}
+
 	private Double aspectRatio;
 	private Amount<Area> surface; 
 	private Amount<Length> span;
@@ -151,9 +161,12 @@ public class TakeOffNoiseTrajectoryCalc {
 			Amount<Angle> iw,
 			double cLmaxTO,
 			double cLZeroTO,
-			Amount<?> cLalphaFlap
+			Amount<?> cLalphaFlap,
+			boolean createCSV
 			) {
 
+		this.createCSV = createCSV;
+		
 		// Required data
 		this.xEndSimulation = xEndSimulation;
 		this.cutbackAltitude = cutbackAltitude;
@@ -1544,7 +1557,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Time", "Horizontal Forces", "s", "N",
 									new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-									currentOutputFolder, "HorizontalForces_evolution_SI");
+									currentOutputFolder, "HorizontalForces_evolution_SI",
+									createCSV);
 						}
 
 						if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1589,7 +1603,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Time", "Horizontal Forces", "s", "lb",
 									new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-									currentOutputFolder, "HorizontalForces_evolution_IMPERIAL");
+									currentOutputFolder, "HorizontalForces_evolution_IMPERIAL",
+									createCSV);
 						}
 						
 						//.................................................................................
@@ -1620,7 +1635,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground Distance", "Horizontal Forces", "m", "N",
 									new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-									currentOutputFolder, "HorizontalForces_vs_GroundDistance_SI");
+									currentOutputFolder, "HorizontalForces_vs_GroundDistance_SI",
+									createCSV);
 						}
 
 						if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1665,7 +1681,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground Distance", "Horizontal Forces", "ft", "lb",
 									new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-									currentOutputFolder, "HorizontalForces_vs_GroundDistance_IMPERIAL");
+									currentOutputFolder, "HorizontalForces_vs_GroundDistance_IMPERIAL",
+									createCSV);
 						}
 
 						//.................................................................................
@@ -1694,7 +1711,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Time", "Vertical Forces", "s", "N",
 									new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-									currentOutputFolder, "VerticalForces_evolution_SI");
+									currentOutputFolder, "VerticalForces_evolution_SI",
+									createCSV);
 						}
 						
 						if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1729,7 +1747,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Time", "Vertical Forces", "s", "lb",
 									new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-									currentOutputFolder, "VerticalForces_evolution_IMPERIAL");
+									currentOutputFolder, "VerticalForces_evolution_IMPERIAL",
+									createCSV);
 						}
 						
 						//.................................................................................
@@ -1758,7 +1777,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground distance", "Vertical Forces", "m", "N",
 									new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-									currentOutputFolder, "VerticalForces_vs_GroundDistance_SI");
+									currentOutputFolder, "VerticalForces_vs_GroundDistance_SI",
+									createCSV);
 						}
 						
 						if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1797,7 +1817,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground distance", "Vertical Forces", "ft", "lb",
 									new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-									currentOutputFolder, "VerticalForces_vs_GroundDistance_IMPERIAL");
+									currentOutputFolder, "VerticalForces_vs_GroundDistance_IMPERIAL",
+									createCSV);
 						}
 						
 						//.................................................................................
@@ -1828,7 +1849,8 @@ public class TakeOffNoiseTrajectoryCalc {
 								0.0, null, null, null,
 								"Time", "Angles", "s", "deg",
 								new String[] {"Alpha Body", "Theta", "Gamma"},
-								currentOutputFolder, "Angles_evolution");
+								currentOutputFolder, "Angles_evolution",
+								createCSV);
 
 						//.................................................................................
 						// Angles v.s. Ground Distance
@@ -1859,7 +1881,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground Distance", "Angles", "m", "deg",
 									new String[] {"Alpha Body", "Theta", "Gamma"},
-									currentOutputFolder, "Angles_vs_GroundDistance_SI");
+									currentOutputFolder, "Angles_vs_GroundDistance_SI",
+									createCSV);
 						}
 						
 						if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1893,7 +1916,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground Distance", "Angles", "ft", "deg",
 									new String[] {"Alpha Body", "Theta", "Gamma"},
-									currentOutputFolder, "Angles_vs_GroundDistance_IMPERIAL");
+									currentOutputFolder, "Angles_vs_GroundDistance_IMPERIAL",
+									createCSV);
 						}
 						//.................................................................................
 						// Angular velocity v.s. time
@@ -1910,7 +1934,8 @@ public class TakeOffNoiseTrajectoryCalc {
 								0.0, null, null, null,
 								"Time", "Angular Velocity", "s", "deg/s",
 								new String[] {"Alpha_dot", "Gamma_dot"},
-								currentOutputFolder, "AngularVelocity_evolution");
+								currentOutputFolder, "AngularVelocity_evolution",
+								createCSV);
 
 						//.................................................................................
 						// Angular velocity v.s. Ground Distance
@@ -1928,7 +1953,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground Distance", "Angular Velocity", "m", "deg/s",
 									new String[] {"Alpha_dot", "Gamma_dot"},
-									currentOutputFolder, "AngularVelocity_vs_GroundDistance_SI");
+									currentOutputFolder, "AngularVelocity_vs_GroundDistance_SI",
+									createCSV);
 						}
 						
 						if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1949,7 +1975,8 @@ public class TakeOffNoiseTrajectoryCalc {
 									0.0, null, null, null,
 									"Ground Distance", "Angular Velocity", "ft", "deg/s",
 									new String[] {"Alpha_dot", "Gamma_dot"},
-									currentOutputFolder, "AngularVelocity_vs_GroundDistance_SI");
+									currentOutputFolder, "AngularVelocity_vs_GroundDistance_SI",
+									createCSV);
 						}
 						
 						System.out.println("\n---------------------------DONE!-------------------------------");
@@ -1974,54 +2001,54 @@ public class TakeOffNoiseTrajectoryCalc {
 		// take-off trajectory
 		if(unitFormat == UnitFormatEnum.SI)
 			MyChartToFileUtils.plot(
-					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-					verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 					"Take-off noise certification trajectories", "Ground distance", "Altitude",
 					0.0, null, 0.0, null,
 					"m", "m",
-					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					trajectoryOutputFolder, "Trajectories_SI"
+					true, (List<String>) groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					trajectoryOutputFolder, "Trajectories_SI", createCSV
 					);
 		
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plot(
-					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							x.stream().map(xe -> xe.to(NonSI.FOOT)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
-					verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							y.stream().map(ye -> ye.to(NonSI.FOOT)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
 					"Take-off noise certification trajectories", "Ground distance", "Altitude",
 					0.0, null, 0.0, null,
 					"ft", "ft",
-					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					trajectoryOutputFolder, "Trajectories_IMPERIAL"
+					true, (List<String>) groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					trajectoryOutputFolder, "Trajectories_IMPERIAL", createCSV
 					);
 		
 		//.................................................................................
 		// vertical distance v.s. time
 		if(unitFormat == UnitFormatEnum.SI)
 			MyChartToFileUtils.plot(
-					timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-					verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					(List<Double[]>) timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 					"Take-off noise certification trajectories", "Time", "Altitude",
 					0.0, null, 0.0, null,
 					"s", "m",
-					true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					trajectoryOutputFolder, "Altitude_Evolution_SI"
+					true, (List<String>) timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					trajectoryOutputFolder, "Altitude_Evolution_SI", createCSV
 					);
 		
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plot(
-					timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-					verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					(List<Double[]>) verticalDistanceMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							y.stream().map(ye -> ye.to(NonSI.FOOT)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
 					"Take-off noise certification trajectories", "Time", "Altitude",
 					0.0, null, 0.0, null,
 					"s", "ft",
-					true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					trajectoryOutputFolder, "Altitude_Evolution_IMPERIAL"
+					true, (List<String>) timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					trajectoryOutputFolder, "Altitude_Evolution_IMPERIAL", createCSV
 					);
 		
 		System.setOut(originalOut);
@@ -2032,53 +2059,53 @@ public class TakeOffNoiseTrajectoryCalc {
 		// thrust v.s. time
 		if(unitFormat == UnitFormatEnum.SI)
 			MyChartToFileUtils.plot(
-					timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					(List<Double[]>) timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					(List<Double[]>) thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 					"Thrust for each take-off trajectory", "Time", "Thrust",
 					0.0, null, 0.0, null,
 					"s", "N",
-					true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					thrustOutputFolder, "Thrust_evolution_SI"
+					true, (List<String>) timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_evolution_SI", createCSV
 					);
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plot(
-					timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					(List<Double[]>) thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							y.stream().map(ye -> ye.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
 					"Thrust for each take-off trajectory", "Time", "Thrust",
 					0.0, null, 0.0, null,
 					"s", "lbf",
-					true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					thrustOutputFolder, "Thrust_evolution_IMPERIAL"
+					true, (List<String>) timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_evolution_IMPERIAL", createCSV
 					);
 
 		//.................................................................................
 		// thrust v.s. ground distance
 		if(unitFormat == UnitFormatEnum.SI)
 			MyChartToFileUtils.plot(
-					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					(List<Double[]>) thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 					"Thrust for each take-off trajectory", "Ground distance", "Thrust",
 					0.0, null, 0.0, null,
 					"m", "N",
-					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					thrustOutputFolder, "Thrust_vs_GroundDistance_SI"
+					true, (List<String>) groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_vs_GroundDistance_SI", createCSV
 					);
 
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plot(
-					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							x.stream().map(xe -> xe.to(NonSI.FOOT)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
-					thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) thrustMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							y.stream().map(ye -> ye.to(NonSI.POUND_FORCE)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
 					"Thrust for each take-off trajectory", "Ground distance", "Thrust",
 					0.0, null, 0.0, null,
 					"ft", "lbf",
-					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL"
+					true, (List<String>) groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					thrustOutputFolder, "Thrust_vs_GroundDistance_IMPERIAL", createCSV
 					);
 		
 		System.setOut(originalOut);
@@ -2088,41 +2115,41 @@ public class TakeOffNoiseTrajectoryCalc {
 		//.................................................................................
 		// fuelUsed v.s. time
 		MyChartToFileUtils.plot(
-				timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-				fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+				(List<Double[]>) timeMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+				(List<Double[]>) fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 				"Fuel used for each take-off trajectory", "Time", "Fuel used",
 				0.0, null, 0.0, null,
 				"s", "kg",
-				true, timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-				fuelUsedOutputFolder, "FuelUsed_evolution"
+				true, (List<String>) timeMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+				fuelUsedOutputFolder, "FuelUsed_evolution", createCSV
 				);
 
 		//.................................................................................
 		// fuelUsed v.s. ground distance
 		if(unitFormat == UnitFormatEnum.SI)
 			MyChartToFileUtils.plot(
-					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
-					fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
+					(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(x)).collect(Collectors.toList()),
+					(List<Double[]>) fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(y)).collect(Collectors.toList()),
 					"Fuel used for each take-off trajectory", "Ground distance", "Fuel used",
 					0.0, null, 0.0, null,
 					"m", "kg",
-					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI"
+					true, (List<String>) groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_SI", createCSV
 					);
 
 		if(unitFormat == UnitFormatEnum.IMPERIAL)
 			MyChartToFileUtils.plot(
-					groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) groundDistanceMap.values().stream().map(x -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							x.stream().map(xe -> xe.to(NonSI.FOOT)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
-					fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
+					(List<Double[]>) fuelUsedMap.values().stream().map(y -> MyArrayUtils.convertListOfAmountToDoubleArray(
 							y.stream().map(ye -> ye.to(NonSI.POUND)).collect(Collectors.toList())
 							)).collect(Collectors.toList()),
 					"Fuel used for each take-off trajectory", "Ground distance", "Fuel used",
 					0.0, null, 0.0, null,
 					"ft", "lb",
-					true, groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
-					fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL"
+					true, (List<String>) groundDistanceMap.keySet().stream().map(phi -> "PHI = " + String.format( "%.2f", phi)).collect(Collectors.toList()),
+					fuelUsedOutputFolder, "FuelUsed_vs_GroundDistance_IMPERIAL", createCSV
 					);
 		
 		System.setOut(originalOut);

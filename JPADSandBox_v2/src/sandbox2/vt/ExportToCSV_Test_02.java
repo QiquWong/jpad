@@ -38,7 +38,8 @@ public class ExportToCSV_Test_02 {
 				"m", "ft",
 				legendName1, legendValues1, "kg",
 				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR),
-				"Plot_Test_01"
+				"Plot_Test_01",
+				true
 				);
 		
 		
@@ -66,7 +67,7 @@ public class ExportToCSV_Test_02 {
 				null, null, null, null,
 				"Distance", "Height",
 				"m", "ft",
-				legendName2, legendValues2, "kg",
+				legendName2, legendValues2, true, "kg",
 				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR),
 				"Plot_Test_02"
 				);
@@ -98,7 +99,8 @@ public class ExportToCSV_Test_02 {
 				"m", "ft",
 				legendValues3,
 				MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR),
-				"Plot_Test_03"
+				"Plot_Test_03",
+				true
 				);
 		
 		
@@ -159,7 +161,8 @@ public class ExportToCSV_Test_02 {
 					"m", "ft",
 					true, legendValues5,
 					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR),
-					"Plot_Test_05"
+					"Plot_Test_05",
+					true
 					);
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();

@@ -560,14 +560,17 @@ public class LandingCalc {
 				0.0, null, -1.0, null,
 				"Ground Distance", "", "m", "",
 				new String[] {"Altitude (m)", "Speed (m/s)"},
-				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance_SI");
+				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance_SI",
+				aircraft.getTheAnalysisManager().getCreateCSVPerformance()
+				);
 		
 		MyChartToFileUtils.plot(
 				xMatrix1_Imperial, yMatrix1_Imperial,
 				0.0, null, -1.0, null,
 				"Ground Distance", "", "ft", "",
 				new String[] {"Altitude (ft)", "Speed (kn)"},
-				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance_IMPERIAL");
+				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance_IMPERIAL",
+				aircraft.getTheAnalysisManager().getCreateCSVPerformance());
 		
 		//.............................................................................
 		// acceleration v.s. ground roll distance
@@ -653,14 +656,16 @@ public class LandingCalc {
 				sApproach.plus(sFlare).doubleValue(SI.METER), null, null, null,
 				"Ground Roll Distance", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust", "Drag", "Friction"},
-				landingFolderPath, "HorizontalForces_vs_GroundDistance_SI");
+				landingFolderPath, "HorizontalForces_vs_GroundDistance_SI",
+				aircraft.getTheAnalysisManager().getCreateCSVPerformance());
 		
 		MyChartToFileUtils.plot(
 				xMatrix2_Imperial, yMatrix2_Imperial,
 				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, null, null,
 				"Ground Roll Distance", "Horizontal Forces", "ft", "lb",
 				new String[] {"Total Force", "Thrust", "Drag", "Friction"},
-				landingFolderPath, "HorizontalForces_vs_GroundDistance_IMPERIAL");
+				landingFolderPath, "HorizontalForces_vs_GroundDistance_IMPERIAL",
+				aircraft.getTheAnalysisManager().getCreateCSVPerformance());
 
 		//.............................................................................
 		// Vertical Forces v.s. ground roll distance
@@ -695,14 +700,16 @@ public class LandingCalc {
 				sApproach.plus(sFlare).doubleValue(SI.METER), null, null, null,
 				"Ground Roll distance", "Vertical Forces", "m", "N",
 				new String[] {"Lift", "Weight"},
-				landingFolderPath, "VerticalForces_vs_GroundDistance_SI");
+				landingFolderPath, "VerticalForces_vs_GroundDistance_SI",
+				aircraft.getTheAnalysisManager().getCreateCSVPerformance());
 		
 		MyChartToFileUtils.plot(
 				xMatrix3_Imperial, yMatrix3_Imperial,
 				sApproach.plus(sFlare).doubleValue(NonSI.FOOT), null, null, null,
 				"Ground Roll distance", "Vertical Forces", "ft", "lb",
 				new String[] {"Lift", "Weight"},
-				landingFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL");
+				landingFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL",
+				aircraft.getTheAnalysisManager().getCreateCSVPerformance());
 		
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}

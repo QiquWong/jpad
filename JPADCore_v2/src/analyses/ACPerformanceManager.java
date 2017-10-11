@@ -3741,7 +3741,10 @@ public class ACPerformanceManager {
 
 			if(_plotList.contains(PerformancePlotEnum.TAKE_OFF_SIMULATIONS))
 				try {
-					_theTakeOffCalculator.createTakeOffCharts(takeOffFolderPath);
+					_theTakeOffCalculator.createTakeOffCharts(
+							takeOffFolderPath,
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -3753,7 +3756,10 @@ public class ACPerformanceManager {
 		public void plotBalancedFieldLength(String takeOffFolderPath) {
 			
 			if(_plotList.contains(PerformancePlotEnum.BALANCED_FIELD_LENGTH))
-				_theTakeOffCalculator.createBalancedFieldLengthChart(takeOffFolderPath);
+				_theTakeOffCalculator.createBalancedFieldLengthChart(
+						takeOffFolderPath,
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+						);
 			
 		}
 		
@@ -3785,7 +3791,8 @@ public class ACPerformanceManager {
 					null, null, null, null,
 					"V/VsTO", "Thrust - Yawing Moment",
 					"", "N m",legendValue,
-					takeOffFolderPath, "VMC");
+					takeOffFolderPath, "VMC",
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance());
 			
 		}
 		
@@ -4638,7 +4645,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "N",
 							true, legendAltitudes_SI,
-							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_SI"
+							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedAltitudeParameterization_Imperial, dragAndThrustAltitudes_Imperial,
@@ -4647,7 +4655,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "lb",
 							true, legendAltitudes_Imperial,
-							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_IMPERIAL"
+							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -4708,7 +4717,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "N",
 							true, legendWeights,
-							cruiseFolderPath, "Drag_and_Thrust_curves_weights_SI"
+							cruiseFolderPath, "Drag_and_Thrust_curves_weights_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedWeightsParameterization_Imperial, dragAndThrustWeights_Imperial,
@@ -4717,7 +4727,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "lb",
 							true, legendWeights,
-							cruiseFolderPath, "Drag_and_Thrust_curves_weights_IMPERIAL"
+							cruiseFolderPath, "Drag_and_Thrust_curves_weights_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -4787,7 +4798,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "W",
 							true, legendAltitudes_SI,
-							cruiseFolderPath, "Power_needed_and_available_altitudes_SI"
+							cruiseFolderPath, "Power_needed_and_available_altitudes_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedAltitudeParameterization_Imperial, powerNeededAndAvailableAltitudes_Imperial,
@@ -4796,7 +4808,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "hp",
 							true, legendAltitudes_Imperial,
-							cruiseFolderPath, "Power_needed_and_available_altitudes_IMPERIAL"
+							cruiseFolderPath, "Power_needed_and_available_altitudes_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -4858,7 +4871,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "W",
 							true, legendWeights,
-							cruiseFolderPath, "Power_needed_and_available_weights_SI"
+							cruiseFolderPath, "Power_needed_and_available_weights_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedWeightsParameterization_Imperial, powerNeededAndAvailableWeights_Imperial,
@@ -4867,7 +4881,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "hp",
 							true, legendWeights,
-							cruiseFolderPath, "Power_needed_and_available_weights_IMPERIAL"
+							cruiseFolderPath, "Power_needed_and_available_weights_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -5049,7 +5064,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "",
 							true, legendAltitude_SI,
-							cruiseFolderPath, "Efficiency_curves_altitude_TAS_SI"
+							cruiseFolderPath, "Efficiency_curves_altitude_TAS_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListAltitudeParameterization_CAS_SI, efficiencyListAltitudeParameterization,
@@ -5058,7 +5074,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "",
 							true, legendAltitude_SI,
-							cruiseFolderPath, "Efficiency_curves_altitude_CAS_SI"
+							cruiseFolderPath, "Efficiency_curves_altitude_CAS_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							machListAltitudeParameterization, efficiencyListAltitudeParameterization,
@@ -5067,7 +5084,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							" ", " ",
 							true, legendAltitude_SI,
-							cruiseFolderPath, "Efficiency_curves_altitude_Mach_SI"
+							cruiseFolderPath, "Efficiency_curves_altitude_Mach_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListAltitudeParameterization_TAS_Imperial, efficiencyListAltitudeParameterization,
@@ -5076,7 +5094,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "",
 							true, legendAltitude_Imperial,
-							cruiseFolderPath, "Efficiency_curves_altitude_TAS_IMPERIAL"
+							cruiseFolderPath, "Efficiency_curves_altitude_TAS_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListAltitudeParameterization_CAS_Imperial, efficiencyListAltitudeParameterization,
@@ -5085,7 +5104,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "",
 							true, legendAltitude_Imperial,
-							cruiseFolderPath, "Efficiency_curves_altitude_CAS_IMPERIAL"
+							cruiseFolderPath, "Efficiency_curves_altitude_CAS_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							machListAltitudeParameterization, efficiencyListAltitudeParameterization,
@@ -5094,7 +5114,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							" ", " ",
 							true, legendAltitude_Imperial,
-							cruiseFolderPath, "Efficiency_curves_altitude_Mach_IMPERIAL"
+							cruiseFolderPath, "Efficiency_curves_altitude_Mach_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -5175,7 +5196,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "",
 							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_TAS_SI"
+							cruiseFolderPath, "Efficiency_curves_weights_TAS_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListWeightParameterization_CAS_SI, efficiencyListWeightParameterization,
@@ -5184,7 +5206,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"m/s", "",
 							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_CAS_SI"
+							cruiseFolderPath, "Efficiency_curves_weights_CAS_SI",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListWeightParameterization_TAS_Imperial, efficiencyListWeightParameterization,
@@ -5193,7 +5216,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "",
 							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_TAS_IMPERIAL"
+							cruiseFolderPath, "Efficiency_curves_weights_TAS_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListWeightParameterization_CAS_Imperial, efficiencyListWeightParameterization,
@@ -5202,7 +5226,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							"kn", "",
 							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_CAS_IMPERIAL"
+							cruiseFolderPath, "Efficiency_curves_weights_CAS_IMPERIAL",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							machListWeightParameterization, efficiencyListWeightParameterization,
@@ -5211,7 +5236,8 @@ public class ACPerformanceManager {
 							null, null, null, null,
 							" ", " ",
 							true, legendWeight,
-							cruiseFolderPath, "Efficiency_curves_weights_Mach"
+							cruiseFolderPath, "Efficiency_curves_weights_Mach",
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -5238,7 +5264,8 @@ public class ACPerformanceManager {
 							specificRange,
 							mach,
 							legend,
-							cruiseFolderPath
+							cruiseFolderPath,
+							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -5480,6 +5507,7 @@ public class ACPerformanceManager {
 			_theEnvelopeCalculator = new FlightManeuveringEnvelopeCalc(
 					_theAircraft.getRegulations(),
 					_theAircraft.getTypeVehicle(),
+					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance(),
 					_cLmaxClean,
 					_cLmaxLanding,
 					_cLmaxInverted,

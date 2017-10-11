@@ -2295,7 +2295,7 @@ public class StabilityExecutableManager {
 						false,
 						legend,
 						folderPathName,
-						"Downwash Angle");
+						"Downwash Angle", true);
 
 				System.out.println("Plot Downwash Angle Chart ---> DONE \n");
 			}
@@ -2322,7 +2322,7 @@ public class StabilityExecutableManager {
 						false,
 						legend,
 						folderPathName,
-						"Downwash Gradient");
+						"Downwash Gradient", true);
 
 				System.out.println("Plot Downwash Gradient Chart ---> DONE \n");
 
@@ -2353,7 +2353,7 @@ public class StabilityExecutableManager {
 						true,
 						legend,
 						folderPathName,
-						"Downwash Angle");
+						"Downwash Angle", true);
 
 				System.out.println("Plot Downwash Angle Chart ---> DONE \n");
 			}
@@ -2382,7 +2382,7 @@ public class StabilityExecutableManager {
 						true,
 						legend,
 						folderPathName,
-						"Downwash Gradient");
+						"Downwash Gradient", true);
 
 				System.out.println("Plot Downwash Gradient Chart ---> DONE \n");
 
@@ -2408,7 +2408,7 @@ public class StabilityExecutableManager {
 						true,
 						legend,
 						folderPathName,
-						"Horizontal Distance");
+						"Horizontal Distance", true);
 
 				System.out.println("Plot Horizontal Distance Chart ---> DONE \n");
 
@@ -2434,7 +2434,7 @@ public class StabilityExecutableManager {
 						true,
 						legend,
 						folderPathName,
-						"Vertical Distance");
+						"Vertical Distance", true);
 
 				System.out.println("Plot Vertical Distance Chart ---> DONE \n");
 			}
@@ -2464,7 +2464,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Wing Lift Coefficient 3D curve");
+					"Wing Lift Coefficient 3D curve", true);
 
 			System.out.println("Plot CL clean Chart ---> DONE \n");
 
@@ -2497,7 +2497,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Horizontal Tail Lift Coefficient 3D curve clean");
+					"Horizontal Tail Lift Coefficient 3D curve clean", true);
 
 			System.out.println("Plot H tail CL clean Chart ---> DONE \n");
 
@@ -2529,7 +2529,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail Cl distribution at CL max Clean");
+					"Horizontal Tail Cl distribution at CL max Clean", true);
 
 			System.out.println("Plot Htail Cl distribution at CL max ---> DONE \n");
 		}
@@ -2556,7 +2556,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail CL vs alpha with elevator deflection");
+					"Horizontal Tail CL vs alpha with elevator deflection", true);
 
 			System.out.println("Plot Htail CL vs alpha with elevator deflection---> DONE \n");
 		}
@@ -2585,7 +2585,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Wing Fuselage Lift Coefficient 3D curve clean");
+					"Wing Fuselage Lift Coefficient 3D curve clean", true);
 
 			System.out.println("Plot CL wing fuselage clean Chart ---> DONE \n");
 		}
@@ -2616,7 +2616,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Wing Parasite drag Coefficient");
+					"Wing Parasite drag Coefficient", true);
 
 			System.out.println("Plot wing Parasite drag Coefficient chart ---> DONE \n");
 			
@@ -2642,7 +2642,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Wing Induced drag Coefficient");
+					"Wing Induced drag Coefficient", true);
 
 			System.out.println("Plot wing Induced drag Coefficient chart ---> DONE \n");
 			
@@ -2674,7 +2674,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Wing Total drag Coefficient");
+					"Wing Total drag Coefficient", true);
 
 			System.out.println("Plot wing Total drag Coefficient chart ---> DONE \n");
 			
@@ -2705,7 +2705,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Horizontal Tail Parasite drag Coefficient");
+					"Horizontal Tail Parasite drag Coefficient", true);
 
 			System.out.println("Plot Horizontal Tail Parasite drag Coefficient chart ---> DONE \n");
 			
@@ -2731,7 +2731,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Horizontal Tail Induced drag Coefficient");
+					"Horizontal Tail Induced drag Coefficient", true);
 
 			System.out.println("Plot Horizontal Tail Induced drag Coefficient chart ---> DONE \n");
 			
@@ -2763,7 +2763,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail Total drag Coefficient");
+					"Horizontal Tail Total drag Coefficient", true);
 
 			System.out.println("Plot Horizontal Tail Total drag Coefficient chart ---> DONE \n");
 			
@@ -2790,7 +2790,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail CD vs CL with elevator deflection");
+					"Horizontal Tail CD vs CL with elevator deflection", true);
 
 			System.out.println("Plot Htail CD vs CL with elevator deflection---> DONE \n");
 			
@@ -2824,7 +2824,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Fuselage Moment Coefficient");
+					"Fuselage Moment Coefficient", true);
 
 			System.out.println("Plot Fuselage Moment Coefficient Chart ---> DONE \n");
 //			System.out.println("Plot CL high lift Chart ---> DONE \n");
@@ -2889,7 +2889,7 @@ public class StabilityExecutableManager {
 				false,
 				legend,
 				folderPathName,
-				"Wing Moment Coefficient with respect to AC indicated = " + _wingFinalMomentumPole);
+				"Wing Moment Coefficient with respect to AC indicated = " + _wingFinalMomentumPole, true);
 
 	System.out.println("Plot Wing Moment Coefficient Chart with respect to AC indicated---> DONE \n");
 		
@@ -2923,7 +2923,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail Moment Coefficient with respect to AC");
+					"Horizontal Tail Moment Coefficient with respect to AC" ,true);
 
 		System.out.println("Plot Horizontal Tail Moment Coefficient Chart with respect to AC---> DONE \n");
 		}
@@ -2950,7 +2950,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail Moment Coefficient");
+					"Horizontal Tail Moment Coefficient", true);
 		
 			System.out.println("Plot Horizontal Tail Moment Coefficient Chart with respect to other poles---> DONE \n");
 		}
@@ -2977,7 +2977,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal Tail Moment Coefficient");
+					"Horizontal Tail Moment Coefficient", true);
 		
 			System.out.println("Plot Horizontal Tail Moment Coefficient Chart with respect to other poles---> DONE \n");
 		}
@@ -3006,7 +3006,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Total Lift Coefficient");
+					"Total Lift Coefficient", true);
 		
 			System.out.println("Plot Total Lift Coefficient Chart ---> DONE \n");
 			
@@ -3036,7 +3036,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Horizontal tail equilibrium lift coefficient");
+					"Horizontal tail equilibrium lift coefficient", true);
 		
 			System.out.println("Horizontal tail equilibrium lift coefficient ---> DONE \n");
 			
@@ -3065,7 +3065,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Total equilibrium lift coefficient");
+					"Total equilibrium lift coefficient", true);
 		
 			System.out.println("Total equilibrium lift coefficient ---> DONE \n");
 			
@@ -3090,7 +3090,7 @@ public class StabilityExecutableManager {
 					false,
 					legend,
 					folderPathName,
-					"Equilibrium angle of deflection");
+					"Equilibrium angle of deflection", true);
 		
 			System.out.println("Total equilibrium angle deflection ---> DONE \n");
 			
@@ -3132,7 +3132,7 @@ public class StabilityExecutableManager {
 					true,
 					legend,
 					folderPathName,
-					"Components Moment coefficient with respect TO CG");
+					"Components Moment coefficient with respect TO CG", true);
 		
 			System.out.println("Plot Components Moment coefficient with respect TO CG Chart ---> DONE \n");
 		}
@@ -3159,7 +3159,7 @@ public class StabilityExecutableManager {
 						true,
 						legend,
 						folderPathName,
-						"Total Moment Coefficient vs CL");
+						"Total Moment Coefficient vs CL", true);
 			
 				System.out.println("Plot Total Moment Coefficient Chart var delta e ---> DONE \n");
 			}
@@ -3186,7 +3186,7 @@ public class StabilityExecutableManager {
 							true,
 							legend,
 							folderPathName,
-							"Total Moment Coefficient vs alpha");
+							"Total Moment Coefficient vs alpha", true);
 				
 					System.out.println("Plot Total Lift Coefficient var delta e vs alpha Chart ---> DONE \n");
 				}

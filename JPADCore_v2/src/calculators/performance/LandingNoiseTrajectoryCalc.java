@@ -85,6 +85,7 @@ public class LandingNoiseTrajectoryCalc {
 	private Double alphaDotFlare, cL0LND, cLmaxLND, kGround;
 	private Amount<?> cLalphaLND;
 	private MyInterpolatingFunction mu, muBrake, phiGroundIdle, thrustFlareFunction;
+	private boolean createCSV;
 
 	private FirstOrderIntegrator theIntegrator;
 	private FirstOrderDifferentialEquations ode;
@@ -129,9 +130,12 @@ public class LandingNoiseTrajectoryCalc {
 			Amount<Angle> iw,
 			double cLmaxLND,
 			double cLZeroLND,
-			Amount<?> cLalphaLND
+			Amount<?> cLalphaLND,
+			boolean createCSV
 			) {
 
+		this.createCSV = createCSV;
+		
 		// Required data
 		this.aspectRatio = aspectRatio;
 		this.surface = surface;
@@ -1168,7 +1172,9 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Time", "Horizontal Forces", "s", "N",
 						new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-						simulationDetailsOutputFolder, "HorizontalForces_evolution_SI");
+						simulationDetailsOutputFolder, "HorizontalForces_evolution_SI",
+						createCSV
+						);
 			}
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1213,7 +1219,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Time", "Horizontal Forces", "s", "lb",
 						new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-						simulationDetailsOutputFolder, "HorizontalForces_evolution_IMPERIAL");
+						simulationDetailsOutputFolder, "HorizontalForces_evolution_IMPERIAL",
+						createCSV );
 			}
 
 			//.................................................................................
@@ -1244,7 +1251,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground Distance", "Horizontal Forces", "m", "N",
 						new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-						simulationDetailsOutputFolder, "HorizontalForces_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "HorizontalForces_vs_GroundDistance_SI",
+						createCSV);
 			}
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1289,7 +1297,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground Distance", "Horizontal Forces", "ft", "lb",
 						new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-						simulationDetailsOutputFolder, "HorizontalForces_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "HorizontalForces_vs_GroundDistance_IMPERIAL",
+						createCSV);
 			}
 
 			//.................................................................................
@@ -1318,7 +1327,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Time", "Vertical Forces", "s", "N",
 						new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-						simulationDetailsOutputFolder, "VerticalForces_evolution_SI");
+						simulationDetailsOutputFolder, "VerticalForces_evolution_SI",
+						createCSV);
 			}
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1353,7 +1363,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Time", "Vertical Forces", "s", "lb",
 						new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-						simulationDetailsOutputFolder, "VerticalForces_evolution_IMPERIAL");
+						simulationDetailsOutputFolder, "VerticalForces_evolution_IMPERIAL",
+						createCSV);
 			}
 
 			//.................................................................................
@@ -1382,7 +1393,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground distance", "Vertical Forces", "m", "N",
 						new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-						simulationDetailsOutputFolder, "VerticalForces_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "VerticalForces_vs_GroundDistance_SI",
+						createCSV);
 			}
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1421,7 +1433,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground distance", "Vertical Forces", "ft", "lb",
 						new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-						simulationDetailsOutputFolder, "VerticalForces_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "VerticalForces_vs_GroundDistance_IMPERIAL",
+						createCSV);
 			}
 
 			//.................................................................................
@@ -1452,7 +1465,8 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, null, null,
 					"Time", "Angles", "s", "deg",
 					new String[] {"Alpha Body", "Theta", "Gamma"},
-					simulationDetailsOutputFolder, "Angles_evolution");
+					simulationDetailsOutputFolder, "Angles_evolution",
+					createCSV);
 
 			//.................................................................................
 			// Angles v.s. Ground Distance
@@ -1483,7 +1497,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground Distance", "Angles", "m", "deg",
 						new String[] {"Alpha Body", "Theta", "Gamma"},
-						simulationDetailsOutputFolder, "Angles_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "Angles_vs_GroundDistance_SI",
+						createCSV);
 			}
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1517,7 +1532,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground Distance", "Angles", "ft", "deg",
 						new String[] {"Alpha Body", "Theta", "Gamma"},
-						simulationDetailsOutputFolder, "Angles_vs_GroundDistance_IMPERIAL");
+						simulationDetailsOutputFolder, "Angles_vs_GroundDistance_IMPERIAL",
+						createCSV);
 			}
 			//.................................................................................
 			// Angular velocity v.s. time
@@ -1534,7 +1550,8 @@ public class LandingNoiseTrajectoryCalc {
 					0.0, null, null, null,
 					"Time", "Angular Velocity", "s", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
-					simulationDetailsOutputFolder, "AngularVelocity_evolution");
+					simulationDetailsOutputFolder, "AngularVelocity_evolution",
+					createCSV);
 
 			//.................................................................................
 			// Angular velocity v.s. Ground Distance
@@ -1552,7 +1569,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground Distance", "Angular Velocity", "m", "deg/s",
 						new String[] {"Alpha_dot", "Gamma_dot"},
-						simulationDetailsOutputFolder, "AngularVelocity_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "AngularVelocity_vs_GroundDistance_SI",
+						createCSV);
 			}
 
 			if(unitFormat == UnitFormatEnum.IMPERIAL) {
@@ -1573,7 +1591,8 @@ public class LandingNoiseTrajectoryCalc {
 						0.0, null, null, null,
 						"Ground Distance", "Angular Velocity", "ft", "deg/s",
 						new String[] {"Alpha_dot", "Gamma_dot"},
-						simulationDetailsOutputFolder, "AngularVelocity_vs_GroundDistance_SI");
+						simulationDetailsOutputFolder, "AngularVelocity_vs_GroundDistance_SI",
+						createCSV);
 			}
 
 			System.out.println("\n---------------------------DONE!-------------------------------");
@@ -2512,6 +2531,14 @@ public class LandingNoiseTrajectoryCalc {
 
 	public void setThrustFlareFunction(MyInterpolatingFunction thrustFlareFunction) {
 		this.thrustFlareFunction = thrustFlareFunction;
+	}
+
+	public boolean getCreateCSV() {
+		return createCSV;
+	}
+
+	public void setCreateCSV(boolean createCSV) {
+		this.createCSV = createCSV;
 	}
 
 }

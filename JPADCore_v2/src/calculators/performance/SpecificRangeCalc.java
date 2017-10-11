@@ -153,7 +153,8 @@ public class SpecificRangeCalc {
 			List<Double[]> specificRange,
 			List<Double[]> mach,
 			List<String> legend,
-			String performanceFolderPath
+			String performanceFolderPath,
+			boolean createCSV
 			) throws InstantiationException, IllegalAccessException{
 
 		// creating and adding maximum values curve to Lists
@@ -198,7 +199,8 @@ public class SpecificRangeCalc {
 				null, null, null, null,									// Axis
 				"", "nmi/lbs",											// Units			
 				true, legend,											// Legend visibility and values
-				performanceFolderPath, "Cruise_Grid"					// output information
+				performanceFolderPath, "Cruise_Grid",					// output information
+				createCSV
 				);
 	}
 	
@@ -218,7 +220,8 @@ public class SpecificRangeCalc {
 			List<Double[]> sfc,
 			List<Double[]> mach,
 			List<String> legend,
-			EngineTypeEnum engineType) throws InstantiationException, IllegalAccessException {
+			EngineTypeEnum engineType,
+			boolean createCSV) throws InstantiationException, IllegalAccessException {
 		
 		System.out.println("\n-----------WRITING SFC v.s. MACH CHART TO FILE-------------");
 		
@@ -238,7 +241,8 @@ public class SpecificRangeCalc {
 					null, null, null, null,
 					"", "lb/(lb*h)",
 					true, legend,
-					subfolderPath, "SFC"
+					subfolderPath, "SFC",
+					createCSV
 					);
 		else if(engineType == EngineTypeEnum.TURBOPROP)
 			MyChartToFileUtils.plot(
@@ -247,7 +251,8 @@ public class SpecificRangeCalc {
 					null, null, null, null,
 					"", "lb/(hp*h)",
 					true, legend,
-					subfolderPath, "SFC"
+					subfolderPath, "SFC",
+					createCSV
 					);  
 	}
 	

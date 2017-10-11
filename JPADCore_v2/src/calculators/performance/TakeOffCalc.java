@@ -1175,7 +1175,7 @@ public class TakeOffCalc {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	public void createTakeOffCharts(String takeOffFolderPath) throws InstantiationException, IllegalAccessException {
+	public void createTakeOffCharts(String takeOffFolderPath, boolean createCSV) throws InstantiationException, IllegalAccessException {
 
 		System.out.println("\n---------WRITING TAKE-OFF PERFORMANCE CHARTS TO FILE-----------");
 
@@ -1443,7 +1443,9 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Horizontal Forces", "s", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_SI");
+				takeOffFolderPath, "HorizontalForces_evolution_SI",
+				createCSV
+				);
 
 		double[][] xMatrix1IMPERIAL = new double[5][totalForce.size()];
 		for(int i=0; i<xMatrix1IMPERIAL.length; i++)
@@ -1483,7 +1485,8 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Horizontal Forces", "s", "lb",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
+				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL",
+				createCSV);
 		
 		//.................................................................................
 		// Horizontal Forces v.s. Ground Distance
@@ -1508,7 +1511,8 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Horizontal Forces", "m", "N",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_SI");
+				takeOffFolderPath, "HorizontalForces_evolution_SI",
+				createCSV);
 
 		double[][] xMatrix2IMPERIAL = new double[5][totalForce.size()];
 		for(int i=0; i<xMatrix2IMPERIAL.length; i++)
@@ -1548,7 +1552,8 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Horizontal Forces", "ft", "lb",
 				new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "Wsin(gamma)"},
-				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
+				takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL",
+				createCSV);
 
 		//.................................................................................
 		// Vertical Forces v.s. Time
@@ -1571,7 +1576,8 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Vertical Forces", "s", "N",
 				new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-				takeOffFolderPath, "VerticalForces_evolution");
+				takeOffFolderPath, "VerticalForces_evolution",
+				createCSV);
 
 		double[][] xMatrix3IMPERIAL = new double[3][totalForce.size()];
 		for(int i=0; i<xMatrix3IMPERIAL.length; i++)
@@ -1601,7 +1607,8 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Time", "Vertical Forces", "s", "lb",
 				new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-				takeOffFolderPath, "VerticalForces_evolution_IMPERIAL");
+				takeOffFolderPath, "VerticalForces_evolution_IMPERIAL",
+				createCSV);
 		
 		//.................................................................................
 		// Vertical Forces v.s. ground distance
@@ -1624,7 +1631,8 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Ground distance", "Vertical Forces", "m", "N",
 				new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-				takeOffFolderPath, "VerticalForces_vs_GroundDistance_SI");
+				takeOffFolderPath, "VerticalForces_vs_GroundDistance_SI",
+				createCSV);
 
 		double[][] xMatrix4IMPERIAL = new double[3][totalForce.size()];
 		for(int i=0; i<xMatrix4IMPERIAL.length; i++)
@@ -1658,7 +1666,7 @@ public class TakeOffCalc {
 				0.0, null, null, null,
 				"Ground distance", "Vertical Forces", "ft", "lb",
 				new String[] {"Lift", "Thrust Vertical", "Wcos(gamma)"},
-				takeOffFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL");
+				takeOffFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL", createCSV);
 		
 		if(!isAborted) {
 			//.................................................................................
@@ -1689,7 +1697,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Time", "Angles", "s", "deg",
 					new String[] {"Alpha Body", "Theta", "Gamma"},
-					takeOffFolderPath, "Angles_evolution");
+					takeOffFolderPath, "Angles_evolution",createCSV);
 
 			//.................................................................................
 			// Angles v.s. Ground Distance
@@ -1719,7 +1727,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Ground Distance", "Angles", "m", "deg",
 					new String[] {"Alpha Body", "Theta", "Gamma"},
-					takeOffFolderPath, "Angles_vs_GroundDistance_SI");
+					takeOffFolderPath, "Angles_vs_GroundDistance_SI", createCSV);
 
 			double[][] xMatrix6IMPERIAL = new double[3][totalForce.size()];
 			for(int i=0; i<xMatrix6IMPERIAL.length; i++)
@@ -1751,7 +1759,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Ground Distance", "Angles", "ft", "deg",
 					new String[] {"Alpha Body", "Theta", "Gamma"},
-					takeOffFolderPath, "Angles_vs_GroundDistance_IMPERIAL");
+					takeOffFolderPath, "Angles_vs_GroundDistance_IMPERIAL", createCSV);
 			
 			//.................................................................................
 			// Angular velocity v.s. time
@@ -1768,7 +1776,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Time", "Angular Velocity", "s", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
-					takeOffFolderPath, "AngularVelocity_evolution");
+					takeOffFolderPath, "AngularVelocity_evolution", createCSV);
 
 			//.................................................................................
 			// Angular velocity v.s. Ground Distance
@@ -1785,7 +1793,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Ground Distance", "Angular Velocity", "m", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
-					takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI");
+					takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI",createCSV);
 			
 			double[][] xMatrix8IMPERIAL = new double[2][totalForce.size()];
 			for(int i=0; i<xMatrix8IMPERIAL.length; i++)
@@ -1804,7 +1812,7 @@ public class TakeOffCalc {
 					0.0, null, null, null,
 					"Ground Distance", "Angular Velocity", "ft", "deg/s",
 					new String[] {"Alpha_dot", "Gamma_dot"},
-					takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI");
+					takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI", createCSV);
 		}
 		
 		System.out.println("\n---------------------------DONE!-------------------------------");
@@ -1818,7 +1826,7 @@ public class TakeOffCalc {
 	 *
 	 * @author Vittorio Trifari
 	 */
-	public void createBalancedFieldLengthChart(String takeOffFolderPath) {
+	public void createBalancedFieldLengthChart(String takeOffFolderPath, boolean createCSV) {
 
 		System.out.println("\n-------WRITING BALANCED TAKE-OFF DISTANCE CHART TO FILE--------");
 
@@ -1835,7 +1843,7 @@ public class TakeOffCalc {
 				null, null, null, null,
 				"Vfailure/VsTO", "Distance", "", "m",
 				new String[] {"OEI Take-Off", "Aborted Take-Off"},
-				takeOffFolderPath, "BalancedTakeOffLength_SI");
+				takeOffFolderPath, "BalancedTakeOffLength_SI", createCSV);
 		
 		double[][] yArrayIMPERIAL = new double[][]	{
 			Arrays.stream(continuedTakeOffArrayFitted)
@@ -1851,7 +1859,7 @@ public class TakeOffCalc {
 				null, null, null, null,
 				"Vfailure/VsTO", "Distance", "", "ft",
 				new String[] {"OEI Take-Off", "Aborted Take-Off"},
-				takeOffFolderPath, "BalancedTakeOffLength_IMPERIAL");
+				takeOffFolderPath, "BalancedTakeOffLength_IMPERIAL", createCSV);
 
 		System.out.println("\n---------------------------DONE!-------------------------------");
 	}
@@ -2794,4 +2802,5 @@ public class TakeOffCalc {
 	public void setPolarCDTakeOff(Double[] polarCDTakeOff) {
 		this.polarCDTakeOff = polarCDTakeOff;
 	}
+
 }

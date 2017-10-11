@@ -19,8 +19,8 @@
 			Otherwise the all the CG positions in every condition will be read from the Balance output file.
 			-->
 				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
-				<adimensional_center_of_gravity_x_position_list>0.15; 0.25; 0.33</adimensional_center_of_gravity_x_position_list>
-				<adimensional_center_of_gravity_z_position_list>0.05; 0.05; 0.05</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
+				<adimensional_center_of_gravity_x_position_list>0.15; 0.25</adimensional_center_of_gravity_x_position_list>
+				<adimensional_center_of_gravity_z_position_list>0.05; 0.05</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
 				<fuselage_dimensional_center_of_gravity_x_position unit="m">16.15</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
 				<fuselage_dimensional_center_of_gravity_z_position unit="m">0.0</fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 				<rear_landing_gear_dimensional_center_of_gravity_x_position unit="m">17.71</rear_landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 

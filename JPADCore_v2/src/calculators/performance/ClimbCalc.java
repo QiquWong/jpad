@@ -722,7 +722,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "N",
 						true, legend_SI,
-						climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AEO_SI"
+						climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AEO_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -732,7 +733,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "lb",
 						true, legend_Imperial,
-						climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AEO_IMPERIAL"
+						climbFolderPath, "Drag_and_Thrust_curves_CLIMB_AEO_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -786,7 +788,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "N",
 						true, legend_SI,
-						climbFolderPath, "Drag_and_Thrust_curves_CONTINUOUS_OEI_IMPERIAL"
+						climbFolderPath, "Drag_and_Thrust_curves_CONTINUOUS_OEI_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -796,7 +799,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "lb",
 						true, legend_Imperial,
-						climbFolderPath, "Drag_and_Thrust_curves_CONTINUOUS_OEI_IMPERIAL"
+						climbFolderPath, "Drag_and_Thrust_curves_CONTINUOUS_OEI_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -889,7 +893,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "W",
 						true, legend_SI,
-						climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AEO_SI"
+						climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AEO_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -899,7 +904,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "hp",
 						true, legend_Imperial,
-						climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AEO_IMPERIAL"
+						climbFolderPath, "Power_Needed_and_Power_Available_curves_CLIMB_AEO_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -953,7 +959,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "W",
 						true, legend_SI,
-						climbFolderPath, "Power_Needed_and_Power_Available_curves_CONTINUOUS_OEI_SI"
+						climbFolderPath, "Power_Needed_and_Power_Available_curves_CONTINUOUS_OEI_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -963,7 +970,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "hp",
 						true, legend_Imperial,
-						climbFolderPath, "Power_Needed_and_Power_Available_curves_CONTINUOUS_OEI_IMPERIAL"
+						climbFolderPath, "Power_Needed_and_Power_Available_curves_CONTINUOUS_OEI_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1049,7 +1057,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "",
 						true, legendAltitudeAEO_SI,
-						climbFolderPath, "Efficiency_curves_altitude_AEO_TAS_SI"
+						climbFolderPath, "Efficiency_curves_altitude_AEO_TAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1059,7 +1068,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "",
 						true, legendAltitudeAEO_Imperial,
-						climbFolderPath, "Efficiency_curves_altitude_AEO_TAS_IMPERIAL"
+						climbFolderPath, "Efficiency_curves_altitude_AEO_TAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1069,7 +1079,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "",
 						true, legendAltitudeAEO_SI,
-						climbFolderPath, "Efficiency_curves_altitude_AEO_CAS_SI"
+						climbFolderPath, "Efficiency_curves_altitude_AEO_CAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1079,7 +1090,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "",
 						true, legendAltitudeAEO_Imperial,
-						climbFolderPath, "Efficiency_curves_altitude_AEO_CAS_IMPERIAL"
+						climbFolderPath, "Efficiency_curves_altitude_AEO_CAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1089,7 +1101,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"", "",
 						true, legendAltitudeAEO_SI,
-						climbFolderPath, "Efficiency_curves_altitude_AEO_Mach_SI"
+						climbFolderPath, "Efficiency_curves_altitude_AEO_Mach_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1099,7 +1112,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"", "",
 						true, legendAltitudeAEO_Imperial,
-						climbFolderPath, "Efficiency_curves_altitude_AEO_Mach_IMPERIAL"
+						climbFolderPath, "Efficiency_curves_altitude_AEO_Mach_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1182,7 +1196,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "",
 						true, legendAltitudeOEI_SI,
-						climbFolderPath, "Efficiency_curves_altitude_OEI_TAS_SI"
+						climbFolderPath, "Efficiency_curves_altitude_OEI_TAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1192,7 +1207,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "",
 						true, legendAltitudeOEI_Imperial,
-						climbFolderPath, "Efficiency_curves_altitude_OEI_TAS_IMPERIAL"
+						climbFolderPath, "Efficiency_curves_altitude_OEI_TAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1202,7 +1218,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "",
 						true, legendAltitudeOEI_SI,
-						climbFolderPath, "Efficiency_curves_altitude_OEI_CAS_SI"
+						climbFolderPath, "Efficiency_curves_altitude_OEI_CAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1212,7 +1229,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "",
 						true, legendAltitudeOEI_Imperial,
-						climbFolderPath, "Efficiency_curves_altitude_OEI_CAS_IMPERIAL"
+						climbFolderPath, "Efficiency_curves_altitude_OEI_CAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1222,7 +1240,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"", "",
 						true, legendAltitudeOEI_SI,
-						climbFolderPath, "Efficiency_curves_altitude_OEI_Mach_SI"
+						climbFolderPath, "Efficiency_curves_altitude_OEI_Mach_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 				MyChartToFileUtils.plot(
@@ -1232,7 +1251,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"", "",
 						true, legendAltitudeOEI_Imperial,
-						climbFolderPath, "Efficiency_curves_altitude_OEI_Mach_IMPERIAL"
+						climbFolderPath, "Efficiency_curves_altitude_OEI_Mach_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				
 			} catch (InstantiationException e) {
@@ -1319,7 +1339,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "m/s",
 						true, legend_SI,
-						climbFolderPath, "Rate_of_Climb_curves_AEO_TAS_SI"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_TAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_SI, rateOfClimbAEO_SI,
@@ -1328,7 +1349,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "m/s",
 						true, legend_SI,
-						climbFolderPath, "Rate_of_Climb_curves_AEO_CAS_SI"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_CAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, rateOfClimbAEO_SI,
@@ -1337,7 +1359,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "m/s",
 						true, legend_SI,
-						climbFolderPath, "Rate_of_Climb_curves_AEO_MACH_SI"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_MACH_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedTAS_Imperial, rateOfClimbAEO_Imperial,
@@ -1346,7 +1369,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
-						climbFolderPath, "Rate_of_Climb_curves_AEO_TAS_IMPERIAL"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_TAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_Imperial, rateOfClimbAEO_Imperial,
@@ -1355,7 +1379,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
-						climbFolderPath, "Rate_of_Climb_curves_AEO_CAS_IMPERIAL"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_CAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, rateOfClimbAEO_Imperial,
@@ -1364,7 +1389,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "ft/min",
 						true, legend_Imperial,
-						climbFolderPath, "Rate_of_Climb_curves_AEO_MACH_IMPERIAL"
+						climbFolderPath, "Rate_of_Climb_curves_AEO_MACH_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1396,7 +1422,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "m/s",
 						true, legend_SI,
-						climbFolderPath, "Rate_of_Climb_curves_OEI_TAS_SI"
+						climbFolderPath, "Rate_of_Climb_curves_OEI_TAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_SI, rateOfClimbOEI_SI,
@@ -1405,7 +1432,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "m/s",
 						true, legend_SI,
-						climbFolderPath, "Rate_of_Climb_curves_OEI_CAS_SI"
+						climbFolderPath, "Rate_of_Climb_curves_OEI_CAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, rateOfClimbOEI_SI,
@@ -1414,7 +1442,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "m/s",
 						true, legend_SI,
-						climbFolderPath, "Rate_of_Climb_curves_OEI_MACH_SI"
+						climbFolderPath, "Rate_of_Climb_curves_OEI_MACH_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedTAS_Imperial, rateOfClimbOEI_Imperial,
@@ -1423,7 +1452,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
-						climbFolderPath, "Rate_of_Climb_curves_OEI_TAS_IMPERIAL"
+						climbFolderPath, "Rate_of_Climb_curves_OEI_TAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_Imperial, rateOfClimbOEI_Imperial,
@@ -1432,7 +1462,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "ft/min",
 						true, legend_Imperial,
-						climbFolderPath, "Rate_of_Climb_curves_OEI_CAS_IMPERIAL"
+						climbFolderPath, "Rate_of_Climb_curves_OEI_CAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, rateOfClimbOEI_Imperial,
@@ -1441,7 +1472,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "ft/min",
 						true, legend_Imperial,
-						climbFolderPath, "Rate_of_Climb_curves_OEI_MACH_IMPERIAL"
+						climbFolderPath, "Rate_of_Climb_curves_OEI_MACH_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1523,7 +1555,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "deg",
 						true, legend_SI,
-						climbFolderPath, "Climb_angle_curves_AEO_TAS_SI"
+						climbFolderPath, "Climb_angle_curves_AEO_TAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_SI, climbAngleAEO,
@@ -1532,7 +1565,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "deg",
 						true, legend_SI,
-						climbFolderPath, "Climb_angle_curves_AEO_CAS_SI"
+						climbFolderPath, "Climb_angle_curves_AEO_CAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedTAS_Imperial, climbAngleAEO,
@@ -1541,7 +1575,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "deg",
 						true, legend_Imperial,
-						climbFolderPath, "Climb_angle_curves_AEO_TAS_IMPERIAL"
+						climbFolderPath, "Climb_angle_curves_AEO_TAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_Imperial, climbAngleAEO,
@@ -1550,7 +1585,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "deg",
 						true, legend_Imperial,
-						climbFolderPath, "Climb_angle_curves_AEO_CAS_IMPERIAL"
+						climbFolderPath, "Climb_angle_curves_AEO_CAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, climbAngleAEO,
@@ -1559,7 +1595,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "deg",
 						true, legend_SI,
-						climbFolderPath, "Climb_angle_curves_AEO_MACH_SI"
+						climbFolderPath, "Climb_angle_curves_AEO_MACH_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, climbAngleAEO,
@@ -1568,7 +1605,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "deg",
 						true, legend_Imperial,
-						climbFolderPath, "Climb_angle_curves_AEO_MACH_IMPERIAL"
+						climbFolderPath, "Climb_angle_curves_AEO_MACH_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1597,7 +1635,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "deg",
 						true, legend_SI,
-						climbFolderPath, "Climb_angle_curves_OEI_TAS_SI"
+						climbFolderPath, "Climb_angle_curves_OEI_TAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_SI, climbAngleOEI,
@@ -1606,7 +1645,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"m/s", "deg",
 						true, legend_SI,
-						climbFolderPath, "Climb_angle_curves_OEI_CAS_SI"
+						climbFolderPath, "Climb_angle_curves_OEI_CAS_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedTAS_Imperial, climbAngleOEI,
@@ -1615,7 +1655,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "deg",
 						true, legend_Imperial,
-						climbFolderPath, "Climb_angle_curves_OEI_TAS_IMPERIAL"
+						climbFolderPath, "Climb_angle_curves_OEI_TAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						speedCAS_Imperial, climbAngleOEI,
@@ -1624,7 +1665,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"kn", "deg",
 						true, legend_Imperial,
-						climbFolderPath, "Climb_angle_curves_OEI_CAS_IMPERIAL"
+						climbFolderPath, "Climb_angle_curves_OEI_CAS_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, climbAngleOEI,
@@ -1633,7 +1675,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "deg",
 						true, legend_SI,
-						climbFolderPath, "Climb_angle_curves_OEI_MACH_SI"
+						climbFolderPath, "Climb_angle_curves_OEI_MACH_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						mach, climbAngleOEI,
@@ -1642,7 +1685,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						" ", "deg",
 						true, legend_Imperial,
-						climbFolderPath, "Climb_angle_curves_OEI_MACH_IMPERIAL"
+						climbFolderPath, "Climb_angle_curves_OEI_MACH_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
@@ -1845,7 +1889,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"min", "m",
 						true, legend,
-						climbFolderPath, "Climb_Time_AEO_SI"
+						climbFolderPath, "Climb_Time_AEO_SI",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 				MyChartToFileUtils.plot(
 						timeList, altitudeListAEO_Imperial,
@@ -1854,7 +1899,8 @@ public class ClimbCalc {
 						null, null, null, null,
 						"min", "ft",
 						true, legend,
-						climbFolderPath, "Climb_Time_AEO_IMPERIAL"
+						climbFolderPath, "Climb_Time_AEO_IMPERIAL",
+						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			} catch (InstantiationException e) {
 				e.printStackTrace();

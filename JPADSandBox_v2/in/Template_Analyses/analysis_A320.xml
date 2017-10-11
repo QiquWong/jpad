@@ -14,19 +14,21 @@
         <weights 
             file="analysis_weights_A320.xml" 
 			plot="TRUE"
-            method_fuselage=""
+			create_CSV="TRUE"
+            method_fuselage="TORENBEEK_2013"
             method_wing=""
-            method_htail=""
-            method_vtail=""
-			method_nacelles=""
+            method_htail="JENKINSON"
+            method_vtail="JENKINSON"
+			method_nacelles="TORENBEEK_1982"
 			method_landing_gears=""
 			method_systems=""
             />
-		<!-- method_XXX="AVERAGED" if empty string -->
+	<!-- method_XXX="AVERAGED" if empty string -->
 	<!--
 	<balance 
 			file="analysis_balance_A320.xml"
 			plot="TRUE"
+			create_CSV="TRUE"
             method_fuselage=""
             method_wing=""
             method_htail=""
@@ -34,8 +36,10 @@
 			method_canard=""
 		/>
 	-->
+	<!-- method_XXX="AVERAGED" if empty string -->
 	<aerodynamic_and_stability
 			plot="TRUE"
+			create_CSV="FALSE"
 			take_off_condition="TRUE"
 			file_take_off_condition="analysis_aerodynamics_TAKE_OFF_A320.xml"
 			climb_condition="FALSE"
@@ -49,6 +53,7 @@
 	<performance 
 			file="analysis_performance_A320.xml"
 			plot="TRUE"
+			create_CSV="TRUE"
 			take_off="TRUE"
 			climb="TRUE"
 			cruise="TRUE"
@@ -63,6 +68,7 @@
 	<costs 
 			file="analysis_costs_A320.xml"
 			plot="TRUE"
+			create_CSV="TRUE"
 			doc_capital="TRUE"
 			doc_capital_method="AEA"
 			doc_crew="TRUE"

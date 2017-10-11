@@ -20,7 +20,7 @@
 			-->
 				<!-- the values of the centre of gravity position are referred to the mean aerodynamic chord of the wing -->
 				<adimensional_center_of_gravity_x_position_list>0.33</adimensional_center_of_gravity_x_position_list>
-				<adimensional_center_of_gravity_z_position_list>0.52</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
+				<adimensional_center_of_gravity_z_position_list>0.32</adimensional_center_of_gravity_z_position_list> <!-- in BRF referred to MAC --> 
 				<fuselage_dimensional_center_of_gravity_x_position unit="m">11.04</fuselage_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
 				<fuselage_dimensional_center_of_gravity_z_position unit="m">0.0</fuselage_dimensional_center_of_gravity_z_position> <!-- in BRF --> 
 				<rear_landing_gear_dimensional_center_of_gravity_x_position unit="m">12.32170821</rear_landing_gear_dimensional_center_of_gravity_x_position> <!-- in BRF --> 
@@ -41,7 +41,7 @@
 				<number_of_points_semispawise_wing>50</number_of_points_semispawise_wing>
 				<number_of_points_semispawise_horizontal_tail>50</number_of_points_semispawise_horizontal_tail>
 				<number_of_points_semispawise_vertical_tail>50</number_of_points_semispawise_vertical_tail>
-				<delta_elevator_array unit="deg">-5.0;-10.0;-15.0;-20.0;-25.0</delta_elevator_array>
+				<delta_elevator_array unit="deg">5.0;0.0;-5.0;-10.0;-15.0;-20.0;-25.0</delta_elevator_array>
 				<delta_rudder_array unit="deg">5.0;10.0;15.0;20.0;25.0</delta_rudder_array>
 				<adimensional_wing_momentum_pole>0.25</adimensional_wing_momentum_pole> 
 				<adimensional_horizontal_tail_momentum_pole>0.25</adimensional_horizontal_tail_momentum_pole> 

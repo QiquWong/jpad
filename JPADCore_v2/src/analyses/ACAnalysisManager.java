@@ -78,6 +78,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 	private Boolean _plotAerodynamicAndStability;
 	private Boolean _plotPerformance;
 	private Boolean _plotCosts;
+	private Boolean _createCSVWeights;
+	private Boolean _createCSVBalance;
+	private Boolean _createCSVAerodynamicAndStability;
+	private Boolean _createCSVPerformance;
+	private Boolean _createCSVCosts;
 	
 	private static File _weightsFileComplete;
 	private static File _balanceFileComplete;
@@ -116,6 +121,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		private Boolean __plotAerodynamicAndStability = Boolean.FALSE;
 		private Boolean __plotPerformance = Boolean.FALSE;
 		private Boolean __plotCosts = Boolean.FALSE;
+		
+		private Boolean __createCSVWeights = Boolean.TRUE;
+		private Boolean __createCSVBalance = Boolean.TRUE;
+		private Boolean __createCSVAerodynamicAndStability = Boolean.TRUE;
+		private Boolean __createCSVPerformance = Boolean.TRUE;
+		private Boolean __createCSVCosts = Boolean.TRUE;
 		
 		public ACAnalysisManagerBuilder id (String id) {
 			this.__id = id;
@@ -159,6 +170,31 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		
 		public ACAnalysisManagerBuilder plotCosts (Boolean plotCosts){
 			this.__plotCosts = plotCosts;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder createCSVWeights (Boolean createCSVWeights){
+			this.__createCSVWeights = createCSVWeights;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder createCSVBalance (Boolean createCSVBalance){
+			this.__createCSVBalance = createCSVBalance;
+			return this;
+		}
+
+		public ACAnalysisManagerBuilder createCSVAerodynamicAndStability (Boolean createCSVAerodynamicAndStability){
+			this.__createCSVAerodynamicAndStability = createCSVAerodynamicAndStability;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder createCSVPerformance (Boolean createCSVPerformance){
+			this.__createCSVPerformance = createCSVPerformance;
+			return this;
+		}
+		
+		public ACAnalysisManagerBuilder createCSVCosts (Boolean createCSVCosts){
+			this.__createCSVCosts = createCSVCosts;
 			return this;
 		}
 		
@@ -259,6 +295,12 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		this._plotPerformance = builder.__plotPerformance;
 		this._plotCosts = builder.__plotCosts;
 		
+		this._createCSVWeights = builder.__createCSVWeights;
+		this._createCSVBalance = builder.__createCSVBalance;
+		this._createCSVAerodynamicAndStability = builder.__createCSVAerodynamicAndStability;
+		this._createCSVPerformance = builder.__createCSVPerformance;
+		this._createCSVCosts = builder.__createCSVCosts;
+		
 		calculateDependentVariables();
 		
 		//-------------------------------------------------
@@ -305,6 +347,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// WEIGHTS ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapWeights = new HashMap<>();
 		Boolean plotWeights = null;
+		Boolean createCSVWeights = null;
 		
 		NodeList weightsTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//weights");
@@ -325,6 +368,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				plotWeights = Boolean.FALSE;
 			else if(plotWeightsString.equalsIgnoreCase("TRUE"))
 				plotWeights = Boolean.TRUE;
+			
+			String createCSVWeightsString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//weights/@create_CSV");
+			if(createCSVWeightsString.equalsIgnoreCase("FALSE") || createCSVWeightsString == null)
+				createCSVWeights = Boolean.FALSE;
+			else if(createCSVWeightsString.equalsIgnoreCase("TRUE"))
+				createCSVWeights = Boolean.TRUE;
 
 			if(weightsFile != null) {
 
@@ -555,6 +607,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// BALANCE ANALYSIS:
 		Map<ComponentEnum, MethodEnum> methodsMapBalance = new HashMap<>();
 		Boolean plotBalance = null;
+		Boolean createCSVBalance = null;
 
 		NodeList balanceTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//balance");
@@ -575,6 +628,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				plotBalance = Boolean.FALSE;
 			else if(plotBalanceString.equalsIgnoreCase("TRUE"))
 				plotBalance = Boolean.TRUE;
+			
+			String createCSVBalanceString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//balance/@create_CSV");
+			if(createCSVBalanceString.equalsIgnoreCase("FALSE") || createCSVBalanceString == null)
+				createCSVBalance = Boolean.FALSE;
+			else if(createCSVBalanceString.equalsIgnoreCase("TRUE"))
+				createCSVBalance = Boolean.TRUE;
 
 			if(balanceFile != null)  {		
 				analysisList.add(AnalysisTypeEnum.BALANCE);
@@ -652,6 +714,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// AERODYNAMIC ANALYSIS:
 		List<ConditionEnum> taskListAerodynamicAndStability = new ArrayList<ConditionEnum>();
 		Boolean plotAerodynamicAndStability = Boolean.FALSE;
+		Boolean createCSVAerodynamicAndStability = Boolean.FALSE;
 
 		NodeList aerodynamicAndStabilityTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//aerodynamic_and_stability");
@@ -670,6 +733,16 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				plotAerodynamicAndStability = Boolean.FALSE;
 			else if(plotAerodynamicAndStabilityString.equalsIgnoreCase("TRUE"))
 				plotAerodynamicAndStability = Boolean.TRUE;
+			
+			String createCSVAerodynamicAndStabilityString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//aerodynamic_and_stability/@create_CSV");
+			if(createCSVAerodynamicAndStabilityString.equalsIgnoreCase("FALSE")
+					|| createCSVAerodynamicAndStabilityString == null)
+				createCSVAerodynamicAndStability = Boolean.FALSE;
+			else if(createCSVAerodynamicAndStabilityString.equalsIgnoreCase("TRUE"))
+				createCSVAerodynamicAndStability = Boolean.TRUE;
 
 			//---------------------------------------------------------------------------------------------------------
 			// TAKE-OFF CONDITION
@@ -818,6 +891,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 		List<PerformanceEnum> taskListPerformance = new ArrayList<PerformanceEnum>();
 		Boolean plotPerformance = Boolean.FALSE;
+		Boolean createCSVPerformance = Boolean.FALSE;
 
 		NodeList performanceTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//performance");
@@ -839,6 +913,16 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				plotPerformance = Boolean.FALSE;
 			else if(plotPerfromanceString.equalsIgnoreCase("TRUE"))
 				plotPerformance = Boolean.TRUE;
+			
+			String createCSVPerformanceString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//performance/@create_CSV");
+			if(createCSVPerformanceString.equalsIgnoreCase("FALSE") 
+					|| createCSVPerformanceString == null)
+				createCSVPerformance = Boolean.FALSE;
+			else if(createCSVPerformanceString.equalsIgnoreCase("TRUE"))
+				createCSVPerformance = Boolean.TRUE;
 
 			if(performanceFile != null)  {		
 				analysisList.add(AnalysisTypeEnum.PERFORMANCE);
@@ -994,6 +1078,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 		// COSTS ANALYSIS:
 		Map<CostsEnum, MethodEnum> taskListCosts = new HashMap<>();
 		Boolean plotCosts = Boolean.FALSE;
+		Boolean createCSVCosts = Boolean.FALSE;
 
 		NodeList costsTag = MyXMLReaderUtils
 				.getXMLNodeListByPath(reader.getXmlDoc(), "//costs");
@@ -1015,6 +1100,16 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				plotCosts = Boolean.FALSE;
 			else if(plotCostsString.equalsIgnoreCase("TRUE"))
 				plotCosts = Boolean.TRUE;
+			
+			String createCSVCostsString = MyXMLReaderUtils
+					.getXMLPropertyByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//costs/@create_CSV");
+			if(createCSVCostsString.equalsIgnoreCase("FALSE") 
+					|| createCSVCostsString == null)
+				createCSVCosts = Boolean.FALSE;
+			else if(createCSVCostsString.equalsIgnoreCase("TRUE"))
+				createCSVCosts = Boolean.TRUE;
 
 			if(costsFile != null)  {		
 				analysisList.add(AnalysisTypeEnum.COSTS);
@@ -1174,6 +1269,11 @@ public class ACAnalysisManager implements IACAnalysisManager {
 				.plotAerodynamicAndStability(plotAerodynamicAndStability)
 				.plotPerformance(plotPerformance)
 				.plotCosts(plotCosts)
+				.createCSVWeights(createCSVWeights)
+				.createCSVBalance(createCSVBalance)
+				.createCSVAerodynamicAndStability(createCSVAerodynamicAndStability)
+				.createCSVPerformance(createCSVPerformance)
+				.createCSVCosts(createCSVCosts)
 				.build();
 	
 		return theAnalysisManager;
@@ -1759,6 +1859,46 @@ public class ACAnalysisManager implements IACAnalysisManager {
 
 	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
 		this._theOperatingConditions = _theOperatingConditions;
+	}
+
+	public Boolean getCreateCSVWeights() {
+		return _createCSVWeights;
+	}
+
+	public void setCreateCSVWeights(Boolean _createCSVWeights) {
+		this._createCSVWeights = _createCSVWeights;
+	}
+
+	public Boolean getCreateCSVBalance() {
+		return _createCSVBalance;
+	}
+
+	public void setCreateCSVBalance(Boolean _createCSVBalance) {
+		this._createCSVBalance = _createCSVBalance;
+	}
+
+	public Boolean getCreateCSVAerodynamicAndStability() {
+		return _createCSVAerodynamicAndStability;
+	}
+
+	public void setCreateCSVAerodynamicAndStability(Boolean _createCSVAerodynamicAndStability) {
+		this._createCSVAerodynamicAndStability = _createCSVAerodynamicAndStability;
+	}
+
+	public Boolean getCreateCSVPerformance() {
+		return _createCSVPerformance;
+	}
+
+	public void setCreateCSVPerformance(Boolean _createCSVPerformance) {
+		this._createCSVPerformance = _createCSVPerformance;
+	}
+
+	public Boolean getCreateCSVCosts() {
+		return _createCSVCosts;
+	}
+
+	public void setCreateCSVCosts(Boolean _createCSVCosts) {
+		this._createCSVCosts = _createCSVCosts;
 	}
 
 }

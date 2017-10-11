@@ -1423,7 +1423,8 @@ public class ACBalanceManager implements IACBalanceManager {
 					null, null, null, null,
 					"%", "Kg",
 					true, legend,
-					balanceOutputFolderPath, "Loading Cycle"
+					balanceOutputFolderPath, "Loading Cycle",
+					_theAircraft.getTheAnalysisManager().getCreateCSVBalance()
 					);
 		} catch (InstantiationException e) {
 			e.printStackTrace();

@@ -668,7 +668,8 @@ public class HighLiftDevicesCalc {
 				true,
 				legend,
 				JPADStaticWriteUtils.createNewFolder(folderPathHL + "High Lift Charts" + File.separator),
-				"CL curve high lift");
+				"CL curve high lift",
+				true);
 
 		System.out.println("\t\n-------------------DONE----------------------- ");
 	}

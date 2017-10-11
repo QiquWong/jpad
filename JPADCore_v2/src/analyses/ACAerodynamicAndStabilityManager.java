@@ -9781,7 +9781,7 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -9797,20 +9797,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body",  
-						"CL_e",
-						"deg", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Total_Equilibrium_Lift_Coefficient");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Total Equilibrium Lift Coefficient", 
+							"alpha body",  
+							"CL_e", 
+							null, 
+							null, 
+							null, 
+							null, 
+							"deg",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Total_Equilibrium_Lift_Coefficient", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE TRIMMED LIFT CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED LIFT CURVE");
@@ -9841,12 +9849,12 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumDragCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -9862,20 +9870,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CD_e", 
-						"CL_e",
-						"", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Total_Equilibrium_Polar_Curve");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Total Equilibrium Polar Curve", 
+							"CL_e", 
+							"CD_e",  
+							null, 
+							null, 
+							null, 
+							null, 
+							"",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Total_Equilibrium_Polar_Curve", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE TRIMMED DRAG POLAR CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED DRAG POLAR CURVE");
@@ -9907,7 +9923,7 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -9923,20 +9939,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body", 
-						"CLh_e",
-						"deg", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Htail_Equilibrium_Lift_Coefficient");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Horizontal Tail Equilibrium Lift Coefficient", 
+							"alpha body", 
+							"CLh_e",
+							null, 
+							null, 
+							null, 
+							null, 
+							"deg",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Htail_Equilibrium_Lift_Coefficient", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE TRIMMED HORIZONTAL TAIL LIFT CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED HORIZONTAL TAIL LIFT CURVE");
@@ -9967,12 +9991,12 @@ public class ACAerodynamicAndStabilityManager {
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumDragCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -9988,20 +10012,29 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CLh_e", 
-						"CDh_e",
-						"", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Htail_Equilibrium_Drag_Coefficient");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Horizontal Tail Equilibrium Drag Coefficient", 
+							"CLh_e", 
+							"CDh_e",
+							null, 
+							null, 
+							null, 
+							null, 
+							"",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Htail_Equilibrium_Drag_Coefficient", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				
 			}
 			else
 				System.err.println("WARNING!! THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE");
@@ -10033,7 +10066,7 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumEfficiencyMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10049,20 +10082,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body", 
-						"Efficiency",
-						"deg", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Total_Equilibrium_Efficiency_vs_Alpha_Body");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Total Equilibrium Efficiency vs Alpha Body", 
+							"alpha body", 
+							"Efficiency",
+							null, 
+							null, 
+							null, 
+							null, 
+							"deg",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Total_Equilibrium_Efficiency_vs_Alpha_Body", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES VS ALPHA");
@@ -10093,12 +10134,12 @@ public class ACAerodynamicAndStabilityManager {
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumEfficiencyMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10114,20 +10155,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CLe", 
-						"Efficiency",
-						"", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Total_Equilibrium_Efficiency_vs_CLe");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Total Equilibrium Efficiency vs CLe", 
+							"alpha body", 
+							"Efficiency",
+							null, 
+							null, 
+							null, 
+							null, 
+							"deg",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Total_Equilibrium_Efficiency_vs_CLe", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES VS CLe");
@@ -10158,12 +10207,12 @@ public class ACAerodynamicAndStabilityManager {
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 							_deltaEEquilibrium.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10179,20 +10228,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CL_e", 
-						"delta_e_eq",
-						"", 
-						"deg", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Delta_Elevator_Equilibrium");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Delta Elevator Equilibrium", 
+							"CL_e", 
+							"delta_e_eq",
+							null, 
+							null, 
+							null, 
+							null, 
+							"",
+							"deg", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Delta_Elevator_Equilibrium", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE EQUILIBRIUM DELTA ELEVATOR ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE EQULIBRIUM DELTA ELEVATOR CURVE");
@@ -10224,7 +10281,7 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_neutralPointPositionMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10240,20 +10297,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body", 
-						"Neutral Point",
-						"deg", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Neutral_Point_vs_Alpha");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Neutral Point vs Alpha", 
+							"alpha body", 
+							"Neutral Point",
+							null, 
+							null, 
+							null, 
+							null, 
+							"deg",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Neutral_Point_vs_Alpha", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE NEUTRAL POINT ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE NEUTRAL POINT CURVE VS ALPHA");
@@ -10288,7 +10353,7 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_neutralPointPositionMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10304,20 +10369,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CLe", 
-						"Neutral Point",
-						"", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Neutral_Point_vs_CLe");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Neutral Point vs CLe", 
+							"CLe", 
+							"Neutral Point",
+							null, 
+							null, 
+							null, 
+							null, 
+							"",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Neutral_Point_vs_CLe", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE NEUTRAL POINT ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE NEUTRAL POINT CURVE VS CLe");
@@ -10349,7 +10422,7 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_staticStabilityMarginMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10365,20 +10438,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body", 
-						"Static Stability Margin",
-						"deg", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Static_Stability_Margin_vs_Alpha");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Static Stability Margin vs Alpha", 
+							"alpha body", 
+							"Static Stability Margin",
+							null, 
+							null, 
+							null, 
+							null, 
+							"deg",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Static_Stability_Margin_vs_Alpha", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS ALPHA");
@@ -10413,7 +10494,7 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_staticStabilityMarginMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium+1)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10429,20 +10510,28 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CLe", 
-						"Static Stability Margin",
-						"", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Static_Stability_Margin_vs_CLe");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix, 
+							yVectorMatrix, 
+							"Static Stability Margin vs CLe", 
+							"CLe", 
+							"Static Stability Margin",
+							null, 
+							null, 
+							null, 
+							null, 
+							"",
+							"", 
+							false,
+							legend,
+							aircraftPlotFolderPath,
+							"Static_Stability_Margin_vs_CLe", 
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+							);
+				} catch (InstantiationException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS CLe");
@@ -11159,6 +11248,9 @@ public class ACAerodynamicAndStabilityManager {
 		String deltaElevatorListProperty = reader.getXMLPropertyByPath("//global_data/delta_elevator_array");
 		if(deltaElevatorListProperty != null)
 			deltaElevatorList = reader.readArrayofAmountFromXML("//global_data/delta_elevator_array");
+		
+		if(!deltaElevatorList.contains(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE)))
+			deltaElevatorList.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
 		
 		//---------------------------------------------------------------
 		// DELTA RUDDER LIST
@@ -23362,87 +23454,6 @@ public class ACAerodynamicAndStabilityManager {
 			});
 			
 			//=======================================================================================
-			// Calculating neutral point position vs alpha body ... 
-			//=======================================================================================
-
-			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
-
-				Double cMalphaFus = _fuselageAerodynamicManagers.get(ComponentEnum.FUSELAGE)
-						.getCMAlpha().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList()
-								.get(ComponentEnum.FUSELAGE)
-								.get(AerodynamicAndStabilityEnum.CM_ALPHA_FUSELAGE)
-								).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue();
-				
-				Double cLAlphaWing = _liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
-						.getCLAlpha().get(
-								_theAerodynamicBuilderInterface.getComponentTaskList()
-								.get(ComponentEnum.WING)
-								.get(AerodynamicAndStabilityEnum.CL_ALPHA)
-								).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(); 
-				
-				Double xacShift = -cMalphaFus/cLAlphaWing;
-				
-				Amount<Length> wingMeanAerodynamicChord = 
-						_theAerodynamicBuilderInterface.getTheAircraft()
-						.getWing().getLiftingSurfaceCreator()
-						.getMeanAerodynamicChord();
-				
-				Amount<Length> xACWingFuselage = 
-						Amount.valueOf( 
-								(_liftingSurfaceAerodynamicManagers
-								.get(ComponentEnum.WING)
-								.getXacMRF()
-								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-										.get(ComponentEnum.WING)
-										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER))
-								+ xacShift)
-								* wingMeanAerodynamicChord.doubleValue(SI.METER),
-								SI.METER
-								);
-
-				_neutralPointPositionMap.put(
-						xcg,
-						AerodynamicCalc.calculateNeutralPointPositionVsAlpha(
-								Amount.valueOf((xcg*_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)+
-										_theAerodynamicBuilderInterface.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER), SI.METER), 
-								xACWingFuselage, 
-								_liftingSurfaceAerodynamicManagers
-								.get(ComponentEnum.HORIZONTAL_TAIL)
-								.getXacLRF()
-								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-										.get(ComponentEnum.HORIZONTAL_TAIL)
-										.get(AerodynamicAndStabilityEnum.AERODYNAMIC_CENTER)).plus(_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getXApexConstructionAxes()),  
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING)
-								.getCLAlpha().get(
-										_theAerodynamicBuilderInterface.getComponentTaskList()
-										.get(ComponentEnum.WING)
-										.get(AerodynamicAndStabilityEnum.CL_ALPHA)
-										),
-								_liftingSurfaceAerodynamicManagers.get(ComponentEnum.HORIZONTAL_TAIL)
-								.getCLAlpha().get(
-										_theAerodynamicBuilderInterface.getComponentTaskList()
-										.get(ComponentEnum.HORIZONTAL_TAIL)
-										.get(AerodynamicAndStabilityEnum.CL_ALPHA)
-										), 
-								_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
-								_theAerodynamicBuilderInterface.getTheAircraft().getWing().getSurface(), 
-								wingMeanAerodynamicChord,
-								_theAerodynamicBuilderInterface.getTheAircraft().getHTail().getSurface(),
-								_downwashGradientMap
-								.get(_theAerodynamicBuilderInterface.getDownwashConstant())
-								.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-										.get(ComponentEnum.AIRCRAFT)
-										.get(AerodynamicAndStabilityEnum.DOWNWASH)
-										),
-								_alphaBodyList
-								)
-						);
-
-			});
-
-			//=======================================================================================
 			// Calculating MSS position vs alpha body ...
 			//=======================================================================================
 
@@ -23450,12 +23461,36 @@ public class ACAerodynamicAndStabilityManager {
 
 				_staticStabilityMarginMap.put(
 						xcg,
-						_neutralPointPositionMap.get(xcg).stream()
-						.map(n0 -> n0-xcg)
-						.collect(Collectors.toList())
+						MyArrayUtils.convertDoubleArrayToListDouble(
+								MyArrayUtils.convertFromDoubleToPrimitive(
+										MyMathUtils.calculateArrayFirstDerivative(
+												MyArrayUtils.convertToDoublePrimitive(_totalEquilibriumLiftCoefficient.get(xcg)), 
+												MyArrayUtils.convertToDoublePrimitive(
+														_totalMomentCoefficient.get(xcg).get(
+																Amount.valueOf(
+																		0.0,
+																		NonSI.DEGREE_ANGLE
+																		)
+																)
+														)
+												)
+										)
+								)
 						);
 			});
 			
+			//=======================================================================================
+			// Calculating neutral point position vs alpha body ... 
+			//=======================================================================================
+
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {	
+
+				_neutralPointPositionMap.put(
+						xcg,
+						_staticStabilityMarginMap.get(xcg).stream().map(ssm -> xcg-ssm).collect(Collectors.toList())
+				);
+				
+			});
 		}
 	}
 

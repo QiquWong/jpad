@@ -516,15 +516,13 @@ public class LSAerodynamicsManager {
 
 		if (_discretizedAirfoilsCd.isEmpty()){
 
-			for(int i=0; 
-					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
-					i++
-					) {
-
-				_clForCdMatrix.add(
-						_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
-						);
-			}
+			_clForCdMatrix = MyArrayUtils.convertDoubleArrayToListDouble(
+					MyArrayUtils.linspaceDouble(
+							-1.0,
+							2.0,
+							_numberOfAlphas
+							)
+					);
 
 			List<List<Double>> clForCdArrayBreakPointsListWing = new ArrayList<>();
 			_theLiftingSurface.getAirfoilList().stream()
@@ -552,17 +550,14 @@ public class LSAerodynamicsManager {
 
 		if (_discretizedAirfoilsCm.isEmpty()){
 
-			for(int i=0; 
-					i<MyArrayUtils.getIndexOfMax(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL));
-					i++
-					) {
-
-				_clForCmMatrix.add(
-						_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)[i]
-						);
-
-			}
-
+			_clForCmMatrix = MyArrayUtils.convertDoubleArrayToListDouble(
+					MyArrayUtils.linspaceDouble(
+							-1.0,
+							2.0,
+							_numberOfAlphas
+							)
+					);
+			
 			List<List<Double>> clForCmArrayBreakPointsListWing = new ArrayList<>();
 			_theLiftingSurface.getAirfoilList().stream()
 			.map(x -> clForCmArrayBreakPointsListWing.add(x.getAirfoilCreator().getClForCmCurve()))
@@ -2245,7 +2240,7 @@ public class LSAerodynamicsManager {
 					_alphaArrayClean,
 					theNasaBlackwellCalculator,
 					_discretizedAirfoilsCd,
-					MyArrayUtils.convertDoubleArrayToListDouble(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)),
+					_clForCdMatrix,
 					_chordDistribution, 
 					_theLiftingSurface.getSurface(), 
 					_yStationDistribution
@@ -2469,7 +2464,7 @@ public class LSAerodynamicsManager {
 								a,
 								theNasaBlackwellCalculator,
 								_discretizedAirfoilsCd,
-								MyArrayUtils.convertDoubleArrayToListDouble(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL))
+								_clForCdMatrix
 								)
 						)
 					);
@@ -2524,7 +2519,7 @@ public class LSAerodynamicsManager {
 								_discretizedAirfoilsCl, 
 								_alphaArrayClean, 
 								_discretizedAirfoilsCd,
-								MyArrayUtils.convertDoubleArrayToListDouble(_liftCoefficient3DCurve.get(MethodEnum.NASA_BLACKWELL)),
+								_clForCdMatrix,
 								_clZeroDistribution, 
 								MyArrayUtils.convertDoubleArrayToListDouble(
 										MyArrayUtils.convertListOfAmountToDoubleArray(
@@ -2973,34 +2968,17 @@ public class LSAerodynamicsManager {
 			_moment3DCurve.put(
 					MethodEnum.AIRFOIL_DISTRIBUTION, 
 					MyArrayUtils.convertListOfDoubleToDoubleArray(
-							MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
-									theNasaBlackwellCalculator,
-									_alphaArrayClean,
-									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
-									_yStationDistribution,
-									_clZeroDistribution,
-									_clAlphaDistribution.stream()
-										.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
-											.collect(Collectors.toList()), 
-									_clForCmMatrix, 
-									_discretizedAirfoilsCm,
-									_chordDistribution,
-									_xLEDistribution,
-									_discretizedAirfoilsCl,
-									_alphaArrayClean, 
-									_theLiftingSurface.getSurface(), 
-									_momentumPole
-									)
-//							MomentCalc.calcCMLiftingSurfaceWithIntegral(
-//									theNasaBlackwellCalculator, 
-//									_alphaArray, 
+//							MomentCalc.calcCMLiftingSurfaceWithIntegralACVariable(
+//									theNasaBlackwellCalculator,
+//									_alphaArrayClean,
 //									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
 //									_yStationDistribution,
 //									_clZeroDistribution,
 //									_clAlphaDistribution.stream()
-//									.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
-//									.collect(Collectors.toList()), 
-//									_cmACDistribution,
+//										.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+//											.collect(Collectors.toList()), 
+//									_clForCmMatrix, 
+//									_discretizedAirfoilsCm,
 //									_chordDistribution,
 //									_xLEDistribution,
 //									_discretizedAirfoilsCl,
@@ -3008,6 +2986,23 @@ public class LSAerodynamicsManager {
 //									_theLiftingSurface.getSurface(), 
 //									_momentumPole
 //									)
+							MomentCalc.calcCMLiftingSurfaceWithIntegral(
+									theNasaBlackwellCalculator, 
+									_alphaArray, 
+									_theLiftingSurface.getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+									_yStationDistribution,
+									_clZeroDistribution,
+									_clAlphaDistribution.stream()
+									.map(cla -> cla.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue())
+									.collect(Collectors.toList()), 
+									_cmACDistribution,
+									_chordDistribution,
+									_xLEDistribution,
+									_discretizedAirfoilsCl,
+									_alphaArrayClean, 
+									_theLiftingSurface.getSurface(), 
+									_momentumPole
+									)
 							)
 
 					);

@@ -282,7 +282,9 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit,
 			String legendName, double[] legendValue,
 			String legendUnit, String path,
-			String fileName) {
+			String fileName,
+			boolean createCSV
+			) {
 
 		MyChartToFileUtils chartFactory = ChartFactory(xLabel, yLabel, 
 				xUnit, yUnit, legendName, legendValue, legendUnit, path, fileName);
@@ -307,18 +309,21 @@ public class MyChartToFileUtils {
 		}
 		
 		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+		legend.stream().map(s -> s.replace('(', '_')).collect(Collectors.toList());
+		legend.stream().map(s -> s.replace(')', '_')).collect(Collectors.toList());
 		
-		JPADStaticWriteUtils.exportToCSV(
-				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
-				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
-				legend, 
-				xListName, yListName,
-				MyConfiguration.createNewFolder(
-						path
-						+ File.separator 
-						+ fileName 
-						)
-				);
+		if(createCSV)
+			JPADStaticWriteUtils.exportToCSV(
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
+					legend, 
+					xListName, yListName,
+					MyConfiguration.createNewFolder(
+							path
+							+ File.separator 
+							+ fileName 
+							)
+					);
 		
 	}
 
@@ -330,6 +335,7 @@ public class MyChartToFileUtils {
 			String xLabel, String yLabel,
 			String xUnit, String yUnit,
 			String legendName, double[] legendValue,
+			boolean createCSV,
 			String legendUnit, String path,
 			String fileName) {
 
@@ -359,18 +365,21 @@ public class MyChartToFileUtils {
 		}
 		
 		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+		legend.stream().map(s -> s.replace('(', '_')).collect(Collectors.toList());
+		legend.stream().map(s -> s.replace(')', '_')).collect(Collectors.toList());
 		
-		JPADStaticWriteUtils.exportToCSV(
-				MyArrayUtils.convertFromListOfDoublePrimitive(xArrays),
-				MyArrayUtils.convertFromListOfDoublePrimitive(yArrays),
-				legend, 
-				xListName, yListName,
-				MyConfiguration.createNewFolder(
-						path
-						+ File.separator 
-						+ fileName 
-						)
-				);
+		if(createCSV)
+			JPADStaticWriteUtils.exportToCSV(
+					MyArrayUtils.convertFromListOfDoublePrimitive(xArrays),
+					MyArrayUtils.convertFromListOfDoublePrimitive(yArrays),
+					legend, 
+					xListName, yListName,
+					MyConfiguration.createNewFolder(
+							path
+							+ File.separator 
+							+ fileName 
+							)
+					);
 	}
 	
 	
@@ -384,14 +393,15 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit,
 			String legendName, double[] legendValue,
 			String legendUnit, String path,
-			String fileName) {
+			String fileName,
+			boolean createCSV) {
 
 		double[][] xArrays = new double[1][xArray.length];
 		for (int i=0; i < xArray.length; i++)
 			xArrays[0][i] = xArray[i];
 
 		plot(xArrays, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				legendName, legendValue, legendUnit, path, fileName);
+				legendName, legendValue, legendUnit, path, fileName, createCSV);
 	}
 
 	public static void plot(
@@ -402,14 +412,14 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit,
 			String legendName, double[] legendValue,
 			String legendUnit, String path,
-			String fileName) {
+			String fileName, boolean createCSV) {
 
 		double[][] yArrays = new double[1][yArray.length];
 		for (int i=0; i < yArray.length; i++)
 			yArrays[0][i] = yArray[i];
 
 		plot(xArray, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				legendName, legendValue, legendUnit, path, fileName);
+				legendName, legendValue, legendUnit, path, fileName, createCSV);
 	}
 
 	// This function creates plot using an array of String as legendValue 
@@ -443,7 +453,8 @@ public class MyChartToFileUtils {
 			String xLabel, String yLabel,
 			String xUnit, String yUnit,
 			String[] legendValue, String path,
-			String fileName) {
+			String fileName,
+			boolean createCSV) {
 
 		MyChartToFileUtils chartFactory = ChartFactory(xLabel, yLabel, 
 				xUnit, yUnit,legendValue,path, fileName);
@@ -468,18 +479,21 @@ public class MyChartToFileUtils {
 		}
 		
 		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+		legend.stream().map(s -> s.replace(')', '_')).collect(Collectors.toList());
+		legend.stream().map(s -> s.replace('(', '_')).collect(Collectors.toList());
 		
-		JPADStaticWriteUtils.exportToCSV(
-				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
-				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
-				legend, 
-				xListName, yListName,
-				MyConfiguration.createNewFolder(
-						path
-						+ File.separator 
-						+ fileName 
-						)
-				);
+		if(createCSV)
+			JPADStaticWriteUtils.exportToCSV(
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
+					legend, 
+					xListName, yListName,
+					MyConfiguration.createNewFolder(
+							path
+							+ File.separator 
+							+ fileName 
+							)
+					);
 		
 	}
 	
@@ -580,14 +594,14 @@ public class MyChartToFileUtils {
 			String xLabel, String yLabel,
 			String xUnit, String yUnit,
 			String[] legendValue, String path,
-			String fileName) {
+			String fileName, boolean createCSV) {
 
 		double[][] xArrays = new double[1][xArray.length];
 		for (int i=0; i < xArray.length; i++)
 			xArrays[0][i] = xArray[i];
 
 		plot(xArrays, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				legendValue, path, fileName);
+				legendValue, path, fileName, createCSV);
 	}
 
 	public static void plot( //xArrays is 1D
@@ -597,7 +611,7 @@ public class MyChartToFileUtils {
 			String xLabel, String yLabel,
 			String xUnit, String yUnit,
 			String[] legendValue, String path,
-			String fileName) {
+			String fileName, boolean createCSV) {
 
 		double[][] xArrays = new double[1][xArray.length];
 		for (int i=0; i < xArray.length; i++)
@@ -608,7 +622,7 @@ public class MyChartToFileUtils {
 			m.setRow(i, ArrayUtils.toPrimitive(yArrays[i]));
 		
 		plot(xArrays, m.transpose().getData(), xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				legendValue, path, fileName);
+				legendValue, path, fileName, createCSV);
 	}
 	
 
@@ -622,14 +636,14 @@ public class MyChartToFileUtils {
 			String xLabel, String yLabel,
 			String xUnit, String yUnit,
 			String[] legendValue, String path,
-			String fileName) {
+			String fileName, boolean createCSV) {
 
 		double[][] yArrays = new double[1][yArray.length];
 		for (int i=0; i < yArray.length; i++)
 			yArrays[0][i] = yArray[i];
 
 		plot(xArray, yArrays, xMin, xMax, yMin, yMax, xLabel, yLabel, xUnit, yUnit, 
-				legendValue,  path, fileName);
+				legendValue,  path, fileName, createCSV);
 	}
 	
 	// This function creates plot whit no legend
@@ -751,17 +765,17 @@ public class MyChartToFileUtils {
 		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
 		
 		if (toCSV == true) {
-		JPADStaticWriteUtils.exportToCSV(
-				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
-				MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
-				legend, 
-				xListName, yListName,
-				MyConfiguration.createNewFolder(
-						path
-						+ File.separator 
-						+ fileName 
-						)
-				);
+			JPADStaticWriteUtils.exportToCSV(
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(xArrays),
+					MyArrayUtils.convertTwoDimensionArrayToListDoubleArray(yArrays),
+					legend, 
+					xListName, yListName,
+					MyConfiguration.createNewFolder(
+							path
+							+ File.separator 
+							+ fileName 
+							)
+					);
 		}
 		
 	}
@@ -1016,7 +1030,7 @@ public class MyChartToFileUtils {
 			Double xMin, Double xMax, Double yMin, Double yMax,
 			String xUnit, String yUnit,
 			boolean showLegend, List<String> legend,
-			String folderPathName, String fileName) throws InstantiationException, IllegalAccessException {
+			String folderPathName, String fileName, boolean createCSV) throws InstantiationException, IllegalAccessException {
 				
 		//----------------------------------------------------------------------------------
 		// Creating XY series from List and adding to a dataset
@@ -1133,29 +1147,30 @@ public class MyChartToFileUtils {
 			System.err.println("Problem occurred creating chart.");
 		}
 		
-		//----------------------------------------------------------------------------------
-		// Generating the .csv file
-		List<String> xListName = new ArrayList<>();
-		List<String> yListName = new ArrayList<>();
-		for(int i=0; i<xList.size(); i++) {
-			xListName.add(xLabelName);
-			yListName.add(yLabelName);
+		if(createCSV) {
+			//----------------------------------------------------------------------------------
+			// Generating the .csv file
+			List<String> xListName = new ArrayList<>();
+			List<String> yListName = new ArrayList<>();
+			for(int i=0; i<xList.size(); i++) {
+				xListName.add(xLabelName);
+				yListName.add(yLabelName);
+			}
+
+			legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+
+			JPADStaticWriteUtils.exportToCSV(
+					xList,
+					yList,
+					legend, 
+					xListName, yListName,
+					MyConfiguration.createNewFolder(
+							folderPathName
+							+ File.separator 
+							+ fileName 
+							)
+					);
 		}
-		
-		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
-		
-		JPADStaticWriteUtils.exportToCSV(
-				xList,
-				yList,
-				legend, 
-				xListName, yListName,
-				MyConfiguration.createNewFolder(
-						folderPathName
-						+ File.separator 
-						+ fileName 
-						)
-				);
-		
 		//----------------------------------------------------------------------------------
 		// Generating the .tikz graph
 //		MyChartToFileUtils chartFactory = new MyChartToFileUtils();

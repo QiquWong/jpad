@@ -23,6 +23,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import aircraft.components.Aircraft;
 import aircraft.components.powerplant.PowerPlant;
 import analyses.OperatingConditions;
@@ -333,6 +335,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 					new double[]{0.025, 0.025}
 					);
 			
+			Boolean createCSV = Boolean.TRUE;
+			
 			//======================================================================
 			
 			Amount<Length> wingToGroundDistance = 
@@ -376,7 +380,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 						theAircraft.getWing().getRiggingAngle(), 
 						cLmaxTO, 
 						cLZeroTO, 
-						cLalphaFlap
+						cLalphaFlap,
+						createCSV
 						);
 
 				theTakeOffNoiseTrajectoryCalculator.calculateNoiseTakeOffTrajectory(false, null, timeHistories);
@@ -436,7 +441,8 @@ public class NoiseTrajectoryCalcTest extends Application {
 						theAircraft.getWing().getRiggingAngle(),
 						cLmaxLND,
 						cLZeroLND,
-						cLalphaLND
+						cLalphaLND,
+						createCSV
 						);
 
 				theLandingNoiseTrajectoryCalculator.calculateNoiseLandingTrajectory(timeHistories);

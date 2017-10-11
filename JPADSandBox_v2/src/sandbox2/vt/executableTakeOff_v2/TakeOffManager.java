@@ -2560,7 +2560,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "s", "N",
 					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-					takeOffFolderPath, "HorizontalForces_evolution_SI");
+					takeOffFolderPath, "HorizontalForces_evolution_SI", true);
 
 			double[][] xMatrix1IMPERIAL = new double[5][totalForce.size()];
 			for(int i=0; i<xMatrix1IMPERIAL.length; i++)
@@ -2600,7 +2600,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "s", "lb",
 					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-					takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
+					takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL", true);
 			
 			//.................................................................................
 			// Horizontal Forces v.s. Ground Distance
@@ -2625,7 +2625,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "m", "N",
 					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-					takeOffFolderPath, "HorizontalForces_evolution_SI");
+					takeOffFolderPath, "HorizontalForces_evolution_SI", true);
 
 			double[][] xMatrix2IMPERIAL = new double[5][totalForce.size()];
 			for(int i=0; i<xMatrix2IMPERIAL.length; i++)
@@ -2665,7 +2665,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Time", "Horizontal Forces", "ft", "lb",
 					new String[] {"Total Force", "Thrust Horizontal", "Drag", "Friction", "W*sin(gamma)"},
-					takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL");
+					takeOffFolderPath, "HorizontalForces_evolution_IMPERIAL", true);
 
 			//.................................................................................
 			// Vertical Forces v.s. Time
@@ -2688,7 +2688,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Time", "Vertical Forces", "s", "N",
 					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
-					takeOffFolderPath, "VerticalForces_evolution");
+					takeOffFolderPath, "VerticalForces_evolution", true);
 
 			double[][] xMatrix3IMPERIAL = new double[3][totalForce.size()];
 			for(int i=0; i<xMatrix3IMPERIAL.length; i++)
@@ -2718,7 +2718,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Time", "Vertical Forces", "s", "lb",
 					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
-					takeOffFolderPath, "VerticalForces_evolution_IMPERIAL");
+					takeOffFolderPath, "VerticalForces_evolution_IMPERIAL", true);
 			
 			//.................................................................................
 			// Vertical Forces v.s. ground distance
@@ -2741,7 +2741,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Ground distance", "Vertical Forces", "m", "N",
 					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
-					takeOffFolderPath, "VerticalForces_vs_GroundDistance_SI");
+					takeOffFolderPath, "VerticalForces_vs_GroundDistance_SI", true);
 
 			double[][] xMatrix4IMPERIAL = new double[3][totalForce.size()];
 			for(int i=0; i<xMatrix4IMPERIAL.length; i++)
@@ -2775,7 +2775,7 @@ public class TakeOffManager {
 					0.0, null, null, null,
 					"Ground distance", "Vertical Forces", "ft", "lb",
 					new String[] {"Lift", "Thrust Vertical", "W*cos(gamma)"},
-					takeOffFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL");
+					takeOffFolderPath, "VerticalForces_vs_GroundDistance_IMPERIAL", true);
 			
 			if(!isAborted) {
 				//.................................................................................
@@ -2806,7 +2806,7 @@ public class TakeOffManager {
 						0.0, null, null, null,
 						"Time", "Angles", "s", "deg",
 						new String[] {"Alpha Body", "Theta", "Gamma"},
-						takeOffFolderPath, "Angles_evolution");
+						takeOffFolderPath, "Angles_evolution", true);
 
 				//.................................................................................
 				// Angles v.s. Ground Distance
@@ -2836,7 +2836,7 @@ public class TakeOffManager {
 						0.0, null, null, null,
 						"Ground Distance", "Angles", "m", "deg",
 						new String[] {"Alpha Body", "Theta", "Gamma"},
-						takeOffFolderPath, "Angles_vs_GroundDistance_SI");
+						takeOffFolderPath, "Angles_vs_GroundDistance_SI", true);
 
 				double[][] xMatrix6IMPERIAL = new double[3][totalForce.size()];
 				for(int i=0; i<xMatrix6IMPERIAL.length; i++)
@@ -2868,7 +2868,7 @@ public class TakeOffManager {
 						0.0, null, null, null,
 						"Ground Distance", "Angles", "ft", "deg",
 						new String[] {"Alpha Body", "Theta", "Gamma"},
-						takeOffFolderPath, "Angles_vs_GroundDistance_IMPERIAL");
+						takeOffFolderPath, "Angles_vs_GroundDistance_IMPERIAL", true);
 				
 				//.................................................................................
 				// Angular velocity v.s. time
@@ -2885,7 +2885,7 @@ public class TakeOffManager {
 						0.0, null, null, null,
 						"Time", "Angular Velocity", "s", "deg/s",
 						new String[] {"Alpha_dot", "Gamma_dot"},
-						takeOffFolderPath, "AngularVelocity_evolution");
+						takeOffFolderPath, "AngularVelocity_evolution", true);
 
 				//.................................................................................
 				// Angular velocity v.s. Ground Distance
@@ -2902,7 +2902,7 @@ public class TakeOffManager {
 						0.0, null, null, null,
 						"Ground Distance", "Angular Velocity", "m", "deg/s",
 						new String[] {"Alpha_dot", "Gamma_dot"},
-						takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI");
+						takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI", true);
 				
 				double[][] xMatrix8IMPERIAL = new double[2][totalForce.size()];
 				for(int i=0; i<xMatrix8IMPERIAL.length; i++)
@@ -2921,7 +2921,7 @@ public class TakeOffManager {
 						0.0, null, null, null,
 						"Ground Distance", "Angular Velocity", "ft", "deg/s",
 						new String[] {"Alpha_dot", "Gamma_dot"},
-						takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI");
+						takeOffFolderPath, "AngularVelocity_vs_GroundDistance_SI", true);
 			}
 			
 			System.out.println("\n---------------------------DONE!-------------------------------");
@@ -2952,7 +2952,7 @@ public class TakeOffManager {
 					null, null, null, null,
 					"Vfailure/VsTO", "Distance", "", "m",
 					new String[] {"OEI Take-Off", "Aborted Take-Off"},
-					takeOffFolderPath, "BalancedTakeOffLength_SI");
+					takeOffFolderPath, "BalancedTakeOffLength_SI", true);
 			
 			double[][] yArrayIMPERIAL = new double[][]	{
 				Arrays.stream(continuedTakeOffArrayFitted)
@@ -2968,7 +2968,7 @@ public class TakeOffManager {
 					null, null, null, null,
 					"Vfailure/VsTO", "Distance", "", "ft",
 					new String[] {"OEI Take-Off", "Aborted Take-Off"},
-					takeOffFolderPath, "BalancedTakeOffLength_IMPERIAL");
+					takeOffFolderPath, "BalancedTakeOffLength_IMPERIAL", true);
 
 			System.out.println("\n---------------------------DONE!-------------------------------");
 		}

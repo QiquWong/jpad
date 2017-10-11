@@ -1338,7 +1338,8 @@ public class AircraftPointMassPropagator2 {
 							0.0, null, null, null,
 							"Time", "Vv, Va", "s", "m/s",
 							new String[] {"Velocity Inertial", "Airspeed"},
-							outputChartDir, "Velocities");
+							outputChartDir, "Velocities",
+							true);
 			
 			// altitude vs. time
 			MyChartToFileUtils.plotNoLegend(

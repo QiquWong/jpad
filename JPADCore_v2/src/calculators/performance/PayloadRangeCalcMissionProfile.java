@@ -1508,13 +1508,15 @@ public class PayloadRangeCalcMissionProfile{
 				null, null, 0.0, null,					    // axis with limits
 				"Range", "Payload", "km", "No. Pass",	    // label with unit
 				legendValue_SI,								// legend
-				subFolderPath, "Payload-Range_SI");		    // output informations
+				subFolderPath, "Payload-Range_SI",          // output informations
+				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance());		    
 		MyChartToFileUtils.plot(
 				rangeDoubleArray_Imperial, payloadDoubleArray,    // array to plot
 				null, null, 0.0, null,					          // axis with limits
 				"Range", "Payload", "nmi", "No. Pass",	          // label with unit
 				legendValue_Imperial,						      // legend
-				subFolderPath, "Payload-Range_IMPERIAL");         // output informations
+				subFolderPath, "Payload-Range_IMPERIAL",          // output informations
+				_theAircraft.getTheAnalysisManager().getCreateCSVPerformance());         
 	}
 
 	@Override

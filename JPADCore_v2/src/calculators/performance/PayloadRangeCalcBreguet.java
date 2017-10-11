@@ -1180,7 +1180,8 @@ public class PayloadRangeCalcBreguet{
 				null, null, 0.0, null,					    // axis with limits
 				"Range", "Payload", "nmi", "No. Pass",	    // label with unit
 				legendValue,								// legend
-				subFolderPath, "Payload-Range_Mach");		// output informations
+				subFolderPath, "Payload-Range_Mach",
+				theAircraft.getTheAnalysisManager().getCreateCSVPerformance());		// output informations
 	}
 
 	/********************************************************************************************
@@ -1203,7 +1204,8 @@ public class PayloadRangeCalcBreguet{
 				0.0, null, 0.0, null,					    	// axis with limits
 				"Range", "Payload", "nmi", "No. Pass",	    	// label with unit
 				"MTOM = ", massArray, " Kg ",					// legend
-				subFolderPath, "Payload-Range_MaxTakeOffMass"); // output informations
+				subFolderPath, "Payload-Range_MaxTakeOffMass",
+				theAircraft.getTheAnalysisManager().getCreateCSVPerformance()); // output informations
 	}
 
 	@Override
