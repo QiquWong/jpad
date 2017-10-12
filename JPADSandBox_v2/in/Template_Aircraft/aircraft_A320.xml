@@ -2,7 +2,7 @@
 <jpad_config>
     <aircraft id="AIRBUS A-320" type="GENERAL_AVIATION" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration.xml"></cabin_configuration>
+			<cabin_configuration file="cabin_configuration_A320.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
             <wing file="wing_A320.xml">

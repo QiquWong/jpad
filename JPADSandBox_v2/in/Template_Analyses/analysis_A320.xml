@@ -11,6 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="A-320 analysis">
+	<!--
         <weights 
             file="analysis_weights_A320.xml" 
 			plot="TRUE"
@@ -23,6 +24,7 @@
 			method_landing_gears=""
 			method_systems=""
             />
+	-->
 	<!-- method_XXX="AVERAGED" if empty string -->
 	<!--
 	<balance 
@@ -37,6 +39,7 @@
 		/>
 	-->
 	<!-- method_XXX="AVERAGED" if empty string -->
+	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="FALSE"
@@ -49,7 +52,7 @@
 			landing_condition="FALSE"
 			file_landing_condition="analysis_aerodynamics_LANDING_A320.xml"
 	/>	
-	<!--
+	-->
 	<performance 
 			file="analysis_performance_A320.xml"
 			plot="TRUE"
@@ -59,11 +62,10 @@
 			cruise="TRUE"
 			descent="TRUE"
 			landing="TRUE"
-			payload_range="TRUE"
+			payload_range="FALSE"
 			V_n_diagram="TRUE"
-			mission_profile="TRUE"
+			mission_profile="FALSE"
 	/>
-	-->
 	<!--
 	<costs 
 			file="analysis_costs_A320.xml"

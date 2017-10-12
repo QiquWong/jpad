@@ -6,7 +6,7 @@
         <weights id="CS-300 - WEIGHTS">
 			<global_data>
 				<maximum_take_off_mass unit="kg">67585</maximum_take_off_mass>
-				<single_passenger_mass unit="kg">102</single_passenger_mass>
+				<single_passenger_mass unit="kg">105</single_passenger_mass>
 				<cruise_phase>
 					<range unit="nmi">3200</range> 
 					<sfc>0.5</sfc>

@@ -5,8 +5,8 @@
     <analysis>
         <weights id="DASH-8 - WEIGHTS">
 			<global_data>
-				<maximum_take_off_mass unit="kg">29000</maximum_take_off_mass>
-				<single_passenger_mass unit="kg">103</single_passenger_mass>
+				<maximum_take_off_mass unit="kg">30481</maximum_take_off_mass>
+				<single_passenger_mass unit="kg">95</single_passenger_mass>
 				<cruise_phase>
 					<range unit="nmi">1000</range> 
 					<sfc>0.55</sfc>

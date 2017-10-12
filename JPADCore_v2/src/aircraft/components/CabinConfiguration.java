@@ -1095,11 +1095,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 		_methodsMap.put(AnalysisTypeEnum.WEIGHTS, _methodsList);
 		_percentDifference = new Double[_massMap.size()];
 
-		_massEstimatedFurnishingsAndEquipment = Amount.valueOf(JPADStaticWriteUtils.compareMethods(
-				_massFurnishingsAndEquipmentReference,
-				_massMap,
-				_percentDifference,
-				1000.).getFilteredMean(), SI.KILOGRAM);
+		_massEstimatedFurnishingsAndEquipment = _massFurnishingsAndEquipment;
 	}
 	
 	@Override

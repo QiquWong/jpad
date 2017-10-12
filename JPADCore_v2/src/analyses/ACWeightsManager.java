@@ -743,6 +743,9 @@ public class ACWeightsManager implements IACWeightsManager {
 				.append("\tOperating Item Mass: " + _operatingItemMass + "\n")
 				.append("\tOperating Item Weight: " + _operatingItemWeight + "\n")
 				.append("\t·····································\n")
+				.append("\tMass furnishings and equipments: " + _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment() + "\n")
+				.append("\tWeight furnishings and equipments: " + _theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().times(AtmosphereCalc.g0).to(SI.NEWTON) + "\n")
+				.append("\t·····································\n")
 				.append("\tTrapped Fuel Oil Mass: " + _trappedFuelOilMass + "\n")
 				.append("\tTrapped Fuel Oil Weight: " + _trappedFuelOilWeight + "\n")
 				.append("\t·····································\n")
@@ -785,6 +788,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		dataListGlobal.add(new Object[] {"Take-Off Mass","kg",_takeOffMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Maximum Landing Mass","kg",_maximumLandingMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Maximum Passengers Mass","kg",_paxMassMax.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Actual Passengers Mass","kg",_paxMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Maximum Fuel Mass","kg",_theAircraft.getFuelTank().getFuelMass().doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Fuel Mass","kg", _fuelMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Crew Mass","kg",_crewMass.doubleValue(SI.KILOGRAM)});
@@ -794,12 +798,14 @@ public class ACWeightsManager implements IACWeightsManager {
 		dataListGlobal.add(new Object[] {"Empty Mass","kg",_emptyMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Manufacturer Empty Mass","kg",_manufacturerEmptyMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Operating Item Mass","kg",_operatingItemMass.doubleValue(SI.KILOGRAM)});
+		dataListGlobal.add(new Object[] {"Furnishings and Equipments Mass","kg",_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Mass","kg",_trappedFuelOilMass.doubleValue(SI.KILOGRAM)});
 		dataListGlobal.add(new Object[] {" "});
 		dataListGlobal.add(new Object[] {"Maximum Take-Off Weight","N",_maximumTakeOffWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Take-Off Weight","N",_takeOffWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Maximum Landing Weight","N",_maximumLandingWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Maximum Passengers Weight","N",(_paxMassMax.times(AtmosphereCalc.g0)).getEstimatedValue()});
+		dataListGlobal.add(new Object[] {"Actual Passengers Weight","N",(_paxMass.times(AtmosphereCalc.g0)).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Fuel Weight","N",_theAircraft.getFuelTank().getFuelWeight().doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Crew Weight","N",_crewMass.times(AtmosphereCalc.g0).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Maximum Zero Fuel Weight","N",_maximumZeroFuelWeight.doubleValue(SI.NEWTON)});
@@ -808,6 +814,7 @@ public class ACWeightsManager implements IACWeightsManager {
 		dataListGlobal.add(new Object[] {"Empty Weight","N",_emptyWeight.doubleValue(SI.NEWTON)});
 		dataListGlobal.add(new Object[] {"Manufacturer Empty Weight","N",_manufacturerEmptyMass.times(AtmosphereCalc.g0).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Operating Item Weight","N",_operatingItemWeight.doubleValue(SI.NEWTON)});
+		dataListGlobal.add(new Object[] {"Furnishings and Equipments Weight","N",_theAircraft.getCabinConfiguration().getMassEstimatedFurnishingsAndEquipment().times(AtmosphereCalc.g0).getEstimatedValue()});
 		dataListGlobal.add(new Object[] {"Trapped Fuel Oil Weight","N",_trappedFuelOilWeight.doubleValue(SI.NEWTON)});
 		
 		CellStyle styleHead = wb.createCellStyle();
