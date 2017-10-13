@@ -55,15 +55,15 @@
 	<performance 
 			file="analysis_performance_DASH8.xml"
 			plot="TRUE"
-			create_CSV="FALSE"
-			take_off="FALSE"
-			climb="FALSE"
-			cruise="FALSE"
-			descent="FALSE"
+			create_CSV="TRUE"
+			take_off="TRUE"
+			climb="TRUE"
+			cruise="TRUE"
+			descent="TRUE"
 			landing="TRUE"
-			payload_range="FALSE"
-			V_n_diagram="FALSE"
-			mission_profile="FALSE"
+			payload_range="TRUE"
+			V_n_diagram="TRUE"
+			mission_profile="TRUE"
 	/>
 	<!--
 	<costs 
