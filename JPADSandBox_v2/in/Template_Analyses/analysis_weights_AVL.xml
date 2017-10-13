@@ -1,25 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
+	<!-- all SFC values must be assigned in lb/(lb*hr) for JET engines -->
+	<!-- all SFC values must be assigned in lb/(hp*hr) for PISTON engines -->
     <analysis>
-        <weights id="JPAD Test analysis - WEIGHTS">
+        <weights id="A320 - WEIGHTS">
 			<global_data>
-				<maximum_take_off_mass unit="kg">300000</maximum_take_off_mass>
-				<maximum_landing_mass unit="kg">270000</maximum_landing_mass>
-				<maximum_zero_fuel_mass unit="kg">220000</maximum_zero_fuel_mass>
-				<operating_empty_mass unit="kg">150000</operating_empty_mass>
-				<trapped_fuel_oil_mass unit="kg">1000</trapped_fuel_oil_mass>
+				<maximum_take_off_mass unit="kg">79000</maximum_take_off_mass>
+				<single_passenger_mass unit="kg">92</single_passenger_mass>
+				<cruise_phase>
+					<range unit="nmi">3300</range> 
+					<sfc>0.61</sfc>
+					<efficiency>14.0</efficiency>
+				</cruise_phase>
+				<alternate_phase>
+					<range unit="nmi">200.0</range> 
+					<altitude unit="ft">10000</altitude>
+					<mach>0.6</mach>
+					<sfc>0.61</sfc> 
+					<efficiency>14</efficiency> 
+				</alternate_phase>
+				<holding_phase>
+					<duration unit="min">45.0</duration> 
+					<altitude unit="ft">1500</altitude>
+					<mach>0.3</mach>
+					<sfc>0.5</sfc> 
+					<efficiency>15.0</efficiency> 
+				</holding_phase>
 			</global_data>
 			<component_data>
-				<fuselage_reference_mass unit="kg">3000</fuselage_reference_mass>
-				<wing_reference_mass unit="kg">2000</wing_reference_mass>
-				<horizontal_tail_reference_mass unit="kg">600</horizontal_tail_reference_mass>
-				<vertical_tail_reference_mass unit="kg">400</vertical_tail_reference_mass>
+			<!-- if these tags are empty, a reference value will be calculated using default percentages of the MZFM -->
+				<fuselage_reference_mass unit="kg"></fuselage_reference_mass>
+				<wing_reference_mass unit="kg"></wing_reference_mass>
+				<horizontal_tail_reference_mass unit="kg"></horizontal_tail_reference_mass>
+				<vertical_tail_reference_mass unit="kg"></vertical_tail_reference_mass>
 				<canard_reference_mass unit="kg"></canard_reference_mass>
-				<nacelles_reference_mass unit="kg">900</nacelles_reference_mass> <!--all nacelles-->
-				<fuel_tank_reference_mass unit="kg">500</fuel_tank_reference_mass>
-				<landing_gears_reference_mass unit="kg">500</landing_gears_reference_mass>
-				<systems_reference_mass unit="kg">2000</systems_reference_mass>
-			</component_data>
+				<nacelles_reference_mass unit="kg"></nacelles_reference_mass> <!-- all nacelles -->
+				<fuel_tank_reference_mass unit="kg"></fuel_tank_reference_mass>
+				<landing_gears_reference_mass unit="kg"></landing_gears_reference_mass>
+				<systems_reference_mass unit="kg"></systems_reference_mass>
+			</component_data>			
         </weights>
     </analysis>
 </jpad_config>

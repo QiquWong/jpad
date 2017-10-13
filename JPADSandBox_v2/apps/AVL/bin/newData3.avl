@@ -6,7 +6,7 @@ ATR-72 (AVL_Test)
 #Sref       Cref        Bref        (meters)
 61.004      2.3024      27.060     
 #Xref       Yref        Zref        (meters)
-11.639      0.0000      0.67363    
+12.063      0.0000      0.57271    
 #CD0ref
 0.02
 #
@@ -41,12 +41,12 @@ AFIL
 newData3_airfoil_wing_root.dat
 #-----------------------
 SECTION
-     0.0000      4.7000      0.0000      2.5759      1.2000     
+     0.0000      4.7000      0.0000      2.5759      1.1975     
 AFIL
 newData3_airfoil_wing_kink.dat
 #-----------------------
 SECTION
-     0.66393     13.530      0.0000      1.5906      -0.90000   
+     0.66393     13.530      0.0000      1.5906      -0.90548   
 AFIL
 newData3_airfoil_wing_tip.dat
 #-----------------------
@@ -84,7 +84,7 @@ CONTROL
 Elevator  1.000   0.6000  0.000   1.000   0.000   1.000   ! name, gain,  Xhinge,  (X,Y,Z)hvec,  SgnDup
 #-----------------------
 SECTION
-     0.21970     3.6548      0.0000      2.0440      0.0000     
+     0.87339     3.6548      0.0000      2.0440      0.0000     
 AFIL
 newData3_airfoil_htail_tip.dat
 CONTROL

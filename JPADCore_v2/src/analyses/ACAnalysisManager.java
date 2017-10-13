@@ -364,7 +364,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@plot");
-			if(plotWeightsString.equalsIgnoreCase("FALSE") || plotWeightsString == null)
+			if(plotWeightsString == null || plotWeightsString.equalsIgnoreCase("FALSE"))
 				plotWeights = Boolean.FALSE;
 			else if(plotWeightsString.equalsIgnoreCase("TRUE"))
 				plotWeights = Boolean.TRUE;
@@ -373,7 +373,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//weights/@create_CSV");
-			if(createCSVWeightsString.equalsIgnoreCase("FALSE") || createCSVWeightsString == null)
+			if(createCSVWeightsString == null || createCSVWeightsString.equalsIgnoreCase("FALSE"))
 				createCSVWeights = Boolean.FALSE;
 			else if(createCSVWeightsString.equalsIgnoreCase("TRUE"))
 				createCSVWeights = Boolean.TRUE;
@@ -624,7 +624,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//balance/@plot");
-			if(plotBalanceString.equalsIgnoreCase("FALSE") || plotBalanceString == null)
+			if(plotBalanceString == null || plotBalanceString.equalsIgnoreCase("FALSE"))
 				plotBalance = Boolean.FALSE;
 			else if(plotBalanceString.equalsIgnoreCase("TRUE"))
 				plotBalance = Boolean.TRUE;
@@ -633,7 +633,7 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//balance/@create_CSV");
-			if(createCSVBalanceString.equalsIgnoreCase("FALSE") || createCSVBalanceString == null)
+			if(createCSVBalanceString == null || createCSVBalanceString.equalsIgnoreCase("FALSE"))
 				createCSVBalance = Boolean.FALSE;
 			else if(createCSVBalanceString.equalsIgnoreCase("TRUE"))
 				createCSVBalance = Boolean.TRUE;

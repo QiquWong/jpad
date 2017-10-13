@@ -452,6 +452,8 @@ public class OperatingConditions implements IOperatingConditions {
 							),
 					NonSI.DEGREE_ANGLE)
 			.to(SI.RADIAN);
+		else
+			betaCurrentCruise = Amount.valueOf(0.0,SI.RADIAN);
 		//.............................................................
 		String machCruiseProperty = reader.getXMLPropertyByPath("//cruise/mach");
 		if(machCruiseProperty != null)
@@ -498,6 +500,8 @@ public class OperatingConditions implements IOperatingConditions {
 							),
 					NonSI.DEGREE_ANGLE)
 			.to(SI.RADIAN);
+		else
+			betaCurrentTakeOff = Amount.valueOf(0.0,SI.RADIAN);
 		//.............................................................		
 		String machTakeOffProperty = reader.getXMLPropertyByPath("//take_off/mach");
 		if(machTakeOffProperty != null)
@@ -603,6 +607,8 @@ public class OperatingConditions implements IOperatingConditions {
 							),
 					NonSI.DEGREE_ANGLE)
 			.to(SI.RADIAN);
+		else
+			betaCurrentLanding = Amount.valueOf(0.0, SI.RADIAN);
 		//.............................................................		
 		String machLandingProperty = reader.getXMLPropertyByPath("//landing/mach");
 		if(machLandingProperty != null)

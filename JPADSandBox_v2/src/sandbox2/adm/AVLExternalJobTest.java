@@ -462,10 +462,6 @@ public class AVLExternalJobTest extends Application {
 			System.out.println("External job terminated.");
 			
 			
-			
-			
-			
-			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
 			
