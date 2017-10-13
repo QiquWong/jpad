@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jpad_config>
-	<engine id="DASH8 Engine" type="TURBOPROP" database="Normalized_TurboProp_100%Cruise_ISA30.h5">
+	<engine id="DASH8 Engine" type="TURBOPROP" database="Normalized_TurboProp_100%Cruise_ISA0.h5">
 		<dimensions>
 			<length unit="m">7.54</length>
 			<propeller_diameter unit="m">4.11</propeller_diameter>

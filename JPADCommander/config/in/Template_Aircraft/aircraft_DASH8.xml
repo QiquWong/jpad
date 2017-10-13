@@ -85,7 +85,7 @@
             </position>
 			<mounting_point>NACELLE</mounting_point>
 		</landing_gears>
-		<systems file="systems.xml">
+		<systems file="systems_DASH8.xml">
 			<position>
                 <x unit="m">0.0</x>
                 <y unit="m">0.0</y>

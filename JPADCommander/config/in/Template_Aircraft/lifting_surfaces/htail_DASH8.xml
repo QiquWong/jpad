@@ -11,12 +11,12 @@
                 <sweep_leading_edge unit="deg">7.72</sweep_leading_edge>
                 <inner_section>
                     <chord unit="m">1.94</chord>
-                    <airfoil file="naca0012_DASH8.xml"/>
+                    <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
                     <chord unit="m">1.44</chord>
-                    <airfoil file="naca0012_DASH8.xml"/>
+                    <airfoil file="naca0012.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
             </panel>
