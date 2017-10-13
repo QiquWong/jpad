@@ -3516,7 +3516,7 @@ public class ACPerformanceManager {
 			
 			//------------------------------------------------------------
 			// SIMULATION
-			_theTakeOffCalculator.calculateTakeOffDistanceODE(0.0, false, true);
+			_theTakeOffCalculator.calculateTakeOffDistanceODE(null, false, true);
 
 			// Distances:
 			_groundRollDistanceTakeOff = _theTakeOffCalculator.getTakeOffResults().getGroundDistance().get(0).to(NonSI.FOOT);

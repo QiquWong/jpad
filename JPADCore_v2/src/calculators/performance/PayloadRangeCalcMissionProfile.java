@@ -256,6 +256,11 @@ public class PayloadRangeCalcMissionProfile{
 			if(i >= 1)
 				initialCruiseLength = newCruiseLength;
 			
+			if(i > 100) {
+				System.err.println("\t\nMAXIMUM NUMBER OF ITERATION REACHED :: PAYLOAD-RANGE");
+				break;
+			}
+			
 			//--------------------------------------------------------------------
 			// TAKE-OFF
 			Amount<Length> wingToGroundDistance = 

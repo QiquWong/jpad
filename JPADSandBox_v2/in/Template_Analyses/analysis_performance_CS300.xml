@@ -29,7 +29,7 @@
 				<cL_alpha_landing unit="1/deg">0.0925</cL_alpha_landing>
 				<cL0_landing_configuration>1.35</cL0_landing_configuration>
 				<!-- the following data are used only if parabolicDragPolar flag is set to TRUE. In any other case, they can be left blank -->
-				<cD0>0.0210</cD0>
+				<cD0>0.0170</cD0>
 				<oswald_cruise>0.85</oswald_cruise> 
 				<oswald_climb>0.85</oswald_climb>
 				<oswald_take_off>0.83</oswald_take_off>
@@ -69,8 +69,8 @@
 				</wheels_friction_coefficient_function>
 					<!-- here is possible to assign the fricition coefficient (with brakes) function of the speed. If only one value is given, the function is constant -->
 				<wheels_friction_coefficient_with_brakes_function>
-					<friction_coefficient_with_brakes>0.94;0.89;0.85;0.8;0.74;0.68;0.62;0.57;0.52</friction_coefficient_with_brakes>
-					<speed unit="m/s">0;10;20;30;40;50;60;70;80</speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
+					<friction_coefficient_with_brakes>0.3</friction_coefficient_with_brakes>
+					<speed unit="m/s"></speed> <!-- if the friction coefficient array contains only 1 value this tag can be left empty -->
 				</wheels_friction_coefficient_with_brakes_function>
 				<!-- take-off data -->
 				<dt_rotation unit="s"></dt_rotation> <!-- the duration of the rotation phase (default = 3s) -->
@@ -95,18 +95,18 @@
 				<k_climb_weight_AEO></k_climb_weight_AEO> <!-- percentage of the maximum take-off weight to be used for the climb performance (AOE) - (default = 1.0) -->
 				<k_climb_weight_OEI></k_climb_weight_OEI> <!-- percentage of the maximum take-off weight to be used for the climb performance (OEI) - (default = 0.97) -->
 				<initial_climb_altitude unit="ft">0.0</initial_climb_altitude>
-				<final_climb_altitude unit="ft">40000.0</final_climb_altitude>
+				<final_climb_altitude unit="ft">37000.0</final_climb_altitude>
 				<climb_speed_CAS unit="kn">190</climb_speed_CAS>
 			</climb>
 			<cruise>
-				<altitudes_array unit="m">0;1500;3000;4500;6000</altitudes_array>
+				<altitudes_array unit="ft">0;10000;20000;30000;37000</altitudes_array>
 				<k_cruise_weight>0.95</k_cruise_weight> <!-- percentage of the maximum take-off weight to be used for the cruise performance - (default = 0.98) -->
 			</cruise>
 			<descent>
 				<rate_of_descent unit="ft/min">1500</rate_of_descent>
 				<descent_speed_CAS unit="kn">220</descent_speed_CAS>
 				<k_descent_weight></k_descent_weight> <!-- percentage of the maximum take-off weight to be used for the descent performance - (default = 0.9) -->
-				<initial_descent_altitude unit="ft">40000</initial_descent_altitude>
+				<initial_descent_altitude unit="ft">37000</initial_descent_altitude>
 				<final_descent_altitude unit="ft">50</final_descent_altitude>
 			</descent>
 			<flight_maneuvering_and_gust_envelope>
@@ -161,7 +161,7 @@
 			<thrust_drag perform="TRUE"/>
 			<power_needed_and_available perform="TRUE"/>
 			<efficiency perform="TRUE"/>
-			<cruise_grid perform="TRUE"/>
+			<cruise_grid perform="FALSE"/>
 			<flight_envelope perform="TRUE"/>
 		</cruise>
 		<descent perform="TRUE"/>

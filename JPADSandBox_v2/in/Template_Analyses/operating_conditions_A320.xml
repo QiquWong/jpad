@@ -13,7 +13,7 @@
 			<alpha_current unit="deg">0</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
 			<mach>0.78</mach>	
-			<altitude unit="ft">39000</altitude>
+			<altitude unit="ft">36000</altitude>
 			<throttle>1.0</throttle>
 		</cruise>
 		<take_off>

@@ -305,6 +305,11 @@ public class TakeOffCalc {
 					break;
 			}
 			
+			if(i > 100) {
+				System.err.println("\t\nMAXIMUM NUMBER OF ITERATION REACHED :: TAKE-OFF");
+				break;
+			}
+			
 			initialize();
 			
 			this.isAborted = isAborted;

@@ -13,7 +13,7 @@
 			<weights>
 				<maximum_take_off_mass unit="kg">78000.0</maximum_take_off_mass>
 				<operating_empty_mass unit="kg">42100.0</operating_empty_mass>
-				<maximum_fuel_mass unit="kg">21300.0</maximum_fuel_mass>
+				<maximum_fuel_mass unit="kg">28861.0</maximum_fuel_mass>
 				<single_passenger_mass unit="kg">92.0</single_passenger_mass>
 			</weights>
 			<balance>
@@ -136,7 +136,7 @@
 				</holding_sfc_function>
 				<initial_mission_fuel unit="kg">5000</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
-				<landing_ground_idle_fuel_flow unit="kg/min">2.65</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
+				<landing_ground_idle_fuel_flow unit="kg/min">0.0</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>
         </performance>
     </analysis>

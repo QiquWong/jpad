@@ -308,9 +308,9 @@ public class MyChartToFileUtils {
 			yListName.add(yLabel);
 		}
 		
-		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
-		legend.stream().map(s -> s.replace('(', '_')).collect(Collectors.toList());
-		legend.stream().map(s -> s.replace(')', '_')).collect(Collectors.toList());
+		legend.stream().forEach(s -> s.replace(" ", "_"));
+		legend.stream().forEach(s -> s.replace("(", "_"));
+		legend.stream().forEach(s -> s.replace(")", "_"));
 		
 		if(createCSV)
 			JPADStaticWriteUtils.exportToCSV(
@@ -364,9 +364,9 @@ public class MyChartToFileUtils {
 			yListName.add(yLabel);
 		}
 		
-		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
-		legend.stream().map(s -> s.replace('(', '_')).collect(Collectors.toList());
-		legend.stream().map(s -> s.replace(')', '_')).collect(Collectors.toList());
+		legend.stream().forEach(s -> s.replace(" ", "_"));
+		legend.stream().forEach(s -> s.replace("(", "_"));
+		legend.stream().forEach(s -> s.replace(")", "_"));
 		
 		if(createCSV)
 			JPADStaticWriteUtils.exportToCSV(
@@ -478,9 +478,9 @@ public class MyChartToFileUtils {
 			yListName.add(yLabel);
 		}
 		
-		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
-		legend.stream().map(s -> s.replace(')', '_')).collect(Collectors.toList());
-		legend.stream().map(s -> s.replace('(', '_')).collect(Collectors.toList());
+		legend.stream().forEach(s -> s.replace(" ", "_"));
+		legend.stream().forEach(s -> s.replace("(", "_"));
+		legend.stream().forEach(s -> s.replace(")", "_"));
 		
 		if(createCSV)
 			JPADStaticWriteUtils.exportToCSV(
@@ -762,7 +762,9 @@ public class MyChartToFileUtils {
 		
 		chartFactory.createMultiTraceChartNoLegend();
 		
-		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+		legend.stream().forEach(s -> s.replace(" ", "_"));
+		legend.stream().forEach(s -> s.replace("(", "_"));
+		legend.stream().forEach(s -> s.replace(")", "_"));
 		
 		if (toCSV == true) {
 			JPADStaticWriteUtils.exportToCSV(
@@ -987,7 +989,9 @@ public class MyChartToFileUtils {
 			yListName.add(yLabelName);
 		}
 		
-		legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+		legend.stream().forEach(s -> s.replace(" ", "_"));
+		legend.stream().forEach(s -> s.replace("(", "_"));
+		legend.stream().forEach(s -> s.replace(")", "_"));
 		
 		JPADStaticWriteUtils.exportToCSV(
 				xList,
@@ -1157,7 +1161,9 @@ public class MyChartToFileUtils {
 				yListName.add(yLabelName);
 			}
 
-			legend.stream().map(s -> s.replace(' ', '_')).collect(Collectors.toList());
+			legend.stream().forEach(s -> s.replace(" ", "_"));
+			legend.stream().forEach(s -> s.replace("(", "_"));
+			legend.stream().forEach(s -> s.replace(")", "_"));
 
 			JPADStaticWriteUtils.exportToCSV(
 					xList,

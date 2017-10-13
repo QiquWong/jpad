@@ -378,6 +378,11 @@ public class MissionProfileCalc {
 			if(i >= 1)
 				_initialFuelMass = newInitialFuelMass;
 			
+			if(i > 100) {
+				System.err.println("\t\nMAXIMUM NUMBER OF ITERATION REACHED :: MISSION PROFILE");
+				break;
+			}
+			
 			//--------------------------------------------------------------------
 			// TAKE-OFF
 			Amount<Length> wingToGroundDistance = 
