@@ -152,6 +152,21 @@ public class JPADXmlReader {
 	}
 
 	/*
+	 * Search first occurrence of a given attribute via XPath
+	 * @param path       the XPath expression pointing to the XML tag
+	 * @param sttribute  the attribute name
+	 * @return           a string result; null if nothing found
+	 */
+	public String getXMLAttributeByPath(String path, String attribute) {
+		if (this.isStatusOK()) {
+			return MyXMLReaderUtils
+					.getXMLPropertyByPath(_xmlDoc, _xpath, path + "/@" + attribute);
+		} else {
+			return null;
+		}		
+	}
+	
+	/*
 	 * Search first occurrence of a given expression via XPath
 	 * @param expression  the XPath expression
 	 * @return            a string result; null if nothing found
