@@ -2,6 +2,8 @@
 package analyses;
 
 import aircraft.components.Aircraft;
+import analyses.IACCostsManager;
+import analyses.OperatingConditions;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;

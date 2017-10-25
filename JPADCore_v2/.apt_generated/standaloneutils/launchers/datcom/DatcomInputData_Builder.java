@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
+import standaloneutils.launchers.datcom.DatcomEngineType;
+import standaloneutils.launchers.datcom.DatcomInputData;
 
 /**
  * Auto-generated superclass of {@link DatcomInputData.Builder},
