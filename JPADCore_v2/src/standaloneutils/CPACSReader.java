@@ -1,25 +1,16 @@
 package standaloneutils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import org.w3c.dom.NodeList;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
-
 import de.dlr.sc.tigl.CpacsConfiguration;
 import de.dlr.sc.tigl.Tigl;
 import de.dlr.sc.tigl.TiglException;
@@ -30,6 +21,14 @@ import de.dlr.sc.tigl.TiglReturnCode;
  * This class wraps the functionalities provided by de.dlr.sc.tigl.* classes
  */
 public class CPACSReader {
+
+	public static enum ReadStatus {
+		OK,
+		ERROR;
+	}
+	
+	// reader object for low-level tasks
+	JPADXmlReader _jpadXmlReader = null;
 	
 	/**
      * Central logger instance.
@@ -37,7 +36,6 @@ public class CPACSReader {
     protected static final Log LOGGER = LogFactory.getLog(CpacsConfiguration.class);	
 	
 	private Document _importDoc;
-	private XPathFactory _xpathFactoryImport;
 
 	private String _cpacsFilePath;
 	CpacsConfiguration _config;
@@ -45,6 +43,8 @@ public class CPACSReader {
 	private int _fuselageCount;
 	private int _wingCount;
 	
+	private ReadStatus _status = null;
+
 	/*
 	 * The object that manages the functionalities provided by de.dlr.sc.tigl.* classes
 	 * 
@@ -59,9 +59,6 @@ public class CPACSReader {
 		
 		try {
 			
-			_xpathFactoryImport = XPathFactory.newInstance();
-			_importDoc = MyXMLReaderUtils.importDocument(_cpacsFilePath);
-
 			_config = Tigl.openCPACSConfiguration(_cpacsFilePath,"");
 			
 			IntByReference fuselageCount = new IntByReference(0);
@@ -72,8 +69,13 @@ public class CPACSReader {
 			TiglNativeInterface.tiglGetWingCount(_config.getCPACSHandle(), wingCount);
 			_wingCount = wingCount.getValue();
 			
+			_status = ReadStatus.OK;
+			_jpadXmlReader = new JPADXmlReader(_cpacsFilePath);
+			_importDoc = _jpadXmlReader.getXmlDoc();
+
 			
 		} catch (TiglException e) {
+			_status = ReadStatus.ERROR;
 			System.err.println(e.getMessage());
 			System.err.println(e.getErrorCode());
 		}		
@@ -286,6 +288,23 @@ public class CPACSReader {
             LOGGER.error("TiGL: Function " + methodname + " returned " + TiglReturnCode.getEnum(errorCode).toString() + ".");
             throw new TiglException(message, TiglReturnCode.getEnum(errorCode));
         }
-    }	
+    }
+    
+    public NodeList getWingList() {
+    	if (_jpadXmlReader != null )
+    		return MyXMLReaderUtils.getXMLNodeListByPath(
+    				_jpadXmlReader.getXmlDoc(), 
+    				"//vehicles/aircraft/model/wings/wing");
+    	else
+    		return null;
+    }
+
+	public JPADXmlReader getJpadXmlReader() {
+		return _jpadXmlReader;
+	}
 	
+	public ReadStatus getStatus() {
+		return _status;
+	}
+    
 } // end of class

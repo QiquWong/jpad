@@ -27494,204 +27494,205 @@
       <machNumber>0.76</machNumber>
       <results/>
     </CD0_wing>
-    <WingAirfoilUnina>
-      <htailarm unit="FT">    48.04 </htailarm>
-      <vtailarm unit="FT">    44.50 </vtailarm>
-      <mass_balance>
-        <ixx unit="SLUG*FT2">    562000 </ixx>
-        <iyy unit="SLUG*FT2"> 1.473e+06 </iyy>
-        <izz unit="SLUG*FT2"> 1.894e+06 </izz>
-        <ixy unit="SLUG*FT2">         0 </ixy>
-        <ixz unit="SLUG*FT2">      8000 </ixz>
-        <iyz unit="SLUG*FT2">         0 </iyz>
-        <emptywt unit="LBS">      83000 </emptywt>
-        <location name="CG" unit="IN">
-          <x> 639 </x>
-          <y>   0 </y>
-          <z> -40 </z>
-        </location>
-      </mass_balance>
-      <landingGear>
-        <contact name="Nose Gear" type="BOGEY">
-          <location unit="IN">
-            <x> 158 </x>
-            <y>   0 </y>
-            <z> -84 </z>
-          </location>
-          <static_friction>  0.80 </static_friction>
-          <dynamic_friction> 0.50 </dynamic_friction>
-          <rolling_friction> 0.02 </rolling_friction>
-          <spring_coeff unit="LBS/FT"> 90000 </spring_coeff>
-          <damping_coeff unit="LBS/FT/SEC"> 4000 </damping_coeff>
-          <damping_coeff_rebound unit="LBS/FT/SEC">8000</damping_coeff_rebound>
-          <max_steer unit="DEG"> 35 </max_steer>
-          <brake_group> NONE </brake_group>
-          <retractable>1</retractable>
-        </contact>
-        <contact name="Left Main Gear" type="BOGEY">
-          <location unit="IN">
-            <x>  648 </x>
-            <y> -100 </y>
-            <z>  -84 </z>
-          </location>
-          <static_friction>  0.80 </static_friction>
-          <dynamic_friction> 0.50 </dynamic_friction>
-          <rolling_friction> 0.02 </rolling_friction>
-          <spring_coeff unit="LBS/FT"> 120000 </spring_coeff>
-          <damping_coeff unit="LBS/FT/SEC"> 10000 </damping_coeff>
-          <damping_coeff_rebound unit="LBS/FT/SEC">20000</damping_coeff_rebound>
-          <max_steer unit="DEG"> 0.0 </max_steer>
-          <brake_group> LEFT </brake_group>
-          <retractable>1</retractable>
-        </contact>
-        <contact name="Right Main Gear" type="BOGEY">
-          <location unit="IN">
-            <x> 648 </x>
-            <y> 100 </y>
-            <z> -84 </z>
-          </location>
-          <static_friction>  0.80 </static_friction>
-          <dynamic_friction> 0.50 </dynamic_friction>
-          <rolling_friction> 0.02 </rolling_friction>
-          <spring_coeff unit="LBS/FT"> 120000 </spring_coeff>
-          <damping_coeff unit="LBS/FT/SEC"> 10000 </damping_coeff>
-          <damping_coeff_rebound unit="LBS/FT/SEC">20000</damping_coeff_rebound>
-          <max_steer unit="DEG"> 0.0 </max_steer>
-          <brake_group> RIGHT </brake_group>
-          <retractable>1</retractable>
-        </contact>
-      </landingGear>
-      <TankFuel>
-        <tank type="FUEL">
-          <!-- Left wing tank -->
-          <location unit="IN">
-            <x> 520 </x>
-            <y> -80 </y>
-            <z> -18 </z>
-          </location>
-          <type>JET-A</type>
-          <capacity unit="LBS"> 10200 </capacity>
-          <contents unit="LBS"> 10000 </contents>
-        </tank>
-        <tank type="FUEL">
-          <!-- Right wing tank -->
-          <location unit="IN">
-            <x> 520 </x>
-            <y>  80 </y>
-            <z> -18 </z>
-          </location>
-          <type>JET-A</type>
-          <capacity unit="LBS"> 10200 </capacity>
-          <contents unit="LBS"> 10000 </contents>
-        </tank>
-        <tank type="FUEL">
-          <!-- Center tank -->
-          <location unit="IN">
-            <x> 480 </x>
-            <y>   0 </y>
-            <z> -18 </z>
-          </location>
-          <type>JET-A</type>
-          <capacity unit="LBS"> 15000 </capacity>
-          <contents unit="LBS">  4000 </contents>
-        </tank>
-      </TankFuel>
-      <SystemControl>
-        <FlapSystem>
-          <Deflection>0.0;10.0;20.0;30.0</Deflection>
-        </FlapSystem>
-        <Ailerons>
-          <range>
-            <min>-20.0</min>
-            <max>20.0</max>
-          </range>
-        </Ailerons>
-        <Rudder>
-          <range>
-            <min>-20.0</min>
-            <max>20.0</max>
-          </range>
-        </Rudder>
-      </SystemControl>
-      <aerodynamics>
-        <GroundEffect>
-          <Height type="ft">0.0000;0.1000;0.1500;0.2000;0.3000;0.4000;0.5000;0.6000;0.7000;0.8000;0.9;1.0</Height>
-          <KCD>0.0480;0.5150;0.6290;0.7090;0.8150;0.8820;0.9280;0.9620;0.9880;1.0000;1.0;1.0</KCD>
-          <KCL>1.2030;1.1270;1.0900;1.0730;1.0460;1.0550;1.0190;1.0130;1.0080;1.0060;1.0;1.0</KCL>
-          <PositionSpeedBreaker>0.0;0.1</PositionSpeedBreaker>
-          <KCLSB>1.0;0.85</KCLSB>
-          <PositionSpoiler>0.0;0.1</PositionSpoiler>
-          <KCLSP>1.0;0.6</KCLSP>
-        </GroundEffect>
-        <Drag>
-          <Alpha type="rad">-1.57;-0.26; 0.00; 0.26; 1.57</Alpha>
-          <CD0>1.5000;0.0420;0.0210;0.0420;1.5000</CD0>
-          <DeltaFlap>30</DeltaFlap>
-          <CDF>0.02</CDF>
-          <CD_Mach>
-            <Mach>0.0;0.78;1.1;1.8;</Mach>
-            <DeltaCD0>0.0;0.0;0.023;0.015</DeltaCD0>
-          </CD_Mach>
-          <CD_Gear>0.015</CD_Gear>
-          <CD_SpoilerFlight>0.02</CD_SpoilerFlight>
-          <CD_SpoilerGround>0.04</CD_SpoilerGround>
-          <CDSideSlip>
-            <beta type="rad"> -1.57;-0.26;0.0;0.26;1.57</beta>
-            <CDBeta> 1.23;0.05;0.0;0.05;1.23</CDBeta>
-          </CDSideSlip>
-          <CDelevator>
-            <DeltaElevator>10.0</DeltaElevator>
-            <CD>0.059</CD>
-          </CDelevator>
-        </Drag>
-        <Side>
-          <CYBeta>-0.67</CYBeta>
-          <CYp>-0.1004</CYp>
-        </Side>
-        <Lift>
-          <StaticLift>
-            <Alpha type="rad">-0.2;0.0; 0.23; 0.46</Alpha>
-            <CLAlpha>-0.68;0.2;1.20;0.20</CLAlpha>
-          </StaticLift>
-          <DeltaFlap>
-            <FlapComand>1.0</FlapComand>
-            <deltaclFlap>0.9</deltaclFlap>
-          </DeltaFlap>
-          <DeltaElevator>
-            <ElevatorComand>1.0</ElevatorComand>
-            <deltaclElevator>0.2</deltaclElevator>
-          </DeltaElevator>
-        </Lift>
-        <Roll>
-          <CLBeta>-0.09</CLBeta>
-          <CLp>-0.4</CLp>
-          <CLr>0.09</CLr>
-          <Aileron>
-            <AileronPosition>0.0;0.375;1.0</AileronPosition>
-            <Mach>0.25;0.85</Mach>
-            <ClDa>0.17;0.11;;0.11;0.06;0.35;0.18</ClDa>
-          </Aileron>
-          <Rudder>
-            <cldr>0.01</cldr>
-          </Rudder>
-        </Roll>
-        <Pitch>
-          <CM>-0.6</CM>
-          <DeltaElevator>
-            <Mach>0.0;2.0</Mach>
-            <Cmde>-1.2;-0.3</Cmde>
-          </DeltaElevator>
-          <Cmq>-27.0</Cmq>
-          <CmalphaDot>-16.0</CmalphaDot>
-        </Pitch>
-        <Yaw>
-          <CNBeta>0.26</CNBeta>
-          <CNr>-0.35</CNr>
-          <CNDeltaRudder>-0.2</CNDeltaRudder>
-        </Yaw>
-      </aerodynamics>
-    </WingAirfoilUnina>
     <UNINA_modules>
+      <JSBSim_data>
+        <htailarm unit="FT">    48.04 </htailarm>
+        <vtailarm unit="FT">    44.50 </vtailarm>
+        <mass_balance>
+          <ixx unit="SLUG*FT2">    562000 </ixx>
+          <iyy unit="SLUG*FT2"> 1.473e+06 </iyy>
+          <izz unit="SLUG*FT2"> 1.894e+06 </izz>
+          <ixy unit="SLUG*FT2">         0 </ixy>
+          <ixz unit="SLUG*FT2">      8000 </ixz>
+          <iyz unit="SLUG*FT2">         0 </iyz>
+          <emptywt unit="LBS">      83000 </emptywt>
+          <location name="CG" unit="IN">
+            <x> 639 </x>
+            <y>   0 </y>
+            <z> -40 </z>
+          </location>
+        </mass_balance>
+        <landingGear>
+          <contact name="Nose Gear" type="BOGEY">
+            <location unit="IN">
+              <x> 158 </x>
+              <y>   0 </y>
+              <z> -84 </z>
+            </location>
+            <static_friction>  0.80 </static_friction>
+            <dynamic_friction> 0.50 </dynamic_friction>
+            <rolling_friction> 0.02 </rolling_friction>
+            <spring_coeff unit="LBS/FT"> 90000 </spring_coeff>
+            <damping_coeff unit="LBS/FT/SEC"> 4000 </damping_coeff>
+            <damping_coeff_rebound unit="LBS/FT/SEC">8000</damping_coeff_rebound>
+            <max_steer unit="DEG"> 35 </max_steer>
+            <brake_group> NONE </brake_group>
+            <retractable>1</retractable>
+          </contact>
+          <contact name="Left Main Gear" type="BOGEY">
+            <location unit="IN">
+              <x>  648 </x>
+              <y> -100 </y>
+              <z>  -84 </z>
+            </location>
+            <static_friction>  0.80 </static_friction>
+            <dynamic_friction> 0.50 </dynamic_friction>
+            <rolling_friction> 0.02 </rolling_friction>
+            <spring_coeff unit="LBS/FT"> 120000 </spring_coeff>
+            <damping_coeff unit="LBS/FT/SEC"> 10000 </damping_coeff>
+            <damping_coeff_rebound unit="LBS/FT/SEC">20000</damping_coeff_rebound>
+            <max_steer unit="DEG"> 0.0 </max_steer>
+            <brake_group> LEFT </brake_group>
+            <retractable>1</retractable>
+          </contact>
+          <contact name="Right Main Gear" type="BOGEY">
+            <location unit="IN">
+              <x> 648 </x>
+              <y> 100 </y>
+              <z> -84 </z>
+            </location>
+            <static_friction>  0.80 </static_friction>
+            <dynamic_friction> 0.50 </dynamic_friction>
+            <rolling_friction> 0.02 </rolling_friction>
+            <spring_coeff unit="LBS/FT"> 120000 </spring_coeff>
+            <damping_coeff unit="LBS/FT/SEC"> 10000 </damping_coeff>
+            <damping_coeff_rebound unit="LBS/FT/SEC">20000</damping_coeff_rebound>
+            <max_steer unit="DEG"> 0.0 </max_steer>
+            <brake_group> RIGHT </brake_group>
+            <retractable>1</retractable>
+          </contact>
+        </landingGear>
+        <TankFuel>
+          <tank type="FUEL">
+            <!-- Left wing tank -->
+            <location unit="IN">
+              <x> 520 </x>
+              <y> -80 </y>
+              <z> -18 </z>
+            </location>
+            <type>JET-A</type>
+            <capacity unit="LBS"> 10200 </capacity>
+            <contents unit="LBS"> 10000 </contents>
+          </tank>
+          <tank type="FUEL">
+            <!-- Right wing tank -->
+            <location unit="IN">
+              <x> 520 </x>
+              <y>  80 </y>
+              <z> -18 </z>
+            </location>
+            <type>JET-A</type>
+            <capacity unit="LBS"> 10200 </capacity>
+            <contents unit="LBS"> 10000 </contents>
+          </tank>
+          <tank type="FUEL">
+            <!-- Center tank -->
+            <location unit="IN">
+              <x> 480 </x>
+              <y>   0 </y>
+              <z> -18 </z>
+            </location>
+            <type>JET-A</type>
+            <capacity unit="LBS"> 15000 </capacity>
+            <contents unit="LBS">  4000 </contents>
+          </tank>
+        </TankFuel>
+        <SystemControl>
+          <FlapSystem>
+            <Deflection>0.0;10.0;20.0;30.0</Deflection>
+          </FlapSystem>
+          <Ailerons>
+            <range>
+              <min>-20.0</min>
+              <max>20.0</max>
+            </range>
+          </Ailerons>
+          <Rudder>
+            <range>
+              <min>-20.0</min>
+              <max>20.0</max>
+            </range>
+          </Rudder>
+        </SystemControl>
+        <aerodynamics>
+          <GroundEffect>
+            <Height type="ft">0.0000;0.1000;0.1500;0.2000;0.3000;0.4000;0.5000;0.6000;0.7000;0.8000;0.9;1.0</Height>
+            <KCD>0.0480;0.5150;0.6290;0.7090;0.8150;0.8820;0.9280;0.9620;0.9880;1.0000;1.0;1.0</KCD>
+            <KCL>1.2030;1.1270;1.0900;1.0730;1.0460;1.0550;1.0190;1.0130;1.0080;1.0060;1.0;1.0</KCL>
+            <PositionSpeedBreaker>0.0;0.1</PositionSpeedBreaker>
+            <KCLSB>1.0;0.85</KCLSB>
+            <PositionSpoiler>0.0;0.1</PositionSpoiler>
+            <KCLSP>1.0;0.6</KCLSP>
+          </GroundEffect>
+          <Drag>
+            <Alpha type="rad">-1.57;-0.26; 0.00; 0.26; 1.57</Alpha>
+            <CD0>1.5000;0.0420;0.0210;0.0420;1.5000</CD0>
+            <DeltaFlap>30</DeltaFlap>
+            <CDF>0.02</CDF>
+            <CD_Mach>
+              <Mach>0.0;0.78;1.1;1.8;</Mach>
+              <DeltaCD0>0.0;0.0;0.023;0.015</DeltaCD0>
+            </CD_Mach>
+            <CD_Gear>0.015</CD_Gear>
+            <CD_SpoilerFlight>0.02</CD_SpoilerFlight>
+            <CD_SpoilerGround>0.04</CD_SpoilerGround>
+            <CDSideSlip>
+              <beta type="rad"> -1.57;-0.26;0.0;0.26;1.57</beta>
+              <CDBeta> 1.23;0.05;0.0;0.05;1.23</CDBeta>
+            </CDSideSlip>
+            <CDelevator>
+              <DeltaElevator>10.0</DeltaElevator>
+              <CD>0.059</CD>
+            </CDelevator>
+          </Drag>
+          <Side>
+            <CYBeta>-0.67</CYBeta>
+            <CYp>-0.1004</CYp>
+          </Side>
+          <Lift>
+            <StaticLift>
+              <Alpha type="rad">-0.2;0.0; 0.23; 0.46</Alpha>
+              <CLAlpha>-0.68;0.2;1.20;0.20</CLAlpha>
+            </StaticLift>
+            <DeltaFlap>
+              <FlapComand>1.0</FlapComand>
+              <deltaclFlap>0.9</deltaclFlap>
+            </DeltaFlap>
+            <DeltaElevator>
+              <ElevatorComand>1.0</ElevatorComand>
+              <deltaclElevator>0.2</deltaclElevator>
+            </DeltaElevator>
+          </Lift>
+          <Roll>
+            <CLBeta>-0.09</CLBeta>
+            <CLp>-0.4</CLp>
+            <CLr>0.09</CLr>
+            <Aileron>
+              <AileronPosition>0.0;0.375;1.0</AileronPosition>
+              <Mach>0.25;0.85</Mach>
+              <ClDa>0.17;0.11;;0.11;0.06;0.35;0.18</ClDa>
+            </Aileron>
+            <Rudder>
+              <cldr>0.01</cldr>
+            </Rudder>
+          </Roll>
+          <Pitch>
+            <CM>-0.6</CM>
+            <DeltaElevator>
+              <Mach>0.0;2.0</Mach>
+              <Cmde>-1.2;-0.3</Cmde>
+            </DeltaElevator>
+            <Cmq>-27.0</Cmq>
+            <CmalphaDot>-16.0</CmalphaDot>
+          </Pitch>
+          <Yaw>
+            <CNBeta>0.26</CNBeta>
+            <CNr>-0.35</CNr>
+            <CNDeltaRudder>-0.2</CNDeltaRudder>
+          </Yaw>
+        </aerodynamics>
+        
+      </JSBSim_data>
       <input>
         <aircraftModelUID>AA_D150_3</aircraftModelUID>
         <aircraftConfiguration>0</aircraftConfiguration>

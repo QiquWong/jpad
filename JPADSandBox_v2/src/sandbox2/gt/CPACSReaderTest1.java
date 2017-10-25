@@ -30,7 +30,7 @@ import de.dlr.sc.tigl.TiglPoint;
 import de.dlr.sc.tigl.TiglSymmetryAxis;
 import de.dlr.sc.tigl.TixiNativeInterface;
 
-class ArgumentsCPACSReader {
+class ArgumentsCPACSReaderTest1 {
 	@Option(name = "-f", aliases = { "--file" }, required = true,
 			usage = "my input file")
 	private File _inputFile;
@@ -45,7 +45,7 @@ class ArgumentsCPACSReader {
 
 }
 
-public class CPACSReader {
+public class CPACSReaderTest1 {
 
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
@@ -69,11 +69,11 @@ public class CPACSReader {
 		//		System.out.println("FILE: " + cpacsFilePath);
 
 
-		ArgumentsCPACSReader va = new ArgumentsCPACSReader();
-		CPACSReader.theCmdLineParser = new CmdLineParser(va);
+		ArgumentsCPACSReaderTest1 va = new ArgumentsCPACSReaderTest1();
+		CPACSReaderTest1.theCmdLineParser = new CmdLineParser(va);
 
 		try {
-			CPACSReader.theCmdLineParser.parseArgument(args);
+			CPACSReaderTest1.theCmdLineParser.parseArgument(args);
 
 			String cpacsFilePath = va.getInputFile().getAbsolutePath();
 
