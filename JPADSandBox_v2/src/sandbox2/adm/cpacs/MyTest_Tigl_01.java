@@ -41,7 +41,7 @@ public class MyTest_Tigl_01 {
 		System.out.println("FILE: " + cpacsFilePath);
 
 		System.out.println("--------------------------------");
-		System.out.println("TiGL Version: " + Tigl.getVersion());
+		//System.out.println("TiGL Version: " + Tigl.getVersion());
 
 		try (CpacsConfiguration config = Tigl.openCPACSConfiguration(
 				cpacsFilePath, // cpacsFileName, 
