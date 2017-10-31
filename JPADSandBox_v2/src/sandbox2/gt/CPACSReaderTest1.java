@@ -104,13 +104,20 @@ public class CPACSReaderTest1 {
 				
 				String flagwing = jpadXmlReader.getXMLPropertyByPath(
 						"/cpacs/toolspecific/UNINA_modules/input/wings/MainWing/mainWingUID");
-				
+				int position = 3;//integer position of the select airfoil 
 				// String flagwing = "D150_VAMP_W1";
+				List<Double> airfoil = new ArrayList<>();
+//				MyArrayUtils
+//				convertListOfDoubleToDoubleArray
+//				readArrayDoubleFromXML
+				airfoil = jpadXmlReader.readArrayDoubleFromXML(
+						"cpacs/vehicles/profiles/wingAirfoils/wingAirfoil["+position+"]/pointList/x");//this read airfoil in position specified in position variables
 				
 				double wingspan = tigl_s.wingGetSpan(flagwing);
 				double flagwingPosition = tigl_s.wingGetIndex(flagwing);
 				System.out.println("wingspan: " + wingspan);
 				System.out.println("flagwingPosition: " + flagwingPosition);
+				System.out.println("Airfoil height: "+ airfoil);
 				//				String wingUID = tigl_s.wingGetW
 				//				i=0
 				//				wingUid  =[0]*nWing

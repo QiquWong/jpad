@@ -3,16 +3,22 @@ package standaloneutils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import de.dlr.sc.tigl.CpacsConfiguration;
 import de.dlr.sc.tigl.Tigl;
+import de.dlr.sc.tigl.Tigl.WingMAC;
 import de.dlr.sc.tigl.TiglException;
 import de.dlr.sc.tigl.TiglNativeInterface;
 import de.dlr.sc.tigl.TiglReturnCode;
@@ -302,6 +308,279 @@ public class CPACSReader {
 	public JPADXmlReader getJpadXmlReader() {
 		return _jpadXmlReader;
 	}
+	
+	/**
+	 * 
+	 * @param Matrix
+	 * @param separator type of separator
+	 * @return From a Matrix of array, return a string that look as a table 
+	 */
+	public static String MatrixDoubleToTable2Variables(double[][] Matrix,String separator) {
+	    
+	    StringBuffer result = new StringBuffer();
+
+	    // iterate over the first dimension
+	    for (int i = 0; i < Matrix.length; i++) {
+	        // iterate over the second dimension
+	        for(int j = 0; j < Matrix[i].length; j++){
+	        	if(i==0&&j==0) {
+	        		result.append("	");
+	        	}
+	        	else {
+	            result.append(Matrix[i][j]);
+	            result.append(separator);
+	        	}
+	        }
+	        // remove the last separator
+	        result.setLength(result.length() - separator.length());
+	        // add a line break.
+	        result.append("\n");
+	    }
+	    return result.toString();
+	}
+	
+public static String MatrixDoubleToTable1Variables(double[][] Matrix) {
+	    
+	    StringBuffer result = new StringBuffer();
+
+	    // iterate over the first dimension
+	    for (int i = 0; i < Matrix.length; i++) {
+	        // iterate over the second dimension
+	        for(int j = 0; j < Matrix[i].length; j++){
+
+	            result.append(Matrix[i][j]);
+	            result.append("	");
+	        }
+	        // remove the last separator
+	        // add a line break.
+	        result.append("\n");
+	    }
+	    return result.toString();
+	}	
+	
+	/**
+	 * 
+	 * @param WingUID Wing UID in the CPACS
+	 * @return Wing Span (CPACS define wing also canard, horizontal tail, vertical tail)
+	 * @throws TiglException
+	 */
+	public double getWingSpan(String WingUID) throws TiglException {
+
+			return _config.wingGetSpan(WingUID);
+
+	}
+	/**
+	 * 
+	 * @param WingUID Wing UID in the CPACS
+	 * @return  Wing wetted area (CPACS define wing also canard, horizontal tail, vertical tail)
+	 * @throws TiglException
+	 */
+	public double getWingWettedArea(String WingUID) throws TiglException {
+
+		return _config.wingGetWettedArea(WingUID);
+
+	}	
+	/**
+	 * 
+	 * @param WingIndex Wing index in the CPACS, remember CPAC definition start from 0
+	 * @return  Wing  area (CPACS define wing also canard, horizontal tail, vertical tail)
+	 * @throws TiglException
+	 */
+	public double getWingReferenceArea(int WingIndex) throws TiglException {
+		return _config.wingGetReferenceArea(WingIndex,_config.wingGetSymmetry(WingIndex));
+
+	}		
+	
+	public double getWingMeanAerodynamicChord(String wingUID) throws TiglException {
+		DoubleByReference mac   = new DoubleByReference();
+		DoubleByReference mac_x = new DoubleByReference();
+		DoubleByReference mac_y = new DoubleByReference();
+		DoubleByReference mac_z = new DoubleByReference();
+		if (TiglNativeInterface.tiglWingGetMAC(_config.getCPACSHandle(), wingUID, mac, mac_x, mac_y, mac_z) == 0) {
+			return mac.getValue();
+		}
+		else
+			return 0;
+	}		
+	
+	/**
+	 * 
+	 * @param WingUID Wing UID in the CPACS
+	 * @return  Wing Index position in the CPACS (CPACS define wing also canard, horizontal tail, vertical tail)
+	 * @throws TiglException
+	 */
+	public int getWingIndex(String WingUID) throws TiglException {
+		NodeList wingsNodes = getWingList();
+		int WingIndex = 0;
+		for (int i = 0; i< wingsNodes.getLength();i++) {
+			Node nodeWing  = wingsNodes.item(i); // .getNodeValue();
+			Element elementWing = (Element) nodeWing;
+            if (elementWing.getAttribute("uID")==WingUID) {
+            	WingIndex = i; //Wing Index in the CPACS start from 1, in JPAD start from 0
+            }
+		}
+		return WingIndex;
+
+	}	
+	/**
+	 * 
+	 * @param WingUID Wing UID in the CPACS
+	 * @param axis axis  which want evaluate distance
+	 * @return Return the leading edge of the mean aerodynamic chord from aircraft nose
+	 * @throws TiglException
+	 */
+	public double getMeanChordLeadingEdge(String WingUID,String axis) throws TiglException {
+		int WingIndex = getWingIndex(WingUID);
+		double WingSpan = getWingSpan(WingUID);		
+		String WingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/transformation/translation/"+axis);
+		double WingRootLeadingEdge = Double.parseDouble(WingRootLeadingEdgeString);	
+		
+		NodeList WingSectionElement = MyXMLReaderUtils.getXMLNodeListByPath(
+				_jpadXmlReader.getXmlDoc(), 
+				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/sections");		
+		int LastWingElementIndex = WingSectionElement.getLength()-1;
+		
+		String WingTipLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/sections/"
+						+ "section["+LastWingElementIndex+"]/elements/element/transformation/scaling/"+axis);
+		double WingTipLeadingEdge = Double.parseDouble(WingTipLeadingEdgeString);
+		//Definition Sweep Angle
+		NodeList WingSectionElementPosition = MyXMLReaderUtils.getXMLNodeListByPath(
+				_jpadXmlReader.getXmlDoc(), 
+				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/positionings");		
+		int LastWingElementPositionIndex = WingSectionElementPosition.getLength()-1;
+		String TanSweepAngleString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/"
+			    + "positionings/positioning["+LastWingElementPositionIndex+"]/sweepAngle");
+		double TanSweepAngle = Double.parseDouble(TanSweepAngleString);			
+		double TaperRatio = WingTipLeadingEdge/WingRootLeadingEdge;
+				
+		return 2/3*WingSpan*(1+2*TaperRatio)/(1+TaperRatio)*TanSweepAngle;
+	}
+ 	/**
+ 	 * 
+ 	 * @return Position of the Gravity center respect to empty weight, given as a vector where
+ 	 * 0 --> x-position
+ 	 * 1 --> y-position
+ 	 * 3 --> z-position
+ 	 * @throws TiglException
+ 	 */
+	public double[] getGravityCenterPosition() throws TiglException {
+		double[] GravityCenterPosition;
+		GravityCenterPosition= new double [3]; 
+		String XpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/mOEM/mEM/massDescription/location/x");
+		GravityCenterPosition[0] = Double.parseDouble(XpositionGCString);			
+
+		String YpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/mOEM/mEM/massDescription/location/y");
+		GravityCenterPosition[1] = Double.parseDouble(YpositionGCString);			
+
+		String ZpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/mOEM/mEM/massDescription/location/z");
+		GravityCenterPosition[2] = Double.parseDouble(ZpositionGCString);			
+
+
+		return GravityCenterPosition;
+	}	
+	/**
+	 * 
+	 * @param pathInTheCpacs Path in the cpacs
+	 * @return x,y,z value of the pathInTheCpacs parameter ( i.e scaling, rotation, translation)
+	 * @throws TiglException
+	 */
+	
+	public double[] getVectorPosition(String pathInTheCpacs) throws TiglException {
+		double[] VectorCenterPosition;
+		VectorCenterPosition= new double [3]; 
+		String XpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+				pathInTheCpacs+"/x");
+		VectorCenterPosition[0] = Double.parseDouble(XpositionGCString);			
+
+		String YpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+				pathInTheCpacs+"/y");
+		VectorCenterPosition[1] = Double.parseDouble(YpositionGCString);			
+
+		String ZpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+				pathInTheCpacs+"/z");
+		VectorCenterPosition[2] = Double.parseDouble(ZpositionGCString);			
+
+
+		return VectorCenterPosition;
+	}	
+	/**
+	 * 
+	 * @param WingUID Wing UID in the CPACS
+	 * @param axis axis  which want evaluate wing position
+	 * @return Wing Position in the axis direction (i.e x y or z)
+	 * @throws TiglException
+	 */
+	
+	
+	public double getWingRootLeadingEdge(String WingUID,String axis) throws TiglException {
+		int WingIndex = getWingIndex(WingUID);
+		String WingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/transformation/translation/"+axis);
+		return Double.parseDouble(WingRootLeadingEdgeString);	
+	}
+	/**
+	 * 
+	 * @param WingUID Wing UID in the CPACS
+	 * @return Tanget of the Sweep Angle
+	 * @throws TiglException
+	 */
+	
+	public double getWingSweep(String WingUID) throws TiglException {
+	int WingIndex = getWingIndex(WingUID);
+	NodeList WingSectionElementPosition = MyXMLReaderUtils.getXMLNodeListByPath(
+			_jpadXmlReader.getXmlDoc(), 
+			"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/positionings");		
+	int LastWingElementPositionIndex = WingSectionElementPosition.getLength()-1;
+	String TanSweepAngleString = _jpadXmlReader.getXMLPropertyByPath(
+			"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/"
+		    + "positionings/positioning["+LastWingElementPositionIndex+"]/sweepAngle");
+	return Double.parseDouble(TanSweepAngleString);			
+	}
+	
+	/**
+	 * 
+	 * @param pathInTheCpacs Path in the CPACS of the system
+	 * @return return as List : SystemUID, Comand Position and deflection value
+	 * 		   every system have 3 position in the list, for example :
+	 * 		   1->Aileron 2->elevator:
+	 * 		   AileronUID getSystemParameter.get(0)
+	 * 		   Aileron Comand Position getSystemParameter.get(1)
+	 * 		   Aileron deflection value getSystemParameter.get(2)
+	 * 		   ElevatorUID getSystemParameter.get(3)
+	 * 		   Elevator Comand Position getSystemParameter.get(4)
+	 * 		   Elevator deflection value getSystemParameter.get(5)     
+	 */
+	public List<String> getSystemParameter(String pathInTheCpacs){
+		NodeList SystemList = MyXMLReaderUtils.getXMLNodeListByPath(
+				_jpadXmlReader.getXmlDoc(),pathInTheCpacs);	
+		String UIDControlSurface;
+        List<String> ReturnSystem = new ArrayList<String>();
+		for (int i=1;i<SystemList.getLength()+1;i++) {
+			Node nodeSystem  = SystemList.item(i); // .getNodeValue();
+			Element SystemElement = (Element) nodeSystem;
+			UIDControlSurface = SystemElement.getAttribute("uID");
+
+			String InputSystem = _jpadXmlReader.getXMLPropertyByPath(
+					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
+					+ "/controlDistributor["+i+"]/controlElements/controlElement/commandInputs");
+			String RelativeDeflection = _jpadXmlReader.getXMLPropertyByPath(
+					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
+					+ "/controlDistributor["+i+"]/controlElements/controlElement/relativeDeflection");
+			ReturnSystem.add(UIDControlSurface);
+			ReturnSystem.add(InputSystem);					
+			ReturnSystem.add(RelativeDeflection);
+		}
+
+		return ReturnSystem;
+	}
+	
+	
 	
 	public ReadStatus getStatus() {
 		return _status;
