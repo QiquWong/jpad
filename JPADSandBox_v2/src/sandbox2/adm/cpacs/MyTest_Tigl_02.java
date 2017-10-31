@@ -9,7 +9,7 @@ import configuration.MyConfiguration;
 import de.dlr.sc.tigl.TiglBSpline;
 import de.dlr.sc.tigl.TiglException;
 import de.dlr.sc.tigl.TiglNativeInterface;
-import standaloneutils.CPACSReader;
+import standaloneutils.cpacs.CPACSReader;
 
 public class MyTest_Tigl_02 {
 

@@ -19,9 +19,10 @@ import org.w3c.dom.NodeList;
 import configuration.MyConfiguration;
 import de.dlr.sc.tigl.Tigl;
 import de.dlr.sc.tigl.TiglException;
-import standaloneutils.CPACSReader;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
+import standaloneutils.cpacs.CPACSReader;
+import standaloneutils.cpacs.CPACSUtils;
 import standaloneutils.jsbsim.JSBSimModel;
 
 class ArgumentsCPACSReaderTest2 {
@@ -113,10 +114,12 @@ public class CPACSReaderTest2 {
 						MyConfiguration.currentDirectoryString + File.separator
 						+ MyConfiguration.outputDirectory + File.separator
 						+ "CPACS";
-				String cpacsOutputFilePath = cpacsOutputFileFolderPath + File.separator + "pippo_cpacs.xml";
+				String jsbsimOutputFilePath = cpacsOutputFileFolderPath + File.separator + "pippo_cpacs.xml";
 				
 				JSBSimModel jsbsimModel = new JSBSimModel(cpacsReader);
 				jsbsimModel.appendToCPACSFile(new File(cpacsOutputFileFolderPath)); // TODO
+//				jsbsimModel.readVariablesFromCPACS(cpacsFilePath); // TODO
+//				jsbsimModel.exportToXML(new File(jsbsimOutputFilePath)); // TODO
 				
 				//table system
 				JPADXmlReader _jpadXmlReader = new JPADXmlReader(cpacsFilePath);
@@ -173,7 +176,7 @@ public class CPACSReaderTest2 {
 					KCDMatrix[i][0] = HeightGroundEffect.get(i);
 					KCDMatrix[i][1] = KCDGroundEffect.get(i);
 				}
-				String Pippo = cpacsReader.MatrixDoubleToTable1Variables(KCLMatrix);
+				String Pippo = CPACSUtils.matrixDoubleToJSBSimTableNx2(KCLMatrix);
 				System.out.println(Pippo);
 //				List<Double> TableArray1 = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
 //						"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/Drag/CD0");
@@ -184,46 +187,47 @@ public class CPACSReaderTest2 {
 ////					
 ////				}
 //				
-//				List<Double> FlightLevelEngine = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-//						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/flightLevel");
-//				List<Double> MachNumberEngine = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-//						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/machNumber");
-//				List<Double> IdleThrust = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-//						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/IdleThrust");
-//				List<Double> MilThrust = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-//						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/MilThrust");
-//				double [][] IdleThrustTable = new double [MachNumberEngine.size()+1][FlightLevelEngine.size()+1];
-//				int k = 0;
-//				for(int i= 0;i<MachNumberEngine.size()+1;i++) {
-//					for (int j = 0;j<FlightLevelEngine.size()+1;j++) {
-////						System.out.println(k);
-//						if (i==0&&j==0) {
-//							IdleThrustTable[i][j]=0;
-//						}
-//						if (j==0 && i !=0 ){
-//							IdleThrustTable[i][j]=MachNumberEngine.get(i-1);
-//						}
-//						if (i==0 && j !=0 ){
-//							IdleThrustTable[i][j]=FlightLevelEngine.get(j-1);
-//						}
-//						else {
-//							IdleThrustTable[i][j]=IdleThrust.get(k);
-////							System.out.println(IdleThrust.get(k));
-//							if (k<FlightLevelEngine.size()*MachNumberEngine.size()-1) {
-//							k++;							
-//							}
-//						}
-//
-//					}						
-//				}
-//				String TableString = cpacsReader.toString(IdleThrustTable, ";");
-//				System.out.println(TableString);
-//				for(int i= 0;i<MachNumberEngine.size()+1;i++) {
-//					for (int j = 0;j<FlightLevelEngine.size()+1;j++) {
-//						System.out.println(IdleThrustTable[i][j]);
-//					}						
-//				}
-//				System.out.println(IdleThrustTable);
+				List<Double> FlightLevelEngine = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
+						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/flightLevel");
+				List<Double> MachNumberEngine = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
+						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/machNumber");
+				List<Double> IdleThrust = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
+						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/IdleThrust");
+				List<Double> MilThrust = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
+						"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/MilThrust");
+
+				double [][] IdleThrustTable = new double [MachNumberEngine.size()+1][FlightLevelEngine.size()+1];
+				int k = 0;
+				for(int i= 0;i<MachNumberEngine.size()+1;i++) {
+					for (int j = 0;j<FlightLevelEngine.size()+1;j++) {
+//						System.out.println(k);
+						if (i==0&&j==0) {
+							IdleThrustTable[i][j]=0;
+						}
+						if (j==0 && i !=0 ){
+							IdleThrustTable[i][j]=MachNumberEngine.get(i-1);
+						}
+						if (i==0 && j !=0 ){
+							IdleThrustTable[i][j]=FlightLevelEngine.get(j-1);
+						}
+						else {
+							IdleThrustTable[i][j]=IdleThrust.get(k);
+//							System.out.println(IdleThrust.get(k));
+							if (k<FlightLevelEngine.size()*MachNumberEngine.size()-1) {
+							k++;							
+							}
+						}
+
+					}						
+				}
+				String TableString = CPACSUtils.matrixDoubleToJSBSimTable2D(IdleThrustTable, ";");
+				System.out.println(TableString);
+				for(int i= 0;i<MachNumberEngine.size()+1;i++) {
+					for (int j = 0;j<FlightLevelEngine.size()+1;j++) {
+						System.out.println(IdleThrustTable[i][j]);
+					}						
+				}
+				System.out.println(IdleThrustTable);
 				
 			} // status OK
 			
