@@ -33,7 +33,6 @@ import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
-import database.DatabaseManager;
 import database.databasefunctions.FuelFractionDatabaseReader;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;

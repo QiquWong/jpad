@@ -3,8 +3,7 @@
     <analysis>
         <balance 
             id="A320 - BALANCE" 
-            from_xls_file="true" 
-            file="Weights.xlsx"
+            weights_from_previous_analysis="true" 
             >
             <maximum_take_off_mass unit="kg"></maximum_take_off_mass>
 			<maximum_zero_fuel_mass unit="kg"></maximum_zero_fuel_mass>

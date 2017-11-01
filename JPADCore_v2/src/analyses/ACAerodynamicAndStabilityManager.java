@@ -1,7 +1,6 @@
 package analyses;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,7 +78,6 @@ import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.AerodynamicAndStabilityPlotEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
-import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
 import javaslang.Tuple;
@@ -90,7 +88,6 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
-import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
@@ -10931,22 +10928,17 @@ public class ACAerodynamicAndStabilityManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 
-		Boolean readBalanceFromXLSFlag;
+		Boolean readBalanceFromPreviousAnalysisFlag;
 		
-		String readBalanceFromXLSString = MyXMLReaderUtils
+		String readBalanceFromPreviousAnalysisString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@balance_from_xls_file");
+						"//@balance_from_previous_analysis");
 		
-		if(readBalanceFromXLSString.equalsIgnoreCase("true"))
-			readBalanceFromXLSFlag = Boolean.TRUE;
+		if(readBalanceFromPreviousAnalysisString.equalsIgnoreCase("true"))
+			readBalanceFromPreviousAnalysisFlag = Boolean.TRUE;
 		else
-			readBalanceFromXLSFlag = Boolean.FALSE;
-		
-		String fileBalanceXLS = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@file_balance");
+			readBalanceFromPreviousAnalysisFlag = Boolean.FALSE;
 		
 		//===============================================================
 		// READING BALANCE DATA
@@ -10965,128 +10957,51 @@ public class ACAerodynamicAndStabilityManager {
 		 * data inside the xlm file.
 		 * Otherwise it ignores the xls file and reads the input data from the xml.
 		 */
-		if(readBalanceFromXLSFlag == Boolean.TRUE) {
+		if(readBalanceFromPreviousAnalysisFlag == Boolean.TRUE) {
+			if(theAircraft.getTheAnalysisManager() != null) {
+				if(theAircraft.getTheAnalysisManager().getTheBalance() != null) {
+					
+					//---------------------------------------------------------------
+					// XCG POSITIONS
+					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxForwardCG());
+					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getXMAC());
+					xCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getMaxAftCG());
 
-			File balanceFile = new File(
-					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
-					+ theAircraft.getId() 
-					+ File.separator
-					+ "WEIGHTS"
-					+ File.separator
-					+ fileBalanceXLS);
-			if(balanceFile.exists()) {
+					//---------------------------------------------------------------
+					// ZCG POSITIONS
+					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZMAC());
+					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZMAC());
+					zCGAdimensionalPositions.add(theAircraft.getTheAnalysisManager().getTheBalance().getCGMTOM().getZMAC());
 
-				FileInputStream readerXLS = new FileInputStream(balanceFile);
-				Workbook workbook;
-				if (balanceFile.getAbsolutePath().endsWith(".xls")) {
-					workbook = new HSSFWorkbook(readerXLS);
-				}
-				else if (balanceFile.getAbsolutePath().endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(readerXLS);
+					//---------------------------------------------------------------
+					// XCG AND ZCG POSITIONS FUSELAGE
+					if(theAircraft.getFuselage() != null) {
+						xCGFuselage = theAircraft.getFuselage().getCG().getXBRF().to(SI.METER);
+						zCGFuselage = theAircraft.getFuselage().getCG().getZBRF().to(SI.METER);
+					}
+
+					//---------------------------------------------------------------
+					// XCG AND ZCG POSITIONS LANDING GEAR
+					if(theAircraft.getLandingGears() != null) {
+						xCGLandingGears = theAircraft.getLandingGears().getCG().getXBRF().to(SI.METER);
+						zCGLandingGears = theAircraft.getLandingGears().getCG().getZBRF().to(SI.METER);
+					}
+
+					//---------------------------------------------------------------
+					// XCG AND ZCG POSITIONS NACELLE
+					if(theAircraft.getNacelles() != null) {
+						xCGNacelles = theAircraft.getNacelles().getNacellesList().get(0).getBalance().getCG().getXBRF().to(SI.METER);
+						zCGNacelles = theAircraft.getNacelles().getNacellesList().get(0).getBalance().getCG().getZBRF().to(SI.METER);
+					}
 				}
 				else {
-					throw new IllegalArgumentException("I don't know how to create that kind of new file");
-				}
-
-				//---------------------------------------------------------------
-				// XCG POSITIONS
-				Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "GLOBAL RESULTS");
-				Double xCGAtMaxTakeOffWeight = 0.0;
-				Double xCGMaxForward = 0.0;
-				Double xCGMaxAfterward = 0.0;
-				
-				if(sheetGlobalData != null) {
-					//...............................................................
-					// Xcg AT MAX TAKE-OFF WEIGHT
-					Cell xCGAtMaxTakeOffWeightCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Xcg maximum take-off mass MAC").get(0)).getCell(2);
-					if(xCGAtMaxTakeOffWeightCell != null)
-						xCGAtMaxTakeOffWeight = xCGAtMaxTakeOffWeightCell.getNumericCellValue()/100;
-					//...............................................................
-					// MAX FORWARD Xcg
-					Cell xCGMaxForwardCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Max forward Xcg MAC").get(0)).getCell(2);
-					if(xCGMaxForwardCell != null)
-						xCGMaxForward = xCGMaxForwardCell.getNumericCellValue()/100;
-					//...............................................................
-					// MAX AFTERWARD Xcg
-					Cell xCGMaxAfterwardCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Max aft Xcg MAC").get(0)).getCell(2);
-					if(xCGMaxAfterwardCell != null)
-						xCGMaxAfterward = xCGMaxAfterwardCell.getNumericCellValue()/100;
-				}
-				
-				xCGAdimensionalPositions.add(xCGMaxForward);
-				xCGAdimensionalPositions.add(xCGAtMaxTakeOffWeight);
-				xCGAdimensionalPositions.add(xCGMaxAfterward);
-				
-				//---------------------------------------------------------------
-				// ZCG POSITIONS
-				Double zCGAtMaxTakeOffWeight = 0.0;
-				
-				if(sheetGlobalData != null) {
-					//...............................................................
-					// Zcg AT MAX TAKE-OFF WEIGHT
-					Cell zCGAtMaxTakeOffWeightCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Zcg maximum take-off mass MAC").get(0)).getCell(2);
-					if(zCGAtMaxTakeOffWeightCell != null)
-						zCGAtMaxTakeOffWeight = zCGAtMaxTakeOffWeightCell.getNumericCellValue()/100;
-				}
-				
-				zCGAdimensionalPositions.add(zCGAtMaxTakeOffWeight);
-				zCGAdimensionalPositions.add(zCGAtMaxTakeOffWeight);
-				zCGAdimensionalPositions.add(zCGAtMaxTakeOffWeight);
-				
-				//---------------------------------------------------------------
-				// XCG AND ZCG POSITIONS FUSELAGE
-				Sheet sheetFuselage = MyXLSUtils.findSheet(workbook, "FUSELAGE");
-				
-				if(sheetFuselage != null) {
-					//...............................................................
-					// Xcg FUSELAGE
-					Cell xCGFuselageCell = sheetFuselage.getRow(MyXLSUtils.findRowIndex(sheetFuselage, "Xcg BRF").get(0)).getCell(2);
-					if(xCGFuselageCell != null)
-						xCGFuselage = Amount.valueOf(xCGFuselageCell.getNumericCellValue(), SI.METER);
-					//...............................................................
-					// Zcg FUSELAGE
-					Cell zCGFuselageCell = sheetFuselage.getRow(MyXLSUtils.findRowIndex(sheetFuselage, "Zcg BRF").get(0)).getCell(2);
-					if(zCGFuselageCell != null)
-						zCGFuselage = Amount.valueOf(zCGFuselageCell.getNumericCellValue(), SI.METER);
-				}
-				
-				//---------------------------------------------------------------
-				// XCG AND ZCG POSITIONS LANDING GEAR
-				Sheet sheetLandingGear = MyXLSUtils.findSheet(workbook, "LANDING GEARS");
-				
-				if(sheetLandingGear != null) {
-					//...............................................................
-					// Xcg LANDING GEAR
-					Cell xCGLandingGearCell = sheetLandingGear.getRow(MyXLSUtils.findRowIndex(sheetLandingGear, "Xcg BRF").get(0)).getCell(2);
-					if(xCGLandingGearCell != null)
-						xCGLandingGears = Amount.valueOf(xCGLandingGearCell.getNumericCellValue(), SI.METER);
-					//...............................................................
-					// Zcg LANDING GEAR
-					Cell zCGLandingGearCell = sheetLandingGear.getRow(MyXLSUtils.findRowIndex(sheetLandingGear, "Zcg BRF").get(0)).getCell(2);
-					if(zCGLandingGearCell != null)
-						zCGLandingGears = Amount.valueOf(zCGLandingGearCell.getNumericCellValue(), SI.METER);
-				}
-				
-				//---------------------------------------------------------------
-				// XCG AND ZCG POSITIONS NACELLE
-				Sheet sheetNacelles = MyXLSUtils.findSheet(workbook, "NACELLES");
-				
-				if(sheetNacelles != null) {
-					//...............................................................
-					// Xcg LANDING GEAR
-					Cell xCGNacelleCell = sheetNacelles.getRow(MyXLSUtils.findRowIndex(sheetNacelles, "Xcg BRF").get(0)).getCell(2);
-					if(xCGNacelleCell != null)
-						xCGNacelles = Amount.valueOf(xCGNacelleCell.getNumericCellValue(), SI.METER);
-					//...............................................................
-					// Zcg LANDING GEAR
-					Cell zCGNacelleCell = sheetNacelles.getRow(MyXLSUtils.findRowIndex(sheetNacelles, "Zcg BRF").get(0)).getCell(2);
-					if(zCGNacelleCell != null)
-						zCGNacelles = Amount.valueOf(zCGNacelleCell.getNumericCellValue(), SI.METER);
+					System.err.println("WARNING!! THE BALANCE ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
+					System.exit(1);
 				}
 			}
 			else {
-				System.err.println("FILE '" + balanceFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
-				return null;
+				System.err.println("WARNING!! THE ANALYSIS MANAGER DOES NOT EXIST ... TERMINATING");
+				System.exit(1);
 			}
 		}
 		else {

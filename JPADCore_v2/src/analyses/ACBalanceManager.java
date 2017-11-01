@@ -1,7 +1,6 @@
 package analyses;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,12 +27,10 @@ import org.jscience.physics.amount.Amount;
 import aircraft.components.Aircraft;
 import configuration.MyConfiguration;
 import configuration.enumerations.ComponentEnum;
-import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
-import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.customdata.CenterOfGravity;
 
@@ -232,20 +229,15 @@ public class ACBalanceManager implements IACBalanceManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 
-		Boolean readFromXLSFlag;
-		String readFromXLSString = MyXMLReaderUtils
+		Boolean weightsFromPreviousAnalysisFlag;
+		String weightsFromPreviousAnalysisString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@from_xls_file");
-		if(readFromXLSString.equalsIgnoreCase("true"))
-			readFromXLSFlag = Boolean.TRUE;
+						"//@weights_from_previous_analysis");
+		if(weightsFromPreviousAnalysisString.equalsIgnoreCase("true"))
+			weightsFromPreviousAnalysisFlag = Boolean.TRUE;
 		else
-			readFromXLSFlag = Boolean.FALSE;
-
-		String fileWeightsXLS = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@file");
+			weightsFromPreviousAnalysisFlag = Boolean.FALSE;
 
 		Amount<Mass> maximumTakeOffMass = null;
 		Amount<Mass> maximumZeroFuelMass = null;
@@ -267,178 +259,110 @@ public class ACBalanceManager implements IACBalanceManager {
 		 * data inside the xlm file.
 		 * Otherwise it ignores the xls file and reads the input data from the xml.
 		 */
-		if(readFromXLSFlag == Boolean.TRUE) {
+		if(weightsFromPreviousAnalysisFlag == Boolean.TRUE) {
 
-			File weightsFile = new File(
-					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
-					+ theAircraft.getId() 
-					+ File.separator
-					+ "WEIGHTS"
-					+ File.separator
-					+ fileWeightsXLS);
-			if(weightsFile.exists()) {
+			if(theAircraft.getTheAnalysisManager() != null) {
+				if(theAircraft.getTheAnalysisManager().getTheWeights() != null) {
+					//---------------------------------------------------------------
+					// MAXIMUM TAKE-OFF MASS
+					maximumTakeOffMass = theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(SI.KILOGRAM);
 
-				FileInputStream readerXLS = new FileInputStream(weightsFile);
-				Workbook workbook;
-				if (weightsFile.getAbsolutePath().endsWith(".xls")) {
-					workbook = new HSSFWorkbook(readerXLS);
-				}
-				else if (weightsFile.getAbsolutePath().endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(readerXLS);
+					//---------------------------------------------------------------
+					// MAXIMUM ZERO FUEL MASS
+					maximumZeroFuelMass = theAircraft.getTheAnalysisManager().getTheWeights().getMaximumZeroFuelMass().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// OPERATING EMPTY MASS
+					operatingEmptyMass = theAircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// FUEL MASS
+					fuelMass = theAircraft.getTheAnalysisManager().getTheWeights().getFuelMass().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// PASSENGERS TOTAL MASS
+					passengersTotalMass = theAircraft.getTheAnalysisManager().getTheWeights().getPaxMass().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// PASSENGERS SINGLE MASS (From ACWeightsManager)
+					passengersSingleMass = theAircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass();
+
+					//---------------------------------------------------------------
+					// FUSELAGE MASS
+					if(theAircraft.getFuselage() != null)
+							fuselageMass = theAircraft.getFuselage().getMassEstimated().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// WING MASS
+					if(theAircraft.getWing() != null)
+							wingMass = theAircraft.getWing().getMassEstimated().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// HORIZONTAL TAIL MASS
+					if(theAircraft.getHTail() != null)
+							horizontalTailMass = theAircraft.getHTail().getMassEstimated().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// VERTICAL TAIL MASS
+					if(theAircraft.getVTail() != null)
+							verticalTailMass = theAircraft.getVTail().getMassEstimated().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// CANARD MASS
+					if(theAircraft.getCanard() != null)
+							canardMass = theAircraft.getCanard().getMassEstimated().to(SI.KILOGRAM);
+
+					//---------------------------------------------------------------
+					// NACELLES MASS
+					if(theAircraft.getNacelles() != null)
+						theAircraft.getNacelles().getNacellesList().stream().forEach(nac -> nacellesMassList.add(nac.getWeights().getMassEstimated()));
+
+					//---------------------------------------------------------------
+					// ENGINES MASS
+					if(theAircraft.getPowerPlant() != null)
+						theAircraft.getPowerPlant().getEngineList().stream().forEach(eng -> enginesMassList.add(eng.getTheWeights().getMassEstimated()));
+
+					//---------------------------------------------------------------
+					// LANDING GEARS MASS
+					if(theAircraft.getLandingGears() != null)
+							landingGearsMass = theAircraft.getLandingGears().getMassEstimated();
 				}
 				else {
-					throw new IllegalArgumentException("I don't know how to create that kind of new file");
+					System.err.println("WARNING!! THE WEIGHTS ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
+					System.exit(1);
 				}
-
-				//---------------------------------------------------------------
-				// MAXIMUM TAKE-OFF MASS
-				Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "GLOBAL RESULTS");
-				if(sheetGlobalData != null) {
-					Cell maximumTakeOffMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Take-Off Mass").get(0)).getCell(2);
-					if(maximumTakeOffMassCell != null)
-						maximumTakeOffMass = Amount.valueOf(maximumTakeOffMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-
-				//---------------------------------------------------------------
-				// MAXIMUM ZERO FUEL MASS
-				Cell maximumZeroFuelMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Zero Fuel Mass").get(0)).getCell(2);
-				if(maximumZeroFuelMassCell != null)
-					maximumZeroFuelMass = Amount.valueOf(maximumZeroFuelMassCell.getNumericCellValue(), SI.KILOGRAM);
-
-				//---------------------------------------------------------------
-				// OPERATING EMPTY MASS
-				Cell operatingEmptyMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Operating Empty Mass").get(0)).getCell(2);
-				if(operatingEmptyMassCell != null)
-					operatingEmptyMass = Amount.valueOf(operatingEmptyMassCell.getNumericCellValue(), SI.KILOGRAM);
-
-				//---------------------------------------------------------------
-				// FUEL MASS
-				Cell fuelMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Fuel Mass").get(0)).getCell(2);
-				if(fuelMassCell != null)
-					fuelMass = Amount.valueOf(fuelMassCell.getNumericCellValue(), SI.KILOGRAM);
-				
-				//---------------------------------------------------------------
-				// PASSENGERS TOTAL MASS
-				Cell passengersTotalMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Passengers Mass").get(0)).getCell(2);
-				if(passengersTotalMassCell != null)
-					passengersTotalMass = Amount.valueOf(passengersTotalMassCell.getNumericCellValue(), SI.KILOGRAM);
-
-				//---------------------------------------------------------------
-				// PASSENGERS SINGLE MASS (From ACWeightsManager)
-				passengersSingleMass = theAircraft
-						.getTheAnalysisManager()
-							.getTheWeights()
-								.getPaxSingleMass();
-				
-				//---------------------------------------------------------------
-				// FUSELAGE MASS
-				Sheet sheetFuselage = MyXLSUtils.findSheet(workbook, "FUSELAGE");
-				if(sheetFuselage != null) {
-					
-					Cell fuselageMassCell = sheetFuselage.getRow(MyXLSUtils.findRowIndex(sheetFuselage, "Estimated Mass ").get(0)).getCell(2);
-					if(fuselageMassCell != null)
-						fuselageMass = Amount.valueOf(fuselageMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-
-				//---------------------------------------------------------------
-				// WING MASS
-				Sheet sheetWing = MyXLSUtils.findSheet(workbook, "WING");
-				if(sheetWing != null) {
-					Cell wingMassCell = sheetWing.getRow(MyXLSUtils.findRowIndex(sheetWing, "Estimated Mass ").get(0)).getCell(2);
-					if(wingMassCell != null)
-						wingMass = Amount.valueOf(wingMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-
-				//---------------------------------------------------------------
-				// HORIZONTAL TAIL MASS
-				Sheet sheetHTail = MyXLSUtils.findSheet(workbook, "HORIZONTAL TAIL");
-				if(sheetHTail != null) {
-					Cell hTailMassCell = sheetHTail.getRow(MyXLSUtils.findRowIndex(sheetHTail, "Estimated Mass ").get(0)).getCell(2);
-					if(hTailMassCell != null)
-						horizontalTailMass = Amount.valueOf(hTailMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-
-				//---------------------------------------------------------------
-				// VERTICAL TAIL MASS
-				Sheet sheetVTail = MyXLSUtils.findSheet(workbook, "VERTICAL TAIL");
-				if(sheetVTail != null) {
-					Cell vTailMassCell = sheetVTail.getRow(MyXLSUtils.findRowIndex(sheetVTail, "Estimated Mass ").get(0)).getCell(2);
-					if(vTailMassCell != null)
-						verticalTailMass = Amount.valueOf(vTailMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-
-				//---------------------------------------------------------------
-				// CANARD MASS
-				Sheet sheetCanard = MyXLSUtils.findSheet(workbook, "CANARD");
-				if(sheetCanard != null) {
-					Cell canardMassCell = sheetCanard.getRow(MyXLSUtils.findRowIndex(sheetCanard, "Estimated Mass ").get(0)).getCell(2);
-					if(canardMassCell != null)
-						canardMass = Amount.valueOf(canardMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-
-				//---------------------------------------------------------------
-				// NACELLES MASS
-				Sheet sheetNacelles = MyXLSUtils.findSheet(workbook, "NACELLES");
-				if(sheetNacelles != null) {
-					for(int i=0; i<theAircraft.getNacelles().getNacellesNumber(); i++) {
-						Cell nacellesMassCell = sheetNacelles.getRow(MyXLSUtils.findRowIndex(sheetNacelles, "Estimated Mass ").get(i)).getCell(2);
-						if(nacellesMassCell != null)
-							nacellesMassList.add(Amount.valueOf(nacellesMassCell.getNumericCellValue(), SI.KILOGRAM));
-					}
-				}
-
-				//---------------------------------------------------------------
-				// ENGINES MASS
-				Sheet sheetEngines = MyXLSUtils.findSheet(workbook, "POWER PLANT");
-				if(sheetEngines != null) {
-					for(int i=0; i<theAircraft.getPowerPlant().getEngineNumber(); i++) {
-						Cell enginesMassCell = sheetEngines.getRow(MyXLSUtils.findRowIndex(sheetEngines, "Total Mass").get(i)).getCell(2);
-						if(enginesMassCell != null)
-							enginesMassList.add(Amount.valueOf(enginesMassCell.getNumericCellValue(), SI.KILOGRAM));
-					}
-				}
-
-				//---------------------------------------------------------------
-				// LANDING GEARS MASS
-				Sheet sheetLandingGears = MyXLSUtils.findSheet(workbook, "LANDING GEARS");
-				if(sheetLandingGears != null) {
-					Cell landingGearsMassCell = sheetLandingGears.getRow(MyXLSUtils.findRowIndex(sheetLandingGears, "Estimated Mass ").get(0)).getCell(2);
-					if(landingGearsMassCell != null)
-						landingGearsMass = Amount.valueOf(landingGearsMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-
 			}
 			else {
-				System.err.println("FILE '" + weightsFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
-				return null;
+				System.err.println("WARNING!! THE ANALYSIS MANAGER DOES NOT EXIST ... TERMINATING");
+				System.exit(1);
 			}
 		}
 		else {
-		
+
 			//---------------------------------------------------------------
 			// MAXIMUM TAKE-OFF MASS
 			String maximumTakeOffMassProperty = reader.getXMLPropertyByPath("//balance/maximum_take_off_mass");
 			if(maximumTakeOffMassProperty != null)
 				maximumTakeOffMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/maximum_take_off_mass");
-			
+
 			//---------------------------------------------------------------
 			// MAXIMUM ZERO FUEL MASS
 			String maximumZeroFuelMassProperty = reader.getXMLPropertyByPath("//balance/maximum_zero_fuel_mass");
 			if(maximumZeroFuelMassProperty != null)
 				maximumZeroFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/maximum_zero_fuel_mass");
-			
+
 			//---------------------------------------------------------------
 			// OPERATING EMPTY MASS
 			String operatingEmptyMassProperty = reader.getXMLPropertyByPath("//balance/operating_empty_mass");
 			if(operatingEmptyMassProperty != null)
 				operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/operating_empty_mass");
-			
+
 			//---------------------------------------------------------------
 			// FUEL MASS
 			String fuelMassProperty = reader.getXMLPropertyByPath("//balance/fuel_mass");
 			if(fuelMassProperty != null)
 				fuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/fuel_mass");
-			
+
 			//---------------------------------------------------------------
 			// PASSENGERS TOTAL MASS
 			String passengersTotalMassProperty = reader.getXMLPropertyByPath("//balance/passengers_total_mass");
@@ -450,58 +374,58 @@ public class ACBalanceManager implements IACBalanceManager {
 			String passengersSingleMassProperty = reader.getXMLPropertyByPath("//balance/passengers_single_mass");
 			if(passengersSingleMassProperty != null)
 				passengersSingleMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/passengers_single_mass");
-			
+
 			//---------------------------------------------------------------
 			// FUSELAGE MASS
 			String fuselageMassProperty = reader.getXMLPropertyByPath("//balance/fuselage_mass");
 			if(fuselageMassProperty != null)
 				fuselageMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/fuselage_mass");
-			
+
 			//---------------------------------------------------------------
 			// WING MASS
 			String wingMassProperty = reader.getXMLPropertyByPath("//balance/wing_mass");
 			if(wingMassProperty != null)
 				wingMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/wing_mass");
-			
+
 			//---------------------------------------------------------------
 			// HORIZONTAL TAIL MASS
 			String horizontalTailMassProperty = reader.getXMLPropertyByPath("//balance/horizontal_tail_mass");
 			if(horizontalTailMassProperty != null)
 				horizontalTailMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/horizontal_tail_mass");
-			
+
 			//---------------------------------------------------------------
 			// VERTICAL TAIL MASS
 			String verticalTailMassProperty = reader.getXMLPropertyByPath("//balance/vertical_tail_mass");
 			if(verticalTailMassProperty != null)
 				verticalTailMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/vertical_tail_mass");
-			
+
 			//---------------------------------------------------------------
 			// CANARD MASS
 			String canardMassProperty = reader.getXMLPropertyByPath("//balance/canard_mass");
 			if(canardMassProperty != null)
 				canardMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/canard_mass");
-			
+
 			//---------------------------------------------------------------
 			// NACELLES MASS
 			List<String> nacellesMassProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//balance/nacelles_mass").get(0));
 			if(nacellesMassProperty != null)
 				for(int i=0; i<nacellesMassProperty.size(); i++)
 					nacellesMassList.add(Amount.valueOf(Double.valueOf(nacellesMassProperty.get(i)), SI.KILOGRAM));
-			
+
 			//---------------------------------------------------------------
 			// ENGINES MASS
 			List<String> enignesMassProperty = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//balance/engines_mass").get(0));
 			if(enignesMassProperty != null)
 				for(int i=0; i<enignesMassProperty.size(); i++)
 					enginesMassList.add(Amount.valueOf(Double.valueOf(enignesMassProperty.get(i)), SI.KILOGRAM));
-			
+
 			//---------------------------------------------------------------
 			// LANDING GEARS MASS
 			String landingGearsMassProperty = reader.getXMLPropertyByPath("//balance/landing_gears_mass");
 			if(landingGearsMassProperty != null)
 				landingGearsMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//balance/landing_gears_mass");
 		}
-		
+
 		/********************************************************************************************
 		 * Once the data are ready, it's possible to create the ACBalanceManager object can be created
 		 * using the builder pattern.
@@ -522,9 +446,9 @@ public class ACBalanceManager implements IACBalanceManager {
 				.enginesMass(enginesMassList)
 				.landingGearsMass(landingGearsMass)
 				.build();
-		
+
 		return theBalance;
-		}
+	}
 		
 	@Override
 	public String toString() {

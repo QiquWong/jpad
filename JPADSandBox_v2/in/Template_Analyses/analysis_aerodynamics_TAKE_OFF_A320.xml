@@ -10,8 +10,7 @@
     <analysis>
         <aerodynamics_and_stability 
 			id="JPAD Test analysis - AERODYNAMICS PROTOTYPE"
-			balance_from_xls_file="false"
-			file_balance="Balance.xlsx"
+			balance_from_previous_analysis="false"
 			>
 			<balance>
 			<!-- 

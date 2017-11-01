@@ -1,7 +1,6 @@
 package analyses;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,12 +36,10 @@ import configuration.enumerations.CostsEnum;
 import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
-import configuration.enumerations.FoldersEnum;
 import configuration.enumerations.MethodEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyUnits;
-import standaloneutils.MyXLSUtils;
 import standaloneutils.MyXMLReaderUtils;
 import writers.JPADStaticWriteUtils;
 
@@ -117,39 +114,29 @@ public class ACCostsManager {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//@id");
 
-		Boolean readWeightFromXLSFlag;
-		Boolean readPerformanceFromXLSFlag;
+		Boolean readWeightFromPreviousAnalysisFlag;
+		Boolean readPerformanceFromPreviousAnalysisFlag;
 		
-		String readWeightFromXLSString = MyXMLReaderUtils
+		String readWeightFromPreviousAnalysisString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@weights_from_xls_file");
+						"//@weights_from_previous_analysis");
 		
-		if(readWeightFromXLSString.equalsIgnoreCase("true"))
-			readWeightFromXLSFlag = Boolean.TRUE;
+		if(readWeightFromPreviousAnalysisString.equalsIgnoreCase("true"))
+			readWeightFromPreviousAnalysisFlag = Boolean.TRUE;
 		else
-			readWeightFromXLSFlag = Boolean.FALSE;
+			readWeightFromPreviousAnalysisFlag = Boolean.FALSE;
 		
-		String readPerformanceFromXLSString = MyXMLReaderUtils
+		String readPerformanceFromPreviousAnalysisString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@performance_from_xls_file");
+						"//@performance_from_previous_analysis");
 		
-		if(readPerformanceFromXLSString.equalsIgnoreCase("true"))
-			readPerformanceFromXLSFlag = Boolean.TRUE;
+		if(readPerformanceFromPreviousAnalysisString.equalsIgnoreCase("true"))
+			readPerformanceFromPreviousAnalysisFlag = Boolean.TRUE;
 		else
-			readPerformanceFromXLSFlag = Boolean.FALSE;
+			readPerformanceFromPreviousAnalysisFlag = Boolean.FALSE;
 
-		String fileWeightsXLS = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@file_weights");
-		
-		String filePerformanceXLS = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@file_performance");		
-		
 		//---------------------------------------------------------------
 		// INITIALIZING WEIGHTS DATA
 		//---------------------------------------------------------------
@@ -162,52 +149,31 @@ public class ACCostsManager {
 		 * data inside the xlm file.
 		 * Otherwise it ignores the xls file and reads the input data from the xml.
 		 */
-		if(readWeightFromXLSFlag == Boolean.TRUE) {
+		if(readWeightFromPreviousAnalysisFlag == Boolean.TRUE) {
+			if(theAircraft.getTheAnalysisManager() != null) {
+				if(theAircraft.getTheAnalysisManager().getTheWeights() != null) {
 
-			File weightsFile = new File(
-					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
-					+ theAircraft.getId() 
-					+ File.separator
-					+ "WEIGHTS"
-					+ File.separator
-					+ fileWeightsXLS);
-			if(weightsFile.exists()) {
+					//---------------------------------------------------------------
+					// MAXIMUM TAKE-OFF MASS
+					maximumTakeOffMass = theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(SI.KILOGRAM);
 
-				FileInputStream readerXLS = new FileInputStream(weightsFile);
-				Workbook workbook;
-				if (weightsFile.getAbsolutePath().endsWith(".xls")) {
-					workbook = new HSSFWorkbook(readerXLS);
-				}
-				else if (weightsFile.getAbsolutePath().endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(readerXLS);
-				}
-				else {
-					throw new IllegalArgumentException("I don't know how to create that kind of new file");
-				}
-
-				//---------------------------------------------------------------
-				// MAXIMUM TAKE-OFF MASS
-				Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "GLOBAL RESULTS");
-				if(sheetGlobalData != null) {
-					Cell maximumTakeOffMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Take-Off Mass").get(0)).getCell(2);
-					if(maximumTakeOffMassCell != null)
-						maximumTakeOffMass = Amount.valueOf(maximumTakeOffMassCell.getNumericCellValue(), SI.KILOGRAM);
 					//---------------------------------------------------------------
 					// OPERATING EMPTY MASS
-					Cell operatingEmptyMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Operating Empty Mass").get(0)).getCell(2);
-					if(operatingEmptyMassCell != null)
-						operatingEmptyMass = Amount.valueOf(operatingEmptyMassCell.getNumericCellValue(), SI.KILOGRAM);
+					operatingEmptyMass = theAircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().to(SI.KILOGRAM);
 
 					//---------------------------------------------------------------
 					// PAYLOAD MASS
-					Cell payloadMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Passengers Mass").get(0)).getCell(2);
-					if(payloadMassCell != null)
-						payloadMass = Amount.valueOf(payloadMassCell.getNumericCellValue(), SI.KILOGRAM);
+					payloadMass = theAircraft.getTheAnalysisManager().getTheWeights().getPaxMass().to(SI.KILOGRAM);
+					
+				}
+				else {
+					System.err.println("WARNING!! THE WEIGHTS ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
+					System.exit(1);
 				}
 			}
 			else {
-				System.err.println("FILE '" + weightsFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
-				return null;
+				System.err.println("WARNING!! THE ANALYSIS MANAGER DOES NOT EXIST ... TERMINATING");
+				System.exit(1);
 			}
 		}
 		else {
@@ -243,52 +209,31 @@ public class ACCostsManager {
 		 * data inside the xlm file.
 		 * Otherwise it ignores the xls file and reads the input data from the xml.
 		 */
-		if(readPerformanceFromXLSFlag == Boolean.TRUE) {
+		if(readPerformanceFromPreviousAnalysisFlag == Boolean.TRUE) {
+			if(theAircraft.getTheAnalysisManager() != null) {
+				if(theAircraft.getTheAnalysisManager().getThePerformance() != null) {
 
-			File performanceFile = new File(
-					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
-					+ theAircraft.getId() 
-					+ File.separator
-					+ "PERFORMANCE"
-					+ File.separator
-					+ filePerformanceXLS);
-			if(performanceFile.exists()) {
+					//---------------------------------------------------------------
+					// RANGE
+					range = theAircraft.getTheAnalysisManager().getThePerformance().getMissionRange().to(NonSI.NAUTICAL_MILE);
 
-				FileInputStream readerXLS = new FileInputStream(performanceFile);
-				Workbook workbook;
-				if (performanceFile.getAbsolutePath().endsWith(".xls")) {
-					workbook = new HSSFWorkbook(readerXLS);
-				}
-				else if (performanceFile.getAbsolutePath().endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(readerXLS);
-				}
-				else {
-					throw new IllegalArgumentException("I don't know how to create that kind of new file");
-				}
-
-				//---------------------------------------------------------------
-				// RANGE
-				Sheet sheetMissionProfileData = MyXLSUtils.findSheet(workbook, "MISSION PROFILE");
-				if(sheetMissionProfileData != null) {
-					Cell rangeCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total mission distance").get(0)).getCell(2);
-					if(rangeCell != null)
-						range = Amount.valueOf(rangeCell.getNumericCellValue(), NonSI.NAUTICAL_MILE);
 					//---------------------------------------------------------------
 					// BLOCK FUEL
-					Cell blockFuelCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total fuel used").get(0)).getCell(2);
-					if(blockFuelCell != null)
-						blockFuel = Amount.valueOf(blockFuelCell.getNumericCellValue(), SI.KILOGRAM);
+					blockFuel = theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsed().to(SI.KILOGRAM);
 
 					//---------------------------------------------------------------
 					// FLIGHT TIME
-					Cell flightTimeCell = sheetMissionProfileData.getRow(MyXLSUtils.findRowIndex(sheetMissionProfileData, "Total mission duration").get(0)).getCell(2);
-					if(flightTimeCell != null)
-						flightTime = Amount.valueOf(flightTimeCell.getNumericCellValue(), NonSI.MINUTE);
+					flightTime = theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTime().to(NonSI.MINUTE);
+
+				}
+				else {
+					System.err.println("WARNING!! THE PERFORMANCE ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
+					System.exit(1);
 				}
 			}
 			else {
-				System.err.println("FILE '" + performanceFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
-				return null;
+				System.err.println("WARNING!! THE ANALYSIS MANAGER DOES NOT EXIST ... TERMINATING");
+				System.exit(1);
 			}
 		}
 		else {

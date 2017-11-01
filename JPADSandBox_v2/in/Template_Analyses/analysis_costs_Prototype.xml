@@ -2,10 +2,8 @@
 <jpad_config>
     <analysis>
         <costs id="JPAD Test analysis - COSTS"
-			weights_from_xls_file="false" 
-			file_weights="Weights.xlsx"
-			performance_from_xls_file="false"
-			file_performance="Performance.xlsx"
+			weights_from_previous_analysis="false" 
+			performance_from_previous_analysis="false"
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">53610</maximum_take_off_mass>
