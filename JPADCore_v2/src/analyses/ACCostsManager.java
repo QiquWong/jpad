@@ -215,7 +215,7 @@ public class ACCostsManager {
 
 					//---------------------------------------------------------------
 					// RANGE
-					range = theAircraft.getTheAnalysisManager().getThePerformance().getMissionRange().to(NonSI.NAUTICAL_MILE);
+					range = theAircraft.getTheAnalysisManager().getThePerformance().getThePerformanceInterface().getMissionRange().to(NonSI.NAUTICAL_MILE);
 
 					//---------------------------------------------------------------
 					// BLOCK FUEL

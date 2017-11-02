@@ -88,100 +88,7 @@ public class ACPerformanceManager {
 	// VARIABLES DECLARATION:
 	//------------------------------------------------------------------------------
 	// INPUT DATA (IMPORTED AND CALCULATED)
-	private String _id;
-	private Aircraft _theAircraft;
-	private OperatingConditions _theOperatingConditions;
-	//..............................................................................
-	// Weights
-	private Amount<Mass> _maximumTakeOffMass;
-	private Amount<Mass> _operatingEmptyMass;
-	private Amount<Mass> _maximumFuelMass;
-	private Amount<Mass> _singlePassengerMass;
-	//..............................................................................
-	// Balance
-	private Amount<Length> _xCGMaxAft;
-	//..............................................................................
-	// Aerodynamics
-	private Double _cLmaxClean;
-	private Amount<?> _cLAlphaClean;
-	private Double _cLmaxTakeOff;
-	private Amount<?> _cLAlphaTakeOff;
-	private Double _cLZeroTakeOff;
-	private Double _cLmaxLanding;
-	private Amount<?> _cLAlphaLanding;
-	private Double _cLZeroLanding;
-	private Double[] _polarCLCruise;
-	private Double[] _polarCDCruise;
-	private Double[] _polarCLClimb;
-	private Double[] _polarCDClimb;
-	private Double[] _polarCLTakeOff;
-	private Double[] _polarCDTakeOff;
-	private Double[] _polarCLLanding;
-	private Double[] _polarCDLanding;	
-	//..............................................................................
-	// Take-off & Landing
-	private Amount<Velocity> _windSpeed;
-	private MyInterpolatingFunction _muFunction;
-	private MyInterpolatingFunction _muBrakeFunction;
-	
-	private Amount<Duration> _dtRotation;
-	private Amount<Duration> _dtHold;
-	private Amount<Angle> _alphaGround;
-	private Amount<Length> _obstacleTakeOff;
-	private Double _kRotation;
-	private Double _alphaDotRotation;
-	private Double _kCLmax;
-	private Double _dragDueToEnigneFailure;
-	private Double _kAlphaDot;
-	
-	private Double _kLandingWeight;
-	private Amount<Length> _obstacleLanding;
-	private Amount<Angle> _thetaApproach;
-	private Double _kApproach;
-	private Double _kFlare;
-	private Double _kTouchDown;
-	private Amount<Duration> _freeRollDuration;
-	//..............................................................................
-	// Climb
-	private Double _kClimbWeightAEO;
-	private Double _kClimbWeightOEI;
-	private Amount<Velocity> _climbSpeed;
-	private Amount<Length> _initialClimbAltitude;
-	private Amount<Length> _finalClimbAltitude;
-	//..............................................................................
-	// Cruise
-	private List<Amount<Length>> _altitudeListCruise;
-	private Double _kCruiseWeight;
-	//..............................................................................
-	// Fligth maneuvering and gust envelope
-	private Double _cLmaxInverted;
-	//..............................................................................
-	// Descent
-	private Amount<Velocity> _speedDescentCAS;
-	private Amount<Velocity> _rateOfDescent;
-	private Double _kDescentWeight;
-	private Amount<Length> _initialDescentAltitude;
-	private Amount<Length> _finalDescentAltitude;
-	//..............................................................................
-	// Mission Profile:
-	private Amount<Length> _missionRange;
-	private Amount<Length> _alternateCruiseLength;
-	private Amount<Length> _alternateCruiseAltitude;
-	private Amount<Duration> _holdingDuration;
-	private Amount<Length> _holdingAltitude;
-	private Double _holdingMachNumber;
-	private Double _fuelReserve;
-	private Amount<Length> _firstGuessCruiseLength;
-	private MyInterpolatingFunction _sfcFunctionCruise;
-	private MyInterpolatingFunction _sfcFunctionAlternateCruise;
-	private MyInterpolatingFunction _sfcFunctionHolding;
-	private Amount<Mass> _firstGuessInitialMissionFuelMass;
-	private Amount<Length> _takeOffMissionAltitude;
-	private Double _landingFuelFlow;
-	//..............................................................................
-	// Plot and Task Maps
-	private List<PerformanceEnum> _taskList;
-	private List<PerformancePlotEnum> _plotList;
+	private IACPerformanceManager _thePerformanceInterface;
 
 	//------------------------------------------------------------------------------
 	// OUTPUT DATA
@@ -344,568 +251,9 @@ public class ACPerformanceManager {
 	private Amount<Mass> _initialMissionMass;
 	private Amount<Mass> _endMissionMass;
 	
-	//============================================================================================
-	// Builder pattern 
-	//============================================================================================
-	public static class ACPerformanceCalculatorBuilder {
-	
-		// required parameters
-		private String __id;
-		private Aircraft __theAircraft;
-		private OperatingConditions __theOperatingConditions;
-		
-		// optional parameters ... default
-		//..............................................................................
-		// Weights
-		private Amount<Mass> __maximumTakeOffMass;
-		private Amount<Mass> __operatingEmptyMass;
-		private Amount<Mass> __maximumFuelMass;
-		private Amount<Mass> __singlePassengerMass;
-		//..............................................................................
-		// Balance
-		private Amount<Length> __xCGMaxAft;
-		//..............................................................................
-		// Aerodynamics
-		private Double __cLmaxClean;
-		private Amount<?> __cLAlphaClean;
-		private Double __cLmaxTakeOff;
-		private Amount<?> __cLAlphaTakeOff;
-		private Double __cLZeroTakeOff;
-		private Double __cLmaxLanding;
-		private Amount<?> __cLAlphaLanding;
-		private Double __cLZeroLanding;
-		private Double[] __polarCLCruise;
-		private Double[] __polarCDCruise;
-		private Double[] __polarCLClimb;
-		private Double[] __polarCDClimb;
-		private Double[] __polarCLTakeOff;
-		private Double[] __polarCDTakeOff;
-		private Double[] __polarCLLanding;
-		private Double[] __polarCDLanding;	
-		//..............................................................................
-		// Take-off & Landing
-		private Amount<Velocity> __windSpeed = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
-		private MyInterpolatingFunction __muFunction;
-		private MyInterpolatingFunction __muBrakeFunction;
-		
-		private Amount<Duration> __dtRotation = Amount.valueOf(3.0, SI.SECOND);
-		private Amount<Duration> __dtHold = Amount.valueOf(0.5, SI.SECOND);
-		private Amount<Angle> __alphaGround = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		private Amount<Length> __obstacleTakeOff = Amount.valueOf(35, NonSI.FOOT).to(SI.METER);
-		private Double __kRotation = 1.05;
-		private Double __alphaDotRotation;
-		private Double __kCLmax = 0.9;
-		private Double __dragDueToEngineFailure = 0.0;
-		private Double __kAlphaDot = 0.04;
-		
-		private Double __kLandingWeight = 0.97;
-		private Amount<Length> __obstacleLanding = Amount.valueOf(50, NonSI.FOOT).to(SI.METER);
-		private Amount<Angle> __thetaApproach = Amount.valueOf(3.0, NonSI.DEGREE_ANGLE);
-		private Double __kApproach = 1.3;
-		private Double __kFlare = 1.23;
-		private Double __kTouchDown = 1.15;
-		private Amount<Duration> __freeRollDuration = Amount.valueOf(2.0, SI.SECOND);
-		//..............................................................................
-		// Climb
-		private Double __kClimbWeightAEO = 1.0;
-		private Double __kClimbWeightOEI = 0.97;
-		private Amount<Velocity> __climbSpeed;
-		private Amount<Length> __initialClimbAltitude;
-		private Amount<Length> __finalClimbAltitude;
-		//..............................................................................
-		// Cruise
-		private List<Amount<Length>> __altitudeListCruise;
-		private Double __kCruiseWeight = 0.98;
-		//..............................................................................
-		// Flight maneuvering and gust envelope
-		private Double __cLmaxInverted = -1.0;
-		//..............................................................................
-		// Descent
-		private Amount<Velocity> __speedDescent;
-		private Amount<Velocity> __rateOfDescent;
-		private Double __kDescentWeight = 0.9;
-		private Amount<Length> __initialDescentAltitude;
-		private Amount<Length> __finalDescentAltitude;
-		//..............................................................................
-		// Mission profile
-		private Amount<Length> __missionRange;
-		private Amount<Length> __alternateCruiseLength;
-		private Amount<Length> __alternateCruiseAltitude;
-		private Amount<Duration> __holdingDuration;
-		private Amount<Length> __holdingAltitude;
-		private Double __holdingMachNumber;
-		private Double __fuelReserve;
-		private Amount<Length> __firstGuessCruiseLength;
-		private MyInterpolatingFunction __sfcFunctionCruise;
-		private MyInterpolatingFunction __sfcFunctionAlternateCruise;
-		private MyInterpolatingFunction __sfcFunctionHolding;
-		private Amount<Mass> __firstGuessInitialMissionFuelMass;
-		private Amount<Length> __takeOffMissionAltitude;
-		private Double __landingFuelFlow;
-		//..............................................................................
-		// Plot and Task Maps
-		private List<PerformanceEnum> __taskList = new ArrayList<PerformanceEnum>();
-		private List<PerformancePlotEnum> __plotList = new ArrayList<PerformancePlotEnum>();
-		//..............................................................................
-		
-		public ACPerformanceCalculatorBuilder id(String id) {
-			this.__id = id;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder aircraft(Aircraft aircraft) {
-			this.__theAircraft = aircraft;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder operatingConditions(OperatingConditions operatingConditions) {
-			this.__theOperatingConditions = operatingConditions;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder maximumTakeOffMass(Amount<Mass> maximumTakeOffMass) {
-			this.__maximumTakeOffMass = maximumTakeOffMass;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder operatingEmptyMass(Amount<Mass> operatingEmptyMass) {
-			this.__operatingEmptyMass = operatingEmptyMass;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder maximumFuelMass(Amount<Mass> maximumFuelMass) {
-			this.__maximumFuelMass = maximumFuelMass;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder singlePassengerMass(Amount<Mass> singlePassengerMass) {
-			this.__singlePassengerMass = singlePassengerMass;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder xCGMaxAft (Amount<Length> xCGMaxAft) {
-			this.__xCGMaxAft = xCGMaxAft;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLmaxClean(Double cLmaxClean) {
-			this.__cLmaxClean = cLmaxClean;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLAlphaClean(Amount<?> cLAlphaClean) {
-			this.__cLAlphaClean = cLAlphaClean;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLAlphaTakeOff(Amount<?> cLAlphaTakeOff) {
-			this.__cLAlphaTakeOff = cLAlphaTakeOff;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLAlphaLanding(Amount<?> cLAlphaLanding) {
-			this.__cLAlphaLanding = cLAlphaLanding;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCLCruise (Double[] polarCLCruise) {
-			this.__polarCLCruise = polarCLCruise;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCDCruise (Double[] polarCDCruise) {
-			this.__polarCDCruise = polarCDCruise;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCLClimb (Double[] polarCLClimb) {
-			this.__polarCLClimb = polarCLClimb;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCDClimb (Double[] polarCDClimb) {
-			this.__polarCDClimb = polarCDClimb;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCLTakeOff (Double[] polarCLTakeOff) {
-			this.__polarCLTakeOff = polarCLTakeOff;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCDTakeOff (Double[] polarCDTakeOff) {
-			this.__polarCDTakeOff = polarCDTakeOff;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCLLanding (Double[] polarCLLanding) {
-			this.__polarCLLanding = polarCLLanding;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder polarCDLanding (Double[] polarCDLanding) {
-			this.__polarCDLanding = polarCDLanding;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLmaxTakeOff(Double cLmaxTakeOff) {
-			this.__cLmaxTakeOff = cLmaxTakeOff;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLZeroTakeOff(Double cLZeroTakeOff) {
-			this.__cLZeroTakeOff = cLZeroTakeOff;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLmaxLanding(Double cLmaxLanding) {
-			this.__cLmaxLanding = cLmaxLanding;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLZeroLanding(Double cLZeroLanding) {
-			this.__cLZeroLanding = cLZeroLanding;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder dtRotation(Amount<Duration> dtRotation) {
-			this.__dtRotation = dtRotation;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder dtHold(Amount<Duration> dtHold) {
-			this.__dtHold = dtHold;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder alphaGround(Amount<Angle> alphaGround) {
-			this.__alphaGround = alphaGround;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder windSpeed(Amount<Velocity> windSpeed) {
-			this.__windSpeed = windSpeed;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder obstacleTakeOff(Amount<Length> obstacleTakeOff) {
-			this.__obstacleTakeOff = obstacleTakeOff;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder obstacleLanding(Amount<Length> obstacleLanding) {
-			this.__obstacleLanding = obstacleLanding;
-			return this;
-		}
-
-		public ACPerformanceCalculatorBuilder muFunction(MyInterpolatingFunction muFunction) {
-			this.__muFunction = muFunction;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder muBrakeFunction(MyInterpolatingFunction muBrakeFunction) {
-			this.__muBrakeFunction = muBrakeFunction;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kRotation(Double kRot) {
-			this.__kRotation = kRot;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder alphaDotRotation(Double alphaDotRotation) {
-			this.__alphaDotRotation = alphaDotRotation;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kCLmax(Double kCLmax) {
-			this.__kCLmax = kCLmax;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder dragDueToEngineFailure(Double dragFailure) {
-			this.__dragDueToEngineFailure = dragFailure;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kAlphaDot(Double kAlphaDot) {
-			this.__kAlphaDot = kAlphaDot;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kLandingWeight (Double kLandingWeight) {
-			this.__kLandingWeight = kLandingWeight;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder thetaApproach(Amount<Angle> thetaApproach) {
-			this.__thetaApproach = thetaApproach;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kApproach(Double kA) {
-			this.__kApproach = kA;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kFlare(Double kFlare) {
-			this.__kFlare = kFlare;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kTouchDown(Double kTD) {
-			this.__kTouchDown = kTD;
-			return this;
-		}
-
-		public ACPerformanceCalculatorBuilder freeRollDuration(Amount<Duration> nFreeRoll) {
-			this.__freeRollDuration = nFreeRoll;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder cLmaxInverted(Double cLmaxInverted) {
-			this.__cLmaxInverted = cLmaxInverted;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kClimbWeightAEO(Double kClimbWeightAEO) {
-			this.__kClimbWeightAEO = kClimbWeightAEO;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kClimbWeightOEI(Double kClimbWeightOEI) {
-			this.__kClimbWeightOEI = kClimbWeightOEI;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder climbSpeed(Amount<Velocity> climbSpeed) {
-			this.__climbSpeed = climbSpeed;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder initialClimbAltitude(Amount<Length> initialClimbAltitude) {
-			this.__initialClimbAltitude = initialClimbAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder finalClimbAltitude(Amount<Length> finalClimbAltitude) {
-			this.__finalClimbAltitude = finalClimbAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder altitudeListCruise(List<Amount<Length>> altitudeListCruise) {
-			this.__altitudeListCruise = altitudeListCruise;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kCruiseWeight(Double kCruiseWeight) {
-			this.__kCruiseWeight = kCruiseWeight;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder kDescentWeight(Double kDescentWeight) {
-			this.__kDescentWeight = kDescentWeight;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder rateOfDescent(Amount<Velocity> rateOfDescent) {
-			this.__rateOfDescent = rateOfDescent;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder speedDescentCAS(Amount<Velocity> speedDescent) {
-			this.__speedDescent = speedDescent;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder initialDescentAltitude(Amount<Length> initialDescentAltitude) {
-			this.__initialDescentAltitude = initialDescentAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder finalDescentAltitude(Amount<Length> finalDescentAltitude) {
-			this.__finalDescentAltitude = finalDescentAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder missionRange (Amount<Length> missionRange) {
-			this.__missionRange = missionRange;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder alternateCruiseLength(Amount<Length> alternateCruiseLength) {
-			this.__alternateCruiseLength = alternateCruiseLength;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder alternateCruiseAltitude(Amount<Length> alternateCruiseAltitude) {
-			this.__alternateCruiseAltitude = alternateCruiseAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder holdingDuration(Amount<Duration> holdingDuration) {
-			this.__holdingDuration = holdingDuration;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder holdingAltitude(Amount<Length> holdingAltitude) {
-			this.__holdingAltitude = holdingAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder holdingMachNumber(Double holdingMachNumber) {
-			this.__holdingMachNumber = holdingMachNumber;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder fuelReserve(Double fuelReserve) {
-			this.__fuelReserve = fuelReserve;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder firstGuessCruiseLength(Amount<Length> firstGuessCruiseLength) {
-			this.__firstGuessCruiseLength = firstGuessCruiseLength;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder sfcFunctionCruise (MyInterpolatingFunction sfcFunctionCruise) {
-			this.__sfcFunctionCruise = sfcFunctionCruise;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder sfcFunctionAlternateCruise (MyInterpolatingFunction sfcAlternateCruiseFunction) {
-			this.__sfcFunctionAlternateCruise = sfcAlternateCruiseFunction;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder sfcFunctionHolding (MyInterpolatingFunction sfcFunctionHolding) {
-			this.__sfcFunctionHolding = sfcFunctionHolding;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder firstGuessFuelMass(Amount<Mass> firstGuessFuelMass) {
-			this.__firstGuessInitialMissionFuelMass = firstGuessFuelMass;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder takeOffMissionAltitude(Amount<Length> takeOffMissionAltitude) {
-			this.__takeOffMissionAltitude = takeOffMissionAltitude;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder landingFuelFlow(Double landingFuelFlow) {
-			this.__landingFuelFlow = landingFuelFlow;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder taskList(List<PerformanceEnum> taskList) {
-			this.__taskList = taskList;
-			return this;
-		}
-		
-		public ACPerformanceCalculatorBuilder plotList(List<PerformancePlotEnum> plotList) {
-			this.__plotList = plotList;
-			return this;
-		}
-		
-		public ACPerformanceManager build() {
-			return new ACPerformanceManager(this);
-		}
-		
-	}
-	
-	private ACPerformanceManager(ACPerformanceCalculatorBuilder builder) {
-		
-		this._id = builder.__id;
-		this._theAircraft = builder.__theAircraft;
-		this._theOperatingConditions = builder.__theOperatingConditions;
-		
-		this._maximumTakeOffMass = builder.__maximumTakeOffMass;
-		this._operatingEmptyMass = builder.__operatingEmptyMass;
-		this._maximumFuelMass = builder.__maximumFuelMass;
-		this._singlePassengerMass = builder.__singlePassengerMass;
-		
-		this._xCGMaxAft = builder.__xCGMaxAft;
-		
-		this._cLmaxClean = builder.__cLmaxClean;
-		this._cLAlphaClean = builder.__cLAlphaClean;
-		this._cLmaxTakeOff = builder.__cLmaxTakeOff;
-		this._cLAlphaTakeOff = builder.__cLAlphaTakeOff;
-		this._cLZeroTakeOff = builder.__cLZeroTakeOff;
-		this._cLmaxLanding = builder.__cLmaxLanding;
-		this._cLAlphaLanding = builder.__cLAlphaLanding;
-		this._cLZeroLanding = builder.__cLZeroLanding;
-		this._polarCLCruise = builder.__polarCLCruise;
-		this._polarCDCruise = builder.__polarCDCruise;
-		this._polarCLClimb = builder.__polarCLClimb;
-		this._polarCDClimb = builder.__polarCDClimb;
-		this._polarCLTakeOff = builder.__polarCLTakeOff;
-		this._polarCDTakeOff = builder.__polarCDTakeOff;
-		this._polarCLLanding = builder.__polarCLLanding;
-		this._polarCDLanding = builder.__polarCDLanding;
-		
-		this._windSpeed = builder.__windSpeed;
-		this._muFunction = builder.__muFunction;
-		this._muBrakeFunction = builder.__muBrakeFunction;
-		
-		this._dtRotation = builder.__dtRotation;
-		this._dtHold = builder.__dtHold;
-		this._alphaGround = builder.__alphaGround;
-		this._obstacleTakeOff = builder.__obstacleTakeOff;
-		this._kRotation = builder.__kRotation;
-		this._alphaDotRotation = builder.__alphaDotRotation;
-		this._kCLmax = builder.__kCLmax;
-		this._dragDueToEnigneFailure = builder.__dragDueToEngineFailure;
-		this._kAlphaDot = builder.__kAlphaDot;
-		
-		this._kLandingWeight = builder.__kLandingWeight;
-		this._obstacleLanding = builder.__obstacleLanding;
-		this._thetaApproach = builder.__thetaApproach;
-		this._kApproach = builder.__kApproach;
-		this._kFlare = builder.__kFlare;
-		this._kTouchDown = builder.__kTouchDown;
-		this._freeRollDuration = builder.__freeRollDuration;
-		
-		this._kClimbWeightAEO = builder.__kClimbWeightAEO;
-		this._kClimbWeightOEI = builder.__kClimbWeightOEI;
-		this._climbSpeed = builder.__climbSpeed;
-		this._initialClimbAltitude = builder.__initialClimbAltitude;
-		this._finalClimbAltitude = builder.__finalClimbAltitude;
-		
-		this._altitudeListCruise = builder.__altitudeListCruise;
-		this._kCruiseWeight = builder.__kCruiseWeight;
-		
-		this._cLmaxInverted = builder.__cLmaxInverted;
-		
-		this._kDescentWeight = builder.__kDescentWeight;
-		this._rateOfDescent = builder.__rateOfDescent;
-		this._speedDescentCAS = builder.__speedDescent;
-		this._initialDescentAltitude = builder.__initialDescentAltitude;
-		this._finalDescentAltitude = builder.__finalDescentAltitude;
-		
-		this._missionRange = builder.__missionRange;
-	    this._alternateCruiseLength = builder.__alternateCruiseLength;
-	    this._alternateCruiseAltitude = builder.__alternateCruiseAltitude;
-	    this._holdingDuration = builder.__holdingDuration;
-	    this._holdingAltitude = builder.__holdingAltitude;
-	    this._holdingMachNumber = builder.__holdingMachNumber;
-	    this._fuelReserve = builder.__fuelReserve;
-	    this._firstGuessCruiseLength = builder.__firstGuessCruiseLength;
-	    this._sfcFunctionCruise = builder.__sfcFunctionCruise;
-	    this._sfcFunctionAlternateCruise = builder.__sfcFunctionAlternateCruise;
-	    this._sfcFunctionHolding = builder.__sfcFunctionHolding;
-	    this._firstGuessInitialMissionFuelMass = builder.__firstGuessInitialMissionFuelMass;
-		this._takeOffMissionAltitude = builder.__takeOffMissionAltitude;
-		this._landingFuelFlow = builder.__landingFuelFlow;
-	    
-		this._taskList = builder.__taskList;
-		this._plotList = builder.__plotList;
-		
-	}
-	//============================================================================================
-	// End of the builder pattern 
-	//============================================================================================
-	
+	//------------------------------------------------------------------------------
+	// METHODS:
+	//------------------------------------------------------------------------------
 	@SuppressWarnings({ "resource", "unchecked", "unused" })
 	public static ACPerformanceManager importFromXML (
 			String pathToXML,
@@ -924,116 +272,74 @@ public class ACPerformanceManager {
 
 		//---------------------------------------------------------------------------------------
 		// WEIGHTS FROM FILE INSTRUCTION
-		String fileWeightsXLS = MyXMLReaderUtils
+		Boolean readWeightsFromPreviousAnalysisFlag;
+		String readWeightsFromPreviousAnalysisString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@file_weights");
-		Boolean readWeightsFromXLSFlag;
-		String readWeightsFromXLSString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@weights_from_xls_file");
-		if(readWeightsFromXLSString.equalsIgnoreCase("true"))
-			readWeightsFromXLSFlag = Boolean.TRUE;
+						"//@weights_from_previous_file");
+		if(readWeightsFromPreviousAnalysisString.equalsIgnoreCase("true"))
+			readWeightsFromPreviousAnalysisFlag = Boolean.TRUE;
 		else
-			readWeightsFromXLSFlag = Boolean.FALSE;
-		
-		//---------------------------------------------------------------------------------------
-		// WEIGHTS FROM FILE INSTRUCTION
-		String fileBalanceXLS = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@file_balance");
-		Boolean readBalanceFromXLSFlag;
-		String readBalanceFromXLSString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@balance_from_xls_file");
-		if(readBalanceFromXLSString.equalsIgnoreCase("true"))
-			readBalanceFromXLSFlag = Boolean.TRUE;
-		else
-			readBalanceFromXLSFlag = Boolean.FALSE;
+			readWeightsFromPreviousAnalysisFlag = Boolean.FALSE;
 		
 		//---------------------------------------------------------------------------------------
 		// AERODYNAMICS FROM FILE INSTRUCTION
-		String fileAerodynamicsXLS = MyXMLReaderUtils
+		Boolean readAerodynamicsFromPreviousAnalysisFlag;
+		String readAerodynamicsFromPreviousAnalysisString = MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
-						"//@file_aerodynamics");
-		Boolean readAerodynamicsFromXLSFlag;
-		String readAerodynamicsFromXLSString = MyXMLReaderUtils
-				.getXMLPropertyByPath(
-						reader.getXmlDoc(), reader.getXpath(),
-						"//@aerodynamics_from_xls_file");
-		if(readAerodynamicsFromXLSString.equalsIgnoreCase("true"))
-			readAerodynamicsFromXLSFlag = Boolean.TRUE;
+						"//@aerodynamics_from_previous_file");
+		if(readAerodynamicsFromPreviousAnalysisString.equalsIgnoreCase("true"))
+			readAerodynamicsFromPreviousAnalysisFlag = Boolean.TRUE;
 		else
-			readAerodynamicsFromXLSFlag = Boolean.FALSE;
+			readAerodynamicsFromPreviousAnalysisFlag = Boolean.FALSE;
 
 		//===========================================================================================
 		// READING WEIGHTS DATA ...
 		/********************************************************************************************
-		 * If the boolean flag is true, the method reads from the xls file and ignores the assigned
-		 * data inside the xlm file.
-		 * Otherwise it ignores the xls file and reads the input data from the xml.
+		 * If the boolean flag is true, the method reads from the ACWeightsManager and ignores the assigned
+		 * data inside the xml file.
+		 * Otherwise it ignores the manager file and reads the input data from the xml.
 		 */
 		Amount<Mass> maximumTakeOffMass = null;
 		Amount<Mass> operatingEmptyMass = null;
 		Amount<Mass> maximumFuelMass = null;
 		Amount<Mass> singlePassengerMass = null;
 		
-		if(readWeightsFromXLSFlag == Boolean.TRUE) {
+		if(readWeightsFromPreviousAnalysisFlag == Boolean.TRUE) {
+			if(theAircraft.getTheAnalysisManager() != null) {
+				if(theAircraft.getTheAnalysisManager().getTheWeights() != null) {
 
-			File weightsFile = new File(
-					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
-					+ theAircraft.getId() 
-					+ File.separator
-					+ "WEIGHTS"
-					+ File.separator
-					+ fileWeightsXLS);
-			if(weightsFile.exists()) {
+					//...............................................................
+					// MAXIMUM TAKE-OFF MASS
+					maximumTakeOffMass = theAircraft.getTheAnalysisManager().getTheWeights().getMaximumTakeOffMass().to(SI.KILOGRAM);
 
-				FileInputStream readerXLS = new FileInputStream(weightsFile);
-				Workbook workbook;
-				if (weightsFile.getAbsolutePath().endsWith(".xls")) {
-					workbook = new HSSFWorkbook(readerXLS);
-				}
-				else if (weightsFile.getAbsolutePath().endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(readerXLS);
+					//...............................................................
+					// OPERATING EMPTY MASS
+					operatingEmptyMass = theAircraft.getTheAnalysisManager().getTheWeights().getOperatingEmptyMass().to(SI.KILOGRAM);
+
+					//...............................................................
+					// MAXIMUM FUEL MASS
+					if(theAircraft.getFuelTank() != null) 
+						maximumFuelMass = theAircraft.getFuelTank().getFuelMass().to(SI.KILOGRAM);
+					else {
+						System.err.println("WARNING!! THE FUEL TANK DOES NOT EXIST ... TERMINATING");
+						System.exit(1);
+					}
+					
+					//...............................................................
+					// SINGLE PASSENGER MASS
+					singlePassengerMass = theAircraft.getTheAnalysisManager().getTheWeights().getPaxSingleMass().to(SI.KILOGRAM);
+						
 				}
 				else {
-					throw new IllegalArgumentException("I don't know how to create that kind of new file");
+					System.err.println("WARNING!! THE WEIGHTS ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
+					System.exit(1);
 				}
-
-				//...............................................................
-				// MAXIMUM TAKE-OFF MASS
-				Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "GLOBAL RESULTS");
-				if(sheetGlobalData != null) {
-					Cell maximumTakeOffMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Maximum Take-Off Mass").get(0)).getCell(2);
-					if(maximumTakeOffMassCell != null)
-						maximumTakeOffMass = Amount.valueOf(maximumTakeOffMassCell.getNumericCellValue(), SI.KILOGRAM);
-				}
-				
-				//...............................................................
-				// OPERATING EMPTY MASS
-				Cell operatingEmptyMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Operating Empty Mass").get(0)).getCell(2);
-				if(operatingEmptyMassCell != null)
-					operatingEmptyMass = Amount.valueOf(operatingEmptyMassCell.getNumericCellValue(), SI.KILOGRAM);
-
-				//...............................................................
-				// MAXIMUM FUEL MASS
-				Cell maximumFuelMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Fuel Mass").get(0)).getCell(2);
-				if(maximumFuelMassCell != null)
-					maximumFuelMass = Amount.valueOf(maximumFuelMassCell.getNumericCellValue(), SI.KILOGRAM);
-				//...............................................................
-				// SINGLE PASSENGER MASS
-				Cell singlePassengerMassCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Single passenger Mass").get(0)).getCell(2);
-				if(singlePassengerMassCell != null)
-					singlePassengerMass = Amount.valueOf(singlePassengerMassCell.getNumericCellValue(), SI.KILOGRAM);
 			}
 			else {
-				System.err.println("FILE '" + weightsFile.getAbsolutePath() + "' NOT FOUND!! \n\treturning...");
-				return null;
+				System.err.println("WARNING!! THE ANALYSIS MANAGER DOES NOT EXIST ... TERMINATING");
+				System.exit(1);
 			}
 		}
 		else {
@@ -1042,94 +348,32 @@ public class ACPerformanceManager {
 			String maximumTakeOffMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_take_off_mass");
 			if(maximumTakeOffMassProperty != null)
 				maximumTakeOffMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_take_off_mass");
-			
+
 			//...............................................................
 			// OPERATING EMPTY MASS
 			String operatingEmptyMassProperty = reader.getXMLPropertyByPath("//performance/weights/operating_empty_mass");
 			if(operatingEmptyMassProperty != null)
 				operatingEmptyMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/operating_empty_mass");
-			
+
 			//...............................................................
 			// MAXIMUM FUEL MASS
 			String maximumFuelMassProperty = reader.getXMLPropertyByPath("//performance/weights/maximum_fuel_mass");
 			if(maximumFuelMassProperty != null)
 				maximumFuelMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/maximum_fuel_mass");
-			
+
 			//...............................................................
 			// SINGLE PASSENGER MASS
 			String singlePassengerMassProperty = reader.getXMLPropertyByPath("//performance/weights/single_passenger_mass");
 			if(singlePassengerMassProperty != null)
 				singlePassengerMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//performance/weights/single_passenger_mass");
 		}
-		
-		//===========================================================================================
-		// READING BALANCE DATA ...
-		/********************************************************************************************
-		 * If the boolean flag is true, the method reads from the xls file and ignores the assigned
-		 * data inside the xlm file.
-		 * Otherwise it ignores the xls file and reads the input data from the xml.
-		 */
-		Amount<Length> xCGMaxAft = null;		
-		
-		if(readBalanceFromXLSFlag == Boolean.TRUE) {
-			
-			File balanceFile = new File(
-					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
-					+ theAircraft.getId() 
-					+ File.separator
-					+ "BALANCE"
-					+ File.separator
-					+ fileBalanceXLS);
-			
-			if(balanceFile.exists()) {
 
-				FileInputStream readerXLS = new FileInputStream(balanceFile);
-				Workbook workbook;
-				if (balanceFile.getAbsolutePath().endsWith(".xls")) {
-					workbook = new HSSFWorkbook(readerXLS);
-				}
-				else if (balanceFile.getAbsolutePath().endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(readerXLS);
-				}
-				else {
-					throw new IllegalArgumentException("I don't know how to create that kind of new file");
-				}
-				
-				//...............................................................
-				// XCG Max Forward
-				Sheet sheetGlobalData = MyXLSUtils.findSheet(workbook, "GLOBAL RESULTS");
-				if(sheetGlobalData != null) {
-					Cell xCGMaxAftCell = sheetGlobalData.getRow(MyXLSUtils.findRowIndex(sheetGlobalData, "Max aft Xcg MAC").get(0)).getCell(2);
-					if(xCGMaxAftCell != null)
-						xCGMaxAft = Amount.valueOf(
-								(xCGMaxAftCell.getNumericCellValue()
-								* theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER))
-								+ (theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
-										+ theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
-								SI.METER);
-				}
-			}
-		}
-		else {
-			//...............................................................
-			// XCG Max Forward
-			String xCGMaxAftProperty = reader.getXMLPropertyByPath("//performance/balance/xCG_max_aft");
-			if(xCGMaxAftProperty != null)
-				xCGMaxAft = Amount.valueOf(
-						(Double.valueOf(reader.getXMLPropertyByPath("//performance/balance/xCG_max_aft"))
-								* theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METER)
-								/100)
-						+ (theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METER)
-								+ theAircraft.getWing().getXApexConstructionAxes().doubleValue(SI.METER)),
-						SI.METER);
-		}
-		
 		//===========================================================================================
 		// READING AERODYNAMICS DATA ...
 		/********************************************************************************************
-		 * If the boolean flag is true, the method reads from the xls file and ignores the assigned
-		 * data inside the xlm file.
-		 * Otherwise it ignores the xls file and reads the input data from the xml.
+		 * If the boolean flag is true, the method reads from the ACAerodynamicAndStabilityManager and ignores the assigned
+		 * data inside the xml file.
+		 * Otherwise it ignores the manager file and reads the input data from the xml.
 		 */
 
 		Double cD0 = null;
@@ -1158,35 +402,25 @@ public class ACPerformanceManager {
 		Double[] polarCLLanding = null;
 		Double[] polarCDLanding = null;
 		
-		if(readAerodynamicsFromXLSFlag == Boolean.TRUE) {
-			
-			File aerodynamicsFile = new File(
-					MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR)
-					+ theAircraft.getId() 
-					+ File.separator
-					+ "AERODYNAMICS"
-					+ File.separator
-					+ fileAerodynamicsXLS);
-			
-			if(aerodynamicsFile.exists()) {
-
-				FileInputStream readerXLS = new FileInputStream(aerodynamicsFile);
-				Workbook workbook;
-				if (aerodynamicsFile.getAbsolutePath().endsWith(".xls")) {
-					workbook = new HSSFWorkbook(readerXLS);
-				}
-				else if (aerodynamicsFile.getAbsolutePath().endsWith(".xlsx")) {
-					workbook = new XSSFWorkbook(readerXLS);
-				}
-				else {
-					throw new IllegalArgumentException("I don't know how to create that kind of new file");
-				}
+		if(readAerodynamicsFromPreviousAnalysisFlag == Boolean.TRUE) {
+			if(theAircraft.getTheAnalysisManager() != null) {
+				if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability() != null) {
 				
 				////////////////////////////////////////////////////////////////////////////
 				//																		  //
 				// TODO : READ ALL REQUIRED DATA FROM THE AERODYNAMICS XML WHEN AVAILABLE //
 				//																		  //
 				////////////////////////////////////////////////////////////////////////////
+			
+				}
+				else {
+					System.err.println("WARNING!! THE AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
+					System.exit(1);
+				}
+			}
+			else {
+				System.err.println("WARNING!! THE ANALYSIS MANAGER DOES NOT EXIST ... TERMINATING");
+				System.exit(1);
 			}
 		}
 		else {
@@ -1205,31 +439,6 @@ public class ACPerformanceManager {
 				return null;
 			}
 			
-			//...............................................................
-			// CD0
-			String cD0Property = reader.getXMLPropertyByPath("//performance/aerodynamics/cD0");
-			if(cD0Property != null)
-				cD0 = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cD0"));
-			//...............................................................
-			// OSWALD CRUISE
-			String oswladCruiseProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise");
-			if(oswladCruiseProperty != null)
-				oswaldCruise = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise"));
-			//...............................................................
-			// OSWALD CLIMB
-			String oswladClimbProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb");
-			if(oswladClimbProperty != null)
-				oswaldClimb = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb"));
-			//...............................................................
-			// OSWALD TO
-			String oswladTOProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off");
-			if(oswladTOProperty != null)
-				oswaldTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off"));
-			//...............................................................
-			// OSWALD LND
-			String oswladLNDProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing");
-			if(oswladLNDProperty != null)
-				oswaldLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing"));
 			//...............................................................
 			// CLmax CLEAN
 			String cLmaxCleanProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_clean_configuration");
@@ -1250,26 +459,6 @@ public class ACPerformanceManager {
 			String cLAlphaLandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_landing");
 			if(cLAlphaLandingProperty != null)
 				cLAlphaLanding = reader.getXMLAmountWithUnitByPath("//performance/aerodynamics/cL_alpha_landing"); 
-			//...............................................................
-			// DeltaCD0 TAKE-OFF
-			String deltaCD0TakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_take_off");
-			if(deltaCD0TakeOffProperty != null)
-				deltaCD0TakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_take_off"));
-			//...............................................................
-			// DeltaCD0 LANDING
-			String deltaCD0LandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_landing");
-			if(deltaCD0LandingProperty != null)
-				deltaCD0Landing = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_landing"));
-			//...............................................................
-			// DeltaCD0 LANDING GEARS
-			String deltaCD0LandingGearsProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears");
-			if(deltaCD0LandingGearsProperty != null)
-				deltaCD0LandingGears = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears"));
-			//...............................................................
-			// DeltaCD0 SPOILERS
-			String deltaCD0SpoilersProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_spoilers");
-			if(deltaCD0SpoilersProperty != null)
-				deltaCD0Spoilers = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_spoilers"));
 			//...............................................................
 			// CLmax TAKE-OFF
 			String cLmaxTakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_take_off_configuration");
@@ -1351,6 +540,52 @@ public class ACPerformanceManager {
 				}
 			}
 			else {
+				
+				//...............................................................
+				// CD0
+				String cD0Property = reader.getXMLPropertyByPath("//performance/aerodynamics/cD0");
+				if(cD0Property != null)
+					cD0 = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cD0"));
+				//...............................................................
+				// OSWALD CRUISE
+				String oswladCruiseProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise");
+				if(oswladCruiseProperty != null)
+					oswaldCruise = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise"));
+				//...............................................................
+				// OSWALD CLIMB
+				String oswladClimbProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb");
+				if(oswladClimbProperty != null)
+					oswaldClimb = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb"));
+				//...............................................................
+				// OSWALD TO
+				String oswladTOProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off");
+				if(oswladTOProperty != null)
+					oswaldTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off"));
+				//...............................................................
+				// OSWALD LND
+				String oswladLNDProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing");
+				if(oswladLNDProperty != null)
+					oswaldLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing"));
+				//...............................................................
+				// DeltaCD0 TAKE-OFF
+				String deltaCD0TakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_take_off");
+				if(deltaCD0TakeOffProperty != null)
+					deltaCD0TakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_take_off"));
+				//...............................................................
+				// DeltaCD0 LANDING
+				String deltaCD0LandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_landing");
+				if(deltaCD0LandingProperty != null)
+					deltaCD0Landing = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_landing"));
+				//...............................................................
+				// DeltaCD0 LANDING GEARS
+				String deltaCD0LandingGearsProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears");
+				if(deltaCD0LandingGearsProperty != null)
+					deltaCD0LandingGears = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears"));
+				//...............................................................
+				// DeltaCD0 SPOILERS
+				String deltaCD0SpoilersProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_spoilers");
+				if(deltaCD0SpoilersProperty != null)
+					deltaCD0Spoilers = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_spoilers"));
 				
 				int numberOfPolarPoints = 50;
 				
@@ -2160,89 +1395,89 @@ public class ACPerformanceManager {
 					if(weightProfileProperty.equalsIgnoreCase("TRUE")) 
 						plotList.add(PerformancePlotEnum.WEIGHT_PROFILE);
 				}
-				
 			}
-			
 		}
 		
 		//===========================================================================================
 		// BUILDING THE CALCULATOR ...
-		ACPerformanceManager thePerformanceCalculator = new ACPerformanceCalculatorBuilder()
-				.id(id)
-				.aircraft(theAircraft)
-				.operatingConditions(theOperatingConditions)
-				.maximumTakeOffMass(maximumTakeOffMass)
-				.operatingEmptyMass(operatingEmptyMass)
-				.maximumFuelMass(maximumFuelMass)
-				.singlePassengerMass(singlePassengerMass)
-				.xCGMaxAft(xCGMaxAft)
-				.cLmaxClean(cLmaxClean)
-				.cLAlphaClean(cLAlphaClean)
-				.cLAlphaTakeOff(cLAlphaTakeOff)
-				.cLAlphaLanding(cLAlphaLanding)
-				.cLmaxTakeOff(cLmaxTakeOff)
-				.cLZeroTakeOff(cLZeroTakeOff)
-				.cLmaxLanding(cLmaxLanding)
-				.cLZeroLanding(cLZeroLanding)
-				.polarCLCruise(polarCLCruise)
-				.polarCDCruise(polarCDCruise)
-				.polarCLClimb(polarCLClimb)
-				.polarCDClimb(polarCDClimb)
-				.polarCLTakeOff(polarCLTakeOff)
-				.polarCDTakeOff(polarCDTakeOff)
-				.polarCLLanding(polarCLLanding)
-				.polarCDLanding(polarCDLanding)
-				.muFunction(muInterpolatingFunction)
-				.muBrakeFunction(muBrakeInterpolatingFunction)
-				.dtRotation(dtRotation)
-				.dtHold(dtHold)
-				.alphaGround(alphaGround)
-				.windSpeed(windSpeed)
-				.obstacleTakeOff(obstacleTakeOff)
-				.kRotation(kRotation)
-				.alphaDotRotation(alphaDotRotation)
-				.kCLmax(kCLmax)
-				.dragDueToEngineFailure(dragDueToEngineFailure)
-				.kAlphaDot(kAlphaDot)
-				.kLandingWeight(kLandingWeight)
-				.obstacleLanding(obstacleLanding)
-				.thetaApproach(thetaApproach)
-				.kApproach(kApproach)
-				.kFlare(kFlare)
-				.kTouchDown(kTouchDown)
-				.freeRollDuration(freeRollDuration)
-				.kClimbWeightAEO(kClimbWeightAEO)
-				.kClimbWeightOEI(kClimbWeightOEI)
-				.climbSpeed(climbSpeed)
-				.initialClimbAltitude(initialClimbAltitude)
-				.finalClimbAltitude(finalClimbAltitude)
-				.altitudeListCruise(altitudeListCruise)
-				.kCruiseWeight(kCruiseWeight)
-				.cLmaxInverted(cLmaxInverted)
-				.rateOfDescent(rateOfDescent)
-				.speedDescentCAS(speedDescentCAS)
-				.kDescentWeight(kDescentWeight)
-				.initialDescentAltitude(initialDescentAltitude)
-				.finalDescentAltitude(finalDescentAltitude)
-				.missionRange(missionRange)
-				.alternateCruiseLength(alternateCruiseLength)
-				.alternateCruiseAltitude(alternateCruiseAltitude)
-				.holdingDuration(holdingDuration)
-				.holdingAltitude(holdingAltitude)
-				.holdingMachNumber(holdingMachNumber)
-				.fuelReserve(fuelReserve)
-				.firstGuessCruiseLength(firstGuessCruiseLength)
-				.sfcFunctionCruise(sfcFunction)
-				.sfcFunctionAlternateCruise(sfcAlternateCruiseFunction)
-				.sfcFunctionHolding(sfcHoldingFunction)
-				.firstGuessFuelMass(firstGuessInitialFuelMass)
-				.takeOffMissionAltitude(takeOffMissionAltitude)
-				.landingFuelFlow(landingFuelFlow)
-				.taskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
-				.plotList(plotList)
+		IACPerformanceManager thePerformanceManagerInterface = new IACPerformanceManager.Builder()
+				.setId(id)
+				.setTheAircraft(theAircraft)
+				.setTheOperatingConditions(theOperatingConditions)
+				.setMaximumTakeOffMass(maximumTakeOffMass)
+				.setOperatingEmptyMass(operatingEmptyMass)
+				.setMaximumFuelMass(maximumFuelMass)
+				.setSinglePassengerMass(singlePassengerMass)
+//				.cLmaxClean(cLmaxClean)
+//				.cLAlphaClean(cLAlphaClean)
+//				.cLAlphaTakeOff(cLAlphaTakeOff)
+//				.cLAlphaLanding(cLAlphaLanding)
+//				.cLmaxTakeOff(cLmaxTakeOff)
+//				.cLZeroTakeOff(cLZeroTakeOff)
+//				.cLmaxLanding(cLmaxLanding)
+//				.cLZeroLanding(cLZeroLanding)
+//				.polarCLCruise(polarCLCruise)
+//				.polarCDCruise(polarCDCruise)
+//				.polarCLClimb(polarCLClimb)
+//				.polarCDClimb(polarCDClimb)
+//				.polarCLTakeOff(polarCLTakeOff)
+//				.polarCDTakeOff(polarCDTakeOff)
+//				.polarCLLanding(polarCLLanding)
+//				.polarCDLanding(polarCDLanding)
+				.setMuFunction(muInterpolatingFunction)
+				.setMuBrakeFunction(muBrakeInterpolatingFunction)
+				.setDtRotation(dtRotation)
+				.setDtHold(dtHold)
+				.setAlphaGround(alphaGround)
+				.setWindSpeed(windSpeed)
+				.setObstacleTakeOff(obstacleTakeOff)
+				.setKRotation(kRotation)
+				.setAlphaDotRotation(alphaDotRotation)
+				.setKCLmax(kCLmax)
+				.setDragDueToEngineFailure(dragDueToEngineFailure)
+				.setKAlphaDot(kAlphaDot)
+				.setKLandingWeight(kLandingWeight)
+				.setObstacleLanding(obstacleLanding)
+				.setThetaApproach(thetaApproach)
+				.setKApproach(kApproach)
+				.setKFlare(kFlare)
+				.setKTouchDown(kTouchDown)
+				.setFreeRollDuration(freeRollDuration)
+				.setKClimbWeightAEO(kClimbWeightAEO)
+				.setKClimbWeightOEI(kClimbWeightOEI)
+				.setClimbSpeedCAS(climbSpeed)
+				.setInitialClimbAltitude(initialClimbAltitude)
+				.setFinalClimbAltitude(finalClimbAltitude)
+				.addAllAltitudeListCruise(altitudeListCruise)
+				.setKCruiseWeight(kCruiseWeight)
+				.setCLmaxInverted(cLmaxInverted)
+				.setRateOfDescent(rateOfDescent)
+				.setSpeedDescentCAS(speedDescentCAS)
+				.setKDescentWeight(kDescentWeight)
+				.setInitialDescentAltitude(initialDescentAltitude)
+				.setFinalDescentAltitude(finalDescentAltitude)
+				.setMissionRange(missionRange)
+				.setAlternateCruiseLength(alternateCruiseLength)
+				.setAlternateCruiseAltitude(alternateCruiseAltitude)
+				.setHoldingDuration(holdingDuration)
+				.setHoldingAltitude(holdingAltitude)
+				.setHoldingMachNumber(holdingMachNumber)
+				.setFuelReserve(fuelReserve)
+				.setFirstGuessCruiseLength(firstGuessCruiseLength)
+				.setSfcFunctionCruise(sfcFunction)
+				.setSfcFunctionAlternateCruise(sfcAlternateCruiseFunction)
+				.setSfcFunctionHolding(sfcHoldingFunction)
+				.setFirstGuessInitialMissionFuelMass(firstGuessInitialFuelMass)
+				.setTakeOffMissionAltitude(takeOffMissionAltitude)
+				.setLandingFuelFlow(landingFuelFlow)
+				.addAllTaskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
+				.addAllPlotList(plotList)
 				.build();
 		
-		return thePerformanceCalculator;
+		ACPerformanceManager thePerformanceManager = new ACPerformanceManager();
+		thePerformanceManager.setThePerformanceInterface(thePerformanceManagerInterface);
+		
+		return thePerformanceManager;
 	}
 	
 	/**
@@ -2257,7 +1492,7 @@ public class ACPerformanceManager {
 				+ File.separator
 				);
 		
-		if(_taskList.contains(PerformanceEnum.TAKE_OFF)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.TAKE_OFF)) {
 			
 			String takeOffFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2267,22 +1502,22 @@ public class ACPerformanceManager {
 			
 			CalcTakeOff calcTakeOff = new CalcTakeOff();
 			calcTakeOff.performTakeOffSimulation(
-					_maximumTakeOffMass, 
-					_theOperatingConditions.getAltitudeTakeOff().to(SI.METER),
-					_theOperatingConditions.getMachTakeOff()
+					_thePerformanceInterface.getMaximumTakeOffMass(), 
+					_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().to(SI.METER),
+					_thePerformanceInterface.getTheOperatingConditions().getMachTakeOff()
 					);
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcTakeOff.plotTakeOffPerformance(takeOffFolderPath);
 			calcTakeOff.calculateBalancedFieldLength();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcTakeOff.plotBalancedFieldLength(takeOffFolderPath);
 			calcTakeOff.calculateVMC();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcTakeOff.plotVMC(takeOffFolderPath);
 			
 		}
 		
-		if(_taskList.contains(PerformanceEnum.CLIMB)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CLIMB)) {
 			
 			String climbFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2292,18 +1527,18 @@ public class ACPerformanceManager {
 			
 			CalcClimb calcClimb = new CalcClimb();
 			calcClimb.calculateClimbPerformance(
-					_maximumTakeOffMass.times(_kClimbWeightAEO),
-					_maximumTakeOffMass.times(_kClimbWeightOEI),
-					_initialClimbAltitude,
-					_finalClimbAltitude,
+					_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightAEO()),
+					_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKClimbWeightOEI()),
+					_thePerformanceInterface.getInitialClimbAltitude(),
+					_thePerformanceInterface.getFinalClimbAltitude(),
 					true
 					);
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcClimb.plotClimbPerformance(climbFolderPath);
 			
 		}
 		
-		if(_taskList.contains(PerformanceEnum.CRUISE)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CRUISE)) {
 			
 			String cruiseFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2315,8 +1550,8 @@ public class ACPerformanceManager {
 			
 			Amount<Force> cruiseWeight = 
 					Amount.valueOf(
-							(_maximumTakeOffMass
-							.times(_kCruiseWeight)
+							(_thePerformanceInterface.getMaximumTakeOffMass()
+							.times(_thePerformanceInterface.getKCruiseWeight())
 							.times(AtmosphereCalc.g0)
 							.getEstimatedValue()
 							),
@@ -2338,16 +1573,20 @@ public class ACPerformanceManager {
 			}
 			
 			CalcCruise calcCruise = new CalcCruise();
-			calcCruise.calculateThrustAndDrag(_maximumTakeOffMass.times(_kCruiseWeight));
-			calcCruise.calculateFlightEnvelope(_maximumTakeOffMass.times(_kCruiseWeight));
+			calcCruise.calculateThrustAndDrag(
+					_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKCruiseWeight())
+					);
+			calcCruise.calculateFlightEnvelope(
+					_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKCruiseWeight())
+					);
 			calcCruise.calculateEfficiency();
 			calcCruise.calculateCruiseGrid();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcCruise.plotCruiseOutput(cruiseFolderPath);
 			
 		}
 		
-		if(_taskList.contains(PerformanceEnum.DESCENT)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.DESCENT)) {
 			
 			String descentFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2357,16 +1596,16 @@ public class ACPerformanceManager {
 			
 			CalcDescent calcDescent = new CalcDescent();
 			calcDescent.calculateDescentPerformance(
-					_initialDescentAltitude.to(SI.METER),
-					_finalDescentAltitude.to(SI.METER),
-					_maximumTakeOffMass.times(_kDescentWeight)
+					_thePerformanceInterface.getInitialDescentAltitude().to(SI.METER),
+					_thePerformanceInterface.getFinalDescentAltitude().to(SI.METER),
+					_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKDescentWeight())
 					);
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcDescent.plotDescentPerformance(descentFolderPath);
 			
 		}
 		
-		if(_taskList.contains(PerformanceEnum.LANDING)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.LANDING)) {
 			
 			String landingFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2375,12 +1614,12 @@ public class ACPerformanceManager {
 					);
 			
 			CalcLanding calcLanding = new CalcLanding();
-			calcLanding.performLandingSimulation(_maximumTakeOffMass.times(_kLandingWeight));
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			calcLanding.performLandingSimulation(_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()));
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcLanding.plotLandingPerformance(landingFolderPath);
 		}
 		
-		if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.PAYLOAD_RANGE)) {
 		
 			String payloadRangeFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2390,12 +1629,12 @@ public class ACPerformanceManager {
 			
 			CalcPayloadRange calcPayloadRange = new CalcPayloadRange();
 			calcPayloadRange.fromMissionProfile();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcPayloadRange.plotPayloadRange(payloadRangeFolderPath);
 		
 		}
 		
-		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.V_n_DIAGRAM)) {
 			
 			String maneuveringFlightAndGustEnvelopeFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2405,12 +1644,12 @@ public class ACPerformanceManager {
 			
 			CalcFlightManeuveringAndGustEnvelope calcEnvelope =  new CalcFlightManeuveringAndGustEnvelope();
 			calcEnvelope.fromRegulations();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcEnvelope.plotVnDiagram(maneuveringFlightAndGustEnvelopeFolderPath);
 			
 		}
 		
-		if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.MISSION_PROFILE)) {
 			
 			String missionProfilesFolderPath = JPADStaticWriteUtils.createNewFolder(
 					performanceFolderPath 
@@ -2420,7 +1659,7 @@ public class ACPerformanceManager {
 			
 			CalcMissionProfile calcMissionProfile = new CalcMissionProfile();
 			calcMissionProfile.calculateMissionProfileIterative();
-			if(_theAircraft.getTheAnalysisManager().getPlotPerformance() == true)
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPlotPerformance() == true)
 				calcMissionProfile.plotProfiles(missionProfilesFolderPath);
 			
 		}
@@ -2467,7 +1706,7 @@ public class ACPerformanceManager {
         //--------------------------------------------------------------------------------
         // TAKE-OFF ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.TAKE_OFF)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.TAKE_OFF)) {
         	Sheet sheet = wb.createSheet("TAKE-OFF");
         	List<Object[]> dataListTakeOff = new ArrayList<>();
 
@@ -2550,7 +1789,7 @@ public class ACPerformanceManager {
 		//--------------------------------------------------------------------------------
 		// CLIMB ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.CLIMB)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CLIMB)) {
         	Sheet sheetClimb = wb.createSheet("CLIMB");
         	List<Object[]> dataListClimb = new ArrayList<>();
 
@@ -2611,7 +1850,7 @@ public class ACPerformanceManager {
         //--------------------------------------------------------------------------------
         // CRUISE ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.CRUISE)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CRUISE)) {
         	Sheet sheetCruise = wb.createSheet("CRUISE");
         	List<Object[]> dataListCruise = new ArrayList<>();
         	
@@ -2684,7 +1923,7 @@ public class ACPerformanceManager {
 		//--------------------------------------------------------------------------------
         // DESCENT ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.DESCENT)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.DESCENT)) {
         	Sheet sheetDescent = wb.createSheet("DESCENT");
         	List<Object[]> dataListDescent = new ArrayList<>();
 
@@ -2736,7 +1975,7 @@ public class ACPerformanceManager {
         //--------------------------------------------------------------------------------
         // LANDING ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.LANDING)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.LANDING)) {
         	Sheet sheetLanding = wb.createSheet("LANDING");
         	List<Object[]> dataListLanding = new ArrayList<>();
 
@@ -2811,21 +2050,21 @@ public class ACPerformanceManager {
         //--------------------------------------------------------------------------------
         // MISSION PROFILE ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.MISSION_PROFILE)) {
         	Sheet sheetMissionProfile = wb.createSheet("MISSION PROFILE");
         	List<Object[]> dataListMissionProfile = new ArrayList<>();
 
         	dataListMissionProfile.add(new Object[] {"Description","Unit","Value"});
-        	dataListMissionProfile.add(new Object[] {"Total mission distance","nmi", _missionRange.to(NonSI.NAUTICAL_MILE)
-        																						 .plus(_alternateCruiseLength).to(NonSI.NAUTICAL_MILE)
+        	dataListMissionProfile.add(new Object[] {"Total mission distance","nmi", _thePerformanceInterface.getMissionRange().to(NonSI.NAUTICAL_MILE)
+        																						 .plus(_thePerformanceInterface.getAlternateCruiseLength()).to(NonSI.NAUTICAL_MILE)
         																						 .doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListMissionProfile.add(new Object[] {"Total mission duration","min", _totalMissionTime.doubleValue(NonSI.MINUTE)});
         	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission start","kg", _initialMissionMass.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Aircraft mass at mission end","kg", _endMissionMass.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Initial fuel mass for the assigned mission","kg", _initialFuelMass.doubleValue(SI.KILOGRAM)});
         	dataListMissionProfile.add(new Object[] {"Total fuel used","kg", _totalFuelUsed.doubleValue(SI.KILOGRAM)});
-        	dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _fuelReserve*100});
-        	dataListMissionProfile.add(new Object[] {"Design passengers number","", _theAircraft.getCabinConfiguration().getNPax().doubleValue()});
+        	dataListMissionProfile.add(new Object[] {"Fuel reserve","%", _thePerformanceInterface.getFuelReserve()*100});
+        	dataListMissionProfile.add(new Object[] {"Design passengers number","", _thePerformanceInterface.getTheAircraft().getCabinConfiguration().getNPax().doubleValue()});
         	dataListMissionProfile.add(new Object[] {"Passengers number for this mission","", _theMissionProfileCalculator.getPassengersNumber().doubleValue()});
         	dataListMissionProfile.add(new Object[] {" "});
         	dataListMissionProfile.add(new Object[] {"Take-off range","nmi", _rangeList.get(1).doubleValue(NonSI.NAUTICAL_MILE)});
@@ -2936,7 +2175,8 @@ public class ACPerformanceManager {
         	dataListMissionProfile.add(new Object[] {"Drag at second climb start", "lbf", _dragMissionList.get(6).doubleValue(NonSI.POUND_FORCE)});
         	dataListMissionProfile.add(new Object[] {"Drag at second climb ending", "lbf", _dragMissionList.get(7).doubleValue(NonSI.POUND_FORCE)});
         	dataListMissionProfile.add(new Object[] {" "});
-        	if(_alternateCruiseAltitude.doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
+        	
+        	if(_thePerformanceInterface.getAlternateCruiseAltitude().doubleValue(SI.METER) != Amount.valueOf(15.24, SI.METER).getEstimatedValue()) {
         		dataListMissionProfile.add(new Object[] {"SECOND CLIMB"});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at second climb start","kn", _speedTASMissionList.get(8).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at second climb ending","kn", _speedTASMissionList.get(9).doubleValue(NonSI.KNOT)});
@@ -2986,7 +2226,7 @@ public class ACPerformanceManager {
         		dataListMissionProfile.add(new Object[] {"Drag at second descent ending","lbf", _dragMissionList.get(13).doubleValue(NonSI.POUND_FORCE)});
         		dataListMissionProfile.add(new Object[] {" "});
         	}
-        	if(_holdingDuration.doubleValue(NonSI.MINUTE) != 0.0) {
+        	if(_thePerformanceInterface.getHoldingDuration().doubleValue(NonSI.MINUTE) != 0.0) {
         		dataListMissionProfile.add(new Object[] {"HOLDING"});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at holding start","kn", _speedTASMissionList.get(14).doubleValue(NonSI.KNOT)});
         		dataListMissionProfile.add(new Object[] {"Speed (TAS) at holding ending","kn", _speedTASMissionList.get(15).doubleValue(NonSI.KNOT)});
@@ -3078,40 +2318,40 @@ public class ACPerformanceManager {
         //--------------------------------------------------------------------------------
         // PAYLOAD-RANGE ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.PAYLOAD_RANGE)) {
         	Sheet sheetPayloadRange = wb.createSheet("PAYLOAD-RANGE");
         	List<Object[]> dataListPayloadRange = new ArrayList<>();
 
         	dataListPayloadRange.add(new Object[] {"Description","Unit","Value"});
-        	dataListPayloadRange.add(new Object[] {"ALTITUDE","ft",_theOperatingConditions.getAltitudeCruise().doubleValue(NonSI.FOOT)});
-        	dataListPayloadRange.add(new Object[] {"MACH"," ",_theOperatingConditions.getMachCruise()});
+        	dataListPayloadRange.add(new Object[] {"ALTITUDE","ft",_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(NonSI.FOOT)});
+        	dataListPayloadRange.add(new Object[] {"MACH"," ",_thePerformanceInterface.getTheOperatingConditions().getMachCruise()});
         	dataListPayloadRange.add(new Object[] {" "});
         	dataListPayloadRange.add(new Object[] {"RANGE AT MAX PAYLOAD"});
         	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _maxPayload.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxPayload.doubleValue()});
         	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtMaxPayload.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {""});
         	dataListPayloadRange.add(new Object[] {"RANGE AT DESIGN PAYLOAD"});
         	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtDesignPayload.doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _designPayload.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtDesignPayload.doubleValue()});
         	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _requiredMassAtDesignPayload.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {""});
         	dataListPayloadRange.add(new Object[] {"RANGE AT MAX FUEL"});
         	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtMaxFuel.doubleValue(NonSI.NAUTICAL_MILE)});
-        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _maximumTakeOffMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _thePerformanceInterface.getMaximumTakeOffMass().doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Payload mass","kg", _payloadAtMaxFuel.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Passengers number","", _passengersNumberAtMaxFuel.doubleValue()});
-        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _maximumFuelMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePerformanceInterface.getMaximumFuelMass().doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"RANGE AT ZERO PAYLOAD"});
         	dataListPayloadRange.add(new Object[] {"Range","nmi", _rangeAtZeroPayload.doubleValue(NonSI.NAUTICAL_MILE)});
         	dataListPayloadRange.add(new Object[] {"Aircraft mass","kg", _takeOffMassAtZeroPayload.doubleValue(SI.KILOGRAM)});
         	dataListPayloadRange.add(new Object[] {"Payload mass","kg", 0.0});
         	dataListPayloadRange.add(new Object[] {"Passengers number","", 0.0});
-        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _maximumFuelMass.doubleValue(SI.KILOGRAM)});
+        	dataListPayloadRange.add(new Object[] {"Fuel mass","kg", _thePerformanceInterface.getMaximumFuelMass().doubleValue(SI.KILOGRAM)});
 
         	Row rowPayloadRange = sheetPayloadRange.createRow(0);
         	Object[] objArrPayloadRange = dataListPayloadRange.get(0);
@@ -3155,13 +2395,13 @@ public class ACPerformanceManager {
         //--------------------------------------------------------------------------------
         // V-n DIAGRAM ANALYSIS RESULTS:
         //--------------------------------------------------------------------------------
-        if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
+        if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.V_n_DIAGRAM)) {
         	Sheet sheetVnDiagram = wb.createSheet("V-n DIAGRAM");
         	List<Object[]> dataListVnDiagram = new ArrayList<>();
 
         	dataListVnDiagram.add(new Object[] {"Description","Unit","Value"});
-        	dataListVnDiagram.add(new Object[] {"REGULATION"," ",_theAircraft.getRegulations().toString()});
-        	dataListVnDiagram.add(new Object[] {"AIRCRAFT TYPE"," ",_theAircraft.getTypeVehicle().toString()});
+        	dataListVnDiagram.add(new Object[] {"REGULATION"," ",_thePerformanceInterface.getTheAircraft().getRegulations().toString()});
+        	dataListVnDiagram.add(new Object[] {"AIRCRAFT TYPE"," ",_thePerformanceInterface.getTheAircraft().getTypeVehicle().toString()});
         	dataListVnDiagram.add(new Object[] {" "});
         	dataListVnDiagram.add(new Object[] {" "});
         	dataListVnDiagram.add(new Object[] {"BASIC MANEUVERING DIAGRAM"});
@@ -3301,7 +2541,7 @@ public class ACPerformanceManager {
 				.append("\tPerformance Analysis\n")
 				.append("\t-------------------------------------\n")
 				;
-		if(_taskList.contains(PerformanceEnum.TAKE_OFF)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.TAKE_OFF)) {
 			
 			sb.append("\tTAKE-OFF\n")
 			.append("\t-------------------------------------\n")
@@ -3343,7 +2583,7 @@ public class ACPerformanceManager {
 			.append("\t-------------------------------------\n")
 			;
 		}
-		if(_taskList.contains(PerformanceEnum.CLIMB)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CLIMB)) {
 			
 			sb.append("\tCLIMB\n")
 			.append("\t-------------------------------------\n")
@@ -3364,7 +2604,7 @@ public class ACPerformanceManager {
 			sb.append("\t-------------------------------------\n");
 			
 		}
-		if(_taskList.contains(PerformanceEnum.CRUISE)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.CRUISE)) {
 			
 			sb.append("\tCRUISE\n")
 			.append("\t-------------------------------------\n")
@@ -3395,7 +2635,7 @@ public class ACPerformanceManager {
 			.append("\t-------------------------------------\n");
 			
 		}
-		if(_taskList.contains(PerformanceEnum.DESCENT)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.DESCENT)) {
 			
 			sb.append("\tDESCENT\n")
 			.append("\t-------------------------------------\n")
@@ -3407,7 +2647,7 @@ public class ACPerformanceManager {
 			;
 			
 		}
-		if(_taskList.contains(PerformanceEnum.LANDING)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.LANDING)) {
 			
 			sb.append("\tLANDING\n")
 			.append("\t-------------------------------------\n")
@@ -3441,15 +2681,15 @@ public class ACPerformanceManager {
 			.append("\t-------------------------------------\n")
 			;
 		}
-		if(_taskList.contains(PerformanceEnum.MISSION_PROFILE)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.MISSION_PROFILE)) {
 			sb.append("\tMISSION PROFILE\n")
 			.append(_theMissionProfileCalculator.toString());
 		}
-		if(_taskList.contains(PerformanceEnum.PAYLOAD_RANGE)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.PAYLOAD_RANGE)) {
 			sb.append("\tPAYLOAD-RANGE\n")
 			.append(_thePayloadRangeCalculator.toString());
 		}
-		if(_taskList.contains(PerformanceEnum.V_n_DIAGRAM)) {
+		if(_thePerformanceInterface.getTaskList().contains(PerformanceEnum.V_n_DIAGRAM)) {
 			sb.append("\tV-n DIAGRAM\n")
 			.append(_theEnvelopeCalculator.toString());
 		}
@@ -3470,12 +2710,12 @@ public class ACPerformanceManager {
 				) {
 			
 			Amount<Length> wingToGroundDistance = 
-					_theAircraft.getFuselage().getHeightFromGround()
-					.plus(_theAircraft.getFuselage().getSectionHeight().divide(2))
-					.plus(_theAircraft.getWing().getZApexConstructionAxes()
-							.plus(_theAircraft.getWing().getSemiSpan()
+					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
+					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionHeight().divide(2))
+					.plus(_thePerformanceInterface.getTheAircraft().getWing().getZApexConstructionAxes()
+							.plus(_thePerformanceInterface.getTheAircraft().getWing().getSemiSpan()
 									.times(Math.sin(
-											_theAircraft.getWing()	
+											_thePerformanceInterface.getTheAircraft().getWing()	
 											.getLiftingSurfaceCreator()	
 											.getDihedralMean()
 											.doubleValue(SI.RADIAN)
@@ -3485,30 +2725,30 @@ public class ACPerformanceManager {
 							);
 			
 			_theTakeOffCalculator = new TakeOffCalc(
-					_theAircraft.getWing().getAspectRatio(),
-					_theAircraft.getWing().getSurface(),
-					_theAircraft.getPowerPlant(),
-					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCLTakeOff(),
-					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff(),
+					_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(),
+					_thePerformanceInterface.getTheAircraft().getWing().getSurface(),
+					_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getThePerformance().getPolarCLTakeOff(),
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getThePerformance().getPolarCDTakeOff(),
 					altitude.to(SI.METER),
 					mach,
 					takeOffMass.to(SI.KILOGRAM),
-					_dtRotation,
-					_dtHold,
-					_kCLmax,
-					_kRotation,
-					_alphaDotRotation,
-					_dragDueToEnigneFailure,
-					_theOperatingConditions.getThrottleGroundIdleTakeOff(),
-					_theOperatingConditions.getThrottleTakeOff(), 
-					_kAlphaDot,
-					_muFunction,
-					_muBrakeFunction,
+					_thePerformanceInterface.getDtRotation(),
+					_thePerformanceInterface.getDtHold(),
+					_thePerformanceInterface.getKCLmax(),
+					_thePerformanceInterface.getKRotation(),
+					_thePerformanceInterface.getAlphaDotRotation(),
+					_thePerformanceInterface.getDragDueToEngineFailure(),
+					_thePerformanceInterface.getTheOperatingConditions().getThrottleGroundIdleTakeOff(),
+					_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(), 
+					_thePerformanceInterface.getKAlphaDot(),
+					_thePerformanceInterface.getMuFunction(),
+					_thePerformanceInterface.getMuBrakeFunction(),
 					wingToGroundDistance,
-					_obstacleTakeOff,
-					_windSpeed,
-					_alphaGround,
-					_theAircraft.getWing().getRiggingAngle(),
+					_thePerformanceInterface.getObstacleTakeOff(),
+					_thePerformanceInterface.getWindSpeed(),
+					_thePerformanceInterface.getAlphaGround(),
+					_thePerformanceInterface.getTheAircraft().getWing().getRiggingAngle(),
 					_cLmaxTakeOff,
 					_cLZeroTakeOff,
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue()
@@ -3557,9 +2797,9 @@ public class ACPerformanceManager {
 					);
 
 			// GETTING THE FUSELAGE HEGHT AR V-TAIL MAC (c/4)
-			List<Amount<Length>> vX = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
-			List<Amount<Length>> vZUpper = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
-			List<Amount<Length>> vZLower = _theAircraft.getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
+			List<Amount<Length>> vX = _thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountX();
+			List<Amount<Length>> vZUpper = _thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
+			List<Amount<Length>> vZLower = _thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
 			
 			List<Amount<Length>> sectionHeightsList = new ArrayList<>();
 			List<Amount<Length>> xListInterpolation = new ArrayList<>();
@@ -3575,44 +2815,44 @@ public class ACPerformanceManager {
 							MyMathUtils.getInterpolatedValue1DLinear(
 									MyArrayUtils.convertListOfAmountTodoubleArray(xListInterpolation),
 									MyArrayUtils.convertListOfAmountTodoubleArray(sectionHeightsList),
-									_theAircraft.getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
-									.plus(_theAircraft.getVTail().getXApexConstructionAxes())
-									.plus(_theAircraft.getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
+									_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX()
+									.plus(_thePerformanceInterface.getTheAircraft().getVTail().getXApexConstructionAxes())
+									.plus(_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getMeanAerodynamicChord().times(0.25))
 									.doubleValue(SI.METER)
 									),
 							SI.METER
 							);
 			
 			double tailConeTipToFuselageRadiusRatio = 
-					_theAircraft.getFuselage().getFuselageCreator().getHeightT()
-					.divide(_theAircraft.getFuselage().getSectionHeight().divide(2))
+					_thePerformanceInterface.getTheAircraft().getFuselage().getFuselageCreator().getHeightT()
+					.divide(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionHeight().divide(2))
 					.getEstimatedValue();
 			
 			veDSCDatabaseReader.runAnalysis(
-					_theAircraft.getWing().getAspectRatio(), 
-					_theAircraft.getWing().getPositionRelativeToAttachment(), 
-					_theAircraft.getVTail().getAspectRatio(), 
-					_theAircraft.getVTail().getSpan().doubleValue(SI.METER), 
-					_theAircraft.getHTail().getPositionRelativeToAttachment(),
+					_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
+					_thePerformanceInterface.getTheAircraft().getWing().getPositionRelativeToAttachment(), 
+					_thePerformanceInterface.getTheAircraft().getVTail().getAspectRatio(), 
+					_thePerformanceInterface.getTheAircraft().getVTail().getSpan().doubleValue(SI.METER), 
+					_thePerformanceInterface.getTheAircraft().getHTail().getPositionRelativeToAttachment(),
 					diameterAtVTailQuarteMAC.doubleValue(SI.METER), 
 					tailConeTipToFuselageRadiusRatio
 					);
 
-			if(_theAircraft.getTheAnalysisManager().getTheBalance() == null)
-				_theAircraft.calculateArms(_theAircraft.getVTail(),_xCGMaxAft);
+			if(_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getTheBalance() == null)
+				_thePerformanceInterface.getTheAircraft().calculateArms(_thePerformanceInterface.getTheAircraft().getVTail(),_xCGMaxAft);
 			
 			// cNb vertical [1/deg]
 			double cNbVertical = MomentCalc.calcCNbetaVerticalTail(
-					_theAircraft.getWing().getAspectRatio(), 
-					_theAircraft.getVTail().getAspectRatio(),
-					_theAircraft.getVTail().getLiftingSurfaceCreator().getLiftingSurfaceArm().doubleValue(SI.METER),
-					_theAircraft.getWing().getSpan().doubleValue(SI.METER),
-					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-					_theAircraft.getVTail().getSurface().doubleValue(SI.SQUARE_METRE), 
-					_theAircraft.getVTail().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
-					_theAircraft.getVTail().getAirfoilList().get(0)
+					_thePerformanceInterface.getTheAircraft().getWing().getAspectRatio(), 
+					_thePerformanceInterface.getTheAircraft().getVTail().getAspectRatio(),
+					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getLiftingSurfaceArm().doubleValue(SI.METER),
+					_thePerformanceInterface.getTheAircraft().getWing().getSpan().doubleValue(SI.METER),
+					_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+					_thePerformanceInterface.getTheAircraft().getVTail().getSurface().doubleValue(SI.SQUARE_METRE), 
+					_thePerformanceInterface.getTheAircraft().getVTail().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+					_thePerformanceInterface.getTheAircraft().getVTail().getAirfoilList().get(0)
 						.getAirfoilCreator().getClAlphaLinearTrait().to(SI.RADIAN.inverse()).getEstimatedValue(),
-					_theOperatingConditions.getMachTakeOff(), 
+					_thePerformanceInterface.getTheOperatingConditions().getMachTakeOff(), 
 					veDSCDatabaseReader.getkFv(),
 					veDSCDatabaseReader.getkWv(),
 					veDSCDatabaseReader.getkHv()
@@ -3623,53 +2863,53 @@ public class ACPerformanceManager {
 			double[] speed = MyArrayUtils.linspace(
 					SpeedCalc.calculateTAS(
 							0.05,
-							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER)
 							),
 					_theTakeOffCalculator.getvSTakeOff().times(1.13).doubleValue(SI.METERS_PER_SECOND),
 					250
 					);
 
 			double[] thrust = new double[speed.length];
-			if ((_theAircraft.getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
+			if ((_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType() == EngineTypeEnum.TURBOPROP) 
 					&& (Double.valueOf(
-							_theAircraft
+							_thePerformanceInterface.getTheAircraft()
 							.getPowerPlant()
 							.getTurbopropEngineDatabaseReader()
 							.getThrustAPR(
-									_theOperatingConditions.getMachTakeOff(),
-									_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER),
-									_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+									_thePerformanceInterface.getTheOperatingConditions().getMachTakeOff(),
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
+									_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR()
 									)
 							) != 0.0
 						)
 					)
 				thrust = ThrustCalc.calculateThrustVsSpeed(
-						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						_theOperatingConditions.getThrottleTakeOff(),
-						_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+						_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(),
+						_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
 						EngineOperatingConditionEnum.APR,
-						_theAircraft.getPowerPlant().getEngineType(),
-						_theAircraft.getPowerPlant(),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineNumber()-1,
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()-1,
 						speed
 						);
 			else
 				thrust = ThrustCalc.calculateThrustVsSpeed(
-						_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-						_theOperatingConditions.getThrottleTakeOff(),
-						_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+						_thePerformanceInterface.getTheOperatingConditions().getThrottleTakeOff(),
+						_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER),
 						EngineOperatingConditionEnum.TAKE_OFF,
-						_theAircraft.getPowerPlant().getEngineType(),
-						_theAircraft.getPowerPlant(),
-						_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-						_theAircraft.getPowerPlant().getEngineNumber()-1,
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+						_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber()-1,
 						speed
 						);
 
 			List<Amount<Length>> enginesArms = new ArrayList<>();
-			for(int i=0; i<_theAircraft.getPowerPlant().getEngineList().size(); i++)
-				enginesArms.add(_theAircraft.getPowerPlant().getEngineList().get(i).getYApexConstructionAxes());
+			for(int i=0; i<_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().size(); i++)
+				enginesArms.add(_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(i).getYApexConstructionAxes());
 			
 			Amount<Length> maxEngineArm = 
 					Amount.valueOf(
@@ -3691,11 +2931,11 @@ public class ACPerformanceManager {
 			_yawingMomentOEI = new double[_thrustMomentOEI.length];
 			
 			double tau = LiftCalc.calculateTauIndexElevator(
-					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
-					_theAircraft.getVTail().getAspectRatio(), 
-					_theAircraft.getVTail().getHighLiftDatabaseReader(),
-					_theAircraft.getVTail().getAerodynamicDatabaseReader(),
-					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
+					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
+					_thePerformanceInterface.getTheAircraft().getVTail().getAspectRatio(), 
+					_thePerformanceInterface.getTheAircraft().getVTail().getHighLiftDatabaseReader(),
+					_thePerformanceInterface.getTheAircraft().getVTail().getAerodynamicDatabaseReader(),
+					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
 					);
 			
 //			double tau = 0.5284; // (Only for IRON)
@@ -3703,12 +2943,12 @@ public class ACPerformanceManager {
 			for(int i=0; i < thrust.length; i++){
 			_yawingMomentOEI[i] = cNbVertical*
 					tau*
-					_theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)*
+					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)*
 					0.5*
-					_theOperatingConditions.getDensityTakeOff().getEstimatedValue()*
+					_thePerformanceInterface.getTheOperatingConditions().getDensityTakeOff().getEstimatedValue()*
 					Math.pow(speed[i],2)*
-					_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE)*
-					_theAircraft.getWing().getSpan().doubleValue(SI.METER);
+					_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE)*
+					_thePerformanceInterface.getTheAircraft().getWing().getSpan().doubleValue(SI.METER);
 			}
 			
 			//..................................................................................
@@ -3739,11 +2979,11 @@ public class ACPerformanceManager {
 
 		public void plotTakeOffPerformance(String takeOffFolderPath) {
 
-			if(_plotList.contains(PerformancePlotEnum.TAKE_OFF_SIMULATIONS))
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.TAKE_OFF_SIMULATIONS))
 				try {
 					_theTakeOffCalculator.createTakeOffCharts(
 							takeOffFolderPath,
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -3755,10 +2995,10 @@ public class ACPerformanceManager {
 		
 		public void plotBalancedFieldLength(String takeOffFolderPath) {
 			
-			if(_plotList.contains(PerformancePlotEnum.BALANCED_FIELD_LENGTH))
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.BALANCED_FIELD_LENGTH))
 				_theTakeOffCalculator.createBalancedFieldLengthChart(
 						takeOffFolderPath,
-						_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+						_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 						);
 			
 		}
@@ -3768,7 +3008,7 @@ public class ACPerformanceManager {
 			double[] speed = MyArrayUtils.linspace(
 					SpeedCalc.calculateTAS(
 							0.05,
-							_theOperatingConditions.getAltitudeTakeOff().doubleValue(SI.METER)
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeTakeOff().doubleValue(SI.METER)
 							)/_vStallTakeOff.doubleValue(SI.METERS_PER_SECOND),
 					1.13, // maximum value of the VMC from FAR regulations
 					250
@@ -3792,7 +3032,7 @@ public class ACPerformanceManager {
 					"V/VsTO", "Thrust - Yawing Moment",
 					"", "N m",legendValue,
 					takeOffFolderPath, "VMC",
-					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance());
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance());
 			
 		}
 		
@@ -3815,13 +3055,13 @@ public class ACPerformanceManager {
 				) {
 			
 			_theClimbCalculator = new ClimbCalc(
-					_theAircraft,
-					_theOperatingConditions,
+					_thePerformanceInterface.getTheAircraft(),
+					_thePerformanceInterface.getTheOperatingConditions(),
 					_cLmaxClean,
 					_polarCLClimb,
 					_polarCDClimb,
-					_climbSpeed,
-					_dragDueToEnigneFailure
+					_thePerformanceInterface.getClimbSpeedCAS(),
+					_thePerformanceInterface.getDragDueToEngineFailure()
 					);
 			
 			_theClimbCalculator.calculateClimbPerformance(
@@ -3854,7 +3094,7 @@ public class ACPerformanceManager {
 		
 		public void plotClimbPerformance(String climbFolderPath) {
 			
-			_theClimbCalculator.plotClimbPerformance(_plotList, climbFolderPath);
+			_theClimbCalculator.plotClimbPerformance(_thePerformanceInterface.getPlotList(), climbFolderPath);
 			
 		}
 	}
@@ -3871,45 +3111,45 @@ public class ACPerformanceManager {
 			
 			//--------------------------------------------------------------------
 			// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
-			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
+			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing()));
 
 			_dragListAltitudeParameterization = new ArrayList<DragMap>();
 			_thrustListAltitudeParameterization = new ArrayList<ThrustMap>();
 
 			double[] speedArrayAltitudeParameterization = new double[100];
 
-			for(int i=0; i<_altitudeListCruise.size(); i++) {
+			for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 				//..................................................................................................
 				speedArrayAltitudeParameterization = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
-								_altitudeListCruise.get(i).doubleValue(SI.METER),
+								_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER),
 								(startCruiseMass
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()
 										),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(
-								_theOperatingConditions.getMachCruise(),
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+								_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 								),
 						100
 						);
 				//..................................................................................................
 				_dragListAltitudeParameterization.add(
 						DragCalc.calculateDragAndPowerRequired(
-								_altitudeListCruise.get(i).doubleValue(SI.METER),
+								_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER),
 								(startCruiseMass
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()
 										),
 								speedArrayAltitudeParameterization,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+								_thePerformanceInterface.getTheAircraft().getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -3918,15 +3158,15 @@ public class ACPerformanceManager {
 				//..................................................................................................
 				_thrustListAltitudeParameterization.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
-								_altitudeListCruise.get(i).doubleValue(SI.METER),
-								_theOperatingConditions.getThrottleCruise(),
+								_thePerformanceInterface.getAltitudeListCruise().get(i).doubleValue(SI.METER),
+								_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 								speedArrayAltitudeParameterization,
 								EngineOperatingConditionEnum.CRUISE,
-								_theAircraft.getPowerPlant().getEngineType(), 
-								_theAircraft.getPowerPlant(),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								_theAircraft.getPowerPlant().getEngineNumber(),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(), 
+								_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber(),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR()
 								)
 						);
 			}
@@ -3936,15 +3176,15 @@ public class ACPerformanceManager {
 			List<Amount<Power>> powerAvailableAltitudesAtCruiseMach = new ArrayList<>();
 			List<Amount<Power>> powerNeededAltitudesAtCruiseMach = new ArrayList<>();
 			
-			for(int i=0; i<_altitudeListCruise.size(); i++) {
+			for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 				thrustAltitudesAtCruiseMach.add(
 						Amount.valueOf(
 								MyMathUtils.getInterpolatedValue1DLinear(
 										_thrustListAltitudeParameterization.get(i).getSpeed(),
 										_thrustListAltitudeParameterization.get(i).getThrust(),
 										SpeedCalc.calculateTAS(
-												_theOperatingConditions.getMachCruise(),
-												_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+												_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+												_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 												)
 										),
 								SI.NEWTON
@@ -3956,8 +3196,8 @@ public class ACPerformanceManager {
 										_dragListAltitudeParameterization.get(i).getSpeed(),
 										_dragListAltitudeParameterization.get(i).getDrag(),
 										SpeedCalc.calculateTAS(
-												_theOperatingConditions.getMachCruise(),
-												_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+												_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+												_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 												)
 										),
 								SI.NEWTON
@@ -3969,8 +3209,8 @@ public class ACPerformanceManager {
 										_thrustListAltitudeParameterization.get(i).getSpeed(),
 										_thrustListAltitudeParameterization.get(i).getPower(),
 										SpeedCalc.calculateTAS(
-												_theOperatingConditions.getMachCruise(),
-												_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+												_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+												_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 												)
 										),
 								SI.WATT
@@ -3982,8 +3222,8 @@ public class ACPerformanceManager {
 										_dragListAltitudeParameterization.get(i).getSpeed(),
 										_dragListAltitudeParameterization.get(i).getPower(),
 										SpeedCalc.calculateTAS(
-												_theOperatingConditions.getMachCruise(),
-												_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+												_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+												_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 												)
 										),
 								SI.WATT
@@ -3995,36 +3235,36 @@ public class ACPerformanceManager {
 			_thrustAtCruiseAltitudeAndMach = 
 					Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeListCruise),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
 									MyArrayUtils.convertListOfAmountTodoubleArray(thrustAltitudesAtCruiseMach),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.NEWTON
 							);
 			_dragAtCruiseAltitudeAndMach = 
 					Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeListCruise),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
 									MyArrayUtils.convertListOfAmountTodoubleArray(dragAltitudesAtCruiseMach),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.NEWTON
 							);
 			_powerAvailableAtCruiseAltitudeAndMach = 
 					Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeListCruise),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
 									MyArrayUtils.convertListOfAmountTodoubleArray(powerAvailableAltitudesAtCruiseMach),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.WATT
 							);
 			_powerNeededAtCruiseAltitudeAndMach = 
 					Amount.valueOf(
 							MyMathUtils.getInterpolatedValue1DLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(_altitudeListCruise),
+									MyArrayUtils.convertListOfAmountTodoubleArray(_thePerformanceInterface.getAltitudeListCruise()),
 									MyArrayUtils.convertListOfAmountTodoubleArray(powerNeededAltitudesAtCruiseMach),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.WATT
 							); 
@@ -4041,28 +3281,28 @@ public class ACPerformanceManager {
 				//..................................................................................................
 				speedArrayWeightParameterization = MyArrayUtils.linspace(
 						SpeedCalc.calculateSpeedStall(
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(
-								_theOperatingConditions.getMachCruise(),
-								MyArrayUtils.getMin(MyArrayUtils.convertListOfAmountToDoubleArray(_altitudeListCruise))
+								_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+								MyArrayUtils.getMin(MyArrayUtils.convertListOfAmountToDoubleArray(_thePerformanceInterface.getAltitudeListCruise()))
 								),
 						100
 						);
 				//..................................................................................................
 				_dragListWeightParameterization.add(
 						DragCalc.calculateDragAndPowerRequired(
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
 								speedArrayWeightParameterization,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+								_thePerformanceInterface.getTheAircraft().getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -4071,34 +3311,34 @@ public class ACPerformanceManager {
 			//..................................................................................................
 			_thrustListWeightParameterization.add(
 					ThrustCalc.calculateThrustAndPowerAvailable(
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-							_theOperatingConditions.getThrottleCruise(),
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
+							_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 							MyArrayUtils.linspace(
 									SpeedCalc.calculateSpeedStall(
-											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+											_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
 											_weightListCruise.get(0).doubleValue(SI.NEWTON),
-											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 											MyArrayUtils.getMax(_polarCLCruise)
 											),
 									SpeedCalc.calculateTAS(
-											_theOperatingConditions.getMachCruise(),
-											MyArrayUtils.getMin(MyArrayUtils.convertListOfAmountToDoubleArray(_altitudeListCruise))
+											_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+											MyArrayUtils.getMin(MyArrayUtils.convertListOfAmountToDoubleArray(_thePerformanceInterface.getAltitudeListCruise()))
 											),
 									100
 									),
 							EngineOperatingConditionEnum.CRUISE,
-							_theAircraft.getPowerPlant().getEngineType(), 
-							_theAircraft.getPowerPlant(),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-							_theAircraft.getPowerPlant().getEngineNumber(),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(), 
+							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR()
 							)
 					);
 		}
 
 		public void calculateFlightEnvelope(Amount<Mass> startCruiseMass) {
 
-			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
+			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing()));
 
 			_intersectionList = new ArrayList<>();
 			_cruiseEnvelopeList = new ArrayList<>();
@@ -4121,7 +3361,7 @@ public class ACPerformanceManager {
 							(startCruiseMass
 									.times(AtmosphereCalc.g0)
 									.getEstimatedValue()),
-							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 							MyArrayUtils.getMax(_polarCLCruise)
 							),
 					SpeedCalc.calculateTAS(1.0, altitude.get(0).doubleValue(SI.METER)),
@@ -4136,11 +3376,11 @@ public class ACPerformanceManager {
 								.getEstimatedValue()
 								),
 							speedArray,
-							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 							MyArrayUtils.getMax(_polarCLCruise),
 							MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 							MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-							_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+							_thePerformanceInterface.getTheAircraft().getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 							meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 							meanAirfoil.getAirfoilCreator().getType()
 							)
@@ -4150,14 +3390,14 @@ public class ACPerformanceManager {
 			thrustList.add(
 					ThrustCalc.calculateThrustAndPowerAvailable(
 							altitude.get(0).doubleValue(SI.METER),
-							_theOperatingConditions.getThrottleCruise(),
+							_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 							speedArray,
 							EngineOperatingConditionEnum.CRUISE,
-							_theAircraft.getPowerPlant().getEngineType(), 
-							_theAircraft.getPowerPlant(),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-							_theAircraft.getPowerPlant().getEngineNumber(),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(), 
+							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR()
 							)
 					);
 			//..................................................................................................
@@ -4169,10 +3409,10 @@ public class ACPerformanceManager {
 									.times(AtmosphereCalc.g0)
 									.getEstimatedValue()
 									),
-							_theOperatingConditions.getThrottleCruise(),
+							_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 							EngineOperatingConditionEnum.CRUISE,
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+							_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 							MyArrayUtils.getMax(_polarCLCruise),
 							dragList,
 							thrustList
@@ -4194,7 +3434,7 @@ public class ACPerformanceManager {
 								(startCruiseMass
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise)
 								),
 						SpeedCalc.calculateTAS(1.0, altitude.get(i).doubleValue(SI.METER)),
@@ -4209,11 +3449,11 @@ public class ACPerformanceManager {
 									.getEstimatedValue()
 									),
 								speedArray,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+								_thePerformanceInterface.getTheAircraft().getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -4223,14 +3463,14 @@ public class ACPerformanceManager {
 				thrustList.add(
 						ThrustCalc.calculateThrustAndPowerAvailable(
 								altitude.get(i).doubleValue(SI.METER),
-								_theOperatingConditions.getThrottleCruise(),
+								_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 								speedArray,
 								EngineOperatingConditionEnum.CRUISE,
-								_theAircraft.getPowerPlant().getEngineType(), 
-								_theAircraft.getPowerPlant(),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-								_theAircraft.getPowerPlant().getEngineNumber(),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(), 
+								_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber(),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR()
 								)
 						);
 				//..................................................................................................
@@ -4242,10 +3482,10 @@ public class ACPerformanceManager {
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()
 										),
-								_theOperatingConditions.getThrottleCruise(),
+								_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 								EngineOperatingConditionEnum.CRUISE,
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								dragList,
 								thrustList
@@ -4263,9 +3503,9 @@ public class ACPerformanceManager {
 										.times(AtmosphereCalc.g0)
 										.getEstimatedValue()
 										),
-								_theOperatingConditions.getThrottleCruise(),
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								EngineOperatingConditionEnum.CRUISE,
 								_intersectionList
@@ -4302,7 +3542,7 @@ public class ACPerformanceManager {
 							MyMathUtils.getInterpolatedValue1DLinear(
 									MyArrayUtils.convertToDoublePrimitive(altitudeList),
 									MyArrayUtils.convertToDoublePrimitive(minSpeedTASList),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND
 							);
@@ -4311,7 +3551,7 @@ public class ACPerformanceManager {
 							MyMathUtils.getInterpolatedValue1DLinear(
 									MyArrayUtils.convertToDoublePrimitive(altitudeList),
 									MyArrayUtils.convertToDoublePrimitive(maxSpeedTASList),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND
 							);
@@ -4320,7 +3560,7 @@ public class ACPerformanceManager {
 							MyMathUtils.getInterpolatedValue1DLinear(
 									MyArrayUtils.convertToDoublePrimitive(altitudeList),
 									MyArrayUtils.convertToDoublePrimitive(minSpeedCASList),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND
 							);
@@ -4329,7 +3569,7 @@ public class ACPerformanceManager {
 							MyMathUtils.getInterpolatedValue1DLinear(
 									MyArrayUtils.convertToDoublePrimitive(altitudeList),
 									MyArrayUtils.convertToDoublePrimitive(maxSpeedCASList),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 									),
 							SI.METERS_PER_SECOND
 							);
@@ -4337,16 +3577,16 @@ public class ACPerformanceManager {
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(altitudeList),
 							MyArrayUtils.convertToDoublePrimitive(minMachList),
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 							);
 			_maxMachAtCruiseAltitude = 
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(altitudeList),
 							MyArrayUtils.convertToDoublePrimitive(maxMachList),
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 							);
 			
-			if(_maxMachAtCruiseAltitude < _theOperatingConditions.getMachCruise()) {
+			if(_maxMachAtCruiseAltitude < _thePerformanceInterface.getTheOperatingConditions().getMachCruise()) {
 				System.err.println("THE CHOSEN CRUISE MACH NUMBER IS NOT INSIDE THE FLIGHT ENVELOPE !");
 			}
 				
@@ -4360,23 +3600,23 @@ public class ACPerformanceManager {
 			
 			//--------------------------------------------------------------------
 			// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
-			for(int i=0; i<_altitudeListCruise.size(); i++) {
+			for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 				List<Double> liftAltitudeParameterization = new ArrayList<>();
 				List<Double> efficiencyListCurrentAltitude = new ArrayList<>();
 				for(int j=0; j<_dragListAltitudeParameterization.get(i).getSpeed().length; j++) {
 					liftAltitudeParameterization.add(
 							LiftCalc.calculateLift(
 									_dragListAltitudeParameterization.get(i).getSpeed()[j],
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 									_dragListAltitudeParameterization.get(i).getAltitude(),
 									LiftCalc.calculateLiftCoeff(
-											(_maximumTakeOffMass
-													.times(_kCruiseWeight)
+											(_thePerformanceInterface.getMaximumTakeOffMass()
+													.times(_thePerformanceInterface.getKCruiseWeight())
 													.times(AtmosphereCalc.g0)
 													.getEstimatedValue()
 													),
 											_dragListAltitudeParameterization.get(i).getSpeed()[j],
-											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 											_dragListAltitudeParameterization.get(i).getAltitude()
 											)
 									)			
@@ -4394,7 +3634,7 @@ public class ACPerformanceManager {
 			
 			List<Double> efficiencyAltitudesAtCruiseMach = new ArrayList<>();
 			
-			for(int i=0; i<_altitudeListCruise.size(); i++)
+			for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++)
 				efficiencyAltitudesAtCruiseMach.add(
 						MyMathUtils.getInterpolatedValue1DLinear(
 								_dragListAltitudeParameterization.get(i).getSpeed(),
@@ -4403,8 +3643,8 @@ public class ACPerformanceManager {
 										.get("Altitude = " + _dragListAltitudeParameterization.get(i).getAltitude())
 										),
 								SpeedCalc.calculateTAS(
-										_theOperatingConditions.getMachCruise(),
-										_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+										_thePerformanceInterface.getTheOperatingConditions().getMachCruise(),
+										_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 										)
 								)
 						);
@@ -4412,12 +3652,12 @@ public class ACPerformanceManager {
 			_efficiencyAtCruiseAltitudeAndMach = 
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertListOfAmountTodoubleArray(
-									_altitudeListCruise.stream()
+									_thePerformanceInterface.getAltitudeListCruise().stream()
 									.map(a -> a.to(SI.METER))
 									.collect(Collectors.toList())
 									),
 							MyArrayUtils.convertToDoublePrimitive(efficiencyAltitudesAtCruiseMach),
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 							);
 			
 			//--------------------------------------------------------------------
@@ -4429,13 +3669,13 @@ public class ACPerformanceManager {
 					liftWeightParameterization.add(
 							LiftCalc.calculateLift(
 									_dragListWeightParameterization.get(i).getSpeed()[j],
-									_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+									_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
 									LiftCalc.calculateLiftCoeff(
 											_dragListWeightParameterization.get(i).getWeight(),
 											_dragListWeightParameterization.get(i).getSpeed()[j],
-											_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
-											_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+											_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+											_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 											)
 									)			
 							);
@@ -4453,7 +3693,7 @@ public class ACPerformanceManager {
 		
 		public void calculateCruiseGrid() {
 
-			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_theAircraft.getWing()));
+			Airfoil meanAirfoil = new Airfoil(LiftingSurface.calculateMeanAirfoil(_thePerformanceInterface.getTheAircraft().getWing()));
 			
 			List<DragMap> dragListWeightParameterization = new ArrayList<DragMap>();
 			List<ThrustMap> thrustListWeightParameterization = new ArrayList<ThrustMap>();
@@ -4461,14 +3701,14 @@ public class ACPerformanceManager {
 			double[] speedArrayWeightParameterization = new double[100];
 			speedArrayWeightParameterization = MyArrayUtils.linspace(
 					SpeedCalc.calculateSpeedStall(
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
 							_weightListCruise.get(_weightListCruise.size()-1).doubleValue(SI.NEWTON), 
-							_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
+							_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE), 
 							MyArrayUtils.getMax(_polarCLCruise)
 							),
 					SpeedCalc.calculateTAS(
 							1.0,
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER)
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER)
 							),
 					100
 					);
@@ -4477,14 +3717,14 @@ public class ACPerformanceManager {
 				//..................................................................................................
 				dragListWeightParameterization.add(
 						DragCalc.calculateDragAndPowerRequired(
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
 								speedArrayWeightParameterization,
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCLCruise),
 								MyArrayUtils.convertToDoublePrimitive(_polarCDCruise),
-								_theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+								_thePerformanceInterface.getTheAircraft().getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
 								meanAirfoil.getAirfoilCreator().getThicknessToChordRatio(),
 								meanAirfoil.getAirfoilCreator().getType()
 								)
@@ -4493,15 +3733,15 @@ public class ACPerformanceManager {
 			//..................................................................................................
 			thrustListWeightParameterization.add(
 					ThrustCalc.calculateThrustAndPowerAvailable(
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-							_theOperatingConditions.getThrottleCruise(),
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
+							_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 							speedArrayWeightParameterization,
 							EngineOperatingConditionEnum.CRUISE,
-							_theAircraft.getPowerPlant().getEngineType(), 
-							_theAircraft.getPowerPlant(),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
-							_theAircraft.getPowerPlant().getEngineNumber(),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(), 
+							_thePerformanceInterface.getTheAircraft().getPowerPlant(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getT0().doubleValue(SI.NEWTON),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineNumber(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR()
 							)
 					);
 			
@@ -4509,13 +3749,13 @@ public class ACPerformanceManager {
 			for(int i=0; i<_dragListWeightParameterization.size(); i++) {
 				intersectionList.add(
 						PerformanceCalcUtils.calculateDragThrustIntersection(
-								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
+								_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
 								thrustListWeightParameterization.get(0).getSpeed(),
 								_weightListCruise.get(i).doubleValue(SI.NEWTON),
-								_theOperatingConditions.getThrottleCruise(),
+								_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 								EngineOperatingConditionEnum.CRUISE,
-								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-								_theAircraft.getWing().getSurface().doubleValue(SI.SQUARE_METRE),
+								_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+								_thePerformanceInterface.getTheAircraft().getWing().getSurface().doubleValue(SI.SQUARE_METRE),
 								MyArrayUtils.getMax(_polarCLCruise),
 								dragListWeightParameterization,
 								thrustListWeightParameterization
@@ -4539,10 +3779,10 @@ public class ACPerformanceManager {
 
 					sfc = SpecificRangeCalc.calculateSfcVsMach(
 							machArray,
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							_theAircraft.getPowerPlant().getEngineType(),
-							_theAircraft.getPowerPlant()
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant()
 							);
 
 					efficiency = MyArrayUtils.convertFromDoubleToPrimitive(
@@ -4561,16 +3801,16 @@ public class ACPerformanceManager {
 							machArray,
 							sfc,
 							efficiency,
-							_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
-							_theAircraft.getPowerPlant().getEngineList().get(0).getEtaPropeller(),
-							_theAircraft.getPowerPlant().getEngineType()
+							_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getBPR(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineList().get(0).getEtaPropeller(),
+							_thePerformanceInterface.getTheAircraft().getPowerPlant().getEngineType()
 							);
 
 					_specificRangeMap.add(
 							new SpecificRangeMap(
-									_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
-									_theOperatingConditions.getThrottleCruise(),
+									_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise().doubleValue(SI.METER),
+									_thePerformanceInterface.getTheOperatingConditions().getThrottleCruise(),
 									_weightListCruise.get(i).doubleValue(SI.NEWTON),
 									EngineOperatingConditionEnum.CRUISE,
 									specificRange,
@@ -4585,7 +3825,7 @@ public class ACPerformanceManager {
 				
 		public void plotCruiseOutput(String cruiseFolderPath) {
 
-			if(_plotList.contains(PerformancePlotEnum.THRUST_DRAG_CURVES_CRUISE)) {
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.THRUST_DRAG_CURVES_CRUISE)) {
 
 				//--------------------------------------------------------------------
 				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
@@ -4596,7 +3836,7 @@ public class ACPerformanceManager {
 				List<String> legendAltitudes_SI = new ArrayList<String>();
 				List<String> legendAltitudes_Imperial = new ArrayList<String>();
 
-				for (int i=0; i<_altitudeListCruise.size(); i++) {
+				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
@@ -4616,7 +3856,7 @@ public class ACPerformanceManager {
 					legendAltitudes_SI.add("Drag at " + _dragListAltitudeParameterization.get(i).getAltitude() + " m");
 					legendAltitudes_Imperial.add("Drag at " + Amount.valueOf(_dragListAltitudeParameterization.get(i).getAltitude(), SI.METER).doubleValue(NonSI.FOOT) + " ft");
 				}
-				for (int i=0; i<_altitudeListCruise.size(); i++) {
+				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
@@ -4646,7 +3886,7 @@ public class ACPerformanceManager {
 							"m/s", "N",
 							true, legendAltitudes_SI,
 							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedAltitudeParameterization_Imperial, dragAndThrustAltitudes_Imperial,
@@ -4656,7 +3896,7 @@ public class ACPerformanceManager {
 							"kn", "lb",
 							true, legendAltitudes_Imperial,
 							cruiseFolderPath, "Drag_and_Thrust_curves_altitudes_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -4718,7 +3958,7 @@ public class ACPerformanceManager {
 							"m/s", "N",
 							true, legendWeights,
 							cruiseFolderPath, "Drag_and_Thrust_curves_weights_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedWeightsParameterization_Imperial, dragAndThrustWeights_Imperial,
@@ -4728,7 +3968,7 @@ public class ACPerformanceManager {
 							"kn", "lb",
 							true, legendWeights,
 							cruiseFolderPath, "Drag_and_Thrust_curves_weights_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -4738,7 +3978,7 @@ public class ACPerformanceManager {
 
 			}
 
-			if(_plotList.contains(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CRUISE)) {
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.POWER_NEEDED_AND_AVAILABLE_CURVES_CRUISE)) {
 
 				//--------------------------------------------------------------------
 				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
@@ -4749,7 +3989,7 @@ public class ACPerformanceManager {
 				List<String> legendAltitudes_SI = new ArrayList<String>();
 				List<String> legendAltitudes_Imperial = new ArrayList<String>();
 
-				for (int i=0; i<_altitudeListCruise.size(); i++) {
+				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_dragListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
@@ -4769,7 +4009,7 @@ public class ACPerformanceManager {
 					legendAltitudes_SI.add("Power needed at " + _dragListAltitudeParameterization.get(i).getAltitude() + " m");
 					legendAltitudes_Imperial.add("Power needed at " + Amount.valueOf(_dragListAltitudeParameterization.get(i).getAltitude(), SI.METER).doubleValue(NonSI.FOOT) + " ft");
 				}
-				for (int i=0; i<_altitudeListCruise.size(); i++) {
+				for (int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 					speedAltitudeParameterization_SI.add(MyArrayUtils.convertFromDoubleToPrimitive(_thrustListAltitudeParameterization.get(i).getSpeed()));
 					speedAltitudeParameterization_Imperial.add(
 							MyArrayUtils.convertFromDoubleToPrimitive(
@@ -4799,7 +4039,7 @@ public class ACPerformanceManager {
 							"m/s", "W",
 							true, legendAltitudes_SI,
 							cruiseFolderPath, "Power_needed_and_available_altitudes_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedAltitudeParameterization_Imperial, powerNeededAndAvailableAltitudes_Imperial,
@@ -4809,7 +4049,7 @@ public class ACPerformanceManager {
 							"kn", "hp",
 							true, legendAltitudes_Imperial,
 							cruiseFolderPath, "Power_needed_and_available_altitudes_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -4872,7 +4112,7 @@ public class ACPerformanceManager {
 							"m/s", "W",
 							true, legendWeights,
 							cruiseFolderPath, "Power_needed_and_available_weights_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedWeightsParameterization_Imperial, powerNeededAndAvailableWeights_Imperial,
@@ -4882,7 +4122,7 @@ public class ACPerformanceManager {
 							"kn", "hp",
 							true, legendWeights,
 							cruiseFolderPath, "Power_needed_and_available_weights_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -4891,7 +4131,7 @@ public class ACPerformanceManager {
 				}
 			}
 			
-			if(_plotList.contains(PerformancePlotEnum.CRUISE_FLIGHT_ENVELOPE)) {
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.CRUISE_FLIGHT_ENVELOPE)) {
 				
 				List<Double> altitudeList_SI = new ArrayList<>();
 				List<Double> altitudeList_Imperial = new ArrayList<>();
@@ -4987,7 +4227,7 @@ public class ACPerformanceManager {
 				
 			}
 			
-			if(_plotList.contains(PerformancePlotEnum.EFFICIENCY_CURVES)) {
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.EFFICIENCY_CURVES)) {
 				
 				//--------------------------------------------------------------------
 				// ALTITUDE PARAMETERIZATION AT FIXED WEIGHT
@@ -4999,7 +4239,7 @@ public class ACPerformanceManager {
 				List<Double[]> efficiencyListAltitudeParameterization = new ArrayList<>();
 				List<String> legendAltitude_SI = new ArrayList<>();
 				List<String> legendAltitude_Imperial = new ArrayList<>();
-				for(int i=0; i<_altitudeListCruise.size(); i++) {
+				for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
 				
 					double sigma = OperatingConditions.getAtmosphere(
 							_cruiseEnvelopeList.get(i).getAltitude()
@@ -5065,7 +4305,7 @@ public class ACPerformanceManager {
 							"m/s", "",
 							true, legendAltitude_SI,
 							cruiseFolderPath, "Efficiency_curves_altitude_TAS_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListAltitudeParameterization_CAS_SI, efficiencyListAltitudeParameterization,
@@ -5075,7 +4315,7 @@ public class ACPerformanceManager {
 							"m/s", "",
 							true, legendAltitude_SI,
 							cruiseFolderPath, "Efficiency_curves_altitude_CAS_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							machListAltitudeParameterization, efficiencyListAltitudeParameterization,
@@ -5085,7 +4325,7 @@ public class ACPerformanceManager {
 							" ", " ",
 							true, legendAltitude_SI,
 							cruiseFolderPath, "Efficiency_curves_altitude_Mach_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListAltitudeParameterization_TAS_Imperial, efficiencyListAltitudeParameterization,
@@ -5095,7 +4335,7 @@ public class ACPerformanceManager {
 							"kn", "",
 							true, legendAltitude_Imperial,
 							cruiseFolderPath, "Efficiency_curves_altitude_TAS_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListAltitudeParameterization_CAS_Imperial, efficiencyListAltitudeParameterization,
@@ -5105,7 +4345,7 @@ public class ACPerformanceManager {
 							"kn", "",
 							true, legendAltitude_Imperial,
 							cruiseFolderPath, "Efficiency_curves_altitude_CAS_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							machListAltitudeParameterization, efficiencyListAltitudeParameterization,
@@ -5115,7 +4355,7 @@ public class ACPerformanceManager {
 							" ", " ",
 							true, legendAltitude_Imperial,
 							cruiseFolderPath, "Efficiency_curves_altitude_Mach_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -5197,7 +4437,7 @@ public class ACPerformanceManager {
 							"m/s", "",
 							true, legendWeight,
 							cruiseFolderPath, "Efficiency_curves_weights_TAS_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListWeightParameterization_CAS_SI, efficiencyListWeightParameterization,
@@ -5207,7 +4447,7 @@ public class ACPerformanceManager {
 							"m/s", "",
 							true, legendWeight,
 							cruiseFolderPath, "Efficiency_curves_weights_CAS_SI",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListWeightParameterization_TAS_Imperial, efficiencyListWeightParameterization,
@@ -5217,7 +4457,7 @@ public class ACPerformanceManager {
 							"kn", "",
 							true, legendWeight,
 							cruiseFolderPath, "Efficiency_curves_weights_TAS_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							speedListWeightParameterization_CAS_Imperial, efficiencyListWeightParameterization,
@@ -5227,7 +4467,7 @@ public class ACPerformanceManager {
 							"kn", "",
 							true, legendWeight,
 							cruiseFolderPath, "Efficiency_curves_weights_CAS_IMPERIAL",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 					MyChartToFileUtils.plot(
 							machListWeightParameterization, efficiencyListWeightParameterization,
@@ -5237,7 +4477,7 @@ public class ACPerformanceManager {
 							" ", " ",
 							true, legendWeight,
 							cruiseFolderPath, "Efficiency_curves_weights_Mach",
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -5247,7 +4487,7 @@ public class ACPerformanceManager {
 				
 			}
 			
-			if(_plotList.contains(PerformancePlotEnum.CRUISE_GRID_CHART)) {
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.CRUISE_GRID_CHART)) {
 				
 				List<Double[]> specificRange = new ArrayList<>();
 				List<Double[]> mach = new ArrayList<>();
@@ -5265,7 +4505,7 @@ public class ACPerformanceManager {
 							mach,
 							legend,
 							cruiseFolderPath,
-							_theAircraft.getTheAnalysisManager().getCreateCSVPerformance()
+							_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance()
 							);
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -5293,9 +4533,9 @@ public class ACPerformanceManager {
 				) {
 			
 			_theDescentCalculator = new DescentCalc(
-					_theAircraft,
-					_speedDescentCAS,
-					_rateOfDescent,
+					_thePerformanceInterface.getTheAircraft(),
+					_thePerformanceInterface.getSpeedDescentCAS(),
+					_thePerformanceInterface.getRateOfDescent(),
 					initialDescentAltitude,
 					endDescentAltitude,
 					initialDescentMass,
@@ -5331,12 +4571,12 @@ public class ACPerformanceManager {
 		public void performLandingSimulation(Amount<Mass> landingMass) {
 
 			Amount<Length> wingToGroundDistance = 
-					_theAircraft.getFuselage().getHeightFromGround()
-					.plus(_theAircraft.getFuselage().getSectionHeight().divide(2))
-					.plus(_theAircraft.getWing().getZApexConstructionAxes()
-							.plus(_theAircraft.getWing().getSemiSpan()
+					_thePerformanceInterface.getTheAircraft().getFuselage().getHeightFromGround()
+					.plus(_thePerformanceInterface.getTheAircraft().getFuselage().getSectionHeight().divide(2))
+					.plus(_thePerformanceInterface.getTheAircraft().getWing().getZApexConstructionAxes()
+							.plus(_thePerformanceInterface.getTheAircraft().getWing().getSemiSpan()
 									.times(Math.sin(
-											_theAircraft.getWing()	
+											_thePerformanceInterface.getTheAircraft().getWing()	
 											.getLiftingSurfaceCreator()	
 											.getDihedralMean()
 											.doubleValue(SI.RADIAN)
@@ -5346,25 +4586,25 @@ public class ACPerformanceManager {
 							);
 			
 			_theLandingCalculator = new LandingCalc(
-					_theAircraft, 
-					_theOperatingConditions,
+					_thePerformanceInterface.getTheAircraft(), 
+					_thePerformanceInterface.getTheOperatingConditions(),
 					landingMass,
-					_kApproach,
-					_kFlare,
-					_kTouchDown,
-					_muFunction,
-					_muBrakeFunction,
+					_thePerformanceInterface.getKApproach(),
+					_thePerformanceInterface.getKFlare(),
+					_thePerformanceInterface.getKTouchDown(),
+					_thePerformanceInterface.getMuFunction(),
+					_thePerformanceInterface.getMuBrakeFunction(),
 					wingToGroundDistance,
-					_obstacleLanding, 
-					_windSpeed,
-					_alphaGround,
-					_theAircraft.getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE),
-					_thetaApproach,
+					_thePerformanceInterface.getObstacleLanding(), 
+					_thePerformanceInterface.getWindSpeed(),
+					_thePerformanceInterface.getAlphaGround(),
+					_thePerformanceInterface.getTheAircraft().getWing().getRiggingAngle().to(NonSI.DEGREE_ANGLE),
+					_thePerformanceInterface.getThetaApproach(),
 					_cLmaxLanding,
 					_cLZeroLanding,
 					_cLAlphaLanding.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
-					_theOperatingConditions.getThrottleGroundIdleLanding(),
-					_freeRollDuration
+					_thePerformanceInterface.getTheOperatingConditions().getThrottleGroundIdleLanding(),
+					_thePerformanceInterface.getFreeRollDuration()
 					);
 			
 			//------------------------------------------------------------
@@ -5389,7 +4629,7 @@ public class ACPerformanceManager {
 			
 		}
 		public void plotLandingPerformance(String landingFolderPath) {
-			if(_plotList.contains(PerformancePlotEnum.LANDING_SIMULATIONS)) {
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.LANDING_SIMULATIONS)) {
 				try {
 					_theLandingCalculator.createLandingCharts(landingFolderPath);
 				} catch (InstantiationException e) {
@@ -5412,24 +4652,24 @@ public class ACPerformanceManager {
 		public void fromMissionProfile() {
 			
 			_thePayloadRangeCalculator = new PayloadRangeCalcMissionProfile(
-					_theAircraft,
-					_theOperatingConditions,
-					_takeOffMissionAltitude,
-					_maximumTakeOffMass,
-					_operatingEmptyMass,
-					_maximumFuelMass,
-					_singlePassengerMass,
-					_firstGuessCruiseLength,
-					_sfcFunctionCruise,
-					_sfcFunctionAlternateCruise,
-					_sfcFunctionHolding,
-					_alternateCruiseLength,
-					_alternateCruiseAltitude,
-					_holdingDuration,
-					_holdingAltitude,
-					_holdingMachNumber,
-					_landingFuelFlow,
-					_fuelReserve,
+					_thePerformanceInterface.getTheAircraft(),
+					_thePerformanceInterface.getTheOperatingConditions(),
+					_thePerformanceInterface.getTakeOffMissionAltitude(),
+					_thePerformanceInterface.getMaximumTakeOffMass(),
+					_thePerformanceInterface.getOperatingEmptyMass(),
+					_thePerformanceInterface.getMaximumFuelMass(),
+					_thePerformanceInterface.getSinglePassengerMass(),
+					_thePerformanceInterface.getFirstGuessCruiseLength(),
+					_thePerformanceInterface.getSfcFunctionCruise(),
+					_thePerformanceInterface.getSfcFunctionAlternateCruise(),
+					_thePerformanceInterface.getSfcFunctionHolding(),
+					_thePerformanceInterface.getAlternateCruiseLength(),
+					_thePerformanceInterface.getAlternateCruiseAltitude(),
+					_thePerformanceInterface.getHoldingDuration(),
+					_thePerformanceInterface.getHoldingAltitude(),
+					_thePerformanceInterface.getHoldingMachNumber(),
+					_thePerformanceInterface.getLandingFuelFlow(),
+					_thePerformanceInterface.getFuelReserve(),
 					MyArrayUtils.getMax(_polarCLCruise),
 					_cLmaxTakeOff,
 					_cLAlphaTakeOff,
@@ -5440,27 +4680,27 @@ public class ACPerformanceManager {
 					_polarCDClimb,
 					_polarCLCruise,
 					_polarCDCruise,
-					_windSpeed,
-					_muFunction,
-					_muBrakeFunction,
-					_dtRotation,
-					_dtHold,
-					_alphaGround,
-					_obstacleTakeOff,
-					_kRotation,
-					_alphaDotRotation,
-					_kCLmax,
-					_dragDueToEnigneFailure,
-					_kAlphaDot,
-					_obstacleLanding,
-					_thetaApproach,
-					_kApproach,
-					_kFlare,
-					_kTouchDown,
-					_freeRollDuration,
-					_climbSpeed,
-					_speedDescentCAS,
-					_rateOfDescent
+					_thePerformanceInterface.getWindSpeed(),
+					_thePerformanceInterface.getMuFunction(),
+					_thePerformanceInterface.getMuBrakeFunction(),
+					_thePerformanceInterface.getDtRotation(),
+					_thePerformanceInterface.getDtHold(),
+					_thePerformanceInterface.getAlphaGround(),
+					_thePerformanceInterface.getObstacleTakeOff(),
+					_thePerformanceInterface.getKRotation(),
+					_thePerformanceInterface.getAlphaDotRotation(),
+					_thePerformanceInterface.getKCLmax(),
+					_thePerformanceInterface.getDragDueToEngineFailure(),
+					_thePerformanceInterface.getKAlphaDot(),
+					_thePerformanceInterface.getObstacleLanding(),
+					_thePerformanceInterface.getThetaApproach(),
+					_thePerformanceInterface.getKApproach(),
+					_thePerformanceInterface.getKFlare(),
+					_thePerformanceInterface.getKTouchDown(),
+					_thePerformanceInterface.getFreeRollDuration(),
+					_thePerformanceInterface.getClimbSpeedCAS(),
+					_thePerformanceInterface.getSpeedDescentCAS(),
+					_thePerformanceInterface.getRateOfDescent()
 					);
 			
 			//------------------------------------------------------------
@@ -5487,7 +4727,7 @@ public class ACPerformanceManager {
 		}
 		public void plotPayloadRange(String payloadRangeFolderPath) {
 			
-			if(_plotList.contains(PerformancePlotEnum.PAYLOAD_RANGE)) {
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.PAYLOAD_RANGE)) {
 				_thePayloadRangeCalculator.createPayloadRangeChart(payloadRangeFolderPath);
 			}
 			
@@ -5505,22 +4745,22 @@ public class ACPerformanceManager {
 		public void fromRegulations() {
 			
 			_theEnvelopeCalculator = new FlightManeuveringEnvelopeCalc(
-					_theAircraft.getRegulations(),
-					_theAircraft.getTypeVehicle(),
-					_theAircraft.getTheAnalysisManager().getCreateCSVPerformance(),
+					_thePerformanceInterface.getTheAircraft().getRegulations(),
+					_thePerformanceInterface.getTheAircraft().getTypeVehicle(),
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVPerformance(),
 					_cLmaxClean,
 					_cLmaxLanding,
 					_cLmaxInverted,
-					_theAircraft.getTheAnalysisManager().getPositiveLimitLoadFactor(),
-					_theAircraft.getTheAnalysisManager().getNegativeLimitLoadFactor(),
-					_theAircraft.getTheAnalysisManager().getVMaxCruise(),
-					_theAircraft.getTheAnalysisManager().getVDive(),
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getPositiveLimitLoadFactor(),
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getNegativeLimitLoadFactor(),
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getVMaxCruise(),
+					_thePerformanceInterface.getTheAircraft().getTheAnalysisManager().getVDive(),
 					_cLAlphaClean.to(SI.RADIAN),
-					_theAircraft.getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),
-					_theOperatingConditions.getAltitudeCruise(),
-					_maximumTakeOffMass,
-					_maximumTakeOffMass.times(_kLandingWeight),
-					_theAircraft.getWing().getSurface()
+					_thePerformanceInterface.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord(),
+					_thePerformanceInterface.getTheOperatingConditions().getAltitudeCruise(),
+					_thePerformanceInterface.getMaximumTakeOffMass(),
+					_thePerformanceInterface.getMaximumTakeOffMass().times(_thePerformanceInterface.getKLandingWeight()),
+					_thePerformanceInterface.getTheAircraft().getWing().getSurface()
 					);
 			
 			_theEnvelopeCalculator.calculateManeuveringEnvelope();
@@ -5550,7 +4790,7 @@ public class ACPerformanceManager {
 		
 		}
 		public void plotVnDiagram(String maneuveringEnvelopeFolderPath) {	
-			if(_plotList.contains(PerformancePlotEnum.FLIGHT_MANEUVERING_AND_GUST_DIAGRAM)) 
+			if(_thePerformanceInterface.getPlotList().contains(PerformancePlotEnum.FLIGHT_MANEUVERING_AND_GUST_DIAGRAM)) 
 				_theEnvelopeCalculator.plotManeuveringEnvelope(maneuveringEnvelopeFolderPath);;
 			
 		}
@@ -5568,26 +4808,26 @@ public class ACPerformanceManager {
 		public void calculateMissionProfileIterative() {
 			
 			_theMissionProfileCalculator = new MissionProfileCalc(
-					_theAircraft,
-					_theOperatingConditions,
-					_maximumTakeOffMass,
-					_operatingEmptyMass,
-					_singlePassengerMass,
-					_theAircraft.getCabinConfiguration().getNPax(),
-					_firstGuessInitialMissionFuelMass,
-					_missionRange,
-					_takeOffMissionAltitude,
-					_firstGuessCruiseLength,
-					_sfcFunctionCruise,
-					_sfcFunctionAlternateCruise,
-					_sfcFunctionHolding,
-					_alternateCruiseLength,
-					_alternateCruiseAltitude,
-					_holdingDuration,
-					_holdingAltitude,
-					_holdingMachNumber,
-					_landingFuelFlow,
-					_fuelReserve,
+					_thePerformanceInterface.getTheAircraft(),
+					_thePerformanceInterface.getTheOperatingConditions(),
+					_thePerformanceInterface.getMaximumTakeOffMass(),
+					_thePerformanceInterface.getOperatingEmptyMass(),
+					_thePerformanceInterface.getSinglePassengerMass(),
+					_thePerformanceInterface.getTheAircraft().getCabinConfiguration().getNPax(),
+					_thePerformanceInterface.getFirstGuessInitialMissionFuelMass(),
+					_thePerformanceInterface.getMissionRange(),
+					_thePerformanceInterface.getTakeOffMissionAltitude(),
+					_thePerformanceInterface.getFirstGuessCruiseLength(),
+					_thePerformanceInterface.getSfcFunctionCruise(),
+					_thePerformanceInterface.getSfcFunctionAlternateCruise(),
+					_thePerformanceInterface.getSfcFunctionHolding(),
+					_thePerformanceInterface.getAlternateCruiseLength(),
+					_thePerformanceInterface.getAlternateCruiseAltitude(),
+					_thePerformanceInterface.getHoldingDuration(),
+					_thePerformanceInterface.getHoldingAltitude(),
+					_thePerformanceInterface.getHoldingMachNumber(),
+					_thePerformanceInterface.getLandingFuelFlow(),
+					_thePerformanceInterface.getFuelReserve(),
 					MyArrayUtils.getMax(_polarCLCruise),
 					_cLmaxTakeOff,
 					_cLAlphaTakeOff,
@@ -5598,27 +4838,27 @@ public class ACPerformanceManager {
 					_polarCDClimb,
 					_polarCLCruise,
 					_polarCDCruise,
-					_windSpeed,
-					_muFunction,
-					_muBrakeFunction,
-					_dtRotation,
-					_dtHold,
-					_alphaGround,
-					_obstacleTakeOff,
-					_kRotation,
-					_alphaDotRotation,
-					_kCLmax,
-					_dragDueToEnigneFailure,
-					_kAlphaDot,
-					_obstacleLanding,
-					_thetaApproach,
-					_kApproach,
-					_kFlare,
-					_kTouchDown,
-					_freeRollDuration,
-					_climbSpeed,
-					_speedDescentCAS,
-					_rateOfDescent
+					_thePerformanceInterface.getWindSpeed(),
+					_thePerformanceInterface.getMuFunction(),
+					_thePerformanceInterface.getMuBrakeFunction(),
+					_thePerformanceInterface.getDtRotation(),
+					_thePerformanceInterface.getDtHold(),
+					_thePerformanceInterface.getAlphaGround(),
+					_thePerformanceInterface.getObstacleTakeOff(),
+					_thePerformanceInterface.getKRotation(),
+					_thePerformanceInterface.getAlphaDotRotation(),
+					_thePerformanceInterface.getKCLmax(),
+					_thePerformanceInterface.getDragDueToEngineFailure(),
+					_thePerformanceInterface.getKAlphaDot(),
+					_thePerformanceInterface.getObstacleLanding(),
+					_thePerformanceInterface.getThetaApproach(),
+					_thePerformanceInterface.getKApproach(),
+					_thePerformanceInterface.getKFlare(),
+					_thePerformanceInterface.getKTouchDown(),
+					_thePerformanceInterface.getFreeRollDuration(),
+					_thePerformanceInterface.getClimbSpeedCAS(),
+					_thePerformanceInterface.getSpeedDescentCAS(),
+					_thePerformanceInterface.getRateOfDescent()
 					);
 				
 			_theMissionProfileCalculator.calculateProfiles();
@@ -5647,7 +4887,7 @@ public class ACPerformanceManager {
 		public void plotProfiles(String missionProfilesFolderPath) {
 			
 			_theMissionProfileCalculator.plotProfiles(
-					_plotList,
+					_thePerformanceInterface.getPlotList(),
 					missionProfilesFolderPath
 					);
 			
@@ -5661,206 +4901,6 @@ public class ACPerformanceManager {
 	//------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 	//------------------------------------------------------------------------------
-	public String getId() {
-		return _id;
-	}
-	public void setId(String _id) {
-		this._id = _id;
-	}
-	public Aircraft getTheAircraft() {
-		return _theAircraft;
-	}
-	public void setTheAircraft(Aircraft _theAircraft) {
-		this._theAircraft = _theAircraft;
-	}
-	public OperatingConditions getTheOperatingConditions() {
-		return _theOperatingConditions;
-	}
-	public void setTheOperatingConditions(OperatingConditions _theOperatingConditions) {
-		this._theOperatingConditions = _theOperatingConditions;
-	}
-	public Amount<Mass> getMaximumTakeOffMass() {
-		return _maximumTakeOffMass;
-	}
-	public void setMaximumTakeOffMass(Amount<Mass> _maximumTakeOffMass) {
-		this._maximumTakeOffMass = _maximumTakeOffMass;
-	}
-	public Amount<Mass> getOperatingEmptyMass() {
-		return _operatingEmptyMass;
-	}
-	public void setOperatingEmptyMass(Amount<Mass> _operatingEmptyMass) {
-		this._operatingEmptyMass = _operatingEmptyMass;
-	}
-	public Amount<Mass> getMaximumFuelMass() {
-		return _maximumFuelMass;
-	}
-	public void setMaximumFuelMass(Amount<Mass> _maximumFuelMass) {
-		this._maximumFuelMass = _maximumFuelMass;
-	}
-	public Amount<Mass> getSinglePassengerMass() {
-		return _singlePassengerMass;
-	}
-
-	public void setSinglePassengerMass(Amount<Mass> _singlePassengerMass) {
-		this._singlePassengerMass = _singlePassengerMass;
-	}
-
-	public Double getCLmaxClean() {
-		return _cLmaxClean;
-	}
-	public void setCLmaxClean(Double _cLmaxClean) {
-		this._cLmaxClean = _cLmaxClean;
-	}
-	public Amount<?> getCLAlphaClean() {
-		return _cLAlphaClean;
-	}
-	public void setCLAlphaClean(Amount<?> _cLAlphaClean) {
-		this._cLAlphaClean = _cLAlphaClean;
-	}
-	public Amount<?> getCLAlphaTakeOff() {
-		return _cLAlphaTakeOff;
-	}
-	public void setCLAlphaTakeOff(Amount<?> _cLAlphaHighLift) {
-		this._cLAlphaTakeOff = _cLAlphaHighLift;
-	}
-	public Amount<?> getCLAlphaLanding() {
-		return _cLAlphaLanding;
-	}
-	public void setCLAlphaLanding(Amount<?> _cLAlphaLanding) {
-		this._cLAlphaLanding = _cLAlphaLanding;
-	}
-	public Amount<Duration> getDtRotation() {
-		return _dtRotation;
-	}
-	public void setDtRotation(Amount<Duration> _dtRotation) {
-		this._dtRotation = _dtRotation;
-	}
-	public Amount<Duration> getDtHold() {
-		return _dtHold;
-	}
-	public void setDtHold(Amount<Duration> _dtHold) {
-		this._dtHold = _dtHold;
-	}
-	public Amount<Angle> getAlphaGround() {
-		return _alphaGround;
-	}
-	public void setAlphaGround(Amount<Angle> _alphaGround) {
-		this._alphaGround = _alphaGround;
-	}
-	public Amount<Velocity> getWindSpeed() {
-		return _windSpeed;
-	}
-	public void setWindSpeed(Amount<Velocity> _windSpeed) {
-		this._windSpeed = _windSpeed;
-	}
-	public Amount<Length> getObstacleTakeOff() {
-		return _obstacleTakeOff;
-	}
-	public void setObstacleTakeOff(Amount<Length> _obstacleTakeOff) {
-		this._obstacleTakeOff = _obstacleTakeOff;
-	}
-	public Double getCLmaxTakeOff() {
-		return _cLmaxTakeOff;
-	}
-	public void setCLmaxTakeOff(Double _cLmaxTakeOff) {
-		this._cLmaxTakeOff = _cLmaxTakeOff;
-	}
-	public Double getCLZeroTakeOff() {
-		return _cLZeroTakeOff;
-	}
-	public void setCLZeroTakeOff(Double _cLZeroTakeOff) {
-		this._cLZeroTakeOff = _cLZeroTakeOff;
-	}
-	public Double getCLZeroLanding() {
-		return _cLZeroLanding;
-	}
-	public void setCLZeroLanding(Double _cLZeroLanding) {
-		this._cLZeroLanding = _cLZeroLanding;
-	}
-	public Double getKRotation() {
-		return _kRotation;
-	}
-	public void setKRotation(Double _kRotation) {
-		this._kRotation = _kRotation;
-	}
-	public Double getKCLmax() {
-		return _kCLmax;
-	}
-	public void setKCLmax(Double _kCLmax) {
-		this._kCLmax = _kCLmax;
-	}
-	public Double getDragDueToEngineFailure() {
-		return _dragDueToEnigneFailure;
-	}
-	public void setDragDueToEngineFailure(Double _dragDueToFailure) {
-		this._dragDueToEnigneFailure = _dragDueToFailure;
-	}
-	public Double getKAlphaDot() {
-		return _kAlphaDot;
-	}
-	public void setKAlphaDot(Double _kAlphaDot) {
-		this._kAlphaDot = _kAlphaDot;
-	}
-	public Double getCLmaxLanding() {
-		return _cLmaxLanding;
-	}
-	public void setCLmaxLanding(Double _cLmaxLanding) {
-		this._cLmaxLanding = _cLmaxLanding;
-	}
-	public Amount<Length> getObstacleLanding() {
-		return _obstacleLanding;
-	}
-	public void setObstacleLanding(Amount<Length> _obstacleLanding) {
-		this._obstacleLanding = _obstacleLanding;
-	}
-	public Amount<Angle> getThetaApproach() {
-		return _thetaApproach;
-	}
-	public void setThetaApproach(Amount<Angle> _thetaApproach) {
-		this._thetaApproach = _thetaApproach;
-	}
-	public Double getKApproach() {
-		return _kApproach;
-	}
-	public void setKApproach(Double _kApproach) {
-		this._kApproach = _kApproach;
-	}
-	public Double getKFlare() {
-		return _kFlare;
-	}
-	public void setKFlare(Double _kFlare) {
-		this._kFlare = _kFlare;
-	}
-	public Double getKTouchDown() {
-		return _kTouchDown;
-	}
-	public void setKTouchDown(Double _kTouchDown) {
-		this._kTouchDown = _kTouchDown;
-	}
-	public Amount<Duration> getFreeRollDuration() {
-		return _freeRollDuration;
-	}
-	public void setFreeRollDuration(Amount<Duration> _freeRollDuration) {
-		this._freeRollDuration = _freeRollDuration;
-	}
-	public Double getCLmaxInverted() {
-		return _cLmaxInverted;
-	}
-	public void setCLmaxInverted(Double _cLmaxInverted) {
-		this._cLmaxInverted = _cLmaxInverted;
-	}
-	public List<PerformanceEnum> getTaskList() {
-		return _taskList;
-	}
-	public void setTaskList(List<PerformanceEnum> _taskList) {
-		this._taskList = _taskList;
-	}
-	public List<PerformancePlotEnum> getPlotList() {
-		return _plotList;
-	}
-	public void setPlotList(List<PerformancePlotEnum> _plotList) {
-		this._plotList = _plotList;
-	}
 
 	public Amount<Length> getTakeOffDistanceAEO() {
 		return _takeOffDistanceAEO;
@@ -5948,70 +4988,6 @@ public class ACPerformanceManager {
 
 	public void setV2(Amount<Velocity> _v2) {
 		this._v2 = _v2;
-	}
-
-	public Double[] getPolarCLCruise() {
-		return _polarCLCruise;
-	}
-
-	public void setPolarCLCruise(Double[] _polarCLCruise) {
-		this._polarCLCruise = _polarCLCruise;
-	}
-
-	public Double[] getPolarCDCruise() {
-		return _polarCDCruise;
-	}
-
-	public void setPolarCDCruise(Double[] _polarCDCruise) {
-		this._polarCDCruise = _polarCDCruise;
-	}
-
-	public Double[] getPolarCLClimb() {
-		return _polarCLClimb;
-	}
-
-	public void setPolarCLClimb(Double[] _polarCLClimb) {
-		this._polarCLClimb = _polarCLClimb;
-	}
-
-	public Double[] getPolarCDClimb() {
-		return _polarCDClimb;
-	}
-
-	public void setPolarCDClimb(Double[] _polarCDClimb) {
-		this._polarCDClimb = _polarCDClimb;
-	}
-
-	public Double[] getPolarCLTakeOff() {
-		return _polarCLTakeOff;
-	}
-
-	public void setPolarCLTakeOff(Double[] _polarCLTakeOff) {
-		this._polarCLTakeOff = _polarCLTakeOff;
-	}
-
-	public Double[] getPolarCDTakeOff() {
-		return _polarCDTakeOff;
-	}
-
-	public void setPolarCDTakeOff(Double[] _polarCDTakeOff) {
-		this._polarCDTakeOff = _polarCDTakeOff;
-	}
-
-	public Double[] getPolarCLLanding() {
-		return _polarCLLanding;
-	}
-
-	public void setPolarCLLanding(Double[] _polarCLLanding) {
-		this._polarCLLanding = _polarCLLanding;
-	}
-
-	public Double[] getPolarCDLanding() {
-		return _polarCDLanding;
-	}
-
-	public void setPolarCDLanding(Double[] _polarCDLanding) {
-		this._polarCDLanding = _polarCDLanding;
 	}
 
 	public Amount<Length> getLandingDistance() {
@@ -6263,22 +5239,6 @@ public class ACPerformanceManager {
 		this._negativeLoadFactorDesignFlapSpeedWithGust = _negativeLoadFactorDesignFlapSpeedWithGust;
 	}
 
-	public Amount<Velocity> getSpeedDescentCAS() {
-		return _speedDescentCAS;
-	}
-
-	public Amount<Velocity> getRateOfDescent() {
-		return _rateOfDescent;
-	}
-
-	public void setRateOfDescent(Amount<Velocity> _rateOfDescent) {
-		this._rateOfDescent = _rateOfDescent;
-	}
-
-	public void setSpeedDescentCAS(Amount<Velocity> _vDescent) {
-		this._speedDescentCAS = _vDescent;
-	}
-
 	public TakeOffCalc getTheTakeOffCalculator() {
 		return _theTakeOffCalculator;
 	}
@@ -6415,59 +5375,30 @@ public class ACPerformanceManager {
 		this._ceilingMapOEI = _ceilingMapOEI;
 	}
 
-	public Amount<Velocity> getClimbSpeed() {
-		return _climbSpeed;
-	}
-
-	public void setClimbSpeed(Amount<Velocity> _climbSpeed) {
-		this._climbSpeed = _climbSpeed;
-	}
-
-	/**
-	 * @return the _dragListAltitudeParameterization
-	 */
 	public List<DragMap> getDragListAltitudeParameterization() {
 		return _dragListAltitudeParameterization;
 	}
 
-	/**
-	 * @param _dragListAltitudeParameterization the _dragListAltitudeParameterization to set
-	 */
 	public void setDragListAltitudeParameterization(List<DragMap> _dragListAltitudeParameterization) {
 		this._dragListAltitudeParameterization = _dragListAltitudeParameterization;
 	}
 
-	/**
-	 * @return the _thrustListAltitudeParameterization
-	 */
 	public List<ThrustMap> getThrustListAltitudeParameterization() {
 		return _thrustListAltitudeParameterization;
 	}
 
-	/**
-	 * @param _thrustListAltitudeParameterization the _thrustListAltitudeParameterization to set
-	 */
 	public void setThrustListAltitudeParameterization(List<ThrustMap> _thrustListAltitudeParameterization) {
 		this._thrustListAltitudeParameterization = _thrustListAltitudeParameterization;
 	}
 
-	/**
-	 * @return the _dragListWeightParameterization
-	 */
 	public List<DragMap> getDragListWeightParameterization() {
 		return _dragListWeightParameterization;
 	}
 
-	/**
-	 * @param _dragListWeightParameterization the _dragListWeightParameterization to set
-	 */
 	public void setDragListWeightParameterization(List<DragMap> _dragListWeightParameterization) {
 		this._dragListWeightParameterization = _dragListWeightParameterization;
 	}
 
-	/**
-	 * @return the _thrustListWeightParameterization
-	 */
 	public List<ThrustMap> getThrustListWeightParameterization() {
 		return _thrustListWeightParameterization;
 	}
@@ -6482,14 +5413,6 @@ public class ACPerformanceManager {
 
 	public void setWeightListCruise(List<Amount<Force>> _weightListCruise) {
 		this._weightListCruise = _weightListCruise;
-	}
-
-	public List<Amount<Length>> getAltitudeListCruise() {
-		return _altitudeListCruise;
-	}
-
-	public void setAltitudeListCruise(List<Amount<Length>> _altitudeListCruise) {
-		this._altitudeListCruise = _altitudeListCruise;
 	}
 
 	public Map<String, List<Double>> getEfficiencyMapAltitude() {
@@ -6756,14 +5679,6 @@ public class ACPerformanceManager {
 		this._endMissionMass = _endMissionMass;
 	}
 
-	public Amount<Length> getXCGMTOM() {
-		return _xCGMaxAft;
-	}
-
-	public void setXCGMTOM(Amount<Length> _xCGMaxAft) {
-		this._xCGMaxAft = _xCGMaxAft;
-	}
-
 	public Amount<Velocity> getVMC() {
 		return _vMC;
 	}
@@ -6772,14 +5687,6 @@ public class ACPerformanceManager {
 		this._vMC = _vMC;
 	}
 
-	public Amount<Length> getXCGMaxAft() {
-		return _xCGMaxAft;
-	}
-
-	public void setXCGMaxAft(Amount<Length> _xCGMaxAft) {
-		this._xCGMaxAft = _xCGMaxAft;
-	}
-	
 	public double[] getThrustMomentOEI() {
 		return _thrustMomentOEI;
 	}
@@ -6794,94 +5701,6 @@ public class ACPerformanceManager {
 
 	public void setYawingMomentOEI(double[] _yawingMomentOEI) {
 		this._yawingMomentOEI = _yawingMomentOEI;
-	}
-
-	public Double getKLandingWeight() {
-		return _kLandingWeight;
-	}
-
-	public void setKLandingWeight(Double _kLandingWeight) {
-		this._kLandingWeight = _kLandingWeight;
-	}
-
-	public Double getKClimbWeightAEO() {
-		return _kClimbWeightAEO;
-	}
-
-	public void setKClimbWeightAEO(Double _kClimbWeightAEO) {
-		this._kClimbWeightAEO = _kClimbWeightAEO;
-	}
-	
-	public Double getKClimbWeightOEI() {
-		return _kClimbWeightOEI;
-	}
-
-	public void setKClimbWeightOEI(Double _kClimbWeightOEI) {
-		this._kClimbWeightOEI = _kClimbWeightOEI;
-	}
-
-	public Double getKCruiseWeight() {
-		return _kCruiseWeight;
-	}
-
-	public void setKCruiseWeight(Double _kCruiseWeight) {
-		this._kCruiseWeight = _kCruiseWeight;
-	}
-
-	public Amount<Length> getAlternateCruiseLength() {
-		return _alternateCruiseLength;
-	}
-
-	public void setAlternateCruiseLength(Amount<Length> _alternateCruiseLength) {
-		this._alternateCruiseLength = _alternateCruiseLength;
-	}
-
-	public Amount<Length> getAlternateCruiseAltitude() {
-		return _alternateCruiseAltitude;
-	}
-
-	public void setAlternateCruiseAltitude(Amount<Length> _alternateCruiseAltitude) {
-		this._alternateCruiseAltitude = _alternateCruiseAltitude;
-	}
-
-	public Amount<Duration> getHoldingDuration() {
-		return _holdingDuration;
-	}
-
-	public void setHoldingDuration(Amount<Duration> _holdingDuration) {
-		this._holdingDuration = _holdingDuration;
-	}
-
-	public Amount<Length> getHoldingAltitude() {
-		return _holdingAltitude;
-	}
-
-	public void setHoldingAltitude(Amount<Length> _holdingAltitude) {
-		this._holdingAltitude = _holdingAltitude;
-	}
-
-	public Double getFuelReserve() {
-		return _fuelReserve;
-	}
-
-	public void setFuelReserve(Double _fuelReserve) {
-		this._fuelReserve = _fuelReserve;
-	}
-
-	public Amount<Length> getFirstGuessCruiseLength() {
-		return _firstGuessCruiseLength;
-	}
-
-	public void setFirstGuessCruiseLength(Amount<Length> _firstGuessCruiseLength) {
-		this._firstGuessCruiseLength = _firstGuessCruiseLength;
-	}
-
-	public Amount<Mass> getFirstGuessInitialMissionFuelMass() {
-		return _firstGuessInitialMissionFuelMass;
-	}
-
-	public void setFirstGuessInitialMissionFuelMass(Amount<Mass> _firstGuessInitialMissionFuelMass) {
-		this._firstGuessInitialMissionFuelMass = _firstGuessInitialMissionFuelMass;
 	}
 
 	public ClimbCalc getTheClimbCalculator() {
@@ -6900,36 +5719,12 @@ public class ACPerformanceManager {
 		this._theMissionProfileCalculator = _theMissionProfileCalculator;
 	}
 
-	public Amount<Length> getTakeOffMissionAltitude() {
-		return _takeOffMissionAltitude;
-	}
-
-	public void setTakeOffMissionAltitude(Amount<Length> _takeOffMissionAltitude) {
-		this._takeOffMissionAltitude = _takeOffMissionAltitude;
-	}
-
 	public DescentCalc getTheDescentCalculator() {
 		return _theDescentCalculator;
 	}
 
 	public void setTheDescentCalculator(DescentCalc _theDescentCalculator) {
 		this._theDescentCalculator = _theDescentCalculator;
-	}
-
-	public Double getHoldingMachNumber() {
-		return _holdingMachNumber;
-	}
-
-	public void setHoldingMachNumber(Double _holdingMachNumber) {
-		this._holdingMachNumber = _holdingMachNumber;
-	}
-
-	public Double getLandingFuelFlow() {
-		return _landingFuelFlow;
-	}
-
-	public void setLandingFuelFlow(Double _landingFuelFlow) {
-		this._landingFuelFlow = _landingFuelFlow;
 	}
 
 	public Amount<Mass> getInitialMissionMass() {
@@ -6946,14 +5741,6 @@ public class ACPerformanceManager {
 
 	public void setInitialFuelMass(Amount<Mass> _initialFuelMass) {
 		this._initialFuelMass = _initialFuelMass;
-	}
-
-	public Amount<Length> getMissionRange() {
-		return _missionRange;
-	}
-
-	public void setMissionRange(Amount<Length> _missionRange) {
-		this._missionRange = _missionRange;
 	}
 
 	public Amount<Length> getRangeAtMaxPayload() {
@@ -7068,38 +5855,6 @@ public class ACPerformanceManager {
 		this._takeOffMassAtZeroPayload = _takeOffMassAtZeroPayload;
 	}
 
-	public MyInterpolatingFunction getMuFunction() {
-		return _muFunction;
-	}
-
-	public void setMuFunction(MyInterpolatingFunction _muFunction) {
-		this._muFunction = _muFunction;
-	}
-
-	public MyInterpolatingFunction getMuBrakeFunction() {
-		return _muBrakeFunction;
-	}
-
-	public void setMuBrakeFunction(MyInterpolatingFunction _muBrakeFunction) {
-		this._muBrakeFunction = _muBrakeFunction;
-	}
-
-	public MyInterpolatingFunction getSFCFunctionCruise() {
-		return _sfcFunctionCruise;
-	}
-
-	public void setSFCFunctionCruise(MyInterpolatingFunction _sfcFunctionCruise) {
-		this._sfcFunctionCruise = _sfcFunctionCruise;
-	}
-
-	public MyInterpolatingFunction getSFCFunctionAlternateCruise() {
-		return _sfcFunctionAlternateCruise;
-	}
-
-	public void setSFCFunctionAlternateCruise(MyInterpolatingFunction _sfcFunctionAlternateCruise) {
-		this._sfcFunctionAlternateCruise = _sfcFunctionAlternateCruise;
-	}
-
 	public Map<String, List<Double>> getEfficiencyMapAltitudeAEO() {
 		return _efficiencyMapAltitudeAEO;
 	}
@@ -7114,22 +5869,6 @@ public class ACPerformanceManager {
 
 	public void setEfficiencyMapAltitudeOEI(Map<String, List<Double>> _efficiencyMapAltitudeOEI) {
 		this._efficiencyMapAltitudeOEI = _efficiencyMapAltitudeOEI;
-	}
-
-	public Double getKDescentWeight() {
-		return _kDescentWeight;
-	}
-
-	public void setKDescentWeight(Double _kDescentWeight) {
-		this._kDescentWeight = _kDescentWeight;
-	}
-
-	public MyInterpolatingFunction getSFCFunctionHolding() {
-		return _sfcFunctionHolding;
-	}
-
-	public void setSFCFunctionHolding(MyInterpolatingFunction _sfcFunctionHolding) {
-		this._sfcFunctionHolding = _sfcFunctionHolding;
 	}
 
 	public List<Amount<Velocity>> getSpeedTASMissionList() {
@@ -7188,46 +5927,6 @@ public class ACPerformanceManager {
 		this._dragMissionList = _dragMissionList;
 	}
 
-	public Double getAlphaDotRotation() {
-		return _alphaDotRotation;
-	}
-
-	public void setAlphaDotRotation(Double _alphaDotRotation) {
-		this._alphaDotRotation = _alphaDotRotation;
-	}
-
-	public Amount<Length> getInitialClimbAltitude() {
-		return _initialClimbAltitude;
-	}
-
-	public void setInitialClimbAltitude(Amount<Length> _initialClimbAltitude) {
-		this._initialClimbAltitude = _initialClimbAltitude;
-	}
-
-	public Amount<Length> getFinalClimbAltitude() {
-		return _finalClimbAltitude;
-	}
-
-	public void setFinalClimbAltitude(Amount<Length> _finalClimbAltitude) {
-		this._finalClimbAltitude = _finalClimbAltitude;
-	}
-
-	public Amount<Length> getInitialDescentAltitude() {
-		return _initialDescentAltitude;
-	}
-
-	public void setInitialDescentAltitude(Amount<Length> _initialDescentAltitude) {
-		this._initialDescentAltitude = _initialDescentAltitude;
-	}
-
-	public Amount<Length> getFinalDescentAltitude() {
-		return _finalDescentAltitude;
-	}
-
-	public void setFinalDescentAltitude(Amount<Length> _finalDescentAltitude) {
-		this._finalDescentAltitude = _finalDescentAltitude;
-	}
-
 	public Amount<Mass> getFuelUsedDuringClimb() {
 		return _fuelUsedDuringClimb;
 	}
@@ -7242,6 +5941,14 @@ public class ACPerformanceManager {
 
 	public void setTotalDescentFuelUsed(Amount<Mass> _totalDescentFuelUsed) {
 		this._totalDescentFuelUsed = _totalDescentFuelUsed;
+	}
+
+	public IACPerformanceManager getThePerformanceInterface() {
+		return _thePerformanceInterface;
+	}
+
+	public void setThePerformanceInterface(IACPerformanceManager _thePerformanceInterface) {
+		this._thePerformanceInterface = _thePerformanceInterface;
 	}
 
 }
