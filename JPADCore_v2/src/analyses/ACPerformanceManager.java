@@ -1,5 +1,7 @@
 package analyses;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
@@ -33,6 +37,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jscience.physics.amount.Amount;
+import org.junit.Assert;
 
 import aircraft.auxiliary.airfoil.Airfoil;
 import aircraft.components.Aircraft;
@@ -58,6 +63,7 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
+import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -66,6 +72,7 @@ import configuration.enumerations.PerformanceEnum;
 import configuration.enumerations.PerformancePlotEnum;
 import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import junit.framework.AssertionFailedError;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -84,6 +91,20 @@ public class ACPerformanceManager {
 	 * @author Vittorio Trifari
 	 *******************************************************************************
 	 */
+	
+	/*
+	 * TODO: - THE CALCULATE METHOD HAS TO BE UPDATED ALLOWING TO MULTI-CG PERFORMANCE EVAULATION
+	 *       - ALL THE OUTPUT HAVE TO BECOME MAPS
+	 *       - ELIMINATE THE INITIAL CRUISE RANGE AND INITIAL MISSION FUEL FROM THE INPUT FILE
+	 *         AND GIVE THEM DEFAULT VALUE (RANGE -> BREGUET; FUEL -> MAX_FUEL/2)
+	 *       - CRATE A FOLDER FOR EACH XCG IN OUTPUT TO STORE FILES AND CHARTS (IN THIS WAY YOU DO
+	 *         NOT NEED TO MODIFY THE METHOD THAT CREATE CHARTS AND XLSX)
+	 *       - DEBUG ALL!! (IN PARTICULAR DURING MISSION PROFILE ANALYSIS OR PAYLOAD RANGE WHEN THE SECOND CLIMB FREEZES THE EXECUTION)
+	 *       
+	 *       - IN THE COSTS ANALYSIS, DATA FROM THE PERFORMANCE MODULE WILL HAVE TO BE UPDATED TAKING INTO
+	 *         ACCOUNT FOR THE DIFFERENT XCG POSITION 
+	 */
+	
 	
 	//------------------------------------------------------------------------------
 	// VARIABLES DECLARATION:
@@ -377,7 +398,7 @@ public class ACPerformanceManager {
 		 * Otherwise it ignores the manager file and reads the input data from the xml.
 		 */
 		
-		Map<ConditionEnum, List<Double>> centerOfGravityList = new HashMap<>();
+		List<Double> centerOfGravityList = new ArrayList<>();
 		
 		Map<Double,Double> cLmaxClean  = new HashMap<>();
 		Map<Double,Amount<?>> cLAlphaClean  = new HashMap<>();
@@ -410,260 +431,269 @@ public class ACPerformanceManager {
 		if(readAerodynamicsFromPreviousAnalysisFlag == Boolean.TRUE) {
 			if(theAircraft.getTheAnalysisManager() != null) {
 				if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability() != null) {
-				
+
 					////////////////////////////////////////////////////////////////////////////
 					//																		  //
 					// TODO : CHECK THAT ALL THE XCG OF ALL CONDITIONS ARE THE SAME,          //
 					//		  OTHERWISE TERMINATE AND GIVE A WARNING    					  //
 					//																	      //
 					////////////////////////////////////////////////////////////////////////////
+
+					List<Double> xcgTakeOff = new ArrayList<>();
+					List<Double> xcgClimb = new ArrayList<>();
+					List<Double> xcgCruise = new ArrayList<>();
+					List<Double> xcgLanding = new ArrayList<>();
+
+					//.........................................................................................................
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF) != null) 
+						xcgTakeOff = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+						.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getXCGAircraft();
+					else 
+						System.err.println("WARNING!! THE TAKE-OFF AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
+					
+					//.........................................................................................................
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB) != null)
+						xcgClimb = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+						.get(ConditionEnum.CLIMB).getTheAerodynamicBuilderInterface().getXCGAircraft();
+					else 
+						System.err.println("WARNING!! THE CLIMB AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
+
+					//.........................................................................................................
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE) != null)
+						xcgCruise = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+						.get(ConditionEnum.CRUISE).getTheAerodynamicBuilderInterface().getXCGAircraft();
+					else 
+						System.err.println("WARNING!! THE CRUISE AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
+					
+					//.........................................................................................................
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING) != null)
+						xcgLanding = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+						.get(ConditionEnum.LANDING).getTheAerodynamicBuilderInterface().getXCGAircraft();
+					else 
+						System.err.println("WARNING!! THE LANDING AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
+
+					
+					//---------------------------------------------------------------------------------------------------------
+					// TEST: SAME Xcg FOR EACH CONDITION... 
+					//---------------------------------------------------------------------------------------------------------
+					try {
+						assertEquals("WARNING! THE TAKE-OFF AND CLIMB XCG LISTS DO NOT CONTAINS THE SAME VALUES. IMPOSSIBLE TO CONTINUE WITH THE PERFORMANCE EVALUATION ...", xcgTakeOff, xcgClimb);
+						assertEquals("WARNING! THE TAKE-OFF AND CRUISE XCG LISTS DO NOT CONTAINS THE SAME VALUES. IMPOSSIBLE TO CONTINUE WITH THE PERFORMANCE EVALUATION ...", xcgTakeOff, xcgCruise);
+						assertEquals("WARNING! THE TAKE-OFF AND LANDING XCG LISTS DO NOT CONTAINS THE SAME VALUES. IMPOSSIBLE TO CONTINUE WITH THE PERFORMANCE EVALUATION ...", xcgTakeOff, xcgLanding);
+						assertEquals("WARNING! THE CLIMB AND CRUISE XCG LISTS DO NOT CONTAINS THE SAME VALUES. IMPOSSIBLE TO CONTINUE WITH THE PERFORMANCE EVALUATION ...", xcgClimb, xcgCruise);
+						assertEquals("WARNING! THE CLIMB AND LANDING XCG LISTS DO NOT CONTAINS THE SAME VALUES. IMPOSSIBLE TO CONTINUE WITH THE PERFORMANCE EVALUATION ...", xcgClimb, xcgLanding);
+						assertEquals("WARNING! THE CRUISE AND LANDING XCG LISTS DO NOT CONTAINS THE SAME VALUES. IMPOSSIBLE TO CONTINUE WITH THE PERFORMANCE EVALUATION ...", xcgCruise, xcgLanding);
+					}
+					catch (AssertionFailedError e) {
+						System.err.println("TERMINATING ...");
+						System.exit(1);
+					}
+					
+					centerOfGravityList.addAll(
+							theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+							.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getXCGAircraft()
+							);
 					
 					//---------------------------------------------------------------------------------------------------------
 					// TAKE-OFF 
 					//---------------------------------------------------------------------------------------------------------
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF) != null) {
-						
-						centerOfGravityList.put(
-								ConditionEnum.TAKE_OFF,
-								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-								.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getXCGAircraft()
+					Map<Double, MyInterpolatingFunction> liftCurveFunctionTakeOffMap = new HashMap<>();
+
+					for(int i=0; i<centerOfGravityList.size(); i++) {
+
+						liftCurveFunctionTakeOffMap.put(
+								centerOfGravityList.get(i),
+								new MyInterpolatingFunction()
 								);
 
-						Map<Double, MyInterpolatingFunction> liftCurveFunctionTakeOffMap = new HashMap<>();
+						liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(i)).interpolateLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).getAlphaBodyList()
+										),
+								MyArrayUtils.convertToDoublePrimitive(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
+										.get(centerOfGravityList.get(i))
+										)
+								);
 
-						for(int i=0; i<centerOfGravityList.get(ConditionEnum.TAKE_OFF).size(); i++) {
+						cLAlphaTakeOff.put(
+								centerOfGravityList.get(i),
+								Amount.valueOf(
+										Math.atan(
+												liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(i)).value(1.0)
+												- liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(i)).value(0.0)
+												),
+										NonSI.DEGREE_ANGLE.inverse()
+										)
+								);
 
-							liftCurveFunctionTakeOffMap.put(
-									centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i),
-									new MyInterpolatingFunction()
-									);
+						cLmaxTakeOff.put(
+								centerOfGravityList.get(i), 
+								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).
+								getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+								.stream().mapToDouble(cL -> cL).max().getAsDouble()
+								);
 
-							liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i)).interpolateLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).getAlphaBodyList()
-											),
-									MyArrayUtils.convertToDoublePrimitive(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
-											.get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i))
-											)
-									);
+						cLZeroTakeOff.put(
+								centerOfGravityList.get(i), 
+								liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(i)).value(0.0)
+								);
 
-							cLAlphaTakeOff.put(
-									centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i),
-									Amount.valueOf(
-											Math.atan(
-													liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i)).value(1.0)
-													- liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i)).value(0.0)
-													),
-											NonSI.DEGREE_ANGLE.inverse()
-											)
-									);
+						polarCLTakeOff.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF)
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										)
+								);
 
-							cLmaxTakeOff.put(
-									centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i), 
-									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).
-									getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i))
-									.stream().mapToDouble(cL -> cL).max().getAsDouble()
-									);
-
-							cLZeroTakeOff.put(
-									centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i), 
-									liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i)).value(0.0)
-									);
-
-							polarCLTakeOff.put(
-									centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF)
-											.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i))
-											)
-									);
-							
-							polarCDTakeOff.put(
-									centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF)
-											.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(ConditionEnum.TAKE_OFF).get(i))
-											)
-									);
-						}
+						polarCDTakeOff.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF)
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										)
+								);
 					}
-					else 
-						System.err.println("WARNING!! THE TAKE-OFF AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
-					
+
 					//---------------------------------------------------------------------------------------------------------
 					// CLIMB 
 					//---------------------------------------------------------------------------------------------------------
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB) != null) {
-						
-						centerOfGravityList.put(
-								ConditionEnum.CLIMB,
-								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-								.get(ConditionEnum.CLIMB).getTheAerodynamicBuilderInterface().getXCGAircraft()
+					for(int i=0; i<centerOfGravityList.size(); i++) {
+
+						polarCLClimb.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB)
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										)
 								);
 
-						for(int i=0; i<centerOfGravityList.get(ConditionEnum.CLIMB).size(); i++) {
-
-							polarCLClimb.put(
-									centerOfGravityList.get(ConditionEnum.CLIMB).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB)
-											.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(ConditionEnum.CLIMB).get(i))
-											)
-									);
-							
-							polarCDClimb.put(
-									centerOfGravityList.get(ConditionEnum.CLIMB).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB)
-											.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(ConditionEnum.CLIMB).get(i))
-											)
-									);
-						}
+						polarCDClimb.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB)
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										)
+								);
 					}
-					else 
-						System.err.println("WARNING!! THE CLIMB AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
-
 					//---------------------------------------------------------------------------------------------------------
 					// CRUISE 
 					//---------------------------------------------------------------------------------------------------------
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE) != null) {
-						
-						centerOfGravityList.put(
-								ConditionEnum.CRUISE,
-								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-								.get(ConditionEnum.CRUISE).getTheAerodynamicBuilderInterface().getXCGAircraft()
+					Map<Double, MyInterpolatingFunction> liftCurveFunctionCruiseMap = new HashMap<>();
+
+					for(int i=0; i<centerOfGravityList.size(); i++) {
+
+						liftCurveFunctionCruiseMap.put(
+								centerOfGravityList.get(i),
+								new MyInterpolatingFunction()
 								);
 
-						Map<Double, MyInterpolatingFunction> liftCurveFunctionCruiseMap = new HashMap<>();
+						liftCurveFunctionCruiseMap.get(centerOfGravityList.get(i)).interpolateLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).getAlphaBodyList()
+										),
+								MyArrayUtils.convertToDoublePrimitive(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
+										.get(centerOfGravityList.get(i))
+										)
+								);
 
-						for(int i=0; i<centerOfGravityList.get(ConditionEnum.CRUISE).size(); i++) {
+						cLAlphaClean.put(
+								centerOfGravityList.get(i),
+								Amount.valueOf(
+										Math.atan(
+												liftCurveFunctionCruiseMap.get(centerOfGravityList.get(i)).value(1.0)
+												- liftCurveFunctionCruiseMap.get(centerOfGravityList.get(i)).value(0.0)
+												),
+										NonSI.DEGREE_ANGLE.inverse()
+										)
+								);
 
-							liftCurveFunctionCruiseMap.put(
-									centerOfGravityList.get(ConditionEnum.CRUISE).get(i),
-									new MyInterpolatingFunction()
-									);
+						cLmaxClean.put(
+								centerOfGravityList.get(i), 
+								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).
+								getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+								.stream().mapToDouble(cL -> cL).max().getAsDouble()
+								);
 
-							liftCurveFunctionCruiseMap.get(centerOfGravityList.get(ConditionEnum.CRUISE).get(i)).interpolateLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).getAlphaBodyList()
-											),
-									MyArrayUtils.convertToDoublePrimitive(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
-											.get(centerOfGravityList.get(ConditionEnum.CRUISE).get(i))
-											)
-									);
+						polarCLCruise.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE)
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										)
+								);
 
-							cLAlphaClean.put(
-									centerOfGravityList.get(ConditionEnum.CRUISE).get(i),
-									Amount.valueOf(
-											Math.atan(
-													liftCurveFunctionCruiseMap.get(centerOfGravityList.get(ConditionEnum.CRUISE).get(i)).value(1.0)
-													- liftCurveFunctionCruiseMap.get(centerOfGravityList.get(ConditionEnum.CRUISE).get(i)).value(0.0)
-													),
-											NonSI.DEGREE_ANGLE.inverse()
-											)
-									);
-
-							cLmaxClean.put(
-									centerOfGravityList.get(ConditionEnum.CRUISE).get(i), 
-									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).
-									getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(ConditionEnum.CRUISE).get(i))
-									.stream().mapToDouble(cL -> cL).max().getAsDouble()
-									);
-
-							polarCLCruise.put(
-									centerOfGravityList.get(ConditionEnum.CRUISE).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE)
-											.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(ConditionEnum.CRUISE).get(i))
-											)
-									);
-							
-							polarCDCruise.put(
-									centerOfGravityList.get(ConditionEnum.CRUISE).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE)
-											.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(ConditionEnum.CRUISE).get(i))
-											)
-									);
-						}
+						polarCDCruise.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE)
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										)
+								);
 					}
-					else 
-						System.err.println("WARNING!! THE CRUISE AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
-					
 					//---------------------------------------------------------------------------------------------------------
 					// LANDING
 					//---------------------------------------------------------------------------------------------------------
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING) != null) {
-						
-						centerOfGravityList.put(
-								ConditionEnum.LANDING,
-								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-								.get(ConditionEnum.LANDING).getTheAerodynamicBuilderInterface().getXCGAircraft()
+					Map<Double, MyInterpolatingFunction> liftCurveFunctionLandingMap = new HashMap<>();
+
+					for(int i=0; i<centerOfGravityList.size(); i++) {
+
+						liftCurveFunctionLandingMap.put(
+								centerOfGravityList.get(i),
+								new MyInterpolatingFunction()
 								);
 
-						Map<Double, MyInterpolatingFunction> liftCurveFunctionLandingMap = new HashMap<>();
+						liftCurveFunctionLandingMap.get(centerOfGravityList.get(i)).interpolateLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).getAlphaBodyList()
+										),
+								MyArrayUtils.convertToDoublePrimitive(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
+										.get(centerOfGravityList.get(i))
+										)
+								);
 
-						for(int i=0; i<centerOfGravityList.get(ConditionEnum.LANDING).size(); i++) {
+						cLAlphaLanding.put(
+								centerOfGravityList.get(i),
+								Amount.valueOf(
+										Math.atan(
+												liftCurveFunctionLandingMap.get(centerOfGravityList.get(i)).value(1.0)
+												- liftCurveFunctionLandingMap.get(centerOfGravityList.get(i)).value(0.0)
+												),
+										NonSI.DEGREE_ANGLE.inverse()
+										)
+								);
 
-							liftCurveFunctionLandingMap.put(
-									centerOfGravityList.get(ConditionEnum.LANDING).get(i),
-									new MyInterpolatingFunction()
-									);
+						cLmaxLanding.put(
+								centerOfGravityList.get(i), 
+								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).
+								getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+								.stream().mapToDouble(cL -> cL).max().getAsDouble()
+								);
 
-							liftCurveFunctionLandingMap.get(centerOfGravityList.get(ConditionEnum.LANDING).get(i)).interpolateLinear(
-									MyArrayUtils.convertListOfAmountTodoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).getAlphaBodyList()
-											),
-									MyArrayUtils.convertToDoublePrimitive(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
-											.get(centerOfGravityList.get(ConditionEnum.LANDING).get(i))
-											)
-									);
+						cLZeroLanding.put(
+								centerOfGravityList.get(i), 
+								liftCurveFunctionLandingMap.get(centerOfGravityList.get(i)).value(0.0)
+								);
 
-							cLAlphaLanding.put(
-									centerOfGravityList.get(ConditionEnum.LANDING).get(i),
-									Amount.valueOf(
-											Math.atan(
-													liftCurveFunctionLandingMap.get(centerOfGravityList.get(ConditionEnum.LANDING).get(i)).value(1.0)
-													- liftCurveFunctionLandingMap.get(centerOfGravityList.get(ConditionEnum.LANDING).get(i)).value(0.0)
-													),
-											NonSI.DEGREE_ANGLE.inverse()
-											)
-									);
+						polarCLLanding.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING)
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										)
+								);
 
-							cLmaxLanding.put(
-									centerOfGravityList.get(ConditionEnum.LANDING).get(i), 
-									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).
-									getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(ConditionEnum.LANDING).get(i))
-									.stream().mapToDouble(cL -> cL).max().getAsDouble()
-									);
-
-							cLZeroLanding.put(
-									centerOfGravityList.get(ConditionEnum.LANDING).get(i), 
-									liftCurveFunctionLandingMap.get(centerOfGravityList.get(ConditionEnum.LANDING).get(i)).value(0.0)
-									);
-
-							polarCLLanding.put(
-									centerOfGravityList.get(ConditionEnum.LANDING).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING)
-											.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(ConditionEnum.LANDING).get(i))
-											)
-									);
-							
-							polarCDLanding.put(
-									centerOfGravityList.get(ConditionEnum.LANDING).get(i),
-									MyArrayUtils.convertListOfDoubleToDoubleArray(
-											theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING)
-											.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(ConditionEnum.LANDING).get(i))
-											)
-									);
-						}
+						polarCDLanding.put(
+								centerOfGravityList.get(i),
+								MyArrayUtils.convertListOfDoubleToDoubleArray(
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING)
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										)
+								);
 					}
-					else 
-						System.err.println("WARNING!! THE LANDING AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
 				}
 				else {
 					System.err.println("WARNING!! THE AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
@@ -676,7 +706,7 @@ public class ACPerformanceManager {
 			}
 		}
 		else {
-			
+
 			Boolean parabolicDragPolarFlag = Boolean.FALSE;
 			String paraboliDragPolarProperty = MyXMLReaderUtils
 					.getXMLPropertyByPath(
@@ -688,238 +718,419 @@ public class ACPerformanceManager {
 				parabolicDragPolarFlag = Boolean.FALSE;
 			else {
 				System.err.println("ERROR : parabolicDragPolar HAS TO BE TRUE/FALSE !");
-				return null;
+				System.exit(1);
 			}
-			
+
+			//...............................................................
+			// Xcg LIST
+			List<String> xCGListProperty = reader.getXMLPropertiesByPath("//xcg");
+			if(!xCGListProperty.isEmpty())
+				xCGListProperty.stream().forEach(xcg -> centerOfGravityList.add(Double.valueOf(xcg)));
 			//...............................................................
 			// CLmax CLEAN
-			String cLmaxCleanProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_clean_configuration");
-			if(cLmaxCleanProperty != null)
-				cLmaxClean = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_clean_configuration"));
+			List<String> cLmaxCleanProperty = reader.getXMLPropertiesByPath("//cLmax_clean_configuration");
+			if(!cLmaxCleanProperty.isEmpty())
+				cLmaxCleanProperty.stream().forEach(cLmax -> cLmaxClean.put(
+						centerOfGravityList.get(cLmaxCleanProperty.indexOf(cLmax)),
+						Double.valueOf(cLmax))
+						);
 			//...............................................................
 			// CLalpha CLEAN
-			String cLAlphaCleanProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_clean_configuration");
-			if(cLAlphaCleanProperty != null)
-				cLAlphaClean = reader.getXMLAmountWithUnitByPath("//performance/aerodynamics/cL_alpha_clean_configuration");
+			List<String> cLAlphaCleanProperty = reader.getXMLPropertiesByPath("//cL_alpha_clean_configuration");
+			List<Amount<?>> cLAlphaCleanList = new ArrayList<>();
+			if(!cLAlphaCleanProperty.isEmpty()) {
+				cLAlphaCleanList = reader.readArrayofUnknownAmountFromXML("//cL_alpha_clean_configuration");
+			}
+			for(int i=0; i<cLAlphaCleanList.size(); i++)
+				cLAlphaClean.put(
+						centerOfGravityList.get(i), 
+						cLAlphaCleanList.get(i)
+						);
+				
 			//...............................................................
 			// CLalpha TAKE-OFF
-			String cLAlphaTakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_take_off");
-			if(cLAlphaTakeOffProperty != null)
-				cLAlphaTakeOff = reader.getXMLAmountWithUnitByPath("//performance/aerodynamics/cL_alpha_take_off"); 
+			List<String> cLAlphaTakeOffProperty = reader.getXMLPropertiesByPath("//cL_alpha_take_off");
+			List<Amount<?>> cLAlphaTakeOffList = new ArrayList<>();
+			if(!cLAlphaTakeOffProperty.isEmpty()) {
+				cLAlphaTakeOffList = reader.readArrayofUnknownAmountFromXML("//cL_alpha_take_off");
+			}
+			for(int i=0; i<cLAlphaTakeOffList.size(); i++)
+				cLAlphaTakeOff.put(
+						centerOfGravityList.get(i), 
+						cLAlphaTakeOffList.get(i)
+						);
 			//...............................................................
 			// CLalpha LANDING
-			String cLAlphaLandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL_alpha_landing");
-			if(cLAlphaLandingProperty != null)
-				cLAlphaLanding = reader.getXMLAmountWithUnitByPath("//performance/aerodynamics/cL_alpha_landing"); 
+			List<String> cLAlphaLandingProperty = reader.getXMLPropertiesByPath("//cL_alpha_landing");
+			List<Amount<?>> cLAlphaLandingList = new ArrayList<>();
+			if(!cLAlphaLandingProperty.isEmpty()) {
+				cLAlphaLandingList = reader.readArrayofUnknownAmountFromXML("//cL_alpha_landing");
+			}
+			for(int i=0; i<cLAlphaLandingList.size(); i++)
+				cLAlphaLanding.put(
+						centerOfGravityList.get(i), 
+						cLAlphaLandingList.get(i)
+						);
 			//...............................................................
 			// CLmax TAKE-OFF
-			String cLmaxTakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_take_off_configuration");
-			if(cLmaxTakeOffProperty != null)
-				cLmaxTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_take_off_configuration"));
+			List<String> cLmaxTakeOffProperty = reader.getXMLPropertiesByPath("//cLmax_take_off_configuration");
+			if(!cLmaxTakeOffProperty.isEmpty())
+				cLmaxTakeOffProperty.stream().forEach(cLmax -> cLmaxTakeOff.put(
+						centerOfGravityList.get(cLmaxTakeOffProperty.indexOf(cLmax)),
+						Double.valueOf(cLmax))
+						);
 			//...............................................................
 			// CL0 TAKE-OFF
-			String cL0TakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL0_take_off_configuration");
-			if(cL0TakeOffProperty != null)
-				cLZeroTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cL0_take_off_configuration"));
+			List<String> cL0TakeOffProperty = reader.getXMLPropertiesByPath("//cL0_take_off_configuration");
+			if(!cL0TakeOffProperty.isEmpty())
+				cL0TakeOffProperty.stream().forEach(cL0 -> cLZeroTakeOff.put(
+						centerOfGravityList.get(cL0TakeOffProperty.indexOf(cL0)),
+						Double.valueOf(cL0))
+						);
 			//...............................................................
 			// CLmax LANDING
-			String cLmaxLandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_landing_configuration");
-			if(cLmaxLandingProperty != null)
-				cLmaxLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cLmax_landing_configuration"));
+			List<String> cLmaxLandingProperty = reader.getXMLPropertiesByPath("//cLmax_landing_configuration");
+			if(!cLmaxLandingProperty.isEmpty())
+				cLmaxLandingProperty.stream().forEach(cLmax -> cLmaxLanding.put(
+						centerOfGravityList.get(cLmaxLandingProperty.indexOf(cLmax)),
+						Double.valueOf(cLmax))
+						);
 			//...............................................................
 			// CL0 LANDING
-			String cL0LandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/cL0_take_off_configuration");
-			if(cL0LandingProperty != null)
-				cLZeroLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cL0_landing_configuration"));
+			List<String> cL0LandingProperty = reader.getXMLPropertiesByPath("//cL0_landing_configuration");
+			if(!cL0LandingProperty.isEmpty())
+				cL0LandingProperty.stream().forEach(cL0 -> cLZeroLanding.put(
+						centerOfGravityList.get(cL0LandingProperty.indexOf(cL0)),
+						Double.valueOf(cL0))
+						);
 			
 			if(parabolicDragPolarFlag == Boolean.FALSE) {
 				
 				//...............................................................
 				// POLAR CURVE CRUISE
-				List<String> polarCLCruiseProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/cruise/polar_curve_CL");
-				if(!polarCLCruiseProperty.isEmpty()) {
-					polarCLCruise = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/cruise/polar_curve_CL")
-							); 
-				}
-				List<String> polarCDCruiseProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/cruise/polar_curve_CD");
-				if(!polarCDCruiseProperty.isEmpty()) {
-					polarCDCruise = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/cruise/polar_curve_CD")
-							); 
-				}
+				Map<Double, List<String>> polarCLCruiseProperty = new HashMap<>();
+				Map<Double, List<String>> polarCDCruiseProperty = new HashMap<>();
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							polarCLCruiseProperty.put(
+								xcg,
+								reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/cruise/polar_curve_CL")
+								);
+							polarCDCruiseProperty.put(
+									xcg,
+									reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/cruise/polar_curve_CD")
+									);
+						});
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							if(!polarCLCruiseProperty.get(xcg).isEmpty())
+								polarCLCruise.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCLCruiseProperty.get(xcg).stream().map(cL -> Double.valueOf(cL)).collect(Collectors.toList())
+												)
+										);
+							if(!polarCDCruiseProperty.get(xcg).isEmpty())
+								polarCDCruise.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCDCruiseProperty.get(xcg).stream().map(cD -> Double.valueOf(cD)).collect(Collectors.toList())
+												)
+										);
+						});
+
 				//...............................................................
 				// POLAR CURVE CLIMB
-				List<String> polarCLClimbProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/climb/polar_curve_CL");
-				if(!polarCLClimbProperty.isEmpty()) {
-					polarCLClimb = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/climb/polar_curve_CL")
-							); 
-				}
-				List<String> polarCDClimbProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/climb/polar_curve_CD");
-				if(!polarCDClimbProperty.isEmpty()) {
-					polarCDClimb = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/climb/polar_curve_CD")
-							); 
-				}
+				Map<Double, List<String>> polarCLClimbProperty = new HashMap<>();
+				Map<Double, List<String>> polarCDClimbProperty = new HashMap<>();
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							polarCLClimbProperty.put(
+								xcg,
+								reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/climb/polar_curve_CL")
+								);
+							polarCDClimbProperty.put(
+									xcg,
+									reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/climb/polar_curve_CD")
+									);
+						});
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							if(!polarCLClimbProperty.get(xcg).isEmpty())
+								polarCLClimb.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCLClimbProperty.get(xcg).stream().map(cL -> Double.valueOf(cL)).collect(Collectors.toList())
+												)
+										);
+							if(!polarCDClimbProperty.get(xcg).isEmpty())
+								polarCDClimb.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCDClimbProperty.get(xcg).stream().map(cD -> Double.valueOf(cD)).collect(Collectors.toList())
+												)
+										);
+						});
+				
 				//...............................................................
 				// POLAR CURVE TAKE-OFF
-				List<String> polarCLTakeOffProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/take_off/polar_curve_CL");
-				if(!polarCLTakeOffProperty.isEmpty()) {
-					polarCLTakeOff = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/take_off/polar_curve_CL")
-							); 
-				}
-				List<String> polarCDTakeOffProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/take_off/polar_curve_CD");
-				if(!polarCDTakeOffProperty.isEmpty()) {
-					polarCDTakeOff = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/take_off/polar_curve_CD")
-							); 
-				}
+				Map<Double, List<String>> polarCLTakeOffProperty = new HashMap<>();
+				Map<Double, List<String>> polarCDTakeOffProperty = new HashMap<>();
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							polarCLTakeOffProperty.put(
+								xcg,
+								reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/take_off/polar_curve_CL")
+								);
+							polarCDTakeOffProperty.put(
+									xcg,
+									reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/take_off/polar_curve_CD")
+									);
+						});
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							if(!polarCLTakeOffProperty.get(xcg).isEmpty())
+								polarCLTakeOff.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCLTakeOffProperty.get(xcg).stream().map(cL -> Double.valueOf(cL)).collect(Collectors.toList())
+												)
+										);
+							if(!polarCDTakeOffProperty.get(xcg).isEmpty())
+								polarCDTakeOff.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCDTakeOffProperty.get(xcg).stream().map(cD -> Double.valueOf(cD)).collect(Collectors.toList())
+												)
+										);
+						});
+				
 				//...............................................................
 				// POLAR CURVE LANDING
-				List<String> polarCLLandingProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/landing/polar_curve_CL");
-				if(!polarCLLandingProperty.isEmpty()) {
-					polarCLLanding = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/landing/polar_curve_CL")
-							);
-				}
-				List<String> polarCDLandingProperty = reader.getXMLPropertiesByPath("//performance/aerodynamics/polar_curves/landing/polar_curve_CD");
-				if(!polarCDLandingProperty.isEmpty()) {
-					polarCDLanding = MyArrayUtils.convertListOfDoubleToDoubleArray(
-							reader.readArrayDoubleFromXML("//performance/aerodynamics/polar_curves/landing/polar_curve_CD")
-							); 
-				}
+				Map<Double, List<String>> polarCLLandingProperty = new HashMap<>();
+				Map<Double, List<String>> polarCDLandingProperty = new HashMap<>();
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							polarCLLandingProperty.put(
+								xcg,
+								reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/landing/polar_curve_CL")
+								);
+							polarCDLandingProperty.put(
+									xcg,
+									reader.getXMLPropertiesByPath("//xcg[@value='" + xcg + "']/polar_curves/landing/polar_curve_CD")
+									);
+						});
+				
+				centerOfGravityList.stream().forEach(
+						xcg -> {
+							if(!polarCLLandingProperty.get(xcg).isEmpty())
+								polarCLLanding.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCLLandingProperty.get(xcg).stream().map(cL -> Double.valueOf(cL)).collect(Collectors.toList())
+												)
+										);
+							if(!polarCDLandingProperty.get(xcg).isEmpty())
+								polarCDLanding.put(
+										xcg, 
+										MyArrayUtils.convertListOfDoubleToDoubleArray(
+												polarCDLandingProperty.get(xcg).stream().map(cD -> Double.valueOf(cD)).collect(Collectors.toList())
+												)
+										);
+						});
+				
 			}
 			else {
 				
 				//...............................................................
 				// CD0
-				String cD0Property = reader.getXMLPropertyByPath("//performance/aerodynamics/cD0");
-				if(cD0Property != null)
-					cD0 = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/cD0"));
+				List<String> cD0Property = reader.getXMLPropertiesByPath("//cD0");
+				if(!cD0Property.isEmpty())
+					cD0Property.stream().forEach(cD -> cD0.put(
+							centerOfGravityList.get(cD0Property.indexOf(cD)),
+							Double.valueOf(cD))
+							);
 				//...............................................................
 				// OSWALD CRUISE
-				String oswladCruiseProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise");
-				if(oswladCruiseProperty != null)
-					oswaldCruise = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_cruise"));
+				List<String> oswladCruiseProperty = reader.getXMLPropertiesByPath("//oswald_cruise");
+				if(!oswladCruiseProperty.isEmpty())
+					oswladCruiseProperty.stream().forEach(e -> oswaldCruise.put(
+							centerOfGravityList.get(oswladCruiseProperty.indexOf(e)),
+							Double.valueOf(e))
+							);
 				//...............................................................
 				// OSWALD CLIMB
-				String oswladClimbProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb");
-				if(oswladClimbProperty != null)
-					oswaldClimb = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_climb"));
+				List<String> oswladClimbProperty = reader.getXMLPropertiesByPath("//oswald_climb");
+				if(!oswladClimbProperty.isEmpty())
+					oswladClimbProperty.stream().forEach(e -> oswaldClimb.put(
+							centerOfGravityList.get(oswladClimbProperty.indexOf(e)),
+							Double.valueOf(e))
+							);
 				//...............................................................
 				// OSWALD TO
-				String oswladTOProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off");
-				if(oswladTOProperty != null)
-					oswaldTakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_take_off"));
+				List<String> oswladTOProperty = reader.getXMLPropertiesByPath("//oswald_take_off");
+				if(!oswladTOProperty.isEmpty())
+					oswladTOProperty.stream().forEach(e -> oswaldTakeOff.put(
+							centerOfGravityList.get(oswladTOProperty.indexOf(e)),
+							Double.valueOf(e))
+							);
 				//...............................................................
 				// OSWALD LND
-				String oswladLNDProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing");
-				if(oswladLNDProperty != null)
-					oswaldLanding = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/oswald_landing"));
+				List<String> oswladLNDProperty = reader.getXMLPropertiesByPath("//oswald_landing");
+				if(!oswladLNDProperty.isEmpty())
+					oswladLNDProperty.stream().forEach(e -> oswaldLanding.put(
+							centerOfGravityList.get(oswladLNDProperty.indexOf(e)),
+							Double.valueOf(e))
+							);
 				//...............................................................
 				// DeltaCD0 TAKE-OFF
-				String deltaCD0TakeOffProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_take_off");
-				if(deltaCD0TakeOffProperty != null)
-					deltaCD0TakeOff = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_take_off"));
+				List<String> deltaCD0TakeOffProperty = reader.getXMLPropertiesByPath("//delta_CD0_flap_take_off");
+				if(!deltaCD0TakeOffProperty.isEmpty())
+					deltaCD0TakeOffProperty.stream().forEach(dCD0 -> deltaCD0TakeOff.put(
+							centerOfGravityList.get(deltaCD0TakeOffProperty.indexOf(dCD0)),
+							Double.valueOf(dCD0))
+							);
 				//...............................................................
 				// DeltaCD0 LANDING
-				String deltaCD0LandingProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_landing");
-				if(deltaCD0LandingProperty != null)
-					deltaCD0Landing = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_flap_landing"));
+				List<String> deltaCD0LandingProperty = reader.getXMLPropertiesByPath("//delta_CD0_flap_landing");
+				if(!deltaCD0LandingProperty.isEmpty())
+					deltaCD0LandingProperty.stream().forEach(dCD0 -> deltaCD0Landing.put(
+							centerOfGravityList.get(deltaCD0LandingProperty.indexOf(dCD0)),
+							Double.valueOf(dCD0))
+							);
 				//...............................................................
 				// DeltaCD0 LANDING GEARS
-				String deltaCD0LandingGearsProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears");
-				if(deltaCD0LandingGearsProperty != null)
-					deltaCD0LandingGears = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_landing_gears"));
+				List<String> deltaCD0LandingGearsProperty = reader.getXMLPropertiesByPath("//delta_CD0_landing_gears");
+				if(!deltaCD0LandingGearsProperty.isEmpty())
+					deltaCD0LandingGearsProperty.stream().forEach(dCD0 -> deltaCD0LandingGears.put(
+							centerOfGravityList.get(deltaCD0LandingGearsProperty.indexOf(dCD0)),
+							Double.valueOf(dCD0))
+							);
 				//...............................................................
 				// DeltaCD0 SPOILERS
-				String deltaCD0SpoilersProperty = reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_spoilers");
-				if(deltaCD0SpoilersProperty != null)
-					deltaCD0Spoilers = Double.valueOf(reader.getXMLPropertyByPath("//performance/aerodynamics/delta_CD0_spoilers"));
+				List<String> deltaCD0SpoilersProperty = reader.getXMLPropertiesByPath("//delta_CD0_spoilers");
+				if(!deltaCD0SpoilersProperty.isEmpty())
+					deltaCD0SpoilersProperty.stream().forEach(dCD0 -> deltaCD0Spoilers.put(
+							centerOfGravityList.get(deltaCD0SpoilersProperty.indexOf(dCD0)),
+							Double.valueOf(dCD0))
+							);
 				
 				int numberOfPolarPoints = 50;
-				
-				//...............................................................
-				// POLAR CURVE CRUISE
-				polarCLCruise = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean, numberOfPolarPoints);				
-				polarCDCruise = new Double[polarCLCruise.length];
-				
-				//...............................................................
-				// POLAR CURVE CLIMB
-				polarCLClimb = MyArrayUtils.linspaceDouble(-0.2, cLmaxClean, numberOfPolarPoints);				
-				polarCDClimb = new Double[polarCLClimb.length];
-				
-				//...............................................................
-				// POLAR CURVE TAKE-OFF
-				polarCLTakeOff = MyArrayUtils.linspaceDouble(-0.2, cLmaxTakeOff, numberOfPolarPoints);
-				polarCDTakeOff = new Double[polarCLTakeOff.length]; 
-				
-				//...............................................................
-				// POLAR CURVE LANDING
-				polarCLLanding = MyArrayUtils.linspaceDouble(-0.2, cLmaxLanding, numberOfPolarPoints);
-				polarCDLanding = new Double[polarCLLanding.length];
-				
-				// building the CD arrays...
-				for(int i=0; i<numberOfPolarPoints; i++) {
-					polarCDClimb[i] = DragCalc.calculateCDTotal(
-							cD0,
-							polarCLClimb[i],
-							theAircraft.getWing().getAspectRatio(),
-							oswaldClimb, 
-							theOperatingConditions.getMachClimb(),
-							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
-									polarCLCruise[i],
-									theOperatingConditions.getMachClimb(),
-									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
-									)
+
+				centerOfGravityList.stream().forEach(xcg -> {
+
+					//...............................................................
+					// POLAR CURVE CRUISE
+					polarCLCruise.put(
+							xcg, 
+							MyArrayUtils.linspaceDouble(-0.2, cLmaxClean.get(xcg), numberOfPolarPoints)
+							);				
+					polarCDCruise.put(
+							xcg,
+							new Double[polarCLCruise.get(xcg).length]
 							);
-					polarCDCruise[i] = DragCalc.calculateCDTotal(
-							cD0,
-							polarCLCruise[i],
-							theAircraft.getWing().getAspectRatio(),
-							oswaldCruise, 
-							theOperatingConditions.getMachCruise(),
-							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
-									polarCLCruise[i],
-									theOperatingConditions.getMachCruise(),
-									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
-									)
+
+					//...............................................................
+					// POLAR CURVE CLIMB
+					polarCLClimb.put(
+							xcg, 
+							MyArrayUtils.linspaceDouble(-0.2, cLmaxClean.get(xcg), numberOfPolarPoints)
+							);				
+					polarCDClimb.put(
+							xcg,
+							new Double[polarCLClimb.get(xcg).length]
 							);
-					polarCDTakeOff[i] = DragCalc.calculateCDTotal(
-							cD0 + deltaCD0TakeOff + deltaCD0LandingGears,
-							polarCLTakeOff[i],
-							theAircraft.getWing().getAspectRatio(),
-							oswaldTakeOff, 
-							theOperatingConditions.getMachCruise(),
-							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
-									polarCLTakeOff[i],
-									theOperatingConditions.getMachCruise(),
-									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
-									)
+
+					//...............................................................
+					// POLAR CURVE TAKE-OFF
+					polarCLTakeOff.put(
+							xcg, 
+							MyArrayUtils.linspaceDouble(-0.2, cLmaxTakeOff.get(xcg), numberOfPolarPoints)
+							);				
+					polarCDTakeOff.put(
+							xcg,
+							new Double[polarCLTakeOff.get(xcg).length]
 							);
-					polarCDLanding[i] = DragCalc.calculateCDTotal(
-							cD0 + deltaCD0Landing + deltaCD0LandingGears + deltaCD0Spoilers,
-							polarCLLanding[i],
-							theAircraft.getWing().getAspectRatio(),
-							oswaldLanding, 
-							theOperatingConditions.getMachCruise(),
-							DragCalc.calculateCDWaveLockKornCriticalMachKroo(
-									polarCLLanding[i],
-									theOperatingConditions.getMachCruise(),
-									theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
-									theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
-									)
+
+					//...............................................................
+					// POLAR CURVE LANDING
+					polarCLLanding.put(
+							xcg, 
+							MyArrayUtils.linspaceDouble(-0.2, cLmaxLanding.get(xcg), numberOfPolarPoints)
+							);				
+					polarCDLanding.put(
+							xcg,
+							new Double[polarCLLanding.get(xcg).length]
 							);
-				}
+
+					//...............................................................
+					// building the CD arrays...
+					for(int i=0; i<numberOfPolarPoints; i++) {
+						polarCDClimb.get(xcg)[i] = DragCalc.calculateCDTotal(
+								cD0.get(xcg),
+								polarCLClimb.get(xcg)[i],
+								theAircraft.getWing().getAspectRatio(),
+								oswaldClimb.get(xcg), 
+								theOperatingConditions.getMachClimb(),
+								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+										polarCLCruise.get(xcg)[i],
+										theOperatingConditions.getMachClimb(),
+										theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
+										)
+								);
+						polarCDCruise.get(xcg)[i] = DragCalc.calculateCDTotal(
+								cD0.get(xcg),
+								polarCLCruise.get(xcg)[i],
+								theAircraft.getWing().getAspectRatio(),
+								oswaldCruise.get(xcg), 
+								theOperatingConditions.getMachCruise(),
+								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+										polarCLCruise.get(xcg)[i],
+										theOperatingConditions.getMachCruise(),
+										theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
+										)
+								);
+						polarCDTakeOff.get(xcg)[i] = DragCalc.calculateCDTotal(
+								cD0.get(xcg) + deltaCD0TakeOff.get(xcg) + deltaCD0LandingGears.get(xcg),
+								polarCLTakeOff.get(xcg)[i],
+								theAircraft.getWing().getAspectRatio(),
+								oswaldTakeOff.get(xcg), 
+								theOperatingConditions.getMachCruise(),
+								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+										polarCLTakeOff.get(xcg)[i],
+										theOperatingConditions.getMachCruise(),
+										theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
+										)
+								);
+						polarCDLanding.get(xcg)[i] = DragCalc.calculateCDTotal(
+								cD0.get(xcg) + deltaCD0Landing.get(xcg) + deltaCD0LandingGears.get(xcg) + deltaCD0Spoilers.get(xcg),
+								polarCLLanding.get(xcg)[i],
+								theAircraft.getWing().getAspectRatio(),
+								oswaldLanding.get(xcg), 
+								theOperatingConditions.getMachCruise(),
+								DragCalc.calculateCDWaveLockKornCriticalMachKroo(
+										polarCLLanding.get(xcg)[i],
+										theOperatingConditions.getMachCruise(),
+										theAircraft.getWing().getSweepHalfChordEquivalent().doubleValue(SI.RADIAN),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getThicknessToChordRatio(),
+										theAircraft.getWing().getAirfoilList().get(0).getAirfoilCreator().getType()
+										)
+								);
+					}
+				});
 			}
 		}
 		
@@ -1660,6 +1871,7 @@ public class ACPerformanceManager {
 				.setOperatingEmptyMass(operatingEmptyMass)
 				.setMaximumFuelMass(maximumFuelMass)
 				.setSinglePassengerMass(singlePassengerMass)
+				.addAllXcgPositionList(centerOfGravityList)
 				.putAllCLmaxClean(cLmaxClean)
 				.putAllCLAlphaClean(cLAlphaClean)
 				.putAllCLAlphaTakeOff(cLAlphaTakeOff)
