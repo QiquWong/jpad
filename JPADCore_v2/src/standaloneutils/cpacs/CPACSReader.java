@@ -491,42 +491,119 @@ public class CPACSReader {
 		return Double.parseDouble(TanSweepAngleString);			
 	}
 
-	/**
-	 * 
-	 * @param pathInTheCpacs Path in the CPACS of the system
-	 * @return return as List : SystemUID, Comand Position and deflection value
-	 * 		   every system have 3 position in the list, for example :
-	 * 		   1->Aileron 2->elevator:
-	 * 		   AileronUID getSystemParameter.get(0)
-	 * 		   Aileron Comand Position getSystemParameter.get(1)
-	 * 		   Aileron deflection value getSystemParameter.get(2)
-	 * 		   ElevatorUID getSystemParameter.get(3)
-	 * 		   Elevator Comand Position getSystemParameter.get(4)
-	 * 		   Elevator deflection value getSystemParameter.get(5)     
-	 */
-	public List<String> getSystemParameter(String pathInTheCpacs){
-		NodeList SystemList = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(),pathInTheCpacs);	
-		String UIDControlSurface;
-		List<String> ReturnSystem = new ArrayList<String>();
-		for (int i=1;i<SystemList.getLength()+1;i++) {
-			Node nodeSystem  = SystemList.item(i); // .getNodeValue();
-			Element SystemElement = (Element) nodeSystem;
-			UIDControlSurface = SystemElement.getAttribute("uID");
+//	/**
+//	 * 
+//	 * @param pathInTheCpacs Path in the CPACS of the system
+//	 * @return return as List : SystemUID, Comand Position and deflection value
+//	 * 		   every system have 3 position in the list, for example :
+//	 * 		   1->Aileron 2->elevator:
+//	 * 		   AileronUID getSystemParameter.get(0)
+//	 * 		   Aileron Comand Position getSystemParameter.get(1)
+//	 * 		   Aileron deflection value getSystemParameter.get(2)
+//	 * 		   ElevatorUID getSystemParameter.get(3)
+//	 * 		   Elevator Comand Position getSystemParameter.get(4)
+//	 * 		   Elevator deflection value getSystemParameter.get(5)     
+//	 */
+//	public List<String> getSystemParameter(String pathInTheCpacs){
+//		NodeList SystemList = MyXMLReaderUtils.getXMLNodeListByPath(
+//				_jpadXmlReader.getXmlDoc(),pathInTheCpacs);	
+//		String UIDControlSurface;
+//		List<String> ReturnSystem = new ArrayList<String>();
+//		for (int i=1;i<SystemList.getLength()+1;i++) {
+//			Node nodeSystem  = SystemList.item(i); // .getNodeValue();
+//			Element SystemElement = (Element) nodeSystem;
+//			UIDControlSurface = SystemElement.getAttribute("uID");
+//
+//			String InputSystem = _jpadXmlReader.getXMLPropertyByPath(
+//					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
+//							+ "/controlDistributor["+i+"]/controlElements/controlElement/commandInputs");
+//			String RelativeDeflection = _jpadXmlReader.getXMLPropertyByPath(
+//					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
+//							+ "/controlDistributor["+i+"]/controlElements/controlElement/relativeDeflection");
+//			ReturnSystem.add(UIDControlSurface);
+//			ReturnSystem.add(InputSystem);					
+//			ReturnSystem.add(RelativeDeflection);
+//		}
+//		return returnSystem;
+//}
+	public double[][] getControlSurfaceRotation(int wingIndex, String controlSurfaceUID, String controlSuraceSystemUID){
+		double [][] matrix = new double [2][3];
+		NodeList systemList = MyXMLReaderUtils.getXMLNodeListByPath(
+				_jpadXmlReader.getXmlDoc(),
+				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+
+				"]/componentSegments/componentSegment/"
+				+ "controlSurfaces/trailingEdgeDevices/trailingEdgeDevice");	
+		for (int i=1;i<systemList.getLength()+1;i++) {
+			Node nodeSystem  = systemList.item(i); // .getNodeValue();
+			Element systemElement = (Element) nodeSystem;
+			if (systemElement.getAttribute("uID")==controlSurfaceUID) {
+				NodeList systemDeflectionList = MyXMLReaderUtils.getXMLNodeListByPath(
+						_jpadXmlReader.getXmlDoc(),
+						"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments"
+						+ "/componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/path/steps/step");
+					String relativeDeflactionString =  _jpadXmlReader.getXMLPropertyByPath(
+							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
+							+ "componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/"
+							+ "path/steps/step["+0+"]/relDeflection");
+					matrix[0][0] = Double.parseDouble(relativeDeflactionString);
 
-			String InputSystem = _jpadXmlReader.getXMLPropertyByPath(
-					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
-							+ "/controlDistributor["+i+"]/controlElements/controlElement/commandInputs");
-			String RelativeDeflection = _jpadXmlReader.getXMLPropertyByPath(
-					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
-							+ "/controlDistributor["+i+"]/controlElements/controlElement/relativeDeflection");
-			ReturnSystem.add(UIDControlSurface);
-			ReturnSystem.add(InputSystem);					
-			ReturnSystem.add(RelativeDeflection);
+					String relativeDeflactionStringEnd =  _jpadXmlReader.getXMLPropertyByPath(
+							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
+							+ "componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/"
+							+ "path/steps/step["+systemDeflectionList.getLength()+"]/relDeflection");
+					matrix[1][0] = Double.parseDouble(relativeDeflactionStringEnd);
+
+					String absoluteDeflactionString =  _jpadXmlReader.getXMLPropertyByPath(
+							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
+							+ "componentSegment/controlSurfaces/trailingEdgeDevices/hingeLineRotation/"
+							+ "path/steps/step["+0+"]/relDeflection");
+					matrix[0][1] = Double.parseDouble(absoluteDeflactionString);
+
+					String absoluteDeflactionStringEnd =  _jpadXmlReader.getXMLPropertyByPath(
+							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
+							+ "componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/"
+							+ "path/steps/step["+systemDeflectionList.getLength()+"]/hingeLineRotation");
+					matrix[1][1] = Double.parseDouble(absoluteDeflactionStringEnd);	
+
+					double[] pilotCommand = getControlSurfacePilotCommand(controlSurfaceUID, controlSuraceSystemUID);
+					matrix[0][2] = pilotCommand[0];
+				    matrix[1][2] = pilotCommand[1];
+
+			}
 		}
-
-		return ReturnSystem;
+		return matrix;
+}		
+		
+	public double[] getControlSurfacePilotCommand(String controlSurfaceUID, String controlSuraceSystemUID){
+		double [] pilotCommand = new double [2]; 
+		NodeList systemList = MyXMLReaderUtils.getXMLNodeListByPath(
+				_jpadXmlReader.getXmlDoc(),"cpacs/vehicles/aircraft/model/systems/controlDistributors");	
+		for (int i=1;i<systemList.getLength()+1;i++) {
+			Node nodeSystem  = systemList.item(i); // .getNodeValue();
+			Element systemElement = (Element) nodeSystem;
+			String controlSurfaceUIDCheck = systemElement.getAttribute("uID");
+			if(controlSuraceSystemUID == controlSurfaceUIDCheck) {
+				NodeList systemListControlSurfaceUID = MyXMLReaderUtils.getXMLNodeListByPath(
+						_jpadXmlReader.getXmlDoc(),"cpacs/vehicles/aircraft/model/systems/"
+								+ "controlDistributors/controlDistributor["+i+"]/controlElements/controlElement");
+				for (int j =1;j<systemListControlSurfaceUID.getLength()+1;j++) {
+					Node nodeSystemControlSurface  = systemList.item(i);
+					Element systemElementControlSurface = (Element) nodeSystem;
+					String CheckControlSurfaceUID = systemElement.getAttribute("uID");
+					if (controlSurfaceUID == CheckControlSurfaceUID) {
+						List<Double> pilotCommandList = _jpadXmlReader.readArrayDoubleFromXMLSplit(
+								"cpacs/vehicles/aircraft/model/systems/controlDistributors/controlDistributor["+i+"]"
+										+ "/controlElements/controlElement["+j+"]/commandInputs");
+						pilotCommand[0]=pilotCommandList.get(0);
+						pilotCommand[1]=pilotCommandList.get(pilotCommandList.size());
+					}			
+				}
+			}			
+		}
+		return pilotCommand;
 	}
+	
+
 
 
 
