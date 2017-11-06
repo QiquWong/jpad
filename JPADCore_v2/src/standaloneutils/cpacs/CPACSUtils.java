@@ -1,5 +1,15 @@
 package standaloneutils.cpacs;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import standaloneutils.MyXMLReaderUtils;
+
 /** 
  * Utility functions for CPACS frile manipulation
  * This class cannot be instantiated
@@ -70,5 +80,38 @@ public final class CPACSUtils {
 		return result.toString();
 	}	
 
+	public static Double getWingChord(Node wingNode) {
+		System.out.println("Reading main wing root chord ...");
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(wingNode, true);
+			doc.appendChild(importedNode);
+			
+			// get the list of sections in wingNode
+			NodeList sections = MyXMLReaderUtils.getXMLNodeListByPath(doc, "//sections/section");
+
+			System.out.println("sections found: " + sections.getLength());
+
+			if (sections.getLength() == 0)
+				return null;
+			
+			// get the first section chord
+			String wingChordString = MyXMLReaderUtils.getXMLPropertyByPath(
+					sections.item(0),
+					"//elements/element/transformation/scaling/x/text()");
+			
+			System.out.println("wingChordString: " + wingChordString);
+			return Double.parseDouble(wingChordString);
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 }

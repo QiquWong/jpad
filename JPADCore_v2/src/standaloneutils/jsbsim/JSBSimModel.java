@@ -1,19 +1,18 @@
 package standaloneutils.jsbsim;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
+import javax.measure.unit.SI;
+
+import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.sun.jna.ptr.IntByReference;
-
-import de.dlr.sc.tigl.CpacsConfiguration;
-import de.dlr.sc.tigl.Tigl;
+import configuration.MyConfiguration;
 import de.dlr.sc.tigl.TiglException;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyXMLReaderUtils;
@@ -27,38 +26,15 @@ public class JSBSimModel {
 		ERROR;
 	}
 
-	JPADXmlReader _jpadXmlReader;
 	CPACSReader _cpacsReader;
-	private String _cpacsFilePath;	
-	private ReadStatus _status = null;
-	CpacsConfiguration _config;
-
-	public JSBSimModel(String filePath) {
-		_cpacsFilePath = filePath;
-		init();
-	}
-
-
-	private void init() {
-
-		try {				
-
-			_status = ReadStatus.OK;
-			_jpadXmlReader = new JPADXmlReader(_cpacsFilePath);
-			_config = Tigl.openCPACSConfiguration(_cpacsFilePath,"");
-			_cpacsReader = new CPACSReader(_cpacsFilePath);
-			_jpadXmlReader = new JPADXmlReader(_cpacsFilePath);
-		} 
-		catch (TiglException e) {
-			_status = ReadStatus.ERROR;
-			System.err.println(e.getMessage());
-			System.err.println(e.getErrorCode());
-		}		
-	}
-
 
 	public JSBSimModel(CPACSReader reader) {
 		_cpacsReader = reader;	
+		init();
+	}
+
+	private void init() {
+		// TODO: in case you need initializations at construction time
 	}
 
 	public CPACSReader getCpacsReader() {
@@ -66,7 +42,14 @@ public class JSBSimModel {
 	}
 
 	public Document getXmlDoc() {
-		return _jpadXmlReader.getXmlDoc();
+		if (_cpacsReader != null) {
+			if (_cpacsReader.getJpadXmlReader() != null)
+				return _cpacsReader.getJpadXmlReader().getXmlDoc();
+			else
+				return null;
+		}
+		else
+			return null;
 	}
 	
 	public void appendToCPACSFile(File file) {
@@ -85,35 +68,71 @@ public class JSBSimModel {
 	}
 
 	public JPADXmlReader getJpadXmlReader() {
-		return _jpadXmlReader;
+		if (_cpacsReader != null)
+			return _cpacsReader.getJpadXmlReader();
+		else
+			return null;
 	}
 
-	public void readVariablesFromCPACS(String cpacsFilePath) throws TiglException {
+	public void readVariablesFromCPACS() throws TiglException {
+		
+		if (_cpacsReader == null)
+			return;
+
+		if (_cpacsReader.getJpadXmlReader() == null)
+			return;
+		
+		JPADXmlReader jpadXmlReader = _cpacsReader.getJpadXmlReader();
+		
+		MyConfiguration.customizeAmountOutput(); // simple output format for Amount-s
+		
 		double[] GravityCenterPosition;
 
 		GravityCenterPosition = _cpacsReader.getGravityCenterPosition();
 		NodeList wingsNodes = _cpacsReader.getWingList();
-		String wingUID = _jpadXmlReader.getXMLAttributeByPath(
-				"cpacs/toolspecific/UNINA_modules/input/wings/MainWing/mainWingUID", "uID");
-		String horizontalTailUID =_jpadXmlReader.getXMLAttributeByPath(
-				"cpacs/toolspecific/UNINA_modules/input/wings/HorizTail/HorizTailUID", "uID");
-		String verticalTailUID =_jpadXmlReader.getXMLAttributeByPath(
-				"cpacs/toolspecific/UNINA_modules/input/wings/HorizTail/HorizTailUID", "uID");
-		int wingIndex = _cpacsReader.getWingIndex(wingUID);
-		int horizontalTailIndex = _cpacsReader.getWingIndex(horizontalTailUID);
-		int verticalTailIndex = _cpacsReader.getWingIndex(verticalTailUID); 
-		//TO DO insert a pointer to the UID of the wing, in the cpacs wing Horizontal tail and verticall tail can have any name 
-		//Start from wing
-		double wingSurface = _cpacsReader.getWingReferenceArea(wingIndex); 
-		double wingSpan = _cpacsReader.getWingSpan(wingUID);
+		
+		// Main wing
+		String wingUID = jpadXmlReader.getXMLPropertyByPath(
+				"/cpacs/toolspecific/UNINA_modules/input/wings/MainWing/mainWingUID");
+		int wingIndex = _cpacsReader.getWingIndexZeroBased(wingUID);
+		System.out.println("wingUID, idx: " + wingUID + ", " + wingIndex);
+
+		// Horizontal tail
+		String horizontalTailUID = jpadXmlReader.getXMLPropertyByPath(
+				"/cpacs/toolspecific/UNINA_modules/input/wings/HorizTail/HorizTailUID");
+		int horizontalTailIndex = _cpacsReader.getWingIndexZeroBased(horizontalTailUID);
+		System.out.println("htailUID, idx: " + horizontalTailUID + ", " + horizontalTailIndex);
+		
+		// Vertical tail
+		String verticalTailUID = jpadXmlReader.getXMLPropertyByPath(
+				"/cpacs/toolspecific/UNINA_modules/input/wings/VerticalTail/VerticalTailUID");
+		int verticalTailIndex = _cpacsReader.getWingIndexZeroBased(verticalTailUID); 
+		System.out.println("vtailUID, idx: " + verticalTailUID + ", " + verticalTailIndex);
+		
+		double wingSurface = _cpacsReader.getWingReferenceArea(wingIndex);
+		System.out.println("wingSurface: " + wingSurface);
+//		double wingWettedArea = _cpacsReader.getWingWettedArea(wingUID);
+//		System.out.println("wingWettedArea: " + wingWettedArea);
+
+		Amount<Area> wingArea = Amount.valueOf(wingSurface,SI.SQUARE_METRE);
+		System.out.println("wing area: " + wingArea);
+		
+		double wspan = _cpacsReader.getWingSpan(wingUID);
+		Amount<Length> wingSpan = Amount.valueOf(wspan,SI.METRE);
+		System.out.println("wing span: " + wingSpan);
+
+		Node wingNode = wingsNodes.item(wingIndex);
+		Double wrootchrd = CPACSUtils.getWingChord(wingNode);
+		Amount<Length> wingRootChord = Amount.valueOf(wrootchrd,SI.METRE);
+		System.out.println("wing root chord: " + wingRootChord);
+		
+
 		NodeList wingSectionElement = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(), 
-				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]sections");
+				jpadXmlReader.getXmlDoc(), 
+				"/cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/sections");
 		int lastWingElementIndex = wingSectionElement.getLength()-1;//Vector start from 0
-		String wingChordString = _jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/vehicles/aircraft/model/wings/wing/sections/section["+0+"]"
-						+ "/elements/element/transformation/scaling/x");
-		double wingRootChord = Double.parseDouble(wingChordString);			
+		
+		
 		//Horizontal tail
 		double horizontalSurface = _cpacsReader.getWingReferenceArea(horizontalTailIndex);
 		double horizontalTailMACLeadingEdge = _cpacsReader.getMeanChordLeadingEdge(horizontalTailUID,"x");
@@ -148,25 +167,25 @@ public class JSBSimModel {
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/location["+2+"]");
 			
 		//Star Mass Balance -->Mass and Inertia
-		String ixx = _jpadXmlReader.getXMLPropertyByPath(
+		String ixx = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
 						+ "mOEM/mEM/massDescription/massInertia/Jxx");
-		String iyy = _jpadXmlReader.getXMLPropertyByPath(
+		String iyy = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
 						+ "mOEM/mEM/massDescription/massInertia/Jyy");
-		String izz = _jpadXmlReader.getXMLPropertyByPath(
+		String izz = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
 						+ "mOEM/mEM/massDescription/massInertia/Jzz");
-		String ixy = _jpadXmlReader.getXMLPropertyByPath(
+		String ixy = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
 						+ "mOEM/mEM/massDescription/massInertia/Jxy");
-		String ixz = _jpadXmlReader.getXMLPropertyByPath(
+		String ixz = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
 						+ "mOEM/mEM/massDescription/massInertia/Jxz");
-		String iyz = _jpadXmlReader.getXMLPropertyByPath(
+		String iyz = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
 						+ "mOEM/mEM/massDescription/massInertia/Jyz");
-		String emptyWeight = _jpadXmlReader.getXMLPropertyByPath(
+		String emptyWeight = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
 						+ "mOEM/mEM/massDescription/mass");
 		//		cpacs/vehicles/aircraft/model/landingGear/noseGears/noseGear/fuselageAttachment/translation ->Path in the CPACS of the nose gear
@@ -174,124 +193,124 @@ public class JSBSimModel {
 
 		//GroundReaction
 		NodeList landingGearList = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(), 
+				jpadXmlReader.getXmlDoc(), 
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear");
 		//Nose gear
-		String noseGearXPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearXPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+0+"]/location/x");		
-		String noseGearYPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearYPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+0+"]/location/y");	
-		String noseGearZPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearZPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+0+"]/location/z");	
-		String noseGearAttribute = _jpadXmlReader.getXMLAttributeByPath(
+		String noseGearAttribute = jpadXmlReader.getXMLAttributeByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+0+"]", "type"); 
-		String noseGearStatic_Friction = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearStatic_Friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/static_friction");
-		String noseGearDynamic_Friction = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearDynamic_Friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/dynamic_friction");
-		String noseGearRolling_friction = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearRolling_friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/rolling_friction");
-		String noseGearSpring_coeff = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearSpring_coeff = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/spring_coeff"); //LBS/FT
-		String noseGearDamping_coeff = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearDamping_coeff = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/damping_coeff");//LBS/FT
-		String noseGearDamping_coeff_rebound = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearDamping_coeff_rebound = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/damping_coeff_rebound");//LBS/FT		
 
-		String noseGearMax_steer = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearMax_steer = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/max_steer");//Deg
-		String noseGearRetractable = _jpadXmlReader.getXMLPropertyByPath(
+		String noseGearRetractable = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/retractable");//1->Retrectable 0 -> Fixed
 
 
 		//Left Main
-		String leftMainXPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainXPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+1+"]/location/x");		
-		String leftMainYPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainYPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+1+"]/location/y");	
-		String leftMainZPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainZPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+1+"]/location/z");	
-		String leftMainGearAttribute = _jpadXmlReader.getXMLAttributeByPath(
+		String leftMainGearAttribute = jpadXmlReader.getXMLAttributeByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+1+"]", "type");
-		String leftMainGearStatic_Friction = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearStatic_Friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/static_friction");
-		String leftMainGearDynamic_Friction = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearDynamic_Friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/dynamic_friction");
-		String leftMainGearRolling_friction = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearRolling_friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/rolling_friction");
-		String leftMainGearSpring_coeff = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearSpring_coeff = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/spring_coeff"); //LBS/FT
-		String leftMainGearDamping_coeff = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearDamping_coeff = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/damping_coeff");//LBS/FT
-		String leftMainGearDamping_coeff_rebound = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearDamping_coeff_rebound = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/damping_coeff_rebound");//LBS/FT		
 
-		String leftMainGearMax_steer = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearMax_steer = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/max_steer");//Deg
-		String leftMainGearRetractable = _jpadXmlReader.getXMLPropertyByPath(
+		String leftMainGearRetractable = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+1+"]/retractable");//1->Retrectable 1 -> Fixed
 
 
 		//Right Main
-		String rightMainXPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainXPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+2+"]/location/x");		
-		String rightMainYPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainYPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+2+"]/location/y");	
-		String rightMainZPosition = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainZPosition = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+2+"]/location/z");			
-		String rightMainGearAttribute = _jpadXmlReader.getXMLAttributeByPath(
+		String rightMainGearAttribute = jpadXmlReader.getXMLAttributeByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+2+"]", "type");	
-		String rightMainGearStatic_Friction = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearStatic_Friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/static_friction");
-		String rightMainGearDynamic_Friction = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearDynamic_Friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/dynamic_friction");
-		String rightMainGearRolling_friction = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearRolling_friction = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/rolling_friction");
-		String rightMainGearSpring_coeff = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearSpring_coeff = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/spring_coeff"); //LBS/FT
-		String rightMainGearDamping_coeff = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearDamping_coeff = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/damping_coeff");//LBS/FT
-		String rightMainGearDamping_coeff_rebound = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearDamping_coeff_rebound = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/damping_coeff_rebound");//LBS/FT		
 
-		String rightMainGearMax_steer = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearMax_steer = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/max_steer");//Deg
-		String rightMainGearRetractable = _jpadXmlReader.getXMLPropertyByPath(
+		String rightMainGearRetractable = jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+2+"]/retractable");//2->Retrectable 2 -> Fixed	
 
@@ -302,25 +321,25 @@ public class JSBSimModel {
 		double[] enginePosition = _cpacsReader.getVectorPosition(
 				"pacs/vehicles/aircraft/model/engines/engine/transformation/translation");
 		//Propulsion Data -> need to write engine script in JSBSim
-		String milthrust =  _jpadXmlReader.getXMLPropertyByPath(
+		String milthrust =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/milthrust");
-		String bypassratio =  _jpadXmlReader.getXMLPropertyByPath(
+		String bypassratio =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/bypassratio");
-		String tsfc =  _jpadXmlReader.getXMLPropertyByPath(
+		String tsfc =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/tsfc");
-		String bleed =  _jpadXmlReader.getXMLPropertyByPath(
+		String bleed =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/bleed");
-		String idlen1 =  _jpadXmlReader.getXMLPropertyByPath(
+		String idlen1 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/idlen1");
-		String idlen2 =  _jpadXmlReader.getXMLPropertyByPath(
+		String idlen2 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/idlen2");
-		String maxn1 =  _jpadXmlReader.getXMLPropertyByPath(
+		String maxn1 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/maxn1");
-		String maxn2 =  _jpadXmlReader.getXMLPropertyByPath(
+		String maxn2 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/maxn2");
-		String augmented =  _jpadXmlReader.getXMLPropertyByPath(
+		String augmented =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/augmented");
-		String injected =  _jpadXmlReader.getXMLPropertyByPath(
+		String injected =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/injected");
 		List<Double> flightLevelEngine = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
 				"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/flightLevel");
@@ -333,7 +352,7 @@ public class JSBSimModel {
 		int k = 0;
 		for(int i= 0;i<machNumberEngine.size()+1;i++) {
 			for (int j = 0;j<flightLevelEngine.size()+1;j++) {
-				if (i==0&&j==0) {
+				if ((i==0) && (j==0)) {
 					idleThrustTable[i][j]=0;
 				}
 				if (j==0 && i !=0 ){
@@ -379,18 +398,18 @@ public class JSBSimModel {
 		String milThrustTableString = CPACSUtils.matrixDoubleToJSBSimTable2D(milThrustTable, "	");
 
 		//thruster
-		String thrust00 =  _jpadXmlReader.getXMLPropertyByPath(
+		String thrust00 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/thrust00");
-		String opr00 =  _jpadXmlReader.getXMLPropertyByPath(
+		String opr00 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/opr00");
-		String bpr00 =  _jpadXmlReader.getXMLPropertyByPath(
+		String bpr00 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/bpr00");
-		String fpr00 =  _jpadXmlReader.getXMLPropertyByPath(
+		String fpr00 =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/fpr00");
 
 		//tank
 		NodeList tankNumberElement = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(), 
+				jpadXmlReader.getXmlDoc(), 
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/TankFuel");
 		double[][] tankMatrix = new double [tankNumberElement.getLength()][3];
 		List<String> capacityTank = null;
@@ -491,12 +510,6 @@ public class JSBSimModel {
 		
 
 	}//end CPACS READ VARIABLE
-
-
-	public ReadStatus getStatus() {
-		return _status;
-	}
-
 
 	public void exportToXML(File file) {
 		// TODO 

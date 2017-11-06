@@ -395,6 +395,39 @@ public class MyXMLReaderUtils {
 		}
 	} // end-of-getXMLPropertyByPath:
 
+	
+	/**
+	 * Get the first occurrence of a property for a given XPath search string
+	 * into a _node_
+	 *
+	 * @author Agostino De Marco
+	 * @param node
+	 * @param expression 
+	 * @return property value
+	 */
+	public static String getXMLPropertyByPath(Node node, String expression) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(node, true);
+			doc.appendChild(importedNode);
+			List<String> props = MyXMLReaderUtils.getXMLPropertiesByPath(doc, expression);
+			System.out.println("getXMLPropertyByPath :: properties found: " + props.size());
+			System.out.println("props[0] " + props.get(0));
+			if (props.size() == 0)
+				return null;
+			else
+				return props.get(0);
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static NodeList getXMLNodeListByPath(Document doc, String expression) {
 		try {
 			XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -442,7 +475,7 @@ public class MyXMLReaderUtils {
 	/*
 	 * Get the list of property values for a given XPath expression
 	 * @param document
-	 * @param string expression
+	 * @param string expression - NOTE: put "/text()" at the end of the expression 
 	 * @return list of properties (strings)
 	 */
 	public static List<String> getXMLPropertiesByPath(Document doc, String expression) {
@@ -474,7 +507,6 @@ public class MyXMLReaderUtils {
 			return null; // ??
 		}
 	} // end-of-getXMLPropertiesByPath:
-
 
 	/*
 	 * Get the node list of property values for a given XPath expression

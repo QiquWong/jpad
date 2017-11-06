@@ -75,7 +75,7 @@ public class CPACSReaderTest2 {
 				for (int i = 0; i < wingsNodes.getLength(); i++) {
 					Node nodeWing  = wingsNodes.item(i); // .getNodeValue();
 					Element elementWing = (Element) nodeWing;
-					wingIndex = cpacsReader.getWingIndex(elementWing.getAttribute("uID"));
+					wingIndex = cpacsReader.getWingIndexZeroBased(elementWing.getAttribute("uID"));
 					System.out.println("WingIndex = "+ wingIndex);
 		            System.out.println("wing[" + i + "] --> uid: " + elementWing.getAttribute("uID"));
 				}
@@ -117,8 +117,8 @@ public class CPACSReaderTest2 {
 				String jsbsimOutputFilePath = cpacsOutputFileFolderPath + File.separator + "pippo_cpacs.xml";
 				
 				JSBSimModel jsbsimModel = new JSBSimModel(cpacsReader);
-				jsbsimModel.appendToCPACSFile(new File(cpacsOutputFileFolderPath)); // TODO
-//				jsbsimModel.readVariablesFromCPACS(cpacsFilePath); // TODO
+//				jsbsimModel.appendToCPACSFile(new File(cpacsOutputFileFolderPath)); // TODO
+				jsbsimModel.readVariablesFromCPACS(); // TODO
 //				jsbsimModel.exportToXML(new File(jsbsimOutputFilePath)); // TODO
 				
 				//table system
