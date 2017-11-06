@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
+import writers.AircraftSaveDirectives;
 
 /**
  * Auto-generated superclass of {@link AircraftSaveDirectives.Builder},
