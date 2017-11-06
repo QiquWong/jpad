@@ -94,9 +94,9 @@ public class ACPerformanceManager {
 	
 	/*
 	 * TODO: - THE CALCULATE METHOD HAS TO BE UPDATED ALLOWING TO MULTI-CG PERFORMANCE EVAULATION
-	 *       - ALL THE OUTPUT HAVE TO BECOME MAPS
 	 *       - ELIMINATE THE INITIAL CRUISE RANGE AND INITIAL MISSION FUEL FROM THE INPUT FILE
-	 *         AND GIVE THEM DEFAULT VALUE (RANGE -> BREGUET; FUEL -> MAX_FUEL/2)
+	 *         AND GIVE THEM DEFAULT VALUE (RANGE -> BREGUET; FUEL -> MAX_FUEL/2).
+	 *       - ALLOW DEFINITION OF SFC OR CALCULATE IT SCALING THE MAX CRUISE
 	 *       - CRATE A FOLDER FOR EACH XCG IN OUTPUT TO STORE FILES AND CHARTS (IN THIS WAY YOU DO
 	 *         NOT NEED TO MODIFY THE METHOD THAT CREATE CHARTS AND XLSX)
 	 *       - DEBUG ALL!! (IN PARTICULAR DURING MISSION PROFILE ANALYSIS OR PAYLOAD RANGE WHEN THE SECOND CLIMB FREEZES THE EXECUTION)
@@ -116,166 +116,329 @@ public class ACPerformanceManager {
 	// OUTPUT DATA
 	//..............................................................................
 	// Take-Off
-	private TakeOffCalc _theTakeOffCalculator;
-	private Amount<Length> _takeOffDistanceAEO;
-	private Amount<Length> _takeOffDistanceFAR25;
-	private Amount<Length> _balancedFieldLength;
-	private Amount<Length> _groundRollDistanceTakeOff;
-	private Amount<Length> _rotationDistanceTakeOff;
-	private Amount<Length> _airborneDistanceTakeOff;
-	private Amount<Velocity> _vStallTakeOff;
-	private Amount<Velocity> _vMC;
-	private Amount<Velocity> _vRotation;
-	private Amount<Velocity> _vLiftOff;
-	private Amount<Velocity> _v1;
-	private Amount<Velocity> _v2;
-	private Amount<Duration> _takeOffDuration;
-	private double[] _thrustMomentOEI;;
-	private double[] _yawingMomentOEI;
+	private Map<Double, TakeOffCalc> _theTakeOffCalculatorMap;
+	private Map<Double, Amount<Length>> _takeOffDistanceAEOMap;
+	private Map<Double, Amount<Length>> _takeOffDistanceFAR25Map;
+	private Map<Double, Amount<Length>> _balancedFieldLengthMap;
+	private Map<Double, Amount<Length>> _groundRollDistanceTakeOffMap;
+	private Map<Double, Amount<Length>> _rotationDistanceTakeOffMap;
+	private Map<Double, Amount<Length>> _airborneDistanceTakeOffMap;
+	private Map<Double, Amount<Velocity>> _vStallTakeOffMap;
+	private Map<Double, Amount<Velocity>> _vMCMap;
+	private Map<Double, Amount<Velocity>>_vRotationMap;
+	private Map<Double, Amount<Velocity>> _vLiftOffMap;
+	private Map<Double, Amount<Velocity>>_v1Map;
+	private Map<Double, Amount<Velocity>> _v2Map;
+	private Map<Double, Amount<Duration>> _takeOffDurationMap;
+	private Map<Double, double[]> _thrustMomentOEIMap;
+	private Map<Double, double[]> _yawingMomentOEIMap;
 	//..............................................................................
 	// Climb
-	private ClimbCalc _theClimbCalculator;
-	private List<RCMap> _rcMapAEO;
-	private List<RCMap> _rcMapOEI;
-	private CeilingMap _ceilingMapAEO;
-	private CeilingMap _ceilingMapOEI;
-	private List<DragMap> _dragListAEO;
-	private List<ThrustMap> _thrustListAEO;
-	private List<DragMap> _dragListOEI;
-	private List<ThrustMap> _thrustListOEI;
-	private Map<String, List<Double>> _efficiencyMapAltitudeAEO;
-	private Map<String, List<Double>> _efficiencyMapAltitudeOEI;
+	private Map<Double, ClimbCalc> _theClimbCalculatorMap;
+	private Map<Double, List<RCMap>> _rcMapAEOMap;
+	private Map<Double, List<RCMap>> _rcMapOEIMap;
+	private Map<Double, CeilingMap> _ceilingMapAEOMap;
+	private Map<Double, CeilingMap> _ceilingMapOEIMap;
+	private Map<Double, List<DragMap>> _dragListAEOMap;
+	private Map<Double, List<ThrustMap>> _thrustListAEOMap;
+	private Map<Double, List<DragMap>> _dragListOEIMap;
+	private Map<Double, List<ThrustMap>> _thrustListOEIMap;
+	private Map<Double, Map<String, List<Double>>> _efficiencyMapAltitudeAEOMap;
+	private Map<Double, Map<String, List<Double>>> _efficiencyMapAltitudeOEIMap;
 	
-	private Amount<Length> _absoluteCeilingAEO;
-	private Amount<Length> _serviceCeilingAEO;
-	private Amount<Duration> _minimumClimbTimeAEO;
-	private Amount<Duration> _climbTimeAtSpecificClimbSpeedAEO;
-	private Amount<Mass> _fuelUsedDuringClimb;
+	private Map<Double, Amount<Length>> _absoluteCeilingAEOMap;
+	private Map<Double, Amount<Length>> _serviceCeilingAEOMap;
+	private Map<Double, Amount<Duration>> _minimumClimbTimeAEOMap;
+	private Map<Double, Amount<Duration>> _climbTimeAtSpecificClimbSpeedAEOMap;
+	private Map<Double, Amount<Mass>> _fuelUsedDuringClimbMap;
 	
-	private Amount<Length> _absoluteCeilingOEI;
-	private Amount<Length> _serviceCeilingOEI;
+	private Map<Double, Amount<Length>> _absoluteCeilingOEIMap;
+	private Map<Double, Amount<Length>> _serviceCeilingOEIMap;
 	//..............................................................................
 	// Cruise
-	private List<DragMap> _dragListAltitudeParameterization;
-	private List<ThrustMap> _thrustListAltitudeParameterization;
-	private List<DragMap> _dragListWeightParameterization;
-	private List<ThrustMap> _thrustListWeightParameterization;
-	private List<Amount<Force>> _weightListCruise;
+	private Map<Double, List<DragMap>> _dragListAltitudeParameterizationMap;
+	private Map<Double, List<ThrustMap>> _thrustListAltitudeParameterizationMap;
+	private Map<Double, List<DragMap>> _dragListWeightParameterizationMap;
+	private Map<Double, List<ThrustMap>> _thrustListWeightParameterizationMap;
+	private Map<Double, List<Amount<Force>>> _weightListCruiseMap;
 	
-	private List<DragThrustIntersectionMap> _intersectionList;
-	private List<FlightEnvelopeMap> _cruiseEnvelopeList;
+	private Map<Double, List<DragThrustIntersectionMap>> _intersectionListMap;
+	private Map<Double, List<FlightEnvelopeMap>> _cruiseEnvelopeListMap;
 	
-	private Map<String, List<Double>> _efficiencyMapAltitude;
-	private Map<String, List<Double>> _efficiencyMapWeight;
+	private Map<Double, Map<String, List<Double>>> _efficiencyMapAltitudeMap;
+	private Map<Double, Map<String, List<Double>>> _efficiencyMapWeightMap;
 	
-	private List<SpecificRangeMap> _specificRangeMap;
+	private Map<Double, List<SpecificRangeMap>> _specificRangeMapMap;
 	
-	private Amount<Velocity> _maxSpeesTASAtCruiseAltitude;
-	private Amount<Velocity> _minSpeesTASAtCruiseAltitude;
-	private Amount<Velocity> _maxSpeesCASAtCruiseAltitude;
-	private Amount<Velocity> _minSpeesCASAtCruiseAltitude;
-	private Double _maxMachAtCruiseAltitude;
-	private Double _minMachAtCruiseAltitude;
-	private Double _efficiencyAtCruiseAltitudeAndMach;
-	private Amount<Force> _thrustAtCruiseAltitudeAndMach;
-	private Amount<Force> _dragAtCruiseAltitudeAndMach;
-	private Amount<Power> _powerAvailableAtCruiseAltitudeAndMach;
-	private Amount<Power> _powerNeededAtCruiseAltitudeAndMach;
+	private Map<Double, Amount<Velocity>> _maxSpeesTASAtCruiseAltitudeMap;
+	private Map<Double, Amount<Velocity>> _minSpeesTASAtCruiseAltitudeMap;
+	private Map<Double, Amount<Velocity>> _maxSpeesCASAtCruiseAltitudeMap;
+	private Map<Double, Amount<Velocity>> _minSpeesCASAtCruiseAltitudeMap;
+	private Map<Double, Double> _maxMachAtCruiseAltitudeMap;
+	private Map<Double, Double> _minMachAtCruiseAltitudeMap;
+	private Map<Double, Double> _efficiencyAtCruiseAltitudeAndMachMap;
+	private Map<Double, Amount<Force>> _thrustAtCruiseAltitudeAndMachMap;
+	private Map<Double, Amount<Force>> _dragAtCruiseAltitudeAndMachMap;
+	private Map<Double, Amount<Power>> _powerAvailableAtCruiseAltitudeAndMachMap;
+	private Map<Double, Amount<Power>> _powerNeededAtCruiseAltitudeAndMachMap;
 	//..............................................................................
 	// Descent
-	private DescentCalc _theDescentCalculator;
-	private List<Amount<Length>> _descentLengths;
-	private List<Amount<Duration>> _descentTimes;
-	private List<Amount<Angle>> _descentAngles;
-	private Amount<Length> _totalDescentLength;
-	private Amount<Duration> _totalDescentTime;
-	private Amount<Mass> _totalDescentFuelUsed;
+	private Map<Double, DescentCalc> _theDescentCalculatorMap;
+	private Map<Double, List<Amount<Length>>> _descentLengthsMap;
+	private Map<Double, List<Amount<Duration>>> _descentTimesMap;
+	private Map<Double, List<Amount<Angle>>> _descentAnglesMap;
+	private Map<Double, Amount<Length>> _totalDescentLengthMap;
+	private Map<Double, Amount<Duration>> _totalDescentTimeMap;
+	private Map<Double, Amount<Mass>> _totalDescentFuelUsedMap;
 	//..............................................................................
 	// Landing
-	private LandingCalc _theLandingCalculator;
-	private Amount<Length> _landingDistance;
-	private Amount<Length> _landingDistanceFAR25;
-	private Amount<Length> _groundRollDistanceLanding;
-	private Amount<Length> _flareDistanceLanding;
-	private Amount<Length> _airborneDistanceLanding;
-	private Amount<Velocity> _vStallLanding;
-	private Amount<Velocity> _vApproach;
-	private Amount<Velocity> _vFlare;
-	private Amount<Velocity> _vTouchDown;
-	private Amount<Duration> _landingDuration;
+	private Map<Double, LandingCalc> _theLandingCalculatorMap;
+	private Map<Double, Amount<Length>> _landingDistanceMap;
+	private Map<Double, Amount<Length>> _landingDistanceFAR25Map;
+	private Map<Double, Amount<Length>> _groundRollDistanceLandingMap;
+	private Map<Double, Amount<Length>> _flareDistanceLandingMap;
+	private Map<Double, Amount<Length>> _airborneDistanceLandingMap;
+	private Map<Double, Amount<Velocity>> _vStallLandingMap;
+	private Map<Double, Amount<Velocity>> _vApproachMap;
+	private Map<Double, Amount<Velocity>> _vFlareMap;
+	private Map<Double, Amount<Velocity>> _vTouchDownMap;
+	private Map<Double, Amount<Duration>> _landingDurationMap;
 	//..............................................................................
 	// Payload-Range
-	private PayloadRangeCalcMissionProfile _thePayloadRangeCalculator;
+	private Map<Double, PayloadRangeCalcMissionProfile> _thePayloadRangeCalculatorMap;
 	
-	private Amount<Length> _rangeAtMaxPayload;
-	private Amount<Length> _rangeAtDesignPayload;
-	private Amount<Length> _rangeAtMaxFuel;	
-	private Amount<Length> _rangeAtZeroPayload;
-	private Amount<Mass> _takeOffMassAtZeroPayload;
-	private Amount<Mass> _maxPayload;
-	private Amount<Mass> _designPayload;
-	private Amount<Mass> _payloadAtMaxFuel;
-	private Integer _passengersNumberAtMaxPayload;
-	private Integer _passengersNumberAtDesignPayload;
-	private Integer _passengersNumberAtMaxFuel;
-	private Amount<Mass> _requiredMassAtMaxPayload;
-	private Amount<Mass> _requiredMassAtDesignPayload;
+	private Map<Double, Amount<Length>> _rangeAtMaxPayloadMap;
+	private Map<Double, Amount<Length>> _rangeAtDesignPayloadMap;
+	private Map<Double, Amount<Length>> _rangeAtMaxFuelMap;	
+	private Map<Double, Amount<Length>> _rangeAtZeroPayloadMap;
+	private Map<Double, Amount<Mass>> _takeOffMassAtZeroPayloadMap;
+	private Map<Double, Amount<Mass>> _maxPayloadMap;
+	private Map<Double, Amount<Mass>> _designPayloadMap;
+	private Map<Double, Amount<Mass>> _payloadAtMaxFuelMap;
+	private Map<Double, Integer> _passengersNumberAtMaxPayloadMap;
+	private Map<Double, Integer> _passengersNumberAtDesignPayloadMap;
+	private Map<Double, Integer> _passengersNumberAtMaxFuelMap;
+	private Map<Double, Amount<Mass>> _requiredMassAtMaxPayloadMap;
+	private Map<Double, Amount<Mass>> _requiredMassAtDesignPayloadMap;
 	
-	private List<Amount<Length>> _rangeArray;
-	private List<Double> _payloadArray;
+	private Map<Double, List<Amount<Length>>> _rangeArrayMap;
+	private Map<Double, List<Double>> _payloadArrayMap;
 	
-	private double[][] _rangeMatrix;
-	private double[][] _payloadMatrix;
+	private Map<Double, double[][]> _rangeMatrixMap;
+	private Map<Double, double[][]> _payloadMatrixMap;
 	//..............................................................................
 	// Maneuvering and Gust Flight Envelope 
-	private FlightManeuveringEnvelopeCalc _theEnvelopeCalculator;
-	private Amount<Velocity> _stallSpeedFullFlap;
-	private Amount<Velocity> _stallSpeedClean;
-	private Amount<Velocity> _stallSpeedInverted;
-	private Amount<Velocity> _maneuveringSpeed;
-	private Amount<Velocity> _maneuveringFlapSpeed;
-	private Amount<Velocity> _maneuveringSpeedInverted;
-	private Amount<Velocity> _designFlapSpeed;
-	private Double _positiveLoadFactorManeuveringSpeed;
-	private Double _positiveLoadFactorCruisingSpeed;
-	private Double _positiveLoadFactorDiveSpeed;
-	private Double _positiveLoadFactorDesignFlapSpeed;
-	private Double _negativeLoadFactorManeuveringSpeedInverted;
-	private Double _negativeLoadFactorCruisingSpeed;
-	private Double _negativeLoadFactorDiveSpeed;
-	private Double _positiveLoadFactorManeuveringSpeedWithGust;
-	private Double _positiveLoadFactorCruisingSpeedWithGust;
-	private Double _positiveLoadFactorDiveSpeedWithGust;
-	private Double _positiveLoadFactorDesignFlapSpeedWithGust;
-	private Double _negativeLoadFactorManeuveringSpeedInvertedWithGust;
-	private Double _negativeLoadFactorCruisingSpeedWithGust;
-	private Double _negativeLoadFactorDiveSpeedWithGust;
-	private Double _negativeLoadFactorDesignFlapSpeedWithGust;
+	private Map<Double, FlightManeuveringEnvelopeCalc> _theEnvelopeCalculatorMap;
+	private Map<Double, Amount<Velocity>> _stallSpeedFullFlapMap;
+	private Map<Double, Amount<Velocity>> _stallSpeedCleanMap;
+	private Map<Double, Amount<Velocity>> _stallSpeedInvertedMap;
+	private Map<Double, Amount<Velocity>> _maneuveringSpeedMap;
+	private Map<Double, Amount<Velocity>> _maneuveringFlapSpeedMap;
+	private Map<Double, Amount<Velocity>> _maneuveringSpeedInvertedMap;
+	private Map<Double, Amount<Velocity>> _designFlapSpeedMap;
+	private Map<Double, Double> _positiveLoadFactorManeuveringSpeedMap;
+	private Map<Double, Double> _positiveLoadFactorCruisingSpeedMap;
+	private Map<Double, Double> _positiveLoadFactorDiveSpeedMap;
+	private Map<Double, Double> _positiveLoadFactorDesignFlapSpeedMap;
+	private Map<Double, Double> _negativeLoadFactorManeuveringSpeedInvertedMap;
+	private Map<Double, Double> _negativeLoadFactorCruisingSpeedMap;
+	private Map<Double, Double> _negativeLoadFactorDiveSpeedMap;
+	private Map<Double, Double> _positiveLoadFactorManeuveringSpeedWithGustMap;
+	private Map<Double, Double> _positiveLoadFactorCruisingSpeedWithGustMap;
+	private Map<Double, Double> _positiveLoadFactorDiveSpeedWithGustMap;
+	private Map<Double, Double> _positiveLoadFactorDesignFlapSpeedWithGustMap;
+	private Map<Double, Double> _negativeLoadFactorManeuveringSpeedInvertedWithGustMap;
+	private Map<Double, Double> _negativeLoadFactorCruisingSpeedWithGustMap;
+	private Map<Double, Double> _negativeLoadFactorDiveSpeedWithGustMap;
+	private Map<Double, Double> _negativeLoadFactorDesignFlapSpeedWithGustMap;
 	//..............................................................................
 	// Mission profile
-	private MissionProfileCalc _theMissionProfileCalculator;
-	private List<Amount<Length>> _altitudeList;
-	private List<Amount<Length>> _rangeList;
-	private List<Amount<Duration>> _timeList;
-	private List<Amount<Mass>> _fuelUsedList;
-	private List<Amount<Mass>> _massList;
-	private List<Amount<Velocity>> _speedTASMissionList;
-	private List<Double> _machMissionList;
-	private List<Double> _liftingCoefficientMissionList;
-	private List<Double> _dragCoefficientMissionList;
-	private List<Double> _efficiencyMissionList;
-	private List<Amount<Force>> _thrustMissionList;
-	private List<Amount<Force>> _dragMissionList;
+	private Map<Double, MissionProfileCalc> _theMissionProfileCalculatorMap;
+	private Map<Double, List<Amount<Length>>> _altitudeListMap;
+	private Map<Double, List<Amount<Length>>> _rangeListMap;
+	private Map<Double, List<Amount<Duration>>> _timeListMap;
+	private Map<Double, List<Amount<Mass>>> _fuelUsedListMap;
+	private Map<Double, List<Amount<Mass>>> _massListMap;
+	private Map<Double, List<Amount<Velocity>>> _speedTASMissionListMap;
+	private Map<Double, List<Double>> _machMissionListMap;
+	private Map<Double, List<Double>> _liftingCoefficientMissionListMap;
+	private Map<Double, List<Double>> _dragCoefficientMissionListMap;
+	private Map<Double, List<Double>> _efficiencyMissionListMap;
+	private Map<Double, List<Amount<Force>>> _thrustMissionListMap;
+	private Map<Double, List<Amount<Force>>> _dragMissionListMap;
 	
-	private Amount<Mass> _initialFuelMass;
-	private Amount<Mass> _totalFuelUsed;
-	private Amount<Duration> _totalMissionTime;
-	private Amount<Mass> _initialMissionMass;
-	private Amount<Mass> _endMissionMass;
+	private Map<Double, Amount<Mass>> _initialFuelMassMap;
+	private Map<Double, Amount<Mass>> _totalFuelUsedMap;
+	private Map<Double, Amount<Duration>> _totalMissionTimeMap;
+	private Map<Double, Amount<Mass>> _initialMissionMassMap;
+	private Map<Double, Amount<Mass>> _endMissionMassMap;
 	
 	//------------------------------------------------------------------------------
 	// METHODS:
 	//------------------------------------------------------------------------------
+	private void initializeData() {
+		
+		//..............................................................................
+		// Take-Off
+		_theTakeOffCalculatorMap = new HashMap<>();
+		_takeOffDistanceAEOMap = new HashMap<>();
+		_balancedFieldLengthMap = new HashMap<>();
+		_takeOffDistanceFAR25Map = new HashMap<>();
+		_groundRollDistanceTakeOffMap = new HashMap<>();
+		_rotationDistanceTakeOffMap = new HashMap<>();
+		_airborneDistanceTakeOffMap = new HashMap<>();
+		_vStallTakeOffMap = new HashMap<>();
+		_vMCMap = new HashMap<>();
+		_vRotationMap = new HashMap<>();
+		_vLiftOffMap = new HashMap<>();
+		_v1Map = new HashMap<>();
+		_v2Map = new HashMap<>();
+		_takeOffDurationMap = new HashMap<>();
+		_thrustMomentOEIMap = new HashMap<>();
+		_yawingMomentOEIMap = new HashMap<>();
+		//..............................................................................
+		// Climb
+		_theClimbCalculatorMap = new HashMap<>();
+		_rcMapAEOMap = new HashMap<>();
+		_rcMapOEIMap = new HashMap<>();
+		_ceilingMapAEOMap = new HashMap<>();
+		_ceilingMapOEIMap = new HashMap<>();
+		_dragListAEOMap = new HashMap<>();
+		_thrustListAEOMap = new HashMap<>();
+		_dragListOEIMap = new HashMap<>();
+		_thrustListOEIMap = new HashMap<>();
+		_efficiencyMapAltitudeAEOMap = new HashMap<>();
+		_efficiencyMapAltitudeOEIMap = new HashMap<>();
+		
+		_absoluteCeilingAEOMap = new HashMap<>();
+		_serviceCeilingAEOMap = new HashMap<>();
+		_minimumClimbTimeAEOMap = new HashMap<>();
+		_climbTimeAtSpecificClimbSpeedAEOMap = new HashMap<>();
+		_fuelUsedDuringClimbMap = new HashMap<>();
+		
+		_absoluteCeilingOEIMap = new HashMap<>();
+		_serviceCeilingOEIMap = new HashMap<>();
+		//..............................................................................
+		// Cruise
+		_dragListAltitudeParameterizationMap = new HashMap<>();
+		_thrustListAltitudeParameterizationMap = new HashMap<>();
+		_dragListWeightParameterizationMap = new HashMap<>();
+		_thrustListWeightParameterizationMap = new HashMap<>();
+		_weightListCruiseMap = new HashMap<>();
+		
+		_intersectionListMap = new HashMap<>();
+		_cruiseEnvelopeListMap = new HashMap<>();
+		
+		_efficiencyMapAltitudeMap = new HashMap<>();
+		_efficiencyMapWeightMap = new HashMap<>();
+		
+		_specificRangeMapMap = new HashMap<>();
+		
+		_maxSpeesTASAtCruiseAltitudeMap = new HashMap<>();
+		_minSpeesTASAtCruiseAltitudeMap = new HashMap<>();
+		_maxSpeesCASAtCruiseAltitudeMap = new HashMap<>();
+		_minSpeesCASAtCruiseAltitudeMap = new HashMap<>();
+		_maxMachAtCruiseAltitudeMap = new HashMap<>();
+		_minMachAtCruiseAltitudeMap = new HashMap<>();
+		_efficiencyAtCruiseAltitudeAndMachMap = new HashMap<>();
+		_thrustAtCruiseAltitudeAndMachMap = new HashMap<>();
+		_dragAtCruiseAltitudeAndMachMap = new HashMap<>();
+		_powerAvailableAtCruiseAltitudeAndMachMap = new HashMap<>();
+		_powerNeededAtCruiseAltitudeAndMachMap = new HashMap<>();
+		//.............................................................................
+		// Descent
+		_theDescentCalculatorMap = new HashMap<>();
+		_descentLengthsMap = new HashMap<>();
+		_descentTimesMap = new HashMap<>();
+		_descentAnglesMap = new HashMap<>();
+		_totalDescentLengthMap = new HashMap<>();
+		_totalDescentTimeMap = new HashMap<>();
+		_totalDescentFuelUsedMap = new HashMap<>();
+		//..............................................................................
+		// Landing
+		_theLandingCalculatorMap = new HashMap<>();
+		_landingDistanceMap = new HashMap<>();
+		_landingDistanceFAR25Map = new HashMap<>();
+		_groundRollDistanceLandingMap = new HashMap<>();
+		_flareDistanceLandingMap = new HashMap<>();
+		_airborneDistanceLandingMap = new HashMap<>();
+		_vStallLandingMap = new HashMap<>();
+		_vApproachMap = new HashMap<>();
+		_vFlareMap = new HashMap<>();
+		_vTouchDownMap = new HashMap<>();
+		_landingDurationMap = new HashMap<>();
+		//..............................................................................
+		// Payload-Range
+		_thePayloadRangeCalculatorMap = new HashMap<>();
+		
+		_rangeAtMaxPayloadMap = new HashMap<>();
+		_rangeAtDesignPayloadMap = new HashMap<>();
+		_rangeAtMaxFuelMap = new HashMap<>();	
+		_rangeAtZeroPayloadMap = new HashMap<>();
+		_takeOffMassAtZeroPayloadMap = new HashMap<>();
+		_maxPayloadMap = new HashMap<>();
+		_designPayloadMap = new HashMap<>();
+		_payloadAtMaxFuelMap = new HashMap<>();
+		_passengersNumberAtMaxPayloadMap = new HashMap<>();
+		_passengersNumberAtDesignPayloadMap = new HashMap<>();
+		_passengersNumberAtMaxFuelMap = new HashMap<>();
+		_requiredMassAtMaxPayloadMap = new HashMap<>();
+		_requiredMassAtDesignPayloadMap = new HashMap<>();
+		
+		_rangeArrayMap = new HashMap<>();
+		_payloadArrayMap = new HashMap<>();
+		
+		_rangeMatrixMap = new HashMap<>();
+		_payloadMatrixMap = new HashMap<>();
+		//..............................................................................
+		// Maneuvering and Gust Flight Envelope 
+		_theEnvelopeCalculatorMap = new HashMap<>();
+		_stallSpeedFullFlapMap = new HashMap<>();
+		_stallSpeedCleanMap = new HashMap<>();
+		_stallSpeedInvertedMap = new HashMap<>();
+		_maneuveringSpeedMap = new HashMap<>();
+		_maneuveringFlapSpeedMap = new HashMap<>();
+		_maneuveringSpeedInvertedMap = new HashMap<>();
+		_designFlapSpeedMap = new HashMap<>();
+		_positiveLoadFactorManeuveringSpeedMap = new HashMap<>();
+		_positiveLoadFactorCruisingSpeedMap = new HashMap<>();
+		_positiveLoadFactorDiveSpeedMap = new HashMap<>();
+		_positiveLoadFactorDesignFlapSpeedMap = new HashMap<>();
+		_negativeLoadFactorManeuveringSpeedInvertedMap = new HashMap<>();
+		_negativeLoadFactorCruisingSpeedMap = new HashMap<>();
+		_negativeLoadFactorDiveSpeedMap = new HashMap<>();
+		_positiveLoadFactorManeuveringSpeedWithGustMap = new HashMap<>();
+		_positiveLoadFactorCruisingSpeedWithGustMap = new HashMap<>();
+		_positiveLoadFactorDiveSpeedWithGustMap = new HashMap<>();
+		_positiveLoadFactorDesignFlapSpeedWithGustMap = new HashMap<>();
+		_negativeLoadFactorManeuveringSpeedInvertedWithGustMap = new HashMap<>();
+		_negativeLoadFactorCruisingSpeedWithGustMap = new HashMap<>();
+		_negativeLoadFactorDiveSpeedWithGustMap = new HashMap<>();
+		_negativeLoadFactorDesignFlapSpeedWithGustMap = new HashMap<>();
+		//..............................................................................
+		// Mission profile
+		_theMissionProfileCalculatorMap = new HashMap<>();
+		_altitudeListMap = new HashMap<>();
+		_rangeListMap = new HashMap<>();
+		_timeListMap = new HashMap<>();
+		_fuelUsedListMap = new HashMap<>();
+		_massListMap = new HashMap<>();
+		_speedTASMissionListMap = new HashMap<>();
+		_machMissionListMap = new HashMap<>();
+		_liftingCoefficientMissionListMap = new HashMap<>();
+		_dragCoefficientMissionListMap = new HashMap<>();
+		_efficiencyMissionListMap = new HashMap<>();
+		_thrustMissionListMap = new HashMap<>();
+		_dragMissionListMap = new HashMap<>();
+	
+		_initialFuelMassMap = new HashMap<>();
+		_totalFuelUsedMap = new HashMap<>();
+		_totalMissionTimeMap = new HashMap<>();
+		_initialMissionMassMap = new HashMap<>();
+		_endMissionMassMap = new HashMap<>();
+		
+	}
+	
 	@SuppressWarnings({ "resource", "unchecked", "unused" })
 	public static ACPerformanceManager importFromXML (
 			String pathToXML,
@@ -431,13 +594,6 @@ public class ACPerformanceManager {
 		if(readAerodynamicsFromPreviousAnalysisFlag == Boolean.TRUE) {
 			if(theAircraft.getTheAnalysisManager() != null) {
 				if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability() != null) {
-
-					////////////////////////////////////////////////////////////////////////////
-					//																		  //
-					// TODO : CHECK THAT ALL THE XCG OF ALL CONDITIONS ARE THE SAME,          //
-					//		  OTHERWISE TERMINATE AND GIVE A WARNING    					  //
-					//																	      //
-					////////////////////////////////////////////////////////////////////////////
 
 					List<Double> xcgTakeOff = new ArrayList<>();
 					List<Double> xcgClimb = new ArrayList<>();
@@ -1949,6 +2105,8 @@ public class ACPerformanceManager {
 	 * performe the required calculation
 	 */
 	public void calculate(String resultsFolderPath) {
+		
+		initializeData();
 		
 		String performanceFolderPath = JPADStaticWriteUtils.createNewFolder(
 				resultsFolderPath 
@@ -5361,1058 +5519,1085 @@ public class ACPerformanceManager {
 	//............................................................................
 	// END OF THE MISSION PROFILE INNER CLASS
 	//............................................................................	
-	
+
 	//------------------------------------------------------------------------------
 	// GETTERS & SETTERS
 	//------------------------------------------------------------------------------
-
-	public Amount<Length> getTakeOffDistanceAEO() {
-		return _takeOffDistanceAEO;
-	}
-
-	public void setTakeOffDistanceAEO(Amount<Length> _takeOffDistanceAEO) {
-		this._takeOffDistanceAEO = _takeOffDistanceAEO;
-	}
-
-	public Amount<Length> getTakeOffDistanceFAR25() {
-		return _takeOffDistanceFAR25;
-	}
-
-	public void setTakeOffDistanceFAR25(Amount<Length> _takeOffDistanceFAR25) {
-		this._takeOffDistanceFAR25 = _takeOffDistanceFAR25;
-	}
-
-	public Amount<Length> getBalancedFieldLength() {
-		return _balancedFieldLength;
-	}
-
-	public void setBalancedFieldLength(Amount<Length> _balancedFieldLength) {
-		this._balancedFieldLength = _balancedFieldLength;
-	}
-
-	public Amount<Length> getGroundRollDistanceTakeOff() {
-		return _groundRollDistanceTakeOff;
-	}
-
-	public void setGroundRollDistanceTakeOff(Amount<Length> _groundRoll) {
-		this._groundRollDistanceTakeOff = _groundRoll;
-	}
-
-	public Amount<Length> getRotationDistanceTakeOff() {
-		return _rotationDistanceTakeOff;
-	}
-
-	public void setRotationDistanceTakeOff(Amount<Length> _rotation) {
-		this._rotationDistanceTakeOff = _rotation;
-	}
-
-	public Amount<Length> getAirborneDistanceTakeOff() {
-		return _airborneDistanceTakeOff;
-	}
-
-	public void setAirborneDistanceTakeOff(Amount<Length> _airborne) {
-		this._airborneDistanceTakeOff = _airborne;
-	}
-
-	public Amount<Velocity> getVStallTakeOff() {
-		return _vStallTakeOff;
-	}
-
-	public void setVStallTakeOff(Amount<Velocity> _vsTO) {
-		this._vStallTakeOff = _vsTO;
-	}
-
-	public Amount<Velocity> getVRotation() {
-		return _vRotation;
-	}
-
-	public void setVRotation(Amount<Velocity> _vRotation) {
-		this._vRotation = _vRotation;
-	}
-
-	public Amount<Velocity> getVLiftOff() {
-		return _vLiftOff;
-	}
-
-	public void setVLiftOff(Amount<Velocity> _vLiftOff) {
-		this._vLiftOff = _vLiftOff;
-	}
-
-	public Amount<Velocity> getV1() {
-		return _v1;
-	}
-
-	public void setV1(Amount<Velocity> _v1) {
-		this._v1 = _v1;
-	}
-
-	public Amount<Velocity> getV2() {
-		return _v2;
-	}
-
-	public void setV2(Amount<Velocity> _v2) {
-		this._v2 = _v2;
-	}
-
-	public Amount<Length> getLandingDistance() {
-		return _landingDistance;
-	}
-
-	public void setLandingDistance(Amount<Length> _landingDistance) {
-		this._landingDistance = _landingDistance;
-	}
-
-	public Amount<Length> getLandingDistanceFAR25() {
-		return _landingDistanceFAR25;
-	}
-
-	public void setLandingDistanceFAR25(Amount<Length> _landingDistanceFAR25) {
-		this._landingDistanceFAR25 = _landingDistanceFAR25;
-	}
-
-	public Amount<Length> getGroundRollDistanceLanding() {
-		return _groundRollDistanceLanding;
-	}
-
-	public void setGroundRollDistanceLanding(Amount<Length> _groundRollDistanceLanding) {
-		this._groundRollDistanceLanding = _groundRollDistanceLanding;
-	}
-
-	public Amount<Length> getFlareDistanceLanding() {
-		return _flareDistanceLanding;
-	}
-
-	public void setFlareDistanceLanding(Amount<Length> _rotationDistanceLanding) {
-		this._flareDistanceLanding = _rotationDistanceLanding;
-	}
-
-	public Amount<Length> getAirborneDistanceLanding() {
-		return _airborneDistanceLanding;
-	}
-
-	public void setAirborneDistanceLanding(Amount<Length> _airborneDistanceLanding) {
-		this._airborneDistanceLanding = _airborneDistanceLanding;
-	}
-
-	public Amount<Velocity> getVStallLanding() {
-		return _vStallLanding;
-	}
-
-	public void setVStallLanding(Amount<Velocity> _vStallLanding) {
-		this._vStallLanding = _vStallLanding;
-	}
-
-	public Amount<Velocity> getVApproach() {
-		return _vApproach;
-	}
-
-	public void setVApproach(Amount<Velocity> _vApproach) {
-		this._vApproach = _vApproach;
-	}
-
-	public Amount<Velocity> getVFlare() {
-		return _vFlare;
-	}
-
-	public void setVFlare(Amount<Velocity> _vFlare) {
-		this._vFlare = _vFlare;
-	}
-
-	public Amount<Velocity> getVTouchDown() {
-		return _vTouchDown;
-	}
-
-	public void setVTouchDown(Amount<Velocity> _vTouchDown) {
-		this._vTouchDown = _vTouchDown;
-	}
-
-	public Amount<Velocity> getStallSpeedFullFlap() {
-		return _stallSpeedFullFlap;
-	}
-
-	public void setStallSpeedFullFlap(Amount<Velocity> _stallSpeedFullFlap) {
-		this._stallSpeedFullFlap = _stallSpeedFullFlap;
-	}
-
-	public Amount<Velocity> getStallSpeedClean() {
-		return _stallSpeedClean;
-	}
-
-	public void setStallSpeedClean(Amount<Velocity> _stallSpeedClean) {
-		this._stallSpeedClean = _stallSpeedClean;
-	}
-
-	public Amount<Velocity> getStallSpeedInverted() {
-		return _stallSpeedInverted;
-	}
-
-	public void setStallSpeedInverted(Amount<Velocity> _stallSpeedInverted) {
-		this._stallSpeedInverted = _stallSpeedInverted;
-	}
-
-	public Amount<Velocity> getManeuveringSpeed() {
-		return _maneuveringSpeed;
-	}
-
-	public void setManeuveringSpeed(Amount<Velocity> _maneuveringSpeed) {
-		this._maneuveringSpeed = _maneuveringSpeed;
-	}
-
-	public Amount<Velocity> getManeuveringFlapSpeed() {
-		return _maneuveringFlapSpeed;
-	}
-
-	public void setManeuveringFlapSpeed(Amount<Velocity> _maneuveringFlapSpeed) {
-		this._maneuveringFlapSpeed = _maneuveringFlapSpeed;
-	}
-
-	public Amount<Velocity> getManeuveringSpeedInverted() {
-		return _maneuveringSpeedInverted;
-	}
-
-	public void setManeuveringSpeedInverted(Amount<Velocity> _maneuveringSpeedInverted) {
-		this._maneuveringSpeedInverted = _maneuveringSpeedInverted;
-	}
-
-	public Amount<Velocity> getDesignFlapSpeed() {
-		return _designFlapSpeed;
-	}
-
-	public void setDesignFlapSpeed(Amount<Velocity> _designFlapSpeed) {
-		this._designFlapSpeed = _designFlapSpeed;
-	}
-
-	public Double getPositiveLoadFactorManeuveringSpeed() {
-		return _positiveLoadFactorManeuveringSpeed;
-	}
-
-	public void setPositiveLoadFactorManeuveringSpeed(Double _positiveLoadFactorManeuveringSpeed) {
-		this._positiveLoadFactorManeuveringSpeed = _positiveLoadFactorManeuveringSpeed;
-	}
-
-	public Double getPositiveLoadFactorCruisingSpeed() {
-		return _positiveLoadFactorCruisingSpeed;
-	}
-
-	public void setPositiveLoadFactorCruisingSpeed(Double _positiveLoadFactorCruisingSpeed) {
-		this._positiveLoadFactorCruisingSpeed = _positiveLoadFactorCruisingSpeed;
-	}
-
-	public Double getPositiveLoadFactorDiveSpeed() {
-		return _positiveLoadFactorDiveSpeed;
-	}
-
-	public void setPositiveLoadFactorDiveSpeed(Double _positiveLoadFactorDiveSpeed) {
-		this._positiveLoadFactorDiveSpeed = _positiveLoadFactorDiveSpeed;
-	}
-
-	public Double getPositiveLoadFactorDesignFlapSpeed() {
-		return _positiveLoadFactorDesignFlapSpeed;
-	}
-
-	public void setPositiveLoadFactorDesignFlapSpeed(Double _positiveLoadFactorDesignFlapSpeed) {
-		this._positiveLoadFactorDesignFlapSpeed = _positiveLoadFactorDesignFlapSpeed;
-	}
-
-	public Double getNegativeLoadFactorManeuveringSpeedInverted() {
-		return _negativeLoadFactorManeuveringSpeedInverted;
-	}
-
-	public void setNegativeLoadFactorManeuveringSpeedInverted(Double _negativeLoadFactorManeuveringSpeedInverted) {
-		this._negativeLoadFactorManeuveringSpeedInverted = _negativeLoadFactorManeuveringSpeedInverted;
-	}
-
-	public Double getNegativeLoadFactorCruisingSpeed() {
-		return _negativeLoadFactorCruisingSpeed;
-	}
-
-	public void setNegativeLoadFactorCruisingSpeed(Double _negativeLoadFactorCruisingSpeed) {
-		this._negativeLoadFactorCruisingSpeed = _negativeLoadFactorCruisingSpeed;
-	}
-
-	public Double getNegativeLoadFactorDiveSpeed() {
-		return _negativeLoadFactorDiveSpeed;
-	}
-
-	public void setNegativeLoadFactorDiveSpeed(Double _negativeLoadFactorDiveSpeed) {
-		this._negativeLoadFactorDiveSpeed = _negativeLoadFactorDiveSpeed;
-	}
-
-	public Double getPositiveLoadFactorManeuveringSpeedWithGust() {
-		return _positiveLoadFactorManeuveringSpeedWithGust;
-	}
-
-	public void setPositiveLoadFactorManeuveringSpeedWithGust(Double _positiveLoadFactorManeuveringSpeedWithGust) {
-		this._positiveLoadFactorManeuveringSpeedWithGust = _positiveLoadFactorManeuveringSpeedWithGust;
-	}
-
-	public Double getPositiveLoadFactorCruisingSpeedWithGust() {
-		return _positiveLoadFactorCruisingSpeedWithGust;
-	}
-
-	public void setPositiveLoadFactorCruisingSpeedWithGust(Double _positiveLoadFactorCruisingSpeedWithGust) {
-		this._positiveLoadFactorCruisingSpeedWithGust = _positiveLoadFactorCruisingSpeedWithGust;
-	}
-
-	public Double getPositiveLoadFactorDiveSpeedWithGust() {
-		return _positiveLoadFactorDiveSpeedWithGust;
-	}
-
-	public void setPositiveLoadFactorDiveSpeedWithGust(Double _positiveLoadFactorDiveSpeedWithGust) {
-		this._positiveLoadFactorDiveSpeedWithGust = _positiveLoadFactorDiveSpeedWithGust;
-	}
-
-	public Double getPositiveLoadFactorDesignFlapSpeedWithGust() {
-		return _positiveLoadFactorDesignFlapSpeedWithGust;
-	}
-
-	public void setPositiveLoadFactorDesignFlapSpeedWithGust(Double _positiveLoadFactorDesignFlapSpeedWithGust) {
-		this._positiveLoadFactorDesignFlapSpeedWithGust = _positiveLoadFactorDesignFlapSpeedWithGust;
-	}
-
-	public Double getNegativeLoadFactorManeuveringSpeedInvertedWithGust() {
-		return _negativeLoadFactorManeuveringSpeedInvertedWithGust;
-	}
-
-	public void setNegativeLoadFactorManeuveringSpeedInvertedWithGust(
-			Double _negativeLoadFactorManeuveringSpeedInvertedWithGust) {
-		this._negativeLoadFactorManeuveringSpeedInvertedWithGust = _negativeLoadFactorManeuveringSpeedInvertedWithGust;
-	}
-
-	public Double getNegativeLoadFactorCruisingSpeedWithGust() {
-		return _negativeLoadFactorCruisingSpeedWithGust;
-	}
-
-	public void setNegativeLoadFactorCruisingSpeedWithGust(Double _negativeLoadFactorCruisingSpeedWithGust) {
-		this._negativeLoadFactorCruisingSpeedWithGust = _negativeLoadFactorCruisingSpeedWithGust;
-	}
-
-	public Double getNegativeLoadFactorDiveSpeedWithGust() {
-		return _negativeLoadFactorDiveSpeedWithGust;
-	}
-
-	public void setNegativeLoadFactorDiveSpeedWithGust(Double _negativeLoadFactorDiveSpeedWithGust) {
-		this._negativeLoadFactorDiveSpeedWithGust = _negativeLoadFactorDiveSpeedWithGust;
-	}
-
-	public Double getNegativeLoadFactorDesignFlapSpeedWithGust() {
-		return _negativeLoadFactorDesignFlapSpeedWithGust;
-	}
-
-	public void setNegativeLoadFactorDesignFlapSpeedWithGust(Double _negativeLoadFactorDesignFlapSpeedWithGust) {
-		this._negativeLoadFactorDesignFlapSpeedWithGust = _negativeLoadFactorDesignFlapSpeedWithGust;
-	}
-
-	public TakeOffCalc getTheTakeOffCalculator() {
-		return _theTakeOffCalculator;
-	}
-
-	public void setTheTakeOffCalculator(TakeOffCalc _theTakeOffCalculator) {
-		this._theTakeOffCalculator = _theTakeOffCalculator;
-	}
-
-	public LandingCalc getTheLandingCalculator() {
-		return _theLandingCalculator;
-	}
-
-	public void setTheLandingCalculator(LandingCalc _theLandingCalculator) {
-		this._theLandingCalculator = _theLandingCalculator;
-	}
-
-	public FlightManeuveringEnvelopeCalc getTheEnvelopeCalculator() {
-		return _theEnvelopeCalculator;
-	}
-
-	public void setTheEnvelopeCalculator(FlightManeuveringEnvelopeCalc _theEnvelopeCalculator) {
-		this._theEnvelopeCalculator = _theEnvelopeCalculator;
-	}
-
-	public Amount<Mass> getPayloadAtMaxFuel() {
-		return _payloadAtMaxFuel;
-	}
-
-	public void setPayloadAtMaxFuel(Amount<Mass> payloadAtMaxFuel) {
-		this._payloadAtMaxFuel = payloadAtMaxFuel;
-	}
-
-	public List<Double> getPayloadArray() {
-		return _payloadArray;
-	}
-
-	public void setPayloadArray(List<Double> payloadArray) {
-		this._payloadArray = payloadArray;
-	}
-
-	public double[][] getRangeMatrix() {
-		return _rangeMatrix;
-	}
-
-	public void setRangeMatrix(double[][] rangeMatrix) {
-		this._rangeMatrix = rangeMatrix;
-	}
-
-	public double[][] getPayloadMatrix() {
-		return _payloadMatrix;
-	}
-
-	public void setPayloadMatrix(double[][] payloadMatrix) {
-		this._payloadMatrix = payloadMatrix;
-	}
-
-	public Amount<Length> getAbsoluteCeilingAEO() {
-		return _absoluteCeilingAEO;
-	}
-
-	public void setAbsoluteCeilingAEO(Amount<Length> _absoluteCeiling) {
-		this._absoluteCeilingAEO = _absoluteCeiling;
-	}
-
-	public Amount<Length> getServiceCeilingAEO() {
-		return _serviceCeilingAEO;
-	}
-
-	public void setServiceCeilingAEO(Amount<Length> _serviceCeiling) {
-		this._serviceCeilingAEO = _serviceCeiling;
-	}
-
-	public Amount<Duration> getMinimumClimbTimeAEO() {
-		return _minimumClimbTimeAEO;
-	}
-
-	public void setMinimumClimbTimeAEO(Amount<Duration> _minimumClimbTime) {
-		this._minimumClimbTimeAEO = _minimumClimbTime;
-	}
-
-	public Amount<Duration> getClimbTimeAtSpecificClimbSpeedAEO() {
-		return _climbTimeAtSpecificClimbSpeedAEO;
-	}
-
-	public void setClimbTimeAtSpecificClimbSpeedAEO(Amount<Duration> _climbTimeAtSpecificClimbSpeed) {
-		this._climbTimeAtSpecificClimbSpeedAEO = _climbTimeAtSpecificClimbSpeed;
-	}
-
-	public Amount<Length> getAbsoluteCeilingOEI() {
-		return _absoluteCeilingOEI;
-	}
-
-	public void setAbsoluteCeilingOEI(Amount<Length> _absoluteCeilingOEI) {
-		this._absoluteCeilingOEI = _absoluteCeilingOEI;
-	}
-
-	public Amount<Length> getServiceCeilingOEI() {
-		return _serviceCeilingOEI;
-	}
-
-	public void setServiceCeilingOEI(Amount<Length> _serviceCeilingOEI) {
-		this._serviceCeilingOEI = _serviceCeilingOEI;
-	}
-
-	public List<RCMap> getRCMapAEO() {
-		return _rcMapAEO;
-	}
-
-	public void setRCMapAEO(List<RCMap> _rcMapAEO) {
-		this._rcMapAEO = _rcMapAEO;
-	}
-
-	public List<RCMap> getRCMapOEI() {
-		return _rcMapOEI;
-	}
-
-	public void setRCMapOEI(List<RCMap> _rcMapOEI) {
-		this._rcMapOEI = _rcMapOEI;
-	}
-
-	public CeilingMap getCeilingMapAEO() {
-		return _ceilingMapAEO;
-	}
-
-	public void setCeilingMapAEO(CeilingMap _ceilingMapAEO) {
-		this._ceilingMapAEO = _ceilingMapAEO;
-	}
-
-	public CeilingMap getCeilingMapOEI() {
-		return _ceilingMapOEI;
-	}
-
-	public void setCeilingMapOEI(CeilingMap _ceilingMapOEI) {
-		this._ceilingMapOEI = _ceilingMapOEI;
-	}
-
-	public List<DragMap> getDragListAltitudeParameterization() {
-		return _dragListAltitudeParameterization;
-	}
-
-	public void setDragListAltitudeParameterization(List<DragMap> _dragListAltitudeParameterization) {
-		this._dragListAltitudeParameterization = _dragListAltitudeParameterization;
-	}
-
-	public List<ThrustMap> getThrustListAltitudeParameterization() {
-		return _thrustListAltitudeParameterization;
-	}
-
-	public void setThrustListAltitudeParameterization(List<ThrustMap> _thrustListAltitudeParameterization) {
-		this._thrustListAltitudeParameterization = _thrustListAltitudeParameterization;
-	}
-
-	public List<DragMap> getDragListWeightParameterization() {
-		return _dragListWeightParameterization;
-	}
-
-	public void setDragListWeightParameterization(List<DragMap> _dragListWeightParameterization) {
-		this._dragListWeightParameterization = _dragListWeightParameterization;
-	}
-
-	public List<ThrustMap> getThrustListWeightParameterization() {
-		return _thrustListWeightParameterization;
-	}
-
-	public void setThrustListWeightParameterization(List<ThrustMap> _thrustListWeightParameterization) {
-		this._thrustListWeightParameterization = _thrustListWeightParameterization;
-	}
-
-	public List<Amount<Force>> getWeightListCruise() {
-		return _weightListCruise;
-	}
-
-	public void setWeightListCruise(List<Amount<Force>> _weightListCruise) {
-		this._weightListCruise = _weightListCruise;
-	}
-
-	public Map<String, List<Double>> getEfficiencyMapAltitude() {
-		return _efficiencyMapAltitude;
-	}
-
-	public void setEfficiencyMapAltitude(Map<String, List<Double>> _efficiencyMapAltitude) {
-		this._efficiencyMapAltitude = _efficiencyMapAltitude;
-	}
-
-	public Map<String, List<Double>> getEfficiencyMapWeight() {
-		return _efficiencyMapWeight;
-	}
-
-	public void setEfficiencyMapWeight(Map<String, List<Double>> _efficiencyMapWeight) {
-		this._efficiencyMapWeight = _efficiencyMapWeight;
-	}
-
-	public List<SpecificRangeMap> getSpecificRangeMap() {
-		return _specificRangeMap;
-	}
-
-	public void setSpecificRangeMap(List<SpecificRangeMap> _specificRangeMap) {
-		this._specificRangeMap = _specificRangeMap;
-	}
-
-	public List<Amount<Length>> getAltitudeList() {
-		return _altitudeList;
-	}
-
-	public void setAltitudeList(List<Amount<Length>> _altitudeList) {
-		this._altitudeList = _altitudeList;
-	}
-
-	public List<Amount<Length>> getRangeList() {
-		return _rangeList;
-	}
-
-	public void setRangeList(List<Amount<Length>> _rangeList) {
-		this._rangeList = _rangeList;
-	}
-
-	public List<Amount<Duration>> getTimeList() {
-		return _timeList;
-	}
-
-	public void setTimeList(List<Amount<Duration>> _timeList) {
-		this._timeList = _timeList;
-	}
-
-	public List<Amount<Mass>> getFuelUsedList() {
-		return _fuelUsedList;
-	}
-
-	public void setFuelUsedList(List<Amount<Mass>> _fuelUsedList) {
-		this._fuelUsedList = _fuelUsedList;
-	}
-
-	public List<Amount<Mass>> getMassList() {
-		return _massList;
-	}
-
-	public void setMassList(List<Amount<Mass>> _weightList) {
-		this._massList = _weightList;
-	}
-
-	public Amount<Mass> getTotalFuelUsed() {
-		return _totalFuelUsed;
-	}
-
-	public void setTotalFuelUsed(Amount<Mass> _totalFuelUsed) {
-		this._totalFuelUsed = _totalFuelUsed;
-	}
-
-	public Amount<Duration> getTotalMissionTime() {
-		return _totalMissionTime;
-	}
-
-	public void setTotalMissionTime(Amount<Duration> _totalMissionTime) {
-		this._totalMissionTime = _totalMissionTime;
-	}
-
-	public Amount<Duration> getTakeOffDuration() {
-		return _takeOffDuration;
-	}
-
-	public void setTakeOffDuration(Amount<Duration> _takeOffDuration) {
-		this._takeOffDuration = _takeOffDuration;
-	}
-
-	public Amount<Duration> getLandingDuration() {
-		return _landingDuration;
-	}
-
-	public void setLandingDuration(Amount<Duration> _landingDuration) {
-		this._landingDuration = _landingDuration;
-	}
-
-	public List<DragMap> getDragListAEO() {
-		return _dragListAEO;
-	}
-
-	public void setDragListAEO(List<DragMap> _dragListAEO) {
-		this._dragListAEO = _dragListAEO;
-	}
-
-	public List<DragMap> getDragListOEI() {
-		return _dragListOEI;
-	}
-
-	public void setDragListOEI(List<DragMap> _dragListOEI) {
-		this._dragListOEI = _dragListOEI;
-	}
-
-	public List<ThrustMap> getThrustListAEO() {
-		return _thrustListAEO;
-	}
-
-	public void setThrustListAEO(List<ThrustMap> _thrustListAEO) {
-		this._thrustListAEO = _thrustListAEO;
-	}
-
-	public List<ThrustMap> getThrustListOEI() {
-		return _thrustListOEI;
-	}
-
-	public void setThrustListOEI(List<ThrustMap> _thrustListOEI) {
-		this._thrustListOEI = _thrustListOEI;
-	}
-
-	public List<Amount<Length>> getDescentLengths() {
-		return _descentLengths;
-	}
-
-	public void setDescentLengths(List<Amount<Length>> _descentLength) {
-		this._descentLengths = _descentLength;
-	}
-
-	public List<Amount<Duration>> getDescentTimes() {
-		return _descentTimes;
-	}
-
-	public void setDescentTimes(List<Amount<Duration>> _descentTime) {
-		this._descentTimes = _descentTime;
-	}
-
-	public List<Amount<Angle>> getDescentAngles() {
-		return _descentAngles;
-	}
-
-	public void setDescentAngles(List<Amount<Angle>> _descentAngle) {
-		this._descentAngles = _descentAngle;
-	}
-
-	public Amount<Length> getTotalDescentLength() {
-		return _totalDescentLength;
-	}
-
-	public void setTotalDescentLength(Amount<Length> _totalDescentLength) {
-		this._totalDescentLength = _totalDescentLength;
-	}
-
-	public Amount<Duration> getTotalDescentTime() {
-		return _totalDescentTime;
-	}
-
-	public void setTotalDescentTime(Amount<Duration> _totalDescentTime) {
-		this._totalDescentTime = _totalDescentTime;
-	}
-
-	public Amount<Velocity> getMaxSpeesTASAtCruiseAltitude() {
-		return _maxSpeesTASAtCruiseAltitude;
-	}
-
-	public void setMaxSpeesTASAtCruiseAltitude(Amount<Velocity> _maxSpeesTASAtCruiseAltitude) {
-		this._maxSpeesTASAtCruiseAltitude = _maxSpeesTASAtCruiseAltitude;
-	}
-
-	public Amount<Velocity> getMinSpeesTASAtCruiseAltitude() {
-		return _minSpeesTASAtCruiseAltitude;
-	}
-
-	public void setMinSpeesTASAtCruiseAltitude(Amount<Velocity> _minSpeesTASAtCruiseAltitude) {
-		this._minSpeesTASAtCruiseAltitude = _minSpeesTASAtCruiseAltitude;
-	}
-
-	public Amount<Velocity> getMaxSpeesCASAtCruiseAltitude() {
-		return _maxSpeesCASAtCruiseAltitude;
-	}
-
-	public void setMaxSpeesCASAtCruiseAltitude(Amount<Velocity> _maxSpeesCASAtCruiseAltitude) {
-		this._maxSpeesCASAtCruiseAltitude = _maxSpeesCASAtCruiseAltitude;
-	}
-
-	public Amount<Velocity> getMinSpeesCASAtCruiseAltitude() {
-		return _minSpeesCASAtCruiseAltitude;
-	}
-
-	public void setMinSpeesCASAtCruiseAltitude(Amount<Velocity> _minSpeesCASAtCruiseAltitude) {
-		this._minSpeesCASAtCruiseAltitude = _minSpeesCASAtCruiseAltitude;
-	}
-
-	public Double getMaxMachAtCruiseAltitude() {
-		return _maxMachAtCruiseAltitude;
-	}
-
-	public void setMaxMachAtCruiseAltitude(Double _maxMachAtCruiseAltitude) {
-		this._maxMachAtCruiseAltitude = _maxMachAtCruiseAltitude;
-	}
-
-	public Double getMinMachAtCruiseAltitude() {
-		return _minMachAtCruiseAltitude;
-	}
-
-	public void setMinMachAtCruiseAltitude(Double _minMachAtCruiseAltitude) {
-		this._minMachAtCruiseAltitude = _minMachAtCruiseAltitude;
-	}
-
-	public Double getEfficiencyAtCruiseAltitudeAndMach() {
-		return _efficiencyAtCruiseAltitudeAndMach;
-	}
-
-	public void setEfficiencyAtCruiseAltitudeAndMach(Double _efficiencyAtCruiseAltitudeAndMach) {
-		this._efficiencyAtCruiseAltitudeAndMach = _efficiencyAtCruiseAltitudeAndMach;
-	}
-
-	public Amount<Force> getThrustAtCruiseAltitudeAndMach() {
-		return _thrustAtCruiseAltitudeAndMach;
-	}
-
-	public void setThrustAtCruiseAltitudeAndMach(Amount<Force> _thrustAtCruiseAltitudeAndMach) {
-		this._thrustAtCruiseAltitudeAndMach = _thrustAtCruiseAltitudeAndMach;
-	}
-
-	public Amount<Force> getDragAtCruiseAltitudeAndMach() {
-		return _dragAtCruiseAltitudeAndMach;
-	}
-
-	public void setDragAtCruiseAltitudeAndMach(Amount<Force> _dragAtCruiseAltitudeAndMach) {
-		this._dragAtCruiseAltitudeAndMach = _dragAtCruiseAltitudeAndMach;
-	}
-
-	public Amount<Power> getPowerAvailableAtCruiseAltitudeAndMach() {
-		return _powerAvailableAtCruiseAltitudeAndMach;
-	}
-
-	public void setPowerAvailableAtCruiseAltitudeAndMach(Amount<Power> _powerAvailableAtCruiseAltitudeAndMach) {
-		this._powerAvailableAtCruiseAltitudeAndMach = _powerAvailableAtCruiseAltitudeAndMach;
-	}
-
-	public Amount<Power> getPowerNeededAtCruiseAltitudeAndMach() {
-		return _powerNeededAtCruiseAltitudeAndMach;
-	}
-
-	public void setPowerNeededAtCruiseAltitudeAndMach(Amount<Power> _powerNeededAtCruiseAltitudeAndMach) {
-		this._powerNeededAtCruiseAltitudeAndMach = _powerNeededAtCruiseAltitudeAndMach;
-	}
-
-	public Amount<Mass> getEndMissionMass() {
-		return _endMissionMass;
-	}
-
-	public void setEndMissionMass(Amount<Mass> _endMissionMass) {
-		this._endMissionMass = _endMissionMass;
-	}
-
-	public Amount<Velocity> getVMC() {
-		return _vMC;
-	}
-
-	public void setVMC(Amount<Velocity> _vMC) {
-		this._vMC = _vMC;
-	}
-
-	public double[] getThrustMomentOEI() {
-		return _thrustMomentOEI;
-	}
-
-	public void setThrustMomentOEI(double[] _thrustMomentOEI) {
-		this._thrustMomentOEI = _thrustMomentOEI;
-	}
-
-	public double[] getYawingMomentOEI() {
-		return _yawingMomentOEI;
-	}
-
-	public void setYawingMomentOEI(double[] _yawingMomentOEI) {
-		this._yawingMomentOEI = _yawingMomentOEI;
-	}
-
-	public ClimbCalc getTheClimbCalculator() {
-		return _theClimbCalculator;
-	}
-
-	public void setTheClimbCalculator(ClimbCalc _theClimbCalculator) {
-		this._theClimbCalculator = _theClimbCalculator;
-	}
-
-	public MissionProfileCalc getTheMissionProfileCalculator() {
-		return _theMissionProfileCalculator;
-	}
-
-	public void setTheMissionProfileCalculator(MissionProfileCalc _theMissionProfileCalculator) {
-		this._theMissionProfileCalculator = _theMissionProfileCalculator;
-	}
-
-	public DescentCalc getTheDescentCalculator() {
-		return _theDescentCalculator;
-	}
-
-	public void setTheDescentCalculator(DescentCalc _theDescentCalculator) {
-		this._theDescentCalculator = _theDescentCalculator;
-	}
-
-	public Amount<Mass> getInitialMissionMass() {
-		return _initialMissionMass;
-	}
-
-	public void setInitialMissionMass(Amount<Mass> _initialMissionMass) {
-		this._initialMissionMass = _initialMissionMass;
-	}
-
-	public Amount<Mass> getInitialFuelMass() {
-		return _initialFuelMass;
-	}
-
-	public void setInitialFuelMass(Amount<Mass> _initialFuelMass) {
-		this._initialFuelMass = _initialFuelMass;
-	}
-
-	public Amount<Length> getRangeAtMaxPayload() {
-		return _rangeAtMaxPayload;
-	}
-
-	public void setRangeAtMaxPayload(Amount<Length> _rangeAtMaxPayload) {
-		this._rangeAtMaxPayload = _rangeAtMaxPayload;
-	}
-
-	public Amount<Length> getRangeAtDesignPayload() {
-		return _rangeAtDesignPayload;
-	}
-
-	public void setRangeAtDesignPayload(Amount<Length> _rangeAtDesignPayload) {
-		this._rangeAtDesignPayload = _rangeAtDesignPayload;
-	}
-
-	public Amount<Length> getRangeAtMaxFuel() {
-		return _rangeAtMaxFuel;
-	}
-
-	public void setRangeAtMaxFuel(Amount<Length> _rangeAtMaxFuel) {
-		this._rangeAtMaxFuel = _rangeAtMaxFuel;
-	}
-
-	public Amount<Mass> getMaxPayload() {
-		return _maxPayload;
-	}
-
-	public void setMaxPayload(Amount<Mass> _maxPayload) {
-		this._maxPayload = _maxPayload;
-	}
-
-	public Amount<Mass> getDesignPayload() {
-		return _designPayload;
-	}
-
-	public void setDesignPayload(Amount<Mass> _designPayload) {
-		this._designPayload = _designPayload;
-	}
-
-	public Integer getPassengersNumberAtMaxPayload() {
-		return _passengersNumberAtMaxPayload;
-	}
-
-	public void setPassengersNumberAtMaxPayload(Integer _passengersNumberAtMaxPayload) {
-		this._passengersNumberAtMaxPayload = _passengersNumberAtMaxPayload;
-	}
-
-	public Integer getPassengersNumberAtDesignPayload() {
-		return _passengersNumberAtDesignPayload;
-	}
-
-	public void setPassengersNumberAtDesignPayload(Integer _passengersNumberAtDesignPayload) {
-		this._passengersNumberAtDesignPayload = _passengersNumberAtDesignPayload;
-	}
-
-	public Integer getPassengersNumberAtMaxFuel() {
-		return _passengersNumberAtMaxFuel;
-	}
-
-	public void setPassengersNumberAtMaxFuel(Integer _passengersNumberAtMaxFuel) {
-		this._passengersNumberAtMaxFuel = _passengersNumberAtMaxFuel;
-	}
-
-	public Amount<Mass> getRequiredMassAtMaxPayload() {
-		return _requiredMassAtMaxPayload;
-	}
-
-	public void setRequiredMassAtMaxPayload(Amount<Mass> _requiredMassAtMaxPayload) {
-		this._requiredMassAtMaxPayload = _requiredMassAtMaxPayload;
-	}
-
-	public Amount<Mass> getRequiredMassAtDesignPayload() {
-		return _requiredMassAtDesignPayload;
-	}
-
-	public void setRequiredMassAtDesignPayload(Amount<Mass> _requiredMassAtDesignPayload) {
-		this._requiredMassAtDesignPayload = _requiredMassAtDesignPayload;
-	}
-
-	public List<Amount<Length>> geRrangeArray() {
-		return _rangeArray;
-	}
-
-	public void setRangeArray(List<Amount<Length>> _rangeArray) {
-		this._rangeArray = _rangeArray;
-	}
-
-	public PayloadRangeCalcMissionProfile getThePayloadRangeCalculator() {
-		return _thePayloadRangeCalculator;
-	}
-
-	public void setThePayloadRangeCalculator(PayloadRangeCalcMissionProfile _thePayloadRangeCalculator) {
-		this._thePayloadRangeCalculator = _thePayloadRangeCalculator;
-	}
-
-	public Amount<Length> getRangeAtZeroPayload() {
-		return _rangeAtZeroPayload;
-	}
-
-	public void setRangeAtZeroPayload(Amount<Length> _rangeAtZeroPayload) {
-		this._rangeAtZeroPayload = _rangeAtZeroPayload;
-	}
-
-	public Amount<Mass> getTakeOffMassAtZeroPayload() {
-		return _takeOffMassAtZeroPayload;
-	}
-
-	public void setTakeOffMassAtZeroPayload(Amount<Mass> _takeOffMassAtZeroPayload) {
-		this._takeOffMassAtZeroPayload = _takeOffMassAtZeroPayload;
-	}
-
-	public Map<String, List<Double>> getEfficiencyMapAltitudeAEO() {
-		return _efficiencyMapAltitudeAEO;
-	}
-
-	public void setEfficiencyMapAltitudeAEO(Map<String, List<Double>> _efficiencyMapAltitudeAEO) {
-		this._efficiencyMapAltitudeAEO = _efficiencyMapAltitudeAEO;
-	}
-
-	public Map<String, List<Double>> getEfficiencyMapAltitudeOEI() {
-		return _efficiencyMapAltitudeOEI;
-	}
-
-	public void setEfficiencyMapAltitudeOEI(Map<String, List<Double>> _efficiencyMapAltitudeOEI) {
-		this._efficiencyMapAltitudeOEI = _efficiencyMapAltitudeOEI;
-	}
-
-	public List<Amount<Velocity>> getSpeedTASMissionList() {
-		return _speedTASMissionList;
-	}
-
-	public void setSpeedTASMissionList(List<Amount<Velocity>> _speedTASMissionList) {
-		this._speedTASMissionList = _speedTASMissionList;
-	}
-
-	public List<Double> getMachMissionList() {
-		return _machMissionList;
-	}
-
-	public void setMachMissionList(List<Double> _machMissionList) {
-		this._machMissionList = _machMissionList;
-	}
-
-	public List<Double> getLiftingCoefficientMissionList() {
-		return _liftingCoefficientMissionList;
-	}
-
-	public void setLiftingCoefficientMissionList(List<Double> _liftingCoefficientMissionList) {
-		this._liftingCoefficientMissionList = _liftingCoefficientMissionList;
-	}
-
-	public List<Double> getDragCoefficientMissionList() {
-		return _dragCoefficientMissionList;
-	}
-
-	public void setDragCoefficientMissionList(List<Double> _dragCoefficientMissionList) {
-		this._dragCoefficientMissionList = _dragCoefficientMissionList;
-	}
-
-	public List<Double> getEfficiencyMissionList() {
-		return _efficiencyMissionList;
-	}
-
-	public void setEfficiencyMissionList(List<Double> _efficiencyMissionList) {
-		this._efficiencyMissionList = _efficiencyMissionList;
-	}
-
-	public List<Amount<Force>> getThrustMissionList() {
-		return _thrustMissionList;
-	}
-
-	public void setThrustMissionList(List<Amount<Force>> _thrustMissionList) {
-		this._thrustMissionList = _thrustMissionList;
-	}
-
-	public List<Amount<Force>> getDragMissionList() {
-		return _dragMissionList;
-	}
-
-	public void setDragMissionList(List<Amount<Force>> _dragMissionList) {
-		this._dragMissionList = _dragMissionList;
-	}
-
-	public Amount<Mass> getFuelUsedDuringClimb() {
-		return _fuelUsedDuringClimb;
-	}
-
-	public void setFuelUsedDuringClimb(Amount<Mass> _fuelUsedDuringClimb) {
-		this._fuelUsedDuringClimb = _fuelUsedDuringClimb;
-	}
-
-	public Amount<Mass> getTotalDescentFuelUsed() {
-		return _totalDescentFuelUsed;
-	}
-
-	public void setTotalDescentFuelUsed(Amount<Mass> _totalDescentFuelUsed) {
-		this._totalDescentFuelUsed = _totalDescentFuelUsed;
-	}
-
-	public IACPerformanceManager getThePerformanceInterface() {
+	
+	public IACPerformanceManager getTthePerformanceInterface() {
 		return _thePerformanceInterface;
 	}
 
 	public void setThePerformanceInterface(IACPerformanceManager _thePerformanceInterface) {
 		this._thePerformanceInterface = _thePerformanceInterface;
+	}
+
+	public Map<Double, TakeOffCalc> getTheTakeOffCalculatorMap() {
+		return _theTakeOffCalculatorMap;
+	}
+
+	public void setTheTakeOffCalculatorMap(Map<Double, TakeOffCalc> _theTakeOffCalculatorMap) {
+		this._theTakeOffCalculatorMap = _theTakeOffCalculatorMap;
+	}
+
+	public Map<Double, Amount<Length>> getTakeOffDistanceAEOMap() {
+		return _takeOffDistanceAEOMap;
+	}
+
+	public void setTakeOffDistanceAEOMap(Map<Double, Amount<Length>> _takeOffDistanceAEOMap) {
+		this._takeOffDistanceAEOMap = _takeOffDistanceAEOMap;
+	}
+
+	public Map<Double, Amount<Length>> getTakeOffDistanceFAR25Map() {
+		return _takeOffDistanceFAR25Map;
+	}
+
+	public void setTakeOffDistanceFAR25Map(Map<Double, Amount<Length>> _takeOffDistanceFAR25Map) {
+		this._takeOffDistanceFAR25Map = _takeOffDistanceFAR25Map;
+	}
+
+	public Map<Double, Amount<Length>> getBalancedFieldLengthMap() {
+		return _balancedFieldLengthMap;
+	}
+
+	public void setBalancedFieldLengthMap(Map<Double, Amount<Length>> _balancedFieldLengthMap) {
+		this._balancedFieldLengthMap = _balancedFieldLengthMap;
+	}
+
+	public Map<Double, Amount<Length>> getGroundRollDistanceTakeOffMap() {
+		return _groundRollDistanceTakeOffMap;
+	}
+
+	public void setGroundRollDistanceTakeOffMap(Map<Double, Amount<Length>> _groundRollDistanceTakeOffMap) {
+		this._groundRollDistanceTakeOffMap = _groundRollDistanceTakeOffMap;
+	}
+
+	public Map<Double, Amount<Length>> getRotationDistanceTakeOffMap() {
+		return _rotationDistanceTakeOffMap;
+	}
+
+	public void setRotationDistanceTakeOffMap(Map<Double, Amount<Length>> _rotationDistanceTakeOffMap) {
+		this._rotationDistanceTakeOffMap = _rotationDistanceTakeOffMap;
+	}
+
+	public Map<Double, Amount<Length>> getAirborneDistanceTakeOffMap() {
+		return _airborneDistanceTakeOffMap;
+	}
+
+	public void setAirborneDistanceTakeOffMap(Map<Double, Amount<Length>> _airborneDistanceTakeOffMap) {
+		this._airborneDistanceTakeOffMap = _airborneDistanceTakeOffMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVStallTakeOffMap() {
+		return _vStallTakeOffMap;
+	}
+
+	public void setVStallTakeOffMap(Map<Double, Amount<Velocity>> _vStallTakeOffMap) {
+		this._vStallTakeOffMap = _vStallTakeOffMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVMCMap() {
+		return _vMCMap;
+	}
+
+	public void setVMCMap(Map<Double, Amount<Velocity>> _vMCMap) {
+		this._vMCMap = _vMCMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVRotationMap() {
+		return _vRotationMap;
+	}
+
+	public void setVRotationMap(Map<Double, Amount<Velocity>> _vRotationMap) {
+		this._vRotationMap = _vRotationMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVLiftOffMap() {
+		return _vLiftOffMap;
+	}
+
+	public void setVLiftOffMap(Map<Double, Amount<Velocity>> _vLiftOffMap) {
+		this._vLiftOffMap = _vLiftOffMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getV1Map() {
+		return _v1Map;
+	}
+
+	public void setV1Map(Map<Double, Amount<Velocity>> _v1Map) {
+		this._v1Map = _v1Map;
+	}
+
+	public Map<Double, Amount<Velocity>> getV2Map() {
+		return _v2Map;
+	}
+
+	public void setV2Map(Map<Double, Amount<Velocity>> _v2Map) {
+		this._v2Map = _v2Map;
+	}
+
+	public Map<Double, Amount<Duration>> getTakeOffDurationMap() {
+		return _takeOffDurationMap;
+	}
+
+	public void setTakeOffDurationMap(Map<Double, Amount<Duration>> _takeOffDurationMap) {
+		this._takeOffDurationMap = _takeOffDurationMap;
+	}
+
+	public Map<Double, double[]> getThrustMomentOEIMap() {
+		return _thrustMomentOEIMap;
+	}
+
+	public void setThrustMomentOEIMap(Map<Double, double[]> _thrustMomentOEIMap) {
+		this._thrustMomentOEIMap = _thrustMomentOEIMap;
+	}
+
+	public Map<Double, double[]> getYawingMomentOEIMap() {
+		return _yawingMomentOEIMap;
+	}
+
+	public void setYawingMomentOEIMap(Map<Double, double[]> _yawingMomentOEIMap) {
+		this._yawingMomentOEIMap = _yawingMomentOEIMap;
+	}
+
+	public Map<Double, ClimbCalc> getTheClimbCalculatorMap() {
+		return _theClimbCalculatorMap;
+	}
+
+	public void setTheClimbCalculatorMap(Map<Double, ClimbCalc> _theClimbCalculatorMap) {
+		this._theClimbCalculatorMap = _theClimbCalculatorMap;
+	}
+
+	public Map<Double, List<RCMap>> getRcMapAEOMap() {
+		return _rcMapAEOMap;
+	}
+
+	public void setRcMapAEOMap(Map<Double, List<RCMap>> _rcMapAEOMap) {
+		this._rcMapAEOMap = _rcMapAEOMap;
+	}
+
+	public Map<Double, List<RCMap>> getRcMapOEIMap() {
+		return _rcMapOEIMap;
+	}
+
+	public void setRcMapOEIMap(Map<Double, List<RCMap>> _rcMapOEIMap) {
+		this._rcMapOEIMap = _rcMapOEIMap;
+	}
+
+	public Map<Double, CeilingMap> getCeilingMapAEOMap() {
+		return _ceilingMapAEOMap;
+	}
+
+	public void setCeilingMapAEOMap(Map<Double, CeilingMap> _ceilingMapAEOMap) {
+		this._ceilingMapAEOMap = _ceilingMapAEOMap;
+	}
+
+	public Map<Double, CeilingMap> getCeilingMapOEIMap() {
+		return _ceilingMapOEIMap;
+	}
+
+	public void setCeilingMapOEIMap(Map<Double, CeilingMap> _ceilingMapOEIMap) {
+		this._ceilingMapOEIMap = _ceilingMapOEIMap;
+	}
+
+	public Map<Double, List<DragMap>> getDragListAEOMap() {
+		return _dragListAEOMap;
+	}
+
+	public void setDragListAEOMap(Map<Double, List<DragMap>> _dragListAEOMap) {
+		this._dragListAEOMap = _dragListAEOMap;
+	}
+
+	public Map<Double, List<ThrustMap>> getThrustListAEOMap() {
+		return _thrustListAEOMap;
+	}
+
+	public void setThrustListAEOMap(Map<Double, List<ThrustMap>> _thrustListAEOMap) {
+		this._thrustListAEOMap = _thrustListAEOMap;
+	}
+
+	public Map<Double, List<DragMap>> getDragListOEIMap() {
+		return _dragListOEIMap;
+	}
+
+	public void setDragListOEIMap(Map<Double, List<DragMap>> _dragListOEIMap) {
+		this._dragListOEIMap = _dragListOEIMap;
+	}
+
+	public Map<Double, List<ThrustMap>> getThrustListOEIMap() {
+		return _thrustListOEIMap;
+	}
+
+	public void setThrustListOEIMap(Map<Double, List<ThrustMap>> _thrustListOEIMap) {
+		this._thrustListOEIMap = _thrustListOEIMap;
+	}
+
+	public Map<Double, Map<String, List<Double>>> getEfficiencyMapAltitudeAEOMap() {
+		return _efficiencyMapAltitudeAEOMap;
+	}
+
+	public void setEfficiencyMapAltitudeAEOMap(Map<Double, Map<String, List<Double>>> _efficiencyMapAltitudeAEOMap) {
+		this._efficiencyMapAltitudeAEOMap = _efficiencyMapAltitudeAEOMap;
+	}
+
+	public Map<Double, Map<String, List<Double>>> getEfficiencyMapAltitudeOEIMap() {
+		return _efficiencyMapAltitudeOEIMap;
+	}
+
+	public void setEfficiencyMapAltitudeOEIMap(Map<Double, Map<String, List<Double>>> _efficiencyMapAltitudeOEIMap) {
+		this._efficiencyMapAltitudeOEIMap = _efficiencyMapAltitudeOEIMap;
+	}
+
+	public Map<Double, Amount<Length>> getAbsoluteCeilingAEOMap() {
+		return _absoluteCeilingAEOMap;
+	}
+
+	public void setAbsoluteCeilingAEOMap(Map<Double, Amount<Length>> _absoluteCeilingAEOMap) {
+		this._absoluteCeilingAEOMap = _absoluteCeilingAEOMap;
+	}
+
+	public Map<Double, Amount<Length>> getServiceCeilingAEOMap() {
+		return _serviceCeilingAEOMap;
+	}
+
+	public void setServiceCeilingAEOMap(Map<Double, Amount<Length>> _serviceCeilingAEOMap) {
+		this._serviceCeilingAEOMap = _serviceCeilingAEOMap;
+	}
+
+	public Map<Double, Amount<Duration>> getMinimumClimbTimeAEOMap() {
+		return _minimumClimbTimeAEOMap;
+	}
+
+	public void setMinimumClimbTimeAEOMap(Map<Double, Amount<Duration>> _minimumClimbTimeAEOMap) {
+		this._minimumClimbTimeAEOMap = _minimumClimbTimeAEOMap;
+	}
+
+	public Map<Double, Amount<Duration>> getClimbTimeAtSpecificClimbSpeedAEOMap() {
+		return _climbTimeAtSpecificClimbSpeedAEOMap;
+	}
+
+	public void setClimbTimeAtSpecificClimbSpeedAEOMap(
+			Map<Double, Amount<Duration>> _climbTimeAtSpecificClimbSpeedAEOMap) {
+		this._climbTimeAtSpecificClimbSpeedAEOMap = _climbTimeAtSpecificClimbSpeedAEOMap;
+	}
+
+	public Map<Double, Amount<Mass>> getFuelUsedDuringClimbMap() {
+		return _fuelUsedDuringClimbMap;
+	}
+
+	public void setFuelUsedDuringClimbMap(Map<Double, Amount<Mass>> _fuelUsedDuringClimbMap) {
+		this._fuelUsedDuringClimbMap = _fuelUsedDuringClimbMap;
+	}
+
+	public Map<Double, Amount<Length>> getAbsoluteCeilingOEIMap() {
+		return _absoluteCeilingOEIMap;
+	}
+
+	public void setAbsoluteCeilingOEIMap(Map<Double, Amount<Length>> _absoluteCeilingOEIMap) {
+		this._absoluteCeilingOEIMap = _absoluteCeilingOEIMap;
+	}
+
+	public Map<Double, Amount<Length>> getServiceCeilingOEIMap() {
+		return _serviceCeilingOEIMap;
+	}
+
+	public void setServiceCeilingOEIMap(Map<Double, Amount<Length>> _serviceCeilingOEIMap) {
+		this._serviceCeilingOEIMap = _serviceCeilingOEIMap;
+	}
+
+	public Map<Double, List<DragMap>> getDragListAltitudeParameterizationMap() {
+		return _dragListAltitudeParameterizationMap;
+	}
+
+	public void setDragListAltitudeParameterizationMap(Map<Double, List<DragMap>> _dragListAltitudeParameterizationMap) {
+		this._dragListAltitudeParameterizationMap = _dragListAltitudeParameterizationMap;
+	}
+
+	public Map<Double, List<ThrustMap>> getThrustListAltitudeParameterizationMap() {
+		return _thrustListAltitudeParameterizationMap;
+	}
+
+	public void setThrustListAltitudeParameterizationMap(
+			Map<Double, List<ThrustMap>> _thrustListAltitudeParameterizationMap) {
+		this._thrustListAltitudeParameterizationMap = _thrustListAltitudeParameterizationMap;
+	}
+
+	public Map<Double, List<DragMap>> getDragListWeightParameterizationMap() {
+		return _dragListWeightParameterizationMap;
+	}
+
+	public void setDragListWeightParameterizationMap(Map<Double, List<DragMap>> _dragListWeightParameterizationMap) {
+		this._dragListWeightParameterizationMap = _dragListWeightParameterizationMap;
+	}
+
+	public Map<Double, List<ThrustMap>> getThrustListWeightParameterizationMap() {
+		return _thrustListWeightParameterizationMap;
+	}
+
+	public void setThrustListWeightParameterizationMap(Map<Double, List<ThrustMap>> _thrustListWeightParameterizationMap) {
+		this._thrustListWeightParameterizationMap = _thrustListWeightParameterizationMap;
+	}
+
+	public Map<Double, List<Amount<Force>>> getWeightListCruiseMap() {
+		return _weightListCruiseMap;
+	}
+
+	public void setWeightListCruiseMap(Map<Double, List<Amount<Force>>> _weightListCruiseMap) {
+		this._weightListCruiseMap = _weightListCruiseMap;
+	}
+
+	public Map<Double, List<DragThrustIntersectionMap>> getIntersectionListMap() {
+		return _intersectionListMap;
+	}
+
+	public void setIntersectionListMap(Map<Double, List<DragThrustIntersectionMap>> _intersectionListMap) {
+		this._intersectionListMap = _intersectionListMap;
+	}
+
+	public Map<Double, List<FlightEnvelopeMap>> getCruiseEnvelopeListMap() {
+		return _cruiseEnvelopeListMap;
+	}
+
+	public void setCruiseEnvelopeListMap(Map<Double, List<FlightEnvelopeMap>> _cruiseEnvelopeListMap) {
+		this._cruiseEnvelopeListMap = _cruiseEnvelopeListMap;
+	}
+
+	public Map<Double, Map<String, List<Double>>> getEfficiencyMapAltitudeMap() {
+		return _efficiencyMapAltitudeMap;
+	}
+
+	public void setEfficiencyMapAltitudeMap(Map<Double, Map<String, List<Double>>> _efficiencyMapAltitudeMap) {
+		this._efficiencyMapAltitudeMap = _efficiencyMapAltitudeMap;
+	}
+
+	public Map<Double, Map<String, List<Double>>> getEfficiencyMapWeightMap() {
+		return _efficiencyMapWeightMap;
+	}
+
+	public void setEfficiencyMapWeightMap(Map<Double, Map<String, List<Double>>> _efficiencyMapWeightMap) {
+		this._efficiencyMapWeightMap = _efficiencyMapWeightMap;
+	}
+
+	public Map<Double, List<SpecificRangeMap>> getSpecificRangeMapMap() {
+		return _specificRangeMapMap;
+	}
+
+	public void setSpecificRangeMapMap(Map<Double, List<SpecificRangeMap>> _specificRangeMapMap) {
+		this._specificRangeMapMap = _specificRangeMapMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getMaxSpeesTASAtCruiseAltitudeMap() {
+		return _maxSpeesTASAtCruiseAltitudeMap;
+	}
+
+	public void setMaxSpeesTASAtCruiseAltitudeMap(Map<Double, Amount<Velocity>> _maxSpeesTASAtCruiseAltitudeMap) {
+		this._maxSpeesTASAtCruiseAltitudeMap = _maxSpeesTASAtCruiseAltitudeMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getMinSpeesTASAtCruiseAltitudeMap() {
+		return _minSpeesTASAtCruiseAltitudeMap;
+	}
+
+	public void setMinSpeesTASAtCruiseAltitudeMap(Map<Double, Amount<Velocity>> _minSpeesTASAtCruiseAltitudeMap) {
+		this._minSpeesTASAtCruiseAltitudeMap = _minSpeesTASAtCruiseAltitudeMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getMaxSpeesCASAtCruiseAltitudeMap() {
+		return _maxSpeesCASAtCruiseAltitudeMap;
+	}
+
+	public void setMaxSpeesCASAtCruiseAltitudeMap(Map<Double, Amount<Velocity>> _maxSpeesCASAtCruiseAltitudeMap) {
+		this._maxSpeesCASAtCruiseAltitudeMap = _maxSpeesCASAtCruiseAltitudeMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getMinSpeesCASAtCruiseAltitudeMap() {
+		return _minSpeesCASAtCruiseAltitudeMap;
+	}
+
+	public void setMinSpeesCASAtCruiseAltitudeMap(Map<Double, Amount<Velocity>> _minSpeesCASAtCruiseAltitudeMap) {
+		this._minSpeesCASAtCruiseAltitudeMap = _minSpeesCASAtCruiseAltitudeMap;
+	}
+
+	public Map<Double, Double> getMaxMachAtCruiseAltitudeMap() {
+		return _maxMachAtCruiseAltitudeMap;
+	}
+
+	public void setMaxMachAtCruiseAltitudeMap(Map<Double, Double> _maxMachAtCruiseAltitudeMap) {
+		this._maxMachAtCruiseAltitudeMap = _maxMachAtCruiseAltitudeMap;
+	}
+
+	public Map<Double, Double> getMinMachAtCruiseAltitudeMap() {
+		return _minMachAtCruiseAltitudeMap;
+	}
+
+	public void setMinMachAtCruiseAltitudeMap(Map<Double, Double> _minMachAtCruiseAltitudeMap) {
+		this._minMachAtCruiseAltitudeMap = _minMachAtCruiseAltitudeMap;
+	}
+
+	public Map<Double, Double> getEfficiencyAtCruiseAltitudeAndMachMap() {
+		return _efficiencyAtCruiseAltitudeAndMachMap;
+	}
+
+	public void setEfficiencyAtCruiseAltitudeAndMachMap(Map<Double, Double> _efficiencyAtCruiseAltitudeAndMachMap) {
+		this._efficiencyAtCruiseAltitudeAndMachMap = _efficiencyAtCruiseAltitudeAndMachMap;
+	}
+
+	public Map<Double, Amount<Force>> getThrustAtCruiseAltitudeAndMachMap() {
+		return _thrustAtCruiseAltitudeAndMachMap;
+	}
+
+	public void setThrustAtCruiseAltitudeAndMachMap(Map<Double, Amount<Force>> _thrustAtCruiseAltitudeAndMachMap) {
+		this._thrustAtCruiseAltitudeAndMachMap = _thrustAtCruiseAltitudeAndMachMap;
+	}
+
+	public Map<Double, Amount<Force>> getDragAtCruiseAltitudeAndMachMap() {
+		return _dragAtCruiseAltitudeAndMachMap;
+	}
+
+	public void setDragAtCruiseAltitudeAndMachMap(Map<Double, Amount<Force>> _dragAtCruiseAltitudeAndMachMap) {
+		this._dragAtCruiseAltitudeAndMachMap = _dragAtCruiseAltitudeAndMachMap;
+	}
+
+	public Map<Double, Amount<Power>> getPowerAvailableAtCruiseAltitudeAndMachMap() {
+		return _powerAvailableAtCruiseAltitudeAndMachMap;
+	}
+
+	public void setPowerAvailableAtCruiseAltitudeAndMachMap(
+			Map<Double, Amount<Power>> _powerAvailableAtCruiseAltitudeAndMachMap) {
+		this._powerAvailableAtCruiseAltitudeAndMachMap = _powerAvailableAtCruiseAltitudeAndMachMap;
+	}
+
+	public Map<Double, Amount<Power>> getPowerNeededAtCruiseAltitudeAndMachMap() {
+		return _powerNeededAtCruiseAltitudeAndMachMap;
+	}
+
+	public void setPowerNeededAtCruiseAltitudeAndMachMap(
+			Map<Double, Amount<Power>> _powerNeededAtCruiseAltitudeAndMachMap) {
+		this._powerNeededAtCruiseAltitudeAndMachMap = _powerNeededAtCruiseAltitudeAndMachMap;
+	}
+
+	public Map<Double, DescentCalc> getTheDescentCalculatorMap() {
+		return _theDescentCalculatorMap;
+	}
+
+	public void setTheDescentCalculatorMap(Map<Double, DescentCalc> _theDescentCalculatorMap) {
+		this._theDescentCalculatorMap = _theDescentCalculatorMap;
+	}
+
+	public Map<Double, List<Amount<Length>>> getDescentLengthsMap() {
+		return _descentLengthsMap;
+	}
+
+	public void setDescentLengthsMap(Map<Double, List<Amount<Length>>> _descentLengthsMap) {
+		this._descentLengthsMap = _descentLengthsMap;
+	}
+
+	public Map<Double, List<Amount<Duration>>> getDescentTimesMap() {
+		return _descentTimesMap;
+	}
+
+	public void setDescentTimesMap(Map<Double, List<Amount<Duration>>> _descentTimesMap) {
+		this._descentTimesMap = _descentTimesMap;
+	}
+
+	public Map<Double, List<Amount<Angle>>> getDescentAnglesMap() {
+		return _descentAnglesMap;
+	}
+
+	public void setDescentAnglesMap(Map<Double, List<Amount<Angle>>> _descentAnglesMap) {
+		this._descentAnglesMap = _descentAnglesMap;
+	}
+
+	public Map<Double, Amount<Length>> getTotalDescentLengthMap() {
+		return _totalDescentLengthMap;
+	}
+
+	public void setTotalDescentLengthMap(Map<Double, Amount<Length>> _totalDescentLengthMap) {
+		this._totalDescentLengthMap = _totalDescentLengthMap;
+	}
+
+	public Map<Double, Amount<Duration>> getTotalDescentTimeMap() {
+		return _totalDescentTimeMap;
+	}
+
+	public void setTotalDescentTimeMap(Map<Double, Amount<Duration>> _totalDescentTimeMap) {
+		this._totalDescentTimeMap = _totalDescentTimeMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalDescentFuelUsedMap() {
+		return _totalDescentFuelUsedMap;
+	}
+
+	public void setTotalDescentFuelUsedMap(Map<Double, Amount<Mass>> _totalDescentFuelUsedMap) {
+		this._totalDescentFuelUsedMap = _totalDescentFuelUsedMap;
+	}
+
+	public Map<Double, LandingCalc> getTheLandingCalculatorMap() {
+		return _theLandingCalculatorMap;
+	}
+
+	public void setTheLandingCalculatorMap(Map<Double, LandingCalc> _theLandingCalculatorMap) {
+		this._theLandingCalculatorMap = _theLandingCalculatorMap;
+	}
+
+	public Map<Double, Amount<Length>> getLandingDistanceMap() {
+		return _landingDistanceMap;
+	}
+
+	public void setLandingDistanceMap(Map<Double, Amount<Length>> _landingDistanceMap) {
+		this._landingDistanceMap = _landingDistanceMap;
+	}
+
+	public Map<Double, Amount<Length>> getLandingDistanceFAR25Map() {
+		return _landingDistanceFAR25Map;
+	}
+
+	public void setLandingDistanceFAR25Map(Map<Double, Amount<Length>> _landingDistanceFAR25Map) {
+		this._landingDistanceFAR25Map = _landingDistanceFAR25Map;
+	}
+
+	public Map<Double, Amount<Length>> getGroundRollDistanceLandingMap() {
+		return _groundRollDistanceLandingMap;
+	}
+
+	public void setGroundRollDistanceLandingMap(Map<Double, Amount<Length>> _groundRollDistanceLandingMap) {
+		this._groundRollDistanceLandingMap = _groundRollDistanceLandingMap;
+	}
+
+	public Map<Double, Amount<Length>> getFlareDistanceLandingMap() {
+		return _flareDistanceLandingMap;
+	}
+
+	public void setFlareDistanceLandingMap(Map<Double, Amount<Length>> _flareDistanceLandingMap) {
+		this._flareDistanceLandingMap = _flareDistanceLandingMap;
+	}
+
+	public Map<Double, Amount<Length>> getAirborneDistanceLandingMap() {
+		return _airborneDistanceLandingMap;
+	}
+
+	public void setAirborneDistanceLandingMap(Map<Double, Amount<Length>> _airborneDistanceLandingMap) {
+		this._airborneDistanceLandingMap = _airborneDistanceLandingMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVStallLandingMap() {
+		return _vStallLandingMap;
+	}
+
+	public void setVStallLandingMap(Map<Double, Amount<Velocity>> _vStallLandingMap) {
+		this._vStallLandingMap = _vStallLandingMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVApproachMap() {
+		return _vApproachMap;
+	}
+
+	public void setVApproachMap(Map<Double, Amount<Velocity>> _vApproachMap) {
+		this._vApproachMap = _vApproachMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVFlareMap() {
+		return _vFlareMap;
+	}
+
+	public void setVFlareMap(Map<Double, Amount<Velocity>> _vFlareMap) {
+		this._vFlareMap = _vFlareMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getVTouchDownMap() {
+		return _vTouchDownMap;
+	}
+
+	public void setVTouchDownMap(Map<Double, Amount<Velocity>> _vTouchDownMap) {
+		this._vTouchDownMap = _vTouchDownMap;
+	}
+
+	public Map<Double, Amount<Duration>> getLandingDurationMap() {
+		return _landingDurationMap;
+	}
+
+	public void setLandingDurationMap(Map<Double, Amount<Duration>> _landingDurationMap) {
+		this._landingDurationMap = _landingDurationMap;
+	}
+
+	public Map<Double, PayloadRangeCalcMissionProfile> getThePayloadRangeCalculatorMap() {
+		return _thePayloadRangeCalculatorMap;
+	}
+
+	public void setThePayloadRangeCalculatorMap(
+			Map<Double, PayloadRangeCalcMissionProfile> _thePayloadRangeCalculatorMap) {
+		this._thePayloadRangeCalculatorMap = _thePayloadRangeCalculatorMap;
+	}
+
+	public Map<Double, Amount<Length>> getRangeAtMaxPayloadMap() {
+		return _rangeAtMaxPayloadMap;
+	}
+
+	public void setRangeAtMaxPayloadMap(Map<Double, Amount<Length>> _rangeAtMaxPayloadMap) {
+		this._rangeAtMaxPayloadMap = _rangeAtMaxPayloadMap;
+	}
+
+	public Map<Double, Amount<Length>> getRangeAtDesignPayloadMap() {
+		return _rangeAtDesignPayloadMap;
+	}
+
+	public void setRangeAtDesignPayloadMap(Map<Double, Amount<Length>> _rangeAtDesignPayloadMap) {
+		this._rangeAtDesignPayloadMap = _rangeAtDesignPayloadMap;
+	}
+
+	public Map<Double, Amount<Length>> getRangeAtMaxFuelMap() {
+		return _rangeAtMaxFuelMap;
+	}
+
+	public void setRangeAtMaxFuelMap(Map<Double, Amount<Length>> _rangeAtMaxFuelMap) {
+		this._rangeAtMaxFuelMap = _rangeAtMaxFuelMap;
+	}
+
+	public Map<Double, Amount<Length>> getRangeAtZeroPayloadMap() {
+		return _rangeAtZeroPayloadMap;
+	}
+
+	public void setRangeAtZeroPayloadMap(Map<Double, Amount<Length>> _rangeAtZeroPayloadMap) {
+		this._rangeAtZeroPayloadMap = _rangeAtZeroPayloadMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTakeOffMassAtZeroPayloadMap() {
+		return _takeOffMassAtZeroPayloadMap;
+	}
+
+	public void setTakeOffMassAtZeroPayloadMap(Map<Double, Amount<Mass>> _takeOffMassAtZeroPayloadMap) {
+		this._takeOffMassAtZeroPayloadMap = _takeOffMassAtZeroPayloadMap;
+	}
+
+	public Map<Double, Amount<Mass>> getMaxPayloadMap() {
+		return _maxPayloadMap;
+	}
+
+	public void setMaxPayloadMap(Map<Double, Amount<Mass>> _maxPayloadMap) {
+		this._maxPayloadMap = _maxPayloadMap;
+	}
+
+	public Map<Double, Amount<Mass>> getDesignPayloadMap() {
+		return _designPayloadMap;
+	}
+
+	public void setDesignPayloadMap(Map<Double, Amount<Mass>> _designPayloadMap) {
+		this._designPayloadMap = _designPayloadMap;
+	}
+
+	public Map<Double, Amount<Mass>> getPayloadAtMaxFuelMap() {
+		return _payloadAtMaxFuelMap;
+	}
+
+	public void setPayloadAtMaxFuelMap(Map<Double, Amount<Mass>> _payloadAtMaxFuelMap) {
+		this._payloadAtMaxFuelMap = _payloadAtMaxFuelMap;
+	}
+
+	public Map<Double, Integer> getPassengersNumberAtMaxPayloadMap() {
+		return _passengersNumberAtMaxPayloadMap;
+	}
+
+	public void setPassengersNumberAtMaxPayloadMap(Map<Double, Integer> _passengersNumberAtMaxPayloadMap) {
+		this._passengersNumberAtMaxPayloadMap = _passengersNumberAtMaxPayloadMap;
+	}
+
+	public Map<Double, Integer> getPassengersNumberAtDesignPayloadMap() {
+		return _passengersNumberAtDesignPayloadMap;
+	}
+
+	public void setPassengersNumberAtDesignPayloadMap(Map<Double, Integer> _passengersNumberAtDesignPayloadMap) {
+		this._passengersNumberAtDesignPayloadMap = _passengersNumberAtDesignPayloadMap;
+	}
+
+	public Map<Double, Integer> getPassengersNumberAtMaxFuelMap() {
+		return _passengersNumberAtMaxFuelMap;
+	}
+
+	public void setPassengersNumberAtMaxFuelMap(Map<Double, Integer> _passengersNumberAtMaxFuelMap) {
+		this._passengersNumberAtMaxFuelMap = _passengersNumberAtMaxFuelMap;
+	}
+
+	public Map<Double, Amount<Mass>> getRequiredMassAtMaxPayloadMap() {
+		return _requiredMassAtMaxPayloadMap;
+	}
+
+	public void setRequiredMassAtMaxPayloadMap(Map<Double, Amount<Mass>> _requiredMassAtMaxPayloadMap) {
+		this._requiredMassAtMaxPayloadMap = _requiredMassAtMaxPayloadMap;
+	}
+
+	public Map<Double, Amount<Mass>> getRequiredMassAtDesignPayloadMap() {
+		return _requiredMassAtDesignPayloadMap;
+	}
+
+	public void setRequiredMassAtDesignPayloadMap(Map<Double, Amount<Mass>> _requiredMassAtDesignPayloadMap) {
+		this._requiredMassAtDesignPayloadMap = _requiredMassAtDesignPayloadMap;
+	}
+
+	public Map<Double, List<Amount<Length>>> getRangeArrayMap() {
+		return _rangeArrayMap;
+	}
+
+	public void setRangeArrayMap(Map<Double, List<Amount<Length>>> _rangeArrayMap) {
+		this._rangeArrayMap = _rangeArrayMap;
+	}
+
+	public Map<Double, List<Double>> getPayloadArrayMap() {
+		return _payloadArrayMap;
+	}
+
+	public void setPayloadArrayMap(Map<Double, List<Double>> _payloadArrayMap) {
+		this._payloadArrayMap = _payloadArrayMap;
+	}
+
+	public Map<Double, double[][]> getRangeMatrixMap() {
+		return _rangeMatrixMap;
+	}
+
+	public void setRangeMatrixMap(Map<Double, double[][]> _rangeMatrixMap) {
+		this._rangeMatrixMap = _rangeMatrixMap;
+	}
+
+	public Map<Double, double[][]> getPayloadMatrixMap() {
+		return _payloadMatrixMap;
+	}
+
+	public void setPayloadMatrixMap(Map<Double, double[][]> _payloadMatrixMap) {
+		this._payloadMatrixMap = _payloadMatrixMap;
+	}
+
+	public Map<Double, FlightManeuveringEnvelopeCalc> getTheEnvelopeCalculatorMap() {
+		return _theEnvelopeCalculatorMap;
+	}
+
+	public void setTheEnvelopeCalculatorMap(Map<Double, FlightManeuveringEnvelopeCalc> _theEnvelopeCalculatorMap) {
+		this._theEnvelopeCalculatorMap = _theEnvelopeCalculatorMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getStallSpeedFullFlapMap() {
+		return _stallSpeedFullFlapMap;
+	}
+
+	public void setStallSpeedFullFlapMap(Map<Double, Amount<Velocity>> _stallSpeedFullFlapMap) {
+		this._stallSpeedFullFlapMap = _stallSpeedFullFlapMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getStallSpeedCleanMap() {
+		return _stallSpeedCleanMap;
+	}
+
+	public void setStallSpeedCleanMap(Map<Double, Amount<Velocity>> _stallSpeedCleanMap) {
+		this._stallSpeedCleanMap = _stallSpeedCleanMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getStallSpeedInvertedMap() {
+		return _stallSpeedInvertedMap;
+	}
+
+	public void setStallSpeedInvertedMap(Map<Double, Amount<Velocity>> _stallSpeedInvertedMap) {
+		this._stallSpeedInvertedMap = _stallSpeedInvertedMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getManeuveringSpeedMap() {
+		return _maneuveringSpeedMap;
+	}
+
+	public void setManeuveringSpeedMap(Map<Double, Amount<Velocity>> _maneuveringSpeedMap) {
+		this._maneuveringSpeedMap = _maneuveringSpeedMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getManeuveringFlapSpeedMap() {
+		return _maneuveringFlapSpeedMap;
+	}
+
+	public void setManeuveringFlapSpeedMap(Map<Double, Amount<Velocity>> _maneuveringFlapSpeedMap) {
+		this._maneuveringFlapSpeedMap = _maneuveringFlapSpeedMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getManeuveringSpeedInvertedMap() {
+		return _maneuveringSpeedInvertedMap;
+	}
+
+	public void setManeuveringSpeedInvertedMap(Map<Double, Amount<Velocity>> _maneuveringSpeedInvertedMap) {
+		this._maneuveringSpeedInvertedMap = _maneuveringSpeedInvertedMap;
+	}
+
+	public Map<Double, Amount<Velocity>> getDesignFlapSpeedMap() {
+		return _designFlapSpeedMap;
+	}
+
+	public void setDesignFlapSpeedMap(Map<Double, Amount<Velocity>> _designFlapSpeedMap) {
+		this._designFlapSpeedMap = _designFlapSpeedMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorManeuveringSpeedMap() {
+		return _positiveLoadFactorManeuveringSpeedMap;
+	}
+
+	public void setPositiveLoadFactorManeuveringSpeedMap(Map<Double, Double> _positiveLoadFactorManeuveringSpeedMap) {
+		this._positiveLoadFactorManeuveringSpeedMap = _positiveLoadFactorManeuveringSpeedMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorCruisingSpeedMap() {
+		return _positiveLoadFactorCruisingSpeedMap;
+	}
+
+	public void setPositiveLoadFactorCruisingSpeedMap(Map<Double, Double> _positiveLoadFactorCruisingSpeedMap) {
+		this._positiveLoadFactorCruisingSpeedMap = _positiveLoadFactorCruisingSpeedMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorDiveSpeedMap() {
+		return _positiveLoadFactorDiveSpeedMap;
+	}
+
+	public void setPositiveLoadFactorDiveSpeedMap(Map<Double, Double> _positiveLoadFactorDiveSpeedMap) {
+		this._positiveLoadFactorDiveSpeedMap = _positiveLoadFactorDiveSpeedMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorDesignFlapSpeedMap() {
+		return _positiveLoadFactorDesignFlapSpeedMap;
+	}
+
+	public void setPositiveLoadFactorDesignFlapSpeedMap(Map<Double, Double> _positiveLoadFactorDesignFlapSpeedMap) {
+		this._positiveLoadFactorDesignFlapSpeedMap = _positiveLoadFactorDesignFlapSpeedMap;
+	}
+
+	public Map<Double, Double> getNegativeLoadFactorManeuveringSpeedInvertedMap() {
+		return _negativeLoadFactorManeuveringSpeedInvertedMap;
+	}
+
+	public void setNegativeLoadFactorManeuveringSpeedInvertedMap(
+			Map<Double, Double> _negativeLoadFactorManeuveringSpeedInvertedMap) {
+		this._negativeLoadFactorManeuveringSpeedInvertedMap = _negativeLoadFactorManeuveringSpeedInvertedMap;
+	}
+
+	public Map<Double, Double> getNegativeLoadFactorCruisingSpeedMap() {
+		return _negativeLoadFactorCruisingSpeedMap;
+	}
+
+	public void setNegativeLoadFactorCruisingSpeedMap(Map<Double, Double> _negativeLoadFactorCruisingSpeedMap) {
+		this._negativeLoadFactorCruisingSpeedMap = _negativeLoadFactorCruisingSpeedMap;
+	}
+
+	public Map<Double, Double> getNegativeLoadFactorDiveSpeedMap() {
+		return _negativeLoadFactorDiveSpeedMap;
+	}
+
+	public void setNegativeLoadFactorDiveSpeedMap(Map<Double, Double> _negativeLoadFactorDiveSpeedMap) {
+		this._negativeLoadFactorDiveSpeedMap = _negativeLoadFactorDiveSpeedMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorManeuveringSpeedWithGustMap() {
+		return _positiveLoadFactorManeuveringSpeedWithGustMap;
+	}
+
+	public void setPositiveLoadFactorManeuveringSpeedWithGustMap(
+			Map<Double, Double> _positiveLoadFactorManeuveringSpeedWithGustMap) {
+		this._positiveLoadFactorManeuveringSpeedWithGustMap = _positiveLoadFactorManeuveringSpeedWithGustMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorCruisingSpeedWithGustMap() {
+		return _positiveLoadFactorCruisingSpeedWithGustMap;
+	}
+
+	public void setPositiveLoadFactorCruisingSpeedWithGustMap(
+			Map<Double, Double> _positiveLoadFactorCruisingSpeedWithGustMap) {
+		this._positiveLoadFactorCruisingSpeedWithGustMap = _positiveLoadFactorCruisingSpeedWithGustMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorDiveSpeedWithGustMap() {
+		return _positiveLoadFactorDiveSpeedWithGustMap;
+	}
+
+	public void setPositiveLoadFactorDiveSpeedWithGustMap(Map<Double, Double> _positiveLoadFactorDiveSpeedWithGustMap) {
+		this._positiveLoadFactorDiveSpeedWithGustMap = _positiveLoadFactorDiveSpeedWithGustMap;
+	}
+
+	public Map<Double, Double> getPositiveLoadFactorDesignFlapSpeedWithGustMap() {
+		return _positiveLoadFactorDesignFlapSpeedWithGustMap;
+	}
+
+	public void setPositiveLoadFactorDesignFlapSpeedWithGustMap(
+			Map<Double, Double> _positiveLoadFactorDesignFlapSpeedWithGustMap) {
+		this._positiveLoadFactorDesignFlapSpeedWithGustMap = _positiveLoadFactorDesignFlapSpeedWithGustMap;
+	}
+
+	public Map<Double, Double> getNegativeLoadFactorManeuveringSpeedInvertedWithGustMap() {
+		return _negativeLoadFactorManeuveringSpeedInvertedWithGustMap;
+	}
+
+	public void setNegativeLoadFactorManeuveringSpeedInvertedWithGustMap(
+			Map<Double, Double> _negativeLoadFactorManeuveringSpeedInvertedWithGustMap) {
+		this._negativeLoadFactorManeuveringSpeedInvertedWithGustMap = _negativeLoadFactorManeuveringSpeedInvertedWithGustMap;
+	}
+
+	public Map<Double, Double> getNegativeLoadFactorCruisingSpeedWithGustMap() {
+		return _negativeLoadFactorCruisingSpeedWithGustMap;
+	}
+
+	public void setNegativeLoadFactorCruisingSpeedWithGustMap(
+			Map<Double, Double> _negativeLoadFactorCruisingSpeedWithGustMap) {
+		this._negativeLoadFactorCruisingSpeedWithGustMap = _negativeLoadFactorCruisingSpeedWithGustMap;
+	}
+
+	public Map<Double, Double> getNegativeLoadFactorDiveSpeedWithGustMap() {
+		return _negativeLoadFactorDiveSpeedWithGustMap;
+	}
+
+	public void setNegativeLoadFactorDiveSpeedWithGustMap(Map<Double, Double> _negativeLoadFactorDiveSpeedWithGustMap) {
+		this._negativeLoadFactorDiveSpeedWithGustMap = _negativeLoadFactorDiveSpeedWithGustMap;
+	}
+
+	public Map<Double, Double> getNegativeLoadFactorDesignFlapSpeedWithGustMap() {
+		return _negativeLoadFactorDesignFlapSpeedWithGustMap;
+	}
+
+	public void setNegativeLoadFactorDesignFlapSpeedWithGustMap(
+			Map<Double, Double> _negativeLoadFactorDesignFlapSpeedWithGustMap) {
+		this._negativeLoadFactorDesignFlapSpeedWithGustMap = _negativeLoadFactorDesignFlapSpeedWithGustMap;
+	}
+
+	public Map<Double, MissionProfileCalc> getTheMissionProfileCalculatorMap() {
+		return _theMissionProfileCalculatorMap;
+	}
+
+	public void setTheMissionProfileCalculatorMap(Map<Double, MissionProfileCalc> _theMissionProfileCalculatorMap) {
+		this._theMissionProfileCalculatorMap = _theMissionProfileCalculatorMap;
+	}
+
+	public Map<Double, List<Amount<Length>>> getAltitudeListMap() {
+		return _altitudeListMap;
+	}
+
+	public void setAltitudeListMap(Map<Double, List<Amount<Length>>> _altitudeListMap) {
+		this._altitudeListMap = _altitudeListMap;
+	}
+
+	public Map<Double, List<Amount<Length>>> getRangeListMap() {
+		return _rangeListMap;
+	}
+
+	public void setRangeListMap(Map<Double, List<Amount<Length>>> _rangeListMap) {
+		this._rangeListMap = _rangeListMap;
+	}
+
+	public Map<Double, List<Amount<Duration>>> getTimeListMap() {
+		return _timeListMap;
+	}
+
+	public void setTimeListMap(Map<Double, List<Amount<Duration>>> _timeListMap) {
+		this._timeListMap = _timeListMap;
+	}
+
+	public Map<Double, List<Amount<Mass>>> getFuelUsedListMap() {
+		return _fuelUsedListMap;
+	}
+
+	public void setFuelUsedListMap(Map<Double, List<Amount<Mass>>> _fuelUsedListMap) {
+		this._fuelUsedListMap = _fuelUsedListMap;
+	}
+
+	public Map<Double, List<Amount<Mass>>> getMassListMap() {
+		return _massListMap;
+	}
+
+	public void setMassListMap(Map<Double, List<Amount<Mass>>> _massListMap) {
+		this._massListMap = _massListMap;
+	}
+
+	public Map<Double, List<Amount<Velocity>>> getSpeedTASMissionListMap() {
+		return _speedTASMissionListMap;
+	}
+
+	public void setSpeedTASMissionListMap(Map<Double, List<Amount<Velocity>>> _speedTASMissionListMap) {
+		this._speedTASMissionListMap = _speedTASMissionListMap;
+	}
+
+	public Map<Double, List<Double>> getMachMissionListMap() {
+		return _machMissionListMap;
+	}
+
+	public void setMachMissionListMap(Map<Double, List<Double>> _machMissionListMap) {
+		this._machMissionListMap = _machMissionListMap;
+	}
+
+	public Map<Double, List<Double>> getLiftingCoefficientMissionListMap() {
+		return _liftingCoefficientMissionListMap;
+	}
+
+	public void setLiftingCoefficientMissionListMap(Map<Double, List<Double>> _liftingCoefficientMissionListMap) {
+		this._liftingCoefficientMissionListMap = _liftingCoefficientMissionListMap;
+	}
+
+	public Map<Double, List<Double>> getDragCoefficientMissionListMap() {
+		return _dragCoefficientMissionListMap;
+	}
+
+	public void setDragCoefficientMissionListMap(Map<Double, List<Double>> _dragCoefficientMissionListMap) {
+		this._dragCoefficientMissionListMap = _dragCoefficientMissionListMap;
+	}
+
+	public Map<Double, List<Double>> getEfficiencyMissionListMap() {
+		return _efficiencyMissionListMap;
+	}
+
+	public void setEfficiencyMissionListMap(Map<Double, List<Double>> _efficiencyMissionListMap) {
+		this._efficiencyMissionListMap = _efficiencyMissionListMap;
+	}
+
+	public Map<Double, List<Amount<Force>>> getThrustMissionListMap() {
+		return _thrustMissionListMap;
+	}
+
+	public void setThrustMissionListMap(Map<Double, List<Amount<Force>>> _thrustMissionListMap) {
+		this._thrustMissionListMap = _thrustMissionListMap;
+	}
+
+	public Map<Double, List<Amount<Force>>> getDragMissionListMap() {
+		return _dragMissionListMap;
+	}
+
+	public void setDragMissionListMap(Map<Double, List<Amount<Force>>> _dragMissionListMap) {
+		this._dragMissionListMap = _dragMissionListMap;
+	}
+
+	public Map<Double, Amount<Mass>> getInitialFuelMassMap() {
+		return _initialFuelMassMap;
+	}
+
+	public void setInitialFuelMassMap(Map<Double, Amount<Mass>> _initialFuelMassMap) {
+		this._initialFuelMassMap = _initialFuelMassMap;
+	}
+
+	public Map<Double, Amount<Mass>> getTotalFuelUsedMap() {
+		return _totalFuelUsedMap;
+	}
+
+	public void setTotalFuelUsedMap(Map<Double, Amount<Mass>> _totalFuelUsedMap) {
+		this._totalFuelUsedMap = _totalFuelUsedMap;
+	}
+
+	public Map<Double, Amount<Duration>> getTotalMissionTimeMap() {
+		return _totalMissionTimeMap;
+	}
+
+	public void setTotalMissionTimeMap(Map<Double, Amount<Duration>> _totalMissionTimeMap) {
+		this._totalMissionTimeMap = _totalMissionTimeMap;
+	}
+
+	public Map<Double, Amount<Mass>> getInitialMissionMassMap() {
+		return _initialMissionMassMap;
+	}
+
+	public void setInitialMissionMassMap(Map<Double, Amount<Mass>> _initialMissionMassMap) {
+		this._initialMissionMassMap = _initialMissionMassMap;
+	}
+
+	public Map<Double, Amount<Mass>> getEndMissionMassMap() {
+		return _endMissionMassMap;
+	}
+
+	public void setEndMissionMassMap(Map<Double, Amount<Mass>> _endMissionMassMap) {
+		this._endMissionMassMap = _endMissionMassMap;
 	}
 
 }
