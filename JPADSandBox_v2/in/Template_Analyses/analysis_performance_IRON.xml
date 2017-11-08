@@ -94,6 +94,10 @@
 							<polar_curve_CD>0.135400883;0.133582443;0.132848483;0.133199003;0.134634042;0.137153575;0.140757223;0.145445151;0.151217648;0.158074035;0.166014619;0.175038985;0.185146827;0.196198286;0.207603396;0.219873902;0.233549812;0.248933639;0.265937067;0.284287369;0.303883008;0.324826902;0.346694324;0.369645716;0.392268833;0.409403904;0.419468091;0.423103066;0.420313086</polar_curve_CD>
 						</landing>
 					</polar_curves>
+					<tau_rudder_function>
+						<tau>0.025</tau>
+						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_rudder_function>
 				</xcg>
 				<xcg value="0.25" parabolicDragPolar="TRUE"> <!-- if TRUE uses a parabolic drag polar with wave drag correction; otherwise it reads the polar_curves tag -->
 					<cLmax_clean_configuration>1.61</cLmax_clean_configuration>

@@ -87,13 +87,9 @@ public class ACPerformanceManager {
 	 */
 	
 	/*
-	 * TODO: - THE CALCULATE METHOD HAS TO BE UPDATED ALLOWING TO MULTI-CG PERFORMANCE EVAULATION
-	 *       - ELIMINATE THE INITIAL CRUISE RANGE AND INITIAL MISSION FUEL FROM THE INPUT FILE
-	 *         AND GIVE THEM DEFAULT VALUE (RANGE -> BREGUET; FUEL -> MAX_FUEL/2).
+	 * TODO: - ELIMINATE THE INITIAL CRUISE RANGE AND INITIAL MISSION FUEL FROM THE INPUT FILE
+	 *         AND GIVE THEM DEFAULT VALUE (RANGE -> BREGUET OR MISSION_RANGE/3; FUEL -> MAX_FUEL/2).
 	 *       - ALLOW DEFINITION OF SFC OR CALCULATE IT SCALING THE MAX CRUISE
-	 *       - ALLOW DEFINITION (OR IMPORT FROM AERODYNAMICS) OF THE TAU INDEX OF THE VERTICAL TAIL
-	 *       - CRATE A FOLDER FOR EACH XCG IN OUTPUT TO STORE FILES AND CHARTS (IN THIS WAY YOU DO
-	 *         NOT NEED TO MODIFY THE METHOD THAT CREATE CHARTS AND XLSX)
 	 *       - DEBUG ALL!! (IN PARTICULAR DURING MISSION PROFILE ANALYSIS OR PAYLOAD RANGE WHEN THE SECOND CLIMB FREEZES THE EXECUTION)
 	 *       
 	 *       - IN THE COSTS ANALYSIS, DATA FROM THE PERFORMANCE MODULE WILL HAVE TO BE UPDATED TAKING INTO
@@ -555,6 +551,7 @@ public class ACPerformanceManager {
 		 * data inside the xml file.
 		 * Otherwise it ignores the manager file and reads the input data from the xml.
 		 */
+		Map<Double, MyInterpolatingFunction> tauRudderMap = new HashMap<>();
 		
 		List<Double> centerOfGravityList = new ArrayList<>();
 		
@@ -569,7 +566,7 @@ public class ACPerformanceManager {
 		
 		Map<Double, Double> cD0 = new HashMap<>();
 		Map<Double,Double> oswaldCruise = new HashMap<>();
-		Map<Double,Double>oswaldClimb = new HashMap<>();
+		Map<Double,Double> oswaldClimb = new HashMap<>();
 		Map<Double,Double> oswaldTakeOff = new HashMap<>();
 		Map<Double,Double> oswaldLanding = new HashMap<>();
 		Map<Double,Double> deltaCD0TakeOff  = new HashMap<>();
@@ -590,36 +587,52 @@ public class ACPerformanceManager {
 			if(theAircraft.getTheAnalysisManager() != null) {
 				if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability() != null) {
 
+					MyInterpolatingFunction tauRudderFunctionTakeOff = new MyInterpolatingFunction();
+					MyInterpolatingFunction tauRudderFunctionClimb = new MyInterpolatingFunction();
+					MyInterpolatingFunction tauRudderFunctionCruise = new MyInterpolatingFunction();
+					MyInterpolatingFunction tauRudderFunctionLanding = new MyInterpolatingFunction();
 					List<Double> xcgTakeOff = new ArrayList<>();
 					List<Double> xcgClimb = new ArrayList<>();
 					List<Double> xcgCruise = new ArrayList<>();
 					List<Double> xcgLanding = new ArrayList<>();
 
 					//.........................................................................................................
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF) != null) 
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF) != null) { 
 						xcgTakeOff = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-						.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getXCGAircraft();
+								.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getXCGAircraft();
+						tauRudderFunctionTakeOff = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.TAKE_OFF).getTheAerodynamicBuilderInterface().getTauRudderFunction();
+					}
 					else 
 						System.err.println("WARNING!! THE TAKE-OFF AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
 					
 					//.........................................................................................................
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB) != null)
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB) != null) {
 						xcgClimb = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-						.get(ConditionEnum.CLIMB).getTheAerodynamicBuilderInterface().getXCGAircraft();
+								.get(ConditionEnum.CLIMB).getTheAerodynamicBuilderInterface().getXCGAircraft();
+						tauRudderFunctionClimb = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.CLIMB).getTheAerodynamicBuilderInterface().getTauRudderFunction();
+					}
 					else 
 						System.err.println("WARNING!! THE CLIMB AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
 
 					//.........................................................................................................
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE) != null)
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE) != null) {
 						xcgCruise = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-						.get(ConditionEnum.CRUISE).getTheAerodynamicBuilderInterface().getXCGAircraft();
+								.get(ConditionEnum.CRUISE).getTheAerodynamicBuilderInterface().getXCGAircraft();
+						tauRudderFunctionCruise = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.CRUISE).getTheAerodynamicBuilderInterface().getTauRudderFunction();
+					}
 					else 
 						System.err.println("WARNING!! THE CRUISE AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
 					
 					//.........................................................................................................
-					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING) != null)
+					if(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING) != null) {
 						xcgLanding = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
-						.get(ConditionEnum.LANDING).getTheAerodynamicBuilderInterface().getXCGAircraft();
+								.get(ConditionEnum.LANDING).getTheAerodynamicBuilderInterface().getXCGAircraft();
+						tauRudderFunctionClimb = theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.LANDING).getTheAerodynamicBuilderInterface().getTauRudderFunction();
+					}
 					else 
 						System.err.println("WARNING!! THE LANDING AERODYNAMIC AND STABILITY ANALYSIS HAS NOT BEEN CARRIED OUT!!");
 
@@ -877,6 +890,82 @@ public class ACPerformanceManager {
 			List<String> xCGListProperty = reader.getXMLPropertiesByPath("//xcg");
 			if(!xCGListProperty.isEmpty())
 				xCGListProperty.stream().forEach(xcg -> centerOfGravityList.add(Double.valueOf(xcg)));
+			
+			//---------------------------------------------------------------
+			// TAU RUDDER
+			List<String> calculateTauRudderListProperty = MyXMLReaderUtils
+					.getXMLPropertiesByPath(
+							reader.getXmlDoc(), reader.getXpath(),
+							"//tau_rudder_function/@calculate");
+			
+			MyInterpolatingFunction tauRudderInterpolatingFunction = new MyInterpolatingFunction();
+			
+			if(!calculateTauRudderListProperty.isEmpty()) {
+
+				List<MyInterpolatingFunction> tauRudderFunctionList = new ArrayList<>();
+
+				calculateTauRudderListProperty.stream().forEach(calc -> {
+
+					if(calc.equalsIgnoreCase("TRUE")) {
+
+						List<Double> tauRudderArray = new ArrayList<>();
+
+						double[] deltaRudderArray = MyArrayUtils.linspace(-25, 25, 51);
+						for(int i=0; i<deltaRudderArray.length; i++)
+							tauRudderArray.add(
+									LiftCalc.calculateTauIndexElevator(
+											theAircraft.getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(), 
+											theAircraft.getVTail().getLiftingSurfaceCreator().getAspectRatio(), 
+											theAircraft.getVTail().getHighLiftDatabaseReader(), 
+											theAircraft.getVTail().getAerodynamicDatabaseReader(), 
+											Amount.valueOf(deltaRudderArray[i], NonSI.DEGREE_ANGLE)
+											)
+									);
+
+						
+						tauRudderInterpolatingFunction.interpolate(deltaRudderArray, MyArrayUtils.convertToDoublePrimitive(tauRudderArray));
+
+						tauRudderFunctionList.add(tauRudderInterpolatingFunction);
+
+					}
+					else {
+
+						List<Double> tauRudderFunction = new ArrayList<>();
+						List<Amount<Angle>> tauRudderFunctionDeltaRudder = new ArrayList<>();
+
+						String tauRudderFunctionProperty = reader.getXMLPropertyByPath("//xcg[@value='" + centerOfGravityList.get(calculateTauRudderListProperty.indexOf(calc)) + "']/tau_rudder_function/tau");
+						if(tauRudderFunctionProperty != null)
+							tauRudderFunction = reader.readArrayDoubleFromXML("//xcg[@value='" + centerOfGravityList.get(calculateTauRudderListProperty.indexOf(calc)) + "']/tau_rudder_function/tau"); 
+						String tauRudderFunctionDeltaRudderProperty = reader.getXMLPropertyByPath("//xcg[@value='" + centerOfGravityList.get(calculateTauRudderListProperty.indexOf(calc)) + "']/tau_rudder_function/delta_rudder");
+						if(tauRudderFunctionDeltaRudderProperty != null)
+							tauRudderFunctionDeltaRudder = reader.readArrayofAmountFromXML("//xcg[@value='" + centerOfGravityList.get(calculateTauRudderListProperty.indexOf(calc)) + "']/tau_rudder_function/delta_rudder");
+
+						if(tauRudderFunction.size() > 1)
+							if(tauRudderFunction.size() != tauRudderFunctionDeltaRudder.size())
+							{
+								System.err.println("TAU RUDDER ARRAY AND THE RELATED DELTA RUDDER ARRAY MUST HAVE THE SAME LENGTH !");
+								System.exit(1);
+							}
+						if(tauRudderFunction.size() == 1) {
+							tauRudderFunction.add(tauRudderFunction.get(0));
+							tauRudderFunctionDeltaRudder.add(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE));
+							tauRudderFunctionDeltaRudder.add(Amount.valueOf(360.0, NonSI.DEGREE_ANGLE));
+						}
+
+						tauRudderInterpolatingFunction.interpolateLinear(
+								MyArrayUtils.convertListOfAmountTodoubleArray(
+										tauRudderFunctionDeltaRudder.stream()
+										.map(f -> f.to(NonSI.DEGREE_ANGLE))
+										.collect(Collectors.toList())
+										),
+								MyArrayUtils.convertToDoublePrimitive(tauRudderFunction)
+								);
+
+						tauRudderFunctionList.add(tauRudderInterpolatingFunction);
+					}
+				});
+			}
+
 			//...............................................................
 			// CLmax CLEAN
 			List<String> cLmaxCleanProperty = reader.getXMLPropertiesByPath("//cLmax_clean_configuration");
@@ -2039,6 +2128,7 @@ public class ACPerformanceManager {
 				.putAllPolarCDTakeOff(polarCDTakeOff)
 				.putAllPolarCLLanding(polarCLLanding)
 				.putAllPolarCDLanding(polarCDLanding)
+				.putAllTauRudderMap(tauRudderMap)
 				.setMuFunction(muInterpolatingFunction)
 				.setMuBrakeFunction(muBrakeInterpolatingFunction)
 				.setDtRotation(dtRotation)
@@ -3628,19 +3718,11 @@ public class ACPerformanceManager {
 			// CALCULATING THE VERTICAL TAIL YAWING MOMENT
 			_yawingMomentOEIMap.put(xcg, new double[_thrustMomentOEIMap.get(xcg).length]);
 			
-			double tau = LiftCalc.calculateTauIndexElevator(
-					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMeanChordRatio(),
-					_thePerformanceInterface.getTheAircraft().getVTail().getAspectRatio(), 
-					_thePerformanceInterface.getTheAircraft().getVTail().getHighLiftDatabaseReader(),
-					_thePerformanceInterface.getTheAircraft().getVTail().getAerodynamicDatabaseReader(),
-					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection()
-					);
-			
-//			double tau = 0.5284; // (Only for IRON)
-			
 			for(int i=0; i < thrust.length; i++){
 			_yawingMomentOEIMap.get(xcg)[i] = cNbVertical*
-					tau*
+					_thePerformanceInterface.getTauRudderMap().get(xcg).value(
+							_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)
+							)*
 					_thePerformanceInterface.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSymmetricFlaps().get(0).getMaximumDeflection().doubleValue(NonSI.DEGREE_ANGLE)*
 					0.5*
 					_thePerformanceInterface.getTheOperatingConditions().getDensityTakeOff().getEstimatedValue()*
@@ -5341,7 +5423,9 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
 							_thePerformanceInterface.getCLAlphaLanding().get(xcg).to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 							_thePerformanceInterface.getTheOperatingConditions().getThrottleGroundIdleLanding(),
-							_thePerformanceInterface.getFreeRollDuration()
+							_thePerformanceInterface.getFreeRollDuration(),
+							_thePerformanceInterface.getPolarCLLanding().get(xcg),
+							_thePerformanceInterface.getPolarCDLanding().get(xcg)
 							)
 					);
 			
@@ -5419,10 +5503,14 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLZeroTakeOff().get(xcg),
 							_thePerformanceInterface.getCLmaxLanding().get(xcg),
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
+							_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
+							_thePerformanceInterface.getPolarCDTakeOff().get(xcg),
 							_thePerformanceInterface.getPolarCLClimb().get(xcg),
 							_thePerformanceInterface.getPolarCDClimb().get(xcg),
 							_thePerformanceInterface.getPolarCLCruise().get(xcg),
 							_thePerformanceInterface.getPolarCDCruise().get(xcg),
+							_thePerformanceInterface.getPolarCLLanding().get(xcg),
+							_thePerformanceInterface.getPolarCDLanding().get(xcg),
 							_thePerformanceInterface.getWindSpeed(),
 							_thePerformanceInterface.getMuFunction(),
 							_thePerformanceInterface.getMuBrakeFunction(),
@@ -5583,10 +5671,14 @@ public class ACPerformanceManager {
 							_thePerformanceInterface.getCLZeroTakeOff().get(xcg),
 							_thePerformanceInterface.getCLmaxLanding().get(xcg),
 							_thePerformanceInterface.getCLZeroLanding().get(xcg),
+							_thePerformanceInterface.getPolarCLTakeOff().get(xcg),
+							_thePerformanceInterface.getPolarCDTakeOff().get(xcg),
 							_thePerformanceInterface.getPolarCLClimb().get(xcg),
 							_thePerformanceInterface.getPolarCDClimb().get(xcg),
 							_thePerformanceInterface.getPolarCLCruise().get(xcg),
-							_thePerformanceInterface.getPolarCDClimb().get(xcg),
+							_thePerformanceInterface.getPolarCDCruise().get(xcg),
+							_thePerformanceInterface.getPolarCLLanding().get(xcg),
+							_thePerformanceInterface.getPolarCDLanding().get(xcg),
 							_thePerformanceInterface.getWindSpeed(),
 							_thePerformanceInterface.getMuFunction(),
 							_thePerformanceInterface.getMuBrakeFunction(),

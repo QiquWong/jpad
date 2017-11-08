@@ -66,10 +66,14 @@ public class MissionProfileCalc {
 	private Double _cLZeroTakeOff;
 	private Double _cLmaxLanding;
 	private Double _cLZeroLanding;
+	private Double[] _polarCLTakeOff;
+	private Double[] _polarCDTakeOff;
 	private Double[] _polarCLClimb;
 	private Double[] _polarCDClimb;
 	private Double[] _polarCLCruise;
 	private Double[] _polarCDCruise;
+	private Double[] _polarCLLanding;
+	private Double[] _polarCDLanding;
 	private Amount<Velocity> _windSpeed;
 	private MyInterpolatingFunction _mu;
 	private MyInterpolatingFunction _muBrake;
@@ -143,10 +147,14 @@ public class MissionProfileCalc {
 			Double cLZeroTakeOff,
 			Double cLmaxLanding,
 			Double cLZeroLanding,
+			Double[] polarCLTakeOff,
+			Double[] polarCDTakeOff,
 			Double[] polarCLClimb,
 			Double[] polarCDClimb,
 			Double[] polarCLCruise,
 			Double[] polarCDCruise,
+			Double[] polarCLLanding,
+			Double[] polarCDLanding,
 			Amount<Velocity> windSpeed,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
@@ -196,10 +204,14 @@ public class MissionProfileCalc {
 		this._cLZeroTakeOff = cLZeroTakeOff;
 		this._cLmaxLanding = cLmaxLanding;
 		this._cLZeroLanding = cLZeroLanding;
+		this._polarCLTakeOff = polarCLTakeOff;
+		this._polarCDTakeOff = polarCDTakeOff;
 		this._polarCLClimb = polarCLClimb;
 		this._polarCDClimb = polarCDClimb;
 		this._polarCLCruise = polarCLCruise;
 		this._polarCDCruise = polarCDCruise;
+		this._polarCLLanding = polarCLLanding;
+		this._polarCDLanding = polarCDLanding;
 		this._windSpeed = windSpeed;
 		this._mu = mu;
 		this._muBrake = muBrake;
@@ -405,8 +417,8 @@ public class MissionProfileCalc {
 					_theAircraft.getWing().getAspectRatio(),
 					_theAircraft.getWing().getSurface(),
 					_theAircraft.getPowerPlant(),
-					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCLTakeOff(),
-					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff(),
+					_polarCLTakeOff,
+					_polarCDTakeOff,
 					_takeOffMissionAltitude.to(SI.METER),
 					_theOperatingConditions.getMachTakeOff(),
 					_initialMissionMass,
@@ -1668,7 +1680,9 @@ public class MissionProfileCalc {
 						_cLZeroLanding,
 						_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 						_theOperatingConditions.getThrottleGroundIdleLanding(),
-						_freeRollDuration
+						_freeRollDuration,
+						_polarCLLanding,
+						_polarCDLanding
 						);
 
 				theLandingCalculator.calculateLandingDistance();
@@ -1691,14 +1705,14 @@ public class MissionProfileCalc {
 				cLAtLandingEnding = theLandingCalculator.getcLground();
 				cDAtLandingStart = 
 						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertToDoublePrimitive(_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCLLanding()),
-								MyArrayUtils.convertToDoublePrimitive(_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCDLanding()),
+								MyArrayUtils.convertToDoublePrimitive(_polarCLLanding),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDLanding),
 								cLAtLandingStart
 								);
 				cDAtLandingEnding = 
 						MyMathUtils.getInterpolatedValue1DLinear(
-								MyArrayUtils.convertToDoublePrimitive(_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCLLanding()),
-								MyArrayUtils.convertToDoublePrimitive(_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCDLanding()),
+								MyArrayUtils.convertToDoublePrimitive(_polarCLLanding),
+								MyArrayUtils.convertToDoublePrimitive(_polarCDLanding),
 								cLAtLandingEnding
 								);
 				thrustAtLandingGroundRollStart = theLandingCalculator.getThrust().get(0).to(NonSI.POUND_FORCE);
@@ -3163,5 +3177,37 @@ public class MissionProfileCalc {
 
 	public void setDragMissionList(List<Amount<Force>> _dragMissionList) {
 		this._dragMissionList = _dragMissionList;
+	}
+
+	public Double[] getPolarCLTakeOff() {
+		return _polarCLTakeOff;
+	}
+
+	public void setPolarCLTakeOff(Double[] _polarCLTakeOff) {
+		this._polarCLTakeOff = _polarCLTakeOff;
+	}
+
+	public Double[] getPolarCDTakeOff() {
+		return _polarCDTakeOff;
+	}
+
+	public void setPolarCDTakeOff(Double[] _polarCDTakeOff) {
+		this._polarCDTakeOff = _polarCDTakeOff;
+	}
+
+	public Double[] getPolarCLLanding() {
+		return _polarCLLanding;
+	}
+
+	public void setPolarCLLanding(Double[] _polarCLLanding) {
+		this._polarCLLanding = _polarCLLanding;
+	}
+
+	public Double[] getPolarCDLanding() {
+		return _polarCDLanding;
+	}
+
+	public void setPolarCDLanding(Double[] _polarCDLanding) {
+		this._polarCDLanding = _polarCDLanding;
 	}
 }

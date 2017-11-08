@@ -35,6 +35,7 @@ public interface IACPerformanceManager {
 	Amount<Mass> getSinglePassengerMass();
 	//..............................................................................
 	// Aerodynamics
+	Map<Double, MyInterpolatingFunction> getTauRudderMap();
 	List<Double> getXcgPositionList();
 	Map<Double, Double> getCLmaxClean();
 	Map<Double, Amount<?>> getCLAlphaClean();

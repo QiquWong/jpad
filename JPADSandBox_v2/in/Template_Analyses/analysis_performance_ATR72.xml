@@ -51,6 +51,10 @@
 							<polar_curve_CD></polar_curve_CD>
 						</landing>
 					</polar_curves>
+					<tau_rudder_function>
+						<tau>0.025</tau>
+						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
+					</tau_rudder_function>
 				</xcg>
 			</aerodynamics>
 			<!-- the following data can be assigned between tags, or not. If not, default values are used -->

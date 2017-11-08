@@ -62,6 +62,10 @@ public class PayloadRangeCalcMissionProfile{
 	private Double _cLZeroTakeOff;
 	private Double _cLmaxLanding;
 	private Double _cLZeroLanding;
+	private Double[] _polarCLTakeOff;
+	private Double[] _polarCDTakeOff;
+	private Double[] _polarCLLanding;
+	private Double[] _polarCDLanding;
 	private Double[] _polarCLClimb;
 	private Double[] _polarCDClimb;
 	private Double[] _polarCLCruise;
@@ -134,10 +138,14 @@ public class PayloadRangeCalcMissionProfile{
 			Double cLZeroTakeOff,
 			Double cLmaxLanding,
 			Double cLZeroLanding,
+			Double[] polarCLTakeOff,
+			Double[] polarCDTakeOff,
 			Double[] polarCLClimb,
 			Double[] polarCDClimb,
 			Double[] polarCLCruise,
 			Double[] polarCDCruise,
+			Double[] polarCLLanding,
+			Double[] polarCDLanding,
 			Amount<Velocity> windSpeed,
 			MyInterpolatingFunction mu,
 			MyInterpolatingFunction muBrake,
@@ -185,10 +193,14 @@ public class PayloadRangeCalcMissionProfile{
 		this._cLZeroTakeOff = cLZeroTakeOff;
 		this._cLmaxLanding = cLmaxLanding;
 		this._cLZeroLanding = cLZeroLanding;
+		this._polarCLTakeOff = polarCLTakeOff;
+		this._polarCDTakeOff = polarCDTakeOff;
 		this._polarCLClimb = polarCLClimb;
 		this._polarCDClimb = polarCDClimb;
 		this._polarCLCruise = polarCLCruise;
 		this._polarCDCruise = polarCDCruise;
+		this._polarCLLanding = polarCLLanding;
+		this._polarCDLanding = polarCDLanding;
 		this._windSpeed = windSpeed;
 		this._mu = mu;
 		this._muBrake = muBrake;
@@ -283,8 +295,8 @@ public class PayloadRangeCalcMissionProfile{
 					_theAircraft.getWing().getAspectRatio(),
 					_theAircraft.getWing().getSurface(),
 					_theAircraft.getPowerPlant(),
-					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCLTakeOff(),
-					_theAircraft.getTheAnalysisManager().getThePerformance().getPolarCDTakeOff(),
+					_polarCLTakeOff,
+					_polarCDTakeOff,
 					_takeOffMissionAltitude.to(SI.METER),
 					_theOperatingConditions.getMachTakeOff(),
 					initialMissionMass.to(SI.KILOGRAM),
@@ -1310,7 +1322,9 @@ public class PayloadRangeCalcMissionProfile{
 					_cLZeroLanding,
 					_cLAlphaTakeOff.to(NonSI.DEGREE_ANGLE.inverse()).getEstimatedValue(),
 					_theOperatingConditions.getThrottleGroundIdleLanding(),
-					_freeRollDuration
+					_freeRollDuration,
+					_polarCLLanding,
+					_polarCDLanding
 					);
 
 			theLandingCalculator.calculateLandingDistance();
@@ -2080,6 +2094,38 @@ public class PayloadRangeCalcMissionProfile{
 
 	public void setSFCFunctionHolding(MyInterpolatingFunction _sfcFunctionHolding) {
 		this._sfcFunctionHolding = _sfcFunctionHolding;
+	}
+
+	public Double[] getPolarCLTakeOff() {
+		return _polarCLTakeOff;
+	}
+
+	public void setPolarCLTakeOff(Double[] _polarCLTakeOff) {
+		this._polarCLTakeOff = _polarCLTakeOff;
+	}
+
+	public Double[] getPolarCDTakeOff() {
+		return _polarCDTakeOff;
+	}
+
+	public void setPolarCDTakeOff(Double[] _polarCDTakeOff) {
+		this._polarCDTakeOff = _polarCDTakeOff;
+	}
+
+	public Double[] getPolarCLLanding() {
+		return _polarCLLanding;
+	}
+
+	public void setPolarCLLanding(Double[] _polarCLLanding) {
+		this._polarCLLanding = _polarCLLanding;
+	}
+
+	public Double[] getPolarCDLanding() {
+		return _polarCDLanding;
+	}
+
+	public void setPolarCDLanding(Double[] _polarCDLanding) {
+		this._polarCDLanding = _polarCDLanding;
 	}
 
 }

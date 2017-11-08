@@ -61,6 +61,8 @@ public class LandingCalc {
 	private Aircraft aircraft;
 	private OperatingConditions theConditions;
 	private Amount<Mass> maxLandingMass;
+	private Double[] polarCLLanding;
+	private Double[] polarCDLanding;
 	private Amount<Duration> nFreeRoll;
 	private Amount<Velocity> vSLanding, vA, vFlare, vTD, vWind;
 	private Amount<Length> wingToGroundDistance, obstacle, sApproach, sFlare, sGround, sTotal;
@@ -124,13 +126,17 @@ public class LandingCalc {
 			double cL0Landing,
 			double cLalphaFlap,
 			MyInterpolatingFunction groundIdleThrottle,
-			Amount<Duration> nFreeRoll
+			Amount<Duration> nFreeRoll,
+			Double[] polarCLLanding,
+			Double[] polarCDLanding
 			) {
 
 		// Required data
 		this.aircraft = aircraft;
 		this.theConditions = theConditions;
 		this.maxLandingMass = maxLandingMass;
+		this.polarCLLanding = polarCLLanding;
+		this.polarCDLanding = polarCDLanding;
 		this.kA = kA;
 		this.kFlare = kFlare;
 		this.kTD = kTD;
@@ -790,17 +796,17 @@ public class LandingCalc {
 			double cD = MyMathUtils
 					.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertToDoublePrimitive(
-									aircraft.getTheAnalysisManager().getThePerformance().getPolarCLLanding()
+									polarCLLanding
 									),
 							MyArrayUtils.convertToDoublePrimitive(
-									aircraft.getTheAnalysisManager().getThePerformance().getPolarCDLanding()
+									polarCDLanding
 									),
 							LandingCalc.this.getcLground()
 							);
 
 			double cD0 = MyArrayUtils.getMin(
 					MyArrayUtils.convertToDoublePrimitive(
-							aircraft.getTheAnalysisManager().getThePerformance().getPolarCDLanding()
+							polarCDLanding
 							)
 					);
 			double cDi = (cD-cD0)*kGround;
@@ -1087,5 +1093,21 @@ public class LandingCalc {
 	}
 	public void setMaxLandingMass(Amount<Mass> maxLandingMass) {
 		this.maxLandingMass = maxLandingMass;
+	}
+
+	public Double[] getPolarCLLanding() {
+		return polarCLLanding;
+	}
+
+	public void setPolarCLLanding(Double[] polarCLLanding) {
+		this.polarCLLanding = polarCLLanding;
+	}
+
+	public Double[] getPolarCDLanding() {
+		return polarCDLanding;
+	}
+
+	public void setPolarCDLanding(Double[] polarCDLanding) {
+		this.polarCDLanding = polarCDLanding;
 	}
 }
