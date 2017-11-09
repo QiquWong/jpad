@@ -92,6 +92,8 @@ public class ACPerformanceManager {
 	 *         
 	 *       - SUBSTITUTE ALL "FOR EACH" WITH "FOR CYCLES" DURING THE READING OF 
 	 *         AERODYNAMIC DATA
+	 *         
+	 *       - FIX CSV CREATION: FILE NAME AND DATA (FOR LANDING)
 	 */
 	
 	
