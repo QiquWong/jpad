@@ -217,13 +217,13 @@ public class ACCostsManager {
 					// RANGE
 					range = theAircraft.getTheAnalysisManager().getThePerformance().getThePerformanceInterface().getMissionRange().to(NonSI.NAUTICAL_MILE);
 
-					//---------------------------------------------------------------
-					// BLOCK FUEL
-					blockFuel = theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsed().to(SI.KILOGRAM);
-
-					//---------------------------------------------------------------
-					// FLIGHT TIME
-					flightTime = theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTime().to(NonSI.MINUTE);
+//					//---------------------------------------------------------------
+//					// BLOCK FUEL
+//					blockFuel = theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsed().to(SI.KILOGRAM);
+//
+//					//---------------------------------------------------------------
+//					// FLIGHT TIME
+//					flightTime = theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTime().to(NonSI.MINUTE);
 
 				}
 				else {

@@ -51,7 +51,7 @@
 							<polar_curve_CD></polar_curve_CD>
 						</landing>
 					</polar_curves>
-					<tau_rudder_function>
+					<tau_rudder_function calculate="TRUE">
 						<tau>0.025</tau>
 						<delta_rudder unit="deg"></delta_rudder> <!-- if the tau array contains only 1 value this tag can be left empty -->
 					</tau_rudder_function>
@@ -120,20 +120,18 @@
 				<holding_altitude unit="ft">1500</holding_altitude> <!-- (default = 0.0) -->
 				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
-				<cruise_length unit="nmi">2000</cruise_length> <!-- this is a first guess value which will be managed by the calculator iteratively -->
-				<cruise_sfc_function>
+				<cruise_sfc_function calculate="TRUE">
 					<sfc>0.5</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</cruise_sfc_function>
-				<alternate_cruise_sfc_function>
+				<alternate_cruise_sfc_function calculate="TRUE">
 					<sfc>0.5</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</alternate_cruise_sfc_function>
-				<holding_sfc_function>
+				<holding_sfc_function calculate="TRUE">
 					<sfc>0.45</sfc>
 					<throttle></throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
-				<initial_mission_fuel unit="kg">5000</initial_mission_fuel> <!-- this is a first guess value which will be managed by the calculator iteratively -->
 				<take_off_mission_altitude unit="ft">0.0</take_off_mission_altitude>
 				<landing_ground_idle_fuel_flow unit="kg/min">0.0</landing_ground_idle_fuel_flow> <!-- have to be in kg/min !! (default = 0.0) -->
 			</mission_profile_and_payload_range>

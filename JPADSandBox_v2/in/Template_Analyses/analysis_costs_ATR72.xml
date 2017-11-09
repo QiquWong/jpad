@@ -11,7 +11,7 @@
 				<payload unit="kg">7050</payload>
 			</weights>
 			<performance>
-				<range unit="nmi">200</range>
+				<range unit="nmi">200</range>				
 				<block_fuel unit="kg">611</block_fuel>
 				<flight_time unit="min">55.4</flight_time>
 			</performance>

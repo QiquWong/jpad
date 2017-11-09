@@ -107,6 +107,9 @@ public interface IACPerformanceManager {
 	Double getHoldingMachNumber();
 	Double getFuelReserve();
 	Amount<Length> getFirstGuessCruiseLength();
+	Boolean getCalculateSFCCruise();
+	Boolean getCalculateSFCAlternateCruise();
+	Boolean getCalculateSFCHolding();
 	MyInterpolatingFunction getSfcFunctionCruise();
 	MyInterpolatingFunction getSfcFunctionAlternateCruise();
 	MyInterpolatingFunction getSfcFunctionHolding();
