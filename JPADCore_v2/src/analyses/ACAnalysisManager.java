@@ -2,6 +2,8 @@ package analyses;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1362,10 +1364,19 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			String resultsFolderPath
 			) throws IOException, HDF5LibraryException {
 
-		if (aircraft == null) return;
+		final PrintStream originalOut = System.out;
+		PrintStream filterStream = new PrintStream(new OutputStream() {
+		    public void write(int b) {
+		         // write nothing
+		    }
+		});
 		
+		if (aircraft == null) return;
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.WEIGHTS)) {
+			System.setOut(originalOut);
+			System.out.println("\t\tWeights Analysis :: START");
+			System.setOut(filterStream);
 			_theWeights = ACWeightsManager.importFromXML(
 					_weightsFileComplete.getAbsolutePath(),
 					aircraft,
@@ -1373,15 +1384,24 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					);
 			calculateWeights(aircraft, resultsFolderPath); 
 			_executedAnalysesMap.put(AnalysisTypeEnum.WEIGHTS, true);
+			System.setOut(originalOut);
+			System.out.println("\t\tWeights Analysis :: COMPLETE\n");
+			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.BALANCE)) {
+			System.setOut(originalOut);
+			System.out.println("\t\tBalance Analysis :: START");
+			System.setOut(filterStream);
 			_theBalance = ACBalanceManager.importFromXML(
 					_balanceFileComplete.getAbsolutePath(),
 					aircraft
 					);
 			calculateBalance(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.BALANCE, true);
+			System.setOut(originalOut);
+			System.out.println("\t\tBalance Analysis :: COMPLETE \n");
+			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY)) {
@@ -1394,6 +1414,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			_theAerodynamicAndStability.put(ConditionEnum.LANDING, new ACAerodynamicAndStabilityManager());
 			
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.TAKE_OFF)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tAerodynamic and Stability Analysis (TAKE-OFF) :: START");
+				System.setOut(filterStream);
 				_theAerodynamicAndStability.remove(ConditionEnum.TAKE_OFF);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.TAKE_OFF,
@@ -1406,6 +1429,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						);
 			}
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CLIMB)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tAerodynamic and Stability Analysis (CLIMB) :: START");
+				System.setOut(filterStream);
 				_theAerodynamicAndStability.remove(ConditionEnum.CLIMB);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CLIMB,
@@ -1418,6 +1444,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						);
 			}
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.CRUISE)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tAerodynamic and Stability Analysis (CRUISE) :: START");
+				System.setOut(filterStream);
 				_theAerodynamicAndStability.remove(ConditionEnum.CRUISE);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.CRUISE,
@@ -1430,6 +1459,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 						);
 			}
 			if(_taskListAerodynamicAndStability.contains(ConditionEnum.LANDING)) {
+				System.setOut(originalOut);
+				System.out.println("\t\tAerodynamic and Stability Analysis (LANDING) :: START");
+				System.setOut(filterStream);
 				_theAerodynamicAndStability.remove(ConditionEnum.LANDING);
 				_theAerodynamicAndStability.put(
 						ConditionEnum.LANDING,
@@ -1444,9 +1476,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 			
 			calculateAerodynamicAndStability(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.AERODYNAMIC_AND_STABILITY, true);
+			System.setOut(originalOut);
+			System.out.println("\t\tAerodynamic and Stability Analysis :: COMPLETE\n");
+			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.PERFORMANCE)) {
+			System.setOut(originalOut);
+			System.out.println("\t\tPerformance Analysis :: START");
+			System.setOut(filterStream);
 			_thePerformance = ACPerformanceManager.importFromXML(
 					_performanceFileComplete.getAbsolutePath(), 
 					aircraft,
@@ -1454,9 +1492,15 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					);
 			calculatePerformances(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.PERFORMANCE, true);
+			System.setOut(originalOut);
+			System.out.println("\t\tPerformance Analysis :: COMPLETE \n");
+			System.setOut(filterStream);
 		}
 		////////////////////////////////////////////////////////////////
 		if (this._analysisList.contains(AnalysisTypeEnum.COSTS)) {
+			System.setOut(originalOut);
+			System.out.println("\t\tCosts Analysis :: START");
+			System.setOut(filterStream);
 			_theCosts = ACCostsManager.importFromXML(
 					_costsFileComplete.getAbsolutePath(), 
 					aircraft, 
@@ -1465,6 +1509,9 @@ public class ACAnalysisManager implements IACAnalysisManager {
 					);
 			calculateCosts(aircraft, resultsFolderPath);
 			_executedAnalysesMap.put(AnalysisTypeEnum.COSTS, true);
+			System.setOut(originalOut);
+			System.out.println("\t\tCosts Analysis :: COMPLETE \n");
+			System.setOut(filterStream);
 		}
 				
 	} // end of constructor

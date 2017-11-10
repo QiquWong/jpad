@@ -306,7 +306,7 @@ public class TakeOffCalc {
 			}
 			
 			if(i > 100) {
-				System.err.println("\t\nMAXIMUM NUMBER OF ITERATION REACHED :: TAKE-OFF");
+				System.err.println("WARNING: (SIMULATION - TAKE-OFF) MAXIMUM NUMBER OF ITERATION REACHED. THE LAST VALUE OF V2 WILL BE CONSIDERED ...");
 				break;
 			}
 			
@@ -1161,14 +1161,23 @@ public class TakeOffCalc {
 		}
 		
 		// arrays intersection
-		double[] intersection = MyArrayUtils.intersectArraysSimple(
+		double[] intersection = new double[continuedTakeOffArrayFitted.length]; 
+				
+		try {
+			intersection = MyArrayUtils.intersectArraysSimple(
 				continuedTakeOffArrayFitted,
 				abortedTakeOffArrayFitted);
-		for(int i=0; i<intersection.length; i++)
-			if(intersection[i] != 0.0) {
-				balancedFieldLength = Amount.valueOf(intersection[i], SI.METER);
-				v1 = Amount.valueOf(failureSpeedArrayFitted[i], SI.METERS_PER_SECOND);
-			}
+			for(int i=0; i<intersection.length; i++)
+				if(intersection[i] != 0.0) {
+					balancedFieldLength = Amount.valueOf(intersection[i], SI.METER);
+					v1 = Amount.valueOf(failureSpeedArrayFitted[i], SI.METERS_PER_SECOND);
+				}
+		}
+		catch (NullPointerException e) {
+			System.err.println("WARNING: (BALANCED FIELD LENGTH - TAKE-OFF) NO INTERSECTION FOUND ...");
+			balancedFieldLength = Amount.valueOf(0.0, SI.METER);
+			v1 = Amount.valueOf(0.0, SI.METERS_PER_SECOND);
+		}
 		
 	}
 

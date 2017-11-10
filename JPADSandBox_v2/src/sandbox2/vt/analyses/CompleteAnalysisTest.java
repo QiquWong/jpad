@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.kohsuke.args4j.Argument;
@@ -30,6 +31,7 @@ import javafx.stage.Stage;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
+import writers.AircraftSaveDirectives;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {
@@ -268,33 +270,37 @@ public class CompleteAnalysisTest extends Application {
 			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
-//			theAircraft = new Aircraft.AircraftBuilder(
-//					"ATR-72",
-//					AircraftEnum.ATR72,
-//					aeroDatabaseReader,
-//					highLiftDatabaseReader,
-//			        fusDesDatabaseReader,
-//					veDSCDatabaseReader
-//					)
-//					.build();
-
-			// reading aircraft from xml ... 
-			theAircraft = Aircraft.importFromXML(
-					pathToXML,
-					dirLiftingSurfaces,
-					dirFuselages,
-					dirEngines,
-					dirNacelles,
-					dirLandingGears,
-					dirSystems,
-					dirCabinConfiguration,
-					dirAirfoil,
+			theAircraft = new Aircraft.AircraftBuilder(
+					"ATR-72",
+					AircraftEnum.ATR72,
 					aeroDatabaseReader,
 					highLiftDatabaseReader,
-					fusDesDatabaseReader,
-					veDSCDatabaseReader);
+			        fusDesDatabaseReader,
+					veDSCDatabaseReader
+					)
+					.build();
+
+			AircraftSaveDirectives asd = new AircraftSaveDirectives
+					.Builder("_ATR72")
+					.build();
 			
+			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, MyConfiguration.getDir(FoldersEnum.INPUT_DIR), "aircraft_ATR72", asd);
 			
+			// reading aircraft from xml ... 
+//			theAircraft = Aircraft.importFromXML(
+//					pathToXML,
+//					dirLiftingSurfaces,
+//					dirFuselages,
+//					dirEngines,
+//					dirNacelles,
+//					dirLandingGears,
+//					dirSystems,
+//					dirCabinConfiguration,
+//					dirAirfoil,
+//					aeroDatabaseReader,
+//					highLiftDatabaseReader,
+//					fusDesDatabaseReader,
+//					veDSCDatabaseReader);
 			
 			// activating system.out
 			System.setOut(originalOut);			
@@ -327,6 +333,7 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println("\n\n\tRunning requested analyses ... \n\n");
 			System.setOut(filterStream);
 			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
+			System.setOut(originalOut);
 			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
 			System.setOut(originalOut);
 			System.out.println("\n\n\tDone!! \n\n");

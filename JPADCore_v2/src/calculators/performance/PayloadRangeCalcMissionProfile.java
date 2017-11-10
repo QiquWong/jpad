@@ -279,7 +279,7 @@ public class PayloadRangeCalcMissionProfile{
 				initialCruiseLength = newCruiseLength;
 			
 			if(i > 100) {
-				System.err.println("\t\nMAXIMUM NUMBER OF ITERATION REACHED :: PAYLOAD-RANGE");
+				System.err.println("WARNING: (PAYLOAD-RANGE) MAXIMUM NUMBER OF ITERATION REACHED");
 				break;
 			}
 			
@@ -463,6 +463,11 @@ public class PayloadRangeCalcMissionProfile{
 							)
 					);
 			
+			if(intersectionList.get(0).getMaxSpeed() < 0.01) {
+				System.err.println("WARNING: (CRUISE - PAYLOAD RANGE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+				return Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+			}
+			
 			List<Double> cruiseMissionMachNumber = new ArrayList<>();
 			cruiseMissionMachNumber.add(intersectionList.get(0).getMaxMach());
 			
@@ -621,7 +626,6 @@ public class PayloadRangeCalcMissionProfile{
 								_theAircraft.getPowerPlant().getEngineList().get(0).getBPR()
 								)
 						);
-
 				intersectionList.add(
 						PerformanceCalcUtils.calculateDragThrustIntersection(
 								_theOperatingConditions.getAltitudeCruise().doubleValue(SI.METER),
@@ -639,6 +643,11 @@ public class PayloadRangeCalcMissionProfile{
 								thrustList
 								)
 						);
+				
+				if(intersectionList.get(j).getMaxSpeed() < 0.01) {
+					System.err.println("WARNING: (CRUISE - PAYLOAD RANGE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+					return Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+				}
 				
 				cruiseMissionMachNumber.add(intersectionList.get(j).getMaxMach());
 				
@@ -888,6 +897,11 @@ public class PayloadRangeCalcMissionProfile{
 							)
 					);
 			
+			if(intersectionListAlternate.get(0).getMaxSpeed() < 0.01) {
+				System.err.println("WARNING: (ALTERNATE CRUISE - PAYLOAD RANGE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+				return Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+			}
+			
 			List<Double> alternateCruiseMachNumberList = new ArrayList<>();
 			alternateCruiseMachNumberList.add(intersectionListAlternate.get(0).getMaxMach());
 			
@@ -1066,6 +1080,11 @@ public class PayloadRangeCalcMissionProfile{
 								thrustListAlternate
 								)
 						);
+				
+				if(intersectionListAlternate.get(j).getMaxSpeed() < 0.01) {
+					System.err.println("WARNING: (ALTERNATE CRUISE - PAYLOAD RANGE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+					return Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+				}
 				
 				alternateCruiseMachNumberList.add(intersectionListAlternate.get(j).getMaxMach());
 				
@@ -1363,11 +1382,34 @@ public class PayloadRangeCalcMissionProfile{
 						.getEstimatedValue()
 						);
 				if(phiListHolding.get(j) < 1.0) {
-					fuelFlowListHolding.add(
-							dragListHolding.get(j).doubleValue(SI.NEWTON)
-							*(0.224809)*(0.454/60)
-							*_sfcFunctionHolding.value(phiListHolding.get(j))
-							);
+					if(_calculateSFCHolding)
+						fuelFlowListHolding.add(
+								dragListHolding.get(j).doubleValue(SI.NEWTON)
+								*(0.224809)*(0.454/60)
+								*phiListHolding.get(j)
+								*EngineDatabaseManager.getSFC(
+										_holdingMachNumber,
+										_holdingAltitude.doubleValue(SI.METER), 
+										EngineDatabaseManager.getThrustRatio(
+												_holdingMachNumber,
+												_holdingAltitude.doubleValue(SI.METER), 
+												_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+												_theAircraft.getPowerPlant().getEngineType(), 
+												EngineOperatingConditionEnum.CRUISE, 
+												_theAircraft.getPowerPlant()
+												),
+										_theAircraft.getPowerPlant().getEngineList().get(0).getBPR(),
+										_theAircraft.getPowerPlant().getEngineType(), 
+										EngineOperatingConditionEnum.CRUISE, 
+										_theAircraft.getPowerPlant()
+										)
+								);
+					else
+						fuelFlowListHolding.add(
+								dragListHolding.get(j).doubleValue(SI.NEWTON)
+								*(0.224809)*(0.454/60)
+								*_sfcFunctionHolding.value(phiListHolding.get(j))
+								);
 				}
 				fuelUsedPerStepHolding.add(
 						Amount.valueOf(
@@ -1577,10 +1619,25 @@ public class PayloadRangeCalcMissionProfile{
 				);
 		
 		// RANGE AT ZERO PAYLOAD
-		_rangeAtZeroPayload = calcRangeAtGivenPayload(
-				_operatingEmptyMass.plus(_maxFuelMass),
-				Amount.valueOf(0.0, SI.KILOGRAM)
-				);
+		if(_rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)!= 0.0) {
+			if(_rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)!= 0.0) {
+				if(_rangeAtMaxPayload.doubleValue(NonSI.NAUTICAL_MILE)!= 0.0) {
+					_rangeAtZeroPayload = calcRangeAtGivenPayload(
+							_operatingEmptyMass.plus(_maxFuelMass),
+							Amount.valueOf(0.0, SI.KILOGRAM)
+							);
+				}
+				else {
+					_rangeAtZeroPayload = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+				}
+			}
+			else {
+				_rangeAtZeroPayload = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+			}
+		}
+		else {
+			_rangeAtZeroPayload = Amount.valueOf(0.0, NonSI.NAUTICAL_MILE);
+		}
 		_takeOffMassZeroPayload = _operatingEmptyMass.plus(_maxFuelMass);
 		
 		// POINT 1

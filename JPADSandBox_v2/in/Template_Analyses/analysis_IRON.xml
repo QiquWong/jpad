@@ -54,8 +54,8 @@
 	-->
 	<performance 
 			file="analysis_performance_IRON.xml"
-			plot="TRUE"
-			create_CSV="TRUE"
+			plot="FALSE"
+			create_CSV="FALSE"
 			take_off="TRUE"
 			climb="TRUE"
 			cruise="TRUE"

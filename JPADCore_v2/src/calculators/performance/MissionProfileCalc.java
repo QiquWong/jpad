@@ -102,6 +102,8 @@ public class MissionProfileCalc {
 	
 	//............................................................................................
 	// Output:
+	private Boolean _missionProfileStopped = Boolean.FALSE;
+	
 	private List<Amount<Length>> _altitudeList;
 	private List<Amount<Length>> _rangeList;
 	private List<Amount<Duration>> _timeList;
@@ -401,7 +403,7 @@ public class MissionProfileCalc {
 				_initialFuelMass = newInitialFuelMass;
 			
 			if(i > 100) {
-				System.err.println("\t\nMAXIMUM NUMBER OF ITERATION REACHED :: MISSION PROFILE");
+				System.err.println("WARNING: (MISSION PROFILE) MAXIMUM NUMBER OF ITERATION REACHED");
 				break;
 			}
 			
@@ -665,6 +667,12 @@ public class MissionProfileCalc {
 								)
 						);
 				
+				if(intersectionList.get(0).getMaxSpeed() < 0.01) {
+					_missionProfileStopped = Boolean.TRUE;
+					System.err.println("WARNING: (CRUISE - MISSION PROFILE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+					return;
+				}
+				
 				List<Double> cruiseMissionMachNumber = new ArrayList<>();
 				cruiseMissionMachNumber.add(intersectionList.get(0).getMaxMach());
 				
@@ -836,6 +844,12 @@ public class MissionProfileCalc {
 									thrustList
 									)
 							);
+					
+					if(intersectionList.get(j).getMaxSpeed() < 0.01) {
+						_missionProfileStopped = Boolean.TRUE;
+						System.err.println("WARNING: (CRUISE - MISSION PROFILE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+						return;
+					}
 					
 					cruiseMissionMachNumber.add(intersectionList.get(j).getMaxMach());
 					
@@ -1156,6 +1170,12 @@ public class MissionProfileCalc {
 								)
 						);
 				
+				if(intersectionListAlternate.get(0).getMaxSpeed() < 0.01) {
+					_missionProfileStopped = Boolean.TRUE;
+					System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+					return;
+				}
+				
 				List<Double> alternateCruiseMachNumberList = new ArrayList<>();
 				alternateCruiseMachNumberList.add(intersectionListAlternate.get(0).getMaxMach());
 				
@@ -1334,6 +1354,12 @@ public class MissionProfileCalc {
 									thrustListAlternate
 									)
 							);
+					
+					if(intersectionListAlternate.get(j).getMaxSpeed() < 0.01) {
+						_missionProfileStopped = Boolean.TRUE;
+						System.err.println("WARNING: (ALTERNATE CRUISE - MISSION PROFILE) CRUISE MACH NUMBER = 0.0. RETURNING ... ");
+						return;
+					}
 					
 					alternateCruiseMachNumberList.add(intersectionListAlternate.get(j).getMaxMach());
 					
@@ -3381,5 +3407,13 @@ public class MissionProfileCalc {
 
 	public void setCalculateSFCHolding(boolean calculateSFCHolding) {
 		this._calculateSFCHolding = calculateSFCHolding;
+	}
+
+	public Boolean getMissionProfileStopped() {
+		return _missionProfileStopped;
+	}
+
+	public void setMissionProfileStopped(Boolean missionProfileStopped) {
+		this._missionProfileStopped = missionProfileStopped;
 	}
 }

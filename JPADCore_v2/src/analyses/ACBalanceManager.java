@@ -1230,8 +1230,11 @@ public class ACBalanceManager implements IACBalanceManager {
 		Double[] fuelCoGAfterBoardingReferToMAC = new Double[2];
 		Double[] massWithFuelAfterBoarding = new Double[2];
 		
-		seatCoGFrontToRearReferToMAC[0] = (getCGOEM().getXMAC()*100) - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));
-		seatCoGRearToFrontReferToMAC[0] = (getCGOEM().getXMAC()*100) + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));  
+//		seatCoGFrontToRearReferToMAC[0] = (getCGOEM().getXMAC()*100) - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));
+//		seatCoGRearToFrontReferToMAC[0] = (getCGOEM().getXMAC()*100) + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER));
+		
+		seatCoGFrontToRearReferToMAC[0] = (getCGOEM().getXMAC()*100);
+		seatCoGRearToFrontReferToMAC[0] = (getCGOEM().getXMAC()*100);  
 		
 		for (int i=0; i<index; i++) {
 			seatCoGFrontToRearReferToMAC[i] = 
@@ -1239,7 +1242,7 @@ public class ACBalanceManager implements IACBalanceManager {
 						.getCabinConfiguration()
 							.getSeatsCoGFrontToRear().get(i)
 								.to(SI.METER)
-								.minus(meanAerodynamicChord.times(0.02).to(SI.METER))
+//								.minus(meanAerodynamicChord.times(0.02).to(SI.METER))
 					.minus(meanAerodynamicChordXle.to(SI.METER))
 					.divide(meanAerodynamicChord.to(SI.METER))
 					.times(100)
@@ -1250,7 +1253,7 @@ public class ACBalanceManager implements IACBalanceManager {
 						.getCabinConfiguration()
 							.getSeatsCoGRearToFront().get(i)
 							.to(SI.METER)
-								.plus(meanAerodynamicChord.times(0.02).to(SI.METER))
+//								.plus(meanAerodynamicChord.times(0.02).to(SI.METER))
 					.minus(meanAerodynamicChordXle.to(SI.METER))
 					.divide(meanAerodynamicChord.to(SI.METER))
 					.times(100)
@@ -1269,7 +1272,8 @@ public class ACBalanceManager implements IACBalanceManager {
 						.times(_fuelMass.to(SI.KILOGRAM)).getEstimatedValue()))
 				/(_operatingEmptyMass.to(SI.KILOGRAM).plus(_fuelMass.to(SI.KILOGRAM)).getEstimatedValue()))
 				- meanAerodynamicChordXle.doubleValue(SI.METER))
-				/ (meanAerodynamicChord.doubleValue(SI.METER)/100);
+				/ (meanAerodynamicChord.doubleValue(SI.METER)/100
+						);
 		massWithFuelBeforeBoarding[1] = _operatingEmptyMass.to(SI.KILOGRAM)
 				.plus(_fuelMass.to(SI.KILOGRAM))
 				.doubleValue(SI.KILOGRAM); 
@@ -1355,15 +1359,6 @@ public class ACBalanceManager implements IACBalanceManager {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-//				xList, yList,
-//				null, null, null, null,
-//				"Xcg/c", "Mass",
-//				"%", "kg",
-//				balanceOutputFolderPath,
-//				"Loading Cycle"
-//				);
-		
-		
 	}
 	
 	/** 
@@ -1621,15 +1616,18 @@ public class ACBalanceManager implements IACBalanceManager {
 		
 		List<Double> cgExcursionRefToMAC = new ArrayList<>();
 		
-		cgExcursionRefToMAC.add((getCGOEM().getXMAC()*100) - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER)));
-		cgExcursionRefToMAC.add((getCGOEM().getXMAC()*100) + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER)));  
+//		cgExcursionRefToMAC.add((getCGOEM().getXMAC()*100) - (meanAerodynamicChord.times(0.02).doubleValue(SI.METER)));
+//		cgExcursionRefToMAC.add((getCGOEM().getXMAC()*100) + (meanAerodynamicChord.times(0.02).doubleValue(SI.METER)));  
+		
+		cgExcursionRefToMAC.add(getCGOEM().getXMAC()*100);
+		cgExcursionRefToMAC.add(getCGOEM().getXMAC()*100);  
 		
 		for (int i=0; i<index; i++) {
 			cgExcursionRefToMAC.add( 
 					_theAircraft
 						.getCabinConfiguration()
 							.getSeatsCoGFrontToRear().get(i)
-								.minus(meanAerodynamicChord.times(0.02))
+//								.minus(meanAerodynamicChord.times(0.02))
 					.minus(meanAerodynamicChordXle)
 					.divide(meanAerodynamicChord)
 					.times(100)
@@ -1639,7 +1637,7 @@ public class ACBalanceManager implements IACBalanceManager {
 					_theAircraft
 						.getCabinConfiguration()
 							.getSeatsCoGRearToFront().get(i)
-								.plus(meanAerodynamicChord.times(0.02))
+//								.plus(meanAerodynamicChord.times(0.02))
 					.minus(meanAerodynamicChordXle)
 					.divide(meanAerodynamicChord)
 					.times(100)
@@ -1652,7 +1650,8 @@ public class ACBalanceManager implements IACBalanceManager {
 						.times(_fuelMass.doubleValue(SI.KILOGRAM)).getEstimatedValue()))
 				/(_operatingEmptyMass.to(SI.KILOGRAM).plus(_fuelMass.to(SI.KILOGRAM)).getEstimatedValue()))
 				- meanAerodynamicChordXle.doubleValue(SI.METER))
-				/ (meanAerodynamicChord.doubleValue(SI.METER)/100)
+				/ (meanAerodynamicChord.doubleValue(SI.METER)/100
+						)
 				);
 		cgExcursionRefToMAC.add((_cgMTOM.getXMAC()*100));
 		

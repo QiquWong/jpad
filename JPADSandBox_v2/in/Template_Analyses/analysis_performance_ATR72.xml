@@ -3,7 +3,7 @@
     <analysis>
         <performance
 			id="ATR-72 - PERFORMANCE"
-			weights_from_previous_file="false" 
+			weights_from_previous_file="TRUE" 
 			aerodynamics_from_previous_file="false" 
 			>
 			<weights>

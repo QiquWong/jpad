@@ -486,47 +486,6 @@ public class LandingCalc {
 
 		System.out.println("\n---------WRITING GROUND ROLL PERFORMANCE CHARTS TO FILE-----------");
 
-		// data setup
-//		double[] groundDistance = new double[getLandingDistance().size()];
-//		for(int i=0; i<groundDistance.length; i++)
-//			groundDistance[i] = getLandingDistance().get(i).getEstimatedValue();
-//		
-//		double[] verticalDistance = new double[getVerticalDistance().size()];
-//		for(int i=0; i<verticalDistance.length; i++)
-//			verticalDistance[i] = getVerticalDistance().get(i).getEstimatedValue();
-//		
-//		double[] thrust = new double[getThrust().size()];
-//		for(int i=0; i<thrust.length; i++)
-//			thrust[i] = getThrust().get(i).getEstimatedValue();
-//
-//		double[] lift = new double[getLift().size()];
-//		for(int i=0; i<lift.length; i++)
-//			lift[i] = getLift().get(i).getEstimatedValue();
-//
-//		double[] drag = new double[getDrag().size()];
-//		for(int i=0; i<drag.length; i++)
-//			drag[i] = getDrag().get(i).getEstimatedValue();
-//
-//		double[] friction = new double[getFriction().size()];
-//		for(int i=0; i<friction.length; i++)
-//			friction[i] = getFriction().get(i).getEstimatedValue();
-//
-//		double[] totalForce = new double[getTotalForce().size()];
-//		for(int i=0; i<totalForce.length; i++)
-//			totalForce[i] = getTotalForce().get(i).getEstimatedValue();
-//
-//		double[] loadFactor = new double[getLoadFactor().size()];
-//		for(int i=0; i<loadFactor.length; i++)
-//			loadFactor[i] = getLoadFactor().get(i);
-//
-//		double[] acceleration = new double[getAcceleration().size()];
-//		for(int i=0; i<acceleration.length; i++)
-//			acceleration[i] = getAcceleration().get(i).getEstimatedValue();
-//
-//		double[] speed = new double[getSpeed().size()];
-//		for(int i=0; i<speed.length; i++)
-//			speed[i] = getSpeed().get(i).getEstimatedValue();
-//
 		//.............................................................................
 		// landing trajectory and speed
 		double[][] xMatrix1_SI = new double[2][landingDistance.size()];
@@ -555,7 +514,7 @@ public class LandingCalc {
 				.map(x -> x.doubleValue(NonSI.FOOT))
 				.collect(Collectors.toList())
 				);
-		yMatrix1_Imperial[0] = MyArrayUtils.convertToDoublePrimitive(
+		yMatrix1_Imperial[1] = MyArrayUtils.convertToDoublePrimitive(
 				speed.stream()
 				.map(x -> x.doubleValue(NonSI.KNOT))
 				.collect(Collectors.toList())
@@ -576,7 +535,8 @@ public class LandingCalc {
 				"Ground Distance", "", "ft", "",
 				new String[] {"Altitude (ft)", "Speed (kn)"},
 				landingFolderPath, "TrajectoryAndSpeed_vs_GroundDistance_IMPERIAL",
-				aircraft.getTheAnalysisManager().getCreateCSVPerformance());
+				aircraft.getTheAnalysisManager().getCreateCSVPerformance()
+				);
 		
 		//.............................................................................
 		// acceleration v.s. ground roll distance

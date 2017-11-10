@@ -3,7 +3,7 @@
     <analysis>
         <balance 
             id="ATR-72 - BALANCE" 
-            weights_from_previous_analysis="false" 
+            weights_from_previous_analysis="TRUE" 
             >
             <maximum_take_off_mass unit="kg">23170</maximum_take_off_mass>
 			<maximum_zero_fuel_mass unit="kg">21000</maximum_zero_fuel_mass>

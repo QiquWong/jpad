@@ -25,6 +25,7 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyInterpolatingFunction;
 import standaloneutils.MyMathUtils;
+import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.atmosphere.SpeedCalc;
 
@@ -44,6 +45,8 @@ public class DescentCalc {
 	private Double[] _polarCDClean;
 	private MyInterpolatingFunction _sfcFunctionDescent;
 
+	private final int maxIterationNumber = 50;
+	
 	//............................................................................................
 	// Output:
 	private List<Amount<Length>> _descentAltitudes;
@@ -272,16 +275,24 @@ public class DescentCalc {
 						)
 				);
 		
+		int iter=0;
 		// iterative loop for the definition of the cruise and flight idle weights
 		while (
 				(Math.abs(
-						(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
-								-rateOfDescentList.get(0).doubleValue(SI.METERS_PER_SECOND))
+						(-_rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
+								-rateOfDescentList.get(0).doubleValue(MyUnits.FOOT_PER_MINUTE))
 						) 
-						/ _rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
+						/ _rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
 						)
-				> 0.001
+				> 0.05
 				) {
+			
+			if(iter > maxIterationNumber) {
+				System.err.println("WARNING: THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
+						iter + " > " + maxIterationNumber 
+						+ "). THE LAST CALCULATED WEIGHTS FOR CRUISE AND IDLE WILL BE CONSIDERED ... ");
+				break;
+			}
 			
 			double rateOfDescentRatio = Math.abs(
 					rateOfDescentList.get(0).doubleValue(SI.METERS_PER_SECOND)/
@@ -326,6 +337,7 @@ public class DescentCalc {
 							)
 					);
 			
+			iter++;
 		}
 		
 		_thrustPerStep.add(interpolatedThrustList.get(0));
@@ -546,16 +558,24 @@ public class DescentCalc {
 							)
 					);
 			
+			iter=0;
 			// iterative loop for the definition of the cruise and flight idle weights
 			while (
 					(Math.abs(
-							(-_rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
-									-rateOfDescentList.get(i).doubleValue(SI.METERS_PER_SECOND))
+							(-_rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
+									-rateOfDescentList.get(i).doubleValue(MyUnits.FOOT_PER_MINUTE))
 							) 
-							/ _rateOfDescent.doubleValue(SI.METERS_PER_SECOND)
+							/ _rateOfDescent.doubleValue(MyUnits.FOOT_PER_MINUTE)
 							)
-					> 0.01
+					> 0.05
 					) {
+				
+				if(iter > maxIterationNumber) {
+					System.err.println("WARNING: THE ITERATIVE LOOP ON THE RATE OF DESCENT HAS BEEN STOPPED. (" +
+							iter + " > " + maxIterationNumber 
+							+ "). THE LAST CALCULATED WEIGHTS FOR CRUISE AND IDLE WILL BE CONSIDERED ... ");
+					break;
+				}
 				
 				double rateOfDescentRatio = Math.abs(
 						rateOfDescentList.get(i).doubleValue(SI.METERS_PER_SECOND)/
@@ -601,7 +621,7 @@ public class DescentCalc {
 								SI.METERS_PER_SECOND
 								)
 						);
-				
+				iter++;
 			}
 			
 			_thrustPerStep.add(i, interpolatedThrustList.get(i));
@@ -1022,5 +1042,9 @@ public class DescentCalc {
 
 	public void setFuelFlowFlightIdleList(List<Double> _fuelFlowFlightIdleList) {
 		this._fuelFlowFlightIdleList = _fuelFlowFlightIdleList;
+	}
+
+	public int getMaxIterationNumber() {
+		return maxIterationNumber;
 	}
 }

@@ -87,7 +87,9 @@ public class PerformanceCalcUtils {
 		Double speedMin = null, speedMax = null;
 		double stallSpeed = SpeedCalc.calculateSpeedStall(altitude, weight, surface, cLmax);
 
-		double[] intersection = MyArrayUtils.intersectArraysSimple(thrust, drag);
+		double[] intersection = new double[thrust.length]; 
+			intersection = MyArrayUtils.intersectArraysSimple(thrust, drag);
+		
 		List<Double> intersectionSpeed = new ArrayList<Double>();
 		for(int i=0; i<intersection.length; i++)
 			if(intersection[i] != 0.0)
@@ -112,12 +114,15 @@ public class PerformanceCalcUtils {
 				}
 			}
 		}
+		else {
+			System.err.println("WARNING: (THRUST-DRAG INTERSECTION) NO INTERSECTION FOUND BETWEEN THRUST AND DRAG...");
+		}
 		
 		if (speedMin != null && stallSpeed > speedMin) speedMin = stallSpeed;
 		else if (speedMin == null && speedMax != null) speedMin = stallSpeed;
 		else if (speedMax == null && speedMin == null) { 
-			speedMin = 0.;
-			speedMax = 0.;
+			speedMin = 0.0;
+			speedMax = 0.001;
 		}
 		
 		

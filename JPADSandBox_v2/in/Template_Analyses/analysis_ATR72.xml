@@ -24,7 +24,6 @@
 			method_systems=""
             />
 		<!-- method_XXX="AVERAGED" if empty string -->
-	<!--
 	<balance 
 			file="analysis_balance_ATR72.xml"
 			plot="TRUE"
@@ -35,7 +34,7 @@
             method_vtail=""
 			method_canard=""
 		/>
-	-->
+	<!--
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="FALSE"
@@ -48,9 +47,9 @@
 			landing_condition="FALSE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
-	<!--
+	-->
 	<performance 
-			file="analysis_performance_ATR72_CG25.xml"
+			file="analysis_performance_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			take_off="TRUE"
@@ -62,8 +61,6 @@
 			V_n_diagram="TRUE"
 			mission_profile="TRUE"
 	/>
-	-->
-	<!--
 	<costs 
 			file="analysis_costs_ATR72.xml"
 			plot="TRUE"
@@ -79,7 +76,5 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
-	-->
-	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

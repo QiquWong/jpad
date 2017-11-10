@@ -2,8 +2,8 @@
 <jpad_config>
     <analysis>
         <costs id="ATR-72 - COSTS"
-			weights_from_previous_analysis="false" 
-			performance_from_previous_analysis="false"
+			weights_from_previous_analysis="TRUE" 
+			performance_from_previous_analysis="TRUE"
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">22000.0</maximum_take_off_mass>
