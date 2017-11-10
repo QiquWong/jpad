@@ -282,6 +282,11 @@ public class CompleteAnalysisTest extends Application {
 
 			AircraftSaveDirectives asd = new AircraftSaveDirectives
 					.Builder("_ATR72")
+					.addAllAirfoilFileNames(
+							theAircraft.getWing().getAirfoilList().stream()
+									.map(a -> a.getAirfoilCreator().getName() + "_ATR72.xml")
+									.collect(Collectors.toList())
+						)
 					.build();
 			
 			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, MyConfiguration.getDir(FoldersEnum.INPUT_DIR), "aircraft_ATR72", asd);
@@ -327,24 +332,24 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println(theOperatingConditions.toString());
 			System.setOut(filterStream);
 			
-			////////////////////////////////////////////////////////////////////////
-			// Analyzing the aircraft
-			System.setOut(originalOut);
-			System.out.println("\n\n\tRunning requested analyses ... \n\n");
-			System.setOut(filterStream);
-			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
-			System.setOut(originalOut);
-			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
-			System.setOut(originalOut);
-			System.out.println("\n\n\tDone!! \n\n");
-			System.setOut(filterStream);
-			
-			////////////////////////////////////////////////////////////////////////
-			// Printing results (activating system.out)
-			System.setOut(originalOut);
-			System.out.println("\n\n\tPrinting results ... \n\n");
-			System.out.println(theAircraft.getTheAnalysisManager().toString());
-			System.out.println("\n\n\tDone!! \n\n");
+//			////////////////////////////////////////////////////////////////////////
+//			// Analyzing the aircraft
+//			System.setOut(originalOut);
+//			System.out.println("\n\n\tRunning requested analyses ... \n\n");
+//			System.setOut(filterStream);
+//			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
+//			System.setOut(originalOut);
+//			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
+//			System.setOut(originalOut);
+//			System.out.println("\n\n\tDone!! \n\n");
+//			System.setOut(filterStream);
+//			
+//			////////////////////////////////////////////////////////////////////////
+//			// Printing results (activating system.out)
+//			System.setOut(originalOut);
+//			System.out.println("\n\n\tPrinting results ... \n\n");
+//			System.out.println(theAircraft.getTheAnalysisManager().toString());
+//			System.out.println("\n\n\tDone!! \n\n");
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");
