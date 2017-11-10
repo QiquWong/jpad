@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jpad_config>
+   <wing equivalent="false" id="Wing" mirrored="true">
+      <global_data>
+         <main_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.2500</main_spar_non_dimensional_position>
+         <secondary_spar_non_dimensional_position ref_to="LOCAL_CHORD" type="PERCENT_CHORD">0.5500</secondary_spar_non_dimensional_position>
+         <composite_correction_factor>0.000000</composite_correction_factor>
+         <roughness unit="m">0.00000405</roughness>
+         <winglet_height unit="m">0.0000</winglet_height>
+      </global_data>
+   </wing>
+</jpad_config>
