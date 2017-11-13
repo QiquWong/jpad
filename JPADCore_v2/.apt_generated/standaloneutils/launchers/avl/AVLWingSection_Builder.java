@@ -19,6 +19,8 @@ import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 import org.apache.commons.math3.linear.RealMatrix;
+import standaloneutils.launchers.avl.AVLWingSection;
+import standaloneutils.launchers.avl.AVLWingSectionControlSurface;
 
 /**
  * Auto-generated superclass of {@link AVLWingSection.Builder},
