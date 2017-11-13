@@ -62,7 +62,10 @@ abstract class AircraftSaveDirectives_Builder {
   private String engineFileName;
   private String landingGearFileName;
   private String systemFileName;
-  private final ArrayList<String> airfoilFileNames = new ArrayList<>();
+  private final ArrayList<String> wingAirfoilFileNames = new ArrayList<>();
+  private final ArrayList<String> HTailAirfoilFileNames = new ArrayList<>();
+  private final ArrayList<String> VTailAirfoilFileNames = new ArrayList<>();
+  private final ArrayList<String> canardAirfoilFileNames = new ArrayList<>();
   private final EnumSet<AircraftSaveDirectives_Builder.Property> _unsetProperties =
       EnumSet.allOf(AircraftSaveDirectives_Builder.Property.class);
 
@@ -477,53 +480,54 @@ abstract class AircraftSaveDirectives_Builder {
   }
 
   /**
-   * Adds {@code element} to the list to be returned from {@link AircraftSaveDirectives#getAirfoilFileNames()}.
+   * Adds {@code element} to the list to be returned from {@link AircraftSaveDirectives#getWingAirfoilFileNames()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code element} is null
    */
-  public AircraftSaveDirectives.Builder addAirfoilFileNames(String element) {
-    this.airfoilFileNames.add(Preconditions.checkNotNull(element));
+  public AircraftSaveDirectives.Builder addWingAirfoilFileNames(String element) {
+    this.wingAirfoilFileNames.add(Preconditions.checkNotNull(element));
     return (AircraftSaveDirectives.Builder) this;
   }
 
   /**
    * Adds each element of {@code elements} to the list to be returned from
-   * {@link AircraftSaveDirectives#getAirfoilFileNames()}.
+   * {@link AircraftSaveDirectives#getWingAirfoilFileNames()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a
    *     null element
    */
-  public AircraftSaveDirectives.Builder addAirfoilFileNames(String... elements) {
-    airfoilFileNames.ensureCapacity(airfoilFileNames.size() + elements.length);
+  public AircraftSaveDirectives.Builder addWingAirfoilFileNames(String... elements) {
+    wingAirfoilFileNames.ensureCapacity(wingAirfoilFileNames.size() + elements.length);
     for (String element : elements) {
-      addAirfoilFileNames(element);
+      addWingAirfoilFileNames(element);
     }
     return (AircraftSaveDirectives.Builder) this;
   }
 
   /**
    * Adds each element of {@code elements} to the list to be returned from
-   * {@link AircraftSaveDirectives#getAirfoilFileNames()}.
+   * {@link AircraftSaveDirectives#getWingAirfoilFileNames()}.
    *
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code elements} is null or contains a
    *     null element
    */
-  public AircraftSaveDirectives.Builder addAllAirfoilFileNames(
+  public AircraftSaveDirectives.Builder addAllWingAirfoilFileNames(
       Iterable<? extends String> elements) {
     if (elements instanceof Collection) {
-      airfoilFileNames.ensureCapacity(airfoilFileNames.size() + ((Collection<?>) elements).size());
+      wingAirfoilFileNames.ensureCapacity(
+          wingAirfoilFileNames.size() + ((Collection<?>) elements).size());
     }
     for (String element : elements) {
-      addAirfoilFileNames(element);
+      addWingAirfoilFileNames(element);
     }
     return (AircraftSaveDirectives.Builder) this;
   }
 
   /**
-   * Applies {@code mutator} to the list to be returned from {@link AircraftSaveDirectives#getAirfoilFileNames()}.
+   * Applies {@code mutator} to the list to be returned from {@link AircraftSaveDirectives#getWingAirfoilFileNames()}.
    *
    * <p>This method mutates the list in-place. {@code mutator} is a void
    * consumer, so any value returned from a lambda will be ignored. Take care
@@ -532,30 +536,279 @@ abstract class AircraftSaveDirectives_Builder {
    * @return this {@code Builder} object
    * @throws NullPointerException if {@code mutator} is null
    */
-  public AircraftSaveDirectives.Builder mutateAirfoilFileNames(
+  public AircraftSaveDirectives.Builder mutateWingAirfoilFileNames(
       Consumer<? super List<String>> mutator) {
-    // If addAirfoilFileNames is overridden, this method will be updated to delegate to it
-    mutator.accept(airfoilFileNames);
+    // If addWingAirfoilFileNames is overridden, this method will be updated to delegate to it
+    mutator.accept(wingAirfoilFileNames);
     return (AircraftSaveDirectives.Builder) this;
   }
 
   /**
-   * Clears the list to be returned from {@link AircraftSaveDirectives#getAirfoilFileNames()}.
+   * Clears the list to be returned from {@link AircraftSaveDirectives#getWingAirfoilFileNames()}.
    *
    * @return this {@code Builder} object
    */
-  public AircraftSaveDirectives.Builder clearAirfoilFileNames() {
-    this.airfoilFileNames.clear();
+  public AircraftSaveDirectives.Builder clearWingAirfoilFileNames() {
+    this.wingAirfoilFileNames.clear();
     return (AircraftSaveDirectives.Builder) this;
   }
 
   /**
    * Returns an unmodifiable view of the list that will be returned by
-   * {@link AircraftSaveDirectives#getAirfoilFileNames()}.
+   * {@link AircraftSaveDirectives#getWingAirfoilFileNames()}.
    * Changes to this builder will be reflected in the view.
    */
-  public List<String> getAirfoilFileNames() {
-    return Collections.unmodifiableList(airfoilFileNames);
+  public List<String> getWingAirfoilFileNames() {
+    return Collections.unmodifiableList(wingAirfoilFileNames);
+  }
+
+  /**
+   * Adds {@code element} to the list to be returned from {@link AircraftSaveDirectives#getHTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code element} is null
+   */
+  public AircraftSaveDirectives.Builder addHTailAirfoilFileNames(String element) {
+    this.HTailAirfoilFileNames.add(Preconditions.checkNotNull(element));
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link AircraftSaveDirectives#getHTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public AircraftSaveDirectives.Builder addHTailAirfoilFileNames(String... elements) {
+    HTailAirfoilFileNames.ensureCapacity(HTailAirfoilFileNames.size() + elements.length);
+    for (String element : elements) {
+      addHTailAirfoilFileNames(element);
+    }
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link AircraftSaveDirectives#getHTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public AircraftSaveDirectives.Builder addAllHTailAirfoilFileNames(
+      Iterable<? extends String> elements) {
+    if (elements instanceof Collection) {
+      HTailAirfoilFileNames.ensureCapacity(
+          HTailAirfoilFileNames.size() + ((Collection<?>) elements).size());
+    }
+    for (String element : elements) {
+      addHTailAirfoilFileNames(element);
+    }
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Applies {@code mutator} to the list to be returned from {@link AircraftSaveDirectives#getHTailAirfoilFileNames()}.
+   *
+   * <p>This method mutates the list in-place. {@code mutator} is a void
+   * consumer, so any value returned from a lambda will be ignored. Take care
+   * not to call pure functions, like {@link Collection#stream()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mutator} is null
+   */
+  public AircraftSaveDirectives.Builder mutateHTailAirfoilFileNames(
+      Consumer<? super List<String>> mutator) {
+    // If addHTailAirfoilFileNames is overridden, this method will be updated to delegate to it
+    mutator.accept(HTailAirfoilFileNames);
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Clears the list to be returned from {@link AircraftSaveDirectives#getHTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   */
+  public AircraftSaveDirectives.Builder clearHTailAirfoilFileNames() {
+    this.HTailAirfoilFileNames.clear();
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Returns an unmodifiable view of the list that will be returned by
+   * {@link AircraftSaveDirectives#getHTailAirfoilFileNames()}.
+   * Changes to this builder will be reflected in the view.
+   */
+  public List<String> getHTailAirfoilFileNames() {
+    return Collections.unmodifiableList(HTailAirfoilFileNames);
+  }
+
+  /**
+   * Adds {@code element} to the list to be returned from {@link AircraftSaveDirectives#getVTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code element} is null
+   */
+  public AircraftSaveDirectives.Builder addVTailAirfoilFileNames(String element) {
+    this.VTailAirfoilFileNames.add(Preconditions.checkNotNull(element));
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link AircraftSaveDirectives#getVTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public AircraftSaveDirectives.Builder addVTailAirfoilFileNames(String... elements) {
+    VTailAirfoilFileNames.ensureCapacity(VTailAirfoilFileNames.size() + elements.length);
+    for (String element : elements) {
+      addVTailAirfoilFileNames(element);
+    }
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link AircraftSaveDirectives#getVTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public AircraftSaveDirectives.Builder addAllVTailAirfoilFileNames(
+      Iterable<? extends String> elements) {
+    if (elements instanceof Collection) {
+      VTailAirfoilFileNames.ensureCapacity(
+          VTailAirfoilFileNames.size() + ((Collection<?>) elements).size());
+    }
+    for (String element : elements) {
+      addVTailAirfoilFileNames(element);
+    }
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Applies {@code mutator} to the list to be returned from {@link AircraftSaveDirectives#getVTailAirfoilFileNames()}.
+   *
+   * <p>This method mutates the list in-place. {@code mutator} is a void
+   * consumer, so any value returned from a lambda will be ignored. Take care
+   * not to call pure functions, like {@link Collection#stream()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mutator} is null
+   */
+  public AircraftSaveDirectives.Builder mutateVTailAirfoilFileNames(
+      Consumer<? super List<String>> mutator) {
+    // If addVTailAirfoilFileNames is overridden, this method will be updated to delegate to it
+    mutator.accept(VTailAirfoilFileNames);
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Clears the list to be returned from {@link AircraftSaveDirectives#getVTailAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   */
+  public AircraftSaveDirectives.Builder clearVTailAirfoilFileNames() {
+    this.VTailAirfoilFileNames.clear();
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Returns an unmodifiable view of the list that will be returned by
+   * {@link AircraftSaveDirectives#getVTailAirfoilFileNames()}.
+   * Changes to this builder will be reflected in the view.
+   */
+  public List<String> getVTailAirfoilFileNames() {
+    return Collections.unmodifiableList(VTailAirfoilFileNames);
+  }
+
+  /**
+   * Adds {@code element} to the list to be returned from {@link AircraftSaveDirectives#getCanardAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code element} is null
+   */
+  public AircraftSaveDirectives.Builder addCanardAirfoilFileNames(String element) {
+    this.canardAirfoilFileNames.add(Preconditions.checkNotNull(element));
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link AircraftSaveDirectives#getCanardAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public AircraftSaveDirectives.Builder addCanardAirfoilFileNames(String... elements) {
+    canardAirfoilFileNames.ensureCapacity(canardAirfoilFileNames.size() + elements.length);
+    for (String element : elements) {
+      addCanardAirfoilFileNames(element);
+    }
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Adds each element of {@code elements} to the list to be returned from
+   * {@link AircraftSaveDirectives#getCanardAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code elements} is null or contains a
+   *     null element
+   */
+  public AircraftSaveDirectives.Builder addAllCanardAirfoilFileNames(
+      Iterable<? extends String> elements) {
+    if (elements instanceof Collection) {
+      canardAirfoilFileNames.ensureCapacity(
+          canardAirfoilFileNames.size() + ((Collection<?>) elements).size());
+    }
+    for (String element : elements) {
+      addCanardAirfoilFileNames(element);
+    }
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Applies {@code mutator} to the list to be returned from {@link AircraftSaveDirectives#getCanardAirfoilFileNames()}.
+   *
+   * <p>This method mutates the list in-place. {@code mutator} is a void
+   * consumer, so any value returned from a lambda will be ignored. Take care
+   * not to call pure functions, like {@link Collection#stream()}.
+   *
+   * @return this {@code Builder} object
+   * @throws NullPointerException if {@code mutator} is null
+   */
+  public AircraftSaveDirectives.Builder mutateCanardAirfoilFileNames(
+      Consumer<? super List<String>> mutator) {
+    // If addCanardAirfoilFileNames is overridden, this method will be updated to delegate to it
+    mutator.accept(canardAirfoilFileNames);
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Clears the list to be returned from {@link AircraftSaveDirectives#getCanardAirfoilFileNames()}.
+   *
+   * @return this {@code Builder} object
+   */
+  public AircraftSaveDirectives.Builder clearCanardAirfoilFileNames() {
+    this.canardAirfoilFileNames.clear();
+    return (AircraftSaveDirectives.Builder) this;
+  }
+
+  /**
+   * Returns an unmodifiable view of the list that will be returned by
+   * {@link AircraftSaveDirectives#getCanardAirfoilFileNames()}.
+   * Changes to this builder will be reflected in the view.
+   */
+  public List<String> getCanardAirfoilFileNames() {
+    return Collections.unmodifiableList(canardAirfoilFileNames);
   }
 
   /**
@@ -573,7 +826,10 @@ abstract class AircraftSaveDirectives_Builder {
     setEngineFileName(value.getEngineFileName());
     setLandingGearFileName(value.getLandingGearFileName());
     setSystemFileName(value.getSystemFileName());
-    addAllAirfoilFileNames(value.getAirfoilFileNames());
+    addAllWingAirfoilFileNames(value.getWingAirfoilFileNames());
+    addAllHTailAirfoilFileNames(value.getHTailAirfoilFileNames());
+    addAllVTailAirfoilFileNames(value.getVTailAirfoilFileNames());
+    addAllCanardAirfoilFileNames(value.getCanardAirfoilFileNames());
     return (AircraftSaveDirectives.Builder) this;
   }
 
@@ -622,7 +878,11 @@ abstract class AircraftSaveDirectives_Builder {
     if (!base._unsetProperties.contains(AircraftSaveDirectives_Builder.Property.SYSTEM_FILE_NAME)) {
       setSystemFileName(template.getSystemFileName());
     }
-    addAllAirfoilFileNames(((AircraftSaveDirectives_Builder) template).airfoilFileNames);
+    addAllWingAirfoilFileNames(((AircraftSaveDirectives_Builder) template).wingAirfoilFileNames);
+    addAllHTailAirfoilFileNames(((AircraftSaveDirectives_Builder) template).HTailAirfoilFileNames);
+    addAllVTailAirfoilFileNames(((AircraftSaveDirectives_Builder) template).VTailAirfoilFileNames);
+    addAllCanardAirfoilFileNames(
+        ((AircraftSaveDirectives_Builder) template).canardAirfoilFileNames);
     return (AircraftSaveDirectives.Builder) this;
   }
 
@@ -630,7 +890,10 @@ abstract class AircraftSaveDirectives_Builder {
    * Resets the state of this builder.
    */
   public AircraftSaveDirectives.Builder clear() {
-    airfoilFileNames.clear();
+    wingAirfoilFileNames.clear();
+    HTailAirfoilFileNames.clear();
+    VTailAirfoilFileNames.clear();
+    canardAirfoilFileNames.clear();
     return (AircraftSaveDirectives.Builder) this;
   }
 
@@ -670,7 +933,10 @@ abstract class AircraftSaveDirectives_Builder {
     private final String engineFileName;
     private final String landingGearFileName;
     private final String systemFileName;
-    private final List<String> airfoilFileNames;
+    private final List<String> wingAirfoilFileNames;
+    private final List<String> HTailAirfoilFileNames;
+    private final List<String> VTailAirfoilFileNames;
+    private final List<String> canardAirfoilFileNames;
 
     private Value(AircraftSaveDirectives_Builder builder) {
       this.aircraftFileName = builder.aircraftFileName;
@@ -684,7 +950,10 @@ abstract class AircraftSaveDirectives_Builder {
       this.engineFileName = builder.engineFileName;
       this.landingGearFileName = builder.landingGearFileName;
       this.systemFileName = builder.systemFileName;
-      this.airfoilFileNames = ImmutableList.copyOf(builder.airfoilFileNames);
+      this.wingAirfoilFileNames = ImmutableList.copyOf(builder.wingAirfoilFileNames);
+      this.HTailAirfoilFileNames = ImmutableList.copyOf(builder.HTailAirfoilFileNames);
+      this.VTailAirfoilFileNames = ImmutableList.copyOf(builder.VTailAirfoilFileNames);
+      this.canardAirfoilFileNames = ImmutableList.copyOf(builder.canardAirfoilFileNames);
     }
 
     @Override
@@ -743,8 +1012,23 @@ abstract class AircraftSaveDirectives_Builder {
     }
 
     @Override
-    public List<String> getAirfoilFileNames() {
-      return airfoilFileNames;
+    public List<String> getWingAirfoilFileNames() {
+      return wingAirfoilFileNames;
+    }
+
+    @Override
+    public List<String> getHTailAirfoilFileNames() {
+      return HTailAirfoilFileNames;
+    }
+
+    @Override
+    public List<String> getVTailAirfoilFileNames() {
+      return VTailAirfoilFileNames;
+    }
+
+    @Override
+    public List<String> getCanardAirfoilFileNames() {
+      return canardAirfoilFileNames;
     }
 
     @Override
@@ -764,7 +1048,10 @@ abstract class AircraftSaveDirectives_Builder {
           && Objects.equals(engineFileName, other.engineFileName)
           && Objects.equals(landingGearFileName, other.landingGearFileName)
           && Objects.equals(systemFileName, other.systemFileName)
-          && Objects.equals(airfoilFileNames, other.airfoilFileNames);
+          && Objects.equals(wingAirfoilFileNames, other.wingAirfoilFileNames)
+          && Objects.equals(HTailAirfoilFileNames, other.HTailAirfoilFileNames)
+          && Objects.equals(VTailAirfoilFileNames, other.VTailAirfoilFileNames)
+          && Objects.equals(canardAirfoilFileNames, other.canardAirfoilFileNames);
     }
 
     @Override
@@ -781,7 +1068,10 @@ abstract class AircraftSaveDirectives_Builder {
           engineFileName,
           landingGearFileName,
           systemFileName,
-          airfoilFileNames);
+          wingAirfoilFileNames,
+          HTailAirfoilFileNames,
+          VTailAirfoilFileNames,
+          canardAirfoilFileNames);
     }
 
     @Override
@@ -820,8 +1110,17 @@ abstract class AircraftSaveDirectives_Builder {
           + "systemFileName="
           + systemFileName
           + ", "
-          + "airfoilFileNames="
-          + airfoilFileNames
+          + "wingAirfoilFileNames="
+          + wingAirfoilFileNames
+          + ", "
+          + "HTailAirfoilFileNames="
+          + HTailAirfoilFileNames
+          + ", "
+          + "VTailAirfoilFileNames="
+          + VTailAirfoilFileNames
+          + ", "
+          + "canardAirfoilFileNames="
+          + canardAirfoilFileNames
           + "}";
     }
   }
@@ -838,7 +1137,10 @@ abstract class AircraftSaveDirectives_Builder {
     private final String engineFileName;
     private final String landingGearFileName;
     private final String systemFileName;
-    private final List<String> airfoilFileNames;
+    private final List<String> wingAirfoilFileNames;
+    private final List<String> HTailAirfoilFileNames;
+    private final List<String> VTailAirfoilFileNames;
+    private final List<String> canardAirfoilFileNames;
     private final EnumSet<AircraftSaveDirectives_Builder.Property> _unsetProperties;
 
     Partial(AircraftSaveDirectives_Builder builder) {
@@ -853,7 +1155,10 @@ abstract class AircraftSaveDirectives_Builder {
       this.engineFileName = builder.engineFileName;
       this.landingGearFileName = builder.landingGearFileName;
       this.systemFileName = builder.systemFileName;
-      this.airfoilFileNames = ImmutableList.copyOf(builder.airfoilFileNames);
+      this.wingAirfoilFileNames = ImmutableList.copyOf(builder.wingAirfoilFileNames);
+      this.HTailAirfoilFileNames = ImmutableList.copyOf(builder.HTailAirfoilFileNames);
+      this.VTailAirfoilFileNames = ImmutableList.copyOf(builder.VTailAirfoilFileNames);
+      this.canardAirfoilFileNames = ImmutableList.copyOf(builder.canardAirfoilFileNames);
       this._unsetProperties = builder._unsetProperties.clone();
     }
 
@@ -948,8 +1253,23 @@ abstract class AircraftSaveDirectives_Builder {
     }
 
     @Override
-    public List<String> getAirfoilFileNames() {
-      return airfoilFileNames;
+    public List<String> getWingAirfoilFileNames() {
+      return wingAirfoilFileNames;
+    }
+
+    @Override
+    public List<String> getHTailAirfoilFileNames() {
+      return HTailAirfoilFileNames;
+    }
+
+    @Override
+    public List<String> getVTailAirfoilFileNames() {
+      return VTailAirfoilFileNames;
+    }
+
+    @Override
+    public List<String> getCanardAirfoilFileNames() {
+      return canardAirfoilFileNames;
     }
 
     @Override
@@ -969,7 +1289,10 @@ abstract class AircraftSaveDirectives_Builder {
           && Objects.equals(engineFileName, other.engineFileName)
           && Objects.equals(landingGearFileName, other.landingGearFileName)
           && Objects.equals(systemFileName, other.systemFileName)
-          && Objects.equals(airfoilFileNames, other.airfoilFileNames)
+          && Objects.equals(wingAirfoilFileNames, other.wingAirfoilFileNames)
+          && Objects.equals(HTailAirfoilFileNames, other.HTailAirfoilFileNames)
+          && Objects.equals(VTailAirfoilFileNames, other.VTailAirfoilFileNames)
+          && Objects.equals(canardAirfoilFileNames, other.canardAirfoilFileNames)
           && Objects.equals(_unsetProperties, other._unsetProperties);
     }
 
@@ -987,7 +1310,10 @@ abstract class AircraftSaveDirectives_Builder {
           engineFileName,
           landingGearFileName,
           systemFileName,
-          airfoilFileNames,
+          wingAirfoilFileNames,
+          HTailAirfoilFileNames,
+          VTailAirfoilFileNames,
+          canardAirfoilFileNames,
           _unsetProperties);
     }
 
@@ -1032,7 +1358,10 @@ abstract class AircraftSaveDirectives_Builder {
               (!_unsetProperties.contains(AircraftSaveDirectives_Builder.Property.SYSTEM_FILE_NAME)
                   ? "systemFileName=" + systemFileName
                   : null),
-              "airfoilFileNames=" + airfoilFileNames)
+              "wingAirfoilFileNames=" + wingAirfoilFileNames,
+              "HTailAirfoilFileNames=" + HTailAirfoilFileNames,
+              "VTailAirfoilFileNames=" + VTailAirfoilFileNames,
+              "canardAirfoilFileNames=" + canardAirfoilFileNames)
           + "}";
     }
   }

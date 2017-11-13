@@ -12,7 +12,7 @@
          <number_of_compressor_stages>5</number_of_compressor_stages>
          <number_of_shafts>2</number_of_shafts>
          <overall_pressure_ratio>15.0000</overall_pressure_ratio>
-         <static_power unit="W">2022622.2500</static_power>
+         <static_power unit="hp">2750</static_power>
          <number_of_propeller_blades>6</number_of_propeller_blades>
          <eta_propeller>0.8000</eta_propeller>
       </specifications>

@@ -18,7 +18,10 @@ public interface AircraftSaveDirectives {
 	String getEngineFileName();
 	String getLandingGearFileName();
 	String getSystemFileName();
-	List<String> getAirfoilFileNames();
+	List<String> getWingAirfoilFileNames();
+	List<String> getHTailAirfoilFileNames();
+	List<String> getVTailAirfoilFileNames();
+	List<String> getCanardAirfoilFileNames();
 	
 	class Builder extends AircraftSaveDirectives_Builder {
 		// NOTE: pass a string to the Builder object to be appended to all names

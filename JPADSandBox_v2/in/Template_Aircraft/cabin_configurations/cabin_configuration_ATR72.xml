@@ -4,22 +4,22 @@
       <global_data>
          <actual_passengers_number>68</actual_passengers_number>
          <maximum_passengers_number>72</maximum_passengers_number>
-         <flight_crew_number>1</flight_crew_number>
+         <flight_crew_number>2</flight_crew_number>
          <classes_number>1</classes_number>
-         <classes_type>[ECONOMY, BUSINESS, FIRST]</classes_type>
+         <classes_type>ECONOMY</classes_type>
          <aisles_number>1</aisles_number>
          <x_coordinates_first_row unit="m">6.1600</x_coordinates_first_row>
          <missing_seat_row>
-            <value>[-1]</value>
-            <value>[-1]</value>
-            <value>[-1]</value>
+            <value>[0,0]</value>
+            <value>[0,0]</value>
+            <value>[0,0]</value>
          </missing_seat_row>
       </global_data>
       <detailed_data>
          <number_of_breaks_economy_class>-1</number_of_breaks_economy_class>
          <number_of_breaks_business_class>-1</number_of_breaks_business_class>
          <number_of_breaks_first_class>-1</number_of_breaks_first_class>
-         <number_of_rows_economy_class>16</number_of_rows_economy_class>
+         <number_of_rows_economy_class>18</number_of_rows_economy_class>
          <number_of_rows_business_class>0</number_of_rows_business_class>
          <number_of_rows_first_class>0</number_of_rows_first_class>
          <number_of_columns_economy_class>[2, 2]</number_of_columns_economy_class>
@@ -32,8 +32,8 @@
          <width_business_class unit="m">0.0000</width_business_class>
          <width_first_class unit="m">0.0000</width_first_class>
          <distance_from_wall_economy_class unit="m">0.0845</distance_from_wall_economy_class>
-         <distance_from_wall_business_class unit="m">0.0845</distance_from_wall_business_class>
-         <distance_from_wall_first_class unit="m">0.0845</distance_from_wall_first_class>
+         <distance_from_wall_business_class unit="m">0.0</distance_from_wall_business_class>
+         <distance_from_wall_first_class unit="m">0.0</distance_from_wall_first_class>
       </detailed_data>
       <reference_masses>
          <mass_furnishings_and_equipment unit="kg">2000.0000</mass_furnishings_and_equipment>

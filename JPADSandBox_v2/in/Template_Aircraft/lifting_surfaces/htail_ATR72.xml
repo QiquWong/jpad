@@ -5,5 +5,32 @@
          <composite_correction_factor>0.000000</composite_correction_factor>
          <roughness unit="m">0.00000405</roughness>
       </global_data>
+      <panels>
+         <panel file="ATR72 horizontal tail">
+            <span unit="m">3.6548</span>
+            <dihedral unit="deg">0.0000</dihedral>
+            <sweep_leading_edge unit="deg">13.4400</sweep_leading_edge>
+            <inner_section>
+               <chord unit="m">2.0440</chord>
+               <airfoil_root file="naca0012.xml"/>
+               <geometric_twist>0.000000</geometric_twist>
+            </inner_section>
+            <outer_section>
+               <chord unit="m">1.1652</chord>
+               <airfoil_root file="naca0012.xml"/>
+               <geometric_twist unit="deg">0.0000</geometric_twist>
+            </outer_section>
+         </panel>
+      </panels>
+      <symmetric_flaps>
+         <symmetric_flap type="PLAIN">
+            <inner_station_spanwise_position>0.1000</inner_station_spanwise_position>
+            <outer_station_spanwise_position>0.9000</outer_station_spanwise_position>
+            <inner_chord_ratio>0.3000</inner_chord_ratio>
+            <outer_chord_ratio>0.3000</outer_chord_ratio>
+            <min_deflection unit="deg">-25.0000</min_deflection>
+            <max_deflection unit="deg">5.0000</max_deflection>
+         </symmetric_flap>
+      </symmetric_flaps>
    </horizontal_tail>
 </jpad_config>
