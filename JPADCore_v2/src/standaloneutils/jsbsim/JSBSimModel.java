@@ -75,7 +75,9 @@ public class JSBSimModel {
 	}
 
 	public void readVariablesFromCPACS() throws TiglException {
-		
+		System.out.println("--------------------------------");
+		System.out.println("Start readVariablesFromCPACS :");
+		System.out.println("--------------------------------");
 		if (_cpacsReader == null)
 			return;
 
@@ -109,6 +111,9 @@ public class JSBSimModel {
 		int verticalTailIndex = _cpacsReader.getWingIndexZeroBased(verticalTailUID); 
 		System.out.println("vtailUID, idx: " + verticalTailUID + ", " + verticalTailIndex);
 		
+		//Start wing 
+		Node wingNode = wingsNodes.item(wingIndex);
+		Double[] wingPosition = CPACSUtils.getWingPosition(wingNode);
 		double wingSurface = _cpacsReader.getWingReferenceArea(wingIndex);
 		System.out.println("wingSurface: " + wingSurface);
 //		double wingWettedArea = _cpacsReader.getWingWettedArea(wingUID);
@@ -121,42 +126,72 @@ public class JSBSimModel {
 		Amount<Length> wingSpan = Amount.valueOf(wspan,SI.METRE);
 		System.out.println("wing span: " + wingSpan);
 
-		Node wingNode = wingsNodes.item(wingIndex);
 		Double wrootchrd = CPACSUtils.getWingChord(wingNode);
 		Amount<Length> wingRootChord = Amount.valueOf(wrootchrd,SI.METRE);
 		System.out.println("wing root chord: " + wingRootChord);
-		
 
-		NodeList wingSectionElement = MyXMLReaderUtils.getXMLNodeListByPath(
-				jpadXmlReader.getXmlDoc(), 
-				"/cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/sections");
-		int lastWingElementIndex = wingSectionElement.getLength()-1;//Vector start from 0
-		
-		
+		double macVectorWing[] = new double [4];
+		macVectorWing = _cpacsReader.getWingMeanAerodynamicChord(wingUID);
+		System.out.println("--------------------------------");
+		System.out.println("MAC value = " + macVectorWing[0]);
+		System.out.println("MACx value = " + macVectorWing[1]);
+		System.out.println("MACy value = " + macVectorWing[2]);
+		System.out.println("MACz value = " + macVectorWing[3]);
+		System.out.println("--------------------------------");
+
 		//Horizontal tail
+		System.out.println("--------------------------------");
+		System.out.println("Start HT");
+		System.out.println("--------------------------------");
+		Node horizontalTailNode = wingsNodes.item(horizontalTailIndex);
+		Double[] horizontalTailPosition = CPACSUtils.getWingPosition(horizontalTailNode);
+		double[] macVectorHT = new double [4];
 		double horizontalSurface = _cpacsReader.getWingReferenceArea(horizontalTailIndex);
-		double horizontalTailMACLeadingEdge = _cpacsReader.getMeanChordLeadingEdge(horizontalTailUID,"x");
-		double horizontalTailAeroCenter =_cpacsReader.getWingRootLeadingEdge(horizontalTailUID,"x") +
-				horizontalTailMACLeadingEdge + (0.25)*_cpacsReader.getWingMeanAerodynamicChord(horizontalTailUID);	
+//		double horizontalTailMACLeadingEdge = _cpacsReader.getMeanChordLeadingEdge(horizontalTailUID,"x");
+		macVectorHT = _cpacsReader.getWingMeanAerodynamicChord(horizontalTailUID);
+		System.out.println("--------------------------------");
+		System.out.println("MAC HT value = " + macVectorHT[0]);
+		System.out.println("MACx HT value = " + macVectorHT[1]);
+		System.out.println("MACy HT value = " + macVectorHT[2]);
+		System.out.println("MACz HT value = " + macVectorHT[3]);
+		System.out.println("--------------------------------");
+		double horizontalTailAeroCenter = 
+				macVectorHT[1] + (0.25)*macVectorHT[0];	
+		System.out.println("--------------------------------");
+		System.out.println("horizontalTailAeroCenter =  " + horizontalTailAeroCenter);
+		System.out.println("--------------------------------");
 		double horizontalTailArm = horizontalTailAeroCenter-GravityCenterPosition[0];
 
 
 		//Vertical tail
-		double verticalTailSurface = _cpacsReader.getWingReferenceArea(verticalTailIndex);
-		double verticalTailMACLeadingEdge = _cpacsReader.getMeanChordLeadingEdge(verticalTailUID,"x");
-		double sweepVerticalTail = _cpacsReader.getWingSweep(verticalTailUID);
-		double verticalTailAeroCenter = _cpacsReader.getWingRootLeadingEdge(verticalTailUID,"x") + 
-				verticalTailMACLeadingEdge + (0.25)*_cpacsReader.getWingMeanAerodynamicChord(verticalTailUID);	
-		double verticalTailArmHorizontalDirection = verticalTailAeroCenter-GravityCenterPosition[0];
-		double verticalTailArmVerticalDirection = _cpacsReader.getWingRootLeadingEdge(verticalTailUID,"z")
-				+verticalTailMACLeadingEdge/sweepVerticalTail - _cpacsReader.getWingRootLeadingEdge(wingUID,"z");
+		System.out.println("--------------------------------");
+		System.out.println("Start VT");
+		System.out.println("--------------------------------");
+		Node verticalTailNode = wingsNodes.item(verticalTailIndex);
+		Double[] verticalTailPosition = CPACSUtils.getWingPosition(verticalTailNode);
+		double[] macVectorVT = new double [4];
+		double verticalSurface = _cpacsReader.getWingReferenceArea(verticalTailIndex);
+//		double horizontalTailMACLeadingEdge = _cpacsReader.getMeanChordLeadingEdge(horizontalTailUID,"x");
+		macVectorVT = _cpacsReader.getWingMeanAerodynamicChord(verticalTailUID);
+		System.out.println("--------------------------------");
+		System.out.println("MAC VT value = " + macVectorVT[0]);
+		System.out.println("MACx VT value = " + macVectorVT[1]);
+		System.out.println("MACy VT value = " + macVectorVT[2]);
+		System.out.println("MACz VT value = " + macVectorVT[3]);
+		System.out.println("--------------------------------");
+		double verticalTailAeroCenter = 
+				macVectorVT[1] + (0.25)*macVectorVT[0];	
+		System.out.println("--------------------------------");
+		System.out.println("verticalTailAeroCenter =  " + verticalTailAeroCenter);
+		System.out.println("--------------------------------");
+		double verticalTailArm = verticalTailAeroCenter-GravityCenterPosition[0];
 
 		//AERO REFERENCE
 		double[] aeroReferenceCenter = new double [3];
-		aeroReferenceCenter[0] =_cpacsReader.getWingRootLeadingEdge(wingUID,"x") +
-				horizontalTailMACLeadingEdge + (0.25)*_cpacsReader.getWingMeanAerodynamicChord(wingUID);	
+		aeroReferenceCenter[0] = wingPosition[0] +
+				macVectorWing[1] + (0.25)*macVectorWing[0];	
 		aeroReferenceCenter[1] = 0;
-		aeroReferenceCenter[2] = _cpacsReader.getWingRootLeadingEdge(wingUID,"z");
+		aeroReferenceCenter[2] =  wingPosition[2];
 
 		//Eyepoint
 		double[] eyePointReferenceCenter = _cpacsReader.getVectorPosition(
@@ -316,10 +351,11 @@ public class JSBSimModel {
 
 		//Propulsion
 		//GeoData
-		double[] engineRotation = _cpacsReader.getVectorPosition(
-				"pacs/vehicles/aircraft/model/engines/engine/transformation/rotation");
+		
 		double[] enginePosition = _cpacsReader.getVectorPosition(
-				"pacs/vehicles/aircraft/model/engines/engine/transformation/translation");
+				"cpacs/vehicles/aircraft/model/engines/engine/transformation/translation");
+		double[] engineRotation = _cpacsReader.getVectorPosition(
+				"cpacs/vehicles/aircraft/model/engines/engine/transformation/rotation");
 		//Propulsion Data -> need to write engine script in JSBSim
 		String milthrust =  jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/engines/engine/analysis/milthrust");
@@ -408,25 +444,41 @@ public class JSBSimModel {
 				"cpacs/vehicles/engines/engine/analysis/fpr00");
 
 		//tank
+		
 		NodeList tankNumberElement = MyXMLReaderUtils.getXMLNodeListByPath(
 				jpadXmlReader.getXmlDoc(), 
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/TankFuel");
+				"cpacs/vehicles/aircraft/model/analyses/weightAndBalance/operationalCases/"
+				+ "operationalCase[" + 1 + "]/mFuel/fuelInTanks/fuelInTank");
+		NodeList tankPositionList =  MyXMLReaderUtils.getXMLNodeListByPath(
+				jpadXmlReader.getXmlDoc(), 
+				"cpacs/vehicles/aircraft/model/analyses/weightAndBalance/operationalCases/"
+				+ "operationalCase");
+		
+		System.out.println("Tank Number is  " + tankNumberElement.getLength());
+		System.out.println("Tank Position is  " + tankPositionList.getLength());
+
 		double[][] tankMatrix = new double [tankNumberElement.getLength()][3];
 		List<String> capacityTank = null;
-		List<String> contentTank = null;
+//		List<String> contentTank = null;
 		List<String> fuelTypeTank = null;
+		
 		for(int i= 0;i<tankNumberElement.getLength();i++) {
-			double[] VectorTankPosition = _cpacsReader.getVectorPosition(
-					"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-							+ "TankFuel/tank["+i+"]/location");
+			
+			Node node = tankPositionList.item(1);
+			Double[] vectorTankPosition = CPACSUtils.getVectorPositionNodeTank(node, i);
+//			Double[] vectorTankPosition = _cpacsReader.getVectorPositionNodeTank(1);	
 			for (int j = 0;j<3;j++) {
-				tankMatrix[i][j] = VectorTankPosition[j];
-				capacityTank.add("cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "TankFuel/tank["+i+"]/capacity");
-				contentTank.add("cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "TankFuel/tank["+i+"]/contents");
-				fuelTypeTank.add("cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "TankFuel/tank["+i+"]/type");	
+//				tankMatrix[i][j] = vectorTankPosition[j];
+//				List<Double>vectorTankCapacity= _cpacsReader.
+//						getJpadXmlReader().readArrayDoubleFromXMLSplit(
+//						"cpacs/vehicles/aircraft/model/analyses/weightAndBalance/"
+//						+ "operationalCases/operationalCase[" + 1+ "]/mFuel/"
+//						+ "fuelInTanks/fuelInTank[" + i + "]/mass");
+//				String tankCapacity = String.valueOf(vectorTankCapacity.get(vectorTankCapacity.size())); 
+//				capacityTank.add(tankCapacity);
+				fuelTypeTank.add("cpacs/vehicles/aircraft/model/analyses/weightAndBalance/"
+						+ "operationalCases/operationalCase[" + 1 + "]/mFuel/"
+						+ "fuelInTanks/fuelInTank[" + i + "]/fuelUID");	
 			}
 		}						
 		//Flight Control

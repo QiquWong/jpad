@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
+import standaloneutils.launchers.avl.AVLWingSectionControlSurface;
 
 /**
  * Auto-generated superclass of {@link AVLWingSectionControlSurface.Builder},

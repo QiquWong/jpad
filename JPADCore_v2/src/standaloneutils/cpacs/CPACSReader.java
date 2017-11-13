@@ -337,23 +337,34 @@ public class CPACSReader {
 	 * @throws TiglException
 	 */
 	public double getWingReferenceArea(int wingIndexZeroBased) throws TiglException {
-		
 		if (TiglSymmetryAxis.TIGL_X_Z_PLANE != _config.wingGetSymmetry(wingIndexZeroBased + 1))
 			System.err.println("getWingReferenceArea: wing " + (wingIndexZeroBased +1) + " not equal to TIGL_X_Z_PLANE");
 		
 		return _config.wingGetSurfaceArea(wingIndexZeroBased + 1);
 	}		
 
-	public double getWingMeanAerodynamicChord(String wingUID) throws TiglException {
+	/**
+	 * Get value and position of the mean aerodynamic chord of the desired wing 
+	 * @param wingUID Main wing UID in the CPACS
+	 * @return
+	 * @throws TiglException
+	 */
+	public double[] getWingMeanAerodynamicChord(String wingUID) throws TiglException {
 		DoubleByReference mac   = new DoubleByReference();
 		DoubleByReference mac_x = new DoubleByReference();
 		DoubleByReference mac_y = new DoubleByReference();
 		DoubleByReference mac_z = new DoubleByReference();
+		double[] macVector;
+		macVector= new double [4];
 		if (TiglNativeInterface.tiglWingGetMAC(_config.getCPACSHandle(), wingUID, mac, mac_x, mac_y, mac_z) == 0) {
-			return mac.getValue();
+			macVector[0]=mac.getValue();
+			macVector[1]=mac_x.getValue();
+			macVector[2]=mac_y.getValue();
+			macVector[3]=mac_z.getValue();
+			return macVector;
 		}
 		else
-			return 0;
+			return null;
 	}		
 
 	/**
@@ -382,37 +393,36 @@ public class CPACSReader {
 	 * @return Return the leading edge of the mean aerodynamic chord from aircraft nose
 	 * @throws TiglException
 	 */
-	public double getMeanChordLeadingEdge(String wingUID, String axis) throws TiglException {
-		int wingIndex = getWingIndexZeroBased(wingUID);
-		double wingSpan = getWingSpan(wingUID);		
-		String wingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/vehicles/aircraft/model/wings/wing["+ (wingIndex + 1) + "]/transformation/translation/"
-				+ axis);
-		double wingRootLeadingEdge = Double.parseDouble(wingRootLeadingEdgeString);	
-
-		NodeList wingSectionElements = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(), 
-				"cpacs/vehicles/aircraft/model/wings/wing[" + (wingIndex + 1) + "]/sections");		
-		int lastWingElementIndex = wingSectionElements.getLength()-1;
-
-		String wingTipLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/vehicles/aircraft/model/wings/wing[" + (wingIndex + 1) + "]/sections/"
-						+ "section["+lastWingElementIndex+"]/elements/element/transformation/scaling/"
-						+ axis);
-		double wingTipLeadingEdge = Double.parseDouble(wingTipLeadingEdgeString);
-		//Definition Sweep Angle
-		NodeList wingSectionElementPosition = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(), 
-				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/positionings");		
-		int lastWingElementPositionIndex = wingSectionElementPosition.getLength()-1;
-		String tanSweepAngleString = _jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/"
-						+ "positionings/positioning["+lastWingElementPositionIndex+"]/sweepAngle");
-		double tanSweepAngle = Double.parseDouble(tanSweepAngleString);			
-		double taperRatio = wingTipLeadingEdge/wingRootLeadingEdge;
-
-		return 2.0f/3.0f*wingSpan*(1 + 2*taperRatio)/(1 + taperRatio)*tanSweepAngle;
-	}
+//	public double getMeanChordLeadingEdge(String wingUID, String axis) throws TiglException {
+//		int wingIndex = getWingIndexZeroBased(wingUID);
+//		double wingSpan = getWingSpan(wingUID);		
+//		String wingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/vehicles/aircraft/model/wings/wing["+ (wingIndex + 1) + "]/transformation/translation/"
+//				+ axis);
+//		double wingRootLeadingEdge = Double.parseDouble(wingRootLeadingEdgeString);	
+//		NodeList wingSectionElements = MyXMLReaderUtils.getXMLNodeListByPath(
+//				_jpadXmlReader.getXmlDoc(), 
+//				"cpacs/vehicles/aircraft/model/wings/wing[" + (wingIndex) + "]/sections/section");		
+//		int lastWingElementIndex = wingSectionElements.getLength();
+//		String wingTipLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/vehicles/aircraft/model/wings/wing[" + (wingIndex) + "]/sections/"
+//						+ "section["+lastWingElementIndex+"]/elements/element/transformation/scaling/"
+//						+ axis);
+//		double wingTipLeadingEdge = Double.parseDouble(wingTipLeadingEdgeString);
+//		//Definition Sweep Angle
+//		NodeList wingSectionElementPosition = MyXMLReaderUtils.getXMLNodeListByPath(
+//				_jpadXmlReader.getXmlDoc(), 
+//				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/positionings/positioning");		
+//		int lastWingElementPositionIndex = wingSectionElementPosition.getLength()-1;
+//		String tanSweepAngleString = _jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/"
+//						+ "positionings/positioning["+lastWingElementPositionIndex+"]/sweepAngle");
+//		double tanSweepAngle = Double.parseDouble(tanSweepAngleString);			
+//		double taperRatio = wingTipLeadingEdge/wingRootLeadingEdge;
+//
+//		return 2.0f/3.0f*wingSpan*(1 + 2*taperRatio)/(1 + taperRatio)*tanSweepAngle;
+//	}
+	
 	/**
 	 * Searches (x,y,z) coordinates of empty-weight CG. By default in the path
 	 * "cpacs/vehicles/aircraft/model/analyses/massBreakdown/mOEM/mEM/massDescription/location"
@@ -427,18 +437,18 @@ public class CPACSReader {
 		if (args.length > 0)
 			pathToCoords = args[0];
 		
-		double[] GravityCenterPosition;
-		GravityCenterPosition= new double [3]; 
-		String XpositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/x");
-		GravityCenterPosition[0] = Double.parseDouble(XpositionGCString);			
+		double[] gravityCenterPosition;
+		gravityCenterPosition= new double [3]; 
+		String xPositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/x");
+		gravityCenterPosition[0] = Double.parseDouble(xPositionGCString);			
 
-		String YpositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/y");
-		GravityCenterPosition[1] = Double.parseDouble(YpositionGCString);			
+		String yPositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/y");
+		gravityCenterPosition[1] = Double.parseDouble(yPositionGCString);			
 
-		String ZpositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/z");
-		GravityCenterPosition[2] = Double.parseDouble(ZpositionGCString);			
+		String zPositionGCString = _jpadXmlReader.getXMLPropertyByPath(pathToCoords+"/z");
+		gravityCenterPosition[2] = Double.parseDouble(zPositionGCString);			
 
-		return GravityCenterPosition;
+		return gravityCenterPosition;
 	}	
 	/**
 	 * 
@@ -448,56 +458,102 @@ public class CPACSReader {
 	 */
 
 	public double[] getVectorPosition(String pathInTheCpacs) throws TiglException {
-		double[] VectorCenterPosition;
-		VectorCenterPosition= new double [3]; 
-		String XpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+		double[] vectorCenterPosition;
+		vectorCenterPosition= new double [3]; 
+		System.out.println("--------------------------------");
+		System.out.println("Vector Position of " + pathInTheCpacs );
+		System.out.println("--------------------------------");
+		String xPositionGCString = _jpadXmlReader.getXMLPropertyByPath(
 				pathInTheCpacs+"/x");
-		VectorCenterPosition[0] = Double.parseDouble(XpositionGCString);			
+		vectorCenterPosition[0] = Double.parseDouble(xPositionGCString);	
+		System.out.println("x =  " + xPositionGCString );
 
-		String YpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+		String yPositionGCString = _jpadXmlReader.getXMLPropertyByPath(
 				pathInTheCpacs+"/y");
-		VectorCenterPosition[1] = Double.parseDouble(YpositionGCString);			
+		vectorCenterPosition[1] = Double.parseDouble(yPositionGCString);			
+		System.out.println("y =  " + yPositionGCString );
 
-		String ZpositionGCString = _jpadXmlReader.getXMLPropertyByPath(
+		String zPositionGCString = _jpadXmlReader.getXMLPropertyByPath(
 				pathInTheCpacs+"/z");
-		VectorCenterPosition[2] = Double.parseDouble(ZpositionGCString);			
+		System.out.println("z =  " + xPositionGCString );
+		vectorCenterPosition[2] = Double.parseDouble(zPositionGCString);			
 
 
-		return VectorCenterPosition;
+		return vectorCenterPosition;
 	}	
 	/**
 	 * 
-	 * @param WingUID Wing UID in the CPACS
+	 * @param wingUID Wing UID in the CPACS
 	 * @param axis axis  which want evaluate wing position
 	 * @return Wing Position in the axis direction (i.e x y or z)
 	 * @throws TiglException
 	 */
 
 
-	public double getWingRootLeadingEdge(String WingUID,String axis) throws TiglException {
-		int WingIndex = getWingIndexZeroBased(WingUID);
-		String WingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/transformation/translation/"+axis);
-		return Double.parseDouble(WingRootLeadingEdgeString);	
-	}
+//	public double getWingRootLeadingEdge(String uIDInput,String axis) throws TiglException {
+//		int wingIndex = getWingIndexZeroBased(uIDInput);
+//		System.out.println("wingUID is = "+uIDInput);
+//		System.out.println("wingIndex is = "+wingIndex);
+//		String wingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/transformation/translation/x");
+//		System.out.println("--------------------------------");
+//		System.out.println("wingRootLeadingEdgeString = "+wingRootLeadingEdgeString);
+//		System.out.println("--------------------------------");
+//
+//		return Double.parseDouble(wingRootLeadingEdgeString);	
+//	}
 	/**
 	 * 
-	 * @param WingUID Wing UID in the CPACS
+	 * @param wingUID Wing UID in the CPACS
 	 * @return Tanget of the Sweep Angle
 	 * @throws TiglException
 	 */
 
-	public double getWingSweep(String WingUID) throws TiglException {
-		int WingIndex = getWingIndexZeroBased(WingUID);
-		NodeList WingSectionElementPosition = MyXMLReaderUtils.getXMLNodeListByPath(
+	public double getWingSweep(String wingUID) throws TiglException {
+		int wingIndex = getWingIndexZeroBased(wingUID);
+		NodeList wingSectionElementPosition = MyXMLReaderUtils.getXMLNodeListByPath(
 				_jpadXmlReader.getXmlDoc(), 
-				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/positionings");		
-		int LastWingElementPositionIndex = WingSectionElementPosition.getLength()-1;
-		String TanSweepAngleString = _jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/vehicles/aircraft/model/wings/wing["+WingIndex+"]/"
-						+ "positionings/positioning["+LastWingElementPositionIndex+"]/sweepAngle");
-		return Double.parseDouble(TanSweepAngleString);			
+				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/positionings/positioning");		
+		int lastWingElementPositionIndex = wingSectionElementPosition.getLength()-1;
+		String tanSweepAngleString = _jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/"
+						+ "positionings/positioning["+lastWingElementPositionIndex+"]/sweepAngle");
+		return Double.parseDouble(tanSweepAngleString);			
 	}
+	
+	
+	
+	public Double[] getVectorPositionNodeTank(int i) throws TiglException {
+		Double [] tankPositionVector = null;
+		NodeList tankNumberElement = MyXMLReaderUtils.getXMLNodeListByPath(
+				_importDoc, 
+				"/cpacs/vehicles/aircraft/model/analyses/weightAndBalance/operationalCases/"
+						+ "operationalCase[" + i + "]/mFuel/fuelInTanks/fuelInTank");
+		for (int j = 1; j < tankNumberElement.getLength(); j++) {
+				List<String> props = new ArrayList<>();
+				props = MyXMLReaderUtils.getXMLPropertiesByPath(
+						_importDoc, 
+						"/cpacs/vehicles/aircraft/model/analyses/weightAndBalance/operationalCases"
+								+ "/operationalCase["+ i +"]/mFuel/fuelInTanks/fuelInTank["
+								+ j +"]/coG/x/text()"
+						);
+
+				System.out.println("\t...: " + props.get(0) + " size: "+ props.size());
+		}		
+		return tankPositionVector;
+	} 
+
+
+
+	
+	
+	
+	
+	
+	
+
+	
+	
 
 //	/**
 //	 * 
