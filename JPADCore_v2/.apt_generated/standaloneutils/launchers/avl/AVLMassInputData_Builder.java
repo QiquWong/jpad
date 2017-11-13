@@ -17,6 +17,7 @@ import javaslang.Tuple2;
 import javaslang.Tuple4;
 import javaslang.Tuple6;
 import javax.annotation.Generated;
+import standaloneutils.launchers.avl.AVLMassInputData;
 
 /**
  * Auto-generated superclass of {@link AVLMassInputData.Builder},

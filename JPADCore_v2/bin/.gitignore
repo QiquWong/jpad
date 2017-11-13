@@ -1,8 +1,8 @@
-/aircraft/
 /analyses/
-/cad/
 /calculators/
+/standaloneutils/
+/aircraft/
+/cad/
 /database/
 /optimization/
-/standaloneutils/
 /writers/

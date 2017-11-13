@@ -9,6 +9,7 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
+import standaloneutils.launchers.avl.AVLBodySection;
 
 /**
  * Auto-generated superclass of {@link AVLBodySection.Builder},
