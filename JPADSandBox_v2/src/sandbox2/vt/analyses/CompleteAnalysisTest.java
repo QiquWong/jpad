@@ -282,8 +282,18 @@ public class CompleteAnalysisTest extends Application {
 
 			AircraftSaveDirectives asd = new AircraftSaveDirectives
 					.Builder("_ATR72")
-					.addAllAirfoilFileNames(
+					.addAllWingAirfoilFileNames(
 							theAircraft.getWing().getAirfoilList().stream()
+									.map(a -> a.getAirfoilCreator().getName() + "_ATR72.xml")
+									.collect(Collectors.toList())
+						)
+					.addAllHTailAirfoilFileNames(
+							theAircraft.getHTail().getAirfoilList().stream()
+									.map(a -> a.getAirfoilCreator().getName() + "_ATR72.xml")
+									.collect(Collectors.toList())
+						)
+					.addAllVTailAirfoilFileNames(
+							theAircraft.getVTail().getAirfoilList().stream()
 									.map(a -> a.getAirfoilCreator().getName() + "_ATR72.xml")
 									.collect(Collectors.toList())
 						)
