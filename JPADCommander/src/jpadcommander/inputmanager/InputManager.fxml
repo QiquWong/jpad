@@ -5,7 +5,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
@@ -13,7 +12,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -33,25 +31,6 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <BorderPane id="mainInputManagerAircraftSubContent" layoutX="552.0" layoutY="58.0" prefHeight="691.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <top>
-                              <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                 <items>
-                                    <RadioButton mnemonicParsing="false" onAction="#showInputManagerAircraftFromFileContent" text="Import from file">
-                                       <padding>
-                                          <Insets left="10.0" right="10.0" />
-                                       </padding>
-                                       <toggleGroup>
-                                          <ToggleGroup fx:id="groupAircraftInputType" />
-                                       </toggleGroup>
-                                    </RadioButton>
-                                    <RadioButton mnemonicParsing="false" onAction="#showInputManagerAircraftDefaultContent" text="Default aircraft" toggleGroup="$groupAircraftInputType">
-                                       <padding>
-                                          <Insets left="10.0" right="10.0" />
-                                       </padding>
-                                    </RadioButton>
-                                 </items>
-                              </ToolBar>
-                           </top>
                            <center>
                               <BorderPane id="mainInputManagerAircraftSubContentFields" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <center>
@@ -484,15 +463,15 @@
                                                                      <tabs>
                                                                         <Tab id="TopView" text="Top view">
                                                                            <content>
-                                                                              <Pane id="TopViewPane" />
+                                                                              <Pane id="TopViewPane" fx:id="mainInputManagerAircraftSubContent" />
                                                                            </content></Tab>
                                                                         <Tab id="SideView" text="Side view">
                                                                            <content>
-                                                                              <Pane id="SideViewPane" />
+                                                                              <Pane id="SideViewPane" fx:id="SideViewPane" />
                                                                            </content></Tab>
                                                                         <Tab id="FrontView" text="Front view">
                                                                            <content>
-                                                                              <Pane id="FrontViewPane" />
+                                                                              <Pane id="FrontViewPane" fx:id="FrontViewPane" />
                                                                            </content>
                                                                         </Tab>
                                                                      </tabs>
@@ -531,6 +510,20 @@
                                  </center>
                               </BorderPane>
                            </center>
+                           <top>
+                              <ToolBar id="loadAircraftFromFileToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <items>
+                                    <Label text="File location:">
+                                       <padding>
+                                          <Insets right="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <TextField id="textFieldAircraftInputFile" prefHeight="30.0" prefWidth="884.0" />
+                                    <Button mnemonicParsing="false" onAction="#chooseAircraftFile" text="..." />
+                                    <Button id="loadButton" mnemonicParsing="false" onAction="#loadAircraftFile" text="Load" />
+                                 </items>
+                              </ToolBar>
+                           </top>
                         </BorderPane>
                      </children>
                   </AnchorPane>
@@ -846,17 +839,17 @@
                                                                <tabs>
                                                                   <Tab id="FuselageTopView" text="Top view">
                                                                      <content>
-                                                                        <Pane id="fuselageTopViewPane" />
+                                                                        <Pane id="fuselageTopViewPane" fx:id="fuselageTopViewPane" />
                                                                      </content>
                                                                   </Tab>
                                                                   <Tab id="FuselageSideView" text="Side view">
                                                                      <content>
-                                                                        <Pane id="fuselageSideViewPane" />
+                                                                        <Pane id="fuselageSideViewPane" fx:id="fuselageSideViewPane" />
                                                                      </content>
                                                                   </Tab>
                                                                   <Tab id="fuselageFrontView" text="Front view">
                                                                      <content>
-                                                                        <Pane id="fuselageFrontViewPane" />
+                                                                        <Pane id="fuselageFrontViewPane" fx:id="fuselageFrontViewPane" />
                                                                      </content>
                                                                   </Tab>
                                                                </tabs>

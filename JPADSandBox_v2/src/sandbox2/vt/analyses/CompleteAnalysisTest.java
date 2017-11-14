@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.kohsuke.args4j.Argument;
@@ -19,7 +17,6 @@ import aircraft.components.Aircraft;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
 import configuration.MyConfiguration;
-import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FoldersEnum;
 import database.DatabaseManager;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
@@ -28,10 +25,8 @@ import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import standaloneutils.JPADXmlReader;
-import writers.AircraftSaveDirectives;
 import writers.JPADStaticWriteUtils;
 
 class MyArgumentsAnalysis {
@@ -270,52 +265,52 @@ public class CompleteAnalysisTest extends Application {
 			System.setOut(filterStream);
 			
 			// default Aircraft ATR-72 ...
-			theAircraft = new Aircraft.AircraftBuilder(
-					"ATR-72",
-					AircraftEnum.ATR72,
-					aeroDatabaseReader,
-					highLiftDatabaseReader,
-			        fusDesDatabaseReader,
-					veDSCDatabaseReader
-					)
-					.build();
-
-			AircraftSaveDirectives asd = new AircraftSaveDirectives
-					.Builder("_ATR72")
-					.addAllWingAirfoilFileNames(
-							theAircraft.getWing().getAirfoilList().stream()
-									.map(a -> a.getAirfoilCreator().getName() + "_ATR72.xml")
-									.collect(Collectors.toList())
-						)
-					.addAllHTailAirfoilFileNames(
-							theAircraft.getHTail().getAirfoilList().stream()
-									.map(a -> a.getAirfoilCreator().getName() + "_ATR72.xml")
-									.collect(Collectors.toList())
-						)
-					.addAllVTailAirfoilFileNames(
-							theAircraft.getVTail().getAirfoilList().stream()
-									.map(a -> a.getAirfoilCreator().getName() + "_ATR72.xml")
-									.collect(Collectors.toList())
-						)
-					.build();
-			
-			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, MyConfiguration.getDir(FoldersEnum.INPUT_DIR), "aircraft_ATR72", asd);
-			
-			// reading aircraft from xml ... 
-//			theAircraft = Aircraft.importFromXML(
-//					pathToXML,
-//					dirLiftingSurfaces,
-//					dirFuselages,
-//					dirEngines,
-//					dirNacelles,
-//					dirLandingGears,
-//					dirSystems,
-//					dirCabinConfiguration,
-//					dirAirfoil,
+//			theAircraft = new Aircraft.AircraftBuilder(
+//					"ATR-72",
+//					AircraftEnum.ATR72,
 //					aeroDatabaseReader,
 //					highLiftDatabaseReader,
-//					fusDesDatabaseReader,
-//					veDSCDatabaseReader);
+//			        fusDesDatabaseReader,
+//					veDSCDatabaseReader
+//					)
+//					.build();
+
+//			AircraftSaveDirectives asd = new AircraftSaveDirectives
+//					.Builder("_ATR72")
+//					.addAllWingAirfoilFileNames(
+//							theAircraft.getWing().getAirfoilList().stream()
+//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
+//									.collect(Collectors.toList())
+//						)
+//					.addAllHTailAirfoilFileNames(
+//							theAircraft.getHTail().getAirfoilList().stream()
+//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
+//									.collect(Collectors.toList())
+//						)
+//					.addAllVTailAirfoilFileNames(
+//							theAircraft.getVTail().getAirfoilList().stream()
+//									.map(a -> a.getAirfoilCreator().getName() + ".xml")
+//									.collect(Collectors.toList())
+//						)
+//					.build();
+//			
+//			JPADStaticWriteUtils.saveAircraftToXML(theAircraft, MyConfiguration.getDir(FoldersEnum.INPUT_DIR), "aircraft_ATR72", asd);
+			
+			// reading aircraft from xml ... 
+			theAircraft = Aircraft.importFromXML(
+					pathToXML,
+					dirLiftingSurfaces,
+					dirFuselages,
+					dirEngines,
+					dirNacelles,
+					dirLandingGears,
+					dirSystems,
+					dirCabinConfiguration,
+					dirAirfoil,
+					aeroDatabaseReader,
+					highLiftDatabaseReader,
+					fusDesDatabaseReader,
+					veDSCDatabaseReader);
 			
 			// activating system.out
 			System.setOut(originalOut);			
@@ -342,24 +337,24 @@ public class CompleteAnalysisTest extends Application {
 			System.out.println(theOperatingConditions.toString());
 			System.setOut(filterStream);
 			
-//			////////////////////////////////////////////////////////////////////////
-//			// Analyzing the aircraft
-//			System.setOut(originalOut);
-//			System.out.println("\n\n\tRunning requested analyses ... \n\n");
-//			System.setOut(filterStream);
-//			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
-//			System.setOut(originalOut);
-//			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
-//			System.setOut(originalOut);
-//			System.out.println("\n\n\tDone!! \n\n");
-//			System.setOut(filterStream);
-//			
-//			////////////////////////////////////////////////////////////////////////
-//			// Printing results (activating system.out)
-//			System.setOut(originalOut);
-//			System.out.println("\n\n\tPrinting results ... \n\n");
-//			System.out.println(theAircraft.getTheAnalysisManager().toString());
-//			System.out.println("\n\n\tDone!! \n\n");
+			////////////////////////////////////////////////////////////////////////
+			// Analyzing the aircraft
+			System.setOut(originalOut);
+			System.out.println("\n\n\tRunning requested analyses ... \n\n");
+			System.setOut(filterStream);
+			theAircraft.setTheAnalysisManager(ACAnalysisManager.importFromXML(pathToAnalysesXML, theAircraft, theOperatingConditions));
+			System.setOut(originalOut);
+			theAircraft.getTheAnalysisManager().doAnalysis(theAircraft, theOperatingConditions, subfolderPath);
+			System.setOut(originalOut);
+			System.out.println("\n\n\tDone!! \n\n");
+			System.setOut(filterStream);
+			
+			////////////////////////////////////////////////////////////////////////
+			// Printing results (activating system.out)
+			System.setOut(originalOut);
+			System.out.println("\n\n\tPrinting results ... \n\n");
+			System.out.println(theAircraft.getTheAnalysisManager().toString());
+			System.out.println("\n\n\tDone!! \n\n");
 			
 			long estimatedTime = System.currentTimeMillis() - startTime;
 			System.out.println("\n\n\t TIME ESTIMATED = " + (estimatedTime/1000) + " seconds");

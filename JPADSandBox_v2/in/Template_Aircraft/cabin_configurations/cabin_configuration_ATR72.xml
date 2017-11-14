@@ -11,8 +11,6 @@
          <x_coordinates_first_row unit="m">6.1600</x_coordinates_first_row>
          <missing_seat_row>
             <value>[0,0]</value>
-            <value>[0,0]</value>
-            <value>[0,0]</value>
          </missing_seat_row>
       </global_data>
       <detailed_data>

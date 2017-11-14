@@ -46,6 +46,7 @@ public class Engine implements IEngine {
 	private Double _bpr;
 	private Amount<Power> _p0;
 	private Amount<Force> _t0;
+	private Boolean _calculateDryMass;
 	private Amount<Mass> _dryMassPublicDomain; 
 	private Amount<Mass> _totalMass; // 1.5*dryMass (ref: Aircraft design - Kundu (pag.245) 
 
@@ -77,6 +78,7 @@ public class Engine implements IEngine {
 		private Double __bpr = 0.0;
 		private Amount<Power> __p0 = Amount.valueOf(0.0, SI.WATT);
 		private Amount<Force> __t0 = Amount.valueOf(0.0, SI.NEWTON);
+		private Boolean __calculateDryMass;
 		private Amount<Mass> __dryMassPublicDomain = Amount.valueOf(0.0, SI.KILOGRAM); 
 		private int __numberOfCompressorStages = 0;
 		private int __numberOfShafts = 0; 
@@ -104,6 +106,11 @@ public class Engine implements IEngine {
 		
 		public EngineBuilder dryMass (Amount<Mass> dryMass) {
 			this.__dryMassPublicDomain = dryMass;
+			return this;
+		}
+		
+		public EngineBuilder calculateDryMass (Boolean calculateDryMass) {
+			this.__calculateDryMass = calculateDryMass;
 			return this;
 		}
 		
@@ -207,6 +214,7 @@ public class Engine implements IEngine {
 				__numberOfBlades = 6;
 				__etaPropeller = 0.8;
 				__dryMassPublicDomain = Amount.valueOf(1064., NonSI.POUND).to(SI.KILOGRAM);
+				__calculateDryMass = Boolean.FALSE;
 				__p0 = Amount.valueOf(2750., NonSI.HORSEPOWER).to(SI.WATT);
 				__numberOfCompressorStages = 5;
 				__numberOfShafts = 2;
@@ -221,6 +229,7 @@ public class Engine implements IEngine {
 				__length = Amount.valueOf(3.26, SI.METER);
 				__bpr = 5.0;
 				__dryMassPublicDomain = Amount.valueOf(3905.0, NonSI.POUND).to(SI.KILOGRAM);
+				__calculateDryMass = Boolean.FALSE;
 				__t0 = Amount.valueOf(204000.0000, SI.NEWTON);
 				__numberOfCompressorStages = 14;
 				__numberOfShafts = 2;
@@ -235,6 +244,7 @@ public class Engine implements IEngine {
 				__length = Amount.valueOf(2.739, SI.METER);
 				__bpr = 6.0;	
 				__dryMassPublicDomain = Amount.valueOf(1162.6, NonSI.POUND).to(SI.KILOGRAM);
+				__calculateDryMass = Boolean.FALSE;
 				__t0 = Amount.valueOf(7000*AtmosphereCalc.g0.getEstimatedValue(), SI.NEWTON);
 				__numberOfCompressorStages = 5; // TODO: CHECK
 				__numberOfShafts = 2;// TODO: CHECK
@@ -261,6 +271,7 @@ public class Engine implements IEngine {
 		this._bpr = builder.__bpr;
 		this._p0 = builder.__p0;
 		this._t0 = builder.__t0;
+		this._calculateDryMass = builder.__calculateDryMass;
 		this._dryMassPublicDomain = builder.__dryMassPublicDomain;
 		this._numberOfCompressorStages = builder.__numberOfCompressorStages;
 		this._numberOfShafts = builder.__numberOfShafts;
@@ -341,12 +352,15 @@ public class Engine implements IEngine {
 			//..............................................................................
 			// DRY MASS
 			Amount<Mass> dryMass = null;
+			Boolean calculateDryMass = Boolean.FALSE;
 			String calculateDryMassString = MyXMLReaderUtils
 					.getXMLPropertyByPath(
 							reader.getXmlDoc(), reader.getXpath(),
 							"//specifications/dry_mass/@calculate");
 			
 			if(calculateDryMassString.equalsIgnoreCase("TRUE")){
+				
+				calculateDryMass = Boolean.TRUE;
 				
 				if(staticThrust.doubleValue(NonSI.POUND_FORCE) < 10000)
 					dryMass = Amount.valueOf(
@@ -417,6 +431,7 @@ public class Engine implements IEngine {
 					.engineDatabaseName(engineDatabaseName)
 					.t0(staticThrust)
 					.bpr(bpr)
+					.calculateDryMass(calculateDryMass)
 					.dryMass(dryMass)
 					.numberOfCompressorStages(numberOfCompressorStages)
 					.numberOfShafts(numberOfShafts)
@@ -954,6 +969,14 @@ public class Engine implements IEngine {
 	@Override
 	public void setEngineDatabaseName(String _engineDatabaseName) {
 		this._engineDatabaseName = _engineDatabaseName;
+	}
+
+	public Boolean getCalculateDryMass() {
+		return _calculateDryMass;
+	}
+
+	public void setCalculateDryMass(Boolean _calculateDryMass) {
+		this._calculateDryMass = _calculateDryMass;
 	}
 
 }

@@ -1272,10 +1272,22 @@ public class MomentCalc {
 		}
 
 		for(int i=0; i<xiAfterWing.length; i++) 
-				dEpsilonDAlphaAfterWing[i] = (
-						(xiAfterWing[i]/wingTrailingEdgeToHTailQuarterChordDistance.doubleValue(SI.METER))
-						*(1-downwashGradientRoskamConstant)
-						);
+//				dEpsilonDAlphaAfterWing[i] = (
+//						(xiAfterWing[i]/wingTrailingEdgeToHTailQuarterChordDistance.doubleValue(SI.METER))
+//						*(1-downwashGradientRoskamConstant)
+//						);
+			dEpsilonDAlphaAfterWing[i] = (
+					(xiAfterWing[i]/(
+							length.doubleValue(SI.METER)
+							-(wingRootChord.doubleValue(SI.METER) + wingXApex.doubleValue(SI.METER))
+							))
+					*(1-downwashGradientRoskamConstant)
+					);
+		
+		/* 
+		 * TODO: CHECK IF THE REFERENCE DISTANCE FOR THE AFT TRUNK IS wingTrailingEdgeToHTailQuarterChordDistance
+		 *       OR length-(wingRoot+wingApex) 
+		 */
 		
 		//-----------------------------------------------------------------
 		// SUM

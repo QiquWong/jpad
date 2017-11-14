@@ -49,6 +49,10 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private Double _xTransitionUpper;
 	private Double _xTransitionLower;
 
+	private Boolean _clCurveFromFile;
+	private Boolean _cdCurveFromFile;
+	private Boolean _cmCurveFromFile;
+	
 	private List<Double> _clCurve;
 	private List<Double> _cdCurve;
 	private List<Double> _cmCurve;
@@ -59,250 +63,6 @@ public class AirfoilCreator implements IAirfoilCreator {
 	private List<PVector> _coordinatesRight = new ArrayList<PVector>();
 	private List<PVector> _coordinatesLeft = new ArrayList<PVector>();
 	
-	/**
-	 * @return the _name
-	 */
-	public String getName() {
-		return _name;
-	}
-
-	/**
-	 * @param _name the _name to set
-	 */
-	public void setName(String _name) {
-		this._name = _name;
-	}
-
-	@Override
-	public AirfoilTypeEnum getType() {
-		return _type;
-	}
-
-	@Override
-	public void setType(AirfoilTypeEnum type) {
-		_type = type;
-	}
-
-	@Override
-	public AirfoilFamilyEnum getFamily() {
-		return _family;
-	}
-
-	@Override
-	public void setFamily(AirfoilFamilyEnum fam) {
-		_family = fam;
-	}
-
-	@Override
-	public Double getThicknessToChordRatio() {
-		return _thicknessToChordRatio;
-	}
-
-	@Override
-	public void setThicknessToChordRatio(Double tOverC) {
-		_thicknessToChordRatio = tOverC;
-	}
-
-	@Override
-	public Amount<Length> getRadiusLeadingEdge() {
-		return _radiusLeadingEdge;
-	}
-
-	@Override
-	public void setRadiusLeadingEdge(Amount<Length> rLEOverC) {
-		_radiusLeadingEdge = rLEOverC;
-	}
-
-	@Override
-	public Double[] getXCoords() {
-		return _xCoords;
-	}
-
-	@Override
-	public void setXCoords(Double[] xCoords) {
-		this._xCoords = xCoords;
-	}
-	
-	@Override
-	public Double[] getZCoords() {
-		return _zCoords;
-	}
-
-	@Override
-	public void setZCoords(Double[] zCoords) {
-		this._zCoords = zCoords;
-	}
-	
-	@Override
-	public Amount<Angle> getAlphaZeroLift() {
-		return _alphaZeroLift;
-	}
-
-	@Override
-	public void setAlphaZeroLift(Amount<Angle> alpha0l) {
-		_alphaZeroLift = alpha0l;
-	}
-
-	@Override
-	public Amount<Angle> getAlphaEndLinearTrait() {
-		return _alphaEndLinearTrait;
-	}
-
-	@Override
-	public void setAlphaLinearTrait(Amount<Angle> alphaStar) {
-		_alphaEndLinearTrait = alphaStar;
-	}
-
-	@Override
-	public Amount<Angle> getAlphaStall() {
-		return _alphaStall;
-	}
-
-	@Override
-	public void setAlphaStall(Amount<Angle> alphaStall) {
-		_alphaStall = alphaStall;
-	}
-
-	@Override
-	public Amount<?> getClAlphaLinearTrait() {
-		return _clAlphaLinearTrait;
-	}
-
-	@Override
-	public void setClAlphaLinearTrait(Amount<?> clApha) {
-		_clAlphaLinearTrait = clApha;
-	}
-
-	@Override
-	public Double getCdMin() {
-		return _cdMin;
-	}
-
-	@Override
-	public void setCdMin(Double cdMin) {
-		_cdMin = cdMin;
-	}
-
-	@Override
-	public Double getClAtCdMin() {
-		return _clAtCdMin;
-	}
-
-	@Override
-	public void setClAtCdMin(Double clAtCdMin) {
-		_clAtCdMin = clAtCdMin;
-	}
-
-	@Override
-	public Double getClAtAlphaZero() {
-		return _clAtAlphaZero;
-	}
-
-	@Override
-	public void setClAtAlphaZero(Double clAtAlphaZero) {
-		_clAtAlphaZero = clAtAlphaZero;
-	}
-
-	@Override
-	public Double getClEndLinearTrait() {
-		return _clEndLinearTrait;
-	}
-
-	@Override
-	public void setClEndLinearTrait(Double clEndLinearTrait) {
-		_clEndLinearTrait = clEndLinearTrait;
-	}
-
-	@Override
-	public Double getClMax() {
-		return _clMax;
-	}
-
-	@Override
-	public void setClMax(Double clMax) {
-		_clMax = clMax;
-	}
-
-	@Override
-	public Double getKFactorDragPolar() {
-		return _kFactorDragPolar;
-	}
-
-	@Override
-	public void setKFactorDragPolar(Double kFactorDragPolar) {
-		_kFactorDragPolar = kFactorDragPolar;
-	}
-
-	@Override
-	public Amount<?> getCmAlphaQuarterChord() {
-		return _cmAlphaQuarterChord;
-	}
-
-	@Override
-	public void setCmAlphaQuarterChord(Amount<?> cmAlphaQuarterChord) {
-		_cmAlphaQuarterChord = cmAlphaQuarterChord;
-	}
-
-	@Override
-	public Double getXACNormalized() {
-		return _xACNormalized;
-	}
-
-	@Override
-	public void setXACNormalized(Double xACAdimensional) {
-		_xACNormalized = xACAdimensional;
-	}
-
-	@Override
-	public Double getCmAC() {
-		return _cmAC;
-	}
-
-	@Override
-	public void setCmAC(Double cmAC) {
-		_cmAC = cmAC;
-	}
-
-	@Override
-	public Double getCmACAtStall() {
-		return _cmACAtStall;
-	}
-
-	@Override
-	public void setCmACAtStall(Double cmACAtStall) {
-		_cmACAtStall = cmACAtStall;
-	}
-
-	@Override
-	public Double getMachCritical() {
-		return _machCritical;
-	}
-
-	@Override
-	public void setMachCritical(Double machCritical) {
-		_machCritical = machCritical;
-	}
-
-	@Override
-	public Double getXTransitionUpper() {
-		return _xTransitionUpper;
-	}
-
-	@Override
-	public void setXTransitionUpper(Double _xTransitionUpper) {
-		this._xTransitionUpper = _xTransitionUpper;
-	}
-
-	@Override
-	public Double getXTransitionLower() {
-		return _xTransitionLower;
-	}
-
-	@Override
-	public void setXTransitionLower(Double _xTransitionLower) {
-		this._xTransitionLower = _xTransitionLower;
-	}
-
 	public static class AirfoilBuilder {
 
 		// required parameters
@@ -335,6 +95,10 @@ public class AirfoilCreator implements IAirfoilCreator {
 		private Double __machCritical;
 		private Double __xTransitionUpper;
 		private Double __xTransitionLower;
+		
+		private Boolean __clCurveFromFile;
+		private Boolean __cdCurveFromFile;
+		private Boolean __cmCurveFromFile;
 		
 		private List<Double> __clCurve = new ArrayList<>();
 		private List<Double> __cdCurve = new ArrayList<>();
@@ -489,6 +253,21 @@ public class AirfoilCreator implements IAirfoilCreator {
 			return this;
 		}
 		
+		public AirfoilBuilder clCurveFromFile(Boolean clCurveFromFile) {
+			__clCurveFromFile = clCurveFromFile;
+			return this;
+		}
+		
+		public AirfoilBuilder cdCurveFromFile(Boolean cdCurveFromFile) {
+			__cdCurveFromFile = cdCurveFromFile;
+			return this;
+		}
+		
+		public AirfoilBuilder cmCurveFromFile(Boolean cmCurveFromFile) {
+			__cmCurveFromFile = cmCurveFromFile;
+			return this;
+		}
+		
 		public AirfoilBuilder alphaForClCurve(List<Amount<Angle>> alphaForClCurve) {
 			__alphaForClCurve = alphaForClCurve;
 			return this;
@@ -536,6 +315,10 @@ public class AirfoilCreator implements IAirfoilCreator {
 		_machCritical = builder.__machCritical;
 		_xTransitionUpper = builder.__xTransitionUpper;
 		_xTransitionLower = builder.__xTransitionLower;
+		
+		_clCurveFromFile = builder.__clCurveFromFile;
+		_cdCurveFromFile = builder.__cdCurveFromFile;
+		_cmCurveFromFile = builder.__cmCurveFromFile;
 		
 		_clCurve = builder.__clCurve;
 		_cdCurve = builder.__cdCurve;
@@ -814,6 +597,9 @@ public class AirfoilCreator implements IAirfoilCreator {
 				.machCritical(machCritical)
 				.xTransitionUpper(xTransitionUpper)
 				.xTransitionLower(xTransitionLower)
+				.clCurveFromFile(externalClCurveFlag)
+				.cdCurveFromFile(externalCdCurveFlag)
+				.cmCurveFromFile(externalCmCurveFlag)
 				.clCurve(clCurve)
 				.cdCurve(cdCurve)
 				.cmCurve(cmCurve)
@@ -941,5 +727,273 @@ public class AirfoilCreator implements IAirfoilCreator {
 
 	public void setClForCmCurve(List<Double> _clForCmCurve) {
 		this._clForCmCurve = _clForCmCurve;
+	}
+
+	public Boolean getClCurveFromFile() {
+		return _clCurveFromFile;
+	}
+
+	public void setClCurveFromFile(Boolean _clCurveFromFile) {
+		this._clCurveFromFile = _clCurveFromFile;
+	}
+
+	public Boolean getCdCurveFromFile() {
+		return _cdCurveFromFile;
+	}
+
+	public void setCdCurveFromFile(Boolean _cdCurveFromFile) {
+		this._cdCurveFromFile = _cdCurveFromFile;
+	}
+
+	public Boolean getCmCurveFromFile() {
+		return _cmCurveFromFile;
+	}
+
+	public void setCmCurveFromFile(Boolean _cmCurveFromFile) {
+		this._cmCurveFromFile = _cmCurveFromFile;
+	}
+	
+	/**
+	 * @return the _name
+	 */
+	public String getName() {
+		return _name;
+	}
+
+	/**
+	 * @param _name the _name to set
+	 */
+	public void setName(String _name) {
+		this._name = _name;
+	}
+
+	@Override
+	public AirfoilTypeEnum getType() {
+		return _type;
+	}
+
+	@Override
+	public void setType(AirfoilTypeEnum type) {
+		_type = type;
+	}
+
+	@Override
+	public AirfoilFamilyEnum getFamily() {
+		return _family;
+	}
+
+	@Override
+	public void setFamily(AirfoilFamilyEnum fam) {
+		_family = fam;
+	}
+
+	@Override
+	public Double getThicknessToChordRatio() {
+		return _thicknessToChordRatio;
+	}
+
+	@Override
+	public void setThicknessToChordRatio(Double tOverC) {
+		_thicknessToChordRatio = tOverC;
+	}
+
+	@Override
+	public Amount<Length> getRadiusLeadingEdge() {
+		return _radiusLeadingEdge;
+	}
+
+	@Override
+	public void setRadiusLeadingEdge(Amount<Length> rLEOverC) {
+		_radiusLeadingEdge = rLEOverC;
+	}
+
+	@Override
+	public Double[] getXCoords() {
+		return _xCoords;
+	}
+
+	@Override
+	public void setXCoords(Double[] xCoords) {
+		this._xCoords = xCoords;
+	}
+	
+	@Override
+	public Double[] getZCoords() {
+		return _zCoords;
+	}
+
+	@Override
+	public void setZCoords(Double[] zCoords) {
+		this._zCoords = zCoords;
+	}
+	
+	@Override
+	public Amount<Angle> getAlphaZeroLift() {
+		return _alphaZeroLift;
+	}
+
+	@Override
+	public void setAlphaZeroLift(Amount<Angle> alpha0l) {
+		_alphaZeroLift = alpha0l;
+	}
+
+	@Override
+	public Amount<Angle> getAlphaEndLinearTrait() {
+		return _alphaEndLinearTrait;
+	}
+
+	@Override
+	public void setAlphaLinearTrait(Amount<Angle> alphaStar) {
+		_alphaEndLinearTrait = alphaStar;
+	}
+
+	@Override
+	public Amount<Angle> getAlphaStall() {
+		return _alphaStall;
+	}
+
+	@Override
+	public void setAlphaStall(Amount<Angle> alphaStall) {
+		_alphaStall = alphaStall;
+	}
+
+	@Override
+	public Amount<?> getClAlphaLinearTrait() {
+		return _clAlphaLinearTrait;
+	}
+
+	@Override
+	public void setClAlphaLinearTrait(Amount<?> clApha) {
+		_clAlphaLinearTrait = clApha;
+	}
+
+	@Override
+	public Double getCdMin() {
+		return _cdMin;
+	}
+
+	@Override
+	public void setCdMin(Double cdMin) {
+		_cdMin = cdMin;
+	}
+
+	@Override
+	public Double getClAtCdMin() {
+		return _clAtCdMin;
+	}
+
+	@Override
+	public void setClAtCdMin(Double clAtCdMin) {
+		_clAtCdMin = clAtCdMin;
+	}
+
+	@Override
+	public Double getClAtAlphaZero() {
+		return _clAtAlphaZero;
+	}
+
+	@Override
+	public void setClAtAlphaZero(Double clAtAlphaZero) {
+		_clAtAlphaZero = clAtAlphaZero;
+	}
+
+	@Override
+	public Double getClEndLinearTrait() {
+		return _clEndLinearTrait;
+	}
+
+	@Override
+	public void setClEndLinearTrait(Double clEndLinearTrait) {
+		_clEndLinearTrait = clEndLinearTrait;
+	}
+
+	@Override
+	public Double getClMax() {
+		return _clMax;
+	}
+
+	@Override
+	public void setClMax(Double clMax) {
+		_clMax = clMax;
+	}
+
+	@Override
+	public Double getKFactorDragPolar() {
+		return _kFactorDragPolar;
+	}
+
+	@Override
+	public void setKFactorDragPolar(Double kFactorDragPolar) {
+		_kFactorDragPolar = kFactorDragPolar;
+	}
+
+	@Override
+	public Amount<?> getCmAlphaQuarterChord() {
+		return _cmAlphaQuarterChord;
+	}
+
+	@Override
+	public void setCmAlphaQuarterChord(Amount<?> cmAlphaQuarterChord) {
+		_cmAlphaQuarterChord = cmAlphaQuarterChord;
+	}
+
+	@Override
+	public Double getXACNormalized() {
+		return _xACNormalized;
+	}
+
+	@Override
+	public void setXACNormalized(Double xACAdimensional) {
+		_xACNormalized = xACAdimensional;
+	}
+
+	@Override
+	public Double getCmAC() {
+		return _cmAC;
+	}
+
+	@Override
+	public void setCmAC(Double cmAC) {
+		_cmAC = cmAC;
+	}
+
+	@Override
+	public Double getCmACAtStall() {
+		return _cmACAtStall;
+	}
+
+	@Override
+	public void setCmACAtStall(Double cmACAtStall) {
+		_cmACAtStall = cmACAtStall;
+	}
+
+	@Override
+	public Double getMachCritical() {
+		return _machCritical;
+	}
+
+	@Override
+	public void setMachCritical(Double machCritical) {
+		_machCritical = machCritical;
+	}
+
+	@Override
+	public Double getXTransitionUpper() {
+		return _xTransitionUpper;
+	}
+
+	@Override
+	public void setXTransitionUpper(Double _xTransitionUpper) {
+		this._xTransitionUpper = _xTransitionUpper;
+	}
+
+	@Override
+	public Double getXTransitionLower() {
+		return _xTransitionLower;
+	}
+
+	@Override
+	public void setXTransitionLower(Double _xTransitionLower) {
+		this._xTransitionLower = _xTransitionLower;
 	}
 }
