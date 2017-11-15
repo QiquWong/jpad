@@ -249,7 +249,7 @@ public class AircraftWriterTest {
 			AircraftSaveDirectives asd = new AircraftSaveDirectives
 					.Builder("_1")
 					.setAircraftFileName("aircraft_1a.xml")
-					.addAllAirfoilFileNames(
+					.addAllWingAirfoilFileNames(
 						theAircraft.getWing().getAirfoilList().stream()
 								.map(a -> a.getAirfoilCreator().getName() + ".xml")
 								.collect(Collectors.toList())

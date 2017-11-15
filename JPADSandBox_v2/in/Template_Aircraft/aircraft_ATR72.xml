@@ -77,24 +77,20 @@
             <mounting_point>WING</mounting_point>
          </nacelle>
       </nacelles>
-      <landing_gears>
-         <nacelle file="landing_gear_ATR72.xml">
-            <position>
-               <x unit="m">12.5000</x>
-               <y unit="m">0.0000</y>
-               <z unit="m">-1.2000</z>
-            </position>
-            <mounting_point>FUSELAGE</mounting_point>
-         </nacelle>
+      <landing_gears file="landing_gear_ATR72.xml">
+         <position>
+            <x unit="m">12.5000</x>
+            <y unit="m">0.0000</y>
+            <z unit="m">-1.2000</z>
+         </position>
+         <mounting_point>FUSELAGE</mounting_point>
       </landing_gears>
-      <systems>
-         <nacelle file="system_ATR72.xml">
-            <position>
-               <x unit="m">0.0000</x>
-               <y unit="m">0.0000</y>
-               <z unit="m">0.0000</z>
-            </position>
-         </nacelle>
+      <systems file="system_ATR72.xml">
+         <position>
+            <x unit="m">0.0000</x>
+            <y unit="m">0.0000</y>
+            <z unit="m">0.0000</z>
+         </position>
       </systems>
    </aircraft>
 </jpad_config>

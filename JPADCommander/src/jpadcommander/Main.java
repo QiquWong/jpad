@@ -19,16 +19,22 @@ import org.controlsfx.control.StatusBar;
 
 import aircraft.components.Aircraft;
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -44,12 +50,7 @@ public class Main extends Application {
 	private static Stage primaryStage;
 	private static BorderPane mainLayout;
 	private static BorderPane mainInputManagerLayout;
-	private static BorderPane mainInputManagerAircraftSubContentLayout;
-	private static BorderPane mainInputManagerAircraftSubContentFieldsLayout;
-	private static BorderPane mainInputManagerAircraftFromFileLayout;
 	private static ToolBar mainInputManagerAircraftFromFileToolbarLayout;
-	private static BorderPane mainInputManagerAircraftDefaultLayout;
-	private static ToolBar mainInputManagerAircraftDefaultToolbarLayout;
 	private static ToolBar actionButtonsToolbar;
 	//...........................................................................................
 	// FOLDER CONFIGURATION FIELDS:
@@ -70,15 +71,17 @@ public class Main extends Application {
 	private static Button saveAircraftButton;
 	private static Button newAircraftButton;
 	//...........................................................................................
+	// AIRCRAFT FROM FILE TOOLBAR
+	private static TextField textFieldAircraftInputFile;
+	private static Button loadButtonFromFile;
+	
+	//...........................................................................................
 	// AIRCRAFT OBJECT
 	private static Aircraft theAircraft;
 	//...........................................................................................
 	// AIRCRAFT TAB (INPUT):
 	private static Boolean isAircraftFormFile;
 	private static TextArea textAreaAircraftConsoleOutput;
-	private static TextField textFieldAircraftInputFile;
-	private static Button loadButtonFromFile;
-	private static Button loadButtonDefaultAircraft;
 	private static ChoiceBox<String> defaultAircraftChoiseBox;
 	private static ChoiceBox<String> choiceBoxAircraftType;
 	private static ChoiceBox<String> choiceBoxRegulationsType;
@@ -309,23 +312,105 @@ public class Main extends Application {
 					(ToolBar) Main.getMainInputManagerLayout()
 					.lookup("#actionButtonsToolbar")
 					);
+			Main.setNewAircraftButton(
+					(Button) Main.getActionButtonsToolbar().getItems().get(0)
+					);
 			Main.setSetDataButton(
-					(Button) Main.getMainInputManagerLayout()
-					.lookup("#setDataButton")
+					(Button) Main.getActionButtonsToolbar().getItems().get(2)
 					);
 			Main.setUpdateAllButton(
-					(Button) Main.getMainInputManagerLayout()
-					.lookup("#updateAllButton")
+					(Button) Main.getActionButtonsToolbar().getItems().get(3)
 					);
 			Main.setSaveAircraftButton(
-					(Button) Main.getMainInputManagerLayout()
-					.lookup("#saveAircraftButton")
+					(Button) Main.getActionButtonsToolbar().getItems().get(4)
 					);
-			Main.setNewAircraftButton(
-					(Button) Main.getMainInputManagerLayout()
-					.lookup("#newAircraftButton")
+	
+			// get the load from file toolbar
+			Main.setMainInputManagerAircraftFromFileToolbarLayout(
+					(ToolBar) Main.getMainInputManagerLayout()
+					.lookup("#loadAircraftFromFileToolbar")
+					);
+			Main.setTextFieldAircraftInputFile(
+					(TextField) Main.getMainInputManagerAircraftFromFileToolbarLayout()
+					.getItems().get(1)
+					);
+			Main.setLoadButtonFromFile(
+					(Button) Main.getMainInputManagerAircraftFromFileToolbarLayout()
+					.getItems().get(3)
+					);
+			//.......................................................................................
+			// AIRCRAFT TAB FILEDS CAPTURE
+			//.......................................................................................
+			// get the pane of the front view
+			TabPane inputTabpane = (TabPane) Main.getMainInputManagerLayout().getCenter();
+			
+			Main.setAircraftFrontViewPane(
+					(Pane) inputTabpane.getTabs().get(0).getContent().lookup("#FrontViewPane")
+					);
+			
+			// get the pane of the side view
+			Main.setAircraftSideViewPane(
+					(Pane) Main.getMainInputManagerLayout().lookupAll("#SideViewPane")
+					);
+			
+			// get the pane of the top view
+			Main.setAircraftTopViewPane(
+					(Pane) Main.getMainInputManagerLayout().lookupAll("#TopViewPane")
+					);
+			
+			// CHECK IF THE TEXT FIELD IS NOT EMPTY
+			Main.getLoadButtonFromFile().disableProperty().bind(
+					Bindings.isEmpty(Main.getTextFieldAircraftInputFile().textProperty())
+					);
+			
+			// CHECK IF THE FILE IN TEXTFIELD IS AN AIRCRAFT
+	        final Tooltip warning = new Tooltip("WARNING : The selected file is not an aircraft !!");
+	        Main.getLoadButtonFromFile().setOnMouseEntered(new EventHandler<MouseEvent>() {
+	        	
+	        	@Override
+	        	public void handle(MouseEvent event) {
+	        		Point2D p = Main.getLoadButtonFromFile()
+	        				.localToScreen(
+	        						-2.5*Main.getLoadButtonFromFile().getLayoutBounds().getMaxX(),
+	        						1.2*Main.getLoadButtonFromFile().getLayoutBounds().getMaxY()
+	        						);
+	        		if(!Main.isAircraftFile(Main.getTextFieldAircraftInputFile().getText())
+	        				) {
+	        			warning.show(Main.getLoadButtonFromFile(), p.getX(), p.getY());
+	        		}
+	        	}
+	        });
+	        Main.getLoadButtonFromFile().setOnMouseExited(new EventHandler<MouseEvent>() {
+	        	
+	        	@Override
+	        	public void handle(MouseEvent event) {
+	        		warning.hide();
+	        	}
+	        });
+	 
+			//.......................................................................................
+			// FUSELAGE TAB
+			//.......................................................................................
+
+	        // get the pane of the front view
+			Main.setFuselageFrontViewPane(
+					(Pane) Main.getMainInputManagerLayout().lookupAll("#fuselageFrontViewPane")
+					);
+			
+			// get the pane of the side view
+			Main.setFuselageSideViewPane(
+					(Pane) Main.getMainInputManagerLayout().lookupAll("#fuselageSideViewPane")
+					);
+			
+			// get the pane of the top view
+			Main.setFuselageTopViewPane(
+					(Pane) Main.getMainInputManagerLayout().lookupAll("#fuselageTopViewPane")
 					);
 		}
+		
+		Main.setIsAircraftFormFile(Boolean.TRUE);
+		Main.getProgressBar().setProgress(0.0);
+		Main.getStatusBar().setText("Ready!");
 		
 		mainInputManagerLayout.setTop(actionButtonsToolbar);
 		mainLayout.setCenter(mainInputManagerLayout);
@@ -336,31 +421,6 @@ public class Main extends Application {
 		
 	}
 
-	public static void showInputManagerAircraftFromFile() throws IOException {
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftFromFile.fxml"));
-		mainInputManagerAircraftFromFileLayout = loader.load();
-
-		Main.setMainInputManagerAircraftFromFileToolbarLayout(
-				(ToolBar) Main.getMainInputManagerAircraftFromFileLayout().lookup("#ImportAircraftFromFileToolbar")
-				);
-		mainInputManagerAircraftSubContentFieldsLayout.setTop(mainInputManagerAircraftFromFileToolbarLayout);
-		
-		primaryStage.show();
-	}
-
-	public static void showInputManagerAircraftDefault() throws IOException {
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("inputmanager/InputManagerAircraftDefault.fxml"));
-		mainInputManagerAircraftDefaultLayout = loader.load();
-		Main.setMainInputManagerAircraftDefaultToolbarLayout(
-				(ToolBar) Main.getMainInputManagerAircraftDefaultLayout().lookup("#ImportAircraftDefaultToolbar")
-				);
-		mainInputManagerAircraftSubContentFieldsLayout.setTop(mainInputManagerAircraftDefaultToolbarLayout);
-		primaryStage.show();
-		
-	}
-	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -371,14 +431,6 @@ public class Main extends Application {
 		return textFieldAircraftInputFile;
 	}
 
-	public static BorderPane getMainInputManagerAircraftFromFileLayout() {
-		return mainInputManagerAircraftFromFileLayout;
-	}
-
-	public static BorderPane getMainInputManagerAircraftDefaultLayout() {
-		return mainInputManagerAircraftDefaultLayout;
-	}
-	
 	public static void setTextFieldAircraftInputFile(TextField textFieldAircraftInputFile) {
 		Main.textFieldAircraftInputFile = textFieldAircraftInputFile;
 	}
@@ -389,14 +441,6 @@ public class Main extends Application {
 
 	public static void setMainInputManagerLayout(BorderPane mainInputManagerLayout) {
 		Main.mainInputManagerLayout = mainInputManagerLayout;
-	}
-
-	public static BorderPane getMainInputManagerAircraftSubContentLayout() {
-		return mainInputManagerAircraftSubContentLayout;
-	}
-
-	public static void setMainInputManagerAircraftSubContentLayout(BorderPane mainInputManagerAircraftSubContentLayout) {
-		Main.mainInputManagerAircraftSubContentLayout = mainInputManagerAircraftSubContentLayout;
 	}
 
 	public static Stage getPrimaryStage() {
@@ -812,15 +856,6 @@ public class Main extends Application {
 		Main.statusBar = statusBar;
 	}
 
-	public static BorderPane getMainInputManagerAircraftSubContentFieldsLayout() {
-		return mainInputManagerAircraftSubContentFieldsLayout;
-	}
-
-	public static void setMainInputManagerAircraftSubContentFieldsLayout(
-			BorderPane mainInputManagerAircraftSubContentFieldsLayout) {
-		Main.mainInputManagerAircraftSubContentFieldsLayout = mainInputManagerAircraftSubContentFieldsLayout;
-	}
-
 	public static ToolBar getMainInputManagerAircraftFromFileToolbarLayout() {
 		return mainInputManagerAircraftFromFileToolbarLayout;
 	}
@@ -828,15 +863,6 @@ public class Main extends Application {
 	public static void setMainInputManagerAircraftFromFileToolbarLayout(
 			ToolBar mainInputManagerAircraftFromFileToolbarLayout) {
 		Main.mainInputManagerAircraftFromFileToolbarLayout = mainInputManagerAircraftFromFileToolbarLayout;
-	}
-
-	public static ToolBar getMainInputManagerAircraftDefaultToolbarLayout() {
-		return mainInputManagerAircraftDefaultToolbarLayout;
-	}
-
-	public static void setMainInputManagerAircraftDefaultToolbarLayout(
-			ToolBar mainInputManagerAircraftDefaultToolbarLayout) {
-		Main.mainInputManagerAircraftDefaultToolbarLayout = mainInputManagerAircraftDefaultToolbarLayout;
 	}
 
 	public static Pane getAircraftFrontViewPane() {
@@ -869,14 +895,6 @@ public class Main extends Application {
 
 	public static void setLoadButtonFromFile(Button loadButtonFromFile) {
 		Main.loadButtonFromFile = loadButtonFromFile;
-	}
-
-	public static Button getLoadButtonDefaultAircraft() {
-		return loadButtonDefaultAircraft;
-	}
-
-	public static void setLoadButtonDefaultAircraft(Button loadButtonDefaultAircraft) {
-		Main.loadButtonDefaultAircraft = loadButtonDefaultAircraft;
 	}
 
 	public static ChoiceBox<String> getDefaultAircraftChoiceBox() {
@@ -1640,14 +1658,6 @@ public class Main extends Application {
 
 	public static void setPrimaryStage(Stage primaryStage) {
 		Main.primaryStage = primaryStage;
-	}
-
-	public static void setMainInputManagerAircraftFromFileLayout(BorderPane mainInputManagerAircraftFromFileLayout) {
-		Main.mainInputManagerAircraftFromFileLayout = mainInputManagerAircraftFromFileLayout;
-	}
-
-	public static void setMainInputManagerAircraftDefaultLayout(BorderPane mainInputManagerAircraftDefaultLayout) {
-		Main.mainInputManagerAircraftDefaultLayout = mainInputManagerAircraftDefaultLayout;
 	}
 
 	public static Button getNewAircraftButton() {

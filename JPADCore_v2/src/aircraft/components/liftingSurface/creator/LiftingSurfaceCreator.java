@@ -212,7 +212,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				
 				if (type.equals(ComponentEnum.WING)) {
 					AirfoilCreator airfoil1 = new AirfoilBuilder()
-							.name("ATR72 wing, root airfoil")
+							.name("ROOT_ATR72")
 							.type(AirfoilTypeEnum.CONVENTIONAL)
 							.family(AirfoilFamilyEnum.NACA_5_Digit)
 							.thicknessToChordRatio(0.18)
@@ -244,9 +244,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.cmAC(-0.083)
 							.cmACAtStall(-0.09)
 							.machCritical(0.656)
+							.clCurveFromFile(Boolean.FALSE)
+							.cdCurveFromFile(Boolean.FALSE)
+							.cmCurveFromFile(Boolean.FALSE)
 							.build();
 					AirfoilCreator airfoil2 = new AirfoilBuilder()
-							.name("ATR72 wing, root airfoil")
+							.name("ROOT_ATR72")
 							.type(AirfoilTypeEnum.CONVENTIONAL)
 							.family(AirfoilFamilyEnum.NACA_5_Digit)
 							.thicknessToChordRatio(0.18)
@@ -278,6 +281,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 							.cmAC(-0.083)
 							.cmACAtStall(-0.09)
 							.machCritical(0.656)
+							.clCurveFromFile(Boolean.FALSE)
+							.cdCurveFromFile(Boolean.FALSE)
+							.cmCurveFromFile(Boolean.FALSE)
 							.build();
 					
 				LiftingSurfacePanelCreator panel1 =
@@ -295,8 +301,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 						.build();
 
 				AirfoilCreator airfoil3 = new AirfoilBuilder()
-						.name("ATR72 wing, tip airfoil")
+						.name("TIP_ATR72")
 						.type(AirfoilTypeEnum.CONVENTIONAL)
+						.family(AirfoilFamilyEnum.NACA_5_Digit)
 						.thicknessToChordRatio(0.15)
 						.radiusLeadingEdge(Amount.valueOf(0.02474, SI.METER))
 						.alphaZeroLift(Amount.valueOf(-1.1, NonSI.DEGREE_ANGLE))
@@ -326,6 +333,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 								0.0334, 0.0, -0.0154, -0.0225, -0.0304, -0.0361, -0.0409, -0.0484, -0.0541,
 								-0.0578, -0.0596, -0.0592, -0.055, -0.0481, -0.0391, -0.0283, -0.0159, 
 								-0.009, 0.0 })
+						.clCurveFromFile(Boolean.FALSE)
+						.cdCurveFromFile(Boolean.FALSE)
+						.cmCurveFromFile(Boolean.FALSE)
 						.build();
 
 				LiftingSurfacePanelCreator panel2 =
@@ -347,7 +357,6 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 				SymmetricFlapCreator flap1 =
 						new SymmetricFlapBuilder(
-		
 								"ATR72 wing, inner flap",
 								FlapTypeEnum.SINGLE_SLOTTED,
 								0.08,
@@ -407,8 +416,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 				else if(type.equals(ComponentEnum.HORIZONTAL_TAIL)) {
 					AirfoilCreator airfoil1 = new AirfoilBuilder()
-							.name("ATR72 horizontal tail, NACA 0012 airfoil")
+							.name("naca0012")
 							.type(AirfoilTypeEnum.CONVENTIONAL)
+							.family(AirfoilFamilyEnum.NACA_5_Digit)
 							.thicknessToChordRatio(0.12)
 							.radiusLeadingEdge(Amount.valueOf(0.01578, SI.METER))
 							.alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
@@ -472,11 +482,15 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									-0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589,
 									-0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138,
 								    0.0})
+							.clCurveFromFile(Boolean.FALSE)
+							.cdCurveFromFile(Boolean.FALSE)
+							.cmCurveFromFile(Boolean.FALSE)
 							.build();
 
 					AirfoilCreator airfoil2 = new AirfoilBuilder()
-							.name("ATR72 horizontal tail, NACA 0012 airfoil")
+							.name("naca0012")
 							.type(AirfoilTypeEnum.CONVENTIONAL)
+							.family(AirfoilFamilyEnum.NACA_5_Digit)
 							.thicknessToChordRatio(0.12)
 							.radiusLeadingEdge(Amount.valueOf(0.01578, SI.METER))
 							.alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
@@ -540,6 +554,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									-0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589,
 									-0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138,
 								    0.0})
+							.clCurveFromFile(Boolean.FALSE)
+							.cdCurveFromFile(Boolean.FALSE)
+							.cmCurveFromFile(Boolean.FALSE)
 							.build();
 					
 					LiftingSurfacePanelCreator panel1 =
@@ -576,8 +593,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 				else if(type.equals(ComponentEnum.VERTICAL_TAIL)) {
 					AirfoilCreator airfoil1 = new AirfoilBuilder()
-							.name("ATR72 vertical tail, NACA 0012 airfoil")
+							.name("naca0012")
 							.type(AirfoilTypeEnum.CONVENTIONAL)
+							.family(AirfoilFamilyEnum.NACA_5_Digit)
 							.thicknessToChordRatio(0.12)
 							.radiusLeadingEdge(Amount.valueOf(0.030195, SI.METER)) // FIXME
 							.alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
@@ -641,11 +659,15 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									-0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589,
 									-0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138,
 								    0.0})
+							.clCurveFromFile(Boolean.FALSE)
+							.cdCurveFromFile(Boolean.FALSE)
+							.cmCurveFromFile(Boolean.FALSE)
 							.build();
 
 					AirfoilCreator airfoil2 = new AirfoilBuilder()
-							.name("ATR72 vertical tail, NACA 0012 airfoil")
+							.name("naca0012")
 							.type(AirfoilTypeEnum.CONVENTIONAL)
+							.family(AirfoilFamilyEnum.NACA_5_Digit)
 							.thicknessToChordRatio(0.12)
 							.radiusLeadingEdge(Amount.valueOf(0.030195, SI.METER)) // FIXME
 							.alphaZeroLift(Amount.valueOf(0.0, NonSI.DEGREE_ANGLE))
@@ -709,6 +731,9 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 									-0.030819, -0.029039, -0.027222, -0.025368, -0.023478, -0.021551, -0.019588, -0.017589,
 									-0.015557, -0.013497, -0.011419, -0.009346, -0.007317, -0.005396, -0.003653, -0.002138,
 								    0.0})
+							.clCurveFromFile(Boolean.FALSE)
+							.cdCurveFromFile(Boolean.FALSE)
+							.cmCurveFromFile(Boolean.FALSE)
 							.build();
 					
 					LiftingSurfacePanelCreator panel1 =

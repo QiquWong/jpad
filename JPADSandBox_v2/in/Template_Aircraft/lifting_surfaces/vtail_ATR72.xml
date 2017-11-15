@@ -6,18 +6,18 @@
          <roughness unit="m">0.00000405</roughness>
       </global_data>
       <panels>
-         <panel file="ATR72 vertical tail">
+         <panel id="ATR72 vertical tail">
             <span unit="m">4.8200</span>
             <dihedral unit="deg">0.0000</dihedral>
             <sweep_leading_edge unit="deg">38.2000</sweep_leading_edge>
             <inner_section>
                <chord unit="m">3.9500</chord>
-               <airfoil_root file="naca0012.xml"/>
+               <airfoil file="naca0012.xml"/>
                <geometric_twist>0.000000</geometric_twist>
             </inner_section>
             <outer_section>
                <chord unit="m">2.2700</chord>
-               <airfoil_root file="naca0012.xml"/>
+               <airfoil file="naca0012.xml"/>
                <geometric_twist unit="deg">0.0000</geometric_twist>
             </outer_section>
          </panel>

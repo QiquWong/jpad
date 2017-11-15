@@ -1711,8 +1711,17 @@ public class JPADStaticWriteUtils {
 			break;
 		case WING_AIRFOIL:
 			if (aircraft.getWing() != null) {
-				for(int i=0; i<aircraft.getWing().getAirfoilList().size(); i++)
-					makeXmlTreeAirfoil(aircraft.getWing().getAirfoilList().get(i), docNameType._1(), docNameType._4());
+				aircraft.getWing().getAirfoilList().stream().filter(
+						airfoil -> airfoil.getAirfoilCreator().getName().equalsIgnoreCase(
+								docNameType._3().substring(0, docNameType._3().length()-4)
+								)
+						).findFirst().ifPresent(
+								airfoil -> makeXmlTreeAirfoil(
+										airfoil,
+										docNameType._1(),
+										docNameType._4()
+										)
+								);
 			}
 			break;
 		case HORIZONTAL_TAIL:
@@ -1721,8 +1730,17 @@ public class JPADStaticWriteUtils {
 			break;
 		case HORIZONTAL_TAIL_AIRFOIL:
 			if (aircraft.getHTail() != null) {
-				for(int i=0; i<aircraft.getHTail().getAirfoilList().size(); i++)
-					makeXmlTreeAirfoil(aircraft.getHTail().getAirfoilList().get(i), docNameType._1(), docNameType._4());
+				aircraft.getHTail().getAirfoilList().stream().filter(
+						airfoil -> airfoil.getAirfoilCreator().getName().equalsIgnoreCase(
+								docNameType._3().substring(0, docNameType._3().length()-4)
+								)
+						).findFirst().ifPresent(
+								airfoil -> makeXmlTreeAirfoil(
+										airfoil,
+										docNameType._1(),
+										docNameType._4()
+										)
+								);
 			}
 			break;
 		case VERTICAL_TAIL:
@@ -1731,8 +1749,17 @@ public class JPADStaticWriteUtils {
 			break;
 		case VERTICAL_TAIL_AIRFOIL:
 			if (aircraft.getVTail() != null) {
-				for(int i=0; i<aircraft.getVTail().getAirfoilList().size(); i++)
-					makeXmlTreeAirfoil(aircraft.getVTail().getAirfoilList().get(i), docNameType._1(), docNameType._4());
+				aircraft.getVTail().getAirfoilList().stream().filter(
+						airfoil -> airfoil.getAirfoilCreator().getName().equalsIgnoreCase(
+								docNameType._3().substring(0, docNameType._3().length()-4)
+								)
+						).findFirst().ifPresent(
+								airfoil -> makeXmlTreeAirfoil(
+										airfoil,
+										docNameType._1(),
+										docNameType._4()
+										)
+								);
 			}
 			break;
 		case CANARD:
@@ -1741,9 +1768,17 @@ public class JPADStaticWriteUtils {
 			break;
 		case CANARD_AIRFOIL:
 			if (aircraft.getCanard() != null) {
-				makeXmlTreeAirfoil(aircraft, docNameType._1(), docNameType._4());
-				for(int i=0; i<aircraft.getCanard().getAirfoilList().size(); i++)
-					makeXmlTreeAirfoil(aircraft.getCanard().getAirfoilList().get(i), docNameType._1(), docNameType._4());
+				aircraft.getCanard().getAirfoilList().stream().filter(
+						airfoil -> airfoil.getAirfoilCreator().getName().equalsIgnoreCase(
+								docNameType._3().substring(0, docNameType._3().length()-4)
+								)
+						).findFirst().ifPresent(
+								airfoil -> makeXmlTreeAirfoil(
+										airfoil,
+										docNameType._1(),
+										docNameType._4()
+										)
+								);
 			}
 			break;
 		case FUSELAGE:
@@ -2172,149 +2207,169 @@ public class JPADStaticWriteUtils {
 		
 		// geometry - x_coordinates
 		JPADStaticWriteUtils.writeSingleNode("x_coordinates", 
-				airfoil.getAirfoilCreator().getXCoords(), 
+				MyArrayUtils.convertDoubleArrayToListDouble(airfoil.getAirfoilCreator().getXCoords()), 
 				geometryElement, doc);
 		
 		// geometry - z_coordinates
 		JPADStaticWriteUtils.writeSingleNode("z_coordinates", 
-				airfoil.getAirfoilCreator().getZCoords(),
+				MyArrayUtils.convertDoubleArrayToListDouble(airfoil.getAirfoilCreator().getZCoords()),
 				geometryElement, doc);
 		
 		// aerodynamics
 		org.w3c.dom.Element aerodynamicsElement = createXMLElementWithAttributes(doc, "aerodynamics", 
-				Tuple.of("external_cl_curve", airfoil.getAirfoilCreator().getEngineList().get(0).getId()),
-				Tuple.of("external_cd_curve", aircraft.getPowerPlant().getEngineList().get(0).getEngineType().toString()),
-				Tuple.of("external_cm_curve", aircraft.getPowerPlant().getEngineList().get(0).getEngineDatabaseName())
+				Tuple.of("external_cl_curve", airfoil.getAirfoilCreator().getClCurveFromFile().toString()),
+				Tuple.of("external_cd_curve", airfoil.getAirfoilCreator().getCdCurveFromFile().toString()),
+				Tuple.of("external_cm_curve", airfoil.getAirfoilCreator().getCmCurveFromFile().toString())
 				);
 		airfoilElement.appendChild(aerodynamicsElement);
 		
-		// aerodynamics - alpha_zero_lift
-		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", 
-				airfoil.getAirfoilCreator().getAlphaZeroLift(), 
-				aerodynamicsElement, doc);
+		if(!airfoil.getAirfoilCreator().getClCurveFromFile()) {
+
+			// aerodynamics - alpha_zero_lift
+			JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", 
+					airfoil.getAirfoilCreator().getAlphaZeroLift(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - alpha_end_linear_trait
+			JPADStaticWriteUtils.writeSingleNode("alpha_end_linear_trait", 
+					airfoil.getAirfoilCreator().getAlphaEndLinearTrait(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - alpha_stall
+			JPADStaticWriteUtils.writeSingleNode("alpha_stall", 
+					airfoil.getAirfoilCreator().getAlphaStall(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - Cl_alpha_linear_trait
+			JPADStaticWriteUtils.writeSingleNode("Cl_alpha_linear_trait", 
+					airfoil.getAirfoilCreator().getClAlphaLinearTrait(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - Cl_at_alpha_zero
+			JPADStaticWriteUtils.writeSingleNode("Cl_at_alpha_zero", 
+					airfoil.getAirfoilCreator().getClAtAlphaZero(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - Cl_end_linear_trait
+			JPADStaticWriteUtils.writeSingleNode("Cl_end_linear_trait", 
+					airfoil.getAirfoilCreator().getClEndLinearTrait(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - Cl_max
+			JPADStaticWriteUtils.writeSingleNode("Cl_max", 
+					airfoil.getAirfoilCreator().getClMax(), 
+					aerodynamicsElement, doc);
+
+		}
 		
-		// aerodynamics - alpha_end_linear_trait
-		JPADStaticWriteUtils.writeSingleNode("alpha_end_linear_trait", 
-				airfoil.getAirfoilCreator().getAlphaEndLinearTrait(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - alpha_stall
-		JPADStaticWriteUtils.writeSingleNode("alpha_stall", 
-				airfoil.getAirfoilCreator().getAlphaStall(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cl_alpha_linear_trait
-		JPADStaticWriteUtils.writeSingleNode("Cl_alpha_linear_trait", 
-				airfoil.getAirfoilCreator().getClAlphaLinearTrait(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cl_at_alpha_zero
-		JPADStaticWriteUtils.writeSingleNode("Cl_at_alpha_zero", 
-				airfoil.getAirfoilCreator().getClAtAlphaZero(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cl_end_linear_trait
-		JPADStaticWriteUtils.writeSingleNode("Cl_end_linear_trait", 
-				airfoil.getAirfoilCreator().getClEndLinearTrait(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cl_max
-		JPADStaticWriteUtils.writeSingleNode("Cl_max", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cd_min
-		JPADStaticWriteUtils.writeSingleNode("Cd_min", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cl_at_Cdmin
-		JPADStaticWriteUtils.writeSingleNode("Cl_at_Cdmin", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - laminar_bucket_semi_extension
-		JPADStaticWriteUtils.writeSingleNode("laminar_bucket_semi_extension", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - laminar_bucket_depth
-		JPADStaticWriteUtils.writeSingleNode("laminar_bucket_depth", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - K_factor_drag_polar
-		JPADStaticWriteUtils.writeSingleNode("K_factor_drag_polar", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cm_alpha_quarter_chord
-		JPADStaticWriteUtils.writeSingleNode("Cm_alpha_quarter_chord", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cm_ac
-		JPADStaticWriteUtils.writeSingleNode("Cm_ac", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
-		
-		// aerodynamics - Cm_ac_at_stall
-		JPADStaticWriteUtils.writeSingleNode("Cm_ac_at_stall", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				aerodynamicsElement, doc);
+		if(!airfoil.getAirfoilCreator().getCdCurveFromFile()) {
+			// aerodynamics - Cd_min
+			JPADStaticWriteUtils.writeSingleNode("Cd_min", 
+					airfoil.getAirfoilCreator().getCdMin(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - Cl_at_Cdmin
+			JPADStaticWriteUtils.writeSingleNode("Cl_at_Cdmin", 
+					airfoil.getAirfoilCreator().getClAtCdMin(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - laminar_bucket_semi_extension
+			JPADStaticWriteUtils.writeSingleNode("laminar_bucket_semi_extension", 
+					airfoil.getAirfoilCreator().getLaminarBucketSemiExtension(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - laminar_bucket_depth
+			JPADStaticWriteUtils.writeSingleNode("laminar_bucket_depth", 
+					airfoil.getAirfoilCreator().getLaminarBucketDepth(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - K_factor_drag_polar
+			JPADStaticWriteUtils.writeSingleNode("K_factor_drag_polar", 
+					airfoil.getAirfoilCreator().getKFactorDragPolar(), 
+					aerodynamicsElement, doc);
+		}
+
+		if(!airfoil.getAirfoilCreator().getCmCurveFromFile()) {
+			// aerodynamics - Cm_alpha_quarter_chord
+			JPADStaticWriteUtils.writeSingleNode("Cm_alpha_quarter_chord", 
+					airfoil.getAirfoilCreator().getCmAlphaQuarterChord(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - Cm_ac
+			JPADStaticWriteUtils.writeSingleNode("Cm_ac", 
+					airfoil.getAirfoilCreator().getCmAC(), 
+					aerodynamicsElement, doc);
+
+			// aerodynamics - Cm_ac_at_stall
+			JPADStaticWriteUtils.writeSingleNode("Cm_ac_at_stall", 
+					airfoil.getAirfoilCreator().getCmACAtStall(), 
+					aerodynamicsElement, doc);
+		}
 		
 		// aerodynamics - airfoil_curves
-		org.w3c.dom.Element airfoilCurvesElement = doc.createElement("airfoil_curves");
-		aerodynamicsElement.appendChild(airfoilCurvesElement);
+		org.w3c.dom.Element airfoilCurvesElement = null;
+		if(airfoil.getAirfoilCreator().getClCurveFromFile()
+				|| airfoil.getAirfoilCreator().getCdCurveFromFile()
+				|| airfoil.getAirfoilCreator().getCmCurveFromFile()
+				) {
+			airfoilCurvesElement = doc.createElement("airfoil_curves");
+			aerodynamicsElement.appendChild(airfoilCurvesElement);
+		}
 		
-		// aerodynamics - Cm_ac_at_stall - Cl_curve 
-		JPADStaticWriteUtils.writeSingleNode("Cl_curve", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				airfoilCurvesElement, doc);
+		// aerodynamics - airfoil_curves - Cl_curve
+		if(airfoil.getAirfoilCreator().getClCurveFromFile()) {
+			JPADStaticWriteUtils.writeSingleNode("Cl_curve", 
+					airfoil.getAirfoilCreator().getClCurve(), 
+					airfoilCurvesElement, doc);
+
+			// aerodynamics - airfoil_curves - alpha_for_Cl_curve 
+			JPADStaticWriteUtils.writeSingleNode("alpha_for_Cl_curve", 
+					airfoil.getAirfoilCreator().getAlphaForClCurve(), 
+					airfoilCurvesElement, doc);
+		}
 		
-		// aerodynamics - Cm_ac_at_stall - alpha_for_Cl_curve 
-		JPADStaticWriteUtils.writeSingleNode("alpha_for_Cl_curve", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				airfoilCurvesElement, doc);
-		
-		// aerodynamics - Cm_ac_at_stall - Cd_curve 
-		JPADStaticWriteUtils.writeSingleNode("Cd_curve", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				airfoilCurvesElement, doc);
-		
-		// aerodynamics - Cm_ac_at_stall - Cl_for_Cd_curve 
-		JPADStaticWriteUtils.writeSingleNode("Cl_for_Cd_curve", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				airfoilCurvesElement, doc);
-		
-		// aerodynamics - Cm_ac_at_stall - Cm_curve 
-		JPADStaticWriteUtils.writeSingleNode("Cm_curve", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				airfoilCurvesElement, doc);
-		
-		// aerodynamics - Cm_ac_at_stall - Cl_for_Cm_curve 
-		JPADStaticWriteUtils.writeSingleNode("Cl_for_Cm_curve", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
-				airfoilCurvesElement, doc);
-		
+		// aerodynamics - airfoil_curves - Cd_curve
+		if(airfoil.getAirfoilCreator().getCdCurveFromFile()) {
+			JPADStaticWriteUtils.writeSingleNode("Cd_curve", 
+					airfoil.getAirfoilCreator().getCdCurve(), 
+					airfoilCurvesElement, doc);
+
+			// aerodynamics - airfoil_curves - Cl_for_Cd_curve 
+			JPADStaticWriteUtils.writeSingleNode("Cl_for_Cd_curve", 
+					airfoil.getAirfoilCreator().getClForCdCurve(), 
+					airfoilCurvesElement, doc);
+		}
+
+		// aerodynamics - airfoil_curves - Cm_curve 
+		if(airfoil.getAirfoilCreator().getCmCurveFromFile()) {
+			JPADStaticWriteUtils.writeSingleNode("Cm_curve", 
+					airfoil.getAirfoilCreator().getCmCurve(), 
+					airfoilCurvesElement, doc);
+
+			// aerodynamics - airfoil_curves - Cl_for_Cm_curve 
+			JPADStaticWriteUtils.writeSingleNode("Cl_for_Cm_curve", 
+					airfoil.getAirfoilCreator().getClForCmCurve(), 
+					airfoilCurvesElement, doc);
+		}
+
 		// aerodynamics - x_ac_normalized
 		JPADStaticWriteUtils.writeSingleNode("x_ac_normalized", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
+				airfoil.getAirfoilCreator().getXACNormalized(), 
 				aerodynamicsElement, doc);
 		
 		// aerodynamics - mach_critical
 		JPADStaticWriteUtils.writeSingleNode("mach_critical", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
+				airfoil.getAirfoilCreator().getMachCritical(), 
 				aerodynamicsElement, doc);
 		
 		// aerodynamics - x_transition_upper
 		JPADStaticWriteUtils.writeSingleNode("x_transition_upper", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
+				airfoil.getAirfoilCreator().getXTransitionUpper(), 
 				aerodynamicsElement, doc);
 		
 		// aerodynamics - x_transition_lower
 		JPADStaticWriteUtils.writeSingleNode("x_transition_lower", 
-				aircraft.getPowerPlant().getEngineList().get(0).getLength(), 
+				airfoil.getAirfoilCreator().getXTransitionLower(), 
 				aerodynamicsElement, doc);
 		
 	}
@@ -2424,12 +2479,12 @@ public class JPADStaticWriteUtils {
 		// nacelleS
 		org.w3c.dom.Element nacellesElement = doc.createElement("nacelles");
 		
-		// engine
+		// nacelle
 		aircraft.getNacelles().getNacellesList().stream()
 		.forEach(e -> {
 			nacellesElement.appendChild(
 					createNacelleElement(doc, 
-							aircraftSaveDirectives.getEngineFileName(), 
+							aircraftSaveDirectives.getNacelleFileName(), 
 							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getXApexConstructionAxes(),
 							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getYApexConstructionAxes(),
 							aircraft.getNacelles().getNacellesList().get(aircraft.getNacelles().getNacellesList().indexOf(e)).getZApexConstructionAxes(),
@@ -2442,13 +2497,11 @@ public class JPADStaticWriteUtils {
 		aircraftElement.appendChild(nacellesElement);
 		
 		// landing gearS
-		org.w3c.dom.Element landingGearsElement = doc.createElement("landing_gears");
-		
 		aircraft.getComponentsList().stream()
 		.filter(comp -> comp.getClass() == LandingGears.class)
 			.map(comp -> (LandingGears) comp)
 				.forEach(lg ->
-				landingGearsElement.appendChild(
+				aircraftElement.appendChild(
 						createLandingGearElement(doc, 
 								aircraftSaveDirectives.getLandingGearFileName(), 
 								lg.getXApexConstructionAxes(),
@@ -2459,17 +2512,12 @@ public class JPADStaticWriteUtils {
 						)
 					);
 	
-		// append all kinds of landing gears
-		aircraftElement.appendChild(landingGearsElement);
-		
 		// systemS
-		org.w3c.dom.Element systemsElement = doc.createElement("systems");
-		
 		aircraft.getComponentsList().stream()
 		.filter(comp -> comp.getClass() == Systems.class)
 			.map(comp -> (Systems) comp)
 				.forEach(sys ->
-				systemsElement.appendChild(
+				aircraftElement.appendChild(
 						createSystemElement(doc, 
 								aircraftSaveDirectives.getSystemFileName(), 
 								sys.getXApexConstructionAxes(),
@@ -2478,10 +2526,6 @@ public class JPADStaticWriteUtils {
 								)
 						)
 					);
-		
-		// append all kinds of systems
-		aircraftElement.appendChild(systemsElement);
-		
 		
 	}
 	
@@ -2956,9 +3000,15 @@ public class JPADStaticWriteUtils {
 		 engineElement.appendChild(specificationsElement); 
 		 
 		 // specifications - dry_mass
-		 JPADStaticWriteUtils.writeSingleNode("dry_mass", 
-				 aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain(), 
-				 specificationsElement, doc);
+		 specificationsElement.appendChild(
+				 JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						 doc,
+						 "dry_mass",
+						 aircraft.getPowerPlant().getEngineList().get(0).getDryMassPublicDomain(),
+						 3, 6,  // above=6 : 1.0000001 -> 1.00000 ___ below=3 : 10333701 -> 10334000 
+						 Tuple.of("calculate", aircraft.getPowerPlant().getEngineList().get(0).getCalculateDryMass().toString())
+						 )
+				 );
 		 
 		 if(engineType == EngineTypeEnum.TURBOFAN || engineType == EngineTypeEnum.TURBOJET) {
 			
@@ -3022,7 +3072,7 @@ public class JPADStaticWriteUtils {
 		doc.appendChild(rootElement);
 
 		// landing gear
-		org.w3c.dom.Element landingGearElement = createXMLElementWithAttributes(doc, "nacelle", 
+		org.w3c.dom.Element landingGearElement = createXMLElementWithAttributes(doc, "landing_gears", 
 				Tuple.of("id", aircraft.getLandingGears().getId())
 				);
 		rootElement.appendChild(landingGearElement);
@@ -3228,7 +3278,7 @@ public class JPADStaticWriteUtils {
 		
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 				doc,
-				"nacelle",
+				"landing_gears",
 				Tuple.of("file", fileName)	
 				);
 		org.w3c.dom.Element pos = doc.createElement("position");
@@ -3248,7 +3298,7 @@ public class JPADStaticWriteUtils {
 		
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 				doc,
-				"nacelle",
+				"systems",
 				Tuple.of("file", fileName)	
 				);
 		org.w3c.dom.Element pos = doc.createElement("position");
@@ -3329,14 +3379,14 @@ public class JPADStaticWriteUtils {
 			element = createXMLElementWithAttributes(
 					doc,
 					"panel",
-					Tuple.of("file", panel.getId()),
+					Tuple.of("id", panel.getId()),
 					Tuple.of("linked_to", linkedPanelName)
 					);
 		else
 			element = createXMLElementWithAttributes(
 					doc,
 					"panel",
-					Tuple.of("file", panel.getId())	
+					Tuple.of("id", panel.getId())	
 					);
 			
 		
@@ -3352,7 +3402,7 @@ public class JPADStaticWriteUtils {
 			element.appendChild(innerSectionElement);
 			JPADStaticWriteUtils.writeSingleNode("chord", panel.getChordRoot(), innerSectionElement, doc);
 			innerSectionElement.appendChild(
-					JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil_root", Tuple.of("file", panel.getAirfoilRoot().getName() + ".xml"))
+					JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil", Tuple.of("file", panel.getAirfoilRoot().getName() + ".xml"))
 					); 
 			JPADStaticWriteUtils.writeSingleNode("geometric_twist", 0.0, innerSectionElement, doc);
 		}
@@ -3364,7 +3414,7 @@ public class JPADStaticWriteUtils {
 		element.appendChild(outerSectionElement);
 		JPADStaticWriteUtils.writeSingleNode("chord", panel.getChordTip(), outerSectionElement, doc);
 		outerSectionElement.appendChild(
-				JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil_root", Tuple.of("file", panel.getAirfoilTip().getName() + ".xml"))
+				JPADStaticWriteUtils.createXMLElementWithAttributes(doc, "airfoil", Tuple.of("file", panel.getAirfoilTip().getName() + ".xml"))
 				);  
 		JPADStaticWriteUtils.writeSingleNode("geometric_twist", panel.getTwistGeometricAtTip(), outerSectionElement, doc);
 
@@ -3418,7 +3468,8 @@ public class JPADStaticWriteUtils {
 				
 		org.w3c.dom.Element element = createXMLElementWithAttributes(
 					doc,
-					"asymmetric_flap"
+					"asymmetric_flap",
+					Tuple.of("type", aileron.getType().toString())	
 					);
 		JPADStaticWriteUtils.writeSingleNode("inner_chord_ratio", aileron.getInnerChordRatio(), element, doc);
 		JPADStaticWriteUtils.writeSingleNode("outer_chord_ratio", aileron.getOuterChordRatio(), element, doc);
