@@ -24,7 +24,6 @@ public class Main extends Application {
 	private static String _outputDirectoryPath;
 	private static String _databaseDirectoryPath;
 	private static String _inputFileAbsolutePath;
-	private static Object _choiseBoxSelectionDefaultAircraft;
 	//...........................................................................................
 	// LAYOUTS:
 	private static Stage _primaryStage;
@@ -187,14 +186,6 @@ public class Main extends Application {
 
 	public static void setInputFileAbsolutePath(String inputFileAbsolutePath) {
 		Main._inputFileAbsolutePath = inputFileAbsolutePath;
-	}
-
-	public static Object getChoiseBoxSelectionDefaultAircraft() {
-		return _choiseBoxSelectionDefaultAircraft;
-	}
-
-	public static void setChoiseBoxSelectionDefaultAircraft(Object choiseBoxSelectionDefaultAircraft) {
-		Main._choiseBoxSelectionDefaultAircraft = choiseBoxSelectionDefaultAircraft;
 	}
 
 }

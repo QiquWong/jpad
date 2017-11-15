@@ -14,5 +14,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar" sourcepath="/LIBRARY_FOLDER"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-nop-1.7.5.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/chartsFxHanSolo/smoothcharts-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -131,5 +131,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/fxyz3d-0.1.1.jar" sourcepath="/LIBRARY_FOLDER/fxyz/fxyz3d-0.1.1-sources.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/fxyz3d-client-0.1.1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vvecmath/VVecMath.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/chartsFxHanSolo/smoothcharts-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

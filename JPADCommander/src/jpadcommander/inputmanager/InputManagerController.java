@@ -95,7 +95,7 @@ public class InputManagerController {
 	private Button loadAircraftButton;
 	
 	//...........................................................................................
-	// BUTTONS:
+	// FILE CHOOSER:
 	//...........................................................................................
 	private FileChooser aircraftFileChooser;
 	
@@ -1007,7 +1007,7 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	public void loadAircraftFile() throws IOException, InterruptedException {
+	private void loadAircraftFile() throws IOException, InterruptedException {
 	
 		if(isAircraftFile(textFieldAircraftInputFile.getText()))
 			try {
@@ -1128,7 +1128,7 @@ public class InputManagerController {
 		
 	}
 	
-	public void createAircraftTopView() {
+	private void createAircraftTopView() {
 		
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
@@ -1411,7 +1411,7 @@ public class InputManagerController {
 		aircraftTopViewPane.getChildren().add(sceneTopView.getRoot());
 	}
 	
-	public void createAircraftSideView() {
+	private void createAircraftSideView() {
 	
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
@@ -1693,7 +1693,7 @@ public class InputManagerController {
 		
 	}
 	
-	public void createAircraftFrontView() {
+	private void createAircraftFrontView() {
 		
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
@@ -2106,7 +2106,7 @@ public class InputManagerController {
 		aircraftFrontViewPane.getChildren().add(sceneFrontView.getRoot());
 	}
 	
-	public void logAircraftFromFileToInterface() {
+	private void logAircraftFromFileToInterface() {
 
 		String dirLiftingSurfaces = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "lifting_surfaces";
 		String dirFuselages = Main.getInputDirectoryPath() + File.separator + "Template_Aircraft" + File.separator + "fuselages";
@@ -3318,7 +3318,7 @@ public class InputManagerController {
 					);
 	}
 	
-	public void createFuselageTopView() {
+	private void createFuselageTopView() {
 		
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
@@ -3423,7 +3423,7 @@ public class InputManagerController {
 		fuselageTopViewPane.getChildren().add(sceneTopView.getRoot());
 	}
 
-	public void createFuselageSideView() {
+	private void createFuselageSideView() {
 		
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
@@ -3535,7 +3535,7 @@ public class InputManagerController {
 		
 	}
 	
-	public void createFuselageFrontView() {
+	private void createFuselageFrontView() {
 		
 		//--------------------------------------------------
 		// get data vectors from fuselage discretization
@@ -3644,7 +3644,7 @@ public class InputManagerController {
 		fuselageFrontViewPane.getChildren().add(sceneFrontView.getRoot());
 	}
 	
-	public void logFuselageFromFileToInterface() {
+	private void logFuselageFromFileToInterface() {
 
 		// print the toString method of the aircraft inside the text area of the GUI ...
 		textAreaFuselageConsoleOutput.setText(
