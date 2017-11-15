@@ -6,6 +6,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.math3.analysis.function.Tan;
+import org.apache.commons.math3.util.MathArrays;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -135,8 +137,8 @@ public final class CPACSUtils {
 			String wingLEXPosition = MyXMLReaderUtils.getXMLPropertyByPath(
 					importedNode,
 					"//transformation/translation/x/text()");			
-			System.out.println("wing LEADING EDGE x: " + wingLEXPosition);
-			wingLEPosition[0] = Double.parseDouble(wingLEXPosition);
+			System.out.println("wing LEADING EDGE x: " + wingLEXPosition);  //TO DO ask if necessary to remove  getXMLPropertyByPath props[0] 
+			wingLEPosition[0] = Double.parseDouble(wingLEXPosition);        //from getXMLPropertyByPath sysout
 			// get Y position
 			String wingLEYPosition = MyXMLReaderUtils.getXMLPropertyByPath(
 					importedNode,
@@ -179,8 +181,8 @@ public final class CPACSUtils {
 				String xpath = MyXMLReaderUtils.getElementXpath(SystemElement);
 				String path = xpath + "/coG/x/text()";
 				List<String> wingTankPositionXx =  MyXMLReaderUtils.getXMLPropertiesByPath(doc, path);
-				System.out.println("Xpath is = " + xpath);
-				System.out.println("Pippo is = " + wingTankPositionXx.size());
+				System.out.println("Xpath is = " + importedNode.getLocalName());
+				System.out.println("Position is = " + wingTankPositionXx.size());
 				
 				
 			}
@@ -213,4 +215,112 @@ public final class CPACSUtils {
 			return null;
 		}
 	}
+	
+	/**
+	 * This function allow to estimate the position of the landing gear relative to wing
+	 * @param wingNode node of the CPACS where landing gear are attached
+	 * @param eta eta position of the landing gear
+	 * @param xsi xsi position of the landing gear
+	 * @param wingSpan 
+	 * @param relHeight height of relative height position of the attachment 
+	 * @return x,y,z position of landing gear relative to wing
+	 */
+	public static Double[] getPositionRelativeToEtaAndCsi(Node wingNode, double eta,
+			double xsi, double wingSpan, double relHeight) {
+		Double [] coordinate = new Double[3];
+		double y = eta*wingSpan/2;
+		double x = 0;
+		double z = 0;
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(wingNode, true);
+			doc.appendChild(importedNode);
+			// get the list of sections in wingNode to read wing chord and element length
+			NodeList sectionsChord = MyXMLReaderUtils.getXMLNodeListByPath(doc, "//sections/section");
+			NodeList sectionsLength = MyXMLReaderUtils.getXMLNodeListByPath(doc, "//positionings/positioning");
+
+			System.out.println("--------------------------------");
+			System.out.println("Read chord length : ");
+			System.out.println("chord found: " + sectionsChord.getLength());
+			System.out.println("--------------------------------");
+			if (sectionsChord.getLength() == 0 || sectionsLength.getLength() == 0)
+				return null;
+
+			//Read from prescribed wing the length of each chord
+			Double[] wingChordVector = new Double [sectionsChord.getLength()];
+
+			System.out.println("--------------------------------");
+			System.out.println("Read element length : ");
+			System.out.println("element found: " + sectionsLength.getLength());
+			System.out.println("--------------------------------");
+			for (int i=0;i<sectionsChord.getLength();i++) {
+				String wingChordString = MyXMLReaderUtils.getXMLPropertyByPath(
+						sectionsChord.item(i),
+						"//elements/element/transformation/scaling/x/text()");
+				wingChordVector[i] =  Double.parseDouble(wingChordString);
+
+			}
+			//Read from prescribed wing the length of segment
+			Double[] wingElementLength = new Double [sectionsLength.getLength()-1];
+			Double[] wingEtaVectorCheck = new Double [sectionsLength.getLength()-1];
+			Double[] coefficient = new Double [sectionsLength.getLength()-1]; 
+			double wingRootChord = 0;
+			double wingTipChord = 0;
+			double chordLength = 0;
+			double height = 0;
+			for (int i=0;i<sectionsLength.getLength()-1;i++) {
+				String wingElementLengthString = MyXMLReaderUtils.getXMLPropertyByPath(
+						sectionsLength.item(i+1),
+						"//length/text()");
+				String wingDihedralAngleString = wingElementLengthString = MyXMLReaderUtils.getXMLPropertyByPath(
+						sectionsLength.item(i+1),
+						"//dihedralAngle/text()");
+				double wingDihedralAngleDouble = Double.parseDouble(wingDihedralAngleString);
+				wingElementLength[i] =  Double.parseDouble(wingElementLengthString);
+				wingRootChord = wingChordVector[i];
+				wingTipChord = wingChordVector[i+1];
+				coefficient[i] = (wingTipChord-wingRootChord)/wingElementLength[i];
+				if (i==0) {
+					wingEtaVectorCheck[i] = wingElementLength[i];
+					if(y<wingEtaVectorCheck[i]) {
+						chordLength = coefficient[i]*y+wingRootChord;
+						x = xsi*chordLength; 
+						z = y*Math.tan(Math.toRadians(wingDihedralAngleDouble));
+					}
+					height = wingElementLength[i]
+							*Math.tan(Math.toRadians(wingDihedralAngleDouble));
+				}
+				else {
+					wingEtaVectorCheck[i] = wingElementLength[i]+wingElementLength[i-1];
+					if((y<wingEtaVectorCheck[i]) && (y>wingEtaVectorCheck[i-1])) {
+						chordLength = coefficient[i]*y+wingRootChord;
+						x = xsi*chordLength;
+						z = height + y*Math.tan(Math.toRadians(wingDihedralAngleDouble));;
+					}
+					height = height + wingElementLength[i]
+							*Math.tan(Math.toRadians(wingDihedralAngleDouble));
+				}
+				if (y==0) {
+					x = xsi*wingChordVector[i];
+				}
+				System.out.println("wingEtaVectorCheck = "+ wingEtaVectorCheck[i]);
+			}
+
+			coordinate[0] = x;
+			coordinate[1] = y;
+			coordinate[2] = z-relHeight;// relHeight in the CPACS this value is positive
+			return coordinate;
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+
+
 }

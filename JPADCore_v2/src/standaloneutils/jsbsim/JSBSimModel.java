@@ -269,17 +269,82 @@ public class JSBSimModel {
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
 						+ "/contact["+0+"]/retractable");//1->Retrectable 0 -> Fixed
 
+		//Right Main
 
+		Double etaRightLandingGear = Double.parseDouble(
+				jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/landingGear/mainGears/"
+				+ "mainGear/wingAttachment/positioning/eta"));
+		Double csiRightLandingGear = Double.parseDouble(
+				jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/landingGear/mainGears/"
+				+ "mainGear/wingAttachment/positioning/xsi"));
+		Double realHeightRightLandingGear = Double.parseDouble(
+				jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/vehicles/aircraft/model/landingGear/mainGears/"
+				+ "mainGear/wingAttachment/positioning/relHeight"));
+		Double [] coordinateRightLandingGear = CPACSUtils.getPositionRelativeToEtaAndCsi
+				(wingNode, etaRightLandingGear, csiRightLandingGear, wspan, realHeightRightLandingGear);
+		double xRightLandingGear = coordinateRightLandingGear[0] + wingPosition[0];
+		double yRightLandingGear = coordinateRightLandingGear[1] + wingPosition[1];
+		double zRightLandingGear = coordinateRightLandingGear[2] + wingPosition[2];
+		System.out.println("--------------------------------");
+		System.out.println("X position of landing gear is : "+ xRightLandingGear );
+		System.out.println("Y position of landing gear is : "+ yRightLandingGear );
+		System.out.println("Z position of landing gear is : "+ zRightLandingGear );
+
+		System.out.println("--------------------------------");
+
+//		String rightMainXPosition = jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
+//						+ "landingGear/contact["+2+"]/location/x");		
+//		String rightMainYPosition = jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
+//						+ "landingGear/contact["+2+"]/location/y");	
+//		String rightMainZPosition = jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
+//						+ "landingGear/contact["+2+"]/location/z");			
+		String rightMainGearAttribute = jpadXmlReader.getXMLAttributeByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
+						+ "landingGear/contact["+2+"]", "type");	
+		String rightMainGearStatic_Friction = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/static_friction");
+		String rightMainGearDynamic_Friction = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/dynamic_friction");
+		String rightMainGearRolling_friction = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/rolling_friction");
+		String rightMainGearSpring_coeff = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/spring_coeff"); //LBS/FT
+		String rightMainGearDamping_coeff = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/damping_coeff");//LBS/FT
+		String rightMainGearDamping_coeff_rebound = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/damping_coeff_rebound");//LBS/FT		
+
+		String rightMainGearMax_steer = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/max_steer");//Deg
+		String rightMainGearRetractable = jpadXmlReader.getXMLPropertyByPath(
+				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
+						+ "/contact["+2+"]/retractable");//2->Retrectable 2 -> Fixed
 		//Left Main
-		String leftMainXPosition = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "landingGear/contact["+1+"]/location/x");		
-		String leftMainYPosition = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "landingGear/contact["+1+"]/location/y");	
-		String leftMainZPosition = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "landingGear/contact["+1+"]/location/z");	
+//		String leftMainXPosition = jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
+//						+ "landingGear/contact["+1+"]/location/x");		
+//		String leftMainYPosition = jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
+//						+ "landingGear/contact["+1+"]/location/y");	
+//		String leftMainZPosition = jpadXmlReader.getXMLPropertyByPath(
+//				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
+//						+ "landingGear/contact["+1+"]/location/z");	
+		double xLeftLandingGear = xRightLandingGear;
+		double yLeftLandingGear = -yRightLandingGear;
+		double realHeightLeftLandingGear = realHeightRightLandingGear ;
 		String leftMainGearAttribute = jpadXmlReader.getXMLAttributeByPath(
 				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
 						+ "landingGear/contact["+1+"]", "type");
@@ -310,44 +375,7 @@ public class JSBSimModel {
 						+ "/contact["+1+"]/retractable");//1->Retrectable 1 -> Fixed
 
 
-		//Right Main
-		String rightMainXPosition = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "landingGear/contact["+2+"]/location/x");		
-		String rightMainYPosition = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "landingGear/contact["+2+"]/location/y");	
-		String rightMainZPosition = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "landingGear/contact["+2+"]/location/z");			
-		String rightMainGearAttribute = jpadXmlReader.getXMLAttributeByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/"
-						+ "landingGear/contact["+2+"]", "type");	
-		String rightMainGearStatic_Friction = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/static_friction");
-		String rightMainGearDynamic_Friction = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/dynamic_friction");
-		String rightMainGearRolling_friction = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/rolling_friction");
-		String rightMainGearSpring_coeff = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/spring_coeff"); //LBS/FT
-		String rightMainGearDamping_coeff = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/damping_coeff");//LBS/FT
-		String rightMainGearDamping_coeff_rebound = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/damping_coeff_rebound");//LBS/FT		
-
-		String rightMainGearMax_steer = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/max_steer");//Deg
-		String rightMainGearRetractable = jpadXmlReader.getXMLPropertyByPath(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/landingGear"
-						+ "/contact["+2+"]/retractable");//2->Retrectable 2 -> Fixed	
+	
 
 		//Propulsion
 		//GeoData
