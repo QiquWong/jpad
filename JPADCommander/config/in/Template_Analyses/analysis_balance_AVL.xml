@@ -3,8 +3,7 @@
     <analysis>
         <balance 
             id="JPAD Test analysis - BALANCE" 
-            from_xls_file="true" 
-            file="Weights.xlsx"
+            weights_from_previous_analysis="true" 
             >
             <maximum_take_off_mass unit="kg">30000</maximum_take_off_mass>
 			<maximum_zero_fuel_mass unit="kg">22000</maximum_zero_fuel_mass>

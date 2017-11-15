@@ -10,25 +10,25 @@
 		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
-    <analyses id="IRON analysis">
+	<analyses id="CS-300 analysis">
 	<!--
         <weights 
-            file="analysis_weights_IRON.xml" 
+            file="analysis_weights_DASH8.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
-			method_fuselage=""
+            method_fuselage=""
             method_wing=""
-            method_htail=""
+            method_htail="JENKINSON"
             method_vtail=""
-			method_nacelles=""
+			method_nacelles="TORENBEEK_1982"
 			method_landing_gears=""
 			method_systems=""
             />
 	-->
 		<!-- method_XXX="AVERAGED" if empty string -->
-    <!--
+	<!--
 	<balance 
-			file="analysis_balance_IRON.xml"
+			file="analysis_balance_DASH8.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
             method_fuselage=""
@@ -38,23 +38,24 @@
 			method_canard=""
 		/>
 	-->
-	<aerodynamic_and_stability
-			plot="FALSE"
-			create_CSV="FALSE"
-			take_off_condition="TRUE"
-			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
-			climb_condition="FALSE"
-			file_climb_condition="analysis_aerodynamics_Prototype.xml"
-			cruise_condition="FALSE"
-			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
-			landing_condition="FALSE"
-			file_landing_condition="analysis_aerodynamics_Prototype.xml"
-	/>
 	<!--
+	<aerodynamic_and_stability
+			plot="TRUE"
+			create_CSV="TRUE"
+			take_off_condition="TRUE"
+			file_take_off_condition="analysis_aerodynamics_TAKE_OFF_DASH8.xml"
+			climb_condition="FALSE"
+			file_climb_condition="analysis_aerodynamics_CLIMB_DASH8.xml"
+			cruise_condition="TRUE"
+			file_cruise_condition="analysis_aerodynamics_CRUISE_DASH8.xml"
+			landing_condition="FALSE"
+			file_landing_condition="analysis_aerodynamics_LANDING_DASH8.xml"
+	/>
+	-->
 	<performance 
-			file="analysis_performance_IRON.xml"
-			plot="FALSE"
-			create_CSV="FALSE"
+			file="analysis_performance_DASH8.xml"
+			plot="TRUE"
+			create_CSV="TRUE"
 			take_off="TRUE"
 			climb="TRUE"
 			cruise="TRUE"
@@ -64,10 +65,9 @@
 			V_n_diagram="TRUE"
 			mission_profile="TRUE"
 	/>
-	-->
 	<!--
 	<costs 
-			file="analysis_costs_IRON.xml"
+			file="analysis_costs_DASH8.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			doc_capital="TRUE"

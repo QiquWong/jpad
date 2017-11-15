@@ -31,12 +31,12 @@
                 <dihedral unit="deg">5.5</dihedral>
                 <sweep_leading_edge unit="deg">30</sweep_leading_edge>
                 <inner_section>
-                    <chord unit="m">7.63</chord>
+                    <chord unit="m">6.64</chord>
                     <airfoil file="ROOT_CS300.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </inner_section>
                 <outer_section>
-                    <chord unit="m">3.81</chord>
+                    <chord unit="m">3.45</chord>
                     <airfoil file="ROOT_CS300.xml"/>
                     <geometric_twist unit="deg">0.0</geometric_twist>
                 </outer_section>
@@ -46,7 +46,7 @@
                 <dihedral unit="deg">5.5</dihedral>
                 <sweep_leading_edge unit="deg">30</sweep_leading_edge>
                 <outer_section>
-                    <chord unit="m">1.82</chord>
+                    <chord unit="m">1.75</chord>
                     <airfoil file="TIP_CS300.xml"/>
                     <geometric_twist unit="deg">-2</geometric_twist>
                 </outer_section>
