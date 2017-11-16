@@ -120,15 +120,15 @@ public class ReaderWriterWing {
 		}
 		
 		List<String> airfoilTypeProperty = reader.getXMLPropertiesByPath("//airfoil_type");
-		if(airfoilFamilyProperty.get(0).equals("CONVENTIONAL"))
+		if(airfoilTypeProperty.get(0).equals("CONVENTIONAL"))
 			input.setMeanAirfoilType(AirfoilTypeEnum.CONVENTIONAL);
-		else if(airfoilFamilyProperty.get(0).equals("PEAKY"))
+		else if(airfoilTypeProperty.get(0).equals("PEAKY"))
 			input.setMeanAirfoilType(AirfoilTypeEnum.PEAKY);
-		else if(airfoilFamilyProperty.get(0).equals("SUPERCRITICAL"))
+		else if(airfoilTypeProperty.get(0).equals("SUPERCRITICAL"))
 			input.setMeanAirfoilType(AirfoilTypeEnum.SUPERCRITICAL);
-		else if(airfoilFamilyProperty.get(0).equals("LAMINAR"))
+		else if(airfoilTypeProperty.get(0).equals("LAMINAR"))
 			input.setMeanAirfoilType(AirfoilTypeEnum.LAMINAR);
-		else if(airfoilFamilyProperty.get(0).equals("MODERN_SUPERCRITICAL"))
+		else if(airfoilTypeProperty.get(0).equals("MODERN_SUPERCRITICAL"))
 			input.setMeanAirfoilType(AirfoilTypeEnum.MODERN_SUPERCRITICAL);
 		else {
 			System.err.println("NO VALID FAMILY TYPE!!");
@@ -186,7 +186,7 @@ public class ReaderWriterWing {
 		
 		List<String> alphaStallDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//alpha_stall_distribution").get(0));
 		for(int i=0; i<alphaStallDistribution.size(); i++)
-			input.getAlphaStarDistributionInput().add(Amount.valueOf(Double.valueOf(alphaStallDistribution.get(i)), NonSI.DEGREE_ANGLE));
+			input.getAlphaStallDistributionInput().add(Amount.valueOf(Double.valueOf(alphaStallDistribution.get(i)), NonSI.DEGREE_ANGLE));
 		
 		List<String> clMaxDistribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//maximum_lift_coefficient_distribution").get(0));
 		for(int i=0; i<clMaxDistribution.size(); i++)

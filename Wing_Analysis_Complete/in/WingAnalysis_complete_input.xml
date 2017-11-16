@@ -17,7 +17,7 @@
              </global>
              <distribution>
                 <number_of_given_sections>3</number_of_given_sections>
-                <airfoil_family>NACA_65_SERIES</airfoil_family> 
+                <airfoil_family>NACA_65_SERIES</airfoil_family> <!-- NACA_4_DIGIT, NACA_5_DIGIT, NACA_63_SERIES, NACA_64_SERIES, NACA_65_SERIES, NACA_66_SERIES, BICONVEX, DOUBLE_WEDGE -->
 				<airfoil_type>CONVENTIONAL</airfoil_type> <!-- CONVENTIONAL, PEAKY, SUPERCRITICAL, LAMINAR, MODERN_SUPERCRITICAL -->
 				<max_thickness_mean_airfoil>0.15</max_thickness_mean_airfoil>
                    <geometry>

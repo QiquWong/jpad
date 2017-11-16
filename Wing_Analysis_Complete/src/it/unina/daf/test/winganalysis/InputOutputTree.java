@@ -141,6 +141,7 @@ public class InputOutputTree {
 		clIdealDistributionInput = new ArrayList<Double>();
 		kDistributionInput = new ArrayList<Double>();
 		cmc4DistributionInput = new ArrayList<Double>();
+		chordDistributionActual = new ArrayList<>();
 	
 		machNumber = 0.0;
 		aspectRatio = 0.0;
@@ -172,6 +173,8 @@ public class InputOutputTree {
 		 parasiteDragDistribution = new ArrayList<>();
 		 inducedDragDistribution = new ArrayList<>();
 		 waweDragDistribution = new ArrayList<>();
+		 clZeroDistributionInput = new ArrayList<>();
+		 clalphaDEGDistributionInput = new ArrayList<>();
 		 
 		 _discretizedAirfoilsCl = new ArrayList<>();
 		 _discretizedAirfoilsCd =  new ArrayList<>();

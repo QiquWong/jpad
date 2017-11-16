@@ -29,7 +29,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/hdf-java-2.6.1.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/1.8.12/lib/hdf5.lib"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/jarh5obj.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/jpad/libraries/hdf/fits.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/jpad/libraries/hdf/hdf-java-2.6.1.jar"/>

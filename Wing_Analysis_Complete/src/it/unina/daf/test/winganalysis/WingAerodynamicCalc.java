@@ -39,7 +39,7 @@ public class WingAerodynamicCalc {
 	public static void calculateAll(InputOutputTree input) throws InstantiationException, IllegalAccessException{
 
 		input.setSpan(Amount.valueOf(Math.sqrt(input.getAspectRatio()*input.getSurface().doubleValue(SI.SQUARE_METRE)), SI.METER));
-		input.setSemiSpan(input.getSemiSpan().divide(2));
+		input.setSemiSpan(input.getSpan().divide(2));
 		
 		// DISTRIBUTIONS
 		input.setyAdimensionalStationActual(MyArrayUtils.convertDoubleArrayToListDouble(
@@ -71,7 +71,7 @@ public class WingAerodynamicCalc {
 				        MyArrayUtils.convertListOfAmountTodoubleArray(input.getTwistDistributionInput()),
 				        MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
 				),
-		SI.METER));
+		NonSI.DEGREE_ANGLE));
 		
 		input.setAlphaStarDistributionActual(MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyMathUtils.getInterpolatedValue1DLinear(
@@ -79,7 +79,7 @@ public class WingAerodynamicCalc {
 				        MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaStarDistributionInput()),
 				        MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
 				),
-		SI.METER));
+				NonSI.DEGREE_ANGLE));
 		
 		input.setAlphaStarDistributionActual(MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyMathUtils.getInterpolatedValue1DLinear(
@@ -87,7 +87,7 @@ public class WingAerodynamicCalc {
 				        MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaStallDistributionInput()),
 				        MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
 				),
-		SI.METER));
+				NonSI.DEGREE_ANGLE));
 		
 		input.setAlphaZeroLiftDistributionActual(MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyMathUtils.getInterpolatedValue1DLinear(
@@ -95,7 +95,7 @@ public class WingAerodynamicCalc {
 				        MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaZeroLiftDistributionInput()),
 				        MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
 				),
-		SI.METER));
+				NonSI.DEGREE_ANGLE));
 		
 		input.setAlphaStallDistributionActual(MyArrayUtils.convertDoubleArrayToListOfAmount(
 				MyMathUtils.getInterpolatedValue1DLinear(
@@ -103,7 +103,7 @@ public class WingAerodynamicCalc {
 				        MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaStallDistributionInput()),
 				        MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
 				),
-		SI.METER));
+				NonSI.DEGREE_ANGLE));
 		
 		input.setMaximumliftCoefficientDistributionActual(MyArrayUtils.convertDoubleArrayToListDouble(
 						MyMathUtils.getInterpolatedValue1DLinear(
@@ -183,7 +183,194 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 			xle = 2.0 * xle / input.getSurface().to(SI.SQUARE_METRE).getEstimatedValue();
 			Amount<Length> meanAerodynamicChordLeadingEdgeX = Amount.valueOf(xle,SI.METRE);
 	
-		
+		//------------------------------------------------------------------------------------
+		// ALPHAS
+		//------------------------------------------------------------------------------------
+			
+			//------------------------------------------------------------------------------------
+			// CL --------------------------------------------------------------------------------
+			//------------------------------------------------------------------------------------
+
+			double [] dihedralActualZero = new double [input.getNumberOfPointSemispan()];	
+			for (int i=0; i< dihedralActualZero.length; i++){
+				dihedralActualZero[i] = 0.0;
+			}
+			double vortexSemiSpanToSemiSpanRatio = (1./(2*input.getNumberOfPointSemispan()));
+
+			NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
+					input.getSemiSpan().getEstimatedValue(), 
+					input.getSurface().getEstimatedValue(),
+				    MyArrayUtils.convertListOfAmountTodoubleArray(input.getyDimensionaStationActual()),
+				    MyArrayUtils.convertListOfAmountTodoubleArray(input.getChordDistributionActual()),
+				    MyArrayUtils.convertListOfAmountTodoubleArray(input.getxLEDistributionActual()),
+					dihedralActualZero,
+					MyArrayUtils.convertListOfAmountTodoubleArray(input.getTwistDistributionActual()),
+					MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaZeroLiftDistributionActual()),
+					vortexSemiSpanToSemiSpanRatio,
+					0.0,
+					input.getMachNumber(),
+					input.getAltitude().getEstimatedValue());
+
+			//cl alpha
+			Amount<Angle> alphaFirst = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
+			Amount<Angle> alphaSecond = Amount.valueOf(Math.toRadians(4.0), SI.RADIAN);
+			theNasaBlackwellCalculator.calculate(alphaFirst);
+			double cLFirst = theNasaBlackwellCalculator.get_cLEvaluated();
+			theNasaBlackwellCalculator.calculate(alphaSecond);
+			double cLSecond = theNasaBlackwellCalculator.get_cLEvaluated();
+			double cLAlpha = (cLSecond - cLFirst)/(alphaSecond.doubleValue(NonSI.DEGREE_ANGLE)-alphaFirst.doubleValue(NonSI.DEGREE_ANGLE)); // 1/rad
+			input.setcLAlpha(cLAlpha); // 1/deg
+
+			// alpha zero lift e cl zero
+			Amount<Angle> alphaZero = Amount.valueOf(0.0, SI.RADIAN);
+			theNasaBlackwellCalculator.calculate(alphaZero);
+			double cLZero = theNasaBlackwellCalculator.get_cLEvaluated();
+			input.setcLZero(cLZero);
+			double alphaZeroLift = -(cLZero)/cLAlpha;
+			input.setAlphaZeroLift(Amount.valueOf(Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE));
+
+			// alpha Star
+			double rootChord = input.getChordDistributionInput().get(0).doubleValue(SI.METER);
+			double kinkChord = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual())), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(input.getChordDistributionActual()),
+					input.getAdimensionalKinkStation());
+			double tipChord = input.getChordDistributionInput().get(input.getChordDistributionInput().size()-1).doubleValue(SI.METER);
+
+			double alphaStarRoot= input.getAlphaStarDistributionInput().get(0).doubleValue(NonSI.DEGREE_ANGLE);
+			double alphaStarKink = MyMathUtils.getInterpolatedValue1DLinear(
+					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual())), 
+					MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaStarDistributionActual()),
+					input.getAdimensionalKinkStation());
+			double alphaStarTip = input.getAlphaStarDistributionInput().get(input.getAlphaStarDistributionInput().size()-1).doubleValue(NonSI.DEGREE_ANGLE); 
+
+			double dimensionalKinkStation = input.getAdimensionalKinkStation()*input.getSemiSpan().getEstimatedValue();
+			double dimensionalOverKink = input.getSemiSpan().getEstimatedValue() - dimensionalKinkStation;
+
+			double influenceAreaRoot = rootChord * dimensionalKinkStation/2;
+			double influenceAreaKink = (kinkChord * dimensionalKinkStation/2) + (kinkChord * dimensionalOverKink/2);
+			double influenceAreaTip = tipChord * dimensionalOverKink/2;
+
+			double kRoot = 2*influenceAreaRoot/input.getSurface().getEstimatedValue();
+			double kKink = 2*influenceAreaKink/input.getSurface().getEstimatedValue();
+			double kTip = 2*influenceAreaTip/input.getSurface().getEstimatedValue();
+
+			double alphaStar =  alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
+
+			input.setAlphaStar(Amount.valueOf(Math.toDegrees(alphaStar), NonSI.DEGREE_ANGLE));
+
+			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
+
+			theNasaBlackwellCalculator.calculate(alphaStarAmount);
+			double cLStar = theNasaBlackwellCalculator.get_cLEvaluated();
+			input.setcLStar(cLStar);
+
+
+			// cl Max
+			double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 30, 31);
+			double[] clDistributionActualNasaBlackwell = new double[input.getNumberOfPointSemispan()]; 
+			boolean firstIntersectionFound = false;
+			int indexOfFirstIntersection = 0;
+			int indexOfAlphaFirstIntersection = 0;
+			double diffCLapp = 0;
+			double diffCLappOld = 0;
+			double diffCL = 0;
+			double accuracy =0.0001;
+			double deltaAlpha = 0.0;
+			Amount<Angle> alphaNew = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+			double cLMax = 0.0;
+			Amount<Angle> alphaMaxLinear = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
+
+
+			for (int k = indexOfFirstIntersection; k< input.getNumberOfPointSemispan(); k++) {
+				diffCLapp = ( clDistributionActualNasaBlackwell[k] -  input.getMaximumliftCoefficientDistributionActual().get(k));
+				diffCL = Math.max(diffCLapp, diffCLappOld);
+				diffCLappOld = diffCL;
+			}
+			if( Math.abs(diffCL) < accuracy){
+				cLMax = theNasaBlackwellCalculator.getCLCurrent();
+				alphaMaxLinear = 
+						Amount.valueOf(
+								theNasaBlackwellCalculator.getAlphaCurrent(),
+								NonSI.DEGREE_ANGLE); 
+			}
+			else{
+				deltaAlpha = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] 
+						- alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection-1];
+				alphaNew = Amount.valueOf(
+						(alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] - (deltaAlpha/2)),
+						NonSI.DEGREE_ANGLE
+						).to(SI.RADIAN);
+				double alphaOld = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection]; 
+				diffCLappOld = 0;
+				while ( diffCL > accuracy){
+					diffCL = 0;
+					theNasaBlackwellCalculator.calculate(alphaNew);
+					clDistributionActualNasaBlackwell = theNasaBlackwellCalculator
+							.getClTotalDistribution()
+							.toArray();
+					for (int m =0; m< input.getNumberOfPointSemispan(); m++) {
+						diffCLapp = clDistributionActualNasaBlackwell[m] - input.getMaximumliftCoefficientDistributionActual().get(m);
+
+						if ( diffCLapp > 0 ){
+							diffCL = Math.max(diffCLapp,diffCLappOld);
+							diffCLappOld = diffCL;
+						}
+
+					}
+					deltaAlpha = Math.abs(alphaOld - alphaNew.doubleValue(NonSI.DEGREE_ANGLE));
+					alphaOld = alphaNew.doubleValue(NonSI.DEGREE_ANGLE);
+					if (diffCL == 0){ //this means that diffCL would have been negative
+						alphaNew = Amount.valueOf(
+								alphaOld + (deltaAlpha/2),
+								NonSI.DEGREE_ANGLE
+								);
+						diffCL = 1; // generic positive value in order to enter again in the while cycle 
+						diffCLappOld = 0;
+					}
+					else { 
+						if(deltaAlpha > 0.005){
+							alphaNew = Amount.valueOf(
+									alphaOld - (deltaAlpha/2),
+									NonSI.DEGREE_ANGLE
+									);	
+							diffCLappOld = 0;
+							if ( diffCL < accuracy) break;
+						}
+						else {
+							alphaNew = Amount.valueOf(
+									alphaOld - (deltaAlpha),
+									NonSI.DEGREE_ANGLE
+									);	
+							diffCLappOld = 0;
+							if ( diffCL < accuracy) 
+								break;
+						}
+					}
+				}
+				theNasaBlackwellCalculator.calculate(alphaNew.to(SI.RADIAN));
+				input.setClDistributionAtStall(
+						MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(
+								theNasaBlackwellCalculator.getClTotalDistribution().toArray()
+								)));	
+				input.setcLMax(theNasaBlackwellCalculator.getCLCurrent());
+				input.setAlphaMaxLinear(alphaNew);
+			}
+
+			// alpha stall
+			double alphaMax = ((cLMax-cLZero)/Math.toRadians(cLAlpha));
+			double alphaStall = alphaMax + input.getDeltaAlpha();
+			input.setAlphaStall(Amount.valueOf(alphaStall, NonSI.DEGREE_ANGLE));
+			
+			Double [] alphaCleanArrayPlotDouble = MyArrayUtils.linspaceDouble(
+					input.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)-5, 
+					input.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE) + 2, 
+					input.getNumberOfAlphaCL()
+					);
+			
+			input.setAlphaVector(MyArrayUtils.convertDoubleArrayToListOfAmount(alphaCleanArrayPlotDouble, NonSI.DEGREE_ANGLE));
+	
+			
 		//------------------------------------------------------------------------------------
 		// CL, CD, CM MATRIX
 		//------------------------------------------------------------------------------------
@@ -203,7 +390,7 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 			double b = 0.0;
 			double c = 0.0;
 			double d = 0.0;
-			double cLStar = (input.getClalphaDEGDistributionActual().get(ii))
+			double cLStarnew = (input.getClalphaDEGDistributionActual().get(ii))
 					* input.getAlphaStarDistributionActual().get(ii).doubleValue(NonSI.DEGREE_ANGLE)
 					+ input.getClZeroDistributionActual().get(ii);
 
@@ -244,7 +431,7 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 					double [] vector = {
 							input.getMaximumliftCoefficientDistributionActual().get(ii),
 							0,
-							cLStar,
+							cLStarnew,
 							input.getClalphaDEGDistributionActual().get(ii)
 					};
 
@@ -353,189 +540,10 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 		));
 		System.out.println("Cl max distribution =  " + input.getMaximumliftCoefficientDistributionActual().toString());
 		
-		//------------------------------------------------------------------------------------
-		// CL --------------------------------------------------------------------------------
-		//------------------------------------------------------------------------------------
-
-		double [] dihedralActualZero = new double [input.getNumberOfPointSemispan()];	
-		for (int i=0; i< dihedralActualZero.length; i++){
-			dihedralActualZero[i] = 0.0;
-		}
-		double vortexSemiSpanToSemiSpanRatio = (1./(2*input.getNumberOfPointSemispan()));
-
-		NasaBlackwell theNasaBlackwellCalculator = new  NasaBlackwell(
-				input.getSemiSpan().getEstimatedValue(), 
-				input.getSurface().getEstimatedValue(),
-			    MyArrayUtils.convertListOfAmountTodoubleArray(input.getyDimensionaStationActual()),
-			    MyArrayUtils.convertListOfAmountTodoubleArray(input.getChordDistributionActual()),
-			    MyArrayUtils.convertListOfAmountTodoubleArray(input.getxLEDistributionActual()),
-				dihedralActualZero,
-				MyArrayUtils.convertListOfAmountTodoubleArray(input.getTwistDistributionActual()),
-				MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaZeroLiftDistributionActual()),
-				vortexSemiSpanToSemiSpanRatio,
-				0.0,
-				input.getMachNumber(),
-				input.getAltitude().getEstimatedValue());
-
-		//cl alpha
-		Amount<Angle> alphaFirst = Amount.valueOf(Math.toRadians(2.0), SI.RADIAN);
-		Amount<Angle> alphaSecond = Amount.valueOf(Math.toRadians(4.0), SI.RADIAN);
-		theNasaBlackwellCalculator.calculate(alphaFirst);
-		double cLFirst = theNasaBlackwellCalculator.get_cLEvaluated();
-		theNasaBlackwellCalculator.calculate(alphaSecond);
-		double cLSecond = theNasaBlackwellCalculator.get_cLEvaluated();
-		double cLAlpha = (cLSecond - cLFirst)/(alphaSecond.doubleValue(NonSI.DEGREE_ANGLE)-alphaFirst.doubleValue(NonSI.DEGREE_ANGLE)); // 1/rad
-		input.setcLAlpha(cLAlpha); // 1/deg
-
-		// alpha zero lift e cl zero
-		Amount<Angle> alphaZero = Amount.valueOf(0.0, SI.RADIAN);
-		theNasaBlackwellCalculator.calculate(alphaZero);
-		double cLZero = theNasaBlackwellCalculator.get_cLEvaluated();
-		input.setcLZero(cLZero);
-		double alphaZeroLift = -(cLZero)/cLAlpha;
-		input.setAlphaZeroLift(Amount.valueOf(Math.toDegrees(alphaZeroLift), NonSI.DEGREE_ANGLE));
-
-		// alpha Star
-		double rootChord = input.getChordDistributionInput().get(0).doubleValue(SI.METER);
-		double kinkChord = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual())), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(input.getChordDistributionActual()),
-				input.getAdimensionalKinkStation());
-		double tipChord = input.getChordDistributionInput().get(input.getChordDistributionInput().size()-1).doubleValue(SI.METER);
-
-		double alphaStarRoot= input.getAlphaStarDistributionInput().get(0).doubleValue(NonSI.DEGREE_ANGLE);
-		double alphaStarKink = MyMathUtils.getInterpolatedValue1DLinear(
-				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual())), 
-				MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaStarDistributionActual()),
-				input.getAdimensionalKinkStation());
-		double alphaStarTip = input.getAlphaStarDistributionInput().get(input.getAlphaStarDistributionInput().size()-1).doubleValue(NonSI.DEGREE_ANGLE); 
-
-		double dimensionalKinkStation = input.getAdimensionalKinkStation()*input.getSemiSpan().getEstimatedValue();
-		double dimensionalOverKink = input.getSemiSpan().getEstimatedValue() - dimensionalKinkStation;
-
-		double influenceAreaRoot = rootChord * dimensionalKinkStation/2;
-		double influenceAreaKink = (kinkChord * dimensionalKinkStation/2) + (kinkChord * dimensionalOverKink/2);
-		double influenceAreaTip = tipChord * dimensionalOverKink/2;
-
-		double kRoot = 2*influenceAreaRoot/input.getSurface().getEstimatedValue();
-		double kKink = 2*influenceAreaKink/input.getSurface().getEstimatedValue();
-		double kTip = 2*influenceAreaTip/input.getSurface().getEstimatedValue();
-
-		double alphaStar =  alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
-
-		input.setAlphaStar(Amount.valueOf(Math.toDegrees(alphaStar), NonSI.DEGREE_ANGLE));
-
-		Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, SI.RADIAN);
-
-		theNasaBlackwellCalculator.calculate(alphaStarAmount);
-		double cLStar = theNasaBlackwellCalculator.get_cLEvaluated();
-		input.setcLStar(cLStar);
-
-
-		// cl Max
-		double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 30, 31);
-		double[] clDistributionActualNasaBlackwell = new double[input.getNumberOfPointSemispan()]; 
-		boolean firstIntersectionFound = false;
-		int indexOfFirstIntersection = 0;
-		int indexOfAlphaFirstIntersection = 0;
-		double diffCLapp = 0;
-		double diffCLappOld = 0;
-		double diffCL = 0;
-		double accuracy =0.0001;
-		double deltaAlpha = 0.0;
-		Amount<Angle> alphaNew = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-		double cLMax = 0.0;
-		Amount<Angle> alphaMaxLinear = Amount.valueOf(0.0, NonSI.DEGREE_ANGLE);
-
-
-		for (int k = indexOfFirstIntersection; k< input.getNumberOfPointSemispan(); k++) {
-			diffCLapp = ( clDistributionActualNasaBlackwell[k] -  input.getMaximumliftCoefficientDistributionActual().get(k));
-			diffCL = Math.max(diffCLapp, diffCLappOld);
-			diffCLappOld = diffCL;
-		}
-		if( Math.abs(diffCL) < accuracy){
-			cLMax = theNasaBlackwellCalculator.getCLCurrent();
-			alphaMaxLinear = 
-					Amount.valueOf(
-							theNasaBlackwellCalculator.getAlphaCurrent(),
-							NonSI.DEGREE_ANGLE); 
-		}
-		else{
-			deltaAlpha = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] 
-					- alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection-1];
-			alphaNew = Amount.valueOf(
-					(alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection] - (deltaAlpha/2)),
-					NonSI.DEGREE_ANGLE
-					).to(SI.RADIAN);
-			double alphaOld = alphaArrayNasaBlackwell[indexOfAlphaFirstIntersection]; 
-			diffCLappOld = 0;
-			while ( diffCL > accuracy){
-				diffCL = 0;
-				theNasaBlackwellCalculator.calculate(alphaNew);
-				clDistributionActualNasaBlackwell = theNasaBlackwellCalculator
-						.getClTotalDistribution()
-						.toArray();
-				for (int m =0; m< input.getNumberOfPointSemispan(); m++) {
-					diffCLapp = clDistributionActualNasaBlackwell[m] - input.getMaximumliftCoefficientDistributionActual().get(m);
-
-					if ( diffCLapp > 0 ){
-						diffCL = Math.max(diffCLapp,diffCLappOld);
-						diffCLappOld = diffCL;
-					}
-
-				}
-				deltaAlpha = Math.abs(alphaOld - alphaNew.doubleValue(NonSI.DEGREE_ANGLE));
-				alphaOld = alphaNew.doubleValue(NonSI.DEGREE_ANGLE);
-				if (diffCL == 0){ //this means that diffCL would have been negative
-					alphaNew = Amount.valueOf(
-							alphaOld + (deltaAlpha/2),
-							NonSI.DEGREE_ANGLE
-							);
-					diffCL = 1; // generic positive value in order to enter again in the while cycle 
-					diffCLappOld = 0;
-				}
-				else { 
-					if(deltaAlpha > 0.005){
-						alphaNew = Amount.valueOf(
-								alphaOld - (deltaAlpha/2),
-								NonSI.DEGREE_ANGLE
-								);	
-						diffCLappOld = 0;
-						if ( diffCL < accuracy) break;
-					}
-					else {
-						alphaNew = Amount.valueOf(
-								alphaOld - (deltaAlpha),
-								NonSI.DEGREE_ANGLE
-								);	
-						diffCLappOld = 0;
-						if ( diffCL < accuracy) 
-							break;
-					}
-				}
-			}
-			theNasaBlackwellCalculator.calculate(alphaNew.to(SI.RADIAN));
-			input.setClDistributionAtStall(
-					MyArrayUtils.convertDoubleArrayToListDouble(MyArrayUtils.convertFromDoubleToPrimitive(
-							theNasaBlackwellCalculator.getClTotalDistribution().toArray()
-							)));	
-			input.setcLMax(theNasaBlackwellCalculator.getCLCurrent());
-			input.setAlphaMaxLinear(alphaNew);
-		}
-
-		// alpha stall
-		double alphaMax = ((cLMax-cLZero)/Math.toRadians(cLAlpha));
-		double alphaStall = alphaMax + input.getDeltaAlpha();
-		input.setAlphaStall(Amount.valueOf(alphaStall, NonSI.DEGREE_ANGLE));
 
 		//--------------------------------------------------------------------------------------
 		// BUILDING CLEAN CURVE: 
 		//--------------------------------------------------------------------------------------
-		Double [] alphaCleanArrayPlotDouble = MyArrayUtils.linspaceDouble(
-				input.getAlphaZeroLift().doubleValue(NonSI.DEGREE_ANGLE)-5, 
-				input.getAlphaStall().doubleValue(NonSI.DEGREE_ANGLE) + 2, 
-				input.getNumberOfAlphaCL()
-				);
 
 		input.setcLVsAlphaVector(
 				MyArrayUtils.convertDoubleArrayToListDouble(
