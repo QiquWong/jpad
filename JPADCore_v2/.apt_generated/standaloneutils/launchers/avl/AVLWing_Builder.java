@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
+import standaloneutils.launchers.avl.AVLWing;
+import standaloneutils.launchers.avl.AVLWingSection;
 
 /**
  * Auto-generated superclass of {@link AVLWing.Builder},

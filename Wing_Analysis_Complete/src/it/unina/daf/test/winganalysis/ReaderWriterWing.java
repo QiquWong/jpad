@@ -372,25 +372,25 @@ public class ReaderWriterWing {
 				System.out.println("] " + input.getAlphaStallDistributionInput().get(0).getUnit() );
 			
 		System.out.print("Cl max distribution : ");
-			System.out.print(input.getMaximumliftCoefficientDistributionInput());
+			System.out.println(input.getMaximumliftCoefficientDistributionInput());
 			
 		System.out.print("Cl zero distribution : ");
-			System.out.print(input.getClZeroDistributionInput());
+			System.out.println(input.getClZeroDistributionInput());
 			
 			System.out.print("Cl alpha distribution : ");
-			System.out.print(input.getClalphaDEGDistributionInput());
+			System.out.println(input.getClalphaDEGDistributionInput());
 			
 		System.out.print("Cd min distribution : ");
-			System.out.print(input.getCdMinDistributionInput());
+			System.out.println(input.getCdMinDistributionInput());
 			
 		System.out.print("Cl ideal distribution : ");
-			System.out.print(input.getClIdealDistributionInput());
+			System.out.println(input.getClIdealDistributionInput());
 			
 		System.out.print("K distribution : ");
-			System.out.print(input.getkDistributionInput());
+			System.out.println(input.getkDistributionInput());
 			
 		System.out.print("Cm c4 distribution : ");
-			System.out.print(input.getCmc4DistributionInput());
+			System.out.println(input.getCmc4DistributionInput());
 			
 		System.out.print("\nAdimentional stations :");
 		 	System.out.println(input.getyAdimensionalStationInput());
