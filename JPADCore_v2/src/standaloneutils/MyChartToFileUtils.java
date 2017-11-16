@@ -1,8 +1,11 @@
 package standaloneutils;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,18 +35,27 @@ import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYDrawableAnnotation;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.LogAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.PieSectionLabelGenerator;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.DefaultDrawingSupplier;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.ui.HorizontalAlignment;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.time.Month;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 import org.jscience.physics.amount.Amount;
 
 import com.google.common.collect.HashBasedTable;
@@ -69,8 +81,8 @@ public class MyChartToFileUtils {
 	private String symbolicCoords;
 	private Array2DRowRealMatrix xArrays, yArrays;
 	private int numberOfXarrays;
-	private int numberOfYarrays;
-	private int width, height;
+	private static int numberOfYarrays;
+	private static int width, height;
 	
 	// TODO: elaborate on this
 	List<ArrayRealVector> xVectors, yVectors;
@@ -326,6 +338,18 @@ public class MyChartToFileUtils {
 							)
 					);
 		
+		chartFactory.createMultiTraceSVG(
+				path,
+				fileName,
+				xLabel, 
+				yLabel,
+				xUnit,
+				yUnit,
+				width,
+				height
+				);
+		
+		
 	}
 
 	// TODO: document me!
@@ -382,6 +406,17 @@ public class MyChartToFileUtils {
 							+ fileName 
 							)
 					);
+		
+		chartFactory.createMultiTraceSVG(
+				path,
+				fileName,
+				xLabel, 
+				yLabel,
+				xUnit,
+				yUnit,
+				width,
+				height
+				);
 	}
 	
 	
@@ -498,6 +533,17 @@ public class MyChartToFileUtils {
 							)
 					);
 		
+		chartFactory.createMultiTraceSVG(
+				path,
+				fileName,
+				xLabel, 
+				yLabel,
+				xUnit,
+				yUnit,
+				width,
+				height
+				);
+		
 	}
 	
 	public static void plotNOCSV(
@@ -592,6 +638,17 @@ public class MyChartToFileUtils {
 		legend = legend.stream().map(s -> s.replace("(", "")).collect(Collectors.toList());
 		legend = legend.stream().map(s -> s.replace(")", "")).collect(Collectors.toList());
 		legend = legend.stream().map(s -> s.replace("/", "")).collect(Collectors.toList());
+		
+		chartFactory.createMultiTraceSVG(
+				path,
+				fileName,
+				xLabel, 
+				yLabel,
+				xUnit,
+				yUnit,
+				width,
+				height
+				);
 	}
 	
 	
@@ -789,6 +846,17 @@ public class MyChartToFileUtils {
 					);
 		}
 		
+		chartFactory.createMultiTraceSVG(
+				path,
+				fileName,
+				xLabel, 
+				yLabel,
+				xUnit,
+				yUnit,
+				width,
+				height
+				);
+		
 	}
 
 //	public static void plotNoLegend( //xArrays is 1D
@@ -982,9 +1050,11 @@ public class MyChartToFileUtils {
 		
 		// creation of the file .png
 		File xyChart = new File(folderPathName + fileName + ".png"); 
+		File xyChartSVG = new File(folderPathName + fileName + ".svg"); 
 
 		try {
 			ChartUtilities.saveChartAsPNG(xyChart, chart, 1920, 1080);
+			MyChartToFileUtils.createMultiTraceSVG(chart, xyChartSVG, 1920, 1080);
 		} catch (IOException e) {
 			System.err.println("Problem occurred creating chart.");
 		}
@@ -1154,9 +1224,11 @@ public class MyChartToFileUtils {
 		
 		// creation of the file .png
 		File xyChart = new File(folderPathName + fileName + ".png"); 
+		File xyChartSVG = new File(folderPathName + fileName + ".svg");
 
 		try {
 			ChartUtilities.saveChartAsPNG(xyChart, chart, 1920, 1080);
+			MyChartToFileUtils.createMultiTraceSVG(chart, xyChartSVG, 1920, 1080);
 		} catch (IOException e) {
 			System.err.println("Problem occurred creating chart.");
 		}
@@ -1270,9 +1342,11 @@ public class MyChartToFileUtils {
 		
 		// creation of the file .png
 		File pieChart = new File(folderPathName + fileName + ".png"); 
+		File pieChartSVG = new File(folderPathName + fileName + ".svg"); 
 
 		try {
 			ChartUtilities.saveChartAsPNG(pieChart, chart, 1920, 1080);
+			MyChartToFileUtils.createPieChartSVG(chart, pieChartSVG, 1920, 1080);
 		} catch (IOException e) {
 			System.err.println("Problem occurred creating chart.");
 		}
@@ -1699,7 +1773,7 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit, 
 			boolean stripTrailingZeros) {
 
-		addArraysToPng(numberOfXarrays, numberOfYarrays, xArrays, yArrays, stripTrailingZeros);
+		addArraysToDataset(numberOfXarrays, numberOfYarrays, xArrays, yArrays, stripTrailingZeros);
 
 		createPNG(
 				path + fileName,
@@ -1719,7 +1793,7 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit, 
 			boolean stripTrailingZeros) {
 
-		addArraysToPng(numberOfXarrays, numberOfYarrays, xArrays, yArrays, stripTrailingZeros);
+		addArraysToDataset(numberOfXarrays, numberOfYarrays, xArrays, yArrays, stripTrailingZeros);
 
 		//addArraysToPng(xVectors.size(), yVectors.size(), xVectors, yVectors, stripTrailingZeros);
 		
@@ -1741,7 +1815,7 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit, 
 			boolean stripTrailingZeros) {
 
-		addArraysToPng(numberOfXarrays, numberOfYarrays, xArrays, yArrays, stripTrailingZeros);
+		addArraysToDataset(numberOfXarrays, numberOfYarrays, xArrays, yArrays, stripTrailingZeros);
 
 		createPNGNoLegend(
 				path + fileName,
@@ -1751,7 +1825,7 @@ public class MyChartToFileUtils {
 				width, height);
 	}
 
-	private void addArraysToPng(int numberOfXarrays, int numberOfYarrays, 
+	private void addArraysToDataset(int numberOfXarrays, int numberOfYarrays, 
 			Array2DRowRealMatrix xArrays, Array2DRowRealMatrix yArrays, 
 			boolean stripTrailingZeros) {
 
@@ -1857,7 +1931,7 @@ public class MyChartToFileUtils {
 
 	
 	// TODO: with lists
-	private void addArraysToPng(int numberOfXarrays, int numberOfYarrays, 
+	private void addArraysToDataset(int numberOfXarrays, int numberOfYarrays, 
 			List<ArrayRealVector> xArrays, List<ArrayRealVector> yArrays, 
 			boolean stripTrailingZeros) {
 
@@ -3086,6 +3160,158 @@ public class MyChartToFileUtils {
 				xLabel, yLabel, xUnit, yUnit, stripTrailingZeros);
 	}
 
+	public void createMultiTraceSVG(
+			String path,
+			String fileName,
+			String xLabel, String yLabel,
+			String xUnit, String yUnit,
+			int width, int height
+			) {
+		
+		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
+
+		addArraysToDataset(numberOfXarrays, numberOfYarrays, xArrays, yArrays, stripTrailingZeros);
+		
+		PlotOrientation orientation;
+		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
+		else orientation = PlotOrientation.VERTICAL;
+
+		final Paint[] paintArray;
+		// create default colors but modify some colors that are hard to see
+		paintArray = ChartColor.createDefaultPaintArray();
+		paintArray[0] = ChartColor.BLACK;
+		paintArray[1] = ChartColor.BLUE;
+		paintArray[2] = ChartColor.RED;
+		paintArray[3] = ChartColor.DARK_GREEN;
+		paintArray[4] = ChartColor.DARK_YELLOW;
+		paintArray[5] = ChartColor.DARK_GRAY;
+		paintArray[6] = ChartColor.DARK_BLUE;
+		paintArray[7] = ChartColor.DARK_RED;
+		paintArray[8] = ChartColor.VERY_DARK_GREEN;
+		paintArray[9] = ChartColor.ORANGE;
+		
+		JFreeChart xylineChart = ChartFactory.createXYLineChart(
+				fileName, 
+				xLabel + " " + xUnit,
+				yLabel + " " + yUnit, 
+				datasetLineChart,
+				orientation, 
+				true, true, false);
+		xylineChart.setBackgroundPaint(Color.WHITE);
+		xylineChart.setBackgroundImageAlpha(0.0f);
+		xylineChart.setAntiAlias(true);
+
+		XYPlot plot = (XYPlot) xylineChart.getPlot();
+		plot.setDrawingSupplier(new DefaultDrawingSupplier(
+				paintArray,
+				DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
+				DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
+		plot.setBackgroundPaint(Color.WHITE);
+		plot.setBackgroundAlpha(0.0f);
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
+
+		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
+		domain.setRange(xMin, xMax);
+		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
+		range.setRange(yMin, yMax);
+
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setDefaultShapesVisible(false);
+		renderer.setDefaultLinesVisible(true);
+		renderer.setSeriesShape(0, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
+		renderer.setSeriesShape(1, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
+		renderer.setSeriesStroke(0, new BasicStroke(3.0f));
+		renderer.setSeriesStroke(1, new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
+				BasicStroke.JOIN_ROUND, 5.0f, new float[] {10.0f, 5.0f}, 0.0f));
+		renderer.setSeriesFillPaint(0, Color.white);
+		renderer.setSeriesFillPaint(1, Color.white);
+		renderer.setUseFillPaint(true);
+
+		renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		renderer.setDefaultEntityRadius(6);
+
+		plot.setRenderer(renderer);
+
+		try {
+			File f = new File(path + File.separator + fileName + ".svg");
+			if(f.exists()) f.delete();
+
+			SVGGraphics2D g2 = new SVGGraphics2D(width, height);
+			Rectangle r = new Rectangle(width, height);
+			xylineChart.draw(g2, r);
+			SVGUtils.writeToSVG(f, g2.getSVGElement());
+			datasetLineChart.removeAllSeries();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void createMultiTraceSVG(
+			JFreeChart chart,
+			File fileNameWithPath,
+			int width, int height
+			) {
+		
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setDefaultShapesVisible(false);
+		renderer.setDefaultLinesVisible(true);
+		renderer.setSeriesShape(0, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
+		renderer.setSeriesShape(1, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
+		renderer.setSeriesStroke(0, new BasicStroke(3.0f));
+		renderer.setSeriesStroke(1, new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
+				BasicStroke.JOIN_ROUND, 5.0f, new float[] {10.0f, 5.0f}, 0.0f));
+		renderer.setSeriesFillPaint(0, Color.white);
+		renderer.setSeriesFillPaint(1, Color.white);
+		renderer.setUseFillPaint(true);
+
+		renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		renderer.setDefaultEntityRadius(6);
+
+		XYPlot plot = chart.getXYPlot();
+		plot.setRenderer(renderer);
+
+		try {
+			if(fileNameWithPath.exists()) fileNameWithPath.delete();
+
+			SVGGraphics2D g2 = new SVGGraphics2D(width, height);
+			Rectangle r = new Rectangle(width, height);
+			chart.draw(g2, r);
+			SVGUtils.writeToSVG(fileNameWithPath, g2.getSVGElement());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void createPieChartSVG(
+			JFreeChart chart,
+			File fileNameWithPath,
+			int width, int height
+			) {
+		
+		try {
+			if(fileNameWithPath.exists()) fileNameWithPath.delete();
+
+			SVGGraphics2D g2 = new SVGGraphics2D(width, height);
+			Rectangle r = new Rectangle(width, height);
+			chart.draw(g2, r);
+			SVGUtils.writeToSVG(fileNameWithPath, g2.getSVGElement());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void createMultiTraceChart() {
 
 		if (legendValueString != null){   // legend as Sring array 
