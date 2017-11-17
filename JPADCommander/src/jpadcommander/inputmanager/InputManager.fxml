@@ -1034,9 +1034,6 @@
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-													  <fx:define>
-														<Image fx:id="infoImage" url="@img/info_icon.jpg" />
-													  </fx:define>
                                                       <Label layoutX="6.0" layoutY="694.0" prefHeight="21.0" prefWidth="268.0" text="Number of rows (Economy Class):">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
@@ -1266,7 +1263,7 @@
    <top>
       <ToolBar id="actionButtonsToolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-            <Button mnemonicParsing="false" onAction="#newAircraft" text="New Aircraft" />
+            <Button fx:id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Aircraft" />
             <Region prefWidth="50.0" />
           <Button id="setDataButton" mnemonicParsing="false" text="Set  Data" />
             <Button id="updateAllButton" mnemonicParsing="false" text="Update All" />

@@ -2,13 +2,19 @@ package jpadcommander.inputmanager;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.geom.Ellipse2D;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.measure.quantity.Angle;
@@ -21,13 +27,14 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 import org.jscience.physics.amount.Amount;
-import org.treez.javafxd3.d3.svg.SymbolType;
-import org.treez.javafxd3.javafx.JavaFxD3Browser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,9 +50,9 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import graphics.ChartCanvas;
-import graphics.D3Plotter;
-import graphics.D3PlotterOptions;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -68,6 +75,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import jpadcommander.Main;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
@@ -107,6 +116,8 @@ public class InputManagerController {
 	//...........................................................................................
 	@FXML
 	private Button loadAircraftButton;
+	@FXML
+	private Button newAircraftButton;
 	@FXML
 	private Button missingSeatRowCabinConfigurationInfoButton;
 	@FXML
@@ -665,6 +676,17 @@ public class InputManagerController {
 	@FXML
 	private void initialize() {
 		
+		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+
+		try {
+			aircraft.set(Main.getTheAircraft());
+			newAircraftButton.disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+		} catch (Exception e) {
+			newAircraftButton.setDisable(true);
+		}
+		
 		aircraftLoadButtonDisableCheck();
 		
 		//.......................................................................................
@@ -739,7 +761,7 @@ public class InputManagerController {
 	private void aircraftLoadButtonDisableCheck () {
 		
 		//.......................................................................................
-		// CHECK IF THE AIRCRAF FILE TEXT FIELD IS NOT EMPTY
+		// CHECK IF THE AIRCRAFT FILE TEXT FIELD IS NOT EMPTY
 		loadAircraftButton.disableProperty().bind(
 				Bindings.isEmpty(textFieldAircraftInputFile.textProperty())
 				);
@@ -1025,7 +1047,18 @@ public class InputManagerController {
 		// TODO: CONTINUE WITH WING, etc ...
 		
 		Main.setTheAircraft(null);
-		
+
+		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+
+		try {
+			aircraft.set(Main.getTheAircraft());
+			newAircraftButton.disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+		} catch (Exception e) {
+			newAircraftButton.setDisable(true);
+		}
+
 	}
 	
 	@FXML
@@ -1162,6 +1195,17 @@ public class InputManagerController {
 		
 		Main.getStatusBar().setText("Task Complete!");
 		
+		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
+
+		try {
+			aircraft.set(Main.getTheAircraft());
+			newAircraftButton.disableProperty().bind(
+					Bindings.isNull(aircraft)
+					);
+		} catch (Exception e) {
+			newAircraftButton.setDisable(true);
+		}
+		
 	}
 	
 	private void createAircraftTopView() {
@@ -1174,21 +1218,19 @@ public class InputManagerController {
 		int nX1Left = vX1Left.size();
 		List<Amount<Length>> vY1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY();
 
-		XYSeries seriesFuselageLeftCurve = new XYSeries("Fuselage left curve - Top View", false);
-		IntStream.range(0, nX1Left)
-		.forEach(i -> {
-			seriesFuselageLeftCurve.add(vX1Left.get(i).doubleValue(SI.METRE), vY1Left.get(i).doubleValue(SI.METRE));
-		});
-		
 		// right curve, upperview
 		List<Amount<Length>> vX2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX();
 		int nX2Right = vX2Right.size();
 		List<Amount<Length>> vY2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY();
 
-		XYSeries seriesFuselageRightCurve = new XYSeries("Fuselage right curve - Top View", false);
+		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Top View", false);
 		IntStream.range(0, nX1Left)
 		.forEach(i -> {
-			seriesFuselageRightCurve.add(vX2Right.get(i).doubleValue(SI.METRE), vY2Right.get(i).doubleValue(SI.METRE));
+			seriesFuselageCurve.add(vX1Left.get(i).doubleValue(SI.METRE), vY1Left.get(i).doubleValue(SI.METRE));
+		});
+		IntStream.range(0, nX2Right)
+		.forEach(i -> {
+			seriesFuselageCurve.add(vX2Right.get(vX2Right.size()-1-i).doubleValue(SI.METRE), vY2Right.get(vY2Right.size()-1-i).doubleValue(SI.METRE));
 		});
 		
 		//--------------------------------------------------
@@ -1204,13 +1246,11 @@ public class InputManagerController {
 					dataTopViewIsolated[i][0] + Main.getTheAircraft().getWing().getYApexConstructionAxes().doubleValue(SI.METER)
 					);
 		});
-		
-		XYSeries seriesWingMirroredTopView = new XYSeries("Wing Mirrored - Top View", false);
 		IntStream.range(0, dataTopViewIsolated.length)
 		.forEach(i -> {
 			seriesWingTopView.add(
-					dataTopViewIsolated[i][1] + Main.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER),
-					-dataTopViewIsolated[i][0] + Main.getTheAircraft().getWing().getYApexConstructionAxes().doubleValue(SI.METER)
+					dataTopViewIsolated[dataTopViewIsolated.length-1-i][1] + Main.getTheAircraft().getWing().getXApexConstructionAxes().doubleValue(SI.METER),
+					-dataTopViewIsolated[dataTopViewIsolated.length-1-i][0] + Main.getTheAircraft().getWing().getYApexConstructionAxes().doubleValue(SI.METER)
 					);
 		});
 		
@@ -1224,16 +1264,14 @@ public class InputManagerController {
 		.forEach(i -> {
 			seriesHTailTopView.add(
 					dataTopViewIsolatedHTail[i][1] + Main.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER),
-					dataTopViewIsolatedHTail[i][0] + Main.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER)
+					dataTopViewIsolatedHTail[i][0] + Main.getTheAircraft().getHTail().getYApexConstructionAxes().doubleValue(SI.METER)
 					);
 		});
-		
-		XYSeries seriesHTailMirroredTopView = new XYSeries("HTail Mirrored - Top View", false);
 		IntStream.range(0, dataTopViewIsolatedHTail.length)
 		.forEach(i -> {
-			seriesHTailMirroredTopView.add(
-					dataTopViewIsolatedHTail[i][1] + Main.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER),
-					- dataTopViewIsolatedHTail[i][0] + Main.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER)
+			seriesHTailTopView.add(
+					dataTopViewIsolatedHTail[dataTopViewIsolatedHTail.length-1-i][1] + Main.getTheAircraft().getHTail().getXApexConstructionAxes().doubleValue(SI.METER),
+					- dataTopViewIsolatedHTail[dataTopViewIsolatedHTail.length-1-i][0] + Main.getTheAircraft().getHTail().getYApexConstructionAxes().doubleValue(SI.METER)
 					);
 		});
 		
@@ -1250,8 +1288,8 @@ public class InputManagerController {
 		IntStream.range(0, vTailRootXCoordinates.length)
 		.forEach(i -> {
 			seriesVTailRootAirfoilTopView.add(
-					(vTailRootYCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue()),
-					(vTailRootXCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue()) + Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue()
+					(vTailRootXCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue()) + Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue(),
+					(vTailRootYCoordinates[i]*Main.getTheAircraft().getVTail().getChordRoot().getEstimatedValue())
 					);
 		});
 		
@@ -1259,17 +1297,17 @@ public class InputManagerController {
 		IntStream.range(0, vTailTipXCoordinates.length)
 		.forEach(i -> {
 			seriesVTailTipAirfoilTopView.add(
-					(vTailTipYCoordinates[i]*Main.getTheAircraft().getVTail().getChordTip().getEstimatedValue()),
 					(vTailTipXCoordinates[i]*Main.getTheAircraft().getVTail().getChordTip().getEstimatedValue()) 
 					  + Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue()
-					  + Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsVTail-1).getEstimatedValue()
+					  + Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsVTail-1).getEstimatedValue(),
+					  (vTailTipYCoordinates[i]*Main.getTheAircraft().getVTail().getChordTip().getEstimatedValue())
 					);
 		});
 		
 		//--------------------------------------------------
 		// get data vectors from nacelle discretization
 		//--------------------------------------------------
-		List<XYSeries> seriesNacelleZXCruvesTopViewList = new ArrayList<>();
+		List<XYSeries> seriesNacelleCruvesTopViewList = new ArrayList<>();
 		
 		for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
 			
@@ -1303,17 +1341,16 @@ public class InputManagerController {
 			dataOutlineXZCurveNacelleY.add(nacelleCurveUpperY.get(0)
 					.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getYApexConstructionAxes()));
 			
-			XYSeries seriesNacelleZXCruvesTopView = new XYSeries("Nacelle " + i + " XZ Cuurve - Top View", false);
+			XYSeries seriesNacelleCruvesTopView = new XYSeries("Nacelle " + i + " XZ Curve - Top View", false);
 			IntStream.range(0, dataOutlineXZCurveNacelleX.size())
 			.forEach(j -> {
-				seriesNacelleZXCruvesTopView.add(
-						dataOutlineXZCurveNacelleY.get(j).doubleValue(SI.METER),
-						dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER)
+				seriesNacelleCruvesTopView.add(
+						dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER),
+						dataOutlineXZCurveNacelleY.get(j).doubleValue(SI.METER)
 						);
 			});
 			
-			seriesNacelleZXCruvesTopViewList.add(seriesNacelleZXCruvesTopView);
-			
+			seriesNacelleCruvesTopViewList.add(seriesNacelleCruvesTopView);
 		}
 		
 		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
@@ -1326,16 +1363,52 @@ public class InputManagerController {
 		
 		//-------------------------------------------------------------------------------------
 		// DATASET CRATION
+		Map<Double, Tuple2<XYSeries, Color>> componentZList = new HashMap<>();
+		componentZList.put(
+				Main.getTheAircraft().getFuselage().getZApexConstructionAxes().doubleValue(SI.METER)
+				+ Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2).doubleValue(SI.METER),
+				Tuple.of(seriesFuselageCurve, Color.WHITE) 
+				);
+		componentZList.put(
+				Main.getTheAircraft().getWing().getZApexConstructionAxes().doubleValue(SI.METER),
+				Tuple.of(seriesWingTopView, Color.decode("#87CEFA"))
+				); 
+		componentZList.put(
+				Main.getTheAircraft().getHTail().getZApexConstructionAxes().doubleValue(SI.METER),
+				Tuple.of(seriesHTailTopView, Color.decode("#00008B"))
+				);
+		componentZList.put(
+				Main.getTheAircraft().getFuselage().getZApexConstructionAxes().doubleValue(SI.METER)
+				+ Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderHeight().divide(2).doubleValue(SI.METER)
+				+ 0.0001,
+				Tuple.of(seriesVTailRootAirfoilTopView, Color.decode("#FFD700"))
+				);
+		componentZList.put(
+				Main.getTheAircraft().getVTail().getZApexConstructionAxes().doubleValue(SI.METER) 
+				+ Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getSpan().doubleValue(SI.METER), 
+				Tuple.of(seriesVTailTipAirfoilTopView, Color.decode("#FFD700"))
+				);
+		seriesNacelleCruvesTopViewList.stream().forEach(
+				nac -> componentZList.put(
+						Main.getTheAircraft().getNacelles().getNacellesList().get(
+								seriesNacelleCruvesTopViewList.indexOf(nac)
+								).getZApexConstructionAxes().doubleValue(SI.METER)
+						+ seriesNacelleCruvesTopViewList.indexOf(nac)*0.001, 
+						Tuple.of(nac, Color.decode("#FF7F50"))
+						)
+				);
+		
+		Map<Double, Tuple2<XYSeries, Color>> componentZListSorted = 
+				componentZList.entrySet().stream()
+			    .sorted(Entry.comparingByKey(Comparator.reverseOrder()))
+			    .collect(Collectors.toMap(Entry::getKey, Entry::getValue,
+			                              (e1, e2) -> e1, LinkedHashMap::new));
+		
 		XYSeriesCollection dataset = new XYSeriesCollection();
-		dataset.addSeries(seriesFuselageLeftCurve);
-		dataset.addSeries(seriesFuselageRightCurve);
-		dataset.addSeries(seriesWingTopView);
-		dataset.addSeries(seriesWingMirroredTopView);
-		dataset.addSeries(seriesHTailTopView);
-		dataset.addSeries(seriesHTailMirroredTopView);
-		dataset.addSeries(seriesVTailRootAirfoilTopView);
-		dataset.addSeries(seriesVTailTipAirfoilTopView);
-		seriesNacelleZXCruvesTopViewList.stream().forEach(i -> dataset.addSeries(i));	
+		componentZListSorted.values().stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		List<Color> colorList = new ArrayList<>();
+		componentZListSorted.values().stream().forEach(t -> colorList.add(t._2()));
 
 		//-------------------------------------------------------------------------------------
 		// CHART CRATION
@@ -1350,137 +1423,79 @@ public class InputManagerController {
                 false  // urls
 				);
 
-		chart.setBackgroundImageAlpha(0.0f);
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
 		chart.setAntiAlias(true);
-
+		
 		XYPlot plot = (XYPlot) chart.getPlot();
 		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
 		plot.setDomainGridlinesVisible(true);
-		plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+		plot.setDomainGridlinePaint(Color.GRAY);
 		plot.setRangeGridlinesVisible(true);
-		plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+		plot.setRangeGridlinePaint(Color.GRAY);
 		plot.setDomainPannable(true);
 		plot.setRangePannable(true);
 
 		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
 		domain.setRange(yMinTopView, yMaxTopView);
+		domain.setInverted(Boolean.TRUE);
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
+		range.setInverted(Boolean.TRUE);
 
-		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-		renderer.setDefaultShapesVisible(false);
-		renderer.setDefaultLinesVisible(true);
-		renderer.setSeriesShape(0, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
-		renderer.setSeriesShape(1, new Ellipse2D.Double(-5.0, -5.0, 10.0, 10.0));
-		renderer.setSeriesStroke(0, new BasicStroke(3.0f));
-		renderer.setSeriesStroke(1, new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
-				BasicStroke.JOIN_ROUND, 5.0f, new float[] {10.0f, 5.0f}, 0.0f));
-		renderer.setSeriesFillPaint(0, Color.white);
-		renderer.setSeriesFillPaint(1, Color.white);
-		renderer.setUseFillPaint(true);
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					colorList.get(i)
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+		
+		plot.setRenderer(0, xyAreaRenderer);
+		plot.setDataset(0, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
 
-		renderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
-		renderer.setDefaultEntityRadius(6);
-
-		plot.setRenderer(renderer);
-
-//		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
-//				.widthGraph(WIDTH).heightGraph(HEIGHT)
-//				.xRange(xMinTopView, xMaxTopView)
-//				.yRange(yMaxTopView, yMinTopView)
-//				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-//				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
-//				.title("Aircraft data representation - Top View")
-//				.xLabel("y (m)")
-//				.yLabel("x (m)")
-//				.showXGrid(true)
-//				.showYGrid(true)
-//				.symbolTypes(
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE,
-//						SymbolType.CIRCLE
-//						)
-//				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2)
-//				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
-//				.symbolStyles(
-//						"fill:blue; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2",
-//						"fill:cyan; stroke:darkblue; stroke-width:2"
-//						)
-//				.lineStyles(
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2",
-//						"fill:none; stroke:black; stroke-width:2"
-//						)
-//				.plotAreas(true,true,true,true,true,true,true,true,true,true,true)
-//				.areaStyles("fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;","fill:white;","fill:white;",
-//						"fill:yellow;","fill:yellow;","fill:orange;","fill:orange;")
-//				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
-//				.showLegend(false)
-//				.build();
-//		
-//		D3Plotter d3Plotter = new D3Plotter(
-//				optionsTopView,
-//				listDataArrayTopView
-//				);
-//		//define d3 content as post loading hook
-//		Runnable postLoadingHook = () -> {
-//
-//			//--------------------------------------------------
-//			// Create the D3 graph
-//			//--------------------------------------------------
-//			d3Plotter.createD3Content();
-//			
-//			//--------------------------------------------------
-//			// output
-//			String outputFilePathTopView = Main.getOutputDirectoryPath() 
-//					+ File.separator 
-//					+ "AircraftTopView.svg";
-//			File outputFile = new File(outputFilePathTopView);
-//			if(outputFile.exists())
-//				outputFile.delete();
-//				
-//			d3Plotter.saveSVG(outputFilePathTopView);
-//
-//		}; // end-of-Runnable
-
-		// create the Browser/D3
-		//create browser
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "AircraftTopView.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
 		ChartCanvas canvas = new ChartCanvas(chart);
 		StackPane stackPane = new StackPane(); 
 		stackPane.getChildren().add(canvas);  
+		
 		// Bind canvas size to stack pane size. 
 		canvas.widthProperty().bind(stackPane.widthProperty()); 
 		canvas.heightProperty().bind(stackPane.heightProperty());  
 		
-//		JavaFxD3Browser browserTopView = d3Plotter.getBrowser(postLoadingHook, false);
 		Scene sceneTopView = new Scene(stackPane, WIDTH+10, HEIGHT+10);
 		aircraftTopViewPane.getChildren().add(sceneTopView.getRoot());
 	}
@@ -1495,23 +1510,19 @@ public class InputManagerController {
 		int nX1Upper = vX1Upper.size();
 		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
 
-		Double[][] dataOutlineXZUpperCurve = new Double[nX1Upper][2];
-		IntStream.range(0, nX1Upper)
-		.forEach(i -> {
-			dataOutlineXZUpperCurve[i][0] = vX1Upper.get(i).doubleValue(SI.METRE);
-			dataOutlineXZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
-		});
-
 		// lower curve, sideview
 		List<Amount<Length>> vX2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
 		int nX2Lower = vX2Lower.size();
 		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
 
-		Double[][] dataOutlineXZLowerCurve = new Double[nX2Lower][2];
+		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Top View", false);
+		IntStream.range(0, nX1Upper)
+		.forEach(i -> {
+			seriesFuselageCurve.add(vX1Upper.get(i).doubleValue(SI.METRE), vZ1Upper.get(i).doubleValue(SI.METRE));
+		});
 		IntStream.range(0, nX2Lower)
 		.forEach(i -> {
-			dataOutlineXZLowerCurve[i][0] = vX2Lower.get(i).doubleValue(SI.METRE);
-			dataOutlineXZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+			seriesFuselageCurve.add(vX2Lower.get(vX2Lower.size()-1-i).doubleValue(SI.METRE), vZ2Lower.get(vZ2Lower.size()-1-i).doubleValue(SI.METRE));
 		});
 		
 		//--------------------------------------------------
@@ -1519,64 +1530,83 @@ public class InputManagerController {
 		//--------------------------------------------------
 		Double[] wingRootXCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
 		Double[] wingRootZCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
-		Double[][] wingRootAirfoilPoints = new Double[wingRootXCoordinates.length][2];
-		for (int i=0; i<wingRootAirfoilPoints.length; i++) {
-			wingRootAirfoilPoints[i][0] = (wingRootXCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue()) 
-										  + Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue(); 
-			wingRootAirfoilPoints[i][1] = (wingRootZCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue())
-										  + Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue();
-		}
-		
-		int nPointsWing = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().size();
 		Double[] wingTipXCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(Main.getTheAircraft().getWing().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
 		Double[] wingTipZCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(Main.getTheAircraft().getWing().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
-		Double[][] wingTipAirfoilPoints = new Double[wingTipXCoordinates.length][2];
-		for (int i=0; i<wingTipAirfoilPoints.length; i++) {
-			wingTipAirfoilPoints[i][0] = (wingTipXCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue()) 
-										  + Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue()
-										  + Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(); 
-			wingTipAirfoilPoints[i][1] = (wingTipZCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue())
-										  + Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue();
-		}
+		int nPointsWing = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().size();
+		
+		XYSeries seriesWingRootAirfoil = new XYSeries("Wing Root - Side View", false);
+		IntStream.range(0, wingRootXCoordinates.length)
+		.forEach(i -> {
+			seriesWingRootAirfoil.add(
+					(wingRootXCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue()) 
+					+ Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue(),
+					(wingRootZCoordinates[i]*Main.getTheAircraft().getWing().getChordRoot().getEstimatedValue())
+					+ Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue()
+					);
+		});
+		
+		XYSeries seriesWingTipAirfoil = new XYSeries("Wing Tip - Side View", false);
+		IntStream.range(0, wingTipXCoordinates.length)
+		.forEach(i -> {
+			seriesWingTipAirfoil.add(
+					(wingTipXCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue()) 
+					+ Main.getTheAircraft().getWing().getXApexConstructionAxes().getEstimatedValue()
+					+ Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsWing-1).getEstimatedValue(),
+					(wingTipZCoordinates[i]*Main.getTheAircraft().getWing().getChordTip().getEstimatedValue())
+					+ Main.getTheAircraft().getWing().getZApexConstructionAxes().getEstimatedValue()
+					);
+		});
 		
 		//--------------------------------------------------
 		// get data vectors from hTail discretization
 		//--------------------------------------------------
 		Double[] hTailRootXCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
 		Double[] hTailRootZCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
-		Double[][] hTailRootAirfoilPoints = new Double[hTailRootXCoordinates.length][2];
-		for (int i=0; i<hTailRootAirfoilPoints.length; i++) {
-			hTailRootAirfoilPoints[i][0] = (hTailRootXCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
-										   + Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue(); 
-			hTailRootAirfoilPoints[i][1] = (hTailRootZCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
-										   + Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue();
-		}
-		
-		int nPointsHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
 		Double[] hTailTipXCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(Main.getTheAircraft().getHTail().getAirfoilList().size()-1).getAirfoilCreator().getXCoords();
 		Double[] hTailTipZCoordinates = Main.getTheAircraft().getHTail().getAirfoilList().get(Main.getTheAircraft().getHTail().getAirfoilList().size()-1).getAirfoilCreator().getZCoords();
-		Double[][] hTailTipAirfoilPoints = new Double[hTailTipXCoordinates.length][2];
-		for (int i=0; i<hTailTipAirfoilPoints.length; i++) {
-			hTailTipAirfoilPoints[i][0] = (hTailTipXCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue()) 
-										  + Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue()
-										  + Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(); 
-			hTailTipAirfoilPoints[i][1] = (hTailTipZCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue())
-										  + Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue();
-		}
+		int nPointsHTail = Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().size();
+		
+		XYSeries seriesHTailRootAirfoil = new XYSeries("HTail Root - Side View", false);
+		IntStream.range(0, hTailRootXCoordinates.length)
+		.forEach(i -> {
+			seriesHTailRootAirfoil.add(
+					(hTailRootXCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
+					+ Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue(),
+					(hTailRootZCoordinates[i]*Main.getTheAircraft().getHTail().getChordRoot().getEstimatedValue())
+					+ Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue()
+					);
+		});
+		
+		XYSeries seriesHTailTipAirfoil = new XYSeries("HTail Tip - Side View", false);
+		IntStream.range(0, hTailTipXCoordinates.length)
+		.forEach(i -> {
+			seriesHTailTipAirfoil.add(
+					(hTailTipXCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue()) 
+					+ Main.getTheAircraft().getHTail().getXApexConstructionAxes().getEstimatedValue()
+					+ Main.getTheAircraft().getHTail().getLiftingSurfaceCreator().getDiscretizedXle().get(nPointsHTail-1).getEstimatedValue(),
+					(hTailTipZCoordinates[i]*Main.getTheAircraft().getHTail().getChordTip().getEstimatedValue())
+					+ Main.getTheAircraft().getHTail().getZApexConstructionAxes().getEstimatedValue()
+					);
+		});
 		
 		//--------------------------------------------------
 		// get data vectors from vTail discretization
 		//--------------------------------------------------
 		Double[][] dataTopViewVTail = Main.getTheAircraft().getVTail().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.VERTICAL_TAIL);
-		for(int i=0; i<dataTopViewVTail.length; i++){
-			dataTopViewVTail[i][0] += Main.getTheAircraft().getVTail().getXApexConstructionAxes().getEstimatedValue();
-			dataTopViewVTail[i][1] += Main.getTheAircraft().getVTail().getZApexConstructionAxes().getEstimatedValue();
-		}
+		
+		XYSeries seriesVTailSideView = new XYSeries("VTail - Side View", false);
+		IntStream.range(0, dataTopViewVTail.length)
+		.forEach(i -> {
+			seriesVTailSideView.add(
+					dataTopViewVTail[i][0] + Main.getTheAircraft().getVTail().getXApexConstructionAxes().doubleValue(SI.METER),
+					dataTopViewVTail[i][1] + Main.getTheAircraft().getVTail().getZApexConstructionAxes().doubleValue(SI.METER)
+					);
+		});
 		
 		//--------------------------------------------------
 		// get data vectors from nacelle discretization
 		//--------------------------------------------------
-		List<Double[][]> nacellePointsList = new ArrayList<Double[][]>();
+		List<XYSeries> seriesNacelleCruvesSideViewList = new ArrayList<>();
 		
 		for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
 			
@@ -1611,13 +1641,16 @@ public class InputManagerController {
 					.plus(Main.getTheAircraft().getNacelles().getNacellesList().get(i).getZApexConstructionAxes()));
 			
 			
-			Double[][] dataOutlineXZCurveNacelle = new Double[dataOutlineXZCurveNacelleX.size()][2];
-			for(int j=0; j<dataOutlineXZCurveNacelleX.size(); j++) {
-				dataOutlineXZCurveNacelle[j][0] = dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER);
-				dataOutlineXZCurveNacelle[j][1] = dataOutlineXZCurveNacelleZ.get(j).doubleValue(SI.METER);
-			}
+			XYSeries seriesNacelleCruvesSideView = new XYSeries("Nacelle " + i + " XY Curve - Side View", false);
+			IntStream.range(0, dataOutlineXZCurveNacelleX.size())
+			.forEach(j -> {
+				seriesNacelleCruvesSideView.add(
+						dataOutlineXZCurveNacelleX.get(j).doubleValue(SI.METER),
+						dataOutlineXZCurveNacelleZ.get(j).doubleValue(SI.METER)
+						);
+			});
 			
-			nacellePointsList.add(dataOutlineXZCurveNacelle);
+			seriesNacelleCruvesSideViewList.add(seriesNacelleCruvesSideView);
 			
 		}
 		
@@ -1633,33 +1666,15 @@ public class InputManagerController {
 		};
 		Double[] thetaArray = MyArrayUtils.linspaceDouble(0, 2*Math.PI, 360);
 		
-		Double[][] dataSideViewLandingGear = new Double[thetaArray.length][2];
-		for(int i=0; i<thetaArray.length; i++) {
-			
-			dataSideViewLandingGear[i][0] = radius.doubleValue(SI.METER)*Math.cos(thetaArray[i]) + wheelCenterPosition[0]; 
-			dataSideViewLandingGear[i][1] = radius.doubleValue(SI.METER)*Math.sin(thetaArray[i]) + wheelCenterPosition[1];
-			
-		}
-		
-		List<Double[][]> listDataArraySideView = new ArrayList<Double[][]>();
+		XYSeries seriesLandingGearSideView = new XYSeries("Landing Gears - Side View", false);
+		IntStream.range(0, thetaArray.length)
+		.forEach(i -> {
+			seriesLandingGearSideView.add(
+					radius.doubleValue(SI.METER)*Math.cos(thetaArray[i]) + wheelCenterPosition[0],
+					radius.doubleValue(SI.METER)*Math.sin(thetaArray[i]) + wheelCenterPosition[1]
+					);
+		});
 
-		// vTail
-		listDataArraySideView.add(dataTopViewVTail);
-		// fuselage
-		listDataArraySideView.add(dataOutlineXZUpperCurve);
-		listDataArraySideView.add(dataOutlineXZLowerCurve);
-		// wing
-		listDataArraySideView.add(wingRootAirfoilPoints);
-		listDataArraySideView.add(wingTipAirfoilPoints);
-		// hTail
-		listDataArraySideView.add(hTailRootAirfoilPoints);
-		listDataArraySideView.add(hTailTipAirfoilPoints);
-		// landing gears
-		listDataArraySideView.add(dataSideViewLandingGear);
-		// nacelles
-		for (int i=0; i<nacellePointsList.size(); i++)
-			listDataArraySideView.add(nacellePointsList.get(i));
-		
 		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMaxSideView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
@@ -1668,101 +1683,109 @@ public class InputManagerController {
 		int WIDTH = 700;
 		int HEIGHT = 600;
 		
-		D3PlotterOptions optionsSideView = new D3PlotterOptions.D3PlotterOptionsBuilder()
-				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(xMinSideView, xMaxSideView)
-				.yRange(yMinSideView, yMaxSideView)
-				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
-				.title("Aircraft data representation - Side View")
-				.xLabel("x (m)")
-				.yLabel("z (m)")
-				.showXGrid(true)
-				.showYGrid(true)
-				.symbolTypes(
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE
-						)
-				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2,2,2)
-				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
-				.symbolStyles(
-						"fill:blue; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2"
-						)
-				.lineStyles(
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2"
-						)
-				.plotAreas(true,true,true,true,true,true,true,false,true,true,true,true,true,true)
-				.areaStyles("fill:yellow;","fill:white;","fill:white;","fill:lightblue;","fill:lightblue;","fill:blue;","fill:blue;",
-						"fill:black;","fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;","fill:orange;")
-				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
-				.showLegend(false)
-				.build();
-		
-		D3Plotter d3Plotter = new D3Plotter(
-				optionsSideView,
-				listDataArraySideView
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesNacelleCruvesSideViewList.stream().forEach(
+				nac -> seriesAndColorList.add(Tuple.of(nac, Color.decode("#FF7F50")))
 				);
+		seriesAndColorList.add(Tuple.of(seriesWingRootAirfoil, Color.decode("#87CEFA")));
+		seriesAndColorList.add(Tuple.of(seriesWingTipAirfoil, Color.decode("#87CEFA")));
+		seriesAndColorList.add(Tuple.of(seriesHTailRootAirfoil, Color.decode("#00008B")));
+		seriesAndColorList.add(Tuple.of(seriesHTailTipAirfoil, Color.decode("#00008B")));
+		seriesAndColorList.add(Tuple.of(seriesLandingGearSideView, Color.decode("#404040")));
+		seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
+		seriesAndColorList.add(Tuple.of(seriesVTailSideView, Color.decode("#FFD700")));
 		
-		//define d3 content as post loading hook
-		Runnable postLoadingHook = () -> {
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Aircraft data representation - Side View", 
+				"x (m)", 
+				"z (m)",
+				(XYDataset) dataset,
+				PlotOrientation.VERTICAL,
+                false, // legend
+                true,  // tooltips
+                false  // urls
+				);
 
-			//--------------------------------------------------
-			// Create the D3 graph
-			//--------------------------------------------------
-			d3Plotter.createD3Content();
-			
-			//--------------------------------------------------
-			// output
-			String outputFilePathSideView = Main.getOutputDirectoryPath() 
-					+ File.separator 
-					+ "AircraftSideView.svg";
-			File outputFile = new File(outputFilePathSideView);
-			if(outputFile.exists())
-				outputFile.delete();
-			d3Plotter.saveSVG(outputFilePathSideView);
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
+		
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
 
-		}; // end-of-Runnable
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(xMinSideView, xMaxSideView);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(yMinSideView, yMaxSideView);
 
-		// create the Browser/D3
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+		
+		plot.setRenderer(0, xyAreaRenderer);
+		plot.setDataset(0, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
+
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "AircraftSideView.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+		
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+		
 		//create browser
-		JavaFxD3Browser browserSideView = d3Plotter.getBrowser(postLoadingHook, false);
-		Scene sceneSideView = new Scene(browserSideView, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
+		Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
 		aircraftSideViewPane.getChildren().add(sceneSideView.getRoot());		
 		
 	}
@@ -1777,23 +1800,19 @@ public class InputManagerController {
 		int nY1Upper = vY1Upper.size();
 		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ();
 
-		Double[][] dataSectionYZUpperCurve = new Double[nY1Upper][2];
-		IntStream.range(0, nY1Upper)
-		.forEach(i -> {
-			dataSectionYZUpperCurve[i][0] = vY1Upper.get(i).doubleValue(SI.METRE);
-			dataSectionYZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
-		});
-
 		// section lower curve
 		List<Amount<Length>> vY2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY();
 		int nY2Lower = vY2Lower.size();
 		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ();
-
-		Double[][] dataSectionYZLowerCurve = new Double[nY2Lower][2];
+		
+		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Front View", false);
+		IntStream.range(0, nY1Upper)
+		.forEach(i -> {
+			seriesFuselageCurve.add(vY1Upper.get(i).doubleValue(SI.METRE), vZ1Upper.get(i).doubleValue(SI.METRE));
+		});
 		IntStream.range(0, nY2Lower)
 		.forEach(i -> {
-			dataSectionYZLowerCurve[i][0] = vY2Lower.get(i).doubleValue(SI.METRE);
-			dataSectionYZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+			seriesFuselageCurve.add(vY2Lower.get(vY2Lower.size()-1-i).doubleValue(SI.METRE), vZ2Lower.get(vZ2Lower.size()-1-i).doubleValue(SI.METRE));
 		});
 		
 		//--------------------------------------------------
@@ -1837,25 +1856,34 @@ public class InputManagerController {
 					);
 		}
 		
-		Double[][] dataFrontViewWing = new Double[nYPointsWing][2];
+		XYSeries seriesWingFrontView = new XYSeries("Wing - Front View", false);
 		IntStream.range(0, nYPointsWing)
 		.forEach(i -> {
-			dataFrontViewWing[i][0] = wingBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getWing().getYApexConstructionAxes()).doubleValue(SI.METRE);
-			dataFrontViewWing[i][1] = wingThicknessZCoordinates.get(i)
+			seriesWingFrontView.add(
+					wingBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getWing().getYApexConstructionAxes()).doubleValue(SI.METRE),
+					wingThicknessZCoordinates.get(i)
 					.plus(Main.getTheAircraft().getWing().getZApexConstructionAxes())
 						.plus(wingBreakPointsYCoordinates.get(i)
 										.times(Math.sin(dihedralList.get(i)
 												.doubleValue(SI.RADIAN))
 												)
 										)
-							.doubleValue(SI.METRE);
+							.doubleValue(SI.METRE)
+					);
 		});
-		
-		Double[][] dataFrontViewWingMirrored = new Double[nYPointsWing][2];
 		IntStream.range(0, nYPointsWing)
 		.forEach(i -> {
-			dataFrontViewWingMirrored[i][0] = -dataFrontViewWing[i][0];
-			dataFrontViewWingMirrored[i][1] = dataFrontViewWing[i][1];
+			seriesWingFrontView.add(
+					-wingBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getWing().getYApexConstructionAxes()).doubleValue(SI.METRE),
+					wingThicknessZCoordinates.get(i)
+					.plus(Main.getTheAircraft().getWing().getZApexConstructionAxes())
+						.plus(wingBreakPointsYCoordinates.get(i)
+										.times(Math.sin(dihedralList.get(i)
+												.doubleValue(SI.RADIAN))
+												)
+										)
+							.doubleValue(SI.METRE)
+					);
 		});
 		
 		//--------------------------------------------------
@@ -1898,25 +1926,34 @@ public class InputManagerController {
 					);
 		}
 		
-		Double[][] dataFrontViewHTail = new Double[nYPointsHTail][2];
+		XYSeries seriesHTailFrontView = new XYSeries("HTail - Front View", false);
 		IntStream.range(0, nYPointsHTail)
 		.forEach(i -> {
-			dataFrontViewHTail[i][0] = hTailBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getHTail().getYApexConstructionAxes()).doubleValue(SI.METRE);
-			dataFrontViewHTail[i][1] = hTailThicknessZCoordinates.get(i)
+			seriesHTailFrontView.add(
+					hTailBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getHTail().getYApexConstructionAxes()).doubleValue(SI.METRE),
+					hTailThicknessZCoordinates.get(i)
 					.plus(Main.getTheAircraft().getHTail().getZApexConstructionAxes())
 					.plus(hTailBreakPointsYCoordinates.get(i)
 									.times(Math.sin(dihedralListHTail.get(i)
 											.doubleValue(SI.RADIAN))
 											)
 									)
-						.doubleValue(SI.METRE);
+						.doubleValue(SI.METRE)
+					);
 		});
-		
-		Double[][] dataFrontViewHTailMirrored = new Double[nYPointsHTail][2];
 		IntStream.range(0, nYPointsHTail)
 		.forEach(i -> {
-			dataFrontViewHTailMirrored[i][0] = -dataFrontViewHTail[i][0];
-			dataFrontViewHTailMirrored[i][1] = dataFrontViewHTail[i][1];
+			seriesHTailFrontView.add(
+					-hTailBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getHTail().getYApexConstructionAxes()).doubleValue(SI.METRE),
+					hTailThicknessZCoordinates.get(i)
+					.plus(Main.getTheAircraft().getHTail().getZApexConstructionAxes())
+					.plus(hTailBreakPointsYCoordinates.get(i)
+									.times(Math.sin(dihedralListHTail.get(i)
+											.doubleValue(SI.RADIAN))
+											)
+									)
+						.doubleValue(SI.METRE)
+					);
 		});
 		
 		//--------------------------------------------------
@@ -1946,18 +1983,20 @@ public class InputManagerController {
 							)
 					);
 		
-		Double[][] dataFrontViewVTail = new Double[nYPointsVTail][2];
+		XYSeries seriesVTailFrontView = new XYSeries("VTail - Front View", false);
 		IntStream.range(0, nYPointsVTail)
 		.forEach(i -> {
-			dataFrontViewVTail[i][0] = vTailThicknessZCoordinates.get(i).plus(Main.getTheAircraft().getVTail().getYApexConstructionAxes()).doubleValue(SI.METRE);
-			dataFrontViewVTail[i][1] = vTailBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getVTail().getZApexConstructionAxes()).doubleValue(SI.METRE);
+			seriesVTailFrontView.add(
+					vTailThicknessZCoordinates.get(i).plus(Main.getTheAircraft().getVTail().getYApexConstructionAxes()).doubleValue(SI.METRE),
+					vTailBreakPointsYCoordinates.get(i).plus(Main.getTheAircraft().getVTail().getZApexConstructionAxes()).doubleValue(SI.METRE)
+					);
 		});
 		
 		//--------------------------------------------------
-		// get data vectors from engine discretization
+		// get data vectors from nacelles discretization
 		//--------------------------------------------------
-		List<Double[][]> nacellePointsList = new ArrayList<Double[][]>();
-
+		List<XYSeries> seriesNacelleCruvesFrontViewList = new ArrayList<>();
+		
 		for(int i=0; i<Main.getTheAircraft().getNacelles().getNacellesList().size(); i++) {
 
 			double[] angleArray = MyArrayUtils.linspace(0.0, 2*Math.PI, 20);
@@ -1984,86 +2023,110 @@ public class InputManagerController {
 				zCoordinate[j] = radius*Math.sin(angleArray[j]);
 			}
 
-			Double[][] nacellePoints = new Double[yCoordinate.length][2];
-			for (int j=0; j<yCoordinate.length; j++) {
-				nacellePoints[j][0] = yCoordinate[j] + y0;
-				nacellePoints[j][1] = zCoordinate[j] + z0;
-			}
-
-			nacellePointsList.add(nacellePoints);
+			XYSeries seriesNacelleCruvesFrontView = new XYSeries("Nacelle " + i + " - Front View", false);
+			IntStream.range(0, yCoordinate.length)
+			.forEach(j -> {
+				seriesNacelleCruvesFrontView.add(
+						yCoordinate[j] + y0,
+						zCoordinate[j] + z0
+						);
+			});
+			
+			seriesNacelleCruvesFrontViewList.add(seriesNacelleCruvesFrontView);
 		}
 		
 		//--------------------------------------------------
 		// get data vectors from landing gears
 		//--------------------------------------------------
-		List<Double[][]> leftLandingGearsPointsList = new ArrayList<>();
-		List<Double[][]> rightLandingGearsPointsList = new ArrayList<>();
+		List<XYSeries> serieLandingGearsCruvesFrontViewList = new ArrayList<>();
 		
 		for(int i=0; i<Main.getTheAircraft().getLandingGears().getNumberOfRearWheels()/2; i++) {
 			
-			Double[][] leftLandingGearsPoints = new Double[5][2];
-			Double[][] rightLandingGearsPoints = new Double[5][2];
-			
-			// landing gears X coordinates
-			leftLandingGearsPoints[0][0] = Main.getTheAircraft().getLandingGears()
+			XYSeries seriesLeftLandingGearCruvesFrontView = new XYSeries("Left Landing Gear " + i + " - Front View", false);
+			seriesLeftLandingGearCruvesFrontView.add(
+					Main.getTheAircraft().getLandingGears()
 					.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
-					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER));
-			leftLandingGearsPoints[1][0] = Main.getTheAircraft().getLandingGears()
+					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					);
+			seriesLeftLandingGearCruvesFrontView.add(
+					Main.getTheAircraft().getLandingGears()
 					.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
 					+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
-					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER));
-			leftLandingGearsPoints[2][0] = leftLandingGearsPoints[1][0];
-			leftLandingGearsPoints[3][0] = leftLandingGearsPoints[0][0];
-			leftLandingGearsPoints[4][0] = leftLandingGearsPoints[0][0];
-
-			rightLandingGearsPoints[0][0] = - leftLandingGearsPoints[0][0];
-			rightLandingGearsPoints[1][0] = - leftLandingGearsPoints[1][0];
-			rightLandingGearsPoints[2][0] = rightLandingGearsPoints[1][0];
-			rightLandingGearsPoints[3][0] = rightLandingGearsPoints[0][0];
-			rightLandingGearsPoints[4][0] = rightLandingGearsPoints[0][0];
-
-			// landing gears Y coordinates
-			leftLandingGearsPoints[0][1] = Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
-					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER);
-			leftLandingGearsPoints[1][1] = leftLandingGearsPoints[0][1];
-			leftLandingGearsPoints[2][1] = Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
 					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
-					- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER);
-			leftLandingGearsPoints[3][1] = leftLandingGearsPoints[2][1];
-			leftLandingGearsPoints[4][1] = leftLandingGearsPoints[0][1];
+					);
+			seriesLeftLandingGearCruvesFrontView.add(
+					Main.getTheAircraft().getLandingGears()
+					.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+					+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
+					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
+					);
+			seriesLeftLandingGearCruvesFrontView.add(
+					Main.getTheAircraft().getLandingGears()
+					.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
+					);
+			seriesLeftLandingGearCruvesFrontView.add(
+					Main.getTheAircraft().getLandingGears()
+					.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+					+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					);
 
-			rightLandingGearsPoints[0][1] = leftLandingGearsPoints[0][1];
-			rightLandingGearsPoints[1][1] = leftLandingGearsPoints[1][1];
-			rightLandingGearsPoints[2][1] = leftLandingGearsPoints[2][1];
-			rightLandingGearsPoints[3][1] = leftLandingGearsPoints[3][1];
-			rightLandingGearsPoints[4][1] = leftLandingGearsPoints[4][1];
-		
-			leftLandingGearsPointsList.add(leftLandingGearsPoints);
-			rightLandingGearsPointsList.add(rightLandingGearsPoints);
+			XYSeries seriesRightLandingGearCruvesFrontView = new XYSeries("Right Landing Gear " + i + " - Front View", false);
+			seriesRightLandingGearCruvesFrontView.add(
+					- (Main.getTheAircraft().getLandingGears()
+							.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+							+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					);
+			seriesRightLandingGearCruvesFrontView.add(
+					- (Main.getTheAircraft().getLandingGears()
+							.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+							+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
+							+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					);
+			seriesRightLandingGearCruvesFrontView.add(
+					- (Main.getTheAircraft().getLandingGears()
+							.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+							+ Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER)
+							+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
+					);
+			seriesRightLandingGearCruvesFrontView.add(
+					- (Main.getTheAircraft().getLandingGears()
+							.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+							+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getRearWheelsHeight().doubleValue(SI.METER)
+					);
+			seriesRightLandingGearCruvesFrontView.add(
+					- (Main.getTheAircraft().getLandingGears()
+							.getDistanceBetweenWheels().divide(2).doubleValue(SI.METER)
+							+ (i*1.1*Main.getTheAircraft().getLandingGears().getRearWheelsWidth().doubleValue(SI.METER))),
+					Main.getTheAircraft().getLandingGears().getZApexConstructionAxes().doubleValue(SI.METER)
+					- Main.getTheAircraft().getLandingGears().getMainLegsLenght().doubleValue(SI.METER)
+					);
+			
+			serieLandingGearsCruvesFrontViewList.add(seriesLeftLandingGearCruvesFrontView);
+			serieLandingGearsCruvesFrontViewList.add(seriesRightLandingGearCruvesFrontView);
 		}
-		
-		
-		List<Double[][]> listDataArrayFrontView = new ArrayList<Double[][]>();
-
-		// hTail
-		listDataArrayFrontView.add(dataFrontViewHTail);
-		listDataArrayFrontView.add(dataFrontViewHTailMirrored);
-		// vTail
-		listDataArrayFrontView.add(dataFrontViewVTail);
-		// wing
-		listDataArrayFrontView.add(dataFrontViewWing);
-		listDataArrayFrontView.add(dataFrontViewWingMirrored);
-		// fuselage
-		listDataArrayFrontView.add(dataSectionYZUpperCurve);
-		listDataArrayFrontView.add(dataSectionYZLowerCurve);
-		// landing gears
-		for (int i=0; i<Main.getTheAircraft().getLandingGears().getNumberOfRearWheels()/2; i++) {
-			listDataArrayFrontView.add(leftLandingGearsPointsList.get(i));
-			listDataArrayFrontView.add(rightLandingGearsPointsList.get(i));
-		}
-		// nacelles
-		for (int i=0; i<nacellePointsList.size(); i++)
-			listDataArrayFrontView.add(nacellePointsList.get(i));
 		
 		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
 		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
@@ -2073,111 +2136,111 @@ public class InputManagerController {
 		int WIDTH = 700;
 		int HEIGHT = 600;
 		
-		D3PlotterOptions optionsFrontView = new D3PlotterOptions.D3PlotterOptionsBuilder()
-				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(yMinFrontView, yMaxFrontView)
-				.yRange(zMinFrontView, zMaxFrontView)
-				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
-				.title("Aircraft data representation - Front View")
-				.xLabel("y (m)")
-				.yLabel("z (m)")
-				.showXGrid(true)
-				.showYGrid(true)
-				.symbolTypes(
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE
-						)
-				.symbolSizes(2,2,2,2,2,2,2,2,2,2,2,2,2,2,2)
-				.showSymbols(false,false,false,false,false,false,false,false,false,false,false,false,false,false,false) // NOTE: overloaded function
-				.symbolStyles(
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2"
-						)
-				.lineStyles(
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2"
-						)
-				.plotAreas(true,true,true,true,true,true,true,false,false,false,false,true,true,true,true)
-				.areaStyles("fill:blue;","fill:blue;","fill:yellow;","fill:lightblue;","fill:lightblue;","fill:white;","fill:white;",
-						"fill:black;","fill:black;","fill:black;","fill:black;","fill:orange;","fill:orange;","fill:orange;","fill:orange;")
-				.areaOpacities(1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0)
-				.showLegend(false)
-				.build();
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
+		seriesNacelleCruvesFrontViewList.stream().forEach(
+				nac -> seriesAndColorList.add(Tuple.of(nac, Color.decode("#FF7F50")))
+				);
+		seriesAndColorList.add(Tuple.of(seriesWingFrontView, Color.decode("#87CEFA")));
+		seriesAndColorList.add(Tuple.of(seriesHTailFrontView, Color.decode("#00008B")));
+		seriesAndColorList.add(Tuple.of(seriesVTailFrontView, Color.decode("#FFD700")));
+		serieLandingGearsCruvesFrontViewList.stream().forEach(
+				lg -> seriesAndColorList.add(Tuple.of(lg, Color.decode("#404040")))
+				);
 		
-		D3Plotter d3Plotter = new D3Plotter(
-				optionsFrontView,
-				listDataArrayFrontView
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Aircraft data representation - Front View", 
+				"y (m)", 
+				"z (m)",
+				(XYDataset) dataset,
+				PlotOrientation.VERTICAL,
+                false, // legend
+                true,  // tooltips
+                false  // urls
 				);
 
-		//define d3 content as post loading hook
-		Runnable postLoadingHook = () -> {
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
+		
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
 
-			//--------------------------------------------------
-			// Create the D3 graph
-			//--------------------------------------------------
-			d3Plotter.createD3Content();
-			
-			//--------------------------------------------------
-			// output
-			String outputFilePathFrontView = Main.getOutputDirectoryPath() 
-					+ File.separator 
-					+ "AircraftFrontView.svg";
-			File outputFile = new File(outputFilePathFrontView);
-			if(outputFile.exists())
-				outputFile.delete();
-			d3Plotter.saveSVG(outputFilePathFrontView);
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(yMinFrontView, yMaxFrontView);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(zMinFrontView, zMaxFrontView);
 
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+		
+		plot.setRenderer(0, xyAreaRenderer);
+		plot.setDataset(0, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
 
-		}; // end-of-Runnable
-
-		// create the Browser/D3
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "AircraftFrontView.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+		
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+		
 		//create browser
-		JavaFxD3Browser browserFrontView = d3Plotter.getBrowser(postLoadingHook, false);
-
-		//create the scene
-		Scene sceneFrontView = new Scene(browserFrontView, WIDTH+10, HEIGHT+10);
+		Scene sceneFrontView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
 		aircraftFrontViewPane.getChildren().add(sceneFrontView.getRoot());
+		
 	}
 	
 	private void logAircraftFromFileToInterface() {
@@ -3402,98 +3465,124 @@ public class InputManagerController {
 		int nX1Left = vX1Left.size();
 		List<Amount<Length>> vY1Left = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideLCurveAmountY();
 
-		Double[][] dataOutlineXYLeftCurve = new Double[nX1Left][2];
-		IntStream.range(0, nX1Left)
-		.forEach(i -> {
-			dataOutlineXYLeftCurve[i][1] = vX1Left.get(i).doubleValue(SI.METRE);
-			dataOutlineXYLeftCurve[i][0] = vY1Left.get(i).doubleValue(SI.METRE);
-		});
-
 		// right curve, upperview
 		List<Amount<Length>> vX2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountX();
 		int nX2Right = vX2Right.size();
 		List<Amount<Length>> vY2Right = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXYSideRCurveAmountY();
 
-		Double[][] dataOutlineXYRightCurve = new Double[nX2Right][2];
+		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Top View", false);
+		IntStream.range(0, nX1Left)
+		.forEach(i -> {
+			seriesFuselageCurve.add(vX1Left.get(i).doubleValue(SI.METRE), vY1Left.get(i).doubleValue(SI.METRE));
+		});
 		IntStream.range(0, nX2Right)
 		.forEach(i -> {
-			dataOutlineXYRightCurve[i][1] = vX2Right.get(i).doubleValue(SI.METRE);
-			dataOutlineXYRightCurve[i][0] = vY2Right.get(i).doubleValue(SI.METRE);
+			seriesFuselageCurve.add(vX2Right.get(vX2Right.size()-1-i).doubleValue(SI.METRE), vY2Right.get(vY2Right.size()-1-i).doubleValue(SI.METRE));
 		});
-
-		List<Double[][]> listDataArrayTopView = new ArrayList<Double[][]>();
-
-		// fuselage
-		listDataArrayTopView.add(dataOutlineXYLeftCurve);
-		listDataArrayTopView.add(dataOutlineXYRightCurve);
 
 		double xMaxTopView = 1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double xMinTopView = -1.40*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().divide(2).doubleValue(SI.METRE);
 		double yMaxTopView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double yMinTopView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
-			
+
 		int WIDTH = 700;
 		int HEIGHT = 600;
-		
-		D3PlotterOptions optionsTopView = new D3PlotterOptions.D3PlotterOptionsBuilder()
-				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(xMinTopView, xMaxTopView)
-				.yRange(yMaxTopView, yMinTopView)
-				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
-				.title("Fuselage data representation - Top View")
-				.xLabel("y (m)")
-				.yLabel("x (m)")
-				.showXGrid(true)
-				.showYGrid(true)
-				.symbolTypes(
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE
-						)
-				.symbolSizes(2,2)
-				.showSymbols(false,false) // NOTE: overloaded function
-				.symbolStyles(
-						"fill:blue; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2"
-						)
-				.lineStyles(
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2"
-						)
-				.plotAreas(true,true)
-				.areaStyles("fill:white;","fill:white;")
-				.areaOpacities(1.0,1.0)
-				.showLegend(false)
-				.build();
-		
-		D3Plotter d3Plotter = new D3Plotter(
-				optionsTopView,
-				listDataArrayTopView
+
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
+
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Fuselage data representation - Top View", 
+				"y (m)", 
+				"x (m)",
+				(XYDataset) dataset,
+				PlotOrientation.HORIZONTAL,
+				false, // legend
+				true,  // tooltips
+				false  // urls
 				);
-		//define d3 content as post loading hook
-		Runnable postLoadingHook = () -> {
 
-			//--------------------------------------------------
-			// Create the D3 graph
-			//--------------------------------------------------
-			d3Plotter.createD3Content();
-			
-			//--------------------------------------------------
-			// output
-			String outputFilePathTopView = Main.getOutputDirectoryPath() 
-					+ File.separator 
-					+ "FuselageTopView.svg";
-			File outputFile = new File(outputFilePathTopView);
-			if(outputFile.exists())
-				outputFile.delete();
-			d3Plotter.saveSVG(outputFilePathTopView);
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
 
-		}; // end-of-Runnable
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
 
-		// create the Browser/D3
-		//create browser
-		JavaFxD3Browser browserTopView = d3Plotter.getBrowser(postLoadingHook, false);
-		Scene sceneTopView = new Scene(browserTopView, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(yMinTopView, yMaxTopView);
+		domain.setInverted(Boolean.TRUE);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(xMinTopView, xMaxTopView);
+		range.setInverted(Boolean.TRUE);
+
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+
+		plot.setRenderer(0, xyAreaRenderer);
+		plot.setDataset(0, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
+
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "FuselageTopView.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+
+		Scene sceneTopView = new Scene(stackPane, WIDTH+10, HEIGHT+10);
 		fuselageTopViewPane.getChildren().add(sceneTopView.getRoot());
 	}
 
@@ -3507,30 +3596,20 @@ public class InputManagerController {
 		int nX1Upper = vX1Upper.size();
 		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZUpperCurveAmountZ();
 
-		Double[][] dataOutlineXZUpperCurve = new Double[nX1Upper][2];
-		IntStream.range(0, nX1Upper)
-		.forEach(i -> {
-			dataOutlineXZUpperCurve[i][0] = vX1Upper.get(i).doubleValue(SI.METRE);
-			dataOutlineXZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
-		});
-
 		// lower curve, sideview
 		List<Amount<Length>> vX2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountX();
 		int nX2Lower = vX2Lower.size();
 		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getOutlineXZLowerCurveAmountZ();
 
-		Double[][] dataOutlineXZLowerCurve = new Double[nX2Lower][2];
+		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Top View", false);
+		IntStream.range(0, nX1Upper)
+		.forEach(i -> {
+			seriesFuselageCurve.add(vX1Upper.get(i).doubleValue(SI.METRE), vZ1Upper.get(i).doubleValue(SI.METRE));
+		});
 		IntStream.range(0, nX2Lower)
 		.forEach(i -> {
-			dataOutlineXZLowerCurve[i][0] = vX2Lower.get(i).doubleValue(SI.METRE);
-			dataOutlineXZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+			seriesFuselageCurve.add(vX2Lower.get(vX2Lower.size()-1-i).doubleValue(SI.METRE), vZ2Lower.get(vZ2Lower.size()-1-i).doubleValue(SI.METRE));
 		});
-		
-		List<Double[][]> listDataArraySideView = new ArrayList<Double[][]>();
-
-		// fuselage
-		listDataArraySideView.add(dataOutlineXZUpperCurve);
-		listDataArraySideView.add(dataOutlineXZLowerCurve);
 		
 		double xMaxSideView = 1.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
 		double xMinSideView = -0.20*Main.getTheAircraft().getFuselage().getFuselageCreator().getLenF().doubleValue(SI.METRE);
@@ -3540,70 +3619,100 @@ public class InputManagerController {
 		int WIDTH = 700;
 		int HEIGHT = 600;
 		
-		D3PlotterOptions optionsSideView = new D3PlotterOptions.D3PlotterOptionsBuilder()
-				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(xMinSideView, xMaxSideView)
-				.yRange(yMinSideView, yMaxSideView)
-				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
-				.title("Fuselage data representation - Side View")
-				.xLabel("x (m)")
-				.yLabel("z (m)")
-				.showXGrid(true)
-				.showYGrid(true)
-				.symbolTypes(
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE
-						)
-				.symbolSizes(2,2)
-				.showSymbols(false,false) // NOTE: overloaded function
-				.symbolStyles(
-						"fill:blue; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2"
-						)
-				.lineStyles(
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2"
-						)
-				.plotAreas(true,true)
-				.areaStyles("fill:white;","fill:white;")
-				.areaOpacities(1.0,1.0)
-				.showLegend(false)
-				.build();
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
 		
-		D3Plotter d3Plotter = new D3Plotter(
-				optionsSideView,
-				listDataArraySideView
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Fuselage data representation - Side View", 
+				"x (m)", 
+				"z (m)",
+				(XYDataset) dataset,
+				PlotOrientation.VERTICAL,
+                false, // legend
+                true,  // tooltips
+                false  // urls
 				);
+
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
 		
-		//define d3 content as post loading hook
-		Runnable postLoadingHook = () -> {
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
 
-			//--------------------------------------------------
-			// Create the D3 graph
-			//--------------------------------------------------
-			d3Plotter.createD3Content();
-			
-			//--------------------------------------------------
-			// output
-			String outputFilePathSideView = Main.getOutputDirectoryPath() 
-					+ File.separator 
-					+ "FuselageSideView.svg";
-			File outputFile = new File(outputFilePathSideView);
-			if(outputFile.exists())
-				outputFile.delete();
-			d3Plotter.saveSVG(outputFilePathSideView);
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(xMinSideView, xMaxSideView);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(yMinSideView, yMaxSideView);
 
-		}; // end-of-Runnable
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+		
+		plot.setRenderer(0, xyAreaRenderer);
+		plot.setDataset(0, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
 
-		// create the Browser/D3
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "FuselageSideView.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+		
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+		
 		//create browser
-		JavaFxD3Browser browserSideView = d3Plotter.getBrowser(postLoadingHook, false);
-		Scene sceneSideView = new Scene(
-				browserSideView, 
-				fuselageSideViewPane.getPrefWidth(), 
-				fuselageSideViewPane.getPrefHeight()
-				);
+		Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
 		fuselageSideViewPane.getChildren().add(sceneSideView.getRoot());		
 		
 	}
@@ -3618,30 +3727,20 @@ public class InputManagerController {
 		int nY1Upper = vY1Upper.size();
 		List<Amount<Length>> vZ1Upper = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionUpperCurveAmountZ();
 
-		Double[][] dataSectionYZUpperCurve = new Double[nY1Upper][2];
-		IntStream.range(0, nY1Upper)
-		.forEach(i -> {
-			dataSectionYZUpperCurve[i][0] = vY1Upper.get(i).doubleValue(SI.METRE);
-			dataSectionYZUpperCurve[i][1] = vZ1Upper.get(i).doubleValue(SI.METRE);
-		});
-
 		// section lower curve
 		List<Amount<Length>> vY2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountY();
 		int nY2Lower = vY2Lower.size();
 		List<Amount<Length>> vZ2Lower = Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionLowerCurveAmountZ();
-
-		Double[][] dataSectionYZLowerCurve = new Double[nY2Lower][2];
+		
+		XYSeries seriesFuselageCurve = new XYSeries("Fuselage - Front View", false);
+		IntStream.range(0, nY1Upper)
+		.forEach(i -> {
+			seriesFuselageCurve.add(vY1Upper.get(i).doubleValue(SI.METRE), vZ1Upper.get(i).doubleValue(SI.METRE));
+		});
 		IntStream.range(0, nY2Lower)
 		.forEach(i -> {
-			dataSectionYZLowerCurve[i][0] = vY2Lower.get(i).doubleValue(SI.METRE);
-			dataSectionYZLowerCurve[i][1] = vZ2Lower.get(i).doubleValue(SI.METRE);
+			seriesFuselageCurve.add(vY2Lower.get(vY2Lower.size()-1-i).doubleValue(SI.METRE), vZ2Lower.get(vZ2Lower.size()-1-i).doubleValue(SI.METRE));
 		});
-		
-		List<Double[][]> listDataArrayFrontView = new ArrayList<Double[][]>();
-
-		// fuselage
-		listDataArrayFrontView.add(dataSectionYZUpperCurve);
-		listDataArrayFrontView.add(dataSectionYZLowerCurve);
 		
 		double yMaxFrontView = 1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METER);
 		double yMinFrontView = -1.20*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
@@ -3651,69 +3750,100 @@ public class InputManagerController {
 		int WIDTH = 700;
 		int HEIGHT = 600;
 		
-		D3PlotterOptions optionsFrontView = new D3PlotterOptions.D3PlotterOptionsBuilder()
-				.widthGraph(WIDTH).heightGraph(HEIGHT)
-				.xRange(yMinFrontView, yMaxFrontView)
-				.yRange(zMinFrontView, zMaxFrontView)
-				.axisLineColor("darkblue").axisLineStrokeWidth("2px")
-				.graphBackgroundColor("blue").graphBackgroundOpacity(0.05)
-				.title("Fuselage data representation - Front View")
-				.xLabel("y (m)")
-				.yLabel("z (m)")
-				.showXGrid(true)
-				.showYGrid(true)
-				.symbolTypes(
-						SymbolType.CIRCLE,
-						SymbolType.CIRCLE
-						)
-				.symbolSizes(2,2)
-				.showSymbols(false,false) // NOTE: overloaded function
-				.symbolStyles(
-						"fill:cyan; stroke:darkblue; stroke-width:2",
-						"fill:cyan; stroke:darkblue; stroke-width:2"
-						)
-				.lineStyles(
-						"fill:none; stroke:black; stroke-width:2",
-						"fill:none; stroke:black; stroke-width:2"
-						)
-				.plotAreas(true,true)
-				.areaStyles("fill:white;","fill:white;")
-				.areaOpacities(1.0,1.0)
-				.showLegend(false)
-				.build();
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesAndColorList.add(Tuple.of(seriesFuselageCurve, Color.WHITE));
 		
-		D3Plotter d3Plotter = new D3Plotter(
-				optionsFrontView,
-				listDataArrayFrontView
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Fuselage data representation - Front View", 
+				"y (m)", 
+				"z (m)",
+				(XYDataset) dataset,
+				PlotOrientation.VERTICAL,
+                false, // legend
+                true,  // tooltips
+                false  // urls
 				);
 
-		//define d3 content as post loading hook
-		Runnable postLoadingHook = () -> {
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
+		
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
 
-			//--------------------------------------------------
-			// Create the D3 graph
-			//--------------------------------------------------
-			d3Plotter.createD3Content();
-			
-			//--------------------------------------------------
-			// output
-			String outputFilePathFrontView = Main.getOutputDirectoryPath() 
-					+ File.separator 
-					+ "FuselageFrontView.svg";
-			File outputFile = new File(outputFilePathFrontView);
-			if(outputFile.exists())
-				outputFile.delete();
-			d3Plotter.saveSVG(outputFilePathFrontView);
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(yMinFrontView, yMaxFrontView);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(zMinFrontView, zMaxFrontView);
 
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+		
+		plot.setRenderer(0, xyAreaRenderer);
+		plot.setDataset(0, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
 
-		}; // end-of-Runnable
-
-		// create the Browser/D3
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "FuselageFrontView.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+		
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+		
 		//create browser
-		JavaFxD3Browser browserFrontView = d3Plotter.getBrowser(postLoadingHook, false);
-
-		//create the scene
-		Scene sceneFrontView = new Scene(browserFrontView, WIDTH+10, HEIGHT+10);
+		Scene sceneFrontView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
 		fuselageFrontViewPane.getChildren().add(sceneFrontView.getRoot());
 	}
 	

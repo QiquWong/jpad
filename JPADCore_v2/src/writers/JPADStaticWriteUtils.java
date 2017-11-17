@@ -3091,6 +3091,11 @@ public class JPADStaticWriteUtils {
 				aircraft.getLandingGears().getKMainLegsLength(), 
 				globalDataElement, doc);
 		
+		// global_data - distance_between_wheels
+				JPADStaticWriteUtils.writeSingleNode("distance_between_wheels", 
+						aircraft.getLandingGears().getDistanceBetweenWheels(), 
+						globalDataElement, doc);
+		
 		// global_data - number_of_frontal_wheels
 		JPADStaticWriteUtils.writeSingleNode("number_of_frontal_wheels", 
 				aircraft.getLandingGears().getNumberOfFrontalWheels(), 
