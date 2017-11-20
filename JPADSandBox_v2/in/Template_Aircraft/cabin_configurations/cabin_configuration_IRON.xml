@@ -22,7 +22,7 @@
 			</missing_seat_row> 
 		</global_data>
 		<detailed_data>
-			<number_of_breaks_economy_class>0</number_of_breaks_economy_class>
+			<number_of_breaks_economy_class>2</number_of_breaks_economy_class>
 			<number_of_breaks_business_class>0</number_of_breaks_business_class>
 			<number_of_breaks_first_class>0</number_of_breaks_first_class>
 			<number_of_rows_economy_class>26</number_of_rows_economy_class>

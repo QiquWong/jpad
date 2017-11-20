@@ -708,7 +708,7 @@ public class SeatsBlock {
 		return _xCoGblock;
 	}
 
-	public Amount<Length> get_lenghtOverall() {
+	public Amount<Length> getLenghtOverall() {
 		return _lenghtOverall;
 	}
 

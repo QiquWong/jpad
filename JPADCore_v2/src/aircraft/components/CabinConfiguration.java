@@ -13,8 +13,6 @@ import java.util.TreeMap;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.unit.SI;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.jscience.physics.amount.Amount;
 import org.jscience.physics.amount.AmountFormat;
@@ -32,7 +30,6 @@ import standaloneutils.MyArrayUtils;
 import standaloneutils.MyXMLReaderUtils;
 import standaloneutils.atmosphere.AtmosphereCalc;
 import standaloneutils.customdata.MyArray;
-import writers.JPADStaticWriteUtils;
 
 /**
  * Define the cabin configuration (full economy, economy + business) and current flight configuration
@@ -52,7 +49,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 					   _seatsBlockLeft,
 					   _seatsBlockCenter;
 
-	private Map<ClassTypeEnum, ArrayList<Object>> _seatsMap;
 	private Map<MethodEnum, Amount<?>> _massMap;
 	private Map<Integer, Amount<Length>> _breaksMap;
 	private Map<AnalysisTypeEnum, List<MethodEnum>> _methodsMap;
@@ -180,8 +176,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 		private Map<MethodEnum, Amount<?>> __massMap = new TreeMap<MethodEnum, Amount<?>>();
 		private Map<Integer, Amount<Length>> __breaksMap = new HashMap<Integer, Amount<Length>>();
 		private Map<AnalysisTypeEnum, List<MethodEnum>> __methodsMap = new HashMap<AnalysisTypeEnum, List<MethodEnum>>();
-		private Map<ClassTypeEnum, ArrayList<Object>> __seatsMap = new HashMap<ClassTypeEnum, ArrayList<Object>>();
-
 		private List<MethodEnum> __methodsList = new ArrayList<MethodEnum>();
 		private List<SeatsBlock> __seatsBlocksList = new ArrayList<SeatsBlock>();
 		private MyArray __xLoading = new MyArray(),  
@@ -557,8 +551,6 @@ public class CabinConfiguration implements ICabinConfiguration {
 		this._massMap = builder.__massMap;
 		this._breaksMap = builder.__breaksMap;
 		this._methodsMap = builder.__methodsMap;
-		this._seatsMap = builder.__seatsMap;
-
 		this._methodsList = builder.__methodsList;
 		this._seatsBlocksList = builder.__seatsBlocksList;
 		this._xLoading = builder.__xLoading;
@@ -586,6 +578,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 	// End of builder pattern
 	//===================================================================================================
 	
+	@SuppressWarnings("unchecked")
 	public static CabinConfiguration importFromXML (String pathToXML) {
 		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
@@ -599,67 +592,61 @@ public class CabinConfiguration implements ICabinConfiguration {
 		
 		//------------------------------------------------------------------
 		// GLOBAL DATA
-		Integer actualPassengerNumber = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//global_data/actual_passengers_number"
-								)
-						);
-		Integer maximumPassengerNumber = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//global_data/maximum_passengers_number"
-								)
-						);
-		Integer flightCrewNumber = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//global_data/flight_crew_number"
-								)
-						);
-		Integer classesNumber = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//global_data/classes_number"
-								)
-						);
-		List<String> classesTypeProperty = JPADXmlReader.readArrayFromXML(
-				reader.getXMLPropertiesByPath(
-						"//global_data/classes_type"
-						)
-				.get(0));
-		List<ClassTypeEnum> classesType = new ArrayList<ClassTypeEnum>();
-		for(int i=0; i<classesTypeProperty.size(); i++) {
-			if(classesTypeProperty.get(i).equalsIgnoreCase("ECONOMY"))
-				classesType.add(ClassTypeEnum.ECONOMY);
-			else if(classesTypeProperty.get(i).equalsIgnoreCase("BUSINESS"))
-				classesType.add(ClassTypeEnum.BUSINESS);
-			else if(classesTypeProperty.get(i).equalsIgnoreCase("FIRST"))
-				classesType.add(ClassTypeEnum.FIRST);
-			else {
-				System.err.println("\n\tERROR: INVALID CLASS TYPE !!\n");
-				return null;
+		Integer actualPassengerNumber = null;
+		Integer maximumPassengerNumber = null; 
+		Integer flightCrewNumber = null;
+		Integer classesNumber = null; 
+		List<ClassTypeEnum> classesType = new ArrayList<>();
+		Integer aislesNumber = null; 
+		Amount<Length> xCoordinatesFirstRow = null; 
+		List<Integer[]> missingSeatsRow = new ArrayList<>();
+		
+		//..................................................................		
+		String actualPassengerNumberProperty =  reader.getXMLPropertyByPath("//global_data/actual_passengers_number");
+		if(actualPassengerNumberProperty != null) 
+			actualPassengerNumber = Integer.valueOf(actualPassengerNumberProperty);
+		//..................................................................
+		String maximumPassengerNumberProperty =  reader.getXMLPropertyByPath("//global_data/maximum_passengers_number");
+		if(actualPassengerNumberProperty != null) 
+			maximumPassengerNumber = Integer.valueOf(maximumPassengerNumberProperty);
+		//..................................................................
+		String flightCrewNumberProperty =  reader.getXMLPropertyByPath("//global_data/flight_crew_number");
+		if(flightCrewNumberProperty != null)
+			flightCrewNumber = Integer.valueOf(flightCrewNumberProperty);
+		//..................................................................
+		String classesNumberProperty =  reader.getXMLPropertyByPath("//global_data/classes_number");
+		if(classesNumberProperty != null)
+			classesNumber = Integer.valueOf(classesNumberProperty);
+		//..................................................................
+		List<String> classesTypeProperty = reader.getXMLPropertiesByPath("//global_data/classes_type");
+		if(!classesTypeProperty.isEmpty()) {
+			List<String> classesTypeList = JPADXmlReader.readArrayFromXML(
+					reader.getXMLPropertiesByPath("//global_data/classes_type")
+					.get(0));
+			classesType = new ArrayList<ClassTypeEnum>();
+			for(int i=0; i<classesTypeList.size(); i++) {
+				if(classesTypeList.get(i).equalsIgnoreCase("ECONOMY"))
+					classesType.add(ClassTypeEnum.ECONOMY);
+				else if(classesTypeList.get(i).equalsIgnoreCase("BUSINESS"))
+					classesType.add(ClassTypeEnum.BUSINESS);
+				else if(classesTypeList.get(i).equalsIgnoreCase("FIRST"))
+					classesType.add(ClassTypeEnum.FIRST);
+				else {
+					System.err.println("\n\tERROR: INVALID CLASS TYPE !!\n");
+					return null;
+				}
 			}
 		}
-		
-		Integer aislesNumber = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//global_data/aisles_number"
-								)
-						);
-		Amount<Length> xCoordinatesFirstRow = Amount.valueOf(
-				Double.valueOf(
-						reader.getXMLPropertyByPath(
-								"//global_data/x_coordinates_first_row"
-								)
-						),
-				SI.METER
-				);
-		
-		List<Integer[]> missingSeatsRow = new ArrayList<Integer[]>();
-		List<String> missingSeatsRowProperty = reader.getXMLPropertiesByPath
-				("//value");
+		//..................................................................
+		String aislesNumberProperty =  reader.getXMLPropertyByPath("//global_data/aisles_number");
+		if(aislesNumberProperty != null)
+		aislesNumber = Integer.valueOf(aislesNumberProperty);
+		//..................................................................
+		String xCoordinatesFirstRowProperty =  reader.getXMLPropertyByPath("//global_data/x_coordinates_first_row");
+		if(xCoordinatesFirstRowProperty != null)
+			xCoordinatesFirstRow = reader.getXMLAmountLengthByPath("//global_data/x_coordinates_first_row");
+		//..................................................................
+		List<String> missingSeatsRowProperty = reader.getXMLPropertiesByPath("//value");
 		if(missingSeatsRowProperty.size() != classesNumber) {
 			System.err.println("THE NUMBER OF MISSING SEAT ROW TAGS HAVE TO BE EQUAL TO THE CLASSES NUMBER !!");
 			return null;
@@ -686,184 +673,144 @@ public class CabinConfiguration implements ICabinConfiguration {
 		}
 		
 		//---------------------------------------------------------------
-		//DETAILED DATA
-		Integer numberOfBreaksEconomyClass = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//detailed_data/number_of_breaks_economy_class"
-								)
+		// DETAILED DATA
+		Integer numberOfBreaksEconomyClass = null;
+		Integer numberOfBreaksBusinessClass = null;
+		Integer numberOfBreaksFirstClass = null;
+		Integer numberOfRowsEconomyClass = null;
+		Integer numberOfRowsBusinessClass = null;
+		Integer numberOfRowsFirstClass = null;
+		Integer[] numberOfColumnsEconomyClass = null;
+		Integer[] numberOfColumnsBusinessClass = null;
+		Integer[] numberOfColumnsFirstClass = null;
+		Amount<Length> pitchEconomyClass = null;
+		Amount<Length> pitchBusinessClass = null;
+		Amount<Length> pitchFirstClass = null;
+		Amount<Length> widthEconomyClass = null;
+		Amount<Length> widthBusinessClass = null;
+		Amount<Length> widthFirstClass = null;
+		Amount<Length> distanceFromWallEconomyClass = null;
+		Amount<Length> distanceFromWallBusinessClass = null;
+		Amount<Length> distanceFromWallFirstClass = null;
+
+		//..................................................................
+		String numberOfBreaksEconomyClassProperty = reader.getXMLPropertyByPath("//detailed_data/number_of_breaks_economy_class");
+		if(numberOfBreaksEconomyClassProperty != null)
+			numberOfBreaksEconomyClass = Integer.valueOf(numberOfBreaksEconomyClassProperty);
+		//..................................................................
+		String numberOfBreaksBusinessClassProperty = reader.getXMLPropertyByPath("//detailed_data/number_of_breaks_business_class");
+		if(numberOfBreaksBusinessClassProperty != null)
+			numberOfBreaksBusinessClass = Integer.valueOf(numberOfBreaksBusinessClassProperty);
+		//..................................................................
+		String numberOfBreaksFirstClassProperty = reader.getXMLPropertyByPath("//detailed_data/number_of_breaks_first_class");
+		if(numberOfBreaksFirstClassProperty != null)
+			numberOfBreaksFirstClass = Integer.valueOf(numberOfBreaksFirstClassProperty);
+		//..................................................................
+		String numberOfRowsEconomyClassProperty = reader.getXMLPropertyByPath("//detailed_data/number_of_rows_economy_class");
+		if(numberOfRowsEconomyClassProperty != null)
+			numberOfRowsEconomyClass = Integer.valueOf(numberOfRowsEconomyClassProperty);
+		//..................................................................
+		String numberOfRowsBusinessClassProperty = reader.getXMLPropertyByPath("//detailed_data/number_of_rows_business_class");
+		if(numberOfRowsBusinessClassProperty != null)
+			numberOfRowsBusinessClass = Integer.valueOf(numberOfRowsBusinessClassProperty);
+		//..................................................................
+		String numberOfRowsFirstClassProperty = reader.getXMLPropertyByPath("//detailed_data/number_of_rows_first_class");
+		if(numberOfRowsFirstClassProperty != null)
+			numberOfRowsFirstClass = Integer.valueOf(numberOfRowsFirstClassProperty);
+		//..................................................................
+		List<String> numberOfColumnsEconomyClassProperty = reader.getXMLPropertiesByPath("//detailed_data/number_of_columns_economy_class");
+		if(!numberOfColumnsEconomyClassProperty.isEmpty()) {
+			List<String> numberOfColumnsEconomyClassArray = JPADXmlReader
+					.readArrayFromXML(
+							reader.getXMLPropertiesByPath(
+									"//detailed_data/number_of_columns_economy_class"
+									)
+							.get(0)
+							);
+			numberOfColumnsEconomyClass = new Integer[numberOfColumnsEconomyClassArray.size()];
+			for(int i=0; i<numberOfColumnsEconomyClassArray.size(); i++)
+				numberOfColumnsEconomyClass[i] = Integer.valueOf(
+						numberOfColumnsEconomyClassArray.get(i)
 						);
-		Integer numberOfBreaksBusinessClass = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//detailed_data/number_of_breaks_business_class"
-								)
+		}
+		//..................................................................
+		List<String> numberOfColumnsBusinessClassProperty = reader.getXMLPropertiesByPath("//detailed_data/number_of_columns_business_class");
+		if(!numberOfColumnsBusinessClassProperty.isEmpty()) {
+			List<String> numberOfColumnsBusinessClassArray = JPADXmlReader
+					.readArrayFromXML(
+							reader.getXMLPropertiesByPath(
+									"//detailed_data/number_of_columns_business_class"
+									)
+							.get(0)
+							);
+			numberOfColumnsBusinessClass = new Integer[numberOfColumnsBusinessClassArray.size()];
+			for(int i=0; i<numberOfColumnsBusinessClassArray.size(); i++)
+				numberOfColumnsBusinessClass[i] = Integer.valueOf(
+						numberOfColumnsBusinessClassArray.get(i)
 						);
-		Integer numberOfBreaksFirstClass = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//detailed_data/number_of_breaks_first_class"
-								)
+		}
+		//..................................................................
+		List<String> numberOfColumnsFirstClassProperty = reader.getXMLPropertiesByPath("//detailed_data/number_of_columns_first_class");
+		if(!numberOfColumnsFirstClassProperty.isEmpty()) {
+			List<String> numberOfColumnsFirstClassArray = JPADXmlReader
+					.readArrayFromXML(
+							reader.getXMLPropertiesByPath(
+									"//detailed_data/number_of_columns_first_class"
+									)
+							.get(0)
+							);
+			numberOfColumnsFirstClass = new Integer[numberOfColumnsFirstClassArray.size()];
+			for(int i=0; i<numberOfColumnsFirstClassArray.size(); i++)
+				numberOfColumnsFirstClass[i] = Integer.valueOf(
+						numberOfColumnsFirstClassArray.get(i)
 						);
-		Integer numberOfRowsEconomyClass = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//detailed_data/number_of_rows_economy_class"
-								)
-						);
-		Integer numberOfRowsBusinessClass = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//detailed_data/number_of_rows_business_class"
-								)
-						);
-		Integer numberOfRowsFirstClass = Integer
-				.valueOf(
-						reader.getXMLPropertyByPath(
-								"//detailed_data/number_of_rows_first_class"
-								)
-						);
-		
-		List<String> numberOfColumnsEconomyClassProperty = JPADXmlReader
-				.readArrayFromXML(
-						reader.getXMLPropertiesByPath(
-								"//detailed_data/number_of_columns_economy_class"
-								)
-						.get(0)
-						);
-		Integer[] numberOfColumnsEconomyClass = new Integer[numberOfColumnsEconomyClassProperty.size()];
-		for(int i=0; i<numberOfColumnsEconomyClassProperty.size(); i++)
-			numberOfColumnsEconomyClass[i] = Integer.valueOf(
-					numberOfColumnsEconomyClassProperty.get(i)
-					);
-		
-		List<String> numberOfColumnsBusinessClassProperty = JPADXmlReader
-				.readArrayFromXML(
-						reader.getXMLPropertiesByPath(
-								"//detailed_data/number_of_columns_business_class"
-								)
-						.get(0)
-						);
-		Integer[] numberOfColumnsBusinessClass = new Integer[numberOfColumnsBusinessClassProperty.size()];
-		for(int i=0; i<numberOfColumnsBusinessClassProperty.size(); i++)
-			numberOfColumnsBusinessClass[i] = Integer.valueOf(
-					numberOfColumnsBusinessClassProperty.get(i)
-					);
-		
-		List<String> numberOfColumnsFirstClassProperty = JPADXmlReader
-				.readArrayFromXML(
-						reader.getXMLPropertiesByPath(
-								"//detailed_data/number_of_columns_first_class"
-								)
-						.get(0)
-						);
-		Integer[] numberOfColumnsFirstClass = new Integer[numberOfColumnsFirstClassProperty.size()];
-		for(int i=0; i<numberOfColumnsFirstClassProperty.size(); i++)
-			numberOfColumnsFirstClass[i] = Integer.valueOf(
-					numberOfColumnsFirstClassProperty.get(i)
-					);
-		
-		Amount<Length> pitchEconomyClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/pitch_economy_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> pitchBusinessClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/pitch_business_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> pitchFirstClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/pitch_first_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> widthEconomyClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/width_economy_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> widthBusinessClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/width_business_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> widthFirstClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/width_first_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> distanceFromWallEconomyClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/distance_from_wall_economy_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> distanceFromWallBusinessClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/distance_from_wall_business_class"
-										)
-								),
-						SI.METER
-						);
-		
-		Amount<Length> distanceFromWallFirstClass = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//detailed_data/distance_from_wall_first_class"
-										)
-								),
-						SI.METER
-						);
+		}
+		//..................................................................
+		String pitchEconomyClassProperty = reader.getXMLPropertyByPath("//detailed_data/pitch_economy_class");
+		if(pitchEconomyClassProperty != null)
+		pitchEconomyClass = reader.getXMLAmountLengthByPath("//detailed_data/pitch_economy_class");
+		//..................................................................
+		String pitchBusinessClassProperty = reader.getXMLPropertyByPath("//detailed_data/pitch_business_class");
+		if(pitchBusinessClassProperty != null)
+			pitchBusinessClass = reader.getXMLAmountLengthByPath("//detailed_data/pitch_business_class");
+		//..................................................................
+		String pitchFirstClassProperty = reader.getXMLPropertyByPath("//detailed_data/pitch_first_class");
+		if(pitchFirstClassProperty != null)
+			pitchFirstClass = reader.getXMLAmountLengthByPath("//detailed_data/pitch_first_class");
+		//..................................................................
+		String widthEconomyClassProperty = reader.getXMLPropertyByPath("//detailed_data/width_economy_class");
+		if(widthEconomyClassProperty != null)
+			widthEconomyClass = reader.getXMLAmountLengthByPath("//detailed_data/width_economy_class");
+		//..................................................................
+		String widthBusinessClassProperty = reader.getXMLPropertyByPath("//detailed_data/width_business_class");
+		if(widthBusinessClassProperty != null)
+			widthBusinessClass = reader.getXMLAmountLengthByPath("//detailed_data/width_business_class");
+		//..................................................................
+		String widthFirstClassProperty = reader.getXMLPropertyByPath("//detailed_data/width_first_class");
+		if(widthFirstClassProperty != null)
+			widthFirstClass = reader.getXMLAmountLengthByPath("//detailed_data/width_first_class");
+		//..................................................................
+		String distanceFromWallEconomyClassProperty = reader.getXMLPropertyByPath("//detailed_data/distance_from_wall_economy_class");
+		if(distanceFromWallEconomyClassProperty != null)
+			distanceFromWallEconomyClass = reader.getXMLAmountLengthByPath("//detailed_data/distance_from_wall_economy_class");
+		//..................................................................
+		String distanceFromWallBusinessClassProperty = reader.getXMLPropertyByPath("//detailed_data/distance_from_wall_business_class");
+		if(distanceFromWallBusinessClassProperty != null)
+			distanceFromWallBusinessClass = reader.getXMLAmountLengthByPath("//detailed_data/distance_from_wall_business_class");
+		//..................................................................
+		String distanceFromWallFirstClassProperty = reader.getXMLPropertyByPath("//detailed_data/distance_from_wall_first_class");
+		if(distanceFromWallFirstClassProperty != null)
+			distanceFromWallFirstClass = reader.getXMLAmountLengthByPath("//detailed_data/distance_from_wall_first_class");
 		
 		//---------------------------------------------------------------
 		//REFERENCE MASS
-		Amount<Mass> massFurnishingsAndEquipment = Amount
-				.valueOf(
-						Double.valueOf(
-								reader.getXMLPropertyByPath(
-										"//reference_masses/mass_furnishings_and_equipment"
-										)
-								),
-						SI.KILOGRAM
-						);
+		Amount<Mass> massFurnishingsAndEquipment = null;
+		
+		String massFurnishingsAndEquipmentProperty = reader.getXMLPropertyByPath("//reference_masses/mass_furnishings_and_equipment");
+		if(massFurnishingsAndEquipmentProperty != null)
+			massFurnishingsAndEquipment = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//reference_masses/mass_furnishings_and_equipment");
+		else
+			massFurnishingsAndEquipment = Amount.valueOf(0.0, SI.KILOGRAM);
 		
 		CabinConfiguration aircraftConfiguration = new ConfigurationBuilder(id)
 				.nPax(actualPassengerNumber)
@@ -1018,7 +965,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 				_seatsBlocksList.add(_seatsBlockRight);
 			}
 
-			length = _seatsBlockRight.get_lenghtOverall();
+			length = _seatsBlockRight.getLenghtOverall();
 
 		}
 
@@ -1108,7 +1055,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 				.append("\tConfiguration\n")
 				.append("\t-------------------------------------\n")
 				.append("\tID: '" + _id + "'\n")
-				.append("\t·····································\n")
+				.append("\t.....................................\n")
 				.append("\tActual number of passengers: " + _nPax + "\n")
 				.append("\tMaximum number of passengers: " + _maxPax + "\n")
 				.append("\tFlight crew number: " + _flightCrewNumber + "\n")
@@ -1125,7 +1072,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 				sb.append("\t\t" + Arrays.toString(_missingSeatsRowList.get(i)) + " ");
 		}
 		
-		sb.append("\n\t·····································\n")
+		sb.append("\n\t.....................................\n")
 		.append("\tNumber of breaks economy class: " + _numberOfBreaksEconomyClass + "\n")
 		.append("\tNumber of breaks business class: " + _numberOfBreaksBusinessClass + "\n")
 		.append("\tNumber of breaks first class: " + _numberOfBreaksFirstClass + "\n")
@@ -1144,9 +1091,9 @@ public class CabinConfiguration implements ICabinConfiguration {
 		.append("\tDistance from wall economy class: " + _distanceFromWallEconomyClass + "\n")
 		.append("\tDistance from wall business class: " + _distanceFromWallBusinessClass + "\n")
 		.append("\tDistance from wall first class: " + _distanceFromWallFirstClass + "\n")
-		.append("\t·····································\n")
+		.append("\t.....................................\n")
 		.append("\tReference mass of furnishings and equipments: " + _massFurnishingsAndEquipmentReference + "\n")
-		.append("\t·····································\n");
+		.append("\t.....................................\n");
 
 		// TODO: ADD ANALYSIS RESULTS AND DERIVED DATA
 		

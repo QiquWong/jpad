@@ -2217,6 +2217,7 @@ public class FuselageCreator implements IFuselageCreator {
 				.sectionMidNoseRhoLower(sectionMidNoseRhoLower)
 				.sectionMidNoseRhoUpper(sectionMidNoseRhoUpper)
 				.sectionNoseMidLowerToTotalHeightRatio(sectionNoseMidLowerToTotalHeightRatio)
+				.windshieldType(windshieldType)
 				.windshieldHeight(windshieldHeight)
 				.windshieldWidth(windshieldWidth)
 				// CYLINDRICAL TRUNK
