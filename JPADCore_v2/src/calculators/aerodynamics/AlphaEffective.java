@@ -108,7 +108,7 @@ public class AlphaEffective {
 		NasaBlackwell theCalculator = new NasaBlackwell(
 				semispan, surface, yStationsActual,
 				chordsVsYActual, xLEvsYActual,
-				dihedral, twist,alpha0l, vortexSemiSpanToSemiSpanRatio,
+				dihedral, theWing.getLiftingSurfaceCreator().getTwistsBreakPoints(),theWing.getAlpha0VsY(), vortexSemiSpanToSemiSpanRatio,
 				alphaInitial.getEstimatedValue(), mach, altitude);
 
 		theCalculator.calculateVerticalVelocity(alphaInitial);

@@ -53,14 +53,29 @@ public class InputOutputTree {
 	kDistributionInput,
 	cmc4DistributionInput;
 	
+	//high lift
+	int flapsNumber, slatsNumber;
+	
+	private List<FlapTypeEnum> flapType;
+	private List<Double> cfc;
+	private List<Double> csc;
+	private List<Double> cExtCSlat;
+	private List<Double> etaInFlap;
+	private List<Double> etaOutFlap;
+	private List<Double> etaInSlat;
+	private List<Double> etaOutSlat;
+	private List<Amount<Angle>> deltaFlap;
+	private List<Amount<Angle>> deltaSlat;	
+	
 	// CALCULATED------------------------------------------------------------------------------------
 	List<Double> yAdimensionalStationActual;
 	private List<Amount<Length>> yDimensionaStationActual, chordDistributionActual,
-	xLEDistributionActual, twistDistributionActual;
+	xLEDistributionActual;
 	
 	private List<Amount<Angle>> alphaZeroLiftDistributionActual,
 	alphaStarDistributionActual,
-	alphaStallDistributionActual;
+	alphaStallDistributionActual,
+	twistDistributionActual;;
 	private List<Double> maximumliftCoefficientDistributionActual,
 	cdMinDistributionActual,
 	clZeroDistributionActual,
@@ -70,10 +85,12 @@ public class InputOutputTree {
 	cmc4DistributionActual;
 	
 	private Amount<Angle> sweepLE;
+	private Amount<Angle> sweepHalfChord;
 	private Amount<Length> span, semiSpan;
 	int numberOfAlphaCL = 50;
 	
 	List<List<Double>> _discretizedAirfoilsCl, _discretizedAirfoilsCd, _discretizedAirfoilsCm;
+	
 	
 	// OUTPUT------------------------------------------------------------------------------------
 	private Amount<Angle> alphaZeroLift,
@@ -106,6 +123,7 @@ public class InputOutputTree {
 	
 	
 	//MOMENT
+	private List<List<Double>> cmVsEtaVectors;
 	private List<Double> momentCurveClean;
 	
 	//HIGH LIFT
@@ -175,6 +193,18 @@ public class InputOutputTree {
 		 waweDragDistribution = new ArrayList<>();
 		 clZeroDistributionInput = new ArrayList<>();
 		 clalphaDEGDistributionInput = new ArrayList<>();
+		 cmVsEtaVectors = new ArrayList<>();
+		 
+		 flapType = new ArrayList<>();
+		cfc = new ArrayList<>();
+		csc = new ArrayList<>();
+		cExtCSlat = new ArrayList<>();
+		etaInFlap = new ArrayList<>();
+		etaOutFlap = new ArrayList<>();
+		etaInSlat = new ArrayList<>();
+		etaOutSlat = new ArrayList<>();
+		deltaFlap = new ArrayList<>();
+		deltaSlat = new ArrayList<>();	
 		 
 		 _discretizedAirfoilsCl = new ArrayList<>();
 		 _discretizedAirfoilsCd =  new ArrayList<>();
@@ -456,12 +486,12 @@ public class InputOutputTree {
 	}
 
 
-	public List<Amount<Length>> getTwistDistributionActual() {
+	public List<Amount<Angle>> getTwistDistributionActual() {
 		return twistDistributionActual;
 	}
 
 
-	public void setTwistDistributionActual(List<Amount<Length>> twistDistributionActual) {
+	public void setTwistDistributionActual(List<Amount<Angle>> twistDistributionActual) {
 		this.twistDistributionActual = twistDistributionActual;
 	}
 
@@ -983,6 +1013,146 @@ public class InputOutputTree {
 
 	public void set_discretizedAirfoilsCm(List<List<Double>> _discretizedAirfoilsCm) {
 		this._discretizedAirfoilsCm = _discretizedAirfoilsCm;
+	}
+
+
+	public Amount<Angle> getSweepHalfChord() {
+		return sweepHalfChord;
+	}
+
+
+	public void setSweepHalfChord(Amount<Angle> sweepHalfChord) {
+		this.sweepHalfChord = sweepHalfChord;
+	}
+
+
+	public List<List<Double>> getCmVsEtaVectors() {
+		return cmVsEtaVectors;
+	}
+
+
+	public void setCmVsEtaVectors(List<List<Double>> cmVsEtaVectors) {
+		this.cmVsEtaVectors = cmVsEtaVectors;
+	}
+
+
+	public int getFlapsNumber() {
+		return flapsNumber;
+	}
+
+
+	public void setFlapsNumber(int flapsNumber) {
+		this.flapsNumber = flapsNumber;
+	}
+
+
+	public List<FlapTypeEnum> getFlapType() {
+		return flapType;
+	}
+
+
+	public void setFlapType(List<FlapTypeEnum> flapType) {
+		this.flapType = flapType;
+	}
+
+
+	public List<Double> getCfc() {
+		return cfc;
+	}
+
+
+	public void setCfc(List<Double> cfc) {
+		this.cfc = cfc;
+	}
+
+
+	public List<Double> getCsc() {
+		return csc;
+	}
+
+
+	public void setCsc(List<Double> csc) {
+		this.csc = csc;
+	}
+
+
+	public List<Double> getcExtCSlat() {
+		return cExtCSlat;
+	}
+
+
+	public void setcExtCSlat(List<Double> cExtCSlat) {
+		this.cExtCSlat = cExtCSlat;
+	}
+
+
+	public List<Double> getEtaInFlap() {
+		return etaInFlap;
+	}
+
+
+	public void setEtaInFlap(List<Double> etaInFlap) {
+		this.etaInFlap = etaInFlap;
+	}
+
+
+	public List<Double> getEtaOutFlap() {
+		return etaOutFlap;
+	}
+
+
+	public void setEtaOutFlap(List<Double> etaOutFlap) {
+		this.etaOutFlap = etaOutFlap;
+	}
+
+
+	public List<Double> getEtaInSlat() {
+		return etaInSlat;
+	}
+
+
+	public void setEtaInSlat(List<Double> etaInSlat) {
+		this.etaInSlat = etaInSlat;
+	}
+
+
+	public List<Double> getEtaOutSlat() {
+		return etaOutSlat;
+	}
+
+
+	public void setEtaOutSlat(List<Double> etaOutSlat) {
+		this.etaOutSlat = etaOutSlat;
+	}
+
+
+	public List<Amount<Angle>> getDeltaFlap() {
+		return deltaFlap;
+	}
+
+
+	public void setDeltaFlap(List<Amount<Angle>> deltaFlap) {
+		this.deltaFlap = deltaFlap;
+	}
+
+
+	public List<Amount<Angle>> getDeltaSlat() {
+		return deltaSlat;
+	}
+
+
+	public void setDeltaSlat(List<Amount<Angle>> deltaSlat) {
+		this.deltaSlat = deltaSlat;
+	}
+
+
+	public int getSlatsNumber() {
+		return slatsNumber;
+	}
+
+
+	public void setSlatsNumber(int slatsNumber) {
+		this.slatsNumber = slatsNumber;
 	}
 
 

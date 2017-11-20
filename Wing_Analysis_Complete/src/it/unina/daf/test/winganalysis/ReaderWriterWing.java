@@ -19,6 +19,7 @@ import org.w3c.dom.NodeList;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
+import configuration.enumerations.FlapTypeEnum;
 import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import standaloneutils.JPADXmlReader;
@@ -286,6 +287,69 @@ public class ReaderWriterWing {
 			 + " ; number of cm c4 = " + input.getCmc4DistributionInput().size()+ " )");
 		}
 		
+		//HIGH LIFT
+		
+		NodeList nodelistFlaps = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//flaps/flap");
+		
+		input.setFlapsNumber(nodelistFlaps.getLength());
+		System.out.println("Flaps found: " + input.getFlapsNumber());
+		
+		List<String> flapTypeProperty = reader.getXMLPropertiesByPath("//flap_type");
+		
+		// Recognizing flap type 
+		flapTypeProperty.stream().forEach(
+				x -> input.getFlapType().add( 
+						Arrays.stream(FlapTypeEnum.values())
+						.filter(a -> a.toString().equals(x))
+						.findFirst()
+						.orElseThrow(() -> {throw new IllegalStateException(String.format("Unsupported flap type", flapTypeProperty));}))
+				);
+				
+		List<String> cfcProperty = reader.getXMLPropertiesByPath("//flap_chord_ratio");
+		for(int i=0; i<cfcProperty.size(); i++)
+			input.getCfc().add(Double.valueOf(cfcProperty.get(i)));
+		
+		List<String> deltaFlapProperty = reader.getXMLPropertiesByPath("//flap_deflection");
+		for(int i=0; i<deltaFlapProperty.size(); i++)
+			input.getDeltaFlap().add(Amount.valueOf(Double.valueOf(deltaFlapProperty.get(i)), NonSI.DEGREE_ANGLE));
+		
+		List<String> etaInFlapProperty = reader.getXMLPropertiesByPath("//flap_non_dimensional_inner_station");
+		for(int i=0; i<etaInFlapProperty.size(); i++)
+			input.getEtaInFlap().add(Double.valueOf(etaInFlapProperty.get(i)));
+		
+		List<String> etaOutFlapProperty = reader.getXMLPropertiesByPath("//flap_non_dimensional_outer_station");
+		for(int i=0; i<etaOutFlapProperty.size(); i++)
+			input.getEtaOutFlap().add(Double.valueOf(etaOutFlapProperty.get(i)));
+		
+		//slat
+		NodeList nodelistSlats = MyXMLReaderUtils
+				.getXMLNodeListByPath(reader.getXmlDoc(), "//slats/slat");
+
+		input.setSlatsNumber(nodelistSlats.getLength());
+		System.out.println("Slats found: " + input.getSlatsNumber());
+		
+		List<String> delta_slat_property = reader.getXMLPropertiesByPath("//slat_deflection");
+		for(int i=0; i<delta_slat_property.size(); i++)
+			input.getDeltaSlat().add(Amount.valueOf(Double.valueOf(delta_slat_property.get(i)), NonSI.DEGREE_ANGLE));
+		
+		List<String> cs_c_property = reader.getXMLPropertiesByPath("//slat_chord_ratio");
+		for(int i=0; i<cs_c_property.size(); i++)
+			input.getCsc().add(Double.valueOf(cs_c_property.get(i)));
+		
+		List<String> cExt_c_slat_property = reader.getXMLPropertiesByPath("//slat_extension_ratio");
+		for(int i=0; i<cExt_c_slat_property.size(); i++)
+			input.getcExtCSlat().add(Double.valueOf(cExt_c_slat_property.get(i)));
+		
+		List<String> eta_in_slat_property = reader.getXMLPropertiesByPath("//slat_non_dimensional_inner_station");
+		for(int i=0; i<eta_in_slat_property.size(); i++)
+			input.getEtaInSlat().add(Double.valueOf(eta_in_slat_property.get(i)));
+		
+		List<String> eta_out_slat_property = reader.getXMLPropertiesByPath("//slat_non_dimensional_outer_station");
+		for(int i=0; i<eta_out_slat_property.size(); i++)
+			input.getEtaOutSlat().add(Double.valueOf(eta_out_slat_property.get(i)));
+		
+		
 	// OTHER VALUES
 		double span = Math.sqrt(input.getAspectRatio() * input.getSurface().getEstimatedValue());
 		input.setSpan(Amount.valueOf(span, SI.METER));
@@ -507,8 +571,11 @@ public class ReaderWriterWing {
 		org.w3c.dom.Element wingAerodynamicElement = doc.createElement("wing_aerodynamic_characteristics");
 		outputRootElement.appendChild(wingAerodynamicElement);
 		
+		org.w3c.dom.Element wingCLEANAerodynamicElement = doc.createElement("CLEAN_configuration");
+		wingAerodynamicElement.appendChild(wingCLEANAerodynamicElement);
+		
 		org.w3c.dom.Element cleanElement = doc.createElement("lift_characteristics");
-		wingAerodynamicElement.appendChild(cleanElement);
+		wingCLEANAerodynamicElement.appendChild(cleanElement);
 		
 		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", input.getAlphaZeroLift(), cleanElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_alpha", Amount.valueOf(Double.valueOf(input.getcLAlpha()), NonSI.DEGREE_ANGLE.inverse()), cleanElement, doc);
@@ -532,19 +599,21 @@ public class ReaderWriterWing {
 
 		if (input.getNumberOfAlpha()!=0){
 			for (int i=0; i<input.getNumberOfAlpha(); i++){
-				JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_at_alpha_" + input.getAlphaDistributionArray().get(i), input.getClVsEtaVectors().get(i), distributionElement, doc);
+				JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_at_alpha_deg_"
+					 + input.getAlphaDistributionArray().get(i).doubleValue(NonSI.DEGREE_ANGLE),
+						input.getClVsEtaVectors().get(i), distributionElement, doc);
 			}
 		}
 
 		org.w3c.dom.Element stallPathElement = doc.createElement("stall_path");
 		cleanElement.appendChild(stallPathElement);
-		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("eta",input.getyAdimensionalStationActual(), distributionElement, doc);
-		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_max_airfoil",input.getMaximumliftCoefficientDistributionActual(), distributionElement, doc);
-		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_distribution_at_stall",input.getClDistributionAtStall(), distributionElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("eta",input.getyAdimensionalStationActual(), stallPathElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_max_airfoil",input.getMaximumliftCoefficientDistributionActual(), stallPathElement, doc);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cl_distribution_at_stall",input.getClDistributionAtStall(), stallPathElement, doc);
 		
 		//DRAG
 		org.w3c.dom.Element cleanDragElement = doc.createElement("drag_characteristics");
-		wingAerodynamicElement.appendChild(cleanDragElement);
+		wingCLEANAerodynamicElement.appendChild(cleanDragElement);
 		
 		org.w3c.dom.Element dragDistribution = doc.createElement("drag_distribution");
 		cleanDragElement.appendChild(dragDistribution);
@@ -553,7 +622,9 @@ public class ReaderWriterWing {
 
 		if (input.getNumberOfAlpha()!=0){
 			for (int i=0; i<input.getNumberOfAlpha(); i++){
-				JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cd_parasite_at_alpha_" + input.getAlphaDistributionArray().get(i), input.getParasiteDragDistribution().get(i), dragDistribution, doc);
+				JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cd_parasite_at_alpha_" 
+			+ input.getAlphaDistributionArray().get(i).doubleValue(NonSI.DEGREE_ANGLE)
+			,input.getParasiteDragDistribution().get(i), dragDistribution, doc);
 			}
 			
 		org.w3c.dom.Element dragBreakdownDistribution = doc.createElement("drag_breakdown");
@@ -567,10 +638,22 @@ public class ReaderWriterWing {
 		
 		//MOMENT
 		org.w3c.dom.Element cleanMomentElement = doc.createElement("moment_characteristics");
-		wingAerodynamicElement.appendChild(cleanMomentElement);
+		wingCLEANAerodynamicElement.appendChild(cleanMomentElement);
+		org.w3c.dom.Element cleanMomentDistributionElement = doc.createElement("moment_distribution");
+		cleanMomentElement.appendChild(cleanMomentDistributionElement);
 		
-		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array", input.getAlphaVector(), cleanMomentElement, doc, "°");
-		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("moment_curve", input.getMomentCurveClean(), cleanMomentElement, doc);
+		if (input.getNumberOfAlpha()!=0){
+			for (int i=0; i<input.getNumberOfAlpha(); i++){
+				JPADStaticWriteUtils.writeSingleNodeCPASCFormat("cm_distribution_at_alpha_" 
+			+ input.getAlphaDistributionArray().get(i).doubleValue(NonSI.DEGREE_ANGLE)
+			,input.getCmVsEtaVectors().get(i), cleanMomentDistributionElement, doc);
+			}
+		}
+		
+		org.w3c.dom.Element cleanMomentCurveElement = doc.createElement("moment_curve");
+		cleanMomentElement.appendChild(cleanMomentCurveElement);
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("alpha_array", input.getAlphaVector(), cleanMomentCurveElement, doc, "°");
+		JPADStaticWriteUtils.writeSingleNodeCPASCFormat("moment_curve", input.getMomentCurveClean(), cleanMomentCurveElement, doc);
 		
 		
 		}

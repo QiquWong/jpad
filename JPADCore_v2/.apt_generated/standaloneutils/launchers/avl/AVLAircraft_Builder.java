@@ -14,6 +14,9 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import javax.annotation.Generated;
+import standaloneutils.launchers.avl.AVLAircraft;
+import standaloneutils.launchers.avl.AVLBody;
+import standaloneutils.launchers.avl.AVLWing;
 
 /**
  * Auto-generated superclass of {@link AVLAircraft.Builder},

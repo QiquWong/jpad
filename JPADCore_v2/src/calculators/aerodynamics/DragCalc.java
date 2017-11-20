@@ -429,7 +429,8 @@ public class DragCalc {
 	 */
 	public static double calculateCDWaveLockKorn(double cL, double mach, 
 			double sweepHalfChord, double tcMax, AirfoilTypeEnum airfoilType) {
-		return calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKornMason(cL, sweepHalfChord, tcMax, airfoilType));
+		double cdWawe = calculateCDWaveLockKorn(cL, mach, AerodynamicCalc.calculateMachCriticalKornMason(cL, sweepHalfChord, tcMax, airfoilType));
+		return cdWawe;
 	}
 	
 	/**
@@ -948,20 +949,20 @@ public class DragCalc {
 			
 			if(Double.isNaN(clDistributionfromNasaBlackwell[ii]))
 				clDistributionfromNasaBlackwell[ii] = 0.0;
-			
-			if(ClReferenceOfCdMatrix.size() > airfoilCdMatrix.get(0).size()) 
-				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix.subList(0, airfoilCdMatrix.get(ii).size())), 
-						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
-						clDistributionfromNasaBlackwell[ii]
-						));
-			else if(ClReferenceOfCdMatrix.size() < airfoilCdMatrix.get(0).size())
-				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
-						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
-						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii).subList(0, ClReferenceOfCdMatrix.size())), 
-						clDistributionfromNasaBlackwell[ii]
-						));
-			else
+//			
+//			if(ClReferenceOfCdMatrix.size() > airfoilCdMatrix.get(0).size()) 
+//				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
+//						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix.subList(0, airfoilCdMatrix.get(ii).size())), 
+//						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 
+//						clDistributionfromNasaBlackwell[ii]
+//						));
+//			else if(ClReferenceOfCdMatrix.size() < airfoilCdMatrix.get(0).size())
+//				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
+//						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
+//						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii).subList(0, ClReferenceOfCdMatrix.size())), 
+//						clDistributionfromNasaBlackwell[ii]
+//						));
+//			else
 				parasiteDragDistribution.add(ii, MyMathUtils.getInterpolatedValue1DLinear(
 						MyArrayUtils.convertToDoublePrimitive(ClReferenceOfCdMatrix), 
 						MyArrayUtils.convertToDoublePrimitive(airfoilCdMatrix.get(ii)), 

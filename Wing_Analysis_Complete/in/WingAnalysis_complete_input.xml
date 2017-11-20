@@ -24,12 +24,12 @@
 						<y_adimensional_stations>[0, 0.399, 1]</y_adimensional_stations>
 						<chord_distribution unit="m">[6.39, 2.72, 1.05]</chord_distribution>
 						<x_le_distribution unit="m">[0.0, 3.71, 8.31]</x_le_distribution>
-						<twist_distribution unit="°">[0, -2, -6]</twist_distribution>
+						<twist_distribution unit="°">[0, -2, -3]</twist_distribution>
                     </geometry>
                     <aerodynamics>
 						<alpha_zero_lift_distribution unit="°">[-1.98, -1.63, -3.18]</alpha_zero_lift_distribution>
-						<alpha_star_distribution unit="°">[9.5, 8.5, 8.0]</alpha_star_distribution>
-						<alpha_stall_distribution unit="°">[10, 10, 10]</alpha_stall_distribution>
+						<alpha_star_distribution unit="°">[8, 8, 8]</alpha_star_distribution>
+						<alpha_stall_distribution unit="°">[17, 17, 17]</alpha_stall_distribution>
 						<cl_zero_distribution unit="°">[0.2, 0.2, 0.2]</cl_zero_distribution>
 						<cl_alpha_distribution unit="1/°">[0.11, 0.11, 0.11]</cl_alpha_distribution> <!-- do not change unit -->
 						<maximum_lift_coefficient_distribution>[2, 2, 1.8]</maximum_lift_coefficient_distribution>
@@ -39,5 +39,53 @@
 						<cm_c4_distribution>[-0.03, -0.03, -0.03]</cm_c4_distribution>
                     </aerodynamics>
              </distribution>
+			 <high_lift_devices>
+			                <flaps>
+                        <flap id = "1">
+                                <flap_type>SINGLE_SLOTTED</flap_type>
+                                <flap_chord_ratio>0.285</flap_chord_ratio>
+                                <flap_deflection unit = "°">40</flap_deflection>
+                                <flap_non_dimensional_inner_station>0.12</flap_non_dimensional_inner_station>
+                                <flap_non_dimensional_outer_station>0.4</flap_non_dimensional_outer_station>
+                        </flap>
+                        <flap id = "2">
+                                <flap_type>SINGLE_SLOTTED</flap_type>
+                                <flap_chord_ratio>0.32</flap_chord_ratio>
+                                <flap_deflection unit = "°">40</flap_deflection>
+                                <flap_non_dimensional_inner_station>0.4</flap_non_dimensional_inner_station>
+                                <flap_non_dimensional_outer_station>0.75</flap_non_dimensional_outer_station>
+                        </flap>
+                </flaps>
+                <slats>
+                        <slat id = "1">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio>0.055</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.12</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.33</slat_non_dimensional_outer_station>
+                        </slat>
+                        <slat id = "2">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio unit = "">0.085</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.4</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.56</slat_non_dimensional_outer_station>
+                        </slat>
+                        <slat id = "3">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio>0.095</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.57</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.73</slat_non_dimensional_outer_station>
+                        </slat>
+						<slat id = "4">
+                                <slat_deflection unit = "°">25</slat_deflection>
+                                <slat_chord_ratio>0.11</slat_chord_ratio>
+                                <slat_extension_ratio>1.1</slat_extension_ratio>
+                                <slat_non_dimensional_inner_station>0.74</slat_non_dimensional_inner_station>
+                                <slat_non_dimensional_outer_station>0.95</slat_non_dimensional_outer_station>
+                        </slat>
+                </slats>
+			 </high_lift_devices>
         </wing>
 </wing_executable>
