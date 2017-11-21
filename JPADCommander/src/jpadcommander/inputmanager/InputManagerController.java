@@ -4756,28 +4756,58 @@ public class InputManagerController {
 					- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
 					);
 			//........................................................................................................
-//			for(int j=0; j<Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(i).length; i++) {
-				for (int k = 0; k <Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(i)[0]; k++) {
+			Amount<Length> aisleWidth = Amount.valueOf(0.0, SI.METER);
+			Amount<Length> currentYPosition = Amount.valueOf(0.0, SI.METER);
+			
+			for(int j=0; j<Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i).length; j++) {
+				if(j>0) {
+					aisleWidth = Amount.valueOf( 
+							(Main.getTheAircraft().getFuselage().getFuselageCreator().getSectionCylinderWidth().doubleValue(SI.METER) 
+									- (MyArrayUtils.sumArrayElements(Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i))
+											* Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER))
+									- 2*Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER))
+							/Main.getTheAircraft().getCabinConfiguration().getAislesNumber(),
+							SI.METER
+							);
+					currentYPosition = Amount.valueOf(
+							seatsSeriesList.get(0).getDataItem(0).getYValue(),
+							SI.METER
+							);
+				}
+				for (int k = 0; k <Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i)[j]; k++) {
 					for (int r = 0;
-							 r < Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(i) 
-							     + Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(i); 
+							 r < Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(classNumber-i) 
+							     + Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i); 
 							 r++) {
 						
-						XYSeries seriesSeats = new XYSeries("Column " + k + "Row " + r, false);
-						seriesSeats.add(
-								Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
-								+ length.doubleValue(SI.METER)
-								+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(i).doubleValue(SI.METER)
-								+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(i).doubleValue(SI.METER),
-								Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
-								- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(i).doubleValue(SI.METER)
-								- (1+k) * Main.getTheAircraft().getCabinConfiguration().getWidth().get(i).doubleValue(SI.METER)
-								);
+						XYSeries seriesSeats = new XYSeries("Column " + i + j + k + r, false);
+						if(j>0)
+							seriesSeats.add(
+									Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
+									+ length.doubleValue(SI.METER)
+									+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+									+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+									Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+									- currentYPosition.doubleValue(SI.METER)
+									- aisleWidth.doubleValue(SI.METER)
+									- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+									);
+						else
+							seriesSeats.add(
+									Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
+									+ length.doubleValue(SI.METER)
+									+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+									+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+									Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+									- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
+									- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
+									- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+									);
 						seatsSeriesList.add(seriesSeats);
 						
 					}
 				}				
-//			}
+			}
 		
 			length = length.plus(seatsBlock.getLenghtOverall());
 			seatBlockSeriesList.add(seriesSeatBlock);
