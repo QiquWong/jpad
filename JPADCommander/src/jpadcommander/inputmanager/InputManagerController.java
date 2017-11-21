@@ -3,6 +3,8 @@ package jpadcommander.inputmanager;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -1221,12 +1223,61 @@ public class InputManagerController {
 			textFieldSpoilersMaximumDeflectionList.stream().forEach(t -> t.clear());
 			textFieldSpoilersMinimumDeflectionList.stream().forEach(t -> t.clear());
 		}
-		
+
 		// 3 View and TextArea
 		textAreaFuselageConsoleOutput.clear();
 		fuselageTopViewPane.getChildren().clear();
 		fuselageSideViewPane.getChildren().clear();
 		fuselageFrontViewPane.getChildren().clear();
+
+		//..................................................................................
+		// CABIN CONFIGURATION
+		textFieldActualPassengersNumber.clear();
+		textFieldMaximumPassengersNumber.clear();
+		textFieldFlightCrewNumber.clear();
+		textFieldClassesNumber.clear();
+		cabinConfigurationClassesTypeChoiceBox1.getSelectionModel().clearSelection();
+		cabinConfigurationClassesTypeChoiceBox2.getSelectionModel().clearSelection();
+		cabinConfigurationClassesTypeChoiceBox3.getSelectionModel().clearSelection();
+		textFieldAislesNumber.clear();
+		textFieldXCoordinateFirstRow.clear();
+		textFieldMissingSeatRow1.clear();
+		textFieldMissingSeatRow2.clear();
+		textFieldMissingSeatRow3.clear();
+		textFieldNumberOfBrakesEconomy.clear();
+		textFieldNumberOfBrakesBusiness.clear();
+		textFieldNumberOfBrakesFirst.clear();
+		textFieldNumberOfRowsEconomy.clear();
+		textFieldNumberOfRowsBusiness.clear();
+		textFieldNumberOfRowsFirst.clear();
+		textFieldNumberOfColumnsEconomy.clear();
+		textFieldNumberOfColumnsBusiness.clear();
+		textFieldNumberOfColumnsFirst.clear();
+		textFieldSeatsPitchEconomy.clear();
+		textFieldSeatsPitchBusiness.clear();
+		textFieldSeatsPitchFirst.clear();
+		textFieldSeatsWidthEconomy.clear();
+		textFieldSeatsWidthBusiness.clear();
+		textFieldSeatsWidthFirst.clear();
+		textFieldDistanceFromWallEconomy.clear();
+		textFieldDistanceFromWallBusiness.clear();
+		textFieldDistanceFromWallFirst.clear();
+		textFieldMassFurnishingsAndEquipment.clear();
+		cabinConfigurationXCoordinateFirstRowUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationSeatsPitchEconomyUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationSeatsPitchBusinessUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationSeatsPitchFirstUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationSeatsWidthEconomyUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationSeatsWidthBusinessUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationSeatsWidthFirstUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationDistanceFromWallEconomyUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationDistanceFromWallFirstUnitChoiceBox.getSelectionModel().clearSelection();
+		cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.getSelectionModel().clearSelection();
+		
+		// 3 View and TextArea
+		textAreaCabinConfigurationConsoleOutput.clear();
+		cabinConfigurationSeatMapPane.getChildren().clear();
 		
 		// TODO: CONTINUE WITH WING, etc ...
 		
@@ -4758,6 +4809,16 @@ public class InputManagerController {
 			//........................................................................................................
 			Amount<Length> aisleWidth = Amount.valueOf(0.0, SI.METER);
 			Amount<Length> currentYPosition = Amount.valueOf(0.0, SI.METER);
+			Double breakLengthPitchFraction = 0.25;
+			List<Integer> breakesPositionsIndexList = new ArrayList<>();
+			for (int iBrake=0; iBrake<Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i); iBrake++) {
+				Integer brekesInteval = Math.round(
+						(Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(classNumber-i)
+						+ Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i))
+						/ (Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i) + 1)
+						);
+				breakesPositionsIndexList.add((iBrake+1)*brekesInteval);
+			}
 			
 			for(int j=0; j<Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i).length; j++) {
 				if(j>0) {
@@ -4770,39 +4831,90 @@ public class InputManagerController {
 							SI.METER
 							);
 					currentYPosition = Amount.valueOf(
-							seatsSeriesList.get(0).getDataItem(0).getYValue(),
+							seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getYValue(),
 							SI.METER
 							);
 				}
 				for (int k = 0; k <Main.getTheAircraft().getCabinConfiguration().getNumberOfColumns().get(classNumber-i)[j]; k++) {
+					
+					int indexOfCurrentBrake = 10000;
+					
 					for (int r = 0;
-							 r < Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(classNumber-i) 
-							     + Main.getTheAircraft().getCabinConfiguration().getNumberOfBreaks().get(classNumber-i); 
+							 r < Main.getTheAircraft().getCabinConfiguration().getNumberOfRows().get(classNumber-i); 
 							 r++) {
 						
 						XYSeries seriesSeats = new XYSeries("Column " + i + j + k + r, false);
-						if(j>0)
-							seriesSeats.add(
-									Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
-									+ length.doubleValue(SI.METER)
-									+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-									+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
-									Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
-									- currentYPosition.doubleValue(SI.METER)
-									- aisleWidth.doubleValue(SI.METER)
-									- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-									);
-						else
-							seriesSeats.add(
-									Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
-									+ length.doubleValue(SI.METER)
-									+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-									+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
-									Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
-									- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
-									- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
-									- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
-									);
+						if(j>0) {
+							int rowIndex = r;
+							if(breakesPositionsIndexList.stream().anyMatch(x -> x == rowIndex)) {
+								seriesSeats.add(
+										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
+										+ breakLengthPitchFraction * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER)
+										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										currentYPosition.doubleValue(SI.METER)
+										- aisleWidth.doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										);
+								indexOfCurrentBrake = r;
+							}
+							else if (r > indexOfCurrentBrake)
+								seriesSeats.add(
+										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
+										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										currentYPosition.doubleValue(SI.METER)
+										- aisleWidth.doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										);
+							else
+								seriesSeats.add(
+										Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
+										+ length.doubleValue(SI.METER)
+										+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										currentYPosition.doubleValue(SI.METER)
+										- aisleWidth.doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										);
+						}
+						else {
+							int columnIndex = r;
+							if(breakesPositionsIndexList.stream().anyMatch(x -> x == columnIndex)) {
+								seriesSeats.add(
+										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
+										+ breakLengthPitchFraction * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER)
+										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										);
+								indexOfCurrentBrake = r;
+							}
+							else if (r > indexOfCurrentBrake)
+								seriesSeats.add(
+										seatsSeriesList.get(seatsSeriesList.size()-1).getDataItem(0).getXValue()
+										+ Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										);
+							else
+								seriesSeats.add(
+										Main.getTheAircraft().getCabinConfiguration().getXCoordinateFirstRow().doubleValue(SI.METER)
+										+ length.doubleValue(SI.METER)
+										+ Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										+ r * Main.getTheAircraft().getCabinConfiguration().getPitch().get(classNumber-i).doubleValue(SI.METER),
+										Main.getTheAircraft().getFuselage().getSectionWidht().divide(2).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getDistanceFromWall().get(classNumber-i).doubleValue(SI.METER)
+										- Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).divide(2).doubleValue(SI.METER)
+										- k * Main.getTheAircraft().getCabinConfiguration().getWidth().get(classNumber-i).doubleValue(SI.METER)
+										);
+								
+						}
 						seatsSeriesList.add(seriesSeats);
 						
 					}
@@ -4894,17 +5006,6 @@ public class InputManagerController {
 		range.setRange(xMinTopView, xMaxTopView);
 		range.setInverted(Boolean.TRUE);
 
-		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
-		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
-		xyAreaRenderer.setDefaultEntityRadius(6);
-		xyAreaRenderer.setDefaultSeriesVisible(false);
-		for(int i=0; i<dataset.getSeries().size(); i++) {
-			xyAreaRenderer.setSeriesPaint(
-					i,
-					seriesAndColorList.get(i)._2()
-					);
-		}
-		
 		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
 		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
 		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
@@ -4913,7 +5014,18 @@ public class InputManagerController {
 			if(i<seatsSeriesList.size()) {
 				xyLineAndShapeRenderer.setSeriesLinesVisible(i, false);
 				xyLineAndShapeRenderer.setSeriesShapesVisible(i, true);
-				xyLineAndShapeRenderer.setSeriesShape(i, ShapeUtils.createDiamond(3));
+				xyLineAndShapeRenderer.setSeriesShape(
+						i,
+						ShapeUtils.createDiamond(2.5f).getBounds()
+//						new Rectangle2D.Double(
+//								seatsSeriesList.get(i).getDataItem(0).getXValue()
+//								- Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).divide(2).doubleValue(SI.METER),
+//								seatsSeriesList.get(i).getDataItem(0).getYValue()
+//								- Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).divide(2).doubleValue(SI.METER),
+//								Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).doubleValue(SI.METER)*10,
+//								Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).doubleValue(SI.METER)*10
+//								)
+						);
 			}
 			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
 			xyLineAndShapeRenderer.setSeriesStroke(
@@ -4923,10 +5035,8 @@ public class InputManagerController {
 					);
 		}
 
-		plot.setRenderer(0, xyAreaRenderer);
-		plot.setDataset(0, dataset);
-		plot.setRenderer(1, xyLineAndShapeRenderer);
-		plot.setDataset(1, dataset);
+		plot.setRenderer(xyLineAndShapeRenderer);
+		plot.setDataset(dataset);
 
 		//-------------------------------------------------------------------------------------
 		// EXPORT TO SVG

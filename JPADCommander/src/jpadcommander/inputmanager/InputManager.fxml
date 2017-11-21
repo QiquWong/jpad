@@ -38,7 +38,7 @@
                                        <items>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
                                              <children>
-                                                <ScrollPane prefHeight="4609.0" prefWidth="535.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-137.0" AnchorPane.topAnchor="0.0">
+                                                <ScrollPane prefHeight="4609.0" prefWidth="403.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                                                    <content>
                                                       <AnchorPane minHeight="0.0" minWidth="0.0">
                                                          <children>
@@ -535,7 +535,7 @@
                      <children>
                         <BorderPane prefHeight="681.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <center>
-                              <SplitPane dividerPositions="0.37509727626459144" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <items>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
                                        <children>
@@ -908,7 +908,7 @@
                      <children>
                         <BorderPane prefHeight="681.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <center>
-                              <SplitPane dividerPositions="0.44205607476635517" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <items>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
                                        <children>

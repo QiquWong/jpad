@@ -2,6 +2,11 @@ package jpadcommander.view;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.controlsfx.validation.Severity;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
 import aircraft.components.Aircraft;
 import analyses.ACAnalysisManager;
 import javafx.beans.binding.Bindings;
