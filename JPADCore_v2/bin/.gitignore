@@ -1,5 +1,6 @@
-/standaloneutils/
 /aircraft/
+/standaloneutils/
+/.gitignore
 /analyses/
 /cad/
 /calculators/
