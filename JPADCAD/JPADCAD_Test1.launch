@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/JPADCAD/src/it/unina/daf/jpadcad/Test1.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="MMGT_OPT" value="1"/>
+<mapEntry key="Path" value="${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64;${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64\jre1.8.0_91\bin;"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="it.unina.daf.jpadcad.Test1"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADCAD"/>
+</launchConfiguration>
