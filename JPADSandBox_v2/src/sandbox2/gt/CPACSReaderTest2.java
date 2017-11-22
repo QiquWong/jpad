@@ -1,8 +1,11 @@
 package sandbox2.gt;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.transform.TransformerException;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -23,9 +26,13 @@ import standaloneutils.cpacs.CPACSUtils;
 import standaloneutils.jsbsim.JSBSimModel;
 
 class ArgumentsCPACSReaderTest2 {
-	@Option(name = "-f", aliases = { "--file" }, required = true,
-			usage = "my input file")
+	@Option(name = "-i", aliases = { "--input" }, required = true,
+			usage = "Cpacs file")
 	private File _inputFile;
+	
+	@Option(name = "-o", aliases = { "--output" }, required = false,
+			usage = "Jsbsim file")
+	private File _outputFile;
 
 	// receives other command line parameters than options
 	@Argument
@@ -33,6 +40,9 @@ class ArgumentsCPACSReaderTest2 {
 
 	public File getInputFile() {
 		return _inputFile;
+	}
+	public File getOutputFile() {
+		return _outputFile;
 	}
 
 }
@@ -43,12 +53,12 @@ public class CPACSReaderTest2 {
 	// declaration necessary for Concrete Object usage
 	public static CmdLineParser theCmdLineParser;
 	
-	public static void main(String[] args) throws TiglException {
+	public static void main(String[] args) throws TiglException, IOException {
 		
 		System.out.println("CPACSReader test");
 		System.out.println("--------------------------------");
 
-		ArgumentsCPACSReaderTest1 va = new ArgumentsCPACSReaderTest1();
+		ArgumentsCPACSReaderTest2 va = new ArgumentsCPACSReaderTest2();
 		CPACSReaderTest1.theCmdLineParser = new CmdLineParser(va);
 
 		try {
@@ -136,12 +146,16 @@ public class CPACSReaderTest2 {
 				System.out.println("Size is = "+clSurfaceVector.size());
 				System.out.println("--------------------------------");
 				
-				double[][] systemControl = new double[2][3];
-				systemControl = cpacsReader.getControlSurfaceRotation(0, "D150_VAMP_W1_CompSeg1_innerFlap", "flapSettingDistributor");
-				System.out.println(systemControl);
-				
-				
-				
+				try {
+					// export to JSBSim format
+					String outputFile = va.getOutputFile().getAbsolutePath();
+					String dirPath = va.getOutputFile().getParent();
+					jsbsimModel.exportToXML(outputFile,dirPath);
+					
+				}
+				catch (NullPointerException e) {
+					System.err.println("Output file not givem");
+				}
 			} // status OK
 			
 		} catch (CmdLineException e) {

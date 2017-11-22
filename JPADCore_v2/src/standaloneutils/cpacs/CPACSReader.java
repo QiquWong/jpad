@@ -3,6 +3,11 @@ package standaloneutils.cpacs;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -77,8 +82,6 @@ public class CPACSReader {
 			_status = ReadStatus.OK;
 			_jpadXmlReader = new JPADXmlReader(_cpacsFilePath);
 			_importDoc = _jpadXmlReader.getXmlDoc();
-
-
 		} catch (TiglException e) {
 			_status = ReadStatus.ERROR;
 			System.err.println(e.getMessage());
@@ -112,6 +115,12 @@ public class CPACSReader {
 		init();
 	}
 
+	public String aircraftName() {
+			String aircraftName =  _jpadXmlReader.getXMLPropertyByPath("cpacs/header/name");
+		return aircraftName;
+		
+	}
+	
 	/**
 	 * Returns the number of fuselages in CPACS file
 	 * 
@@ -386,43 +395,7 @@ public class CPACSReader {
 		}
 		return idx;
 	}	
-	/**
-	 * 
-	 * @param wingUID Wing UID in the CPACS
-	 * @param axis axis  which want evaluate distance
-	 * @return Return the leading edge of the mean aerodynamic chord from aircraft nose
-	 * @throws TiglException
-	 */
-//	public double getMeanChordLeadingEdge(String wingUID, String axis) throws TiglException {
-//		int wingIndex = getWingIndexZeroBased(wingUID);
-//		double wingSpan = getWingSpan(wingUID);		
-//		String wingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
-//				"cpacs/vehicles/aircraft/model/wings/wing["+ (wingIndex + 1) + "]/transformation/translation/"
-//				+ axis);
-//		double wingRootLeadingEdge = Double.parseDouble(wingRootLeadingEdgeString);	
-//		NodeList wingSectionElements = MyXMLReaderUtils.getXMLNodeListByPath(
-//				_jpadXmlReader.getXmlDoc(), 
-//				"cpacs/vehicles/aircraft/model/wings/wing[" + (wingIndex) + "]/sections/section");		
-//		int lastWingElementIndex = wingSectionElements.getLength();
-//		String wingTipLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
-//				"cpacs/vehicles/aircraft/model/wings/wing[" + (wingIndex) + "]/sections/"
-//						+ "section["+lastWingElementIndex+"]/elements/element/transformation/scaling/"
-//						+ axis);
-//		double wingTipLeadingEdge = Double.parseDouble(wingTipLeadingEdgeString);
-//		//Definition Sweep Angle
-//		NodeList wingSectionElementPosition = MyXMLReaderUtils.getXMLNodeListByPath(
-//				_jpadXmlReader.getXmlDoc(), 
-//				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/positionings/positioning");		
-//		int lastWingElementPositionIndex = wingSectionElementPosition.getLength()-1;
-//		String tanSweepAngleString = _jpadXmlReader.getXMLPropertyByPath(
-//				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/"
-//						+ "positionings/positioning["+lastWingElementPositionIndex+"]/sweepAngle");
-//		double tanSweepAngle = Double.parseDouble(tanSweepAngleString);			
-//		double taperRatio = wingTipLeadingEdge/wingRootLeadingEdge;
-//
-//		return 2.0f/3.0f*wingSpan*(1 + 2*taperRatio)/(1 + taperRatio)*tanSweepAngle;
-//	}
-	
+
 	/**
 	 * Searches (x,y,z) coordinates of empty-weight CG. By default in the path
 	 * "cpacs/vehicles/aircraft/model/analyses/massBreakdown/mOEM/mEM/massDescription/location"
@@ -481,27 +454,7 @@ public class CPACSReader {
 
 		return vectorCenterPosition;
 	}	
-	/**
-	 * 
-	 * @param wingUID Wing UID in the CPACS
-	 * @param axis axis  which want evaluate wing position
-	 * @return Wing Position in the axis direction (i.e x y or z)
-	 * @throws TiglException
-	 */
 
-
-//	public double getWingRootLeadingEdge(String uIDInput,String axis) throws TiglException {
-//		int wingIndex = getWingIndexZeroBased(uIDInput);
-//		System.out.println("wingUID is = "+uIDInput);
-//		System.out.println("wingIndex is = "+wingIndex);
-//		String wingRootLeadingEdgeString = _jpadXmlReader.getXMLPropertyByPath(
-//				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/transformation/translation/x");
-//		System.out.println("--------------------------------");
-//		System.out.println("wingRootLeadingEdgeString = "+wingRootLeadingEdgeString);
-//		System.out.println("--------------------------------");
-//
-//		return Double.parseDouble(wingRootLeadingEdgeString);	
-//	}
 	/**
 	 * 
 	 * @param wingUID Wing UID in the CPACS
@@ -521,152 +474,429 @@ public class CPACSReader {
 		return Double.parseDouble(tanSweepAngleString);			
 	}
 	
+	public double[][] getVectorPositionNodeTank(Node tankNode, double [] cgPosition, double massEW){
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			String[] s1 = null; // for list to string
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(tankNode, true);
+			doc.appendChild(importedNode);
+			NodeList sectionsTank = MyXMLReaderUtils.getXMLNodeListByPath(doc,
+					"//mFuel/fuelInTanks/fuelInTank");
+			double[][] tankMatrix = new double [sectionsTank.getLength()][4];
+			if (sectionsTank.getLength() == 0 ) {
+				System.out.println("Error tank not found");
+				return null;
+			}
+			for (int i = 0;i<sectionsTank.getLength();i++) {
+				
+					DocumentBuilderFactory factoryInt = DocumentBuilderFactory.newInstance();
+					factoryInt.setNamespaceAware(true);
+					DocumentBuilder builderInt;
+					try {
+						builderInt = factoryInt.newDocumentBuilder();
+						Document docInt = builderInt.newDocument();
+						Node importedNodeInt = docInt.importNode(sectionsTank.item(i), true);
+						docInt.appendChild(importedNodeInt);
+						System.out.println("Read tank : "+ MyXMLReaderUtils.getXMLPropertyByPath(
+								importedNode,"//tankUID/text()"));
+						List<String>tankMassFuel = MyXMLReaderUtils.getXMLPropertiesByPath(docInt,
+								"//mass/text()");
+						s1 = tankMassFuel.get(0).split(";");
+						tankMatrix[i][3] = Double.parseDouble(s1[s1.length-1]);
+						System.out.println("Capacity = "+ tankMatrix[i][3]);
+						List<String>tankXPosition = MyXMLReaderUtils.getXMLPropertiesByPath(docInt,
+								"//coG/x/text()");
+						s1 = tankXPosition.get(0).split(";");
+						double xTotalMass = Double.parseDouble(s1[s1.length-1]);
+						tankMatrix[i][0] =xTotalMass;
+						System.out.println("Mew = "+ massEW);
+						System.out.println("X position = "+ tankMatrix[i][0]);
+						List<String>tankYPosition = MyXMLReaderUtils.getXMLPropertiesByPath(docInt,
+								"//coG/y/text()");
+						s1 = tankYPosition.get(0).split(";");
+						double yTotalMass = Double.parseDouble(s1[s1.length-1]);
+						tankMatrix[i][1] = yTotalMass;
+						System.out.println("Y position = "+ tankMatrix[i][1]);
+						List<String>tankZPosition = MyXMLReaderUtils.getXMLPropertiesByPath(docInt,
+								"//coG/z/text()");
+						s1 = tankZPosition.get(0).split(";");
+						double zTotalMass = Double.parseDouble(s1[s1.length-1]);
+						tankMatrix[i][2] = zTotalMass;
+					}
+					catch (ParserConfigurationException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+
+			return tankMatrix;
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void getControlSurfacePilotCommandIndexAndValue(
+			 Node wingNode, List<String> controlSurfaceList, List<Integer> controlSurfaceInt){
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
 	
 	
-	public Double[] getVectorPositionNodeTank(int i) throws TiglException {
-		Double [] tankPositionVector = null;
-		NodeList tankNumberElement = MyXMLReaderUtils.getXMLNodeListByPath(
-				_importDoc, 
-				"/cpacs/vehicles/aircraft/model/analyses/weightAndBalance/operationalCases/"
-						+ "operationalCase[" + i + "]/mFuel/fuelInTanks/fuelInTank");
-		for (int j = 1; j < tankNumberElement.getLength(); j++) {
-				List<String> props = new ArrayList<>();
-				props = MyXMLReaderUtils.getXMLPropertiesByPath(
-						_importDoc, 
-						"/cpacs/vehicles/aircraft/model/analyses/weightAndBalance/operationalCases"
-								+ "/operationalCase["+ i +"]/mFuel/fuelInTanks/fuelInTank["
-								+ j +"]/coG/x/text()"
-						);
+			try {
+				builder = factory.newDocumentBuilder();
+				Document doc = builder.newDocument();
+				Node importedNode = doc.importNode(wingNode, true);
+				doc.appendChild(importedNode);
+				NodeList sectionsControlSurfaceList = MyXMLReaderUtils.getXMLNodeListByPath(doc, 
+						"//componentSegments/componentSegment/controlSurfaces/"
+								+ "trailingEdgeDevices/trailingEdgeDevice");
+				if (sectionsControlSurfaceList.getLength() == 0) {
+					System.out.println("Error control surface not found");
+				}
+				for (int i = 0;i <sectionsControlSurfaceList.getLength();i++) {
+					Node sectionsControlSurfaceNode = sectionsControlSurfaceList.item(i);
+					String controlSurfaceUID = MyXMLReaderUtils.getXMLPropertyByPath(
+							sectionsControlSurfaceNode,
+							"//name/text()");
+					System.out.println("Reading control surface : " + controlSurfaceUID);
+					controlSurfaceInt.add(
+							getControlSurfacePilotCommand
+							(controlSurfaceUID, sectionsControlSurfaceNode, controlSurfaceList)
+							);
+				}
+				
+			}
+			
+			
+			catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			}
 
-				System.out.println("\t...: " + props.get(0) + " size: "+ props.size());
-		}		
-		return tankPositionVector;
-	} 
 
-
-
+		
+		
+		
+	}
+	/**
+	 * 
+	 * @param controlSurfaceUID control surface UID
+	 * @param sectionsControlSurfaceNode node of the control surface in the wing node of the previous function
+	 * @return
+	 */
 	
-	
-	
-	
-	
-	
+	public int getControlSurfacePilotCommand(
+			String controlSurfaceUID, Node sectionsControlSurfaceNode, List<String> controlSurfaceList){
+		int controlSurfaceNumberOfStep = 0;
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(sectionsControlSurfaceNode, true);
+			doc.appendChild(importedNode);
+			NodeList deflectionNode = MyXMLReaderUtils.getXMLNodeListByPath(doc, "//path/steps/step");
+			for (int j = 0;j<deflectionNode.getLength();j++) {
+				Node nodeControlSurface  = deflectionNode.item(j); // .getNodeValue();
+				String relDeflection = MyXMLReaderUtils.getXMLPropertyByPath(
+						nodeControlSurface,
+						"//relDeflection/text()");
+				String absDeflection = MyXMLReaderUtils.getXMLPropertyByPath(
+						nodeControlSurface,
+						"//hingeLineRotation/text()");	
+				System.out.println(absDeflection + "; " + relDeflection);
+				controlSurfaceList.add(absDeflection + "; " + relDeflection);
+			}
+			controlSurfaceNumberOfStep = deflectionNode.getLength();
+			return controlSurfaceNumberOfStep;
+					}
+					catch (ParserConfigurationException e) {
+						e.printStackTrace();
+						return 0;
+					}
 
+		 
+	}
+	/**
+	 * 	Return as List landing gear characteristic. Position  
+	 * 0)Static friction
+	 * 1)Dynamic friction
+	 * 2)Rolling friction
+	 * 3)Spring friction
+	 * 4)Damping coefficient
+	 * 5)Damping coefficient rebound
+	 * 6)max steer
+	 * 7)Retractable
+	 * @param landingGearNode landing gear node in the CPACS (tool specific)
+	 * @return landing Gear characteristic as list 
+	 */
+	public List<Double> getLandingGear(Node landingGearNode){
+		List<Double> landingGear = new ArrayList<Double>();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(landingGearNode, true);
+			doc.appendChild(importedNode);
+			String staticFriction = MyXMLReaderUtils.getXMLPropertyByPath(
+					landingGearNode,
+					"//static_friction/text()");
+			landingGear.add(Double.parseDouble(staticFriction));
+			String dynamicFriction = MyXMLReaderUtils.getXMLPropertyByPath(
+					landingGearNode,
+					"//dynamic_friction/text()");
+			landingGear.add(Double.parseDouble(dynamicFriction));
+			String rollingFriction = MyXMLReaderUtils.getXMLPropertyByPath(
+					landingGearNode,
+					"//rolling_friction/text()");
+			landingGear.add(Double.parseDouble(rollingFriction));
+			XPath landingGearXpath = _jpadXmlReader.getXpath();
+
+			String springCoefficient = MyXMLReaderUtils.getXMLPropertyByPath(
+					doc, landingGearXpath, "//spring_coeff/text()");
+			landingGear.add(Double.parseDouble(springCoefficient));
+			String dampingCoefficient = MyXMLReaderUtils.getXMLPropertyByPath(
+					doc, landingGearXpath,
+					"//damping_coeff/text()");
+			landingGear.add(Double.parseDouble(dampingCoefficient));
+			String dampingCoefficientRebound = MyXMLReaderUtils.getXMLPropertyByPath(
+					doc, landingGearXpath,
+					"//damping_coeff_rebound/text()");
+			landingGear.add(Double.parseDouble(dampingCoefficientRebound));
+			String maxSteer = MyXMLReaderUtils.getXMLPropertyByPath(
+					doc, landingGearXpath,
+					"//max_steer/text()");
+			landingGear.add(Double.parseDouble(maxSteer));
+			String brakeGroup = MyXMLReaderUtils.getXMLPropertyByPath(
+					landingGearNode,
+					"//brake_group/text()");
+			String retractable = MyXMLReaderUtils.getXMLPropertyByPath(
+					landingGearNode,
+					"//retractable/text()");
+			landingGear.add(Double.parseDouble(retractable));
+			return landingGear;
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
+	 * 	Return as List engine characteristic. Position  
+	 * 0)Thrust at takeoff
+	 * 1)Fan pressure ratio at takeoff
+	 * 2)Bypass ratio at takeoff
+	 * 3)overall pressure ratio at takeoff
+	 * 4)Mass
+	 * @param engineNode engine in the CPACS 
+	 * @return engine characteristic as list 
+	 */
+	public List<Double> getEngine(Node engineNode){
+		List<Double> engine = new ArrayList<Double>();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(engineNode, true);
+			doc.appendChild(importedNode);
+			String thrust = MyXMLReaderUtils.getXMLPropertyByPath(
+					engineNode,
+					"//thrust00/text()");
+			engine.add(Double.parseDouble(thrust));
+			String fpr = MyXMLReaderUtils.getXMLPropertyByPath(
+					engineNode,
+					"//fpr00/text()");
+			engine.add(Double.parseDouble(fpr));
+			String bpr = MyXMLReaderUtils.getXMLPropertyByPath(
+					engineNode,
+					"//bpr00/text()");
+			engine.add(Double.parseDouble(bpr));
+			String opr = MyXMLReaderUtils.getXMLPropertyByPath(
+					engineNode,
+					"//opr00/text()");
+			engine.add(Double.parseDouble(opr));
+			XPath engineXpath = _jpadXmlReader.getXpath();
+
+			String mass = MyXMLReaderUtils.getXMLPropertyByPath(
+					engineNode,
+					"//mass/mass/text()");
+			engine.add(Double.parseDouble(mass));
+
+			return engine;
+
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public double[][] getAeroPerformanceMap(Node aeroNode){
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder;
+		try {
+			String[] s1 = null; // for list to string
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
+			Node importedNode = doc.importNode(aeroNode, true);
+			doc.appendChild(importedNode);
+			List<String>machNumberList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//machNumber/text()");
+			double[] machNumber = CPACSUtils.getDoubleArrayFromStringList(machNumberList);
+			List<String> reynoldsNumberList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//reynoldsNumber/text()");
+			double[] reynoldsNumber = CPACSUtils.getDoubleArrayFromStringList(reynoldsNumberList);
+			List<String> yawAngleList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//angleOfYaw/text()");
+			double[] yawAngle = CPACSUtils.getDoubleArrayFromStringList(yawAngleList);
+			List<String> angleOfAttackList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//angleOfAttack/text()");
+			double[] angleOfAttack = CPACSUtils.getDoubleArrayFromStringList(angleOfAttackList);
+
+			//Read data from aeroperformance map
+			List<String> cfxList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//cfx/text()");
+			double[] cfx = CPACSUtils.getDoubleArrayFromStringList(cfxList);
+			List<String> cfyList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//cfy/text()");
+			double[] cfy = CPACSUtils.getDoubleArrayFromStringList(cfyList);
+			List<String> cfzList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//cfx/text()");
+			double[] cfz = CPACSUtils.getDoubleArrayFromStringList(cfzList);
+			List<String> cmxList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//cmx/text()");
+			double[] cmx = CPACSUtils.getDoubleArrayFromStringList(cmxList);
+			List<String> cmyList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//cmy/text()");
+			double[] cmy = CPACSUtils.getDoubleArrayFromStringList(cmyList);
+			List<String> cmzList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
+					"//cmz/text()");
+			double[] cmz = CPACSUtils.getDoubleArrayFromStringList(cmzList);
+			int machNumberDimension = machNumber.length;
+			int reynoldsNumberDimension = reynoldsNumber.length;
+			int yawAngleDimension = yawAngle.length;
+			int angleOfAttackDimension = angleOfAttack.length;
+			int numberOfCalculation = machNumberDimension*reynoldsNumberDimension*yawAngleDimension*angleOfAttackDimension;
+			int numberOfCalculation1 = reynoldsNumberDimension*yawAngleDimension*angleOfAttackDimension;
+			int numberOfCalculation2 = yawAngleDimension*angleOfAttackDimension;
+			int zeroAlphaPosition = 0;
+			int zeroYawPosition = 0;
+			double[][] aeroData = new double[9][numberOfCalculation];
+//			double []cd = new double[numberOfCalculation];
+//			double []cy = new double[numberOfCalculation];
+//			double []cl = new double[numberOfCalculation];
+//			double []cdAlpha = new double[numberOfCalculation];
+//			double []cyBeta = new double[numberOfCalculation];
+//			double []clAlpha = new double[numberOfCalculation];
+			int aoaIndex = 0;
+			int yawIndex = 0;
+			for (int i = 0;i<numberOfCalculation;i++) {
+				double a = cfx[i];
+				double a1 = Math.cos(Math.toRadians(angleOfAttack[aoaIndex]));
+				double a2 = Math.sin(Math.toRadians(angleOfAttack[aoaIndex]));
+				double b = cfy[i];
+				double b1 = Math.cos(Math.toRadians(yawAngle[yawIndex]));
+				double b2 = Math.sin(Math.toRadians(yawAngle[yawIndex]));
+				double c = cfz[i];
+//				cd[i] = a1*b1*a - b2*b +a2*b1*c; 
+//				cy[i] = a1*b2*a + b1*b +a2*b2*c;  
+//				cl[i] = -a2*a + a1*c;
+				aeroData[0][i] = a1*b1*a - b2*b +a2*b1*c; 
+				aeroData[2][i] = a1*b2*a + b1*b +a2*b2*c;  
+				aeroData[4][i] = -a2*a + a1*c;
+				if (angleOfAttack[aoaIndex] != 0.0) {
+//					cdAlpha[i] = cd[i]/(Math.toRadians(angleOfAttack[aoaIndex]));
+//					clAlpha[i] = cl[i]/(Math.toRadians(angleOfAttack[aoaIndex]));
+//					cmy[i] = cmy[i]/(Math.toRadians(angleOfAttack[aoaIndex]));
+					aeroData[1][i] = aeroData[1][i]/(Math.toRadians(angleOfAttack[aoaIndex]));
+					aeroData[5][i] = aeroData[5][i]/(Math.toRadians(angleOfAttack[aoaIndex]));
+					aeroData[7][i] = cmy[i]/(Math.toRadians(angleOfAttack[aoaIndex]));
+				}
+				if (yawAngle[yawIndex] != 0.0) {
+					aeroData[3][i] = aeroData[3][i]/(Math.toRadians(yawAngle[yawIndex]));
+					aeroData[6][i] = cmx[i]/(Math.toRadians(yawAngle[yawIndex]));
+					aeroData[8][i] = cmz[i]/(Math.toRadians(yawAngle[yawIndex]));
+				}					
+				aoaIndex++;
+				if(aoaIndex == angleOfAttackDimension) {
+					aoaIndex = 0;
+					yawIndex++;
+				}
+				if(yawIndex == yawAngleDimension) {
+					yawIndex = 0;
+				}
+			}
+			return aeroData;
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
+	 * 
+	 * @param controlSurfaceUID UID of the control surface
+	 * @param pathInTheCPACS path in the CPACS of the aerodynamic analysis of the control surface
+	 * @param typeControlSurface a--> latero-directional 
+	 * 							 b--> longitudinal
+	 * 									
+	 * @return
+	 */
 	
-	
-
-//	/**
-//	 * 
-//	 * @param pathInTheCpacs Path in the CPACS of the system
-//	 * @return return as List : SystemUID, Comand Position and deflection value
-//	 * 		   every system have 3 position in the list, for example :
-//	 * 		   1->Aileron 2->elevator:
-//	 * 		   AileronUID getSystemParameter.get(0)
-//	 * 		   Aileron Comand Position getSystemParameter.get(1)
-//	 * 		   Aileron deflection value getSystemParameter.get(2)
-//	 * 		   ElevatorUID getSystemParameter.get(3)
-//	 * 		   Elevator Comand Position getSystemParameter.get(4)
-//	 * 		   Elevator deflection value getSystemParameter.get(5)     
-//	 */
-//	public List<String> getSystemParameter(String pathInTheCpacs){
-//		NodeList SystemList = MyXMLReaderUtils.getXMLNodeListByPath(
-//				_jpadXmlReader.getXmlDoc(),pathInTheCpacs);	
-//		String UIDControlSurface;
-//		List<String> ReturnSystem = new ArrayList<String>();
-//		for (int i=1;i<SystemList.getLength()+1;i++) {
-//			Node nodeSystem  = SystemList.item(i); // .getNodeValue();
-//			Element SystemElement = (Element) nodeSystem;
-//			UIDControlSurface = SystemElement.getAttribute("uID");
-//
-//			String InputSystem = _jpadXmlReader.getXMLPropertyByPath(
-//					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
-//							+ "/controlDistributor["+i+"]/controlElements/controlElement/commandInputs");
-//			String RelativeDeflection = _jpadXmlReader.getXMLPropertyByPath(
-//					"cpacs/vehicles/aircraft/model/systems/controlDistributors"
-//							+ "/controlDistributor["+i+"]/controlElements/controlElement/relativeDeflection");
-//			ReturnSystem.add(UIDControlSurface);
-//			ReturnSystem.add(InputSystem);					
-//			ReturnSystem.add(RelativeDeflection);
-//		}
-//		return returnSystem;
-//}
-	public double[][] getControlSurfaceRotation(int wingIndex, String controlSurfaceUID, String controlSuraceSystemUID){
-		double [][] matrix = new double [2][3];
-		NodeList systemList = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(),
-				"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+
-				"]/componentSegments/componentSegment/"
-				+ "controlSurfaces/trailingEdgeDevices/trailingEdgeDevice");	
-		for (int i=1;i<systemList.getLength()+1;i++) {
-			Node nodeSystem  = systemList.item(i); // .getNodeValue();
-			Element systemElement = (Element) nodeSystem;
-			if (systemElement.getAttribute("uID")==controlSurfaceUID) {
-				NodeList systemDeflectionList = MyXMLReaderUtils.getXMLNodeListByPath(
-						_jpadXmlReader.getXmlDoc(),
-						"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments"
-						+ "/componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/path/steps/step");
-					String relativeDeflactionString =  _jpadXmlReader.getXMLPropertyByPath(
-							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
-							+ "componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/"
-							+ "path/steps/step["+0+"]/relDeflection");
-					matrix[0][0] = Double.parseDouble(relativeDeflactionString);
-
-					String relativeDeflactionStringEnd =  _jpadXmlReader.getXMLPropertyByPath(
-							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
-							+ "componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/"
-							+ "path/steps/step["+systemDeflectionList.getLength()+"]/relDeflection");
-					matrix[1][0] = Double.parseDouble(relativeDeflactionStringEnd);
-
-					String absoluteDeflactionString =  _jpadXmlReader.getXMLPropertyByPath(
-							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
-							+ "componentSegment/controlSurfaces/trailingEdgeDevices/hingeLineRotation/"
-							+ "path/steps/step["+0+"]/relDeflection");
-					matrix[0][1] = Double.parseDouble(absoluteDeflactionString);
-
-					String absoluteDeflactionStringEnd =  _jpadXmlReader.getXMLPropertyByPath(
-							"cpacs/vehicles/aircraft/model/wings/wing["+wingIndex+"]/componentSegments/"
-							+ "componentSegment/controlSurfaces/trailingEdgeDevices/trailingEdgeDevice/"
-							+ "path/steps/step["+systemDeflectionList.getLength()+"]/hingeLineRotation");
-					matrix[1][1] = Double.parseDouble(absoluteDeflactionStringEnd);	
-
-					double[] pilotCommand = getControlSurfacePilotCommand(controlSurfaceUID, controlSuraceSystemUID);
-					matrix[0][2] = pilotCommand[0];
-				    matrix[1][2] = pilotCommand[1];
-
+	// TO DO
+	public List<Double> getControlSurfaceDragCoefficientEffect(String controlSurfaceUID, String pathInTheCPACS, String typeControlSurface){
+		List<Double> aerodynamicDerivativeList = null ; 
+		double[] aerodynamicDerivativeVector = new double [6];
+		List<Double> machNumber =  _jpadXmlReader.readArrayDoubleFromXMLSplit(
+				pathInTheCPACS+"/machNumber");
+		List<Double> reynoldsNumber =  _jpadXmlReader.readArrayDoubleFromXMLSplit(
+				pathInTheCPACS+"/reynoldsNumber");
+		List<Double> yawAngle =  _jpadXmlReader.readArrayDoubleFromXMLSplit(
+				pathInTheCPACS+"/angleOfYaw");
+		List<Double> angleOfAttack =  _jpadXmlReader.readArrayDoubleFromXMLSplit(
+				pathInTheCPACS+"/angleOfAttack");
+		List<Double> deflection =  _jpadXmlReader.readArrayDoubleFromXMLSplit(
+				pathInTheCPACS+"/angleOfAttack");
+		NodeList controlSurfaceList = MyXMLReaderUtils.getXMLNodeListByPath(
+				_jpadXmlReader.getXmlDoc(),pathInTheCPACS+"/controlSurfaces/controlSurface");
+		
+		int machNumberDimension = machNumber.size();
+		int reynoldsNumberDimension = reynoldsNumber.size();
+		int yawAngleDimension = yawAngle.size();
+		int angleOfAttackDimension = angleOfAttack.size();
+		int numberOfCalculation = machNumberDimension*reynoldsNumberDimension*yawAngleDimension*angleOfAttackDimension;
+		int numberOfCalculation1 = reynoldsNumberDimension*yawAngleDimension*angleOfAttackDimension;
+		int numberOfCalculation2 = yawAngleDimension*angleOfAttackDimension;
+		int controlSurfaceNumber = controlSurfaceList.getLength();
+		int zeroAlphaPosition = 0;
+		int zeroYawPosition = 0;
+		for (int i = 0;i<angleOfAttackDimension;i++) {
+			if (angleOfAttack.get(i)==0) {
+				zeroAlphaPosition = i;
 			}
 		}
-		return matrix;
-}		
-		
-	public double[] getControlSurfacePilotCommand(String controlSurfaceUID, String controlSuraceSystemUID){
-		double [] pilotCommand = new double [2]; 
-		NodeList systemList = MyXMLReaderUtils.getXMLNodeListByPath(
-				_jpadXmlReader.getXmlDoc(),"cpacs/vehicles/aircraft/model/systems/controlDistributors");	
-		for (int i=1;i<systemList.getLength()+1;i++) {
-			Node nodeSystem  = systemList.item(i); // .getNodeValue();
-			Element systemElement = (Element) nodeSystem;
-			String controlSurfaceUIDCheck = systemElement.getAttribute("uID");
-			if(controlSuraceSystemUID == controlSurfaceUIDCheck) {
-				NodeList systemListControlSurfaceUID = MyXMLReaderUtils.getXMLNodeListByPath(
-						_jpadXmlReader.getXmlDoc(),"cpacs/vehicles/aircraft/model/systems/"
-								+ "controlDistributors/controlDistributor["+i+"]/controlElements/controlElement");
-				for (int j =1;j<systemListControlSurfaceUID.getLength()+1;j++) {
-					Node nodeSystemControlSurface  = systemList.item(i);
-					Element systemElementControlSurface = (Element) nodeSystem;
-					String CheckControlSurfaceUID = systemElement.getAttribute("uID");
-					if (controlSurfaceUID == CheckControlSurfaceUID) {
-						List<Double> pilotCommandList = _jpadXmlReader.readArrayDoubleFromXMLSplit(
-								"cpacs/vehicles/aircraft/model/systems/controlDistributors/controlDistributor["+i+"]"
-										+ "/controlElements/controlElement["+j+"]/commandInputs");
-						pilotCommand[0]=pilotCommandList.get(0);
-						pilotCommand[1]=pilotCommandList.get(pilotCommandList.size());
-					}			
-				}
-			}			
+		for (int i = 0;i<yawAngleDimension;i++) {
+			if (yawAngle.get(i)==0) {
+				zeroYawPosition = i;
+			}
 		}
-		return pilotCommand;
+		
+		for (int i=0;i<controlSurfaceList.getLength();i++) {
+			
+			Node nodeSystemControlSurface  = controlSurfaceList.item(i);
+			Element systemElementControlSurface = (Element) nodeSystemControlSurface;
+
+		}
+		return aerodynamicDerivativeList;
 	}
-	
+
 	public String getCpacsFilePath() {
 		return _cpacsFilePath;
 	}

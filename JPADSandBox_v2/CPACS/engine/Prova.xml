@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<turbine_engine name="Prova">
+   <milthrust>104530.0000</milthrust>
+   <bypassratio>1.5000</bypassratio>
+   <augmented>0</augmented>
+   <injected>0</injected>
+</turbine_engine>

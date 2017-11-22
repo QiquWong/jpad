@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fdm_config name="D150 AGILE" release="BETA" version="2.0">
+   <metrics>
+      <wingarea unit="m²">130.5137</wingarea>
+      <wingspan unit="m">33.9137</wingspan>
+      <chord unit="m">4.1923</chord>
+      <htailarea unit="m²">32.7580</htailarea>
+      <htailarea unit="m">17.7269</htailarea>
+      <htailarm unit="m²">46.5891</htailarm>
+      <location name="AERORP" unit="M">
+         <x>29.0738</x>
+         <y>0.000000</y>
+         <z>-1.136280</z>
+      </location>
+      <location name="EYEPOINT" unit="M">
+         <x>575.6000</x>
+         <y>0.000000</y>
+         <z>-5.000000</z>
+      </location>
+      <location name="VRP" unit="M">
+         <x>29.0738</x>
+         <y>0.000000</y>
+         <z>-1.136280</z>
+      </location>
+   </metrics>
+   <mass_balance>
+      <ixx unit="KG*M2">761969.688</ixx>
+      <iyy unit="KG*M2">1997119.840</iyy>
+      <izz unit="KG*M2">2567919.197</izz>
+      <ixy unit="KG*M2">0.000000</ixy>
+      <ixz unit="KG*M2">8000.000</ixz>
+      <iyz unit="KG*M2">0.000000</iyz>
+      <location name="CG" unit="M">
+         <x>16.0519</x>
+         <y>0.000000</y>
+         <z>0.000000</z>
+      </location>
+   </mass_balance>
+   <ground_reactions>
+      <contact name="Nose Gear" type="BOGEY">
+         <location unit="M">
+            <x>5.0720</x>
+            <y>0.000000</y>
+            <z>-1.690730</z>
+            <brake_group>NONE</brake_group>
+            <retractable>1.0000</retractable>
+         </location>
+         <static_friction>0.8000</static_friction>
+         <dynamic_friction>0.5000</dynamic_friction>
+         <rolling_friction>0.0200</rolling_friction>
+         <spring_coeff unit="LBS/FT">133934.750</spring_coeff>
+         <dynamic_coeff unit="LBS/FT">5952.656</dynamic_coeff>
+         <damping_coeff_rebound unit="LBS/FT">11905.311</damping_coeff_rebound>
+         <max_steer unit="DEG">35.000</max_steer>
+      </contact>
+      <contact name="Right Main Gear" type="BOGEY">
+         <location unit="M">
+            <x>16.1264</x>
+            <y>3.7814</y>
+            <z>-1.305452</z>
+            <brake_group>RIGHT</brake_group>
+            <retractable>1.0000</retractable>
+         </location>
+         <static_friction>0.8000</static_friction>
+         <dynamic_friction>0.5000</dynamic_friction>
+         <rolling_friction>0.0200</rolling_friction>
+         <spring_coeff unit="LBS/FT">178579.673</spring_coeff>
+         <dynamic_coeff unit="LBS/FT">14881.640</dynamic_coeff>
+         <damping_coeff_rebound unit="LBS/FT">29763.270</damping_coeff_rebound>
+         <max_steer unit="DEG">0.000000</max_steer>
+      </contact>
+      <contact name="Left Main Gear" type="BOGEY">
+         <location unit="M">
+            <x>16.1264</x>
+            <y>-3.781379</y>
+            <z>-1.305452</z>
+            <brake_group>LEFT</brake_group>
+            <retractable>1.0000</retractable>
+         </location>
+         <static_friction>0.8000</static_friction>
+         <dynamic_friction>0.5000</dynamic_friction>
+         <rolling_friction>0.0200</rolling_friction>
+         <spring_coeff unit="LBS/FT">178579.673</spring_coeff>
+         <dynamic_coeff unit="LBS/FT">14881.640</dynamic_coeff>
+         <damping_coeff_rebound unit="LBS/FT">29763.270</damping_coeff_rebound>
+         <max_steer unit="DEG">0.000000</max_steer>
+      </contact>
+   </ground_reactions>
+   <propulsion>
+      <engine file="Prova">
+         <location unit="M">
+            <x>13.6765</x>
+            <y>5.7482</y>
+            <z>-2.338950</z>
+         </location>
+         <orient unit="DEG">
+            <roll>0.000000</roll>
+            <pitch>0.000000</pitch>
+            <yaw>0.000000</yaw>
+         </orient>
+         <thruster file="direct">
+            <location unit="M">
+               <x>13.6765</x>
+               <y>5.7482</y>
+               <z>-2.338950</z>
+            </location>
+            <orient unit="DEG">
+               <roll>0.000000</roll>
+               <pitch>0.000000</pitch>
+               <yaw>0.000000</yaw>
+            </orient>
+         </thruster>
+      </engine>
+      <tank tank="FUEL">
+         <location unit="M">
+            <x>14.7736</x>
+            <y>0.9362</y>
+            <z>-1.212579</z>
+         </location>
+         <capacity unit="KG">3271.985</capacity>
+         <contents unit="KG">3271.985</contents>
+      </tank>
+      <tank tank="FUEL">
+         <location unit="M">
+            <x>15.9503</x>
+            <z>-0.881934</z>
+            <y>4.7680</y>
+         </location>
+         <capacity unit="KG">5532.997</capacity>
+         <contents unit="KG">5532.997</contents>
+      </tank>
+      <tank tank="FUEL">
+         <location unit="M">
+            <x>18.8026</x>
+            <z>-0.241955</z>
+            <y>11.3816</y>
+         </location>
+         <capacity unit="KG">707.706</capacity>
+         <contents unit="KG">707.706</contents>
+      </tank>
+      <tank tank="FUEL">
+         <location unit="M">
+            <x>14.7736</x>
+            <y>-0.936171</y>
+            <z>-1.212579</z>
+         </location>
+         <capacity unit="KG">3271.985</capacity>
+         <contents unit="KG">3271.985</contents>
+      </tank>
+      <tank tank="FUEL">
+         <location unit="M">
+            <x>15.9503</x>
+            <z>-0.881934</z>
+            <y>-4.767959</y>
+         </location>
+         <capacity unit="KG">5532.997</capacity>
+         <contents unit="KG">5532.997</contents>
+      </tank>
+      <tank tank="FUEL">
+         <location unit="M">
+            <x>18.8026</x>
+            <z>-0.241955</z>
+            <y>-11.381596</y>
+         </location>
+         <capacity unit="KG">707.706</capacity>
+         <contents unit="KG">707.706</contents>
+      </tank>
+   </propulsion>
+   <flight_control name="FCS :D150 AGILE">
+      <channel name="Pitch">
+         <summer name="Pitch Trim Sum">
+            <input>fcs/elevator-cmd-norm</input>
+            <input>pitch-trim-cmd-norm</input>
+            <clipto>
+               <min>-1</min>
+               <max>1</max>
+            </clipto>
+         </summer>
+         <aerosurface_scale name="Elevator Control">
+            <input>fcs/elevator-trim-sum</input>
+            <gain>0.0175</gain>
+            <range>
+               <min>-25.0</min>
+               <max>25.0</max>
+            </range>
+            <output>fcs/elevator-pos-rad</output>
+         </aerosurface_scale>
+         <aerosurface_scale name="Elevator position normalized">
+            <input>fcs/elevator-pos-deg</input>
+            <domain>
+               <min>-25.0</min>
+               <max>25.0</max>
+            </domain>
+            <range>
+               <min> -1</min>
+               <max> 1</max>
+            </range>
+            <output>fcs/elevator-pos-norm</output>
+         </aerosurface_scale>
+      </channel>
+      <channel name="Yaw">
+         <summer name="Yaw Trim Sum">
+            <input>fcs/rudder-cmd-norm</input>
+            <input>fcs/yaw-trim-sum</input>
+            <clipto>
+               <min>-1</min>
+               <max>1</max>
+            </clipto>
+         </summer>
+         <aerosurface_scale name="Rudder Control">
+            <input>fcs/rudder-trim-sum</input>
+            <gain>0.0175</gain>
+            <range>
+               <min>-15.0</min>
+               <max>30.0</max>
+            </range>
+            <output>fcs/rudder-pos-rad</output>
+         </aerosurface_scale>
+         <aerosurface_scale name="Rudder position normalized">
+            <input>fcs/rudder-pos-deg</input>
+            <domain>
+               <min>-15.0</min>
+               <max>30.0</max>
+            </domain>
+            <range>
+               <min> -1</min>
+               <max> 1</max>
+            </range>
+            <output>fcs/rudder-pos-norm</output>
+         </aerosurface_scale>
+      </channel>
+   </flight_control>
+</fdm_config>

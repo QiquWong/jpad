@@ -57,6 +57,18 @@ public final class CPACSUtils {
 		return result.toString();
 	}
 
+	public static String matrixDoubleToJSBSimColumn(double[] vector) {
+
+		StringBuffer result = new StringBuffer();
+
+		// iterate over the first dimension
+		for (int i = 0; i < vector.length; i++) {
+			// iterate over the second dimension
+					result.append(vector[i]);
+					result.append("\n");
+			}
+		return result.toString();
+	}
 	/**
 	 * Returns a string made up of N rows and 2 columns, that displays a 2D array in a tabular format
 	 * recognized by JSBSim
@@ -177,8 +189,8 @@ public final class CPACSUtils {
 			
 			for (int j = 0;j<sections.getLength();j++) {
 				Node nodeSystem  = sections.item(j); // .getNodeValue();
-				Element SystemElement = (Element) nodeSystem;
-				String xpath = MyXMLReaderUtils.getElementXpath(SystemElement);
+				Element systemElement = (Element) nodeSystem;
+				String xpath = MyXMLReaderUtils.getElementXpath(systemElement);
 				String path = xpath + "/coG/x/text()";
 				List<String> wingTankPositionXx =  MyXMLReaderUtils.getXMLPropertiesByPath(doc, path);
 				System.out.println("Xpath is = " + importedNode.getLocalName());
@@ -186,10 +198,7 @@ public final class CPACSUtils {
 				
 				
 			}
-				
-			
-			
-			
+
 			String wingTankPositionX = MyXMLReaderUtils.getXMLPropertyByPath(
 					sections.item(i),
 					"//coG/x/text()");
@@ -320,7 +329,34 @@ public final class CPACSUtils {
 			return null;
 		}
 		
+	} 
+	/**
+	 * 
+	 * @param arrayData
+	 * @return
+	 */
+	public static double [] getDoubleArrayFromString(String [] arrayData) {
+		double[] doubleArray = new double [arrayData.length];
+		for (int i=0; i<arrayData.length;i++) {
+			doubleArray[i] = Double.parseDouble(arrayData[i]);
+		}
+		
+		return doubleArray;
 	}
-
+	/**
+	 * 
+	 * @param listData
+	 * @return
+	 */
+	public static double [] getDoubleArrayFromStringList(List<String> listData) {
+		String[] arrayData = listData.get(0).split(";");
+		double[] doubleArray = new double [arrayData.length];
+		for (int i=0; i<arrayData.length;i++) {
+			doubleArray[i] = Double.parseDouble(arrayData[i]);
+		}
+		
+		return doubleArray;
+	}
+	
 
 }
