@@ -170,26 +170,26 @@
       <channel name="Pitch">
          <summer name="Pitch Trim Sum">
             <input>fcs/elevator-cmd-norm</input>
-            <input>pitch-trim-cmd-norm</input>
+            <input>fcs/pitch-trim-cmd-norm</input>
             <clipto>
                <min>-1</min>
                <max>1</max>
             </clipto>
          </summer>
          <aerosurface_scale name="Elevator Control">
-            <input>fcs/elevator-trim-sum</input>
+            <input>fcs/pitch-trim-sum</input>
             <gain>0.0175</gain>
             <range>
-               <min>-25.0</min>
-               <max>25.0</max>
+               <min>-15.0</min>
+               <max>30.0</max>
             </range>
             <output>fcs/elevator-pos-rad</output>
          </aerosurface_scale>
          <aerosurface_scale name="Elevator position normalized">
             <input>fcs/elevator-pos-deg</input>
             <domain>
-               <min>-25.0</min>
-               <max>25.0</max>
+               <min>-15.0</min>
+               <max>30.0</max>
             </domain>
             <range>
                <min> -1</min>
@@ -201,17 +201,17 @@
       <channel name="Yaw">
          <summer name="Yaw Trim Sum">
             <input>fcs/rudder-cmd-norm</input>
-            <input>fcs/yaw-trim-sum</input>
+            <input>fcs/yaw-trim-cmd-norm</input>
             <clipto>
                <min>-1</min>
                <max>1</max>
             </clipto>
          </summer>
          <aerosurface_scale name="Rudder Control">
-            <input>fcs/rudder-trim-sum</input>
+            <input>fcs/yaw-trim-sum</input>
             <gain>0.0175</gain>
             <range>
-               <min>-15.0</min>
+               <min>-30.0</min>
                <max>30.0</max>
             </range>
             <output>fcs/rudder-pos-rad</output>
@@ -219,7 +219,7 @@
          <aerosurface_scale name="Rudder position normalized">
             <input>fcs/rudder-pos-deg</input>
             <domain>
-               <min>-15.0</min>
+               <min>-30.0</min>
                <max>30.0</max>
             </domain>
             <range>
@@ -227,6 +227,35 @@
                <max> 1</max>
             </range>
             <output>fcs/rudder-pos-norm</output>
+         </aerosurface_scale>
+      </channel>
+      <channel name="Roll">
+         <summer name="Roll Trim Sum">
+            <input>fcs/aileron-cmd-norm</input>
+            <clipto>
+               <min>-1</min>
+               <max>1</max>
+            </clipto>
+         </summer>
+         <aerosurface_scale>
+            <gain>0.0175</gain>
+            <range>
+               <min>-25.0</min>
+               <max>25.0</max>
+            </range>
+            <output>fcs/aileron-pos-rad</output>
+         </aerosurface_scale>
+         <aerosurface_scale>
+            <input>fcs/aileron-pos-deg</input>
+            <domain>
+               <min>-25.0</min>
+               <max>25.0</max>
+            </domain>
+            <range>
+               <min> -1</min>
+               <max> 1</max>
+            </range>
+            <output>fcs/aileron-pos-norm</output>
          </aerosurface_scale>
       </channel>
    </flight_control>

@@ -691,14 +691,14 @@ public class JSBSimModel {
 				Tuple.of("name", "FCS :"+aircraftName)
 				);
 		rootElement.appendChild(flightControlElement);
-		org.w3c.dom.Element rollControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+		org.w3c.dom.Element pitchControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 				doc,"channel",
 				Tuple.of("name", "Pitch")
 				);
-		flightControlElement.appendChild(rollControlElement);
+		flightControlElement.appendChild(pitchControlElement);
 		System.out.println(controlSurfaceList);
 		JSBSimUtils.writeSymmetricalControl(
-				rollControlElement, controlSurfaceList, doc, 
+				pitchControlElement, controlSurfaceList, doc, 
 				controlSurfaceInt, "elevator", "Pitch", 3);
 		org.w3c.dom.Element yawControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 				doc,"channel",
@@ -708,7 +708,14 @@ public class JSBSimModel {
 		JSBSimUtils.writeSymmetricalControl(
 				yawControlElement, controlSurfaceList, doc, 
 				controlSurfaceInt, "rudder", "Yaw", 4);
-		
+		org.w3c.dom.Element RollControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+				doc,"channel",
+				Tuple.of("name", "Roll")
+				);
+		flightControlElement.appendChild(RollControlElement);
+		JSBSimUtils.writeSymmetricalControl(
+				RollControlElement, controlSurfaceList, doc, 
+				controlSurfaceInt, "aileron", "Roll", 2);
 		rootElement.appendChild(flightControlElement);
 
 		} catch (ParserConfigurationException e) {
