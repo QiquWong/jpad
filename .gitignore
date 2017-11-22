@@ -1,4 +1,5 @@
 !*.dll
 !*.lib
 !*.pdb
+/JPADCore_v2/.apt_generated/*
 /.metadata/
