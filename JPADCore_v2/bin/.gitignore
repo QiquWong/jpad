@@ -1,1 +1,12 @@
 /aircraft/
+<<<<<<< HEAD
+=======
+/.gitignore
+/analyses/
+/cad/
+/calculators/
+/database/
+/optimization/
+/standaloneutils/
+/writers/
+>>>>>>> 7a90c11e2774e8581e8e48cf82341edef9d8369d
