@@ -69,7 +69,9 @@ public class NasaBlackwell {
 
 	List<MyPoint> controlPoints, vortexPoints;
 
-	private double[] yStations, dihedral, twist, alpha0l, yStationsActual, chordsVsYActual, xLEvsYActual;
+	private double[] yStations, dihedral, yStationsActual, chordsVsYActual, xLEvsYActual;
+	List<Amount<Angle>> twist, alpha0l;
+	
 	private double _cLCurrent;
 	private double alphaCurrent;
 	private double [][] influenceFactor;
@@ -88,8 +90,8 @@ public class NasaBlackwell {
 			double[] chordsVsYActual,
 			double[] xLEvsYActual,
 			double[] dihedral,
-			double[] twist,
-			double[] alpha0l,
+			List<Amount<Angle>> twist,
+			List<Amount<Angle>> alpha0l,
 			double vortexSemiSpanToSemiSpanRatio,
 			double alpha,
 			double mach,
@@ -109,7 +111,7 @@ public class NasaBlackwell {
 		this.nPointsSemispanWise = (int) (1./(2*vortexSemiSpanToSemiSpanRatio));
 
 		// TODO change the following ifs
-		if (twist.length != nPointsSemispanWise) this.twist = new double[nPointsSemispanWise];
+		if (twist.size() != nPointsSemispanWise) this.twist = new ArrayList<>();
 		else this.twist = twist;
 
 		if (dihedral.length != nPointsSemispanWise) this.dihedral = new double[nPointsSemispanWise];
@@ -486,10 +488,17 @@ public class NasaBlackwell {
 	public void calculate(Amount<Angle> alpha) {
 		// prepareDiscreteSurface();
 		alphaCurrent = alpha.doubleValue(NonSI.DEGREE_ANGLE);
+		double[] twistRadian = new double[twist.size()];
+		double[] aolRadian = new double[alpha0l.size()];
+		
+		for(int i=0; i< twist.size(); i++) {
+			twistRadian[i] = twist.get(i).doubleValue(SI.RADIAN);
+			aolRadian[i] = alpha0l.get(i).doubleValue(SI.RADIAN);
+		}
 		_alphaDistribution = new MyArray(AnglesCalc.getAlphaDistribution(
 				alpha.doubleValue(SI.RADIAN),
-				twist, 
-				alpha0l));
+				twistRadian, 
+				aolRadian));
 
 		prepareSystemSolution();
 		calculateCLOverall();

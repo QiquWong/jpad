@@ -97,6 +97,9 @@ public class WingAnalysisCalculator {
 	static double[] dihedralxleDistributionHighLiftFinal;
 	static double[] twistDistributionHighLiftFinal;
 	static double[] yMeterDimensionalDistributionHighLiftFinal;
+
+
+	static List<Amount<Angle>> alphaZeroLiftDistributionHighLiftFinalAmount = new ArrayList<>();
 	
 	static double[] clMaxDistributionHighLiftFinal;
 	static double[] alphaStallDistributionHighLiftFinal;
@@ -134,8 +137,8 @@ public class WingAnalysisCalculator {
 				chordDistributionMeter,
 				xleDistributionMeter,
 				dihedralDistributionRadians,
-				twistDistributionRadians,
-				alphaZeroLiftDistributionRadians,
+				theInputOutputTree.getTwistDistributionSemiSpan(),
+				theInputOutputTree.getAlphaZeroLiftDistributionSemiSpan(),
 				vortexSemiSpanToSemiSpanRatio,
 				0.0,
 				theInputOutputTree.getMachNumber(),
@@ -438,8 +441,8 @@ public class WingAnalysisCalculator {
 				chordDistributionMeter,
 				xleDistributionMeter,
 				dihedralDistributionRadians, 
-				twistDistributionRadians, 
-				alphaZeroLiftDistributionRadians,
+				theInputOutputTree.getDihedralDistributionSemiSpan(),
+				theInputOutputTree.getAlphaZeroLiftDistributionSemiSpan(),
 				vortexSemiSpanToSemiSpanRatio,
 				0.0,
 				theInputOutputTree.getMachNumber(), 
@@ -1731,6 +1734,14 @@ public class WingAnalysisCalculator {
 					MyArrayUtils.convertToDoublePrimitive(alphaZeroLiftInterpolated),
 					yADold);
 
+	
+			alphaZeroLiftDistributionHighLiftFinalAmount.set(i,
+					Amount.valueOf(
+					alphaZeroLiftDistributionHighLiftFinal[i],
+					SI.RADIAN)
+					);
+			
+			
 			xleDistributionHighLiftFinal[i] = MyMathUtils.getInterpolatedValue1DLinear(
 					MyArrayUtils.convertToDoublePrimitive(yAdimensionalArrayHighLiftModified), 
 					MyArrayUtils.convertToDoublePrimitive(xleInterpolated),
@@ -1801,6 +1812,14 @@ public class WingAnalysisCalculator {
 		theInputOutpuTree.setNewAlphaZeroLiftDistributionDeg(alphaZeroLiftDistributionDeg);
 		theInputOutpuTree.setNewXLEDisributionMeter(xleDistributionHighLiftFinal);
 		
+		List<Amount<Angle>> twistDistributionHighLiftFinalAmount = new ArrayList<>();
+		List<Amount<Angle>> aolDistributionHighLiftFinalAmount = new ArrayList<>();
+		
+		for (int i=0; i< twistDistributionHighLiftFinal.length; i++) {
+			twistDistributionHighLiftFinalAmount.set(i, Amount.valueOf(twistDistributionHighLiftFinal[i], SI.RADIAN));
+			aolDistributionHighLiftFinalAmount.set(i, Amount.valueOf(alphaZeroLiftDistributionHighLiftFinal[i], SI.RADIAN));
+		}
+		
 		theNasaBlackwellHIGHLIFTCalculator = new  calculators.aerodynamics.NasaBlackwell(
 				theInputOutpuTree.getSemiSpan().doubleValue(SI.METER),
 				theInputOutpuTree.getSurface().doubleValue(SI.SQUARE_METRE),
@@ -1808,8 +1827,8 @@ public class WingAnalysisCalculator {
 				chordDistributionHighLiftFinal,
 				xleDistributionHighLiftFinal, 
 				dihedralxleDistributionHighLiftFinal, 
-				twistDistributionHighLiftFinal,
-				alphaZeroLiftDistributionHighLiftFinal, 
+				theInputOutpuTree.getTwistDistributionSemiSpan(),
+				aolDistributionHighLiftFinalAmount, 
 				vortexSemiSpanToSemiSpanRatio,
 				0.0,
 				theInputOutpuTree.getMachNumber(),
@@ -2331,8 +2350,8 @@ public class WingAnalysisCalculator {
 				chordDistributionMeter,
 				xleDistributionMeter,
 				dihedralDistributionRadians,
-				twistDistributionRadians,
-				alphaZeroLiftDistributionRadians,
+				theInputOutputTree.getTwistDistributionSemiSpan(),
+				theInputOutputTree.getAlphaZeroLiftDistributionSemiSpan(),
 				vortexSemiSpanToSemiSpanRatio,
 				0.0,
 				theInputOutputTree.getMachNumber(),
@@ -2548,8 +2567,8 @@ public class WingAnalysisCalculator {
 					chordDistributionHighLiftFinal,
 					xleDistributionHighLiftFinal, 
 					dihedralxleDistributionHighLiftFinal, 
-					twistDistributionHighLiftFinal,
-					alphaZeroLiftDistributionHighLiftFinal, 
+					theInputOutputTree.getTwistDistributionSemiSpan(),
+					alphaZeroLiftDistributionHighLiftFinalAmount, 
 					vortexSemiSpanToSemiSpanRatio,
 					0.0,
 					theInputOutputTree.getMachNumber(),

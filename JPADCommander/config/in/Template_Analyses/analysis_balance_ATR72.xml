@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+    <analysis>
+        <balance 
+            id="ATR-72 - BALANCE" 
+            weights_from_previous_analysis="TRUE" 
+            >
+            <maximum_take_off_mass unit="kg">23170</maximum_take_off_mass>
+			<maximum_zero_fuel_mass unit="kg">21000</maximum_zero_fuel_mass>
+			<operating_empty_mass unit="kg">13208</operating_empty_mass>
+			<fuel_mass unit="kg">3036</fuel_mass>
+			<passengers_total_mass unit="kg">6460</passengers_total_mass>
+			<passengers_single_mass unit='kg'>95</passengers_single_mass>
+			<fuselage_mass unit="kg">3340.6</fuselage_mass>
+			<wing_mass unit="kg">2080.6</wing_mass>
+			<horizontal_tail_mass unit="kg">192.9</horizontal_tail_mass>
+			<vertical_tail_mass unit="kg">271.7</vertical_tail_mass>
+			<canard_mass unit="kg"></canard_mass>
+			<nacelles_mass unit="kg">204.7;204.7</nacelles_mass>
+			<engines_mass unit="kg">778.5;778.5</engines_mass>
+			<landing_gears_mass unit="kg">675.2</landing_gears_mass>
+        </balance>
+    </analysis>        
+</jpad_config>

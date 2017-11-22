@@ -2217,6 +2217,7 @@ public class FuselageCreator implements IFuselageCreator {
 				.sectionMidNoseRhoLower(sectionMidNoseRhoLower)
 				.sectionMidNoseRhoUpper(sectionMidNoseRhoUpper)
 				.sectionNoseMidLowerToTotalHeightRatio(sectionNoseMidLowerToTotalHeightRatio)
+				.windshieldType(windshieldType)
 				.windshieldHeight(windshieldHeight)
 				.windshieldWidth(windshieldWidth)
 				// CYLINDRICAL TRUNK
@@ -2671,7 +2672,18 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\tHeight from ground: " + heightFromGround + "\n")
 				.append("\t·····································\n")
 				.append("\tDiscretization\n")
-				.append("\tNo. points (Nose/Cabin/Tail); " + npN + ", " + npC + ", " + npT + "\n")
+				.append("\tOutline XY Left Top View - X (m): " + outlineXYSideLCurveX + "\n")
+				.append("\tOutline XY Left Top View - Y (m): " + outlineXYSideLCurveY + "\n")
+				.append("\tOutline XY Right Top View - X (m): " + outlineXYSideRCurveX + "\n")
+				.append("\tOutline XY Right Top View - Y (m): " + outlineXYSideRCurveY + "\n")
+				.append("\tOutline XZ Upper Side View - X (m): " + outlineXZUpperCurveX + "\n")
+				.append("\tOutline XZ Upper Side View - Z (m): " + outlineXZUpperCurveZ + "\n")
+				.append("\tOutline XZ Lower Side View - X (m): " + outlineXZLowerCurveX + "\n")
+				.append("\tOutline XZ Lower Side View - Z (m): " + outlineXZLowerCurveZ + "\n")
+				.append("\tOutline YZ Upper Section View - Y (m): " + getSectionUpperCurveAmountY().stream().map(y -> y.doubleValue(SI.METER)).collect(Collectors.toList())+ "\n")
+				.append("\tOutline YZ Upper Section View - Z (m): " + getSectionUpperCurveAmountZ().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
+				.append("\tOutline YZ Upper Section View - Y (m): " + getSectionLowerCurveAmountY().stream().map(y -> y.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
+				.append("\tOutline YZ Upper Section View - Z (m): " + getSectionLowerCurveAmountZ().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
 				.append("\t·····································\n");
 		
 		if(!(spoilers == null)) {

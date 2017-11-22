@@ -14,8 +14,8 @@
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jarhdf5-2.10.1.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jarhdfobj.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jcommon-1.0.23.jar"/>
-	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreechart-1.0.19.jar"/>
-	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreesvg-2.0.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreechart-1.5.0.jar"/>
+	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jfreesvg-3.3.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jscience.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/jsr275_0.9.4_mod.jar"/>
 	<classpathentry kind="var" path="JPADAPPS_LIBRARY_FOLDER/junit-4.11.jar"/>
@@ -29,7 +29,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/hdf-java-2.6.1.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/1.8.12/lib/hdf5.lib"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/jarh5obj.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/jpad/libraries/hdf/fits.jar"/>
 	<classpathentry kind="lib" path="C:/Users/manue/jpad/libraries/hdf/hdf-java-2.6.1.jar"/>

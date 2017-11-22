@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jpad_config>
+   <vertical_tail id="Vertical tail" mirrored="false">
+      <global_data>
+         <composite_correction_factor>0.000000</composite_correction_factor>
+         <roughness unit="m">0.00000405</roughness>
+      </global_data>
+      <panels>
+         <panel id="ATR72 vertical tail">
+            <span unit="m">4.8200</span>
+            <dihedral unit="deg">0.0000</dihedral>
+            <sweep_leading_edge unit="deg">38.2000</sweep_leading_edge>
+            <inner_section>
+               <chord unit="m">3.9500</chord>
+               <airfoil file="naca0012.xml"/>
+               <geometric_twist>0.000000</geometric_twist>
+            </inner_section>
+            <outer_section>
+               <chord unit="m">2.2700</chord>
+               <airfoil file="naca0012.xml"/>
+               <geometric_twist unit="deg">0.0000</geometric_twist>
+            </outer_section>
+         </panel>
+      </panels>
+      <symmetric_flaps>
+         <symmetric_flap type="PLAIN">
+            <inner_station_spanwise_position>0.000000</inner_station_spanwise_position>
+            <outer_station_spanwise_position>0.9000</outer_station_spanwise_position>
+            <inner_chord_ratio>0.3500</inner_chord_ratio>
+            <outer_chord_ratio>0.3500</outer_chord_ratio>
+            <min_deflection unit="deg">-25.0000</min_deflection>
+            <max_deflection unit="deg">25.0000</max_deflection>
+         </symmetric_flap>
+      </symmetric_flaps>
+   </vertical_tail>
+</jpad_config>

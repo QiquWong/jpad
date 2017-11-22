@@ -8,7 +8,7 @@
 			<classes_number>2</classes_number>
 			<classes_type>ECONOMY;BUSINESS</classes_type>
 			<aisles_number>1</aisles_number>
-			<x_coordinates_first_row unit="m">3.131</x_coordinates_first_row>   <!-- 6,481 dal nose-->
+			<x_coordinates_first_row unit="m">7.0</x_coordinates_first_row>   <!-- 6,481 dal nose-->
 			
 			<missing_seat_row>
 				<!--
@@ -33,14 +33,14 @@
 			<number_of_columns_economy_class>2;3</number_of_columns_economy_class>
 			<number_of_columns_business_class>2;3</number_of_columns_business_class>
 			<number_of_columns_first_class>0;0</number_of_columns_first_class>
-			<pitch_economy_class unit="m">0.79</pitch_economy_class>
-			<pitch_business_class unit="m">0.86</pitch_business_class>
+			<pitch_economy_class unit="m">0.7</pitch_economy_class>
+			<pitch_business_class unit="m">0.9</pitch_business_class>
 			<pitch_first_class unit="m">0.0</pitch_first_class>
-			<width_economy_class unit="m">0.43</width_economy_class>
-			<width_business_class unit="m">0.43</width_business_class>
+			<width_economy_class unit="m">0.47</width_economy_class>
+			<width_business_class unit="m">0.575</width_business_class>
 			<width_first_class unit="m">0.0</width_first_class>
-			<distance_from_wall_economy_class unit="m">0.0</distance_from_wall_economy_class>
-			<distance_from_wall_business_class unit="m">0.0</distance_from_wall_business_class>
+			<distance_from_wall_economy_class unit="m">0.1</distance_from_wall_economy_class>
+			<distance_from_wall_business_class unit="m">0.1</distance_from_wall_business_class>
 			<distance_from_wall_first_class unit="m">0.0</distance_from_wall_first_class>
 		</detailed_data>
 		<reference_masses>

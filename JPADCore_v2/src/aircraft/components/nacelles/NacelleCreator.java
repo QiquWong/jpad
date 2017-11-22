@@ -3,6 +3,7 @@ package aircraft.components.nacelles;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -344,7 +345,14 @@ public class NacelleCreator implements INacelleCreator {
 		.append("\t·····································\n")
 		.append("\tSurface roughness: " + _roughness + "\n")
 		.append("\tSurface wetted: " + _surfaceWetted + "\n")
-		.append("\t·····································\n")				
+		.append("\t·····································\n")	
+		.append("\tDiscretization\n")
+		.append("\tOutline XY - X (m): " + getXCoordinatesOutline().stream().map(x -> x.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
+		.append("\tOutline XY Left Top View - Y (m): " + getYCoordinatesOutlineXYLeft().stream().map(y -> y.doubleValue(SI.METER)).collect(Collectors.toList())+ "\n")
+		.append("\tOutline XY Right Top View - Y (m): " + getYCoordinatesOutlineXYRight().stream().map(y -> y.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
+		.append("\tOutline XZ Upper Side View - Z (m): " + getZCoordinatesOutlineXZUpper().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
+		.append("\tOutline XZ Lower Side View - Z (m): " + getZCoordinatesOutlineXZLower().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
+		.append("\t·····································\n");
 		;
 
 		return sb.toString();

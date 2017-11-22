@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jpad_config>
+   <nacelle engine="engine_ATR72.xml" id="ATR-72 Nacelle">
+      <global_data>
+         <roughness unit="m">0.00000405</roughness>
+	  </global_data>
+	  <geometry>
+         <length unit="m">4.3710</length>
+         <maximum_diameter unit="m">1.4000</maximum_diameter>
+         <k_inlet>0.8570</k_inlet>
+         <k_outlet>0.1430</k_outlet>
+         <k_length>0.4000</k_length>
+         <k_diameter_outlet>1.5000</k_diameter_outlet>
+      </geometry>
+   </nacelle>
+</jpad_config>

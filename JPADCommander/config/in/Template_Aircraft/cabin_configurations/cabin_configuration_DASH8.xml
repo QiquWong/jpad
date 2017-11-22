@@ -8,7 +8,7 @@
 			<classes_number>1</classes_number>
 			<classes_type>ECONOMY</classes_type>
 			<aisles_number>1</aisles_number> <!-- numero di corridoi -->
-			<x_coordinates_first_row unit="m">2.63</x_coordinates_first_row>
+			<x_coordinates_first_row unit="m">5.0</x_coordinates_first_row>
 			<missing_seat_row>
 				<!--
 				The size of missing seat list has to be equal to the class size.

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jpad_config>
+	<!-- all SFC values must be assigned in lb/(lb*hr) for JET engines -->
+	<!-- all SFC values must be assigned in lb/(hp*hr) for PISTON engines -->
+    <analysis>
+        <weights id="CS-300 - WEIGHTS">
+			<global_data>
+				<maximum_take_off_mass unit="kg">67585</maximum_take_off_mass>
+				<single_passenger_mass unit="kg">105</single_passenger_mass>
+				<cruise_phase>
+					<range unit="nmi">3200</range> 
+					<sfc>0.5</sfc>
+					<efficiency>15.5</efficiency>
+				</cruise_phase>
+				<alternate_phase>
+					<range unit="nmi">100.0</range> 
+					<altitude unit="ft">10000</altitude>
+					<mach>0.6</mach>
+					<sfc>0.5</sfc> 
+					<efficiency>15.5</efficiency> 
+				</alternate_phase>
+				<holding_phase>
+					<duration unit="min">45</duration> 
+					<altitude unit="ft">1500</altitude>
+					<mach>0.3</mach>
+					<sfc>0.45</sfc> 
+					<efficiency>16.5</efficiency> 
+				</holding_phase>
+			</global_data>
+			<component_data>
+			<!-- if these tags are empty, a reference value will be calculated using default percentages of the MZFM -->
+				<fuselage_reference_mass unit="kg"></fuselage_reference_mass>
+				<wing_reference_mass unit="kg"></wing_reference_mass>
+				<horizontal_tail_reference_mass unit="kg"></horizontal_tail_reference_mass>
+				<vertical_tail_reference_mass unit="kg"></vertical_tail_reference_mass>
+				<canard_reference_mass unit="kg"></canard_reference_mass>
+				<nacelles_reference_mass unit="kg"></nacelles_reference_mass> <!-- all nacelles -->
+				<fuel_tank_reference_mass unit="kg"></fuel_tank_reference_mass>
+				<landing_gears_reference_mass unit="kg"></landing_gears_reference_mass>
+				<systems_reference_mass unit="kg"></systems_reference_mass>
+			</component_data>			
+        </weights>
+    </analysis>
+</jpad_config>

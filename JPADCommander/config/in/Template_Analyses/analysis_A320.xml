@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!-- 
+	plot=TRUE -> enters the plot tag in the specified file.
+	plot=FALSE -> plots nothing.
+	-->
+<jpad_config>
+    <!-- Input data, shared across analysis tasks -->
+    <global_data>
+        <positive_limit_load_factor>2.5</positive_limit_load_factor>
+		<negative_limit_load_factor>-1.0</negative_limit_load_factor>
+    </global_data>
+    <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
+    <analyses id="A-320 analysis">
+	<!--
+        <weights 
+            file="analysis_weights_A320.xml" 
+			plot="TRUE"
+			create_CSV="TRUE"
+            method_fuselage="TORENBEEK_2013"
+            method_wing=""
+            method_htail="JENKINSON"
+            method_vtail="JENKINSON"
+			method_nacelles="TORENBEEK_1982"
+			method_landing_gears=""
+			method_systems=""
+            />
+	-->
+	<!-- method_XXX="AVERAGED" if empty string -->
+	<!--
+	<balance 
+			file="analysis_balance_A320.xml"
+			plot="TRUE"
+			create_CSV="TRUE"
+            method_fuselage=""
+            method_wing=""
+            method_htail=""
+            method_vtail=""
+			method_canard=""
+		/>
+	-->
+	<!-- method_XXX="AVERAGED" if empty string -->
+	<!--
+	<aerodynamic_and_stability
+			plot="TRUE"
+			create_CSV="FALSE"
+			take_off_condition="TRUE"
+			file_take_off_condition="analysis_aerodynamics_TAKE_OFF_A320.xml"
+			climb_condition="FALSE"
+			file_climb_condition="analysis_aerodynamics_CLIMB_A320.xml"
+			cruise_condition="TRUE"
+			file_cruise_condition="analysis_aerodynamics_CRUISE_A320.xml"
+			landing_condition="FALSE"
+			file_landing_condition="analysis_aerodynamics_LANDING_A320.xml"
+	/>	
+	-->
+	<performance 
+			file="analysis_performance_A320.xml"
+			plot="TRUE"
+			create_CSV="TRUE"
+			take_off="FALSE"
+			climb="FALSE"
+			cruise="FALSE"
+			descent="FALSE"
+			landing="FALSE"
+			payload_range="TRUE"
+			V_n_diagram="FALSE"
+			mission_profile="TRUE"
+	/>
+	<!--
+	<costs 
+			file="analysis_costs_A320.xml"
+			plot="TRUE"
+			create_CSV="TRUE"
+			doc_capital="TRUE"
+			doc_capital_method="AEA"
+			doc_crew="TRUE"
+			doc_crew_method="AEA"
+			doc_fuel="TRUE"
+			doc_fuel_method="AEA"
+			doc_charges="TRUE"
+			doc_charges_method="ILR_AACHEN"
+			doc_maintenance="TRUE"
+			doc_maintenance_method="ATA"
+	/>
+	-->
+	<!-- add other costs analyses if available -->
+    </analyses>
+</jpad_config>

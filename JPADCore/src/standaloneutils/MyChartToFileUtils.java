@@ -20,11 +20,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYSeries;
@@ -521,132 +520,132 @@ public class MyChartToFileUtils {
 			boolean showLegend, List<String> legend,
 			String folderPathName, String fileName) throws InstantiationException, IllegalAccessException {
 				
-		//----------------------------------------------------------------------------------
-		// Creating XY series from List and adding to a dataset
-		XYSeriesCollection dataset = new XYSeriesCollection();
-		
-		for (int i=0; i<xList.size(); i++) {
-			// check if xList[i] and yList[i] have the same length
-			if(xList.get(i).length == yList.get(i).length){
-				XYSeries series = new XYSeries(legend.get(i));
-				for (int j=0; j<xList.get(i).length; j++) {
-					series.add(xList.get(i)[j], yList.get(i)[j]);
-				}
-				dataset.addSeries(series);					
-			}
-			else
-				System.err.println("X AND Y LISTS CORRESPONGING ELEMENTS MUST HAVE SAME LENGTH");
-		}
-		
-		//----------------------------------------------------------------------------------
-		// Generating the .png graph
-		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
-		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
-		
-//		if (legend == null){
-//			legend = new ArrayList<String>();
-//			for ( int i = 0; i<xList.size() ; i++)
-//				legend.add("default");
+//		//----------------------------------------------------------------------------------
+//		// Creating XY series from List and adding to a dataset
+//		XYSeriesCollection dataset = new XYSeriesCollection();
+//		
+//		for (int i=0; i<xList.size(); i++) {
+//			// check if xList[i] and yList[i] have the same length
+//			if(xList.get(i).length == yList.get(i).length){
+//				XYSeries series = new XYSeries(legend.get(i));
+//				for (int j=0; j<xList.get(i).length; j++) {
+//					series.add(xList.get(i)[j], yList.get(i)[j]);
+//				}
+//				dataset.addSeries(series);					
+//			}
+//			else
+//				System.err.println("X AND Y LISTS CORRESPONGING ELEMENTS MUST HAVE SAME LENGTH");
 //		}
-			
-		// minimum and maximum of Lists research
-		if(xMin == null) {
-			xMin = 0.0;
-			Double[] xMinArray = new Double[xList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				xMinArray[i] = MyArrayUtils.getMin(xList.get(i));
-			xMin = MyArrayUtils.getMin(xMinArray);
-		}
-		
-		if(xMax == null) {
-			xMax = 0.0;
-			Double[] xMaxArray = new Double[xList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				xMaxArray[i] = MyArrayUtils.getMax(xList.get(i));			
-			xMax = MyArrayUtils.getMax(xMaxArray);
-		}
-		
-		if(yMin == null) {
-			yMin = 0.0;
-			Double[] yMinArray = new Double[yList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				yMinArray[i] = MyArrayUtils.getMin(yList.get(i));			
-			yMin = MyArrayUtils.getMin(yMinArray);
-		}
-		
-		if(yMax == null) {
-			yMax = 0.0;
-			Double[] yMaxArray = new Double[yList.size()];
-			for(int i=0; i<xList.size(); i++) 
-				yMaxArray[i] = MyArrayUtils.getMax(yList.get(i));			
-			yMax = MyArrayUtils.getMax(yMaxArray);
-		}
-				
-		JFreeChart chart = ChartFactory.createXYLineChart(
-				chartName,	 					// Title
-				xLabelName + " " + xUnit,		// x-axis Label
-				yLabelName + " " + yUnit,		// y-axis Label
-				dataset, 						// Dataset
-				PlotOrientation.VERTICAL, 		// Plot Orientation
-				showLegend, 					// Show Legend
-				true, 							// Use tooltips
-				false						 	// Configure chart to generate URLs?
-				);
-		chart.setBackgroundPaint(Color.WHITE);
-		chart.setBackgroundImageAlpha(0.0f);
-		chart.setAntiAlias(true);
-		chart.getPlot().setBackgroundPaint(Color.WHITE);
-		chart.getPlot().setBackgroundAlpha(0.0f);
-		chart.getXYPlot().setDomainGridlinesVisible(true);
-		chart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
-		chart.getXYPlot().setRangeGridlinesVisible(true);
-		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
-		chart.getXYPlot().getDomainAxis().setRange(xMin - 0.1*xMin, xMax + 0.1*xMax);
-		chart.getXYPlot().getRangeAxis().setRange(yMin - 0.1*yMin, yMax + 0.1*yMax);
-		
-		// creation of the file .png
-		File xyChart = new File(folderPathName + fileName + ".png"); 
-
-		try {
-			ChartUtilities.saveChartAsPNG(xyChart, chart, 1920, 1080);
-		} catch (IOException e) {
-			System.err.println("Problem occurred creating chart.");
-		}
-		
-		//----------------------------------------------------------------------------------
-		// Generating the .tikz graph
-		
-		String[] legendValue = new String[legend.size()];
-		
-		for (int i=0; i<legendValue.length; i++){
-			legendValue[i] = legend.get(i);
-		}
-		MyChartToFileUtils chartFactory = new MyChartToFileUtils();
-		chartFactory.initializeTikz(
-				folderPathName + fileName,
-				xMin, xMax,
-				yMin, yMax,
-				xLabelName, yLabelName,
-				xUnit, yUnit,
-				"west", "black",
-				"white", "left", legendValue);
-
-		if (xList.size() == 1)
-			for (int i=0; i < yList.size(); i++) {
-				try {
-					chartFactory.addTraceToTikz(xList.get(0), yList.get(i), legend.get(i));
-				} catch (ArrayIndexOutOfBoundsException e) {
-					System.err.println("ARRAY INDEX OUT OF BOUNDS !!!");
-				}
-			}
-		else if(xList.size() != 1 && yList.size() == 1)
-			for (int i=0; i < yList.size(); i++)
-				chartFactory.addTraceToTikz(xList.get(i), yList.get(0), legend.get(i));
-		else
-			for (int i=0; i < yList.size(); i++)
-				chartFactory.addTraceToTikz(xList.get(i), yList.get(i), legend.get(i));
-
-		chartFactory.closeTikz();
+//		
+//		//----------------------------------------------------------------------------------
+//		// Generating the .png graph
+//		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+//		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
+//		
+////		if (legend == null){
+////			legend = new ArrayList<String>();
+////			for ( int i = 0; i<xList.size() ; i++)
+////				legend.add("default");
+////		}
+//			
+//		// minimum and maximum of Lists research
+//		if(xMin == null) {
+//			xMin = 0.0;
+//			Double[] xMinArray = new Double[xList.size()];
+//			for(int i=0; i<xList.size(); i++) 
+//				xMinArray[i] = MyArrayUtils.getMin(xList.get(i));
+//			xMin = MyArrayUtils.getMin(xMinArray);
+//		}
+//		
+//		if(xMax == null) {
+//			xMax = 0.0;
+//			Double[] xMaxArray = new Double[xList.size()];
+//			for(int i=0; i<xList.size(); i++) 
+//				xMaxArray[i] = MyArrayUtils.getMax(xList.get(i));			
+//			xMax = MyArrayUtils.getMax(xMaxArray);
+//		}
+//		
+//		if(yMin == null) {
+//			yMin = 0.0;
+//			Double[] yMinArray = new Double[yList.size()];
+//			for(int i=0; i<xList.size(); i++) 
+//				yMinArray[i] = MyArrayUtils.getMin(yList.get(i));			
+//			yMin = MyArrayUtils.getMin(yMinArray);
+//		}
+//		
+//		if(yMax == null) {
+//			yMax = 0.0;
+//			Double[] yMaxArray = new Double[yList.size()];
+//			for(int i=0; i<xList.size(); i++) 
+//				yMaxArray[i] = MyArrayUtils.getMax(yList.get(i));			
+//			yMax = MyArrayUtils.getMax(yMaxArray);
+//		}
+//				
+//		JFreeChart chart = ChartFactory.createXYLineChart(
+//				chartName,	 					// Title
+//				xLabelName + " " + xUnit,		// x-axis Label
+//				yLabelName + " " + yUnit,		// y-axis Label
+//				dataset, 						// Dataset
+//				PlotOrientation.VERTICAL, 		// Plot Orientation
+//				showLegend, 					// Show Legend
+//				true, 							// Use tooltips
+//				false						 	// Configure chart to generate URLs?
+//				);
+//		chart.setBackgroundPaint(Color.WHITE);
+//		chart.setBackgroundImageAlpha(0.0f);
+//		chart.setAntiAlias(true);
+//		chart.getPlot().setBackgroundPaint(Color.WHITE);
+//		chart.getPlot().setBackgroundAlpha(0.0f);
+//		chart.getXYPlot().setDomainGridlinesVisible(true);
+//		chart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
+//		chart.getXYPlot().setRangeGridlinesVisible(true);
+//		chart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+//		chart.getXYPlot().getDomainAxis().setRange(xMin - 0.1*xMin, xMax + 0.1*xMax);
+//		chart.getXYPlot().getRangeAxis().setRange(yMin - 0.1*yMin, yMax + 0.1*yMax);
+//		
+//		// creation of the file .png
+//		File xyChart = new File(folderPathName + fileName + ".png"); 
+//
+//		try {
+//			ChartUtilities.saveChartAsPNG(xyChart, chart, 1920, 1080);
+//		} catch (IOException e) {
+//			System.err.println("Problem occurred creating chart.");
+//		}
+//		
+//		//----------------------------------------------------------------------------------
+//		// Generating the .tikz graph
+//		
+//		String[] legendValue = new String[legend.size()];
+//		
+//		for (int i=0; i<legendValue.length; i++){
+//			legendValue[i] = legend.get(i);
+//		}
+//		MyChartToFileUtils chartFactory = new MyChartToFileUtils();
+//		chartFactory.initializeTikz(
+//				folderPathName + fileName,
+//				xMin, xMax,
+//				yMin, yMax,
+//				xLabelName, yLabelName,
+//				xUnit, yUnit,
+//				"west", "black",
+//				"white", "left", legendValue);
+//
+//		if (xList.size() == 1)
+//			for (int i=0; i < yList.size(); i++) {
+//				try {
+//					chartFactory.addTraceToTikz(xList.get(0), yList.get(i), legend.get(i));
+//				} catch (ArrayIndexOutOfBoundsException e) {
+//					System.err.println("ARRAY INDEX OUT OF BOUNDS !!!");
+//				}
+//			}
+//		else if(xList.size() != 1 && yList.size() == 1)
+//			for (int i=0; i < yList.size(); i++)
+//				chartFactory.addTraceToTikz(xList.get(i), yList.get(0), legend.get(i));
+//		else
+//			for (int i=0; i < yList.size(); i++)
+//				chartFactory.addTraceToTikz(xList.get(i), yList.get(i), legend.get(i));
+//
+//		chartFactory.closeTikz();
 	}
 	
 	/** 
@@ -1829,54 +1828,54 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit,
 			int width, int height) {
 
-		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
-		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
-
-		PlotOrientation orientation;
-		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
-		else orientation = PlotOrientation.VERTICAL;
-
-		JFreeChart xylineChart = ChartFactory.createXYLineChart(
-				title, 
-				xLabel + " " + xUnit,
-				yLabel + " " + yUnit, 
-				datasetLineChart,
-				orientation, 
-				true, true, false);
-
-		xylineChart.setBackgroundPaint(Color.WHITE);
-		xylineChart.setBackgroundImageAlpha(0.0f);
-		xylineChart.setAntiAlias(true);
-
-		xylineChart.getPlot().setBackgroundPaint(Color.WHITE);
-		xylineChart.getPlot().setBackgroundAlpha(0.0f);
-		//		xylineChart.getXYPlot().getRenderer().setSeriesPaint(seriesIndex, color);
-		xylineChart.getXYPlot().setDomainGridlinesVisible(true);
-		xylineChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
-		xylineChart.getXYPlot().setRangeGridlinesVisible(true);
-		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
-		//xylineChart.removeLegend(); 
-
-		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
-		domain.setRange(xMin, xMax);
-		//        domain.setTickUnit(new NumberTickUnit(0.1));
-		//        domain.setVerticalTickLabels(true);
-		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
-		range.setRange(yMin, yMax);
-		//        range.setTickUnit(new NumberTickUnit(0.1));
-
-		File xyChart = new File(filenameWithPath + ".png"); 
-
-		try {
-			File f = new File(filenameWithPath + ".png");
-			if(f.exists()) f.delete();
-
-			ChartUtilities.saveChartAsPNG(xyChart, xylineChart, width, height);
-			datasetLineChart.removeAllSeries();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+//		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
+//
+//		PlotOrientation orientation;
+//		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
+//		else orientation = PlotOrientation.VERTICAL;
+//
+//		JFreeChart xylineChart = ChartFactory.createXYLineChart(
+//				title, 
+//				xLabel + " " + xUnit,
+//				yLabel + " " + yUnit, 
+//				datasetLineChart,
+//				orientation, 
+//				true, true, false);
+//
+//		xylineChart.setBackgroundPaint(Color.WHITE);
+//		xylineChart.setBackgroundImageAlpha(0.0f);
+//		xylineChart.setAntiAlias(true);
+//
+//		xylineChart.getPlot().setBackgroundPaint(Color.WHITE);
+//		xylineChart.getPlot().setBackgroundAlpha(0.0f);
+//		//		xylineChart.getXYPlot().getRenderer().setSeriesPaint(seriesIndex, color);
+//		xylineChart.getXYPlot().setDomainGridlinesVisible(true);
+//		xylineChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
+//		xylineChart.getXYPlot().setRangeGridlinesVisible(true);
+//		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+//		//xylineChart.removeLegend(); 
+//
+//		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
+//		domain.setRange(xMin, xMax);
+//		//        domain.setTickUnit(new NumberTickUnit(0.1));
+//		//        domain.setVerticalTickLabels(true);
+//		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
+//		range.setRange(yMin, yMax);
+//		//        range.setTickUnit(new NumberTickUnit(0.1));
+//
+//		File xyChart = new File(filenameWithPath + ".png"); 
+//
+//		try {
+//			File f = new File(filenameWithPath + ".png");
+//			if(f.exists()) f.delete();
+//
+//			ChartUtilities.saveChartAsPNG(xyChart, xylineChart, width, height);
+//			datasetLineChart.removeAllSeries();
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 
@@ -1902,54 +1901,54 @@ public class MyChartToFileUtils {
 			String xUnit, String yUnit,
 			int width, int height) {
 
-		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
-		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
-
-		PlotOrientation orientation;
-		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
-		else orientation = PlotOrientation.VERTICAL;
-
-		JFreeChart xylineChart = ChartFactory.createXYLineChart(
-				title, 
-				xLabel + " " + xUnit,
-				yLabel + " " + yUnit, 
-				datasetLineChart,
-				orientation, 
-				true, true, false);
-
-		xylineChart.setBackgroundPaint(Color.WHITE);
-		xylineChart.setBackgroundImageAlpha(0.0f);
-		xylineChart.setAntiAlias(true);
-
-		xylineChart.getPlot().setBackgroundPaint(Color.WHITE);
-		xylineChart.getPlot().setBackgroundAlpha(0.0f);
-		//		xylineChart.getXYPlot().getRenderer().setSeriesPaint(seriesIndex, color);
-		xylineChart.getXYPlot().setDomainGridlinesVisible(true);
-		xylineChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
-		xylineChart.getXYPlot().setRangeGridlinesVisible(true);
-		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
-		xylineChart.removeLegend(); 
-
-		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
-		domain.setRange(xMin, xMax);
-		//        domain.setTickUnit(new NumberTickUnit(0.1));
-		//        domain.setVerticalTickLabels(true);
-		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
-		range.setRange(yMin, yMax);
-		//        range.setTickUnit(new NumberTickUnit(0.1));
-
-		File XYChart = new File(filenameWithPath + ".png"); 
-
-		try {
-			File f = new File(filenameWithPath + ".png");
-			if(f.exists()) f.delete();
-
-			ChartUtilities.saveChartAsPNG(XYChart, xylineChart, width, height);
-			datasetLineChart.removeAllSeries();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		if (!xUnit.equals("")) xUnit = "(" + xUnit + ")"; 
+//		if (!yUnit.equals("")) yUnit = "(" + yUnit + ")";
+//
+//		PlotOrientation orientation;
+//		if (swapXY) orientation = PlotOrientation.HORIZONTAL;
+//		else orientation = PlotOrientation.VERTICAL;
+//
+//		JFreeChart xylineChart = ChartFactory.createXYLineChart(
+//				title, 
+//				xLabel + " " + xUnit,
+//				yLabel + " " + yUnit, 
+//				datasetLineChart,
+//				orientation, 
+//				true, true, false);
+//
+//		xylineChart.setBackgroundPaint(Color.WHITE);
+//		xylineChart.setBackgroundImageAlpha(0.0f);
+//		xylineChart.setAntiAlias(true);
+//
+//		xylineChart.getPlot().setBackgroundPaint(Color.WHITE);
+//		xylineChart.getPlot().setBackgroundAlpha(0.0f);
+//		//		xylineChart.getXYPlot().getRenderer().setSeriesPaint(seriesIndex, color);
+//		xylineChart.getXYPlot().setDomainGridlinesVisible(true);
+//		xylineChart.getXYPlot().setDomainGridlinePaint(Color.LIGHT_GRAY);
+//		xylineChart.getXYPlot().setRangeGridlinesVisible(true);
+//		xylineChart.getXYPlot().setRangeGridlinePaint(Color.LIGHT_GRAY);
+//		xylineChart.removeLegend(); 
+//
+//		NumberAxis domain = (NumberAxis) xylineChart.getXYPlot().getDomainAxis();
+//		domain.setRange(xMin, xMax);
+//		//        domain.setTickUnit(new NumberTickUnit(0.1));
+//		//        domain.setVerticalTickLabels(true);
+//		NumberAxis range = (NumberAxis) xylineChart.getXYPlot().getRangeAxis();
+//		range.setRange(yMin, yMax);
+//		//        range.setTickUnit(new NumberTickUnit(0.1));
+//
+//		File XYChart = new File(filenameWithPath + ".png"); 
+//
+//		try {
+//			File f = new File(filenameWithPath + ".png");
+//			if(f.exists()) f.delete();
+//
+//			ChartUtilities.saveChartAsPNG(XYChart, xylineChart, width, height);
+//			datasetLineChart.removeAllSeries();
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	/**
@@ -1966,37 +1965,37 @@ public class MyChartToFileUtils {
 			DefaultPieDataset dataset,
 			int width, int height) {
 
-		JFreeChart chart = ChartFactory.createPieChart(
-				title,  // chart title
-				dataset,             // data
-				false,               // include legend
-				true,
-				false
-				);
-
-		PiePlot plot = (PiePlot) chart.getPlot();
-		//		        plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
-		plot.setNoDataMessage("No data available");
-		plot.setCircular(true);
-		plot.setLabelGap(0.02);
-
-		chart.setBackgroundPaint(Color.WHITE);
-		chart.setBackgroundImageAlpha(0.0f);
-		chart.setAntiAlias(true);
-
-		chart.getPlot().setBackgroundPaint(Color.WHITE);
-		chart.getPlot().setBackgroundAlpha(0.0f);
-
-		File chartFile = new File(filenameWithPath + ".png"); 
-
-		try {
-			File f = new File(filenameWithPath + ".png");
-			if(f.exists()) f.delete();
-			ChartUtilities.saveChartAsPNG(chartFile, chart, width, height);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		JFreeChart chart = ChartFactory.createPieChart(
+//				title,  // chart title
+//				dataset,             // data
+//				false,               // include legend
+//				true,
+//				false
+//				);
+//
+//		PiePlot plot = (PiePlot) chart.getPlot();
+//		//		        plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
+//		plot.setNoDataMessage("No data available");
+//		plot.setCircular(true);
+//		plot.setLabelGap(0.02);
+//
+//		chart.setBackgroundPaint(Color.WHITE);
+//		chart.setBackgroundImageAlpha(0.0f);
+//		chart.setAntiAlias(true);
+//
+//		chart.getPlot().setBackgroundPaint(Color.WHITE);
+//		chart.getPlot().setBackgroundAlpha(0.0f);
+//
+//		File chartFile = new File(filenameWithPath + ".png"); 
+//
+//		try {
+//			File f = new File(filenameWithPath + ".png");
+//			if(f.exists()) f.delete();
+//			ChartUtilities.saveChartAsPNG(chartFile, chart, width, height);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	/**
