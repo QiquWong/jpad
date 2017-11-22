@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -593,8 +594,15 @@ public class JSBSimModel {
 		org.w3c.dom.Element metricsElement = doc.createElement("metrics");
 		rootElement.appendChild(metricsElement);
 		
-//		Amount<Area> wingArea = Amount.valueOf(100, SI.SQUARE_METRE);
-		JPADStaticWriteUtils.writeSingleNode("wingarea", wingArea , metricsElement, doc);
+		// JPADStaticWriteUtils.writeSingleNode("wingarea", wingArea , metricsElement, doc);
+		metricsElement.appendChild(
+				JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+						doc, "wingarea",
+						wingArea.doubleValue(SI.SQUARE_METRE), 3, 6, // value, rounding-above, rounding-below
+						Tuple.of("unit", "M2")
+						)
+				);
+		
 		JPADStaticWriteUtils.writeSingleNode("wingspan", wingSpan , metricsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("chord", wingMAC , metricsElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("htailarea", htSurface , metricsElement, doc);
@@ -669,10 +677,11 @@ public class JSBSimModel {
 		JSBSimUtils.writeLandingGear(groundReaction, noseGear, coordinateNoseLandingGear, doc, "Nose Gear", "NONE");
 		JSBSimUtils.writeLandingGear(groundReaction, mainRightGear, coordinateRightLandingGear, doc, "Right Main Gear", "RIGHT");
 		JSBSimUtils.writeLandingGear(groundReaction, mainRightGear, coordinateLeftLandingGear, doc, "Left Main Gear", "LEFT");
-		//Propulsion
 		
+		// Propulsion
+		String engineName = aircraftName.replaceAll("\\s+","_") + "_engine";
 		try {
-			JSBSimUtils.createEngineXML(engineRight, "Prova", "turbine", dirPath+"/engine","JET");
+			JSBSimUtils.createEngineXML(engineRight, engineName, "turbine", dirPath+"/engine","JET");
 		} catch (TransformerException e) {
 			e.printStackTrace();
 			System.out.println("Engine not created");
@@ -681,11 +690,11 @@ public class JSBSimModel {
 		rootElement.appendChild(propulsionElement);
 		JSBSimUtils.writeEngine
 		        (propulsionElement, engineRight, rightEnginePosition, rightEngineRotation, 
-				doc, "Prova", "JET");
+				doc, engineName, "JET");
 
 		JSBSimUtils.writeTank(propulsionElement, tankMatrix, doc, "RIGHT");
 		JSBSimUtils.writeTank(propulsionElement, tankMatrix, doc, "LEFT");
-		//Flight Control
+		// Flight Control
 		org.w3c.dom.Element flightControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 				doc,"flight_control",
 				Tuple.of("name", "FCS :"+aircraftName)

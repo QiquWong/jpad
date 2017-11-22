@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fdm_config name="D150 AGILE" release="BETA" version="2.0">
    <metrics>
-      <wingarea unit="m²">130.5137</wingarea>
+      <wingarea unit="M2">130.514</wingarea>
       <wingspan unit="m">33.9137</wingspan>
       <chord unit="m">4.1923</chord>
       <htailarea unit="m²">32.7580</htailarea>
@@ -87,7 +87,7 @@
       </contact>
    </ground_reactions>
    <propulsion>
-      <engine file="Prova">
+      <engine file="D150_AGILE_engine">
          <location unit="M">
             <x>13.6765</x>
             <y>5.7482</y>

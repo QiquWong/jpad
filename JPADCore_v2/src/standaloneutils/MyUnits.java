@@ -70,6 +70,9 @@ public class MyUnits {
 	public static final Unit KILOGRAM_METER = SI.KILOGRAM.times(SI.METER);
 	public static final Unit KILOGRAM_METER_PER_SECOND = SI.KILOGRAM.times(SI.METER).divide(SI.SECOND);
 
+	public static final Unit KILOGRAM_METER_SQUARED = SI.KILOGRAM.times(SI.METER).times(SI.METER);
+	public static final Unit SLUG_FT_SQUARED = MyUnits.SLUG.times(NonSI.FOOT).times(NonSI.FOOT);
+
 	public static final Unit KILOGRAM_PER_SECOND = SI.KILOGRAM.divide(SI.SECOND);
 	public static final Unit KILOGRAM_PER_SECOND_PER_NEWTON = SI.KILOGRAM.divide(SI.SECOND).divide(SI.NEWTON);
 	public static final Unit SLUG_PER_SECOND_PER_POUND = MyUnits.SLUG.divide(SI.SECOND).divide(NonSI.POUND_FORCE);

@@ -23,8 +23,6 @@ import writers.JPADStaticWriteUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
-
 public class JSBSimUtils {
 
 	public static void writeLandingGear(
