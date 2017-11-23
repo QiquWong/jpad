@@ -7,10 +7,10 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-<HBox xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.view.MainItemsController">
+<HBox fx:id="backgroundHBox" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.view.MainItemsController">
    <children>
       <Region prefHeight="200.0" prefWidth="193.0" />
-      <Button id="inputManagerButton" fx:id="inputManagerButton" blendMode="SRC_ATOP" mnemonicParsing="false" onAction="#goInputManager" prefHeight="250.0" prefWidth="350.0" text="Input Manager" HBox.hgrow="ALWAYS">
+      <Button id="inputManagerButton" fx:id="inputManagerButton" blendMode="SRC_ATOP" mnemonicParsing="false" onAction="#goInputManager" prefHeight="250.0" prefWidth="350.0" style="-fx-background-color: #F0FFFF;" text="Input Manager" HBox.hgrow="ALWAYS">
          <font>
             <Font name="System Bold" size="32.0" />
          </font>
@@ -22,7 +22,7 @@
          </HBox.margin>
       </Button>
       <Region prefHeight="200.0" prefWidth="200.0" />
-      <Button id="analysisManagerButton" fx:id="analysisManagerButton" blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" text="Analysis Manager" HBox.hgrow="ALWAYS">
+      <Button id="analysisManagerButton" fx:id="analysisManagerButton" blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" style="-fx-background-color: #F0FFFF;" text="Analysis Manager" HBox.hgrow="ALWAYS">
          <font>
             <Font name="System Bold" size="32.0" />
          </font>
@@ -34,7 +34,7 @@
          </HBox.margin>
       </Button>
       <Region prefHeight="200.0" prefWidth="200.0" />
-      <Button id="resultsManagerButton" fx:id="resultsManagerButton" blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" text="Results Manager" HBox.hgrow="ALWAYS">
+      <Button id="resultsManagerButton" fx:id="resultsManagerButton" blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="250.0" prefWidth="350.0" style="-fx-background-color: #F0FFFF;" text="Results Manager" HBox.hgrow="ALWAYS">
          <font>
             <Font name="System Bold" size="32.0" />
          </font>
