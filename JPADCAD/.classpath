@@ -7,5 +7,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vecmath/vecmath.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar" sourcepath="/LIBRARY_FOLDER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

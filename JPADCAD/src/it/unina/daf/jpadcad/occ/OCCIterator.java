@@ -10,7 +10,7 @@ public class OCCIterator implements CADIterator
 		occIt = new TopoDS_Iterator();
 	}
 	
-	public void initialize(CADShape s)
+	public void init(CADShape s)
 	{
 		OCCShape shape = (OCCShape) s;
 		occIt.Initialize(shape.getShape());

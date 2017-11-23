@@ -33,11 +33,11 @@ public abstract class CADShapeFactory
 	{
 		if(factory == null)
 		{
-			String cadType = System.getProperty("org.jcae.mesh.cad");
+			String cadType = System.getProperty("it.unina.it.daf.jpadcad.occ");
 			if (cadType == null)
 			{
-				cadType = "org.jcae.mesh.cad.occ.OCCShapeFactory";
-				System.setProperty("org.jcae.mesh.cad", cadType);
+				cadType = "it.unina.it.daf.jpadcad.occ.OCCShapeFactory";
+				System.setProperty("it.unina.it.daf.jpadcad.occ", cadType);
 			}
 			try
 			{
@@ -128,6 +128,9 @@ public abstract class CADShapeFactory
 	 * @return The created CADShell
 	 */
 	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList);
+
+	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled, double pres3d);	
+	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled);	
 	
 	/**
 	 * Create a new CADVertex from a triplet of coordinates
