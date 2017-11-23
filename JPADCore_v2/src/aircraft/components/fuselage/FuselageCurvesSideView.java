@@ -8,6 +8,7 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
 import org.apache.commons.math3.util.ArithmeticUtils;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.jscience.physics.amount.Amount;
 
 //import org.apache.commons.math3.linear.RealMatrix;
@@ -403,7 +404,8 @@ public class FuselageCurvesSideView {
 		} else if (k == 0) {
 			return (float) Math.pow((1 - u), (n));
 		} else {
-			float bez = ArithmeticUtils.binomialCoefficient(n, k);
+			// float bez = ArithmeticUtils.binomialCoefficient(n, k); // deprecated
+			float bez = CombinatoricsUtils.binomialCoefficient(n, k);
 			bez = (float) (bez * Math.pow(u, k));
 			bez = (float) (bez * Math.pow((1 - u), (n - k)));
 			return bez;

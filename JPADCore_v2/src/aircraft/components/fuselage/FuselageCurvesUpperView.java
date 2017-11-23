@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math3.util.ArithmeticUtils;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import processing.core.PVector;
 
@@ -292,7 +293,8 @@ public class FuselageCurvesUpperView {
 		} else if (k == 0) {
 			return (float) Math.pow((1 - u), (n));
 		} else {
-			float bez = ArithmeticUtils.binomialCoefficient(n, k);
+			// float bez = ArithmeticUtils.binomialCoefficient(n, k); deprecated
+			float bez = CombinatoricsUtils.binomialCoefficient(n, k);
 			bez = (float) (bez * Math.pow(u, k));
 			bez = (float) (bez * Math.pow((1 - u), (n - k)));
 			return bez;

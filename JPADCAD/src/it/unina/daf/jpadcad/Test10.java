@@ -8,8 +8,6 @@ import javax.measure.unit.SI;
 
 import org.jscience.physics.amount.Amount;
 
-import cad.jcae.CADShape;
-import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADShapeFactory;
 import it.unina.daf.jpadcad.occ.CADShell;
@@ -18,11 +16,9 @@ import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCShell;
-import it.unina.daf.jpadcad.occ.OCCVertex;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.TopoDS_Compound;
-import opencascade.TopoDS_Edge;
 
 public class Test10 {
 
