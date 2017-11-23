@@ -2,18 +2,19 @@ package jpadcommander.view;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
-import org.controlsfx.validation.Severity;
-import org.controlsfx.validation.ValidationSupport;
-import org.controlsfx.validation.Validator;
-
 import aircraft.components.Aircraft;
 import analyses.ACAnalysisManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import jpadcommander.Main;
 
 public class MainItemsController {
@@ -21,6 +22,12 @@ public class MainItemsController {
 	//-------------------------------------------------------------------------------------------
 	// VARIABLE DECLARATION:
 	//-------------------------------------------------------------------------------------------
+	//...........................................................................................
+	// LAYOUTS:
+	//...........................................................................................
+	@FXML
+	private HBox backgroundHBox;
+	
 	//...........................................................................................
 	// BUTTONS:
 	//...........................................................................................
@@ -37,14 +44,20 @@ public class MainItemsController {
 	@FXML
 	private void initialize() {
 		
-		if(Main.getTheAircraft() != null) {
-			//FIXME
-			inputManagerButton.setStyle("fx-background-color: #00CC00");
-		}
-		
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
 		ObjectProperty<ACAnalysisManager> analysisManager = new SimpleObjectProperty<>();
 
+		inputManagerButton.backgroundProperty().bind(
+				Bindings.when(aircraft.isNotNull())
+                .then(new Background(new BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY)))
+                .otherwise(new Background(new BackgroundFill(Color.valueOf("#F0FFFF"), CornerRadii.EMPTY, Insets.EMPTY)))
+                );
+		analysisManagerButton.backgroundProperty().bind(
+				Bindings.when(analysisManager.isNotNull())
+                .then(new Background(new BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY)))
+                .otherwise(new Background(new BackgroundFill(Color.valueOf("#F0FFFF"), CornerRadii.EMPTY, Insets.EMPTY)))
+                );
+		
 		try {
 			aircraft.set(Main.getTheAircraft());
 			analysisManagerButton.disableProperty().bind(

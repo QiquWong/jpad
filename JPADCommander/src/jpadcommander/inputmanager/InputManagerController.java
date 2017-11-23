@@ -3,8 +3,6 @@ package jpadcommander.inputmanager;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
