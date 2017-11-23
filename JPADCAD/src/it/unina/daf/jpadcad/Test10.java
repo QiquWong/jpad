@@ -89,7 +89,7 @@ public class Test10 {
 			).reversed();
 		System.out.println("Reversed-Curve-2, Orientation forward: " + e2.isOrientationForward());
 		
-//		CADGeomCurve3D cadGeomCurve3D2r = factory.newCurve3D((CADEdge)e2);
+		CADGeomCurve3D cadGeomCurve3D2r = factory.newCurve3D((CADEdge)e2);
 		
 				
 		//---------------------------------------------------------------------------
