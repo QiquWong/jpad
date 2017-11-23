@@ -2,6 +2,8 @@ package it.unina.daf.jpadcad;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
@@ -9,66 +11,13 @@ import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
 
 import configuration.MyConfiguration;
-import it.unina.daf.jpadcad.Test11.FuselageSection;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
-import it.unina.daf.jpadcad.occ.CADShapeFactory;
 import it.unina.daf.jpadcad.occ.CADShell;
-import it.unina.daf.jpadcad.occ.OCCEdge;
-import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
-import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCUtils;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import opencascade.BRepTools;
-import opencascade.BRep_Builder;
-import opencascade.TopoDS_Compound;
 
 public class Test11 {
 
-	
-	@Getter
-	@Setter
-	@RequiredArgsConstructor(staticName = "of")
-	@EqualsAndHashCode(of = {"xStation", "semiWidth", "zBaseline", "aboveBaseline", "belowBaseline"})
-	@ToString
-	public static class FuselageSection<T> { // T as Amount<Length>
-		@NonNull private T xStation;
-		@NonNull private T semiWidth;
-		@NonNull private T zBaseline;
-		@NonNull private T aboveBaseline;
-		@NonNull private T belowBaseline;
-		
-		public CADGeomCurve3D makeCADGeomCurve() {
-			
-			Amount<Length> xS, sW, z0, zU, zL;
-			xS = (Amount<Length>)xStation;
-			sW = (Amount<Length>)semiWidth;
-			z0 = (Amount<Length>)zBaseline;
-			zU = z0.plus((Amount<Length>)aboveBaseline);
-			zL = z0.minus((Amount<Length>)aboveBaseline);
-			
-			// list of points belonging to the desired curve-1
-			List<double[]> points = new ArrayList<double[]>();
-			points.add(new double[]{ xS.doubleValue(SI.METER),                        0, zU.doubleValue(SI.METER)});
-			points.add(new double[]{ xS.doubleValue(SI.METER), sW.doubleValue(SI.METER),                         0});
-			points.add(new double[]{ xS.doubleValue(SI.METER),                        0, zL.doubleValue(SI.METER)});
-
-			// 
-			if (OCCUtils.theFactory == null)
-				return null;
-			
-			boolean isPeriodic = false;
-			CADGeomCurve3D cadGeomCurve3D = OCCUtils.theFactory.newCurve3D(points, isPeriodic);
-			return cadGeomCurve3D;
-		}
-
-	}	
-	
 	public static OCCShape makeFuselagePatch() {
 		
 		System.out.println("Section 1 ...");
@@ -97,8 +46,12 @@ public class Test11 {
 		
 		// The CADShell object
 		System.out.println("Surfacing ...");
-		CADShell cadShell = OCCUtils.theFactory.newShell(cadGeomCurveList);
-		
+		CADShell cadShell = OCCUtils.theFactory
+				                    .newShell(
+										cadGeomCurveList.stream() // purge the null objects
+									      				.filter(Objects::nonNull)
+									      				.collect(Collectors.toList())
+									);
 		return (OCCShape)cadShell;
 	}
 	
