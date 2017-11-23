@@ -17,6 +17,7 @@ import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
+import it.unina.daf.jpadcad.occ.OCCUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -29,11 +30,6 @@ import opencascade.TopoDS_Compound;
 
 public class Test11 {
 
-	static CADShapeFactory theFactory;
-	static void initCADShapeFactory() {
-		CADShapeFactory.setFactory(new OCCShapeFactory());
-		Test11.theFactory = CADShapeFactory.getFactory();
-	}
 	
 	@Getter
 	@Setter
@@ -63,11 +59,11 @@ public class Test11 {
 			points.add(new double[]{ xS.doubleValue(SI.METER),                        0, zL.doubleValue(SI.METER)});
 
 			// 
-			if (theFactory == null)
+			if (OCCUtils.theFactory == null)
 				return null;
 			
 			boolean isPeriodic = false;
-			CADGeomCurve3D cadGeomCurve3D = theFactory.newCurve3D(points, isPeriodic);
+			CADGeomCurve3D cadGeomCurve3D = OCCUtils.theFactory.newCurve3D(points, isPeriodic);
 			return cadGeomCurve3D;
 		}
 
@@ -101,7 +97,7 @@ public class Test11 {
 		
 		// The CADShell object
 		System.out.println("Surfacing ...");
-		CADShell cadShell = theFactory.newShell(cadGeomCurveList);
+		CADShell cadShell = OCCUtils.theFactory.newShell(cadGeomCurveList);
 		
 		return (OCCShape)cadShell;
 	}
@@ -114,26 +110,16 @@ public class Test11 {
 		System.out.println("Classes in package it.unina.daf.jpadcad");
 		
 		System.out.println("========== Initialize CAD shape factory");
-		Test11.initCADShapeFactory();
+		OCCUtils.initCADShapeFactory();
 		
 		System.out.println("========== Construct a fuselage nose");
 		OCCShape patch1 = Test11.makeFuselagePatch();
 
-		//---------------------------------------------------------------------------
-		// Put everything in a compound
-		BRep_Builder _builder = new BRep_Builder();
-		TopoDS_Compound _compound = new TopoDS_Compound();
-		_builder.MakeCompound(_compound);
-		
-		_builder.Add(_compound, ((OCCShape)patch1).getShape());
-		
 		// Write to a file
 		String fileName = "test11.brep";
 
-		BRepTools.Write(_compound, fileName);
-		
-		System.out.println("Output written on file: " + fileName);
-		
+		if (OCCUtils.write(fileName, ((OCCShape)patch1)))
+			System.out.println("Output written on file: " + fileName);
 		
 	}
 
