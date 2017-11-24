@@ -76,6 +76,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -108,6 +109,14 @@ public class InputManagerController {
 	@FXML
 	private SplitPane cabinConfigurationViewsAndDataLogSplitPane;
 	@FXML
+	private SplitPane wingViewsAndDataLogSplitPane;
+	@FXML
+	private SplitPane hTailViewsAndDataLogSplitPane;
+	@FXML
+	private SplitPane vTailViewsAndDataLogSplitPane;
+	@FXML
+	private SplitPane canardViewsAndDataLogSplitPane;
+	@FXML
 	private Pane aircraftFrontViewPane;
 	@FXML
 	private Pane aircraftSideViewPane;
@@ -122,11 +131,35 @@ public class InputManagerController {
 	@FXML
 	private Pane cabinConfigurationSeatMapPane;
 	@FXML
+	private Pane wingPlanformPane;
+	@FXML
+	private Pane hTailPlanformPane;
+	@FXML
+	private Pane vTailPlanformPane;
+	@FXML
+	private Pane canardPlanformPane;
+	@FXML
 	private TextArea textAreaAircraftConsoleOutput;
 	@FXML
 	private TextArea textAreaFuselageConsoleOutput;
 	@FXML
 	private TextArea textAreaCabinConfigurationConsoleOutput;
+	@FXML
+	private TextArea textAreaWingConsoleOutput;
+	@FXML
+	private TextArea textAreaHTailConsoleOutput;
+	@FXML
+	private TextArea textAreaVTailConsoleOutput;
+	@FXML
+	private TextArea textAreaCanardConsoleOutput;
+	@FXML
+	private TabPane tabPaneWingPanels;
+	@FXML
+	private TabPane tabPaneWingFlaps;
+	@FXML
+	private TabPane tabPaneWingSlats;
+	@FXML
+	private TabPane tabPaneWingSpoilers;	
 	
 	//...........................................................................................
 	// BUTTONS:
@@ -136,9 +169,41 @@ public class InputManagerController {
 	@FXML
 	private Button newAircraftButton;
 	@FXML
+	private Button updateGeometryButton;
+	@FXML
+	private Button saveAircraftButton;
+	@FXML
 	private Button missingSeatRowCabinConfigurationInfoButton;
 	@FXML
 	private Button referenceMassCabinConfigurationInfoButton;
+	@FXML
+	private Button equivalentWingInfoButton;
+	@FXML
+	private Button equivalentWingRootXOffsetLEInfoButton;
+	@FXML
+	private Button equivalentWingRootXOffseTLEInfoButton;
+	@FXML
+	private Button equivalentWingAirfoilRootDetailButton;
+	@FXML
+	private Button equivalentWingAirfoilKinkDetailButton;
+	@FXML
+	private Button equivalentWingAirfoilTipDetailButton;
+	@FXML
+	private Button wingAddPanelButton;
+	@FXML
+	private Button wingInnerSectionAirfoilDetailsPanel1Button;
+	@FXML
+	private Button wingOuterSectionAirfoilDetailsPanel1Button;
+	@FXML
+	private Button wingInnerSectionAirfoilDetailsPanel2Button;
+	@FXML
+	private Button wingOuterSectionAirfoilDetailsPanel2Button;
+	@FXML
+	private Button wingAddFlapButton;
+	@FXML
+	private Button wingAddSlatButton;
+	@FXML
+	private Button wingAddSpoilerButton;
 	
 	//...........................................................................................
 	// FILE CHOOSER:
@@ -204,7 +269,7 @@ public class InputManagerController {
 			"ADJUST TAILCONE LENGTH, CONSTANT FINENESS-RATIOS",
 			"ADJUST FUSELAGE LENGTH, CONSTANT FINENESS-RATIOS"
 			);
-	ObservableList<String> wingAdjustCriteriaTypeList = FXCollections.observableArrayList(
+	ObservableList<String> liftingSurfaceAdjustCriteriaTypeList = FXCollections.observableArrayList(
 			"NONE",
 			"FIXED AR, SPAN AND ROOT CHORD",
 			"FIXED AR, SPAN AND TIP CHORD",
@@ -241,6 +306,10 @@ public class InputManagerController {
 	ObservableList<String> massUnitsList = FXCollections.observableArrayList(
 			"kg",
 			"lb" 
+			);
+	ObservableList<String> areaUnitsList = FXCollections.observableArrayList(
+			"m²",
+			"ft²" 
 			);
 	
 	//...........................................................................................
@@ -772,14 +841,364 @@ public class InputManagerController {
 	//...........................................................................................
 	@FXML
 	private ChoiceBox<String> wingAdjustCriterionChoiceBox;
+	@FXML
+	private CheckBox equivalentWingCheckBox;
+	@FXML
+	private TextField textFieldWingMainSparAdimensionalPosition;
+	@FXML
+	private TextField textFieldWingSecondarySparAdimensionalPosition;
+	@FXML
+	private TextField textFieldWingCompositeMassCorrectionFactor;
+	@FXML
+	private TextField textFieldWingRoughness;
+	@FXML
+	private TextField textFieldWingWingletHeight;
+	@FXML
+	private TextField textFieldEquivalentWingArea;
+	@FXML
+	private TextField textFieldEquivalentWingAspectRatio;
+	@FXML
+	private TextField textFieldEquivalentWingKinkPosition;
+	@FXML
+	private TextField textFieldEquivalentWingSweepLeadingEdge;
+	@FXML
+	private TextField textFieldEquivalentWingTwistAtTip;
+	@FXML
+	private TextField textFieldEquivalentWingDihedral;
+	@FXML
+	private TextField textFieldEquivalentWingTaperRatio;
+	@FXML
+	private TextField textFieldEquivalentWingRootXOffsetLE;
+	@FXML
+	private TextField textFieldEquivalentWingRootXOffsetTE;
+	@FXML
+	private TextField textFieldEquivalentWingAirfoilRootPath;
+	@FXML
+	private TextField textFieldEquivalentWingAirfoilKinkPath;
+	@FXML
+	private TextField textFieldEquivalentWingAirfoilTipPath;
+	@FXML
+	private TextField textFieldWingSpanPanel1;
+	@FXML
+	private TextField textFieldWingSweepLeadingEdgePanel1;
+	@FXML
+	private TextField textFieldWingDihedralPanel1;
+	@FXML
+	private TextField textFieldWingChordInnerSectionPanel1;
+	@FXML
+	private TextField textFieldWingTwistInnerSectionPanel1;
+	@FXML
+	private TextField textFieldWingAirfoilPathInnerSectionPanel1;
+	@FXML
+	private TextField textFieldWingChordOuterSectionPanel1;
+	@FXML
+	private TextField textFieldWingTwistOuterSectionPanel1;
+	@FXML
+	private TextField textFieldWingAirfoilPathOuterSectionPanel1;
+	@FXML
+	private CheckBox linkedToPreviousPanelCheckBoxPanel2;
+	@FXML
+	private TextField textFieldWingSpanPanel2;
+	@FXML
+	private TextField textFieldWingSweepLeadingEdgePanel2;
+	@FXML
+	private TextField textFieldWingDihedralPanel2;
+	@FXML
+	private TextField textFieldWingChordInnerSectionPanel2;
+	@FXML
+	private TextField textFieldWingTwistInnerSectionPanel2;
+	@FXML
+	private TextField textFieldWingAirfoilPathInnerSectionPanel2;
+	@FXML
+	private TextField textFieldWingChordOuterSectionPanel2;
+	@FXML
+	private TextField textFieldWingTwistOuterSectionPanel2;
+	@FXML
+	private TextField textFieldWingAirfoilPathOuterSectionPanel2;
+	@FXML
+	private TextField textFieldWingInnerPositionFlap1;
+	@FXML
+	private TextField textFieldWingOuterPositionFlap1;
+	@FXML
+	private TextField textFieldWingInnerChordRatioFlap1;
+	@FXML
+	private TextField textFieldWingOuterChordRatioFlap1;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleFlap1;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleFlap1;
+	@FXML
+	private TextField textFieldWingInnerPositionFlap2;
+	@FXML
+	private TextField textFieldWingOuterPositionFlap2;
+	@FXML
+	private TextField textFieldWingInnerChordRatioFlap2;
+	@FXML
+	private TextField textFieldWingOuterChordRatioFlap2;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleFlap2;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleFlap2;
+	@FXML
+	private TextField textFieldWingInnerPositionSlat1;
+	@FXML
+	private TextField textFieldWingOuterPositionSlat1;
+	@FXML
+	private TextField textFieldWingInnerChordRatioSlat1;
+	@FXML
+	private TextField textFieldWingOuterChordRatioSlat1;
+	@FXML
+	private TextField textFieldWingExtensionRatioSlat1;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSlat1;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSlat1;
+	@FXML
+	private TextField textFieldWingInnerPositionSlat2;
+	@FXML
+	private TextField textFieldWingOuterPositionSlat2;
+	@FXML
+	private TextField textFieldWingInnerChordRatioSlat2;
+	@FXML
+	private TextField textFieldWingOuterChordRatioSlat2;
+	@FXML
+	private TextField textFieldWingExtensionRatioSlat2;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSlat2;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSlat2;
+	@FXML
+	private TextField textFieldWingInnerPositionSlat3;
+	@FXML
+	private TextField textFieldWingOuterPositionSlat3;
+	@FXML
+	private TextField textFieldWingInnerChordRatioSlat3;
+	@FXML
+	private TextField textFieldWingOuterChordRatioSlat3;
+	@FXML
+	private TextField textFieldWingExtensionRatioSlat3;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSlat3;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSlat3;
+	@FXML
+	private TextField textFieldWingInnerPositionSlat4;
+	@FXML
+	private TextField textFieldWingOuterPositionSlat4;
+	@FXML
+	private TextField textFieldWingInnerChordRatioSlat4;
+	@FXML
+	private TextField textFieldWingOuterChordRatioSlat4;
+	@FXML
+	private TextField textFieldWingExtensionRatioSlat4;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSlat4;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSlat4;
+	@FXML
+	private TextField textFieldWingInnerPositionAileronLeft;
+	@FXML
+	private TextField textFieldWingOuterPositionAileronLeft;
+	@FXML
+	private TextField textFieldWingInnerChordRatioAileronLeft;
+	@FXML
+	private TextField textFieldWingOuterChordRatioAileronLeft;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleAileronLeft;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleAileronLeft;
+	@FXML
+	private TextField textFieldWingInnerPositionAileronRight;
+	@FXML
+	private TextField textFieldWingOuterPositionAileronRight;
+	@FXML
+	private TextField textFieldWingInnerChordRatioAileronRight;
+	@FXML
+	private TextField textFieldWingOuterChordRatioAileronRight;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleAileronRight;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleAileronRight;
+	@FXML
+	private TextField textFieldWingInnerSpanwisePositionSpolier1;
+	@FXML
+	private TextField textFieldWingOuterSpanwisePositionSpolier1;
+	@FXML
+	private TextField textFieldWingInnerChordwisePositionSpolier1;
+	@FXML
+	private TextField textFieldWingOuterChordwisePositionSpolier1;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSpolier1;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSpoiler1;
+	@FXML
+	private TextField textFieldWingInnerSpanwisePositionSpolier2;
+	@FXML
+	private TextField textFieldWingOuterSpanwisePositionSpolier2;
+	@FXML
+	private TextField textFieldWingInnerChordwisePositionSpolier2;
+	@FXML
+	private TextField textFieldWingOuterChordwisePositionSpolier2;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSpolier2;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSpoiler2;
+	@FXML
+	private TextField textFieldWingInnerSpanwisePositionSpolier3;
+	@FXML
+	private TextField textFieldWingOuterSpanwisePositionSpolier3;
+	@FXML
+	private TextField textFieldWingInnerChordwisePositionSpolier3;
+	@FXML
+	private TextField textFieldWingOuterChordwisePositionSpolier3;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSpolier3;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSpoiler3;
+	@FXML
+	private TextField textFieldWingInnerSpanwisePositionSpolier4;
+	@FXML
+	private TextField textFieldWingOuterSpanwisePositionSpolier4;
+	@FXML
+	private TextField textFieldWingInnerChordwisePositionSpolier4;
+	@FXML
+	private TextField textFieldWingOuterChordwisePositionSpolier4;
+	@FXML
+	private TextField textFieldWingMinimumDeflectionAngleSpolier4;
+	@FXML
+	private TextField textFieldWingMaximumDeflectionAngleSpoiler4;
 	
-	// TODO: COMPLETE ME !!
+	// lists:
+	// TODO: COMPLETE ME !! 
 	
 	//...........................................................................................
 	// WING TAB (UNITS):
 	//...........................................................................................
+	@FXML
+	private ChoiceBox<String> wingRoughnessUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingWingletHeightUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> equivalentWingAreaUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> equivalentWingSweepLEUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> equivalentWingTwistAtTipUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> equivalentWingDihedralUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> equivalentWingXOffsetRootLEUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> equivalentWingXOffsetRootTEUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingSpanPanel1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingSweepLEPanel1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingDihedralPanel1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingInnerSectionChordPanel1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingInnerSectionTwistTipPanel1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingOuterSectionChordPanel1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingOuterSectionTwistTipPanel1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingSpanPanel2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingSweepLEPanel2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingDihedralPanel2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingInnerSectionChordPanel2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingInnerSectionTwistTipPanel2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingOuterSectionChordPanel2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingOuterSectionTwistTipPanel2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleFlap1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleFlap1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleFlap2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleFlap2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSlat1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSlat1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSlat2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSlat2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSlat3UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSlat3UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSlat4UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSlat4UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleAileronLeftUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleAileronRigthUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleAileronRightUnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler1UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler2UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler3UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler3UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler4UnitChoiceBox;
+	@FXML
+	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler4UnitChoiceBox;
 	
+	//...........................................................................................
+	// HTAIL TAB (DATA):
+	//...........................................................................................
 	// TODO: COMPLETE ME !!
+	
+	//...........................................................................................
+	// HTAIL TAB (UNITS):
+	//...........................................................................................
+	// TODO: COMPLETE ME !!
+	
+	
+	//...........................................................................................
+	// VTAIL TAB (DATA):
+	//...........................................................................................
+	// TODO: COMPLETE ME !!
+	
+	//...........................................................................................
+	// VTAIL TAB (UNITS):
+	//...........................................................................................
+	// TODO: COMPLETE ME !!
+	
+	
+	//...........................................................................................
+	// CANARD TAB (DATA):
+	//...........................................................................................
+	// TODO: COMPLETE ME !!
+	
+	//...........................................................................................
+	// CANARD TAB (UNITS):
+	//...........................................................................................
+	// TODO: COMPLETE ME !!
+	
 	
 	
 	//-------------------------------------------------------------------------------------------
@@ -802,6 +1221,7 @@ public class InputManagerController {
 		aircraftLoadButtonDisableCheck();
 		cabinConfigurationClassesNumberDisableCheck();
 		checkCabinConfigurationClassesNumber();
+		equivalentWingDisableCheck();
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -825,7 +1245,7 @@ public class InputManagerController {
 		cabinConfigurationClassesTypeChoiceBox1.setItems(cabinConfigurationClassesTypeList);
 		cabinConfigurationClassesTypeChoiceBox2.setItems(cabinConfigurationClassesTypeList);
 		cabinConfigurationClassesTypeChoiceBox3.setItems(cabinConfigurationClassesTypeList);
-//		wingAdjustCriterionChoiceBox.setItems(wingAdjustCriteriaTypeList);
+		wingAdjustCriterionChoiceBox.setItems(liftingSurfaceAdjustCriteriaTypeList);
 		
 		// Units 
 		fuselageXUnitChoiceBox.setItems(lengthUnitsList);
@@ -882,8 +1302,52 @@ public class InputManagerController {
 		cabinConfigurationDistanceFromWallBusinessUnitChoiceBox.setItems(lengthUnitsList);
 		cabinConfigurationDistanceFromWallFirstUnitChoiceBox.setItems(lengthUnitsList);
 		cabinConfigurationMassFurnishingsAndEquipmentUnitChoiceBox.setItems(massUnitsList);
-	
-		
+		wingRoughnessUnitChoiceBox.setItems(lengthUnitsList);
+		wingWingletHeightUnitChoiceBox.setItems(lengthUnitsList);
+		equivalentWingAreaUnitChoiceBox.setItems(areaUnitsList);
+		equivalentWingSweepLEUnitChoiceBox.setItems(angleUnitsList);
+		equivalentWingTwistAtTipUnitChoiceBox.setItems(angleUnitsList);
+		equivalentWingDihedralUnitChoiceBox.setItems(angleUnitsList);
+		equivalentWingXOffsetRootLEUnitChoiceBox.setItems(lengthUnitsList);
+		equivalentWingXOffsetRootTEUnitChoiceBox.setItems(lengthUnitsList);
+		wingSpanPanel1UnitChoiceBox.setItems(lengthUnitsList);
+		wingSweepLEPanel1UnitChoiceBox.setItems(angleUnitsList);
+		wingDihedralPanel1UnitChoiceBox.setItems(angleUnitsList);
+		wingInnerSectionChordPanel1UnitChoiceBox.setItems(lengthUnitsList);
+		wingInnerSectionTwistTipPanel1UnitChoiceBox.setItems(angleUnitsList);
+		wingOuterSectionChordPanel1UnitChoiceBox.setItems(lengthUnitsList);
+		wingOuterSectionTwistTipPanel1UnitChoiceBox.setItems(angleUnitsList);
+		wingSpanPanel2UnitChoiceBox.setItems(lengthUnitsList);
+		wingSweepLEPanel2UnitChoiceBox.setItems(angleUnitsList);
+		wingDihedralPanel2UnitChoiceBox.setItems(angleUnitsList);
+		wingInnerSectionChordPanel2UnitChoiceBox.setItems(lengthUnitsList);
+		wingInnerSectionTwistTipPanel2UnitChoiceBox.setItems(angleUnitsList);
+		wingOuterSectionChordPanel2UnitChoiceBox.setItems(lengthUnitsList);
+		wingOuterSectionTwistTipPanel2UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleFlap1UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleFlap1UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleFlap2UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleFlap2UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSlat2UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSlat2UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSlat3UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSlat3UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSlat4UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSlat4UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleAileronRigthUnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleAileronRightUnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSpoiler2UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSpoiler2UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSpoiler3UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSpoiler3UnitChoiceBox.setItems(angleUnitsList);
+		wingMinimumDeflectionAngleSpoiler4UnitChoiceBox.setItems(angleUnitsList);
+		wingMaximumDeflectionAngleSpoiler4UnitChoiceBox.setItems(angleUnitsList);
 		
 	}
 	
@@ -975,6 +1439,45 @@ public class InputManagerController {
 				);
 		
 	}
+	
+	private void equivalentWingDisableCheck () {
+
+		// disable equivalent wing if the check-box is not checked
+		textFieldEquivalentWingArea.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingAspectRatio.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingKinkPosition.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingSweepLeadingEdge.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingTwistAtTip.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingDihedral.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingTaperRatio.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingRootXOffsetLE.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingRootXOffsetTE.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingAirfoilRootPath.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingAirfoilKinkPath.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		textFieldEquivalentWingAirfoilTipPath.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingAreaUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingSweepLEUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingTwistAtTipUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingDihedralUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingXOffsetRootLEUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingXOffsetRootTEUnitChoiceBox.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingAirfoilRootDetailButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingAirfoilKinkDetailButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingAirfoilTipDetailButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingInfoButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingRootXOffsetLEInfoButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		equivalentWingRootXOffseTLEInfoButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty().not());
+		
+		// disable the panels tab pane if the check-box is checked
+		tabPaneWingPanels.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
+		wingAddPanelButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
+		
+	}
+	
+	// TODO: ADD A METHOD TO ADD TAB AND CONTENT TO A GIVEN TAB PANE (for panels, flaps, slats, spoilers, etc...)
+	
+	// TODO: ADD A METHOD TO ADD A NEW TAB IN THE VIEWS TAB PANE FOR A GIVEN AIRFOIL. HERE YOU SHOULD LOAD A NEW FXML FOR GATHERING 
+	//       ALL THE AIRFOIL DATA AND THE VISUAL REPRESENTATION
 	
 	private boolean isAircraftFile(String pathToAircraftXML) {
 
@@ -5792,6 +6295,46 @@ public class InputManagerController {
 	@FXML
 	private void zoomViewsCabinConfiguration() {
 		cabinConfigurationViewsAndDataLogSplitPane.setDividerPositions(0.9);
+	};
+	
+	@FXML
+	private void zoomDataLogAndMessagesWing() {
+		wingViewsAndDataLogSplitPane.setDividerPositions(0.5);
+	};
+	
+	@FXML
+	private void zoomViewsWing() {
+		wingViewsAndDataLogSplitPane.setDividerPositions(0.9);
+	};
+	
+	@FXML
+	private void zoomDataLogAndMessagesHTail() {
+		hTailViewsAndDataLogSplitPane.setDividerPositions(0.5);
+	};
+	
+	@FXML
+	private void zoomViewsHTail() {
+		hTailViewsAndDataLogSplitPane.setDividerPositions(0.9);
+	};
+	
+	@FXML
+	private void zoomDataLogAndMessagesVTail() {
+		vTailViewsAndDataLogSplitPane.setDividerPositions(0.5);
+	};
+	
+	@FXML
+	private void zoomViewsVTail() {
+		vTailViewsAndDataLogSplitPane.setDividerPositions(0.9);
+	};
+	
+	@FXML
+	private void zoomDataLogAndMessagesCanard() {
+		canardViewsAndDataLogSplitPane.setDividerPositions(0.5);
+	};
+	
+	@FXML
+	private void zoomViewsCanard() {
+		canardViewsAndDataLogSplitPane.setDividerPositions(0.9);
 	};
 	
 }
