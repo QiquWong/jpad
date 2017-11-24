@@ -8,6 +8,8 @@ import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.physics.amount.Amount;
+
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.FlapTypeEnum;
 
@@ -51,7 +53,7 @@ public class InputTree {
 	private List<Double> etaOutSlat;
 	private List<Amount<Angle>> deltaFlap;
 	private List<Amount<Angle>> deltaSlat;
-	
+	private List<SymmetricFlapCreator> symmetricFlapCreatorList;
 	//------------------------------------------------------------------------------------------
 	// BUILDER:
 	
@@ -342,5 +344,13 @@ public class InputTree {
 
 	public void setEtaStations(List<Double> etaStations) {
 		this.etaStations = etaStations;
+	}
+
+	public List<SymmetricFlapCreator> getSymmetricFlapCreatorList() {
+		return symmetricFlapCreatorList;
+	}
+
+	public void setSymmetricFlapCreatorList(List<SymmetricFlapCreator> symmetricFlapCreatorList) {
+		this.symmetricFlapCreatorList = symmetricFlapCreatorList;
 	}
 }

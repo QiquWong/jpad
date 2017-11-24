@@ -1719,7 +1719,7 @@ public class WingAnalysisCalculator {
 //		System.out.println(" twist distribution " + Arrays.toString(twist));
 //		System.out.println(" xle distribution " + Arrays.toString(xleInterpolated));
 
-
+		 alphaZeroLiftDistributionHighLiftFinalAmount = new ArrayList<>();
 
 		theInputOutpuTree.getyAdimensionalDistributionSemiSpan().stream().forEach(yADold ->{	
 			int i = theInputOutpuTree.getyAdimensionalDistributionSemiSpan().indexOf(yADold);
