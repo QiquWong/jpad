@@ -115,7 +115,7 @@ public final class AircraftUtils {
 
 			////////////////////////////////////////////////////////////////////////
 			// Aircraft creation
-			System.out.println("\nCreating the Aircraft ... \n\n");
+			System.out.println("Creating the Aircraft ... ");
 			
 			// deactivating system.out
 			System.setOut(filterStream);
@@ -186,7 +186,7 @@ public final class AircraftUtils {
 			////////////////////////////////////////////////////////////////////////
 			// Defining the operating conditions ...
 			System.setOut(originalOut);
-			System.out.println("\nDefining the operating conditions ... \n\n");
+			System.out.println("Defining the operating conditions ... ");
 			System.setOut(filterStream);
 			OperatingConditions theOperatingConditions = OperatingConditions.importFromXML(pathToOperatingConditionsXML);
 //			System.setOut(originalOut);

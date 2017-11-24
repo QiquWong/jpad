@@ -35,6 +35,7 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FuselageAdjustCriteriaEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import processing.core.PVector;
+import standaloneutils.JPADPVector;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -1033,6 +1034,37 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
+	public List<JPADPVector> getUniqueValuesYZSideRCurveJP(Amount<Length> len_x)
+	{
+		List<JPADPVector> p  = new ArrayList<JPADPVector>();
+
+		FuselageCurvesSection curvesSection = makeSection(len_x.doubleValue(SI.METRE));
+
+		for ( int i = 0; i < curvesSection.getSectionUpperLeftPoints().size() - 1; i++ )
+		{
+			p.add(
+					new JPADPVector(
+							(float) len_x.doubleValue(SI.METRE),
+							(float) curvesSection.getSectionUpperLeftPoints().get(i).x,
+							(float) curvesSection.getSectionUpperLeftPoints().get(i).y
+							)
+					);
+		}
+		for ( int i = 0; i < curvesSection.getSectionLowerLeftPoints().size(); i++ )
+		{
+			p.add(
+					new JPADPVector(
+							(float) len_x.doubleValue(SI.METRE),
+							(float) curvesSection.getSectionLowerLeftPoints().get(i).x,
+							(float) curvesSection.getSectionLowerLeftPoints().get(i).y
+							)
+					);
+		}
+		return p;
+	}
+	
+	
+	
 	/**
 	 * Section points on SideL are ordered as follows:
 	 * first point is at Y=0 at the bottom of the section,
@@ -1051,6 +1083,14 @@ public class FuselageCreator implements IFuselageCreator {
 		return pts;
 	}
 
+	public List<JPADPVector> getUniqueValuesYZSideLCurveJP(Amount<Length> len_x)
+	{
+		List<JPADPVector> pts  = getUniqueValuesYZSideRCurveJP(len_x);
+		// simply change all Y-coordinates
+		for (JPADPVector p : pts){ p.y = -p.y; }
+		Collections.reverse(pts);
+		return pts;
+	}
 
 	public List<PVector> getUniqueValuesXZUpperCurve()
 	{
@@ -1081,6 +1121,34 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
+	public List<JPADPVector> getUniqueValuesXZUpperCurveJP()
+	{
+		List<JPADPVector> p  = new ArrayList<JPADPVector>();
+		// add the first element
+		if ( outlineXZUpperCurveX.size() != 0 )
+			p.add(
+					new JPADPVector(
+							(float)outlineXZUpperCurveX.get(0).doubleValue(),
+							(float)0.0,
+							(float)outlineXZUpperCurveZ.get(0).doubleValue()
+							)
+					);
+
+		for(int i = 1; i <= outlineXZUpperCurveX.size()-1; i++)
+		{
+			if ( !outlineXZUpperCurveX.get(i-1).equals( outlineXZUpperCurveX.get(i) ) )
+			{
+				p.add(
+						new JPADPVector(
+								(float)outlineXZUpperCurveX.get(i).doubleValue(),
+								(float)0.0,
+								(float)outlineXZUpperCurveZ.get(i).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
 
 	public List<PVector> getUniqueValuesXZLowerCurve()
 	{
@@ -1110,6 +1178,34 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
+	public List<JPADPVector> getUniqueValuesXZLowerCurveJP()
+	{
+		List<JPADPVector> p  = new ArrayList<JPADPVector>();
+		// add the first element
+		if ( outlineXZLowerCurveX.size() != 0 )
+			p.add(
+					new JPADPVector(
+							(float)outlineXZLowerCurveX.get(0).doubleValue(),
+							(float)0.0,
+							(float)outlineXZLowerCurveZ.get(0).doubleValue()
+							)
+					);
+		for(int i = 1; i <= outlineXZLowerCurveX.size()-1; i++)
+		{
+			if ( !outlineXZLowerCurveX.get(i-1).equals( outlineXZLowerCurveX.get(i) ) )
+			{
+				p.add(
+						new JPADPVector(
+								(float)outlineXZLowerCurveX.get(i).doubleValue(),
+								(float)0.0,
+								(float)outlineXZLowerCurveZ.get(i).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
+	
 	public List<PVector> getUniqueValuesXYSideRCurve()
 	{
 		List<PVector> p  = new ArrayList<PVector>();
@@ -1138,6 +1234,34 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
+	public List<JPADPVector> getUniqueValuesXYSideRCurveJP()
+	{
+		List<JPADPVector> p  = new ArrayList<JPADPVector>();
+		// add the first element
+		if ( outlineXYSideRCurveX.size() != 0 )
+			p.add(
+					new JPADPVector(
+							(float)outlineXYSideRCurveX.get(0).doubleValue(),
+							(float)outlineXYSideRCurveY.get(0).doubleValue(),
+							(float)0.0 // _outlineXYSideRCurveZ.get(0).doubleValue()
+							)
+					);
+		for(int i = 1; i <= outlineXYSideRCurveX.size()-1; i++)
+		{
+			if ( ! outlineXYSideRCurveX.get(i-1).equals( outlineXYSideRCurveX.get(i) ) )
+			{
+				p.add(
+						new JPADPVector(
+								(float)outlineXYSideRCurveX.get(i).doubleValue(),
+								(float)outlineXYSideRCurveY.get(i).doubleValue(),
+								(float)0.0 // _outlineXYSideRCurveZ.get(i).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
+	
 	public List<PVector> getUniqueValuesXYSideLCurve()
 	{
 		List<PVector> p  = new ArrayList<PVector>();
@@ -1166,6 +1290,33 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
+	public List<JPADPVector> getUniqueValuesXYSideLCurveJP()
+	{
+		List<JPADPVector> p  = new ArrayList<JPADPVector>();
+		// add the first element
+		if ( outlineXYSideLCurveX.size() != 0 )
+			p.add(
+					new JPADPVector(
+							(float)outlineXYSideLCurveX.get(0).doubleValue(),
+							(float)outlineXYSideLCurveY.get(0).doubleValue(),
+							(float)outlineXYSideLCurveZ.get(0).doubleValue()
+							)
+					);
+		for(int i = 1; i <= outlineXYSideLCurveX.size()-1; i++)
+		{
+			if ( !outlineXYSideLCurveX.get(i-1).equals( outlineXYSideLCurveX.get(i) ) )
+			{
+				p.add(
+						new JPADPVector(
+								(float)outlineXYSideLCurveX.get(i).doubleValue(),
+								(float)outlineXYSideLCurveY.get(i).doubleValue(),
+								(float)outlineXYSideLCurveZ.get(i).doubleValue()
+								)
+						);
+			}
+		}
+		return p;
+	}
 
 
 	/**
@@ -2719,6 +2870,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenF;
 	}
 
+	public Amount<Length> getLength() {
+		return lenF;
+	}
+	
 	@Override
 	public void setLenF(Amount<Length> lenF) {
 		this.lenF = lenF;
@@ -2729,6 +2884,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenN;
 	}
 
+	public Amount<Length> getLengthNoseTrunk() {
+		return lenN;
+	}
+	
 	public void setLenN(Amount<Length> lenN) {
 		// check bounds
 		if ( !(lenN.doubleValue(SI.METRE) < lenNMIN.doubleValue(SI.METRE)) 
@@ -2751,6 +2910,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenC;
 	}
 
+	public Amount<Length> getLengthCylindricalTrunk() {
+		return lenC;
+	}
+	
 	public void setLenC(Amount<Length> lenC) {
 		// check bounds
 		if ( !(lenC.doubleValue(SI.METRE) < lenCMIN.doubleValue(SI.METRE)) 
@@ -2773,6 +2936,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenT;
 	}
 
+	public Amount<Length> getLengthTailTrunk() {
+		return lenT;
+	}
+	
 	public void setLenT(Amount<Length> lenT) {
 		// check bounds
 		if ( !(lenT.doubleValue(SI.METRE) < lenTMIN.doubleValue(SI.METRE)) 

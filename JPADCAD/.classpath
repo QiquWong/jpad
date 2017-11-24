@@ -16,5 +16,6 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/log4j/log4j-core-2.0.2.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-nop-1.7.5.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

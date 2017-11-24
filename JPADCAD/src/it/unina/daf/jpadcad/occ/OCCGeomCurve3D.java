@@ -95,8 +95,8 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 			BRepGProp.LinearProperties (spline, myProps);
 			len = myProps.Mass();
 			// agodemar
-			//System.out.println("OCCGeomCurve3D - len: " + len);
-			//System.out.println("OCCGeomCurve3D - range: " + Arrays.toString(range));		
+//			System.out.println("OCCGeomCurve3D - len: " + len);
+//			System.out.println("OCCGeomCurve3D - range: " + Arrays.toString(range));		
 		}
 	}
 
