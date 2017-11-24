@@ -16,6 +16,10 @@ import org.jscience.physics.amount.Amount;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import aircraft.components.liftingSurface.creator.SlatCreator;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
+import aircraft.components.liftingSurface.creator.SlatCreator.SlatBuilder;
+import aircraft.components.liftingSurface.creator.SymmetricFlapCreator.SymmetricFlapBuilder;
 import calculators.geometry.LSGeometryCalc;
 import configuration.enumerations.AirfoilFamilyEnum;
 import configuration.enumerations.AirfoilTypeEnum;
@@ -49,7 +53,44 @@ public class ReaderWriterWing {
 						databaseFolderPath, highLiftDatabaseFileName),
 				databaseFolderPath);
 
+		input.setTheAerodatabaseReader(aeroDatabaseReader);
+		input.setTheHighLiftDatabaseReader(highLiftDatabaseReader);
 
+		
+		String plotString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@plot");
+		
+		if(plotString.equalsIgnoreCase("true"))
+			input.setPlotFlag(Boolean.TRUE);
+		
+		if(plotString.equalsIgnoreCase("false"))
+			input.setPlotFlag(Boolean.FALSE);
+		
+		String sysoutString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@verbosity");
+		
+		if(sysoutString.equalsIgnoreCase("true"))
+			input.setVerbosityFlag(Boolean.TRUE);
+		
+		if(sysoutString.equalsIgnoreCase("false"))
+			input.setVerbosityFlag(Boolean.FALSE);
+		
+		String highLiftString = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//@highLift");
+		
+		if(highLiftString.equalsIgnoreCase("true"))
+			input.setHighLiftFlag(Boolean.TRUE);
+		
+		if(highLiftString.equalsIgnoreCase("false"))
+			input.setHighLiftFlag(Boolean.FALSE);
+		
+		
 		//---------------------------------------------------------------------------------
 		// OPERATING CONDITION:
 				
@@ -83,9 +124,6 @@ public class ReaderWriterWing {
 		
 		double adimensionalKinkStation = Double.parseDouble(reader.getXMLPropertiesByPath("//adimensional_kink_station ").get(0));
 		input.setAdimensionalKinkStation(adimensionalKinkStation);
-		
-		double meanAirfoilThickness = Double.parseDouble(reader.getXMLPropertiesByPath("//max_thickness_mean_airfoil").get(0));
-		input.setMeanThickness(meanAirfoilThickness);
 		
 		double momentumPole = Double.parseDouble(reader.getXMLPropertiesByPath("//momentum_pole").get(0));
 		input.setMomentumPole(momentumPole);
@@ -216,6 +254,15 @@ public class ReaderWriterWing {
 		List<String> cmc4Distribution = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//cm_c4_distribution").get(0));
 		for(int i=0; i<cmc4Distribution.size(); i++)
 			input.getCmc4DistributionInput().add(Double.valueOf(cmc4Distribution.get(i)));
+		
+		List<String> thicknessMeanAirfoil = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//max_thickness_distribution").get(0));
+		for(int i=0; i<thicknessMeanAirfoil.size(); i++)
+			input.getMaxThicknessAirfoilsDistribution().add(Double.valueOf(thicknessMeanAirfoil.get(i)));
+		
+		List<String> leRadiusAirfoil = JPADXmlReader.readArrayFromXML(reader.getXMLPropertiesByPath("//leading_edge_radius_distribution").get(0));
+		for(int i=0; i<leRadiusAirfoil.size(); i++)
+			input.getLeRadiusDistribution().add(Amount.valueOf(Double.valueOf(leRadiusAirfoil.get(i)), SI.METER));
+
 
 	// WARNINGS
 		
@@ -280,11 +327,21 @@ public class ReaderWriterWing {
 			 System.err.println("WARNING! the number of declared section differs from the number of k. ( number of section = " + input.getNumberOfSections()
 			 + " ; number of k = " + input.getkDistributionInput().size()+ " )");
 		}
-	
+
 
 		if ( input.getNumberOfSections() != input.getCmc4DistributionInput().size()){
-			 System.err.println("WARNING! the number of declared section differs from the number of cmc4 disributions. ( number of section = " + input.getNumberOfSections()
+			 System.err.println("WARNING! the number of declared section differs from the number of cmc4 distributions. ( number of section = " + input.getNumberOfSections()
 			 + " ; number of cm c4 = " + input.getCmc4DistributionInput().size()+ " )");
+		}
+		
+		if ( input.getNumberOfSections() != input.getLeRadiusDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of le radius distributions. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of cm t/c = " + input.getLeRadiusDistribution().size()+ " )");
+		}
+		
+		if ( input.getNumberOfSections() != input.getLeRadiusDistribution().size()){
+			 System.err.println("WARNING! the number of declared section differs from the number of le max thickness distributions. ( number of section = " + input.getNumberOfSections()
+			 + " ; number of le radius = " + input.getLeRadiusDistribution().size()+ " )");
 		}
 		
 		//HIGH LIFT
@@ -306,9 +363,14 @@ public class ReaderWriterWing {
 						.orElseThrow(() -> {throw new IllegalStateException(String.format("Unsupported flap type", flapTypeProperty));}))
 				);
 				
-		List<String> cfcProperty = reader.getXMLPropertiesByPath("//flap_chord_ratio");
-		for(int i=0; i<cfcProperty.size(); i++)
-			input.getCfc().add(Double.valueOf(cfcProperty.get(i)));
+		List<String> cfcPropertyInner = reader.getXMLPropertiesByPath("//flap_chord_inner_ratio");
+		for(int i=0; i<cfcPropertyInner.size(); i++)
+			input.getCfcInner().add(Double.valueOf(cfcPropertyInner.get(i)));
+		
+		List<String> cfcPropertyOuter = reader.getXMLPropertiesByPath("//flap_chord_outer_ratio");
+		for(int i=0; i<cfcPropertyOuter.size(); i++)
+			input.getCfcOuter().add(Double.valueOf(cfcPropertyOuter.get(i)));
+		
 		
 		List<String> deltaFlapProperty = reader.getXMLPropertiesByPath("//flap_deflection");
 		for(int i=0; i<deltaFlapProperty.size(); i++)
@@ -349,6 +411,49 @@ public class ReaderWriterWing {
 		for(int i=0; i<eta_out_slat_property.size(); i++)
 			input.getEtaOutSlat().add(Double.valueOf(eta_out_slat_property.get(i)));
 		
+		for(int i=0; i<input.getFlapsNumber(); i++) {
+			String id = reader
+					.getXMLPropertyByPath(
+							"//flap/@id");
+			
+			SymmetricFlapCreator symmetricFlap =
+					new SymmetricFlapBuilder(
+							id,
+							input.getFlapType().get(i),
+							input.getEtaInFlap().get(i),
+							input.getEtaOutFlap().get(i),
+							input.getCfcInner().get(i),
+							input.getCfcOuter().get(i),
+							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+							Amount.valueOf(40.0, NonSI.DEGREE_ANGLE)
+							)
+					.build();
+			
+			input.getSymmetricFlapCreatorList().add(symmetricFlap);
+		}
+		
+		for(int i=0; i<input.getSlatsNumber(); i++) {
+			String id = reader
+					.getXMLPropertyByPath(
+							"//slat/@id");
+			
+			SlatCreator slat =
+					new SlatBuilder(
+							id,
+							input.getEtaInSlat().get(i),
+							input.getEtaOutSlat().get(i),
+							input.getCsc().get(i),
+							input.getCsc().get(i),
+							input.getcExtCSlat().get(i),
+							Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+							Amount.valueOf(40.0, NonSI.DEGREE_ANGLE)
+							)
+					.build();
+		
+			
+			input.getSlatCreatorList().add(slat);
+		}
+	
 		
 	// OTHER VALUES
 		double span = Math.sqrt(input.getAspectRatio() * input.getSurface().getEstimatedValue());
@@ -366,6 +471,7 @@ public class ReaderWriterWing {
 		
 	// PRINT
 		
+		if (input.isVerbosityFlag()) {
 		if(input.getNumberOfSections() == input.getChordDistributionInput().size() &&
 				input.getNumberOfSections() == input.getxLEDistributionInput().size() &&
 				input.getNumberOfSections() == input.getTwistDistributionInput().size() &&
@@ -456,8 +562,15 @@ public class ReaderWriterWing {
 		System.out.print("Cm c4 distribution : ");
 			System.out.println(input.getCmc4DistributionInput());
 			
+		System.out.print("thickness distribution : ");
+			System.out.println(input.getMaxThicknessAirfoilsDistribution());
+			
+		System.out.print("le radius distribution : ");
+			System.out.println(input.getLeRadiusDistribution());
+			
 		System.out.print("\nAdimentional stations :");
 		 	System.out.println(input.getyAdimensionalStationInput());
+		}
 		}
 		
 		double [] yInput = new double [input.getNumberOfSections()];
@@ -473,9 +586,7 @@ public class ReaderWriterWing {
 		}
 		Double[] alphastar = MyMathUtils.getInterpolatedValue1DLinear(yInput,alphaStar, yNew);
 		Double[] cLMaxext = MyMathUtils.getInterpolatedValue1DLinear(yInput,cLMax, yNew);
-		
-		System.out.println(" alpha star " + Arrays.toString(alphastar));
-		System.out.println(" cl max ext " + Arrays.toString(cLMaxext));
+
 	}
 	
 	
@@ -577,6 +688,8 @@ public class ReaderWriterWing {
 		org.w3c.dom.Element cleanElement = doc.createElement("lift_characteristics");
 		wingCLEANAerodynamicElement.appendChild(cleanElement);
 		
+		JPADStaticWriteUtils.writeSingleNode("max_thickness_distribution", input.getMaxThicknessAirfoilsDistribution(), cleanElement, doc);
+		JPADStaticWriteUtils.writeSingleNode("leading_edge_radius_distribution", input.getLeRadiusDistribution(), cleanElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("alpha_zero_lift", input.getAlphaZeroLift(), cleanElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_alpha", Amount.valueOf(Double.valueOf(input.getcLAlpha()), NonSI.DEGREE_ANGLE.inverse()), cleanElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("cL_zero", input.getcLZero(), cleanElement, doc);
