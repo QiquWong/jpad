@@ -15,6 +15,7 @@ import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
+import it.unina.daf.jpadcad.utils.FuselageSection;
 
 public class Test11 {
 

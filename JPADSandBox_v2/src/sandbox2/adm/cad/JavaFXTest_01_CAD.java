@@ -32,7 +32,6 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import sandbox2.vt.analyses.CompleteAnalysisTest;
 import standaloneutils.JPADXmlReader;
 import writers.JPADStaticWriteUtils;
 
@@ -652,7 +651,7 @@ public class JavaFXTest_01_CAD extends Application {
 			
 		} catch (CmdLineException | IOException e) {
 			System.err.println("Error: " + e.getMessage());
-			CompleteAnalysisTest.theCmdLineParser.printUsage(System.err);
+			theCmdLineParser.printUsage(System.err);
 			System.err.println();
 			System.err.println("  Must launch this app with proper command line arguments.");
 			return;
