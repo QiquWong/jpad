@@ -547,6 +547,18 @@ public final class MyArrayUtils {
 		return ret;
 	}
 
+	/** Compute a half-cosine-spaced array of values (finer spacing near first boundary value)
+	 *
+	 * @author Agodemar
+	 * @param a, b, n
+	 * @return Double[]
+	 */
+	public static Double[] halfCosine1SpaceDouble(double a, double b, int n){
+		return MyArrayUtils.convertFromDoubleToPrimitive(
+				halfCosine1Space(a, b, n)
+				);
+	}
+	
 
 	/** Compute a half-cosine-spaced array of values (finer spacing near second boundary value)
 	 *
