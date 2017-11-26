@@ -118,26 +118,37 @@ public class Test12 {
 						0.0, noseCapStation.doubleValue(SI.METER), 
 						15) // n. points
 				);
-		
-		List<double[]> pointsCapSideUpper = xx.stream()
+		// points z's on nose outline curve, XZ, upper
+		List<double[]> pointsCapXZUpper = xx.stream()
 				.map(x -> new double[]{
 						x,
 						0.0,
 						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
 						})
 				.collect(Collectors.toList());
-		List<double[]> pointsCapSideLower = xx.stream()
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsCapXZLower = xx.stream()
 				.map(x -> new double[]{
 						x,
 						0.0,
 						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
 						})
 				.collect(Collectors.toList());
+		// points y's on nose outline curve, XY, right
+		List<double[]> pointsCapSideRight = xx.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+						})
+				.collect(Collectors.toList());
 				
-		CADGeomCurve3D cadCrvCapSideUpper = OCCUtils.theFactory
-				.newCurve3D(pointsCapSideUpper, false);
-		CADGeomCurve3D cadCrvCapSideLower = OCCUtils.theFactory
-				.newCurve3D(pointsCapSideLower, false);
+		CADGeomCurve3D cadCrvCapXZUpper = OCCUtils.theFactory
+				.newCurve3D(pointsCapXZUpper, false);
+		CADGeomCurve3D cadCrvCapXZLower = OCCUtils.theFactory
+				.newCurve3D(pointsCapXZLower, false);
+		CADGeomCurve3D cadCrvCapXYRight = OCCUtils.theFactory
+				.newCurve3D(pointsCapSideRight, false);
 
 		
 		
@@ -152,8 +163,9 @@ public class Test12 {
 				(OCCShape)patch1,
 				// nose cap stuff
 				(OCCShape)vertexNoseTip,
-				(OCCEdge)((OCCGeomCurve3D)cadCrvCapSideUpper).edge(),
-				(OCCEdge)((OCCGeomCurve3D)cadCrvCapSideLower).edge()
+				(OCCEdge)((OCCGeomCurve3D)cadCrvCapXZUpper).edge(),
+				(OCCEdge)((OCCGeomCurve3D)cadCrvCapXZLower).edge(),
+				(OCCEdge)((OCCGeomCurve3D)cadCrvCapXYRight).edge()
 				)
 			)
 			System.out.println("========== Output written on file: " + fileName);
