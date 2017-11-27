@@ -131,6 +131,10 @@ public abstract class CADShapeFactory
 
 	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled, double pres3d);	
 	public abstract CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled);	
+
+	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1);
+	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled, double pres3d);
+	public abstract CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled);
 	
 	/**
 	 * Create a new CADVertex from a triplet of coordinates
