@@ -526,6 +526,17 @@ public final class MyArrayUtils {
 		return ret;
 	}
 
+	/** Compute a cosine-spaced array of values (finer spacing near first and last boundary value)
+	 *
+	 * @author Agodemar
+	 * @param a, b, n
+	 * @return Double[]
+	 */
+	public static Double[] cosineSpaceDouble(double a, double b, int n){
+		return MyArrayUtils.convertFromDoubleToPrimitive(
+				cosineSpace(a, b, n)
+				);
+	}
 
 	/** Compute a half-cosine-spaced array of values (finer spacing near first boundary value)
 	 *
@@ -574,11 +585,24 @@ public final class MyArrayUtils {
 		double dth = 0.5*Math.PI/((double)(n-1));
 		double th;
 		for(int i = 0; i < ret.length; i++){
-			th = 0.5*Math.PI + (double)i * dth;
-			ret[i] = a + (1.0 - Math.cos(th))*r;
+			th = 0.5*Math.PI - (double)i * dth;
+			ret[i] = a + r*Math.cos(th);
 		}
 		return ret;
 	}
+
+	/** Compute a half-cosine-spaced array of values (finer spacing near last boundary value)
+	 *
+	 * @author Agodemar
+	 * @param a, b, n
+	 * @return Double[]
+	 */
+	public static Double[] halfCosine2SpaceDouble(double a, double b, int n){
+		return MyArrayUtils.convertFromDoubleToPrimitive(
+				halfCosine2Space(a, b, n)
+				);
+	}
+	
 
 	public static double[] sumNumberToArrayEBE(double[] a, double b) {
 		return Arrays.stream(a).map(x -> x + b).toArray();

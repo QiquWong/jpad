@@ -2,6 +2,7 @@ package it.unina.daf.jpadcad.occ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public final class OCCUtils {
 		theFactory = CADShapeFactory.getFactory();
 	}
 	
+	// Example: write("test.brep", occshape1, occsape2, occshape3)	
 	public static boolean write(String fileName, OCCShape ... shapes) {
 		
 		if (shapes.length == 0)
@@ -38,6 +40,45 @@ public final class OCCUtils {
 		// loop through the shapes and add to compound
 		for(int k = 0; k < nonNullShapes.length; k++)
 			builder.Add(compound, nonNullShapes[k].getShape());
+		// write on file
+		long result = BRepTools.Write(compound, fileName);
+		return (result == 1);
+	}
+	
+	// Example: write("test.brep", occshape1, occsape2, listOfOccshapes, occshape3)
+	public static boolean write(String fileName, Object ... objects) {
+		
+		if (objects.length == 0)
+			return false;
+
+		Object[] nonNullObjects = Arrays.stream(objects)
+                .filter(o -> o != null)
+                .toArray(size -> new Object[size]);
+		
+		OCCShape[] nonNullShapes = Arrays.stream(nonNullObjects)
+                .filter(o -> o != null)
+                .filter(o -> (o instanceof  OCCShape))
+                .map(o -> (OCCShape)o)
+                .toArray(size -> new OCCShape[size]);
+		
+		List<OCCShape> listShapes = new ArrayList<>();
+		Arrays.stream(nonNullObjects)
+		      .filter(o -> (o instanceof List<?>))
+		      .filter(o -> (((List<?>) o).get(0) instanceof OCCShape))
+		      .map(o -> (List<OCCShape>) o)
+		      .forEach(l -> l.stream().filter(s -> s != null).forEach(s -> listShapes.add(s)));
+		
+		// Put everything in a compound
+		BRep_Builder builder = new BRep_Builder();
+		TopoDS_Compound compound = new TopoDS_Compound();
+		builder.MakeCompound(compound);
+		// loop through the shapes and add to compound
+		for(int k = 0; k < nonNullShapes.length; k++)
+			builder.Add(compound, nonNullShapes[k].getShape());
+		// loop through the shapes grabbed from lists and add to compound
+		listShapes.stream()
+			.forEach(s -> builder.Add(compound, s.getShape()));
+		
 		// write on file
 		long result = BRepTools.Write(compound, fileName);
 		return (result == 1);
