@@ -76,7 +76,7 @@ public class Test12 {
 		System.out.println("JPADCAD Test");
 		System.out.println("-------------------");
 		
-		Test12.theAircraft = AircraftUtils.createAircraft(args);
+		Test12.theAircraft = AircraftUtils.importAircraft(args);
 
 		System.out.println("Getting the fuselage ...");
 		

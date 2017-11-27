@@ -2,12 +2,9 @@ package it.unina.daf.jpadcad.occ;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.measure.unit.SI;
 
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;

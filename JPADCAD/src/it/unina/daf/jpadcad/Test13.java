@@ -39,8 +39,9 @@ public class Test13 {
 		System.out.println("JPADCAD Test");
 		System.out.println("-------------------");
 
-		Test13.theAircraft = AircraftUtils.createAircraft(args);
+		Test13.theAircraft = AircraftUtils.importAircraft(args);
 
+		System.out.println("-------------------");
 		System.out.println("Getting the fuselage ...");
 
 		Fuselage fuselage = theAircraft.getFuselage();
@@ -190,14 +191,15 @@ public class Test13 {
 
 		if (
 				OCCUtils.write(fileName,
-						(OCCShape)patch1,
-						(OCCShape)patch2,
+						(OCCShape)patch1, // nose cap
+						(OCCShape)patch2, // nose
 //						// nose cap stuff
 //						(OCCVertex)vertexNoseTip,
 //						(OCCEdge)((OCCGeomCurve3D)cadCrvCapXZUpper).edge(),
 //						(OCCEdge)((OCCGeomCurve3D)cadCrvCapXZLower).edge(),
 //						(OCCEdge)((OCCGeomCurve3D)cadCrvCapXYRight).edge(),
 //						(OCCEdge)((OCCGeomCurve3D)cadCrvCapTerminalSection).edge()
+						// ...
 						extraShapesCap
 						)
 				)
