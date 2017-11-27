@@ -254,7 +254,48 @@ public class OCCShapeFactory extends CADShapeFactory
 		return shell;
 	}
 	
-
+	@Override
+	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(v0, cadGeomCurveList, v1); // defaults: isSolid=0, ruled=0, pres3d=1.0e-06
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
+	@Override
+	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled, double pres3d) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(v0, cadGeomCurveList, v1, isSolid, ruled, pres3d);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
+	@Override
+	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(v0, cadGeomCurveList, v1, isSolid, ruled);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
 	@Override
 	public CADVertex newVertex(double x, double y, double z) {
 		CADVertex vertex = null;
