@@ -834,7 +834,8 @@ public class MyXMLReaderUtils {
 					case "deg":
 					case "DEG":
 					case "Deg":
-						unitStr = "°";
+						unitStr = "Â°"; // UTF-8 symbol: C/C++/Java source code "\u00B0"
+						unitStr = "\u00B0";
 						break;
 					}
 					quantity = (Amount<Angle>) Amount.valueOf(value, 1e-9, Unit.valueOf(unitStr));
@@ -926,12 +927,12 @@ public class MyXMLReaderUtils {
 					switch (unitStr) {
 					case "s^(-2)":
 					case "sec^(-2)":
-					case "rad/s²":
+					case "rad/sï¿½":
 					case "rad/s^(-2)":
 					case "RAD/s^(-2)":
 					case "rad/sec^(-2)":
 					case "RAD/SEC^(-2)":
-						unitStr = "1/s²";
+						unitStr = "1/sï¿½";
 						break;
 					}
 					quantity = Amount.valueOf(value, 1e-9, MyUnits.ONE_PER_SECOND_SQUARED);

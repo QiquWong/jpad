@@ -35,7 +35,6 @@ import configuration.enumerations.AircraftEnum;
 import configuration.enumerations.FuselageAdjustCriteriaEnum;
 import configuration.enumerations.WindshieldTypeEnum;
 import processing.core.PVector;
-import standaloneutils.JPADPVector;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
@@ -1034,37 +1033,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
-	public List<JPADPVector> getUniqueValuesYZSideRCurveJP(Amount<Length> len_x)
-	{
-		List<JPADPVector> p  = new ArrayList<JPADPVector>();
-
-		FuselageCurvesSection curvesSection = makeSection(len_x.doubleValue(SI.METRE));
-
-		for ( int i = 0; i < curvesSection.getSectionUpperLeftPoints().size() - 1; i++ )
-		{
-			p.add(
-					new JPADPVector(
-							(float) len_x.doubleValue(SI.METRE),
-							(float) curvesSection.getSectionUpperLeftPoints().get(i).x,
-							(float) curvesSection.getSectionUpperLeftPoints().get(i).y
-							)
-					);
-		}
-		for ( int i = 0; i < curvesSection.getSectionLowerLeftPoints().size(); i++ )
-		{
-			p.add(
-					new JPADPVector(
-							(float) len_x.doubleValue(SI.METRE),
-							(float) curvesSection.getSectionLowerLeftPoints().get(i).x,
-							(float) curvesSection.getSectionLowerLeftPoints().get(i).y
-							)
-					);
-		}
-		return p;
-	}
-	
-	
-	
 	/**
 	 * Section points on SideL are ordered as follows:
 	 * first point is at Y=0 at the bottom of the section,
@@ -1079,15 +1047,6 @@ public class FuselageCreator implements IFuselageCreator {
 		List<PVector> pts  = getUniqueValuesYZSideRCurve(len_x);
 		// simply change all Y-coordinates
 		for (PVector p : pts){ p.y = -p.y; }
-		Collections.reverse(pts);
-		return pts;
-	}
-
-	public List<JPADPVector> getUniqueValuesYZSideLCurveJP(Amount<Length> len_x)
-	{
-		List<JPADPVector> pts  = getUniqueValuesYZSideRCurveJP(len_x);
-		// simply change all Y-coordinates
-		for (JPADPVector p : pts){ p.y = -p.y; }
 		Collections.reverse(pts);
 		return pts;
 	}
@@ -1111,35 +1070,6 @@ public class FuselageCreator implements IFuselageCreator {
 			{
 				p.add(
 						new PVector(
-								(float)outlineXZUpperCurveX.get(i).doubleValue(),
-								(float)0.0,
-								(float)outlineXZUpperCurveZ.get(i).doubleValue()
-								)
-						);
-			}
-		}
-		return p;
-	}
-
-	public List<JPADPVector> getUniqueValuesXZUpperCurveJP()
-	{
-		List<JPADPVector> p  = new ArrayList<JPADPVector>();
-		// add the first element
-		if ( outlineXZUpperCurveX.size() != 0 )
-			p.add(
-					new JPADPVector(
-							(float)outlineXZUpperCurveX.get(0).doubleValue(),
-							(float)0.0,
-							(float)outlineXZUpperCurveZ.get(0).doubleValue()
-							)
-					);
-
-		for(int i = 1; i <= outlineXZUpperCurveX.size()-1; i++)
-		{
-			if ( !outlineXZUpperCurveX.get(i-1).equals( outlineXZUpperCurveX.get(i) ) )
-			{
-				p.add(
-						new JPADPVector(
 								(float)outlineXZUpperCurveX.get(i).doubleValue(),
 								(float)0.0,
 								(float)outlineXZUpperCurveZ.get(i).doubleValue()
@@ -1178,34 +1108,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
-	public List<JPADPVector> getUniqueValuesXZLowerCurveJP()
-	{
-		List<JPADPVector> p  = new ArrayList<JPADPVector>();
-		// add the first element
-		if ( outlineXZLowerCurveX.size() != 0 )
-			p.add(
-					new JPADPVector(
-							(float)outlineXZLowerCurveX.get(0).doubleValue(),
-							(float)0.0,
-							(float)outlineXZLowerCurveZ.get(0).doubleValue()
-							)
-					);
-		for(int i = 1; i <= outlineXZLowerCurveX.size()-1; i++)
-		{
-			if ( !outlineXZLowerCurveX.get(i-1).equals( outlineXZLowerCurveX.get(i) ) )
-			{
-				p.add(
-						new JPADPVector(
-								(float)outlineXZLowerCurveX.get(i).doubleValue(),
-								(float)0.0,
-								(float)outlineXZLowerCurveZ.get(i).doubleValue()
-								)
-						);
-			}
-		}
-		return p;
-	}
-	
 	public List<PVector> getUniqueValuesXYSideRCurve()
 	{
 		List<PVector> p  = new ArrayList<PVector>();
@@ -1234,34 +1136,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return p;
 	}
 
-	public List<JPADPVector> getUniqueValuesXYSideRCurveJP()
-	{
-		List<JPADPVector> p  = new ArrayList<JPADPVector>();
-		// add the first element
-		if ( outlineXYSideRCurveX.size() != 0 )
-			p.add(
-					new JPADPVector(
-							(float)outlineXYSideRCurveX.get(0).doubleValue(),
-							(float)outlineXYSideRCurveY.get(0).doubleValue(),
-							(float)0.0 // _outlineXYSideRCurveZ.get(0).doubleValue()
-							)
-					);
-		for(int i = 1; i <= outlineXYSideRCurveX.size()-1; i++)
-		{
-			if ( ! outlineXYSideRCurveX.get(i-1).equals( outlineXYSideRCurveX.get(i) ) )
-			{
-				p.add(
-						new JPADPVector(
-								(float)outlineXYSideRCurveX.get(i).doubleValue(),
-								(float)outlineXYSideRCurveY.get(i).doubleValue(),
-								(float)0.0 // _outlineXYSideRCurveZ.get(i).doubleValue()
-								)
-						);
-			}
-		}
-		return p;
-	}
-	
 	public List<PVector> getUniqueValuesXYSideLCurve()
 	{
 		List<PVector> p  = new ArrayList<PVector>();
@@ -1289,35 +1163,6 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 		return p;
 	}
-
-	public List<JPADPVector> getUniqueValuesXYSideLCurveJP()
-	{
-		List<JPADPVector> p  = new ArrayList<JPADPVector>();
-		// add the first element
-		if ( outlineXYSideLCurveX.size() != 0 )
-			p.add(
-					new JPADPVector(
-							(float)outlineXYSideLCurveX.get(0).doubleValue(),
-							(float)outlineXYSideLCurveY.get(0).doubleValue(),
-							(float)outlineXYSideLCurveZ.get(0).doubleValue()
-							)
-					);
-		for(int i = 1; i <= outlineXYSideLCurveX.size()-1; i++)
-		{
-			if ( !outlineXYSideLCurveX.get(i-1).equals( outlineXYSideLCurveX.get(i) ) )
-			{
-				p.add(
-						new JPADPVector(
-								(float)outlineXYSideLCurveX.get(i).doubleValue(),
-								(float)outlineXYSideLCurveY.get(i).doubleValue(),
-								(float)outlineXYSideLCurveZ.get(i).doubleValue()
-								)
-						);
-			}
-		}
-		return p;
-	}
-
 
 	/**
 	 * Calculate a fuselage section profile for a given coordinate x,
@@ -2803,25 +2648,25 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\tPressurized: '" + pressurized + "'\n")
 				.append("\tNumber of decks: " + deckNumber + "\n")
 				.append("\tRoughness: " + roughness + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tLength: " + lenF + "\n")
 				.append("\tNose length: " + lenN + "\n")
 				.append("\tCabin length: " + lenC + "\n")
 				.append("\tTail length: " + lenT + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tNose length ratio: " + lenRatioNF + "\n")
 				.append("\tCabin length ratio: " + lenRatioCF + "\n")
 				.append("\tTail length ratio: " + lenRatioTF + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tCabin width: " + sectionCylinderWidth + "\n")
 				.append("\tCabin height: " + sectionCylinderHeight + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tNose fineness ratio: " + lambdaN + "\n")
 				.append("\tCabin fineness ratio: " + lambdaC + "\n")
 				.append("\tTail fineness ratio: " + lambdaT + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tHeight from ground: " + heightFromGround + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tDiscretization\n")
 				.append("\tOutline XY Left Top View - X (m): " + outlineXYSideLCurveX + "\n")
 				.append("\tOutline XY Left Top View - Y (m): " + outlineXYSideLCurveY + "\n")
@@ -2835,7 +2680,7 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\tOutline YZ Upper Section View - Z (m): " + getSectionUpperCurveAmountZ().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
 				.append("\tOutline YZ Upper Section View - Y (m): " + getSectionLowerCurveAmountY().stream().map(y -> y.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
 				.append("\tOutline YZ Upper Section View - Z (m): " + getSectionLowerCurveAmountZ().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
-				.append("\t·····································\n");
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
 		
 		if(!(spoilers == null)) {
 			for (SpoilerCreator spoilers : spoilers) {
