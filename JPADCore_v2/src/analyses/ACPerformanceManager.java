@@ -4025,7 +4025,7 @@ public class ACPerformanceManager {
 						);
 				
 				if (MathArrays.isMonotonic(speedArrayAltitudeParameterization, OrderDirection.INCREASING, true)) {
-					System.err.println("WARNING: (THRUST CALCULATION - CRUISE) THE SPEED ARRAY IS NOT MONOTONIC INCREASING. TERMINATING ...");
+					System.err.println("WARNING: (THRUST CALCULATION ALTITUDE PARAMETERIZATION - CRUISE) THE SPEED ARRAY IS NOT MONOTONIC INCREASING. CRUISE STALL SPEED IS BIGGER THAN CRUISE SPEED. TERMINATING ...");
 					System.exit(1);
 				}
 				
@@ -4196,6 +4196,11 @@ public class ACPerformanceManager {
 								),
 						100
 						);
+				
+				if (MathArrays.isMonotonic(speedArrayWeightParameterization, OrderDirection.INCREASING, true)) {
+					System.err.println("WARNING: (THRUST CALCULATION WEIGHT PARAMETERIZATION - CRUISE) THE SPEED ARRAY IS NOT MONOTONIC INCREASING. CRUISE STALL SPEED IS BIGGER THAN CRUISE SPEED. TERMINATING ...");
+					System.exit(1);
+				}
 				//..................................................................................................
 				_dragListWeightParameterizationMap.get(xcg).add(
 						DragCalc.calculateDragAndPowerRequired(
