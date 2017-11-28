@@ -86,7 +86,7 @@ public class Test13 {
 
 		System.out.println("Constructing the nose-cap patch, Patch-1");
 		OCCShape patch1 = 
-				OCCUtils.makePatchThruSections(
+				OCCUtils.makePatchThruSectionsP(
 						new PVector(0.0f, 0.0f, (float) zNoseTip.doubleValue(SI.METER)), // Nose tip vertex
 						sections1
 				);
@@ -176,7 +176,7 @@ public class Test13 {
 			  );
 
 		System.out.println("Constructing the nose patch, Patch-2");
-		OCCShape patch2 = OCCUtils.makePatchThruSections(sections2);
+		OCCShape patch2 = OCCUtils.makePatchThruSectionsP(sections2);
 
 		System.out.println("========== Construct a fuselage nose patch (Sewing Patch-1/Patch-2");
 				
