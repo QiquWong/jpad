@@ -23,6 +23,9 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
+import org.apache.commons.math3.exception.NonMonotonicSequenceException;
+import org.apache.commons.math3.util.MathArrays;
+import org.apache.commons.math3.util.MathArrays.OrderDirection;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -4020,6 +4023,12 @@ public class ACPerformanceManager {
 								),
 						100
 						);
+				
+				if (MathArrays.isMonotonic(speedArrayAltitudeParameterization, OrderDirection.INCREASING, true)) {
+					System.err.println("WARNING: (THRUST CALCULATION - CRUISE) THE SPEED ARRAY IS NOT MONOTONIC INCREASING. TERMINATING ...");
+					System.exit(1);
+				}
+				
 				//..................................................................................................
 				_dragListAltitudeParameterizationMap.get(xcg).add(
 						DragCalc.calculateDragAndPowerRequired(
@@ -4061,6 +4070,9 @@ public class ACPerformanceManager {
 			List<Amount<Power>> powerNeededAltitudesAtCruiseMach = new ArrayList<>();
 			
 			for(int i=0; i<_thePerformanceInterface.getAltitudeListCruise().size(); i++) {
+				
+				MathArrays.checkOrder(_thrustListAltitudeParameterizationMap.get(xcg).get(i).getThrust());
+				
 				thrustAltitudesAtCruiseMach.add(
 						Amount.valueOf(
 								MyMathUtils.getInterpolatedValue1DLinear(
