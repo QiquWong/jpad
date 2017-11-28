@@ -248,7 +248,7 @@ public final class AircraftUtils {
 				SI.METER);
 		System.out.println("Nose tip z: " + zNoseTip);
 
-		System.out.println("========== Patch 1: nose cap, from nose tip to x=" + noseCapStation);
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Patch 1: nose cap, from nose tip to x=" + noseCapStation);
 		
 		System.out.println("Getting selected sections ...");
 		// all xbar's are normalized with noseLength
@@ -279,7 +279,7 @@ public final class AircraftUtils {
 						sections1
 				);
 		
-		System.out.println("========== Patch 2: x=" + noseCapStation + "to x=" + noseLength);
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Patch 2: x=" + noseCapStation + "to x=" + noseLength);
 		
 		System.out.println("Getting selected sections ...");
 
@@ -306,13 +306,13 @@ public final class AircraftUtils {
 		System.out.println("Constructing the nose patch, Patch-2");
 		OCCShape patch2 = OCCUtils.makePatchThruSections(sections2);
 
-		System.out.println("========== Construct the entire fuselage nose patch (Sewing Patch-1/Patch-2) - TODO");
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Construct the entire fuselage nose patch (Sewing Patch-1/Patch-2) - TODO");
 				
 		List<OCCShape> ret = new ArrayList<>();
 		ret.add(patch1);
 		ret.add(patch2);
 
-		System.out.println("========== Construct fuselage cylindrical patch");
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Construct fuselage cylindrical patch [>>> Experimental <<<]");
 		
 		// nose Patch-2 terminal section
 		List<PVector> sectionNoseTerminal = fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength);

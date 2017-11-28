@@ -24,14 +24,12 @@ public class Test14 {
 		System.out.println("JPADCAD Test");
 		System.out.println("-------------------");
 
+		System.out.println("========== [main] Getting the aircraft and the fuselage ...");
 		Test14.theAircraft = AircraftUtils.importAircraft(args);
-
-		System.out.println("-------------------");
-		System.out.println("Getting the fuselage ...");
 
 		Fuselage fuselage = theAircraft.getFuselage();
 		
-		System.out.println("========== Initialize CAD shape factory");
+		System.out.println("========== [main] Initialize CAD shape factory");
 		OCCUtils.initCADShapeFactory();
 		
 		boolean supportShapes = true;
@@ -41,7 +39,7 @@ public class Test14 {
 		String fileName = "test14.brep";
 		
 		if (OCCUtils.write(fileName, fuselageShapes))
-			System.out.println("========== Output written on file: " + fileName);
+			System.out.println("========== [main] Output written on file: " + fileName);
 
 	}	
 }
