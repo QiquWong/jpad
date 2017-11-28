@@ -1,13 +1,25 @@
 package sandbox2.pdfu;
 
+import sandbox2.mds.Test1;
+
 public class PDFuTest01 {
 	
 	private int n1 = 0;
 	private float a1 = -10.0f;
 	public float a2 = 0.0f;
 	
+	private sandbox2.mds.Test1 test1 = new Test1(0.0, 0.0, "Pippo!");
+	
+	public sandbox2.mds.Test1 getTest1() {
+		return test1;
+	}
+
+	public void setTest1(sandbox2.mds.Test1 test1) {
+		this.test1 = test1;
+	}
+
 	public int getN1() {
-		return n1;
+		return this.n1;
 	}
 
 	public void setN1(int n1) {
@@ -32,8 +44,8 @@ public class PDFuTest01 {
 		return this.a1 + this.a2 + this.n1;
 	}
 	
-	public static void main(String[] args) {
-
-	}
+//	public static void main(String[] args) {
+//
+//	}
 	
 }

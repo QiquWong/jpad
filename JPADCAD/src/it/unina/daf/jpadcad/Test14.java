@@ -29,6 +29,8 @@ public class Test14 {
 
 		Fuselage fuselage = theAircraft.getFuselage();
 		
+		// System.out.println(theAircraft);
+		
 		System.out.println("========== [main] Initialize CAD shape factory");
 		OCCUtils.initCADShapeFactory();
 		
