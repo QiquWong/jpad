@@ -549,124 +549,124 @@ public class JSBSimModel {
 		String cmyPath = "//cmy/text()";
 		String cmzPath = "//cmz/text()";
 		//Moments and force coefficient in body axis
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfxList, cfxPath);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfyList, cfyPath);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfzList, cfzPath);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmxList, cmxPath);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmyList, cmyPath);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmzList, cmzPath);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), dfxpList, cmzPath);
+		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfxList, cfxPath, 0);
+		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfyList, cfyPath, 0);
+		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfzList, cfzPath, 1);
+		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmxList, cmxPath, 0);
+		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmyList, cmyPath, 0);
+		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmzList, cmzPath, 0);
+		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), dfxpList, cmzPath, 0);
 		//Control surface aeroData
 		//Aileron
 		aileronDeflectionAero = 
 				CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap
 				(controlSurfaceAeroPerformanceList.item(0));
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(0), dfxAileronList, "//dcfx/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(0), dfxAileronList, "//dcfx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(0), dfyAileronList, "//dcfy/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(0), dfyAileronList, "//dcfy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(0), dfzAileronList, "//dcfz/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(0), dfzAileronList, "//dcfz/text()", aeroNodeList.item(0), 1);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(0), dmxAileronList, "//dcmx/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(0), dmxAileronList, "//dcmx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(0), dmyAileronList, "//dcmy/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(0), dmyAileronList, "//dcmy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(0), dmzAileronList, "//dcmz/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(0), dmzAileronList, "//dcmz/text()", aeroNodeList.item(0), 0);
 		//Elevator
 		elevatorDeflectionAero = 
 				CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap
 				(controlSurfaceAeroPerformanceList.item(3));
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dfxElevatorList, "//dcfx/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(3), dfxElevatorList, "//dcfx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dfyElevatorList, "//dcfy/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(3), dfyElevatorList, "//dcfy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dfzElevatorList, "//dcfz/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(3), dfzElevatorList, "//dcfz/text()", aeroNodeList.item(0), 1);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dmxElevatorList, "//dcmx/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(3), dmxElevatorList, "//dcmx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dmyElevatorList, "//dcmy/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(3), dmyElevatorList, "//dcmy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dmzElevatorList, "//dcmz/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(3), dmzElevatorList, "//dcmz/text()", aeroNodeList.item(0), 0);
 		//Rudder
 		rudderDeflectionAero = 
 				CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap
 				(controlSurfaceAeroPerformanceList.item(4));
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dfxRudderList, "//dcfx/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(4), dfxRudderList, "//dcfx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dfyRudderList, "//dcfy/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(4), dfyRudderList, "//dcfy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dfzRudderList, "//dcfz/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(4), dfzRudderList, "//dcfz/text()", aeroNodeList.item(0), 1);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dmxRudderList, "//dcmx/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(4), dmxRudderList, "//dcmx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dmyRudderList, "//dcmy/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(4), dmyRudderList, "//dcmy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dmzRudderList, "//dcmz/text()", aeroNodeList.item(0));
+		(controlSurfaceAeroPerformanceList.item(4), dmzRudderList, "//dcmz/text()", aeroNodeList.item(0), 0);
 		//Flap
 		flapDeflectionAero = 
 				CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap(controlSurfaceAeroPerformanceList.item(1));
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
 		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dfxFlapList, "//dcfx/text()", aeroNodeList.item(0));
+				dfxFlapList, "//dcfx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
 		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dfyFlapList, "//dcfy/text()", aeroNodeList.item(0));
+				dfyFlapList, "//dcfy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
 		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dfzFlapList, "//dcfz/text()", aeroNodeList.item(0));
+				dfzFlapList, "//dcfz/text()", aeroNodeList.item(0), 1);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
 		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dmxFlapList, "//dcmx/text()", aeroNodeList.item(0));
+				dmxFlapList, "//dcmx/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
 		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dmyFlapList, "//dcmy/text()", aeroNodeList.item(0));
+				dmyFlapList, "//dcmy/text()", aeroNodeList.item(0), 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
 		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dmzFlapList, "//dcmz/text()", aeroNodeList.item(0));
+				dmzFlapList, "//dcmz/text()", aeroNodeList.item(0), 0);
 		//Damping derivative
 //		String prova = "//dampingDerivatives/positiveRates/dcfxdpstar/text()";
 		//p-rate
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfxpList, "//dampingDerivatives/positiveRates/dcfxdpstar/text()");
+		(aeroNodeList.item(0), dfxpList, "//dampingDerivatives/positiveRates/dcfxdpstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfypList, "//dampingDerivatives/positiveRates/dcfydpstar/text()");
+		(aeroNodeList.item(0), dfypList, "//dampingDerivatives/positiveRates/dcfydpstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfzpList, "//dampingDerivatives/positiveRates/dcfzdpstar/text()");
+		(aeroNodeList.item(0), dfzpList, "//dampingDerivatives/positiveRates/dcfzdpstar/text()", 1);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmxpList, "//dampingDerivatives/positiveRates/dcmxdpstar/text()");
+		(aeroNodeList.item(0), dmxpList, "//dampingDerivatives/positiveRates/dcmxdpstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmypList, "//dampingDerivatives/positiveRates/dcmydpstar/text()");
+		(aeroNodeList.item(0), dmypList, "//dampingDerivatives/positiveRates/dcmydpstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmzpList, "//dampingDerivatives/positiveRates/dcmzdpstar/text()");
+		(aeroNodeList.item(0), dmzpList, "//dampingDerivatives/positiveRates/dcmzdpstar/text()", 0);
 		//q-rate
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfxqList, "//dampingDerivatives/positiveRates/dcfxdqstar/text()");
+		(aeroNodeList.item(0), dfxqList, "//dampingDerivatives/positiveRates/dcfxdqstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfyqList, "//dampingDerivatives/positiveRates/dcfydqstar/text()");
+		(aeroNodeList.item(0), dfyqList, "//dampingDerivatives/positiveRates/dcfydqstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfzqList, "//dampingDerivatives/positiveRates/dcfzdqstar/text()");
+		(aeroNodeList.item(0), dfzqList, "//dampingDerivatives/positiveRates/dcfzdqstar/text()", 1);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmxqList, "//dampingDerivatives/positiveRates/dcmxdqstar/text()");
+		(aeroNodeList.item(0), dmxqList, "//dampingDerivatives/positiveRates/dcmxdqstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmyqList, "//dampingDerivatives/positiveRates/dcmydqstar/text()");
+		(aeroNodeList.item(0), dmyqList, "//dampingDerivatives/positiveRates/dcmydqstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmzqList, "//dampingDerivatives/positiveRates/dcmzdqstar/text()");
+		(aeroNodeList.item(0), dmzqList, "//dampingDerivatives/positiveRates/dcmzdqstar/text()", 0);
 		//r-rate
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfxrList, "//dampingDerivatives/positiveRates/dcfxdrstar/text()");
+		(aeroNodeList.item(0), dfxrList, "//dampingDerivatives/positiveRates/dcfxdrstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfyrList, "//dampingDerivatives/positiveRates/dcfydrstar/text()");
+		(aeroNodeList.item(0), dfyrList, "//dampingDerivatives/positiveRates/dcfydrstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfzrList, "//dampingDerivatives/positiveRates/dcfzdrstar/text()");
+		(aeroNodeList.item(0), dfzrList, "//dampingDerivatives/positiveRates/dcfzdrstar/text()", 1);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmxrList, "//dampingDerivatives/positiveRates/dcmxdrstar/text()");
+		(aeroNodeList.item(0), dmxrList, "//dampingDerivatives/positiveRates/dcmxdrstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmyrList, "//dampingDerivatives/positiveRates/dcmydrstar/text()");
+		(aeroNodeList.item(0), dmyrList, "//dampingDerivatives/positiveRates/dcmydrstar/text()", 0);
 		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmzrList, "//dampingDerivatives/positiveRates/dcmzdrstar/text()");
+		(aeroNodeList.item(0), dmzrList, "//dampingDerivatives/positiveRates/dcmzdrstar/text()", 0);
 		
 		
 		
@@ -974,12 +974,12 @@ public class JSBSimModel {
 		JSBSimUtils.writeAlileron(
 				RollControlElement, controlSurfaceList, doc, 
 				controlSurfaceInt, "aileron", "roll", 2);
-		rootElement.appendChild(flightControlElement);
 		org.w3c.dom.Element FlapControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 				doc,"channel",
 				Tuple.of("name", "Flaps")
 				);
-		rootElement.appendChild(FlapControlElement);
+		flightControlElement.appendChild(FlapControlElement);
+		rootElement.appendChild(flightControlElement);
 		JSBSimUtils.writeFlap(FlapControlElement, controlSurfaceList, doc, controlSurfaceInt, "flap", 1);
 		org.w3c.dom.Element aeroElement = doc.createElement("aerodynamics");
 		rootElement.appendChild(aeroElement);

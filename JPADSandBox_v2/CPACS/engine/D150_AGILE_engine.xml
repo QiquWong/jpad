@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <turbine_engine name="D150_AGILE_engine">
-   <milthrust unit="N">10453.000</milthrust>
+   <milthrust unit="N">104530.000</milthrust>
    <bypassratio>1.5000</bypassratio>
    <idlen1>30</idlen1>
    <idlen2>60</idlen2>

@@ -785,7 +785,7 @@ public class CPACSReader {
 	
 	
 	public static void getCoefficientFromAeroPerformanceMapControlSurface
-	(Node aeroNodeControlSurface, List<String> forceFixedMach, String coefficientStringPath, Node aeroNode)
+	(Node aeroNodeControlSurface, List<String> forceFixedMach, String coefficientStringPath, Node aeroNode, int correctioAxisDefinition)
 			throws ParserConfigurationException{
 		DocumentBuilderFactory factoryControlSurface = DocumentBuilderFactory.newInstance();
 		factoryControlSurface.setNamespaceAware(true);
@@ -828,7 +828,16 @@ public class CPACSReader {
 			List<String> coefficientList = MyXMLReaderUtils.getXMLPropertiesByPath(docAeroControlSurface,
 					coefficientStringPath);
 			System.out.println(coefficientList);
-			double[] coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
+			double[] coefficientVector = null;
+			if (correctioAxisDefinition==0) {
+			coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
+			}
+			else {
+			coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
+			for (int s = 0;s<coefficientVector.length;s++) {
+				coefficientVector[s] = -1.0*coefficientVector[s];
+			}
+			}
 			for (int s = 0;s<coefficientVector.length;s++) {
 				System.out.println(coefficientVector[s] + ",");
 			}
@@ -900,7 +909,7 @@ public class CPACSReader {
 	
 	public static void getCoefficientFromAeroPerformanceMapControlSurfaceFlap
 	(Node aeroNodeInnerFlap, Node aeroNodeOuterFlap, List<String> forceFixedMach,
-			String coefficientStringPath, Node aeroNode) 
+			String coefficientStringPath, Node aeroNode, int correctionAxisDefinition) 
 			throws ParserConfigurationException{
 		//DOC inner flap
 		DocumentBuilderFactory factoryInnerFlap = DocumentBuilderFactory.newInstance();
@@ -953,13 +962,31 @@ public class CPACSReader {
 			List<String> coefficientListInner = MyXMLReaderUtils.getXMLPropertiesByPath(docInnerFlap,
 					coefficientStringPath);
 			System.out.println(coefficientListInner);
-			double[] coefficientVectorInner = CPACSUtils.getDoubleArrayFromStringList(coefficientListInner);
+			double[] coefficientVectorInner = null;
+			double[] coefficientVectorOuter = null;
+
+			if (correctionAxisDefinition==0) {
+				coefficientVectorInner = CPACSUtils.getDoubleArrayFromStringList(coefficientListInner);
+			}
+			else {
+				coefficientVectorInner = CPACSUtils.getDoubleArrayFromStringList(coefficientListInner);
+			for (int s = 0;s<coefficientVectorInner.length;s++) {
+				coefficientVectorInner[s] = -1.0*coefficientVectorInner[s];
+			}
+			}
 			//reading coefficient relative to outer flap
 			List<String> coefficientListOuter = MyXMLReaderUtils.getXMLPropertiesByPath(docOuterFlap,
 					coefficientStringPath);
 			System.out.println(coefficientListOuter);
-			double[] coefficientVectorOuter = CPACSUtils.getDoubleArrayFromStringList(coefficientListOuter);
+			if (correctionAxisDefinition==0) {
+				coefficientVectorOuter = CPACSUtils.getDoubleArrayFromStringList(coefficientListInner);
+			}
+			else {
+				coefficientVectorOuter = CPACSUtils.getDoubleArrayFromStringList(coefficientListInner);
 			for (int s = 0;s<coefficientVectorOuter.length;s++) {
+				coefficientVectorOuter[s] = -1.0*coefficientVectorOuter[s];
+			}
+			}			for (int s = 0;s<coefficientVectorOuter.length;s++) {
 				System.out.println(coefficientVectorOuter[s] + ",");
 			}
 
@@ -1047,7 +1074,7 @@ public class CPACSReader {
 	}
 	
 	public static void getCoefficientFromAeroPerformanceMap
-	(Node aeroNode, List<String> forceFixedMach, String coefficientStringPath){
+	(Node aeroNode, List<String> forceFixedMach, String coefficientStringPath, int correctioAxisDefinition){
 //		List<String> forceFixedMach = new ArrayList<String>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
@@ -1083,10 +1110,19 @@ public class CPACSReader {
 			List<String> coefficientList = MyXMLReaderUtils.getXMLPropertiesByPath(doc,
 					coefficientStringPath);
 			if (coefficientList.size()>0) {
-				double[] coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
-				for (int s = 0;s<coefficientVector.length;s++) {
-					System.out.println(coefficientVector[s] + ",");
+				double[] coefficientVector = null;
+				if (correctioAxisDefinition==0) {
+				coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
 				}
+				else {
+				coefficientVector = CPACSUtils.getDoubleArrayFromStringList(coefficientList);
+				for (int s = 0;s<coefficientVector.length;s++) {
+					coefficientVector[s] = -1.0*coefficientVector[s];
+				}				
+				}
+//				for (int s = 0;s<coefficientVector.length;s++) {
+//					System.out.println(coefficientVector[s] + ",");
+//				}
 				int pippo = 0;
 				int i = 0;
 				int j = 0; //counter matrix column index

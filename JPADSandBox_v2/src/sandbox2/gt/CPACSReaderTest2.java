@@ -290,10 +290,10 @@ public class CPACSReaderTest2 {
 					double longitude = 20.0;
 					double latitude = 30.0;
 					double phi = 0.0;
-					double theta = 0.0;
+					double theta = 1.0;
 					double psi = 30.0;
-					double altitude = 1.5;
-					double elevation = 1.0;
+					double altitude = 2.5;
+					double elevation = 2.0;
 					double hwind = 0.0;
 					String dirIC = outputDirPath+"/initialCondition.xml";
 					jsbsimModel.initialize(dirIC, ubody, vbody, wbody,
