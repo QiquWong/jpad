@@ -116,7 +116,7 @@ public class Main extends Application {
 		Main._primaryStage = primaryStage;
 	}
 
-	public static BorderPane getMain2Layout() {
+	public static BorderPane getMainLayout() {
 		return _mainLayout;
 	}
 
@@ -140,7 +140,7 @@ public class Main extends Application {
 		Main._progressBar = _progressBar;
 	}
 
-	public static BorderPane getMain2InputManagerLayout() {
+	public static BorderPane getMainInputManagerLayout() {
 		return _mainInputManagerLayout;
 	}
 
