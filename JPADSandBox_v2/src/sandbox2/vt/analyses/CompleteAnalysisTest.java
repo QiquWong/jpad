@@ -178,9 +178,9 @@ public class CompleteAnalysisTest extends Application {
 		MyArgumentsAnalysis va = new MyArgumentsAnalysis();
 		CompleteAnalysisTest.theCmdLineParser = new CmdLineParser(va);
 
-		// populate the wing static object in the class
-		// before launching the JavaFX application thread (launch --> start ...)
+		// populate the wing static object in the class-> start ...)
 		try {
+		// before launching the JavaFX application thread (launch -
 			CompleteAnalysisTest.theCmdLineParser.parseArgument(args);
 			
 			String pathToXML = va.getInputFile().getAbsolutePath();
