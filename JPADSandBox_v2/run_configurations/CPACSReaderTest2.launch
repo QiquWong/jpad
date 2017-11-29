@@ -10,6 +10,6 @@
 <mapEntry key="Path" value="${JPAD_ROOT}\libraries\tigl\v2.2.1\win64"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="sandbox2.gt.CPACSReaderTest2"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i CPACS/D150_AGILE.xml&#13;&#10;-o CPACS/D150_JSBSim.xml"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-i CPACS/D150_AGILE.xml&#13;&#10;-o CPACS/aircraft/D150_JSBSim/D150_JSBSim.xml"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="JPADSandBox_v2"/>
 </launchConfiguration>

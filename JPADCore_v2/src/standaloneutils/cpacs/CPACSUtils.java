@@ -42,7 +42,7 @@ public final class CPACSUtils {
 			// iterate over the second dimension
 			for(int j = 0; j < matrix[i].length; j++){
 				if(i==0&&j==0) {
-					result.append("	");
+					result.append("\n 	");
 				}
 				else {
 					result.append(matrix[i][j]);
@@ -66,6 +66,19 @@ public final class CPACSUtils {
 			// iterate over the second dimension
 					result.append(vector[i]);
 					result.append("\n");
+			}
+		return result.toString();
+	}
+	
+	public static String matrixDoubleToJSBSimRow(double[] vector) {
+
+		StringBuffer result = new StringBuffer();
+
+		// iterate over the first dimension
+		for (int i = 0; i < vector.length; i++) {
+			// iterate over the second dimension
+					result.append(vector[i]);
+					result.append("	");
 			}
 		return result.toString();
 	}

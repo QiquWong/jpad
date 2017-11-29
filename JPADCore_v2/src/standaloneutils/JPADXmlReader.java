@@ -193,7 +193,7 @@ public class JPADXmlReader {
 			return null;
 		}		
 	}
-
+	
 	/*
 	 * Get the quantity from XML path; unit attribute is mandatory; if search fails return null
 	 * <p>

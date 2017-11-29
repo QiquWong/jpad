@@ -3,6 +3,7 @@ package it.unina.daf.jpadcad.occ;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import opencascade.BRepAlgoAPI_BooleanOperation;
 import opencascade.BRepAlgoAPI_Common;
@@ -13,6 +14,7 @@ import opencascade.BRep_Builder;
 import opencascade.IGESControl_Reader;
 import opencascade.STEPControl_Reader;
 import opencascade.TopoDS_Shape;
+import processing.core.PVector;
 
 /*
  * Note: this class is used only by reflection, see CADShapeFactory#factory
@@ -212,6 +214,23 @@ public class OCCShapeFactory extends CADShapeFactory
 		return curve;
 	}
 
+	@Override
+	public CADGeomCurve3D newCurve3DP(List<PVector> pointList, boolean isPeriodic) {
+		CADGeomCurve3D curve = null;
+		try
+		{
+			curve = new OCCGeomCurve3D(
+					pointList.stream()
+							 .map(p -> new double[]{p.x, p.y, p.z})
+							 .collect(Collectors.toList()),
+					isPeriodic);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		return curve;
+	}
+	
 	@Override
 	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList) {
 		CADShell shell = null;
