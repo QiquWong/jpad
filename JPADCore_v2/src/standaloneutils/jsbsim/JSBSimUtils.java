@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
 public class JSBSimUtils {
 
 	public static void writeLandingGear(
-			org.w3c.dom.Element rootElementGear,List<Double> properties, Double []position,
+			org.w3c.dom.Element rootElementGear, List<Double> properties, Double[] position,
 			Document doc, String landingGearString, String brake) {
 		org.w3c.dom.Element noseGearElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 				doc,"contact",

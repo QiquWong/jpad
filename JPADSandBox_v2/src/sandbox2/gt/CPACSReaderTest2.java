@@ -39,6 +39,10 @@ class ArgumentsCPACSReaderTest2 {
 			usage = "Jsbsim file")
 	private File _outputFile;
 
+	@Option(name = "-ns", aliases = { "--no-sim" }, required = false,
+			usage = "Jsbsim file")
+	private boolean _noSim = false;
+	
 	// receives other command line parameters than options
 	@Argument
 	public List<String> arguments = new ArrayList<String>();
@@ -48,6 +52,9 @@ class ArgumentsCPACSReaderTest2 {
 	}
 	public File getOutputFile() {
 		return _outputFile;
+	}
+	public boolean isNoSim() {
+		return _noSim;
 	}
 
 }
@@ -160,10 +167,11 @@ public class CPACSReaderTest2 {
 				docScript = docScriptBuilder.newDocument();
 				String scriptName = "uninaProva.xml";
 				String scriptPath = dirPath+"/scripts/"+scriptName;
+				String icFileNameBase = "initialCondition";
 				org.w3c.dom.Element runscriptElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"runscript",
 						Tuple.of("name", "D150_JSBSim"), // TODO: get aircraft name from _cpaceReader
-						Tuple.of("initialize", "initialCondition")
+						Tuple.of("initialize", icFileNameBase)
 						);
 				docScript.appendChild(runscriptElement);
 				JPADStaticWriteUtils.writeSingleNode("decription",
@@ -295,10 +303,11 @@ public class CPACSReaderTest2 {
 					double altitude = 2.5;
 					double elevation = 2.0;
 					double hwind = 0.0;
-					String dirIC = outputDirPath+"/initialCondition.xml";
-					jsbsimModel.initialize(dirIC, ubody, vbody, wbody,
+					String icFilePath = outputDirPath + "/" + icFileNameBase + ".xml";
+					jsbsimModel.writeInitialConditionsFile(icFilePath, ubody, vbody, wbody,
 							longitude, latitude, phi, theta, psi, altitude, elevation, hwind);
-					jsbsimModel.startJSBSimSimulation(dirPath,scriptName);
+					if (!va.isNoSim())
+						jsbsimModel.startJSBSimSimulation(dirPath, scriptName);
 				}
 				catch (NullPointerException e) {
 					System.err.println("Output file not givem");
