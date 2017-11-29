@@ -1,0 +1,44 @@
+<database.databasefunctions.aerodynamics.AerodynamicDatabaseReader>
+  <databaseFolderPath>C:\Users\agodemar\ADOPT_PROJECT\jpad\JPADCAD\data\</databaseFolderPath>
+  <databaseFileName>Aerodynamic_Database_Ultimate.h5</databaseFileName>
+  <database>
+    <__fileName>C:\Users\agodemar\ADOPT_PROJECT\jpad\JPADCAD\data\Aerodynamic_Database_Ultimate.h5</__fileName>
+    <__fileH5 serialization="custom">
+      <file>
+        <default>
+          <path>C:\Users\agodemar\ADOPT_PROJECT\jpad\JPADCAD\data\Aerodynamic_Database_Ultimate.h5</path>
+        </default>
+        <char>\</char>
+      </file>
+      <ncsa.hdf.object.FileFormat>
+        <default>
+          <fid>-1</fid>
+          <isReadOnly>true</isReadOnly>
+          <max__members>1000000</max__members>
+          <start__members>0</start__members>
+          <fullFileName>C:\Users\agodemar\ADOPT_PROJECT\jpad\JPADCAD\data\Aerodynamic_Database_Ultimate.h5</fullFileName>
+        </default>
+      </ncsa.hdf.object.FileFormat>
+      <ncsa.hdf.object.h5.H5File>
+        <default>
+          <attrFlag>false</attrFlag>
+          <flag>0</flag>
+          <indexOrder>0</indexOrder>
+          <indexType>0</indexType>
+          <libver>
+            <int>0</int>
+            <int>0</int>
+          </libver>
+        </default>
+      </ncsa.hdf.object.h5.H5File>
+    </__fileH5>
+  </database>
+  <cM0__b__k2__minus__k1>0.0</cM0__b__k2__minus__k1>
+  <ar__v__eff__c2>0.0</ar__v__eff__c2>
+  <x__bar__ac__w__k1>0.0</x__bar__ac__w__k1>
+  <x__bar__ac__w__k2>0.0</x__bar__ac__w__k2>
+  <x__bar__ac__w__xac__cr>0.0</x__bar__ac__w__xac__cr>
+  <d__Alpha__Vs__LambdaLE>0.0</d__Alpha__Vs__LambdaLE>
+  <deltaYvsThickness>0.0</deltaYvsThickness>
+  <clmaxCLmaxVsLambdaLE>0.0</clmaxCLmaxVsLambdaLE>
+</database.databasefunctions.aerodynamics.AerodynamicDatabaseReader>

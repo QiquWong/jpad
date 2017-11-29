@@ -1,5 +1,7 @@
 package sandbox2.pdfu;
 
+import sandbox2.mds.Test1;
+
 public class PDFuTest02 {
 
 	public static void main(String[] args) {
@@ -36,6 +38,13 @@ public class PDFuTest02 {
 			+ ", n1 = " + test.getN1()
 		);
 		System.out.println("a1 + a2 + n1 = " + test.getSum());
+		
+		System.out.println("===============================================");
+
+		test.setTest1(new Test1(-21.5, 2.5, "In PDFuTest02!"));
+		
+		System.out.println("PDFuTest02.test1 ==> " + test.getTest1());
+		System.out.println("PDFuTest02.test1.getSum ==> " + test.getTest1().getSumXY());
 		
 	}
 

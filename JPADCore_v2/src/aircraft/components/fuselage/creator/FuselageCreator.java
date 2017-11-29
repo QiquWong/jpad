@@ -1051,7 +1051,6 @@ public class FuselageCreator implements IFuselageCreator {
 		return pts;
 	}
 
-
 	public List<PVector> getUniqueValuesXZUpperCurve()
 	{
 		List<PVector> p  = new ArrayList<PVector>();
@@ -1080,7 +1079,6 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 		return p;
 	}
-
 
 	public List<PVector> getUniqueValuesXZLowerCurve()
 	{
@@ -1165,8 +1163,6 @@ public class FuselageCreator implements IFuselageCreator {
 		}
 		return p;
 	}
-
-
 
 	/**
 	 * Calculate a fuselage section profile for a given coordinate x,
@@ -2652,25 +2648,25 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\tPressurized: '" + pressurized + "'\n")
 				.append("\tNumber of decks: " + deckNumber + "\n")
 				.append("\tRoughness: " + roughness + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tLength: " + lenF + "\n")
 				.append("\tNose length: " + lenN + "\n")
 				.append("\tCabin length: " + lenC + "\n")
 				.append("\tTail length: " + lenT + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tNose length ratio: " + lenRatioNF + "\n")
 				.append("\tCabin length ratio: " + lenRatioCF + "\n")
 				.append("\tTail length ratio: " + lenRatioTF + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tCabin width: " + sectionCylinderWidth + "\n")
 				.append("\tCabin height: " + sectionCylinderHeight + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tNose fineness ratio: " + lambdaN + "\n")
 				.append("\tCabin fineness ratio: " + lambdaC + "\n")
 				.append("\tTail fineness ratio: " + lambdaT + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tHeight from ground: " + heightFromGround + "\n")
-				.append("\t·····································\n")
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n")
 				.append("\tDiscretization\n")
 				.append("\tOutline XY Left Top View - X (m): " + outlineXYSideLCurveX + "\n")
 				.append("\tOutline XY Left Top View - Y (m): " + outlineXYSideLCurveY + "\n")
@@ -2684,7 +2680,7 @@ public class FuselageCreator implements IFuselageCreator {
 				.append("\tOutline YZ Upper Section View - Z (m): " + getSectionUpperCurveAmountZ().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
 				.append("\tOutline YZ Upper Section View - Y (m): " + getSectionLowerCurveAmountY().stream().map(y -> y.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
 				.append("\tOutline YZ Upper Section View - Z (m): " + getSectionLowerCurveAmountZ().stream().map(z -> z.doubleValue(SI.METER)).collect(Collectors.toList()) + "\n")
-				.append("\t·····································\n");
+				.append("\tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
 		
 		if(!(spoilers == null)) {
 			for (SpoilerCreator spoilers : spoilers) {
@@ -2719,6 +2715,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenF;
 	}
 
+	public Amount<Length> getLength() {
+		return lenF;
+	}
+	
 	@Override
 	public void setLenF(Amount<Length> lenF) {
 		this.lenF = lenF;
@@ -2729,6 +2729,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenN;
 	}
 
+	public Amount<Length> getLengthNoseTrunk() {
+		return lenN;
+	}
+	
 	public void setLenN(Amount<Length> lenN) {
 		// check bounds
 		if ( !(lenN.doubleValue(SI.METRE) < lenNMIN.doubleValue(SI.METRE)) 
@@ -2751,6 +2755,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenC;
 	}
 
+	public Amount<Length> getLengthCylindricalTrunk() {
+		return lenC;
+	}
+	
 	public void setLenC(Amount<Length> lenC) {
 		// check bounds
 		if ( !(lenC.doubleValue(SI.METRE) < lenCMIN.doubleValue(SI.METRE)) 
@@ -2773,6 +2781,10 @@ public class FuselageCreator implements IFuselageCreator {
 		return lenT;
 	}
 
+	public Amount<Length> getLengthTailTrunk() {
+		return lenT;
+	}
+	
 	public void setLenT(Amount<Length> lenT) {
 		// check bounds
 		if ( !(lenT.doubleValue(SI.METRE) < lenTMIN.doubleValue(SI.METRE)) 

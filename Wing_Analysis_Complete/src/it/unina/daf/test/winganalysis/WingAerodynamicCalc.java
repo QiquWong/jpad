@@ -24,11 +24,15 @@ import calculators.aerodynamics.DragCalc;
 import calculators.aerodynamics.LiftCalc;
 import calculators.aerodynamics.MomentCalc;
 import calculators.aerodynamics.NasaBlackwell;
+import calculators.geometry.LSGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.AerodynamicAndStabilityEnum;
 import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.FoldersEnum;
+import configuration.enumerations.HighLiftDeviceEffectEnum;
 import configuration.enumerations.MethodEnum;
+import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
+import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import ncsa.hdf.view.NewAttributeDialog;
 import standaloneutils.MyArrayUtils;
 import standaloneutils.MyChartToFileUtils;
@@ -53,9 +57,29 @@ public class WingAerodynamicCalc {
 				SI.RADIAN)
 				);
 		
+		input.setSweepQuarterChord(
+				Amount.valueOf(
+				Math.atan(
+						(input.getxLEDistributionInput().get(input.getNumberOfSections()-1).doubleValue(SI.METER)+
+						(input.getChordDistributionInput().get(input.getNumberOfSections()-1).doubleValue(SI.METER)/4)
+						-(input.getChordDistributionInput().get(0).doubleValue(SI.METER)/4))/
+						input.getSemiSpan().doubleValue(SI.METER)
+						),
+				SI.RADIAN)
+				);
+		
+		input.setTaperRatio(input.getChordDistributionInput().get(input.getNumberOfSections()-1).doubleValue(SI.METER)/input.getChordDistributionInput().get(0).doubleValue(SI.METER));
+	
 		// DISTRIBUTIONS
 		input.setyAdimensionalStationActual(MyArrayUtils.convertDoubleArrayToListDouble(
 				MyArrayUtils.convertFromDoubleToPrimitive(MyArrayUtils.linspace(0., 1., input.getNumberOfPointSemispan()))));
+		
+		for (int i=0; i<input.getNumberOfSections(); i++) {
+		input.getyDimensionalInput().add(
+				Amount.valueOf(
+				input.getyAdimensionalStationInput().get(i)*input.getSemiSpan().doubleValue(SI.METER), SI.METER));
+		}
+		
 		input.setyDimensionaStationActual(MyArrayUtils.convertDoubleArrayToListOfAmount(MyArrayUtils.linspace(
 						0.*input.getSemiSpan().doubleValue(SI.METER), 
 						1.*input.getSemiSpan().doubleValue(SI.METER), 
@@ -165,6 +189,21 @@ public class WingAerodynamicCalc {
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getCmc4DistributionInput())),
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
 						)));
+		
+		input.setMaxThicknessAirfoilsDistributionActual(MyArrayUtils.convertDoubleArrayToListDouble(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationInput())), 
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getMaxThicknessAirfoilsDistribution())),
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
+						)));
+		
+		input.setLeRadiusDistributionActual(MyArrayUtils.convertDoubleArrayToListOfAmount(
+				MyMathUtils.getInterpolatedValue1DLinear(
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationInput())), 
+				        MyArrayUtils.convertListOfAmountTodoubleArray(input.getLeRadiusDistribution()),
+						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()))
+						), SI.METER));
+		
 
 		//
 
@@ -242,41 +281,30 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 			input.setAlphaZeroLift(Amount.valueOf(alphaZeroLift, NonSI.DEGREE_ANGLE));
 
 			// alpha Star
-			double rootChord = input.getChordDistributionInput().get(0).doubleValue(SI.METER);
-			double kinkChord = MyMathUtils.getInterpolatedValue1DLinear(
-					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual())), 
-					MyArrayUtils.convertListOfAmountTodoubleArray(input.getChordDistributionActual()),
-					input.getAdimensionalKinkStation());
-			double tipChord = input.getChordDistributionInput().get(input.getChordDistributionInput().size()-1).doubleValue(SI.METER);
+			
+			List<Double> InfluenceCoefficientList = LSGeometryCalc.calculateInfluenceCoefficients(
+					input.getChordDistributionInput(),
+					input.getyDimensionalInput(), 
+					input.getSurface(), 
+					true
+					);
 
-			double alphaStarRoot= input.getAlphaStarDistributionInput().get(0).doubleValue(NonSI.DEGREE_ANGLE);
-			double alphaStarKink = MyMathUtils.getInterpolatedValue1DLinear(
-					MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual())), 
-					MyArrayUtils.convertListOfAmountTodoubleArray(input.getAlphaStarDistributionActual()),
-					input.getAdimensionalKinkStation());
-			double alphaStarTip = input.getAlphaStarDistributionInput().get(input.getAlphaStarDistributionInput().size()-1).doubleValue(NonSI.DEGREE_ANGLE); 
-
-			double dimensionalKinkStation = input.getAdimensionalKinkStation()*input.getSemiSpan().getEstimatedValue();
-			double dimensionalOverKink = input.getSemiSpan().getEstimatedValue() - dimensionalKinkStation;
-
-			double influenceAreaRoot = rootChord * dimensionalKinkStation/2;
-			double influenceAreaKink = (kinkChord * dimensionalKinkStation/2) + (kinkChord * dimensionalOverKink/2);
-			double influenceAreaTip = tipChord * dimensionalOverKink/2;
-
-			double kRoot = 2*influenceAreaRoot/input.getSurface().getEstimatedValue();
-			double kKink = 2*influenceAreaKink/input.getSurface().getEstimatedValue();
-			double kTip = 2*influenceAreaTip/input.getSurface().getEstimatedValue();
-
-			double alphaStar =  alphaStarRoot * kRoot + alphaStarKink * kKink + alphaStarTip * kTip;
+			double alphaStar = 0.0;
+			double tcMean = 0.0;
+			for(int i=0; i<InfluenceCoefficientList.size(); i++) {
+				alphaStar = alphaStar + input.getAlphaStarDistributionInput().get(i).doubleValue(NonSI.DEGREE_ANGLE)*InfluenceCoefficientList.get(i);
+				tcMean = tcMean + input.getMaxThicknessAirfoilsDistribution().get(i)*InfluenceCoefficientList.get(i);
+			}
 
 			input.setAlphaStar(Amount.valueOf(alphaStar, NonSI.DEGREE_ANGLE));
+			input.setMeanThickness(tcMean);
+			
 
 			Amount<Angle> alphaStarAmount = Amount.valueOf(alphaStar, NonSI.DEGREE_ANGLE);
 
 			theNasaBlackwellCalculator.calculate(alphaStarAmount);
 			double cLStar = theNasaBlackwellCalculator.get_cLEvaluated();
 			input.setcLStar(cLStar);
-
 
 			// cl Max
 			double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 30, 31);
@@ -593,7 +621,7 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 				
 		//------------------------------------------------------------------------------------
 		
-		
+		if(input.isVerbosityFlag()) {
 		System.out.println("\n---------ACTUAL PARAMETER DISTRIBUTION------------");	
 		System.out.println("--------------------------------------------------");
 		System.out.println("Y Stations  " + input.getyAdimensionalStationActual().toString());
@@ -623,7 +651,7 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 		));
 		System.out.println("Cl max distribution =  " + input.getMaximumliftCoefficientDistributionActual().toString());
 		
-
+}
 
 		//--------------------------------------------------------------------------------------
 		// DISTRIBUTIONS: 
@@ -762,12 +790,10 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 			input.getPolarClean().add(input.getParasitePolar().get(indeaxOfa) + input.getInducedPolar().get(indeaxOfa)+
 					input.getWawePolar().get(indeaxOfa));
 		});
-		
-		
+			
 		//------------------------------------------------------------------------------------
 		// CM --------------------------------------------------------------------------------
 		//------------------------------------------------------------------------------------
-
 
 		input.getAlphaDistributionArray().stream().forEach( a -> {
 			input.getCmVsEtaVectors().add(MomentCalc.calcCmDistributionLiftingSurfaceWithIntegral(
@@ -808,9 +834,168 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 						)
 				));
 		
+		
+		if(input.isHighLiftFlag()) {
+		//------------------------------------------------------------------------------------
+		// HIGH LIFT--------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------
+		
+		List<Amount<?>> clAlphaAmount = new ArrayList<>();
+		for(int i=0; i<input.getNumberOfSections(); i++) {
+			clAlphaAmount.add(Amount.valueOf(input.getClalphaDEGDistributionInput().get(i), NonSI.DEGREE_ANGLE.inverse()));
+		}
+		Map<HighLiftDeviceEffectEnum, Object> highLiftDevicesEffectsMap = 
+				LiftCalc.calculateHighLiftDevicesEffects(
+						input.getTheAerodatabaseReader(),
+						input.getTheHighLiftDatabaseReader(),
+						input.getSymmetricFlapCreatorList(),
+						input.getSlatCreatorList(),
+						input.getyAdimensionalStationInput(),
+						clAlphaAmount,
+						input.getClZeroDistributionInput(),
+						input.getMaxThicknessAirfoilsDistribution(),
+						input.getLeRadiusDistribution(),
+						input.getChordDistributionInput(),
+						input.getDeltaFlap(),
+						input.getDeltaSlat(),
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
+						Amount.valueOf(input.getcLAlpha(), NonSI.DEGREE_ANGLE.inverse()),
+						input.getSweepQuarterChord(),
+						input.getTaperRatio(),
+						input.getChordDistributionInput().get(0),
+						input.getAspectRatio(),
+						input.getSurface(),
+						input.getMeanThickness(),
+						input.getMeanAirfoilFamily(),
+						input.getcLZero(),
+						input.getcLMax(),
+						input.getAlphaStar(),
+						input.getAlphaStall()
+						);	
+		
+		input.set_deltaCL0Flap(
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL0_FLAP)
+				);
+
+		input.set_deltaCLmaxFlap(
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_FLAP)
+				);
+
+		input.set_deltaCLmaxSlat(
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CL_MAX_SLAT)
+				);
+		
+		input.set_deltaCD0(
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CD)
+				);
+		
+		input.set_deltaCMc4(
+				(Double) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.DELTA_CM_c4)
+				);
+		
+	   input.set_cLAlphaHighLift(
+				(Amount<?>) highLiftDevicesEffectsMap.get(HighLiftDeviceEffectEnum.CL_ALPHA_HIGH_LIFT)
+				);
+	   
+	   input.setcLZeroHL(input.getcLZero()+input.get_deltaCL0Flap());
+	   if(input.getSlatsNumber()!= 0)
+	   input.setcLMaxHL(input.getcLMax()+input.get_deltaCLmaxFlap()+input.get_deltaCLmaxSlat());
+	   else
+	   input.setcLMaxHL(input.getcLMax()+input.get_deltaCLmaxFlap());
+	   
+	   input.setAlphaZeroLiftHL(
+			   Amount.valueOf(
+						-(input.getcLZeroHL()
+								/input.get_cLAlphaHighLift()
+								.to(NonSI.DEGREE_ANGLE.inverse())
+								.getEstimatedValue()
+								),
+						NonSI.DEGREE_ANGLE)
+				);
+			   
+	   input.setAlphaStallHL(
+				Amount.valueOf(
+				(((input.getcLMaxHL()
+				- (input.getcLZeroHL()))
+				/input.get_cLAlphaHighLift()
+					.to(NonSI.DEGREE_ANGLE.inverse())
+					.getEstimatedValue())
+				+ deltaAlpha),
+				NonSI.DEGREE_ANGLE)
+				);
+		
+		//------------------------------------------------------
+		// ALPHA STAR HIGH LIFT
+		input.setAlphaStarHL(
+				Amount.valueOf(
+						input.getAlphaStallHL().doubleValue(NonSI.DEGREE_ANGLE)
+						-(input.getAlphaStallHL().doubleValue(NonSI.DEGREE_ANGLE)
+								- input.getAlphaStar().doubleValue(NonSI.DEGREE_ANGLE)),
+						NonSI.DEGREE_ANGLE)
+				);
+		
+		//------------------------------------------------------
+		// CL STAR HIGH LIFT
+
+		input.setcLStarHL(
+				(input.get_cLAlphaHighLift()
+					.to(NonSI.DEGREE_ANGLE.inverse())
+							.getEstimatedValue()
+				* input.getAlphaStarHL()
+					.doubleValue(NonSI.DEGREE_ANGLE))
+				+ input.getcLZeroHL()
+				);
+		
+	   // BUILD NEW CURVES
+	   
+		Double [] alphaHighLiftArrayPlotDouble = MyArrayUtils.linspaceDouble(
+				input.getAlphaZeroLiftHL().doubleValue(NonSI.DEGREE_ANGLE)-5, 
+				input.getAlphaStallHL().doubleValue(NonSI.DEGREE_ANGLE)+2, 
+				input.getNumberOfAlphaCL()
+				);
+		
+		input.setAlphaVectorHL(MyArrayUtils.convertDoubleArrayToListOfAmount(
+				alphaHighLiftArrayPlotDouble,
+				NonSI.DEGREE_ANGLE));
+
+		//--------------------------------------------------------------------------------------
+		// BUILDING HIGH LIFT CURVE: 
+		//--------------------------------------------------------------------------------------
+
+		List<Double> clVectorTempHL=
+				MyArrayUtils.convertDoubleArrayToListDouble(
+						LiftCalc.calculateCLvsAlphaArray(
+								input.getcLZeroHL(),
+								input.getcLMaxHL(),
+								input.getAlphaStarHL(),
+								input.getAlphaStallHL(),
+								input.get_cLAlphaHighLift(),
+								alphaHighLiftArrayPlotDouble
+								)
+						);		
+		
+		input.setClVsAlphaHighLift(clVectorTempHL);
+		
+		//--------------------------------------------------------------------------------------
+		// BUILDING DRAG HIGH LIFT CURVE: 
+		//--------------------------------------------------------------------------------------
+		
+		for (int i=0; i<input.getPolarClean().size(); i++) {
+			input.getPolarHighLift().add(input.getPolarClean().get(i)+input.get_deltaCD0());
+		}
+		
+		
+		//--------------------------------------------------------------------------------------
+		// BUILDING MOMENT HIGH LIFT CURVE: 
+		//--------------------------------------------------------------------------------------
+		
+		for (int i=0; i<input.getMomentCurveClean().size(); i++) {
+			input.getMomentCurveHighLift().add(input.getMomentCurveClean().get(i)+input.get_deltaCMc4());
+		}
+		}
 		//-----------------------------------------------------
 		// RESULTS
-		
+		if (input.isVerbosityFlag()) {
 		System.out.println(" \n-----------WING CLEAN RESULTS-------------- ");
 		System.out.println(" Alpha stall = " + input.getAlphaStall().getEstimatedValue() + " " + input.getAlphaStall().getUnit());
 		System.out.println(" Alpha star = " + input.getAlphaStar().getEstimatedValue() + " " + input.getAlphaStar().getUnit());
@@ -829,11 +1014,27 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 		System.out.println(" CD induced curve " + input.getInducedPolar().toString());
 		System.out.println(" CD wawe curve " + input.getWawePolar());
 		System.out.println(" Polar curve " + input.getPolarClean().toString());
-		System.out.println(" CM curve " + input.getMomentCurveClean());
+		System.out.println(" CM curve " + input.getMomentCurveClean() + "\n");
+		
+		if(input.isHighLiftFlag()) {
+		System.out.println(" Alpha Array for CL curve High Lift devices (deg) unit = " + input.getAlphaVector().get(0).getUnit() + " " + 
+				Arrays.toString( 
+				MyArrayUtils.convertListOfAmountTodoubleArray((input.getAlphaVectorHL()))
+			));
+		System.out.println(" CL curve High Lift " + input.getClVsAlphaHighLift().toString());
+		System.out.println(" Alpha Array for CD and CM curve High Lift devices (deg) unit = " + input.getAlphaVector().get(0).getUnit() + " " + 
+				Arrays.toString( 
+				MyArrayUtils.convertListOfAmountTodoubleArray((input.getAlphaVector()))
+			));
+		System.out.println(" CD curve High Lift " + input.getPolarHighLift().toString());
+		System.out.println(" CM curve High Lift " + input.getMomentCurveHighLift().toString());
+		}
+		}
 		
 		//--------------------------------------------------------------------------------------
 		// PLOT: 
 		//--------------------------------------------------------------------------------------
+		if(input.isPlotFlag()) {
 		//LIFT CURVE
 		String folderPath = MyConfiguration.getDir(FoldersEnum.OUTPUT_DIR);
 		System.out.println(" \n-----------WRITING CHART TO FILE. CL vs Alpha-------------- ");
@@ -1055,7 +1256,7 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 		xVector = MyArrayUtils.convertDoubleArrayToListDouble(alphaCleanArrayPlotDouble);
 		yVector = input.getMomentCurveClean();
 
-		System.out.println(" \n-----------WRITING CHART TO FILE . Cl distribution-------------- ");
+		System.out.println(" \n-----------WRITING CHART TO FILE . CM curve-------------- ");
 
 		MyChartToFileUtils.plotNoLegend(
 				MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
@@ -1075,6 +1276,173 @@ for (int i=0; i<input.getNumberOfPointSemispan(); i++) {
 
 		System.out.println(" \n-------------------DONE----------------------- ");
 
-			}
+		
+		//DRAG DISTRIBUTIONS
+		System.out.println(" \n-----------WRITING CHART TO FILE. Moment Coefficient Distributions-------------- ");
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatrix = new ArrayList<Double[]>();
+
+		legendList  = new ArrayList<>(); 
+
+		for(int i=0; i<input.getNumberOfAlpha(); i++){
+			xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getyAdimensionalStationActual()));
+			yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getCmVsEtaVectors().get(i)));
+			legendList.add("Cm distribution at alpha = " + input.getAlphaDistributionArray().get(i).doubleValue(NonSI.DEGREE_ANGLE) + " deg");
+		}
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+			legendString [i] = legendList.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				0.0, 
+				null, 
+				null, 
+				null,
+				"eta", 
+				"Cm",
+				"", 
+				"", 
+				legendString, 
+				folderPath,
+				"Moment_Coefficient_Distributions");
+
+		System.out.println(" \n-------------------DONE----------------------- ");	
+		
+		if(input.isHighLiftFlag()) {
+		//CL HIGH LIFT 
+		System.out.println(" \n-----------WRITING CHART TO FILE. Cl high lift-------------- ");
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatrix = new ArrayList<Double[]>();
+		legendList  = new ArrayList<>(); 
+		
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(input.getAlphaVector()));
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(input.getAlphaVectorHL()));
+			yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getcLVsAlphaVector()));
+			yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getClVsAlphaHighLift()));
+			legendList.add("CL clean ");
+			legendList.add("CL high lift");
+	
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+			legendString [i] = legendList.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				0.0, 
+				null, 
+				null, 
+				null,
+				"alpha", 
+				"CL",
+				"", 
+				"", 
+				legendString, 
+				folderPath,
+				"CL high lift");
+
+		System.out.println(" \n-------------------DONE----------------------- ");	
+		
+		//CL HIGH LIFT 
+		System.out.println(" \n-----------WRITING CHART TO FILE. Cd high lift-------------- ");
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatrix = new ArrayList<Double[]>();
+		legendList  = new ArrayList<>(); 
+		
+	    	yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getcLVsAlphaVector()));
+		    yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getClVsAlphaHighLift()));
+			xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getPolarClean()));
+			xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getPolarHighLift()));
+			legendList.add("Polar clean ");
+			legendList.add("Polar high lift");
+	
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+			legendString [i] = legendList.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				0.0, 
+				null, 
+				null, 
+				null,
+				"CD", 
+				"CL",
+				"", 
+				"", 
+				legendString, 
+				folderPath,
+				"Polar high lift");
+
+		System.out.println(" \n-------------------DONE----------------------- ");	
+			
+	
+		//CM HIGH LIFT 
+		System.out.println(" \n-----------WRITING CHART TO FILE. Cm high lift-------------- ");
+		xVectorMatrix = new ArrayList<Double[]>();
+		yVectorMatrix = new ArrayList<Double[]>();
+		legendList  = new ArrayList<>(); 
+		
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(input.getAlphaVector()));
+			xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(input.getAlphaVectorHL()));
+			yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getMomentCurveClean()));
+			yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(input.getMomentCurveHighLift()));
+			legendList.add("CM clean ");
+			legendList.add("CM high lift");
+	
+
+		xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+		legendString = new String[xVectorMatrix.size()];
+
+		for(int i=0; i <xVectorMatrix.size(); i++){
+			xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+			yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+			legendString [i] = legendList.get(i);
+		}
+
+		MyChartToFileUtils.plotNOCSV(
+				xMatrix,
+				yMatrix, 
+				0.0, 
+				null, 
+				null, 
+				null,
+				"alpha", 
+				"CM",
+				"", 
+				"", 
+				legendString, 
+				folderPath,
+				"Cm high lift");
+
+		System.out.println(" \n-------------------DONE----------------------- ");	
+		}
+		}
+	}
 		}
 		

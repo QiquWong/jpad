@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persons>
+
+  <person>
+    <name>Piero</name>
+    <surname>Di Fusco</surname>
+    <height unit="cm">172</height>
+    <sex value="MALE"/>
+    <eyes>
+      <eye type="RIGHT" color="green"/>
+      <eye type="LEFT" color="blue"/>
+    </eyes>
+  </person>
+
+  <person>
+    <name>Mario</name>
+    <surname>Di Stasio</surname>
+    <height unit="m">1.80</height>
+    <sex value="MALE"/>
+    <eyes>
+      <eye type="RIGHT" color="brown"/>
+      <eye type="LEFT" color="brown"/>
+    </eyes>
+  </person>
+  
+</persons>

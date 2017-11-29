@@ -3,6 +3,7 @@ package it.unina.daf.jpadcad.occ;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import opencascade.BRepAlgoAPI_BooleanOperation;
 import opencascade.BRepAlgoAPI_Common;
@@ -13,6 +14,7 @@ import opencascade.BRep_Builder;
 import opencascade.IGESControl_Reader;
 import opencascade.STEPControl_Reader;
 import opencascade.TopoDS_Shape;
+import processing.core.PVector;
 
 /*
  * Note: this class is used only by reflection, see CADShapeFactory#factory
@@ -213,11 +215,28 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 
 	@Override
+	public CADGeomCurve3D newCurve3DP(List<PVector> pointList, boolean isPeriodic) {
+		CADGeomCurve3D curve = null;
+		try
+		{
+			curve = new OCCGeomCurve3D(
+					pointList.stream()
+							 .map(p -> new double[]{p.x, p.y, p.z})
+							 .collect(Collectors.toList()),
+					isPeriodic);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		return curve;
+	}
+	
+	@Override
 	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList) {
 		CADShell shell = null;
 		try
 		{
-			shell = new OCCShell(cadGeomCurveList);
+			shell = new OCCShell(cadGeomCurveList); // defaults: isSolid=0, ruled=0, pres3d=1.0e-06
 		}
 		catch (RuntimeException ex)
 		{
@@ -226,6 +245,76 @@ public class OCCShapeFactory extends CADShapeFactory
 		return shell;
 	}
 
+	@Override
+	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled, double pres3d) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(cadGeomCurveList, isSolid, ruled, pres3d);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
+	@Override
+	public CADShell newShell(List<CADGeomCurve3D> cadGeomCurveList, long isSolid, long ruled) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(cadGeomCurveList, isSolid, ruled);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
+	@Override
+	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(v0, cadGeomCurveList, v1); // defaults: isSolid=0, ruled=0, pres3d=1.0e-06
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
+	@Override
+	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled, double pres3d) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(v0, cadGeomCurveList, v1, isSolid, ruled, pres3d);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
+	@Override
+	public CADShell newShell(OCCVertex v0, List<CADGeomCurve3D> cadGeomCurveList, OCCVertex v1, long isSolid, long ruled) {
+		CADShell shell = null;
+		try
+		{
+			shell = new OCCShell(v0, cadGeomCurveList, v1, isSolid, ruled);
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		
+		return shell;
+	}
+	
 	@Override
 	public CADVertex newVertex(double x, double y, double z) {
 		CADVertex vertex = null;

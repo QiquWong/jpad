@@ -9,7 +9,7 @@
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="false"/>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="MMGT_OPT" value="1"/>
-<mapEntry key="Path" value="${build_files}${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64;${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64\jre1.8.0_91\bin;"/>
+<mapEntry key="Path" value="${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64;${JPAD_ROOT}\libraries\occjava\OCCJavaWrapper_OCCT_v7.0.0_vc14_Win64\jre1.8.0_91\bin;"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.debug.ui.ATTR_CONSOLE_ENCODING" value="UTF-8"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="it.unina.daf.jpadcad.Test7"/>

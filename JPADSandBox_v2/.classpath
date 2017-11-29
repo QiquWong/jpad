@@ -24,9 +24,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.widgets_1.0.0.201401291008.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.xygraph_1.0.0.201401291008.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/Win64/occjava.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/core.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/gluegen-rt.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/jogl-all.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/unit-api/unit-api-0.6.1.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_FOLDER/org.eclipse.swt.win32.win32.x86_64_3.104.2.v20160212-1350.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/uomo/org.eclipse.uomo.core_0.7.0.201306062021.jar"/>

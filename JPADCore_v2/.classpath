@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_151">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
@@ -19,9 +19,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.widgets_1.0.0.201401291008.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/nebula/org.eclipse.nebula.visualization.xygraph_1.0.0.201401291008.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/occjava/Win64/occjava.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/core.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/gluegen-rt.jar"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/library/jogl-all.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/unit-api/unit-api-0.6.1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/guava/guava-16.0.1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/jahuwaldt/AeroLS.jar"/>

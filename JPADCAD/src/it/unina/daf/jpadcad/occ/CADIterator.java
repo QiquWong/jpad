@@ -11,7 +11,7 @@ public interface CADIterator
      * Initialize this explorer
      * @param shape The shape to explore
      */    
-	public void initialize(CADShape shape);
+	public void init(CADShape shape);
     /**
      * Return true if there are more shapes to explore
      * @return true if there are more shapes to explore

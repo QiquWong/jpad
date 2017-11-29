@@ -7,5 +7,15 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/vecmath/vecmath.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jscience-4.3/jscience.jar" sourcepath="/LIBRARY_FOLDER"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/lombok/lombok.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/args4j/args4j-2.0.21.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/jarhdf5-2.10.1.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/poi/poi-ooxml-3.10.1-20140818.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/log4j/log4j-api-2.0.2.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/log4j/log4j-core-2.0.2.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-nop-1.7.5.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
