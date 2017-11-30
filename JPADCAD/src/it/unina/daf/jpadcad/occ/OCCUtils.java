@@ -102,7 +102,17 @@ public final class OCCUtils {
 									);
 		return (OCCShape)cadShell;		
 	}
+	
+	public static OCCShape makePatchThruSections(
+			CADVertex v0, List<CADGeomCurve3D> geomcurves) {
+		return makePatchThruSections(v0, geomcurves, null);
+	}
 
+	public static OCCShape makePatchThruSections(
+			List<CADGeomCurve3D> geomcurves, CADVertex v1) {
+		return makePatchThruSections(null, geomcurves, v1);
+	}
+	
 	public static OCCShape makePatchThruSections(List<CADGeomCurve3D> geomcurves) {
 		return makePatchThruSections(null, geomcurves, null);
 	}
