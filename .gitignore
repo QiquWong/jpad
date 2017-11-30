@@ -3,6 +3,4 @@
 !*.pdb
 /JPADCore_v2/.apt_generated/*
 /.metadata/
-/JPADCore_v2/bin/*
-/JPADConfigs/bin/*
-/JPADCAD/bin/*
+*.class
