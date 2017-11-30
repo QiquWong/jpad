@@ -233,20 +233,20 @@ public final class AircraftUtils {
 	 * Creates a list of shapes, mostly surfaces/shells, representing the fuselage.
 	 * @see getFuselageCAD(Fuselage fuselage, double noseFirstCapSectionFactor1, double noseFirstCapSectionFactor2, int numberNoseCapSections, int numberNosePatch2Sections, boolean exportSupportShapes)
 	 * 
-	 * noseFirstCapSectionFactor1 = 0.15, noseFirstCapSectionFactor2 = 1.00, numberNoseCapSections = 3, numberNosePatch2Sections = 9
+	 * noseFirstCapSectionFactor1 = 0.15, noseFirstCapSectionFactor2 = 1.00, numberNoseCapSections = 3, numberNosePatch2Sections = 9, numberTailPatchSections = 5, numberTailCapSections = 3
 	 * 
 	 * @param fuselage				the fuselage object, extracted from a Aircraft object
 	 * @param exportSupportShapes	include supporting sections, outline curves, etc in the output shape list 
 	 * @return
 	 */
 	public static List<OCCShape> getFuselageCAD(Fuselage fuselage, boolean exportSupportShapes) {
-		return getFuselageCAD(fuselage, 0.15, 1.0, 3, 9, exportSupportShapes);
+		return getFuselageCAD(fuselage, 0.15, 1.0, 3, 9, 7, 1.0, 0.10, 3, true, exportSupportShapes);
 	}
 	
 	/**
 	 * Creates a list of shapes, mostly surfaces/shells, representing the fuselage.
 	 * 
-	 * Nose trunk patch:
+	 * Nose trunk patches. Patch-1, Patch-2:
 	 * First, the nose patch is created, as the union of two patches: Patch-1, i.e. Nose Cap Patch, and Patch-2, i.e. from cap terminal section to
 	 * the nose trunk terminal section. Patch-1 has numberNoseCapSections supporting section curves and is constrained to include the fuselage foremost tip vertex.
 	 * Patch-1 passes thru: nose tip vertex, support-section-1, support-section-2, ... support-section-<numberNoseCapSections>. The last section of Patch-1 coincides
@@ -254,19 +254,31 @@ public final class AircraftUtils {
 	 * support-section-<numberNoseCapSections + numberNosePatch2Sections>.
 	 * 
 	 * Cylindrical trunk patch:
+	 * Patch-3
 	 * 
 	 * Tail cone trunk patch:
+	 * Patch-4
+	 * 
+	 * Tail cap patch:
+	 * Patch-5
 	 * 
 	 * @param fuselage 						the fuselage object, extracted from a Aircraft object
-	 * @param noseFirstCapSectionFactor1 	the factor multiplying xNoseCap/NoseCapLength to obtain the first support section of Patch-1, e.g. 0.15
-	 * @param noseFirstCapSectionFactor2	the factor multiplying xNoseCap/NoseCapLength to obtain the last support section of Patch-1, e.g. 1.0 (>1.0 means x>xNoseCap) 
+	 * @param noseCapSectionFactor1 		the factor multiplying xNoseCap/noseCapLength to obtain the first support section of Patch-1, e.g. 0.15
+	 * @param noseCapSectionFactor2			the factor multiplying xNoseCap/noseCapLength to obtain the last support section of Patch-1, e.g. 1.0 (>1.0 means x > xNoseCap) 
 	 * @param numberNoseCapSections			number of Patch-1 supporting sections, e.g. 3 
 	 * @param numberNosePatch2Sections		number of Patch-2 supporting sections, e.g. 9
+	 * @param numberTailPatchSections		number of Patch-4 supporting sections, e.g. 5
+	 * @param tailCapSectionFactor1 		the factor multiplying (fuselageLength - xTailCap)/tailCapLength to obtain the first support section of Patch-5, e.g. 1.0 (>1.0 means x < xFusLength - tailCapLength)
+	 * @param tailCapSectionFactor2 	    the factor multiplying (fuselageLength - xTailCap)/tailCapLength to obtain the last support section of Patch-5, e.g. 0.15
+	 * @param numberTailCapSections			number of Patch-5 supporting sections, e.g. 3 
+	 * @param exportLoft					include fuselage loft in the output shape list 
 	 * @param exportSupportShapes			include supporting sections, outline curves, etc in the output shape list 
 	 * @return
 	 */
 	public static List<OCCShape> getFuselageCAD(Fuselage fuselage,
-			double noseFirstCapSectionFactor1, double noseFirstCapSectionFactor2, int numberNoseCapSections, int numberNosePatch2Sections, 
+			double noseCapSectionFactor1, double noseCapSectionFactor2, int numberNoseCapSections, 
+			int numberNosePatch2Sections, int numberTailPatchSections, double tailCapSectionFactor1, double tailCapSectionFactor2, int numberTailCapSections,
+			boolean exporLoft,
 			boolean exportSupportShapes) {
 		if (fuselage == null)
 			return null;
@@ -274,6 +286,7 @@ public final class AircraftUtils {
 			return null;
 			
 		System.out.println("========== [AircraftUtils::getFuselageCAD] ");
+		List<OCCShape> ret = new ArrayList<>();
 
 		Amount<Length> noseLength = fuselage.getFuselageCreator().getLengthNoseTrunk();
 		System.out.println("Nose length: " + noseLength);
@@ -286,7 +299,7 @@ public final class AircraftUtils {
 				SI.METER);
 		System.out.println("Nose tip z: " + zNoseTip);
 
-		System.out.println("========== [AircraftUtils::getFuselageCAD] Patch 1: nose cap, from nose tip to x=" + noseCapStation);
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Nose cap, from nose tip: x = 0 m to x=" + noseCapStation);
 		
 		System.out.println("Getting selected sections ...");
 		// all xbar's are normalized with noseLength
@@ -297,7 +310,7 @@ public final class AircraftUtils {
 					// .linspaceDouble(
 					.halfCosine2SpaceDouble(
 					// .cosineSpaceDouble(
-					noseFirstCapSectionFactor1*xbarNoseCap, noseFirstCapSectionFactor2*xbarNoseCap, 
+					noseCapSectionFactor1*xbarNoseCap, noseCapSectionFactor2*xbarNoseCap, 
 					numberNoseCapSections) // n. points
 				);
 		
@@ -309,14 +322,18 @@ public final class AircraftUtils {
 					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
 			  );
 
-		System.out.println("Constructing the nose-cap patch, Patch-1");
-		OCCShape patch1 = 
-				OCCUtils.makePatchThruSectionsP(
-						new PVector(0.0f, 0.0f, (float) zNoseTip.doubleValue(SI.METER)), // Nose tip vertex
-						sections1
-				);
+		if(exporLoft) {
+			System.out.println("Constructing the nose-cap patch, Patch-1");
+			OCCShape patch1 = 
+					OCCUtils.makePatchThruSectionsP(
+							new PVector(0.0f, 0.0f, (float) zNoseTip.doubleValue(SI.METER)), // Nose tip vertex
+							sections1
+							);
+
+			ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
+		}
 		
-		System.out.println("========== [AircraftUtils::getFuselageCAD] Patch 2: x=" + noseCapStation + "to x=" + noseLength);
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Nose trunk (no cap): x=" + noseCapStation + " to x=" + noseLength);
 		
 		System.out.println("Getting selected sections ...");
 
@@ -328,7 +345,7 @@ public final class AircraftUtils {
 				// .linspaceDouble(
 				// .halfCosine1SpaceDouble(
 				.cosineSpaceDouble(
-					noseFirstCapSectionFactor2*xbarNoseCap, 1.0, 
+					noseCapSectionFactor2*xbarNoseCap, 1.0, 
 					numberNosePatch2Sections) // n. points
 				);
 
@@ -340,22 +357,20 @@ public final class AircraftUtils {
 					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
 			  );
 
-		System.out.println("Constructing the nose patch, Patch-2");
-		OCCShape patch2 = OCCUtils.makePatchThruSectionsP(sections2);
+		if(exporLoft) {
+			System.out.println("Constructing the nose patch, Patch-2");
+			OCCShape patch2 = OCCUtils.makePatchThruSectionsP(sections2);
 
-		System.out.println("========== [AircraftUtils::getFuselageCAD] Construct the entire fuselage nose patch (Sewing Patch-1/Patch-2) - TODO");
-				
-		List<OCCShape> ret = new ArrayList<>();
-		ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
-		ret.add(patch2); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
-
-		System.out.println("========== [AircraftUtils::getFuselageCAD] Construct fuselage cylindrical patch");
+			ret.add(patch2); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
+		}
 		
 		// nose Patch-2 terminal section
 		CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
 				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
 
 		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getLengthCylindricalTrunk();
+		
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Fuselage cylindrical trunk: x=" + noseLength + " to x=" + noseLength.plus(cylinderLength));
 
 		// Cylindrical trunk mid section
 		CADGeomCurve3D cadCrvCylinderMidSection = OCCUtils.theFactory
@@ -366,13 +381,85 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
 				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
 						noseLength.plus(cylinderLength)), false);
-		
-		OCCShape patch3 = OCCUtils.makePatchThruSections(
-				cadCrvCylinderInitialSection, cadCrvCylinderMidSection, cadCrvCylinderTerminalSection);
 
-		ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
+		if(exporLoft) {
+			OCCShape patch3 = OCCUtils.makePatchThruSections(
+					cadCrvCylinderInitialSection, cadCrvCylinderMidSection, cadCrvCylinderTerminalSection);
+
+			ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
+		}
+		
+		// Tail trunk
+		Amount<Length> tailLength = fuselage.getFuselageCreator().getLengthTailTrunk();
+		Amount<Length> tailCapLength = fuselage.getFuselageCreator().getDxTailCap();
+		Amount<Length> fuselageLength = fuselage.getLength();
+
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Tail trunk (no cap): x=" 
+				+ noseLength.plus(cylinderLength) + " to x=" + fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " (fus. length - tail cap length)"
+				);
+
+		// x stations defining cylinder outlines
+		List<Double> xmtPatch4 = Arrays.asList(
+				MyArrayUtils.halfCosine1SpaceDouble( // cosineSpaceDouble( // 
+						noseLength.plus(cylinderLength).doubleValue(SI.METER), 
+						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER),
+						numberTailPatchSections) // n. points
+				);
+		
+		List<CADGeomCurve3D> cadCurvesTailTrunk = new ArrayList<>();
+		xmtPatch4.stream()
+				 .map(x -> Amount.valueOf(x, SI.METER))
+				 .forEach(x -> cadCurvesTailTrunk.add(
+						 OCCUtils.theFactory
+							.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(x), false)
+						 	)
+						 );
+		if(exporLoft) {
+			OCCShape patch4 = OCCUtils.makePatchThruSections(
+					cadCurvesTailTrunk);
+
+			ret.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
+		}
+		
+		// tail cap patch
+
+		System.out.println("========== [AircraftUtils::getFuselageCAD] Fuselage tail cap trunk: x=" 
+				+ fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)) + " to x=" + fuselageLength + " (fus. total length)"
+				);
+
+		// x stations in tail cap
+		List<Double> xmtPatch5 = Arrays.asList(
+				MyArrayUtils.halfCosine2SpaceDouble(
+						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor1)).doubleValue(SI.METER), 
+						fuselageLength.minus(tailCapLength.times(tailCapSectionFactor2)).doubleValue(SI.METER), // tweak to avoid a degenerate section 
+						numberTailCapSections) // n. points
+				);
+
+		Amount<Length> zTailTip = Amount.valueOf( 
+				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER)),
+				SI.METER);
+		
+		CADVertex vertexTailTip = OCCUtils.theFactory.newVertex(
+				fuselageLength.doubleValue(SI.METER), 0, zTailTip.doubleValue(SI.METER));
+		
+		List<CADGeomCurve3D> cadCurvesTailCapTrunk = new ArrayList<>();
+		xmtPatch5.stream()
+				 .map(x -> Amount.valueOf(x, SI.METER))
+				 .forEach(x -> cadCurvesTailCapTrunk.add(
+						 OCCUtils.theFactory
+							.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(x), false)
+						 	)
+						 );
+
+		if(exporLoft) {
+			OCCShape patch5 = OCCUtils.makePatchThruSections(cadCurvesTailCapTrunk, vertexTailTip);
+			ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap
+		}
+		
 		
 		if (exportSupportShapes) {
+			
+			System.out.println("========== [AircraftUtils::getFuselageCAD] adding support cad entities");
 			List<OCCShape> extraShapesCap = new ArrayList<>();
 
 			// other nose cap entities (outline curves, vertices)
@@ -550,7 +637,97 @@ public final class AircraftUtils {
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCylinderXYRight).edge());
 			
 			// tail trunk
+			// points z's on nose outline curve, XZ, upper
+			List<double[]> pointsTailXZUpper = xmtPatch4.stream()
+					.map(x -> new double[]{
+							x,
+							0.0,
+							fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+					})
+					.collect(Collectors.toList());
+			// points z's on nose outline curve, XZ, lower
+			List<double[]> pointsTailXZLower = xmtPatch4.stream()
+					.map(x -> new double[]{
+							x,
+							0.0,
+							fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+					})
+					.collect(Collectors.toList());
 			
+			CADGeomCurve3D cadCrvTailXZUpper = OCCUtils.theFactory
+					.newCurve3D(pointsTailXZUpper, false);
+			CADGeomCurve3D cadCrvTailXZLower = OCCUtils.theFactory
+					.newCurve3D(pointsTailXZLower, false);
+
+			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZUpper).edge());
+			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZLower).edge());
+			
+			// tail side curve
+			List<double[]> pointsTailSideRight = xmtPatch4.stream()
+					.map(x -> new double[]{
+							x,
+							fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+							fuselage.getFuselageCreator().getCamberZAtX(x)
+					})
+					.collect(Collectors.toList());
+			
+			CADGeomCurve3D cadTailXYRight = OCCUtils.theFactory
+					.newCurve3D(pointsTailSideRight, false);
+
+			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailXYRight).edge());
+			
+			// support sections of tail, patch-4
+			cadCurvesTailTrunk.stream()
+			         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+			         .forEach(e -> extraShapesCap.add(e));			
+			
+			// tail cap support entities (outline curves, vertices)
+
+			cadCurvesTailCapTrunk.stream()
+	         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+	         .forEach(e -> extraShapesCap.add(e));			
+			
+			// points z's on tail cap outline curve, XZ, upper
+			List<double[]> pointsTailCapXZUpper = xmtPatch5.stream()
+					.map(x -> new double[]{
+							x,
+							0.0,
+							fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+					})
+					.collect(Collectors.toList());
+			pointsTailCapXZUpper.add(vertexTailTip.pnt()); // add tail tip point
+			// points z's on nose outline curve, XZ, lower
+			List<double[]> pointsTailCapXZLower = xmtPatch5.stream()
+					.map(x -> new double[]{
+							x,
+							0.0,
+							fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+					})
+					.collect(Collectors.toList());
+			pointsTailCapXZLower.add(vertexTailTip.pnt()); // add tail tip point
+			
+			CADGeomCurve3D cadTailCapXZUpper = OCCUtils.theFactory
+					.newCurve3D(pointsTailCapXZUpper, false);
+			CADGeomCurve3D cadTailCapXZLower = OCCUtils.theFactory
+					.newCurve3D(pointsTailCapXZLower, false);
+			
+			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZUpper).edge());
+			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZLower).edge());
+			
+			// tail side curve
+			List<double[]> pointsTailCapSideRight = xmtPatch5.stream()
+					.map(x -> new double[]{
+							x,
+							fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+							fuselage.getFuselageCreator().getCamberZAtX(x)
+					})
+					.collect(Collectors.toList());
+			pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point
+			
+			CADGeomCurve3D cadTailCapXYRight = OCCUtils.theFactory
+					.newCurve3D(pointsTailCapSideRight, false);
+
+			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
 			
 			// finally add all to extra shapes
 			ret.addAll(extraShapesCap);

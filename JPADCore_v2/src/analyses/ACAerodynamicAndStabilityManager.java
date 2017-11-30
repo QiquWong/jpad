@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Angle;
@@ -5635,39 +5636,13 @@ public class ACAerodynamicAndStabilityManager {
 			currentDownwashAngle = Amount.valueOf(
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertListOfAmountTodoubleArray(
+									_alphaBodyList),
+							MyArrayUtils.convertListOfAmountTodoubleArray(
 									_downwashAngleMap
 									.get(_theAerodynamicBuilderInterface.getDownwashConstant())
 									.get(_theAerodynamicBuilderInterface.getComponentTaskList()
 											.get(ComponentEnum.AIRCRAFT)
 											.get(AerodynamicAndStabilityEnum.DOWNWASH)
-											)
-									.subList(
-											0,
-											MyArrayUtils.getIndexOfMax(
-													MyArrayUtils.convertListOfAmountToDoubleArray(
-															_downwashAngleMap
-															.get(_theAerodynamicBuilderInterface.getDownwashConstant())
-															.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-																	.get(ComponentEnum.AIRCRAFT)
-																	.get(AerodynamicAndStabilityEnum.DOWNWASH)
-																	)
-															)
-													)
-											)
-									),
-							MyArrayUtils.convertListOfAmountTodoubleArray(
-									_alphaBodyList.subList(
-											0,
-											MyArrayUtils.getIndexOfMax(
-													MyArrayUtils.convertListOfAmountToDoubleArray(
-															_downwashAngleMap
-															.get(_theAerodynamicBuilderInterface.getDownwashConstant())
-															.get(_theAerodynamicBuilderInterface.getComponentTaskList()
-																	.get(ComponentEnum.AIRCRAFT)
-																	.get(AerodynamicAndStabilityEnum.DOWNWASH)
-																	)
-															)
-													)
 											)
 									),
 							_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
@@ -5680,31 +5655,11 @@ public class ACAerodynamicAndStabilityManager {
 			currentDownwashAngle = Amount.valueOf(
 					MyMathUtils.getInterpolatedValue1DLinear(
 							MyArrayUtils.convertListOfAmountTodoubleArray(
+									_alphaBodyList),
+							MyArrayUtils.convertListOfAmountTodoubleArray(
 									_downwashAngleMap
 									.get(Boolean.FALSE)
 									.get(MethodEnum.SLINGERLAND)
-									.subList(
-											0,
-											MyArrayUtils.getIndexOfMax(
-													MyArrayUtils.convertListOfAmountToDoubleArray(
-															_downwashAngleMap
-															.get(Boolean.FALSE)
-															.get(MethodEnum.SLINGERLAND)
-															)
-													)
-											)
-									),
-							MyArrayUtils.convertListOfAmountTodoubleArray(
-									_alphaBodyList.subList(
-											0,
-											MyArrayUtils.getIndexOfMax(
-													MyArrayUtils.convertListOfAmountToDoubleArray(
-															_downwashAngleMap
-															.get(Boolean.FALSE)
-															.get(MethodEnum.SLINGERLAND)
-															)
-													)
-											)
 									),
 							_alphaBodyCurrent.doubleValue(NonSI.DEGREE_ANGLE)
 							),
@@ -5766,6 +5721,7 @@ public class ACAerodynamicAndStabilityManager {
 			// WING
 			//-----------------------------------------------------------------------------------------------------------------------
 			// LIFT CURVE
+			try {
 			if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.WING).contains(AerodynamicAndStabilityPlotEnum.WING_LIFT_CURVE_CLEAN)) {
 
 				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.WING).containsKey(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)) {
@@ -5799,6 +5755,10 @@ public class ACAerodynamicAndStabilityManager {
 				}
 				else 
 					System.err.println("WARNING!! THE WING CLEAN LIFT CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING CLEAN LIFT CURVE");
+			}
+			}
+			catch (NullPointerException e) {
+				System.err.println("WARNING: (PLOT WING LIFT CURVE) MISSING VALUES ...");
 			}
 			//-----------------------------------------------------------------------------------------------------------------------
 			// POLAR CURVE
@@ -9755,7 +9715,7 @@ public class ACAerodynamicAndStabilityManager {
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CL TOTAL EQUILIBRIUM
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE)) {
-
+			try {	
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -9820,11 +9780,19 @@ public class ACAerodynamicAndStabilityManager {
 			else
 				System.err.println("WARNING!! THE TRIMMED LIFT CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED LIFT CURVE");
 		}
+		
+		catch (NullPointerException e) {
+			System.err.println("WARNING: (PLOT AIRCRAFT LIFT CURVE) MISSING VALUES ...");
+		}
+		}
 
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CD TOTAL EQUILIBRIUM
+
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_POLAR_CURVE)) {
 
+			try {
+				
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -9894,10 +9862,16 @@ public class ACAerodynamicAndStabilityManager {
 				System.err.println("WARNING!! THE TRIMMED DRAG POLAR CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED DRAG POLAR CURVE");
 		}
 
+		catch (NoSuchElementException e) {
+			System.err.println("WARNING: (PLOT WING POLAR CURVE) MISSING VALUES ...");
+		}
+		}
+
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CL HTAIL EQUILIBRIUM
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE_HTAIL)) {
 
+			try {	
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -9961,12 +9935,18 @@ public class ACAerodynamicAndStabilityManager {
 			}
 			else
 				System.err.println("WARNING!! THE TRIMMED HORIZONTAL TAIL LIFT CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED HORIZONTAL TAIL LIFT CURVE");
-		}
+		
+			}
+			catch (NullPointerException e) {
+				System.err.println("WARNING: (PLOT HTAIL EQUILIBRIUM LIFT CURVE) MISSING VALUES ...");
+			}
+			}
 
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CD HTAIL EQUILIBRIUM
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_POLAR_CURVE_HTAIL)) {
 
+			try {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -10035,12 +10015,17 @@ public class ACAerodynamicAndStabilityManager {
 			}
 			else
 				System.err.println("WARNING!! THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TRIMMED HORIZONTAL TAIL DRAG POLAR CURVE");
-		}
+			}
+			catch (NoSuchElementException e) {
+				System.err.println("WARNING: (PLOT HTAIL EQUILIBRIUM POLAR CURVE) MISSING VALUES ...");
+			}
+			}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// TOTAL TRIMMED EFFICIENCY CURVES VS ALPHA
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_EFFICIENCY_CURVE_VS_ALPHA)) {
 
+			try {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -10104,12 +10089,17 @@ public class ACAerodynamicAndStabilityManager {
 			}
 			else
 				System.err.println("WARNING!! THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES VS ALPHA");
-		}
+			}
+			catch (NullPointerException e) {
+				System.err.println("WARNING: (PLOT EFFICIENCY CURVE) MISSING VALUES ...");
+			}		
+			}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// TOTAL TRIMMED EFFICIENCY CURVES VS CLe
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_EFFICIENCY_CURVE_VS_ALPHA)) {
 
+			try {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -10157,13 +10147,13 @@ public class ACAerodynamicAndStabilityManager {
 							xVectorMatrix, 
 							yVectorMatrix, 
 							"Total Equilibrium Efficiency vs CLe", 
-							"alpha body", 
+							"Cl", 
 							"Efficiency",
 							null, 
 							null, 
 							null, 
 							null, 
-							"deg",
+							"",
 							"", 
 							false,
 							legend,
@@ -10177,12 +10167,17 @@ public class ACAerodynamicAndStabilityManager {
 			}
 			else
 				System.err.println("WARNING!! THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TOTAL TRIMMED AIRCRAFT EFFICIENCY CURVES VS CLe");
-		}
+			}
+			catch (NoSuchElementException e) {
+				System.err.println("WARNING: (PLOT EFFICIENCY VS CL CURVE) MISSING VALUES ...");
+			}
+			}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// DELTA ELEVATOR EQUILIBRIUM
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DELTA_ELEVATOR_EQUILIBRIUM)) {
 
+			try {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -10250,12 +10245,17 @@ public class ACAerodynamicAndStabilityManager {
 			}
 			else
 				System.err.println("WARNING!! THE EQUILIBRIUM DELTA ELEVATOR ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE EQULIBRIUM DELTA ELEVATOR CURVE");
-		}
+			}
+			catch (NullPointerException e) {
+				System.err.println("WARNING: (PLOT DELTA E EQUILIBRIUM CURVE) MISSING VALUES ...");
+			}
+			}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// NEUTRAL POINT VS ALPHA
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT_VS_ALPHA)) {
 
+			try {
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -10319,219 +10319,238 @@ public class ACAerodynamicAndStabilityManager {
 			}
 			else
 				System.err.println("WARNING!! THE NEUTRAL POINT ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE NEUTRAL POINT CURVE VS ALPHA");
-		}
+			}
+			catch (NullPointerException e) {
+				System.err.println("WARNING: (PLOT NEUTRAL POINT CURVE) MISSING VALUES ...");
+			}
+			}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// NEUTRAL POINT VS CLe
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.NEUTRAL_POINT_VS_CLe)) {
 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+			try {
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
+					xVectorMatrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
+					legend  = new ArrayList<>(); 
 
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_totalEquilibriumLiftCoefficient.get(
-									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_neutralPointPositionMap.get(
-									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
-							));
-					legend.add("Xcg = " + 
-							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+					for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+
+						int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+
+						for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+							if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+									.equals(_deltaEForEquilibrium.get(0))
+									) {
+								indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+								break;
+							}
+
+						xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+								_totalEquilibriumLiftCoefficient.get(
+										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+								_neutralPointPositionMap.get(
+										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+								));
+						legend.add("Xcg = " + 
+								_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+					}
+
+					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					legendString = new String[xVectorMatrix.size()];
+
+					for(int i=0; i <xVectorMatrix.size(); i++){
+						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+						legendString [i] = legend.get(i);
+					}
+
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix, 
+								yVectorMatrix, 
+								"Neutral Point vs CLe", 
+								"CLe", 
+								"Neutral Point",
+								null, 
+								null, 
+								null, 
+								null, 
+								"",
+								"", 
+								false,
+								legend,
+								aircraftPlotFolderPath,
+								"Neutral_Point_vs_CLe", 
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
 				}
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
-				}
-
-				try {
-					MyChartToFileUtils.plot(
-							xVectorMatrix, 
-							yVectorMatrix, 
-							"Neutral Point vs CLe", 
-							"CLe", 
-							"Neutral Point",
-							null, 
-							null, 
-							null, 
-							null, 
-							"",
-							"", 
-							false,
-							legend,
-							aircraftPlotFolderPath,
-							"Neutral_Point_vs_CLe", 
-							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
-							);
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+				else
+					System.err.println("WARNING!! THE NEUTRAL POINT ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE NEUTRAL POINT CURVE VS CLe");
 			}
-			else
-				System.err.println("WARNING!! THE NEUTRAL POINT ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE NEUTRAL POINT CURVE VS CLe");
+			catch (NoSuchElementException e) {
+				System.err.println("WARNING: (PLOT NEUTRAL POINT VS CL CURVE) MISSING VALUES ...");
+			}
 		}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// STATIC STABILITY MARGIN VS ALPHA
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.STATIC_STABILITY_MARGIN_VS_ALPHA)) {
 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+			try {
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
+					xVectorMatrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
+					legend  = new ArrayList<>(); 
 
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_staticStabilityMarginMap.get(
-									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
-							));
-					legend.add("Xcg = " + 
-							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+					for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+
+						int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+
+						for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+							if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+									.equals(_deltaEForEquilibrium.get(0))
+									) {
+								indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+								break;
+							}
+
+						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+								_staticStabilityMarginMap.get(
+										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+								));
+						legend.add("Xcg = " + 
+								_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+					}
+
+					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					legendString = new String[xVectorMatrix.size()];
+
+					for(int i=0; i <xVectorMatrix.size(); i++){
+						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+						legendString [i] = legend.get(i);
+					}
+
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix, 
+								yVectorMatrix, 
+								"Static Stability Margin vs Alpha", 
+								"alpha body", 
+								"Static Stability Margin",
+								null, 
+								null, 
+								null, 
+								null, 
+								"deg",
+								"", 
+								false,
+								legend,
+								aircraftPlotFolderPath,
+								"Static_Stability_Margin_vs_Alpha", 
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
 				}
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
-				}
-
-				try {
-					MyChartToFileUtils.plot(
-							xVectorMatrix, 
-							yVectorMatrix, 
-							"Static Stability Margin vs Alpha", 
-							"alpha body", 
-							"Static Stability Margin",
-							null, 
-							null, 
-							null, 
-							null, 
-							"deg",
-							"", 
-							false,
-							legend,
-							aircraftPlotFolderPath,
-							"Static_Stability_Margin_vs_Alpha", 
-							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
-							);
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+				else
+					System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS ALPHA");
 			}
-			else
-				System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS ALPHA");
+			catch (NullPointerException e) {
+				System.err.println("WARNING: (PLOT STATIC STABILITY MARGIN CURVE) MISSING VALUES ...");
+			}
 		}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
 		// STATIC STABILITY MARGIN VS CLe
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.STATIC_STABILITY_MARGIN_VS_CLe)) {
 
-			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
+			try {
+				if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
-				xVectorMatrix = new ArrayList<Double[]>();
-				yVectorMatrix = new ArrayList<Double[]>();
-				legend  = new ArrayList<>(); 
+					xVectorMatrix = new ArrayList<Double[]>();
+					yVectorMatrix = new ArrayList<Double[]>();
+					legend  = new ArrayList<>(); 
 
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_totalEquilibriumLiftCoefficient.get(
-									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
-					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
-							_staticStabilityMarginMap.get(
-									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
-							));
-					legend.add("Xcg = " + 
-							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+					for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+
+						int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
+
+						for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+							if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+									.equals(_deltaEForEquilibrium.get(0))
+									) {
+								indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
+								break;
+							}
+
+						xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+								_totalEquilibriumLiftCoefficient.get(
+										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
+								_staticStabilityMarginMap.get(
+										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+								));
+						legend.add("Xcg = " + 
+								_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+					}
+
+					xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
+					legendString = new String[xVectorMatrix.size()];
+
+					for(int i=0; i <xVectorMatrix.size(); i++){
+						xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
+						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
+						legendString [i] = legend.get(i);
+					}
+
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix, 
+								yVectorMatrix, 
+								"Static Stability Margin vs CLe", 
+								"CLe", 
+								"Static Stability Margin",
+								null, 
+								null, 
+								null, 
+								null, 
+								"",
+								"", 
+								false,
+								legend,
+								aircraftPlotFolderPath,
+								"Static_Stability_Margin_vs_CLe", 
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
+								);
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
 				}
-
-				xMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				yMatrix = new double[xVectorMatrix.size()][xVectorMatrix.get(0).length];
-				legendString = new String[xVectorMatrix.size()];
-
-				for(int i=0; i <xVectorMatrix.size(); i++){
-					xMatrix[i] = MyArrayUtils.convertToDoublePrimitive(xVectorMatrix.get(i));
-					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
-					legendString [i] = legend.get(i);
-				}
-
-				try {
-					MyChartToFileUtils.plot(
-							xVectorMatrix, 
-							yVectorMatrix, 
-							"Static Stability Margin vs CLe", 
-							"CLe", 
-							"Static Stability Margin",
-							null, 
-							null, 
-							null, 
-							null, 
-							"",
-							"", 
-							false,
-							legend,
-							aircraftPlotFolderPath,
-							"Static_Stability_Margin_vs_CLe", 
-							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability()
-							);
-				} catch (InstantiationException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+				else
+					System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS CLe");
 			}
-			else
-				System.err.println("WARNING!! THE STATIC STABILITY MARGIN ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE STATIC STABILITY MARGIN CURVE VS CLe");
+			catch (NoSuchElementException e) {
+				System.err.println("WARNING: (PLOT STATIC STABILITY MARGIN VS CL CURVE) MISSING VALUES ...");
+			}
 		}
 		
 		//-----------------------------------------------------------------------------------------------------------------------
