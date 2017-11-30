@@ -4,3 +4,8 @@
 /JPADCore_v2/.apt_generated/*
 /.metadata/
 *.class
+/JPADCore/bin/
+/JPADSandbox/bin/
+/JPADConfigs/bin/
+/JPADCore_v2/bin/
+/JPADSandbox_v2/bin/
