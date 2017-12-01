@@ -6,10 +6,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
+import opencascade.GeomAbs_Shape;
 import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
+import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Shape;
 import processing.core.PVector;
 
 public final class OCCUtils {
@@ -17,8 +21,10 @@ public final class OCCUtils {
 	public static CADShapeFactory theFactory;
 
 	static public void initCADShapeFactory() {
-		CADShapeFactory.setFactory(new OCCShapeFactory());
-		theFactory = CADShapeFactory.getFactory();
+		if (theFactory == null) {
+			CADShapeFactory.setFactory(new OCCShapeFactory());
+			theFactory = CADShapeFactory.getFactory();
+		}
 	}
 	
 	// Example: write("test.brep", occshape1, occsape2, occshape3)	
@@ -77,25 +83,26 @@ public final class OCCUtils {
 		listShapes.stream()
 			.forEach(s -> builder.Add(compound, s.getShape()));
 		
-		TopoDS_CompSolid compsolid = new TopoDS_CompSolid();
-		builder.MakeCompSolid(compsolid);
+//		TopoDS_CompSolid compsolid = new TopoDS_CompSolid();
+//		builder.MakeCompSolid(compsolid);
+//		
+//		// === Experimental, trying to write solids, TODO: fixme 
+//		listShapes.stream()
+//			.filter(s -> s instanceof OCCSolid)
+//			.forEach(s -> {
+//				System.out.println(">>>>>> Solid");
+//				builder.Add(compsolid, s.getShape());
+//			});
 		
-		// === Experimental, trying to write solids, TODO: fixme 
-		listShapes.stream()
-			.filter(s -> s instanceof OCCSolid)
-			.forEach(s -> {
-				System.out.println(">>>>>> Solid");
-				builder.Add(compsolid, s.getShape());
-			});
 		
+//		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
+//		long resultSolids = BRepTools.Write(compsolid, fileNameSolids);
+//		if (resultSolids == 1)
+//			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
+
+		// ====================
 		// write on file
-		long result = BRepTools.Write(compound, fileName);
-		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
-		long resultSolids = BRepTools.Write(compsolid, fileNameSolids);
-		if (resultSolids == 1)
-			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
-		// ===
-		
+		long result = BRepTools.Write(compound, fileName);		
 		return (result == 1);
 	}
 	
@@ -194,4 +201,32 @@ public final class OCCUtils {
 		return makePatchThruSectionsP(null, sections, p1);
 	}
 	
+	public static CADShape makeFilledFace(TopoDS_Shape ... shapesArray) {
+		// TODO: add checks
+		
+		return makeFilledFace(Arrays.stream(shapesArray).collect(Collectors.toList()));
+	}
+
+	public static CADShape makeFilledFace(List<TopoDS_Shape> shapes) {
+		// TODO: add checks
+		
+		BRepOffsetAPI_MakeFilling filled = new BRepOffsetAPI_MakeFilling();
+		shapes.stream()
+			.forEach(s -> filled.Add((TopoDS_Edge) s, GeomAbs_Shape.GeomAbs_C0));
+		filled.Build();
+		System.out.println("[OCCUtils::makeFilledFace] Filled surface is done? = " + filled.IsDone());
+
+		CADShape face = OCCUtils.theFactory.newShape(filled.Shape());		
+		return face;
+	}
+	
+	public static CADShape makeFilledFace(CADGeomCurve3D ... crvs) {
+		List<TopoDS_Shape> shapes = new ArrayList<>();
+		Arrays.stream(crvs).collect(Collectors.toList()).stream()
+			.map(crv -> crv.edge())
+			.forEach(cadedge -> shapes.add(
+					((OCCEdge)cadedge).getShape())
+			);
+		return makeFilledFace(shapes);
+	}	
 }

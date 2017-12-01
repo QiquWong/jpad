@@ -386,10 +386,10 @@ public final class AircraftUtils {
 
 			ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
 			
-			// TODO: fixme and OCCSolid
-			OCCSolid solid3 = new OCCSolid(patch3);
-			System.out.println("Solid volume = " + solid3.getVolume());
-			ret.add(solid3);
+//			// TODO: fixme and OCCSolid
+//			OCCSolid solid3 = new OCCSolid(patch3);
+//			System.out.println("Solid volume = " + solid3.getVolume());
+//			ret.add(solid3);
 		}
 		
 		// Tail trunk
