@@ -1,6 +1,5 @@
 package it.unina.daf.jpadcad.occ;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +10,6 @@ import opencascade.BRepOffsetAPI_ThruSections;
 import opencascade.GProp_GProps;
 import opencascade.TopoDS;
 import opencascade.TopoDS_Shape;
-import opencascade.TopoDS_Vertex;
 
 public class OCCShell extends OCCShape implements CADShell
 {

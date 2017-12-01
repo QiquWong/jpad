@@ -1,8 +1,9 @@
-package cad.occ;
+package it.unina.daf.jpadcad.occ.javafx;
 
 import java.util.Collections;
 import java.util.List;
 
+import it.unina.daf.jpadcad.occ.OCCDataProvider;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Transform;

@@ -10,7 +10,6 @@ import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import analyses.ACAnalysisManager;
 import analyses.OperatingConditions;
-import cad.occ.OCCFXViewableCAD;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -28,7 +27,7 @@ public class JPADGlobalData {
 	public static ObjectProperty<Aircraft> theCurrentAircraftProperty = new SimpleObjectProperty<Aircraft>();
 	public static ObjectProperty<Fuselage> theCurrentFuselageProperty = new SimpleObjectProperty<Fuselage>();
 	
-	public static ObservableMap<OCCFXViewableCAD,String> viewablesMap = FXCollections.observableHashMap();
+	// public static ObservableMap<OCCFXViewableCAD,String> viewablesMap = FXCollections.observableHashMap();
 	
 	public static OperatingConditions _theCurrentOperatingConditions;
 	public static ACAnalysisManager theCurrentAnalysis = null;

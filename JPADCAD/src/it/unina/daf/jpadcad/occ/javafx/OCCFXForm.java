@@ -1,4 +1,4 @@
-package cad.occ;
+package it.unina.daf.jpadcad.occ.javafx;
 
 import javafx.scene.Group;
 import javafx.scene.transform.Rotate;

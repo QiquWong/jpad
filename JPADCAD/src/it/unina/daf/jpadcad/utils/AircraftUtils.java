@@ -19,7 +19,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import analyses.OperatingConditions;
-import cad.occ.OCCShapeFactory;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import database.DatabaseManager;
@@ -28,15 +27,14 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
+import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADVertex;
 import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
-import opencascade.Geom_Curve;
-import opencascade.Geom_SurfaceOfLinearExtrusion;
-import opencascade.gp_Dir;
+import it.unina.daf.jpadcad.occ.OCCSolid;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import writers.JPADStaticWriteUtils;
@@ -387,6 +385,10 @@ public final class AircraftUtils {
 					cadCrvCylinderInitialSection, cadCrvCylinderMidSection, cadCrvCylinderTerminalSection);
 
 			ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
+			
+			// TODO: fixme and OCCSolid
+//			OCCSolid solid3 = new OCCSolid(patch3);
+//			System.out.println("Solid volume = " + solid3.getVolume());
 		}
 		
 		// Tail trunk

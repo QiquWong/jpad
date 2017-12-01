@@ -1,4 +1,4 @@
-package cad.occ;
+package it.unina.daf.jpadcad.occ.javafx;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,10 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fxyz.extras.CubeWorld;
-import org.fxyz.shapes.primitives.BezierMesh;
-import org.fxyz.shapes.primitives.helper.InterpolateBezier;
-import org.fxyz.tools.CubeViewer;
+import org.fxyz3d.scene.CubeViewer;
+import org.fxyz3d.shapes.primitives.BezierMesh;
+import org.fxyz3d.shapes.primitives.helper.InterpolateBezier;
 
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
@@ -123,7 +122,6 @@ final public class OCCFXSubScene {
 	private OCCFXForm xForm = new OCCFXForm();
 	
 	private CubeViewer cubeViewer;
-	private CubeWorld cubeWorld;
     
 	public OCCFXSubScene() {
 
@@ -139,14 +137,14 @@ final public class OCCFXSubScene {
 		Rotate rotateY = new Rotate(0, 0, 0, 0, Rotate.Y_AXIS);
     	
     	// the control points
-    	List<org.fxyz.geometry.Point3D> knots = Arrays.asList(
-    			new org.fxyz.geometry.Point3D(0f,0f,0f),
-    			new org.fxyz.geometry.Point3D(0,5,5),
-    			new org.fxyz.geometry.Point3D(0,10,-10),
-    			new org.fxyz.geometry.Point3D(10,15,-7),
-    			new org.fxyz.geometry.Point3D(15,5,-4),
-    			new org.fxyz.geometry.Point3D(0,-1,0),
-    			new org.fxyz.geometry.Point3D(0,-3,0)
+    	List<org.fxyz3d.geometry.Point3D> knots = Arrays.asList(
+    			new org.fxyz3d.geometry.Point3D(0f,0f,0f),
+    			new org.fxyz3d.geometry.Point3D(0,5,5),
+    			new org.fxyz3d.geometry.Point3D(0,10,-10),
+    			new org.fxyz3d.geometry.Point3D(10,15,-7),
+    			new org.fxyz3d.geometry.Point3D(15,5,-4),
+    			new org.fxyz3d.geometry.Point3D(0,-1,0),
+    			new org.fxyz3d.geometry.Point3D(0,-3,0)
     			);
 
     	boolean showControlPoints=true;
@@ -158,10 +156,10 @@ final public class OCCFXSubScene {
     	AtomicInteger sp=new AtomicInteger();
     	if(showKnots || showControlPoints){
     		interpolate.getSplines().forEach(spline->{ // <===================== LAMBDA
-    			org.fxyz.geometry.Point3D k0=spline.getPoints().get(0);
-    			org.fxyz.geometry.Point3D k1=spline.getPoints().get(1);
-    			org.fxyz.geometry.Point3D k2=spline.getPoints().get(2);
-    			org.fxyz.geometry.Point3D k3=spline.getPoints().get(3);
+    			org.fxyz3d.geometry.Point3D k0=spline.getPoints().get(0);
+    			org.fxyz3d.geometry.Point3D k1=spline.getPoints().get(1);
+    			org.fxyz3d.geometry.Point3D k2=spline.getPoints().get(2);
+    			org.fxyz3d.geometry.Point3D k3=spline.getPoints().get(3);
     			if(showKnots){
     				Sphere s=new Sphere(0.2d);
     				s.getTransforms().add(new Translate(k0.x, k0.y, k0.z));
@@ -173,8 +171,8 @@ final public class OCCFXSubScene {
     				testCurvesXForm.getChildren().add(s);
     			}
     			if(showControlPoints){
-    				org.fxyz.geometry.Point3D dir=k1.substract(k0).crossProduct(new org.fxyz.geometry.Point3D(0,-1,0));
-    				double angle=Math.acos(k1.substract(k0).normalize().dotProduct(new org.fxyz.geometry.Point3D(0,-1,0)));
+    				org.fxyz3d.geometry.Point3D dir=k1.substract(k0).crossProduct(new org.fxyz3d.geometry.Point3D(0,-1,0));
+    				double angle=Math.acos(k1.substract(k0).normalize().dotProduct(new org.fxyz3d.geometry.Point3D(0,-1,0)));
     				double h1=k1.substract(k0).magnitude();
     				Cylinder c=new Cylinder(0.03d,h1);
     				c.getTransforms().addAll(new Translate(k0.x, k0.y-h1/2d, k0.z),
@@ -183,8 +181,8 @@ final public class OCCFXSubScene {
     				c.setMaterial(new PhongMaterial(Color.GREEN));
     				testCurvesXForm.getChildren().add(c);
 
-    				dir=k2.substract(k1).crossProduct(new org.fxyz.geometry.Point3D(0,-1,0));
-    				angle=Math.acos(k2.substract(k1).normalize().dotProduct(new org.fxyz.geometry.Point3D(0,-1,0)));
+    				dir=k2.substract(k1).crossProduct(new org.fxyz3d.geometry.Point3D(0,-1,0));
+    				angle=Math.acos(k2.substract(k1).normalize().dotProduct(new org.fxyz3d.geometry.Point3D(0,-1,0)));
     				h1=k2.substract(k1).magnitude();
     				c=new Cylinder(0.03d,h1);
     				c.getTransforms().addAll(new Translate(k1.x, k1.y-h1/2d, k1.z),
@@ -193,8 +191,8 @@ final public class OCCFXSubScene {
     				c.setMaterial(new PhongMaterial(Color.GREEN));
     				testCurvesXForm.getChildren().add(c);
 
-    				dir=k3.substract(k2).crossProduct(new org.fxyz.geometry.Point3D(0,-1,0));
-    				angle=Math.acos(k3.substract(k2).normalize().dotProduct(new org.fxyz.geometry.Point3D(0,-1,0)));
+    				dir=k3.substract(k2).crossProduct(new org.fxyz3d.geometry.Point3D(0,-1,0));
+    				angle=Math.acos(k3.substract(k2).normalize().dotProduct(new org.fxyz3d.geometry.Point3D(0,-1,0)));
     				h1=k3.substract(k2).magnitude();
     				c=new Cylinder(0.03d,h1);
     				c.getTransforms().addAll(new Translate(k2.x, k2.y-h1/2d, k2.z),

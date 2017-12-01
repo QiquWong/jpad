@@ -17,5 +17,8 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/hdf/slf4j-nop-1.7.5.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/processing/v3.3.6/library/core.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/fxyz/fxyz3d-0.1.1.jar" sourcepath="/LIBRARY_FOLDER/fxyz/fxyz3d-0.1.1-sources.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jim/jimStlMeshImporterJFX.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/jim/jimObjModelImporterJFX.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
