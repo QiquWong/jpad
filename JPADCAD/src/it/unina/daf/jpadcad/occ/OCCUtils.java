@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
+import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
 import processing.core.PVector;
 
@@ -76,8 +77,25 @@ public final class OCCUtils {
 		listShapes.stream()
 			.forEach(s -> builder.Add(compound, s.getShape()));
 		
+		TopoDS_CompSolid compsolid = new TopoDS_CompSolid();
+		builder.MakeCompSolid(compsolid);
+		
+		// === Experimental, trying to write solids, TODO: fixme 
+		listShapes.stream()
+			.filter(s -> s instanceof OCCSolid)
+			.forEach(s -> {
+				System.out.println(">>>>>> Solid");
+				builder.Add(compsolid, s.getShape());
+			});
+		
 		// write on file
 		long result = BRepTools.Write(compound, fileName);
+		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
+		long resultSolids = BRepTools.Write(compsolid, fileNameSolids);
+		if (resultSolids == 1)
+			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
+		// ===
+		
 		return (result == 1);
 	}
 	

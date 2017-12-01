@@ -6,6 +6,7 @@ import opencascade.BRepBuilderAPI_MakeShell;
 import opencascade.BRepBuilderAPI_MakeSolid;
 import opencascade.BRepGProp;
 import opencascade.GProp_GProps;
+import opencascade.Geom_Surface;
 import opencascade.TopoDS_Shell;
 
 public class OCCSolid extends OCCShape implements CADSolid
@@ -15,10 +16,13 @@ public class OCCSolid extends OCCShape implements CADSolid
 	public OCCSolid() {
 	}	
 
-	public OCCSolid(CADShape patch3) {
-		OCCFace occf = (OCCFace)patch3;
-		TopoDS_Shell sh = (TopoDS_Shell)((OCCShape)patch3).getShape();
-		BRepBuilderAPI_MakeSolid mso = new BRepBuilderAPI_MakeSolid(sh);
+	public OCCSolid(CADShape shell) {
+		OCCFace occf = new OCCFace();
+		occf.setShape(((OCCShape)shell).getShape());
+		BRepBuilderAPI_MakeShell msh = new BRepBuilderAPI_MakeShell(
+				(Geom_Surface)occf.getGeomSurface().getSurface());
+		BRepBuilderAPI_MakeSolid mso = new BRepBuilderAPI_MakeSolid(
+				msh.Shell());
 		myShape = mso.Shape();
 		
 		// volume of the solid
