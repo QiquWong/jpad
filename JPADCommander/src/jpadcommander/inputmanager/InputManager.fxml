@@ -459,7 +459,7 @@
                                                          <items>
                                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
                                                                <children>
-                                                                  <TabPane fx:id="tabPaneWingViewAndAirfoils" onMouseClicked="#zoomViewsAircraft" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <TabPane onMouseClicked="#zoomViewsAircraft" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <tabs>
                                                                         <Tab id="TopView" text="Top view">
                                                                            <content>
@@ -2243,7 +2243,7 @@
                                                    <items>
                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
                                                          <children>
-                                                            <TabPane onMouseClicked="#zoomViewsWing" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TabPane fx:id="tabPaneWingViewAndAirfoils" onMouseClicked="#zoomViewsWing" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <tabs>
                                                                   <Tab id="FuselageTopView" text="Planform">
                                                                      <content>
