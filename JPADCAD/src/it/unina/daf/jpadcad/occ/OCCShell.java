@@ -45,7 +45,7 @@ public class OCCShell extends OCCShape implements CADShell
 
 	public OCCShell() {
 	}	
-	
+
 	public OCCShell(List<CADGeomCurve3D> cadGeomCurveList) {
 		myShape = OCCShellImpl(null, cadGeomCurveList, null, defaultMakeSolid, defaultMakeRuled, defaultPrec3D);
 	}

@@ -50,39 +50,40 @@ public class Test15 {
 		OCCShell.setDefaultMakeSolid(true);
 		System.out.println(">>>>>> OCCShell default-make-solid: " + OCCShell.isDefaultMakeSolid());
 
-//		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, supportShapes);
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, supportShapes);
+
 		
-		Amount<Length> noseLength = fuselage.getFuselageCreator().getLengthNoseTrunk();
-		System.out.println("Nose length: " + noseLength);
-		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getLengthCylindricalTrunk();
-		System.out.println("Cylinder length: " + cylinderLength);
-		
-		// Cylindrical trunk initial section
-		CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
-				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
-		// Cylindrical trunk terminal section
-		CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
-				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
-						noseLength.plus(cylinderLength)), false);
-		CADEdge e1 = cadCrvCylinderInitialSection.edge();
-		System.out.println("e1 >>>>> length: " + cadCrvCylinderInitialSection.length());
-		
-		CADVertex[] v12 = e1.vertices();
-		System.out.println("e1 >>>>> n. vertices: " + v12.length);
-		List<double[]> p12 = new ArrayList<double[]>();
-		p12.add(v12[1].pnt());
-		p12.add(v12[0].pnt()); // reversed order
-		CADGeomCurve3D cadCrvE1 = OCCUtils.theFactory.newCurve3D(p12, false);
-		System.out.println("e2 >>>>> length: " + cadCrvE1.length());
-		CADEdge e2 = cadCrvE1.edge();
-		
-		CADShape face1 = OCCUtils.makeFilledFace(
-				cadCrvCylinderInitialSection, cadCrvE1);
+//		Amount<Length> noseLength = fuselage.getFuselageCreator().getLengthNoseTrunk();
+//		System.out.println("Nose length: " + noseLength);
+//		Amount<Length> cylinderLength = fuselage.getFuselageCreator().getLengthCylindricalTrunk();
+//		System.out.println("Cylinder length: " + cylinderLength);
+//		
+//		// Cylindrical trunk initial section
+//		CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
+//				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
+//		// Cylindrical trunk terminal section
+//		CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
+//				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
+//						noseLength.plus(cylinderLength)), false);
+//		CADEdge e1 = cadCrvCylinderInitialSection.edge();
+//		System.out.println("e1 >>>>> length: " + cadCrvCylinderInitialSection.length());
+//		
+//		CADVertex[] v12 = e1.vertices();
+//		System.out.println("e1 >>>>> n. vertices: " + v12.length);
+//		List<double[]> p12 = new ArrayList<double[]>();
+//		p12.add(v12[1].pnt());
+//		p12.add(v12[0].pnt()); // reversed order
+//		CADGeomCurve3D cadCrvE1 = OCCUtils.theFactory.newCurve3D(p12, false);
+//		System.out.println("e2 >>>>> length: " + cadCrvE1.length());
+//		CADEdge e2 = cadCrvE1.edge();
+//		
+//		CADShape face1 = OCCUtils.makeFilledFace(
+//				cadCrvCylinderInitialSection, cadCrvE1);
 		
 		// Write to a file
 		String fileName = "test15.brep";
 		
-		if (OCCUtils.write(fileName, face1))
+		if (OCCUtils.write(fileName, fuselageShapes))
 			System.out.println("========== [main] Output written on file: " + fileName);
 
 	}

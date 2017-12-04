@@ -10,6 +10,8 @@ import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
 import opencascade.GeomAbs_Shape;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
 import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
 import opencascade.TopoDS_Edge;
@@ -228,5 +230,47 @@ public final class OCCUtils {
 					((OCCEdge)cadedge).getShape())
 			);
 		return makeFilledFace(shapes);
-	}	
+	}
+	
+	/** Return the number of shapes in one shape */
+	public static int numberOfShape(TopoDS_Shape shape, TopAbs_ShapeEnum type)
+	{
+		int n=0;
+		TopExp_Explorer exp = new TopExp_Explorer(shape, type);
+		while (exp.More() > 0) {
+			n++;
+			exp.Next();
+		}
+		return n;
+	}
+	
+	public static String reportOnShape(TopoDS_Shape shape, String ... prepends) {
+		StringBuilder sb = new StringBuilder()
+				.append("\t-------------------------------------\n");
+		
+		java.util.Arrays.asList(prepends).stream()
+			.forEach(s -> sb.append("\t" +s + "\n")); // user additional log messages
+				
+		sb
+			.append("\tTopoDS_Shape report\n")
+			//.append("\t-------------------------------------\n")
+			//.append("\tTypes: ")
+			//.append( java.util.Arrays.asList( TopAbs_ShapeEnum.class.getEnumConstants()) + "\n")
+			.append("\t-------------------------------------\n");
+		
+		sb
+			.append("\tShapes of type TopAbs_SHAPE: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SHAPE) + "\n")
+			.append("\tShapes of type TopAbs_VERTEX " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_VERTEX) + "\n")
+			.append("\tShapes of type TopAbs_EDGE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_EDGE) + "\n")
+			.append("\tShapes of type TopAbs_WIRE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_WIRE) + "\n")
+			.append("\tShapes of type TopAbs_FACE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_FACE) + "\n")
+			.append("\tShapes of type TopAbs_SHELL " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SHELL) + "\n")
+			.append("\tShapes of type TopAbs_SOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SOLID) + "\n")
+			.append("\tShapes of type TopAbs_COMPSOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPSOLID) + "\n")
+			.append("\tShapes of type TopAbs_COMPOUND " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPOUND) + "\n")
+			.append("\t-------------------------------------\n");
+		
+		return sb.toString();
+	}
+	
 }

@@ -27,14 +27,18 @@ import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
-import it.unina.daf.jpadcad.occ.CADShell;
+import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADVertex;
 import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
+import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
-import it.unina.daf.jpadcad.occ.OCCSolid;
+import opencascade.BRepBuilderAPI_Sewing;
+import opencascade.TopoDS_Shape;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
 import processing.core.PVector;
 import standaloneutils.MyArrayUtils;
 import writers.JPADStaticWriteUtils;
@@ -282,7 +286,13 @@ public final class AircraftUtils {
 			return null;
 		if (OCCUtils.theFactory == null)
 			return null;
-			
+		
+		OCCShape patch1 = null, // nose cap 
+				patch2 = null, // nose trunk
+				patch3 = null, // cylindrical trunk 
+				patch4 = null, // tail trunk 
+				patch5 = null; // tail cap
+		
 		System.out.println("========== [AircraftUtils::getFuselageCAD] ");
 		List<OCCShape> ret = new ArrayList<>();
 
@@ -322,13 +332,13 @@ public final class AircraftUtils {
 
 		if(exporLoft) {
 			System.out.println("Constructing the nose-cap patch, Patch-1");
-			OCCShape patch1 = 
+			patch1 = 
 					OCCUtils.makePatchThruSectionsP(
 							new PVector(0.0f, 0.0f, (float) zNoseTip.doubleValue(SI.METER)), // Nose tip vertex
 							sections1
 							);
 
-			ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
+//			ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
 		}
 		
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Nose trunk (no cap): x=" + noseCapStation + " to x=" + noseLength);
@@ -357,9 +367,9 @@ public final class AircraftUtils {
 
 		if(exporLoft) {
 			System.out.println("Constructing the nose patch, Patch-2");
-			OCCShape patch2 = OCCUtils.makePatchThruSectionsP(sections2);
+			patch2 = OCCUtils.makePatchThruSectionsP(sections2);
 
-			ret.add(patch2); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
+//			ret.add(patch2); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
 		}
 		
 		// nose Patch-2 terminal section
@@ -381,15 +391,9 @@ public final class AircraftUtils {
 						noseLength.plus(cylinderLength)), false);
 
 		if(exporLoft) {
-			OCCShape patch3 = OCCUtils.makePatchThruSections(
+			patch3 = OCCUtils.makePatchThruSections(
 					cadCrvCylinderInitialSection, cadCrvCylinderMidSection, cadCrvCylinderTerminalSection);
-
-			ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
-			
-//			// TODO: fixme and OCCSolid
-//			OCCSolid solid3 = new OCCSolid(patch3);
-//			System.out.println("Solid volume = " + solid3.getVolume());
-//			ret.add(solid3);
+//			ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
 		}
 		
 		// Tail trunk
@@ -418,10 +422,9 @@ public final class AircraftUtils {
 						 	)
 						 );
 		if(exporLoft) {
-			OCCShape patch4 = OCCUtils.makePatchThruSections(
+			patch4 = OCCUtils.makePatchThruSections(
 					cadCurvesTailTrunk);
-
-			ret.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
+//			ret.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
 		}
 		
 		// tail cap patch
@@ -455,10 +458,49 @@ public final class AircraftUtils {
 						 );
 
 		if(exporLoft) {
-			OCCShape patch5 = OCCUtils.makePatchThruSections(cadCurvesTailCapTrunk, vertexTailTip);
-			ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap
+			patch5 = OCCUtils.makePatchThruSections(cadCurvesTailCapTrunk, vertexTailTip);
+//			ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap
 		}
 		
+		if(exporLoft) {
+			// Sewing the lofts
+			BRepBuilderAPI_Sewing shellMaker = new BRepBuilderAPI_Sewing();
+			shellMaker.Init();
+			shellMaker.Add(patch1.getShape());
+			shellMaker.Add(patch2.getShape());
+			shellMaker.Add(patch3.getShape());
+			shellMaker.Add(patch4.getShape());
+			shellMaker.Add(patch5.getShape());
+			shellMaker.Perform(); // actually compute sewing. Never forget this step!
+
+			System.out.println("Sewing step successful? " + !shellMaker.IsNull());
+			if (!shellMaker.IsNull()) {
+				TopoDS_Shape tds_shape = shellMaker.SewedShape();
+				// The resulting shape may consist of multiple shapes!
+				// Use TopExp_Explorer to iterate through shells
+				System.out.println(OCCUtils.reportOnShape(tds_shape, "Fuselage sewed surface"));
+				TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
+				while (exp.More() > 0) {
+					ret.add((OCCShape)OCCShapeFactory.getFactory().newShape(exp.Current()));
+					exp.Next();
+				}
+			} else {
+				// add patches one by one
+				ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
+				ret.add(patch2); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
+				ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
+				ret.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
+				ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap				
+			}
+
+			// TODO: fixme and OCCSolid
+//			OCCSolid solid3 = new OCCSolid(patch3);
+//			System.out.println("Solid volume = " + solid3.getVolume());
+//			ret.add(solid3);
+			
+			// TODO: put the lists of x's defining support curves outside the if's 
+
+		}		
 		
 		if (exportSupportShapes) {
 			
@@ -731,9 +773,35 @@ public final class AircraftUtils {
 					.newCurve3D(pointsTailCapSideRight, false);
 
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
+
+			// ==================== Fuselage as a Solid
+			
+//			// Cylindrical trunk initial section
+//			CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
+//					.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
+//			// Cylindrical trunk terminal section
+//			CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
+//					.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
+//							noseLength.plus(cylinderLength)), false);
+//			CADEdge e1 = cadCrvCylinderInitialSection.edge();
+//			System.out.println("e1 >>>>> length: " + cadCrvCylinderInitialSection.length());
+//			
+//			CADVertex[] v12 = e1.vertices();
+//			System.out.println("e1 >>>>> n. vertices: " + v12.length);
+//			List<double[]> p12 = new ArrayList<double[]>();
+//			p12.add(v12[1].pnt());
+//			p12.add(v12[0].pnt()); // reversed order
+//			CADGeomCurve3D cadCrvE1 = OCCUtils.theFactory.newCurve3D(p12, false);
+//			System.out.println("e2 >>>>> length: " + cadCrvE1.length());
+//			CADEdge e2 = cadCrvE1.edge();
+//			
+//			CADShape face1 = OCCUtils.makeFilledFace(
+//					cadCrvCylinderInitialSection, cadCrvE1);
+
 			
 			// finally add all to extra shapes
 			ret.addAll(extraShapesCap);
+			
 		}
 		
 		return ret;
