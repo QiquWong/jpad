@@ -1867,7 +1867,42 @@ public class ACAerodynamicAndStabilityManager {
 									)
 							);
 			}
-			
+//----------------------------------------------------------------------
+			int lastSortedIndex = MyArrayUtils.isSorted(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaHTailList));
+			if(lastSortedIndex != -1) {
+				_alphaBodyList = _alphaBodyList.subList(0, lastSortedIndex);
+				_alphaWingList = _alphaWingList.subList(0, lastSortedIndex);
+				_alphaHTailList = _alphaHTailList.subList(0, lastSortedIndex);
+				
+
+				_downwashAngleMap.get(Boolean.TRUE).put(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
+						_downwashAngleMap.get(Boolean.TRUE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
+						);
+				
+				_downwashGradientMap.get(Boolean.TRUE).put(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
+						_downwashGradientMap.get(Boolean.TRUE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
+						);
+				
+				
+				if(!_theAerodynamicBuilderInterface.getDownwashConstant()) {
+				_downwashAngleMap.get(Boolean.FALSE).put(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
+						_downwashAngleMap.get(Boolean.FALSE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
+						);
+				
+				_downwashGradientMap.get(Boolean.FALSE).put(
+						_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH), 
+						_downwashGradientMap.get(Boolean.FALSE).get(
+								_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).get(AerodynamicAndStabilityEnum.DOWNWASH)).subList(0, lastSortedIndex)
+						);
+				}
+			}		
+//----------------------------------------------------------------------			
 			_liftingSurfaceAerodynamicManagers.put(
 					ComponentEnum.HORIZONTAL_TAIL,
 					new LSAerodynamicsManager(

@@ -911,5 +911,21 @@ public static <T extends Quantity> String ListOfAmountWithUnitsInEvidenceString(
 	return st;
 }
 
+/**
+ * This method returns the index of the LAST SORTED ELEMENT of the array if it isn't sorted. If the array input is already sorted, the method returns -1
+ * @author Manuela Ruocco
+ *
+ * @param array input
+ * @return index of last sorted element is the array isn't alseady sorted. Else -1
+ */
+public static int isSorted( Double[] arrayInput) {
+
+	for(int i=1; i < arrayInput.length; i++) {
+		if(arrayInput[i] < arrayInput[i-1]) {
+			return i-1;
+		}
+	}
+	return -1;
+}
 }
 

@@ -11,7 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="IRON analysis">
-        <weights 
+<!--         <weights 
             file="analysis_weights_IRON.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -22,7 +22,7 @@
 			method_nacelles=""
 			method_landing_gears=""
 			method_systems=""
-            />
+            /> -->
 		<!-- method_XXX="AVERAGED" if empty string -->
     <!--
 	<balance 
@@ -36,37 +36,20 @@
 			method_canard=""
 		/>
 	-->
-<<<<<<< HEAD
-<!-- 	<aerodynamic_and_stability
-			plot="FALSE"
-			create_CSV="FALSE"
-			take_off_condition="TRUE"
-=======
+	
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off_condition="FALSE"
->>>>>>> 76781f51c342c490afbf97f1d9a3f6e5f0293b0e
+			take_off_condition="TRUE"
 			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
-			climb_condition="FALSE"
+			climb_condition="TRUE"
 			file_climb_condition="analysis_aerodynamics_Prototype.xml"
 			cruise_condition="TRUE"
 			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
-			landing_condition="FALSE"
+			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
-<<<<<<< HEAD
-	/> -->
-	
-=======
-<<<<<<< HEAD
-	/> -->
-	<!--
-=======
 	/>
-<!-- 	
->>>>>>> 0f016f669458529721f83c95191e54cfa155ea08
->>>>>>> 76781f51c342c490afbf97f1d9a3f6e5f0293b0e
-	<performance 
+<!-- 	<performance 
 			file="analysis_performance_IRON_updated_canard.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -77,18 +60,7 @@
 			landing="TRUE"
 			payload_range="TRUE"
 			V_n_diagram="TRUE"
-			mission_profile="TRUE"
-<<<<<<< HEAD
-	/>
-<<<<<<< HEAD
-	
-=======
-	-->
-=======
-	/> -->
-	
->>>>>>> 0f016f669458529721f83c95191e54cfa155ea08
->>>>>>> 76781f51c342c490afbf97f1d9a3f6e5f0293b0e
+			mission_profile="TRUE" -->
 	<!--
 	<costs 
 			file="analysis_costs_IRON.xml"
