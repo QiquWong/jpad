@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import processing.core.PVector;
+
 /**
  * Class to provide factory methods
  */
@@ -122,6 +124,13 @@ public abstract class CADShapeFactory
 	 */
 	public abstract CADGeomCurve3D newCurve3D(List<double[]> pointList, boolean isPeriodic);
 
+	/**
+	 * Create a new CADGeomCurve3D
+	 * @param pointList The list of PVector points belonging to the curve (a BSpline)
+	 * @return The created CADGeomCurve3D
+	 */
+	public abstract CADGeomCurve3D newCurve3DP(List<PVector> pointList, boolean isPeriodic);
+	
 	/**
 	 * Create a new CADShell by constructing a loft surface (see BRepOffsetAPI_ThruSections)
 	 * @param cadGeomCurveList The list of CADGeomCurve3D through which the loft passes

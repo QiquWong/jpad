@@ -424,13 +424,13 @@ public class LSAerodynamicsManager {
 		//......................................................................................................................
 //		twistDistributionRadians = new double[_numberOfPointSemiSpanWise];
 //		alphaZeroLiftDistributionRadians = new double[_numberOfPointSemiSpanWise];
-//		dihedralDistributionRadians = new double[_numberOfPointSemiSpanWise];
+		dihedralDistributionRadians = new double[_numberOfPointSemiSpanWise];
 //		
-//		for (int i=0; i< _numberOfPointSemiSpanWise; i++) {
+		for (int i=0; i< _numberOfPointSemiSpanWise; i++) {
 //			twistDistributionRadians[i] = _twistDistribution.get(i).doubleValue(SI.RADIAN);
 //			alphaZeroLiftDistributionRadians[i] = _alphaZeroLiftDistribution.get(i).doubleValue(SI.RADIAN);
-//			dihedralDistributionRadians[i] = 0.0;
-//		}
+			dihedralDistributionRadians[i] = 0.0;
+		}
 
 		theNasaBlackwellCalculator = new NasaBlackwell(
 				_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
@@ -1416,7 +1416,7 @@ public class LSAerodynamicsManager {
 		 */
 		public void nasaBlackwell() {
 
-			double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 30, 31);
+			double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 40, 31);
 			double[] clDistributionActualNasaBlackwell = new double[_numberOfPointSemiSpanWise]; 
 			boolean firstIntersectionFound = false;
 			int indexOfFirstIntersection = 0;

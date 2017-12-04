@@ -1610,7 +1610,7 @@
                                                          </font>
                                                       </Label>
                                                       <Separator layoutX="-2.0" layoutY="1751.0" prefHeight="3.0" prefWidth="1345.0" />
-                                                      <Button fx:id="wingAddPanelButton" layoutX="79.0" layoutY="1052.0" mnemonicParsing="false" text="Add panel" />
+                                                      <Button fx:id="wingAddPanelButton" layoutX="79.0" layoutY="1052.0" mnemonicParsing="false" onAction="#addPanel" text="Add panel" />
                                                       <TabPane fx:id="tabPaneWingFlaps" layoutY="1750.0" prefHeight="352.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
                                                             <Tab text="Flap 1">
@@ -1707,14 +1707,14 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="wingAddFlapButton" layoutX="59.0" layoutY="1721.0" mnemonicParsing="false" text="Add flap" />
+                                                      <Button fx:id="wingAddFlapButton" layoutX="59.0" layoutY="1721.0" mnemonicParsing="false" onAction="#addFlap" text="Add flap" />
                                                       <Separator layoutX="-3.0" layoutY="2102.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <Label layoutX="6.0" layoutY="2110.0" prefHeight="21.0" prefWidth="179.0" text="SLATS:" textFill="#0400ff">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
-                                                      <Button fx:id="wingAddSlatButton" layoutX="58.0" layoutY="2108.0" mnemonicParsing="false" text="Add slat" />
+                                                      <Button fx:id="wingAddSlatButton" layoutX="58.0" layoutY="2108.0" mnemonicParsing="false" onAction="#addSlat" text="Add slat" />
                                                       <Separator layoutX="-2.0" layoutY="2140.0" prefHeight="0.0" prefWidth="1312.0" />
                                                       <TabPane fx:id="tabPaneWingSlats" layoutY="2140.0" prefHeight="400.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                          <tabs>
@@ -2224,7 +2224,11 @@
                                                             </Tab>
                                                          </tabs>
                                                       </TabPane>
-                                                      <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="2937.0" mnemonicParsing="false" text="Add spolier" />
+                                                      <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="2937.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spolier" />
+                                                      <Button fx:id="wingRemovePanelButton" layoutX="152.0" layoutY="1052.0" mnemonicParsing="false" onAction="#removePanel" text="Remove panel" />
+                                                      <Button fx:id="wingRemoveFlapButton" layoutX="123.0" layoutY="1721.0" mnemonicParsing="false" onAction="#removeFlap" text="Remove flap" />
+                                                      <Button fx:id="wingRemoveSlatButton" layoutX="121.0" layoutY="2108.0" mnemonicParsing="false" onAction="#removeSlat" text="Remove slat" />
+                                                      <Button fx:id="wingRemoveSpoilerButton" layoutX="164.0" layoutY="2937.0" mnemonicParsing="false" onAction="#removeSpoiler" text="Remove spolier" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>
@@ -2239,11 +2243,16 @@
                                                    <items>
                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="332.0" prefWidth="730.0">
                                                          <children>
-                                                            <TabPane onMouseClicked="#zoomViewsWing" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TabPane fx:id="tabPaneWingViewAndAirfoils" onMouseClicked="#zoomViewsWing" prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <tabs>
                                                                   <Tab id="FuselageTopView" text="Planform">
                                                                      <content>
                                                                         <Pane id="fuselageTopViewPane" fx:id="wingPlanformPane" />
+                                                                     </content>
+                                                                  </Tab>
+                                                                  <Tab id="FuselageTopView" text="Equivalent Wing">
+                                                                     <content>
+                                                                        <Pane id="fuselageTopViewPane" fx:id="wingPlanformPane1" />
                                                                      </content>
                                                                   </Tab>
                                                                </tabs>

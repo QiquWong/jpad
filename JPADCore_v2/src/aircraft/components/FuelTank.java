@@ -11,15 +11,12 @@ import javax.measure.quantity.Volume;
 import javax.measure.quantity.VolumetricDensity;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.jscience.physics.amount.Amount;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import aircraft.components.liftingSurface.LiftingSurface;
 import calculators.aerodynamics.AirfoilCalc;
 import configuration.MyConfiguration;
-import database.databasefunctions.FuelFractionDatabaseReader;
-import standaloneutils.MyArrayUtils;
 import standaloneutils.MyMathUtils;
 import standaloneutils.MyUnits;
 import standaloneutils.atmosphere.AtmosphereCalc;

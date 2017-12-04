@@ -5,4 +5,9 @@ package it.unina.daf.jpadcad.occ;
  */
 public interface CADSolid extends CADShape
 {
+	/**
+	 * Returns the volume of this solid
+	 * @return the volume of this solid
+	 */    
+	public double getVolume();
 }
