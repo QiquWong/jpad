@@ -80,6 +80,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -200,8 +201,6 @@ public class InputManagerController {
 	@FXML
 	private Button wingAddPanelButton;
 	@FXML
-	private Button wingRemovePanelButton;
-	@FXML
 	private Button wingInnerSectionAirfoilDetailsPanel1Button;
 	@FXML
 	private Button wingOuterSectionAirfoilDetailsPanel1Button;
@@ -212,15 +211,9 @@ public class InputManagerController {
 	@FXML
 	private Button wingAddFlapButton;
 	@FXML
-	private Button wingRemoveFlapButton;
-	@FXML
 	private Button wingAddSlatButton;
 	@FXML
-	private Button wingRemoveSlatButton;
-	@FXML
 	private Button wingAddSpoilerButton;
-	@FXML
-	private Button wingRemoveSpoilerButton;
 	
 	//...........................................................................................
 	// FILE CHOOSER:
@@ -1285,11 +1278,18 @@ public class InputManagerController {
 			newAircraftButton.setDisable(true);
 		}
 		
+		tabPaneWingPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingFlaps.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingSlats.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingSpoilers.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingViewAndAirfoils.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingViewAndAirfoils.getTabs().get(0).closableProperty().set(false);
+		tabPaneWingViewAndAirfoils.getTabs().get(1).closableProperty().set(false);
+		
 		aircraftLoadButtonDisableCheck();
 		cabinConfigurationClassesNumberDisableCheck();
 		checkCabinConfigurationClassesNumber();
 		equivalentWingDisableCheck();
-		removeButtonsDisableChecks();
 		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilRootDetailButton, textFieldEquivalentWingAirfoilRootPath);
 		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilKinkDetailButton, textFieldEquivalentWingAirfoilKinkPath);
 		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilTipDetailButton, textFieldEquivalentWingAirfoilTipPath);
@@ -1647,7 +1647,11 @@ public class InputManagerController {
 
 			@Override
 			public void handle(ActionEvent event) {
-				showAirfoilData(airfoilPathTextField.getText());
+				try {
+					showAirfoilData(airfoilPathTextField.getText());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -1777,15 +1781,6 @@ public class InputManagerController {
 		// disable the panels tab pane if the check-box is checked
 		tabPaneWingPanels.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
 		wingAddPanelButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
-		
-	}
-	
-	private void removeButtonsDisableChecks () {
-		
-		wingRemovePanelButton.disableProperty().bind(Bindings.isEmpty(tabPaneWingPanels.getTabs()));
-		wingRemoveFlapButton.disableProperty().bind(Bindings.isEmpty(tabPaneWingFlaps.getTabs()));
-		wingRemoveSlatButton.disableProperty().bind(Bindings.isEmpty(tabPaneWingSlats.getTabs()));
-		wingRemoveSpoilerButton.disableProperty().bind(Bindings.isEmpty(tabPaneWingSpoilers.getTabs()));
 		
 	}
 	
@@ -1963,7 +1958,11 @@ public class InputManagerController {
 		panelInnerSectionAirfoilDetailsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				showAirfoilData(panelInnerSectionAirfoilPathTextField.getText());
+				try {
+					showAirfoilData(panelInnerSectionAirfoilPathTextField.getText());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		contentPane.getChildren().add(panelInnerSectionAirfoilDetailsButton);
@@ -2054,7 +2053,11 @@ public class InputManagerController {
 		panelOuterSectionAirfoilDetailsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				showAirfoilData(panelOuterSectionAirfoilPathTextField.getText());
+				try {
+					showAirfoilData(panelOuterSectionAirfoilPathTextField.getText());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		contentPane.getChildren().add(panelOuterSectionAirfoilDetailsButton);
@@ -2083,13 +2086,6 @@ public class InputManagerController {
 		
 		newPanelTab.setContent(contentPane);
 		tabPaneWingPanels.getTabs().add(newPanelTab);
-		
-	}
-	
-	@FXML
-	private void removePanel() {
-		
-		tabPaneWingPanels.getTabs().remove(tabPaneWingPanels.getTabs().size()-1);
 		
 	}
 	
@@ -2204,13 +2200,6 @@ public class InputManagerController {
 		
 		newFlapTab.setContent(contentPane);
 		tabPaneWingFlaps.getTabs().add(newFlapTab);
-		
-	}
-	
-	@FXML
-	private void removeFlap() {
-		
-		tabPaneWingFlaps.getTabs().remove(tabPaneWingFlaps.getTabs().size()-1);
 		
 	}
 	
@@ -2343,13 +2332,6 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void removeSlat() {
-		
-		tabPaneWingSlats.getTabs().remove(tabPaneWingSlats.getTabs().size()-1);
-		
-	}
-	
-	@FXML
 	private void addSpoiler() {
 		
 		Tab newSpoilerTab = new Tab("Spoiler " + (tabPaneWingSpoilers.getTabs().size()+1));
@@ -2464,23 +2446,19 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void removeSpoiler() {
-		
-		tabPaneWingSpoilers.getTabs().remove(tabPaneWingSpoilers.getTabs().size()-1);
-		
-	}
-	
-	@FXML
-	private void showAirfoilData(String airfoilFileName) {
+	private void showAirfoilData(String airfoilFileName) throws IOException {
 		
 		Tab airfoilTab = new Tab("Airfoil: " + airfoilFileName);
-		Pane contentPane = new Pane();  
+//		BorderPane contentPane = new BorderPane();  
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/AirfoilInputManager.fxml"));
+		BorderPane contentPane = loader.load();
 		
 		/* TODO: LOAD THE FXML */
 		
 		airfoilTab.setContent(contentPane);
 		tabPaneWingViewAndAirfoils.getTabs().add(airfoilTab);
-		
 		
 	}
 	

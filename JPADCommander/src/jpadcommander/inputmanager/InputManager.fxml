@@ -2225,10 +2225,6 @@
                                                          </tabs>
                                                       </TabPane>
                                                       <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="2937.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spolier" />
-                                                      <Button fx:id="wingRemovePanelButton" layoutX="152.0" layoutY="1052.0" mnemonicParsing="false" onAction="#removePanel" text="Remove panel" />
-                                                      <Button fx:id="wingRemoveFlapButton" layoutX="123.0" layoutY="1721.0" mnemonicParsing="false" onAction="#removeFlap" text="Remove flap" />
-                                                      <Button fx:id="wingRemoveSlatButton" layoutX="121.0" layoutY="2108.0" mnemonicParsing="false" onAction="#removeSlat" text="Remove slat" />
-                                                      <Button fx:id="wingRemoveSpoilerButton" layoutX="164.0" layoutY="2937.0" mnemonicParsing="false" onAction="#removeSpoiler" text="Remove spolier" />
                                                    </children>
                                                 </AnchorPane>
                                              </content>

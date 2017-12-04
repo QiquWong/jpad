@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="4720.0" prefWidth="1072.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jpadcommander.inputmanager.AirfoilInputManagerController">
+   <center>
+      <Pane prefHeight="3792.0" prefWidth="1072.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="3352.0" prefWidth="1072.0">
+               <children>
+                  <BorderPane prefHeight="681.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <center>
+                        <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <items>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
+                                 <children>
+                                    <ScrollPane prefHeight="674.0" prefWidth="635.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2107.0" prefWidth="1325.0">
+                                             <children>
+                                                <Label layoutX="6.0" layoutY="34.0" prefHeight="21.0" prefWidth="199.0" text="t/c max:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="57.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="88.0" prefHeight="21.0" prefWidth="232.0" text="Normalized LE radius:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator layoutX="-10.0" layoutY="33.0" prefHeight="0.0" prefWidth="1345.0" />
+                                                <Label layoutX="6.0" layoutY="6.0" text="GEOMETRY" textFill="#0400ff">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageLength" layoutX="6.0" layoutY="108.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Separator layoutX="-2.0" layoutY="146.0" prefHeight="0.0" prefWidth="1312.0" />
+                                                <Label layoutX="6.0" layoutY="156.0" prefHeight="21.0" prefWidth="241.0" text="AERODYNAMIC" textFill="#0400ff">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator layoutX="-2.0" layoutY="187.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                <Label layoutX="6.0" layoutY="190.0" prefHeight="21.0" prefWidth="232.0" text="External Cl curve:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <CheckBox layoutX="147.0" layoutY="192.0" mnemonicParsing="false" />
+                                                <Label layoutX="6.0" layoutY="211.0" prefHeight="21.0" prefWidth="232.0" text="External Cd curve:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <CheckBox layoutX="147.0" layoutY="213.0" mnemonicParsing="false" />
+                                                <Label layoutX="6.0" layoutY="233.0" prefHeight="21.0" prefWidth="232.0" text="External Cm curve:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <CheckBox layoutX="147.0" layoutY="235.0" mnemonicParsing="false" />
+                                                <Label layoutX="6.0" layoutY="266.0" prefHeight="21.0" prefWidth="199.0" text="Alpha zero lift:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="289.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Separator layoutX="-10.0" layoutY="260.0" prefHeight="3.0" prefWidth="1345.0" />
+                                                <ChoiceBox layoutX="348.0" layoutY="289.0" prefHeight="30.0" prefWidth="47.0" />
+                                                <Label layoutX="6.0" layoutY="320.0" prefHeight="21.0" prefWidth="199.0" text="Alpha star:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="343.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <ChoiceBox layoutX="348.0" layoutY="343.0" prefHeight="30.0" prefWidth="47.0" />
+                                                <Label layoutX="6.0" layoutY="373.0" prefHeight="21.0" prefWidth="199.0" text="Alpha stall:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="396.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <ChoiceBox layoutX="348.0" layoutY="396.0" prefHeight="30.0" prefWidth="47.0" />
+                                                <Label layoutX="6.0" layoutY="426.0" prefHeight="21.0" prefWidth="199.0" text="Cl alpha:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="449.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <ChoiceBox layoutX="348.0" layoutY="449.0" prefHeight="30.0" prefWidth="47.0" />
+                                                <Label layoutX="6.0" layoutY="480.0" prefHeight="21.0" prefWidth="199.0" text="Cl zero:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="503.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="534.0" prefHeight="21.0" prefWidth="199.0" text="Cl star:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="557.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="588.0" prefHeight="21.0" prefWidth="199.0" text="Cl max:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="611.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="642.0" prefHeight="21.0" prefWidth="199.0" text="Cd min:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="665.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="696.0" prefHeight="21.0" prefWidth="199.0" text="Cl at Cd min:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="719.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="750.0" prefHeight="21.0" prefWidth="246.0" text="Laminar bucket semi-extension:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="773.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="804.0" prefHeight="21.0" prefWidth="246.0" text="Laminar bucket depth:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="827.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="858.0" prefHeight="21.0" prefWidth="246.0" text="K factor drag polar:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="881.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="912.0" prefHeight="21.0" prefWidth="246.0" text="Cm alpha:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="935.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <ChoiceBox layoutX="348.0" layoutY="935.0" prefHeight="30.0" prefWidth="47.0" />
+                                                <Label layoutX="6.0" layoutY="966.0" prefHeight="21.0" prefWidth="246.0" text="Cm ac:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="989.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="1020.0" prefHeight="21.0" prefWidth="246.0" text="Cm ac stall:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="1043.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="1074.0" prefHeight="21.0" prefWidth="326.0" text="Aerodynamic center adimensional position:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="1097.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="1128.0" prefHeight="21.0" prefWidth="326.0" text="Critical Mach number:">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="1151.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="1182.0" prefHeight="21.0" prefWidth="326.0" text="Upper transition point (% chord)">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="1205.0" prefHeight="31.0" prefWidth="340.0" />
+                                                <Label layoutX="6.0" layoutY="1236.0" prefHeight="21.0" prefWidth="326.0" text="Lower transition point (% chord)">
+                                                   <font>
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField id="textFieldFuselageDeckNumber" layoutX="6.0" layoutY="1259.0" prefHeight="31.0" prefWidth="340.0" />
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                 <children>
+                                    <BorderPane layoutX="386.0" layoutY="181.0" prefHeight="678.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <center>
+                                          <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                             <children>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="3397.0" prefWidth="730.0">
+                                                   <children>
+                                                      <TabPane prefHeight="978.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <tabs>
+                                                            <Tab id="FuselageTopView" text="Airfoil View">
+                                                               <content>
+                                                                  <Pane id="fuselageTopViewPane" fx:id="cabinConfigurationSeatMapPane" />
+                                                               </content>
+                                                            </Tab>
+                                                            <Tab id="FuselageTopView" text="Airfoil Coordinates">
+                                                               <content>
+                                                                  <Pane id="fuselageTopViewPane" fx:id="cabinConfigurationSeatMapPane1" />
+                                                               </content>
+                                                            </Tab>
+                                                         </tabs>
+                                                      </TabPane>
+                                                   </children>
+                                                </AnchorPane>
+                                             </children>
+                                          </Pane>
+                                       </center>
+                                    </BorderPane>
+                                 </children>
+                              </AnchorPane>
+                           </items>
+                        </SplitPane>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </Pane>
+   </center>
+</BorderPane>
