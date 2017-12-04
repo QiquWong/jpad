@@ -38,7 +38,7 @@
 			method_canard=""
 		/>
 	-->
-	<aerodynamic_and_stability
+<!-- 	<aerodynamic_and_stability
 			plot="FALSE"
 			create_CSV="FALSE"
 			take_off_condition="TRUE"
@@ -49,8 +49,8 @@
 			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
 			landing_condition="FALSE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
-	/>
-	<!--
+	/> -->
+	
 	<performance 
 			file="analysis_performance_IRON.xml"
 			plot="FALSE"
@@ -64,7 +64,7 @@
 			V_n_diagram="TRUE"
 			mission_profile="TRUE"
 	/>
-	-->
+	
 	<!--
 	<costs 
 			file="analysis_costs_IRON.xml"
