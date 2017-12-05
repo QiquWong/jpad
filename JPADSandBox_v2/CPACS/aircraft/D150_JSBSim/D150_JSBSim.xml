@@ -19427,5 +19427,16 @@
       <property>aero/beta-deg</property>
       <property>aero/Re</property>
       <property>velocities/mach</property>
+      <property>propulsion/engine/thrust-lbs</property>
+      <property>propulsion/engine[1]/thrust-lbs</property>
+      <property>position/h-sl-meters</property>
+      <property>attitude/phi-deg</property>
+      <property>attitude/theta-deg</property>
+      <property>attitude/psi-deg</property>
+      <property>velocities/vtrue-kts</property>
+      <property>velocities/h-dot-fps</property>
+      <property>velocities/p-rad_sec</property>
+      <property>velocities/q-rad_sec</property>
+      <property>velocities/r-rad_sec</property>
    </output>
 </fdm_config>

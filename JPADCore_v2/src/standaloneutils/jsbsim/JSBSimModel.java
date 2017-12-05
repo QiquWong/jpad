@@ -1147,6 +1147,45 @@ public class JSBSimModel {
 			JPADStaticWriteUtils.writeSingleNode("property","aero/beta-deg",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","aero/Re",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","velocities/mach",outputElement,doc);
+			
+			/*
+
+velocities/h-dot-fps (R)
+velocities/v-north-fps (R)
+velocities/v-east-fps (R)
+velocities/v-down-fps (R)
+velocities/u-fps (R)
+velocities/v-fps (R)
+velocities/w-fps (R)
+velocities/p-rad_sec (R)
+velocities/q-rad_sec (R)
+velocities/r-rad_sec (R)
+ 
+position/h-sl-ft (RW)
+position/h-sl-meters (RW)
+
+attitude/phi-deg (R)
+attitude/theta-deg (R)
+attitude/psi-deg (R)
+
+velocities/vtrue-kts (R)
+
+propulsion/engine/thrust-lbs (R)
+
+			 */
+
+			JPADStaticWriteUtils.writeSingleNode("property","propulsion/engine/thrust-lbs",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","propulsion/engine[1]/thrust-lbs",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","position/h-sl-meters",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","attitude/phi-deg",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","attitude/theta-deg",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","attitude/psi-deg",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/vtrue-kts",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/h-dot-fps",outputElement,doc);
+			
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/p-rad_sec",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/q-rad_sec",outputElement,doc);
+			JPADStaticWriteUtils.writeSingleNode("property","velocities/r-rad_sec",outputElement,doc);
 
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();

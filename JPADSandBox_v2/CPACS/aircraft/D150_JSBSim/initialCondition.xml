@@ -1,12 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<initialize name="cruise">
-  <altitude unit="M"> 8000.0 </altitude>
-  <vt unit="FT/SEC">     700.0 </vt>
-  <gamma unit="DEG">       0.0 </gamma>
-  <latitude unit="DEG">   47.0 </latitude>
-  <longitude unit="DEG"> 122.0 </longitude>
-  <phi unit="DEG">         0.0 </phi>
-  <psi unit="DEG">       225.0 </psi>
-  <beta unit="DEG">        0.0 </beta>
+<?xml version="1.0" encoding="UTF-8"?>
+<initialize name="initialCondition">
+   <ubody unit="M/SEC">0.000000</ubody>
+   <vbody unit="M/SEC">0.000000</vbody>
+   <wbody unit="M/SEC">0.000000</wbody>
+   <longitude unit="DEG">20.000</longitude>
+   <latitude unit="DEG">30.000</latitude>
+   <phi unit="DEG">0.000000</phi>
+   <theta unit="DEG">1.000</theta>
+   <psi unit="DEG">30.000</psi>
+   <altitude unit="M">2.500</altitude>
+   <elevation unit="M">2.000</elevation>
+   <hwind>0.000000</hwind>
 </initialize>
-
