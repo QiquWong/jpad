@@ -34,7 +34,7 @@ public class JSBSimUtils {
 
 	public static Element createLandingGearElement( List<Double> properties, Double[] position,
 			Document doc, String landingGearString, String brake) {
-		org.w3c.dom.Element noseGearElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+		org.w3c.dom.Element gearElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 				doc,"contact",
 				Tuple.of("type", "BOGEY"), 
 				Tuple.of("name", landingGearString)
@@ -44,31 +44,31 @@ public class JSBSimUtils {
 		JPADStaticWriteUtils.writeSingleNode("x",position[0],locationElementNoseGear,doc);
 		JPADStaticWriteUtils.writeSingleNode("y",position[1],locationElementNoseGear,doc);
 		JPADStaticWriteUtils.writeSingleNode("z",position[2],locationElementNoseGear,doc);
-		noseGearElement.appendChild(locationElementNoseGear);
+		gearElement.appendChild(locationElementNoseGear);
 
-		JPADStaticWriteUtils.writeSingleNode("static_friction",properties.get(0),noseGearElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("dynamic_friction",properties.get(1),noseGearElement,doc);
-		JPADStaticWriteUtils.writeSingleNode("rolling_friction",properties.get(2),noseGearElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("static_friction",properties.get(0),gearElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("dynamic_friction",properties.get(1),gearElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("rolling_friction",properties.get(2),gearElement,doc);
 		org.w3c.dom.Element springCoeff = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
 				doc, "spring_coeff", properties.get(3), 
 				3, 6, Tuple.of("unit", "LBS/FT"));
-		noseGearElement.appendChild(springCoeff);
+		gearElement.appendChild(springCoeff);
 		org.w3c.dom.Element dynamicCoeff = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
 				doc, "dynamic_coeff", properties.get(4), 
 				3, 6, Tuple.of("unit", "LBS/FT"));
-		noseGearElement.appendChild(dynamicCoeff);
+		gearElement.appendChild(dynamicCoeff);
 		org.w3c.dom.Element dynamicCoeffRebound = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
 				doc, "damping_coeff_rebound", properties.get(5), 
 				3, 6, Tuple.of("unit", "LBS/FT/SEC"));
-		noseGearElement.appendChild(dynamicCoeffRebound);
+		gearElement.appendChild(dynamicCoeffRebound);
 		org.w3c.dom.Element maxSteer = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
 				doc, "max_steer", properties.get(6), 
 				3, 6, Tuple.of("unit", "DEG"));
-		noseGearElement.appendChild(maxSteer);
-		JPADStaticWriteUtils.writeSingleNode("brake_group",brake,locationElementNoseGear,doc);
-		JPADStaticWriteUtils.writeSingleNode("retractable",properties.get(7),locationElementNoseGear,doc);
+		gearElement.appendChild(maxSteer);
+		JPADStaticWriteUtils.writeSingleNode("brake_group",brake,gearElement,doc);
+		JPADStaticWriteUtils.writeSingleNode("retractable",properties.get(7),gearElement,doc);
 
-		return noseGearElement;
+		return gearElement;
 		
 	}
 	
@@ -226,8 +226,7 @@ public class JSBSimUtils {
 	
 	
 	public static Element createTankElement(
-			double[][] properties, Document doc, String position) {
-		org.w3c.dom.Element rootElementEngine = doc.createElement("propulsion");
+			double[][] properties, Document doc, String position, org.w3c.dom.Element rootElementEngine) {
 		//INNER
 		org.w3c.dom.Element tankInnerElement = doc.createElement("tank");
 		tankInnerElement.setAttribute("type", "FUEL");
@@ -385,9 +384,6 @@ public class JSBSimUtils {
 		return rootElementChannel;
 	}
 	
-	
-	
-	
 	public static Element createAlileronElement(
 			List<String> deflection, Document doc, List<Integer> number, String controlSurface, String axis, int index, String elementName) {
 		
@@ -520,9 +516,8 @@ public class JSBSimUtils {
 
 	public static Element createAeroDataBodyAxisElement(Document doc, org.w3c.dom.Element outputElement,
 			List<String> aeroData, int machDimension, double[] machVector,
-			int reynoldsDimension, double[] reynoldsVector, String axis, String axisElementname ) {
-		org.w3c.dom.Element axisElement = doc.createElement("axis");
-		axisElement.setAttribute("name", axisElementname);
+			int reynoldsDimension, double[] reynoldsVector, String axis, org.w3c.dom.Element axisElement ) {
+
 		//FORCE		
 		org.w3c.dom.Element forceFunctionElement = 
 				doc.createElement("function");
@@ -592,7 +587,6 @@ public class JSBSimUtils {
 				tableElement.appendChild(tableElementBreakPoint);
 				counterList = counterList+1;
 			}
-			JPADStaticWriteUtils.writeSingleNode("property","aero/function/"+axis+"_coeff_basic_M" + i,outputElement,doc);
 		}
 		
 		return axisElement;
@@ -600,11 +594,8 @@ public class JSBSimUtils {
 	
 	public static Element createAeroDataBodyAxisControlSurfaceElement(
 			Document doc, List<String> deltaAeroDataDeflection, int machDimension, double[] machVector, int reynoldsDimension,
-			double[] reynoldsVector, String axis, String axisElementName, double[] deflection, String controlSurfaceUID) {
-
-		org.w3c.dom.Element axisElement = doc.createElement("axis");
-		axisElement.setAttribute("name", axisElementName);
-		
+			double[] reynoldsVector, String axis, org.w3c.dom.Element axisElement, double[] deflection, String controlSurfaceUID) {
+	
 		org.w3c.dom.Element functionElementTop = 
 				doc.createElement("function");
 		functionElementTop.setAttribute(

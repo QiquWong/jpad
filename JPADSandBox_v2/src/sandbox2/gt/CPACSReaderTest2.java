@@ -147,8 +147,8 @@ public class CPACSReaderTest2 {
 				org.w3c.dom.Element runElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"run",
 						Tuple.of("start", "0"), // TODO: get aircraft name from _cpaceReader
-						Tuple.of("end", "1000"),
-						Tuple.of("dt", "0.01")
+						Tuple.of("end", "100"),
+						Tuple.of("dt", "0.1")
 						);
 				runscriptElement.appendChild(runElement);
 				JPADStaticWriteUtils.writeSingleNode("property","simulation/notify-time-trigger",runElement,docScript);
@@ -175,16 +175,7 @@ public class CPACSReaderTest2 {
 				org.w3c.dom.Element setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
 						docScript,"set",
 						Tuple.of("name", "fcs/throttle-cmd-norm"), 
-						Tuple.of("value", "1.0"),
-						Tuple.of("action", "FG_RAMP"),
-						Tuple.of("tc", "0.5"));
-				eventElem.appendChild(setElem);	
-				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
-						docScript,"set",
-						Tuple.of("name", "fcs/mixture-cmd-norm"), 
-						Tuple.of("value", "1.0"),
-						Tuple.of("action", "FG_RAMP"),
-						Tuple.of("tc", "0.5"));
+						Tuple.of("value", "1.0"));
 				eventElem.appendChild(setElem);	
 				org.w3c.dom.Element notifyElem = docScript.createElement("notify");
 				eventElem.appendChild(notifyElem);

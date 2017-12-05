@@ -8,10 +8,27 @@
    <maxn2>100</maxn2>
    <augmented>0</augmented>
    <injected>0</injected>
-   <function name="IdleThrust">
-      <value>0.0300</value>
-   </function>
-   <function name="MilThrust">
-      <value>1.0000</value>
-   </function>
+  <function name="IdleThrust">
+   <table>
+    <independentVar lookup="row">velocities/mach</independentVar>
+    <independentVar lookup="column">atmosphere/density-altitude</independentVar>
+    <tableData>
+           0     60000
+     0.0 0.0436  0.0436
+     1.0 0.0436  0.0436
+    </tableData>
+   </table>
+  </function>
+
+  <function name="MilThrust">
+   <table>
+    <independentVar lookup="row">velocities/mach</independentVar>
+    <independentVar lookup="column">atmosphere/density-altitude</independentVar>
+    <tableData>
+           0     60000
+     0.0 1.0  1.0
+     1.0 1.0  1.0
+    </tableData>
+   </table>
+  </function>
 </turbine_engine>

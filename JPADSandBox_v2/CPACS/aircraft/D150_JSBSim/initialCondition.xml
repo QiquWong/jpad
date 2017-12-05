@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<initialize name="initialCondition">
-  <!--
-  -->
-  <vt unit="KTS">        100.0  </vt>
-  <latitude unit="DEG">   28.0  </latitude>
-  <longitude unit="DEG"> -90.0  </longitude>
-  <psi unit="DEG">       200.0  </psi>
-  <altitude unit="FT">   4000.0  </altitude>
-  <running>                0    </running>
+<initialize name="cruise">
+  <altitude unit="M"> 8000.0 </altitude>
+  <vt unit="FT/SEC">     700.0 </vt>
+  <gamma unit="DEG">       0.0 </gamma>
+  <latitude unit="DEG">   47.0 </latitude>
+  <longitude unit="DEG"> 122.0 </longitude>
+  <phi unit="DEG">         0.0 </phi>
+  <psi unit="DEG">       225.0 </psi>
+  <beta unit="DEG">        0.0 </beta>
 </initialize>
+
