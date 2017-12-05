@@ -137,8 +137,30 @@ public class JSBSimModel {
 	List<String> dmxRudderList = new ArrayList<String>();
 	List<String> dmyRudderList = new ArrayList<String>();
 	List<String> dmzRudderList = new ArrayList<String>();
-
-
+	List<String> cdList =  new ArrayList<String>();
+	List<String> cyList =  new ArrayList<String>();
+	List<String> clList =  new ArrayList<String>();
+	List<String> cdListAileron =  new ArrayList<String>();
+	List<String> cyListAileron =  new ArrayList<String>();
+	List<String> clListAileron =  new ArrayList<String>();
+	List<String> cdListFlap =  new ArrayList<String>();
+	List<String> cyListFlap =  new ArrayList<String>();
+	List<String> clListFlap =  new ArrayList<String>();
+	List<String> cdListElevator =  new ArrayList<String>();
+	List<String> cyListElevator =  new ArrayList<String>();
+	List<String> clListElevator =  new ArrayList<String>();
+	List<String> cdListRudder =  new ArrayList<String>();
+	List<String> cyListRudder =  new ArrayList<String>();
+	List<String> clListRudder =  new ArrayList<String>();
+	List<String> cdListp =  new ArrayList<String>();
+	List<String> cyListp =  new ArrayList<String>();
+	List<String> clListp =  new ArrayList<String>();
+	List<String> cdListq =  new ArrayList<String>();
+	List<String> cyListq =  new ArrayList<String>();
+	List<String> clListq =  new ArrayList<String>();
+	List<String> cdListr =  new ArrayList<String>();
+	List<String> cyListr =  new ArrayList<String>();
+	List<String> clListr =  new ArrayList<String>();
 	double[] aileronDeflectionAero = null;
 	double[] flapDeflectionAero = null;
 	double[] elevatorDeflectionAero = null;
@@ -244,9 +266,6 @@ public class JSBSimModel {
 		Double[] wingPosition = CPACSUtils.getWingPosition(wingNode);
 		double wingSurface = _cpacsReader.getWingReferenceArea(wingIndex);
 		System.out.println("wingSurface: " + wingSurface);
-		//		double wingWettedArea = _cpacsReader.getWingWettedArea(wingUID);
-		//		System.out.println("wingWettedArea: " + wingWettedArea);
-
 		wingArea = Amount.valueOf(wingSurface,SI.SQUARE_METRE);
 		System.out.println("wing area: " + wingArea);
 		double wspan = _cpacsReader.getWingSpan(wingUID);
@@ -276,7 +295,6 @@ public class JSBSimModel {
 		double[] macVectorHT = new double [4];
 		double horizontalSurface = _cpacsReader.getWingReferenceArea(horizontalTailIndex);
 		htSurface = Amount.valueOf(horizontalSurface, SI.SQUARE_METRE);
-		//		double horizontalTailMACLeadingEdge = _cpacsReader.getMeanChordLeadingEdge(horizontalTailUID,"x");
 		macVectorHT = _cpacsReader.getWingMeanAerodynamicChord(horizontalTailUID);
 		System.out.println("--------------------------------");
 		System.out.println("MAC HT value = " + macVectorHT[0]);
@@ -317,8 +335,7 @@ public class JSBSimModel {
 		double verticalTailArm = verticalTailAeroCenter-cgPosition[0];
 		vtArm =  Amount.valueOf(verticalTailArm, SI.METER);
 		//AERO REFERENCE
-		aeroReferenceOrigin[0] = wingPosition[0] +
-				macVectorWing[1] + (0.25)*macVectorWing[0];	
+		aeroReferenceOrigin[0] = macVectorWing[1] + (0.25)*macVectorWing[0];	
 		aeroReferenceOrigin[1] = 0;
 		aeroReferenceOrigin[2] =  wingPosition[2];
 
@@ -352,12 +369,9 @@ public class JSBSimModel {
 						+ "mOEM/mEM/massDescription/massInertia/Jyz")));
 		emptyW = Double.parseDouble(jpadXmlReader.getXMLPropertyByPath(
 				"cpacs/vehicles/aircraft/model/analyses/massBreakdown/"
-						+ "mOEM/massDescription/mass"));
+						+ "mOEM/mEM/massDescription/mass"));
 		System.out.println("Empty weight = "+ emptyW);
 		emptyWeight =  Amount.valueOf (emptyW,SI.KILOGRAM);
-		//		cpacs/vehicles/aircraft/model/landingGear/noseGears/noseGear/fuselageAttachment/translation ->Path in the CPACS of the nose gear
-		//		cpacs/vehicles/aircraft/model/landingGear/mainGears/mainGear/wingAttachment/positioning ->Path in the CPACS of the main gear
-
 		//GroundReaction
 		NodeList landingGearList = MyXMLReaderUtils.getXMLNodeListByPath(
 				jpadXmlReader.getXmlDoc(), 
@@ -392,9 +406,6 @@ public class JSBSimModel {
 		coordinateRightLandingGear[0] = coordinateRightLandingGear[0] + wingPosition[0];
 		coordinateRightLandingGear[1] = coordinateRightLandingGear[1] + wingPosition[1];
 		coordinateRightLandingGear[2] = coordinateRightLandingGear[2] + wingPosition[2];
-		//		mainGearRightPosition.add(Amount.valueOf(xRightLandingGear,SI.METER));
-		//		mainGearRightPosition.add(Amount.valueOf(yRightLandingGear,SI.METER));
-		//		mainGearRightPosition.add(Amount.valueOf(zRightLandingGear,SI.METER));
 
 		System.out.println("--------------------------------");
 		System.out.println("X position of landing gear is : "+ coordinateRightLandingGear[0] );
@@ -411,9 +422,6 @@ public class JSBSimModel {
 		coordinateLeftLandingGear[0] = coordinateRightLandingGear[0];
 		coordinateLeftLandingGear[1] = -coordinateRightLandingGear[1];
 		coordinateLeftLandingGear[2] = coordinateRightLandingGear[2] ;
-		//		mainGearLeftPosition.add(Amount.valueOf(xRightLandingGear,SI.METER));
-		//		mainGearLeftPosition.add(Amount.valueOf(yRightLandingGear,SI.METER));
-		//		mainGearLeftPosition.add(Amount.valueOf(zRightLandingGear,SI.METER));
 		//Propulsion
 		//GeoData
 
@@ -431,71 +439,11 @@ public class JSBSimModel {
 		}
 
 		//Propulsion Data -> need to write engine script in JSBSim
-
-		//		List<Double> flightLevelEngine = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-		//				"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/flightLevel");
-		//		List<Double> machNumberEngine = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-		//				"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/machNumber");
-		//		List<Double> idleThrust = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-		//				"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/IdleThrust");
-		//Building Table for engine
-		//		double [][] idleThrustTable = new double [machNumberEngine.size()+1][flightLevelEngine.size()+1];
-		//		int k = 0;
-		//		for(int i= 0;i<machNumberEngine.size()+1;i++) {
-		//			for (int j = 0;j<flightLevelEngine.size()+1;j++) {
-		//				if ((i==0) && (j==0)) {
-		//					idleThrustTable[i][j]=0;
-		//				}
-		//				if (j==0 && i !=0 ){
-		//					idleThrustTable[i][j]=machNumberEngine.get(i-1);
-		//				}
-		//				if (i==0 && j !=0 ){
-		//					idleThrustTable[i][j]=flightLevelEngine.get(j-1);
-		//				}
-		//				else {
-		//					idleThrustTable[i][j]=idleThrust.get(k);
-		//					if (k<flightLevelEngine.size()*machNumberEngine.size()-1) {
-		//						k++;							
-		//					}
-		//				}
-		//			}						
-		//		}
-		//		String idleThrustTableString = CPACSUtils.matrixDoubleToJSBSimTable2D(idleThrustTable, "	");
-		//
-		//		//Build 2nd table for engine
-		//		List<Double> milThrust = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-		//				"cpacs/vehicles/engines/engine/analysis/performanceMaps/performanceMap/MilThrust");
-		//		double [][] milThrustTable = new double [machNumberEngine.size()+1][flightLevelEngine.size()+1];
-		//		k = 0;
-		//		for(int i= 0;i<machNumberEngine.size()+1;i++) {
-		//			for (int j = 0;j<flightLevelEngine.size()+1;j++) {
-		//				if (i==0&&j==0) {
-		//					milThrustTable[i][j]=0;
-		//				}
-		//				if (j==0 && i !=0 ){
-		//					milThrustTable[i][j]=machNumberEngine.get(i-1);
-		//				}
-		//				if (i==0 && j !=0 ){
-		//					milThrustTable[i][j]=flightLevelEngine.get(j-1);
-		//				}
-		//				else {
-		//					milThrustTable[i][j]=idleThrust.get(k);
-		//					if (k<flightLevelEngine.size()*machNumberEngine.size()-1) {
-		//						k++;							
-		//					}
-		//				}
-		//			}						
-		//		}
-		//		String milThrustTableString = CPACSUtils.matrixDoubleToJSBSimTable2D(milThrustTable, "	");
 		NodeList engineList = MyXMLReaderUtils.getXMLNodeListByPath(
 				jpadXmlReader.getXmlDoc(), 
 				"cpacs/vehicles/engines/engine");
 		engineRight = _cpacsReader.getEngine(engineList.item(0));
-		//thruster
-
-
 		//tank
-
 		NodeList tankNumberElement = MyXMLReaderUtils.getXMLNodeListByPath(
 				jpadXmlReader.getXmlDoc(), 
 				"cpacs/vehicles/aircraft/model/analyses/weightAndBalance/operationalCases/"
@@ -513,9 +461,6 @@ public class JSBSimModel {
 
 
 		//Flight Control
-		//		List<String> systemCommadList = _cpacsReader.getSystemParameter(
-		//				"cpacs/vehicles/aircraft/model/systems/controlDistributors/controlDistributor");
-		//TODO now is possible to have relative and absolute deflection of control surface, need integration with pilot command
 		NodeList aeroNodeList = MyXMLReaderUtils.getXMLNodeListByPath(
 				jpadXmlReader.getXmlDoc(),
 				"cpacs/vehicles/aircraft/model/analyses/aeroPerformanceMap");
@@ -532,8 +477,6 @@ public class JSBSimModel {
 		NodeList controlSurfaceAeroPerformanceList = MyXMLReaderUtils.getXMLNodeListByPath(
 				docAero, 
 				"//controlSurfaces/controlSurface");
-		System.out.println("pippo123 = "+controlSurfaceAeroPerformanceList.getLength());
-
 		reynoldNumber = CPACSReader.getReynoldsNumberFromAeroPerformanceMap(docAero);
 		reynoldDimension = reynoldNumber.length;
 		machNumber = CPACSReader.getMachNumberFromAeroPerformanceMap(docAero);
@@ -545,233 +488,182 @@ public class JSBSimModel {
 		String cmyPath = "//cmy/text()";
 		String cmzPath = "//cmz/text()";
 		//Moments and force coefficient in body axis
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfxList, cfxPath, 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfyList, cfyPath, 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfzList, cfzPath, 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmxList, cmxPath, 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmyList, cmyPath, 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmzList, cmzPath, 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), dfxpList, cmzPath, 0);
+		cfxList = _cpacsReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfxPath, 0);
+		cfyList = _cpacsReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfyPath, 0);
+		cfzList = _cpacsReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cfzPath, 0);
+		cmxList = _cpacsReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmxPath, 0);
+		cmyList = _cpacsReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0), cmyPath, 0);
+		cmzList = _cpacsReader.getCoefficientFromAeroPerformanceMap(aeroNodeList.item(0),  cmzPath, 0);
+		
+		cdList = _cpacsReader.getAeroDragCoefficientFromAeroPerformanceMap(aeroNodeList.item(0),cfxPath,cfyPath,cfzPath, 0);
+		cyList = _cpacsReader.getAeroSideCoefficientFromAeroPerformanceMap(aeroNodeList.item(0),cfxPath,cfyPath,cfzPath, 0);
+		clList = _cpacsReader.getAeroLiftCoefficientFromAeroPerformanceMap(aeroNodeList.item(0),cfxPath,cfyPath,cfzPath, 0);
+
 		//Control surface aeroData
+		String cfxPathDamping = "//dampingDerivatives/positiveRates/dcfx/text()";
+		String cfyPathDamping = "//dampingDerivatives/positiveRates/dcfy/text()";
+		String cfzPathDamping = "//dampingDerivatives/positiveRates/dcfz/text()";
 		//Aileron
 		aileronDeflectionAero = CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap(
 				controlSurfaceAeroPerformanceList.item(0));
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface(
-				controlSurfaceAeroPerformanceList.item(0), dfxAileronList, "//dcfx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface(
-				controlSurfaceAeroPerformanceList.item(0), dfyAileronList, "//dcfy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface(
-				controlSurfaceAeroPerformanceList.item(0), dfzAileronList, "//dcfz/text()", aeroNodeList.item(0), 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface(
-				controlSurfaceAeroPerformanceList.item(0), dmxAileronList, "//dcmx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface(
-				controlSurfaceAeroPerformanceList.item(0), dmyAileronList, "//dcmy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface(
-				controlSurfaceAeroPerformanceList.item(0), dmzAileronList, "//dcmz/text()", aeroNodeList.item(0), 0);
+//		dfxAileronList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(0), "//dcfx/text()", aeroNodeList.item(0), 0);
+//		dfyAileronList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(0), "//dcfy/text()", aeroNodeList.item(0), 0);
+//		dfzAileronList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(0), "//dcfz/text()", aeroNodeList.item(0), 0);
+		cdListAileron = _cpacsReader.getDragCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		clListAileron = _cpacsReader.getLiftCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		cyListAileron = _cpacsReader.getSideCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+
+		dmxAileronList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), "//dcmx/text()", aeroNodeList.item(0), 0);
+		dmyAileronList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), "//dcmy/text()", aeroNodeList.item(0), 0);
+		dmzAileronList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), "//dcmz/text()", aeroNodeList.item(0), 0);
 		//Elevator
-		elevatorDeflectionAero = 
-				CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap(
-						controlSurfaceAeroPerformanceList.item(3));
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dfxElevatorList, "//dcfx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dfyElevatorList, "//dcfy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dfzElevatorList, "//dcfz/text()", aeroNodeList.item(0), 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dmxElevatorList, "//dcmx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dmyElevatorList, "//dcmy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(3), dmzElevatorList, "//dcmz/text()", aeroNodeList.item(0), 0);
+		elevatorDeflectionAero = CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap(
+				controlSurfaceAeroPerformanceList.item(3));
+//		dfxElevatorList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(3), "//dcfx/text()", aeroNodeList.item(0), 0);
+//		dfyElevatorList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(3), "//dcfy/text()", aeroNodeList.item(0), 0);
+//		dfzElevatorList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(3), "//dcfz/text()", aeroNodeList.item(0), 0);
+		cdListElevator = _cpacsReader.getDragCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		clListElevator = _cpacsReader.getLiftCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		cyListElevator = _cpacsReader.getSideCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		dmxElevatorList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(3), "//dcmx/text()", aeroNodeList.item(0), 0);
+		dmyElevatorList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(3), "//dcmy/text()", aeroNodeList.item(0), 0);
+		dmzElevatorList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(3), "//dcmz/text()", aeroNodeList.item(0), 0);
 		//Rudder
-		rudderDeflectionAero = 
-				CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap
+		rudderDeflectionAero = CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap
 				(controlSurfaceAeroPerformanceList.item(4));
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dfxRudderList, "//dcfx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dfyRudderList, "//dcfy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dfzRudderList, "//dcfz/text()", aeroNodeList.item(0), 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dmxRudderList, "//dcmx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dmyRudderList, "//dcmy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurface
-		(controlSurfaceAeroPerformanceList.item(4), dmzRudderList, "//dcmz/text()", aeroNodeList.item(0), 0);
+//		dfxRudderList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(4), "//dcfx/text()", aeroNodeList.item(0), 0);
+//		dfyRudderList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(4), "//dcfy/text()", aeroNodeList.item(0), 0);
+//		dfzRudderList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+//				controlSurfaceAeroPerformanceList.item(4), "//dcfz/text()", aeroNodeList.item(0), 0);
+		cdListRudder = _cpacsReader.getDragCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		clListRudder = _cpacsReader.getLiftCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		cyListRudder = _cpacsReader.getSideCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(0), aeroNodeList.item(0), 0);
+		dmxRudderList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(4), "//dcmx/text()", aeroNodeList.item(0), 0);
+		dmyRudderList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(4), "//dcmy/text()", aeroNodeList.item(0), 0);
+		dmzRudderList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurface(
+				controlSurfaceAeroPerformanceList.item(4), "//dcmz/text()", aeroNodeList.item(0), 0);
 		//Flap
-		flapDeflectionAero = 
-				CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap(controlSurfaceAeroPerformanceList.item(1));
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
-		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dfxFlapList, "//dcfx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
-		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dfyFlapList, "//dcfy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
-		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dfzFlapList, "//dcfz/text()", aeroNodeList.item(0), 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
-		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dmxFlapList, "//dcmx/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
-		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dmyFlapList, "//dcmy/text()", aeroNodeList.item(0), 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap
-		(controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
-				dmzFlapList, "//dcmz/text()", aeroNodeList.item(0), 0);
+		flapDeflectionAero = CPACSReader.getControlSurfaceDeflectionFromAeroPerformanceMap(
+				controlSurfaceAeroPerformanceList.item(1));
+//		dfxFlapList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+//				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2), 
+//				"//dcfx/text()", aeroNodeList.item(0), 0);
+//		dfyFlapList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+//				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2), 
+//				"//dcfy/text()", aeroNodeList.item(0), 0);
+//		dfzFlapList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+//				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
+//				"//dcfz/text()", aeroNodeList.item(0), 0);
+		cdListFlap = _cpacsReader.getDragCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2), aeroNodeList.item(0), 0);
+		clListFlap = _cpacsReader.getLiftCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2), aeroNodeList.item(0), 0);
+		cyListFlap = _cpacsReader.getSideCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2), aeroNodeList.item(0), 0);
+		dmxFlapList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
+				"//dcmx/text()", aeroNodeList.item(0), 0);
+		dmyFlapList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
+				"//dcmy/text()", aeroNodeList.item(0), 0);
+		dmzFlapList = _cpacsReader.getCoefficientFromAeroPerformanceMapControlSurfaceFlap(
+				controlSurfaceAeroPerformanceList.item(1), controlSurfaceAeroPerformanceList.item(2),
+				"//dcmz/text()", aeroNodeList.item(0), 0);
 		//Damping derivative
-		//		String prova = "//dampingDerivatives/positiveRates/dcfxdpstar/text()";
 		//p-rate
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfxpList, "//dampingDerivatives/positiveRates/dcfxdpstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfypList, "//dampingDerivatives/positiveRates/dcfydpstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfzpList, "//dampingDerivatives/positiveRates/dcfzdpstar/text()", 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmxpList, "//dampingDerivatives/positiveRates/dcmxdpstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmypList, "//dampingDerivatives/positiveRates/dcmydpstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmzpList, "//dampingDerivatives/positiveRates/dcmzdpstar/text()", 0);
+//		dfxpList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfxdpstar/text()", 0);
+//		dfypList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfydpstar/text()", 0);
+//		dfzpList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfzdpstar/text()", 0);
+		cdListp = _cpacsReader.getAeroDragCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		cyListp = _cpacsReader.getAeroSideCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		clListp = _cpacsReader.getAeroLiftCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		dmxpList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmxdpstar/text()", 0);
+		dmypList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmydpstar/text()", 0);
+		dmzpList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmzdpstar/text()", 0);
 		//q-rate
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfxqList, "//dampingDerivatives/positiveRates/dcfxdqstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfyqList, "//dampingDerivatives/positiveRates/dcfydqstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfzqList, "//dampingDerivatives/positiveRates/dcfzdqstar/text()", 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmxqList, "//dampingDerivatives/positiveRates/dcmxdqstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmyqList, "//dampingDerivatives/positiveRates/dcmydqstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmzqList, "//dampingDerivatives/positiveRates/dcmzdqstar/text()", 0);
+//		dfxqList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfxdqstar/text()", 0);
+//		dfyqList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfydqstar/text()", 0);
+//		dfzqList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfzdqstar/text()", 0);
+		cdListq = _cpacsReader.getAeroDragCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		cyListq = _cpacsReader.getAeroSideCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		clListq = _cpacsReader.getAeroLiftCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		dmxqList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmxdqstar/text()", 0);
+		dmyqList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmydqstar/text()", 0);
+		dmzqList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmzdqstar/text()", 0);
 		//r-rate
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfxrList, "//dampingDerivatives/positiveRates/dcfxdrstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfyrList, "//dampingDerivatives/positiveRates/dcfydrstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dfzrList, "//dampingDerivatives/positiveRates/dcfzdrstar/text()", 1);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmxrList, "//dampingDerivatives/positiveRates/dcmxdrstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmyrList, "//dampingDerivatives/positiveRates/dcmydrstar/text()", 0);
-		CPACSReader.getCoefficientFromAeroPerformanceMap
-		(aeroNodeList.item(0), dmzrList, "//dampingDerivatives/positiveRates/dcmzdrstar/text()", 0);
+//		dfxrList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfxdrstar/text()", 0);
+//		dfyrList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfydrstar/text()", 0);
+//		dfzrList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+//				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcfzdrstar/text()", 0);
+		cdListr = _cpacsReader.getAeroDragCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		cyListr = _cpacsReader.getAeroSideCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		clListr = _cpacsReader.getAeroLiftCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0),cfxPathDamping,cfyPathDamping,cfzPathDamping, 0);
+		dmxrList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmxdrstar/text()", 0);
+		dmyrList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmydrstar/text()", 0);
+		dmzrList = _cpacsReader.getCoefficientFromAeroPerformanceMap(
+				aeroNodeList.item(0), "//dampingDerivatives/positiveRates/dcmzdrstar/text()", 0);
 
 
 
 		_cpacsReader.getControlSurfacePilotCommandIndexAndValue(wingNode, controlSurfaceList, controlSurfaceInt);
 		_cpacsReader.getControlSurfacePilotCommandIndexAndValue(horizontalTailNode, controlSurfaceList, controlSurfaceInt);
 		_cpacsReader.getControlSurfacePilotCommandIndexAndValue(verticalTailNode, controlSurfaceList, controlSurfaceInt);
-
-
-
-
-		//Ground Effect
-
-		List<Double> heightGroundEffect = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/Height");
-		List<Double> kCLGroundEffect = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/KCL");
-		List<Double> kCDGroundEffect = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/KCD");
-		double[][] kCLMatrix = new double [kCLGroundEffect.size()][2];
-		double[][] kCDMatrix = new double [kCLGroundEffect.size()][2];
-		for (int i=0;i<kCLGroundEffect.size();i++) {
-			kCLMatrix[i][0] = heightGroundEffect.get(i); //-> effect on lift coefficient
-			kCLMatrix[i][1] = kCLGroundEffect.get(i); 
-			kCDMatrix[i][0] = heightGroundEffect.get(i); //-> effect on drag coefficient
-			kCDMatrix[i][1] = kCDGroundEffect.get(i);
-		}
-		String kCLTable = CPACSUtils.matrixDoubleToJSBSimTableNx2(kCLMatrix);
-		String kCDTable = CPACSUtils.matrixDoubleToJSBSimTableNx2(kCDMatrix);
-
-		//effect speed braker
-		List<Double> kSpeedBreakerGroundEffect = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/KCLSB");
-		List<Double> speedBreakerPosition = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/PositionSpeedBreaker");
-		double[][] kSpeedBreakerMatrix = new double [kSpeedBreakerGroundEffect.size()][2];
-		for (int i=0;i<kSpeedBreakerGroundEffect.size();i++) {
-			kSpeedBreakerMatrix[i][0] = speedBreakerPosition.get(i); 
-			kSpeedBreakerMatrix[i][1] = kSpeedBreakerGroundEffect.get(i); 
-		}
-		kSpeedBreakerTable = CPACSUtils.matrixDoubleToJSBSimTableNx2(kSpeedBreakerMatrix);
-
-		//effect spoiler
-		List<Double> kSpoilerGroundEffect = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/KCLSB");
-		List<Double> spoilerPosition = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/PositionSpeedBreaker");
-		double[][] kSpoilerMatrix = new double [kSpoilerGroundEffect.size()][2];
-		for (int i=0;i<kSpoilerGroundEffect.size();i++) {
-			kSpoilerMatrix[i][0] = spoilerPosition.get(i); 
-			kSpoilerMatrix[i][1] = kSpoilerGroundEffect.get(i); 
-
-		}
-		String kSpoilerTable = CPACSUtils.matrixDoubleToJSBSimTableNx2(kSpoilerMatrix);
-
-		//Drag
-		//1) CD0
-		List<Double> alphaCD0 = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/KCLSB");
-		List<Double> cD0Value = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/GroundEffect/PositionSpeedBreaker");
-		double[][] cD0Matrix = new double [cD0Value.size()][2];
-		for (int i=0;i<cD0Value.size();i++) {
-			cD0Matrix[i][0] = spoilerPosition.get(i); 
-			cD0Matrix[i][1] = kSpoilerGroundEffect.get(i); 
-		}
-		String cD0Table = CPACSUtils.matrixDoubleToJSBSimTableNx2(cD0Matrix);
-		//2) Mach Effect
-		List<Double> machCDWave = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/Drag/CD_Mach/Mach");
-		List<Double> cDWaveValue = _cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-				"cpacs/toolspecific/UNINA_modules/JSBSim_data/aerodynamics/Drag/CD_Mach/DeltaCD0");
-		double[][] cDWaveMatrix = new double [cDWaveValue.size()][2];
-		for (int i=0;i<cDWaveValue.size();i++) {
-			cDWaveMatrix[i][0] = machCDWave.get(i); 
-			cDWaveMatrix[i][1] = cDWaveValue.get(i); 
-		}
-		String CDWaveTable = CPACSUtils.matrixDoubleToJSBSimTableNx2(cDWaveMatrix);	
-		//		List<String> controlSurfaceList = new ArrayList<String>();
-		//		NodeList controlSurfaceListToolspecific = MyXMLReaderUtils.getXMLNodeListByPath(
-		//				jpadXmlReader.getXmlDoc(),
-		//				"cpacs/toolspecific/UNINA_modules/input/wings/MainWing/controlSurfaces/controlSurface");
-		//
-		//
-		//				controlSurfaceIndexList.add(
-		//						_cpacsReader.getControlSurfacePilotCommand(
-		//								"D150_VAMP_W1_CompSeg1_aileron", wingNode, controlSurfaceList));
-
-
-		//		
-		//		double[][] aerodata =  _cpacsReader.getAeroPerformanceMap(aeroNodeList.item(0));
-		//		for (int i = 0;i<aerodata[0].length;i++) {
-		//			cd.add(aerodata[0][i]);
-		//			cdAlpha.add(aerodata[1][i]);
-		//			cy.add(aerodata[2][i]);
-		//			cyBeta.add(aerodata[3][i]);
-		//			cl.add(aerodata[4][i]);
-		//			clAlpha.add(aerodata[5][i]);
-		//			cm.add(aerodata[7][i]);
-		//			cRoll.add(aerodata[6][i]);
-		//			cn.add(aerodata[8][i]);
-		//
-		//		}
 	}//end CPACS READ VARIABLE
 
 
 	public void exportToXML(String filePath, String dirPath) throws IOException {
 		System.out.println("[JSBSimModel.exportToXML] ...");
-
 		Document doc = makeXmlTree(dirPath);
-
 		System.out.println("[JSBSimModel.exportToXML] writing file " + filePath + " ...");
 		JPADStaticWriteUtils.writeDocumentToXml(doc, filePath);
 
@@ -915,250 +807,318 @@ public class JSBSimModel {
 			// ground reaction
 
 			org.w3c.dom.Element groundReaction = doc.createElement("ground_reactions");
+			groundReaction.appendChild(
+					JSBSimUtils.createLandingGearElement(noseGear, coordinateNoseLandingGear, doc, "Nose Gear", "NONE")
+					);
+			//			groundReaction.appendChild(
+			//					buildLandingGearNodeContent(noseGear, coordinateNoseLandingGear, doc, "Nose Gear", "NONE")
+			//					);
+			groundReaction.appendChild(
+					JSBSimUtils.createLandingGearElement(mainRightGear, coordinateRightLandingGear, doc, "Right Main Gear", "RIGHT")
+					);
+			groundReaction.appendChild(
+					JSBSimUtils.createLandingGearElement(mainRightGear, coordinateLeftLandingGear, doc, "Left Main Gear", "LEFT")
+					);
+
 			rootElement.appendChild(groundReaction);
-			
-			JSBSimUtils.writeLandingGear(groundReaction, noseGear, coordinateNoseLandingGear, doc, "Nose Gear", "NONE");
-//			groundReaction.appendChild(
-//					buildLandingGearNodeContent(noseGear, coordinateNoseLandingGear, doc, "Nose Gear", "NONE")
-//					);
-
-			JSBSimUtils.writeLandingGear(groundReaction, mainRightGear, coordinateRightLandingGear, doc, "Right Main Gear", "RIGHT");
-			JSBSimUtils.writeLandingGear(groundReaction, mainRightGear, coordinateLeftLandingGear, doc, "Left Main Gear", "LEFT");
-
 			// Propulsion
 			String engineName = aircraftName.replaceAll("\\s+","_") + "_engine";
 			try {
-				JSBSimUtils.createEngineXML(engineRight, engineName, "turbine", dirPath+"/engine","JET");
+				JSBSimUtils.createEngineXML( engineRight, engineName, "turbine", dirPath+"/engine","JET");
 			} catch (TransformerException e) {
 				e.printStackTrace();
 				System.out.println("Engine not created");
 			}
 			org.w3c.dom.Element propulsionElement = doc.createElement("propulsion");
 			rootElement.appendChild(propulsionElement);
-			JSBSimUtils.writeEngine
-			(propulsionElement, engineRight, rightEnginePosition, rightEngineRotation, 
-					doc, engineName, "JET", tankMatrix, "right");
-			JSBSimUtils.writeEngine
-			(propulsionElement, engineRight, leftEnginePosition, rightEngineRotation, 
-					doc, engineName, "JET", tankMatrix, "left");
-			JSBSimUtils.writeTank(propulsionElement, tankMatrix, doc, "RIGHT");
-			JSBSimUtils.writeTank(propulsionElement, tankMatrix, doc, "LEFT");
+			propulsionElement.appendChild(
+			JSBSimUtils.createEngineElement( engineRight, rightEnginePosition, rightEngineRotation, 
+					doc, engineName, "JET", tankMatrix, "right"));
+			
+			propulsionElement.appendChild(
+			JSBSimUtils.createEngineElement( engineRight, leftEnginePosition, rightEngineRotation
+					,doc, engineName, "JET", tankMatrix, "left"));
+
+			propulsionElement.appendChild(
+					JSBSimUtils.createTankElement( tankMatrix, doc, "RIGHT")
+					);
+			propulsionElement.appendChild(
+					JSBSimUtils.createTankElement( tankMatrix, doc, "LEFT")
+					);
 			// Flight Control
 			org.w3c.dom.Element flightControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
 					doc,"flight_control",
 					Tuple.of("name", "FCS :"+aircraftName)
 					);
 			rootElement.appendChild(flightControlElement);
-			org.w3c.dom.Element pitchControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
-					doc,"channel",
-					Tuple.of("name", "Pitch")
+
+//			org.w3c.dom.Element pitchControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+//					doc,"channel",
+//					Tuple.of("name", "Pitch")
+//					);
+//			flightControlElement.appendChild(pitchControlElement);
+			flightControlElement.appendChild(
+			JSBSimUtils.createSymmetricalControl( controlSurfaceList, doc, 
+					controlSurfaceInt, "elevator", "pitch", 3, "Pitch"));
+//			org.w3c.dom.Element yawControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+//					doc,"channel",
+//					Tuple.of("name", "Yaw")
+//					);
+//			flightControlElement.appendChild(yawControlElement);
+			flightControlElement.appendChild(
+					JSBSimUtils.createSymmetricalControl(
+							controlSurfaceList, doc,controlSurfaceInt, "rudder", "yaw", 4, "Yaw")
 					);
-			flightControlElement.appendChild(pitchControlElement);
-			System.out.println(controlSurfaceList);
-			JSBSimUtils.writeSymmetricalControl(
-					pitchControlElement, controlSurfaceList, doc, 
-					controlSurfaceInt, "elevator", "pitch", 3);
-			org.w3c.dom.Element yawControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
-					doc,"channel",
-					Tuple.of("name", "Yaw")
+//			org.w3c.dom.Element RollControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+//					doc,"channel",
+//					Tuple.of("name", "Roll")
+//					);
+//			flightControlElement.appendChild(RollControlElement);
+			flightControlElement.appendChild(
+					JSBSimUtils.createAlileronElement(
+							controlSurfaceList, doc, controlSurfaceInt, "aileron", "roll", 2, "Roll")
 					);
-			flightControlElement.appendChild(yawControlElement);
-			JSBSimUtils.writeSymmetricalControl(
-					yawControlElement, controlSurfaceList, doc, 
-					controlSurfaceInt, "rudder", "yaw", 4);
-			org.w3c.dom.Element RollControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
-					doc,"channel",
-					Tuple.of("name", "Roll")
+//			org.w3c.dom.Element FlapControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+//					doc,"channel",
+//					Tuple.of("name", "Flaps")
+//					);
+//			flightControlElement.appendChild(FlapControlElement);
+			System.out.println("----------------------------------------------");
+			flightControlElement.appendChild(
+					JSBSimUtils.createFlapElement(
+							controlSurfaceList, doc, controlSurfaceInt, "flap", 1, "Flap")
 					);
-			flightControlElement.appendChild(RollControlElement);
-			JSBSimUtils.writeAlileron(
-					RollControlElement, controlSurfaceList, doc, 
-					controlSurfaceInt, "aileron", "roll", 2);
-			org.w3c.dom.Element FlapControlElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
-					doc,"channel",
-					Tuple.of("name", "Flaps")
-					);
-			flightControlElement.appendChild(FlapControlElement);
+			System.out.println("----------------------------------------------");
+
+			
 			rootElement.appendChild(flightControlElement);
-			JSBSimUtils.writeFlap(FlapControlElement, controlSurfaceList, doc, controlSurfaceInt, "flap", 1);
+
 			org.w3c.dom.Element aeroElement = doc.createElement("aerodynamics");
 			rootElement.appendChild(aeroElement);
 
-			org.w3c.dom.Element xAxisElement = doc.createElement("axis");
-			xAxisElement.setAttribute("name", "X");
-			aeroElement.appendChild(xAxisElement);
-
-			org.w3c.dom.Element yAxisElement = doc.createElement("axis");
-			yAxisElement.setAttribute("name", "Y");
-			aeroElement.appendChild(yAxisElement);
-			org.w3c.dom.Element zAxisElement = doc.createElement("axis");
-			zAxisElement.setAttribute("name", "Z");
-			aeroElement.appendChild(zAxisElement);
-
-			org.w3c.dom.Element rollElement = doc.createElement("axis");
-			rollElement.setAttribute("name", "ROLL");
-			aeroElement.appendChild(rollElement);
-
-			org.w3c.dom.Element pitchElement = doc.createElement("axis");
-			pitchElement.setAttribute("name", "PITCH");
-			aeroElement.appendChild(pitchElement);
-
-			org.w3c.dom.Element yawElement = doc.createElement("axis");
-			yawElement.setAttribute("name", "YAW");
-			aeroElement.appendChild(yawElement);
+//			org.w3c.dom.Element xAxisElement = doc.createElement("axis");
+//			xAxisElement.setAttribute("name", "X");
+//			aeroElement.appendChild(xAxisElement);
+//
+//			org.w3c.dom.Element yAxisElement = doc.createElement("axis");
+//			yAxisElement.setAttribute("name", "Y");
+//			aeroElement.appendChild(yAxisElement);
+//			org.w3c.dom.Element zAxisElement = doc.createElement("axis");
+//			zAxisElement.setAttribute("name", "Z");
+//			aeroElement.appendChild(zAxisElement);
+//
+//			org.w3c.dom.Element rollElement = doc.createElement("axis");
+//			rollElement.setAttribute("name", "ROLL");
+//			aeroElement.appendChild(rollElement);
+//
+//			org.w3c.dom.Element pitchElement = doc.createElement("axis");
+//			pitchElement.setAttribute("name", "PITCH");
+//			aeroElement.appendChild(pitchElement);
+//
+//			org.w3c.dom.Element yawElement = doc.createElement("axis");
+//			yawElement.setAttribute("name", "YAW");
+//			aeroElement.appendChild(yawElement);
 			org.w3c.dom.Element outputElement = doc.createElement("output");
 			outputElement.setAttribute("name", aircraftName+".csv");
 			outputElement.setAttribute("rate", String.valueOf(10));
 			outputElement.setAttribute("type", "CSV");
 			rootElement.appendChild(outputElement);
-
-			JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, cfxList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "axial", xAxisElement);
-			JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, cfyList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "side", yAxisElement);
-			JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, cfzList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "normal", zAxisElement);
-			JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, cmxList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "roll", rollElement);
-			JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, cmyList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "pitch", pitchElement);
-			JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, cmzList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "yaw", yawElement);
+			aeroElement.appendChild(
+					JSBSimUtils.createAeroDataBodyAxisElement(
+							doc, outputElement, cdList, machDimension, machNumber, 
+							reynoldDimension,reynoldNumber, "drag", "DRAG"));
+			aeroElement.appendChild(
+					JSBSimUtils.createAeroDataBodyAxisElement(
+							doc, outputElement, cyList, machDimension, machNumber,
+							reynoldDimension, reynoldNumber, "side", "SIDE"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, clList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "lift", "LIFT"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, cmxList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "roll", "ROLL"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, cmyList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "pitch", "PITCH"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+					doc, outputElement, cmzList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "yaw", "YAW"));
 			//Aileron
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfxAileronList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "axial", xAxisElement, aileronDeflectionAero, "aileron");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfyAileronList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "side", yAxisElement, aileronDeflectionAero, "aileron");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfzAileronList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "normal", zAxisElement, aileronDeflectionAero, "aileron");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmxAileronList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "roll", rollElement, aileronDeflectionAero, "aileron");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmyAileronList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "pitch", pitchElement, aileronDeflectionAero, "aileron");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmzAileronList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "yaw", yawElement, aileronDeflectionAero, "aileron");
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cdListAileron, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "drag", "DRAG", aileronDeflectionAero, "aileron"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cyListAileron, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "side", "SIDE", aileronDeflectionAero, "aileron"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, clListAileron, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "lift", "LIFT", aileronDeflectionAero, "aileron"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmxAileronList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "roll", "ROLL", aileronDeflectionAero, "aileron"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmyAileronList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "pitch", "PITCH", aileronDeflectionAero, "aileron"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmzAileronList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "yaw", "YAW", aileronDeflectionAero, "aileron"));
 
 			//Elevator
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfxElevatorList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "axial", xAxisElement, aileronDeflectionAero, "elevator");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfyElevatorList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "side", yAxisElement, aileronDeflectionAero, "elevator");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfzElevatorList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "normal", zAxisElement, aileronDeflectionAero, "elevator");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmxElevatorList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "roll", rollElement, aileronDeflectionAero, "elevator");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmyElevatorList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "pitch", pitchElement, aileronDeflectionAero, "elevator");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmzElevatorList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "yaw", yawElement, aileronDeflectionAero, "elevator");
+
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cdListElevator, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "drag", "DRAG", elevatorDeflectionAero, "elevator"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cyListElevator, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "side", "SIDE", elevatorDeflectionAero, "elevator"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, clListElevator, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "lift", "LIFT", elevatorDeflectionAero, "elevator"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmxElevatorList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "roll", "ROLL", elevatorDeflectionAero, "elevator"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmyElevatorList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "pitch", "PITCH", elevatorDeflectionAero, "elevator"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmzElevatorList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "yaw", "YAW", elevatorDeflectionAero, "elevator"));
 
 			//Rudder
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfxRudderList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "axial", xAxisElement, aileronDeflectionAero, "rudder");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfyRudderList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "side", yAxisElement, aileronDeflectionAero, "rudder");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dfzRudderList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "normal", zAxisElement, aileronDeflectionAero, "rudder");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmxRudderList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "roll", rollElement, aileronDeflectionAero, "rudder");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmyRudderList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "pitch", pitchElement, aileronDeflectionAero, "rudder");
-			JSBSimUtils.writeAeroDataBodyAxisControlSurface(
-					doc, outputElement,  dmzRudderList, machDimension, machNumber, reynoldDimension,
-					reynoldNumber, "yaw", yawElement, aileronDeflectionAero, "rudder");
+
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cdListRudder, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "drag", "DRAG", rudderDeflectionAero, "rudder"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cyListRudder, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "side", "SIDE", rudderDeflectionAero, "rudder"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, clListRudder, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "lift", "LIFT", rudderDeflectionAero, "rudder"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmxRudderList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "roll", "ROLL", rudderDeflectionAero, "rudder"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmyRudderList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "pitch", "PITCH", rudderDeflectionAero, "rudder"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmzRudderList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "yaw", "YAW", rudderDeflectionAero, "rudder"));
+
+			//Flap
+			//Rudder
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cdListFlap, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "drag", "DRAG", flapDeflectionAero, "flap"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, cyListFlap, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "side", "SIDE", flapDeflectionAero, "flap"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, clListFlap, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "lift", "LIFT", flapDeflectionAero, "flap"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmxFlapList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "roll", "ROLL", flapDeflectionAero, "flap"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmyFlapList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "pitch", "PITCH", flapDeflectionAero, "flap"));
+			aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisControlSurfaceElement(
+					doc, dmzFlapList, machDimension, machNumber, reynoldDimension,
+					reynoldNumber, "yaw", "YAW", flapDeflectionAero, "flap"));
 			//Damping derivative
 			//p-rate
-			if (dfxpList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfxpList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-axial", xAxisElement);
+			if (cdListp.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, cdListp, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "p-drag", "DRAG"));
 			}
-			if (dfypList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfypList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-side", yAxisElement);
+			if (cyListp.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, cyListp, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "p-side", "SIDE"));
 			}
-			if (dfzpList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfzpList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-normal", zAxisElement);
+			if (clListp.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, clListp, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "p-lift", "LIFT"));
 			}
 			if (dmxpList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmxpList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-roll", rollElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmxpList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "p-roll", "ROLL"));
 			}
 			if (dmypList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmypList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-pitch", pitchElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmypList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "p-pitch", "PITCH"));
 			}
 			if (dmzpList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmzpList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "p-yaw", yawElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmzpList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "p-yaw", "YAW"));
 			}
 			// q-rate
-			if (dfxqList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfxqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-axial", xAxisElement);
+			if (cdListq.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, cdListq, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "q-drag", "DRAG"));
 			}
-			if (dfyqList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfyqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-side", yAxisElement);
+			if (cyListq.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, cyListq, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "q-side", "SIDE"));
 			}
-			if (dfzqList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfzqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-normal", zAxisElement);
+			if (clListq.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, clListq, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "q-lift", "LIFT"));
 			}
 			if (dmxqList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmxqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-roll", rollElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmxqList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "q-roll", "ROLL"));
 			}
 			if (dmyqList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmyqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-pitch", pitchElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmyqList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "q-pitch", "PITCH"));
 			}
 			if (dmzqList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmzqList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "q-yaw", yawElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmzqList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "q-yaw", "YAW"));
 			}
 
 			//r-rate
-			if (dfxrList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfxrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-axial", xAxisElement);
+			if (cdListr.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, cdListr, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "r-drag", "DRAG"));
 			}
-			if (dfyrList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfyrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-side", yAxisElement);
+			if (cyListr.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, cyListr, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "r-side", "SIDE"));
 			}
-			if (dfzrList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dfzrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-normal", zAxisElement);
+			if (clListr.size()>0) {
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, clListr, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "r-lift", "LIFT"));
 			}
 			if (dmxrList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmxrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-roll", rollElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmxrList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "r-roll", "ROLL"));
 			}
 			if (dmyrList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmyrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-pitch", pitchElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmyrList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "r-pitch", "PITCH"));
 			}
 			if (dmzrList.size()>0) {
-				JSBSimUtils.writeAeroDataBodyAxis(doc, outputElement, dmzrList, machDimension, machNumber, reynoldDimension,
-						reynoldNumber, "r-yaw", yawElement);
+				aeroElement.appendChild(JSBSimUtils.createAeroDataBodyAxisElement(
+						doc, outputElement, dmzrList, machDimension, machNumber, reynoldDimension,
+						reynoldNumber, "r-yaw", "YAW"));
 			}
 			JPADStaticWriteUtils.writeSingleNode("property","aero/alpha-deg",outputElement,doc);
 			JPADStaticWriteUtils.writeSingleNode("property","aero/beta-deg",outputElement,doc);

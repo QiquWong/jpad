@@ -100,65 +100,27 @@ public class CPACSReaderTest2 {
 		            System.out.println("wing[" + i + "] --> uid: " + elementWing.getAttribute("uID"));
 				}
 				System.out.println("--------------------------------");
-
 				System.out.println("Getting a given tag content");
-				
 				String pathToMainWingUID = "/cpacs/toolspecific/UNINA_modules/input/wings/MainWing/mainWingUID";
 				System.out.println("--> " + pathToMainWingUID);
-
 				String flagwing = cpacsReader.getJpadXmlReader()
 						.getXMLPropertyByPath(pathToMainWingUID);
 				System.out.println("----> " + flagwing);
-				
 				System.out.println("--------------------------------");
-			
-				
-
 				System.out.println("--------------------------------");
 				
 				System.out.println("Getting a given tag content + attribute");
-				
-//				String pathToIxx = "//toolspecific/UNINA_modules/JSBSim_data/mass_balance/ixx";
-//				System.out.println("--> " + pathToIxx);
-//				Double ixx = Double.valueOf(
-//						cpacsReader.getJpadXmlReader()
-//						.getXMLPropertyByPath(pathToIxx)
-//						);
-//				String unitIxx = cpacsReader.getJpadXmlReader()
-//						.getXMLAttributeByPath(pathToIxx,"unit");
-//				System.out.println("----> " + ixx + " " + unitIxx);
-//				
-//				System.out.println("--------------------------------");
-				
+
 				String cpacsOutputFileFolderPath = 
 						MyConfiguration.currentDirectoryString + File.separator
 						+ MyConfiguration.outputDirectory + File.separator
 						+ "CPACS";
-				String jsbsimOutputFilePath = cpacsOutputFileFolderPath + File.separator + "pippo_cpacs.xml";
-				
 				JSBSimModel jsbsimModel = new JSBSimModel(cpacsReader);
 //				jsbsimModel.appendToCPACSFile(new File(cpacsOutputFileFolderPath)); // TODO
 				jsbsimModel.readVariablesFromCPACS(); // TODO
 //				jsbsimModel.exportToXML(new File(jsbsimOutputFilePath)); // TODO
 				
-				//table system
-				JPADXmlReader _jpadXmlReader = new JPADXmlReader(cpacsFilePath);
-				Document _importDoc = _jpadXmlReader.getXmlDoc();
 
-				
-//				List<Double> clVector = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-//						"cpacs/vehicles/aircraft/model/analyses/aeroPerformanceMap/cfx");
-//				System.out.println("--------------------------------");
-//				System.out.println("Size is = "+clVector.size());
-//				System.out.println("--------------------------------");
-//				
-//				
-//				List<Double> clSurfaceVector = cpacsReader.getJpadXmlReader().readArrayDoubleFromXMLSplit(
-//						"cpacs/vehicles/aircraft/model/analyses/aeroPerformanceMap/controlSurfaces/controlSurface/dcmz");
-//				System.out.println("--------------------------------");
-//				System.out.println("Size is = "+clSurfaceVector.size());
-//				System.out.println("--------------------------------");
-				
 				//Generate script
 				DocumentBuilderFactory docScriptFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docScriptBuilder;
@@ -224,16 +186,6 @@ public class CPACSReaderTest2 {
 						Tuple.of("action", "FG_RAMP"),
 						Tuple.of("tc", "0.5"));
 				eventElem.appendChild(setElem);	
-//				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
-//						docScript,"set",
-//						Tuple.of("name", "propulsion/magneto_cmd"), 
-//						Tuple.of("value", "3.0"));
-//				eventElem.appendChild(setElem);	
-//				setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
-//						docScript,"set",
-//						Tuple.of("name", "propulsion/starter_cmd"), 
-//						Tuple.of("value", "1.0"));
-//				eventElem.appendChild(setElem);	
 				org.w3c.dom.Element notifyElem = docScript.createElement("notify");
 				eventElem.appendChild(notifyElem);
 				JPADStaticWriteUtils.writeSingleNode("property"," position/h-agl-ft",notifyElem,docScript);
