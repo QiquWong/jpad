@@ -2449,7 +2449,6 @@ public class InputManagerController {
 	private void showAirfoilData(String airfoilFileName) throws IOException {
 		
 		Tab airfoilTab = new Tab("Airfoil: " + airfoilFileName);
-//		BorderPane contentPane = new BorderPane();  
 		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/AirfoilInputManager.fxml"));
@@ -3001,7 +3000,7 @@ public class InputManagerController {
 
 		aircraftFileChooser = new FileChooser();
 		aircraftFileChooser.setTitle("Open File");
-		aircraftFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath()));
+		aircraftFileChooser.setInitialDirectory(new File(Main.getInputDirectoryPath() + File.separator + "Template_Aircraft"));
 		File file = aircraftFileChooser.showOpenDialog(null);
 		if (file != null) {
 			// get full path and populate the text box
@@ -3140,6 +3139,7 @@ public class InputManagerController {
 		System.setOut(originalOut);
 		
 		Main.getStatusBar().setText("Task Complete!");
+		Main.getProgressBar().setProgress(1.0);
 		
 		ObjectProperty<Aircraft> aircraft = new SimpleObjectProperty<>();
 
