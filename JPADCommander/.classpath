@@ -6,7 +6,7 @@
 	<classpathentry kind="var" path="LIBRARY_FOLDER/controlFX/controlsfx-8.40.11.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADCore_v2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JPADConfigs"/>
-	<classpathentry kind="var" path="LIBRARY_FOLDER/commons-lang/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="var" path="LIBRARY_FOLDER/commons-lang/commons-lang3-3.7/commons-lang3-3.7.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/guava/guava-16.0.1.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.core_1.0.0.201602152140.jar"/>
 	<classpathentry kind="var" path="LIBRARY_FOLDER/javafx-d3/org.treez.data_1.0.0.201602152140.jar"/>

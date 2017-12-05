@@ -486,7 +486,12 @@ public class ACAerodynamicAndStabilityManager {
 						),
 				SI.METER);
 		
-		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(-25, 5, 10)), NonSI.DEGREE_ANGLE); 
+		_deltaEForEquilibrium = MyArrayUtils.convertDoubleArrayToListOfAmount((MyArrayUtils.linspaceDouble(
+				_theAerodynamicBuilderInterface.getMaximumElevatorDeflection().doubleValue(NonSI.DEGREE_ANGLE),
+				5, 
+				10
+				)),
+				NonSI.DEGREE_ANGLE); 
 	}
 
 	private void calculateDownwash() {
@@ -9747,6 +9752,20 @@ public class ACAerodynamicAndStabilityManager {
 			}
 		}
 
+		//----------------INDEX OF MAX ELEVATOR
+		
+		List<Integer> indexOfFirstMaximumDeltaElevatorOfEquilibrium = new ArrayList<>();
+		
+		for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+			indexOfFirstMaximumDeltaElevatorOfEquilibrium.add(i, 0);
+			for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
+				if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
+						.equals(_deltaEForEquilibrium.get(0))
+						) {
+					indexOfFirstMaximumDeltaElevatorOfEquilibrium.add(i, j+1);
+					break;
+				}
+		}
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CL TOTAL EQUILIBRIUM
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE)) {
@@ -9758,22 +9777,12 @@ public class ACAerodynamicAndStabilityManager {
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -9835,26 +9844,16 @@ public class ACAerodynamicAndStabilityManager {
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
+
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumDragCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -9914,22 +9913,13 @@ public class ACAerodynamicAndStabilityManager {
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+
 					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -9990,25 +9980,16 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
 					
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_horizontalTailEquilibriumDragCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10068,22 +10049,13 @@ public class ACAerodynamicAndStabilityManager {
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
+
 					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumEfficiencyMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10143,25 +10115,15 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumEfficiencyMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10220,26 +10182,16 @@ public class ACAerodynamicAndStabilityManager {
 				legend  = new ArrayList<>(); 
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
+
 					xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_totalEquilibriumLiftCoefficient.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					yVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 							_deltaEEquilibrium.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10299,21 +10251,11 @@ public class ACAerodynamicAndStabilityManager {
 
 				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 					
-					int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-					
-					for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-						if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-								.equals(_deltaEForEquilibrium.get(0))
-								) {
-							indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-							break;
-						}
-					
-					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))));
 					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 							_neutralPointPositionMap.get(
 									_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+									).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 							));
 					legend.add("Xcg = " + 
 							_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10373,24 +10315,14 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 
-						int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-
-						for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-							if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-									.equals(_deltaEForEquilibrium.get(0))
-									) {
-								indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-								break;
-							}
-
 						xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_totalEquilibriumLiftCoefficient.get(
 										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))));
 						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_neutralPointPositionMap.get(
 										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 								));
 						legend.add("Xcg = " + 
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10450,21 +10382,11 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 
-						int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-
-						for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-							if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-									.equals(_deltaEForEquilibrium.get(0))
-									) {
-								indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-								break;
-							}
-
-						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList.subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))));
 						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_staticStabilityMarginMap.get(
 										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 								));
 						legend.add("Xcg = " + 
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -10524,24 +10446,15 @@ public class ACAerodynamicAndStabilityManager {
 
 					for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 
-						int indexOfFirstMaximumDeltaElevatorOfEquilibrium = 0;
-
-						for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
-							if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
-									.equals(_deltaEForEquilibrium.get(0))
-									) {
-								indexOfFirstMaximumDeltaElevatorOfEquilibrium = j;
-								break;
-							}
 
 						xVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_totalEquilibriumLiftCoefficient.get(
 										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)));
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))));
 						yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray(
 								_staticStabilityMarginMap.get(
 										_theAerodynamicBuilderInterface.getXCGAircraft().get(i)
-										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium)
+										).subList(0, indexOfFirstMaximumDeltaElevatorOfEquilibrium.get(i))
 								));
 						legend.add("Xcg = " + 
 								_theAerodynamicBuilderInterface.getXCGAircraft().get(i));
@@ -11124,6 +11037,7 @@ public class ACAerodynamicAndStabilityManager {
 		Integer numberOfPointsSemispanwiseWing = null;
 		Integer numberOfPointsSemispanwiseHTail = null;
 		Integer numberOfPointsSemispanwiseVTail = null;
+		Amount<Angle> maximumElevatorDeflection = null;
 		List<Amount<Angle>> deltaElevatorList = new ArrayList<>();
 		List<Amount<Angle>> deltaRudderList = new ArrayList<>();
 		Double adimensionalWingMomentumPole = null;
@@ -11211,6 +11125,12 @@ public class ACAerodynamicAndStabilityManager {
 		String numberOfPointsSemispanwiseVTailProperty = reader.getXMLPropertyByPath("//global_data/number_of_points_semispawise_vertical_tail");
 		if(numberOfPointsSemispanwiseVTailProperty != null)
 			numberOfPointsSemispanwiseVTail = Integer.valueOf(numberOfPointsSemispanwiseVTailProperty);
+		
+		//---------------------------------------------------------------
+		// MAXIMUM ELEVATOR DEFLECTION
+		String maximumElevatorDeflectionProperty = reader.getXMLPropertyByPath("//global_data/maximum_elevator_deflection");
+		if(maximumElevatorDeflectionProperty != null)
+			maximumElevatorDeflection = reader.getXMLAmountAngleByPath("//global_data/maximum_elevator_deflection");
 		
 		//---------------------------------------------------------------
 		// DELTA ELEVATOR LIST
@@ -16349,6 +16269,7 @@ public class ACAerodynamicAndStabilityManager {
 				.setWingNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseWing)
 				.setHTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseHTail)
 				.setVTailNumberOfPointSemiSpanWise(numberOfPointsSemispanwiseVTail)
+				.setMaximumElevatorDeflection(maximumElevatorDeflection)
 				.addAllDeltaElevatorList(deltaElevatorList)
 				.addAllDeltaRudderList(deltaRudderList)
 				.setWingMomentumPole(wingMomentumPole)
@@ -23421,7 +23342,18 @@ public class ACAerodynamicAndStabilityManager {
 						);
 				
 			});
+	
+			//-------------
 			
+			System.err.println("QUIQUI alpha body " + Arrays.toString(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList)));
+			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
+				System.err.println("cl equilibrium htail " + _horizontalTailEquilibriumLiftCoefficient.get(xcg).toString());
+				System.err.println("delta e equilibrium " + Arrays.toString(MyArrayUtils.convertListOfAmountToDoubleArray(_deltaEEquilibrium.get(xcg))));
+			}
+					);
+			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de ->{
+				System.err.println("cl htail at de " + de + " is " + _current3DHorizontalTailLiftCurve.get(de));
+			});
 			//=======================================================================================
 			// Calculating MSS position vs alpha body ...
 			//=======================================================================================

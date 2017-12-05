@@ -38,13 +38,13 @@
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off_condition="FALSE"
+			take_off_condition="TRUE"
 			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
-			climb_condition="FALSE"
+			climb_condition="TRUE"
 			file_climb_condition="analysis_aerodynamics_Prototype.xml"
 			cruise_condition="TRUE"
 			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
-			landing_condition="FASE"
+			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
 	

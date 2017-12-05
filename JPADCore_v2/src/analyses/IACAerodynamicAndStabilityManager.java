@@ -48,6 +48,7 @@ public interface IACAerodynamicAndStabilityManager {
 	int getWingNumberOfPointSemiSpanWise();
 	int getHTailNumberOfPointSemiSpanWise();
 	int getVTailNumberOfPointSemiSpanWise();
+	Amount<Angle> getMaximumElevatorDeflection();
 	List<Amount<Angle>> getAlphaWingForDistribution();
 	List<Amount<Angle>> getAlphaHorizontalTailForDistribution();
 	List<Amount<Angle>> getBetaVerticalTailForDistribution();
