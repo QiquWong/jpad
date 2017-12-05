@@ -46,7 +46,9 @@ public class MyConfiguration {
 
 	// Directories
 	public static String currentImagesDirectory;
-	public static final String currentDirectoryString = System.getProperty("user.dir");
+	public static final String currentDirectoryString = 
+			System.getProperty("user.dir"); // TODO: fix me! points to JPADSandbox
+			//System.getenv("JPAD_ROOT") + File.separator + "JPADSandbox_v2";
 	public static final File currentDirectory = new File(currentDirectoryString);
 
 	public static final String src_it_unina_adopt_Directory = currentDirectoryString
@@ -135,7 +137,7 @@ public class MyConfiguration {
 		UnitFormat uf = UnitFormat.getInstance();
 		
 		// Customize labels
-		uf.label(NonSI.DEGREE_ANGLE, "deg"); // instead of default '°' symbol
+		uf.label(NonSI.DEGREE_ANGLE, "deg"); // instead of default 'ï¿½' symbol
 		
 		
 		AmountFormat.setInstance(new AmountFormat() {
