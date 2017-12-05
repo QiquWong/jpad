@@ -6,9 +6,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
+import opencascade.GeomAbs_Shape;
+import opencascade.TopAbs_ShapeEnum;
+import opencascade.TopExp_Explorer;
+import opencascade.TopoDS_CompSolid;
 import opencascade.TopoDS_Compound;
+import opencascade.TopoDS_Edge;
+import opencascade.TopoDS_Shape;
 import processing.core.PVector;
 
 public final class OCCUtils {
@@ -16,8 +23,10 @@ public final class OCCUtils {
 	public static CADShapeFactory theFactory;
 
 	static public void initCADShapeFactory() {
-		CADShapeFactory.setFactory(new OCCShapeFactory());
-		theFactory = CADShapeFactory.getFactory();
+		if (theFactory == null) {
+			CADShapeFactory.setFactory(new OCCShapeFactory());
+			theFactory = CADShapeFactory.getFactory();
+		}
 	}
 	
 	// Example: write("test.brep", occshape1, occsape2, occshape3)	
@@ -76,8 +85,26 @@ public final class OCCUtils {
 		listShapes.stream()
 			.forEach(s -> builder.Add(compound, s.getShape()));
 		
+//		TopoDS_CompSolid compsolid = new TopoDS_CompSolid();
+//		builder.MakeCompSolid(compsolid);
+//		
+//		// === Experimental, trying to write solids, TODO: fixme 
+//		listShapes.stream()
+//			.filter(s -> s instanceof OCCSolid)
+//			.forEach(s -> {
+//				System.out.println(">>>>>> Solid");
+//				builder.Add(compsolid, s.getShape());
+//			});
+		
+		
+//		String fileNameSolids = fileName.replace(".brep", "_solids.brep");
+//		long resultSolids = BRepTools.Write(compsolid, fileNameSolids);
+//		if (resultSolids == 1)
+//			System.out.println("========== [OCCUtils::write] Solids written on file: " + fileNameSolids);
+
+		// ====================
 		// write on file
-		long result = BRepTools.Write(compound, fileName);
+		long result = BRepTools.Write(compound, fileName);		
 		return (result == 1);
 	}
 	
@@ -102,7 +129,17 @@ public final class OCCUtils {
 									);
 		return (OCCShape)cadShell;		
 	}
+	
+	public static OCCShape makePatchThruSections(
+			CADVertex v0, List<CADGeomCurve3D> geomcurves) {
+		return makePatchThruSections(v0, geomcurves, null);
+	}
 
+	public static OCCShape makePatchThruSections(
+			List<CADGeomCurve3D> geomcurves, CADVertex v1) {
+		return makePatchThruSections(null, geomcurves, v1);
+	}
+	
 	public static OCCShape makePatchThruSections(List<CADGeomCurve3D> geomcurves) {
 		return makePatchThruSections(null, geomcurves, null);
 	}
@@ -164,6 +201,76 @@ public final class OCCUtils {
 	
 	public static OCCShape makePatchThruSectionsP(List<List<PVector>> sections, PVector p1) {
 		return makePatchThruSectionsP(null, sections, p1);
+	}
+	
+	public static CADShape makeFilledFace(TopoDS_Shape ... shapesArray) {
+		// TODO: add checks
+		
+		return makeFilledFace(Arrays.stream(shapesArray).collect(Collectors.toList()));
+	}
+
+	public static CADShape makeFilledFace(List<TopoDS_Shape> shapes) {
+		// TODO: add checks
+		
+		BRepOffsetAPI_MakeFilling filled = new BRepOffsetAPI_MakeFilling();
+		shapes.stream()
+			.forEach(s -> filled.Add((TopoDS_Edge) s, GeomAbs_Shape.GeomAbs_C0));
+		filled.Build();
+		System.out.println("[OCCUtils::makeFilledFace] Filled surface is done? = " + filled.IsDone());
+
+		CADShape face = OCCUtils.theFactory.newShape(filled.Shape());		
+		return face;
+	}
+	
+	public static CADShape makeFilledFace(CADGeomCurve3D ... crvs) {
+		List<TopoDS_Shape> shapes = new ArrayList<>();
+		Arrays.stream(crvs).collect(Collectors.toList()).stream()
+			.map(crv -> crv.edge())
+			.forEach(cadedge -> shapes.add(
+					((OCCEdge)cadedge).getShape())
+			);
+		return makeFilledFace(shapes);
+	}
+	
+	/** Return the number of shapes in one shape */
+	public static int numberOfShape(TopoDS_Shape shape, TopAbs_ShapeEnum type)
+	{
+		int n=0;
+		TopExp_Explorer exp = new TopExp_Explorer(shape, type);
+		while (exp.More() > 0) {
+			n++;
+			exp.Next();
+		}
+		return n;
+	}
+	
+	public static String reportOnShape(TopoDS_Shape shape, String ... prepends) {
+		StringBuilder sb = new StringBuilder()
+				.append("\t-------------------------------------\n");
+		
+		java.util.Arrays.asList(prepends).stream()
+			.forEach(s -> sb.append("\t" +s + "\n")); // user additional log messages
+				
+		sb
+			.append("\tTopoDS_Shape report\n")
+			//.append("\t-------------------------------------\n")
+			//.append("\tTypes: ")
+			//.append( java.util.Arrays.asList( TopAbs_ShapeEnum.class.getEnumConstants()) + "\n")
+			.append("\t-------------------------------------\n");
+		
+		sb
+			.append("\tShapes of type TopAbs_SHAPE: " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SHAPE) + "\n")
+			.append("\tShapes of type TopAbs_VERTEX " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_VERTEX) + "\n")
+			.append("\tShapes of type TopAbs_EDGE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_EDGE) + "\n")
+			.append("\tShapes of type TopAbs_WIRE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_WIRE) + "\n")
+			.append("\tShapes of type TopAbs_FACE " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_FACE) + "\n")
+			.append("\tShapes of type TopAbs_SHELL " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SHELL) + "\n")
+			.append("\tShapes of type TopAbs_SOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SOLID) + "\n")
+			.append("\tShapes of type TopAbs_COMPSOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPSOLID) + "\n")
+			.append("\tShapes of type TopAbs_COMPOUND " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPOUND) + "\n")
+			.append("\t-------------------------------------\n");
+		
+		return sb.toString();
 	}
 	
 }

@@ -57,7 +57,6 @@ import com.google.common.primitives.Ints;
 import aircraft.components.Aircraft;
 import analyses.OperatingConditions;
 import cad.aircraft.MyAircraftBuilder;
-import cad.occ.OCCFXMeshExtractor;
 import configuration.MyConfiguration;
 import configuration.enumerations.FoldersEnum;
 import database.DatabaseManager;

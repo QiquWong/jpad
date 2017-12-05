@@ -485,7 +485,7 @@ public class Engine implements IEngine {
 							.getEstimatedValue(),
 							SI.KILOGRAM
 							);
-				else
+				else 
 					dryMass = Amount.valueOf(
 							Amount.valueOf(
 									Math.pow(
@@ -498,7 +498,6 @@ public class Engine implements IEngine {
 							.getEstimatedValue(),
 							SI.KILOGRAM
 							);
-
 			}
 			else {
 				String dryMassProperty = reader.getXMLPropertyByPath("//specifications/dry_mass");

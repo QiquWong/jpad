@@ -7,6 +7,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import aircraft.components.Aircraft;
 import aircraft.components.fuselage.Fuselage;
 import it.unina.daf.jpadcad.occ.OCCShape;
+import it.unina.daf.jpadcad.occ.OCCShell;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.utils.AircraftUtils;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
@@ -35,6 +36,8 @@ public class Test14 {
 		OCCUtils.initCADShapeFactory();
 		
 		boolean supportShapes = true;
+		OCCShell.setDefaultMakeSolid(true);
+		System.out.println(">>>>>> OCCShell default-make-solid: " + OCCShell.isDefaultMakeSolid());
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(fuselage, supportShapes);
 		
 		// Write to a file

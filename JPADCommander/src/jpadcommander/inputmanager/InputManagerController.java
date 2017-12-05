@@ -75,8 +75,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -84,6 +88,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -160,6 +168,8 @@ public class InputManagerController {
 	private TabPane tabPaneWingSlats;
 	@FXML
 	private TabPane tabPaneWingSpoilers;	
+	@FXML
+	private TabPane tabPaneWingViewAndAirfoils;	
 	
 	//...........................................................................................
 	// BUTTONS:
@@ -1069,7 +1079,57 @@ public class InputManagerController {
 	private TextField textFieldWingMaximumDeflectionAngleSpoiler4;
 	
 	// lists:
-	// TODO: COMPLETE ME !! 
+	// panels
+	private List<TextField> textFieldWingSpanPanelList;
+	private List<TextField> textFieldWingSweepLEPanelList;
+	private List<TextField> textFieldWingDihedralPanelList;
+	private List<TextField> textFieldWingInnerChordPanelList;
+	private List<TextField> textFieldWingInnerTwistPanelList;
+	private List<TextField> textFieldWingInnerAirfoilPanelList;
+	private List<TextField> textFieldWingOuterChordPanelList;
+	private List<TextField> textFieldWingOuterTwistPanelList;
+	private List<TextField> textFieldWingOuterAirfoilPanelList;
+	private List<CheckBox> checkBoxWingLinkedToPreviousPanelList;
+	private List<ChoiceBox<String>> choiceBoxWingSpanPanelUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingSweepLEPanelUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingDihedralPanelUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingInnerChordPanelUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingInnerTwistPanelUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingOuterChordPanelUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingOuterTwistPanelUnitList;
+	private List<Button> detailButtonWingInnerAirfoilList;
+	private List<Button> detailButtonWingOuterAirfoilList;
+	
+	// flaps
+	private List<TextField> textFieldWingInnerPositionFlapList;
+	private List<TextField> textFieldWingOuterPositionFlapList;
+	private List<TextField> textFieldWingInnerChordRatioFlapList;
+	private List<TextField> textFieldWingOuterChordRatioFlapList;
+	private List<TextField> textFieldWingMinimumDeflectionAngleFlapList;
+	private List<TextField> textFieldWingMaximumDeflectionAngleFlapList;
+	private List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleFlapUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleFlapUnitList;
+	
+	// flaps
+	private List<TextField> textFieldWingInnerPositionSlatList;
+	private List<TextField> textFieldWingOuterPositionSlatList;
+	private List<TextField> textFieldWingInnerChordRatioSlatList;
+	private List<TextField> textFieldWingOuterChordRatioSlatList;
+	private List<TextField> textFieldWingExtensionRatioSlatList;
+	private List<TextField> textFieldWingMinimumDeflectionAngleSlatList;
+	private List<TextField> textFieldWingMaximumDeflectionAngleSlatList;
+	private List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleSlatUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleSlatUnitList;
+	
+	// spoilers
+	private List<TextField> textFieldWingInnerSpanwisePositionSpoilerList;
+	private List<TextField> textFieldWingOuterSpanwisePositionSpoilerList;
+	private List<TextField> textFieldWingInnerChordwisePositionSpoilerList;
+	private List<TextField> textFieldWingOuterChordwisePositionSpoilerList;
+	private List<TextField> textFieldWingMinimumDeflectionAngleSpoilerList;
+	private List<TextField> textFieldWingMaximumDeflectionAngleSpoilerList;
+	private List<ChoiceBox<String>> choiceBoxWingMinimumDeflectionAngleSpoilerUnitList;
+	private List<ChoiceBox<String>> choiceBoxWingMaximumDeflectionAngleSpoilerUnitList;
 	
 	//...........................................................................................
 	// WING TAB (UNITS):
@@ -1218,10 +1278,25 @@ public class InputManagerController {
 			newAircraftButton.setDisable(true);
 		}
 		
+		tabPaneWingPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingFlaps.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingSlats.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingSpoilers.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingViewAndAirfoils.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		tabPaneWingViewAndAirfoils.getTabs().get(0).closableProperty().set(false);
+		tabPaneWingViewAndAirfoils.getTabs().get(1).closableProperty().set(false);
+		
 		aircraftLoadButtonDisableCheck();
 		cabinConfigurationClassesNumberDisableCheck();
 		checkCabinConfigurationClassesNumber();
 		equivalentWingDisableCheck();
+		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilRootDetailButton, textFieldEquivalentWingAirfoilRootPath);
+		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilKinkDetailButton, textFieldEquivalentWingAirfoilKinkPath);
+		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilTipDetailButton, textFieldEquivalentWingAirfoilTipPath);
+		setAirfoilDetailsActionAndDisableCheck(wingInnerSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathInnerSectionPanel1);
+		setAirfoilDetailsActionAndDisableCheck(wingOuterSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathOuterSectionPanel1);
+		setAirfoilDetailsActionAndDisableCheck(wingInnerSectionAirfoilDetailsPanel2Button, textFieldWingAirfoilPathInnerSectionPanel2);
+		setAirfoilDetailsActionAndDisableCheck(wingOuterSectionAirfoilDetailsPanel2Button, textFieldWingAirfoilPathOuterSectionPanel2);
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -1349,6 +1424,241 @@ public class InputManagerController {
 		wingMinimumDeflectionAngleSpoiler4UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleSpoiler4UnitChoiceBox.setItems(angleUnitsList);
 		
+		//.......................................................................................
+		// WING LISTS INITIALIZATION
+		// panels
+		textFieldWingSpanPanelList = new ArrayList<>();
+		textFieldWingSpanPanelList.add(textFieldWingSpanPanel1);
+		textFieldWingSpanPanelList.add(textFieldWingSpanPanel2);
+		
+		textFieldWingSweepLEPanelList = new ArrayList<>();
+		textFieldWingSweepLEPanelList.add(textFieldWingSweepLeadingEdgePanel1);
+		textFieldWingSweepLEPanelList.add(textFieldWingSweepLeadingEdgePanel2);
+		
+		textFieldWingDihedralPanelList = new ArrayList<>();
+		textFieldWingDihedralPanelList.add(textFieldWingDihedralPanel1);
+		textFieldWingDihedralPanelList.add(textFieldWingDihedralPanel2);
+		
+		textFieldWingInnerChordPanelList = new ArrayList<>();
+		textFieldWingInnerChordPanelList.add(textFieldWingChordInnerSectionPanel1);
+		textFieldWingInnerChordPanelList.add(textFieldWingChordInnerSectionPanel2);
+		
+		textFieldWingInnerTwistPanelList = new ArrayList<>();
+		textFieldWingInnerTwistPanelList.add(textFieldWingTwistInnerSectionPanel1);
+		textFieldWingInnerTwistPanelList.add(textFieldWingTwistInnerSectionPanel2);
+		
+		textFieldWingInnerAirfoilPanelList = new ArrayList<>();
+		textFieldWingInnerAirfoilPanelList.add(textFieldWingAirfoilPathInnerSectionPanel1);
+		textFieldWingInnerAirfoilPanelList.add(textFieldWingAirfoilPathInnerSectionPanel2);
+		
+		textFieldWingOuterChordPanelList = new ArrayList<>();
+		textFieldWingOuterChordPanelList.add(textFieldWingChordOuterSectionPanel1);
+		textFieldWingOuterChordPanelList.add(textFieldWingChordOuterSectionPanel2);
+		
+		textFieldWingOuterTwistPanelList = new ArrayList<>();
+		textFieldWingOuterTwistPanelList.add(textFieldWingTwistOuterSectionPanel1);
+		textFieldWingOuterTwistPanelList.add(textFieldWingTwistOuterSectionPanel2);
+		
+		textFieldWingOuterAirfoilPanelList = new ArrayList<>();
+		textFieldWingOuterAirfoilPanelList.add(textFieldWingAirfoilPathOuterSectionPanel1);
+		textFieldWingOuterAirfoilPanelList.add(textFieldWingAirfoilPathOuterSectionPanel2);
+		
+		checkBoxWingLinkedToPreviousPanelList = new ArrayList<>();
+		checkBoxWingLinkedToPreviousPanelList.add(linkedToPreviousPanelCheckBoxPanel2);
+		
+		choiceBoxWingSpanPanelUnitList = new ArrayList<>();
+		choiceBoxWingSpanPanelUnitList.add(wingSpanPanel1UnitChoiceBox);
+		choiceBoxWingSpanPanelUnitList.add(wingSpanPanel2UnitChoiceBox);
+		
+		choiceBoxWingSweepLEPanelUnitList = new ArrayList<>();
+		choiceBoxWingSweepLEPanelUnitList.add(wingSweepLEPanel1UnitChoiceBox);
+		choiceBoxWingSweepLEPanelUnitList.add(wingSweepLEPanel2UnitChoiceBox);
+		
+		choiceBoxWingDihedralPanelUnitList = new ArrayList<>();
+		choiceBoxWingDihedralPanelUnitList.add(wingDihedralPanel1UnitChoiceBox);
+		choiceBoxWingDihedralPanelUnitList.add(wingDihedralPanel2UnitChoiceBox);
+		
+		choiceBoxWingInnerChordPanelUnitList = new ArrayList<>();
+		choiceBoxWingInnerChordPanelUnitList.add(wingInnerSectionChordPanel1UnitChoiceBox);
+		choiceBoxWingInnerChordPanelUnitList.add(wingInnerSectionChordPanel2UnitChoiceBox);
+		
+		choiceBoxWingInnerTwistPanelUnitList = new ArrayList<>();
+		choiceBoxWingInnerTwistPanelUnitList.add(wingInnerSectionTwistTipPanel1UnitChoiceBox);
+		choiceBoxWingInnerTwistPanelUnitList.add(wingInnerSectionTwistTipPanel2UnitChoiceBox);
+		
+		choiceBoxWingOuterChordPanelUnitList = new ArrayList<>();
+		choiceBoxWingOuterChordPanelUnitList.add(wingOuterSectionChordPanel1UnitChoiceBox);
+		choiceBoxWingOuterChordPanelUnitList.add(wingOuterSectionChordPanel2UnitChoiceBox);
+		
+		choiceBoxWingOuterTwistPanelUnitList = new ArrayList<>();
+		choiceBoxWingOuterTwistPanelUnitList.add(wingOuterSectionTwistTipPanel1UnitChoiceBox);
+		choiceBoxWingOuterTwistPanelUnitList.add(wingOuterSectionTwistTipPanel2UnitChoiceBox);
+		
+		detailButtonWingInnerAirfoilList = new ArrayList<>();
+		detailButtonWingInnerAirfoilList.add(wingInnerSectionAirfoilDetailsPanel1Button);
+		detailButtonWingInnerAirfoilList.add(wingInnerSectionAirfoilDetailsPanel2Button);
+		
+		detailButtonWingOuterAirfoilList = new ArrayList<>();
+		detailButtonWingOuterAirfoilList.add(wingOuterSectionAirfoilDetailsPanel1Button);
+		detailButtonWingOuterAirfoilList.add(wingOuterSectionAirfoilDetailsPanel2Button);
+		
+		// flaps
+		textFieldWingInnerPositionFlapList = new ArrayList<>();
+		textFieldWingInnerPositionFlapList.add(textFieldWingInnerPositionFlap1);
+		textFieldWingInnerPositionFlapList.add(textFieldWingInnerPositionFlap2);
+		
+		textFieldWingOuterPositionFlapList = new ArrayList<>();
+		textFieldWingOuterPositionFlapList.add(textFieldWingOuterPositionFlap1);
+		textFieldWingOuterPositionFlapList.add(textFieldWingOuterPositionFlap2);
+		
+		textFieldWingInnerChordRatioFlapList = new ArrayList<>();
+		textFieldWingInnerChordRatioFlapList.add(textFieldWingInnerChordRatioFlap1);
+		textFieldWingInnerChordRatioFlapList.add(textFieldWingInnerChordRatioFlap2);
+		
+		textFieldWingOuterChordRatioFlapList = new ArrayList<>();
+		textFieldWingOuterChordRatioFlapList.add(textFieldWingOuterChordRatioFlap1);
+		textFieldWingOuterChordRatioFlapList.add(textFieldWingOuterChordRatioFlap2);
+		
+		textFieldWingMinimumDeflectionAngleFlapList = new ArrayList<>();
+		textFieldWingMinimumDeflectionAngleFlapList.add(textFieldWingMinimumDeflectionAngleFlap1);
+		textFieldWingMinimumDeflectionAngleFlapList.add(textFieldWingMinimumDeflectionAngleFlap2);
+		
+		textFieldWingMaximumDeflectionAngleFlapList = new ArrayList<>();
+		textFieldWingMaximumDeflectionAngleFlapList.add(textFieldWingMaximumDeflectionAngleFlap1);
+		textFieldWingMaximumDeflectionAngleFlapList.add(textFieldWingMaximumDeflectionAngleFlap2);
+		
+		choiceBoxWingMinimumDeflectionAngleFlapUnitList = new ArrayList<>();
+		choiceBoxWingMinimumDeflectionAngleFlapUnitList.add(wingMinimumDeflectionAngleFlap1UnitChoiceBox);
+		choiceBoxWingMinimumDeflectionAngleFlapUnitList.add(wingMinimumDeflectionAngleFlap2UnitChoiceBox);
+		
+		choiceBoxWingMaximumDeflectionAngleFlapUnitList = new ArrayList<>();
+		choiceBoxWingMaximumDeflectionAngleFlapUnitList.add(wingMaximumDeflectionAngleFlap1UnitChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleFlapUnitList.add(wingMaximumDeflectionAngleFlap2UnitChoiceBox);
+		
+		// flaps
+		textFieldWingInnerPositionSlatList = new ArrayList<>();
+		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat1);
+		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat2);
+		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat3);
+		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat4);
+		
+		textFieldWingOuterPositionSlatList = new ArrayList<>();
+		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat1);
+		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat2);
+		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat3);
+		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat4);
+		
+		textFieldWingInnerChordRatioSlatList = new ArrayList<>();
+		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat1);
+		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat2);
+		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat3);
+		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat4);
+		
+		textFieldWingOuterChordRatioSlatList = new ArrayList<>();
+		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat1);
+		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat2);
+		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat3);
+		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat4);
+		
+		textFieldWingExtensionRatioSlatList = new ArrayList<>();
+		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat1);
+		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat2);
+		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat3);
+		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat4);
+		
+		textFieldWingMinimumDeflectionAngleSlatList = new ArrayList<>();
+		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat1);
+		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat2);
+		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat3);
+		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat4);
+		
+		textFieldWingMaximumDeflectionAngleSlatList = new ArrayList<>();
+		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat1);
+		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat2);
+		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat3);
+		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat4);
+		
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList = new ArrayList<>();
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat1UnitChoiceBox);
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat2UnitChoiceBox);
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat3UnitChoiceBox);
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat4UnitChoiceBox);
+		
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList = new ArrayList<>();
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat1UnitChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat2UnitChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat3UnitChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat4UnitChoiceBox);
+		
+		// spoilers
+		textFieldWingInnerSpanwisePositionSpoilerList = new ArrayList<>();
+		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier1);
+		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier2);
+		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier3);
+		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier4);
+		
+		textFieldWingOuterSpanwisePositionSpoilerList = new ArrayList<>();
+		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier1);
+		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier2);
+		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier3);
+		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier4);
+		
+		textFieldWingInnerChordwisePositionSpoilerList = new ArrayList<>();
+		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier1);
+		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier2);
+		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier3);
+		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier4);
+		
+		textFieldWingOuterChordwisePositionSpoilerList = new ArrayList<>();
+		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier1);
+		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier2);
+		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier3);
+		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier4);
+		
+		textFieldWingMinimumDeflectionAngleSpoilerList = new ArrayList<>();
+		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier1);
+		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier2);
+		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier3);
+		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier4);
+		
+		textFieldWingMaximumDeflectionAngleSpoilerList = new ArrayList<>();
+		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler1);
+		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler2);
+		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler3);
+		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler4);
+		
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList = new ArrayList<>();
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler1UnitChoiceBox);
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler2UnitChoiceBox);
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler3UnitChoiceBox);
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler4UnitChoiceBox);
+		
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList = new ArrayList<>();
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler1UnitChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler2UnitChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler3UnitChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler4UnitChoiceBox);
+		
+	}
+	
+	private void setAirfoilDetailsActionAndDisableCheck (Button detailsButton, TextField airfoilPathTextField) {
+		
+		detailsButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					showAirfoilData(airfoilPathTextField.getText());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		detailsButton.disableProperty().bind(
+				Bindings.isEmpty(airfoilPathTextField.textProperty())
+				);	
+		
 	}
 	
 	private void aircraftLoadButtonDisableCheck () {
@@ -1474,10 +1784,684 @@ public class InputManagerController {
 		
 	}
 	
-	// TODO: ADD A METHOD TO ADD TAB AND CONTENT TO A GIVEN TAB PANE (for panels, flaps, slats, spoilers, etc...)
+	@FXML
+	private void addPanel() {
+		
+		Tab newPanelTab = new Tab("Panel " + (tabPaneWingPanels.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		int additionalYSize = 0;
+		
+		if(tabPaneWingPanels.getTabs().size() > 0) {
+
+			Label linkedToPreviousPanelLabel = new Label("Linked to previous panel:");
+			linkedToPreviousPanelLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+			linkedToPreviousPanelLabel.setLayoutX(6.0);
+			linkedToPreviousPanelLabel.setLayoutY(14.0);
+			contentPane.getChildren().add(linkedToPreviousPanelLabel);
+
+			CheckBox linkedToPreviousCheckBox = new CheckBox();
+			linkedToPreviousCheckBox.setPrefWidth(21.0);
+			linkedToPreviousCheckBox.setPrefHeight(17.0);
+			linkedToPreviousCheckBox.setLayoutX(190.0);
+			linkedToPreviousCheckBox.setLayoutY(16.0);
+			contentPane.getChildren().add(linkedToPreviousCheckBox);
+			checkBoxWingLinkedToPreviousPanelList.add(linkedToPreviousCheckBox);
+
+			additionalYSize = 47;
+			
+		}
+
+		Label panelSpanLabel = new Label("Span:");
+		panelSpanLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelSpanLabel.setLayoutX(6.0);
+		panelSpanLabel.setLayoutY(additionalYSize);
+		contentPane.getChildren().add(panelSpanLabel);
+		
+		TextField panelSpanTextField = new TextField();
+		panelSpanTextField.setLayoutX(6.0);
+		panelSpanTextField.setLayoutY(21+additionalYSize);
+		panelSpanTextField.setPrefWidth(340);
+		panelSpanTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelSpanTextField);
+		
+		ChoiceBox<String> panelSpanChoiceBox = new ChoiceBox<String>();
+		panelSpanChoiceBox.setLayoutX(347.0);
+		panelSpanChoiceBox.setLayoutY(22+additionalYSize);
+		panelSpanChoiceBox.setPrefWidth(47);
+		panelSpanChoiceBox.setPrefHeight(30);
+		panelSpanChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(panelSpanChoiceBox);
+		
+		Label panelSweepLELabel = new Label("Sweep L.E.:");
+		panelSweepLELabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelSweepLELabel.setLayoutX(6.0);
+		panelSweepLELabel.setLayoutY(52+additionalYSize);
+		contentPane.getChildren().add(panelSweepLELabel);
+		
+		TextField panelSweepLETextField = new TextField();
+		panelSweepLETextField.setLayoutX(6.0);
+		panelSweepLETextField.setLayoutY(73+additionalYSize);
+		panelSweepLETextField.setPrefWidth(340);
+		panelSweepLETextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelSweepLETextField);
+		
+		ChoiceBox<String> panelSweepLEChoiceBox = new ChoiceBox<String>();
+		panelSweepLEChoiceBox.setLayoutX(347.0);
+		panelSweepLEChoiceBox.setLayoutY(74+additionalYSize);
+		panelSweepLEChoiceBox.setPrefWidth(47);
+		panelSweepLEChoiceBox.setPrefHeight(30);
+		panelSweepLEChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(panelSweepLEChoiceBox);
+		
+		Label panelDihedralLabel = new Label("Dihedral angle:");
+		panelDihedralLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelDihedralLabel.setLayoutX(6.0);
+		panelDihedralLabel.setLayoutY(104+additionalYSize);
+		contentPane.getChildren().add(panelDihedralLabel);
+		
+		TextField panelDihedralTextField = new TextField();
+		panelDihedralTextField.setLayoutX(6.0);
+		panelDihedralTextField.setLayoutY(125+additionalYSize);
+		panelDihedralTextField.setPrefWidth(340);
+		panelDihedralTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelDihedralTextField);
+		
+		ChoiceBox<String> panelDihedralChoiceBox = new ChoiceBox<String>();
+		panelDihedralChoiceBox.setLayoutX(347.0);
+		panelDihedralChoiceBox.setLayoutY(126+additionalYSize);
+		panelDihedralChoiceBox.setPrefWidth(47);
+		panelDihedralChoiceBox.setPrefHeight(30);
+		panelDihedralChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(panelDihedralChoiceBox);
+		
+		Separator innerSectionUpperSeparator = new Separator();
+		innerSectionUpperSeparator.setLayoutX(-2);
+		innerSectionUpperSeparator.setLayoutY(164+additionalYSize);
+		innerSectionUpperSeparator.setPrefWidth(1345);
+		contentPane.getChildren().add(innerSectionUpperSeparator);
+		
+		Label innerSectionLabel = new Label("Inner section");
+		innerSectionLabel.setFont(Font.font("System", FontWeight.BOLD, FontPosture.ITALIC, 15));
+		innerSectionLabel.setTextFill(Paint.valueOf("#0400ff"));
+		innerSectionLabel.setLayoutX(6.0);
+		innerSectionLabel.setLayoutY(164+additionalYSize);
+		contentPane.getChildren().add(innerSectionLabel);
+		
+		Separator innerSectionLowerSeparator = new Separator();
+		innerSectionLowerSeparator.setLayoutX(-8);
+		innerSectionLowerSeparator.setLayoutY(184+additionalYSize);
+		innerSectionLowerSeparator.setPrefWidth(1345);
+		contentPane.getChildren().add(innerSectionLowerSeparator);
+		
+		Label panelInnerSectionChordLabel = new Label("Chord:");
+		panelInnerSectionChordLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelInnerSectionChordLabel.setLayoutX(7.0);
+		panelInnerSectionChordLabel.setLayoutY(184+additionalYSize);
+		contentPane.getChildren().add(panelInnerSectionChordLabel);
+		
+		TextField panelInnerSectionChordTextField = new TextField();
+		panelInnerSectionChordTextField.setLayoutX(7.0);
+		panelInnerSectionChordTextField.setLayoutY(205+additionalYSize);
+		panelInnerSectionChordTextField.setPrefWidth(340);
+		panelInnerSectionChordTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelInnerSectionChordTextField);
+		
+		ChoiceBox<String> panelInnerSectionChordChoiceBox = new ChoiceBox<String>();
+		panelInnerSectionChordChoiceBox.setLayoutX(348.0);
+		panelInnerSectionChordChoiceBox.setLayoutY(206+additionalYSize);
+		panelInnerSectionChordChoiceBox.setPrefWidth(47);
+		panelInnerSectionChordChoiceBox.setPrefHeight(30);
+		panelInnerSectionChordChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(panelInnerSectionChordChoiceBox);
+		
+		Label panelInnerSectionTwistLabel = new Label("Twist angle:");
+		panelInnerSectionTwistLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelInnerSectionTwistLabel.setLayoutX(7.0);
+		panelInnerSectionTwistLabel.setLayoutY(236+additionalYSize);
+		contentPane.getChildren().add(panelInnerSectionTwistLabel);
+		
+		TextField panelInnerSectionTwistTextField = new TextField();
+		panelInnerSectionTwistTextField.setLayoutX(7.0);
+		panelInnerSectionTwistTextField.setLayoutY(257+additionalYSize);
+		panelInnerSectionTwistTextField.setPrefWidth(340);
+		panelInnerSectionTwistTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelInnerSectionTwistTextField);
+		
+		ChoiceBox<String> panelInnerSectionTwistChoiceBox = new ChoiceBox<String>();
+		panelInnerSectionTwistChoiceBox.setLayoutX(348.0);
+		panelInnerSectionTwistChoiceBox.setLayoutY(258+additionalYSize);
+		panelInnerSectionTwistChoiceBox.setPrefWidth(47);
+		panelInnerSectionTwistChoiceBox.setPrefHeight(30);
+		panelInnerSectionTwistChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(panelInnerSectionTwistChoiceBox);
+		
+		Label panelInnerSectionAirfoilPathLabel = new Label("Airfoil:");
+		panelInnerSectionAirfoilPathLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelInnerSectionAirfoilPathLabel.setLayoutX(7.0);
+		panelInnerSectionAirfoilPathLabel.setLayoutY(288+additionalYSize);
+		contentPane.getChildren().add(panelInnerSectionAirfoilPathLabel);
+		
+		TextField panelInnerSectionAirfoilPathTextField = new TextField();
+		panelInnerSectionAirfoilPathTextField.setLayoutX(6.0);
+		panelInnerSectionAirfoilPathTextField.setLayoutY(309+additionalYSize);
+		panelInnerSectionAirfoilPathTextField.setPrefWidth(340);
+		panelInnerSectionAirfoilPathTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelInnerSectionAirfoilPathTextField);
+		
+		Button panelInnerSectionAirfoilDetailsButton = new Button("Details");
+		panelInnerSectionAirfoilDetailsButton.setLayoutX(348);
+		panelInnerSectionAirfoilDetailsButton.setLayoutY(309+additionalYSize);
+		panelInnerSectionAirfoilDetailsButton.setPrefWidth(55);
+		panelInnerSectionAirfoilDetailsButton.setPrefHeight(31);
+		panelInnerSectionAirfoilDetailsButton.setFont(Font.font("System", FontWeight.BOLD, 12));
+		panelInnerSectionAirfoilDetailsButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					showAirfoilData(panelInnerSectionAirfoilPathTextField.getText());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		contentPane.getChildren().add(panelInnerSectionAirfoilDetailsButton);
+		panelInnerSectionAirfoilDetailsButton.disableProperty().bind(
+				Bindings.isEmpty(panelInnerSectionAirfoilPathTextField.textProperty())
+				);	
+		
+		Separator outerSectionUpperSeparator = new Separator();
+		outerSectionUpperSeparator.setLayoutX(-2);
+		outerSectionUpperSeparator.setLayoutY(360+additionalYSize);
+		outerSectionUpperSeparator.setPrefWidth(1345);
+		contentPane.getChildren().add(outerSectionUpperSeparator);
+		
+		Label outerSectionLabel = new Label("Outer section");
+		outerSectionLabel.setFont(Font.font("System", FontWeight.BOLD, FontPosture.ITALIC, 15));
+		outerSectionLabel.setTextFill(Paint.valueOf("#0400ff"));
+		outerSectionLabel.setLayoutX(6.0);
+		outerSectionLabel.setLayoutY(360+additionalYSize);
+		contentPane.getChildren().add(outerSectionLabel);
+		
+		Separator outerSectionLowerSeparator = new Separator();
+		outerSectionLowerSeparator.setLayoutX(-8);
+		outerSectionLowerSeparator.setLayoutY(380+additionalYSize);
+		outerSectionLowerSeparator.setPrefWidth(1345);
+		contentPane.getChildren().add(outerSectionLowerSeparator);
+		
+		Label panelOuterSectionChordLabel = new Label("Chord:");
+		panelOuterSectionChordLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelOuterSectionChordLabel.setLayoutX(6.0);
+		panelOuterSectionChordLabel.setLayoutY(383+additionalYSize);
+		contentPane.getChildren().add(panelOuterSectionChordLabel);
+		
+		TextField panelOuterSectionChordTextField = new TextField();
+		panelOuterSectionChordTextField.setLayoutX(6.0);
+		panelOuterSectionChordTextField.setLayoutY(404+additionalYSize);
+		panelOuterSectionChordTextField.setPrefWidth(340);
+		panelOuterSectionChordTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelOuterSectionChordTextField);
+		
+		ChoiceBox<String> panelOuterSectionChordChoiceBox = new ChoiceBox<String>();
+		panelOuterSectionChordChoiceBox.setLayoutX(348.0);
+		panelOuterSectionChordChoiceBox.setLayoutY(405+additionalYSize);
+		panelOuterSectionChordChoiceBox.setPrefWidth(47);
+		panelOuterSectionChordChoiceBox.setPrefHeight(30);
+		panelOuterSectionChordChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(panelOuterSectionChordChoiceBox);
+		
+		Label panelOuterSectionTwistLabel = new Label("Twist angle:");
+		panelOuterSectionTwistLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelOuterSectionTwistLabel.setLayoutX(6.0);
+		panelOuterSectionTwistLabel.setLayoutY(435+additionalYSize);
+		contentPane.getChildren().add(panelOuterSectionTwistLabel);
+		
+		TextField panelOuterSectionTwistTextField = new TextField();
+		panelOuterSectionTwistTextField.setLayoutX(6.0);
+		panelOuterSectionTwistTextField.setLayoutY(456+additionalYSize);
+		panelOuterSectionTwistTextField.setPrefWidth(340);
+		panelOuterSectionTwistTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelOuterSectionTwistTextField);
+		
+		ChoiceBox<String> panelOuterSectionTwistChoiceBox = new ChoiceBox<String>();
+		panelOuterSectionTwistChoiceBox.setLayoutX(348.0);
+		panelOuterSectionTwistChoiceBox.setLayoutY(457+additionalYSize);
+		panelOuterSectionTwistChoiceBox.setPrefWidth(47);
+		panelOuterSectionTwistChoiceBox.setPrefHeight(30);
+		panelOuterSectionTwistChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(panelOuterSectionTwistChoiceBox);
+		
+		Label panelOuterSectionAirfoilPathLabel = new Label("Airfoil:");
+		panelOuterSectionAirfoilPathLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		panelOuterSectionAirfoilPathLabel.setLayoutX(6.0);
+		panelOuterSectionAirfoilPathLabel.setLayoutY(487+additionalYSize);
+		contentPane.getChildren().add(panelOuterSectionAirfoilPathLabel);
+		
+		TextField panelOuterSectionAirfoilPathTextField = new TextField();
+		panelOuterSectionAirfoilPathTextField.setLayoutX(6.0);
+		panelOuterSectionAirfoilPathTextField.setLayoutY(508+additionalYSize);
+		panelOuterSectionAirfoilPathTextField.setPrefWidth(340);
+		panelOuterSectionAirfoilPathTextField.setPrefHeight(31);
+		contentPane.getChildren().add(panelOuterSectionAirfoilPathTextField);
+		
+		Button panelOuterSectionAirfoilDetailsButton = new Button("Details");
+		panelOuterSectionAirfoilDetailsButton.setLayoutX(348);
+		panelOuterSectionAirfoilDetailsButton.setLayoutY(508+additionalYSize);
+		panelOuterSectionAirfoilDetailsButton.setPrefWidth(55);
+		panelOuterSectionAirfoilDetailsButton.setPrefHeight(31);
+		panelOuterSectionAirfoilDetailsButton.setFont(Font.font("System", FontWeight.BOLD, 12));
+		panelOuterSectionAirfoilDetailsButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					showAirfoilData(panelOuterSectionAirfoilPathTextField.getText());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		contentPane.getChildren().add(panelOuterSectionAirfoilDetailsButton);
+		panelOuterSectionAirfoilDetailsButton.disableProperty().bind(
+				Bindings.isEmpty(panelOuterSectionAirfoilPathTextField.textProperty())
+				);		
+		
+		textFieldWingSpanPanelList.add(panelSpanTextField);
+		textFieldWingSweepLEPanelList.add(panelSweepLETextField);
+		textFieldWingDihedralPanelList.add(panelDihedralTextField);
+		textFieldWingInnerChordPanelList.add(panelInnerSectionChordTextField);
+		textFieldWingInnerTwistPanelList.add(panelInnerSectionTwistTextField);
+		textFieldWingInnerAirfoilPanelList.add(panelInnerSectionAirfoilPathTextField);
+		textFieldWingOuterChordPanelList.add(panelOuterSectionChordTextField);
+		textFieldWingOuterTwistPanelList.add(panelOuterSectionTwistTextField);
+		textFieldWingOuterAirfoilPanelList.add(panelOuterSectionAirfoilPathTextField);
+		choiceBoxWingSpanPanelUnitList.add(panelSpanChoiceBox);
+		choiceBoxWingSweepLEPanelUnitList.add(panelSweepLEChoiceBox);
+		choiceBoxWingDihedralPanelUnitList.add(panelDihedralChoiceBox);
+		choiceBoxWingInnerChordPanelUnitList.add(panelInnerSectionChordChoiceBox);
+		choiceBoxWingInnerTwistPanelUnitList.add(panelInnerSectionTwistChoiceBox);
+		choiceBoxWingOuterChordPanelUnitList.add(panelOuterSectionChordChoiceBox);
+		choiceBoxWingOuterTwistPanelUnitList.add(panelOuterSectionTwistChoiceBox);
+		detailButtonWingInnerAirfoilList.add(panelInnerSectionAirfoilDetailsButton);
+		detailButtonWingOuterAirfoilList.add(panelOuterSectionAirfoilDetailsButton);
+		
+		newPanelTab.setContent(contentPane);
+		tabPaneWingPanels.getTabs().add(newPanelTab);
+		
+	}
 	
-	// TODO: ADD A METHOD TO ADD A NEW TAB IN THE VIEWS TAB PANE FOR A GIVEN AIRFOIL. HERE YOU SHOULD LOAD A NEW FXML FOR GATHERING 
-	//       ALL THE AIRFOIL DATA AND THE VISUAL REPRESENTATION
+	@FXML
+	private void addFlap() {
+		
+		Tab newFlapTab = new Tab("Flap " + (tabPaneWingFlaps.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label flapInnerPositionLabel = new Label("Inner position (% semispan):");
+		flapInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		flapInnerPositionLabel.setLayoutX(6.0);
+		flapInnerPositionLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(flapInnerPositionLabel);
+		
+		TextField flapInnerPositionTextField = new TextField();
+		flapInnerPositionTextField.setLayoutX(6.0);
+		flapInnerPositionTextField.setLayoutY(21);
+		flapInnerPositionTextField.setPrefWidth(340);
+		flapInnerPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(flapInnerPositionTextField);
+		
+		Label flapOuterPositionLabel = new Label("Outer position (% semispan):");
+		flapOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		flapOuterPositionLabel.setLayoutX(6.0);
+		flapOuterPositionLabel.setLayoutY(52.0);
+		contentPane.getChildren().add(flapOuterPositionLabel);
+		
+		TextField flapOuterPositionTextField = new TextField();
+		flapOuterPositionTextField.setLayoutX(6.0);
+		flapOuterPositionTextField.setLayoutY(73);
+		flapOuterPositionTextField.setPrefWidth(340);
+		flapOuterPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(flapOuterPositionTextField);
+		
+		Label flapInnerChordRatioLabel = new Label("Inner chord ratio:");
+		flapInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		flapInnerChordRatioLabel.setLayoutX(6.0);
+		flapInnerChordRatioLabel.setLayoutY(104.0);
+		contentPane.getChildren().add(flapInnerChordRatioLabel);
+		
+		TextField flapInnerChordRatioTextField = new TextField();
+		flapInnerChordRatioTextField.setLayoutX(6.0);
+		flapInnerChordRatioTextField.setLayoutY(125);
+		flapInnerChordRatioTextField.setPrefWidth(340);
+		flapInnerChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(flapInnerChordRatioTextField);
+		
+		Label flapOuterChordRatioLabel = new Label("Outer chord ratio:");
+		flapOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		flapOuterChordRatioLabel.setLayoutX(7.0);
+		flapOuterChordRatioLabel.setLayoutY(156.0);
+		contentPane.getChildren().add(flapOuterChordRatioLabel);
+		
+		TextField flapOuterChordRatioTextField = new TextField();
+		flapOuterChordRatioTextField.setLayoutX(7.0);
+		flapOuterChordRatioTextField.setLayoutY(177);
+		flapOuterChordRatioTextField.setPrefWidth(340);
+		flapOuterChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(flapOuterChordRatioTextField);
+		
+		Label flapMinimumDeflectionLabel = new Label("Minimum deflection angle:");
+		flapMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		flapMinimumDeflectionLabel.setLayoutX(7.0);
+		flapMinimumDeflectionLabel.setLayoutY(208.0);
+		contentPane.getChildren().add(flapMinimumDeflectionLabel);
+		
+		TextField flapMinimumDeflectionTextField = new TextField();
+		flapMinimumDeflectionTextField.setLayoutX(6.0);
+		flapMinimumDeflectionTextField.setLayoutY(229);
+		flapMinimumDeflectionTextField.setPrefWidth(340);
+		flapMinimumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(flapMinimumDeflectionTextField);
+		
+		ChoiceBox<String> flapMinimumDeflectionChoiceBox = new ChoiceBox<String>();
+		flapMinimumDeflectionChoiceBox.setLayoutX(347.0);
+		flapMinimumDeflectionChoiceBox.setLayoutY(230);
+		flapMinimumDeflectionChoiceBox.setPrefWidth(47);
+		flapMinimumDeflectionChoiceBox.setPrefHeight(30);
+		flapMinimumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(flapMinimumDeflectionChoiceBox);
+		
+		Label flapMaximumDeflectionLabel = new Label("Maximum deflection angle:");
+		flapMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		flapMaximumDeflectionLabel.setLayoutX(7.0);
+		flapMaximumDeflectionLabel.setLayoutY(260.0);
+		contentPane.getChildren().add(flapMaximumDeflectionLabel);
+		
+		TextField flapMaximumDeflectionTextField = new TextField();
+		flapMaximumDeflectionTextField.setLayoutX(6.0);
+		flapMaximumDeflectionTextField.setLayoutY(281);
+		flapMaximumDeflectionTextField.setPrefWidth(340);
+		flapMaximumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(flapMaximumDeflectionTextField);
+		
+		ChoiceBox<String> flapMaximumDeflectionChoiceBox = new ChoiceBox<String>();
+		flapMaximumDeflectionChoiceBox.setLayoutX(347.0);
+		flapMaximumDeflectionChoiceBox.setLayoutY(282);
+		flapMaximumDeflectionChoiceBox.setPrefWidth(47);
+		flapMaximumDeflectionChoiceBox.setPrefHeight(30);
+		flapMaximumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(flapMaximumDeflectionChoiceBox);
+		
+		textFieldWingInnerPositionFlapList.add(flapInnerPositionTextField);
+		textFieldWingOuterPositionFlapList.add(flapOuterPositionTextField);
+		textFieldWingInnerChordRatioFlapList.add(flapInnerChordRatioTextField);
+		textFieldWingOuterChordRatioFlapList.add(flapOuterChordRatioTextField);
+		textFieldWingMinimumDeflectionAngleFlapList.add(flapMinimumDeflectionTextField);
+		textFieldWingMaximumDeflectionAngleFlapList.add(flapMaximumDeflectionTextField);
+		choiceBoxWingMinimumDeflectionAngleFlapUnitList.add(flapMinimumDeflectionChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleFlapUnitList.add(flapMaximumDeflectionChoiceBox);
+		
+		newFlapTab.setContent(contentPane);
+		tabPaneWingFlaps.getTabs().add(newFlapTab);
+		
+	}
+	
+	@FXML
+	private void addSlat() {
+		
+		Tab newSlatTab = new Tab("Slat " + (tabPaneWingSlats.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label slatInnerPositionLabel = new Label("Inner position (% semispan):");
+		slatInnerPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		slatInnerPositionLabel.setLayoutX(6.0);
+		slatInnerPositionLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(slatInnerPositionLabel);
+		
+		TextField slatInnerPositionTextField = new TextField();
+		slatInnerPositionTextField.setLayoutX(6.0);
+		slatInnerPositionTextField.setLayoutY(21);
+		slatInnerPositionTextField.setPrefWidth(340);
+		slatInnerPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(slatInnerPositionTextField);
+		
+		Label slatOuterPositionLabel = new Label("Outer position (% semispan):");
+		slatOuterPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		slatOuterPositionLabel.setLayoutX(6.0);
+		slatOuterPositionLabel.setLayoutY(52.0);
+		contentPane.getChildren().add(slatOuterPositionLabel);
+		
+		TextField slatOuterPositionTextField = new TextField();
+		slatOuterPositionTextField.setLayoutX(6.0);
+		slatOuterPositionTextField.setLayoutY(73);
+		slatOuterPositionTextField.setPrefWidth(340);
+		slatOuterPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(slatOuterPositionTextField);
+		
+		Label slatInnerChordRatioLabel = new Label("Inner chord ratio:");
+		slatInnerChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		slatInnerChordRatioLabel.setLayoutX(6.0);
+		slatInnerChordRatioLabel.setLayoutY(104.0);
+		contentPane.getChildren().add(slatInnerChordRatioLabel);
+		
+		TextField slatInnerChordRatioTextField = new TextField();
+		slatInnerChordRatioTextField.setLayoutX(6.0);
+		slatInnerChordRatioTextField.setLayoutY(125);
+		slatInnerChordRatioTextField.setPrefWidth(340);
+		slatInnerChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(slatInnerChordRatioTextField);
+		
+		Label slatOuterChordRatioLabel = new Label("Outer chord ratio:");
+		slatOuterChordRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		slatOuterChordRatioLabel.setLayoutX(7.0);
+		slatOuterChordRatioLabel.setLayoutY(156.0);
+		contentPane.getChildren().add(slatOuterChordRatioLabel);
+		
+		TextField slatOuterChordRatioTextField = new TextField();
+		slatOuterChordRatioTextField.setLayoutX(7.0);
+		slatOuterChordRatioTextField.setLayoutY(177);
+		slatOuterChordRatioTextField.setPrefWidth(340);
+		slatOuterChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(slatOuterChordRatioTextField);
+		
+		Label slatExtensionRatioLabel = new Label("Extension ratio:");
+		slatExtensionRatioLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		slatExtensionRatioLabel.setLayoutX(6.0);
+		slatExtensionRatioLabel.setLayoutY(208.0);
+		contentPane.getChildren().add(slatExtensionRatioLabel);
+		
+		TextField slatExtensionRatioTextField = new TextField();
+		slatExtensionRatioTextField.setLayoutX(6.0);
+		slatExtensionRatioTextField.setLayoutY(229);
+		slatExtensionRatioTextField.setPrefWidth(340);
+		slatExtensionRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(slatExtensionRatioTextField);
+		
+		Label slatMinimumDeflectionLabel = new Label("Minimum deflection angle:");
+		slatMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		slatMinimumDeflectionLabel.setLayoutX(6.0);
+		slatMinimumDeflectionLabel.setLayoutY(262.0);
+		contentPane.getChildren().add(slatMinimumDeflectionLabel);
+		
+		TextField slatMinimumDeflectionTextField = new TextField();
+		slatMinimumDeflectionTextField.setLayoutX(6.0);
+		slatMinimumDeflectionTextField.setLayoutY(285);
+		slatMinimumDeflectionTextField.setPrefWidth(340);
+		slatMinimumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(slatMinimumDeflectionTextField);
+		
+		ChoiceBox<String> slatMinimumDeflectionChoiceBox = new ChoiceBox<String>();
+		slatMinimumDeflectionChoiceBox.setLayoutX(347.0);
+		slatMinimumDeflectionChoiceBox.setLayoutY(285);
+		slatMinimumDeflectionChoiceBox.setPrefWidth(47);
+		slatMinimumDeflectionChoiceBox.setPrefHeight(30);
+		slatMinimumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(slatMinimumDeflectionChoiceBox);
+		
+		Label slatMaximumDeflectionLabel = new Label("Maximum deflection angle:");
+		slatMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		slatMaximumDeflectionLabel.setLayoutX(6.0);
+		slatMaximumDeflectionLabel.setLayoutY(320.0);
+		contentPane.getChildren().add(slatMaximumDeflectionLabel);
+		
+		TextField slatMaximumDeflectionTextField = new TextField();
+		slatMaximumDeflectionTextField.setLayoutX(6.0);
+		slatMaximumDeflectionTextField.setLayoutY(340);
+		slatMaximumDeflectionTextField.setPrefWidth(340);
+		slatMaximumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(slatMaximumDeflectionTextField);
+		
+		ChoiceBox<String> slatMaximumDeflectionChoiceBox = new ChoiceBox<String>();
+		slatMaximumDeflectionChoiceBox.setLayoutX(347.0);
+		slatMaximumDeflectionChoiceBox.setLayoutY(340);
+		slatMaximumDeflectionChoiceBox.setPrefWidth(47);
+		slatMaximumDeflectionChoiceBox.setPrefHeight(30);
+		slatMaximumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(slatMaximumDeflectionChoiceBox);
+		
+		textFieldWingInnerPositionSlatList.add(slatInnerPositionTextField);
+		textFieldWingOuterPositionSlatList.add(slatOuterPositionTextField);
+		textFieldWingInnerChordRatioSlatList.add(slatInnerChordRatioTextField);
+		textFieldWingOuterChordRatioSlatList.add(slatExtensionRatioTextField);
+		textFieldWingExtensionRatioSlatList.add(slatExtensionRatioTextField);
+		textFieldWingMinimumDeflectionAngleSlatList.add(slatMinimumDeflectionTextField);
+		textFieldWingMaximumDeflectionAngleSlatList.add(slatMaximumDeflectionTextField);
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(slatMinimumDeflectionChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(slatMaximumDeflectionChoiceBox);
+		
+		newSlatTab.setContent(contentPane);
+		tabPaneWingSlats.getTabs().add(newSlatTab);
+		
+	}
+	
+	@FXML
+	private void addSpoiler() {
+		
+		Tab newSpoilerTab = new Tab("Spoiler " + (tabPaneWingSpoilers.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label spoilerInnerSpanwisePositionLabel = new Label("Inner Y position (% semispan):");
+		spoilerInnerSpanwisePositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		spoilerInnerSpanwisePositionLabel.setLayoutX(6.0);
+		spoilerInnerSpanwisePositionLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(spoilerInnerSpanwisePositionLabel);
+		
+		TextField spoilerInnerSpanwisePositionTextField = new TextField();
+		spoilerInnerSpanwisePositionTextField.setLayoutX(6.0);
+		spoilerInnerSpanwisePositionTextField.setLayoutY(21);
+		spoilerInnerSpanwisePositionTextField.setPrefWidth(340);
+		spoilerInnerSpanwisePositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(spoilerInnerSpanwisePositionTextField);
+		
+		Label spoilerOuterSpanwisePositionLabel = new Label("Outer Y position (% semispan):");
+		spoilerOuterSpanwisePositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		spoilerOuterSpanwisePositionLabel.setLayoutX(6.0);
+		spoilerOuterSpanwisePositionLabel.setLayoutY(52.0);
+		contentPane.getChildren().add(spoilerOuterSpanwisePositionLabel);
+		
+		TextField spoilerSpanwisePositionTextField = new TextField();
+		spoilerSpanwisePositionTextField.setLayoutX(6.0);
+		spoilerSpanwisePositionTextField.setLayoutY(73);
+		spoilerSpanwisePositionTextField.setPrefWidth(340);
+		spoilerSpanwisePositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(spoilerSpanwisePositionTextField);
+		
+		Label spoilerInnerChordwisePositionLabel = new Label("Inner X position (% local chord):");
+		spoilerInnerChordwisePositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		spoilerInnerChordwisePositionLabel.setLayoutX(6.0);
+		spoilerInnerChordwisePositionLabel.setLayoutY(104.0);
+		contentPane.getChildren().add(spoilerInnerChordwisePositionLabel);
+		
+		TextField spoilerInnerChordisePositionTextField = new TextField();
+		spoilerInnerChordisePositionTextField.setLayoutX(6.0);
+		spoilerInnerChordisePositionTextField.setLayoutY(125);
+		spoilerInnerChordisePositionTextField.setPrefWidth(340);
+		spoilerInnerChordisePositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(spoilerInnerChordisePositionTextField);
+		
+		Label spoilerOuterChordwisePositionLabel = new Label("Outer X position (% local chord):");
+		spoilerOuterChordwisePositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		spoilerOuterChordwisePositionLabel.setLayoutX(7.0);
+		spoilerOuterChordwisePositionLabel.setLayoutY(156.0);
+		contentPane.getChildren().add(spoilerOuterChordwisePositionLabel);
+		
+		TextField spoilerOuterChordRatioTextField = new TextField();
+		spoilerOuterChordRatioTextField.setLayoutX(7.0);
+		spoilerOuterChordRatioTextField.setLayoutY(177);
+		spoilerOuterChordRatioTextField.setPrefWidth(340);
+		spoilerOuterChordRatioTextField.setPrefHeight(31);
+		contentPane.getChildren().add(spoilerOuterChordRatioTextField);
+		
+		Label spoilerMinimumDeflectionLabel = new Label("Minimum deflection angle:");
+		spoilerMinimumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		spoilerMinimumDeflectionLabel.setLayoutX(7.0);
+		spoilerMinimumDeflectionLabel.setLayoutY(208.0);
+		contentPane.getChildren().add(spoilerMinimumDeflectionLabel);
+		
+		TextField spoilerMinimumDeflectionTextField = new TextField();
+		spoilerMinimumDeflectionTextField.setLayoutX(7.0);
+		spoilerMinimumDeflectionTextField.setLayoutY(229);
+		spoilerMinimumDeflectionTextField.setPrefWidth(340);
+		spoilerMinimumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(spoilerMinimumDeflectionTextField);
+		
+		ChoiceBox<String> spoilerMinimumDeflectionChoiceBox = new ChoiceBox<String>();
+		spoilerMinimumDeflectionChoiceBox.setLayoutX(348.0);
+		spoilerMinimumDeflectionChoiceBox.setLayoutY(230);
+		spoilerMinimumDeflectionChoiceBox.setPrefWidth(47);
+		spoilerMinimumDeflectionChoiceBox.setPrefHeight(30);
+		spoilerMinimumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(spoilerMinimumDeflectionChoiceBox);
+		
+		Label spoilerMaximumDeflectionLabel = new Label("Maximum deflection angle:");
+		spoilerMaximumDeflectionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		spoilerMaximumDeflectionLabel.setLayoutX(7.0);
+		spoilerMaximumDeflectionLabel.setLayoutY(260.0);
+		contentPane.getChildren().add(spoilerMaximumDeflectionLabel);
+		
+		TextField spoilerMaximumDeflectionTextField = new TextField();
+		spoilerMaximumDeflectionTextField.setLayoutX(7.0);
+		spoilerMaximumDeflectionTextField.setLayoutY(281);
+		spoilerMaximumDeflectionTextField.setPrefWidth(340);
+		spoilerMaximumDeflectionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(spoilerMaximumDeflectionTextField);
+		
+		ChoiceBox<String> spoilerMaximumDeflectionChoiceBox = new ChoiceBox<String>();
+		spoilerMaximumDeflectionChoiceBox.setLayoutX(348.0);
+		spoilerMaximumDeflectionChoiceBox.setLayoutY(282);
+		spoilerMaximumDeflectionChoiceBox.setPrefWidth(47);
+		spoilerMaximumDeflectionChoiceBox.setPrefHeight(30);
+		spoilerMaximumDeflectionChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(spoilerMaximumDeflectionChoiceBox);
+		
+		textFieldWingInnerSpanwisePositionSpoilerList.add(spoilerInnerSpanwisePositionTextField);
+		textFieldWingOuterSpanwisePositionSpoilerList.add(spoilerSpanwisePositionTextField);
+		textFieldWingInnerChordwisePositionSpoilerList.add(spoilerInnerChordisePositionTextField);
+		textFieldWingOuterChordwisePositionSpoilerList.add(spoilerOuterChordRatioTextField);
+		textFieldWingMinimumDeflectionAngleSpoilerList.add(spoilerMinimumDeflectionTextField);
+		textFieldWingMaximumDeflectionAngleSpoilerList.add(spoilerMaximumDeflectionTextField);
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(spoilerMinimumDeflectionChoiceBox);
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(spoilerMaximumDeflectionChoiceBox);
+		
+		newSpoilerTab.setContent(contentPane);
+		tabPaneWingSpoilers.getTabs().add(newSpoilerTab);
+		
+	}
+	
+	@FXML
+	private void showAirfoilData(String airfoilFileName) throws IOException {
+		
+		Tab airfoilTab = new Tab("Airfoil: " + airfoilFileName);
+//		BorderPane contentPane = new BorderPane();  
+		
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("inputmanager/AirfoilInputManager.fxml"));
+		BorderPane contentPane = loader.load();
+		
+		/* TODO: LOAD THE FXML */
+		
+		airfoilTab.setContent(contentPane);
+		tabPaneWingViewAndAirfoils.getTabs().add(airfoilTab);
+		
+	}
+	
 	
 	private boolean isAircraftFile(String pathToAircraftXML) {
 
@@ -1779,6 +2763,221 @@ public class InputManagerController {
 		// 3 View and TextArea
 		textAreaCabinConfigurationConsoleOutput.clear();
 		cabinConfigurationSeatMapPane.getChildren().clear();
+		
+		//..................................................................................
+		// WING
+		wingAdjustCriterionChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingCheckBox.setSelected(false);
+		textFieldWingMainSparAdimensionalPosition.clear();
+		textFieldWingSecondarySparAdimensionalPosition.clear();
+		textFieldWingCompositeMassCorrectionFactor.clear();
+		textFieldWingRoughness.clear();
+		textFieldWingWingletHeight.clear();
+		textFieldEquivalentWingArea.clear();
+		textFieldEquivalentWingAspectRatio.clear();
+		textFieldEquivalentWingKinkPosition.clear();
+		textFieldEquivalentWingSweepLeadingEdge.clear();
+		textFieldEquivalentWingTwistAtTip.clear();
+		textFieldEquivalentWingDihedral.clear();
+		textFieldEquivalentWingTaperRatio.clear();
+		textFieldEquivalentWingRootXOffsetLE.clear();
+		textFieldEquivalentWingRootXOffsetTE.clear();
+		textFieldEquivalentWingAirfoilRootPath.clear();
+		textFieldEquivalentWingAirfoilKinkPath.clear();
+		textFieldEquivalentWingAirfoilTipPath.clear();
+		textFieldWingSpanPanel1.clear();
+		textFieldWingSweepLeadingEdgePanel1.clear();
+		textFieldWingDihedralPanel1.clear();
+		textFieldWingChordInnerSectionPanel1.clear();
+		textFieldWingTwistInnerSectionPanel1.clear();
+		textFieldWingAirfoilPathInnerSectionPanel1.clear();
+		textFieldWingChordOuterSectionPanel1.clear();
+		textFieldWingTwistOuterSectionPanel1.clear();
+		textFieldWingAirfoilPathOuterSectionPanel1.clear();
+		linkedToPreviousPanelCheckBoxPanel2.setSelected(false);
+		textFieldWingSpanPanel2.clear();
+		textFieldWingSweepLeadingEdgePanel2.clear();
+		textFieldWingDihedralPanel2.clear();
+		textFieldWingChordInnerSectionPanel2.clear();
+		textFieldWingTwistInnerSectionPanel2.clear();
+		textFieldWingAirfoilPathInnerSectionPanel2.clear();
+		textFieldWingChordOuterSectionPanel2.clear();
+		textFieldWingTwistOuterSectionPanel2.clear();
+		textFieldWingAirfoilPathOuterSectionPanel2.clear();
+		textFieldWingInnerPositionFlap1.clear();
+		textFieldWingOuterPositionFlap1.clear();
+		textFieldWingInnerChordRatioFlap1.clear();
+		textFieldWingOuterChordRatioFlap1.clear();
+		textFieldWingMinimumDeflectionAngleFlap1.clear();
+		textFieldWingMaximumDeflectionAngleFlap1.clear();
+		textFieldWingInnerPositionFlap2.clear();
+		textFieldWingOuterPositionFlap2.clear();
+		textFieldWingInnerChordRatioFlap2.clear();
+		textFieldWingOuterChordRatioFlap2.clear();
+		textFieldWingMinimumDeflectionAngleFlap2.clear();
+		textFieldWingMaximumDeflectionAngleFlap2.clear();
+		textFieldWingInnerPositionSlat1.clear();
+		textFieldWingOuterPositionSlat1.clear();
+		textFieldWingInnerChordRatioSlat1.clear();
+		textFieldWingOuterChordRatioSlat1.clear();
+		textFieldWingExtensionRatioSlat1.clear();
+		textFieldWingMinimumDeflectionAngleSlat1.clear();
+		textFieldWingMaximumDeflectionAngleSlat1.clear();
+		textFieldWingInnerPositionSlat2.clear();
+		textFieldWingOuterPositionSlat2.clear();
+		textFieldWingInnerChordRatioSlat2.clear();
+		textFieldWingOuterChordRatioSlat2.clear();
+		textFieldWingExtensionRatioSlat2.clear();
+		textFieldWingMinimumDeflectionAngleSlat2.clear();
+		textFieldWingMaximumDeflectionAngleSlat2.clear();
+		textFieldWingInnerPositionSlat3.clear();
+		textFieldWingOuterPositionSlat3.clear();
+		textFieldWingInnerChordRatioSlat3.clear();
+		textFieldWingOuterChordRatioSlat3.clear();
+		textFieldWingExtensionRatioSlat3.clear();
+		textFieldWingMinimumDeflectionAngleSlat3.clear();
+		textFieldWingMaximumDeflectionAngleSlat3.clear();
+		textFieldWingInnerPositionSlat4.clear();
+		textFieldWingOuterPositionSlat4.clear();
+		textFieldWingInnerChordRatioSlat4.clear();
+		textFieldWingOuterChordRatioSlat4.clear();
+		textFieldWingExtensionRatioSlat4.clear();
+		textFieldWingMinimumDeflectionAngleSlat4.clear();
+		textFieldWingMaximumDeflectionAngleSlat4.clear();
+		textFieldWingInnerPositionAileronLeft.clear();
+		textFieldWingOuterPositionAileronLeft.clear();
+		textFieldWingInnerChordRatioAileronLeft.clear();
+		textFieldWingOuterChordRatioAileronLeft.clear();
+		textFieldWingMinimumDeflectionAngleAileronLeft.clear();
+		textFieldWingMaximumDeflectionAngleAileronLeft.clear();
+		textFieldWingInnerPositionAileronRight.clear();
+		textFieldWingOuterPositionAileronRight.clear();
+		textFieldWingInnerChordRatioAileronRight.clear();
+		textFieldWingOuterChordRatioAileronRight.clear();
+		textFieldWingMinimumDeflectionAngleAileronRight.clear();
+		textFieldWingMaximumDeflectionAngleAileronRight.clear();
+		textFieldWingInnerSpanwisePositionSpolier1.clear();
+		textFieldWingOuterSpanwisePositionSpolier1.clear();
+		textFieldWingInnerChordwisePositionSpolier1.clear();
+		textFieldWingOuterChordwisePositionSpolier1.clear();
+		textFieldWingMinimumDeflectionAngleSpolier1.clear();
+		textFieldWingMaximumDeflectionAngleSpoiler1.clear();
+		textFieldWingInnerSpanwisePositionSpolier2.clear();
+		textFieldWingOuterSpanwisePositionSpolier2.clear();
+		textFieldWingInnerChordwisePositionSpolier2.clear();
+		textFieldWingOuterChordwisePositionSpolier2.clear();
+		textFieldWingMinimumDeflectionAngleSpolier2.clear();
+		textFieldWingMaximumDeflectionAngleSpoiler2.clear();
+		textFieldWingInnerSpanwisePositionSpolier3.clear();
+		textFieldWingOuterSpanwisePositionSpolier3.clear();
+		textFieldWingInnerChordwisePositionSpolier3.clear();
+		textFieldWingOuterChordwisePositionSpolier3.clear();
+		textFieldWingMinimumDeflectionAngleSpolier3.clear();
+		textFieldWingMaximumDeflectionAngleSpoiler3.clear();
+		textFieldWingInnerSpanwisePositionSpolier4.clear();
+		textFieldWingOuterSpanwisePositionSpolier4.clear();
+		textFieldWingInnerChordwisePositionSpolier4.clear();
+		textFieldWingOuterChordwisePositionSpolier4.clear();
+		textFieldWingMinimumDeflectionAngleSpolier4.clear();
+		textFieldWingMaximumDeflectionAngleSpoiler4.clear();
+
+		textFieldWingSpanPanelList.clear();
+		textFieldWingSweepLEPanelList.clear();
+		textFieldWingDihedralPanelList.clear();
+		textFieldWingInnerChordPanelList.clear();
+		textFieldWingInnerTwistPanelList.clear();
+		textFieldWingInnerAirfoilPanelList.clear();
+		textFieldWingOuterChordPanelList.clear();
+		textFieldWingOuterTwistPanelList.clear();
+		textFieldWingOuterAirfoilPanelList.clear();
+		checkBoxWingLinkedToPreviousPanelList.clear();
+		choiceBoxWingSpanPanelUnitList.clear();
+		choiceBoxWingSweepLEPanelUnitList.clear();
+		choiceBoxWingDihedralPanelUnitList.clear();
+		choiceBoxWingInnerChordPanelUnitList.clear();
+		choiceBoxWingInnerTwistPanelUnitList.clear();
+		choiceBoxWingOuterChordPanelUnitList.clear();
+		choiceBoxWingOuterTwistPanelUnitList.clear();
+		detailButtonWingInnerAirfoilList.clear();
+		detailButtonWingOuterAirfoilList.clear();
+		
+		// flaps
+		textFieldWingInnerPositionFlapList.clear();
+		textFieldWingOuterPositionFlapList.clear();
+		textFieldWingInnerChordRatioFlapList.clear();
+		textFieldWingOuterChordRatioFlapList.clear();
+		textFieldWingMinimumDeflectionAngleFlapList.clear();
+		textFieldWingMaximumDeflectionAngleFlapList.clear();
+		choiceBoxWingMinimumDeflectionAngleFlapUnitList.clear();
+		choiceBoxWingMaximumDeflectionAngleFlapUnitList.clear();
+		
+		// flaps
+		textFieldWingInnerPositionSlatList.clear();
+		textFieldWingOuterPositionSlatList.clear();
+		textFieldWingInnerChordRatioSlatList.clear();
+		textFieldWingOuterChordRatioSlatList.clear();
+		textFieldWingExtensionRatioSlatList.clear();
+		textFieldWingMinimumDeflectionAngleSlatList.clear();
+		textFieldWingMaximumDeflectionAngleSlatList.clear();
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList.clear();
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList.clear();
+		
+		// spoilers
+		textFieldWingInnerSpanwisePositionSpoilerList.clear();
+		textFieldWingOuterSpanwisePositionSpoilerList.clear();
+		textFieldWingInnerChordwisePositionSpoilerList.clear();
+		textFieldWingOuterChordwisePositionSpoilerList.clear();
+		textFieldWingMinimumDeflectionAngleSpoilerList.clear();
+		textFieldWingMaximumDeflectionAngleSpoilerList.clear();
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.clear();
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.clear();
+		
+		wingRoughnessUnitChoiceBox.getSelectionModel().clearSelection();
+		wingWingletHeightUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingAreaUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingSweepLEUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingTwistAtTipUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingDihedralUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingXOffsetRootLEUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingXOffsetRootTEUnitChoiceBox.getSelectionModel().clearSelection();
+		wingSpanPanel1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingSweepLEPanel1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingDihedralPanel1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingInnerSectionChordPanel1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingInnerSectionTwistTipPanel1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingOuterSectionChordPanel1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingOuterSectionTwistTipPanel1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingSpanPanel2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingSweepLEPanel2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingDihedralPanel2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingInnerSectionChordPanel2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingInnerSectionTwistTipPanel2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingOuterSectionChordPanel2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingOuterSectionTwistTipPanel2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleFlap1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleFlap1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleFlap2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleFlap2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSlat1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSlat1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSlat2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSlat2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSlat3UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSlat3UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSlat4UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSlat4UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleAileronLeftUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleAileronLeftUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleAileronRigthUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleAileronRightUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSpoiler1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSpoiler1UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSpoiler2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSpoiler2UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSpoiler3UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSpoiler3UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleSpoiler4UnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleSpoiler4UnitChoiceBox.getSelectionModel().clearSelection();
 		
 		// TODO: CONTINUE WITH WING, etc ...
 		
