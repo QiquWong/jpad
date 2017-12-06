@@ -119,6 +119,13 @@ public abstract class CADShapeFactory
 
 	/**
 	 * Create a new CADGeomCurve3D
+	 * @param two points in space
+	 * @return The created CADGeomCurve3D, a segment
+	 */
+	public abstract CADGeomCurve3D newCurve3D(double[] pt1, double[] pt2);
+
+	/**
+	 * Create a new CADGeomCurve3D
 	 * @param pointList The list of points belonging to the curve (a BSpline)
 	 * @return The created CADGeomCurve3D
 	 */

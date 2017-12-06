@@ -213,6 +213,9 @@ public final class OCCUtils {
 		// TODO: add checks
 		
 		BRepOffsetAPI_MakeFilling filled = new BRepOffsetAPI_MakeFilling();
+		
+		// TODO: check if consecutive edges in the list of shapes share the same vertex
+		
 		shapes.stream()
 			.forEach(s -> filled.Add((TopoDS_Edge) s, GeomAbs_Shape.GeomAbs_C0));
 		filled.Build();

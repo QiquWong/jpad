@@ -1,5 +1,6 @@
 package it.unina.daf.jpadcad.occ;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -202,6 +203,22 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 
 	@Override
+	public CADGeomCurve3D newCurve3D(double[] pt1, double[] pt2) {
+		CADGeomCurve3D curve = null;
+		try
+		{
+			List<double[]> pointList = new ArrayList<double[]>();
+			pointList.add(pt1);
+			pointList.add(pt2);
+			curve = new OCCGeomCurve3D(pointList, false); // a regular segment is non periodic
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		return curve;
+	}
+	
+	@Override
 	public CADGeomCurve3D newCurve3D(List<double[]> pointList, boolean isPeriodic) {
 		CADGeomCurve3D curve = null;
 		try
@@ -333,5 +350,5 @@ public class OCCShapeFactory extends CADShapeFactory
 	public CADVertex newVertex(double[] coordinates3d) {
 		return newVertex(coordinates3d[0], coordinates3d[1], coordinates3d[1]);
 	}
-	
+
 }

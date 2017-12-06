@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 
 import javax.measure.quantity.Length;
@@ -26,10 +27,14 @@ import database.databasefunctions.aerodynamics.AerodynamicDatabaseReader;
 import database.databasefunctions.aerodynamics.HighLiftDatabaseReader;
 import database.databasefunctions.aerodynamics.fusDes.FusDesDatabaseReader;
 import database.databasefunctions.aerodynamics.vedsc.VeDSCDatabaseReader;
+import it.unina.daf.jpadcad.occ.CADEdge;
 import it.unina.daf.jpadcad.occ.CADGeomCurve3D;
 import it.unina.daf.jpadcad.occ.CADShape;
+import it.unina.daf.jpadcad.occ.CADShapeFactory;
+import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADVertex;
 import it.unina.daf.jpadcad.occ.OCCEdge;
+import it.unina.daf.jpadcad.occ.OCCFace;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
 import it.unina.daf.jpadcad.occ.OCCShape;
 import it.unina.daf.jpadcad.occ.OCCShapeFactory;
@@ -529,14 +534,14 @@ public final class AircraftUtils {
 		CADVertex vertexNoseTip = OCCUtils.theFactory.newVertex(0, 0, zNoseTip.doubleValue(SI.METER));
 		// nose cap terminal section
 		List<PVector> sectionCapTerminal = fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseCapStation);
-		CADGeomCurve3D cadCrvCapTerminalSection = OCCUtils.theFactory
+		CADGeomCurve3D cadCrvNoseCapTerminalSection = OCCUtils.theFactory
 				.newCurve3D(
 						sectionCapTerminal.stream()
 						.map(p -> new double[]{p.x, p.y, p.z})
 						.collect(Collectors.toList()),
 						false);
 		// points z's on nose outline curve, XZ, upper
-		List<double[]> pointsCapXZUpper = xmtPatch1.stream()
+		List<double[]> pointsNoseCapXZUpper = xmtPatch1.stream()
 				.map(x -> new double[]{
 						x,
 						0.0,
@@ -544,7 +549,7 @@ public final class AircraftUtils {
 				})
 				.collect(Collectors.toList());
 		// points z's on nose outline curve, XZ, lower
-		List<double[]> pointsCapXZLower = xmtPatch1.stream()
+		List<double[]> pointsNoseCapXZLower = xmtPatch1.stream()
 				.map(x -> new double[]{
 						x,
 						0.0,
@@ -552,7 +557,7 @@ public final class AircraftUtils {
 				})
 				.collect(Collectors.toList());
 		// points y's on nose outline curve, XY, right
-		List<double[]> pointsCapSideRight = xmtPatch1.stream()
+		List<double[]> pointsNoseCapSideRight = xmtPatch1.stream()
 				.map(x -> new double[]{
 						x,
 						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
@@ -560,24 +565,30 @@ public final class AircraftUtils {
 				})
 				.collect(Collectors.toList());
 		
-		CADGeomCurve3D cadCrvCapXZUpper = OCCUtils.theFactory
-				.newCurve3D(pointsCapXZUpper, false);
-		CADGeomCurve3D cadCrvCapXZLower = OCCUtils.theFactory
-				.newCurve3D(pointsCapXZLower, false);
-		CADGeomCurve3D cadCrvCapXYRight = OCCUtils.theFactory
-				.newCurve3D(pointsCapSideRight, false);
+		CADGeomCurve3D cadCrvNoseCapXZUpper = OCCUtils.theFactory
+				.newCurve3D(pointsNoseCapXZUpper, false);
+		CADGeomCurve3D cadCrvNoseCapXZLower = OCCUtils.theFactory
+				.newCurve3D(pointsNoseCapXZLower, false);
+		CADGeomCurve3D cadCrvNoseCapXYRight = OCCUtils.theFactory
+				.newCurve3D(pointsNoseCapSideRight, false);
+		
+		extraShapesCap.add((OCCVertex)vertexNoseTip);
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseCapXZUpper).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseCapXZLower).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseCapXYRight).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseCapTerminalSection).edge());
 		
 		// support sections of nose cap
 		sections1.stream()
-		.map(sec -> OCCUtils.theFactory
-				.newCurve3D(
-						sec.stream()
-						.map(p -> new double[]{p.x, p.y, p.z})
-						.collect(Collectors.toList()),
-						false)
-				)
-		.map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
-		.forEach(e -> extraShapesCap.add(e));
+			.map(sec -> OCCUtils.theFactory
+					.newCurve3D(
+							sec.stream()
+							.map(p -> new double[]{p.x, p.y, p.z})
+							.collect(Collectors.toList()),
+							false)
+					)
+			.map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+			.forEach(e -> extraShapesCap.add(e));
 		
 		// nose outline curves
 		// points z's on nose outline curve, XZ, upper
@@ -602,6 +613,9 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadCrvNoseXZLower = OCCUtils.theFactory
 				.newCurve3D(pointsNoseXZLower, false);
 		
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXZUpper).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXZLower).edge());
+		
 		List<double[]> pointsNoseSideRight = xmtPatch2.stream()
 				.map(x -> new double[]{
 						x,
@@ -612,6 +626,12 @@ public final class AircraftUtils {
 		
 		CADGeomCurve3D cadCrvNoseXYRight = OCCUtils.theFactory
 				.newCurve3D(pointsNoseSideRight, false);
+
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXYRight).edge());			
+
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderInitialSection).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderMidSection).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderTerminalSection).edge());
 
 		// support sections of nose patch-2
 		sections2.stream()
@@ -650,6 +670,9 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadCrvCylinderXZLower = OCCUtils.theFactory
 				.newCurve3D(pointsCylinderXZLower, false);
 		
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderXZUpper).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderXZLower).edge());
+		
 		// cylinder side curve
 		List<double[]> pointsCylinderSideRight = xmtPatch3.stream()
 				.map(x -> new double[]{
@@ -662,6 +685,8 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadCylinderXYRight = OCCUtils.theFactory
 				.newCurve3D(pointsCylinderSideRight, false);
 
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCylinderXYRight).edge());
+		
 		// tail trunk
 		// points z's on nose outline curve, XZ, upper
 		List<double[]> pointsTailXZUpper = xmtPatch4.stream()
@@ -685,6 +710,9 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadCrvTailXZLower = OCCUtils.theFactory
 				.newCurve3D(pointsTailXZLower, false);
 
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZUpper).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZLower).edge());
+		
 		// tail side curve
 		List<double[]> pointsTailSideRight = xmtPatch4.stream()
 				.map(x -> new double[]{
@@ -696,6 +724,8 @@ public final class AircraftUtils {
 		
 		CADGeomCurve3D cadTailXYRight = OCCUtils.theFactory
 				.newCurve3D(pointsTailSideRight, false);
+		
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailXYRight).edge());
 		
 		// support sections of tail, patch-4
 		cadCurvesTailTrunk.stream()
@@ -732,6 +762,9 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadTailCapXZLower = OCCUtils.theFactory
 				.newCurve3D(pointsTailCapXZLower, false);
 
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZUpper).edge());
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZLower).edge());
+		
 		// tail side curve
 		List<double[]> pointsTailCapSideRight = xmtPatch5.stream()
 				.map(x -> new double[]{
@@ -745,66 +778,63 @@ public final class AircraftUtils {
 		CADGeomCurve3D cadTailCapXYRight = OCCUtils.theFactory
 				.newCurve3D(pointsTailCapSideRight, false);
 
-		// ==================== Fuselage as a Solid
+		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
 		
-//		// Cylindrical trunk initial section
-//		CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
-//				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
-//		// Cylindrical trunk terminal section
-//		CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
-//				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
-//						noseLength.plus(cylinderLength)), false);
-//		CADEdge e1 = cadCrvCylinderInitialSection.edge();
-//		System.out.println("e1 >>>>> length: " + cadCrvCylinderInitialSection.length());
-//		
-//		CADVertex[] v12 = e1.vertices();
-//		System.out.println("e1 >>>>> n. vertices: " + v12.length);
-//		List<double[]> p12 = new ArrayList<double[]>();
-//		p12.add(v12[1].pnt());
-//		p12.add(v12[0].pnt()); // reversed order
-//		CADGeomCurve3D cadCrvE1 = OCCUtils.theFactory.newCurve3D(p12, false);
-//		System.out.println("e2 >>>>> length: " + cadCrvE1.length());
-//		CADEdge e2 = cadCrvE1.edge();
-//		
-//		CADShape face1 = OCCUtils.makeFilledFace(
-//				cadCrvCylinderInitialSection, cadCrvE1);
+		// ==================== Fuselage as a Solid
+
+		// Nose solid
+
+		// front
+		CADGeomCurve3D cadCrvE0A = cadCrvNoseCapTerminalSection;
+		CADEdge e0A = cadCrvE0A.edge();
+		System.out.println("e0 >>>>> length: " + cadCrvE0A.length());
+		CADVertex[] vtxE0 = e0A.vertices();
+		System.out.println("e0A >>>>> n. vertices: " + vtxE0.length);
+		Arrays.asList(vtxE0).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+		CADGeomCurve3D cadCrvE0B = OCCUtils.theFactory.newCurve3D(
+				vtxE0[1].pnt(), vtxE0[0].pnt()  // reversed order
+				);
+		System.out.println("e0B >>>>> length: " + cadCrvE0B.length());
+		CADShape faceSolidNose0 = OCCUtils.makeFilledFace(cadCrvE0A, cadCrvE0B);
+		//System.out.println("f0 >>>>> area: " + ((OCCFace)faceSolidNose0).getGeomSurface().);
+		ret.add((OCCShape)faceSolidNose0);
+		
+		// rear
+		CADGeomCurve3D cadCrvE1A = cadCrvCylinderInitialSection;
+		CADEdge e1A = cadCrvE1A.edge();
+		System.out.println("e1A >>>>> length: " + cadCrvE1A.length());
+		CADVertex[] vtxE1 = e1A.vertices();
+		System.out.println("e1A >>>>> n. vertices: " + vtxE1.length);
+		Arrays.asList(vtxE1).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+		CADGeomCurve3D cadCrvE1B = OCCUtils.theFactory.newCurve3D(
+				vtxE1[1].pnt(), vtxE1[0].pnt()  // reversed order
+				);
+		System.out.println("e1B >>>>> length: " + cadCrvE1B.length());
+		CADShape faceSolidNose2 = OCCUtils.makeFilledFace(cadCrvE1A, cadCrvE1B);
+		ret.add((OCCShape)faceSolidNose2);
+		
+		// symmetry plane, up
+		CADGeomCurve3D cadCrvE2 = cadCrvNoseXZUpper;
+		CADVertex[] vtxE2 = cadCrvE2.edge().vertices();
+		Arrays.asList(vtxE2).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+		CADGeomCurve3D cadCrvE3 = cadCrvNoseXZLower;
+		CADVertex[] vtxE3 = cadCrvE3.edge().vertices();
+		Arrays.asList(vtxE3).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+
+		// TODO: fix me! Check the orientation of edges before filling the boundary
+//		CADShape faceSolidNose3 = OCCUtils.makeFilledFace(cadCrvE0B, cadCrvE2, 
+//				CADShapeFactory.getFactory().newCurve3D((CADEdge)cadCrvE1B.edge().reversed()), 
+//				CADShapeFactory.getFactory().newCurve3D((CADEdge)cadCrvE3.edge().reversed()) 
+//				);
+//		ret.add((OCCShape)faceSolidNose3);
+		
+		
+		
 		
 		
 		if (exportSupportShapes) {
-			
 			System.out.println("========== [AircraftUtils::getFuselageCAD] adding support cad entities");
-
-			extraShapesCap.add((OCCVertex)vertexNoseTip);
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapXZUpper).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapXZLower).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapXYRight).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapTerminalSection).edge());
-			
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXZUpper).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXZLower).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXYRight).edge());			
-
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderInitialSection).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderMidSection).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderTerminalSection).edge());
-
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderXZUpper).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderXZLower).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCylinderXYRight).edge());
-			
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZUpper).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZLower).edge());
-			
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailXYRight).edge());
-			
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZUpper).edge());
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZLower).edge());
-			
-			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
-
-			// finally add all to extra shapes
 			ret.addAll(extraShapesCap);
-			
 		}
 		
 		return ret;
