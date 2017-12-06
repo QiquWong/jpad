@@ -315,8 +315,6 @@ public final class AircraftUtils {
 		System.out.println("Getting selected sections ...");
 		// all xbar's are normalized with noseLength
 		List<Double> xbars1 = Arrays.asList(
-//				new Double[] {
-//						0.2*xbarNoseCap, 0.4*xbarNoseCap, 0.8*xbarNoseCap, 1.0*xbarNoseCap}
 				MyArrayUtils
 					// .linspaceDouble(
 					.halfCosine2SpaceDouble(
@@ -333,7 +331,14 @@ public final class AircraftUtils {
 					  fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength.times(x)))
 			  );
 
+		// x stations defining cap outlines
+		List<Double> xmtPatch1 = new ArrayList<>();
+		xmtPatch1.add(0.0); // nose tip
+		xbars1.stream()
+			  .forEach(x -> xmtPatch1.add(x*noseCapStation.doubleValue(SI.METER)));
+		
 		if(exporLoft) {
+			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
 			System.out.println("Constructing the nose-cap patch, Patch-1");
 			patch1 = 
 					OCCUtils.makePatchThruSectionsP(
@@ -341,7 +346,6 @@ public final class AircraftUtils {
 							sections1
 							);
 
-//			ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
 		}
 		
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Nose trunk (no cap): x=" + noseCapStation + " to x=" + noseLength);
@@ -350,8 +354,6 @@ public final class AircraftUtils {
 
 		// all xbar's are normalized with noseLength
 		List<Double> xbars2 = Arrays.asList(
-//				new Double[] {
-//						xbarNoseCap, 0.2, 0.4, 0.6, 0.8, 1.0}
 				MyArrayUtils
 				// .linspaceDouble(
 				// .halfCosine1SpaceDouble(
@@ -362,6 +364,11 @@ public final class AircraftUtils {
 
 		System.out.println("Nose trunk selected sections, Patch-2, normalized x-stations: " + xbars2.toString());
 
+		// x stations defining nose outlines
+		List<Double> xmtPatch2 = new ArrayList<>();
+		xbars2.stream()
+			  .forEach(x -> xmtPatch2.add(x*noseCapStation.doubleValue(SI.METER)));
+
 		List<List<PVector>> sections2 = new ArrayList<List<PVector>>();
 		xbars2.stream()
 			  .forEach(x -> sections2.add(
@@ -369,10 +376,9 @@ public final class AircraftUtils {
 			  );
 
 		if(exporLoft) {
+			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
 			System.out.println("Constructing the nose patch, Patch-2");
 			patch2 = OCCUtils.makePatchThruSectionsP(sections2);
-
-//			ret.add(patch2); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-2, loft: nose patch
 		}
 		
 		// nose Patch-2 terminal section
@@ -383,6 +389,13 @@ public final class AircraftUtils {
 		
 		System.out.println("========== [AircraftUtils::getFuselageCAD] Fuselage cylindrical trunk: x=" + noseLength + " to x=" + noseLength.plus(cylinderLength));
 
+		// x stations defining cylinder outlines
+		List<Double> xmtPatch3 = Arrays.asList(
+				MyArrayUtils.halfCosine1SpaceDouble(
+						noseLength.doubleValue(SI.METER), noseLength.plus(cylinderLength).doubleValue(SI.METER), 
+						3) // n. points
+				);
+		
 		// Cylindrical trunk mid section
 		CADGeomCurve3D cadCrvCylinderMidSection = OCCUtils.theFactory
 				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
@@ -394,9 +407,9 @@ public final class AircraftUtils {
 						noseLength.plus(cylinderLength)), false);
 
 		if(exporLoft) {
+			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
 			patch3 = OCCUtils.makePatchThruSections(
 					cadCrvCylinderInitialSection, cadCrvCylinderMidSection, cadCrvCylinderTerminalSection);
-//			ret.add(patch3); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-3, loft: cylinder
 		}
 		
 		// Tail trunk
@@ -425,9 +438,9 @@ public final class AircraftUtils {
 						 	)
 						 );
 		if(exporLoft) {
+			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
 			patch4 = OCCUtils.makePatchThruSections(
 					cadCurvesTailTrunk);
-//			ret.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
 		}
 		
 		// tail cap patch
@@ -461,8 +474,8 @@ public final class AircraftUtils {
 						 );
 
 		if(exporLoft) {
+			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap
 			patch5 = OCCUtils.makePatchThruSections(cadCurvesTailCapTrunk, vertexTailTip);
-//			ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap
 		}
 		
 		if(exporLoft) {
@@ -496,312 +509,299 @@ public final class AircraftUtils {
 				ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap				
 			}
 
+
+		}
+		
+		
+		boolean exporSolid = true;
+		if (exporSolid) {
 			// TODO: fixme and OCCSolid
 //			OCCSolid solid3 = new OCCSolid(patch3);
 //			System.out.println("Solid volume = " + solid3.getVolume());
 //			ret.add(solid3);
 			
-			// TODO: put the lists of x's defining support curves outside the if's 
+			
+		}
+		
+		List<OCCShape> extraShapesCap = new ArrayList<>();
+		
+		// other nose cap entities (outline curves, vertices)
+		CADVertex vertexNoseTip = OCCUtils.theFactory.newVertex(0, 0, zNoseTip.doubleValue(SI.METER));
+		// nose cap terminal section
+		List<PVector> sectionCapTerminal = fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseCapStation);
+		CADGeomCurve3D cadCrvCapTerminalSection = OCCUtils.theFactory
+				.newCurve3D(
+						sectionCapTerminal.stream()
+						.map(p -> new double[]{p.x, p.y, p.z})
+						.collect(Collectors.toList()),
+						false);
+		// points z's on nose outline curve, XZ, upper
+		List<double[]> pointsCapXZUpper = xmtPatch1.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsCapXZLower = xmtPatch1.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points y's on nose outline curve, XY, right
+		List<double[]> pointsCapSideRight = xmtPatch1.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		CADGeomCurve3D cadCrvCapXZUpper = OCCUtils.theFactory
+				.newCurve3D(pointsCapXZUpper, false);
+		CADGeomCurve3D cadCrvCapXZLower = OCCUtils.theFactory
+				.newCurve3D(pointsCapXZLower, false);
+		CADGeomCurve3D cadCrvCapXYRight = OCCUtils.theFactory
+				.newCurve3D(pointsCapSideRight, false);
+		
+		// support sections of nose cap
+		sections1.stream()
+		.map(sec -> OCCUtils.theFactory
+				.newCurve3D(
+						sec.stream()
+						.map(p -> new double[]{p.x, p.y, p.z})
+						.collect(Collectors.toList()),
+						false)
+				)
+		.map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+		.forEach(e -> extraShapesCap.add(e));
+		
+		// nose outline curves
+		// points z's on nose outline curve, XZ, upper
+		List<double[]> pointsNoseXZUpper = xmtPatch2.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsNoseXZLower = xmtPatch2.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		CADGeomCurve3D cadCrvNoseXZUpper = OCCUtils.theFactory
+				.newCurve3D(pointsNoseXZUpper, false);
+		CADGeomCurve3D cadCrvNoseXZLower = OCCUtils.theFactory
+				.newCurve3D(pointsNoseXZLower, false);
+		
+		List<double[]> pointsNoseSideRight = xmtPatch2.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		CADGeomCurve3D cadCrvNoseXYRight = OCCUtils.theFactory
+				.newCurve3D(pointsNoseSideRight, false);
 
-		}		
+		// support sections of nose patch-2
+		sections2.stream()
+		.map(sec -> OCCUtils.theFactory
+				.newCurve3D(
+						sec.stream()
+						.map(p -> new double[]{p.x, p.y, p.z})
+						.collect(Collectors.toList()),
+						false)
+				)
+		.map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+		.forEach(e -> extraShapesCap.add(e));
+		
+		// support sections of cylinder, patch-3
+
+		// points z's on cylinder outline curve, XZ, upper
+		List<double[]> pointsCylinderXZUpper = xmtPatch3.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points z's on cylinder outline curve, XZ, lower
+		List<double[]> pointsCylinderXZLower = xmtPatch3.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		// cylinder outline curves
+		CADGeomCurve3D cadCrvCylinderXZUpper = OCCUtils.theFactory
+				.newCurve3D(pointsCylinderXZUpper, false);
+		CADGeomCurve3D cadCrvCylinderXZLower = OCCUtils.theFactory
+				.newCurve3D(pointsCylinderXZLower, false);
+		
+		// cylinder side curve
+		List<double[]> pointsCylinderSideRight = xmtPatch3.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		CADGeomCurve3D cadCylinderXYRight = OCCUtils.theFactory
+				.newCurve3D(pointsCylinderSideRight, false);
+
+		// tail trunk
+		// points z's on nose outline curve, XZ, upper
+		List<double[]> pointsTailXZUpper = xmtPatch4.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsTailXZLower = xmtPatch4.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		CADGeomCurve3D cadCrvTailXZUpper = OCCUtils.theFactory
+				.newCurve3D(pointsTailXZUpper, false);
+		CADGeomCurve3D cadCrvTailXZLower = OCCUtils.theFactory
+				.newCurve3D(pointsTailXZLower, false);
+
+		// tail side curve
+		List<double[]> pointsTailSideRight = xmtPatch4.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		
+		CADGeomCurve3D cadTailXYRight = OCCUtils.theFactory
+				.newCurve3D(pointsTailSideRight, false);
+		
+		// support sections of tail, patch-4
+		cadCurvesTailTrunk.stream()
+		         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+		         .forEach(e -> extraShapesCap.add(e));			
+		
+		// tail cap support entities (outline curves, vertices)
+
+		cadCurvesTailCapTrunk.stream()
+         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
+         .forEach(e -> extraShapesCap.add(e));			
+		
+		// points z's on tail cap outline curve, XZ, upper
+		List<double[]> pointsTailCapXZUpper = xmtPatch5.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
+				})
+				.collect(Collectors.toList());
+		pointsTailCapXZUpper.add(vertexTailTip.pnt()); // add tail tip point
+		// points z's on nose outline curve, XZ, lower
+		List<double[]> pointsTailCapXZLower = xmtPatch5.stream()
+				.map(x -> new double[]{
+						x,
+						0.0,
+						fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
+				})
+				.collect(Collectors.toList());
+		pointsTailCapXZLower.add(vertexTailTip.pnt()); // add tail tip point
+		
+		CADGeomCurve3D cadTailCapXZUpper = OCCUtils.theFactory
+				.newCurve3D(pointsTailCapXZUpper, false);
+		CADGeomCurve3D cadTailCapXZLower = OCCUtils.theFactory
+				.newCurve3D(pointsTailCapXZLower, false);
+
+		// tail side curve
+		List<double[]> pointsTailCapSideRight = xmtPatch5.stream()
+				.map(x -> new double[]{
+						x,
+						fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
+						fuselage.getFuselageCreator().getCamberZAtX(x)
+				})
+				.collect(Collectors.toList());
+		pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point
+		
+		CADGeomCurve3D cadTailCapXYRight = OCCUtils.theFactory
+				.newCurve3D(pointsTailCapSideRight, false);
+
+		// ==================== Fuselage as a Solid
+		
+//		// Cylindrical trunk initial section
+//		CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
+//				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
+//		// Cylindrical trunk terminal section
+//		CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
+//				.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
+//						noseLength.plus(cylinderLength)), false);
+//		CADEdge e1 = cadCrvCylinderInitialSection.edge();
+//		System.out.println("e1 >>>>> length: " + cadCrvCylinderInitialSection.length());
+//		
+//		CADVertex[] v12 = e1.vertices();
+//		System.out.println("e1 >>>>> n. vertices: " + v12.length);
+//		List<double[]> p12 = new ArrayList<double[]>();
+//		p12.add(v12[1].pnt());
+//		p12.add(v12[0].pnt()); // reversed order
+//		CADGeomCurve3D cadCrvE1 = OCCUtils.theFactory.newCurve3D(p12, false);
+//		System.out.println("e2 >>>>> length: " + cadCrvE1.length());
+//		CADEdge e2 = cadCrvE1.edge();
+//		
+//		CADShape face1 = OCCUtils.makeFilledFace(
+//				cadCrvCylinderInitialSection, cadCrvE1);
+		
 		
 		if (exportSupportShapes) {
 			
 			System.out.println("========== [AircraftUtils::getFuselageCAD] adding support cad entities");
-			List<OCCShape> extraShapesCap = new ArrayList<>();
 
-			// other nose cap entities (outline curves, vertices)
-			CADVertex vertexNoseTip = OCCUtils.theFactory.newVertex(0, 0, zNoseTip.doubleValue(SI.METER));
-			// nose cap terminal section
-			List<PVector> sectionCapTerminal = fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseCapStation);
-			CADGeomCurve3D cadCrvCapTerminalSection = OCCUtils.theFactory
-					.newCurve3D(
-						sectionCapTerminal.stream()
-							.map(p -> new double[]{p.x, p.y, p.z})
-							.collect(Collectors.toList()),
-						false);
-			// x stations defining cap outlines
-			List<Double> xxPatch1 = Arrays.asList(
-					MyArrayUtils.halfCosine1SpaceDouble(
-							0.0, noseCapStation.doubleValue(SI.METER), 
-							numberNoseCapSections) // n. points
-					);
-			// points z's on nose outline curve, XZ, upper
-			List<double[]> pointsCapXZUpper = xxPatch1.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
-					})
-					.collect(Collectors.toList());
-			// points z's on nose outline curve, XZ, lower
-			List<double[]> pointsCapXZLower = xxPatch1.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
-					})
-					.collect(Collectors.toList());
-			// points y's on nose outline curve, XY, right
-			List<double[]> pointsCapSideRight = xxPatch1.stream()
-					.map(x -> new double[]{
-							x,
-							fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-							fuselage.getFuselageCreator().getCamberZAtX(x)
-					})
-					.collect(Collectors.toList());
-
-			CADGeomCurve3D cadCrvCapXZUpper = OCCUtils.theFactory
-					.newCurve3D(pointsCapXZUpper, false);
-			CADGeomCurve3D cadCrvCapXZLower = OCCUtils.theFactory
-					.newCurve3D(pointsCapXZLower, false);
-			CADGeomCurve3D cadCrvCapXYRight = OCCUtils.theFactory
-					.newCurve3D(pointsCapSideRight, false);
-			
 			extraShapesCap.add((OCCVertex)vertexNoseTip);
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapXZUpper).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapXZLower).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapXYRight).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCapTerminalSection).edge());
 			
-			// support sections of nose cap
-			sections1.stream()
-			         .map(sec -> OCCUtils.theFactory
-								         .newCurve3D(
-										   sec.stream()
-										      .map(p -> new double[]{p.x, p.y, p.z})
-										      .collect(Collectors.toList()),
-										   false)
-			         )
-			         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
-			         .forEach(e -> extraShapesCap.add(e));
-			
-			// nose outline curves
-			// x stations defining nose Patch-2 outlines
-			List<Double> xxPatch2 = Arrays.asList(
-					MyArrayUtils.halfCosine1SpaceDouble(
-							noseCapStation.doubleValue(SI.METER), noseLength.doubleValue(SI.METER), 
-							numberNosePatch2Sections) // n. points
-					);
-			// points z's on nose outline curve, XZ, upper
-			List<double[]> pointsNoseXZUpper = xxPatch2.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
-					})
-					.collect(Collectors.toList());
-			// points z's on nose outline curve, XZ, lower
-			List<double[]> pointsNoseXZLower = xxPatch2.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
-					})
-					.collect(Collectors.toList());
-			
-			CADGeomCurve3D cadCrvNoseXZUpper = OCCUtils.theFactory
-					.newCurve3D(pointsNoseXZUpper, false);
-			CADGeomCurve3D cadCrvNoseXZLower = OCCUtils.theFactory
-					.newCurve3D(pointsNoseXZLower, false);
-			
-			List<double[]> pointsNoseSideRight = xxPatch2.stream()
-					.map(x -> new double[]{
-							x,
-							fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-							fuselage.getFuselageCreator().getCamberZAtX(x)
-					})
-					.collect(Collectors.toList());
-			
-			CADGeomCurve3D cadCrvNoseXYRight = OCCUtils.theFactory
-					.newCurve3D(pointsNoseSideRight, false);
-			
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXZUpper).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXZLower).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvNoseXYRight).edge());			
-			
-			// support sections of nose patch-2
-			sections2.stream()
-			         .map(sec -> OCCUtils.theFactory
-								         .newCurve3D(
-										   sec.stream()
-										      .map(p -> new double[]{p.x, p.y, p.z})
-										      .collect(Collectors.toList()),
-										   false)
-			         )
-			         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
-			         .forEach(e -> extraShapesCap.add(e));
-			
-			// support sections of cylinder, patch-3
 
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderInitialSection).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderMidSection).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderTerminalSection).edge());
 
-			// x stations defining cylinder outlines
-			List<Double> xmtPatch3 = Arrays.asList(
-					MyArrayUtils.halfCosine1SpaceDouble(
-							noseLength.doubleValue(SI.METER), noseLength.plus(cylinderLength).doubleValue(SI.METER), 
-							3) // n. points
-					);
-
-			// points z's on nose outline curve, XZ, upper
-			List<double[]> pointsCylinderXZUpper = xmtPatch3.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
-					})
-					.collect(Collectors.toList());
-			// points z's on nose outline curve, XZ, lower
-			List<double[]> pointsCylinderXZLower = xmtPatch3.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
-					})
-					.collect(Collectors.toList());
-			
-			// cylinder outline curves
-			CADGeomCurve3D cadCrvCylinderXZUpper = OCCUtils.theFactory
-					.newCurve3D(pointsCylinderXZUpper, false);
-			CADGeomCurve3D cadCrvCylinderXZLower = OCCUtils.theFactory
-					.newCurve3D(pointsCylinderXZLower, false);
-			
-			// cylinder side curve
-			List<double[]> pointsCylinderSideRight = xmtPatch3.stream()
-					.map(x -> new double[]{
-							x,
-							fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-							fuselage.getFuselageCreator().getCamberZAtX(x)
-					})
-					.collect(Collectors.toList());
-			
-			CADGeomCurve3D cadCylinderXYRight = OCCUtils.theFactory
-					.newCurve3D(pointsCylinderSideRight, false);
-
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderXZUpper).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvCylinderXZLower).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCylinderXYRight).edge());
 			
-			// tail trunk
-			// points z's on nose outline curve, XZ, upper
-			List<double[]> pointsTailXZUpper = xmtPatch4.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
-					})
-					.collect(Collectors.toList());
-			// points z's on nose outline curve, XZ, lower
-			List<double[]> pointsTailXZLower = xmtPatch4.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
-					})
-					.collect(Collectors.toList());
-			
-			CADGeomCurve3D cadCrvTailXZUpper = OCCUtils.theFactory
-					.newCurve3D(pointsTailXZUpper, false);
-			CADGeomCurve3D cadCrvTailXZLower = OCCUtils.theFactory
-					.newCurve3D(pointsTailXZLower, false);
-
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZUpper).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadCrvTailXZLower).edge());
 			
-			// tail side curve
-			List<double[]> pointsTailSideRight = xmtPatch4.stream()
-					.map(x -> new double[]{
-							x,
-							fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-							fuselage.getFuselageCreator().getCamberZAtX(x)
-					})
-					.collect(Collectors.toList());
-			
-			CADGeomCurve3D cadTailXYRight = OCCUtils.theFactory
-					.newCurve3D(pointsTailSideRight, false);
-
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailXYRight).edge());
-			
-			// support sections of tail, patch-4
-			cadCurvesTailTrunk.stream()
-			         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
-			         .forEach(e -> extraShapesCap.add(e));			
-			
-			// tail cap support entities (outline curves, vertices)
-
-			cadCurvesTailCapTrunk.stream()
-	         .map(crv -> (OCCEdge)((OCCGeomCurve3D)crv).edge())
-	         .forEach(e -> extraShapesCap.add(e));			
-			
-			// points z's on tail cap outline curve, XZ, upper
-			List<double[]> pointsTailCapXZUpper = xmtPatch5.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
-					})
-					.collect(Collectors.toList());
-			pointsTailCapXZUpper.add(vertexTailTip.pnt()); // add tail tip point
-			// points z's on nose outline curve, XZ, lower
-			List<double[]> pointsTailCapXZLower = xmtPatch5.stream()
-					.map(x -> new double[]{
-							x,
-							0.0,
-							fuselage.getFuselageCreator().getZOutlineXZLowerAtX(x)
-					})
-					.collect(Collectors.toList());
-			pointsTailCapXZLower.add(vertexTailTip.pnt()); // add tail tip point
-			
-			CADGeomCurve3D cadTailCapXZUpper = OCCUtils.theFactory
-					.newCurve3D(pointsTailCapXZUpper, false);
-			CADGeomCurve3D cadTailCapXZLower = OCCUtils.theFactory
-					.newCurve3D(pointsTailCapXZLower, false);
 			
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZUpper).edge());
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXZLower).edge());
 			
-			// tail side curve
-			List<double[]> pointsTailCapSideRight = xmtPatch5.stream()
-					.map(x -> new double[]{
-							x,
-							fuselage.getFuselageCreator().getYOutlineXYSideRAtX(x),
-							fuselage.getFuselageCreator().getCamberZAtX(x)
-					})
-					.collect(Collectors.toList());
-			pointsTailCapSideRight.add(vertexTailTip.pnt()); // add tail tip point
-			
-			CADGeomCurve3D cadTailCapXYRight = OCCUtils.theFactory
-					.newCurve3D(pointsTailCapSideRight, false);
-
 			extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
 
-			// ==================== Fuselage as a Solid
-			
-//			// Cylindrical trunk initial section
-//			CADGeomCurve3D cadCrvCylinderInitialSection = OCCUtils.theFactory
-//					.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(noseLength), false);
-//			// Cylindrical trunk terminal section
-//			CADGeomCurve3D cadCrvCylinderTerminalSection = OCCUtils.theFactory
-//					.newCurve3DP(fuselage.getFuselageCreator().getUniqueValuesYZSideRCurve(
-//							noseLength.plus(cylinderLength)), false);
-//			CADEdge e1 = cadCrvCylinderInitialSection.edge();
-//			System.out.println("e1 >>>>> length: " + cadCrvCylinderInitialSection.length());
-//			
-//			CADVertex[] v12 = e1.vertices();
-//			System.out.println("e1 >>>>> n. vertices: " + v12.length);
-//			List<double[]> p12 = new ArrayList<double[]>();
-//			p12.add(v12[1].pnt());
-//			p12.add(v12[0].pnt()); // reversed order
-//			CADGeomCurve3D cadCrvE1 = OCCUtils.theFactory.newCurve3D(p12, false);
-//			System.out.println("e2 >>>>> length: " + cadCrvE1.length());
-//			CADEdge e2 = cadCrvE1.edge();
-//			
-//			CADShape face1 = OCCUtils.makeFilledFace(
-//					cadCrvCylinderInitialSection, cadCrvE1);
-
-			
 			// finally add all to extra shapes
 			ret.addAll(extraShapesCap);
 			
