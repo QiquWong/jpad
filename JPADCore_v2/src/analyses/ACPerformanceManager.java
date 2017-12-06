@@ -661,6 +661,8 @@ public class ACPerformanceManager {
 					// TAKE-OFF 
 					//---------------------------------------------------------------------------------------------------------
 					Map<Double, MyInterpolatingFunction> liftCurveFunctionTakeOffMap = new HashMap<>();
+					
+					List<Integer> indexOfMaximumCLTrimmed = new ArrayList<>();
 
 					for(int i=0; i<centerOfGravityList.size(); i++) {
 
@@ -669,13 +671,46 @@ public class ACPerformanceManager {
 								new MyInterpolatingFunction()
 								);
 
+		//....................................
+		// CUTTTING ALL CURVES UNTIL MAXIMUM CL
+		//.....................................
+
+					indexOfMaximumCLTrimmed.add(i, theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+							.get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
+							.get(centerOfGravityList.get(i)).size());
+					
+					for(int ii=0; ii<theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+							.get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
+							.get(centerOfGravityList.get(i)).size()-1; 
+							ii++) {
+						
+						if((theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).get(ii+1)
+								<
+								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).get(ii)) ||
+							  (Math.abs(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).get(ii+1)
+								-
+								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).get(ii))<0.0001)) {
+							indexOfMaximumCLTrimmed.set(i, ii);
+							break;
+						}
+					}
+					
+//-------------------------------------------------------------				
 						liftCurveFunctionTakeOffMap.get(centerOfGravityList.get(i)).interpolateLinear(
 								MyArrayUtils.convertListOfAmountTodoubleArray(
-										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).getAlphaBodyList()
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).getAlphaBodyList().subList(0, indexOfMaximumCLTrimmed.get(i))
 										),
 								MyArrayUtils.convertToDoublePrimitive(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).getTotalEquilibriumLiftCoefficient()
-										.get(centerOfGravityList.get(i))
+										.get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 
@@ -693,7 +728,7 @@ public class ACPerformanceManager {
 						cLmaxTakeOff.put(
 								centerOfGravityList.get(i), 
 								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF).
-								getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+								getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 								.stream().mapToDouble(cL -> cL).max().getAsDouble()
 								);
 
@@ -706,7 +741,7 @@ public class ACPerformanceManager {
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF)
-										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 
@@ -714,7 +749,7 @@ public class ACPerformanceManager {
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.TAKE_OFF)
-										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 					}
@@ -722,13 +757,44 @@ public class ACPerformanceManager {
 					//---------------------------------------------------------------------------------------------------------
 					// CLIMB 
 					//---------------------------------------------------------------------------------------------------------
+					indexOfMaximumCLTrimmed = new ArrayList<>();
+					
 					for(int i=0; i<centerOfGravityList.size(); i++) {
 
+
+						indexOfMaximumCLTrimmed.add(i, theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.CLIMB).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).size());
+						
+						for(int ii=0; ii<theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.CLIMB).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).size()-1; 
+								ii++) {
+							
+							if((theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CLIMB).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii+1)
+									<
+									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CLIMB).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii)) ||
+								  (Math.abs(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CLIMB).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii+1)
+									-
+									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CLIMB).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii))<0.0001)) {
+								indexOfMaximumCLTrimmed.set(i, ii);
+								break;
+							}
+						}
+						
 						polarCLClimb.put(
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB)
-										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 
@@ -736,17 +802,47 @@ public class ACPerformanceManager {
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CLIMB)
-										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 					}
+					
 					//---------------------------------------------------------------------------------------------------------
 					// CRUISE 
 					//---------------------------------------------------------------------------------------------------------
 					Map<Double, MyInterpolatingFunction> liftCurveFunctionCruiseMap = new HashMap<>();
+					indexOfMaximumCLTrimmed = new ArrayList<>();
 
 					for(int i=0; i<centerOfGravityList.size(); i++) {
 
+						indexOfMaximumCLTrimmed.add(i, theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).size());
+						
+						for(int ii=0; ii<theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).size()-1; 
+								ii++) {
+							
+							if((theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii+1)
+									<
+									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii)) ||
+								  (Math.abs(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii+1)
+									-
+									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii))<0.0001)) {
+								indexOfMaximumCLTrimmed.set(i, ii);
+								break;
+							}
+						}
+						
 						liftCurveFunctionCruiseMap.put(
 								centerOfGravityList.get(i),
 								new MyInterpolatingFunction()
@@ -754,11 +850,11 @@ public class ACPerformanceManager {
 
 						liftCurveFunctionCruiseMap.get(centerOfGravityList.get(i)).interpolateLinear(
 								MyArrayUtils.convertListOfAmountTodoubleArray(
-										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).getAlphaBodyList()
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).getAlphaBodyList().subList(0, indexOfMaximumCLTrimmed.get(i))
 										),
 								MyArrayUtils.convertToDoublePrimitive(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).getTotalEquilibriumLiftCoefficient()
-										.get(centerOfGravityList.get(i))
+										.get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 
@@ -776,7 +872,7 @@ public class ACPerformanceManager {
 						cLmaxClean.put(
 								centerOfGravityList.get(i), 
 								theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE).
-								getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+								getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 								.stream().mapToDouble(cL -> cL).max().getAsDouble()
 								);
 
@@ -784,7 +880,7 @@ public class ACPerformanceManager {
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE)
-										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 
@@ -792,7 +888,7 @@ public class ACPerformanceManager {
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.CRUISE)
-										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 					}
@@ -800,9 +896,38 @@ public class ACPerformanceManager {
 					// LANDING
 					//---------------------------------------------------------------------------------------------------------
 					Map<Double, MyInterpolatingFunction> liftCurveFunctionLandingMap = new HashMap<>();
-
+					indexOfMaximumCLTrimmed = new ArrayList<>();
+					
 					for(int i=0; i<centerOfGravityList.size(); i++) {
 
+						indexOfMaximumCLTrimmed.add(i, theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).size());
+						
+						for(int ii=0; ii<theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+								.get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
+								.get(centerOfGravityList.get(i)).size()-1; 
+								ii++) {
+							
+							if((theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii+1)
+									<
+									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii)) ||
+								  (Math.abs(theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii+1)
+									-
+									theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability()
+									.get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
+									.get(centerOfGravityList.get(i)).get(ii))<0.0001)) {
+								indexOfMaximumCLTrimmed.set(i, ii);
+								break;
+							}
+						}
+						
 						liftCurveFunctionLandingMap.put(
 								centerOfGravityList.get(i),
 								new MyInterpolatingFunction()
@@ -810,11 +935,11 @@ public class ACPerformanceManager {
 
 						liftCurveFunctionLandingMap.get(centerOfGravityList.get(i)).interpolateLinear(
 								MyArrayUtils.convertListOfAmountTodoubleArray(
-										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).getAlphaBodyList()
+										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).getAlphaBodyList().subList(0, indexOfMaximumCLTrimmed.get(i))
 										),
 								MyArrayUtils.convertToDoublePrimitive(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING).getTotalEquilibriumLiftCoefficient()
-										.get(centerOfGravityList.get(i))
+										.get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 
@@ -845,7 +970,7 @@ public class ACPerformanceManager {
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING)
-										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumLiftCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 
@@ -853,7 +978,7 @@ public class ACPerformanceManager {
 								centerOfGravityList.get(i),
 								MyArrayUtils.convertListOfDoubleToDoubleArray(
 										theAircraft.getTheAnalysisManager().getTheAerodynamicAndStability().get(ConditionEnum.LANDING)
-										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i))
+										.getTotalEquilibriumDragCoefficient().get(centerOfGravityList.get(i)).subList(0, indexOfMaximumCLTrimmed.get(i))
 										)
 								);
 					}

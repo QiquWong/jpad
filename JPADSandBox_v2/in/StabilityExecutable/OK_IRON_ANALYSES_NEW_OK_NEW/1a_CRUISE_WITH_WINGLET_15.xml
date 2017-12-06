@@ -228,6 +228,13 @@ CALCULATED_DATABASE_AIRFOIL: the drag of the lifting surface is calculated start
                <y unit="m">0.0</y>
                <z unit="m">1.02</z>
             </position>
+			
+			
+			
+			
+			
+			
+			
    <global>
                 <surface unit="m²">33.62</surface>
                 <aspect_ratio>2.44</aspect_ratio>

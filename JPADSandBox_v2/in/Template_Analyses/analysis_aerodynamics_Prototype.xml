@@ -10,7 +10,7 @@
     <analysis>
         <aerodynamics_and_stability 
 			id="JPAD Test analysis - AERODYNAMICS PROTOTYPE"
-			balance_from_previous_analysis="false"
+			balance_from_previous_analysis="true"
 			>
 			<balance>
 			<!-- 

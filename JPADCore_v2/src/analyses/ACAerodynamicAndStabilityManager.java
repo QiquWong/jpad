@@ -9757,19 +9757,18 @@ public class ACAerodynamicAndStabilityManager {
 		List<Integer> indexOfFirstMaximumDeltaElevatorOfEquilibrium = new ArrayList<>();
 		
 		for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
-			indexOfFirstMaximumDeltaElevatorOfEquilibrium.add(i, 0);
+			indexOfFirstMaximumDeltaElevatorOfEquilibrium.add(i, _deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size());
 			for(int j=0; j<_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).size(); j++)
 				if(_deltaEEquilibrium.get(_theAerodynamicBuilderInterface.getXCGAircraft().get(i)).get(j)
 						.equals(_deltaEForEquilibrium.get(0))
 						) {
-					indexOfFirstMaximumDeltaElevatorOfEquilibrium.add(i, j+1);
+					indexOfFirstMaximumDeltaElevatorOfEquilibrium.set(i, j+1);
 					break;
 				}
 		}
 		//-----------------------------------------------------------------------------------------------------------------------
 		// CL TOTAL EQUILIBRIUM
-		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE)) {
-			try {	
+		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TRIMMED_LIFT_CURVE)) {			try {	
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.LONGITUDINAL_STABILITY)) {
 
 				xVectorMatrix = new ArrayList<Double[]>();
@@ -10575,11 +10574,11 @@ public class ACAerodynamicAndStabilityManager {
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.TOTAL_CN_VS_BETA_VS_DELTA_RUDDER)) {
 
 			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.AIRCRAFT).containsKey(AerodynamicAndStabilityEnum.DIRECTIONAL_STABILITY)) {
+				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 
 				xVectorMatrix = new ArrayList<Double[]>();
 				yVectorMatrix = new ArrayList<Double[]>();
 				legend  = new ArrayList<>(); 
-				for(int i=0; i<_theAerodynamicBuilderInterface.getXCGAircraft().size(); i++){
 
 					for(int j=0; j<_theAerodynamicBuilderInterface.getDeltaRudderList().size(); j++){
 						xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(_betaList));
@@ -23083,7 +23082,7 @@ public class ACAerodynamicAndStabilityManager {
 							_current3DWingLiftCurve,
 							_horizontalTailEquilibriumLiftCoefficient.get(xcg),
 							_theAerodynamicBuilderInterface.getDynamicPressureRatio(), 
-							_alphaBodyList));
+							_alphaBodyList));		
 
 			});
 			
@@ -23343,17 +23342,6 @@ public class ACAerodynamicAndStabilityManager {
 				
 			});
 	
-			//-------------
-			
-			System.err.println("QUIQUI alpha body " + Arrays.toString(MyArrayUtils.convertListOfAmountToDoubleArray(_alphaBodyList)));
-			_theAerodynamicBuilderInterface.getXCGAircraft().stream().forEach(xcg -> {
-				System.err.println("cl equilibrium htail " + _horizontalTailEquilibriumLiftCoefficient.get(xcg).toString());
-				System.err.println("delta e equilibrium " + Arrays.toString(MyArrayUtils.convertListOfAmountToDoubleArray(_deltaEEquilibrium.get(xcg))));
-			}
-					);
-			_theAerodynamicBuilderInterface.getDeltaElevatorList().stream().forEach(de ->{
-				System.err.println("cl htail at de " + de + " is " + _current3DHorizontalTailLiftCurve.get(de));
-			});
 			//=======================================================================================
 			// Calculating MSS position vs alpha body ...
 			//=======================================================================================
@@ -23392,9 +23380,11 @@ public class ACAerodynamicAndStabilityManager {
 				);
 				
 			});
+			
 		}
 	}
-
+	
+	
 	//............................................................................
 	// END Longitudinal Stability INNER CLASS
 	//............................................................................

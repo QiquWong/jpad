@@ -4,7 +4,7 @@
         <performance
 			id="ATR-72 - PERFORMANCE"
 			weights_from_previous_file="true" 
-			aerodynamics_from_previous_file="false" 
+			aerodynamics_from_previous_file="TRUE" 
 			>
 			<weights>
 				<maximum_take_off_mass unit="kg">22500.0</maximum_take_off_mass>
