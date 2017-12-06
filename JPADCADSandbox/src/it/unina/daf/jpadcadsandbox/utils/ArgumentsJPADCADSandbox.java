@@ -20,6 +20,10 @@ public class ArgumentsJPADCADSandbox { // see CompleteAnalysisTest
 			usage = "operating conditions input file")
 	private File _inputFileOperatingCondition;
 
+	@Option(name = "-db", aliases = { "--database-dir" }, required = true,
+			usage = "database directory")
+	private File _databaseDirectory;
+	
 	@Option(name = "-da", aliases = { "--dir-airfoils" }, required = true,
 			usage = "airfoil directory path")
 	private File _airfoilDirectory;
@@ -68,6 +72,10 @@ public class ArgumentsJPADCADSandbox { // see CompleteAnalysisTest
 		return _inputFileOperatingCondition;
 	}
 
+	public File getDatabaseDirectory() {
+		return _databaseDirectory;
+	}
+	
 	public File getAirfoilDirectory() {
 		return _airfoilDirectory;
 	}

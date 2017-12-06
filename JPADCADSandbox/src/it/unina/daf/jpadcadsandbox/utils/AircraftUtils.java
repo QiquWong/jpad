@@ -101,10 +101,13 @@ public final class AircraftUtils {
 			//------------------------------------------------------------------------------------
 			// Setup database(s)
 			MyConfiguration.initWorkingDirectoryTree(
-					MyConfiguration.databaseDirectory,
+//					MyConfiguration.databaseDirectory,  // Used only for default location.
 					MyConfiguration.inputDirectory,
 					MyConfiguration.outputDirectory
 					);
+			
+			// Overriding default database directory path
+			MyConfiguration.setDir(FoldersEnum.DATABASE_DIR, CmdLineUtils.va.getDatabaseDirectory().getAbsolutePath());
 			
 			String databaseFolderPath = MyConfiguration.getDir(FoldersEnum.DATABASE_DIR);
 			String aerodynamicDatabaseFileName = "Aerodynamic_Database_Ultimate.h5";

@@ -3105,6 +3105,9 @@ public class InputManagerController {
 		logCabinConfigutionFromFileToInterface();
 		Main.getProgressBar().setProgress(progressBarIncrement*5);
 		Main.getStatusBar().setText("Logging Cabin Configuration Object Data...");
+		logWingFromFileToInterface();
+		Main.getProgressBar().setProgress(progressBarIncrement*5);
+		Main.getStatusBar().setText("Logging Cabin Configuration Object Data...");
 		
 		// COMPONENTS 3 VIEW CREATION
 		//............................
@@ -7461,6 +7464,133 @@ public class InputManagerController {
 			}
 			else
 				textFieldMassFurnishingsAndEquipment.setText(
+						"NOT INITIALIZED"
+						);
+		}
+	}
+	
+	private void logWingFromFileToInterface() {
+
+		// print the toString method of the aircraft inside the text area of the GUI ...
+		textAreaWingConsoleOutput.setText(
+				Main.getTheAircraft().getWing().toString()
+				);
+
+		if(Main.getTheAircraft().getWing() != null) {
+
+			//---------------------------------------------------------------------------------
+			// ADJUST CRITERION CHOICE BOX:
+			if(Main.getTheAircraft() != null)
+				wingAdjustCriterionChoiceBox.setDisable(false);
+			
+			//---------------------------------------------------------------------------------
+			// EQUIVALENT WING FLAG: 
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWingFlag().equals(Boolean.TRUE))
+				equivalentWingCheckBox.setSelected(true);
+
+			//---------------------------------------------------------------------------------
+			// MAIN SPAR LOCATION:
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMainSparNonDimensionalPosition() != null) 
+				textFieldWingMainSparAdimensionalPosition.setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getWing()
+								.getLiftingSurfaceCreator()
+								.getMainSparNonDimensionalPosition()
+								)
+						);
+			else
+				textFieldWingMainSparAdimensionalPosition.setText(
+						"NOT INITIALIZED"
+						);
+
+			//---------------------------------------------------------------------------------
+			// SECONDARY SPAR LOCATION:
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSecondarySparNonDimensionalPosition() != null) 
+				textFieldWingSecondarySparAdimensionalPosition.setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getWing()
+								.getLiftingSurfaceCreator()
+								.getSecondarySparNonDimensionalPosition()
+								)
+						);
+			else
+				textFieldWingSecondarySparAdimensionalPosition.setText(
+						"NOT INITIALIZED"
+						);
+
+			//---------------------------------------------------------------------------------
+			// COMPOSITE CORRECTION FACTOR:
+			if(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getCompositeCorrectionFactor() != null) 
+				textFieldWingCompositeMassCorrectionFactor.setText(
+						Double.toString(
+								Main.getTheAircraft()
+								.getWing()
+								.getLiftingSurfaceCreator()
+								.getCompositeCorrectionFactor()
+								)
+						);
+			else
+				textFieldWingCompositeMassCorrectionFactor.setText(
+						"NOT INITIALIZED"
+						);
+			
+			//---------------------------------------------------------------------------------
+			// ROUGHNESS:
+			if(Main.getTheAircraft().getWing() != null) {
+				
+				textFieldWingRoughness.setText(
+						String.valueOf(
+								Main.getTheAircraft()
+								.getWing()
+								.getLiftingSurfaceCreator()
+								.getRoughness()
+								.getEstimatedValue()
+								)
+						);
+				
+				if(Main.getTheAircraft()
+						.getWing().getLiftingSurfaceCreator()
+						.getRoughness().getUnit().toString().equalsIgnoreCase("m"))
+					wingRoughnessUnitChoiceBox.getSelectionModel().select(0);
+				else if(Main.getTheAircraft()
+						.getWing().getLiftingSurfaceCreator()
+						.getRoughness().getUnit().toString().equalsIgnoreCase("ft"))
+					wingRoughnessUnitChoiceBox.getSelectionModel().select(1);
+				
+			}
+			else
+				textFieldWingRoughness.setText(
+						"NOT INITIALIZED"
+						);
+			
+			//---------------------------------------------------------------------------------
+			// WINGLET HEIGHT:
+			if(Main.getTheAircraft().getWing() != null) {
+				
+				textFieldWingWingletHeight.setText(
+						String.valueOf(
+								Main.getTheAircraft()
+								.getWing()
+								.getLiftingSurfaceCreator()
+								.getWingletHeight()
+								.getEstimatedValue()
+								)
+						);
+				
+				if(Main.getTheAircraft()
+						.getWing().getLiftingSurfaceCreator()
+						.getWingletHeight().getUnit().toString().equalsIgnoreCase("m"))
+					wingWingletHeightUnitChoiceBox.getSelectionModel().select(0);
+				else if(Main.getTheAircraft()
+						.getWing().getLiftingSurfaceCreator()
+						.getWingletHeight().getUnit().toString().equalsIgnoreCase("ft"))
+					wingWingletHeightUnitChoiceBox.getSelectionModel().select(1);
+				
+			}
+			else
+				textFieldWingWingletHeight.setText(
 						"NOT INITIALIZED"
 						);
 		}
