@@ -289,10 +289,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				LiftingSurfacePanelCreator panel1 =
 						new LiftingSurfacePanelBuilder(
 								"ATR72 wing, inner panel",
+								false,
 								Amount.valueOf(2.5759,SI.METER), // chordRoot, 
 								Amount.valueOf(2.5759,SI.METER), // chordTip,
 								airfoil1, // airfoilRoot, 
 								airfoil2, // airfoilTip,
+								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricRoot,
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 								Amount.valueOf(4.7,SI.METER), // span, 
 								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
@@ -341,10 +343,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				LiftingSurfacePanelCreator panel2 =
 						new LiftingSurfacePanelBuilder(
 								"ATR72 wing, outer panel",
+								false,
 								Amount.valueOf(2.5759,SI.METER), // chordRoot, 
 								Amount.valueOf(1.5906,SI.METER), // chordTip,
 								airfoil2, // airfoilRoot, 
 								airfoil3, // airfoilTip,
+								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricRoot,
 								Amount.valueOf(-2.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 								Amount.valueOf(8.83,SI.METER), // span, 
 								Amount.valueOf(4.3, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
@@ -562,10 +566,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					LiftingSurfacePanelCreator panel1 =
 							new LiftingSurfacePanelBuilder(
 									"ATR72 horizontal tail",
+									false,
 									Amount.valueOf(2.044,SI.METER), // chordRoot, 
 									Amount.valueOf(1.1652,SI.METER), // chordTip,
 									airfoil1, // airfoilRoot, 
 									airfoil2, // airfoilTip,
+									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricRoot,
 									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 									Amount.valueOf(3.6548,SI.METER), // semiSpan, 
 									Amount.valueOf(13.44, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
@@ -739,10 +745,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 					LiftingSurfacePanelCreator panel1 =
 							new LiftingSurfacePanelBuilder(
 									"ATR72 vertical tail",
+									false,
 									Amount.valueOf(3.95,SI.METER), // chordRoot, 
 									Amount.valueOf(2.27,SI.METER), // chordTip,
 									airfoil1, // airfoilRoot, 
 									airfoil2, // airfoilTip,
+									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricRoot,
 									Amount.valueOf(0.0, NonSI.DEGREE_ANGLE), // twistGeometricTip,
 									Amount.valueOf(4.82,SI.METER), // span, 
 									Amount.valueOf(38.2, NonSI.DEGREE_ANGLE), // sweepLeadingEdge, 
@@ -1014,10 +1022,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 				LiftingSurfacePanelCreator equivalentWingPanel = new 
 						LiftingSurfacePanelBuilder(
 								"Equivalent wing",
+								false,
 								chordRootEquivalentWing.to(SI.METER),
 								chordTipEquivalentWing.to(SI.METER),
 								airfoilRoot,
 								airfoilTip,
+								Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 								twistAtTip,
 								span.divide(2).to(SI.METER),
 								sweepLeadingEdge.to(SI.RADIAN),
@@ -2177,10 +2187,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			_equivalentWingFlag = Boolean.TRUE;
 			liftingSurfacePanel = new LiftingSurfacePanelBuilder(
 					"Equivalent Wing",
+					false,
 					Amount.valueOf(rootChord, SI.METER),
 					Amount.valueOf(tipChord, SI.METER),
 					_equivalentWing.getPanels().get(0).getAirfoilRoot(),
 					_equivalentWing.getPanels().get(0).getAirfoilTip(),
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 					equivalentTwistAtTip,
 					Amount.valueOf(0.5*span, SI.METER),
 					equivalentSweepLE,
@@ -2199,10 +2211,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 			
 			liftingSurfacePanel = new LiftingSurfacePanelBuilder(
 					"Lifting Surface Panel",
+					false,
 					Amount.valueOf(rootChord, SI.METER),
 					Amount.valueOf(tipChord, SI.METER),
 					_equivalentWing.getPanels().get(0).getAirfoilRoot(),
 					_equivalentWing.getPanels().get(0).getAirfoilTip(),
+					Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 					equivalentTwistAtTip,
 					Amount.valueOf(0.5*span, SI.METER),
 					equivalentSweepLE,
@@ -2561,10 +2575,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		LiftingSurfacePanelCreator panel1 = new 
 				LiftingSurfacePanelBuilder(
 						"Inner panel from equivalent wing",
+						false,
 						chordRoot,
 						chordKink,
 						_equivalentWing.getPanels().get(0).getAirfoilRoot(),
 						_equivalentWing.getAirfoilKinkEquivalentWing(),
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 						_equivalentWing.getTwistAtKinkRealWing(),
 						semiSpanInnerPanel,
 						sweepLeadingEdgeInnerPanel.to(NonSI.DEGREE_ANGLE),
@@ -2575,10 +2591,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		LiftingSurfacePanelCreator panel2 = new 
 				LiftingSurfacePanelBuilder(
 						"Outer panel from equivalent wing",
+						false,
 						chordKink,
 						chordTip,
 						_equivalentWing.getAirfoilKinkEquivalentWing(),
 						_equivalentWing.getPanels().get(0).getAirfoilTip(),
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 						_equivalentWing.getPanels().get(0).getTwistGeometricAtTip(),
 						semiSpanOuterPanel,
 						sweepLeadingEdgeOuterPanel.to(NonSI.DEGREE_ANGLE),
@@ -2769,10 +2787,12 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 		LiftingSurfacePanelCreator equivalentWingPanel = new 
 				LiftingSurfacePanelBuilder(
 						"Equivalent wing",
+						false,
 						chordRootEquivalentWing,
 						chordTipEquivalentWing,
 						airfoilRootEquivalent,
 						airfoilTipEquivalent,
+						Amount.valueOf(0.0, NonSI.DEGREE_ANGLE),
 						twistGeometricTipEquivalentWing,
 						getSemiSpan(),
 						sweepLEEquivalentWing,
@@ -3338,6 +3358,7 @@ public class LiftingSurfaceCreator extends AbstractLiftingSurface {
 
 	}
 
+	@SuppressWarnings("unused")
 	private void reportDiscretizedVariables(){
 
 		System.out.println("=====================================================");

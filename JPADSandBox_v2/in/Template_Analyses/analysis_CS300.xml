@@ -38,21 +38,21 @@
 			method_canard=""
 		/>
 	-->
-	<!--
+	
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off_condition="TRUE"
-			file_take_off_condition="analysis_aerodynamics_TAKE_OFF_CS300.xml"
-			climb_condition="TRUE"
-			file_climb_condition="analysis_aerodynamics_CLIMB_CS300.xml"
-			cruise_condition="TRUE"
-			file_cruise_condition="analysis_aerodynamics_CRUISE_CS300.xml"
+			take_off_condition="FALSE"
+			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
+			climb_condition="FALSE"
+			file_climb_condition="analysis_aerodynamics_Prototype.xml"
+			cruise_condition="FALSE"
+			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
 			landing_condition="TRUE"
-			file_landing_condition="analysis_aerodynamics_LANDING_CS300.xml"
+			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
-	-->
-	<performance 
+	
+<!-- 	<performance 
 			file="analysis_performance_CS300.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -64,7 +64,7 @@
 			payload_range="TRUE"
 			V_n_diagram="TRUE"
 			mission_profile="TRUE"
-	/>
+	/> -->
 	<!--
 	<costs 
 			file="analysis_costs_CS300.xml"

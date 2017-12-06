@@ -855,10 +855,12 @@ public class Aircraft implements IAircraft {
 		LiftingSurfacePanelCreator exposedWingFirstPanel = new LiftingSurfacePanelCreator
 				.LiftingSurfacePanelBuilder(
 						"Exposed wing first panel",
+						false,
 						chordRootExposed,
 						theWing.getLiftingSurfaceCreator().getPanels().get(0).getChordTip(),
 						exposedWingRootAirfoil,
 						theWing.getLiftingSurfaceCreator().getPanels().get(0).getAirfoilTip(),
+						theWing.getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricRoot(),
 						theWing.getLiftingSurfaceCreator().getPanels().get(0).getTwistGeometricAtTip(),
 						exposedWingFirstPanelSpan,
 						theWing.getLiftingSurfaceCreator().getPanels().get(0).getSweepLeadingEdge(),

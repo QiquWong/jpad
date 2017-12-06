@@ -1655,8 +1655,8 @@ public class ACBalanceManager implements IACBalanceManager {
 				);
 		cgExcursionRefToMAC.add((_cgMTOM.getXMAC()*100));
 		
-		_maxForwardCG = (MyArrayUtils.getMin(cgExcursionRefToMAC));
-		_maxAftCG = (MyArrayUtils.getMax(cgExcursionRefToMAC));
+		_maxForwardCG = (MyArrayUtils.getMin(cgExcursionRefToMAC)/100);
+		_maxAftCG = (MyArrayUtils.getMax(cgExcursionRefToMAC)/100);
 	}
 
 	public List<CenterOfGravity> getCGList() {
