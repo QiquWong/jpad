@@ -1229,7 +1229,7 @@
                      <children>
                         <BorderPane prefHeight="681.0" prefWidth="1072.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <center>
-                              <SplitPane dividerPositions="0.3751" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <SplitPane dividerPositions="0.375" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                  <items>
                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="2194.0" prefWidth="520.0">
                                        <children>
@@ -1342,14 +1342,13 @@
                                                          </font>
                                                       </Label>
                                                       <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingTaperRatio" layoutX="6.0" layoutY="750.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Label layoutX="6.0" layoutY="781.0" prefHeight="21.0" prefWidth="217.0" text="X offset root chord from L.E.">
+                                                      <Label layoutX="6.0" layoutY="781.0" prefHeight="21.0" prefWidth="322.0" text="X offset root chord from L.E. (% Root Chord)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
                                                       </Label>
                                                       <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingRootXOffsetLE" layoutX="6.0" layoutY="802.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingXOffsetRootLEUnitChoiceBox" layoutX="347.0" layoutY="803.0" prefHeight="30.0" prefWidth="47.0" />
-                                                      <Label layoutX="6.0" layoutY="833.0" prefHeight="21.0" prefWidth="213.0" text="X offset root chord from T.E.">
+                                                      <Label layoutX="6.0" layoutY="833.0" prefHeight="21.0" prefWidth="322.0" text="X offset root chord from T.E. (%Root Chord)">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
                                                          </font>
@@ -1361,7 +1360,6 @@
                                                          </font>
                                                       </Label>
                                                       <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilRootPath" layoutX="6.0" layoutY="906.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <ChoiceBox id="fuselageLengthUnitChoiceBox" fx:id="equivalentWingXOffsetRootTEUnitChoiceBox" layoutX="347.0" layoutY="854.0" prefHeight="30.0" prefWidth="47.0" />
                                                       <Label layoutX="6.0" layoutY="937.0" prefHeight="21.0" prefWidth="128.0" text="Airfoil kink:">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
@@ -1374,27 +1372,27 @@
                                                          </font>
                                                       </Label>
                                                       <TextField id="textFieldSurfaceRoughness" fx:id="textFieldEquivalentWingAirfoilTipPath" layoutX="6.0" layoutY="1010.0" prefHeight="31.0" prefWidth="340.0" />
-                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton" layoutX="211.0" layoutY="783.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                      <Button fx:id="equivalentWingRootXOffsetLEInfoButton" layoutX="330.0" layoutY="783.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
                                                          <font>
                                                             <Font name="System Bold" size="8.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingRootXOffseTLEInfoButton" layoutX="211.0" layoutY="835.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
+                                                      <Button fx:id="equivalentWingRootXOffseTLEInfoButton" layoutX="330.0" layoutY="835.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" text="?">
                                                          <font>
                                                             <Font name="System Bold" size="8.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingAirfoilRootDetailButton" layoutX="347.0" layoutY="906.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                      <Button fx:id="equivalentWingAirfoilRootDetailButton" layoutX="380.0" layoutY="906.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingAirfoilKinkDetailButton" layoutX="347.0" layoutY="958.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                      <Button fx:id="equivalentWingAirfoilKinkDetailButton" layoutX="380.0" layoutY="958.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Button>
-                                                      <Button fx:id="equivalentWingAirfoilTipDetailButton" layoutX="347.0" layoutY="1010.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                      <Button fx:id="equivalentWingAirfoilTipDetailButton" layoutX="380.0" layoutY="1010.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
@@ -1461,7 +1459,7 @@
                                                                            </font>
                                                                         </Label>
                                                                         <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingAirfoilPathInnerSectionPanel1" layoutX="6.0" layoutY="309.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button fx:id="wingInnerSectionAirfoilDetailsPanel1Button" layoutX="348.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <Button fx:id="wingInnerSectionAirfoilDetailsPanel1Button" layoutX="380.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
@@ -1493,11 +1491,13 @@
                                                                            </font>
                                                                         </Label>
                                                                         <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingAirfoilPathOuterSectionPanel1" layoutX="6.0" layoutY="508.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button fx:id="wingOuterSectionAirfoilDetailsPanel1Button" layoutX="348.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <Button fx:id="wingOuterSectionAirfoilDetailsPanel1Button" layoutX="380.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
                                                                         </Button>
+                                                                        <Button fx:id="wingChooseInnerAirfoilPanel1Button" layoutX="350.0" layoutY="309.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                                        <Button fx:id="wingChooseOuterAirfoilPanel1Button" layoutX="350.0" layoutY="508.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                                      </children>
                                                                   </AnchorPane>
                                                             </content>
@@ -1560,7 +1560,7 @@
                                                                            </font>
                                                                         </Label>
                                                                         <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingAirfoilPathInnerSectionPanel2" layoutX="6.0" layoutY="356.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button fx:id="wingInnerSectionAirfoilDetailsPanel2Button" layoutX="348.0" layoutY="356.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <Button fx:id="wingInnerSectionAirfoilDetailsPanel2Button" layoutX="380.0" layoutY="356.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
@@ -1592,11 +1592,13 @@
                                                                            </font>
                                                                         </Label>
                                                                         <TextField id="textFieldSurfaceRoughness" fx:id="textFieldWingAirfoilPathOuterSectionPanel2" layoutX="6.0" layoutY="555.0" prefHeight="31.0" prefWidth="340.0" />
-                                                                        <Button fx:id="wingOuterSectionAirfoilDetailsPanel2Button" layoutX="348.0" layoutY="555.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
+                                                                        <Button fx:id="wingOuterSectionAirfoilDetailsPanel2Button" layoutX="380.0" layoutY="555.0" mnemonicParsing="false" prefHeight="31.0" text="Details">
                                                                            <font>
                                                                               <Font name="System Bold" size="12.0" />
                                                                            </font>
                                                                         </Button>
+                                                                        <Button fx:id="wingChooseInnerAirfoilPanel2Button" layoutX="350.0" layoutY="356.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                                        <Button fx:id="wingChooseOuterAirfoilPanel2Button" layoutX="350.0" layoutY="555.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </content>
@@ -2225,6 +2227,9 @@
                                                          </tabs>
                                                       </TabPane>
                                                       <Button fx:id="wingAddSpoilerButton" layoutX="85.0" layoutY="2937.0" mnemonicParsing="false" onAction="#addSpoiler" text="Add spolier" />
+                                                      <Button fx:id="equivalentWingChooseAirfoilRootButton" layoutX="350.0" layoutY="906.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                      <Button fx:id="equivalentWingChooseAirfoilKinkButton" layoutX="350.0" layoutY="958.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
+                                                      <Button fx:id="equivalentWingChooseAirfoilTipButton" layoutX="350.0" layoutY="1010.0" mnemonicParsing="false" prefHeight="31.0" text="..." />
                                                    </children>
                                                 </AnchorPane>
                                              </content>

@@ -28,11 +28,13 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	String _id;
 	
+	private boolean _isLinked;
 	private Amount<Length> _chordRoot;
 	private Amount<Length> _chordTip;
 	private AirfoilCreator _airfoilRoot;
 	private AirfoilCreator _airfoilTip;
 	private Amount<Angle> _twistGeometricTip;
+	private Amount<Angle> _twistGeometricRoot;
 	private Amount<Length> _span;
 	private Amount<Angle> _sweepLeadingEdge,
 		_sweepQuarterChord, _sweepHalfChord, _sweepTrailingEdge;
@@ -270,10 +272,12 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	public static class LiftingSurfacePanelBuilder {
 		// required parameters
 		private String __id;
+		private boolean __isLinked;
 		private Amount<Length> __chordRoot;
 		private Amount<Length> __chordTip;
 		private AirfoilCreator __airfoilRoot;
 		private AirfoilCreator __airfoilTip;
+		private Amount<Angle> __twistGeometricRoot;
 		private Amount<Angle> __twistGeometricTip;
 		private Amount<Length> __span;
 		private Amount<Angle> __sweepLeadingEdge;
@@ -284,18 +288,22 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 		public LiftingSurfacePanelBuilder(
 				String id,
+				boolean isLinked,
 				Amount<Length> cR, Amount<Length> cT,
 				AirfoilCreator airfR, AirfoilCreator airfT,
+				Amount<Angle> twistGeometricR,
 				Amount<Angle> twistGeometricT,
 				Amount<Length> span,
 				Amount<Angle> sweepLE,
 				Amount<Angle> dih
 				){
 			this.__id = id;
+			this.__isLinked = isLinked;
 			this.__chordRoot = cR;
 			this.__chordTip = cT;
 			this.__airfoilRoot = airfR;
 			this.__airfoilTip = airfT;
+			this.__twistGeometricRoot = twistGeometricR;
 			this.__twistGeometricTip = twistGeometricT;
 			this.__span = span;
 			this.__sweepLeadingEdge = sweepLE;
@@ -310,10 +318,12 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	private LiftingSurfacePanelCreator(LiftingSurfacePanelBuilder builder) {
 		_id = builder.__id;
+		_isLinked = builder.__isLinked;
 		_chordRoot = builder.__chordRoot;
 		_chordTip = builder.__chordTip;
 		_airfoilRoot = builder.__airfoilRoot;
 		_airfoilTip = builder.__airfoilTip;
+		_twistGeometricRoot = builder.__twistGeometricRoot;
 		_twistGeometricTip = builder.__twistGeometricTip;
 		_span = builder.__span;
 		_sweepLeadingEdge = builder.__sweepLeadingEdge;
@@ -323,7 +333,16 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 	}
 
 	public static LiftingSurfacePanelCreator importFromXML(String pathToXML, String airfoilsDir) {
-
+		
+		boolean isLinked = false;
+		Amount<Length> span = null;
+		Amount<Angle> dihedral = null;
+		Amount<Angle> sweepLeadingEdge = null;
+		Amount<Length> chordRoot = null;
+		Amount<Length> chordTip = null;
+		Amount<Angle> twistGeometricRoot = null;
+		Amount<Angle> twistGeometricTip = null;
+		
 		JPADXmlReader reader = new JPADXmlReader(pathToXML);
 
 		System.out.println("Reading wing panel data ...");
@@ -333,40 +352,71 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 						reader.getXmlDoc(), reader.getXpath(),
 						"//panel/@id");
 
-		Amount<Length> span = reader.getXMLAmountLengthByPath("//panel/span");
+		String isLinkedProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						reader.getXmlDoc(), reader.getXpath(),
+						"//panel/@linked_to");
+		if(isLinkedProperty != null)
+			isLinked = true;
+		
+		String spanProperty = reader.getXMLPropertyByPath("//panel/span/text()");
+		if(spanProperty != null)
+			span = reader.getXMLAmountLengthByPath("//panel/span");
+		
+		String dihedralProperty = reader.getXMLPropertyByPath("//panel/dihedral/text()");
+		if(dihedralProperty != null)
+			dihedral = reader.getXMLAmountAngleByPath("//panel/dihedral");
 
-		Amount<Angle> dihedral = reader.getXMLAmountAngleByPath("//panel/dihedral");
+		String sweepLEProperty = reader.getXMLPropertyByPath("//panel/sweep_leading_edge/text()");
+		if(sweepLEProperty != null)
+			sweepLeadingEdge = reader.getXMLAmountAngleByPath("//panel/sweep_leading_edge");
 
-		Amount<Angle> sweepLeadingEdge = reader.getXMLAmountAngleByPath("//panel/sweep_leading_edge");
-
-		Amount<Length> chordRoot = reader.getXMLAmountLengthByPath("//panel/inner_section/chord");
+		String chordRootProperty = reader.getXMLPropertyByPath("//panel/inner_section/chord/text()");
+		if(chordRootProperty != null)
+			chordRoot = reader.getXMLAmountLengthByPath("//panel/inner_section/chord");
 
 		String airfoilFileName1 =
 			MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//panel/inner_section/airfoil/@file");
-		String airFoilPath1 = airfoilsDir + File.separator + airfoilFileName1;
+		String airFoilPath1 = "";
+		if(airfoilFileName1 != null)
+			 airFoilPath1 = airfoilsDir + File.separator + airfoilFileName1;
+		
 		AirfoilCreator airfoilRoot = AirfoilCreator.importFromXML(airFoilPath1);
 
-		Amount<Length> chordTip = reader.getXMLAmountLengthByPath("//panel/outer_section/chord");
+		String chordTipProperty = reader.getXMLPropertyByPath("//panel/outer_section/chord/text()");
+		if(chordTipProperty != null)
+			chordTip = reader.getXMLAmountLengthByPath("//panel/outer_section/chord");
 
+		String twistGeometricRootProperty = reader.getXMLPropertyByPath("//panel/inner_section/geometric_twist/text()");
+		if(twistGeometricRootProperty != null)
+			twistGeometricRoot = reader.getXMLAmountAngleByPath("//panel/inner_section/geometric_twist");
+		
 		String airfoilFileName2 =
 			MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						reader.getXmlDoc(), reader.getXpath(),
 						"//panel/outer_section/airfoil/@file");
-		String airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
+		String airFoilPath2 = "";
+		if(airfoilFileName2 != null)
+			airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
+		
 		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
 
-		Amount<Angle> twistGeometricTip = reader.getXMLAmountAngleByPath("//panel/outer_section/geometric_twist");
+		String twistGeometricTipProperty = reader.getXMLPropertyByPath("//panel/outer_section/geometric_twist/text()");
+		if(twistGeometricTipProperty != null)
+			twistGeometricTip = reader.getXMLAmountAngleByPath("//panel/outer_section/geometric_twist");
 
 		// create the wing panel via its builder
 		LiftingSurfacePanelCreator panel =
 			new LiftingSurfacePanelBuilder(
 				id,
+				isLinked,
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
+				twistGeometricRoot,
 				twistGeometricTip,
 				span, sweepLeadingEdge, dihedral
 				)
@@ -377,8 +427,17 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	private static LiftingSurfacePanelCreator importFromPanelNodeImpl(Document doc, String airfoilsDir) {
 
+		boolean isLinked = false;
+		Amount<Length> span = null;
+		Amount<Angle> dihedral = null;
+		Amount<Angle> sweepLeadingEdge = null;
+		Amount<Length> chordRoot = null;
+		Amount<Length> chordTip = null;
+		Amount<Angle> twistGeometricRoot = null;
+		Amount<Angle> twistGeometricTip = null;
+		
 		System.out.println("Reading lifting surface panel data from XML doc ...");
-
+		
 		XPathFactory xpathFactory = XPathFactory.newInstance();
 		XPath xpath = xpathFactory.newXPath();
 
@@ -386,37 +445,72 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//panel/@id");
+		
+		String isLinkedProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						doc, xpath,
+						"//panel/@linked_to");
+		if(isLinkedProperty != null)
+			isLinked = true;
 
-		Amount<Length> span = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//span");
-		Amount<Angle> dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
-		Amount<Angle> sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
-		Amount<Length> chordRoot = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//inner_section/chord");
+		String spanProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//span/text()");
+		if(spanProperty != null)
+			span = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//span");
+		
+		String dihedralProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//dihedral/text()");
+		if(dihedralProperty != null)
+			dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
+		
+		String sweepLeadingEdgeProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//sweep_leading_edge/text()");
+		if(sweepLeadingEdgeProperty != null)
+			sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
+		
+		String chordRootProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//inner_section/chord/text()");
+		if(chordRootProperty != null)
+			chordRoot = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//inner_section/chord");
 
 		String airfoilFileName1 =
 				MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//inner_section/airfoil/@file");
-		String airFoilPath1 = airfoilsDir + File.separator + airfoilFileName1;
+		String airFoilPath1 = "";
+		if(airfoilFileName1 != null)
+			airFoilPath1 = airfoilsDir + File.separator + airfoilFileName1;
+		
 		AirfoilCreator airfoilRoot = AirfoilCreator.importFromXML(airFoilPath1);
 
-		Amount<Length> chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
+		String twistGeometricRootProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//inner_section/geometric_twist/text()");
+		if(twistGeometricRootProperty != null)
+			twistGeometricRoot = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//inner_section/geometric_twist");
+		
+		String chordTipProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//outer_section/chord/text()");
+		if(chordTipProperty != null)
+			chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
 
 		String airfoilFileName2 =
 				MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//outer_section/airfoil/@file");
-		String airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
+		String airFoilPath2 = "";
+		if(airfoilFileName2 != null)
+			airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
+		
 		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
 
-		Amount<Angle> twistGeometricTip = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//outer_section/geometric_twist");
+		String twistGeometricTipProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//outer_section/geometric_twist/text()");
+		if(twistGeometricTipProperty != null)
+			twistGeometricTip = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//outer_section/geometric_twist");
+		
 		// create the wing panel via its builder
 		LiftingSurfacePanelCreator panel =
 			new LiftingSurfacePanelBuilder(
 				id,
+				isLinked,
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
+				twistGeometricRoot,
 				twistGeometricTip,
 				span, sweepLeadingEdge, dihedral
 				)
@@ -444,6 +538,15 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	private static LiftingSurfacePanelCreator importFromPanelNodeLinkedImpl(Document doc, LiftingSurfacePanelCreator panel0, String airfoilsDir) {
 
+		boolean isLinked = false;
+		Amount<Length> span = null;
+		Amount<Angle> dihedral = null;
+		Amount<Angle> sweepLeadingEdge = null;
+		Amount<Length> chordRoot = null;
+		Amount<Length> chordTip = null;
+		Amount<Angle> twistGeometricRoot = null;
+		Amount<Angle> twistGeometricTip = null;
+		
 		System.out.println("Reading LINKED lifting surface panel data from XML doc ...");
 
 		XPathFactory xpathFactory = XPathFactory.newInstance();
@@ -453,32 +556,58 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//panel/@id");
+		
+		String isLinkedProperty = MyXMLReaderUtils
+				.getXMLPropertyByPath(
+						doc, xpath,
+						"//panel/@linked_to");
+		if (isLinkedProperty != null)
+			isLinked = true;
 
-		Amount<Length> span = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//span");
-		Amount<Angle> dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
-		Amount<Angle> sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
+		String spanProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//span/text()");
+		if(spanProperty != null)
+			span = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//span");
+		
+		String dihedralProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//dihedral/text()");
+		if(dihedralProperty != null)
+			dihedral = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//dihedral");
+		
+		String sweepLeadingEdgeProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//sweep_leading_edge/text()");
+		if(sweepLeadingEdgeProperty != null)
+			sweepLeadingEdge = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//sweep_leading_edge");
 
-		Amount<Length> chordRoot = panel0.getChordTip(); // from linked panel
+		chordRoot = panel0.getChordTip(); // from linked panel
 
 		AirfoilCreator airfoilRoot = panel0.getAirfoilTip(); // from linked panel
-
-		Amount<Length> chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
+		
+		twistGeometricRoot = panel0.getTwistAerodynamicAtTip();
+		
+		String chordTipProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//outer_section/chord/text()");
+		if(chordTipProperty != null)
+			chordTip = MyXMLReaderUtils.getXMLAmountLengthByPath(doc, xpath, "//outer_section/chord");
 
 		String airfoilFileName2 =
 				MyXMLReaderUtils
 				.getXMLPropertyByPath(
 						doc, xpath,
 						"//outer_section/airfoil/@file");
-		String airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
+		String airFoilPath2 = "";
+		if(airfoilFileName2 != null)
+			airFoilPath2 = airfoilsDir + File.separator + airfoilFileName2;
+		
 		AirfoilCreator airfoilTip = AirfoilCreator.importFromXML(airFoilPath2);
 
-		Amount<Angle> twistGeometricTip = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//outer_section/geometric_twist");
+		String twistGeometricTipProperty = MyXMLReaderUtils.getXMLPropertyByPath(doc, xpath, "//outer_section/geometric_twist/text()");
+		if(twistGeometricTipProperty != null)
+			twistGeometricTip = MyXMLReaderUtils.getXMLAmountAngleByPath(doc, xpath, "//outer_section/geometric_twist");
+		
 		// create the wing panel via its builder
 		LiftingSurfacePanelCreator panel =
 			new LiftingSurfacePanelBuilder(
-				id,
+				id, isLinked,
 				chordRoot, chordTip,
 				airfoilRoot, airfoilTip,
+				twistGeometricRoot,
 				twistGeometricTip,
 				span, sweepLeadingEdge, dihedral
 				)
@@ -524,6 +653,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			.append("\t.....................................\n")
 			.append("\t                           panel root\n")
 			.append("\tc_r = " + _chordRoot.to(SI.METER) + "\n")
+			.append("\tepsilon_r = " + _twistGeometricRoot.to(NonSI.DEGREE_ANGLE) + "\n")
 			.append(_airfoilRoot + "\n")
 			.append("\t.....................................\n")
 			.append("\t                            panel tip\n")
@@ -543,6 +673,22 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			;
 		return sb.toString();
 
+	}
+
+	public boolean isLinked() {
+		return _isLinked;
+	}
+
+	public void setLinked(boolean isLinked) {
+		this._isLinked = isLinked;
+	}
+
+	public Amount<Angle> getTwistGeometricRoot() {
+		return _twistGeometricRoot;
+	}
+
+	public void setTwistGeometricRoot(Amount<Angle> _twistGeometricRoot) {
+		this._twistGeometricRoot = _twistGeometricRoot;
 	}
 
 }
