@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import opencascade.BRepOffsetAPI_MakeFilling;
 import opencascade.BRepTools;
 import opencascade.BRep_Builder;
+import opencascade.BRep_Tool;
 import opencascade.GeomAbs_Shape;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
@@ -211,15 +212,50 @@ public final class OCCUtils {
 
 	public static CADShape makeFilledFace(List<TopoDS_Shape> shapes) {
 		// TODO: add checks
+		// TODO: ??? check if consecutive edges in the list of shapes share the same vertex
 		
 		BRepOffsetAPI_MakeFilling filled = new BRepOffsetAPI_MakeFilling();
+
+		filled.SetApproxParam(3, 20);
+		/* 
+		 * Sets the parameters used to approximate the filling surface.
+		 * DEFAULTS
+		 * int MaxDeg = 8, the highest degree which the polynomial defining the filling surface can have. 
+		 * MaxSegments = 9, the greatest number of segments which the filling surface can have. 
+		 */
 		
-		// TODO: check if consecutive edges in the list of shapes share the same vertex
+		filled.SetConstrParam(0.00001, 0.0001, 0.5, 1.0);
+		/*
+		 * Sets the values of Tolerances used to control the constraint. 
+		 * DEFAULTS
+		 * double Tol2d = 0.00001, 
+		 * double Tol3d = 0.0001, 	is the maximum distance allowed between the support surface and the constraints.
+		 * double TolAng = 0.01, 	is the maximum angle allowed between the normal of the surface and the constraints.
+		 * double TolCurv = 0.1, 	is the maximum difference of curvature allowed between the surface and the constraint. 
+		 */
+
+		filled.SetResolParam(3, 20, 20, 0);
+		/* 
+		 * Sets the parameters used for resolution. 
+		 * DEFAULTS
+		 * int Degree = 3, 			is the order of energy criterion to minimize for computing the deformation of the surface.
+		 * 							The recommanded value is i+2 where i is the maximum order of the constraints. 
+		 * int NbPtsOnCur = 15,		is the average number of points for discretisation of the edges. 
+		 * int NbIter = 2,			is the maximum number of iterations of the process. For each iteration the number of 
+		 * 							discretisation points is increased.
+		 * long	Anisotropie = 0 
+		 * 
+		 */
 		
 		shapes.stream()
-			.forEach(s -> filled.Add((TopoDS_Edge) s, GeomAbs_Shape.GeomAbs_C0));
+			.map(s -> (TopoDS_Edge)s)
+			.filter(e -> BRep_Tool.Degenerated(e) != 1)
+			.forEach(e -> filled.Add(e, GeomAbs_Shape.GeomAbs_C0));
+
+		System.out.println("[OCCUtils::makeFilledFace] Filling ...");
+		
 		filled.Build();
-		System.out.println("[OCCUtils::makeFilledFace] Filled surface is done? = " + filled.IsDone());
+		System.out.println("[OCCUtils::makeFilledFace] Filled surface is done? " + (filled.IsDone() == 1));
 
 		CADShape face = OCCUtils.theFactory.newShape(filled.Shape());		
 		return face;

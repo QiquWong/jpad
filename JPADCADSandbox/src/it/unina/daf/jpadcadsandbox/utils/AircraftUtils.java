@@ -340,7 +340,11 @@ public final class AircraftUtils {
 		List<Double> xmtPatch1 = new ArrayList<>();
 		xmtPatch1.add(0.0); // nose tip
 		xbars1.stream()
-			  .forEach(x -> xmtPatch1.add(x*noseCapStation.doubleValue(SI.METER)));
+			  .forEach(x -> xmtPatch1.add(x*noseLength.doubleValue(SI.METER)));
+		
+		System.out.println("xmtPatch1");
+		xmtPatch1.stream()
+			.forEach(x -> System.out.println(">> " + x));
 		
 		if(exporLoft) {
 			// <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
@@ -372,7 +376,11 @@ public final class AircraftUtils {
 		// x stations defining nose outlines
 		List<Double> xmtPatch2 = new ArrayList<>();
 		xbars2.stream()
-			  .forEach(x -> xmtPatch2.add(x*noseCapStation.doubleValue(SI.METER)));
+			  .forEach(x -> xmtPatch2.add(x*noseLength.doubleValue(SI.METER)));
+		
+		System.out.println("xmtPatch2");
+		xmtPatch2.stream()
+			.forEach(x -> System.out.println(">> " + x));
 
 		List<List<PVector>> sections2 = new ArrayList<List<PVector>>();
 		xbars2.stream()
@@ -400,6 +408,10 @@ public final class AircraftUtils {
 						noseLength.doubleValue(SI.METER), noseLength.plus(cylinderLength).doubleValue(SI.METER), 
 						3) // n. points
 				);
+		
+		System.out.println("xmtPatch3");
+		xmtPatch3.stream()
+			.forEach(x -> System.out.println(">> " + x));
 		
 		// Cylindrical trunk mid section
 		CADGeomCurve3D cadCrvCylinderMidSection = OCCUtils.theFactory
@@ -434,6 +446,10 @@ public final class AircraftUtils {
 						numberTailPatchSections) // n. points
 				);
 		
+		System.out.println("xmtPatch4");
+		xmtPatch4.stream()
+			.forEach(x -> System.out.println(">> " + x));
+		
 		List<CADGeomCurve3D> cadCurvesTailTrunk = new ArrayList<>();
 		xmtPatch4.stream()
 				 .map(x -> Amount.valueOf(x, SI.METER))
@@ -462,6 +478,10 @@ public final class AircraftUtils {
 						numberTailCapSections) // n. points
 				);
 
+		System.out.println("xmtPatch5");
+		xmtPatch5.stream()
+			.forEach(x -> System.out.println(">> " + x));
+		
 		Amount<Length> zTailTip = Amount.valueOf( 
 				fuselage.getFuselageCreator().getZOutlineXZLowerAtX(fuselageLength.doubleValue(SI.METER)),
 				SI.METER);
@@ -513,19 +533,6 @@ public final class AircraftUtils {
 				ret.add(patch4); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-4, loft: tail
 				ret.add(patch5); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-5, loft: tail cap				
 			}
-
-
-		}
-		
-		
-		boolean exporSolid = true;
-		if (exporSolid) {
-			// TODO: fixme and OCCSolid
-//			OCCSolid solid3 = new OCCSolid(patch3);
-//			System.out.println("Solid volume = " + solid3.getVolume());
-//			ret.add(solid3);
-			
-			
 		}
 		
 		List<OCCShape> extraShapesCap = new ArrayList<>();
@@ -780,55 +787,63 @@ public final class AircraftUtils {
 
 		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
 		
-		// ==================== Fuselage as a Solid
+		boolean exporSolid = false;
+		if (exporSolid) {
+			
+			// TODO: fixme and OCCSolid
+//			OCCSolid solid3 = new OCCSolid(patch3);
+//			System.out.println("Solid volume = " + solid3.getVolume());
+//			ret.add(solid3);
+			
+			
+			// ==================== Fuselage as a Solid
 
-		// Nose solid
+			// Nose solid
 
-		// front
-		CADGeomCurve3D cadCrvE0A = cadCrvNoseCapTerminalSection;
-		CADEdge e0A = cadCrvE0A.edge();
-		System.out.println("e0 >>>>> length: " + cadCrvE0A.length());
-		CADVertex[] vtxE0 = e0A.vertices();
-		System.out.println("e0A >>>>> n. vertices: " + vtxE0.length);
-		Arrays.asList(vtxE0).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
-		CADGeomCurve3D cadCrvE0B = OCCUtils.theFactory.newCurve3D(
-				vtxE0[1].pnt(), vtxE0[0].pnt()  // reversed order
-				);
-		System.out.println("e0B >>>>> length: " + cadCrvE0B.length());
-		CADShape faceSolidNose0 = OCCUtils.makeFilledFace(cadCrvE0A, cadCrvE0B);
-		//System.out.println("f0 >>>>> area: " + ((OCCFace)faceSolidNose0).getGeomSurface().);
-		ret.add((OCCShape)faceSolidNose0);
-		
-		// rear
-		CADGeomCurve3D cadCrvE1A = cadCrvCylinderInitialSection;
-		CADEdge e1A = cadCrvE1A.edge();
-		System.out.println("e1A >>>>> length: " + cadCrvE1A.length());
-		CADVertex[] vtxE1 = e1A.vertices();
-		System.out.println("e1A >>>>> n. vertices: " + vtxE1.length);
-		Arrays.asList(vtxE1).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
-		CADGeomCurve3D cadCrvE1B = OCCUtils.theFactory.newCurve3D(
-				vtxE1[1].pnt(), vtxE1[0].pnt()  // reversed order
-				);
-		System.out.println("e1B >>>>> length: " + cadCrvE1B.length());
-		CADShape faceSolidNose2 = OCCUtils.makeFilledFace(cadCrvE1A, cadCrvE1B);
-		ret.add((OCCShape)faceSolidNose2);
-		
-		// symmetry plane, up
-		CADGeomCurve3D cadCrvE2 = cadCrvNoseXZUpper;
-		CADVertex[] vtxE2 = cadCrvE2.edge().vertices();
-		Arrays.asList(vtxE2).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
-		CADGeomCurve3D cadCrvE3 = cadCrvNoseXZLower;
-		CADVertex[] vtxE3 = cadCrvE3.edge().vertices();
-		Arrays.asList(vtxE3).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+			// front
+			// Edge 0, A curve, B straight
+			CADGeomCurve3D c0A = cadCrvNoseCapTerminalSection;
+			CADEdge e0A = c0A.edge();
+			System.out.println("e0A >>>>> length: " + c0A.length());
+			Arrays.asList(e0A.vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+			CADGeomCurve3D c0B = OCCUtils.theFactory.newCurve3D(
+					e0A.vertices()[0].pnt(), e0A.vertices()[1].pnt()  // order unimportant
+					);
+			System.out.println("e0B >>>>> length: " + c0B.length());
+			CADShape faceSolidNose0 = OCCUtils.makeFilledFace(c0A, c0B);
+			ret.add((OCCShape)faceSolidNose0);
+			
+			// rear
+			// Edge 1, A curve, B straight
+			CADGeomCurve3D c1A = cadCrvCylinderInitialSection;
+			CADEdge e1A =   c1A.edge();
+			System.out.println("e1A >>>>> length: " + c1A.length());
+			Arrays.asList(e1A.vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+			CADGeomCurve3D c1B = OCCUtils.theFactory.newCurve3D(
+					e1A.vertices()[0].pnt(), e1A.vertices()[1].pnt()  // order unimportant
+					);
+			System.out.println("e1B >>>>> length: " + c1B.length());
+			CADShape faceSolidNose2 = OCCUtils.makeFilledFace(c1A, c1B);
+			ret.add((OCCShape)faceSolidNose2);
+			
+			// symmetry plane, up
 
-		// TODO: fix me! Check the orientation of edges before filling the boundary
-//		CADShape faceSolidNose3 = OCCUtils.makeFilledFace(cadCrvE0B, cadCrvE2, 
-//				CADShapeFactory.getFactory().newCurve3D((CADEdge)cadCrvE1B.edge().reversed()), 
-//				CADShapeFactory.getFactory().newCurve3D((CADEdge)cadCrvE3.edge().reversed()) 
-//				);
-//		ret.add((OCCShape)faceSolidNose3);
-		
-		
+			CADGeomCurve3D c2 = cadCrvNoseXZUpper;
+			System.out.println("e2 >>>>> length: " + c2.length());
+			Arrays.asList(c2.edge().vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+			
+			CADGeomCurve3D c3 = cadCrvNoseXZLower;
+			System.out.println("e3 >>>>> length: " + c3.length());
+			Arrays.asList(c3.edge().vertices()).stream().forEach(v -> System.out.println(Arrays.toString(v.pnt())));
+
+			// TODO: fix me! doesn't seem to build the plate
+//			CADShape faceSolidNose3 = 
+//					OCCUtils.makeFilledFace(c0B, c2, c1B, c3);
+//			ret.add((OCCShape)faceSolidNose3);
+			
+			
+			
+		}
 		
 		
 		
