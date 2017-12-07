@@ -105,8 +105,10 @@ import javafx.stage.Stage;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import jpadcommander.Main;
+import standaloneutils.GeometryCalc;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyArrayUtils;
+import standaloneutils.MyMapUtils;
 import standaloneutils.MyXMLReaderUtils;
 
 public class InputManagerController {
@@ -147,6 +149,8 @@ public class InputManagerController {
 	private Pane cabinConfigurationSeatMapPane;
 	@FXML
 	private Pane wingPlanformPane;
+	@FXML
+	private Pane equivalentWingPane;
 	@FXML
 	private Pane hTailPlanformPane;
 	@FXML
@@ -218,10 +222,6 @@ public class InputManagerController {
 	@FXML
 	private Button wingOuterSectionAirfoilDetailsPanel1Button;
 	@FXML
-	private Button wingInnerSectionAirfoilDetailsPanel2Button;
-	@FXML
-	private Button wingOuterSectionAirfoilDetailsPanel2Button;
-	@FXML
 	private Button wingAddFlapButton;
 	@FXML
 	private Button wingAddSlatButton;
@@ -230,11 +230,12 @@ public class InputManagerController {
 	@FXML
 	private Button wingChooseInnerAirfoilPanel1Button;
 	@FXML
-	private Button wingChooseInnerAirfoilPanel2Button;
-	@FXML
 	private Button wingChooseOuterAirfoilPanel1Button;
-	@FXML
-	private Button wingChooseOuterAirfoilPanel2Button;
+	
+	//...........................................................................................
+	// BUTTON TUPLE:
+	//...........................................................................................
+	Map<Button, Integer> airfoilDetailsButtonAndTabsMap = new HashMap<>();
 	
 	//...........................................................................................
 	// FILE CHOOSER:
@@ -929,26 +930,6 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldWingAirfoilPathOuterSectionPanel1;
 	@FXML
-	private CheckBox linkedToPreviousPanelCheckBoxPanel2;
-	@FXML
-	private TextField textFieldWingSpanPanel2;
-	@FXML
-	private TextField textFieldWingSweepLeadingEdgePanel2;
-	@FXML
-	private TextField textFieldWingDihedralPanel2;
-	@FXML
-	private TextField textFieldWingChordInnerSectionPanel2;
-	@FXML
-	private TextField textFieldWingTwistInnerSectionPanel2;
-	@FXML
-	private TextField textFieldWingAirfoilPathInnerSectionPanel2;
-	@FXML
-	private TextField textFieldWingChordOuterSectionPanel2;
-	@FXML
-	private TextField textFieldWingTwistOuterSectionPanel2;
-	@FXML
-	private TextField textFieldWingAirfoilPathOuterSectionPanel2;
-	@FXML
 	private TextField textFieldWingInnerPositionFlap1;
 	@FXML
 	private TextField textFieldWingOuterPositionFlap1;
@@ -960,18 +941,6 @@ public class InputManagerController {
 	private TextField textFieldWingMinimumDeflectionAngleFlap1;
 	@FXML
 	private TextField textFieldWingMaximumDeflectionAngleFlap1;
-	@FXML
-	private TextField textFieldWingInnerPositionFlap2;
-	@FXML
-	private TextField textFieldWingOuterPositionFlap2;
-	@FXML
-	private TextField textFieldWingInnerChordRatioFlap2;
-	@FXML
-	private TextField textFieldWingOuterChordRatioFlap2;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleFlap2;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleFlap2;
 	@FXML
 	private TextField textFieldWingInnerPositionSlat1;
 	@FXML
@@ -986,48 +955,6 @@ public class InputManagerController {
 	private TextField textFieldWingMinimumDeflectionAngleSlat1;
 	@FXML
 	private TextField textFieldWingMaximumDeflectionAngleSlat1;
-	@FXML
-	private TextField textFieldWingInnerPositionSlat2;
-	@FXML
-	private TextField textFieldWingOuterPositionSlat2;
-	@FXML
-	private TextField textFieldWingInnerChordRatioSlat2;
-	@FXML
-	private TextField textFieldWingOuterChordRatioSlat2;
-	@FXML
-	private TextField textFieldWingExtensionRatioSlat2;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleSlat2;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleSlat2;
-	@FXML
-	private TextField textFieldWingInnerPositionSlat3;
-	@FXML
-	private TextField textFieldWingOuterPositionSlat3;
-	@FXML
-	private TextField textFieldWingInnerChordRatioSlat3;
-	@FXML
-	private TextField textFieldWingOuterChordRatioSlat3;
-	@FXML
-	private TextField textFieldWingExtensionRatioSlat3;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleSlat3;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleSlat3;
-	@FXML
-	private TextField textFieldWingInnerPositionSlat4;
-	@FXML
-	private TextField textFieldWingOuterPositionSlat4;
-	@FXML
-	private TextField textFieldWingInnerChordRatioSlat4;
-	@FXML
-	private TextField textFieldWingOuterChordRatioSlat4;
-	@FXML
-	private TextField textFieldWingExtensionRatioSlat4;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleSlat4;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleSlat4;
 	@FXML
 	private TextField textFieldWingInnerPositionAileronLeft;
 	@FXML
@@ -1064,42 +991,6 @@ public class InputManagerController {
 	private TextField textFieldWingMinimumDeflectionAngleSpolier1;
 	@FXML
 	private TextField textFieldWingMaximumDeflectionAngleSpoiler1;
-	@FXML
-	private TextField textFieldWingInnerSpanwisePositionSpolier2;
-	@FXML
-	private TextField textFieldWingOuterSpanwisePositionSpolier2;
-	@FXML
-	private TextField textFieldWingInnerChordwisePositionSpolier2;
-	@FXML
-	private TextField textFieldWingOuterChordwisePositionSpolier2;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleSpolier2;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleSpoiler2;
-	@FXML
-	private TextField textFieldWingInnerSpanwisePositionSpolier3;
-	@FXML
-	private TextField textFieldWingOuterSpanwisePositionSpolier3;
-	@FXML
-	private TextField textFieldWingInnerChordwisePositionSpolier3;
-	@FXML
-	private TextField textFieldWingOuterChordwisePositionSpolier3;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleSpolier3;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleSpoiler3;
-	@FXML
-	private TextField textFieldWingInnerSpanwisePositionSpolier4;
-	@FXML
-	private TextField textFieldWingOuterSpanwisePositionSpolier4;
-	@FXML
-	private TextField textFieldWingInnerChordwisePositionSpolier4;
-	@FXML
-	private TextField textFieldWingOuterChordwisePositionSpolier4;
-	@FXML
-	private TextField textFieldWingMinimumDeflectionAngleSpolier4;
-	@FXML
-	private TextField textFieldWingMaximumDeflectionAngleSpoiler4;
 	
 	// lists:
 	// panels
@@ -1186,43 +1077,13 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> wingOuterSectionTwistTipPanel1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> wingSpanPanel2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingSweepLEPanel2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingDihedralPanel2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingInnerSectionChordPanel2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingInnerSectionTwistTipPanel2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingOuterSectionChordPanel2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingOuterSectionTwistTipPanel2UnitChoiceBox;
-	@FXML
 	private ChoiceBox<String> wingMinimumDeflectionAngleFlap1UnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> wingMaximumDeflectionAngleFlap1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleFlap2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleFlap2UnitChoiceBox;
-	@FXML
 	private ChoiceBox<String> wingMinimumDeflectionAngleSlat1UnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> wingMaximumDeflectionAngleSlat1UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleSlat2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleSlat2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleSlat3UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleSlat3UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleSlat4UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleSlat4UnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> wingMinimumDeflectionAngleAileronLeftUnitChoiceBox;
 	@FXML
@@ -1235,18 +1096,6 @@ public class InputManagerController {
 	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler1UnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler1UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler2UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler3UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler3UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMinimumDeflectionAngleSpoiler4UnitChoiceBox;
-	@FXML
-	private ChoiceBox<String> wingMaximumDeflectionAngleSpoiler4UnitChoiceBox;
 	
 	//...........................................................................................
 	// HTAIL TAB (DATA):
@@ -1315,6 +1164,8 @@ public class InputManagerController {
 			removeContentOnSlatTabClose(tabPaneWingSlats.getTabs().get(i));
 		for(int i=0; i<tabPaneWingSpoilers.getTabs().size(); i++)
 			removeContentOnSpoilerTabClose(tabPaneWingSpoilers.getTabs().get(i));
+		for(int i=0; i<tabPaneWingViewAndAirfoils.getTabs().size(); i++)
+			removeAirfoilDetailsButtonFromMapOnTabClose(tabPaneWingViewAndAirfoils.getTabs().get(i));
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -1408,260 +1259,159 @@ public class InputManagerController {
 		wingInnerSectionTwistTipPanel1UnitChoiceBox.setItems(angleUnitsList);
 		wingOuterSectionChordPanel1UnitChoiceBox.setItems(lengthUnitsList);
 		wingOuterSectionTwistTipPanel1UnitChoiceBox.setItems(angleUnitsList);
-		wingSpanPanel2UnitChoiceBox.setItems(lengthUnitsList);
-		wingSweepLEPanel2UnitChoiceBox.setItems(angleUnitsList);
-		wingDihedralPanel2UnitChoiceBox.setItems(angleUnitsList);
-		wingInnerSectionChordPanel2UnitChoiceBox.setItems(lengthUnitsList);
-		wingInnerSectionTwistTipPanel2UnitChoiceBox.setItems(angleUnitsList);
-		wingOuterSectionChordPanel2UnitChoiceBox.setItems(lengthUnitsList);
-		wingOuterSectionTwistTipPanel2UnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleFlap1UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleFlap1UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleFlap2UnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleFlap2UnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleSlat1UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleSlat2UnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleSlat2UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleSlat3UnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleSlat3UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleSlat4UnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleSlat4UnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleAileronLeftUnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleAileronRigthUnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleAileronRightUnitChoiceBox.setItems(angleUnitsList);
 		wingMinimumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
 		wingMaximumDeflectionAngleSpoiler1UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleSpoiler2UnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleSpoiler2UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleSpoiler3UnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleSpoiler3UnitChoiceBox.setItems(angleUnitsList);
-		wingMinimumDeflectionAngleSpoiler4UnitChoiceBox.setItems(angleUnitsList);
-		wingMaximumDeflectionAngleSpoiler4UnitChoiceBox.setItems(angleUnitsList);
 		
 		//.......................................................................................
 		// WING LISTS INITIALIZATION
 		// panels
 		textFieldWingSpanPanelList = new ArrayList<>();
 		textFieldWingSpanPanelList.add(textFieldWingSpanPanel1);
-		textFieldWingSpanPanelList.add(textFieldWingSpanPanel2);
 		
 		textFieldWingSweepLEPanelList = new ArrayList<>();
 		textFieldWingSweepLEPanelList.add(textFieldWingSweepLeadingEdgePanel1);
-		textFieldWingSweepLEPanelList.add(textFieldWingSweepLeadingEdgePanel2);
 		
 		textFieldWingDihedralPanelList = new ArrayList<>();
 		textFieldWingDihedralPanelList.add(textFieldWingDihedralPanel1);
-		textFieldWingDihedralPanelList.add(textFieldWingDihedralPanel2);
 		
 		textFieldWingInnerChordPanelList = new ArrayList<>();
 		textFieldWingInnerChordPanelList.add(textFieldWingChordInnerSectionPanel1);
-		textFieldWingInnerChordPanelList.add(textFieldWingChordInnerSectionPanel2);
 		
 		textFieldWingInnerTwistPanelList = new ArrayList<>();
 		textFieldWingInnerTwistPanelList.add(textFieldWingTwistInnerSectionPanel1);
-		textFieldWingInnerTwistPanelList.add(textFieldWingTwistInnerSectionPanel2);
 		
 		textFieldWingInnerAirfoilPanelList = new ArrayList<>();
 		textFieldWingInnerAirfoilPanelList.add(textFieldWingAirfoilPathInnerSectionPanel1);
-		textFieldWingInnerAirfoilPanelList.add(textFieldWingAirfoilPathInnerSectionPanel2);
 		
 		textFieldWingOuterChordPanelList = new ArrayList<>();
 		textFieldWingOuterChordPanelList.add(textFieldWingChordOuterSectionPanel1);
-		textFieldWingOuterChordPanelList.add(textFieldWingChordOuterSectionPanel2);
 		
 		textFieldWingOuterTwistPanelList = new ArrayList<>();
 		textFieldWingOuterTwistPanelList.add(textFieldWingTwistOuterSectionPanel1);
-		textFieldWingOuterTwistPanelList.add(textFieldWingTwistOuterSectionPanel2);
 		
 		textFieldWingOuterAirfoilPanelList = new ArrayList<>();
 		textFieldWingOuterAirfoilPanelList.add(textFieldWingAirfoilPathOuterSectionPanel1);
-		textFieldWingOuterAirfoilPanelList.add(textFieldWingAirfoilPathOuterSectionPanel2);
 		
 		checkBoxWingLinkedToPreviousPanelList = new ArrayList<>();
-		checkBoxWingLinkedToPreviousPanelList.add(linkedToPreviousPanelCheckBoxPanel2);
 		
 		choiceBoxWingSpanPanelUnitList = new ArrayList<>();
 		choiceBoxWingSpanPanelUnitList.add(wingSpanPanel1UnitChoiceBox);
-		choiceBoxWingSpanPanelUnitList.add(wingSpanPanel2UnitChoiceBox);
 		
 		choiceBoxWingSweepLEPanelUnitList = new ArrayList<>();
 		choiceBoxWingSweepLEPanelUnitList.add(wingSweepLEPanel1UnitChoiceBox);
-		choiceBoxWingSweepLEPanelUnitList.add(wingSweepLEPanel2UnitChoiceBox);
 		
 		choiceBoxWingDihedralPanelUnitList = new ArrayList<>();
 		choiceBoxWingDihedralPanelUnitList.add(wingDihedralPanel1UnitChoiceBox);
-		choiceBoxWingDihedralPanelUnitList.add(wingDihedralPanel2UnitChoiceBox);
 		
 		choiceBoxWingInnerChordPanelUnitList = new ArrayList<>();
 		choiceBoxWingInnerChordPanelUnitList.add(wingInnerSectionChordPanel1UnitChoiceBox);
-		choiceBoxWingInnerChordPanelUnitList.add(wingInnerSectionChordPanel2UnitChoiceBox);
 		
 		choiceBoxWingInnerTwistPanelUnitList = new ArrayList<>();
 		choiceBoxWingInnerTwistPanelUnitList.add(wingInnerSectionTwistTipPanel1UnitChoiceBox);
-		choiceBoxWingInnerTwistPanelUnitList.add(wingInnerSectionTwistTipPanel2UnitChoiceBox);
 		
 		choiceBoxWingOuterChordPanelUnitList = new ArrayList<>();
 		choiceBoxWingOuterChordPanelUnitList.add(wingOuterSectionChordPanel1UnitChoiceBox);
-		choiceBoxWingOuterChordPanelUnitList.add(wingOuterSectionChordPanel2UnitChoiceBox);
 		
 		choiceBoxWingOuterTwistPanelUnitList = new ArrayList<>();
 		choiceBoxWingOuterTwistPanelUnitList.add(wingOuterSectionTwistTipPanel1UnitChoiceBox);
-		choiceBoxWingOuterTwistPanelUnitList.add(wingOuterSectionTwistTipPanel2UnitChoiceBox);
 		
 		chooseInnerAirfoilFileButtonList = new ArrayList<>();
 		chooseInnerAirfoilFileButtonList.add(wingChooseInnerAirfoilPanel1Button);
-		chooseInnerAirfoilFileButtonList.add(wingChooseInnerAirfoilPanel2Button);
 		
 		detailButtonWingInnerAirfoilList = new ArrayList<>();
 		detailButtonWingInnerAirfoilList.add(wingInnerSectionAirfoilDetailsPanel1Button);
-		detailButtonWingInnerAirfoilList.add(wingInnerSectionAirfoilDetailsPanel2Button);
 		
 		chooseOuterAirfoilFileButtonList = new ArrayList<>();
 		chooseOuterAirfoilFileButtonList.add(wingChooseOuterAirfoilPanel1Button);
-		chooseOuterAirfoilFileButtonList.add(wingChooseOuterAirfoilPanel2Button);
 		
 		detailButtonWingOuterAirfoilList = new ArrayList<>();
 		detailButtonWingOuterAirfoilList.add(wingOuterSectionAirfoilDetailsPanel1Button);
-		detailButtonWingOuterAirfoilList.add(wingOuterSectionAirfoilDetailsPanel2Button);
 		
 		// flaps
 		textFieldWingInnerPositionFlapList = new ArrayList<>();
 		textFieldWingInnerPositionFlapList.add(textFieldWingInnerPositionFlap1);
-		textFieldWingInnerPositionFlapList.add(textFieldWingInnerPositionFlap2);
 		
 		textFieldWingOuterPositionFlapList = new ArrayList<>();
 		textFieldWingOuterPositionFlapList.add(textFieldWingOuterPositionFlap1);
-		textFieldWingOuterPositionFlapList.add(textFieldWingOuterPositionFlap2);
 		
 		textFieldWingInnerChordRatioFlapList = new ArrayList<>();
 		textFieldWingInnerChordRatioFlapList.add(textFieldWingInnerChordRatioFlap1);
-		textFieldWingInnerChordRatioFlapList.add(textFieldWingInnerChordRatioFlap2);
 		
 		textFieldWingOuterChordRatioFlapList = new ArrayList<>();
 		textFieldWingOuterChordRatioFlapList.add(textFieldWingOuterChordRatioFlap1);
-		textFieldWingOuterChordRatioFlapList.add(textFieldWingOuterChordRatioFlap2);
 		
 		textFieldWingMinimumDeflectionAngleFlapList = new ArrayList<>();
 		textFieldWingMinimumDeflectionAngleFlapList.add(textFieldWingMinimumDeflectionAngleFlap1);
-		textFieldWingMinimumDeflectionAngleFlapList.add(textFieldWingMinimumDeflectionAngleFlap2);
 		
 		textFieldWingMaximumDeflectionAngleFlapList = new ArrayList<>();
 		textFieldWingMaximumDeflectionAngleFlapList.add(textFieldWingMaximumDeflectionAngleFlap1);
-		textFieldWingMaximumDeflectionAngleFlapList.add(textFieldWingMaximumDeflectionAngleFlap2);
 		
 		choiceBoxWingMinimumDeflectionAngleFlapUnitList = new ArrayList<>();
 		choiceBoxWingMinimumDeflectionAngleFlapUnitList.add(wingMinimumDeflectionAngleFlap1UnitChoiceBox);
-		choiceBoxWingMinimumDeflectionAngleFlapUnitList.add(wingMinimumDeflectionAngleFlap2UnitChoiceBox);
 		
 		choiceBoxWingMaximumDeflectionAngleFlapUnitList = new ArrayList<>();
 		choiceBoxWingMaximumDeflectionAngleFlapUnitList.add(wingMaximumDeflectionAngleFlap1UnitChoiceBox);
-		choiceBoxWingMaximumDeflectionAngleFlapUnitList.add(wingMaximumDeflectionAngleFlap2UnitChoiceBox);
 		
 		// flaps
 		textFieldWingInnerPositionSlatList = new ArrayList<>();
 		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat1);
-		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat2);
-		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat3);
-		textFieldWingInnerPositionSlatList.add(textFieldWingInnerPositionSlat4);
 		
 		textFieldWingOuterPositionSlatList = new ArrayList<>();
 		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat1);
-		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat2);
-		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat3);
-		textFieldWingOuterPositionSlatList.add(textFieldWingOuterPositionSlat4);
 		
 		textFieldWingInnerChordRatioSlatList = new ArrayList<>();
 		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat1);
-		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat2);
-		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat3);
-		textFieldWingInnerChordRatioSlatList.add(textFieldWingInnerChordRatioSlat4);
 		
 		textFieldWingOuterChordRatioSlatList = new ArrayList<>();
 		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat1);
-		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat2);
-		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat3);
-		textFieldWingOuterChordRatioSlatList.add(textFieldWingOuterChordRatioSlat4);
 		
 		textFieldWingExtensionRatioSlatList = new ArrayList<>();
 		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat1);
-		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat2);
-		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat3);
-		textFieldWingExtensionRatioSlatList.add(textFieldWingExtensionRatioSlat4);
 		
 		textFieldWingMinimumDeflectionAngleSlatList = new ArrayList<>();
 		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat1);
-		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat2);
-		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat3);
-		textFieldWingMinimumDeflectionAngleSlatList.add(textFieldWingMinimumDeflectionAngleSlat4);
 		
 		textFieldWingMaximumDeflectionAngleSlatList = new ArrayList<>();
 		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat1);
-		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat2);
-		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat3);
-		textFieldWingMaximumDeflectionAngleSlatList.add(textFieldWingMaximumDeflectionAngleSlat4);
 		
 		choiceBoxWingMinimumDeflectionAngleSlatUnitList = new ArrayList<>();
 		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat1UnitChoiceBox);
-		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat2UnitChoiceBox);
-		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat3UnitChoiceBox);
-		choiceBoxWingMinimumDeflectionAngleSlatUnitList.add(wingMinimumDeflectionAngleSlat4UnitChoiceBox);
 		
 		choiceBoxWingMaximumDeflectionAngleSlatUnitList = new ArrayList<>();
 		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat1UnitChoiceBox);
-		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat2UnitChoiceBox);
-		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat3UnitChoiceBox);
-		choiceBoxWingMaximumDeflectionAngleSlatUnitList.add(wingMaximumDeflectionAngleSlat4UnitChoiceBox);
 		
 		// spoilers
 		textFieldWingInnerSpanwisePositionSpoilerList = new ArrayList<>();
 		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier1);
-		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier2);
-		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier3);
-		textFieldWingInnerSpanwisePositionSpoilerList.add(textFieldWingInnerSpanwisePositionSpolier4);
 		
 		textFieldWingOuterSpanwisePositionSpoilerList = new ArrayList<>();
 		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier1);
-		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier2);
-		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier3);
-		textFieldWingOuterSpanwisePositionSpoilerList.add(textFieldWingOuterSpanwisePositionSpolier4);
 		
 		textFieldWingInnerChordwisePositionSpoilerList = new ArrayList<>();
 		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier1);
-		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier2);
-		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier3);
-		textFieldWingInnerChordwisePositionSpoilerList.add(textFieldWingInnerChordwisePositionSpolier4);
 		
 		textFieldWingOuterChordwisePositionSpoilerList = new ArrayList<>();
 		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier1);
-		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier2);
-		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier3);
-		textFieldWingOuterChordwisePositionSpoilerList.add(textFieldWingOuterChordwisePositionSpolier4);
 		
 		textFieldWingMinimumDeflectionAngleSpoilerList = new ArrayList<>();
 		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier1);
-		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier2);
-		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier3);
-		textFieldWingMinimumDeflectionAngleSpoilerList.add(textFieldWingMinimumDeflectionAngleSpolier4);
 		
 		textFieldWingMaximumDeflectionAngleSpoilerList = new ArrayList<>();
 		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler1);
-		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler2);
-		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler3);
-		textFieldWingMaximumDeflectionAngleSpoilerList.add(textFieldWingMaximumDeflectionAngleSpoiler4);
 		
 		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList = new ArrayList<>();
 		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler1UnitChoiceBox);
-		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler2UnitChoiceBox);
-		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler3UnitChoiceBox);
-		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.add(wingMinimumDeflectionAngleSpoiler4UnitChoiceBox);
 		
 		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList = new ArrayList<>();
 		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler1UnitChoiceBox);
-		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler2UnitChoiceBox);
-		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler3UnitChoiceBox);
-		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.add(wingMaximumDeflectionAngleSpoiler4UnitChoiceBox);
 		
 		aircraftLoadButtonDisableCheck();
 		cabinConfigurationClassesNumberDisableCheck();
@@ -1671,17 +1421,31 @@ public class InputManagerController {
 		setAirfoilDetailsActionAndDisableCheck(equivalentWingAirfoilTipDetailButton, textFieldEquivalentWingAirfoilTipPath);
 		setAirfoilDetailsActionAndDisableCheck(wingInnerSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathInnerSectionPanel1);
 		setAirfoilDetailsActionAndDisableCheck(wingOuterSectionAirfoilDetailsPanel1Button, textFieldWingAirfoilPathOuterSectionPanel1);
-		setAirfoilDetailsActionAndDisableCheck(wingInnerSectionAirfoilDetailsPanel2Button, textFieldWingAirfoilPathInnerSectionPanel2);
-		setAirfoilDetailsActionAndDisableCheck(wingOuterSectionAirfoilDetailsPanel2Button, textFieldWingAirfoilPathOuterSectionPanel2);
 		setChooseAirfoilFileAction(equivalentWingChooseAirfoilRootButton, textFieldEquivalentWingAirfoilRootPath);
 		setChooseAirfoilFileAction(equivalentWingChooseAirfoilKinkButton, textFieldEquivalentWingAirfoilKinkPath);
 		setChooseAirfoilFileAction(equivalentWingChooseAirfoilTipButton, textFieldEquivalentWingAirfoilTipPath);
 		setChooseAirfoilFileAction(wingChooseInnerAirfoilPanel1Button, textFieldWingAirfoilPathInnerSectionPanel1);
 		setChooseAirfoilFileAction(wingChooseOuterAirfoilPanel1Button, textFieldWingAirfoilPathOuterSectionPanel1);
-		setChooseAirfoilFileAction(wingChooseInnerAirfoilPanel2Button, textFieldWingAirfoilPathInnerSectionPanel2);
-		setChooseAirfoilFileAction(wingChooseOuterAirfoilPanel2Button, textFieldWingAirfoilPathOuterSectionPanel2);
 		equivalentWingDisableCheck();
 		linkedToDisableCheck();
+		
+	}
+	
+	// FIXME !!
+	private void removeAirfoilDetailsButtonFromMapOnTabClose(Tab tab) {
+		
+		tab.setOnCloseRequest(new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event event) {
+				
+				MyMapUtils.removeEntryByValue(
+						airfoilDetailsButtonAndTabsMap,
+						tabPaneWingViewAndAirfoils.getTabs().indexOf(tab)
+						);
+				
+			}
+		});
 		
 	}
 	
@@ -1840,16 +1604,48 @@ public class InputManagerController {
 	}
 	
 	private void setAirfoilDetailsActionAndDisableCheck (Button detailsButton, TextField airfoilPathTextField) {
-		
+
 		detailsButton.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					showAirfoilData(Paths.get(airfoilPathTextField.getText()).getFileName().toString());
-				} catch (IOException e) {
-					e.printStackTrace();
+
+				if(!airfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
+					try {
+						airfoilDetailsButtonAndTabsMap.put(
+								detailsButton, 
+								tabPaneWingViewAndAirfoils.getTabs().size()-1
+								);
+						showAirfoilData(
+								Paths.get(airfoilPathTextField.getText()).getFileName().toString(),
+								detailsButton
+								);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+			}
+		});
+		final Tooltip warning = new Tooltip("WARNING : The airfoil details are already opened !!");
+		detailsButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				Point2D p = detailsButton
+						.localToScreen(
+								-2.5*detailsButton.getLayoutBounds().getMaxX(),
+								1.2*detailsButton.getLayoutBounds().getMaxY()
+								);
+				if(airfoilDetailsButtonAndTabsMap.containsKey(detailsButton)) {
+					warning.show(detailsButton, p.getX(), p.getY());
+				}
+			}
+		});
+		detailsButton.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				warning.hide();
 			}
 		});
 		
@@ -2170,11 +1966,43 @@ public class InputManagerController {
 		panelInnerSectionAirfoilDetailsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					showAirfoilData(Paths.get(panelInnerSectionAirfoilPathTextField.getText()).getFileName().toString());
-				} catch (IOException e) {
-					e.printStackTrace();
+				
+				if(!airfoilDetailsButtonAndTabsMap.containsKey(panelInnerSectionAirfoilDetailsButton)) {
+					try {
+						airfoilDetailsButtonAndTabsMap.put(
+								panelInnerSectionAirfoilDetailsButton, 
+								tabPaneWingViewAndAirfoils.getTabs().size()-1
+								);
+						showAirfoilData(
+								Paths.get(panelInnerSectionAirfoilPathTextField.getText()).getFileName().toString(),
+								panelInnerSectionAirfoilDetailsButton
+								);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+			}
+		});
+		final Tooltip warning = new Tooltip("WARNING : The airfoil details are already opened !!");
+		panelInnerSectionAirfoilDetailsButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				Point2D p = panelInnerSectionAirfoilDetailsButton
+						.localToScreen(
+								-2.5*panelInnerSectionAirfoilDetailsButton.getLayoutBounds().getMaxX(),
+								1.2*panelInnerSectionAirfoilDetailsButton.getLayoutBounds().getMaxY()
+								);
+				if(airfoilDetailsButtonAndTabsMap.containsKey(panelInnerSectionAirfoilDetailsButton)) {
+					warning.show(panelInnerSectionAirfoilDetailsButton, p.getX(), p.getY());
+				}
+			}
+		});
+		panelInnerSectionAirfoilDetailsButton.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				warning.hide();
 			}
 		});
 		contentPane.getChildren().add(panelInnerSectionAirfoilDetailsButton);
@@ -2278,11 +2106,42 @@ public class InputManagerController {
 		panelOuterSectionAirfoilDetailsButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					showAirfoilData(Paths.get(panelOuterSectionAirfoilPathTextField.getText()).getFileName().toString());
-				} catch (IOException e) {
-					e.printStackTrace();
+
+				if(!airfoilDetailsButtonAndTabsMap.containsKey(panelOuterSectionAirfoilDetailsButton)) {
+					try {
+						airfoilDetailsButtonAndTabsMap.put(
+								panelOuterSectionAirfoilDetailsButton, 
+								tabPaneWingViewAndAirfoils.getTabs().size()-1
+								);
+						showAirfoilData(
+								Paths.get(panelOuterSectionAirfoilPathTextField.getText()).getFileName().toString(),
+								panelOuterSectionAirfoilDetailsButton);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
+			}
+			
+		});
+		panelOuterSectionAirfoilDetailsButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				Point2D p = panelOuterSectionAirfoilDetailsButton
+						.localToScreen(
+								-2.5*panelOuterSectionAirfoilDetailsButton.getLayoutBounds().getMaxX(),
+								1.2*panelOuterSectionAirfoilDetailsButton.getLayoutBounds().getMaxY()
+								);
+				if(airfoilDetailsButtonAndTabsMap.containsKey(panelOuterSectionAirfoilDetailsButton)) {
+					warning.show(panelOuterSectionAirfoilDetailsButton, p.getX(), p.getY());
+				}
+			}
+		});
+		panelOuterSectionAirfoilDetailsButton.setOnMouseExited(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				warning.hide();
 			}
 		});
 		contentPane.getChildren().add(panelOuterSectionAirfoilDetailsButton);
@@ -2316,24 +2175,6 @@ public class InputManagerController {
 		
 	}
 	
-	@FXML
-	private void chooseAirfoilFile(TextField panelInnerSectionAirfoilPathTextField) {
-		
-		aircraftFileChooser = new FileChooser();
-		aircraftFileChooser.setTitle("Open File");
-		aircraftFileChooser.setInitialDirectory(
-				new File(
-						Main.getInputDirectoryPath() + File.separator 
-						+ "Template_Aircraft" + File.separator 
-						+ "lifting_surfaces" + File.separator
-						+ "airfoils"));
-		File file = aircraftFileChooser.showOpenDialog(null);
-		if (file != null) {
-			panelInnerSectionAirfoilPathTextField.setText(file.getAbsolutePath());
-		}
-		
-	}
-
 	@FXML
 	private void addFlap() {
 		
@@ -2691,7 +2532,7 @@ public class InputManagerController {
 	}
 	
 	@FXML
-	private void showAirfoilData(String airfoilFileName) throws IOException {
+	private void showAirfoilData(String airfoilFileName, Button detailButton) throws IOException {
 		
 		Tab airfoilTab = new Tab("Airfoil: " + airfoilFileName);
 		
@@ -2699,13 +2540,28 @@ public class InputManagerController {
 		loader.setLocation(Main.class.getResource("inputmanager/AirfoilInputManager.fxml"));
 		BorderPane contentPane = loader.load();
 		
-		/* TODO: LOAD THE FXML */
-		
 		airfoilTab.setContent(contentPane);
 		tabPaneWingViewAndAirfoils.getTabs().add(airfoilTab);
 		
 	}
 	
+	@FXML
+	private void chooseAirfoilFile(TextField panelInnerSectionAirfoilPathTextField) {
+		
+		aircraftFileChooser = new FileChooser();
+		aircraftFileChooser.setTitle("Open File");
+		aircraftFileChooser.setInitialDirectory(
+				new File(
+						Main.getInputDirectoryPath() + File.separator 
+						+ "Template_Aircraft" + File.separator 
+						+ "lifting_surfaces" + File.separator
+						+ "airfoils"));
+		File file = aircraftFileChooser.showOpenDialog(null);
+		if (file != null) {
+			panelInnerSectionAirfoilPathTextField.setText(file.getAbsolutePath());
+		}
+		
+	}
 	
 	private boolean isAircraftFile(String pathToAircraftXML) {
 
@@ -3029,65 +2885,134 @@ public class InputManagerController {
 		textFieldEquivalentWingAirfoilRootPath.clear();
 		textFieldEquivalentWingAirfoilKinkPath.clear();
 		textFieldEquivalentWingAirfoilTipPath.clear();
-		textFieldWingSpanPanel1.clear();
-		textFieldWingSweepLeadingEdgePanel1.clear();
-		textFieldWingDihedralPanel1.clear();
-		textFieldWingChordInnerSectionPanel1.clear();
-		textFieldWingTwistInnerSectionPanel1.clear();
-		textFieldWingAirfoilPathInnerSectionPanel1.clear();
-		textFieldWingChordOuterSectionPanel1.clear();
-		textFieldWingTwistOuterSectionPanel1.clear();
-		textFieldWingAirfoilPathOuterSectionPanel1.clear();
-		linkedToPreviousPanelCheckBoxPanel2.setSelected(false);
-		textFieldWingSpanPanel2.clear();
-		textFieldWingSweepLeadingEdgePanel2.clear();
-		textFieldWingDihedralPanel2.clear();
-		textFieldWingChordInnerSectionPanel2.clear();
-		textFieldWingTwistInnerSectionPanel2.clear();
-		textFieldWingAirfoilPathInnerSectionPanel2.clear();
-		textFieldWingChordOuterSectionPanel2.clear();
-		textFieldWingTwistOuterSectionPanel2.clear();
-		textFieldWingAirfoilPathOuterSectionPanel2.clear();
-		textFieldWingInnerPositionFlap1.clear();
-		textFieldWingOuterPositionFlap1.clear();
-		textFieldWingInnerChordRatioFlap1.clear();
-		textFieldWingOuterChordRatioFlap1.clear();
-		textFieldWingMinimumDeflectionAngleFlap1.clear();
-		textFieldWingMaximumDeflectionAngleFlap1.clear();
-		textFieldWingInnerPositionFlap2.clear();
-		textFieldWingOuterPositionFlap2.clear();
-		textFieldWingInnerChordRatioFlap2.clear();
-		textFieldWingOuterChordRatioFlap2.clear();
-		textFieldWingMinimumDeflectionAngleFlap2.clear();
-		textFieldWingMaximumDeflectionAngleFlap2.clear();
-		textFieldWingInnerPositionSlat1.clear();
-		textFieldWingOuterPositionSlat1.clear();
-		textFieldWingInnerChordRatioSlat1.clear();
-		textFieldWingOuterChordRatioSlat1.clear();
-		textFieldWingExtensionRatioSlat1.clear();
-		textFieldWingMinimumDeflectionAngleSlat1.clear();
-		textFieldWingMaximumDeflectionAngleSlat1.clear();
-		textFieldWingInnerPositionSlat2.clear();
-		textFieldWingOuterPositionSlat2.clear();
-		textFieldWingInnerChordRatioSlat2.clear();
-		textFieldWingOuterChordRatioSlat2.clear();
-		textFieldWingExtensionRatioSlat2.clear();
-		textFieldWingMinimumDeflectionAngleSlat2.clear();
-		textFieldWingMaximumDeflectionAngleSlat2.clear();
-		textFieldWingInnerPositionSlat3.clear();
-		textFieldWingOuterPositionSlat3.clear();
-		textFieldWingInnerChordRatioSlat3.clear();
-		textFieldWingOuterChordRatioSlat3.clear();
-		textFieldWingExtensionRatioSlat3.clear();
-		textFieldWingMinimumDeflectionAngleSlat3.clear();
-		textFieldWingMaximumDeflectionAngleSlat3.clear();
-		textFieldWingInnerPositionSlat4.clear();
-		textFieldWingOuterPositionSlat4.clear();
-		textFieldWingInnerChordRatioSlat4.clear();
-		textFieldWingOuterChordRatioSlat4.clear();
-		textFieldWingExtensionRatioSlat4.clear();
-		textFieldWingMinimumDeflectionAngleSlat4.clear();
-		textFieldWingMaximumDeflectionAngleSlat4.clear();
+		wingRoughnessUnitChoiceBox.getSelectionModel().clearSelection();
+		wingWingletHeightUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingAreaUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingSweepLEUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingTwistAtTipUnitChoiceBox.getSelectionModel().clearSelection();
+		equivalentWingDihedralUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleAileronLeftUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleAileronLeftUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMinimumDeflectionAngleAileronRigthUnitChoiceBox.getSelectionModel().clearSelection();
+		wingMaximumDeflectionAngleAileronRightUnitChoiceBox.getSelectionModel().clearSelection();
+		
+		// panels
+		textFieldWingSpanPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingSpanPanelList.size() > 1)
+			textFieldWingSpanPanelList.subList(1, textFieldWingSpanPanelList.size()).clear();
+		textFieldWingSweepLEPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingSweepLEPanelList.size() > 1)
+			textFieldWingSweepLEPanelList.subList(1, textFieldWingSweepLEPanelList.size()).clear();
+		textFieldWingDihedralPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingDihedralPanelList.size() > 1)
+			textFieldWingDihedralPanelList.subList(1, textFieldWingDihedralPanelList.size()).clear();
+		textFieldWingInnerChordPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerChordPanelList.size() > 1)
+			textFieldWingInnerChordPanelList.subList(1, textFieldWingInnerChordPanelList.size()).clear();
+		textFieldWingInnerTwistPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerTwistPanelList.size() > 1)
+			textFieldWingInnerTwistPanelList.subList(1, textFieldWingInnerTwistPanelList.size()).clear();
+		textFieldWingInnerAirfoilPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerAirfoilPanelList.size() > 1)
+			textFieldWingInnerAirfoilPanelList.subList(1, textFieldWingInnerAirfoilPanelList.size()).clear();
+		textFieldWingOuterChordPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterChordPanelList.size() > 1)
+			textFieldWingOuterChordPanelList.subList(1, textFieldWingOuterChordPanelList.size()).clear();
+		textFieldWingOuterTwistPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterTwistPanelList.size() > 1)
+			textFieldWingOuterTwistPanelList.subList(1, textFieldWingOuterTwistPanelList.size()).clear();
+		textFieldWingOuterAirfoilPanelList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterAirfoilPanelList.size() > 1)
+			textFieldWingOuterAirfoilPanelList.subList(1, textFieldWingOuterAirfoilPanelList.size()).clear();
+		checkBoxWingLinkedToPreviousPanelList.stream().forEach(cb -> cb.selectedProperty().set(false));
+		if (checkBoxWingLinkedToPreviousPanelList.size() > 0)
+			checkBoxWingLinkedToPreviousPanelList.subList(0, checkBoxWingLinkedToPreviousPanelList.size()).clear();
+		choiceBoxWingSpanPanelUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingSpanPanelUnitList.size() > 1)
+			choiceBoxWingSpanPanelUnitList.subList(1, choiceBoxWingSpanPanelUnitList.size()).clear();
+		choiceBoxWingSweepLEPanelUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingSweepLEPanelUnitList.size() > 1)
+			choiceBoxWingSweepLEPanelUnitList.subList(1, choiceBoxWingSweepLEPanelUnitList.size()).clear();
+		choiceBoxWingDihedralPanelUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingDihedralPanelUnitList.size() > 1)
+			choiceBoxWingDihedralPanelUnitList.subList(1, choiceBoxWingDihedralPanelUnitList.size()).clear();
+		choiceBoxWingInnerChordPanelUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingInnerChordPanelUnitList.size() > 1)
+			choiceBoxWingInnerChordPanelUnitList.subList(1, choiceBoxWingInnerChordPanelUnitList.size()).clear();
+		choiceBoxWingInnerTwistPanelUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingInnerTwistPanelUnitList.size() > 1)
+			choiceBoxWingInnerTwistPanelUnitList.subList(1, choiceBoxWingInnerTwistPanelUnitList.size()).clear();
+		choiceBoxWingOuterChordPanelUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingOuterChordPanelUnitList.size() > 1)
+			choiceBoxWingOuterChordPanelUnitList.subList(1, choiceBoxWingOuterChordPanelUnitList.size()).clear();
+		choiceBoxWingOuterTwistPanelUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingOuterTwistPanelUnitList.size() > 1)
+			choiceBoxWingOuterTwistPanelUnitList.subList(1, choiceBoxWingOuterTwistPanelUnitList.size()).clear();
+		if (detailButtonWingInnerAirfoilList.size() > 1)
+			detailButtonWingInnerAirfoilList.subList(1, detailButtonWingInnerAirfoilList.size()).clear();
+		if (detailButtonWingOuterAirfoilList.size() > 1)
+			detailButtonWingOuterAirfoilList.subList(1, detailButtonWingOuterAirfoilList.size()).clear();
+		tabPaneWingPanels.getTabs().remove(1, tabPaneWingPanels.getTabs().size());
+		
+		// flaps
+		textFieldWingInnerPositionFlapList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerPositionFlapList.size() > 1)
+			textFieldWingInnerPositionFlapList.subList(1, textFieldWingInnerPositionFlapList.size()).clear();
+		textFieldWingOuterPositionFlapList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterPositionFlapList.size() > 1)
+			textFieldWingOuterPositionFlapList.subList(1, textFieldWingOuterPositionFlapList.size()).clear();
+		textFieldWingInnerChordRatioFlapList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerChordRatioFlapList.size() > 1)
+			textFieldWingInnerChordRatioFlapList.subList(1, textFieldWingInnerChordRatioFlapList.size()).clear();
+		textFieldWingOuterChordRatioFlapList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterChordRatioFlapList.size() > 1)
+			textFieldWingOuterChordRatioFlapList.subList(1, textFieldWingOuterChordRatioFlapList.size()).clear();
+		textFieldWingMinimumDeflectionAngleFlapList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingMinimumDeflectionAngleFlapList.size() > 1)
+			textFieldWingMinimumDeflectionAngleFlapList.subList(1, textFieldWingMinimumDeflectionAngleFlapList.size()).clear();
+		textFieldWingMaximumDeflectionAngleFlapList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingMaximumDeflectionAngleFlapList.size() > 1)
+			textFieldWingMaximumDeflectionAngleFlapList.subList(1, textFieldWingMaximumDeflectionAngleFlapList.size()).clear();
+		choiceBoxWingMinimumDeflectionAngleFlapUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingMinimumDeflectionAngleFlapUnitList.size() > 1)
+			choiceBoxWingMinimumDeflectionAngleFlapUnitList.subList(1, choiceBoxWingMinimumDeflectionAngleFlapUnitList.size()).clear();
+		choiceBoxWingMinimumDeflectionAngleFlapUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingMinimumDeflectionAngleFlapUnitList.size() > 1)
+			choiceBoxWingMinimumDeflectionAngleFlapUnitList.subList(1, choiceBoxWingMinimumDeflectionAngleFlapUnitList.size()).clear();
+		tabPaneWingFlaps.getTabs().remove(1, tabPaneWingFlaps.getTabs().size());
+		
+		// slats
+		textFieldWingInnerPositionSlatList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerPositionSlatList.size() > 1)
+			textFieldWingInnerPositionSlatList.subList(1, textFieldWingInnerPositionSlatList.size()).clear();
+		textFieldWingOuterPositionSlatList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterPositionSlatList.size() > 1)
+			textFieldWingOuterPositionSlatList.subList(1, textFieldWingOuterPositionSlatList.size()).clear();
+		textFieldWingInnerChordRatioSlatList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerChordRatioSlatList.size() > 1)
+			textFieldWingInnerChordRatioSlatList.subList(1, textFieldWingInnerChordRatioSlatList.size()).clear();
+		textFieldWingOuterChordRatioSlatList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterChordRatioSlatList.size() > 1)
+			textFieldWingOuterChordRatioSlatList.subList(1, textFieldWingOuterChordRatioSlatList.size()).clear();
+		textFieldWingExtensionRatioSlatList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingExtensionRatioSlatList.size() > 1)
+			textFieldWingExtensionRatioSlatList.subList(1, textFieldWingExtensionRatioSlatList.size()).clear();
+		textFieldWingMinimumDeflectionAngleSlatList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingMinimumDeflectionAngleSlatList.size() > 1)
+			textFieldWingMinimumDeflectionAngleSlatList.subList(1, textFieldWingMinimumDeflectionAngleSlatList.size()).clear();
+		textFieldWingMaximumDeflectionAngleSlatList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingMaximumDeflectionAngleSlatList.size() > 1)
+			textFieldWingMaximumDeflectionAngleSlatList.subList(1, textFieldWingMaximumDeflectionAngleSlatList.size()).clear();
+		choiceBoxWingMinimumDeflectionAngleSlatUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingMinimumDeflectionAngleSlatUnitList.size() > 1)
+			choiceBoxWingMinimumDeflectionAngleSlatUnitList.subList(1, choiceBoxWingMinimumDeflectionAngleSlatUnitList.size()).clear();
+		choiceBoxWingMaximumDeflectionAngleSlatUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingMaximumDeflectionAngleSlatUnitList.size() > 1)
+			choiceBoxWingMaximumDeflectionAngleSlatUnitList.subList(1, choiceBoxWingMaximumDeflectionAngleSlatUnitList.size()).clear();
+		tabPaneWingSlats.getTabs().remove(1, tabPaneWingSlats.getTabs().size());
+
+		// ailerons
+		textFieldWingInnerPositionAileronLeft.clear();
 		textFieldWingInnerPositionAileronLeft.clear();
 		textFieldWingOuterPositionAileronLeft.clear();
 		textFieldWingInnerChordRatioAileronLeft.clear();
@@ -3100,126 +3025,33 @@ public class InputManagerController {
 		textFieldWingOuterChordRatioAileronRight.clear();
 		textFieldWingMinimumDeflectionAngleAileronRight.clear();
 		textFieldWingMaximumDeflectionAngleAileronRight.clear();
-		textFieldWingInnerSpanwisePositionSpolier1.clear();
-		textFieldWingOuterSpanwisePositionSpolier1.clear();
-		textFieldWingInnerChordwisePositionSpolier1.clear();
-		textFieldWingOuterChordwisePositionSpolier1.clear();
-		textFieldWingMinimumDeflectionAngleSpolier1.clear();
-		textFieldWingMaximumDeflectionAngleSpoiler1.clear();
-		textFieldWingInnerSpanwisePositionSpolier2.clear();
-		textFieldWingOuterSpanwisePositionSpolier2.clear();
-		textFieldWingInnerChordwisePositionSpolier2.clear();
-		textFieldWingOuterChordwisePositionSpolier2.clear();
-		textFieldWingMinimumDeflectionAngleSpolier2.clear();
-		textFieldWingMaximumDeflectionAngleSpoiler2.clear();
-		textFieldWingInnerSpanwisePositionSpolier3.clear();
-		textFieldWingOuterSpanwisePositionSpolier3.clear();
-		textFieldWingInnerChordwisePositionSpolier3.clear();
-		textFieldWingOuterChordwisePositionSpolier3.clear();
-		textFieldWingMinimumDeflectionAngleSpolier3.clear();
-		textFieldWingMaximumDeflectionAngleSpoiler3.clear();
-		textFieldWingInnerSpanwisePositionSpolier4.clear();
-		textFieldWingOuterSpanwisePositionSpolier4.clear();
-		textFieldWingInnerChordwisePositionSpolier4.clear();
-		textFieldWingOuterChordwisePositionSpolier4.clear();
-		textFieldWingMinimumDeflectionAngleSpolier4.clear();
-		textFieldWingMaximumDeflectionAngleSpoiler4.clear();
-
-		textFieldWingSpanPanelList.clear();
-		textFieldWingSweepLEPanelList.clear();
-		textFieldWingDihedralPanelList.clear();
-		textFieldWingInnerChordPanelList.clear();
-		textFieldWingInnerTwistPanelList.clear();
-		textFieldWingInnerAirfoilPanelList.clear();
-		textFieldWingOuterChordPanelList.clear();
-		textFieldWingOuterTwistPanelList.clear();
-		textFieldWingOuterAirfoilPanelList.clear();
-		checkBoxWingLinkedToPreviousPanelList.clear();
-		choiceBoxWingSpanPanelUnitList.clear();
-		choiceBoxWingSweepLEPanelUnitList.clear();
-		choiceBoxWingDihedralPanelUnitList.clear();
-		choiceBoxWingInnerChordPanelUnitList.clear();
-		choiceBoxWingInnerTwistPanelUnitList.clear();
-		choiceBoxWingOuterChordPanelUnitList.clear();
-		choiceBoxWingOuterTwistPanelUnitList.clear();
-		detailButtonWingInnerAirfoilList.clear();
-		detailButtonWingOuterAirfoilList.clear();
-		
-		// flaps
-		textFieldWingInnerPositionFlapList.clear();
-		textFieldWingOuterPositionFlapList.clear();
-		textFieldWingInnerChordRatioFlapList.clear();
-		textFieldWingOuterChordRatioFlapList.clear();
-		textFieldWingMinimumDeflectionAngleFlapList.clear();
-		textFieldWingMaximumDeflectionAngleFlapList.clear();
-		choiceBoxWingMinimumDeflectionAngleFlapUnitList.clear();
-		choiceBoxWingMaximumDeflectionAngleFlapUnitList.clear();
-		
-		// flaps
-		textFieldWingInnerPositionSlatList.clear();
-		textFieldWingOuterPositionSlatList.clear();
-		textFieldWingInnerChordRatioSlatList.clear();
-		textFieldWingOuterChordRatioSlatList.clear();
-		textFieldWingExtensionRatioSlatList.clear();
-		textFieldWingMinimumDeflectionAngleSlatList.clear();
-		textFieldWingMaximumDeflectionAngleSlatList.clear();
-		choiceBoxWingMinimumDeflectionAngleSlatUnitList.clear();
-		choiceBoxWingMaximumDeflectionAngleSlatUnitList.clear();
 		
 		// spoilers
-		textFieldWingInnerSpanwisePositionSpoilerList.clear();
-		textFieldWingOuterSpanwisePositionSpoilerList.clear();
-		textFieldWingInnerChordwisePositionSpoilerList.clear();
-		textFieldWingOuterChordwisePositionSpoilerList.clear();
-		textFieldWingMinimumDeflectionAngleSpoilerList.clear();
-		textFieldWingMaximumDeflectionAngleSpoilerList.clear();
-		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.clear();
-		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.clear();
-		
-		wingRoughnessUnitChoiceBox.getSelectionModel().clearSelection();
-		wingWingletHeightUnitChoiceBox.getSelectionModel().clearSelection();
-		equivalentWingAreaUnitChoiceBox.getSelectionModel().clearSelection();
-		equivalentWingSweepLEUnitChoiceBox.getSelectionModel().clearSelection();
-		equivalentWingTwistAtTipUnitChoiceBox.getSelectionModel().clearSelection();
-		equivalentWingDihedralUnitChoiceBox.getSelectionModel().clearSelection();
-		wingSpanPanel1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingSweepLEPanel1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingDihedralPanel1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingInnerSectionChordPanel1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingInnerSectionTwistTipPanel1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingOuterSectionChordPanel1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingOuterSectionTwistTipPanel1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingSpanPanel2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingSweepLEPanel2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingDihedralPanel2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingInnerSectionChordPanel2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingInnerSectionTwistTipPanel2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingOuterSectionChordPanel2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingOuterSectionTwistTipPanel2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleFlap1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleFlap1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleFlap2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleFlap2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSlat1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSlat1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSlat2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSlat2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSlat3UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSlat3UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSlat4UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSlat4UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleAileronLeftUnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleAileronLeftUnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleAileronRigthUnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleAileronRightUnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSpoiler1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSpoiler1UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSpoiler2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSpoiler2UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSpoiler3UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSpoiler3UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMinimumDeflectionAngleSpoiler4UnitChoiceBox.getSelectionModel().clearSelection();
-		wingMaximumDeflectionAngleSpoiler4UnitChoiceBox.getSelectionModel().clearSelection();
+		textFieldWingInnerSpanwisePositionSpoilerList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerSpanwisePositionSpoilerList.size() > 1)
+			textFieldWingInnerSpanwisePositionSpoilerList.subList(1, textFieldWingInnerSpanwisePositionSpoilerList.size()).clear();
+		textFieldWingOuterSpanwisePositionSpoilerList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterSpanwisePositionSpoilerList.size() > 1)
+			textFieldWingOuterSpanwisePositionSpoilerList.subList(1, textFieldWingOuterSpanwisePositionSpoilerList.size()).clear();
+		textFieldWingInnerChordwisePositionSpoilerList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingInnerChordwisePositionSpoilerList.size() > 1)
+			textFieldWingInnerChordwisePositionSpoilerList.subList(1, textFieldWingInnerChordwisePositionSpoilerList.size()).clear();
+		textFieldWingOuterChordwisePositionSpoilerList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingOuterChordwisePositionSpoilerList.size() > 1)
+			textFieldWingOuterChordwisePositionSpoilerList.subList(1, textFieldWingOuterChordwisePositionSpoilerList.size()).clear();
+		textFieldWingMinimumDeflectionAngleSpoilerList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingMinimumDeflectionAngleSpoilerList.size() > 1)
+			textFieldWingMinimumDeflectionAngleSpoilerList.subList(1, textFieldWingMinimumDeflectionAngleSpoilerList.size()).clear();
+		textFieldWingMaximumDeflectionAngleSpoilerList.stream().forEach(tf -> tf.clear());
+		if (textFieldWingMaximumDeflectionAngleSpoilerList.size() > 1)
+			textFieldWingMaximumDeflectionAngleSpoilerList.subList(1, textFieldWingMaximumDeflectionAngleSpoilerList.size()).clear();
+		choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.size() > 1)
+			choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.subList(1, choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.size()).clear();
+		choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		if (choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.size() > 1)
+			choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.subList(1, choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.size()).clear();
+		tabPaneWingSpoilers.getTabs().remove(1, tabPaneWingSpoilers.getTabs().size());
 		
 		// TODO: CONTINUE WITH WING, etc ...
 		
@@ -3379,7 +3211,16 @@ public class InputManagerController {
 		// cabin configuration
 		createSeatMap();
 		Main.getProgressBar().setProgress(progressBarIncrement*12);
-		Main.getStatusBar().setText("Creating Fuselage Top View...");
+		Main.getStatusBar().setText("Creating Seat Map...");
+		//............................
+		// wing
+		createWingPlanformView();
+		Main.getProgressBar().setProgress(progressBarIncrement*12);
+		Main.getStatusBar().setText("Creating Wing Planform View...");
+		createEquivalentWingView();
+		Main.getProgressBar().setProgress(progressBarIncrement*12);
+		Main.getStatusBar().setText("Creating Equivalent Wing View...");
+		
 		
 		// write again
 		System.setOut(originalOut);
@@ -3633,7 +3474,7 @@ public class InputManagerController {
 		domain.setInverted(Boolean.TRUE);
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
-		range.setInverted(Boolean.TRUE);
+		range.setInverted(Boolean.FALSE);
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -5734,7 +5575,7 @@ public class InputManagerController {
 		domain.setInverted(Boolean.TRUE);
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
-		range.setInverted(Boolean.TRUE);
+		range.setInverted(Boolean.FALSE);
 
 		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
 		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
@@ -6971,8 +6812,18 @@ public class InputManagerController {
 		domain.setInverted(Boolean.TRUE);
 		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
 		range.setRange(xMinTopView, xMaxTopView);
-		range.setInverted(Boolean.TRUE);
+		range.setInverted(Boolean.FALSE);
 
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		
 		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
 		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
 		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
@@ -6984,14 +6835,6 @@ public class InputManagerController {
 				xyLineAndShapeRenderer.setSeriesShape(
 						i,
 						ShapeUtils.createDiamond(2.5f).getBounds()
-//						new Rectangle2D.Double(
-//								seatsSeriesList.get(i).getDataItem(0).getXValue()
-//								- Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).divide(2).doubleValue(SI.METER),
-//								seatsSeriesList.get(i).getDataItem(0).getYValue()
-//								- Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).divide(2).doubleValue(SI.METER),
-//								Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).doubleValue(SI.METER)*10,
-//								Main.getTheAircraft().getCabinConfiguration().getWidth().get(0).doubleValue(SI.METER)*10
-//								)
 						);
 			}
 			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
@@ -7001,9 +6844,11 @@ public class InputManagerController {
 					false
 					);
 		}
-
-		plot.setRenderer(xyLineAndShapeRenderer);
-		plot.setDataset(dataset);
+		
+		plot.setRenderer(1, xyAreaRenderer);
+		plot.setDataset(1, dataset);
+		plot.setRenderer(0, xyLineAndShapeRenderer);
+		plot.setDataset(0, dataset);
 
 		//-------------------------------------------------------------------------------------
 		// EXPORT TO SVG
@@ -7731,6 +7576,579 @@ public class InputManagerController {
 						"NOT INITIALIZED"
 						);
 		}
+	}
+	
+	private void createWingPlanformView() {
+		
+		//--------------------------------------------------
+		// get data vectors from wing discretization
+		//--------------------------------------------------
+		Double[][] dataTopViewIsolated = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+		
+		XYSeries seriesWingTopView = new XYSeries("Wing Planform", false);
+		IntStream.range(0, dataTopViewIsolated.length)
+		.forEach(i -> {
+			seriesWingTopView.add(
+					dataTopViewIsolated[i][1],
+					dataTopViewIsolated[i][0]
+					);
+		});
+		seriesWingTopView.add(
+				dataTopViewIsolated[0][1],
+				dataTopViewIsolated[0][0]
+				);
+		
+		//--------------------------------------------------
+		// get data vectors from flaps
+		//--------------------------------------------------
+		List<XYSeries> seriesFlapsTopViewList = new ArrayList<>();
+		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().isEmpty()) {
+			for(int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().size(); i++) {
+				
+				double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getInnerStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getOuterStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				
+				double localChordInner = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+						yIn);
+				double localChordOuter = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+						yOut);
+				
+				double xLELocalInnerChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+						yIn);
+				double xLELocalOuterChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+						yOut);
+				
+				double innerChordRatio = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getInnerChordRatio();
+				double outerChordRatio = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSymmetricFlaps().get(i).getOuterChordRatio();
+				
+				XYSeries seriesFlapsTopView = new XYSeries("Flap" + i, false);
+				seriesFlapsTopView.add(
+						xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+						yIn
+						);
+				seriesFlapsTopView.add(
+						xLELocalInnerChord + (localChordInner),
+						yIn
+						);
+				seriesFlapsTopView.add(
+						xLELocalOuterChord + (localChordOuter),
+						yOut
+						);
+				seriesFlapsTopView.add(
+						xLELocalOuterChord + (localChordOuter*(1-outerChordRatio)),
+						yOut
+						);
+				seriesFlapsTopView.add(
+						xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+						yIn
+						);
+			
+				seriesFlapsTopViewList.add(seriesFlapsTopView);
+			}
+		}
+		//--------------------------------------------------
+		// get data vectors from slats
+		//--------------------------------------------------
+		List<XYSeries> seriesSlatsTopViewList = new ArrayList<>();
+		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().isEmpty()) {
+			for(int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().size(); i++) {
+				
+				double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().get(i).getInnerStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().get(i).getOuterStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				
+				double localChordInner = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+						yIn);
+				double localChordOuter = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+						yOut);
+				
+				double xLELocalInnerChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+						yIn);
+				double xLELocalOuterChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+						yOut);
+				
+				double innerChordRatio = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().get(i).getInnerChordRatio();
+				double outerChordRatio = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSlats().get(i).getOuterChordRatio();
+				
+				XYSeries seriesSlatTopView = new XYSeries("Slat" + i, false);
+				seriesSlatTopView.add(
+						xLELocalInnerChord,
+						yIn
+						);
+				seriesSlatTopView.add(
+						xLELocalInnerChord + (innerChordRatio*localChordInner),
+						yIn
+						);
+				seriesSlatTopView.add(
+						xLELocalOuterChord + (outerChordRatio*localChordOuter),
+						yOut
+						);
+				seriesSlatTopView.add(
+						xLELocalOuterChord,
+						yOut
+						);
+				seriesSlatTopView.add(
+						xLELocalInnerChord,
+						yIn
+						);
+
+				seriesSlatsTopViewList.add(seriesSlatTopView);
+			}
+		}
+		//--------------------------------------------------
+		// get data vectors from ailerons
+		//--------------------------------------------------
+		XYSeries seriesAileronTopView = new XYSeries("Right Slat", false);
+		
+		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().isEmpty()) {
+			
+			double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(0).getInnerStationSpanwisePosition()
+					).doubleValue(SI.METER);
+			double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+					Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(0).getOuterStationSpanwisePosition()
+					).doubleValue(SI.METER);
+
+			double localChordInner = GeometryCalc.getChordAtYActual(
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+					yIn);
+			double localChordOuter = GeometryCalc.getChordAtYActual(
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+					yOut);
+
+			double xLELocalInnerChord = GeometryCalc.getXLEAtYActual(
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+					yIn);
+			double xLELocalOuterChord = GeometryCalc.getXLEAtYActual(
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+					MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+					yOut);
+
+			double innerChordRatio = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(0).getInnerChordRatio();
+			double outerChordRatio = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getAsymmetricFlaps().get(0).getOuterChordRatio();
+
+			seriesAileronTopView.add(
+					xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+					yIn
+					);
+			seriesAileronTopView.add(
+					xLELocalInnerChord + (localChordInner),
+					yIn
+					);
+			seriesAileronTopView.add(
+					xLELocalOuterChord + (localChordOuter),
+					yOut
+					);
+			seriesAileronTopView.add(
+					xLELocalOuterChord + (localChordOuter*(1-outerChordRatio)),
+					yOut
+					);
+			seriesAileronTopView.add(
+					xLELocalInnerChord + (localChordInner*(1-innerChordRatio)),
+					yIn
+					);
+
+		}
+		//--------------------------------------------------
+		// get data vectors from spoilers
+		//--------------------------------------------------
+		List<XYSeries> seriesSpoilersTopViewList = new ArrayList<>();
+		if (!Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().isEmpty()) {
+			for(int i=0; i<Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().size(); i++) {
+				
+				double yIn = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().get(i).getInnerStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				double yOut = Main.getTheAircraft().getWing().getSemiSpan().times(
+						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().get(i).getOuterStationSpanwisePosition()
+						).doubleValue(SI.METER);
+				
+				double localChordInner = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+						yIn);
+				double localChordOuter = GeometryCalc.getChordAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedChords()),
+						yOut);
+				
+				double xLELocalInnerChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+						yIn);
+				double xLELocalOuterChord = GeometryCalc.getXLEAtYActual(
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedYs()),
+						MyArrayUtils.convertListOfAmountTodoubleArray(Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle()),
+						yOut);
+				
+				double innerChordwisePosition = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().get(i).getInnerStationChordwisePosition();
+				double outerChordwisePosition = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSpoilers().get(i).getOuterStationChordwisePosition();
+				
+				XYSeries seriesSpoilerTopView = new XYSeries("Spoiler" + i, false);
+				seriesSpoilerTopView.add(
+						xLELocalInnerChord + (localChordInner*innerChordwisePosition),
+						yIn
+						);
+				seriesSpoilerTopView.add(
+						xLELocalInnerChord + (localChordInner*outerChordwisePosition),
+						yIn
+						);
+				seriesSpoilerTopView.add(
+						xLELocalOuterChord + (localChordOuter*outerChordwisePosition),
+						yOut
+						);
+				seriesSpoilerTopView.add(
+						xLELocalOuterChord + (localChordOuter*innerChordwisePosition),
+						yOut
+						);
+				seriesSpoilerTopView.add(
+						xLELocalInnerChord + (localChordInner*innerChordwisePosition),
+						yIn
+						);
+
+				seriesSpoilersTopViewList.add(seriesSpoilerTopView);
+			}
+		}
+		
+		double xLERoot = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(0).doubleValue(SI.METER);
+		double xLETip = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().size()-1
+				).doubleValue(SI.METER);
+		
+		double xMaxTopView = 1.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double xMinTopView = -0.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double yMinTopView = -0.55*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+				+ 0.5*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+				+ ((xLETip - xLERoot)/4);
+		double yMaxTopView = 1.1*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+				+ yMinTopView;
+			
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesFlapsTopViewList.stream().forEach(
+				flap -> seriesAndColorList.add(Tuple.of(flap, Color.decode("#778899")))
+				);
+		seriesSlatsTopViewList.stream().forEach(
+				slat -> seriesAndColorList.add(Tuple.of(slat, Color.decode("#6495ED")))
+				);
+		seriesAndColorList.add(Tuple.of(seriesAileronTopView, Color.decode("#1E90FF")));
+		seriesSpoilersTopViewList.stream().forEach(
+				spoiler -> seriesAndColorList.add(Tuple.of(spoiler, Color.decode("#ADD8E6")))
+				);
+		seriesAndColorList.add(Tuple.of(seriesWingTopView, Color.decode("#87CEFA")));
+
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Wing Planform representation", 
+				"y (m)", 
+				"x (m)",
+				(XYDataset) dataset,
+				PlotOrientation.HORIZONTAL,
+				false, // legend
+				true,  // tooltips
+				false  // urls
+				);
+
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
+
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
+
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(yMinTopView, yMaxTopView);
+		domain.setInverted(Boolean.TRUE);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(xMinTopView, xMaxTopView);
+		range.setInverted(Boolean.FALSE);
+
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+		
+		plot.setRenderer(1, xyAreaRenderer);
+		plot.setDataset(1, dataset);
+		plot.setRenderer(0, xyLineAndShapeRenderer);
+		plot.setDataset(0, dataset);
+
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "WingPlanform.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+
+		Scene sceneTopView = new Scene(stackPane, WIDTH+10, HEIGHT+10);
+		wingPlanformPane.getChildren().add(sceneTopView.getRoot());
+	}
+	
+	private void createEquivalentWingView() {
+		
+		//--------------------------------------------------
+		// get data vectors from wing discretization
+		//--------------------------------------------------
+		Double[][] dataTopViewIsolated = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedTopViewAsArray(ComponentEnum.WING);
+		
+		XYSeries seriesWingTopView = new XYSeries("Wing Planform", false);
+		IntStream.range(0, dataTopViewIsolated.length)
+		.forEach(i -> {
+			seriesWingTopView.add(
+					dataTopViewIsolated[i][1],
+					dataTopViewIsolated[i][0]
+					);
+		});
+		seriesWingTopView.add(
+				dataTopViewIsolated[0][1],
+				dataTopViewIsolated[0][0]
+				);
+		
+		//--------------------------------------------------
+		// get data vectors from equivalent wing discretization
+		//--------------------------------------------------
+		int nSec = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().size();
+		int nPanels = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().size();
+
+		XYSeries seriesEquivalentWingTopView = new XYSeries("Equivalent Wing", false);
+		seriesEquivalentWingTopView.add(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE().doubleValue(),
+				0.0
+				);
+		seriesEquivalentWingTopView.add(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).doubleValue(SI.METER),
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER)
+				);
+		seriesEquivalentWingTopView.add(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(nSec - 1).plus(
+						Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(nPanels - 1).getChordTip()
+						).doubleValue(SI.METER),
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getSemiSpan().doubleValue(SI.METER)
+				);
+		seriesEquivalentWingTopView.add(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+				- Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootTE(),
+				0.0
+				);
+		
+		XYSeries seriesMeanAerodinamicChordView = new XYSeries("M.A.C.", false);
+		seriesMeanAerodinamicChordView.add(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE),
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE)
+				);
+		seriesMeanAerodinamicChordView.add(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeX().doubleValue(SI.METRE)
+				+ Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChord().doubleValue(SI.METRE),
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getMeanAerodynamicChordLeadingEdgeY().doubleValue(SI.METRE)
+				);
+		seriesEquivalentWingTopView.add(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getEquivalentWing().getXOffsetEquivalentWingRootLE().doubleValue(),
+				0.0
+				);
+		
+		double xLERoot = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(0).doubleValue(SI.METER);
+		double xLETip = Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().get(
+				Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getDiscretizedXle().size()-1
+				).doubleValue(SI.METER);
+		
+		double xMaxTopView = 1.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double xMinTopView = -0.05*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE);
+		double yMinTopView = -0.55*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+				+ 0.5*Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(0).getChordRoot().doubleValue(SI.METER)
+				+ ((xLETip - xLERoot)/4);
+		double yMaxTopView = 1.1*Main.getTheAircraft().getWing().getSemiSpan().doubleValue(SI.METRE) 
+				+ yMinTopView;
+			
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesAndColorList.add(Tuple.of(seriesMeanAerodinamicChordView, Color.BLACK));
+		seriesAndColorList.add(Tuple.of(seriesEquivalentWingTopView, Color.decode("#87CEFA")));
+		seriesAndColorList.add(Tuple.of(seriesWingTopView, Color.decode("#87CEFA")));
+
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Wing Planform representation", 
+				"y (m)", 
+				"x (m)",
+				(XYDataset) dataset,
+				PlotOrientation.HORIZONTAL,
+				false, // legend
+				true,  // tooltips
+				false  // urls
+				);
+
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
+
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
+
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(yMinTopView, yMaxTopView);
+		domain.setInverted(Boolean.TRUE);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(xMinTopView, xMaxTopView);
+		range.setInverted(Boolean.FALSE);
+
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		xyAreaRenderer.setDefaultSeriesVisible(false);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			if(i==1)
+				xyAreaRenderer.setSeriesVisible(i, true);
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		xyLineAndShapeRenderer.setDrawSeriesLineAsPath(true);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			if (i==2 || i==0) {
+				xyLineAndShapeRenderer.setSeriesStroke(
+						i,
+						new BasicStroke(
+								2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+								1.0f, new float[] {5.0f}, 1.0f));
+			}
+			else {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+			}
+		}
+		
+		plot.setRenderer(1, xyAreaRenderer);
+		plot.setDataset(1, dataset);
+		plot.setRenderer(0, xyLineAndShapeRenderer);
+		plot.setDataset(0, dataset);
+
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "EquivalentWing.svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+
+		Scene sceneTopView = new Scene(stackPane, WIDTH+10, HEIGHT+10);
+		equivalentWingPane.getChildren().add(sceneTopView.getRoot());
 	}
 	
 	private void logWingFromFileToInterface() {

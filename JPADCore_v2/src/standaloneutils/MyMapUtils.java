@@ -2,6 +2,9 @@ package standaloneutils;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Table;
 
@@ -93,6 +96,28 @@ public class MyMapUtils {
 		return min;
 	}
 
+	// @see: https://stackoverflow.com/questions/1383797/java-hashmap-how-to-get-key-from-value
+	public static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
+	    return map.entrySet()
+	              .stream()
+	              .filter(entry -> Objects.equals(entry.getValue(), value))
+	              .map(Map.Entry::getKey)
+	              .collect(Collectors.toSet());
+	}
+	
+	// @see: https://stackoverflow.com/questions/1383797/java-hashmap-how-to-get-key-from-value
+	public static <T, E> void removeEntryByValue(Map<T, E> map, E value) {
+		
+		Set<T> keySet = map.entrySet()
+				.stream()
+				.filter(entry -> Objects.equals(entry.getValue(), value))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toSet());
+		
+		if(!keySet.isEmpty())
+			keySet.stream().forEach(key -> map.remove(key));
+	}
+	
 }
 
 

@@ -108,10 +108,9 @@
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.84</outer_station_spanwise_position>
             </slat>
         </slats>
-	
         <asymmetric_flaps>
             <asymmetric_flap id="Left aileron" type="PLAIN">
-                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.70</inner_station_spanwise_position>
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.705</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.88</outer_station_spanwise_position>
                 <inner_chord_ratio>0.32</inner_chord_ratio>
 				<outer_chord_ratio>0.32</outer_chord_ratio>
@@ -119,7 +118,7 @@
 				<max_deflection unit="deg">25.0</max_deflection>
             </asymmetric_flap>
 			<asymmetric_flap id="Right aileron" type="PLAIN">
-                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.78</inner_station_spanwise_position>
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.705</inner_station_spanwise_position>
                 <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.88</outer_station_spanwise_position>
                 <inner_chord_ratio>0.32</inner_chord_ratio>
 				<outer_chord_ratio>0.32</outer_chord_ratio>
@@ -127,6 +126,16 @@
 				<max_deflection unit="deg">25.0</max_deflection>
             </asymmetric_flap>
         </asymmetric_flaps>
+		<spoilers>
+			<spoiler id="1">
+                <inner_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.45</inner_station_spanwise_position>
+                <outer_station_spanwise_position type="PERCENT_SEMISPAN" ref_to="FULL_SEMISPAN">0.65</outer_station_spanwise_position>
+                <inner_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.5</inner_station_chordwise_position>
+                <outer_station_chordwise_position type="PERCENT_CHORD" ref_to="LOCAL_CHORD">0.65</outer_station_chordwise_position>
+                <min_deflection unit="deg">0.0</min_deflection>
+				<max_deflection unit="deg">90.0</max_deflection>
+            </spoiler>
+        </spoilers>
         <!-- SPOILERS DATA ARE NOT AVAILABLE YET
 		<spoilers>
             <spoiler id="1">
