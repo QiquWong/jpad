@@ -24,6 +24,7 @@ public class OCCGeomCurve3D implements CADGeomCurve3D
 	private GeomAdaptor_Curve myCurve = null;
 	private final double [] range = new double[2];
 	private OCCDiscretizeCurve3D discret = null;
+
 	private double len = 0.0;
 	
 	public OCCGeomCurve3D(CADEdge E)

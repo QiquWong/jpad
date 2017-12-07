@@ -33,6 +33,7 @@ import it.unina.daf.jpadcad.occ.CADShape;
 import it.unina.daf.jpadcad.occ.CADShapeFactory;
 import it.unina.daf.jpadcad.occ.CADShell;
 import it.unina.daf.jpadcad.occ.CADVertex;
+import it.unina.daf.jpadcad.occ.OCCDiscretizeCurve3D;
 import it.unina.daf.jpadcad.occ.OCCEdge;
 import it.unina.daf.jpadcad.occ.OCCFace;
 import it.unina.daf.jpadcad.occ.OCCGeomCurve3D;
@@ -41,6 +42,8 @@ import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
 import opencascade.BRepBuilderAPI_Sewing;
+import opencascade.GeomPlate_BuildPlateSurface;
+import opencascade.GeomPlate_CurveConstraint;
 import opencascade.TopoDS_Shape;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
@@ -787,7 +790,7 @@ public final class AircraftUtils {
 
 		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
 		
-		boolean exporSolid = false;
+		boolean exporSolid = true;
 		if (exporSolid) {
 			
 			// TODO: fixme and OCCSolid
@@ -842,6 +845,52 @@ public final class AircraftUtils {
 //			ret.add((OCCShape)faceSolidNose3);
 			
 			
+			/*
+			 * int Degree = 3,
+			 * int NbPtsOnCur = 10,
+			 * int NbIter = 3,
+			 * double Tol2d = 0.00001,
+			 * double Tol3d = 0.0001,
+			 * double TolAng = 0.01,
+			 * double TolCurv = 0.1,
+			 * long Anisotropie = 0 // false 
+			 * 
+			 * You can add one later by using the method LoadInitSurface. If no initial surface is loaded, 
+			 * one will automatically be computed. The curve and point constraints will be defined by using the method Add. 
+			 * Before the call to the algorithm, the curve constraints will be transformed into sequences of discrete points. 
+			 * Each curve defined as a constraint will be given the value of NbPtsOnCur as the average number of points on it. 
+			 * Several arguments serve to improve performance of the algorithm. NbIter, for example, expresses the number of 
+			 * iterations allowed and is used to control the duration of computation. 
+			 * To optimize resolution, Degree will have the default value of 3. 
+			 * The surface generated must respect several tolerance values: 
+			 * 
+			 * - 2d tolerance given by Tol2d, with a default value of 0.00001
+			 * - 3d tolerance expressed by Tol3d, with a default value of 0.0001
+			 * - angular tolerance given by TolAng, with a default value of 0.01, defining the greatest angle allowed
+			 *   between the constraint and the target surface. 
+			 *   
+			 *   Exceptions Standard_ConstructionError if NbIter is less than 1 or Degree is less than 3.
+			 * 
+			 */
+			GeomPlate_BuildPlateSurface geomPlateBuilder = new GeomPlate_BuildPlateSurface(3, 2, 10000, 1.e-4, 1.e-5, 1.e-2, 1.e-1, 0); 
+			
+			/*
+			 * As usual there are two levels - geometry and topology. BRepFill_Filling works on the latter and uses GeomPlate underneath.
+			 */
+			
+			c2.discretize(20);
+			System.out.println("c2, n pts: " + c2.nbPoints());
+			List<double[]> ptsC2 = new ArrayList<>();
+			
+			for (int k = 1; k <= c2.nbPoints(); k++) { // MIND the INDEX! OCCT STYLE, 1-BASED
+				double u = c2.parameter(k);
+				ptsC2.add(c2.value(u));
+			}
+			ptsC2.stream().forEach(p -> System.out.println(">> " + Arrays.toString(p)));
+			
+//			GeomPlate_CurveConstraint crvConstraint = new GeomPlate_CurveConstraint(
+//					(CADShape)((OCCEdge)c2.edge()).getShape(). ;
+
 			
 		}
 		
