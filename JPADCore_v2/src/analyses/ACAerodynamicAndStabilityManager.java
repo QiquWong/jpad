@@ -7875,6 +7875,7 @@ public class ACAerodynamicAndStabilityManager {
 		// STALL PATH
 		if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.HORIZONTAL_TAIL).contains(AerodynamicAndStabilityPlotEnum.HTAIL_STALL_PATH)) {
 
+			if(_theAerodynamicBuilderInterface.getComponentTaskList().get(ComponentEnum.HORIZONTAL_TAIL).containsKey(AerodynamicAndStabilityEnum.CL_MAX)) {
 			xVectorMatrix = new ArrayList<Double[]>();
 			yVectorMatrix = new ArrayList<Double[]>();
 			legend  = new ArrayList<>(); 
@@ -7915,7 +7916,8 @@ public class ACAerodynamicAndStabilityManager {
 					"", 
 					legendString, 
 					horizontalTailPlotFolderPath,
-					"Stall_Path"+ legendStringCondition);
+					"Stall_Path"+ legendStringCondition);}
+			
 		}
 		//-----------------------------------------------------------------------------------------------------------------------
 		// LIFT COEFFICIENT DISTRIBUTION

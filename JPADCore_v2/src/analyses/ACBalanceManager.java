@@ -1247,6 +1247,10 @@ public class ACBalanceManager implements IACBalanceManager {
 					.divide(meanAerodynamicChord.to(SI.METER))
 					.times(100)
 					.getEstimatedValue();
+		}
+		for (int i=0; i<_theAircraft
+				.getCabinConfiguration()
+				.getSeatsCoGRearToFront().size(); i++) {
 			seatCoGRearToFrontReferToMAC[i] = 
 					seatCoGRearToFrontReferToMAC[i] = 
 					_theAircraft
@@ -1633,6 +1637,10 @@ public class ACBalanceManager implements IACBalanceManager {
 					.times(100)
 					.getEstimatedValue()
 					);
+		}
+			for (int i=0; i<_theAircraft
+					.getCabinConfiguration()
+					.getSeatsCoGRearToFront().size(); i++) {			
 			cgExcursionRefToMAC.add(  
 					_theAircraft
 						.getCabinConfiguration()

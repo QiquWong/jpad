@@ -11,7 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
 	<analyses id="CS-300 analysis">
-	<!--
+	
         <weights 
             file="analysis_weights_CS300.xml" 
 			plot="TRUE"
@@ -24,11 +24,11 @@
 			method_landing_gears=""
 			method_systems=""
             />
-	-->
+	
 		<!-- method_XXX="AVERAGED" if empty string -->
-	<!--	
+		
 	<balance 
-			file="analysis_balance_CS300.xml"
+			file="analysis_balance_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
             method_fuselage=""
@@ -36,24 +36,22 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
-		/>
-	-->
-	
+		/>	
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="TRUE"
-			take_off_condition="FALSE"
+			take_off_condition="TRUE"
 			file_take_off_condition="analysis_aerodynamics_Prototype.xml"
-			climb_condition="FALSE"
+			climb_condition="TRUE"
 			file_climb_condition="analysis_aerodynamics_Prototype.xml"
-			cruise_condition="FALSE"
+			cruise_condition="TRUE"
 			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
 			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
 	
-<!-- 	<performance 
-			file="analysis_performance_CS300.xml"
+	<performance 
+			file="analysis_performance_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			take_off="TRUE"
@@ -64,10 +62,10 @@
 			payload_range="TRUE"
 			V_n_diagram="TRUE"
 			mission_profile="TRUE"
-	/> -->
-	<!--
+	/>
+	
 	<costs 
-			file="analysis_costs_CS300.xml"
+			file="analysis_costs_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
 			doc_capital="TRUE"
@@ -81,7 +79,7 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
-	-->
+	
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

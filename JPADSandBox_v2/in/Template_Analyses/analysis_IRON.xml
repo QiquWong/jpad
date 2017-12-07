@@ -11,7 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="IRON analysis">
-<!--         <weights 
+        <weights 
             file="analysis_weights_IRON.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -22,9 +22,9 @@
 			method_nacelles=""
 			method_landing_gears=""
 			method_systems=""
-            /> -->
+            />
 		<!-- method_XXX="AVERAGED" if empty string -->
-    <!--
+    
 	<balance 
 			file="analysis_balance_IRON.xml"
 			plot="TRUE"
@@ -35,7 +35,7 @@
             method_vtail=""
 			method_canard=""
 		/>
-	-->
+	
 	
 	<aerodynamic_and_stability
 			plot="TRUE"
@@ -49,7 +49,7 @@
 			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
-<!-- 	<performance 
+	<performance 
 			file="analysis_performance_IRON_updated_canard.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -60,8 +60,8 @@
 			landing="TRUE"
 			payload_range="TRUE"
 			V_n_diagram="TRUE"
-			mission_profile="TRUE" -->
-	<!--
+			mission_profile="TRUE"
+	/>
 	<costs 
 			file="analysis_costs_IRON.xml"
 			plot="TRUE"
@@ -77,7 +77,7 @@
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
 	/>
-	-->
+	
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>
