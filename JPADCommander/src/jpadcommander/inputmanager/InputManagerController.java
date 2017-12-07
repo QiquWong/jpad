@@ -1164,8 +1164,6 @@ public class InputManagerController {
 			removeContentOnSlatTabClose(tabPaneWingSlats.getTabs().get(i));
 		for(int i=0; i<tabPaneWingSpoilers.getTabs().size(); i++)
 			removeContentOnSpoilerTabClose(tabPaneWingSpoilers.getTabs().get(i));
-		for(int i=0; i<tabPaneWingViewAndAirfoils.getTabs().size(); i++)
-			removeAirfoilDetailsButtonFromMapOnTabClose(tabPaneWingViewAndAirfoils.getTabs().get(i));
 		
 		//.......................................................................................
 		// CHOICE BOX INITIALIZATION
@@ -1431,7 +1429,6 @@ public class InputManagerController {
 		
 	}
 	
-	// FIXME !!
 	private void removeAirfoilDetailsButtonFromMapOnTabClose(Tab tab) {
 		
 		tab.setOnCloseRequest(new EventHandler<Event>() {
@@ -1614,7 +1611,7 @@ public class InputManagerController {
 					try {
 						airfoilDetailsButtonAndTabsMap.put(
 								detailsButton, 
-								tabPaneWingViewAndAirfoils.getTabs().size()-1
+								tabPaneWingViewAndAirfoils.getTabs().size()
 								);
 						showAirfoilData(
 								Paths.get(airfoilPathTextField.getText()).getFileName().toString(),
@@ -1971,7 +1968,7 @@ public class InputManagerController {
 					try {
 						airfoilDetailsButtonAndTabsMap.put(
 								panelInnerSectionAirfoilDetailsButton, 
-								tabPaneWingViewAndAirfoils.getTabs().size()-1
+								tabPaneWingViewAndAirfoils.getTabs().size()
 								);
 						showAirfoilData(
 								Paths.get(panelInnerSectionAirfoilPathTextField.getText()).getFileName().toString(),
@@ -2111,7 +2108,7 @@ public class InputManagerController {
 					try {
 						airfoilDetailsButtonAndTabsMap.put(
 								panelOuterSectionAirfoilDetailsButton, 
-								tabPaneWingViewAndAirfoils.getTabs().size()-1
+								tabPaneWingViewAndAirfoils.getTabs().size()
 								);
 						showAirfoilData(
 								Paths.get(panelOuterSectionAirfoilPathTextField.getText()).getFileName().toString(),
@@ -2541,6 +2538,7 @@ public class InputManagerController {
 		BorderPane contentPane = loader.load();
 		
 		airfoilTab.setContent(contentPane);
+		removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab);
 		tabPaneWingViewAndAirfoils.getTabs().add(airfoilTab);
 		
 	}
