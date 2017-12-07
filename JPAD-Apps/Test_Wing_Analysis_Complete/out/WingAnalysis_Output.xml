@@ -13,7 +13,6 @@
                 <surface unit="m²">83.1500</surface>
                 <aspect_ratio>9.4300</aspect_ratio>
                 <number_of_point_semispan>100</number_of_point_semispan>
-                <adimensional_kink_station>0.3990</adimensional_kink_station>
             </global>
             <distibution>
                 <number_of_given_sections>3</number_of_given_sections>

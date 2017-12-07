@@ -645,4 +645,36 @@ public final class MyMathUtils {
 		
 	}
 	
+	public static double[] calculateArrayFirstDerivative2Point (
+			double[] xArray,
+			double[] yArray
+			) {
+		
+		if(xArray.length != yArray.length) {
+			System.err.println("THE LENGTH OF THE TWO ARRAYS HAS TO BE THE SAME !!!");
+			return null;
+		}
+		
+		double[] derivativeArray = new double[xArray.length];
+	
+		
+		for(int i=1; i<xArray.length-1; i++) {
+			
+			derivativeArray[i-1] = calculateFirstDerivative2Point(
+					new double[] {xArray[i-1], xArray[i]},
+					new double[] {yArray[i-1], yArray[i]}
+					);
+			
+		}
+		derivativeArray[derivativeArray.length-1] = calculateFirstDerivative2Point(
+				new double[] {xArray[xArray.length-2], xArray[xArray.length-1]},
+				new double[] {yArray[yArray.length-2], yArray[yArray.length-1]}
+				);
+			
+		
+			
+		return derivativeArray;
+		
+	}
+	
 }

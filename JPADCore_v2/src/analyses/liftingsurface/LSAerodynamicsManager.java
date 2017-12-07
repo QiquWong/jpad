@@ -1416,7 +1416,7 @@ public class LSAerodynamicsManager {
 		 */
 		public void nasaBlackwell() {
 
-			double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 30, 31);
+			double[] alphaArrayNasaBlackwell = MyArrayUtils.linspace(0.0, 40, 41);
 			double[] clDistributionActualNasaBlackwell = new double[_numberOfPointSemiSpanWise]; 
 			boolean firstIntersectionFound = false;
 			int indexOfFirstIntersection = 0;

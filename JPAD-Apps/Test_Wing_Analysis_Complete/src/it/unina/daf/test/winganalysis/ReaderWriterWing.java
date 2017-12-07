@@ -122,9 +122,6 @@ public class ReaderWriterWing {
 		int numberOfPointSemispan =  (int)Double.parseDouble(reader.getXMLPropertiesByPath("//number_of_point_semispan").get(0));
 		input.setNumberOfPointSemispan(numberOfPointSemispan);
 		
-		double adimensionalKinkStation = Double.parseDouble(reader.getXMLPropertiesByPath("//adimensional_kink_station ").get(0));
-		input.setAdimensionalKinkStation(adimensionalKinkStation);
-		
 		double momentumPole = Double.parseDouble(reader.getXMLPropertiesByPath("//momentum_pole").get(0));
 		input.setMomentumPole(momentumPole);
 		
@@ -501,7 +498,6 @@ public class ReaderWriterWing {
 		System.out.println("Surface : " + input.getSurface().getEstimatedValue()+ " " + input.getSurface().getUnit());
 		System.out.println("Aspect Ratio : " + input.getAspectRatio());
 		System.out.println("Number of point along semi-span : " + input.getNumberOfPointSemispan());
-		System.out.println("Adimensional kink station : " + input.getAdimensionalKinkStation());
 		System.out.println("Span : " + input.getSpan().getEstimatedValue()+ " " + input.getSpan().getUnit());
 		System.out.println("\nDistribution");
 		System.out.println("-------------------------------------");
@@ -639,7 +635,6 @@ public class ReaderWriterWing {
 		JPADStaticWriteUtils.writeSingleNode("surface", input.getSurface(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("aspect_ratio", input.getAspectRatio(), geometryDataElement, doc);
 		JPADStaticWriteUtils.writeSingleNode("number_of_point_semispan", input.getNumberOfPointSemispan(), geometryDataElement, doc);
-		JPADStaticWriteUtils.writeSingleNode("adimensional_kink_station", input.getAdimensionalKinkStation(), geometryDataElement, doc);
 		
 		
 		org.w3c.dom.Element cleanConfigurationDataElement = doc.createElement("distibution");
