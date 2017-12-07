@@ -34,7 +34,6 @@ public class InputOutputTree {
 	private Amount<Area> surface;
 	private double aspectRatio,
 	taperRatio,
-	adimensionalKinkStation,
 	momentumPole;
 	private int numberOfPointSemispan;
 	
@@ -207,7 +206,6 @@ public class InputOutputTree {
 	
 		machNumber = 0.0;
 		aspectRatio = 0.0;
-		adimensionalKinkStation = 0.0;
 		meanThickness = 0.0;
 
 		numberOfAlpha = 0;
@@ -332,15 +330,6 @@ public class InputOutputTree {
 		this.aspectRatio = aspectRatio;
 	}
 
-
-	public double getAdimensionalKinkStation() {
-		return adimensionalKinkStation;
-	}
-
-
-	public void setAdimensionalKinkStation(double adimensionalKinkStation) {
-		this.adimensionalKinkStation = adimensionalKinkStation;
-	}
 
 
 	public int getNumberOfPointSemispan() {
