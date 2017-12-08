@@ -307,7 +307,7 @@ public final class OCCUtils {
 			.append("\tShapes of type TopAbs_SOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_SOLID) + "\n")
 			.append("\tShapes of type TopAbs_COMPSOLID " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPSOLID) + "\n")
 			.append("\tShapes of type TopAbs_COMPOUND " + OCCUtils.numberOfShape(shape, TopAbs_ShapeEnum.TopAbs_COMPOUND) + "\n")
-			.append("\t-------------------------------------\n");
+			.append("\t-------------------------------------");
 		
 		return sb.toString();
 	}

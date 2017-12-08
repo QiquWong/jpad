@@ -137,8 +137,8 @@ public class FuselageCreator implements IFuselageCreator {
 		sectionMidTailRhoLower;
 
 	// meshing stuff
-	private int npN = 10, npC = 4, npT = 10, npSecUp = 10, npSecLow = 10;
 	private double deltaXNose, deltaXCylinder, deltaXTail;
+	private int npN = 10, npC = 4, npT = 10, npSecUp = 10, npSecLow = 10;
 
 	private double dxNoseCapPercent;
 	private double dxTailCapPercent;

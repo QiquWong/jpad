@@ -203,6 +203,25 @@ public class OCCShapeFactory extends CADShapeFactory
 	}
 
 	@Override
+	public CADGeomCurve3D newCurve3D(boolean isPeriodic, double[] ... pts) {
+		CADGeomCurve3D curve = null;
+		try
+		{
+			List<double[]> pointList = new ArrayList<double[]>();			
+			for (double[] p : pts) {
+				pointList.add(p);
+			}
+			if (pointList.size() > 1) {			
+				curve = new OCCGeomCurve3D(pointList, isPeriodic); // can be periodic
+			}
+		}
+		catch (RuntimeException ex)
+		{
+		}
+		return curve;
+	}
+
+	@Override
 	public CADGeomCurve3D newCurve3D(double[] pt1, double[] pt2) {
 		CADGeomCurve3D curve = null;
 		try

@@ -126,6 +126,13 @@ public abstract class CADShapeFactory
 
 	/**
 	 * Create a new CADGeomCurve3D
+	 * @param at least two points in space
+	 * @return The created CADGeomCurve3D, a segment
+	 */
+	public abstract CADGeomCurve3D newCurve3D(boolean isPeriodic, double[] ... pts);
+	
+	/**
+	 * Create a new CADGeomCurve3D
 	 * @param pointList The list of points belonging to the curve (a BSpline)
 	 * @return The created CADGeomCurve3D
 	 */
@@ -165,5 +172,5 @@ public abstract class CADShapeFactory
 	 * @return The created CADVertex
 	 */
 	public abstract CADVertex newVertex(double [] coordinates3D);
-	
+
 }
