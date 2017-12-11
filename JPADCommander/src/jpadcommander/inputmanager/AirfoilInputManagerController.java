@@ -3,6 +3,7 @@ package jpadcommander.inputmanager;
 import java.io.File;
 import java.io.IOException;
 
+import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -378,6 +379,133 @@ public class AirfoilInputManagerController {
 	private void loadCmCurveFile() {
 		
 		// TODO ...
+		
+	}
+	
+	public void loadAirfoilData(AirfoilCreator airfoil) {
+		
+		//---------------------------------------------------------------------------------
+		// t/c MAX:
+		if (airfoil.getThicknessToChordRatio() != null) 
+			textFieldMaximumThicknessRatio.setText(String.valueOf(airfoil.getThicknessToChordRatio()));
+		else
+			textFieldMaximumThicknessRatio.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NORMALIZED LE RADIUS:
+		if (airfoil.getRadiusLeadingEdge() != null) 
+			textFieldNoramlizedLERadius.setText(String.valueOf(airfoil.getRadiusLeadingEdge()));
+		else
+			textFieldNoramlizedLERadius.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// EXTERNAL Cl CURVE FLAG: 
+		if(airfoil.getClCurveFromFile().equals(Boolean.TRUE))
+			checkBoxExternalClCurve.setSelected(true);
+		
+		//---------------------------------------------------------------------------------
+		// EXTERNAL Cd CURVE FLAG: 
+		if(airfoil.getCdCurveFromFile().equals(Boolean.TRUE))
+			checkBoxExternalCdCurve.setSelected(true);
+		
+		//---------------------------------------------------------------------------------
+		// EXTERNAL Cm CURVE FLAG: 
+		if(airfoil.getCmCurveFromFile().equals(Boolean.TRUE))
+			checkBoxExternalCmCurve.setSelected(true);
+		
+		//---------------------------------------------------------------------------------
+		// ALPHA ZERO LIFT: 
+		if(airfoil.getAlphaZeroLift() != null) {
+			
+			textFieldAlphaZeroLift.setText(String.valueOf(airfoil.getAlphaZeroLift().getEstimatedValue()));
+			
+			if(airfoil.getAlphaZeroLift().getUnit().toString().equalsIgnoreCase("°")
+					|| airfoil.getAlphaZeroLift().getUnit().toString().equalsIgnoreCase("deg"))
+				choiceBoxAlphaZeroLiftUnit.getSelectionModel().select(0);
+			else if(airfoil.getAlphaZeroLift().getUnit().toString().equalsIgnoreCase("rad"))
+				choiceBoxAlphaZeroLiftUnit.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldAlphaZeroLift.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// ALPHA STAR: 
+		if(airfoil.getAlphaEndLinearTrait() != null) {
+			
+			textFieldAlphaStar.setText(String.valueOf(airfoil.getAlphaEndLinearTrait().getEstimatedValue()));
+			
+			if(airfoil.getAlphaEndLinearTrait().getUnit().toString().equalsIgnoreCase("°")
+					|| airfoil.getAlphaEndLinearTrait().getUnit().toString().equalsIgnoreCase("deg"))
+				choiceBoxAlphaStarUnit.getSelectionModel().select(0);
+			else if(airfoil.getAlphaEndLinearTrait().getUnit().toString().equalsIgnoreCase("rad"))
+				choiceBoxAlphaStarUnit.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldAlphaStar.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// ALPHA STALL: 
+		if(airfoil.getAlphaStall() != null) {
+			
+			textFieldAlphaStall.setText(String.valueOf(airfoil.getAlphaStall().getEstimatedValue()));
+			
+			if(airfoil.getAlphaStall().getUnit().toString().equalsIgnoreCase("°")
+					|| airfoil.getAlphaStall().getUnit().toString().equalsIgnoreCase("deg"))
+				choiceBoxAlphaStallUnit.getSelectionModel().select(0);
+			else if(airfoil.getAlphaStall().getUnit().toString().equalsIgnoreCase("rad"))
+				choiceBoxAlphaStallUnit.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldAlphaStall.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// Cl ALPHA: 
+		if(airfoil.getClAlphaLinearTrait() != null) {
+			
+			textFieldClAlpha.setText(String.valueOf(airfoil.getClAlphaLinearTrait().getEstimatedValue()));
+			
+			if(airfoil.getClAlphaLinearTrait().getUnit().toString().equalsIgnoreCase("1/°")
+					|| airfoil.getClAlphaLinearTrait().getUnit().toString().equalsIgnoreCase("1/deg"))
+				choiceBoxClAlphaUnit.getSelectionModel().select(0);
+			else if(airfoil.getClAlphaLinearTrait().getUnit().toString().equalsIgnoreCase("1/rad"))
+				choiceBoxClAlphaUnit.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldClAlpha.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// Cl ZERO: 
+		if(airfoil.getClAtAlphaZero() != null) 
+			textFieldClZero.setText(String.valueOf(airfoil.getClAtAlphaZero()));
+		else
+			textFieldClZero.setText(
+					"NOT INITIALIZED"
+					);
+		
+		
+	}
+	
+	public void createAirfoilView() {
+		
+	}
+	
+	public void createAirfoilCurves() {
 		
 	}
 	

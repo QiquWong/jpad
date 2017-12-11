@@ -2536,6 +2536,8 @@ public class InputManagerController {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/AirfoilInputManager.fxml"));
 		BorderPane contentPane = loader.load();
+		AirfoilInputManagerController airfoilInputManagerController = loader.getController();
+//		airfoilInputManagerController.loadAirfoilData(airfoil);
 		
 		airfoilTab.setContent(contentPane);
 		removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab);
