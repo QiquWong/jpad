@@ -1,12 +1,35 @@
 package jpadcommander.inputmanager;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYAreaRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.graphics2d.svg.SVGGraphics2D;
+import org.jfree.graphics2d.svg.SVGUtils;
 
 import aircraft.auxiliary.airfoil.creator.AirfoilCreator;
+import graphics.ChartCanvas;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -15,7 +38,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import jpadcommander.Main;
 
 public class AirfoilInputManagerController {
@@ -113,6 +139,8 @@ public class AirfoilInputManagerController {
 	// TEXT FIELDS:
 	//...........................................................................................
 	@FXML
+	private TextField textFieldAirfoilName;
+	@FXML
 	private TextField textFieldMaximumThicknessRatio;
 	@FXML
 	private TextField textFieldNoramlizedLERadius;
@@ -167,6 +195,10 @@ public class AirfoilInputManagerController {
 	private ChoiceBox<String> choiceBoxClAlphaUnit;
 	@FXML
 	private ChoiceBox<String> choiceBoxCmAlphaUnit;
+	@FXML
+	private ChoiceBox<String> choiceBoxAirfoilFamily;
+	@FXML
+	private ChoiceBox<String> choiceBoxAirfoilType;
 	//...........................................................................................
 	// OBSERVABLE LISTS:
 	//...........................................................................................
@@ -177,6 +209,23 @@ public class AirfoilInputManagerController {
 	ObservableList<String> slopeUnitList = FXCollections.observableArrayList(
 			"1/°",
 			"1/rad"
+			);
+	ObservableList<String> airfoilFamilyList = FXCollections.observableArrayList(
+			"NACA_4_Digit",
+			"NACA_5_Digit",
+			"NACA_63_Series",
+			"NACA_64_Series",
+			"NACA_65_Series",
+			"NACA_66_Series",
+			"BICONVEX",
+			"DOUBLE_WEDGE"
+			);
+	ObservableList<String> airfoilTypeList = FXCollections.observableArrayList(
+			"CONVENTIONAL",
+			"PEAKY",
+			"SUPERCRITICAL",
+			"LAMINAR",
+			"MODERN_SUPERCRITICAL"
 			);
 	
 	//-------------------------------------------------------------------------------------------
@@ -201,7 +250,8 @@ public class AirfoilInputManagerController {
 		choiceBoxAlphaStallUnit.setItems(angleUnitList);
 		choiceBoxClAlphaUnit.setItems(slopeUnitList);
 		choiceBoxCmAlphaUnit.setItems(slopeUnitList);
-		
+		choiceBoxAirfoilFamily.setItems(airfoilFamilyList);
+		choiceBoxAirfoilType.setItems(airfoilTypeList);
 		
 	}
 	
@@ -382,7 +432,91 @@ public class AirfoilInputManagerController {
 		
 	}
 	
+	@SuppressWarnings("static-access")
 	public void loadAirfoilData(AirfoilCreator airfoil) {
+		
+		//---------------------------------------------------------------------------------
+		// NAME:
+		if (airfoil.getName() != null) 
+			textFieldAirfoilName.setText(String.valueOf(airfoil.getName()));
+		else
+			textFieldAirfoilName.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// FAMILY:
+		if(airfoil.getFamily() != null) { 
+			if(airfoil.getFamily().toString().equalsIgnoreCase("NACA_4_Digit"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(0);
+			else if(airfoil.getFamily().toString().equalsIgnoreCase("NACA_5_Digit"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(1);
+			else if(airfoil.getFamily().toString().equalsIgnoreCase("NACA_63_Series"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(2);
+			else if(airfoil.getFamily().toString().equalsIgnoreCase("NACA_64_Series"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(3);
+			else if(airfoil.getFamily().toString().equalsIgnoreCase("NACA_65_Series"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(4);
+			else if(airfoil.getFamily().toString().equalsIgnoreCase("NACA_66_Series"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(5);
+			else if(airfoil.getFamily().toString().equalsIgnoreCase("BICONVEX"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(6);
+			else if(airfoil.getFamily().toString().equalsIgnoreCase("DOUBLE_WEDGE"))
+				choiceBoxAirfoilFamily.getSelectionModel().select(7);
+		}
+		
+		//---------------------------------------------------------------------------------
+		// TYPE:
+		if(airfoil.getType() != null) { 
+			if(airfoil.getType().toString().equalsIgnoreCase("CONVENTIONAL"))
+				choiceBoxAirfoilType.getSelectionModel().select(0);
+			else if(airfoil.getType().toString().equalsIgnoreCase("PEAKY"))
+				choiceBoxAirfoilType.getSelectionModel().select(1);
+			else if(airfoil.getType().toString().equalsIgnoreCase("SUPERCRITICAL"))
+				choiceBoxAirfoilType.getSelectionModel().select(2);
+			else if(airfoil.getType().toString().equalsIgnoreCase("LAMINAR"))
+				choiceBoxAirfoilType.getSelectionModel().select(3);
+			else if(airfoil.getType().toString().equalsIgnoreCase("MODERN_SUPERCRITICAL"))
+				choiceBoxAirfoilType.getSelectionModel().select(4);
+		}
+		
+		//---------------------------------------------------------------------------------
+		// X COORDINATES:
+		if (airfoil.getXCoords() != null) {
+			for (int i=0; i<airfoil.getXCoords().length; i++) {
+				
+				int columnIndex = 0;
+				int rowIndex = i+4;
+				
+				// FIXME !!
+				for (Node child : gridPaneAirfoilCoordinates.getChildren().sorted()) {
+				    Integer column = GridPane.getColumnIndex(child);
+				    Integer row = GridPane.getRowIndex(child);
+				    if (column == columnIndex && row == rowIndex) {
+				        ((TextField) child).setText(String.valueOf(airfoil.getXCoords()[i]));
+				    }
+				}
+			}
+		}
+		
+		//---------------------------------------------------------------------------------
+		// Z COORDINATES:
+		if (airfoil.getZCoords() != null) {
+			for (int i=0; i<airfoil.getZCoords().length; i++) {
+				
+				int columnIndex = 1;
+				int rowIndex = i+4;
+
+				// FIXME !!
+				for (Node child : gridPaneAirfoilCoordinates.getChildren()) {
+				    Integer column = GridPane.getColumnIndex(child);
+				    Integer row = GridPane.getRowIndex(child);
+				    if (column == columnIndex && row == rowIndex) {
+				        ((TextField) child).setText(String.valueOf(airfoil.getZCoords()[i]));
+				    }
+				}
+			}
+		}
 		
 		//---------------------------------------------------------------------------------
 		// t/c MAX:
@@ -498,10 +632,265 @@ public class AirfoilInputManagerController {
 					"NOT INITIALIZED"
 					);
 		
+		//---------------------------------------------------------------------------------
+		// Cl STAR: 
+		if(airfoil.getClEndLinearTrait() != null) 
+			textFieldClStar.setText(String.valueOf(airfoil.getClEndLinearTrait()));
+		else
+			textFieldClStar.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// Cl MAX: 
+		if(airfoil.getClMax() != null) 
+			textFieldClMax.setText(String.valueOf(airfoil.getClMax()));
+		else
+			textFieldClMax.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// Cl AT Cd MIN: 
+		if(airfoil.getClAtCdMin() != null) 
+			textFieldClAtCdMin.setText(String.valueOf(airfoil.getClAtCdMin()));
+		else
+			textFieldClAtCdMin.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// Cd MIN: 
+		if(airfoil.getCdMin() != null) 
+			textFieldCdMin.setText(String.valueOf(airfoil.getCdMin()));
+		else
+			textFieldCdMin.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// LAMINAR BUCKET SEMI-EXTENSION: 
+		if(airfoil.getLaminarBucketSemiExtension() != null) 
+			textFieldLaminarBucketSemiExtension.setText(String.valueOf(airfoil.getLaminarBucketSemiExtension()));
+		else
+			textFieldLaminarBucketSemiExtension.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// LAMINAR BUCKET DEPTH: 
+		if(airfoil.getLaminarBucketDepth() != null) 
+			textFieldLaminarBucketDepth.setText(String.valueOf(airfoil.getLaminarBucketDepth()));
+		else
+			textFieldLaminarBucketDepth.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// K FACTOR DRAG POLAR: 
+		if(airfoil.getKFactorDragPolar() != null) 
+			textFieldKFactorDragPolar.setText(String.valueOf(airfoil.getKFactorDragPolar()));
+		else
+			textFieldKFactorDragPolar.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// Cm ALPHA: 
+		if(airfoil.getCmAlphaQuarterChord() != null) {
+			
+			textFieldCmAlpha.setText(String.valueOf(airfoil.getCmAlphaQuarterChord().getEstimatedValue()));
+			
+			if(airfoil.getCmAlphaQuarterChord().getUnit().toString().equalsIgnoreCase("1/°")
+					|| airfoil.getCmAlphaQuarterChord().getUnit().toString().equalsIgnoreCase("1/deg"))
+				choiceBoxCmAlphaUnit.getSelectionModel().select(0);
+			else if(airfoil.getCmAlphaQuarterChord().getUnit().toString().equalsIgnoreCase("1/rad"))
+				choiceBoxCmAlphaUnit.getSelectionModel().select(1);
+			
+		}
+		else
+			textFieldCmAlpha.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// Cm AC: 
+		if(airfoil.getCmAC() != null) 
+			textFieldCmAC.setText(String.valueOf(airfoil.getCmAC()));
+		else
+			textFieldCmAC.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// Cm AC STALL: 
+		if(airfoil.getCmACAtStall() != null) 
+			textFieldCmACStall.setText(String.valueOf(airfoil.getCmACAtStall()));
+		else
+			textFieldCmACStall.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// NORMALIZED Xac: 
+		if(airfoil.getXACNormalized() != null) 
+			textFieldAerodynamicCenterAdimensionalPosition.setText(String.valueOf(airfoil.getXACNormalized()));
+		else
+			textFieldAerodynamicCenterAdimensionalPosition.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// CRITICAL MACH NUMBER: 
+		if(airfoil.getMachCritical() != null) 
+			textFieldCriticalMachNumber.setText(String.valueOf(airfoil.getMachCritical()));
+		else
+			textFieldCriticalMachNumber.setText(
+					"NOT INITIALIZED"
+					);
+
+		//---------------------------------------------------------------------------------
+		// X TRANSITION UPPER: 
+		if(airfoil.getXTransitionUpper() != null) 
+			textFieldXTransitionUpper.setText(String.valueOf(airfoil.getXTransitionUpper()));
+		else
+			textFieldXTransitionUpper.setText(
+					"NOT INITIALIZED"
+					);
+		
+		//---------------------------------------------------------------------------------
+		// X TRANSITION LOWER: 
+		if(airfoil.getXTransitionLower() != null) 
+			textFieldXTransitionLower.setText(String.valueOf(airfoil.getXTransitionLower()));
+		else
+			textFieldXTransitionLower.setText(
+					"NOT INITIALIZED"
+					);
 		
 	}
 	
 	public void createAirfoilView() {
+		
+		//--------------------------------------------------
+		// get data vectors from airfoil
+		//--------------------------------------------------
+		
+		// TODO: POINT AT THE CORRECT COORDINATES
+		Double[] xCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getXCoords();
+		Double[] zCoordinates = Main.getTheAircraft().getWing().getAirfoilList().get(0).getAirfoilCreator().getZCoords();
+		
+		XYSeries seriesAirfoil = new XYSeries("Airfoil", false);
+		IntStream.range(0, xCoordinates.length)
+		.forEach(i -> {
+			seriesAirfoil.add(
+					xCoordinates[i],
+					zCoordinates[i]
+					);
+		});
+		
+		double xMax = 1.1;
+		double xMin = -0.1;
+		double yMax = xMax;
+		double yMin = xMin;
+		
+		int WIDTH = 700;
+		int HEIGHT = 600;
+		
+		//-------------------------------------------------------------------------------------
+		// DATASET CRATION
+		List<Tuple2<XYSeries, Color>> seriesAndColorList = new ArrayList<>();
+		seriesAndColorList.add(Tuple.of(seriesAirfoil, Color.decode("#87CEFA")));
+		
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		seriesAndColorList.stream().forEach(t -> dataset.addSeries(t._1()));
+		
+		//-------------------------------------------------------------------------------------
+		// CHART CRATION
+		JFreeChart chart = ChartFactory.createXYAreaChart(
+				"Airfoil" + textFieldAirfoilName.getText() + " coordinates representation", 
+				"x (m)", 
+				"z (m)",
+				(XYDataset) dataset,
+				PlotOrientation.VERTICAL,
+                false, // legend
+                true,  // tooltips
+                false  // urls
+				);
+
+		chart.setBackgroundPaint(Color.decode("#F5F5F5"));
+		chart.setAntiAlias(true);
+		
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundAlpha(0.0f);
+		plot.setBackgroundPaint(Color.decode("#F0F8FF"));
+		plot.setDomainGridlinesVisible(true);
+		plot.setDomainGridlinePaint(Color.GRAY);
+		plot.setRangeGridlinesVisible(true);
+		plot.setRangeGridlinePaint(Color.GRAY);
+		plot.setDomainPannable(true);
+		plot.setRangePannable(true);
+
+		NumberAxis domain = (NumberAxis) chart.getXYPlot().getDomainAxis();
+		domain.setRange(xMin, xMax);
+		NumberAxis range = (NumberAxis) chart.getXYPlot().getRangeAxis();
+		range.setRange(yMin, yMax);
+
+		XYAreaRenderer xyAreaRenderer = new XYAreaRenderer();
+		xyAreaRenderer.setDefaultToolTipGenerator(new StandardXYToolTipGenerator());
+		xyAreaRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyAreaRenderer.setSeriesPaint(
+					i,
+					seriesAndColorList.get(i)._2()
+					);
+		}
+		XYLineAndShapeRenderer xyLineAndShapeRenderer = new XYLineAndShapeRenderer();
+		xyLineAndShapeRenderer.setDefaultShapesVisible(false);
+		xyLineAndShapeRenderer.setDefaultLinesVisible(true);
+		xyLineAndShapeRenderer.setDefaultEntityRadius(6);
+		for(int i=0; i<dataset.getSeries().size(); i++) {
+			xyLineAndShapeRenderer.setSeriesPaint(i, Color.BLACK);
+			xyLineAndShapeRenderer.setSeriesStroke(
+					i, 
+					new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND), 
+					false
+					);
+		}
+		
+		plot.setRenderer(0, xyAreaRenderer);
+		plot.setDataset(0, dataset);
+		plot.setRenderer(1, xyLineAndShapeRenderer);
+		plot.setDataset(1, dataset);
+
+		//-------------------------------------------------------------------------------------
+		// EXPORT TO SVG
+		String outputFilePathTopView = Main.getOutputDirectoryPath() 
+				+ File.separator 
+				+ "Airfoil_" + textFieldAirfoilName.getText() + ".svg";
+		File outputFile = new File(outputFilePathTopView);
+		if(outputFile.exists()) outputFile.delete();
+		SVGGraphics2D g2 = new SVGGraphics2D(WIDTH, HEIGHT);
+		Rectangle r = new Rectangle(WIDTH, HEIGHT);
+		chart.draw(g2, r);
+		try {
+			SVGUtils.writeToSVG(outputFile, g2.getSVGElement());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//-------------------------------------------------------------------------------------
+		// PLOT TO PANE
+		ChartCanvas canvas = new ChartCanvas(chart);
+		StackPane stackPane = new StackPane(); 
+		stackPane.getChildren().add(canvas);  
+		
+		// Bind canvas size to stack pane size. 
+		canvas.widthProperty().bind(stackPane.widthProperty()); 
+		canvas.heightProperty().bind(stackPane.heightProperty());  
+		
+		//create browser
+		Scene sceneSideView = new Scene(stackPane, WIDTH+10, HEIGHT+10, javafx.scene.paint.Color.web("#666970"));
+		paneAirfoilCoordinates.getChildren().add(sceneSideView.getRoot());
 		
 	}
 	

@@ -86,7 +86,8 @@ public class LiftingSurface implements ILiftingSurface {
 	
 	// airfoil span-wise characteristics : 
 	private List<Airfoil> _airfoilList;
-	private List<Double> _maxThicknessVsY = new ArrayList<>();
+	private List<String> _airfoilPathList = new ArrayList<>();
+ 	private List<Double> _maxThicknessVsY = new ArrayList<>();
 	private List<Amount<Length>> _radiusLEVsY = new ArrayList<>();
 	private List<Double> _camberRatioVsY = new ArrayList<>();
 	private List<Amount<Angle>> _alpha0VsY = new ArrayList<>();
@@ -889,23 +890,30 @@ public class LiftingSurface implements ILiftingSurface {
 		if(!equivalentWingFlag) {
 			Airfoil airfoilRoot = new Airfoil(this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRoot());
 			this._airfoilList.add(airfoilRoot);
+			this._airfoilPathList.add(this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRootPath());
 
 			for(int i=0; i<nPanels - 1; i++) {
 
 				Airfoil innerAirfoil = new Airfoil(this._liftingSurfaceCreator.getPanels().get(i).getAirfoilTip()); 
 				this._airfoilList.add(innerAirfoil);
+				this._airfoilPathList.add(this._liftingSurfaceCreator.getPanels().get(i).getAirfoilTipPath());
+				
 			}
 
 			Airfoil airfoilTip = new Airfoil(this._liftingSurfaceCreator.getPanels().get(nPanels - 1).getAirfoilTip());
 			this._airfoilList.add(airfoilTip);
+			this._airfoilPathList.add(this._liftingSurfaceCreator.getPanels().get(nPanels - 1).getAirfoilTipPath());
+			
 		}
 
 		else{
 			Airfoil airfoilRoot = new Airfoil(this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getAirfoilRoot());
 			this._airfoilList.add(airfoilRoot);
+			this._airfoilPathList.add(this._liftingSurfaceCreator.getPanels().get(0).getAirfoilRootPath());
 
 			Airfoil airfoilTip = new Airfoil(this._liftingSurfaceCreator.getEquivalentWing().getPanels().get(0).getAirfoilTip());
 			this._airfoilList.add(airfoilTip);
+			this._airfoilPathList.add(this._liftingSurfaceCreator.getPanels().get(0).getAirfoilTipPath());
 		}
 
 		discretizeAirfoilCharacteristics();
@@ -2087,6 +2095,14 @@ public class LiftingSurface implements ILiftingSurface {
 
 	public void setVEDSCDatabaseReader(VeDSCDatabaseReader _veDSCDatabaseReader) {
 		this._veDSCDatabaseReader = _veDSCDatabaseReader;
+	}
+
+	public List<String> getAirfoilPathList() {
+		return _airfoilPathList;
+	}
+
+	public void setAirfoilPathList(List<String> _airfoilPathList) {
+		this._airfoilPathList = _airfoilPathList;
 	}
 	
 }

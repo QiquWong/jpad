@@ -28,11 +28,14 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	String _id;
 	
+	
 	private boolean _isLinked;
 	private Amount<Length> _chordRoot;
 	private Amount<Length> _chordTip;
 	private AirfoilCreator _airfoilRoot;
+	private String _airfoilRootPath;
 	private AirfoilCreator _airfoilTip;
+	private String _airfoilTipPath;
 	private Amount<Angle> _twistGeometricTip;
 	private Amount<Angle> _twistGeometricRoot;
 	private Amount<Length> _span;
@@ -285,6 +288,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 		// optional parameters ... defaults
 		// ...
+		private String __airfoilRootPath;
+		private String __airfoilTipPath;
 
 		public LiftingSurfacePanelBuilder(
 				String id,
@@ -310,6 +315,16 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 			this.__dihedral = dih;
 		}
 
+		public LiftingSurfacePanelBuilder setAirfoilRootPath (String path) {
+			this.__airfoilRootPath = path;
+			return this;
+		}
+		
+		public LiftingSurfacePanelBuilder setAirfoilTipPath (String path) {
+			this.__airfoilTipPath = path;
+			return this;
+		}
+		
 		public LiftingSurfacePanelCreator build() {
 			return new LiftingSurfacePanelCreator(this);
 		}
@@ -322,7 +337,9 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		_chordRoot = builder.__chordRoot;
 		_chordTip = builder.__chordTip;
 		_airfoilRoot = builder.__airfoilRoot;
+		_airfoilRootPath = builder.__airfoilRootPath;
 		_airfoilTip = builder.__airfoilTip;
+		_airfoilTipPath = builder.__airfoilTipPath;
 		_twistGeometricRoot = builder.__twistGeometricRoot;
 		_twistGeometricTip = builder.__twistGeometricTip;
 		_span = builder.__span;
@@ -420,6 +437,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				twistGeometricTip,
 				span, sweepLeadingEdge, dihedral
 				)
+			.setAirfoilRootPath(airFoilPath1)
+			.setAirfoilTipPath(airFoilPath2)
 			.build();
 
 		return panel;
@@ -514,6 +533,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				twistGeometricTip,
 				span, sweepLeadingEdge, dihedral
 				)
+			.setAirfoilRootPath(airFoilPath1)
+			.setAirfoilTipPath(airFoilPath2)
 			.build();
 
 		return panel;
@@ -579,6 +600,7 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 		chordRoot = panel0.getChordTip(); // from linked panel
 
 		AirfoilCreator airfoilRoot = panel0.getAirfoilTip(); // from linked panel
+		String airfoilRootPath = panel0.getAirfoilRootPath();
 		
 		twistGeometricRoot = panel0.getTwistAerodynamicAtTip();
 		
@@ -611,6 +633,8 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 				twistGeometricTip,
 				span, sweepLeadingEdge, dihedral
 				)
+			.setAirfoilRootPath(airfoilRootPath)
+			.setAirfoilTipPath(airFoilPath2)
 			.build();
 
 		return panel;
@@ -689,6 +713,22 @@ public class LiftingSurfacePanelCreator implements ILiftingSurfacePanelCreator {
 
 	public void setTwistGeometricRoot(Amount<Angle> _twistGeometricRoot) {
 		this._twistGeometricRoot = _twistGeometricRoot;
+	}
+
+	public String getAirfoilRootPath() {
+		return _airfoilRootPath;
+	}
+
+	public void setAirfoilRootPath(String _airfoilRootPath) {
+		this._airfoilRootPath = _airfoilRootPath;
+	}
+
+	public String getAirfoilTipPath() {
+		return _airfoilTipPath;
+	}
+
+	public void setAirfoilTipPath(String _airfoilTipPath) {
+		this._airfoilTipPath = _airfoilTipPath;
 	}
 
 }
