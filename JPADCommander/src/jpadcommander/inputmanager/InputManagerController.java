@@ -2550,6 +2550,10 @@ public class InputManagerController {
 		airfoilInputManagerController.loadAirfoilData(
 				Main.getTheAircraft().getWing().getAirfoilList().get(airfoilIndex).getAirfoilCreator()
 				);
+		airfoilInputManagerController.createAirfoilView();
+		airfoilInputManagerController.createClCurve();
+		airfoilInputManagerController.createCdCurve();
+		airfoilInputManagerController.createCmCurve();
 		
 		airfoilTab.setContent(contentPane);
 		removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab);
