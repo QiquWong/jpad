@@ -7,7 +7,7 @@
         <lifting_surfaces>
             <wing file="wing_IRON_NEW.xml">
                 <position>
-                    <x unit="m">19.09</x>
+                    <x unit="m">20.8</x>
                     <y unit="m">0.0</y>
                     <z unit="m">-1.32</z>
                 </position>
