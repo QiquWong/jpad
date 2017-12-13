@@ -403,6 +403,7 @@ public class HighLiftDevicesCalc {
 //		// Calculation of the high lift effects ...
 //		Map<HighLiftDeviceEffectEnum, Object> resultsMap = 
 //				LiftCalc.calculateHighLiftDevicesEffects(
+//						aeroDatabaseReader,
 //						highLiftDatabaseReader, 
 //						flapList,
 //						slatList,
@@ -415,13 +416,13 @@ public class HighLiftDevicesCalc {
 //						input.getDeltaFlap(), 
 //						input.getDeltaSlat(), 
 //						input.getCurrentAlpha(),
-//						input.getcLAlphaClean(), 
+//						input.getcLAlphaClean().to(NonSI.DEGREE_ANGLE.inverse()), 
 //						input.getSweepQuarteChordEq(),
 //						input.getTaperRatioEq(),
 //						input.getRootChordEquivalentWing(),
 //						input.getAspectRatio(),
 //						input.getSurface(),
-//						alphaArrayHighLift, 
+//						MyArrayUtils.getMean(MyArrayUtils.convertToDoublePrimitive(input.getMaxThicknessAirfoilsDistribution())), 
 //						input.getcL0Clean(), 
 //						input.getcLmaxClean(), 
 //						input.getAlphaStarClean(), 

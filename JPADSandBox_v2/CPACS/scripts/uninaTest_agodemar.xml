@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runscript name="Test of D150_AGILE_agodemar">
+   <decription>CPACS simulation with JSBSim through JPAD software</decription>
+   <use aircraft="D150_AGILE_agodemar" initialize="initialCondition"/>
+   <run dt="0.1" end="100" start="0">
+      <property>simulation/notify-time-trigger</property>
+      <property value="1">simulation/run_id</property>
+      <property value="1">fcs/left-brake-cmd-norm</property>
+      <property value="1">fcs/right-brake-cmd-norm</property>
+      <event name="engine start">
+         <description>Start the engine</description>
+         <condition> simulation/sim-time-sec &gt;= 0.2</condition>
+         <set name="fcs/throttle-cmd-norm" value="1.0"/>
+         <notify>
+            <property> position/h-agl-ft</property>
+            <property> velocities/vc-kts</property>
+         </notify>
+      </event>
+      <event name="begin roll">
+         <description>Release brakes and get rolling with flaps at 30 degrees.</description>
+         <condition> simulation/sim-time-sec &gt;= 2.5</condition>
+         <set name="fcs/left-brake-cmd-norm" value="0"/>
+         <set name="fcs/right-brake-cmd-norm" value="0"/>
+         <set name="fcs/flap-cmd-norm" value="0.66"/>
+         <notify>
+            <property> position/h-agl-ft</property>
+            <property> velocities/vc-kts</property>
+         </notify>
+      </event>
+      <event name="Remove flap">
+         <description>at 1000 feet remove flap</description>
+         <condition> position/h-agl-ft &gt;= 1000</condition>
+         <set name="fcs/flap-cmd-norm" value="0.0"/>
+         <notify>
+            <property> position/h-agl-ft</property>
+            <property> velocities/vc-kts</property>
+         </notify>
+      </event>
+   </run>
+</runscript>

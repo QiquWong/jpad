@@ -12,7 +12,7 @@
 			<!-- angle of attack at which the user wants to evaluate a generic aerodynamic output -->
 			<alpha_current unit="deg">2</alpha_current>
 			<beta_current unit="deg">0.0</beta_current>
-			<mach>0.6</mach>	
+			<mach>0.64</mach>	
 			<altitude unit="ft">30000</altitude>
 			<throttle>1.0</throttle> <!-- COMPARISON VALUE CS300 = 1.38 -->
 		</cruise>

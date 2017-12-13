@@ -73,6 +73,10 @@ public class Main extends Application {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("view/MainView.fxml"));
 		_mainLayout = loader.load();
+		_mainLayout.setMinWidth(1600);
+		_mainLayout.setMaxWidth(1600);
+		_mainLayout.setMinHeight(900);
+		_mainLayout.setMaxHeight(900);
 		_statusBar = new StatusBar();
 		_progressBar = new ProgressBar();
 		_progressBar.setProgress(0.0);
@@ -86,6 +90,8 @@ public class Main extends Application {
 		_mainLayout.setBottom(statusToolbar);
 		Scene scene = new Scene(_mainLayout);
 		_primaryStage.setScene(scene);
+		_primaryStage.setFullScreen(false);
+		_primaryStage.setResizable(false);
 		_primaryStage.show();
 		
 	}
@@ -144,7 +150,7 @@ public class Main extends Application {
 		return _mainInputManagerLayout;
 	}
 
-	public static void setMain2InputManagerLayout(BorderPane _mainInputManagerLayout) {
+	public static void setMainInputManagerLayout(BorderPane _mainInputManagerLayout) {
 		Main._mainInputManagerLayout = _mainInputManagerLayout;
 	}
 

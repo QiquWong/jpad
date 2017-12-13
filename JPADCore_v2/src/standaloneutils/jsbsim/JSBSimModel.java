@@ -1217,6 +1217,114 @@ propulsion/engine/thrust-lbs (R)
 		return doc;
 	}
 
+	public void writeScriptFile(String scriptPath, String aircraftName, String icFileNameBase, JSBSimScriptsTemplateEnums type) throws ParserConfigurationException {
+		
+		DocumentBuilderFactory docScriptFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docScriptBuilder;
+		Document docScript = null;
+		docScriptBuilder = docScriptFactory.newDocumentBuilder();
+		docScript = docScriptBuilder.newDocument();
+
+		org.w3c.dom.Element runscriptElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"runscript",
+				Tuple.of("name", "Test of " + aircraftName)
+				);
+		docScript.appendChild(runscriptElement);
+		JPADStaticWriteUtils.writeSingleNode("decription",
+				"CPACS simulation with JSBSim through JPAD software",runscriptElement,docScript);
+		org.w3c.dom.Element useElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"use",
+				Tuple.of("aircraft", aircraftName), // TODO: get aircraft name from _cpaceReader
+				Tuple.of("initialize", icFileNameBase)
+				);
+		runscriptElement.appendChild(useElement);
+		org.w3c.dom.Element runElement = JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"run",
+				Tuple.of("start", "0"), // TODO: get aircraft name from _cpaceReader
+				Tuple.of("end", "100"),
+				Tuple.of("dt", "0.1")
+				);
+		runscriptElement.appendChild(runElement);
+		JPADStaticWriteUtils.writeSingleNode("property","simulation/notify-time-trigger",runElement,docScript);
+		org.w3c.dom.Element propertyElem = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				docScript, "property", "simulation/run_id", 
+				3, 6, Tuple.of("value", "1"));
+		runElement.appendChild(propertyElem);
+		propertyElem = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				docScript, "property", "fcs/left-brake-cmd-norm", 
+				3, 6, Tuple.of("value", "1"));
+		runElement.appendChild(propertyElem);
+		propertyElem = JPADStaticWriteUtils.createXMLElementWithValueAndAttributes(
+				docScript, "property", "fcs/right-brake-cmd-norm", 
+				3, 6, Tuple.of("value", "1"));
+		runElement.appendChild(propertyElem);
+		//Start Element
+		org.w3c.dom.Element eventElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"event",
+				Tuple.of("name", "engine start") // TODO: get aircraft name from _cpaceReader
+				);
+		runElement.appendChild(eventElem);	
+		JPADStaticWriteUtils.writeSingleNode("description","Start the engine",eventElem,docScript);
+		JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec >= 0.2",eventElem,docScript);
+		org.w3c.dom.Element setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"set",
+				Tuple.of("name", "fcs/throttle-cmd-norm"), 
+				Tuple.of("value", "1.0"));
+		eventElem.appendChild(setElem);	
+		org.w3c.dom.Element notifyElem = docScript.createElement("notify");
+		eventElem.appendChild(notifyElem);
+		JPADStaticWriteUtils.writeSingleNode("property"," position/h-agl-ft",notifyElem,docScript);
+		JPADStaticWriteUtils.writeSingleNode("property"," velocities/vc-kts",notifyElem,docScript);
+		
+		// 2nd event
+		eventElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"event",
+				Tuple.of("name", "begin roll") // TODO: get aircraft name from _cpaceReader
+				);
+		runElement.appendChild(eventElem);	
+		JPADStaticWriteUtils.writeSingleNode("description","Release brakes and get rolling with flaps at 30 degrees.",eventElem,docScript);
+		JPADStaticWriteUtils.writeSingleNode("condition"," simulation/sim-time-sec >= 2.5",eventElem,docScript);
+		setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"set",
+				Tuple.of("name", "fcs/left-brake-cmd-norm"), 
+				Tuple.of("value", "0"));
+		eventElem.appendChild(setElem);	
+		setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"set",
+				Tuple.of("name", "fcs/right-brake-cmd-norm"), 
+				Tuple.of("value", "0"));
+		eventElem.appendChild(setElem);	
+		setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"set",
+				Tuple.of("name", "fcs/flap-cmd-norm"), 
+				Tuple.of("value", "0.66"));
+		eventElem.appendChild(setElem);	
+		notifyElem = docScript.createElement("notify");
+		eventElem.appendChild(notifyElem);
+		JPADStaticWriteUtils.writeSingleNode("property"," position/h-agl-ft",notifyElem,docScript);
+		JPADStaticWriteUtils.writeSingleNode("property"," velocities/vc-kts",notifyElem,docScript);
+		
+		// 3rd event
+		eventElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"event",
+				Tuple.of("name", "Remove flap") // TODO: get aircraft name from _cpaceReader
+				);
+		runElement.appendChild(eventElem);	
+		JPADStaticWriteUtils.writeSingleNode("description","at 1000 feet remove flap",eventElem,docScript);
+		JPADStaticWriteUtils.writeSingleNode("condition"," position/h-agl-ft >= 1000",eventElem,docScript);
+		setElem =  JPADStaticWriteUtils.createXMLElementWithAttributes(
+				docScript,"set",
+				Tuple.of("name", "fcs/flap-cmd-norm"), 
+				Tuple.of("value", "0.0"));
+		eventElem.appendChild(setElem);	
+		notifyElem = docScript.createElement("notify");
+		eventElem.appendChild(notifyElem);
+		JPADStaticWriteUtils.writeSingleNode("property"," position/h-agl-ft",notifyElem,docScript);
+		JPADStaticWriteUtils.writeSingleNode("property"," velocities/vc-kts",notifyElem,docScript);
+		JPADStaticWriteUtils.writeDocumentToXml(docScript, scriptPath);
+		
+	}
+	
 	//Start JSBSim script
 	public void startJSBSimSimulation(String dirPath, String simulationName) throws IOException, InterruptedException {
 		List<String> commandList = new ArrayList<String>();

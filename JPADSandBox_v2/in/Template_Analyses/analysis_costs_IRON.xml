@@ -3,17 +3,17 @@
     <analysis>
         <costs id="IRON - COSTS"
 			weights_from_previous_analysis="false" 
-			performance_from_previous_analysis="false"
+			performance_from_previous_analysis="true"
 			>
 			<weights>
-				<maximum_take_off_mass unit="kg">53610</maximum_take_off_mass>
-				<operating_empty_mass unit="kg">33550</operating_empty_mass>
-				<payload unit="kg">13780</payload>
+				<maximum_take_off_mass unit="kg">55239</maximum_take_off_mass>
+				<operating_empty_mass unit="kg">34679</operating_empty_mass>
+				<payload unit="kg">13650</payload>
 			</weights>
 			<performance>
-				<range unit="nmi">200</range>				
-				<block_fuel unit="kg">611</block_fuel>
-				<flight_time unit="min">55.4</flight_time>
+				<range unit="nmi"></range>				
+				<block_fuel unit="kg"></block_fuel>
+				<flight_time unit="min"></flight_time>
 			</performance>
 			<global_data>
 				<utilization calculate="TRUE" method="AEA" unit="h/year"></utilization> <!-- Methods: AEA or SFORZA  -->
@@ -28,8 +28,8 @@
 						<insurance></insurance> <!-- percentage of the sum of the airframe and engines prices. Default: 0.005 = 0.5%  -->
 					</capital>
 					<crew>
-						<cabin_labour_rate unit="USD/h"></cabin_labour_rate> <!-- Default values: 360 $/hr (each pilot) -->
-						<cockpit_labour_rate unit="USD/h"></cockpit_labour_rate> <!-- Default values: 90 $/hr (each flight attendant) -->
+						<cabin_labour_rate unit="USD/h"></cabin_labour_rate> <!-- Default values: 90 $/hr (each flight attendant) -->
+						<cockpit_labour_rate unit="USD/h"></cockpit_labour_rate> <!-- Default values: 360 $/hr (each pilot) -->
 					</crew>
 					<fuel>
 					<!-- the unit "USD" is used instead of "USD/barrel" which cannot be recognized -->

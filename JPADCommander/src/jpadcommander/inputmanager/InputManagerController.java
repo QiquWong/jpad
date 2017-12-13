@@ -2536,6 +2536,24 @@ public class InputManagerController {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("inputmanager/AirfoilInputManager.fxml"));
 		BorderPane contentPane = loader.load();
+		AirfoilInputManagerController airfoilInputManagerController = loader.getController();
+		
+		String airfoilPathFromList = Main.getTheAircraft().getWing().getAirfoilPathList()
+				.stream()
+				.filter(
+						airfoilPath -> Paths.get(airfoilPath).getFileName().toString().equals(airfoilFileName))
+				.findFirst()
+				.get();
+		
+		int airfoilIndex = Main.getTheAircraft().getWing().getAirfoilPathList().indexOf(airfoilPathFromList);
+		
+		airfoilInputManagerController.loadAirfoilData(
+				Main.getTheAircraft().getWing().getAirfoilList().get(airfoilIndex).getAirfoilCreator()
+				);
+		airfoilInputManagerController.createAirfoilView();
+		airfoilInputManagerController.createClCurve();
+		airfoilInputManagerController.createCdCurve();
+		airfoilInputManagerController.createCmCurve();
 		
 		airfoilTab.setContent(contentPane);
 		removeAirfoilDetailsButtonFromMapOnTabClose(airfoilTab);
@@ -8719,18 +8737,7 @@ public class InputManagerController {
 				if(currentPanel.getAirfoilRoot().getName() != null) {
 
 					textFieldWingInnerAirfoilPanelList.get(i).setText(
-							String.valueOf(
-									Main.getInputDirectoryPath()
-									+ File.separator
-									+ "Template_Aircraft"
-									+ File.separator
-									+ "lifting_surfaces"
-									+ File.separator
-									+ "airfoils"
-									+ File.separator
-									+ currentPanel.getAirfoilRoot().getName()
-									+ ".xml"
-									)
+							Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(i).getAirfoilRootPath()
 							);
 				}
 				else
@@ -8782,18 +8789,7 @@ public class InputManagerController {
 				if(currentPanel.getAirfoilTip().getName() != null) {
 
 					textFieldWingOuterAirfoilPanelList.get(i).setText(
-							String.valueOf(
-									Main.getInputDirectoryPath()
-									+ File.separator
-									+ "Template_Aircraft"
-									+ File.separator
-									+ "lifting_surfaces"
-									+ File.separator
-									+ "airfoils"
-									+ File.separator
-									+ currentPanel.getAirfoilTip().getName()
-									+ ".xml"
-									)
+							Main.getTheAircraft().getWing().getLiftingSurfaceCreator().getPanels().get(i).getAirfoilTipPath()
 							);
 				}
 				else

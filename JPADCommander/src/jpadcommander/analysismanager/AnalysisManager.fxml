@@ -360,7 +360,6 @@
         <items>
             <Button id="newAircraftButton" mnemonicParsing="false" onAction="#newAircraft" text="New Analysis" />
             <Region prefWidth="50.0" />
-          <Button id="setDataButton" mnemonicParsing="false" text="Set  Data" />
             <Button id="updateAllButton" mnemonicParsing="false" text="Save Analysis" />
             <Button id="saveAircraftButton" mnemonicParsing="false" text="Run" />
         </items>

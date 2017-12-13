@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.measure.quantity.Length;
 import javax.measure.unit.SI;
+import javax.swing.text.StyledEditorKit.ForegroundAction;
 
 import org.jscience.physics.amount.Amount;
 import org.kohsuke.args4j.CmdLineException;
@@ -45,9 +46,14 @@ import it.unina.daf.jpadcad.occ.OCCShapeFactory;
 import it.unina.daf.jpadcad.occ.OCCUtils;
 import it.unina.daf.jpadcad.occ.OCCVertex;
 import opencascade.BRepBuilderAPI_Sewing;
+import opencascade.BRepBuilderAPI_Transform;
 import opencascade.GeomPlate_BuildPlateSurface;
 import opencascade.GeomPlate_CurveConstraint;
 import opencascade.TopoDS_Shape;
+import opencascade.gp_Ax2;
+import opencascade.gp_Dir;
+import opencascade.gp_Pnt;
+import opencascade.gp_Trsf;
 import opencascade.TopAbs_ShapeEnum;
 import opencascade.TopExp_Explorer;
 import processing.core.PVector;
@@ -540,12 +546,41 @@ public final class AircraftUtils {
 				// Use TopExp_Explorer to iterate through shells
 				System.out.println(OCCUtils.reportOnShape(tds_shape, "Fuselage sewed surface"));
 				
+				List<OCCShape> sewedShapes = new ArrayList<>();
 				TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
 				while (exp.More() > 0) {
-					ret.add((OCCShape)OCCShapeFactory.getFactory().newShape(exp.Current()));
+					sewedShapes.add((OCCShape)OCCShapeFactory.getFactory().newShape(exp.Current()));
 					exp.Next();
 				}
 				System.out.println("========== [AircraftUtils::getFuselageCAD] Exporting sewed loft.");
+				ret.addAll(sewedShapes);
+				
+				// >>>>>>>>>>>>>>>>>>>>>>>>>>>> MIRRORING
+
+				System.out.println("========== [AircraftUtils::getFuselageCAD] Mirroring sewed lofts.");
+			 	gp_Trsf mirrorTransform = new gp_Trsf();
+			 	gp_Ax2 mirrorPointPlane = new gp_Ax2(
+			 			new gp_Pnt(0.0, 0.0, 0.0),
+			 			new gp_Dir(0.0, 1.0, 0.0), // Y dir normal to reflection plane XZ
+			 			new gp_Dir(1.0, 0.0, 0.0)
+			 			);
+			 	mirrorTransform.SetMirror(mirrorPointPlane);
+				BRepBuilderAPI_Transform mirrorBuilder = new BRepBuilderAPI_Transform(mirrorTransform);
+			 	
+				List<OCCShape> mirroredShapes = new ArrayList<>();
+				sewedShapes.stream()
+					.map(occshape -> occshape.getShape())
+					.forEach(s -> {
+						mirrorBuilder.Perform(s, 1);
+						TopoDS_Shape sMirrored = mirrorBuilder.Shape();
+						mirroredShapes.add(
+								(OCCShape)OCCShapeFactory.getFactory().newShape(sMirrored)
+								);
+					});
+				System.out.println("Mirrored shapes: " + mirroredShapes.size());
+				System.out.println("========== [AircraftUtils::getFuselageCAD] Exporting mirrored sewed loft.");
+				ret.addAll(mirroredShapes);
+				
 			} else {
 				// add patches one by one
 				ret.add(patch1); // <<<<<<<<<<<<<<<<<<<<<<<< Patch-1, loft: nose cap
@@ -626,13 +661,12 @@ public final class AircraftUtils {
 //						fuselage.getFuselageCreator().getZOutlineXZUpperAtX(x)
 //				})
 //				.collect(Collectors.toList());
-		// FIXME
+		// TODO: 
 		List<double[]> pointsNoseXZUpper = cadCurvesNoseTrunk.stream()
 				.map(crv -> crv.edge().vertices()[0])
 				.map(v -> new double[]{v.pnt()[0], v.pnt()[1], v.pnt()[2]})
 				.collect(Collectors.toList());
 		
-		// FIXME
 //		System.out.println("========== [AircraftUtils::getFuselageCAD] Experimental...................................");		
 //		patch2 = OCCUtils.makePatchThruSections(cadCurvesNoseTrunk);
 //		CADShape cadShape = CADShapeFactory.getFactory().newShape(patch2.getShape());
@@ -833,11 +867,11 @@ public final class AircraftUtils {
 
 		extraShapesCap.add((OCCEdge)((OCCGeomCurve3D)cadTailCapXYRight).edge());
 		
+		// TODO: fixme and OCCSolid
 		boolean exporSolid = false;
 		if (exporSolid) {
 			System.out.println("========== [AircraftUtils::getFuselageCAD] Experimental: build a solid ...");
 
-			// TODO: fixme and OCCSolid
 //			OCCSolid solid3 = new OCCSolid(patch3);
 //			System.out.println("Solid volume = " + solid3.getVolume());
 //			ret.add(solid3);

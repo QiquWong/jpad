@@ -23,7 +23,6 @@ import javax.measure.quantity.Velocity;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 
-import org.apache.commons.math3.exception.NonMonotonicSequenceException;
 import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.math3.util.MathArrays.OrderDirection;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -62,8 +61,6 @@ import calculators.performance.customdata.RCMap;
 import calculators.performance.customdata.SpecificRangeMap;
 import calculators.performance.customdata.ThrustMap;
 import configuration.MyConfiguration;
-import configuration.enumerations.AerodynamicAndStabilityEnum;
-import configuration.enumerations.ComponentEnum;
 import configuration.enumerations.ConditionEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
@@ -2435,10 +2432,10 @@ public class ACPerformanceManager {
 				.setId(id)
 				.setTheAircraft(theAircraft)
 				.setTheOperatingConditions(theOperatingConditions)
-				.setMaximumTakeOffMass(maximumTakeOffMass)
-				.setOperatingEmptyMass(operatingEmptyMass)
-				.setMaximumFuelMass(maximumFuelMass)
-				.setSinglePassengerMass(singlePassengerMass)
+				.setMaximumTakeOffMass(maximumTakeOffMass.to(SI.KILOGRAM))
+				.setOperatingEmptyMass(operatingEmptyMass.to(SI.KILOGRAM))
+				.setMaximumFuelMass(maximumFuelMass.to(SI.KILOGRAM))
+				.setSinglePassengerMass(singlePassengerMass.to(SI.KILOGRAM))
 				.addAllXcgPositionList(centerOfGravityList)
 				.putAllCLmaxClean(cLmaxClean)
 				.putAllCLAlphaClean(cLAlphaClean)
@@ -2462,49 +2459,49 @@ public class ACPerformanceManager {
 				.setDtRotation(dtRotation)
 				.setDtHold(dtHold)
 				.setAlphaGround(alphaGround)
-				.setWindSpeed(windSpeed)
-				.setObstacleTakeOff(obstacleTakeOff)
+				.setWindSpeed(windSpeed.to(SI.METERS_PER_SECOND))
+				.setObstacleTakeOff(obstacleTakeOff.to(SI.METER))
 				.setKRotation(kRotation)
 				.setAlphaDotRotation(alphaDotRotation)
 				.setKCLmax(kCLmax)
 				.setDragDueToEngineFailure(dragDueToEngineFailure)
 				.setKAlphaDot(kAlphaDot)
 				.setKLandingWeight(kLandingWeight)
-				.setObstacleLanding(obstacleLanding)
-				.setThetaApproach(thetaApproach)
+				.setObstacleLanding(obstacleLanding.to(SI.METER))
+				.setThetaApproach(thetaApproach.to(NonSI.DEGREE_ANGLE))
 				.setKApproach(kApproach)
 				.setKFlare(kFlare)
 				.setKTouchDown(kTouchDown)
-				.setFreeRollDuration(freeRollDuration)
+				.setFreeRollDuration(freeRollDuration.to(SI.SECOND))
 				.setKClimbWeightAEO(kClimbWeightAEO)
 				.setKClimbWeightOEI(kClimbWeightOEI)
-				.setClimbSpeedCAS(climbSpeed)
-				.setInitialClimbAltitude(initialClimbAltitude)
-				.setFinalClimbAltitude(finalClimbAltitude)
-				.addAllAltitudeListCruise(altitudeListCruise)
+				.setClimbSpeedCAS(climbSpeed.to(SI.METERS_PER_SECOND))
+				.setInitialClimbAltitude(initialClimbAltitude.to(SI.METER))
+				.setFinalClimbAltitude(finalClimbAltitude.to(SI.METER))
+				.addAllAltitudeListCruise(altitudeListCruise.stream().map(a -> a.to(SI.METER)).collect(Collectors.toList()))
 				.setKCruiseWeight(kCruiseWeight)
 				.setCLmaxInverted(cLmaxInverted)
-				.setRateOfDescent(rateOfDescent)
-				.setSpeedDescentCAS(speedDescentCAS)
+				.setRateOfDescent(rateOfDescent.to(SI.METERS_PER_SECOND))
+				.setSpeedDescentCAS(speedDescentCAS.to(SI.METERS_PER_SECOND))
 				.setKDescentWeight(kDescentWeight)
-				.setInitialDescentAltitude(initialDescentAltitude)
-				.setFinalDescentAltitude(finalDescentAltitude)
-				.setMissionRange(missionRange)
-				.setAlternateCruiseLength(alternateCruiseLength)
-				.setAlternateCruiseAltitude(alternateCruiseAltitude)
-				.setHoldingDuration(holdingDuration)
-				.setHoldingAltitude(holdingAltitude)
+				.setInitialDescentAltitude(initialDescentAltitude.to(SI.METER))
+				.setFinalDescentAltitude(finalDescentAltitude.to(SI.METER))
+				.setMissionRange(missionRange.to(SI.METER))
+				.setAlternateCruiseLength(alternateCruiseLength.to(SI.METER))
+				.setAlternateCruiseAltitude(alternateCruiseAltitude.to(SI.METER))
+				.setHoldingDuration(holdingDuration.to(SI.SECOND))
+				.setHoldingAltitude(holdingAltitude.to(SI.METER))
 				.setHoldingMachNumber(holdingMachNumber)
 				.setFuelReserve(fuelReserve)
-				.setFirstGuessCruiseLength(missionRange.divide(3)) // first guess value equal to 1/3 of the total mission range
+				.setFirstGuessCruiseLength(missionRange.to(SI.METER).divide(3)) // first guess value equal to 1/3 of the total mission range
 				.setCalculateSFCCruise(calculateSfcCruise)
 				.setCalculateSFCAlternateCruise(calculateSfcAlternateCruise)
 				.setCalculateSFCHolding(calculateSfcHolding)
 				.setSfcFunctionCruise(sfcCruiseFunction)
 				.setSfcFunctionAlternateCruise(sfcAlternateCruiseFunction)
 				.setSfcFunctionHolding(sfcHoldingFunction)
-				.setFirstGuessInitialMissionFuelMass(maximumFuelMass.divide(2)) // first guess value equal to 1/2 of the maximum fuel
-				.setTakeOffMissionAltitude(takeOffMissionAltitude)
+				.setFirstGuessInitialMissionFuelMass(maximumFuelMass.to(SI.KILOGRAM).divide(2)) // first guess value equal to 1/2 of the maximum fuel
+				.setTakeOffMissionAltitude(takeOffMissionAltitude.to(SI.METER))
 				.setLandingFuelFlow(landingFuelFlow)
 				.addAllTaskList(theAircraft.getTheAnalysisManager().getTaskListPerformance())
 				.addAllPlotList(plotList)

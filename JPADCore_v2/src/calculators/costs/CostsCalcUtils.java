@@ -123,8 +123,8 @@ public class CostsCalcUtils {
 	 */
 	public static double calcSingleEngineCostSforza(double cruiseThrust, double cruiseSpecificFuelConsumption){
 		//TODO: test this equation on some known engine
-		return 1.2* (1 + (FastMath.pow(cruiseThrust, 0.088) /
-				FastMath.pow(cruiseSpecificFuelConsumption, 2.58)));
+		return 1.2*Math.pow(10, 6)* (1 + (Math.pow(cruiseThrust, 0.088) /
+				Math.pow(cruiseSpecificFuelConsumption, 2.58)));
 	}
 
 	/**
