@@ -54,8 +54,8 @@
 	-->
 	<performance 
 			file="analysis_performance_IRON_updated_canard.xml"
-			plot="TRUE"
-			create_CSV="TRUE"
+			plot="FALSE"
+			create_CSV="FALSE"
 			take_off="TRUE"
 			climb="TRUE"
 			cruise="TRUE"
@@ -67,8 +67,8 @@
 	/>
 	<costs 
 			file="analysis_costs_IRON.xml"
-			plot="TRUE"
-			create_CSV="TRUE"
+			plot="FALSE"
+			create_CSV="FALSE"
 			doc_capital="TRUE"
 			doc_capital_method="AEA"
 			doc_crew="TRUE"

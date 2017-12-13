@@ -2,14 +2,13 @@
 <jpad_config>
     <configuration id="CS300 Cabin Configuration">
 		<global_data>
-			<actual_passengers_number>150</actual_passengers_number>
-			<maximum_passengers_number>160</maximum_passengers_number>
+			<actual_passengers_number>130</actual_passengers_number>
+			<maximum_passengers_number>130</maximum_passengers_number>
 			<flight_crew_number>4</flight_crew_number>
 			<classes_number>2</classes_number>
 			<classes_type>ECONOMY;BUSINESS</classes_type>
 			<aisles_number>1</aisles_number>
 			<x_coordinates_first_row unit="m">3.131</x_coordinates_first_row>   <!-- 6,481 dal nose-->
-			
 			<missing_seat_row>
 				<!--
 				The size of missing seat list has to be equal to the class size.
@@ -19,6 +18,7 @@
 				If the user wants to add other arrays it has to add another value tag.
 				Each value tag contains an array of Integer values and must be assigned using [ , , ].
 				-->
+				<value>[0,0]</value>
 				<value>[0,0]</value>
 				<!--<value>[0,0]</value>-->
 			</missing_seat_row> 

@@ -2,7 +2,7 @@
 <high_lift_executable>
         <INPUT>
             <flight_condition>
-                    <current_angle_of_attack>0.0</current_angle_of_attack>
+                    <current_lifting_coefficient>0.0</current_lifting_coefficient>
             </flight_condition>
             <wing>
                     <geometry>
@@ -11,16 +11,16 @@
                                 <root_chord_equivalent_wing unit = "m">5.15</root_chord_equivalent_wing>
                                 <sweep_quarter_chord_equivalent_wing unit = "°">25.04</sweep_quarter_chord_equivalent_wing>
                                 <taper_ratio_equivalent_wing>0.252</taper_ratio_equivalent_wing>
-                    </geometry>
-                    <clean_configuration_parameters>
+                        </geometry>
+                        <clean_configuration_parameters>
                                 <alpha_stall_clean unit = "°">18.2</alpha_stall_clean>
                                 <alpha_star_clean unit = "°">9.32</alpha_star_clean>
                                 <cLalpha_clean unit="1/°">0.088</cLalpha_clean>
                                 <cL0_clean>0.2</cL0_clean>
 								<cLStar_clean>1.0</cLStar_clean>
 								<cLmax_clean>1.441</cLmax_clean>
-                    </clean_configuration_parameters>
-                    <airfoils_data> <!-- these data are referred to the break points stations --> 
+                        </clean_configuration_parameters>
+                        <airfoils_data> <!-- these data are referred to the break points stations --> 
                                 <eta_stations>0.0;0.345;1.0</eta_stations>
 								<airfoil_chord_distribution unit = "m">6.743;3.261;1.3</airfoil_chord_distribution>
 								<max_thickness_distribution>0.14;0.14;0.10</max_thickness_distribution>
@@ -28,9 +28,9 @@
 								<cl_alpha_distribution unit="1/deg">0.12;0.11;0.10</cl_alpha_distribution>
                                 <cl0_distribution>0.5;0.5;0.5</cl0_distribution>                                                             
                                 <airfoils_family>NACA_5_Digit</airfoils_family> 
-                    </airfoils_data>
+                        </airfoils_data>
             </wing>
-       <flaps>
+        <flaps>
             <flap id = "1">
                 <flap_type unit="">OPTIMIZED_FOWLER</flap_type>
                 <flap_chord_ratio unit="">0.26</flap_chord_ratio>

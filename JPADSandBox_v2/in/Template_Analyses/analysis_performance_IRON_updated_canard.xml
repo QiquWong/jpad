@@ -2,10 +2,10 @@
 <jpad_config>
     <analysis>
         <performance
-			id="IRON - PERFORMANCE"
+			id="IRON - PERFORMANCE" 
 			weights_from_previous_file="false" 
 			aerodynamics_from_previous_file="false" 
-			>
+			> <!-- T/T0 CRUISE INCREMENTED BY 1.05 TO ACHIEVE M=0.64 -->
 			<weights>
 				<!-- MTOM -->
 				<maximum_take_off_mass unit="kg">55239</maximum_take_off_mass> <!-- IRON = 53610 / CS300 = 67585 -->
@@ -51,7 +51,7 @@
 						</take_off>
 						<landing>
 							<polar_curve_CL>1.263905018;1.383132038;1.502136307;1.621329623;1.740702207;1.860244266;1.979945985;2.099797536;2.219789069;2.339910721;2.46015261;2.58054593;2.700998585;2.821500646;2.942124346;3.062818635;3.183573534</polar_curve_CL>
-							<polar_curve_CD>0.09776;0.09694;0.09673;0.09713;0.09814;0.09976;0.10200;0.10485;0.10831;0.11239;0.11709;0.12240;0.12833;0.13488;0.14204;0.14983;0.15823</polar_curve_CD>
+							<polar_curve_CD>0.107757886;0.10693773;0.106728496;0.107128773;0.108139734;0.109762483;0.111998049;0.114847385;0.118311366;0.122390787;0.127086362;0.132399443;0.138329228;0.144875903;0.152041554;0.159825656;0.168228404</polar_curve_CD>
 						</landing>
 					</polar_curves>
 					<tau_rudder_function calculate="FALSE">
@@ -125,7 +125,7 @@
 			</flight_maneuvering_and_gust_envelope>
 			<mission_profile_and_payload_range>
 			<!-- if alternate and holding phases have not to be taken into account, leave their tags empty -->
-				<mission_range unit="nmi">400</mission_range> 
+				<mission_range unit="nmi">1600</mission_range> 
 				<alternate_cruise_length unit="nmi">100</alternate_cruise_length> <!-- (default = 0.0) -->
 				<alternate_cruise_altitude unit="ft">15000</alternate_cruise_altitude> <!-- (default = 15.24 = landing obstacle) -->
 				<holding_duration unit="min">30</holding_duration> <!-- (default = 0.0) -->
@@ -133,15 +133,15 @@
 				<holding_mach_number>0.3</holding_mach_number>
 				<fuel_reserve>0.05</fuel_reserve> <!-- (default = 0.0) -->
 				<cruise_sfc_function calculate="FALSE">
-					<sfc>0.47;0.435;0.429</sfc>
+					<sfc>0.422436;0.390978;0.3855852</sfc> <!-- old deck: 0.47;0.435;0.429 -->
 					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</cruise_sfc_function>
 				<alternate_cruise_sfc_function calculate="FALSE">
-					<sfc>0.51036;0.46433;0.45617</sfc>
+					<sfc>0.458711568;0.417339804;0.410005596</sfc> <!-- old deck: 0.51036;0.46433;0.45617 -->
 					<throttle>0.75;0.95;1.0</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 1.035;1.311;1.38)-->
 				</alternate_cruise_sfc_function>
 				<holding_sfc_function calculate="FALSE">
-					<sfc>0.444;0.3285;0.3047</sfc>
+					<sfc>0.3990672;0.2952558;0.27386436</sfc> <!-- old deck: 0.444;0.3285;0.3047 -->
 					<throttle>0.4;0.75;0.95</throttle> <!-- if the friction coefficient array contains only 1 value this tag can be left empty (THROTTLE COMPARISON CS300 = 0.552;1.035;1.3118)-->
 				</holding_sfc_function>
 				<take_off_mission_altitude unit="ft">5400.0</take_off_mission_altitude>

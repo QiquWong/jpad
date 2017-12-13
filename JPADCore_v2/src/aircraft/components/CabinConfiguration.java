@@ -882,7 +882,7 @@ public class CabinConfiguration implements ICabinConfiguration {
 	@Override
 	public void calculateDependentVariables() {
 
-		_cabinCrewNumber = (int) Math.ceil(Double.valueOf(_nPax/35));
+		_cabinCrewNumber = (int) Math.ceil(_nPax.doubleValue()/35);
 		_nCrew = _cabinCrewNumber + _flightCrewNumber;
 		updateConfiguration();
 

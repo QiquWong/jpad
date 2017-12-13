@@ -44,7 +44,7 @@ public class TurbopropEngineDatabaseReader extends EngineDatabaseReader{
 		}
 
 		else if (flightCondition.equals(EngineOperatingConditionEnum.CRUISE)){
-			return getThrustMaximumCruise(mach, altitude, bpr);
+			return getThrustMaximumCruise(mach, altitude, bpr) /* *1.05 */;
 		}
 
 		else if (flightCondition.equals(EngineOperatingConditionEnum.DESCENT)){

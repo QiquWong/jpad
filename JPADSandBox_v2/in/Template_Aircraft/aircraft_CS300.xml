@@ -2,7 +2,7 @@
 <jpad_config>
     <aircraft id="CS300" type="JET" regulations="FAR_25">
 		<global_data>
-			<cabin_configuration file="cabin_configuration_ATR72.xml"></cabin_configuration>
+			<cabin_configuration file="cabin_configuration_CS300.xml"></cabin_configuration>
 		</global_data>
         <lifting_surfaces>
             <wing file="wing_CS300.xml">
