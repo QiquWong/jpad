@@ -38,7 +38,7 @@
 			method_canard=""
 		/>
 	-->
-	<!--
+	
 	<aerodynamic_and_stability
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -47,12 +47,12 @@
 			climb_condition="TRUE"
 			file_climb_condition="analysis_aerodynamics_Prototype.xml"
 			cruise_condition="TRUE"
-			file_cruise_condition="analysis_aerodynamics_Prototype.xml"
+			file_cruise_condition="analysis_aerodynamics_IRON_cruise.xml"
 			landing_condition="TRUE"
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
-	-->
-	<performance 
+	
+<!-- 	<performance 
 			file="analysis_performance_IRON_updated_canard.xml"
 			plot="FALSE"
 			create_CSV="FALSE"
@@ -79,7 +79,7 @@
 			doc_charges_method="ILR_AACHEN"
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
-	/>
+	/> -->
 	<!-- add other costs analyses if available -->
     </analyses>
 </jpad_config>

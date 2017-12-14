@@ -82,6 +82,7 @@ public class LSAerodynamicsManager {
 	private double[] dihedralDistributionRadians;
 	
 	private NasaBlackwell theNasaBlackwellCalculator;
+	NasaBlackwell theNasaBlackwellCalculatorAlphaZeroLift;
 	
 	private List<List<Double>> _discretizedAirfoilsCl;
 	private List<Double> _clForCdMatrix;
@@ -433,6 +434,21 @@ public class LSAerodynamicsManager {
 		}
 
 		theNasaBlackwellCalculator = new NasaBlackwell(
+				_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
+				_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
+				MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
+				dihedralDistributionRadians,
+				_twistDistribution,
+				_alphaZeroLiftDistribution,
+				_vortexSemiSpanToSemiSpanRatio,
+				0.0,
+				_currentMachNumber,
+				_currentAltitude.doubleValue(SI.METER)
+				);
+		
+		theNasaBlackwellCalculatorAlphaZeroLift = new NasaBlackwell(
 				_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
 				_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE),
 				MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
@@ -2042,20 +2058,6 @@ public class LSAerodynamicsManager {
 			Map<Amount<Angle>, List<Amount<Force>>> liftBasicMap = new HashMap<>();
 			Map<Amount<Angle>, List<Amount<Force>>> liftTotalMap = new HashMap<>();
 			
-			NasaBlackwell theNasaBlackwellCalculatorAlphaZeroLift = new NasaBlackwell(
-					_theLiftingSurface.getSemiSpan().doubleValue(SI.METER),
-					_theLiftingSurface.getSurface().doubleValue(SI.SQUARE_METRE),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_yStationDistribution),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_chordDistribution),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_xLEDistribution),
-					MyArrayUtils.convertListOfAmountTodoubleArray(_dihedralDistribution),
-					_twistDistribution,
-					_alphaZeroLiftDistribution,
-					_vortexSemiSpanToSemiSpanRatio,
-					0.0,
-					_currentMachNumber,
-					_currentAltitude.doubleValue(SI.METER)
-					);
 			
 			if(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST) == null) {
 				CalcAlpha0L theAlphaZeroLiftCalculator = new CalcAlpha0L();
@@ -2063,7 +2065,9 @@ public class LSAerodynamicsManager {
 			}
 			
 			// EVALUATION OF THE BASIC LOAD
-			theNasaBlackwellCalculatorAlphaZeroLift.calculate(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST));
+			
+			theNasaBlackwellCalculatorAlphaZeroLift.calculate(Amount.valueOf(-0.6139, NonSI.DEGREE_ANGLE));
+//	     	theNasaBlackwellCalculatorAlphaZeroLift.calculate(_alphaZeroLift.get(MethodEnum.INTEGRAL_MEAN_TWIST));
 			
 			for(int i=0; i<_alphaForDistribution.size(); i++) {
 			

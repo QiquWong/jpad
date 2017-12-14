@@ -11,7 +11,7 @@
     </global_data>
     <!-- Required analysis tasks - comment the tag of the analysis if not needed -->
     <analyses id="ATR-72 analysis">
-        <weights 
+   <!--      <weights 
             file="analysis_weights_ATR72.xml" 
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -22,9 +22,9 @@
 			method_nacelles=""
 			method_landing_gears=""
 			method_systems=""
-            />
+            /> -->
 		<!-- method_XXX="AVERAGED" if empty string -->
-	<balance 
+	<!-- <balance 
 			file="analysis_balance_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -33,7 +33,7 @@
             method_htail=""
             method_vtail=""
 			method_canard=""
-		/> 
+		/>  -->
 	
 	<aerodynamic_and_stability
 			plot="TRUE"
@@ -48,7 +48,7 @@
 			file_landing_condition="analysis_aerodynamics_Prototype.xml"
 	/>
 	
-	<performance 
+	<!-- performance 
 			file="analysis_performance_ATR72.xml"
 			plot="TRUE"
 			create_CSV="TRUE"
@@ -75,6 +75,6 @@
 			doc_charges_method="ILR_AACHEN"
 			doc_maintenance="TRUE"
 			doc_maintenance_method="ATA"
-	/>
+	/> -->
     </analyses>
 </jpad_config>

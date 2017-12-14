@@ -6728,20 +6728,24 @@ public class ACAerodynamicAndStabilityManager {
 					yVectorMatrix = new ArrayList<Double[]>();
 					legend  = new ArrayList<>(); 
 
+					int indexOfMaxHighLift = MyArrayUtils.getIndexOfMax(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+							_theAerodynamicBuilderInterface.getComponentTaskList()
+							.get(ComponentEnum.WING)
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
+					
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
 							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArrayClean()
 							));
 					xVectorMatrix.add(MyArrayUtils.convertListOfAmountToDoubleArray(
-							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray()
-							));
+							_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getAlphaArray().subList(0, indexOfMaxHighLift+3)));
 					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurve().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
 							.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
-					yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
+					yVectorMatrix.add(MyArrayUtils.convertListOfDoubleToDoubleArray((MyArrayUtils.convertDoubleArrayToListDouble(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.WING).getLiftCoefficient3DCurveHighLift().get(
 							_theAerodynamicBuilderInterface.getComponentTaskList()
 							.get(ComponentEnum.WING)
-							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
+							.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D))).subList(0, indexOfMaxHighLift+3))));
 
 					legend.add("Clean configuration");
 					legend.add("Configuration with high lift devices");
@@ -6757,20 +6761,48 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"alpha", 
-							"CL",
-							"deg", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Lift_Coefficient_Curve");
+					
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Lift_Coefficient_Curve lean and high lift",
+								"alpha", 
+								"CL",
+								null, 
+								null, 
+								null, 
+								null,
+								"deg", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Lift_Coefficient_Curve",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+//					
+//					MyChartToFileUtils.plotNOCSV(
+//							xMatrix,
+//							yMatrix, 
+//							null, 
+//							null, 
+//							null, 
+//							null,
+//							"alpha", 
+//							"CL",
+//							"deg", 
+//							"", 
+//							legendString, 
+//							wingPlotFolderPath,
+//							"Lift_Coefficient_Curve");
 				}
 				else
 					System.err.println("WARNING!! THE WING HIGH LIFT AND CLEAN LIFT CURVES HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING HIGH LIFT CURVE");
