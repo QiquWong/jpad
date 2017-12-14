@@ -176,7 +176,10 @@ public class CPACSReaderTest2a {
 				
 				//================================================================================
 				// manage JSBSim script file
-				jsbsimModel.writeScriptFile(jsbsimScriptPath, jsbsimAircraftName, jsbsimInitFileBaseName, JSBSimScriptsTemplateEnums.TAKEOFF);
+				jsbsimModel.writeScriptFile(jsbsimScriptPath, 
+						jsbsimAircraftName, jsbsimInitFileBaseName, 
+						0.0, 90.0, 0.083,
+						JSBSimScriptsTemplateEnums.TAKEOFF);
 				
 				System.out.println("-----------------------------------------------------------");
 				System.out.println("CPACS input: " + cpacsFilePath);

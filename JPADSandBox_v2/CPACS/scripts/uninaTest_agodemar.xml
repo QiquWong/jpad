@@ -2,14 +2,14 @@
 <runscript name="Test of D150_AGILE_agodemar">
    <decription>CPACS simulation with JSBSim through JPAD software</decription>
    <use aircraft="D150_AGILE_agodemar" initialize="initialCondition"/>
-   <run dt="0.1" end="100" start="0">
-      <property>simulation/notify-time-trigger</property>
+   <run dt="0.083" end="90.0" start="0.0">
+      <property value="0">simulation/notify-time-trigger</property>
       <property value="1">simulation/run_id</property>
       <property value="1">fcs/left-brake-cmd-norm</property>
       <property value="1">fcs/right-brake-cmd-norm</property>
       <event name="engine start">
          <description>Start the engine</description>
-         <condition> simulation/sim-time-sec &gt;= 0.2</condition>
+         <condition> simulation/sim-time-sec GE 0.2</condition>
          <set name="fcs/throttle-cmd-norm" value="1.0"/>
          <notify>
             <property> position/h-agl-ft</property>
@@ -18,23 +18,41 @@
       </event>
       <event name="begin roll">
          <description>Release brakes and get rolling with flaps at 30 degrees.</description>
-         <condition> simulation/sim-time-sec &gt;= 2.5</condition>
+         <condition>simulation/sim-time-sec GE 2.5</condition>
          <set name="fcs/left-brake-cmd-norm" value="0"/>
          <set name="fcs/right-brake-cmd-norm" value="0"/>
          <set name="fcs/flap-cmd-norm" value="0.66"/>
          <notify>
-            <property> position/h-agl-ft</property>
-            <property> velocities/vc-kts</property>
+            <property>position/h-agl-ft</property>
+            <property>velocities/vc-kts</property>
          </notify>
       </event>
       <event name="Remove flap">
          <description>at 1000 feet remove flap</description>
-         <condition> position/h-agl-ft &gt;= 1000</condition>
+         <condition>position/h-agl-ft GE 1000</condition>
          <set name="fcs/flap-cmd-norm" value="0.0"/>
          <notify>
-            <property> position/h-agl-ft</property>
-            <property> velocities/vc-kts</property>
+            <property>position/h-agl-ft</property>
+            <property>velocities/vc-kts</property>
          </notify>
+      </event>
+      <event name="Repeating Notify" persistent="true">
+         <description>Output message at fixed time intervals (5.0 s)</description>
+         <notify>
+            <property>position/h-agl-ft</property>
+            <property>velocities/vt-fps</property>
+            <property>velocities/h-dot-fps</property>
+            <property>aero/alpha-deg</property>
+            <property>aero/beta-deg</property>
+            <property>attitude/phi-deg</property>
+            <property>attitude/theta-deg</property>
+            <property>attitude/psi-deg</property>
+            <property>velocities/p-rad_sec</property>
+            <property>velocities/q-rad_sec</property>
+            <property>velocities/r-rad_sec</property>
+         </notify>
+         <condition>simulation/sim-time-sec GE simulation/notify-time-trigger</condition>
+         <set name="simulation/notify-time-trigger" type="FG_DELTA" value="5.0"/>
       </event>
    </run>
 </runscript>
