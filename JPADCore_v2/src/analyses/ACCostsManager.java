@@ -37,6 +37,7 @@ import configuration.enumerations.CostsPlotEnum;
 import configuration.enumerations.EngineOperatingConditionEnum;
 import configuration.enumerations.EngineTypeEnum;
 import configuration.enumerations.MethodEnum;
+import configuration.enumerations.PerformanceEnum;
 import standaloneutils.JPADXmlReader;
 import standaloneutils.MyChartToFileUtils;
 import standaloneutils.MyUnits;
@@ -196,7 +197,7 @@ public class ACCostsManager {
 			if(payloadMassProperty != null)
 				payloadMass = (Amount<Mass>) reader.getXMLAmountWithUnitByPath("//weights/payload");
 		}
-		
+
 		//---------------------------------------------------------------
 		// INITIALIZING PERFORMANCE DATA
 		//---------------------------------------------------------------
@@ -212,37 +213,43 @@ public class ACCostsManager {
 		if(readPerformanceFromPreviousAnalysisFlag == Boolean.TRUE) {
 			if(theAircraft.getTheAnalysisManager() != null) {
 				if(theAircraft.getTheAnalysisManager().getThePerformance() != null) {
+					if(theAircraft.getTheAnalysisManager().getTaskListPerformance().contains(PerformanceEnum.MISSION_PROFILE)) {
 
-					//---------------------------------------------------------------
-					// RANGE
-					range = theAircraft.getTheAnalysisManager().getThePerformance().getThePerformanceInterface().getMissionRange().to(NonSI.NAUTICAL_MILE);
+						//---------------------------------------------------------------
+						// RANGE
+						range = theAircraft.getTheAnalysisManager().getThePerformance().getThePerformanceInterface().getMissionRange().to(NonSI.NAUTICAL_MILE);
 
-					//---------------------------------------------------------------
-					// BLOCK FUEL
-					// Block Fuel from the Performance is Map. Here a mean value is assumed (or else the first value of the collection)
-					blockFuel = Amount.valueOf( 
-							theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsedMap()
-							.values().stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM))
-							.average().orElse(
-									theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsedMap()
-									.values().stream().findFirst().get().doubleValue(SI.KILOGRAM)
-									),
-							SI.KILOGRAM
-							);
+						//---------------------------------------------------------------
+						// BLOCK FUEL
+						// Block Fuel from the Performance is Map. Here a mean value is assumed (or else the first value of the collection)
+						blockFuel = Amount.valueOf( 
+								theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsedMap()
+								.values().stream().mapToDouble(f -> f.doubleValue(SI.KILOGRAM))
+								.average().orElse(
+										theAircraft.getTheAnalysisManager().getThePerformance().getTotalFuelUsedMap()
+										.values().stream().findFirst().get().doubleValue(SI.KILOGRAM)
+										),
+								SI.KILOGRAM
+								);
 
-					//---------------------------------------------------------------
-					// FLIGHT TIME
-					// Flight Time from the Performance is Map. Here a mean value is assumed (or else the first value of the collection)
-					flightTime = Amount.valueOf( 
-							theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTimeMap()
-							.values().stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE))
-							.average().orElse(
-									theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTimeMap()
-									.values().stream().findFirst().get().doubleValue(NonSI.MINUTE)
-									),
-							NonSI.MINUTE
-							);
+						//---------------------------------------------------------------
+						// FLIGHT TIME
+						// Flight Time from the Performance is Map. Here a mean value is assumed (or else the first value of the collection)
+						flightTime = Amount.valueOf( 
+								theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTimeMap()
+								.values().stream().mapToDouble(t -> t.doubleValue(NonSI.MINUTE))
+								.average().orElse(
+										theAircraft.getTheAnalysisManager().getThePerformance().getTotalMissionTimeMap()
+										.values().stream().findFirst().get().doubleValue(NonSI.MINUTE)
+										),
+								NonSI.MINUTE
+								);
 
+					}
+					else {
+						System.err.println("WARNING!! THE MISSION PROFILE ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
+						System.exit(1);
+					}
 				}
 				else {
 					System.err.println("WARNING!! THE PERFORMANCE ANALYSIS HAS NOT BEEN CARRIED OUT ... TERMINATING");
