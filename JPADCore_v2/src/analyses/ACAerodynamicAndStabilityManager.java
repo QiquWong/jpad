@@ -6225,7 +6225,7 @@ public class ACAerodynamicAndStabilityManager {
 								null,
 								"", 
 								"", 
-								true,
+								false,
 								legend,
 								wingPlotFolderPath,
 								"Basic_Lift_Coefficient_Distributions",
@@ -6413,7 +6413,7 @@ public class ACAerodynamicAndStabilityManager {
 								null,
 								"", 
 								"", 
-								true,
+								false,
 								legend,
 								wingPlotFolderPath,
 								"cCl_Basic_Distributions",
@@ -6603,7 +6603,7 @@ public class ACAerodynamicAndStabilityManager {
 								null,
 								"", 
 								"", 
-								true,
+								false,
 								legend,
 								wingPlotFolderPath,
 								"Gamma_Basic_Distributions",
@@ -6779,20 +6779,34 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Basic_load",
-							"", 
-							"Newton", 
-							legendString, 
-							wingPlotFolderPath,
-							"Basic_Load_Distributions");
+					
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Basic_Load_Distributions",
+								"eta", 
+								"basic load",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"Newton", 
+								false,
+								legend,
+								wingPlotFolderPath,
+								"Basic_Load_Distributions",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 				else
 					System.err.println("WARNING!! THE WING BASIC LOAD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING BASIC LOAD DISTRIBUTION");
@@ -6827,20 +6841,34 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"M",
-							"", 
-							"Nm", 
-							legendString, 
-							wingPlotFolderPath,
-							"Moment_Distributions");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Moment_Distributions",
+								"eta", 
+								"basic load",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"Nm", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Moment_Distributions",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+			
 				}
 				else
 					System.err.println("WARNING!! THE WING MOMENT DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING MOMENT DISTRIBUTION");
@@ -6875,20 +6903,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"D",
-							"", 
-							"N", 
-							legendString, 
-							wingPlotFolderPath,
-							"Drag_Distributions");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Moment_Distributions",
+								"eta", 
+								"Cd",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Drag_Distributions",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 				else
 					System.err.println("WARNING!! THE WING DRAG DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING DRAG DISTRIBUTION");
@@ -6948,7 +6989,7 @@ public class ACAerodynamicAndStabilityManager {
 						MyChartToFileUtils.plot(
 								xVectorMatrix,
 								yVectorMatrix,
-								"Lift_Coefficient_Curve lean and high lift",
+								"Lift_Coefficient_Curve clean and high lift",
 								"alpha", 
 								"CL",
 								null, 
@@ -7034,20 +7075,32 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"CD", 
-							"CL",
-							"deg", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Polar_Curve");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Polar_Curve",
+								"CD", 
+								"CL",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Polar_Curve",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
 				}
 				else
@@ -7094,20 +7147,34 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"alpha", 
-							"CM",
-							"deg", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Moment_Coefficient_Curve");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Moment_Coefficient_Curve",
+								"alpha", 
+								"CM",
+								null, 
+								null, 
+								null, 
+								null,
+								"deg", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Moment_Coefficient_Curve",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					
 				}
 				else
 					System.err.println("WARNING!! THE WING HIGH LIFT AND CLEAN MOMENT CURVES HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING HIGH LIFT MOMENT CURVE");
@@ -7143,21 +7210,34 @@ public class ACAerodynamicAndStabilityManager {
 					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Stall_Path_Clean_Configuration",
+							"eta", 
+							"Cl",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							wingPlotFolderPath,
+							"Stall_Path_Clean_Configuration",
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Cl",
-						"", 
-						"", 
-						legendString, 
-						wingPlotFolderPath,
-						"Stall_Path_Clean_Configuration");
 			}
 			//-----------------------------------------------------------------------------------------------------------------------
 			// LIFT COEFFICIENT DISTRIBUTION
@@ -7190,20 +7270,34 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Cl",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Lift_Coefficient_Distributions_Clean_Configuration");
+					
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Lift_Coefficient_Distributions_Clean_Configuration",
+								"eta", 
+								"Cl",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Lift_Coefficient_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 				else
 					System.err.println("WARNING!! THE WING CL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING CL DISTRIBUTION");
@@ -7239,21 +7333,33 @@ public class ACAerodynamicAndStabilityManager {
 						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Drag_Coefficient_Distributions_Clean_Configuration",
+								"eta", 
+								"Cd",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Drag_Coefficient_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Cd",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Drag_Coefficient_Distributions_Clean_Configuration");
 				}
 				else
 					System.err.println("WARNING!! THE WING CD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING CD DISTRIBUTION");
@@ -7290,20 +7396,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Cm",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Moment_Coefficient_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Moment_Coefficient_Distributions_Clean_Configuration",
+								"eta", 
+								"Cm",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Moment_Coefficient_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			
 				}
 				else
 					System.err.println("WARNING!! THE WING CM DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING CMmom DISTRIBUTION");
@@ -7340,20 +7459,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Cl_add.",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Additional_Lift_Coefficient_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Additional_Lift_Coefficient_Distributions_Clean_Configuration",
+								"eta", 
+								"CL add.",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Additional_Lift_Coefficient_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 				else
 					System.err.println("WARNING!! THE WING ADDITIONAL CL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING ADDITIONAL CL DISTRIBUTION");
@@ -7390,20 +7522,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Cl_basic",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Basic_Lift_Coefficient_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Basic_Lift_Coefficient_Distributions_Clean_Configuration",
+								"eta", 
+								"CL basic",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								false,
+								legend,
+								wingPlotFolderPath,
+								"Basic_Lift_Coefficient_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 				else
 					System.err.println("WARNING!! THE WING BASIC CL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING BASIC CL DISTRIBUTION");
@@ -7439,20 +7584,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"cCl",
-							"", 
-							"m", 
-							legendString, 
-							wingPlotFolderPath,
-							"cCl_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"cCl_Distributions_Clean_Configuration",
+								"eta", 
+								"cCl",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"m", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"cCl_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
 				}		
 				else
 					System.err.println("WARNING!! THE WING cCL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING cCL DISTRIBUTION");
@@ -7489,20 +7647,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"cCl_add.",
-							"", 
-							"m", 
-							legendString, 
-							wingPlotFolderPath,
-							"cCl_Additional_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"cCl_Additional_Distributions_Clean_Configuration",
+								"eta", 
+								"cCl_add.",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"m", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"cCl_Additional_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}	
 				else
 					System.err.println("WARNING!! THE WING ADDITIONAL cCL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING ADDITIONAL cCL DISTRIBUTION");
@@ -7538,20 +7709,34 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"cCl_basic",
-							"", 
-							"m", 
-							legendString, 
-							wingPlotFolderPath,
-							"cCl_Basic_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"cCl_Basic_Distributions_Clean_Configuration",
+								"eta", 
+								"cCl_basic",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"m", 
+								false,
+								legend,
+								wingPlotFolderPath,
+								"cCl_Basic_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+		
 				}	
 				else
 					System.err.println("WARNING!! THE WING BASIC cCL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING BASIC cCL DISTRIBUTION");
@@ -7587,20 +7772,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Gamma",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Gamma_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Gamma_Distributions_Clean_Configuration",
+								"eta", 
+								"gamma",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"m^2/s", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Gamma_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 				else
 					System.err.println("WARNING!! THE WING GAMMA DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING GAMMA DISTRIBUTION");
@@ -7637,20 +7835,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Gamma_add.",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Gamma_Additional_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Gamma_Additional_Distributions_Clean_Configuration",
+								"eta", 
+								"gamma_add",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"m^2/s", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Gamma_Additional_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 				else
 					System.err.println("WARNING!! THE WING ADDITIONAL GAMMA DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING ADDITIONAL GAMMA DISTRIBUTION");
@@ -7687,20 +7898,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Gamma_basic",
-							"", 
-							"", 
-							legendString, 
-							wingPlotFolderPath,
-							"Gamma_Basic_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Gamma_Basic_Distributions_Clean_Configuration",
+								"eta", 
+								"gamma_basic",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"m^2/s", 
+								false,
+								legend,
+								wingPlotFolderPath,
+								"Gamma_Basic_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 				else
 					System.err.println("WARNING!! THE WING BASIC GAMMA DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING BASIC GAMMA DISTRIBUTION");
@@ -7737,20 +7961,34 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Total_load",
-							"", 
-							"Newton", 
-							legendString, 
-							wingPlotFolderPath,
-							"Total_Load_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Total_Load_Distributions_Clean_Configuration",
+								"eta", 
+								"Total_load",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"Newton", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Total_Load_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				
 				}
 				else
 					System.err.println("WARNING!! THE WING LOAD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING LOAD DISTRIBUTION");
@@ -7787,20 +8025,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Additional_load",
-							"", 
-							"Newton", 
-							legendString, 
-							wingPlotFolderPath,
-							"Additional_Load_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Additional_Load_Distributions_Clean_Configuration",
+								"eta", 
+								"Add. Load",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"Newton", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Additional_Load_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 				else
 					System.err.println("WARNING!! THE WING ADDITIONAL LOAD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING ADDITIONAL LOAD DISTRIBUTION");
@@ -7837,20 +8088,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"Basic_load",
-							"", 
-							"Newton", 
-							legendString, 
-							wingPlotFolderPath,
-							"Basic_Load_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Basic_Load_Distributions_Clean_Configuration",
+								"eta", 
+								"Basic_load",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"Newton", 
+								false,
+								legend,
+								wingPlotFolderPath,
+								"Basic_Load_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	
 				}
 				else
 					System.err.println("WARNING!! THE WING BASIC LOAD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING BASIC LOAD DISTRIBUTION");
@@ -7885,20 +8149,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"M",
-							"", 
-							"Nm", 
-							legendString, 
-							wingPlotFolderPath,
-							"Moment_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Moment_Distributions_Clean_Configuration",
+								"eta", 
+								"M",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"Nm", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Moment_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 				else
 					System.err.println("WARNING!! THE WING MOMENT DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING MOMENT DISTRIBUTION");
@@ -7933,20 +8210,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							0.0, 
-							null, 
-							null, 
-							null,
-							"eta", 
-							"D",
-							"", 
-							"N", 
-							legendString, 
-							wingPlotFolderPath,
-							"Drag_Distributions_Clean_Configuration");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Drag_Distributions_Clean_Configuration",
+								"eta", 
+								"D",
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"N", 
+								true,
+								legend,
+								wingPlotFolderPath,
+								"Drag_Distributions_Clean_Configuration",
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 				else
 					System.err.println("WARNING!! THE WING DRAG DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE WING DRAG DISTRIBUTION");
@@ -8001,7 +8291,7 @@ public class ACAerodynamicAndStabilityManager {
 						"",
 						horizontalTailPlotFolderPath,
 						"Lift_Coefficient_Curve" + legendStringCondition,
-						false
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
 			}
 			else
@@ -8040,7 +8330,7 @@ public class ACAerodynamicAndStabilityManager {
 						"",
 						horizontalTailPlotFolderPath,
 						"Polar_Curve" + legendStringCondition,
-						false
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
 
 			}
@@ -8065,6 +8355,7 @@ public class ACAerodynamicAndStabilityManager {
 						.get(ComponentEnum.HORIZONTAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
 
+				
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
 						MyArrayUtils.convertToDoublePrimitive(yVector),
@@ -8078,7 +8369,7 @@ public class ACAerodynamicAndStabilityManager {
 						"",
 						horizontalTailPlotFolderPath,
 						"Moment_Coefficient_Curve" + legendStringCondition,
-						false
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
 			}
 			else
@@ -8117,21 +8408,34 @@ public class ACAerodynamicAndStabilityManager {
 				legendString [i] = legend.get(i);
 			}
 
-			MyChartToFileUtils.plotNOCSV(
-					xMatrix,
-					yMatrix, 
-					0.0, 
-					null, 
-					null, 
-					null,
-					"eta", 
-					"Cl",
-					"", 
-					"", 
-					legendString, 
-					horizontalTailPlotFolderPath,
-					"Stall_Path"+ legendStringCondition);}
+			try {
+				MyChartToFileUtils.plot(
+						xVectorMatrix,
+						yVectorMatrix,
+						"Stall_Path",
+						"eta", 
+						"Cl",
+						null, 
+						null, 
+						null, 
+						null,
+						"", 
+						"", 
+						true,
+						legend,
+						horizontalTailPlotFolderPath,
+						"Stall_Path"+ legendStringCondition,
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+						);
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
+		}
 		}
 		//-----------------------------------------------------------------------------------------------------------------------
 		// LIFT COEFFICIENT DISTRIBUTION
@@ -8163,21 +8467,34 @@ public class ACAerodynamicAndStabilityManager {
 					yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 					legendString [i] = legend.get(i);
 				}
+				
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Lift_Coefficient_Distributions",
+							"eta", 
+							"Cl",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Lift_Coefficient_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Cl",
-						"", 
-						"", 
-						legendString, 
-						horizontalTailPlotFolderPath ,
-						"Lift_Coefficient_Distributions"+ legendStringCondition);
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL CL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL CL DISTRIBUTION");
@@ -8214,20 +8531,32 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Cd",
-						"", 
-						"", 
-						legendString, 
-						horizontalTailPlotFolderPath ,
-						"Drag_Coefficient_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Drag_Coefficient_Distributions",
+							"eta", 
+							"Cd",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Drag_Coefficient_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL CD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL CD DISTRIBUTION");
@@ -8264,20 +8593,34 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Cm",
-						"", 
-						"", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Moment_Coefficient_Distributions"+ legendStringCondition);
+
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Moment_Coefficient_Distributions",
+							"eta", 
+							"Cm",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Moment_Coefficient_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL CM DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL CM DISTRIBUTION");
@@ -8313,20 +8656,34 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"cCl",
-						"", 
-						"m", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"cCl_Distributions"+ legendStringCondition);
+
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"cCl_Distributions",
+							"eta", 
+							"cCl",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"m", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"cCl_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}	
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL cCL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL cCL DISTRIBUTION");
@@ -8363,20 +8720,34 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Gamma",
-						"", 
-						"", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Gamma_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Gamma_Distributions",
+							"eta", 
+							"gamma",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"m^2/s", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Gamma_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+		
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL GAMMA DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL GAMMA DISTRIBUTION");
@@ -8413,20 +8784,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Total_load",
-						"", 
-						"Newton", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Total_load_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Total_load_Distributions",
+							"eta", 
+							"Total_load",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"Newton", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Total_load_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL LOAD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL LOAD DISTRIBUTION");
@@ -8461,20 +8845,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"M",
-						"", 
-						"Nm", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Moment_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Moment_Distributions",
+							"eta", 
+							"M",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"Nm", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Moment_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL MOMENT DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL MOMENT DISTRIBUTION");
@@ -8509,20 +8906,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"D",
-						"", 
-						"N", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Drag_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Drag_Distributions",
+							"eta", 
+							"D",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"N", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Drag_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL DRAG DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL DRAG DISTRIBUTION");
@@ -8568,20 +8978,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha", 
-						"CL",
-						"deg", 
-						"", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Lift_Coefficient_Curve_Elevator");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Lift_Coefficient_Curve_Elevator",
+							"alpha", 
+							"CL",
+							null, 
+							null, 
+							null, 
+							null,
+							"deg", 
+							"", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Lift_Coefficient_Curve_Elevator"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL LIFT CURVES (WITH AND WITHOUT ELEVATOR) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL LIFT CURVE WITH ELEVATOR");
@@ -8631,20 +9054,34 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CD", 
-						"CL",
-						"deg", 
-						"", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Polar_Curve_Elevator");
+
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Polar_Curve_Elevator",
+							"CD", 
+							"CL",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Polar_Curve_Elevator"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 
 			}
 			else
@@ -8691,20 +9128,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha", 
-						"CM",
-						"deg", 
-						"", 
-						legendString, 
-						horizontalTailPlotFolderPath,
-						"Moment_Coefficient_Curve_Elevator");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Moment_Coefficient_Curve_Elevator",
+							"alpha", 
+							"CM",
+							null, 
+							null, 
+							null, 
+							null,
+							"deg", 
+							"", 
+							true,
+							legend,
+							horizontalTailPlotFolderPath,
+							"Moment_Coefficient_Curve_Elevator"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE HORIZONTAL TAIL PITCHING MOMENT CURVES (WITH AND WITHOUT ELEVATOR) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE HORIZONTAL TAIL PITCHING MOMENT CURVE WITH ELEVATOR");
@@ -8729,6 +9179,7 @@ public class ACAerodynamicAndStabilityManager {
 						.get(ComponentEnum.VERTICAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
 
+				
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
 						MyArrayUtils.convertToDoublePrimitive(yVector),
@@ -8740,10 +9191,11 @@ public class ACAerodynamicAndStabilityManager {
 						"CL",
 						"deg", 
 						"",
-						verticalTailPlotFolderPath ,
-						"Lift_Coefficient_Curve"+ legendStringCondition,
-						false
+						verticalTailPlotFolderPath,
+						"Lift_Coefficient_Curve" + legendStringCondition,
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
+
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL CLEAN LIFT CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL CLEAN LIFT CURVE");
@@ -8768,6 +9220,7 @@ public class ACAerodynamicAndStabilityManager {
 						.get(ComponentEnum.VERTICAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
 
+				
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
 						MyArrayUtils.convertToDoublePrimitive(yVector),
@@ -8779,10 +9232,11 @@ public class ACAerodynamicAndStabilityManager {
 						"CL",
 						"", 
 						"",
-						verticalTailPlotFolderPath ,
-						"Polar_Curve"+ legendStringCondition,
-						false
+						verticalTailPlotFolderPath,
+						"Polar_Curve" + legendStringCondition,
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
+
 
 			}
 			else
@@ -8808,6 +9262,7 @@ public class ACAerodynamicAndStabilityManager {
 						.get(ComponentEnum.VERTICAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.MOMENT_CURVE_3D_LIFTING_SURFACE)));
 
+				
 				MyChartToFileUtils.plotNoLegend(
 						MyArrayUtils.convertToDoublePrimitive(MyArrayUtils.convertListOfDoubleToDoubleArray(xVector)),
 						MyArrayUtils.convertToDoublePrimitive(yVector),
@@ -8816,13 +9271,14 @@ public class ACAerodynamicAndStabilityManager {
 						null, 
 						null, 
 						"alpha",
-						"CM",
+						"Cm",
 						"deg", 
 						"",
 						verticalTailPlotFolderPath,
-						"Moment_Coefficient_Curve" + legendStringCondition,
-						false
+						"Moment Curve" + legendStringCondition,
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
+
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL CLEAN PITCHING MOMENT CURVE HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL CLEAN PITCHING MOMENT CURVE");
@@ -8859,20 +9315,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Cl",
-						"", 
-						"", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"Lift_Coefficient_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Lift_Coefficient_Distributions",
+							"eta", 
+							"Cl",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Lift_Coefficient_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL CL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL CL DISTRIBUTION");
@@ -8909,20 +9378,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Cd",
-						"", 
-						"", 
-						legendString, 
-						verticalTailPlotFolderPath ,
-						"Drag_Coefficient_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Drag_Coefficient_Distributions",
+							"eta", 
+							"Cd",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Drag_Coefficient_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL CD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL CD DISTRIBUTION");
@@ -8959,20 +9441,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Cm",
-						"", 
-						"", 
-						legendString, 
-						verticalTailPlotFolderPath ,
-						"Moment_Coefficient_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Moment_Coefficient_Distributions",
+							"eta", 
+							"Cm",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Moment_Coefficient_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL CM DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL CM DISTRIBUTION");
@@ -9009,20 +9504,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"cCl",
-						"", 
-						"m", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"cCl_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"cCl_Distributions",
+							"eta", 
+							"cCl",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"m", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"cCl_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}	
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL cCL DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL cCL DISTRIBUTION");
@@ -9059,20 +9567,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Gamma",
-						"", 
-						"", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"Gamma_Distributions" + legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Gamma_Distributions",
+							"eta", 
+							"Gamma",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"m^2/s", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Gamma_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL GAMMA DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL GAMMA DISTRIBUTION");
@@ -9109,20 +9630,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"Total_load",
-						"", 
-						"Newton", 
-						legendString, 
-						verticalTailPlotFolderPath ,
-						"Total_load_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Total_load_Distributions",
+							"eta", 
+							"Total_Load",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"Newton", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Total_load_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL LOAD DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL LOAD DISTRIBUTION");
@@ -9157,20 +9691,34 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"M",
-						"", 
-						"Nm", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"Moment_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Drag_Distributions",
+							"eta", 
+							"D",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"N", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Drag_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+		
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL DRAG DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL DRAG DISTRIBUTION");
@@ -9206,20 +9754,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						0.0, 
-						null, 
-						null, 
-						null,
-						"eta", 
-						"M",
-						"", 
-						"Nm", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"Moment_Distributions"+ legendStringCondition);
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Moment_Distributions",
+							"eta", 
+							"M",
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"Nm", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Moment_Distributions"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL MOMENT DISTRIBUTION HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL MOMENT DISTRIBUTION");
@@ -9244,11 +9805,11 @@ public class ACAerodynamicAndStabilityManager {
 						));
 				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurve().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
+						.get(ComponentEnum.VERTICAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.LIFT_CURVE_3D)));
 				yVectorMatrix.add(_liftingSurfaceAerodynamicManagers.get(ComponentEnum.VERTICAL_TAIL).getLiftCoefficient3DCurveHighLift().get(
 						_theAerodynamicBuilderInterface.getComponentTaskList()
-						.get(ComponentEnum.HORIZONTAL_TAIL)
+						.get(ComponentEnum.VERTICAL_TAIL)
 						.get(AerodynamicAndStabilityEnum.HIGH_LIFT_CURVE_3D)));
 
 				legend.add("Clean configuration");
@@ -9265,20 +9826,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha", 
-						"CL",
-						"deg", 
-						"", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"Lift_Coefficient_Curve_Rudder");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Lift_Coefficient_Curve_Rudder",
+							"alpha",
+							"CL", 
+							null, 
+							null, 
+							null, 
+							null,
+							"deg", 
+							"", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Lift_Coefficient_Curve_Rudder"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL LIFT CURVES (WITH AND WITHOUT RUDDER) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL LIFT CURVE WITH RUDDER");
@@ -9328,21 +9902,34 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CD", 
-						"CL",
-						"deg", 
-						"", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"Polar_Curve_Rudder");
 
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Polar_Curve_Rudder",
+							"CD",
+							"CL", 
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Polar_Curve_Rudder"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL DRAG POLAR CURVES (WITH AND WITHOUT RUDDER) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL DRAG POLAR CURVE WITH RUDDER");
@@ -9388,20 +9975,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha", 
-						"CM",
-						"deg", 
-						"", 
-						legendString, 
-						verticalTailPlotFolderPath,
-						"Moment_Coefficient_Curve_Rudder");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Moment_Coefficient_Curve_Rudder",
+							"alpha",
+							"CM", 
+							null, 
+							null, 
+							null, 
+							null,
+							"deg", 
+							"", 
+							true,
+							legend,
+							verticalTailPlotFolderPath,
+							"Moment_Coefficient_Curve_Rudder"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE VERTICAL TAIL PITCHING MOMENT CURVES (WITH AND WITHOUT RUDDER) HAVE NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE VERTICAL TAIL PITCHING MOMENT CURVE WITH RUDDER");
@@ -9436,7 +10036,7 @@ public class ACAerodynamicAndStabilityManager {
 						"",
 						fuselagePlotFolderPath,
 						"Polar_Curve"+ legendStringCondition,
-						false
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
 			}
 			else
@@ -9470,7 +10070,7 @@ public class ACAerodynamicAndStabilityManager {
 						"",
 						fuselagePlotFolderPath,
 						"Moment_Curve"+ legendStringCondition,
-						false
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
 			}
 			else
@@ -9506,7 +10106,7 @@ public class ACAerodynamicAndStabilityManager {
 						"",
 						nacellePlotFolderPath,
 						"Polar_Curve"+ legendStringCondition,
-						false
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
 			}
 			else
@@ -9540,7 +10140,7 @@ public class ACAerodynamicAndStabilityManager {
 						"",
 						nacellePlotFolderPath,
 						"Moment_Curve"+ legendStringCondition,
-						false
+						_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 						);
 			}
 			else
@@ -9575,7 +10175,7 @@ public class ACAerodynamicAndStabilityManager {
 							"deg", 
 							aircraftPlotFolderPath,
 							"Downwash_Angle",
-							false
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 							);
 				}
 
@@ -9602,7 +10202,7 @@ public class ACAerodynamicAndStabilityManager {
 							"", 
 							aircraftPlotFolderPath,
 							"Downwash_Gradient",
-							false
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
 							);
 				}
 
@@ -9636,21 +10236,33 @@ public class ACAerodynamicAndStabilityManager {
 						yMatrix[i] = MyArrayUtils.convertToDoublePrimitive(yVectorMatrix.get(i));
 						legendString [i] = legend.get(i);
 					}
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Downwash_Angle",
+								"alpha body",
+								"Epsilon", 
+								null, 
+								null, 
+								null, 
+								null,
+								"deg", 
+								"deg", 
+								true,
+								legend,
+								aircraftPlotFolderPath,
+								"Downwash_Angle"+ legendStringCondition,
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"alpha body",  
-							"epsilon",
-							"deg", 
-							"deg", 
-							legendString, 
-							aircraftPlotFolderPath,
-							"Downwash_Angle");
 				}
 
 				if(_theAerodynamicBuilderInterface.getPlotList().get(ComponentEnum.AIRCRAFT).contains(AerodynamicAndStabilityPlotEnum.DOWNWASH_GRADIENT)) {
@@ -9681,20 +10293,32 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"alpha body", 
-							"d_epsilon/d_alpha",
-							"deg", 
-							"", 
-							legendString, 
-							aircraftPlotFolderPath,
-							"Downwash_Gradient");
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Downwash_Gradient",
+								"alpha body",
+								"d_epsilon/d_alpha", 
+								null, 
+								null, 
+								null, 
+								null,
+								"deg", 
+								"deg", 
+								true,
+								legend,
+								aircraftPlotFolderPath,
+								"Downwash_Gradient"+ legendStringCondition,
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -9729,20 +10353,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"alpha body",  
-						"CL",
-						"deg", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Total_Lift_Coefficient");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Total_Lift_Coefficient",
+							"alpha body",
+							"CL", 
+							null, 
+							null, 
+							null, 
+							null,
+							"deg", 
+							"", 
+							true,
+							legend,
+							aircraftPlotFolderPath,
+							"Total_Lift_Coefficient"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
 			else
 				System.err.println("WARNING!! THE TOTAL LIFT CURVE, AT ALL THE ASSIGNED DELTA ELEVATOR DEFLECTIONS, HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TOTAL LIFT CURVES");
@@ -9789,20 +10426,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [ii] = legend.get(ii);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"alpha body", 
-							"CM",
-							"deg", 
-							"", 
-							legendString, 
-							aircraftPlotFolderPath,
-							"Total_Moment_Coefficient_Breakdown_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(i));
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Total_Moment_Coefficient_Breakdown_at_CG",
+								"alpha body",
+								"CM", 
+								null, 
+								null, 
+								null, 
+								null,
+								"deg", 
+								"", 
+								true,
+								legend,
+								aircraftPlotFolderPath,
+								"Total_Moment_Coefficient_Breakdown_at_CG"+ legendStringCondition,
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 			}
 			else
@@ -9840,20 +10490,33 @@ public class ACAerodynamicAndStabilityManager {
 					legendString [i] = legend.get(i);
 				}
 
-				MyChartToFileUtils.plotNOCSV(
-						xMatrix,
-						yMatrix, 
-						null, 
-						null, 
-						null, 
-						null,
-						"CD",  
-						"CL",
-						"", 
-						"", 
-						legendString, 
-						aircraftPlotFolderPath,
-						"Total_Drag_Polar");
+				try {
+					MyChartToFileUtils.plot(
+							xVectorMatrix,
+							yVectorMatrix,
+							"Total_Drag_Polar",
+							"CD",
+							"CL", 
+							null, 
+							null, 
+							null, 
+							null,
+							"", 
+							"", 
+							true,
+							legend,
+							aircraftPlotFolderPath,
+							"Total_Drag_Polar"+ legendStringCondition,
+							_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+							);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
 			}
 			else
 				System.err.println("WARNING!! THE TOTAL DRAG POLAR CURVE, AT ALL THE ASSIGNED DELTA ELEVATOR DEFLECTIONS, HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE TOTAL DRAG POLAR CURVES");
@@ -9890,20 +10553,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"alpha body",  
-							"CM",
-							"deg", 
-							"", 
-							legendString, 
-							aircraftPlotFolderPath,
-							"Total_Moment_Coefficient_with respect_to_alpha_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(j));
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Total_Moment_Coefficient_with_respect_to_alpha_at_CG",
+								"alpha body",
+								"CM", 
+								null, 
+								null, 
+								null, 
+								null,
+								"deg", 
+								"", 
+								true,
+								legend,
+								aircraftPlotFolderPath,
+								"Total_Moment_Coefficient_with_respect_to_alpha_at_CG"+ legendStringCondition,
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 				else
 					System.err.println("WARNING!! THE TOTAL PITCHING MOMENT CURVE AT XCG/C = " + 
@@ -9945,20 +10621,33 @@ public class ACAerodynamicAndStabilityManager {
 						legendString [i] = legend.get(i);
 					}
 
-					MyChartToFileUtils.plotNOCSV(
-							xMatrix,
-							yMatrix, 
-							null, 
-							null, 
-							null, 
-							null,
-							"CL",  
-							"CM",
-							"", 
-							"", 
-							legendString, 
-							aircraftPlotFolderPath,
-							"Total_Moment_Coefficient_with respect_to_CL_at_CG" + _theAerodynamicBuilderInterface.getXCGAircraft().get(j));
+					try {
+						MyChartToFileUtils.plot(
+								xVectorMatrix,
+								yVectorMatrix,
+								"Total_Moment_Coefficient_with_respect_to_CL_at_CG",
+								"CL",
+								"CM", 
+								null, 
+								null, 
+								null, 
+								null,
+								"", 
+								"", 
+								true,
+								legend,
+								aircraftPlotFolderPath,
+								"Total_Moment_Coefficient_with_respect_to_CL_at_CG"+ legendStringCondition,
+								_theAerodynamicBuilderInterface.getTheAircraft().getTheAnalysisManager().getCreateCSVAerodynamicAndStability() 
+								);
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
 				}
 				else
 					System.err.println("WARNING!! THE TOTAL PITCHING MOMENT CURVE AT XCG/C = " + 
@@ -10014,6 +10703,7 @@ public class ACAerodynamicAndStabilityManager {
 				}
 
 				try {
+					
 					MyChartToFileUtils.plot(
 							xVectorMatrix, 
 							yVectorMatrix, 
@@ -10927,10 +11617,9 @@ public class ACAerodynamicAndStabilityManager {
 						"Delta_Rudder_Equilibrium");
 				
 			}
-			else
-				System.err.println("WARNING!! THE EQUILIBRIUM DELTA RUDDER ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE EQUILIBRIUM DELTA RUDDER");
 		}
-		
+			else
+				System.err.println("WARNING!! THE EQUILIBRIUM DELTA RUDDER ARRAY HAS NOT BEEN CALCULATED ... IMPOSSIBLE TO PLOT THE EQUILIBRIUM DELTA RUDDER");	
 	}
 
 	public void calculate(String resultsFolderPath) {
