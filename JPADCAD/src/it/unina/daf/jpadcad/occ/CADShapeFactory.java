@@ -10,18 +10,15 @@ import processing.core.PVector;
 /**
  * Class to provide factory methods
  */
-public abstract class CADShapeFactory
-{
+public abstract class CADShapeFactory {
 	private static final Logger LOGGER=Logger.getLogger(CADShapeFactory.class.getName());
 	private static CADShapeFactory factory;
 	
-	protected CADShapeFactory()
-	{
+	protected CADShapeFactory() {
 	}
 
-	public static void setFactory(CADShapeFactory f)
-	{
-		if(factory == null)
+	public static void setFactory(CADShapeFactory f) {
+		if (factory == null)
 			factory = f;
 		else
 			throw new IllegalStateException("Factory already set to "+factory+".");
@@ -31,22 +28,17 @@ public abstract class CADShapeFactory
 	 * Return factory instance
 	 * @return factory instance
 	 */
-	public static CADShapeFactory getFactory()
-	{
-		if(factory == null)
-		{
-			String cadType = System.getProperty("it.unina.it.daf.jpadcad.occ");
-			if (cadType == null)
-			{
-				cadType = "it.unina.it.daf.jpadcad.occ.OCCShapeFactory";
-				System.setProperty("it.unina.it.daf.jpadcad.occ", cadType);
+	public static CADShapeFactory getFactory() {
+		if (factory == null) {
+			String cadType = System.getProperty("it.unina.daf.jpadcad.occ");
+			if (cadType == null) {
+				cadType = "it.unina.daf.jpadcad.occ.OCCShapeFactory";
+				System.setProperty("it.unina.daf.jpadcad.occ", cadType);
 			}
-			try
-			{
+			try {
 				factory = (CADShapeFactory) Class.forName(cadType).newInstance();
 			}
-			catch (Exception e)
-			{
+			catch (Exception e) {
 				LOGGER.severe("Class "+cadType+" not found");
 				LOGGER.log(Level.SEVERE, null, e);
 				System.exit(1);

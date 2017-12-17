@@ -25,9 +25,6 @@ public class Test16 {
 		
 		// System.out.println(theAircraft);
 		
-		System.out.println("========== [main] Initialize CAD shape factory");
-		OCCUtils.initCADShapeFactory();
-		
 		boolean exportLofts = true;
 		boolean exportSupportShapes = false;
 		
@@ -35,9 +32,10 @@ public class Test16 {
 //		System.out.println(">>>>>> OCCShell default-make-solid: " + OCCShell.isDefaultMakeSolid());
 
 		fuselage.getFuselageCreator().calculateGeometry(40, 3, 40, 20, 20);
-		List<OCCShape> fuselageShapes = AircraftUtils
-				//.getFuselageCAD(fuselage, exportLofts, exportSupportShapes);
-				.getFuselageCAD(fuselage, 0.15, 1.0, 3, 13, 7, 1.0, 0.10, 3, exportLofts, exportSupportShapes);
+		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(
+				fuselage, 
+				0.15, 1.0, 3, 13, 7, 1.0, 0.10, 3, 
+				exportLofts, exportSupportShapes);
 
 		// Write to a file
 		String fileName = "test16.brep";

@@ -319,8 +319,13 @@ public final class AircraftUtils {
 			boolean exportSupportShapes) {
 		if (fuselage == null)
 			return null;
-		if (OCCUtils.theFactory == null)
-			return null;
+		
+		System.out.println("========== [AircraftUtils::getFuselageCAD] ");
+
+		if (OCCUtils.theFactory == null) {
+			System.out.println("========== [AircraftUtils::getFuselageCAD] Initialize CAD shape factory");
+			OCCUtils.initCADShapeFactory(); // theFactory now non-null
+		}
 		
 		OCCShape patch1 = null, // nose cap 
 				patch2 = null, // nose trunk
@@ -328,7 +333,6 @@ public final class AircraftUtils {
 				patch4 = null, // tail trunk 
 				patch5 = null; // tail cap
 		
-		System.out.println("========== [AircraftUtils::getFuselageCAD] ");
 		List<OCCShape> ret = new ArrayList<>();
 		List<OCCShape> extraShapesCap = new ArrayList<>();
 		
@@ -549,7 +553,7 @@ public final class AircraftUtils {
 				List<OCCShape> sewedShapes = new ArrayList<>();
 				TopExp_Explorer exp = new TopExp_Explorer(tds_shape, TopAbs_ShapeEnum.TopAbs_SHELL);
 				while (exp.More() > 0) {
-					sewedShapes.add((OCCShape)OCCShapeFactory.getFactory().newShape(exp.Current()));
+					sewedShapes.add((OCCShape)OCCUtils.theFactory.newShape(exp.Current()));
 					exp.Next();
 				}
 				System.out.println("========== [AircraftUtils::getFuselageCAD] Exporting sewed loft.");
@@ -574,7 +578,7 @@ public final class AircraftUtils {
 						mirrorBuilder.Perform(s, 1);
 						TopoDS_Shape sMirrored = mirrorBuilder.Shape();
 						mirroredShapes.add(
-								(OCCShape)OCCShapeFactory.getFactory().newShape(sMirrored)
+								(OCCShape)OCCUtils.theFactory.newShape(sMirrored)
 								);
 					});
 				System.out.println("Mirrored shapes: " + mirroredShapes.size());
