@@ -338,8 +338,8 @@ public class AirfoilCalc {
 		double KFactorDragPolar;
 		
 		// FIXME: SEE HOW TO DERIVE THESE DATA FROM THE CURVE (not necessary for analyses)
-		Double laminarBucketSemiExtension = null;
-		Double laminarBucketDepth = null;
+		Double laminarBucketSemiExtension = 0.0;
+		Double laminarBucketDepth = 0.0;
 		
 		// cmd Min
 		cdMin = MyArrayUtils.getMin(cdCurve);
