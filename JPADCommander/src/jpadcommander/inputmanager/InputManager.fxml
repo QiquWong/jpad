@@ -225,7 +225,7 @@
                                                                   <ChoiceBox id="canardRiggingAngleUnitChoiceBox" fx:id="canardRiggingAngleUnitChoiceBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                </children>
                                                             </GridPane>
-                                                            <Separator layoutX="-12.0" layoutY="1224.0" prefHeight="2.0" prefWidth="1431.0" />
+                                                            <Separator layoutX="-12.0" layoutY="1215.0" prefHeight="2.0" prefWidth="1431.0" />
                                                             <Label layoutX="8.0" layoutY="1228.0" text="Power Plant:">
                                                                <font>
                                                                   <Font name="System Bold" size="15.0" />
@@ -318,7 +318,7 @@
                                                             </Label>
                                                             <Separator layoutX="-20.0" layoutY="129.0" prefHeight="0.0" prefWidth="1345.0" />
                                                             <ChoiceBox id="choiceBoxRegulationsType" fx:id="regulationsTypeChoiceBox" layoutX="5.0" layoutY="89.0" prefHeight="31.0" prefWidth="384.0" />
-                                                            <TabPane fx:id="tabPaneFuselageSpoilers1" layoutY="1250.0" prefHeight="353.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                            <TabPane fx:id="tabPaneFuselageSpoilers1" layoutY="1260.0" prefHeight="353.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                                <tabs>
                                                                   <Tab text="Engine 1 ">
                                                                      <content>
@@ -370,11 +370,11 @@
                                                                   </Tab>
                                                                </tabs>
                                                             </TabPane>
-                                                            <TabPane fx:id="tabPaneFuselageSpoilers11" layoutY="1647.0" prefHeight="306.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
+                                                            <TabPane fx:id="tabPaneFuselageSpoilers11" layoutY="1655.0" prefHeight="306.0" prefWidth="1072.0" tabClosingPolicy="UNAVAILABLE">
                                                                <tabs>
                                                                   <Tab text="Nacelle 1">
                                                                      <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="519.0" prefWidth="1072.0">
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="317.0" prefWidth="1072.0">
                                                                            <children>
                                                                               <Label layoutX="6.0" prefHeight="21.0" prefWidth="220.0" text="File:">
                                                                                  <font>
@@ -415,6 +415,8 @@
                                                                   </Tab>
                                                                </tabs>
                                                             </TabPane>
+                                                            <Button layoutX="79.0" layoutY="1624.0" mnemonicParsing="false" text="Add Nacelle" />
+                                                            <Button layoutX="108.0" layoutY="1226.0" mnemonicParsing="false" text="Add Engine" />
                                                          </children>
                                                       </AnchorPane>
                                                    </content>

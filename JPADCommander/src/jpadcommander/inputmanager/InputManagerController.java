@@ -33,6 +33,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.util.ShapeUtils;
@@ -53,6 +54,7 @@ import aircraft.components.liftingSurface.creator.LiftingSurfacePanelCreator;
 import aircraft.components.liftingSurface.creator.SlatCreator;
 import aircraft.components.liftingSurface.creator.SpoilerCreator;
 import aircraft.components.liftingSurface.creator.SymmetricFlapCreator;
+import aircraft.components.powerplant.Engine;
 import calculators.geometry.FusNacGeometryCalc;
 import configuration.MyConfiguration;
 import configuration.enumerations.ClassTypeEnum;
@@ -172,6 +174,10 @@ public class InputManagerController {
 	@FXML
 	private TextArea textAreaCanardConsoleOutput;
 	@FXML
+	private TabPane tabPaneAircraftEngines;
+	@FXML
+	private TabPane tabPaneAircraftNacelles;
+	@FXML
 	private TabPane tabPaneFuselageSpoilers;	
 	@FXML
 	private TabPane tabPaneWingPanels;
@@ -213,6 +219,10 @@ public class InputManagerController {
 	private Button updateGeometryButton;
 	@FXML
 	private Button saveAircraftButton;
+	@FXML
+	private Button aircraftAddEngineButton;
+	@FXML
+	private Button aircraftAddNacelleButton;
 	@FXML
 	private Button fuselageAddSpoilerButton;
 	@FXML
@@ -408,7 +418,7 @@ public class InputManagerController {
 			);
 	
 	//...........................................................................................
-	// AIRCRAFT TAB (DATA):
+	// AIRCRAFT TAB (CHOICE BOX):
 	//...........................................................................................
 	// Choice Box
 	@FXML
@@ -416,29 +426,9 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> regulationsTypeChoiceBox;
 	@FXML
-	private ChoiceBox<String> powerPlantMountingPositionTypeChoiceBox1;
+	private ChoiceBox<String> engineMountingPositionTypeChoiceBox1;
 	@FXML
-	private ChoiceBox<String> powerPlantMountingPositionTypeChoiceBox2;
-	@FXML
-	private ChoiceBox<String> powerPlantMountingPositionTypeChoiceBox3;
-	@FXML
-	private ChoiceBox<String> powerPlantMountingPositionTypeChoiceBox4;
-	@FXML
-	private ChoiceBox<String> powerPlantMountingPositionTypeChoiceBox5;
-	@FXML
-	private ChoiceBox<String> powerPlantMountingPositionTypeChoiceBox6;
-	@FXML
-	private ChoiceBox<String> nacellesMountingPositionTypeChoiceBox1;
-	@FXML
-	private ChoiceBox<String> nacellesMountingPositionTypeChoiceBox2;
-	@FXML
-	private ChoiceBox<String> nacellesMountingPositionTypeChoiceBox3;
-	@FXML
-	private ChoiceBox<String> nacellesMountingPositionTypeChoiceBox4;
-	@FXML
-	private ChoiceBox<String> nacellesMountingPositionTypeChoiceBox5;
-	@FXML
-	private ChoiceBox<String> nacellesMountingPositionTypeChoiceBox6;
+	private ChoiceBox<String> nacelleMountingPositionTypeChoiceBox1;
 	@FXML
 	private ChoiceBox<String> landingGearsMountingPositionTypeChoiceBox;
 	
@@ -448,12 +438,19 @@ public class InputManagerController {
 	private List<TextField> textFieldAircraftEngineZList = new ArrayList<>();
 	private List<ChoiceBox<String>> choiceBoxesAircraftEnginePositonList = new ArrayList<>();
 	private List<TextField> textFieldAircraftEngineTiltList = new ArrayList<>();
+	private List<ChoiceBox<String>> choiceBoxAircraftEngineXUnitList;
+	private List<ChoiceBox<String>> choiceBoxAircraftEngineYUnitList;
+	private List<ChoiceBox<String>> choiceBoxAircraftEngineZUnitList;
+	private List<ChoiceBox<String>> choiceBoxAircraftEngineTiltUnitList;
 	
 	private List<TextField> textFieldsAircraftNacelleFileList = new ArrayList<>();
 	private List<TextField> textFieldAircraftNacelleXList = new ArrayList<>();
 	private List<TextField> textFieldAircraftNacelleYList = new ArrayList<>();
 	private List<TextField> textFieldAircraftNacelleZList = new ArrayList<>();
 	private List<ChoiceBox<String>> choiceBoxesAircraftNacellePositonList = new ArrayList<>();
+	private List<ChoiceBox<String>> choiceBoxAircraftNacelleXUnitList;
+	private List<ChoiceBox<String>> choiceBoxAircraftNacelleYUnitList;
+	private List<ChoiceBox<String>> choiceBoxAircraftNacelleZUnitList;
 	
 	//...........................................................................................
 	// AIRCRAFT TAB (DATA):
@@ -513,111 +510,21 @@ public class InputManagerController {
 	@FXML
 	private TextField textFieldAircraftEngineFile1;
 	@FXML
-	private TextField textFieldAircraftEngineFile2;
-	@FXML
-	private TextField textFieldAircraftEngineFile3;
-	@FXML
-	private TextField textFieldAircraftEngineFile4;
-	@FXML
-	private TextField textFieldAircraftEngineFile5;
-	@FXML
-	private TextField textFieldAircraftEngineFile6;
-	@FXML
 	private TextField textFieldAircraftEngineX1;
-	@FXML
-	private TextField textFieldAircraftEngineX2;
-	@FXML
-	private TextField textFieldAircraftEngineX3;
-	@FXML
-	private TextField textFieldAircraftEngineX4;
-	@FXML
-	private TextField textFieldAircraftEngineX5;
-	@FXML
-	private TextField textFieldAircraftEngineX6;
 	@FXML
 	private TextField textFieldAircraftEngineY1;
 	@FXML
-	private TextField textFieldAircraftEngineY2;
-	@FXML
-	private TextField textFieldAircraftEngineY3;
-	@FXML
-	private TextField textFieldAircraftEngineY4;
-	@FXML
-	private TextField textFieldAircraftEngineY5;
-	@FXML
-	private TextField textFieldAircraftEngineY6;
-	@FXML
 	private TextField textFieldAircraftEngineZ1;
-	@FXML
-	private TextField textFieldAircraftEngineZ2;
-	@FXML
-	private TextField textFieldAircraftEngineZ3;
-	@FXML
-	private TextField textFieldAircraftEngineZ4;
-	@FXML
-	private TextField textFieldAircraftEngineZ5;
-	@FXML
-	private TextField textFieldAircraftEngineZ6;
 	@FXML
 	private TextField textFieldAircraftEngineTilt1;
 	@FXML
-	private TextField textFieldAircraftEngineTilt2;
-	@FXML
-	private TextField textFieldAircraftEngineTilt3;
-	@FXML
-	private TextField textFieldAircraftEngineTilt4;
-	@FXML
-	private TextField textFieldAircraftEngineTilt5;
-	@FXML
-	private TextField textFieldAircraftEngineTilt6;
-	@FXML
 	private TextField textFieldAircraftNacelleFile1;
-	@FXML
-	private TextField textFieldAircraftNacelleFile2;
-	@FXML
-	private TextField textFieldAircraftNacelleFile3;
-	@FXML
-	private TextField textFieldAircraftNacelleFile4;
-	@FXML
-	private TextField textFieldAircraftNacelleFile5;
-	@FXML
-	private TextField textFieldAircraftNacelleFile6;
 	@FXML
 	private TextField textFieldAircraftNacelleX1;
 	@FXML
-	private TextField textFieldAircraftNacelleX2;
-	@FXML
-	private TextField textFieldAircraftNacelleX3;
-	@FXML
-	private TextField textFieldAircraftNacelleX4;
-	@FXML
-	private TextField textFieldAircraftNacelleX5;
-	@FXML
-	private TextField textFieldAircraftNacelleX6;
-	@FXML
 	private TextField textFieldAircraftNacelleY1;
 	@FXML
-	private TextField textFieldAircraftNacelleY2;
-	@FXML
-	private TextField textFieldAircraftNacelleY3;
-	@FXML
-	private TextField textFieldAircraftNacelleY4;
-	@FXML
-	private TextField textFieldAircraftNacelleY5;
-	@FXML
-	private TextField textFieldAircraftNacelleY6;
-	@FXML
 	private TextField textFieldAircraftNacelleZ1;
-	@FXML
-	private TextField textFieldAircraftNacelleZ2;
-	@FXML
-	private TextField textFieldAircraftNacelleZ3;
-	@FXML
-	private TextField textFieldAircraftNacelleZ4;
-	@FXML
-	private TextField textFieldAircraftNacelleZ5;
-	@FXML
-	private TextField textFieldAircraftNacelleZ6;
 	@FXML
 	private TextField textFieldAircraftLandingGearsFile;
 	@FXML
@@ -677,19 +584,19 @@ public class InputManagerController {
 	@FXML
 	private ChoiceBox<String> canardRiggingAngleUnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> powerPlantXUnitChoiceBox;
+	private ChoiceBox<String> engineX1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> powerPlantYUnitChoiceBox;
+	private ChoiceBox<String> engineY1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> powerPlantZUnitChoiceBox;
+	private ChoiceBox<String> engineZ1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> powerPlantTiltAngleUnitChoiceBox;
+	private ChoiceBox<String> engineTilt1AngleUnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> nacelleXUnitChoiceBox;
+	private ChoiceBox<String> nacelleX1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> nacelleYUnitChoiceBox;
+	private ChoiceBox<String> nacelleY1UnitChoiceBox;
 	@FXML
-	private ChoiceBox<String> nacelleZUnitChoiceBox;
+	private ChoiceBox<String> nacelleZ1UnitChoiceBox;
 	@FXML
 	private ChoiceBox<String> landingGearsXUnitChoiceBox;
 	@FXML
@@ -1442,6 +1349,14 @@ public class InputManagerController {
 		for(int i=0; i<tabPaneFuselageSpoilers.getTabs().size(); i++)
 			removeContentOnSpoilerTabClose(tabPaneFuselageSpoilers.getTabs().get(i), ComponentEnum.FUSELAGE);
 		
+		tabPaneAircraftEngines.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		for(int i=0; i<tabPaneAircraftEngines.getTabs().size(); i++)
+			removeContentOnEngineTabClose(tabPaneAircraftEngines.getTabs().get(i));
+		
+		tabPaneAircraftNacelles.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
+		for(int i=0; i<tabPaneAircraftNacelles.getTabs().size(); i++)
+			removeContentOnNacelleTabClose(tabPaneAircraftNacelles.getTabs().get(i));
+		
 		tabPaneWingPanels.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingFlaps.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
 		tabPaneWingSlats.setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
@@ -1494,18 +1409,8 @@ public class InputManagerController {
 		aircraftTypeChoiceBox.setItems(aircraftTypeList);
 		regulationsTypeChoiceBox.setItems(regulationsTypeList);
 		windshieldTypeChoiceBox.setItems(windshieldTypeList);
-		powerPlantMountingPositionTypeChoiceBox1.setItems(powerPlantMountingPositionTypeList);
-		powerPlantMountingPositionTypeChoiceBox2.setItems(powerPlantMountingPositionTypeList);
-		powerPlantMountingPositionTypeChoiceBox3.setItems(powerPlantMountingPositionTypeList);
-		powerPlantMountingPositionTypeChoiceBox4.setItems(powerPlantMountingPositionTypeList);
-		powerPlantMountingPositionTypeChoiceBox5.setItems(powerPlantMountingPositionTypeList);
-		powerPlantMountingPositionTypeChoiceBox6.setItems(powerPlantMountingPositionTypeList);
-		nacellesMountingPositionTypeChoiceBox1.setItems(nacelleMountingPositionTypeList);
-		nacellesMountingPositionTypeChoiceBox2.setItems(nacelleMountingPositionTypeList);
-		nacellesMountingPositionTypeChoiceBox3.setItems(nacelleMountingPositionTypeList);
-		nacellesMountingPositionTypeChoiceBox4.setItems(nacelleMountingPositionTypeList);
-		nacellesMountingPositionTypeChoiceBox5.setItems(nacelleMountingPositionTypeList);
-		nacellesMountingPositionTypeChoiceBox6.setItems(nacelleMountingPositionTypeList);
+		engineMountingPositionTypeChoiceBox1.setItems(powerPlantMountingPositionTypeList);
+		nacelleMountingPositionTypeChoiceBox1.setItems(nacelleMountingPositionTypeList);
 		landingGearsMountingPositionTypeChoiceBox.setItems(landingGearsMountingPositionTypeList);
 		fuselageAdjustCriterionChoiceBox.setItems(fuselageAdjustCriteriaTypeList);
 		cabinConfigurationClassesTypeChoiceBox1.setItems(cabinConfigurationClassesTypeList);
@@ -1535,13 +1440,13 @@ public class InputManagerController {
 		canardYUnitChoiceBox.setItems(lengthUnitsList);
 		canardZUnitChoiceBox.setItems(lengthUnitsList);
 		canardRiggingAngleUnitChoiceBox.setItems(angleUnitsList);
-		powerPlantXUnitChoiceBox.setItems(lengthUnitsList);
-		powerPlantYUnitChoiceBox.setItems(lengthUnitsList);
-		powerPlantZUnitChoiceBox.setItems(lengthUnitsList);
-		powerPlantTiltAngleUnitChoiceBox.setItems(angleUnitsList);
-		nacelleXUnitChoiceBox.setItems(lengthUnitsList);
-		nacelleYUnitChoiceBox.setItems(lengthUnitsList);
-		nacelleZUnitChoiceBox.setItems(lengthUnitsList);
+		engineX1UnitChoiceBox.setItems(lengthUnitsList);
+		engineY1UnitChoiceBox.setItems(lengthUnitsList);
+		engineZ1UnitChoiceBox.setItems(lengthUnitsList);
+		engineTilt1AngleUnitChoiceBox.setItems(angleUnitsList);
+		nacelleX1UnitChoiceBox.setItems(lengthUnitsList);
+		nacelleY1UnitChoiceBox.setItems(lengthUnitsList);
+		nacelleZ1UnitChoiceBox.setItems(lengthUnitsList);
 		landingGearsXUnitChoiceBox.setItems(lengthUnitsList);
 		landingGearsYUnitChoiceBox.setItems(lengthUnitsList);
 		landingGearsZUnitChoiceBox.setItems(lengthUnitsList);
@@ -1623,6 +1528,64 @@ public class InputManagerController {
 		canardOuterSectionTwistTipPanel1UnitChoiceBox.setItems(angleUnitsList);
 		canardMinimumDeflectionAngleControlSurface1UnitChoiceBox.setItems(angleUnitsList);
 		canardMaximumDeflectionAngleControlSurface1UnitChoiceBox.setItems(angleUnitsList);
+		
+		//.......................................................................................
+		// ENGINE LISTS INITIALIZATION
+		textFieldsAircraftEngineFileList = new ArrayList<>();
+		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile1);
+		
+		textFieldAircraftEngineXList = new ArrayList<>();
+		textFieldAircraftEngineXList.add(textFieldAircraftEngineX1);
+		
+		textFieldAircraftEngineYList = new ArrayList<>();
+		textFieldAircraftEngineYList.add(textFieldAircraftEngineY1);
+		
+		textFieldAircraftEngineZList = new ArrayList<>();
+		textFieldAircraftEngineZList.add(textFieldAircraftEngineZ1);
+		
+		textFieldAircraftEngineTiltList = new ArrayList<>();
+		textFieldAircraftEngineTiltList.add(textFieldAircraftEngineTilt1);
+		
+		choiceBoxesAircraftEnginePositonList = new ArrayList<>();
+		choiceBoxesAircraftEnginePositonList.add(engineMountingPositionTypeChoiceBox1);
+		
+		choiceBoxAircraftEngineXUnitList = new ArrayList<>();
+		choiceBoxAircraftEngineXUnitList.add(engineX1UnitChoiceBox);
+		
+		choiceBoxAircraftEngineYUnitList = new ArrayList<>();
+		choiceBoxAircraftEngineYUnitList.add(engineY1UnitChoiceBox);
+		
+		choiceBoxAircraftEngineZUnitList = new ArrayList<>();
+		choiceBoxAircraftEngineZUnitList.add(engineZ1UnitChoiceBox);
+		
+		choiceBoxAircraftEngineTiltUnitList = new ArrayList<>();
+		choiceBoxAircraftEngineTiltUnitList.add(engineTilt1AngleUnitChoiceBox);
+		
+		//.......................................................................................
+		// NACELLE LISTS INITIALIZATION
+		textFieldsAircraftNacelleFileList = new ArrayList<>();
+		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile1);
+		
+		textFieldAircraftNacelleXList = new ArrayList<>();
+		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX1);
+		
+		textFieldAircraftNacelleYList = new ArrayList<>();
+		textFieldAircraftNacelleYList.add(textFieldAircraftNacelleY1);
+		
+		textFieldAircraftNacelleZList = new ArrayList<>();
+		textFieldAircraftNacelleZList.add(textFieldAircraftNacelleZ1);
+		
+		choiceBoxesAircraftNacellePositonList = new ArrayList<>();
+		choiceBoxesAircraftNacellePositonList.add(nacelleMountingPositionTypeChoiceBox1);
+		
+		choiceBoxAircraftNacelleXUnitList = new ArrayList<>();
+		choiceBoxAircraftNacelleXUnitList.add(nacelleX1UnitChoiceBox);
+		
+		choiceBoxAircraftNacelleYUnitList = new ArrayList<>();
+		choiceBoxAircraftNacelleYUnitList.add(nacelleY1UnitChoiceBox);
+		
+		choiceBoxAircraftNacelleZUnitList = new ArrayList<>();
+		choiceBoxAircraftNacelleZUnitList.add(nacelleZ1UnitChoiceBox);
 		
 		//.......................................................................................
 		// FUSELAGE LISTS INITIALIZATION
@@ -2097,6 +2060,40 @@ public class InputManagerController {
 		
 	}
 	
+	private void removeContentOnEngineTabClose (Tab tab) {
+
+		int indexEngine = tabPaneAircraftEngines.getTabs().indexOf(tab);
+
+		textFieldsAircraftEngineFileList.remove(indexEngine);
+		textFieldAircraftEngineXList.remove(indexEngine);
+		textFieldAircraftEngineYList.remove(indexEngine);
+		textFieldAircraftEngineZList.remove(indexEngine);
+		textFieldAircraftEngineTiltList.remove(indexEngine);
+		choiceBoxesAircraftEnginePositonList.remove(indexEngine);
+
+		choiceBoxAircraftEngineXUnitList.remove(indexEngine);
+		choiceBoxAircraftEngineYUnitList.remove(indexEngine);
+		choiceBoxAircraftEngineZUnitList.remove(indexEngine);
+		choiceBoxAircraftEngineTiltUnitList.remove(indexEngine);
+		
+	}
+	
+	private void removeContentOnNacelleTabClose (Tab tab) {
+		
+		int indexNacelle = tabPaneAircraftNacelles.getTabs().indexOf(tab);
+		
+		textFieldsAircraftNacelleFileList.remove(indexNacelle);
+		textFieldAircraftNacelleXList.remove(indexNacelle);
+		textFieldAircraftNacelleYList.remove(indexNacelle);
+		textFieldAircraftNacelleZList.remove(indexNacelle);
+		choiceBoxesAircraftNacellePositonList.remove(indexNacelle);
+		
+		choiceBoxAircraftNacelleXUnitList.remove(indexNacelle);
+		choiceBoxAircraftNacelleYUnitList.remove(indexNacelle);
+		choiceBoxAircraftNacelleZUnitList.remove(indexNacelle);
+		
+	}
+	
 	private void removeAirfoilDetailsButtonFromMapOnTabClose(Tab tab, ComponentEnum type) {
 		
 		tab.setOnCloseRequest(new EventHandler<Event>() {
@@ -2375,7 +2372,7 @@ public class InputManagerController {
 		
 	}
 	
-	private void removeContentOnSpoilerTabClose(Tab tab, ComponentEnum type) {
+	private void removeContentOnSpoilerTabClose (Tab tab, ComponentEnum type) {
 		
 		tab.setOnCloseRequest(new EventHandler<Event>() {
 
@@ -2396,6 +2393,7 @@ public class InputManagerController {
 					choiceBoxWingMinimumDeflectionAngleSpoilerUnitList.remove(indexWing);
 					choiceBoxWingMaximumDeflectionAngleSpoilerUnitList.remove(indexWing);					
 					break;
+					
 				case FUSELAGE:
 					int indexFuselage = tabPaneFuselageSpoilers.getTabs().indexOf(tab);
 					
@@ -2409,7 +2407,7 @@ public class InputManagerController {
 					choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.remove(indexFuselage);
 					choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.remove(indexFuselage);
 					break;
-					
+
 				default:
 					break;
 				}
@@ -2825,6 +2823,251 @@ public class InputManagerController {
 		// disable the panels tab pane if the check-box is checked
 		tabPaneWingPanels.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
 		wingAddPanelButton.disableProperty().bind(equivalentWingCheckBox.selectedProperty());
+		
+	}
+	
+	@FXML
+	private void addAircraftEngine() {
+		
+		Tab newEngineTab = new Tab("Engine " + (tabPaneAircraftEngines.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label engineFileLabel = new Label("File:");
+		engineFileLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineFileLabel.setLayoutX(6.0);
+		engineFileLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(engineFileLabel);
+		
+		TextField engineFileTextField = new TextField();
+		engineFileTextField.setLayoutX(6.0);
+		engineFileTextField.setLayoutY(21);
+		engineFileTextField.setPrefWidth(340);
+		engineFileTextField.setPrefHeight(31);
+		contentPane.getChildren().add(engineFileTextField);
+		
+		Label engineXPositionLabel = new Label("X:");
+		engineXPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineXPositionLabel.setLayoutX(6.0);
+		engineXPositionLabel.setLayoutY(52.0);
+		contentPane.getChildren().add(engineXPositionLabel);
+		
+		TextField engineXPositionTextField = new TextField();
+		engineXPositionTextField.setLayoutX(6.0);
+		engineXPositionTextField.setLayoutY(73);
+		engineXPositionTextField.setPrefWidth(340);
+		engineXPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(engineXPositionTextField);
+		
+		ChoiceBox<String> engineXChoiceBox = new ChoiceBox<String>();
+		engineXChoiceBox.setLayoutX(348.0);
+		engineXChoiceBox.setLayoutY(74);
+		engineXChoiceBox.setPrefWidth(47);
+		engineXChoiceBox.setPrefHeight(30);
+		engineXChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(engineXChoiceBox);
+		
+		Label engineYPositionLabel = new Label("Y:");
+		engineYPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineYPositionLabel.setLayoutX(6.0);
+		engineYPositionLabel.setLayoutY(104.0);
+		contentPane.getChildren().add(engineYPositionLabel);
+		
+		TextField engineYPositionTextField = new TextField();
+		engineYPositionTextField.setLayoutX(6.0);
+		engineYPositionTextField.setLayoutY(125);
+		engineYPositionTextField.setPrefWidth(340);
+		engineYPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(engineYPositionTextField);
+		
+		ChoiceBox<String> engineYChoiceBox = new ChoiceBox<String>();
+		engineYChoiceBox.setLayoutX(348.0);
+		engineYChoiceBox.setLayoutY(126);
+		engineYChoiceBox.setPrefWidth(47);
+		engineYChoiceBox.setPrefHeight(30);
+		engineYChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(engineYChoiceBox);
+		
+		Label engineZPositionLabel = new Label("Z:");
+		engineZPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineZPositionLabel.setLayoutX(7.0);
+		engineZPositionLabel.setLayoutY(156.0);
+		contentPane.getChildren().add(engineZPositionLabel);
+		
+		TextField engineZPositionTextField = new TextField();
+		engineZPositionTextField.setLayoutX(7.0);
+		engineZPositionTextField.setLayoutY(177);
+		engineZPositionTextField.setPrefWidth(340);
+		engineZPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(engineZPositionTextField);
+		
+		ChoiceBox<String> engineZChoiceBox = new ChoiceBox<String>();
+		engineZChoiceBox.setLayoutX(348.0);
+		engineZChoiceBox.setLayoutY(178);
+		engineZChoiceBox.setPrefWidth(47);
+		engineZChoiceBox.setPrefHeight(30);
+		engineZChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(engineZChoiceBox);
+		
+		Label engineTiltAngleLabel = new Label("Tilting Angle:");
+		engineTiltAngleLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineTiltAngleLabel.setLayoutX(7.0);
+		engineTiltAngleLabel.setLayoutY(208.0);
+		contentPane.getChildren().add(engineTiltAngleLabel);
+		
+		TextField engineTiltAngleTextField = new TextField();
+		engineTiltAngleTextField.setLayoutX(7.0);
+		engineTiltAngleTextField.setLayoutY(229);
+		engineTiltAngleTextField.setPrefWidth(340);
+		engineTiltAngleTextField.setPrefHeight(31);
+		contentPane.getChildren().add(engineTiltAngleTextField);
+		
+		ChoiceBox<String> engineTiltAngleChoiceBox = new ChoiceBox<String>();
+		engineTiltAngleChoiceBox.setLayoutX(348.0);
+		engineTiltAngleChoiceBox.setLayoutY(230);
+		engineTiltAngleChoiceBox.setPrefWidth(47);
+		engineTiltAngleChoiceBox.setPrefHeight(30);
+		engineTiltAngleChoiceBox.setItems(angleUnitsList);
+		contentPane.getChildren().add(engineTiltAngleChoiceBox);
+		
+		Label engineMountingPositionLabel = new Label("Position:");
+		engineMountingPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		engineMountingPositionLabel.setLayoutX(7.0);
+		engineMountingPositionLabel.setLayoutY(260.0);
+		contentPane.getChildren().add(engineMountingPositionLabel);
+		
+		ChoiceBox<String> engineMountingPositionChoiceBox = new ChoiceBox<String>();
+		engineMountingPositionChoiceBox.setLayoutX(6.0);
+		engineMountingPositionChoiceBox.setLayoutY(282);
+		engineMountingPositionChoiceBox.setPrefWidth(340);
+		engineMountingPositionChoiceBox.setPrefHeight(31);
+		engineMountingPositionChoiceBox.setItems(powerPlantMountingPositionTypeList);
+		contentPane.getChildren().add(engineMountingPositionChoiceBox);
+		
+		textFieldsAircraftEngineFileList.add(engineFileTextField);
+		textFieldAircraftEngineXList.add(engineXPositionTextField);
+		textFieldAircraftEngineYList.add(engineYPositionTextField);
+		textFieldAircraftEngineZList.add(engineZPositionTextField);
+		textFieldAircraftEngineTiltList.add(engineTiltAngleTextField);
+		choiceBoxesAircraftEnginePositonList.add(engineMountingPositionChoiceBox);
+		
+		choiceBoxAircraftEngineXUnitList.add(engineXChoiceBox);
+		choiceBoxAircraftEngineYUnitList.add(engineYChoiceBox);
+		choiceBoxAircraftEngineZUnitList.add(engineZChoiceBox);
+		choiceBoxAircraftEngineTiltUnitList.add(engineTiltAngleChoiceBox);
+		
+		newEngineTab.setContent(contentPane);
+		tabPaneAircraftEngines.getTabs().add(newEngineTab);
+		
+	}
+	
+	@FXML
+	private void addAircraftNacelle() {
+		
+		Tab newNacelleTab = new Tab("Nacelle " + (tabPaneAircraftNacelles.getTabs().size()+1));
+		Pane contentPane = new Pane();
+		
+		Label nacelleFileLabel = new Label("File:");
+		nacelleFileLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleFileLabel.setLayoutX(6.0);
+		nacelleFileLabel.setLayoutY(0.0);
+		contentPane.getChildren().add(nacelleFileLabel);
+		
+		TextField nacelleFileTextField = new TextField();
+		nacelleFileTextField.setLayoutX(6.0);
+		nacelleFileTextField.setLayoutY(21);
+		nacelleFileTextField.setPrefWidth(340);
+		nacelleFileTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleFileTextField);
+		
+		Label nacelleXPositionLabel = new Label("X:");
+		nacelleXPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleXPositionLabel.setLayoutX(6.0);
+		nacelleXPositionLabel.setLayoutY(52.0);
+		contentPane.getChildren().add(nacelleXPositionLabel);
+		
+		TextField nacelleXPositionTextField = new TextField();
+		nacelleXPositionTextField.setLayoutX(6.0);
+		nacelleXPositionTextField.setLayoutY(73);
+		nacelleXPositionTextField.setPrefWidth(340);
+		nacelleXPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleXPositionTextField);
+		
+		ChoiceBox<String> nacelleXChoiceBox = new ChoiceBox<String>();
+		nacelleXChoiceBox.setLayoutX(348.0);
+		nacelleXChoiceBox.setLayoutY(74);
+		nacelleXChoiceBox.setPrefWidth(47);
+		nacelleXChoiceBox.setPrefHeight(30);
+		nacelleXChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(nacelleXChoiceBox);
+		
+		Label nacelleYPositionLabel = new Label("Y:");
+		nacelleYPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleYPositionLabel.setLayoutX(6.0);
+		nacelleYPositionLabel.setLayoutY(104.0);
+		contentPane.getChildren().add(nacelleYPositionLabel);
+		
+		TextField nacelleYPositionTextField = new TextField();
+		nacelleYPositionTextField.setLayoutX(6.0);
+		nacelleYPositionTextField.setLayoutY(125);
+		nacelleYPositionTextField.setPrefWidth(340);
+		nacelleYPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleYPositionTextField);
+		
+		ChoiceBox<String> nacelleYChoiceBox = new ChoiceBox<String>();
+		nacelleYChoiceBox.setLayoutX(348.0);
+		nacelleYChoiceBox.setLayoutY(126);
+		nacelleYChoiceBox.setPrefWidth(47);
+		nacelleYChoiceBox.setPrefHeight(30);
+		nacelleYChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(nacelleYChoiceBox);
+		
+		Label nacelleZPositionLabel = new Label("Z:");
+		nacelleZPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleZPositionLabel.setLayoutX(7.0);
+		nacelleZPositionLabel.setLayoutY(156.0);
+		contentPane.getChildren().add(nacelleZPositionLabel);
+		
+		TextField nacelleZPositionTextField = new TextField();
+		nacelleZPositionTextField.setLayoutX(7.0);
+		nacelleZPositionTextField.setLayoutY(177);
+		nacelleZPositionTextField.setPrefWidth(340);
+		nacelleZPositionTextField.setPrefHeight(31);
+		contentPane.getChildren().add(nacelleZPositionTextField);
+		
+		ChoiceBox<String> nacelleZChoiceBox = new ChoiceBox<String>();
+		nacelleZChoiceBox.setLayoutX(348.0);
+		nacelleZChoiceBox.setLayoutY(178);
+		nacelleZChoiceBox.setPrefWidth(47);
+		nacelleZChoiceBox.setPrefHeight(30);
+		nacelleZChoiceBox.setItems(lengthUnitsList);
+		contentPane.getChildren().add(nacelleZChoiceBox);
+		
+		Label nacelleMountingPositionLabel = new Label("Position:");
+		nacelleMountingPositionLabel.setFont(Font.font("System", FontWeight.BOLD, 15));
+		nacelleMountingPositionLabel.setLayoutX(6.0);
+		nacelleMountingPositionLabel.setLayoutY(208.0);
+		contentPane.getChildren().add(nacelleMountingPositionLabel);
+		
+		ChoiceBox<String> nacelleMountingPositionChoiceBox = new ChoiceBox<String>();
+		nacelleMountingPositionChoiceBox.setLayoutX(6.0);
+		nacelleMountingPositionChoiceBox.setLayoutY(230);
+		nacelleMountingPositionChoiceBox.setPrefWidth(340);
+		nacelleMountingPositionChoiceBox.setPrefHeight(31);
+		nacelleMountingPositionChoiceBox.setItems(nacelleMountingPositionTypeList);
+		contentPane.getChildren().add(nacelleMountingPositionChoiceBox);
+		
+		textFieldsAircraftNacelleFileList.add(nacelleFileTextField);
+		textFieldAircraftNacelleXList.add(nacelleXPositionTextField);
+		textFieldAircraftNacelleYList.add(nacelleYPositionTextField);
+		textFieldAircraftNacelleZList.add(nacelleZPositionTextField);
+		choiceBoxesAircraftNacellePositonList.add(nacelleMountingPositionChoiceBox);
+		
+		choiceBoxAircraftNacelleXUnitList.add(nacelleXChoiceBox);
+		choiceBoxAircraftNacelleYUnitList.add(nacelleYChoiceBox);
+		choiceBoxAircraftNacelleZUnitList.add(nacelleZChoiceBox);
+		
+		newNacelleTab.setContent(contentPane);
+		tabPaneAircraftNacelles.getTabs().add(newNacelleTab);
 		
 	}
 	
@@ -5506,26 +5749,46 @@ public class InputManagerController {
 		canardRiggingAngleUnitChoiceBox.getSelectionModel().clearSelection();
 		
 		// Power Plant
-		powerPlantXUnitChoiceBox.getSelectionModel().clearSelection();
-		powerPlantYUnitChoiceBox.getSelectionModel().clearSelection();
-		powerPlantZUnitChoiceBox.getSelectionModel().clearSelection();
-		powerPlantTiltAngleUnitChoiceBox.getSelectionModel().clearSelection();
+		textFieldAircraftEngineFile1.clear();
+		textFieldAircraftEngineX1.clear();
+		textFieldAircraftEngineY1.clear();
+		textFieldAircraftEngineZ1.clear();
+		textFieldAircraftEngineTilt1.clear();
+		engineX1UnitChoiceBox.getSelectionModel().clearSelection();
+		engineY1UnitChoiceBox.getSelectionModel().clearSelection();
+		engineZ1UnitChoiceBox.getSelectionModel().clearSelection();
+		engineTilt1AngleUnitChoiceBox.getSelectionModel().clearSelection();
+		engineMountingPositionTypeChoiceBox1.getSelectionModel().clearSelection();
 		textFieldsAircraftEngineFileList.stream().forEach(t -> t.clear());
 		textFieldAircraftEngineXList.stream().forEach(t -> t.clear());
 		textFieldAircraftEngineYList.stream().forEach(t -> t.clear());
 		textFieldAircraftEngineZList.stream().forEach(t -> t.clear());
 		choiceBoxesAircraftEnginePositonList.stream().forEach(ep -> ep.getSelectionModel().clearSelection());
 		textFieldAircraftEngineTiltList.stream().forEach(t -> t.clear());
+		choiceBoxAircraftEngineXUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		choiceBoxAircraftEngineYUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		choiceBoxAircraftEngineZUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		choiceBoxAircraftEngineTiltUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		tabPaneAircraftEngines.getTabs().remove(1, tabPaneAircraftEngines.getTabs().size());
 		
 		// Nacelle
-		nacelleXUnitChoiceBox.getSelectionModel().clearSelection();
-		nacelleYUnitChoiceBox.getSelectionModel().clearSelection();
-		nacelleZUnitChoiceBox.getSelectionModel().clearSelection();
+		textFieldAircraftNacelleFile1.clear();
+		textFieldAircraftNacelleX1.clear();
+		textFieldAircraftNacelleY1.clear();
+		textFieldAircraftNacelleZ1.clear();
+		nacelleMountingPositionTypeChoiceBox1.getSelectionModel().clearSelection();
+		nacelleX1UnitChoiceBox.getSelectionModel().clearSelection();
+		nacelleY1UnitChoiceBox.getSelectionModel().clearSelection();
+		nacelleZ1UnitChoiceBox.getSelectionModel().clearSelection();
 		textFieldsAircraftNacelleFileList.stream().forEach(t -> t.clear());
 		textFieldAircraftNacelleXList.stream().forEach(t -> t.clear());
 		textFieldAircraftNacelleYList.stream().forEach(t -> t.clear());
 		textFieldAircraftNacelleZList.stream().forEach(t -> t.clear());
 		choiceBoxesAircraftNacellePositonList.stream().forEach(ep -> ep.getSelectionModel().clearSelection());
+		choiceBoxAircraftNacelleXUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		choiceBoxAircraftNacelleYUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		choiceBoxAircraftNacelleZUnitList.stream().forEach(cb -> cb.getSelectionModel().clearSelection());
+		tabPaneAircraftNacelles.getTabs().remove(1, tabPaneAircraftNacelles.getTabs().size());
 		
 		// Landing Gears
 		textFieldAircraftLandingGearsFile.clear();
@@ -5611,6 +5874,7 @@ public class InputManagerController {
 			textFieldFuselageOuterChordwisePositionSpoilerList.stream().forEach(t -> t.clear());
 			textFieldFuselageMinimumDeflectionAngleSpoilerList.stream().forEach(t -> t.clear());
 			textFieldFuselageMaximumDeflectionAngleSpoilerList.stream().forEach(t -> t.clear());
+			tabPaneFuselageSpoilers.getTabs().remove(1, tabPaneFuselageSpoilers.getTabs().size());
 		}
 
 		// 3 View and TextArea
@@ -8297,352 +8561,374 @@ public class InputManagerController {
 			textFieldAircraftCanardRiggingAngle.setText(
 					"NOT INITIALIZED"
 					);
+		
 		//---------------------------------------------------------------------------------
-		// POWER PLANT:
-		textFieldsAircraftEngineFileList = new ArrayList<>();
-		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile1);
-		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile2);
-		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile3);
-		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile4);
-		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile5);
-		textFieldsAircraftEngineFileList.add(textFieldAircraftEngineFile6);
-		
-		textFieldAircraftEngineXList = new ArrayList<>();
-		textFieldAircraftEngineXList.add(textFieldAircraftEngineX1);
-		textFieldAircraftEngineXList.add(textFieldAircraftEngineX2);
-		textFieldAircraftEngineXList.add(textFieldAircraftEngineX3);
-		textFieldAircraftEngineXList.add(textFieldAircraftEngineX4);
-		textFieldAircraftEngineXList.add(textFieldAircraftEngineX5);
-		textFieldAircraftEngineXList.add(textFieldAircraftEngineX6);
-		
-		textFieldAircraftEngineYList = new ArrayList<>();
-		textFieldAircraftEngineYList.add(textFieldAircraftEngineY1);
-		textFieldAircraftEngineYList.add(textFieldAircraftEngineY2);
-		textFieldAircraftEngineYList.add(textFieldAircraftEngineY3);
-		textFieldAircraftEngineYList.add(textFieldAircraftEngineY4);
-		textFieldAircraftEngineYList.add(textFieldAircraftEngineY5);
-		textFieldAircraftEngineYList.add(textFieldAircraftEngineY6);
-		
-		textFieldAircraftEngineZList = new ArrayList<>();
-		textFieldAircraftEngineZList.add(textFieldAircraftEngineZ1);
-		textFieldAircraftEngineZList.add(textFieldAircraftEngineZ2);
-		textFieldAircraftEngineZList.add(textFieldAircraftEngineZ3);
-		textFieldAircraftEngineZList.add(textFieldAircraftEngineZ4);
-		textFieldAircraftEngineZList.add(textFieldAircraftEngineZ5);
-		textFieldAircraftEngineZList.add(textFieldAircraftEngineZ6);
-		
-		choiceBoxesAircraftEnginePositonList = new ArrayList<>();
-		choiceBoxesAircraftEnginePositonList.add(powerPlantMountingPositionTypeChoiceBox1);
-		choiceBoxesAircraftEnginePositonList.add(powerPlantMountingPositionTypeChoiceBox2);
-		choiceBoxesAircraftEnginePositonList.add(powerPlantMountingPositionTypeChoiceBox3);
-		choiceBoxesAircraftEnginePositonList.add(powerPlantMountingPositionTypeChoiceBox4);
-		choiceBoxesAircraftEnginePositonList.add(powerPlantMountingPositionTypeChoiceBox5);
-		choiceBoxesAircraftEnginePositonList.add(powerPlantMountingPositionTypeChoiceBox6);
-		
-		textFieldAircraftEngineTiltList = new ArrayList<>();
-		textFieldAircraftEngineTiltList.add(textFieldAircraftEngineTilt1);
-		textFieldAircraftEngineTiltList.add(textFieldAircraftEngineTilt2);
-		textFieldAircraftEngineTiltList.add(textFieldAircraftEngineTilt3);
-		textFieldAircraftEngineTiltList.add(textFieldAircraftEngineTilt4);
-		textFieldAircraftEngineTiltList.add(textFieldAircraftEngineTilt5);
-		textFieldAircraftEngineTiltList.add(textFieldAircraftEngineTilt6);
-		
-		if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-			powerPlantXUnitChoiceBox.getSelectionModel().select(0);
-		else if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-			powerPlantXUnitChoiceBox.getSelectionModel().select(1);
-
-
-		if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-			powerPlantYUnitChoiceBox.getSelectionModel().select(0);
-		else if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-			powerPlantYUnitChoiceBox.getSelectionModel().select(1);
-
-
-		if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-			powerPlantZUnitChoiceBox.getSelectionModel().select(0);
-		else if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-			powerPlantZUnitChoiceBox.getSelectionModel().select(1);
-
-
-		if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("°")
-				|| Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("deg"))
-			powerPlantTiltAngleUnitChoiceBox.getSelectionModel().select(0);
-		else if(Main.getTheAircraft()
-				.getPowerPlant().getEngineList().get(0)
-				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("rad"))
-			powerPlantTiltAngleUnitChoiceBox.getSelectionModel().select(1);
-
-		//..........................................................................................................
-		NodeList nodelistEngines = MyXMLReaderUtils
-				.getXMLNodeListByPath(reader.getXmlDoc(), "//power_plant/engine");
-		if(nodelistEngines != null) {
-			for (int i = 0; i < nodelistEngines.getLength(); i++) {
-				//..........................................................................................................
-				Node nodeEngine  = nodelistEngines.item(i); 
-				Element elementEngine = (Element) nodeEngine;
-				if(elementEngine.getAttribute("file") != null)
-					textFieldsAircraftEngineFileList.get(i).setText(
-							dirEngines 
-							+ File.separator
-							+ elementEngine.getAttribute("file")	
-							);
-				else
-					textFieldsAircraftEngineFileList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) 
-					textFieldAircraftEngineXList.get(i).setText(
-							String.valueOf(
-									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-									.getXApexConstructionAxes()
-									.getEstimatedValue()
-									)
-							);
-				else
-					textFieldAircraftEngineXList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-					textFieldAircraftEngineYList.get(i).setText(
-							String.valueOf(
-									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-									.getYApexConstructionAxes()
-									.getEstimatedValue()
-									)
-							);
-				else
-					textFieldAircraftEngineYList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-					textFieldAircraftEngineZList.get(i).setText(
-							String.valueOf(
-									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-									.getZApexConstructionAxes()
-									.getEstimatedValue()
-									)
-							);
-				else
-					textFieldAircraftEngineZList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-
-					if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("BURIED")
-							)
-						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(0);
-					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("WING")
-							)
-						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(1);
-					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("AFT_FUSELAGE")
-							)
-						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(2);
-					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("HTAIL")
-							)
-						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(3);
-					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("REAR_FUSELAGE")
-							)
-						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(4);
-
-				//..........................................................................................................
-				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
-					textFieldAircraftEngineTiltList.get(i).setText(
-							String.valueOf(
-									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
-									.getTiltingAngle()
-									.getEstimatedValue()
-									)
-							);
-				else
-					textFieldAircraftEngineTiltList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-			}
+		// ENGINES NUMBER CHECK:
+		if (Main.getTheAircraft().getPowerPlant().getEngineList().size() >= 
+				tabPaneAircraftEngines.getTabs().size()) {
+			
+			int iStart = tabPaneAircraftEngines.getTabs().size();
+			
+			for(int i=iStart; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++)
+				addAircraftEngine();
+			
 		}
-		//---------------------------------------------------------------------------------
-		// NACELLES:
-		textFieldsAircraftNacelleFileList = new ArrayList<>();
-		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile1);
-		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile2);
-		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile3);
-		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile4);
-		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile5);
-		textFieldsAircraftNacelleFileList.add(textFieldAircraftNacelleFile6);
 		
-		textFieldAircraftNacelleXList = new ArrayList<>();
-		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX1);
-		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX2);
-		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX3);
-		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX4);
-		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX5);
-		textFieldAircraftNacelleXList.add(textFieldAircraftNacelleX6);
-		
-		textFieldAircraftNacelleYList = new ArrayList<>();
-		textFieldAircraftNacelleYList.add(textFieldAircraftNacelleY1);
-		textFieldAircraftNacelleYList.add(textFieldAircraftNacelleY2);
-		textFieldAircraftNacelleYList.add(textFieldAircraftNacelleY3);
-		textFieldAircraftNacelleYList.add(textFieldAircraftNacelleY4);
-		textFieldAircraftNacelleYList.add(textFieldAircraftNacelleY5);
-		textFieldAircraftNacelleYList.add(textFieldAircraftNacelleY6);
-		
-		textFieldAircraftNacelleZList = new ArrayList<>();
-		textFieldAircraftNacelleZList.add(textFieldAircraftNacelleZ1);
-		textFieldAircraftNacelleZList.add(textFieldAircraftNacelleZ2);
-		textFieldAircraftNacelleZList.add(textFieldAircraftNacelleZ3);
-		textFieldAircraftNacelleZList.add(textFieldAircraftNacelleZ4);
-		textFieldAircraftNacelleZList.add(textFieldAircraftNacelleZ5);
-		textFieldAircraftNacelleZList.add(textFieldAircraftNacelleZ6);
-		
-		choiceBoxesAircraftNacellePositonList = new ArrayList<>();
-		choiceBoxesAircraftNacellePositonList.add(nacellesMountingPositionTypeChoiceBox1);
-		choiceBoxesAircraftNacellePositonList.add(nacellesMountingPositionTypeChoiceBox2);
-		choiceBoxesAircraftNacellePositonList.add(nacellesMountingPositionTypeChoiceBox3);
-		choiceBoxesAircraftNacellePositonList.add(nacellesMountingPositionTypeChoiceBox4);
-		choiceBoxesAircraftNacellePositonList.add(nacellesMountingPositionTypeChoiceBox5);
-		choiceBoxesAircraftNacellePositonList.add(nacellesMountingPositionTypeChoiceBox6);
-		
-		//..........................................................................................................
-		if(Main.getTheAircraft()
-				.getNacelles().getNacellesList().get(0)
-				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-			nacelleXUnitChoiceBox.getSelectionModel().select(0);
-		else if(Main.getTheAircraft()
-				.getNacelles().getNacellesList().get(0)
-				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-			nacelleXUnitChoiceBox.getSelectionModel().select(1);
-
-		if(Main.getTheAircraft()
-				.getNacelles().getNacellesList().get(0)
-				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-			nacelleYUnitChoiceBox.getSelectionModel().select(0);
-		else if(Main.getTheAircraft()
-				.getNacelles().getNacellesList().get(0)
-				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-			nacelleYUnitChoiceBox.getSelectionModel().select(1);
-
-		if(Main.getTheAircraft()
-				.getNacelles().getNacellesList().get(0)
-				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
-			nacelleZUnitChoiceBox.getSelectionModel().select(0);
-		else if(Main.getTheAircraft()
-				.getNacelles().getNacellesList().get(0)
-				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
-			nacelleZUnitChoiceBox.getSelectionModel().select(1);
-
-		//..........................................................................................................
-		NodeList nodelistNacelles = MyXMLReaderUtils
-				.getXMLNodeListByPath(reader.getXmlDoc(), "//nacelles/nacelle");
-		if(nodelistNacelles != null) {
-			for (int i = 0; i < nodelistNacelles.getLength(); i++) {
-				//..........................................................................................................
-				Node nodeNacelle  = nodelistNacelles.item(i); 
-				Element elementNacelle = (Element) nodeNacelle;
-				if(elementNacelle.getAttribute("file") != null)
-					textFieldsAircraftNacelleFileList.get(i).setText(
-							dirEngines 
-							+ File.separator
-							+ elementNacelle.getAttribute("file")	
-							);
-				else
-					textFieldsAircraftNacelleFileList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-					textFieldAircraftNacelleXList.get(i).setText(
-							String.valueOf(
-									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-									.getXApexConstructionAxes()
-									.getEstimatedValue()
-									)
-							);
-				else
-					textFieldAircraftNacelleXList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-					textFieldAircraftNacelleYList.get(i).setText(
-							String.valueOf(
-									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-									.getYApexConstructionAxes()
-									.getEstimatedValue()
-									)
-							);
-				else
-					textFieldAircraftNacelleYList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-					textFieldAircraftNacelleZList.get(i).setText(
-							String.valueOf(
-									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-									.getZApexConstructionAxes()
-									.getEstimatedValue()
-									)
-							);
-				else
-					textFieldAircraftNacelleZList.get(i).setText(
-							"NOT INITIALIZED"
-							);
-				//..........................................................................................................
-				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
-
-					if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("WING")
-							)
-						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(0);
-					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("FUSELAGE")
-							)
-						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(1);
-					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("HTAIL")
-							)
-						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(2);
-					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
-							.getMountingPosition().toString()
-							.equalsIgnoreCase("UNDERCARRIAGE_HOUSING")
-							)
-						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(3);
-
-			}
-		}
+//		//---------------------------------------------------------------------------------
+//		// LOOP OVER ENGINES:
+//		for (int i=0; i<Main.getTheAircraft().getPowerPlant().getEngineList().size(); i++) {
+//			
+//			Engine currentEngine = Main.getTheAircraft().getPowerPlant().getEngineList().get(i);
+//			
+//			//---------------------------------------------------------------------------------
+//			// FILE:
+//			if(currentEngine.getFilePath() != null) {
+//				textFieldFuselageInnerSpanwisePositionSpoilerList.get(i).setText(
+//						String.valueOf(currentSpoiler.getInnerStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				textFieldFuselageInnerSpanwisePositionSpoilerList.get(i).setText(
+//						"NOT INITIALIZED"
+//						);
+//			
+//			//---------------------------------------------------------------------------------
+//			// OUTER SPANWISE POSITION:
+//			if(currentSpoiler.getOuterStationSpanwisePosition() != null) {
+//				textFieldFuselageOuterSpanwisePositionSpoilerList.get(i).setText(
+//						String.valueOf(currentSpoiler.getOuterStationSpanwisePosition())
+//						);
+//			}
+//			else
+//				textFieldFuselageOuterSpanwisePositionSpoilerList.get(i).setText(
+//						"NOT INITIALIZED"
+//						);
+//			
+//			//---------------------------------------------------------------------------------
+//			// INNER CHORDWISE POSITION:
+//			if(currentSpoiler.getInnerStationChordwisePosition() != null) {
+//				textFieldFuselageInnerChordwisePositionSpoilerList.get(i).setText(
+//						String.valueOf(currentSpoiler.getInnerStationChordwisePosition())
+//						);
+//			}
+//			else
+//				textFieldFuselageInnerChordwisePositionSpoilerList.get(i).setText(
+//						"NOT INITIALIZED"
+//						);
+//			
+//			//---------------------------------------------------------------------------------
+//			// OUTER CHORDWISE POSITION:
+//			if(currentSpoiler.getOuterStationChordwisePosition() != null) {
+//				textFieldFuselageOuterChordwisePositionSpoilerList.get(i).setText(
+//						String.valueOf(currentSpoiler.getOuterStationChordwisePosition())
+//						);
+//			}
+//			else
+//				textFieldFuselageOuterChordwisePositionSpoilerList.get(i).setText(
+//						"NOT INITIALIZED"
+//						);
+//			
+//			//---------------------------------------------------------------------------------
+//			// MINIMUM DEFLECTION:
+//			if(currentSpoiler.getMinimumDeflection() != null) {
+//				
+//				textFieldFuselageMinimumDeflectionAngleSpoilerList.get(i).setText(
+//						String.valueOf(currentSpoiler.getMinimumDeflection().getEstimatedValue())
+//						);
+//				
+//				if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("°")
+//						|| currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(0);
+//				else if(currentSpoiler.getMinimumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					choiceBoxFuselageMinimumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(1);
+//				
+//			}
+//			else
+//				textFieldFuselageMinimumDeflectionAngleSpoilerList.get(i).setText(
+//						"NOT INITIALIZED"
+//						);
+//			
+//			//---------------------------------------------------------------------------------
+//			// MAXIMUM DEFLECTION:
+//			if(currentSpoiler.getMaximumDeflection() != null) {
+//				
+//				textFieldFuselageMaximumDeflectionAngleSpoilerList.get(i).setText(
+//						String.valueOf(currentSpoiler.getMaximumDeflection().getEstimatedValue())
+//						);
+//				
+//				if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("°")
+//						|| currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("deg"))
+//					choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(0);
+//				else if(currentSpoiler.getMaximumDeflection().getUnit().toString().equalsIgnoreCase("rad"))
+//					choiceBoxFuselageMaximumDeflectionAngleSpoilerUnitList.get(i).getSelectionModel().select(1);
+//				
+//			}
+//			else
+//				textFieldFuselageMaximumDeflectionAngleSpoilerList.get(i).setText(
+//						"NOT INITIALIZED"
+//						);
+//			
+//		}
+//		
+//		
+//		
+//		//---------------------------------------------------------------------------------
+//		// POWER PLANT:
+//		if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//			powerPlantXUnitChoiceBox.getSelectionModel().select(0);
+//		else if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//			powerPlantXUnitChoiceBox.getSelectionModel().select(1);
+//
+//
+//		if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//			powerPlantYUnitChoiceBox.getSelectionModel().select(0);
+//		else if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//			powerPlantYUnitChoiceBox.getSelectionModel().select(1);
+//
+//
+//		if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//			powerPlantZUnitChoiceBox.getSelectionModel().select(0);
+//		else if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//			powerPlantZUnitChoiceBox.getSelectionModel().select(1);
+//
+//
+//		if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("°")
+//				|| Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("deg"))
+//			powerPlantTiltAngleUnitChoiceBox.getSelectionModel().select(0);
+//		else if(Main.getTheAircraft()
+//				.getPowerPlant().getEngineList().get(0)
+//				.getTiltingAngle().getUnit().toString().equalsIgnoreCase("rad"))
+//			powerPlantTiltAngleUnitChoiceBox.getSelectionModel().select(1);
+//
+//		//..........................................................................................................
+//		NodeList nodelistEngines = MyXMLReaderUtils
+//				.getXMLNodeListByPath(reader.getXmlDoc(), "//power_plant/engine");
+//		if(nodelistEngines != null) {
+//			for (int i = 0; i < nodelistEngines.getLength(); i++) {
+//				//..........................................................................................................
+//				Node nodeEngine  = nodelistEngines.item(i); 
+//				Element elementEngine = (Element) nodeEngine;
+//				if(elementEngine.getAttribute("file") != null)
+//					textFieldsAircraftEngineFileList.get(i).setText(
+//							dirEngines 
+//							+ File.separator
+//							+ elementEngine.getAttribute("file")	
+//							);
+//				else
+//					textFieldsAircraftEngineFileList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null) 
+//					textFieldAircraftEngineXList.get(i).setText(
+//							String.valueOf(
+//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//									.getXApexConstructionAxes()
+//									.getEstimatedValue()
+//									)
+//							);
+//				else
+//					textFieldAircraftEngineXList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
+//					textFieldAircraftEngineYList.get(i).setText(
+//							String.valueOf(
+//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//									.getYApexConstructionAxes()
+//									.getEstimatedValue()
+//									)
+//							);
+//				else
+//					textFieldAircraftEngineYList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
+//					textFieldAircraftEngineZList.get(i).setText(
+//							String.valueOf(
+//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//									.getZApexConstructionAxes()
+//									.getEstimatedValue()
+//									)
+//							);
+//				else
+//					textFieldAircraftEngineZList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
+//
+//					if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("BURIED")
+//							)
+//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(0);
+//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("WING")
+//							)
+//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(1);
+//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("AFT_FUSELAGE")
+//							)
+//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(2);
+//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("HTAIL")
+//							)
+//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(3);
+//					else if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("REAR_FUSELAGE")
+//							)
+//						choiceBoxesAircraftEnginePositonList.get(i).getSelectionModel().select(4);
+//
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getPowerPlant().getEngineList().get(i) != null)
+//					textFieldAircraftEngineTiltList.get(i).setText(
+//							String.valueOf(
+//									Main.getTheAircraft().getPowerPlant().getEngineList().get(i)
+//									.getTiltingAngle()
+//									.getEstimatedValue()
+//									)
+//							);
+//				else
+//					textFieldAircraftEngineTiltList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//			}
+//		}
+//		//---------------------------------------------------------------------------------
+//		// NACELLES:
+//		if(Main.getTheAircraft()
+//				.getNacelles().getNacellesList().get(0)
+//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//			nacelleXUnitChoiceBox.getSelectionModel().select(0);
+//		else if(Main.getTheAircraft()
+//				.getNacelles().getNacellesList().get(0)
+//				.getXApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//			nacelleXUnitChoiceBox.getSelectionModel().select(1);
+//
+//		if(Main.getTheAircraft()
+//				.getNacelles().getNacellesList().get(0)
+//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//			nacelleYUnitChoiceBox.getSelectionModel().select(0);
+//		else if(Main.getTheAircraft()
+//				.getNacelles().getNacellesList().get(0)
+//				.getYApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//			nacelleYUnitChoiceBox.getSelectionModel().select(1);
+//
+//		if(Main.getTheAircraft()
+//				.getNacelles().getNacellesList().get(0)
+//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("m"))
+//			nacelleZUnitChoiceBox.getSelectionModel().select(0);
+//		else if(Main.getTheAircraft()
+//				.getNacelles().getNacellesList().get(0)
+//				.getZApexConstructionAxes().getUnit().toString().equalsIgnoreCase("ft"))
+//			nacelleZUnitChoiceBox.getSelectionModel().select(1);
+//
+//		//..........................................................................................................
+//		NodeList nodelistNacelles = MyXMLReaderUtils
+//				.getXMLNodeListByPath(reader.getXmlDoc(), "//nacelles/nacelle");
+//		if(nodelistNacelles != null) {
+//			for (int i = 0; i < nodelistNacelles.getLength(); i++) {
+//				//..........................................................................................................
+//				Node nodeNacelle  = nodelistNacelles.item(i); 
+//				Element elementNacelle = (Element) nodeNacelle;
+//				if(elementNacelle.getAttribute("file") != null)
+//					textFieldsAircraftNacelleFileList.get(i).setText(
+//							dirEngines 
+//							+ File.separator
+//							+ elementNacelle.getAttribute("file")	
+//							);
+//				else
+//					textFieldsAircraftNacelleFileList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
+//					textFieldAircraftNacelleXList.get(i).setText(
+//							String.valueOf(
+//									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+//									.getXApexConstructionAxes()
+//									.getEstimatedValue()
+//									)
+//							);
+//				else
+//					textFieldAircraftNacelleXList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
+//					textFieldAircraftNacelleYList.get(i).setText(
+//							String.valueOf(
+//									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+//									.getYApexConstructionAxes()
+//									.getEstimatedValue()
+//									)
+//							);
+//				else
+//					textFieldAircraftNacelleYList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
+//					textFieldAircraftNacelleZList.get(i).setText(
+//							String.valueOf(
+//									Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+//									.getZApexConstructionAxes()
+//									.getEstimatedValue()
+//									)
+//							);
+//				else
+//					textFieldAircraftNacelleZList.get(i).setText(
+//							"NOT INITIALIZED"
+//							);
+//				//..........................................................................................................
+//				if(Main.getTheAircraft().getNacelles().getNacellesList().get(i) != null)
+//
+//					if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("WING")
+//							)
+//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(0);
+//					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("FUSELAGE")
+//							)
+//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(1);
+//					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("HTAIL")
+//							)
+//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(2);
+//					else if(Main.getTheAircraft().getNacelles().getNacellesList().get(i)
+//							.getMountingPosition().toString()
+//							.equalsIgnoreCase("UNDERCARRIAGE_HOUSING")
+//							)
+//						choiceBoxesAircraftNacellePositonList.get(i).getSelectionModel().select(3);
+//
+//			}
+//		}
 		//---------------------------------------------------------------------------------
 		// LANDING GEARS:
 		String landingGearsFileName =
