@@ -23,7 +23,14 @@ public class Test16 {
 
 		Fuselage fuselage = theAircraft.getFuselage();
 		
-		// System.out.println(theAircraft);
+//		System.out.println("========== [main] The aircraft:");
+//		System.out.println(theAircraft);
+
+//		System.out.println("========== [main] The fuselage geometric parameters:");
+//		System.out.println(fuselage.getFuselageCreator());
+//
+//		System.out.println("========== [main] The wing geometric parameters:");
+//		System.out.println(theAircraft.getWing().getLiftingSurfaceCreator());
 		
 		boolean exportLofts = true;
 		boolean exportSupportShapes = false;
@@ -32,6 +39,7 @@ public class Test16 {
 //		System.out.println(">>>>>> OCCShell default-make-solid: " + OCCShell.isDefaultMakeSolid());
 
 		fuselage.getFuselageCreator().calculateGeometry(40, 3, 40, 20, 20);
+
 		List<OCCShape> fuselageShapes = AircraftUtils.getFuselageCAD(
 				fuselage, 
 				0.15, 1.0, 3, 13, 7, 1.0, 0.10, 3, 
